@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A691F6865
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44D71F6869
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgFKM4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:56:44 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24912 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726346AbgFKM4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:56:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591880202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fq4jWTmxvdTOixqCSNHPWC+W1UeHSFDB5a+MOgnJLHI=;
-        b=c3sv5DwIx6rXrS13Y/uDhUSx0cqSokh194UxZ6TjXLIFquxm5/Z+Yy4+hNcvr6rA/wTjCb
-        jYDa945yQ0FmT2g5SEHI+4tBaqwTygdR4awiB3hRssx7o4bnc9YIgX1HgjghfvIPIXmN36
-        hPSFOSMcyJOmYk2rAzblQp7nVsXAe5Y=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-kjjaHxJuOUivsKg__do2VA-1; Thu, 11 Jun 2020 08:56:38 -0400
-X-MC-Unique: kjjaHxJuOUivsKg__do2VA-1
-Received: by mail-qt1-f199.google.com with SMTP id l26so4720744qtr.14
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:56:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Fq4jWTmxvdTOixqCSNHPWC+W1UeHSFDB5a+MOgnJLHI=;
-        b=QyIRGOsm57mvQkDI4koNxuPVxeD5eGQ8spzqnFyyvK5KM+WTcbnGoWC4qEG1lhSkdC
-         EC0CnkPteWrBxyIeaUA/cTmxIbJA6a606xtgfKurNGm2UzHmcKBy/3cOQRgGoOzWb/n3
-         7EVRT0vDB1KVRH0BJcTytKyw35qwBe6gk6+Z+bbh5EuVmr1ASJ7cn35pOAofz8EEuaRT
-         YKHrdfoY+iOdYYaqQFqW1zEhmPjOpmv1l5pXhjbNRR4KnbrJlQtMX9HP/7jjommA+PDo
-         ha8pkW7s6Yo5IhVftKQfn+vcw3ET+Kt+qWT6/bMimdT38C7QTVrwa54G+UBQs+IU/zDk
-         YSIQ==
-X-Gm-Message-State: AOAM5335TFE7VBnFSsy0OTUPVS9UE2kZPTEiHE7UR9cYAq2u4kAuUaAN
-        +/ifDi9WiN+Xu4JEo31cJebVZEeFOSuxve76ITqVrV43WdUJ7u4oIdDEoFseGyOJRVHzarcDGAY
-        zQBKhx7wvoy4lZyjuEUeyzYnT
-X-Received: by 2002:a05:6214:b33:: with SMTP id w19mr7223586qvj.7.1591880197758;
-        Thu, 11 Jun 2020 05:56:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+JyKVnjOWvjSt9Z4+PqIeU1E00Ib2Tef8IcgZTQ1YgELkIq0HkZauAQyYv/J2UaWpMgxv7Q==
-X-Received: by 2002:a05:6214:b33:: with SMTP id w19mr7223575qvj.7.1591880197557;
-        Thu, 11 Jun 2020 05:56:37 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b4sm2229646qtp.63.2020.06.11.05.56.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 05:56:36 -0700 (PDT)
-Subject: Re: [PATCH 0/6] Add more configuration and regmap support for
- spi-altera
-To:     Xu Yilun <yilun.xu@intel.com>, broonie@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     hao.wu@intel.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com
-References: <1591845911-10197-1-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <fb4a6f25-9f93-7618-d64e-20b93b1fcade@redhat.com>
-Date:   Thu, 11 Jun 2020 05:56:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <1591845911-10197-1-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1727913AbgFKM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:57:05 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42542 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726775AbgFKM5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:57:03 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb94VKuJek_hAAA--.1592S2;
+        Thu, 11 Jun 2020 20:56:53 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 1/2] spi: tools: Make default_tx/rx and input_tx static
+Date:   Thu, 11 Jun 2020 20:56:51 +0800
+Message-Id: <1591880212-13479-1-git-send-email-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxb94VKuJek_hAAA--.1592S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr48tw4UArW7GFW5Jry3twb_yoW8JF47pF
+        45Ar40kan7KF1Yyay7X3ZxGw15CF97X3y5Cw1DK3yFyFsYk3Z7Xa95Kry8tFWUGFZ2qFn8
+        Zr1I9r43Xa10vw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUZNV3UUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset looks good to me.
+Fix the following sparse warning:
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+./spidev_test.c:50:9: warning: symbol 'default_tx' was not declared. Should it be static?
+./spidev_test.c:59:9: warning: symbol 'default_rx' was not declared. Should it be static?
+./spidev_test.c:60:6: warning: symbol 'input_tx' was not declared. Should it be static?
 
-Thanks,
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
+ tools/spi/spidev_test.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Tom
-
-On 6/10/20 8:25 PM, Xu Yilun wrote:
-> This patchset adds platform_data for spi-altera, to enable more IP
-> configurations, and creating specific spi client devices. It also adds
-> regmap support, to enable the indirect access to this IP.
->
-> We have a PCIE based FPGA platform which integrates this IP to communicate
-> with a BMC chip (Intel MAX10) over SPI. The IP is configured as 32bit data
-> width. There is also an indirect access interface in FPGA for host to
-> access the registers of this IP. This patchset enables this use case.
->
-> Matthew Gerlach (1):
->   spi: altera: fix size mismatch on 64 bit processors
->
-> Xu Yilun (5):
->   spi: altera: add 32bit data width transfer support.
->   spi: altera: add SPI core parameters support via platform data.
->   spi: altera: add platform data for slave information.
->   spi: altera: use regmap instead of direct mmio register access
->   spi: altera: move driver name string to header file
->
->  drivers/spi/Kconfig        |   1 +
->  drivers/spi/spi-altera.c   | 161 +++++++++++++++++++++++++++++++++++++--------
->  include/linux/spi/altera.h |  37 +++++++++++
->  3 files changed, 171 insertions(+), 28 deletions(-)
->  create mode 100644 include/linux/spi/altera.h
->
+diff --git a/tools/spi/spidev_test.c b/tools/spi/spidev_test.c
+index 56ea053f..83844f8 100644
+--- a/tools/spi/spidev_test.c
++++ b/tools/spi/spidev_test.c
+@@ -47,7 +47,7 @@ static int transfer_size;
+ static int iterations;
+ static int interval = 5; /* interval in seconds for showing transfer rate */
+ 
+-uint8_t default_tx[] = {
++static uint8_t default_tx[] = {
+ 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+ 	0x40, 0x00, 0x00, 0x00, 0x00, 0x95,
+ 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+@@ -56,8 +56,8 @@ uint8_t default_tx[] = {
+ 	0xF0, 0x0D,
+ };
+ 
+-uint8_t default_rx[ARRAY_SIZE(default_tx)] = {0, };
+-char *input_tx;
++static uint8_t default_rx[ARRAY_SIZE(default_tx)] = {0, };
++static char *input_tx;
+ 
+ static void hex_dump(const void *src, size_t length, size_t line_size,
+ 		     char *prefix)
+-- 
+2.1.0
 
