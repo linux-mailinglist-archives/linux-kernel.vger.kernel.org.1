@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F281F6425
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 10:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8C51F641C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 10:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgFKI7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 04:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S1727025AbgFKI7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 04:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgFKI7g (ORCPT
+        with ESMTP id S1726833AbgFKI67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 04:59:36 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A89C03E96F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 01:59:35 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x13so5301496wrv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 01:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yYF1qLiVcqC5+ofUdD+N961rSzft8TLHXK3pdCiJAf4=;
-        b=cNtnL98yUbK2MCL+1+RKeOROIoB5KILcEmhKmzVSQ0JHP2sFlFMpJK5x2EyYKhMjev
-         UWYHxlDYULDROij0/0uRsiQ7ejZvFyVLTCtOnTXZOy6SFSZgP/Um0CgXGUjh7L2HZZzD
-         fxpqR3Hc6bXw3PHPrSq/6JElnTuXsntnW7cB3rappNwxzCynIC+beZ119+lurecYIHfz
-         DUDRypO35acuvv2rERRb1XWP0578Z+NQGLRsa2VyEQ4cWvO3hFaYL39RyrPgjfUzY+2P
-         +ILv81nreYMMHTMpuoJ+R43utIyD2ldbbWuPkOYdZsGJSWeMQSL3WzQ667IWnPZJ50Ph
-         tEtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=yYF1qLiVcqC5+ofUdD+N961rSzft8TLHXK3pdCiJAf4=;
-        b=YcWtATxGRbsUrrKP5DfHBgjLKfpY14s5kERHx5sZto0VgpuwbN3JxNW5BOPHlis3Up
-         NEGKGuuJ4ojoTAHtXBk9EOm1iTg5Jl8gDcsh7UxrmqC1y3puG+VUCwRHHInWz+H7uSic
-         e/hcGpbjFZVzClFhffFxhPQApMiRl55shPBO5CCLz3lJuJE0tmoRfgSL2aPxyiqAsRTR
-         XA+IseHgFgb8T110XBB5ElqULwMWM1pdCtXnGCzUJ8YxkbtC0rpF8w1mntNKp/rT+ltO
-         4VzjvecRLfR1JVbnJkGM6HngwQqSn9iwrYk3dJdX3PAsYzy4GZi24s7PGG2Oe4b41Jqq
-         zMjw==
-X-Gm-Message-State: AOAM533xjMKzhHqRMFifvGOtajllb8ntaa+e173aDZFNjz8P7OjA3qGB
-        hJ2QHTj+1OBij9ooMAqFj6a5v1fu
-X-Google-Smtp-Source: ABdhPJzO7ZN5HbQmNp6JjblxAuLk8K1tfrLxFTX4g+Bjh4JseUCjO7OPQwFC79X7Kj44jaFBkZmWUw==
-X-Received: by 2002:adf:dcc3:: with SMTP id x3mr8137121wrm.93.1591865973844;
-        Thu, 11 Jun 2020 01:59:33 -0700 (PDT)
-Received: from cizrna.lan ([109.72.12.141])
-        by smtp.gmail.com with ESMTPSA id o20sm4205023wra.29.2020.06.11.01.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 01:59:33 -0700 (PDT)
-From:   Tomeu Vizoso <tomeu.vizoso@collabora.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Rob Herring <robh@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/2] panfrost: Add compatible string for bifrost
-Date:   Thu, 11 Jun 2020 10:58:44 +0200
-Message-Id: <20200611085900.49740-2-tomeu.vizoso@collabora.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200611085900.49740-1-tomeu.vizoso@collabora.com>
-References: <20200611085900.49740-1-tomeu.vizoso@collabora.com>
+        Thu, 11 Jun 2020 04:58:59 -0400
+X-Greylist: delayed 196 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 11 Jun 2020 01:58:59 PDT
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094F9C03E96F;
+        Thu, 11 Jun 2020 01:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=g4cB48q84iF2x+YTctvj2vQzPcRRIUPbdwGd8ytPMJs=; b=yPCiYKdwo02fKO/iPRLDsIklK
+        vBXP/ZlL6LtWewhRVdjSfq+XXQb0XGO1gloD1ntYOGL9NeGC/tIZFALMOg+g0XY55XlPadWVFj6Br
+        9IifcYd2NCANKhBvjffoapNhI7Ksm9QJKWqeAa1Mbiv73vJk1ySr2R0nvPqrirGUDLMkvr99xPD0+
+        GoktE8KjB1nCDvVSWCj80Pr6MmeL29Uae1zsraDjW77jWQ2rAUHDG095XlGqlAoJdkDqhVFQUWj/2
+        DxcSFZjuDsYRHWc73aPvTdPCHBehcH3VMv+rfMU2gKNIASHeTYFTcxJqoUTf6107r08wr/VOggEQD
+        RE0dJ7a0A==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:52172)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jjJ2x-0008Cw-Fv; Thu, 11 Jun 2020 09:58:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jjJ2w-00052V-Rb; Thu, 11 Jun 2020 09:58:50 +0100
+Date:   Thu, 11 Jun 2020 09:58:50 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jonathan McDowell <noodles@earth.li>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: dsa: qca8k: Improve SGMII interface handling
+Message-ID: <20200611085850.GW1551@shell.armlinux.org.uk>
+References: <cover.1591816172.git.noodles@earth.li>
+ <2150f4c70c754aed179e46e166f3c305254cf85a.1591816172.git.noodles@earth.li>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2150f4c70c754aed179e46e166f3c305254cf85a.1591816172.git.noodles@earth.li>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mesa now supports some Bifrost devices, so enable it.
+On Wed, Jun 10, 2020 at 08:15:13PM +0100, Jonathan McDowell wrote:
+> This patch improves the handling of the SGMII interface on the QCA8K
+> devices. Previously the driver did no configuration of the port, even if
+> it was selected. We now configure it up in the appropriate
+> PHY/MAC/Base-X mode depending on what phylink tells us we are connected
+> to and ensure it is enabled.
+> 
+> Tested with a device where the CPU connection is RGMII (i.e. the common
+> current use case) + one where the CPU connection is SGMII. I don't have
+> any devices where the SGMII interface is brought out to something other
+> than the CPU.
+> 
+> Signed-off-by: Jonathan McDowell <noodles@earth.li>
+> ---
+>  drivers/net/dsa/qca8k.c | 28 +++++++++++++++++++++++++++-
+>  drivers/net/dsa/qca8k.h | 13 +++++++++++++
+>  2 files changed, 40 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index dcd9e8fa99b6..33e62598289e 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -681,7 +681,7 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>  			 const struct phylink_link_state *state)
+>  {
+>  	struct qca8k_priv *priv = ds->priv;
+> -	u32 reg;
+> +	u32 reg, val;
+>  
+>  	switch (port) {
+>  	case 0: /* 1st CPU port */
+> @@ -740,6 +740,32 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>  	case PHY_INTERFACE_MODE_1000BASEX:
+>  		/* Enable SGMII on the port */
+>  		qca8k_write(priv, reg, QCA8K_PORT_PAD_SGMII_EN);
+> +
+> +		/* Enable/disable SerDes auto-negotiation as necessary */
+> +		val = qca8k_read(priv, QCA8K_REG_PWS);
+> +		if (phylink_autoneg_inband(mode))
+> +			val &= ~QCA8K_PWS_SERDES_AEN_DIS;
+> +		else
+> +			val |= QCA8K_PWS_SERDES_AEN_DIS;
+> +		qca8k_write(priv, QCA8K_REG_PWS, val);
+> +
+> +		/* Configure the SGMII parameters */
+> +		val = qca8k_read(priv, QCA8K_REG_SGMII_CTRL);
+> +
+> +		val |= QCA8K_SGMII_EN_PLL | QCA8K_SGMII_EN_RX |
+> +			QCA8K_SGMII_EN_TX | QCA8K_SGMII_EN_SD;
+> +
+> +		val &= ~QCA8K_SGMII_MODE_CTRL_MASK;
+> +		if (dsa_is_cpu_port(ds, port)) {
+> +			/* CPU port, we're talking to the CPU MAC, be a PHY */
+> +			val |= QCA8K_SGMII_MODE_CTRL_PHY;
+> +		} else if (state->interface == PHY_INTERFACE_MODE_SGMII) {
+> +			val |= QCA8K_SGMII_MODE_CTRL_MAC;
+> +		} else {
+> +			val |= QCA8K_SGMII_MODE_CTRL_BASEX;
+> +		}
+> +
+> +		qca8k_write(priv, QCA8K_REG_SGMII_CTRL, val);
 
-Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
----
- drivers/gpu/drm/panfrost/panfrost_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+Ah, here it is!  Hmm, I suppose as the two patches will be applied
+together, it's fine to split it like this.
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 882fecc33fdb..8ff8e140f91e 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -677,6 +677,7 @@ static const struct of_device_id dt_match[] = {
- 	{ .compatible = "arm,mali-t830", .data = &default_data, },
- 	{ .compatible = "arm,mali-t860", .data = &default_data, },
- 	{ .compatible = "arm,mali-t880", .data = &default_data, },
-+	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, dt_match);
 -- 
-2.21.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 503kbps up
