@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D3C1F5F7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 03:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71D21F5F7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 03:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgFKBc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 21:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S1726307AbgFKBe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 21:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgFKBc0 (ORCPT
+        with ESMTP id S1726163AbgFKBe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 21:32:26 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1107C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 18:32:26 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l17so4138565qki.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 18:32:26 -0700 (PDT)
+        Wed, 10 Jun 2020 21:34:28 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46F0C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 18:34:28 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id i16so3453313qtr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 18:34:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=GeSX8BLi/S97GAEC8tAxV2cog3jQBy8w8/D9vd362qA=;
-        b=rS9uqXeHK+Xy7MdjS3rdfJl0MwS489Fyt+KGbXqkfZ76nFlpp4WlT+0Q6Q97kN+utD
-         NIpm0q2sOcAwnbUVv7kNi2jxljRQFqGythGpcKPox/HNRlSELB7wYnlsoWVxrrBx7Fxm
-         3Sl1pM2kSOIktiHNPpHNYjLtzyqg5xBEJY01I=
+        bh=55Gy25i6MWT9R2Sy3CAwrMigrI5YAB45T9Iy8NhgGeg=;
+        b=DH1tWi6y94mWYgFSHkuj2ZwvjarHqQyX0ydceO/EdpVgvPsqky3ujppY3dggDEwWfo
+         bGxGOi4eCh99xuyFnaIpkxwysp5f4A14KIF7iBT2S0pWsc4kud/SAhObdl52dn+I/XrV
+         JO7U+JMDW7TVrnxNMK9TUjQOSjLozsRpg4A9k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GeSX8BLi/S97GAEC8tAxV2cog3jQBy8w8/D9vd362qA=;
-        b=QoY2jyWu9Tt+IND2o+juVN4H+BVYH5ZcG8yAh1ofP0LHjmv0X56F0V5ztEqK9/ooY+
-         VYpbWTOso7wgeY7/MJ5paTSgDAHJfDwM6GfeAJbE0hiabUoB2d77h0UvBpeBIVjGrdbL
-         n9dhviyh4SkgouL4Z5han/HJGiWuWZtKABPtvNts5CYYpbxz+t2hnzL0DSXrJ/6EnYG9
-         pQHLf7hGKiaiZOx8v5/3DcheJy/ztfkXZ4qE8VALhuGEc7zhJzl+KPd7i+bu0W2FB5Op
-         6P1hLbhxd3x9pSX/ng0896jtom0AoEge+gU6f9HZQQId+x2I07bOmyLK7Rvs3yabQu08
-         A6aA==
-X-Gm-Message-State: AOAM533FTKljA3G+/cL3mrz9E0DQl8NsH5ZILSc1Ht00g5umqnrBlrsW
-        v475HZLZzGcN7fhgnl6h+loaJQ==
-X-Google-Smtp-Source: ABdhPJz6gg55lcd58w3pkrBwmi2gA9J36PIx1Nta5MymXsCxZ5SaU+egNwIauVSxFDB4LuccOVmNJA==
-X-Received: by 2002:a05:620a:52d:: with SMTP id h13mr5932452qkh.424.1591839145357;
-        Wed, 10 Jun 2020 18:32:25 -0700 (PDT)
+        bh=55Gy25i6MWT9R2Sy3CAwrMigrI5YAB45T9Iy8NhgGeg=;
+        b=FFwl/TqAOd2cuFiR5OICbnjZQjf3re0yfnCcacmC1lJK8mOb6j+etpVyR1fXt4gieo
+         69zJVmkcvGeMsHB5zjADAhABjogcEX6TNvaIf12Rk5YhRgtAJKYHlxpHF7eAp5Lg0+AT
+         QxELDDZznjMskDwTt/OxhyS4ELhLmZzdzA0nLdSAqRzH4SgeDqOVQk1YjKSL6DCnPrzA
+         1JgtEGyhA6SOUvCElYqCrecIP+UO/eC84ilS0kFkqzzsTezW2J5EUInP4FM/d5VeNTad
+         h6P16X/H3wXzJmsqaWAkAQaqNJILs+BRqXqr1bHUPi3HvRm+XhiiiHWQFKfTiGR9eZkk
+         JWvQ==
+X-Gm-Message-State: AOAM531ebxC/jYdTEGuRxuswIOIIGhpfpSUq2H75umLMLd5EWo4GYbKp
+        hLK4e/SIEjCstLwIzkEjTz9Iawbc4WA=
+X-Google-Smtp-Source: ABdhPJzR53fwQYF4rMdlZKKO43GIOTfeOYOuxLqI7tMkeVzyZ4FumvZ0dS6IU1FmSiqBS4/t7dtZyg==
+X-Received: by 2002:aed:3f25:: with SMTP id p34mr6133961qtf.92.1591839267917;
+        Wed, 10 Jun 2020 18:34:27 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 6sm1054724qkl.26.2020.06.10.18.32.24
+        by smtp.gmail.com with ESMTPSA id l8sm1363568qtb.57.2020.06.10.18.34.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 18:32:24 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 21:32:24 -0400
+        Wed, 10 Jun 2020 18:34:27 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 21:34:26 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 01/10] rcu: Directly lock rdp->nocb_lock on nocb code
- entrypoints
-Message-ID: <20200611013224.GA9005@google.com>
-References: <20200520122949.GB16672@google.com>
- <20200522175739.GM2869@paulmck-ThinkPad-P72>
- <20200604114121.GA26398@lenoir>
- <20200604163655.GC29598@paulmck-ThinkPad-P72>
- <20200608125715.GA30920@lenoir>
- <20200609180227.GR4455@paulmck-ThinkPad-P72>
- <20200610131238.GA26639@lenoir>
- <20200610140210.GT4455@paulmck-ThinkPad-P72>
- <20200610221245.GA3833@lenoir>
- <20200610232142.GA4455@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH 06/10] rcu: Make nocb_cb kthread parkable
+Message-ID: <20200611013426.GB12037@google.com>
+References: <20200513164714.22557-1-frederic@kernel.org>
+ <20200513164714.22557-7-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200610232142.GA4455@paulmck-ThinkPad-P72>
+In-Reply-To: <20200513164714.22557-7-frederic@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 04:21:42PM -0700, Paul E. McKenney wrote:
-[...]
-> > > 8.	To softirq 3.  Either GP or CB kthread for the transitioning
-> > > 	CPU advances to next.
-> > > 	At this point, the no-CBs setup is fully shut down.
-> > > 9.	To softirq 4.  Transitioning code advances to next,
-> > > 	which is the first, "In softirq".
-> > > 	(This one -might- be unnecessary, but...)
-> > > 
-> > > All transitions are of course with the ->nocb_lock held.
-> > > 
-> > > When there is only one CPU during early boot near rcu_init() time,
-> > > the transition from "In softirq" to "No-CB" can remain be instantaneous.
-> > > 
-> > > This has the advantage of not slowing things down just because there
-> > > is an RCU callback flood in progress.  It also uses an explicit
-> > > protocol that should (give or take bugs) maintain full safety both
-> > > in protection of ->cblist and in dealing with RCU callback floods.
-> > > 
-> > > Thoughts?
-> > 
-> > Agreed. And I really like that it details the whole process in a very
-> > explicit way.
-> > 
-> > Thanks!
+On Wed, May 13, 2020 at 06:47:10PM +0200, Frederic Weisbecker wrote:
+> This will be necessary to correctly implement rdp de-offloading. We
+> don't want rcu_do_batch() in nocb_cb kthread to race with local
+> rcu_do_batch().
 > 
-> Glad you like it!  And of course please adjust it as needed, up to and
-> including doing something completely different that works better.  ;-)
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
 
-Makes sense to me too, thanks!
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
 
  - Joel
 
+
+> ---
+>  kernel/rcu/tree_plugin.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 1dd3fdd675a1..43ecc047af26 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -2104,7 +2104,9 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+>  	if (needwake_gp)
+>  		rcu_gp_kthread_wake();
+>  	swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
+> -				 !READ_ONCE(rdp->nocb_cb_sleep));
+> +				    !READ_ONCE(rdp->nocb_cb_sleep) ||
+> +				    kthread_should_park());
+> +
+>  	if (!smp_load_acquire(&rdp->nocb_cb_sleep)) { /* VVV */
+>  		/* ^^^ Ensure CB invocation follows _sleep test. */
+>  		return;
+> @@ -2125,6 +2127,8 @@ static int rcu_nocb_cb_kthread(void *arg)
+>  	// if there are no more ready callbacks, waits for them.
+>  	for (;;) {
+>  		nocb_cb_wait(rdp);
+> +		if (kthread_should_park())
+> +			kthread_parkme();
+>  		cond_resched_tasks_rcu_qs();
+>  	}
+>  	return 0;
+> -- 
+> 2.25.0
+> 
