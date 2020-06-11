@@ -2,166 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336A01F684A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1EE1F6863
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgFKMvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:51:55 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:34952 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgFKMvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:51:55 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jjMgL-0002LX-NV; Thu, 11 Jun 2020 22:51:46 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 11 Jun 2020 22:51:45 +1000
-Date:   Thu, 11 Jun 2020 22:51:45 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH] printk: Make linux/printk.h self-contained
-Message-ID: <20200611125144.GA2506@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726513AbgFKM41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:56:27 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:39911 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726346AbgFKM41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:56:27 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Jun 2020 18:25:43 +0530
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 11 Jun 2020 18:25:18 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id 1D39A488D; Thu, 11 Jun 2020 18:25:17 +0530 (IST)
+From:   Krishna Manikandan <mkrishn@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        nganji@codeaurora.org, mka@chromium.org, john.stultz@linaro.org,
+        dianders@chromium.org, abhinavk@codeaurora.org
+Subject: [v1] drm/msm/dpu: request for display color blocks based on hw catalog entry
+Date:   Thu, 11 Jun 2020 18:25:15 +0530
+Message-Id: <1591880115-12721-1-git-send-email-mkrishn@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As it stands if you include printk.h it will fail to compile
-because it requires definitions from ratelimit.h.  However, simply
-including ratelimit.h from printk.h does not work due to inclusion
-loops involving sched.h and kernel.h.
+From: Kalyan Thota <kalyan_t@codeaurora.org>
 
-This patch solves this by moving bits from ratelimit.h into a new
-header file which can then be included by printk.h without any
-worries about header loops.
+Request for color processing blocks only if they are
+available in the display hw catalog and they are
+sufficient in number for the selection.
 
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/ratelimit_types.h b/include/linux/ratelimit_types.h
-new file mode 100644
-index 000000000000..b676aa419eef
---- /dev/null
-+++ b/include/linux/ratelimit_types.h
-@@ -0,0 +1,43 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_RATELIMIT_TYPES_H
-+#define _LINUX_RATELIMIT_TYPES_H
-+
-+#include <linux/bits.h>
-+#include <linux/param.h>
-+#include <linux/spinlock_types.h>
-+
-+#define DEFAULT_RATELIMIT_INTERVAL	(5 * HZ)
-+#define DEFAULT_RATELIMIT_BURST		10
-+
-+/* issue num suppressed message on exit */
-+#define RATELIMIT_MSG_ON_RELEASE	BIT(0)
-+
-+struct ratelimit_state {
-+	raw_spinlock_t	lock;		/* protect the state */
-+
-+	int		interval;
-+	int		burst;
-+	int		printed;
-+	int		missed;
-+	unsigned long	begin;
-+	unsigned long	flags;
-+};
-+
-+#define RATELIMIT_STATE_INIT(name, interval_init, burst_init) {		\
-+		.lock		= __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
-+		.interval	= interval_init,			\
-+		.burst		= burst_init,				\
-+	}
-+
-+#define RATELIMIT_STATE_INIT_DISABLED					\
-+	RATELIMIT_STATE_INIT(ratelimit_state, 0, DEFAULT_RATELIMIT_BURST)
-+
-+#define DEFINE_RATELIMIT_STATE(name, interval_init, burst_init)		\
-+									\
-+	struct ratelimit_state name =					\
-+		RATELIMIT_STATE_INIT(name, interval_init, burst_init)	\
-+
-+extern int ___ratelimit(struct ratelimit_state *rs, const char *func);
-+#define __ratelimit(state) ___ratelimit(state, __func__)
-+
-+#endif /* _LINUX_RATELIMIT_TYPES_H */
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index e061635e0409..1cd862cfd2f4 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -7,6 +7,7 @@
- #include <linux/kern_levels.h>
- #include <linux/linkage.h>
- #include <linux/cache.h>
-+#include <linux/ratelimit_types.h>
- 
- extern const char linux_banner[];
- extern const char linux_proc_banner[];
-diff --git a/include/linux/ratelimit.h b/include/linux/ratelimit.h
-index 8ddf79e9207a..b17e0cd0a30c 100644
---- a/include/linux/ratelimit.h
-+++ b/include/linux/ratelimit.h
-@@ -2,41 +2,10 @@
- #ifndef _LINUX_RATELIMIT_H
- #define _LINUX_RATELIMIT_H
- 
--#include <linux/param.h>
-+#include <linux/ratelimit_types.h>
- #include <linux/sched.h>
- #include <linux/spinlock.h>
- 
--#define DEFAULT_RATELIMIT_INTERVAL	(5 * HZ)
--#define DEFAULT_RATELIMIT_BURST		10
--
--/* issue num suppressed message on exit */
--#define RATELIMIT_MSG_ON_RELEASE	BIT(0)
--
--struct ratelimit_state {
--	raw_spinlock_t	lock;		/* protect the state */
--
--	int		interval;
--	int		burst;
--	int		printed;
--	int		missed;
--	unsigned long	begin;
--	unsigned long	flags;
--};
--
--#define RATELIMIT_STATE_INIT(name, interval_init, burst_init) {		\
--		.lock		= __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
--		.interval	= interval_init,			\
--		.burst		= burst_init,				\
--	}
--
--#define RATELIMIT_STATE_INIT_DISABLED					\
--	RATELIMIT_STATE_INIT(ratelimit_state, 0, DEFAULT_RATELIMIT_BURST)
--
--#define DEFINE_RATELIMIT_STATE(name, interval_init, burst_init)		\
--									\
--	struct ratelimit_state name =					\
--		RATELIMIT_STATE_INIT(name, interval_init, burst_init)	\
--
- static inline void ratelimit_state_init(struct ratelimit_state *rs,
- 					int interval, int burst)
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 63976dc..9f8de77 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -521,7 +521,7 @@ static struct msm_display_topology dpu_encoder_get_topology(
+ 			struct dpu_kms *dpu_kms,
+ 			struct drm_display_mode *mode)
  {
-@@ -73,9 +42,6 @@ ratelimit_set_flags(struct ratelimit_state *rs, unsigned long flags)
+-	struct msm_display_topology topology;
++	struct msm_display_topology topology = {0};
+ 	int i, intf_count = 0;
  
- extern struct ratelimit_state printk_ratelimit_state;
+ 	for (i = 0; i < MAX_PHYS_ENCODERS_PER_VIRTUAL; i++)
+@@ -537,7 +537,8 @@ static struct msm_display_topology dpu_encoder_get_topology(
+ 	 * 1 LM, 1 INTF
+ 	 * 2 LM, 1 INTF (stream merge to support high resolution interfaces)
+ 	 *
+-	 * Adding color blocks only to primary interface
++	 * Adding color blocks only to primary interface if available in
++	 * sufficient number
+ 	 */
+ 	if (intf_count == 2)
+ 		topology.num_lm = 2;
+@@ -546,8 +547,11 @@ static struct msm_display_topology dpu_encoder_get_topology(
+ 	else
+ 		topology.num_lm = (mode->hdisplay > MAX_HDISPLAY_SPLIT) ? 2 : 1;
  
--extern int ___ratelimit(struct ratelimit_state *rs, const char *func);
--#define __ratelimit(state) ___ratelimit(state, __func__)
--
- #ifdef CONFIG_PRINTK
+-	if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI)
+-		topology.num_dspp = topology.num_lm;
++	if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI) {
++		if (dpu_kms->catalog->dspp &&
++			(dpu_kms->catalog->dspp_count >= topology.num_lm))
++			topology.num_dspp = topology.num_lm;
++	}
  
- #define WARN_ON_RATELIMIT(condition, state)	({		\
+ 	topology.num_enc = 0;
+ 	topology.num_intf = intf_count;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+1.9.1
+
