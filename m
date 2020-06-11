@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47EA1F6AA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F51F6AAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgFKPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728364AbgFKPNR (ORCPT
+        id S1728492AbgFKPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 11:15:00 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51079 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728425AbgFKPPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:13:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41DDC08C5C1;
-        Thu, 11 Jun 2020 08:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w3fBHCM88Jt6cDakKyk4xboQWGAsFcwZYcNUwD/n+nU=; b=UtaPwmTzyZIQm0eT7m6SNXoJB4
-        VEIPQTkfTTpUfAvEF37o1G0jHd+Y95AGyX9dzVYfoFBWjXPQqXXilnzEKOcByAGTvQgHp9w8nTqO7
-        QwU9tb6KWeI0n0NbVqy/Hr16C2/p28CsawrQGVa+KMM+AXybJtvEB9SXqJYZhiyS1WGqT3nPV4lyo
-        RDAnri9zQcK1XjCgw6xAnoDbnQWYZQt22FfD98tO6SIoYY6HnWAzOd4zHxUzduoq6ChG6oJO8MfhA
-        213c7hJBlrrRX/bXaMqCavMXmm6oVJttLCkFhfB5KeGtlWzbPuwfjdaiV1ZXwcX2PI+n/c44fsTcx
-        6dkEYKAg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jjOt3-0001iB-3j; Thu, 11 Jun 2020 15:13:01 +0000
-Date:   Thu, 11 Jun 2020 08:13:01 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
-Subject: Re: [PATCH v2 01/14] Documentation: PCI: Add specification for the
- *PCI NTB* function device
-Message-ID: <20200611151301.GB8681@bombadil.infradead.org>
-References: <20200611130525.22746-1-kishon@ti.com>
- <20200611130525.22746-2-kishon@ti.com>
+        Thu, 11 Jun 2020 11:15:00 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id DA2D35BE;
+        Thu, 11 Jun 2020 11:14:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 11 Jun 2020 11:14:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type; s=fm3; bh=mbP/c7Zh+UG74gGWVl4xZP+lch
+        svxpJUzk1CyV5rpiQ=; b=aIOyG6+xRhaXc+6OLxLr0zFCxu4sHFoVRL44HrfOdZ
+        oQel5q1HJ46JviW+2qpaLqE4mXAd3Vq4FUSxc0Vdo120xjUabDi/85UeTbuR2Ox8
+        UX2CqHiT5mFhRY4fnw0ZhwGFjWmc/d7GH/JP/ICuQ9rlxi3mx2Xi37heE8x1UNKb
+        c8js0e+Yu1mLZ8QmRlH42T6/4AnitbOpiJ4vXnNgZRbTXVUwUAUOZ+kU6/2LXTck
+        yriMzz+vmY9EmLpxrXExa9nWi8xp/LEgdplRRgXoGuvH2HKKUMOmwsRCtRz9xVfm
+        /3kzQ/tPT/2cfzWZBW97cYb/5o0BNrrXOJZy9f+P9K9A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mbP/c7
+        Zh+UG74gGWVl4xZP+lchsvxpJUzk1CyV5rpiQ=; b=otW+a/3M7nDknV3NODCwU3
+        1TE/MSk1Yhg6PXG9/aDRX3mpIqmlFOJWIptxLI7OuJMbcpOKhsBUcOgzDyhasgDI
+        v4s3Mz9XuEs+ZUEAhCGyUUeHoqrB3jBSsyT1bYBL2VMpMMex5NLaJqhxBAFrzMSA
+        URInPJEQqeovjJbzI32v42znIGEqpMS+c8XSSpgq1/2b+wK+D/K8ztKTQAcE3vLZ
+        SLIYkK0HOedMYsphWO7teZvGPBTqGu9a58jhqam9g1rWMG7T21ygRwzZ9FbIwP7P
+        Ea0APpmVKCMKwg8VHc6VsYjM3OLTwwQtRpI9rJV75cWHKj4Fyxi0maWgMCT1QsUA
+        ==
+X-ME-Sender: <xms:ckriXkPXy4pV0pCSKYlDnKtCdcAfdXNQ6DnIrLJ5C8iEeyl87xoQrw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehledgieduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffokfgjfhggtgesghdtmh
+    erredtjeenucfhrhhomhepfdgkihcujggrnhdfuceoiihirdihrghnsehsvghnthdrtgho
+    mheqnecuggftrfgrthhtvghrnhepjeeujeetjeffgeelvdfhveekiedvgeffhfegfeektd
+    eigedvveejfedvhedutddunecukfhppeejhedrieejrdelrddutdefnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvghnth
+    drtghomh
+X-ME-Proxy: <xmx:ckriXq_16g94uu606hp94eN4VZUUG_KpxLZ7QMeZDHL9KEPBw0C35Q>
+    <xmx:ckriXrQteha7jvpTcnlO0bKHv0WYF_3zEMC7O0eQ2ENbIyxF9HuQ1Q>
+    <xmx:ckriXsuZ6NX_DfKtCsvf5X-dnEjFK6kyzYAr_afdD_mAjTgOrkhupw>
+    <xmx:ckriXoHzLnX8xmrhnQS42iWdz4SZzcapPNr4NNFbSf9-0_u8VON7qA>
+Received: from [10.2.166.236] (c-75-67-9-103.hsd1.ma.comcast.net [75.67.9.103])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EFFFB3060FE7;
+        Thu, 11 Jun 2020 11:14:57 -0400 (EDT)
+From:   "Zi Yan" <zi.yan@sent.com>
+To:     "Matthew Wilcox" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 05/51] mm: Simplify PageDoubleMap with PF_SECOND policy
+Date:   Thu, 11 Jun 2020 11:14:45 -0400
+X-Mailer: MailMate (1.13.1r5690)
+Message-ID: <A8271172-074D-43E2-928B-EE267544EA82@sent.com>
+In-Reply-To: <20200610201345.13273-6-willy@infradead.org>
+References: <20200610201345.13273-1-willy@infradead.org>
+ <20200610201345.13273-6-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611130525.22746-2-kishon@ti.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_44D74A30-D1A2-4272-80E2-5EF81B020730_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 06:35:12PM +0530, Kishon Vijay Abraham I wrote:
-> +++ b/Documentation/PCI/endpoint/pci-ntb-function.rst
-> @@ -0,0 +1,344 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=================
-> +PCI NTB Function
-> +=================
-> +
-> +:Author: Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +PCI NTB Function allows two different systems (or hosts) to communicate
-> +with each other by configurig the endpoint instances in such a way that
-> +transactions from one system is routed to the other system.
+This is an OpenPGP/MIME signed message (RFC 3156 and 4880).
 
-At no point in this document do you expand "NTB" into Non-Transparent
-Bridge.  The above paragraph probably also needs to say something like "By
-making each host appear as a device to the other host".  Although maybe
-that's not entirely accurate?  It's been a few years since I last played
-with NTBs.
+--=_MailMate_44D74A30-D1A2-4272-80E2-5EF81B020730_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So how about the following opening paragraph:
+On 10 Jun 2020, at 16:12, Matthew Wilcox wrote:
 
-PCI Non Transparent Bridges (NTB) allow two host systems to communicate
-with each other by exposing each host as a device to the other host.
-NTBs typically support the ability to generate interrupts on the remote
-machine, expose memory ranges as BARs and perform DMA.  They also support
-scratchpads which are areas of memory within the NTB that are accessible
-from both machines.
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>
+> Introduce the new page policy of PF_SECOND which lets us use the
+> normal pageflags generation machinery to create the various DoubleMap
+> manipulation functions.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/page-flags.h | 40 ++++++++++----------------------------=
 
-... feel free to fix that up if my memory is out of date or corrupted.
+>  1 file changed, 10 insertions(+), 30 deletions(-)
+>
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index de6e0696f55c..979460df4768 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -232,6 +232,9 @@ static inline void page_init_poison(struct page *pa=
+ge, size_t size)
+>   *
+>   * PF_NO_COMPOUND:
+>   *     the page flag is not relevant for compound pages.
+> + *
+> + * PF_SECOND:
+> + *     the page flag is stored in the first tail page.
+>   */
+
+Would PF_FIRST_TAIL or PF_SECOND_IN_COMPOUND be more informative?
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_44D74A30-D1A2-4272-80E2-5EF81B020730_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFEBAEBCgAuFiEEOXBxLIohamfZUwd5QYsvEZxOpswFAl7iSmUQHHppLnlhbkBz
+ZW50LmNvbQAKCRBBiy8RnE6mzBAhB/9RPEgOo5xCLbS1n7upmOU40BpKZaxVUeBX
++VGnxbPtM9Pi78CkZew1B0gDa4TGam+kx2HfVhkL038T7U+OhXHZgTZlL95JR0sJ
+jco0EPXsRJAcWVt/h8KH70OQhNyL7go5Wj+Glb4mM2ceUvfUN6ldDbL4uLqpoigi
+RKqMiwaqqPQ5fjh9LRNQJ0HW7BCUtsUp3TvgYSYoTPN57W8ojcAqnCfanRgvtD4J
+33KYQWAidnv7L3ZtLi7ZIHbKgCV9+aAlFscQ8UcNwHtcwPA8yJEx8+a1E7iw/F8F
+pzU9hhi5z/5WkeOdbowIr+036mLPNUeulu643uUxVJp3XyN15WlH
+=ZXg8
+-----END PGP SIGNATURE-----
+
+--=_MailMate_44D74A30-D1A2-4272-80E2-5EF81B020730_=--
