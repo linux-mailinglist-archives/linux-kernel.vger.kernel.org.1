@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804E51F622A
+	by mail.lfdr.de (Postfix) with ESMTP id 150291F6229
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgFKHVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 03:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgFKHVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 03:21:20 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E904BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 00:21:19 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id o15so5355814ejm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 00:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qo3jKj2TlYH3YqUl34KzJeMJH4fTcTcBHRWbQNMVHbQ=;
-        b=GgeT2KTHyRGE5UGaccyQn5lsdHLbqVcnDr4VLIeEDsBho6U8+B/+UBJN0Y8tVUTH6I
-         2e9omFEj/RKp6ewd/zoLOGO3BmN2qrJbo8tNra570xh8sI2t12UAb0dCRzmBMniJpcYF
-         BhngUS6HMMTuaSfokudf7udJpEApEvTRNjrzU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qo3jKj2TlYH3YqUl34KzJeMJH4fTcTcBHRWbQNMVHbQ=;
-        b=nY0pjyaE/qjST4OR8KVjf/mQXwrKjDEjvy1c86rJ6L1lVBbsBUvis94KgBfy+xseXR
-         E4fJWcYidA/8LRsv7fwIMc1Hd2bclOYAkQoKNmksvBl/nlq19bbrsAP2UQm5W1sOUzHy
-         twKz8DMvZLsfmAMpgOqkEM8wgsxMI8psU6dTo8FNXO6v4DTq7GDUyQBdQ7FzDH/5Tfz/
-         9nZIgulynRXIDEknGVQeUrpzzS3bwRu5tU040NlyoaDeJCNtl90isiu5cNzlPb+jJNgH
-         AxcxYaOdz+mb1u1N03EZ6+aCwVnd76UK6QoTxpoeUhjx74g2NIP92qkA2o+gU0xq1X6D
-         BzIg==
-X-Gm-Message-State: AOAM533G3FKHoLCWISzB1dioJQhXlhoIyK0RnDnvEI++fZocV1XwCUJ9
-        GFtACTSPv3N5LMdWaRF1TbUyI7A2BVnBL5jdzlVTJw==
-X-Google-Smtp-Source: ABdhPJw5JAalLlhabnI4NthFk/ReyQjVVTos9S4ZL6EYuL3a7iHEh/deWGwXVbjUHBGhO4S2Zp5kZV1VGpQscP592RI=
-X-Received: by 2002:a17:906:e115:: with SMTP id gj21mr6795315ejb.528.1591860078482;
- Thu, 11 Jun 2020 00:21:18 -0700 (PDT)
+        id S1726846AbgFKHVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 03:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726799AbgFKHVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 03:21:01 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5778F2075F;
+        Thu, 11 Jun 2020 07:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591860060;
+        bh=6DmIpbYdLBI2kbf0xz+hdtay7iiIqUkdlABjgG0kEDY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mljyIh9SoHiGW2VNTMWM3IoJJupbzJnYaRzx1O7xgIFyjvnRtpH1heHYGOym00gEE
+         Nv3dw0hGHbPj7dvrxApx3ZfquwfN6VdwVz9RhaVM0fyJh4tFkWOweEVhGXI9DST3zT
+         4anfLEU20Nl0l+kzOWgBk5oaoj3q9YhZFjSNqTO4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.128
+Date:   Thu, 11 Jun 2020 09:20:43 +0200
+Message-Id: <1591860043251175@kroah.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200610090748.45908-1-pihsun@chromium.org> <20200610090748.45908-3-pihsun@chromium.org>
- <3776237e-a6d5-ccda-79e4-39545b818e34@collabora.com>
-In-Reply-To: <3776237e-a6d5-ccda-79e4-39545b818e34@collabora.com>
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Date:   Thu, 11 Jun 2020 15:20:42 +0800
-Message-ID: <CANdKZ0cwcTaXM+y3scooJyrH_DVdF8=jS2QN96CyoPrH8RmbTg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] regulator: Add driver for cros-ec-regulator
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Yicheng Li <yichengli@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review, would address most of them in v4. An inline
-reply as below:
+I'm announcing the release of the 4.19.128 kernel.
 
-On Thu, Jun 11, 2020 at 12:47 AM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> Hi Pi-Hsun,
->
-> Thank you for your patch.
->
-> On 10/6/20 11:07, Pi-Hsun Shih wrote:
-> > +/*****************************************************************************/
-> > +/* Voltage regulator controls */
-> > +
-> > +/*
-> > + * Get basic info of voltage regulator for given index.
-> > + *
-> > + * Returns the regulator name and supported voltage list in mV.
-> > + */
-> > +#define EC_CMD_REGULATOR_GET_INFO 0x012B
->
-> This introduces a new EC command, while you are here, please also add the
-> command in drivers/platform/chrome/cros_ec_trace.c, so we can trace properly the
-> command. Also can you point me to the commit that introduces this command in the
-> EC firmware?
+All users of the 4.19 kernel series must upgrade.
 
-The commit that introduces this in EC firmware is at https://crrev.com/c/2100327
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Documentation/ABI/testing/sysfs-devices-system-cpu                          |    1 
+ Documentation/admin-guide/hw-vuln/index.rst                                 |    1 
+ Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst |  149 ++++++++++
+ Documentation/admin-guide/kernel-parameters.txt                             |   20 +
+ Makefile                                                                    |    2 
+ arch/x86/include/asm/cpu_device_id.h                                        |   27 +
+ arch/x86/include/asm/cpufeatures.h                                          |    2 
+ arch/x86/include/asm/msr-index.h                                            |    4 
+ arch/x86/kernel/cpu/bugs.c                                                  |  106 +++++++
+ arch/x86/kernel/cpu/common.c                                                |   54 ++-
+ arch/x86/kernel/cpu/cpu.h                                                   |    1 
+ arch/x86/kernel/cpu/match.c                                                 |    7 
+ drivers/base/cpu.c                                                          |    8 
+ drivers/iio/light/vcnl4000.c                                                |    6 
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c                           |    6 
+ drivers/net/usb/qmi_wwan.c                                                  |    1 
+ drivers/nfc/st21nfca/dep.c                                                  |    4 
+ drivers/nvmem/qfprom.c                                                      |   14 
+ drivers/staging/rtl8712/wifi.h                                              |    9 
+ drivers/tty/hvc/hvc_console.c                                               |   23 -
+ drivers/tty/vt/keyboard.c                                                   |   26 +
+ drivers/usb/class/cdc-acm.c                                                 |    2 
+ drivers/usb/musb/musb_core.c                                                |    7 
+ drivers/usb/musb/musb_debugfs.c                                             |   10 
+ drivers/usb/serial/option.c                                                 |    4 
+ drivers/usb/serial/qcserial.c                                               |    1 
+ drivers/usb/serial/usb_wwan.c                                               |    4 
+ include/linux/mod_devicetable.h                                             |    6 
+ include/linux/virtio_net.h                                                  |   14 
+ kernel/events/uprobes.c                                                     |   14 
+ net/ipv4/devinet.c                                                          |    1 
+ net/l2tp/l2tp_core.c                                                        |    3 
+ net/l2tp/l2tp_ip.c                                                          |   29 +
+ net/l2tp/l2tp_ip6.c                                                         |   30 +-
+ net/vmw_vsock/af_vsock.c                                                    |    2 
+ 35 files changed, 500 insertions(+), 98 deletions(-)
+
+Bin Liu (2):
+      USB: serial: usb_wwan: do not resubmit rx urb on fatal errors
+      usb: musb: start session in resume for host port
+
+Chuhong Yuan (1):
+      NFC: st21nfca: add missed kfree_skb() in an error path
+
+Daniele Palmas (2):
+      net: usb: qmi_wwan: add Telit LE910C1-EUX composition
+      USB: serial: option: add Telit LE910C1-EUX compositions
+
+Dinghao Liu (1):
+      usb: musb: Fix runtime PM imbalance on error
+
+Dmitry Torokhov (1):
+      vt: keyboard: avoid signed integer overflow in k_ascii
+
+Eric Dumazet (2):
+      l2tp: add sk_family checks to l2tp_validate_socket
+      l2tp: do not use inet_hash()/inet_unhash()
+
+Greg Kroah-Hartman (2):
+      Revert "net/mlx5: Annotate mutex destroy for root ns"
+      Linux 4.19.128
+
+Jiri Slaby (1):
+      tty: hvc_console, fix crashes on parallel open/close
+
+Josh Poimboeuf (1):
+      x86/speculation: Add Ivy Bridge to affected list
+
+Mark Gross (4):
+      x86/cpu: Add a steppings field to struct x86_cpu_id
+      x86/cpu: Add 'table' argument to cpu_matches()
+      x86/speculation: Add Special Register Buffer Data Sampling (SRBDS) mitigation
+      x86/speculation: Add SRBDS vulnerability and mitigation documentation
+
+Mathieu Othacehe (1):
+      iio: vcnl4000: Fix i2c swapped word reading.
+
+Matt Jolly (1):
+      USB: serial: qcserial: add DW5816e QDL support
+
+Oleg Nesterov (1):
+      uprobes: ensure that uprobe->offset and ->ref_ctr_offset are properly aligned
+
+Oliver Neukum (1):
+      CDC-ACM: heed quirk also in error handling
+
+Pascal Terjan (1):
+      staging: rtl8712: Fix IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK
+
+Srinivas Kandagatla (1):
+      nvmem: qfprom: remove incorrect write support
+
+Stefano Garzarella (1):
+      vsock: fix timeout in vsock_accept()
+
+Willem de Bruijn (1):
+      net: check untrusted gso_size at kernel entry
+
+Yang Yingliang (1):
+      devinet: fix memleak in inetdev_init()
+
