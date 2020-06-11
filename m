@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166EB1F670B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576B41F66ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgFKLqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:46:13 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:38516 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727939AbgFKLqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:46:05 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8AECF1A070E;
-        Thu, 11 Jun 2020 13:46:03 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0B52E1A070A;
-        Thu, 11 Jun 2020 13:45:59 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 832E740323;
-        Thu, 11 Jun 2020 19:45:53 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
-        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V5 9/9] pinctrl: imx8dxl: Support building as module
-Date:   Thu, 11 Jun 2020 19:34:55 +0800
-Message-Id: <1591875295-19427-10-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1591875295-19427-1-git-send-email-Anson.Huang@nxp.com>
-References: <1591875295-19427-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727097AbgFKLin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgFKLin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:38:43 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30817C08C5C1;
+        Thu, 11 Jun 2020 04:38:43 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id A863E2A4AF1
+Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: Add DT binding for
+ cros-ec-regulator
+To:     Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "open list:VOLTAGE AND CURRENT REGULATOR FRAMEWORK" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <20200611082542.219516-1-pihsun@chromium.org>
+ <20200611082542.219516-2-pihsun@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <71a5c99a-a2fb-557f-7fdc-8f717778f4a7@collabora.com>
+Date:   Thu, 11 Jun 2020 13:38:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <20200611082542.219516-2-pihsun@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change configuration to "tristate", add module device table,
-author, description and license to support building i.MX8DXL
-pinctrl driver as module.
+Hi Pi-Hsun,
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V4:
-	- remove unnecessary change of replacing arch_initcall() with module_platform_driver();
-	- add module author and description;
-	- add more details to commit message.
----
- drivers/pinctrl/freescale/Kconfig           | 2 +-
- drivers/pinctrl/freescale/pinctrl-imx8dxl.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+On 11/6/20 10:25, Pi-Hsun Shih wrote:
+> Add DT binding documentation for cros-ec-regulator, a voltage regulator
+> controlled by ChromeOS EC.
+> 
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
 
-diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-index de8d571..922ae4b 100644
---- a/drivers/pinctrl/freescale/Kconfig
-+++ b/drivers/pinctrl/freescale/Kconfig
-@@ -167,7 +167,7 @@ config PINCTRL_IMX8QXP
- 	  Say Y here to enable the imx8qxp pinctrl driver
- 
- config PINCTRL_IMX8DXL
--	bool "IMX8DXL pinctrl driver"
-+	tristate "IMX8DXL pinctrl driver"
- 	depends on IMX_SCU && ARCH_MXC && ARM64
- 	select PINCTRL_IMX_SCU
- 	help
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-index be3b09e..d3020c0 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
-@@ -168,6 +168,7 @@ static const struct of_device_id imx8dxl_pinctrl_of_match[] = {
- 	{ .compatible = "fsl,imx8dxl-iomuxc", },
- 	{ /* sentinel */ }
- };
-+MODULE_DEVICE_TABLE(of, imx8dxl_pinctrl_of_match);
- 
- static int imx8dxl_pinctrl_probe(struct platform_device *pdev)
- {
-@@ -194,3 +195,7 @@ static int __init imx8dxl_pinctrl_init(void)
- 	return platform_driver_register(&imx8dxl_pinctrl_driver);
- }
- arch_initcall(imx8dxl_pinctrl_init);
-+
-+MODULE_AUTHOR("Anson Huang <Anson.Huang@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX8DXL pinctrl driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
+> ---
+> Changes from v4:
+> * Change compatible name from regulator-cros-ec to cros-ec-regulator.
+> 
+> Changes from v3:
+> * Fix dt bindings file name.
+> * Add full example.
+> 
+> Changes from v2:
+> * No change
+> 
+> Changes from v1:
+> * Change compatible string to google,regulator-cros-ec.
+> * Use reg property in device tree.
+> * Change license for dt binding according to checkpatch.pl.
+> ---
+>  .../regulator/google,cros-ec-regulator.yaml   | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.yaml b/Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.yaml
+> new file mode 100644
+> index 000000000000..c9453d7ce227
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/google,cros-ec-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ChromeOS EC controlled voltage regulators
+> +
+> +maintainers:
+> +  - Pi-Hsun Shih <pihsun@chromium.org>
+> +
+> +description:
+> +  Any property defined as part of the core regulator binding, defined in
+> +  regulator.yaml, can also be used.
+> +
+> +allOf:
+> +  - $ref: "regulator.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: google,cros-ec-regulator
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Identifier for the voltage regulator to ChromeOS EC.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        cros_ec: ec@0 {
+> +            compatible = "google,cros-ec-spi";
+> +            reg = <0>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            regulator@0 {
+> +                compatible = "google,cros-ec-regulator";
+> +                regulator-min-microvolt = <1800000>;
+> +                regulator-max-microvolt = <3300000>;
+> +                reg = <0>;
+> +            };
+> +        };
+> +    };
+> +...
+> 
