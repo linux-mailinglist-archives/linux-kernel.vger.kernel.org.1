@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF5B1F6D8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 20:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A065B1F6D99
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 20:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgFKSiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 14:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        id S1728169AbgFKSq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 14:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgFKSiy (ORCPT
+        with ESMTP id S1727059AbgFKSq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 14:38:54 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7B0C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 11:38:54 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id d12so269476qvn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 11:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zcAd0OCwL+LW19ejS0uHvwjKngjOVPuSl1ychbjKfWA=;
-        b=d9kaS29qTa6CMR7K6/UAq62vdgIm7KjJ1p8JDmI82D+4nk6IlJ3WOcLkwEsrRhuPgQ
-         F00P+tc/G3oqDH9WBY/RGphjMiIJbVWWLA7S7vJACm7U7P9HGYMgEGHUBtnO8bJ0KFsj
-         fMOgenLNy2rToXZIKX+1cHxMZR/+f/xwraGLWrAelXvROW1ijFNFtOsIE3wQ/bVky3XN
-         1Snm5L28bF/ovmTJZ5wzdnr7gdtFicFh5CJ1XPkiMjSVQckpYvZTW0ri+X8++pWahx2m
-         OVd1njIPsPUKGSRto5ImDJ5pA03+ctiHcGYf9CzeCHQYphk1e0Utqe1+wUkQd6kZIIma
-         FIcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zcAd0OCwL+LW19ejS0uHvwjKngjOVPuSl1ychbjKfWA=;
-        b=VK0m+ziNVTDycaVtPL0bNaOlDO0CIusr9PM2GLsCuEnXZEYgNHr0VhMR1dSdp6Bn3/
-         /ZFRYGOHgWJkebqiq3gSrG1kY18UoS2V5oKAzG6VUEGTHS10jaokkvGjqZdzsWbGdY4t
-         IcmwXV13PHpsf6jN+qm1FUjlA7Mzhw4ubxJj8pCj31pnfddwitcSZtsK+x+oMBBvgcZw
-         o87Ufgoz89Q9q3rFiB789GVGED11AGr0c2ofFLv/Pme9h1yI3nzRkMeR6Pkj+EEN17Yn
-         WIbYBz5pDtqWUF4z3azn4M6M9OTxAPqN4BPWBs9UmBKnY4TYwprqRJNwZxNrLznVExSA
-         L8zw==
-X-Gm-Message-State: AOAM530Swa6IXkC6UOHQ/n7Q0f77HdXSsb3rkKHsfwuVBdCLcDxQZfZm
-        zoVo4yia9abRiQ4icLncCQ==
-X-Google-Smtp-Source: ABdhPJwErSdg1RuK+kLXh29/tjcF893DQNxl0XGREP2qGDPkanfxZUH1IBri+KvbvGhv9o3JjbV6lA==
-X-Received: by 2002:ad4:4f23:: with SMTP id fc3mr9366299qvb.25.1591900733445;
-        Thu, 11 Jun 2020 11:38:53 -0700 (PDT)
-Received: from localhost.localdomain ([142.118.26.59])
-        by smtp.googlemail.com with ESMTPSA id s70sm2772593qke.80.2020.06.11.11.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 11:38:53 -0700 (PDT)
-From:   Keyur Patel <iamkeyur96@gmail.com>
-To:     Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Keyur Patel <iamkeyur96@gmail.com>
-Subject: [PATCH] memory: emif: Avoid double error messaging when IRQ absent
-Date:   Thu, 11 Jun 2020 14:38:37 -0400
-Message-Id: <20200611183837.170408-1-iamkeyur96@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+        Thu, 11 Jun 2020 14:46:57 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49706C08C5C2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 11:46:57 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jjSDz-0003pq-8G; Thu, 11 Jun 2020 20:46:51 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 9929A100D0B;
+        Thu, 11 Jun 2020 20:46:50 +0200 (CEST)
+Date:   Thu, 11 Jun 2020 18:46:22 -0000
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] timers/urgent for v5.8
+Message-ID: <159190118210.28418.16838792857524354792.tglx@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the commit 7723f4c ("driver core: platform: Add an error message
-to platform_get_irq*()") platform_get_irq() started issuing an error message.
-Thus, there is no need to have the same in the driver.
+Linus,
 
-Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
----
- drivers/memory/emif.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+please pull the latest timers/urgent branch from:
 
-diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
-index 9d9127bf2a59..3ac9f355ddb8 100644
---- a/drivers/memory/emif.c
-+++ b/drivers/memory/emif.c
-@@ -1563,11 +1563,8 @@ static int __init_or_module emif_probe(struct platform_device *pdev)
- 		goto error;
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-06-11
+
+up to:  b91c8c42ffdd: lib/vdso: Force inlining of __cvdso_clock_gettime_common()
+
+
+A small fix for the VDSO code to force inline
+__cvdso_clock_gettime_common() so the compiler can't generate horrible
+code.
+
+Thanks,
+
+	tglx
+
+------------------>
+Christophe Leroy (1):
+      lib/vdso: Force inlining of __cvdso_clock_gettime_common()
+
+
+ lib/vdso/gettimeofday.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+index a2909af4b924..7938d3c4901d 100644
+--- a/lib/vdso/gettimeofday.c
++++ b/lib/vdso/gettimeofday.c
+@@ -210,7 +210,7 @@ static __always_inline int do_coarse(const struct vdso_data *vd, clockid_t clk,
+ 	return 0;
+ }
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(emif->dev, "%s: error getting IRQ resource - %d\n",
--			__func__, irq);
-+	if (irq < 0)
- 		goto error;
--	}
- 
- 	emif_onetime_settings(emif);
- 	emif_debugfs_init(emif);
--- 
-2.26.2
+-static __maybe_unused int
++static __always_inline int
+ __cvdso_clock_gettime_common(const struct vdso_data *vd, clockid_t clock,
+ 			     struct __kernel_timespec *ts)
+ {
 
