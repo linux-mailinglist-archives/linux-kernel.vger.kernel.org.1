@@ -2,172 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE301F5EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 01:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F9C1F5EFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 02:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgFJX6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 19:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726842AbgFJX6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 19:58:30 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB03C03E96F
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:58:29 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id p22so4388758ybg.21
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 16:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=NYW1oslxUrjhzXJ7bTMZ4CDQ1phtBvPY5iW8pjV0AgY=;
-        b=ZzZXV7kGekCGXVvqwIeVxumkrSgFKwSD8IUN6y8gTZn1ai53K99qiqSYfeUJ7+3xMP
-         J5ruWthSpTkfiijOakKRz81y1ZqF2m9f0PSjBYQnUNLgm5UAZkCbRysdkLv0VscoQG/Z
-         8WyqSmkJQ6Ak9xOe7UV4sRWEosKc4+VoNnM09WbqV6KndRxQIU+AYxCkwwIo5TpOXa75
-         3Bq+9aJbqSQyPN++7lJfvvaREkFh9BV2Ys+UNcZJJuQwh23yhgUdpzRA3OAOHn0yDOHV
-         /qOHB3dGcXsc93n18/24dkoh/wF8yLbiDVvTUuP1+s6kI0o+1W5gpI5wWYcDlLhKMKqD
-         1Ccg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=NYW1oslxUrjhzXJ7bTMZ4CDQ1phtBvPY5iW8pjV0AgY=;
-        b=cWseOb3q6jREECeHMbfWc+mY8NMnApoRYdSQaupYWz2Yc87X4Z948HDy8XzY6fYdMy
-         NkLBQUwjjSJpMoIOXkS6y1Ah6sXTn9Mu3jc1riyuXnf/Hvz1aG+yOBiC9Bh0kIRuzfIf
-         5WfQkndoGX+VaogRWYpzdKnusxhFzjxLlmC0QmWIJAUCKTrYYNrss0kFkFruaLFNDZ/k
-         gDbi8DcP+gtMaeovnVTTm4nk2zFPtVDNuLm65sAMMb8GtIYgvUjym1kb9PGbZLRD1Exq
-         iHYgpX7RMwr9GlaQdLIPiiPYHC7dYNBC7Yxj+5iRPVbP+pp1OWeBH8vZ5A/Nqb3dxtCm
-         nYhQ==
-X-Gm-Message-State: AOAM530Ila0PoBePWdcGreTj29E121q94rHEyS9M9/socz64dQ/PqAne
-        C41ZZMmOii2JigrNrIdkAc270oT+Q8Un
-X-Google-Smtp-Source: ABdhPJzAZC0uog7B9B1OScECN6SNqapsCHDp0QRtFVZNrOqzsRrdYi8FfOV8ZAB/m8BdMcL6e2pH23vSpqKX
-X-Received: by 2002:a25:8444:: with SMTP id r4mr9019037ybm.301.1591833509073;
- Wed, 10 Jun 2020 16:58:29 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 16:58:23 -0700
-In-Reply-To: <20200610235823.52557-1-irogers@google.com>
-Message-Id: <20200610235823.52557-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20200610235823.52557-1-irogers@google.com>
-X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
-Subject: [PATCH v2 2/2] perf expr: Add < and > operators
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, Kajol Jain <kjain@linux.ibm.com>,
+        id S1726956AbgFKAAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 20:00:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14660 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726768AbgFKAAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 20:00:33 -0400
+IronPort-SDR: SE10CC9A2LBsv546AGLOiHuc7GowI8HTvDN60gL5uQ52fVdI1or8DrfCURFOdK/z//bsSm4352
+ Rc5dF1hdLjTA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 17:00:33 -0700
+IronPort-SDR: NfMrcfm4ZnQtCNeqiWz2f8LzNdPP5sEYFf+z0qJHcPzA1Lu9xULjvDHTDroLNGpGfphpgx34Y0
+ lqAh+XDgkz0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,497,1583222400"; 
+   d="scan'208";a="380228276"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jun 2020 17:00:32 -0700
+Date:   Wed, 10 Jun 2020 17:00:32 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     "David P. Reed" <dpreed@deepplum.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Molnar <martin.molnar.programming@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] Fix undefined operation VMXOFF during reboot and crash
+Message-ID: <20200611000032.GI18790@linux.intel.com>
+References: <20200610181254.2142-1-dpreed@deepplum.com>
+ <3F5CEF02-0561-4E28-851B-8E993F76DC9B@amacapital.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3F5CEF02-0561-4E28-851B-8E993F76DC9B@amacapital.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are broadly useful but required to handle TMA metrics. For
-example encoding Ports_Utilization from:
-https://download.01.org/perfmon/TMA_Metrics.csv
-requires '<'.
+On Wed, Jun 10, 2020 at 02:59:19PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> > On Jun 10, 2020, at 11:21 AM, David P. Reed <dpreed@deepplum.com> wrote:
+> > 
+> > ﻿If a panic/reboot occurs when CR4 has VMX enabled, a VMXOFF is
+> > done on all CPUS, to allow the INIT IPI to function, since
+> > INIT is suppressed when CPUs are in VMX root operation.
+> > However, VMXOFF causes an undefined operation fault if the CPU is not
+> > in VMX operation, that is, VMXON has not been executed, or VMXOFF
+> > has been executed, but VMX is enabled.
+> 
+> I’m surprised. Wouldn’t this mean that emergency reboots always fail it a VM
+> is running?  I would think someone would have noticed before.
 
-{
-  "BriefDescription": "This metric estimates fraction of cycles the CPU per=
-formance was potentially limited due to Core computation issues (non divide=
-r-related).  Two distinct categories can be attributed into this metric: (1=
-) heavy data-dependency among contiguous instructions would manifest in thi=
-s metric - such cases are often referred to as low Instruction Level Parall=
-elism (ILP). (2) Contention on some hardware execution unit other than Divi=
-der. For example; when there are too many multiply operations.",
-  "MetricExpr": "( ( cpu@EXE_ACTIVITY.EXE_BOUND_0_PORTS@ + cpu@EXE_ACTIVITY=
-.1_PORTS_UTIL@ + ( cpu@EXE_ACTIVITY.2_PORTS_UTIL@ * ( ( ( cpu@UOPS_RETIRED.=
-RETIRE_SLOTS@ ) / ( cpu@CPU_CLK_UNHALTED.THREAD@ ) ) / ( ( 4.000000 ) + 1.0=
-00000 ) ) ) ) / ( cpu@CPU_CLK_UNHALTED.THREAD@ ) if ( cpu@ARITH.DIVIDER_ACT=
-IVE\\,cmask\\=3D1@ < cpu@EXE_ACTIVITY.EXE_BOUND_0_PORTS@ ) else ( ( cpu@EXE=
-_ACTIVITY.EXE_BOUND_0_PORTS@ + cpu@EXE_ACTIVITY.1_PORTS_UTIL@ + ( cpu@EXE_A=
-CTIVITY.2_PORTS_UTIL@ * ( ( ( cpu@UOPS_RETIRED.RETIRE_SLOTS@ ) / ( cpu@CPU_=
-CLK_UNHALTED.THREAD@ ) ) / ( ( 4.000000 ) + 1.000000 ) ) ) ) - cpu@EXE_ACTI=
-VITY.EXE_BOUND_0_PORTS@ ) / ( cpu@CPU_CLK_UNHALTED.THREAD@ ) )",
-  "MetricGroup": "Topdown_Group_Ports_Utilization",
-  "MetricName": "Topdown_Metric_Ports_Utilization"
-},
-
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/expr.c | 6 ++++++
- tools/perf/util/expr.l  | 2 ++
- tools/perf/util/expr.y  | 5 ++++-
- 3 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index c4877b36ab58..b7e5ef3007fc 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -41,6 +41,12 @@ int test__expr(struct test *t __maybe_unused, int subtes=
-t __maybe_unused)
- 	ret |=3D test(&ctx, ".1 + 2.", 2.1);
- 	ret |=3D test(&ctx, "d_ratio(1, 2)", 0.5);
- 	ret |=3D test(&ctx, "d_ratio(2.5, 0)", 0);
-+	ret |=3D test(&ctx, "1.1 < 2.2", 1);
-+	ret |=3D test(&ctx, "2.2 > 1.1", 1);
-+	ret |=3D test(&ctx, "1.1 < 1.1", 0);
-+	ret |=3D test(&ctx, "2.2 > 2.2", 0);
-+	ret |=3D test(&ctx, "2.2 < 1.1", 0);
-+	ret |=3D test(&ctx, "1.1 > 2.2", 0);
-=20
- 	if (ret)
- 		return ret;
-diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
-index 298d86660a96..13e5e3c75f56 100644
---- a/tools/perf/util/expr.l
-+++ b/tools/perf/util/expr.l
-@@ -111,6 +111,8 @@ else		{ return ELSE; }
- "|"		{ return '|'; }
- "^"		{ return '^'; }
- "&"		{ return '&'; }
-+"<"		{ return '<'; }
-+">"		{ return '>'; }
- "-"		{ return '-'; }
- "+"		{ return '+'; }
- "*"		{ return '*'; }
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index fe145344bb39..5fcb98800f9c 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -41,6 +41,7 @@ static double d_ratio(double val0, double val1)
- %left '|'
- %left '^'
- %left '&'
-+%left '<' '>'
- %left '-' '+'
- %left '*' '/' '%'
- %left NEG NOT
-@@ -73,7 +74,7 @@ other: ID
- |
- MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*=
-' | '/' | '%' | '(' | ')' | ','
- |
--D_RATIO
-+'<' | '>' | D_RATIO
-=20
- all_expr: if_expr			{ *final_val =3D $1; }
- 	;
-@@ -94,6 +95,8 @@ expr:	  NUMBER
- 	| expr '|' expr		{ $$ =3D (long)$1 | (long)$3; }
- 	| expr '&' expr		{ $$ =3D (long)$1 & (long)$3; }
- 	| expr '^' expr		{ $$ =3D (long)$1 ^ (long)$3; }
-+	| expr '<' expr		{ $$ =3D $1 < $3; }
-+	| expr '>' expr		{ $$ =3D $1 > $3; }
- 	| expr '+' expr		{ $$ =3D $1 + $3; }
- 	| expr '-' expr		{ $$ =3D $1 - $3; }
- 	| expr '*' expr		{ $$ =3D $1 * $3; }
---=20
-2.27.0.278.ge193c7cf3a9-goog
-
+The call to cpu_vmxoff() is conditioned on CR4.VMXE==1, which KVM toggles in
+tandem with VMXON and VMXOFF.  Out of tree hypervisors presumably do the
+same.  That's obviously not atomic though, e.g. VMXOFF will #UD if the
+vmxoff_nmi() NMI arrives between CR4.VMXE=1 and VMXON, or between VMXOFF
+and CR4.VMXE=0.
