@@ -2,355 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400071F6B7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05B41F6B81
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgFKPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:47:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:20166 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728104AbgFKPrw (ORCPT
+        id S1728626AbgFKPuz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Jun 2020 11:50:55 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:54031 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgFKPuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591890470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FAy7EX/f3nMJPgUfcEXOOrhWk+dzE7IzYVqH/zhVl6M=;
-        b=Szh0q3VFZ43JOwBgTviYoHXbYG1oNlKPyc/unW7jwj8C71AECqaHgZvNWeMvRV/Mmp99n9
-        /hf3U7Zzna40L+kuTvyB7+bY5WghBfb/YuvJd1rM2P5sr6tkvcITb8FB+S0vCMhXp+oqUc
-        LkTUDJ0J2icrT21EjVo2KApB//fapKE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-mESMLCO7P0a-03G2a9yMDA-1; Thu, 11 Jun 2020 11:47:48 -0400
-X-MC-Unique: mESMLCO7P0a-03G2a9yMDA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5117A18FF660;
-        Thu, 11 Jun 2020 15:47:46 +0000 (UTC)
-Received: from w520.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B7C9100238C;
-        Thu, 11 Jun 2020 15:47:42 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 09:47:41 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2 1/3] docs: IOMMU user API
-Message-ID: <20200611094741.6d118fa8@w520.home>
-In-Reply-To: <1591848735-12447-2-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1591848735-12447-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1591848735-12447-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        Thu, 11 Jun 2020 11:50:54 -0400
+Received: from [192.168.1.167] ([37.4.249.202]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MCbR7-1jaMvr13Ct-009dN8; Thu, 11 Jun 2020 17:50:32 +0200
+Subject: Re: [PATCH v4 2/3] clk: bcm: Add BCM2711 DVP driver
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     devicetree@vger.kernel.org, Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.4c4625a8e076f3163b800b3d8986b282ee98d908.1591867332.git-series.maxime@cerno.tech>
+ <bb60d97fc76b61c2eabef5a02ebd664c0f57ede0.1591867332.git-series.maxime@cerno.tech>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+Message-ID: <e9e83c60-ef4c-8806-bcdb-a09702bf7559@i2se.com>
+Date:   Thu, 11 Jun 2020 17:50:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <bb60d97fc76b61c2eabef5a02ebd664c0f57ede0.1591867332.git-series.maxime@cerno.tech>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-Provags-ID: V03:K1:HDg82ncF1MmItdNDbIwielQ0MFeg9bteVxMSidqALKpzxFesGWY
+ IIdcWyF1Wa0xJ6uG2PZavzW+ThtNnK2uPHnN6bBu7DbMvcoWJiG2sF/IvEy5CVDkFr6ZjBL
+ 4T94Hs5FZTbmTidPrFZwUIH+OQ9WcrbW5+ujZYfhdR2gC38tH8u2qIRVYEbTuVW03iu9LbR
+ cSUrQr2fSsFSTB+nNupfA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U3p8azP5kQw=:MB/QMoVPnMq/q2hEsI+X6L
+ AssifK4xbButPmwihx5TgMazDyBlctG1tjuqzQNS/gVE8gQvlhv7O6thq/ARYMS8KEhKh9ObP
+ 9WukF0HgOA6UJSRwO2ei5rQCbsl/+vcEFXIt0AC1UJKd8811ILEuJyVl6Ue1RrE507RvuMeR+
+ +oSLaFUA4apZUE3RdZK4ZeIE2Lv+5/4Zqplq5f4aZQIGnwX9jTzVpdSXwv0KhbaSt9ftG4kMa
+ p4nWJLdd1eD/d1vYiC1hAtWfV5pUz0+kshe8Dge9PRAWCOvV4rl4kYERY1x+XxYGdjYYDtS47
+ bSlPac7IeBrzTtugKmkXMNWzrp6GBa1Evd4s35F3JcsTtMYCJdt6qHY5qijGO0SetsX1Dhfh7
+ eafsm27bDUOLSotcauY6ApmdC2wRtA0A33GbmJtGY0U8xT2T60XhLFK+rM1wBivjOiHQ7fzsD
+ UOPy/rnEagONUZe5ZzkTtzkLDqu/Ld/E8/0m/TyA7p4qB+nj6an2ollDEI7wKFdAcQ6ScPc7w
+ WKaT/wUbSkDnwMLy+DX8LF7W0fINYVMjgeg/fIPE17uguHUb2HwzuB89Pz2/EQcOPlCuNBbRP
+ FItQmxByyVgddNwZ6v/fqkiwghRcq7ffhgbybn1KVbs4QdNe6E4laCHGKIKCnwxS4Wl1FiZGq
+ 37G6U/e+YMd2b68vuCUsxeqmmdhkEY7FBYSfE2eiFeRKX5BGIsQuCeqULUxb7ndy+5cYQTLqs
+ rKCba4/4Jj/+JNaaXobJDtnAfwXbVRpshEt39T1fGIN8eKooDLvFkDTqkYRhr+hBbYoAUCBME
+ teoKDY/mUJv9pvELoGhHSQF8srf3ur3Iifns3SY3VWL2RjF5bjsG+pCypxl/XSqH2vAW1WP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Jun 2020 21:12:13 -0700
-Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+Hi Maxime,
 
-> IOMMU UAPI is newly introduced to support communications between guest
-> virtual IOMMU and host IOMMU. There has been lots of discussions on how
-> it should work with VFIO UAPI and userspace in general.
-> 
-> This document is indended to clarify the UAPI design and usage. The
-> mechenics of how future extensions should be achieved are also covered
-> in this documentation.
-> 
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Am 11.06.20 um 11:23 schrieb Maxime Ripard:
+> The HDMI block has a block that controls clocks and reset signals to the
+> HDMI0 and HDMI1 controllers.
+>
+> Let's expose that through a clock driver implementing a clock and reset
+> provider.
+>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > ---
->  Documentation/userspace-api/iommu.rst | 210 ++++++++++++++++++++++++++++++++++
->  1 file changed, 210 insertions(+)
->  create mode 100644 Documentation/userspace-api/iommu.rst
-> 
-> diff --git a/Documentation/userspace-api/iommu.rst b/Documentation/userspace-api/iommu.rst
+>  drivers/clk/bcm/Kconfig           |  11 +++-
+>  drivers/clk/bcm/Makefile          |   1 +-
+>  drivers/clk/bcm/clk-bcm2711-dvp.c | 120 +++++++++++++++++++++++++++++++-
+>  3 files changed, 132 insertions(+)
+>  create mode 100644 drivers/clk/bcm/clk-bcm2711-dvp.c
+>
+> diff --git a/drivers/clk/bcm/Kconfig b/drivers/clk/bcm/Kconfig
+> index 8c83977a7dc4..784f12c72365 100644
+> --- a/drivers/clk/bcm/Kconfig
+> +++ b/drivers/clk/bcm/Kconfig
+> @@ -1,4 +1,15 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> +
+> +config CLK_BCM2711_DVP
+> +	tristate "Broadcom BCM2711 DVP support"
+> +	depends on ARCH_BCM2835 ||COMPILE_TEST
+> +	depends on COMMON_CLK
+> +	default ARCH_BCM2835
+> +	select RESET_SIMPLE
+> +	help
+> +	  Enable common clock framework support for the Broadcom BCM2711
+> +	  DVP Controller.
+> +
+>  config CLK_BCM2835
+>  	bool "Broadcom BCM2835 clock support"
+>  	depends on ARCH_BCM2835 || ARCH_BRCMSTB || COMPILE_TEST
+> diff --git a/drivers/clk/bcm/Makefile b/drivers/clk/bcm/Makefile
+> index 0070ddf6cdd2..edb66b44cb27 100644
+> --- a/drivers/clk/bcm/Makefile
+> +++ b/drivers/clk/bcm/Makefile
+> @@ -6,6 +6,7 @@ obj-$(CONFIG_CLK_BCM_KONA)	+= clk-kona-setup.o
+>  obj-$(CONFIG_CLK_BCM_KONA)	+= clk-bcm281xx.o
+>  obj-$(CONFIG_CLK_BCM_KONA)	+= clk-bcm21664.o
+>  obj-$(CONFIG_COMMON_CLK_IPROC)	+= clk-iproc-armpll.o clk-iproc-pll.o clk-iproc-asiu.o
+> +obj-$(CONFIG_CLK_BCM2711_DVP)	+= clk-bcm2711-dvp.o
+>  obj-$(CONFIG_CLK_BCM2835)	+= clk-bcm2835.o
+>  obj-$(CONFIG_CLK_BCM2835)	+= clk-bcm2835-aux.o
+>  obj-$(CONFIG_CLK_RASPBERRYPI)	+= clk-raspberrypi.o
+> diff --git a/drivers/clk/bcm/clk-bcm2711-dvp.c b/drivers/clk/bcm/clk-bcm2711-dvp.c
 > new file mode 100644
-> index 000000000000..e95dc5a04a41
+> index 000000000000..84dbc886e303
 > --- /dev/null
-> +++ b/Documentation/userspace-api/iommu.rst
-> @@ -0,0 +1,210 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. iommu:
+> +++ b/drivers/clk/bcm/clk-bcm2711-dvp.c
+> @@ -0,0 +1,120 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +// Copyright 2020 Cerno
 > +
-> +=====================================
-> +IOMMU Userspace API
-> +=====================================
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/reset/reset-simple.h>
 > +
-> +IOMMU UAPI is used for virtualization cases where communications are
-> +needed between physical and virtual IOMMU drivers. For native
-> +usage, IOMMU is a system device which does not need to communicate
-> +with user space directly.
-> +
-> +The primary use cases are guest Shared Virtual Address (SVA) and
-> +guest IO virtual address (IOVA), wherein virtual IOMMU (vIOMMU) is
-> +required to communicate with the physical IOMMU in the host.
-> +
-> +.. contents:: :local:
-> +
-> +Functionalities
-> +====================================================
-> +Communications of user and kernel involve both directions. The
-> +supported user-kernel APIs are as follows:
-> +
-> +1. Alloc/Free PASID
-> +2. Bind/unbind guest PASID (e.g. Intel VT-d)
-> +3. Bind/unbind guest PASID table (e.g. ARM sMMU)
-> +4. Invalidate IOMMU caches
-> +5. Service page request
-> +
-> +Requirements
-> +====================================================
-> +The IOMMU UAPIs are generic and extensible to meet the following
-> +requirements:
-> +
-> +1. Emulated and para-virtualised vIOMMUs
-> +2. Multiple vendors (Intel VT-d, ARM sMMU, etc.)
-> +3. Extensions to the UAPI shall not break existing user space
-> +
-> +Interfaces
-> +====================================================
-> +Although the data structures defined in IOMMU UAPI are self-contained,
-> +there is no user API functions introduced. Instead, IOMMU UAPI is
-> +designed to work with existing user driver frameworks such as VFIO.
-> +
-> +Extension Rules & Precautions
-> +-----------------------------
-> +When IOMMU UAPI gets extended, the data structures can *only* be
-> +modified in two ways:
-> +
-> +1. Adding new fields by re-purposing the padding[] field. No size change.
-> +2. Adding new union members at the end. May increase in size.
-> +
-> +No new fields can be added *after* the variable size union in that it
-> +will break backward compatibility when offset moves. In both cases, a
-> +new flag must be accompanied with a new field such that the IOMMU
-> +driver can process the data based on the new flag. Version field is
-> +only reserved for the unlikely event of UAPI upgrade at its entirety.
-> +
-> +It's *always* the caller's responsibility to indicate the size of the
-> +structure passed by setting argsz appropriately.
-> +
-> +When IOMMU UAPI extension results in size increase, user such as VFIO
-> +has to handle the following scenarios:
-> +
-> +1. User and kernel has exact size match
-> +2. An older user with older kernel header (smaller UAPI size) running on a
-> +   newer kernel (larger UAPI size)
-> +3. A newer user with newer kernel header (larger UAPI size) running
-> +   on a older kernel.
-> +4. A malicious/misbehaving user pass illegal/invalid size but within
-> +   range. The data may contain garbage.
-> +
-> +
-> +Feature Checking
-> +----------------
-> +While launching a guest with vIOMMU, it is important to ensure that host
-> +can support the UAPI data structures to be used for vIOMMU-pIOMMU
-> +communications. Without the upfront compatibility checking, future
-> +faults are difficult to report even in normal conditions. For example,
-> +TLB invalidations should always succeed from vIOMMU's
-> +perspective. There is no architectural way to report back to the vIOMMU
-> +if the UAPI data is incompatible. For this reason the following IOMMU
-> +UAPIs cannot fail:
-> +
-> +1. Free PASID
-> +2. Unbind guest PASID
-> +3. Unbind guest PASID table (SMMU)
-> +4. Cache invalidate
-> +5. Page response
-> +
-> +User applications such as QEMU is expected to import kernel UAPI
-> +headers. Only backward compatibility is supported. For example, an
-> +older QEMU (with older kernel header) can run on newer kernel. Newer
-> +QEMU (with new kernel header) may fail on older kernel.
+> +#define DVP_HT_RPI_SW_INIT	0x04
+> +#define DVP_HT_RPI_MISC_CONFIG	0x08
 
-"Build your user application against newer kernels and it may break on
-older kernels" is not a great selling point of this UAPI.  Clearly new
-features may not be available on older kernels and an application that
-depends on a newer feature may be restricted to newer kernels.
+sorry for not noticing this before. Are these defines specific to the
+Raspberry Pi, because of RPI?
 
-> +
-> +IOMMU vendor driver should report the below features to IOMMU UAPI
-> +consumers (e.g. via VFIO).
-> +
-> +1. IOMMU_NESTING_FEAT_SYSWIDE_PASID
-> +2. IOMMU_NESTING_FEAT_BIND_PGTBL
-> +3. IOMMU_NESTING_FEAT_BIND_PASID_TABLE
-> +4. IOMMU_NESTING_FEAT_CACHE_INVLD
-> +5. IOMMU_NESTING_FEAT_PAGE_REQUEST
-> +
-> +Take VFIO as example, upon request from VFIO user space (e.g. QEMU),
-> +VFIO kernel code shall query IOMMU vendor driver for the support of
-> +the above features. Query result can then be reported back to the
-> +user-space caller. Details can be found in
-> +Documentation/driver-api/vfio.rst.
-> +
-> +
-> +Data Passing Example with VFIO
-> +------------------------------
-> +As the ubiquitous userspace driver framework, VFIO is already IOMMU
-> +aware and share many key concepts such as device model, group, and
-> +protection domain. Other user driver frameworks can also be extended
-> +to support IOMMU UAPI but it is outside the scope of this document.
-> +
-> +In this tight-knit VFIO-IOMMU interface, the ultimate consumer of the
-> +IOMMU UAPI data is the host IOMMU driver. VFIO facilitates user-kernel
-> +transport, capability checking, security, and life cycle management of
-> +process address space ID (PASID).
-> +
-> +Unlike normal user data passed via VFIO UAPI IOTCL, IOMMU driver is the
-> +ultimate consumer of its UAPI data. At VFIO layer, the IOMMU UAPI data
-> +is wrapped in a VFIO UAPI data for sanity checking. It follows the
-> +pattern below:
-> +
-> +::
-> +
-> +   struct {
-> +	__u32 argsz;
-> +	__u32 flags;
-> +	__u8  data[];
-> +  }
-> +
-> +Here data[] contains the IOMMU UAPI data structures.
-> +
-> +In order to determine the size and feature set of the user data, argsz
-> +and flags are also embedded in the IOMMU UAPI data structures.
-> +A "__u32 argsz" field is *always* at the beginning of each structure.
-> +
-> +For example:
-> +::
-> +
-> +   struct iommu_gpasid_bind_data {
-> +	__u32 argsz;
-> +	__u32 version;
-> +	#define IOMMU_PASID_FORMAT_INTEL_VTD	1
-> +	__u32 format;
-> +	#define IOMMU_SVA_GPASID_VAL	(1 << 0)
-> +	__u64 flags;
-> +	__u64 gpgd;
-> +	__u64 hpasid;
-> +	__u64 gpasid;
-> +	__u32 addr_width;
-> +	__u8  padding[12];
-> +	/* Vendor specific data */
-> +	union {
-> +		struct iommu_gpasid_bind_data_vtd vtd;
-> +	};
-> +  };
-> +
-> +Use bind guest PASID as an example, VFIO code shall process IOMMU UAPI
-> +request as follows:
-> +
-> +::
-> +
-> + 1        /* Minsz must include IOMMU UAPI "argsz" of __u32 */
-> + 2        minsz = offsetofend(struct vfio_iommu_type1_bind, flags) +
-> +                              sizeof(u32);
+Otherwise i like to see this RPI part removed.
 
-In the example structure above:
+Regards
+Stefan
 
-> +   struct {
-> +	__u32 argsz;
-> +	__u32 flags;
-> +	__u8  data[];
-> +  }
-
-This presumes that vfio does not use flags to identify a different
-layout, for example a field before data or defining a flag that
-provides no data.  IOW, the IOMMU guarantees argsz at the beginning of
-all structures, but let's not limit how vfio chooses to bundle that
-structure.  minsz should be based on flags, which we'll evaluate to
-determine how much more to copy.
-
-> + 3        copy_from_user(&vfio_bind, (void __user *)arg, minsz);
-> + 4
-> + 5        /* Check VFIO argsz */
-> + 6        if (vfio_bind.argsz < minsz)
-> + 7                return -EINVAL;
-> + 8
-> + 9        /* VFIO flags must be included in minsz */
-> + 10        switch (vfio_bind.flags) {
-> + 11        case VFIO_IOMMU_BIND_GUEST_PGTBL:
-> + 12                /*
-> + 13                 * Get the current IOMMU bind GPASID data size,
-> + 14                 * which accounted for the largest union member.
-> + 15                 */
-> + 16                data_size = sizeof(struct iommu_gpasid_bind_data);
-> + 17                iommu_argsz = vfio_bind.argsz - minsz;
-
-Note that by including the IOMMU UAPI argsz within minsz, this is
-incorrect.
-
-> + 18                if (iommu_argsz > data_size) {
-> + 19                        /* User data > current kernel */
-> + 20                        return -E2BIG;
-> + 21                }
-
-Now I see why you're making the claim that QEMU compiled against an new
-kernel may not work on an older kernel.  We can do better.  The current
-sizeof the data structure should be the maximum we'll copy from the
-user, and we can update the user provided IOMMU UAPI argsz as we pass it
-down from the user to avoid exposing ourselves to an arbitrarily large
-user buffer.  The IOMMU UAPI interfaces should then also use argsz and
-flags to determine whether the data is present for a specified flag.
-That should allow a user application compiled against a newer kernel
-header, but only using features found on older kernels to continue to
-work on older kernels, which seems like a basic requirement to me.
-
-> + 22                copy_from_user(&iommu_bind, (void __user *)
-> + 23                               vfio_bind.data, iommu_argsz);
-> + 24               /*
-> + 25                * Deal with trailing bytes that is bigger than user
-> + 26                * provided UAPI size but smaller than the current
-> + 27                * kernel data size. Zero fill the trailing bytes.
-> + 28                */
-> + 29                memset(iommu_bind + iommu_argsz, 0, data_size -
-> + 30                       iommu_argsz;
-
-The IOMMU UAPI interface having access to argsz should make this
-unnecessary.  Performing this memset() seems like it suggests to the
-next layer that it can rely on all fields being present and valid,
-which defeats the purpose of argsz.
-
-> + 31
-> + 32                iommu_sva_bind_gpasid(domain, dev, iommu_bind_data);
-> + 33                break;
-> +
-> +
-> +Case #1 & 2 are supported per backward compatibility rule.
-> +
-> +Case #3 will fail with -E2BIG at line #20. Case
-
-This is not acceptable IMO.
-
-> +Case #4 may result in other error processed by IOMMU vendor driver. However,
-> +the damage shall not exceed the scope of the offending user.
-
-This is a concern in this double wrapped interface, the IOMMU UAPI
-layer may expect the vfio layer to validate the data.  Zeroing the
-remainder of the data structure is evidence towards that.  The IOMMU
-UAPI layer needs to consider all of this untrusted, so why would we not
-reflect that by passing a __user pointer through to the IOMMU UAPI such
-that it can copy the data from the user itself rather than being
-mislead that the contents have been somehow verified?  Thanks,
-
-Alex
 
