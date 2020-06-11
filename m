@@ -2,110 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F901F6CBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE241F6CBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgFKRZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 13:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S1726791AbgFKR3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 13:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgFKRZr (ORCPT
+        with ESMTP id S1725782AbgFKR3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 13:25:47 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FBCC08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:25:47 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e1so7014404wrt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:25:46 -0700 (PDT)
+        Thu, 11 Jun 2020 13:29:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CE5C03E96F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:29:24 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id p5so6989512wrw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GmHmPvjIL/uoQZEqL49hjtjHKbcvKuEnA1LiIhhiiv4=;
-        b=CMzvm+imQ9cB23Eiy1rEwYePeux7mfPlyD6M/FEjx5Hh6kdKtBGC6QkIrZj0C6FwWi
-         OffW2wZLvIpgYLzJFod41sU26hINgE+Otu9+lSQ8mdn+YYNLSd8m6rYUn7Zy0wqDRIlR
-         YrS2tofgEqd1VY32pehLP0/GCkbMu/RdT3GHU=
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Gv2kS6G3o83f2mBPnYmMpo8TuJCcISodnEkPwPcYQnE=;
+        b=BOrhAO2vWpMDso2mx5GwRjXpyvGIn++k+1R00OaP5mChKpAlscrEZsqwuF1TYhbAV4
+         OoIqjEtayPMVIGwtgDZHlAL8y/gc6CxGKQ2kGcL89SMHnAN4XqG8pAJsoYHrARWHFs76
+         Y0j6HMJIuKh8GQpVOZQagPjv2rsu1J4B6uD6U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GmHmPvjIL/uoQZEqL49hjtjHKbcvKuEnA1LiIhhiiv4=;
-        b=OqW3xvNMlQ5fbtQSAjgUi2b7Au8ZizXDiAQ8uMVLjCy318AawtToNR9qn0SdMHDL0J
-         6fI53jKmdrbuaBumEXi2mBblODYmjdFBPnEcpfQEmhHLj9GQVhXobBWg1/eQxfgPZmFt
-         jZ8z5ELPfeJCyQ5oOXajsesXG7q9aeSwE32J8PbPvrZHQ03aPk/zpElTrQl4BGLprV5I
-         2LEwHoL6nqLv/GW0mkNpkbUJ9KteD+EhR7krijRlST+u0O0z8zFPrlMhcp33menkjn7B
-         TY2xNqRlqmoXyjEySkOfnH47dGUTSIDx6DUdESlJcPZvdODE+1y+VzIscBSWbH5oviy9
-         J7RQ==
-X-Gm-Message-State: AOAM531Dy9U/U0exm2afbHaAK4h3WvKi4jNuhieTDZGWO8MWXekyKz8C
-        AVX8hfvXwTC/74k0t/2kmVEwGA==
-X-Google-Smtp-Source: ABdhPJzfvbquWMv3SW72gKgtUedJACAfw0cuil7ok4HdoKUCgxg9YSjE0tpPciptHEDo7nJ9xggemw==
-X-Received: by 2002:adf:d852:: with SMTP id k18mr10714394wrl.177.1591896345683;
-        Thu, 11 Jun 2020 10:25:45 -0700 (PDT)
-Received: from antares.lan (4.1.2.f.7.2.f.a.4.b.9.9.a.8.4.a.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:a48a:99b4:af27:f214])
-        by smtp.gmail.com with ESMTPSA id v7sm5971907wro.76.2020.06.11.10.25.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 10:25:45 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] bpf: sockmap: don't attach programs to UDP sockets
-Date:   Thu, 11 Jun 2020 18:25:20 +0100
-Message-Id: <20200611172520.327602-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Gv2kS6G3o83f2mBPnYmMpo8TuJCcISodnEkPwPcYQnE=;
+        b=cU2X0V+L9Uaqsi9GDdL7hS7Z8J2ViZ1QzDr2rQhPfJkDg8FZvb3KPLDEb97Od/JlX/
+         NJLq1Bp9rZIaYu4Yp3nEYD0iszizAikLwkNh8zk0XFFbXl5zP4WKPNzTe66gS175ohlV
+         5k7ATY7oOcF+gK8YDrZKgWaWpCRUlpnoo1tbbomXpLu63+0uufZm0g3K74WtDr+8OLyQ
+         dyXAIOqXDBTeOnF8JFp8W7+Fz4JHv4mL1QLUbSzrbuo1xKz9iDO5+DSS3xGclo2kWfBf
+         HPpl7LHK4guapTwxz21M3cttRzPVmslZlvUgAsCR4dAFx5OscdqfFVxXaB2+wM9wKqYm
+         So8A==
+X-Gm-Message-State: AOAM530SU0iTbCarfG8Eh83g+PHY4snT20+S6vtMkiPbMSLJgN562KSq
+        uITQVUTNu37RFNk0TXo9zuyUqJz7gbfZe8KqajEW
+X-Google-Smtp-Source: ABdhPJyWWL+hUtM4a2VwYzffSh78HZlncIF/3sL9ZnNp2EfXeeeH93J0EfETtmyORukse0dSa18u+e3xo+ODmWtN0MI=
+X-Received: by 2002:adf:edc8:: with SMTP id v8mr10227082wro.176.1591896563205;
+ Thu, 11 Jun 2020 10:29:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200603153608.30056-1-alex@ghiti.fr> <CAOnJCUJSKvLDsXC8+wyO1xsZDzLJmjY2kwMKhjz0t+uS8h0pDw@mail.gmail.com>
+ <7ad7057e-fdab-14ef-9bdb-c77ccefd208a@ghiti.fr>
+In-Reply-To: <7ad7057e-fdab-14ef-9bdb-c77ccefd208a@ghiti.fr>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 11 Jun 2020 10:29:12 -0700
+Message-ID: <CAOnJCUKcMmchxgeHNx997EH5JM_OAJFUDCNT6Ca2B-xHE4YT5A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] PUD/PGDIR entries for linear mapping
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stream parser infrastructure isn't set up to deal with UDP
-sockets, so we mustn't try to attach programs to them.
+On Wed, Jun 10, 2020 at 11:51 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>
+> Hi Atish,
+>
+> Le 6/10/20 =C3=A0 2:32 PM, Atish Patra a =C3=A9crit :
+> > On Wed, Jun 3, 2020 at 8:36 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
+> >> This small patchset intends to use PUD/PGDIR entries for linear mappin=
+g
+> >> in order to better utilize TLB.
+> >>
+> >> At the moment, only PMD entries can be used since on common platforms
+> >> (qemu/unleashed), the kernel is loaded at DRAM + 2MB which dealigns vi=
+rtual
+> >> and physical addresses and then prevents the use of PUD/PGDIR entries.
+> >> So the kernel must be able to get those 2MB for PAGE_OFFSET to map the
+> >> beginning of the DRAM: this is achieved in patch 1.
+> >>
+> > I don't have in depth knowledge of how mm code works so this question
+> > may be a completely
+> > stupid one :). Just for my understanding,
+> > As per my understanding, kernel will map those 2MB of memory but never =
+use it.
+> > How does the kernel ensure that it doesn't allocate any memory from tho=
+se 2MB
+> > memory if it is not marked as reserved?
+>
+> Yes, a 1GB hugepage will cover those 2MB: I rely on the previous boot
+> stage to mark this region
+> as reserved if there is something there (like opensbi). Otherwise, the
+> kernel will indeed try to
+> allocate memory from there :)
+>
+In that case, this patch mandates that the firmware region has to be
+mark "reserved"
+the device tree so that the Linux kernel doesn't try to allocate
+memory from there.
+OpenSBI is already doing it from v0.7. Thus, any user using latest
+OpenSBI can leverage
+this patch for a better TLB utilization.
+However, legacy previous boot stages(BBL) do not reserve this area via
+DT which may
+result in an unexpected crash. I am not sure how many developers still
+use BBL though.
 
-I remember making this change at some point, but I must have lost
-it while rebasing or something similar.
+Few general suggestions to tackle this problem:
+1. This mandatory requirement should be added to the booting document
+so that any other
+SBI implementation is also aware of it.
+2. You may have to move the patch1 to a separate config so that any
+users of legacy boot stages
+can disable this feature.
 
-Fixes: 7b98cd42b049 ("bpf: sockmap: Add UDP support")
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- net/core/sock_map.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> Alex
+>
+>
+> >> But furthermore, at the moment, the firmware (opensbi) explicitly asks=
+ the
+> >> kernel not to map the region it occupies, which is on those common
+> >> platforms at the very beginning of the DRAM and then it also dealigns
+> >> virtual and physical addresses. I proposed a patch here:
+> >>
+> >> https://github.com/riscv/opensbi/pull/167
+> >>
+> >> that removes this 'constraint' but *not* all the time as it offers som=
+e
+> >> kind of protection in case PMP is not available. So sometimes, we may
+> >> have a part of the memory below the kernel that is removed creating a
+> >> misalignment between virtual and physical addresses. So for performanc=
+e
+> >> reasons, we must at least make sure that PMD entries can be used: that
+> >> is guaranteed by patch 1 too.
+> >>
+> >> Finally the second patch simply improves best_map_size so that wheneve=
+r
+> >> possible, PUD/PGDIR entries are used.
+> >>
+> >> Below is the kernel page table without this patch on a 6G platform:
+> >>
+> >> ---[ Linear mapping ]---
+> >> 0xffffc00000000000-0xffffc00176e00000    0x0000000080200000 5998M PMD =
+    D A . . . W R V
+> >>
+> >> And with this patchset + opensbi patch:
+> >>
+> >> ---[ Linear mapping ]---
+> >> 0xffffc00000000000-0xffffc00140000000 0x0000000080000000         5G PU=
+D     D A . . . W R V
+> >> 0xffffc00140000000-0xffffc00177000000    0x00000001c0000000 880M PMD  =
+   D A . . . W R V
+> >>
+> >> Alexandre Ghiti (2):
+> >>    riscv: Get memory below load_pa while ensuring linear mapping is PM=
+D
+> >>      aligned
+> >>    riscv: Use PUD/PGDIR entries for linear mapping when possible
+> >>
+> >>   arch/riscv/include/asm/page.h |  8 ++++
+> >>   arch/riscv/mm/init.c          | 69 +++++++++++++++++++++++++++++----=
+--
+> >>   2 files changed, 65 insertions(+), 12 deletions(-)
+> >>
+> >> --
+> >> 2.20.1
+> >>
+> >>
+> >
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 00a26cf2cfe9..35cea36f3892 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -424,10 +424,7 @@ static int sock_map_get_next_key(struct bpf_map *map, void *key, void *next)
- 	return 0;
- }
- 
--static bool sock_map_redirect_allowed(const struct sock *sk)
--{
--	return sk->sk_state != TCP_LISTEN;
--}
-+static bool sock_map_redirect_allowed(const struct sock *sk);
- 
- static int sock_map_update_common(struct bpf_map *map, u32 idx,
- 				  struct sock *sk, u64 flags)
-@@ -508,6 +505,11 @@ static bool sk_is_udp(const struct sock *sk)
- 	       sk->sk_protocol == IPPROTO_UDP;
- }
- 
-+static bool sock_map_redirect_allowed(const struct sock *sk)
-+{
-+	return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
-+}
-+
- static bool sock_map_sk_is_suitable(const struct sock *sk)
- {
- 	return sk_is_tcp(sk) || sk_is_udp(sk);
--- 
-2.25.1
 
+
+--=20
+Regards,
+Atish
