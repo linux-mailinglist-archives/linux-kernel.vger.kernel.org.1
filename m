@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6FE1F6992
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017681F6996
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgFKODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58368 "EHLO mail.kernel.org"
+        id S1727936AbgFKOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:05:12 -0400
+Received: from mga03.intel.com ([134.134.136.65]:30436 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726808AbgFKODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:03:04 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F250206C3;
-        Thu, 11 Jun 2020 14:03:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591884184;
-        bh=KwaNQt8CHB0EhbuxLaFyv3pyqaPwUgg4tG0QM0szqSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b0OCEbE4kM0G44R+IPkLOHrhllos+I/kAIXU2VVFnidEhAuAeVDc8opKGAmJOCJrR
-         W9HF128ZST0k9gj0ESz+vvc3vDFTMkjak1f9kycjmaPbqNjtqsF+YGjrw6o25UmMuW
-         fdG3HPBPTNr23ERnNY1wpUqRr/RxJriluUs32lNQ=
-Date:   Thu, 11 Jun 2020 15:03:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, hao.wu@intel.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com
-Subject: Re: [PATCH 5/6] spi: altera: move driver name string to header file
-Message-ID: <20200611140301.GH4671@sirena.org.uk>
-References: <1591845911-10197-1-git-send-email-yilun.xu@intel.com>
- <1591845911-10197-6-git-send-email-yilun.xu@intel.com>
+        id S1726157AbgFKOFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:05:10 -0400
+IronPort-SDR: qjmb+WEd9t5g9oVEbG4qC+m5CLzeWF6yPeQsCiV3tozhYhMABsDc8O1B2qjndO5KAS83DMj53D
+ LhL+F91AYUMg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 07:05:09 -0700
+IronPort-SDR: FFWBeEpcoD3sE9KG4LLHlHMqmmqRijDk7yhcUuQanLFzsQeZeiAyYKv9Z1v0bevvMppaM9mK/5
+ LyWlZnbqPoTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,499,1583222400"; 
+   d="scan'208";a="275340402"
+Received: from hbaravin-mobl.amr.corp.intel.com (HELO [10.255.4.112]) ([10.255.4.112])
+  by orsmga006.jf.intel.com with ESMTP; 11 Jun 2020 07:05:08 -0700
+Subject: Re: [RFC PATCH 0/3] Add Documentation for /proc/cpuinfo flags
+To:     Borislav Petkov <bp@alien8.de>,
+        Kyung Min Park <kyung.min.park@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org,
+        ak@linux.intel.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        ricardo.neri@intel.com
+References: <20200610200701.16757-1-kyung.min.park@intel.com>
+ <20200610203537.GT14118@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5b6cc9c0-491f-689f-b7e9-e2c7a32182aa@intel.com>
+Date:   Thu, 11 Jun 2020 07:05:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k+G3HLlWI7eRTl+h"
-Content-Disposition: inline
-In-Reply-To: <1591845911-10197-6-git-send-email-yilun.xu@intel.com>
-X-Cookie: I like your SNOOPY POSTER!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200610203537.GT14118@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/10/20 1:35 PM, Borislav Petkov wrote:
+> On Wed, Jun 10, 2020 at 01:06:58PM -0700, Kyung Min Park wrote:
+>> Include two instances of features for which there are not implemented
+>> use cases in the kernel.
+>>
+>> Patch 1 creates a new documentation for /proc/cpuinfo flags bits.
+>> Patch 2 adds X86_FEATURE_SERIALIZE.
+>> Patch 3 adds X86_FEATURE_TSXLDTRK.
+>>
+>> This RFC series has been reviewed by Dave Hansen.
+> Yeah, and he and I talked about this on IRC. If you really want to dump
+> CPUID to see what's there, we should do a userspace tool in tools/ or
+> even use the ones which are already out there: x86info, cpuid, ...
+> 
+> Just adding X86_FEATURE_* flags without usage in the kernel makes no
+> sense and will cause unnecessary bloat and doesn't help one bit because
+> userspace simply calls CPUID directly.
 
---k+G3HLlWI7eRTl+h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 11, 2020 at 11:25:10AM +0800, Xu Yilun wrote:
-> This allows other driver to reuse the name string for spi-altera
-> platform device creation.
-
-This is a very unusual thing to do, normally we just have the users use
-the strong directly.  It feels like if we are going to change this idiom
-we should do so globally but that seems like far more trouble thanit's
-worth.
-
---k+G3HLlWI7eRTl+h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7iOZUACgkQJNaLcl1U
-h9Da1gf+IVsNj1j6qCAsG0ClLwzynb1gwlrM9hM9V225dz0WnVCf+YvdK2cCN2ef
-rCAyr1EvGLyKcg+gVV4laDFfkdJFecYWKiyPGCReduMlF2mtJh0G/SlWjxSl2pN0
-v5pGgl8vDGT+tTpQcX9uRDLK+YV4RValFuMznvD0TiwifIr7UqLp69Ih4sxtbWeU
-vr7mW9Tr6ILMOXo5Stee0Ept06ejaJX4QsoFVUb3cBV+m00V/wnJUX2Yq2M1ejNF
-XsHy1J5N6aPng0+XkKZGIXViQ5ySxHFPtQPrt4X14Vi6eoLYX60ovHd7nAD8SK2e
-97mUFhJU/WztGB/CN9q1vczboJsoFQ==
-=Sc8J
------END PGP SIGNATURE-----
-
---k+G3HLlWI7eRTl+h--
+Could we ignore the new flag patches for the moment and make sure
+everyone is on board with what the new Documentation/ says?
