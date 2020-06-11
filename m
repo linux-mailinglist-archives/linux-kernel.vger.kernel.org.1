@@ -2,168 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF211F668B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4F11F668F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgFKLXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:23:18 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:38499 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgFKLXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:23:17 -0400
-IronPort-SDR: K/Fz8CzlNt0Sls90ffuamuQjdSAoeVs7WX5hKr1ZBOkWQHFga6tKQnGVdxAzyMk1J4tcbGxHqO
- kaq1IvkTFeXrBYxArTZiUbQkglQeCpcMVS/12QTfBy5x9AqyTgA5Oq7+28d7SGFUeB1OiBjQR2
- /rdNw7GD3pkbTZlZVxfrJcYXEfGbIiPjarLoTWONiyeoPe9/L5xjE2I7OM9KbQXWduSHaY3jbL
- YRgptM+9AlPZPirWGJprS1utvicTg4hLbKkHkGUMRVv25HZDhnDCT+TrPyLyxuv+ks8OvTMtqc
- Rdk=
-X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
-   d="scan'208";a="12649147"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 11 Jun 2020 13:23:15 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 11 Jun 2020 13:23:15 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 11 Jun 2020 13:23:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1591874595; x=1623410595;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=L/lgEa4ngwESBUIJx1nHCkPgKmQSKt9J/YaWqXauyUY=;
-  b=D5T4hJX4FEoWAS/wvQwynmTaIeqQvuskhlM/PDu4E80stFfhaKrNz7wJ
-   Ur4lAhKPqW2ZXa8EQrNmEWXqifmPoXr2J1WLASGunUA56/rlfu7xAgy1L
-   IIYLgruaulVukYN4Fvjexg4rmBadBNhGVsK9yv8H2tWF6gom+OXPDcgJV
-   z94gAaQWH2wVw9kS8MsbAGRJsZmdhWJFqEm/1oKRBmJPAG4su3HzlDSh9
-   2oaA1rm2XwrNeU0q5EVsmcdgjtR6P/TWf1YtMEUU9Zd8QA4oeO/UVHfmO
-   hVpRACaBVuomaI8rRSRxEFBYLIgoFb8efJfDIL27wEAQeBkB+Ck28n71E
-   A==;
-IronPort-SDR: BBPnzRjo5PtKvM3sAoKKY/91efyUw36B8KUb3x0FrhdKvXoii3SYRfpW7ffwNcSyL31qRBh+25
- 93tfMfF8KK971BnNFi8HBA2zNHw4d5Q/LpoBqvKBL0D7/LWsMXvyflargHSdF9tvMy412WYp0U
- piWfYYQ/tVpSOWWAmy97dwF4HwmFcqbkpY4E7z62bwPoFcq38frXok8ntIUtIniAIiOq1TWzVy
- z9gDwgSmhmj+IUhtx6JVmaepfaAcEYtcWba8z1yj8b+A1hhjI4VIO0jvWyPc71x7DIEjFV1EOS
- hQo=
-X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
-   d="scan'208";a="12649146"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 11 Jun 2020 13:23:15 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id C7DCE280065;
-        Thu, 11 Jun 2020 13:23:16 +0200 (CEST)
-Message-ID: <0637641b8872a84481f5177876893cd1543a0d0b.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: Consistent block device references for root= cmdline
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Roger Heflin <rogerheflin@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 11 Jun 2020 13:23:13 +0200
-In-Reply-To: <CAAMCDef2g8t5u1GuVH7p4bM1C7UMsC=fV4RKGU9jSG1rScPc9g@mail.gmail.com>
-References: <fb0340aaf273be84e915214a3d8bae4ac85d7c0b.camel@ew.tq-group.com>
-         <CAPDyKFq+RiwbDj+58+W5GTcT7=ZOpZFmc02+FxjRGYwbBgA8oQ@mail.gmail.com>
-         <CAAMCDef2g8t5u1GuVH7p4bM1C7UMsC=fV4RKGU9jSG1rScPc9g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1728004AbgFKLYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727944AbgFKLYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:24:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF7BC08C5C1;
+        Thu, 11 Jun 2020 04:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Qq2Iy8vRsv+5GToEZEr3De3lvTsl+HAJS9n4B3sidmk=; b=YT27lwEQYmP2PbQRi+lLN3ESJi
+        RoOTtTN1kUg2a1QmB8+i8HoBLb65E6/4/dpn4kPxV5PaAERVszQZaBLaxk1J368KSUaM8fvQKXAvH
+        KQhcfbmOvrQBwsFS7FDf1IYGUrF+q0Wa9FYF/lTC50SwWNSlnCUIZO+xgJUyH9ff3t2V13bIV3NK+
+        b9LL2NnGp9AfxDF6YZFCJ1Y4QAUu3h5/mWRsy1c9aqD35gjNb0KtjkDf4dWlvzCpZjOZMDWDqx4w5
+        I/wYx0SXB7wofhAsWAFlN2JV1BaQHL5iqzA9r0cOsRh0Izug1NMO55T3gQhwj53Iw3P8iAcc4ZUZD
+        hV+JMHLg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jjLJd-0000YC-2X; Thu, 11 Jun 2020 11:24:13 +0000
+Date:   Thu, 11 Jun 2020 04:24:12 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v6 00/51] Large pages in the page cache
+Message-ID: <20200611112412.GA8681@bombadil.infradead.org>
+References: <20200610201345.13273-1-willy@infradead.org>
+ <20200611065954.GA21475@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611065954.GA21475@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-10 at 12:33 -0500, Roger Heflin wrote:
-> No idea if this would still work, but back before label/uuid and lvm
-> in initird I had a staticly linked "C" program that ran inside
-> initrd,
-> it searched for likely places a boot device could be (mounted them
-> and
-> looked for a file to confirm it was the right device, then unmounted
-> it), and when it found the right one, it then echo's is major/minor
-> numbers into /proc/sys/kernel/real-root-dev and that is used for
-> root=
-> without it being on the command line.  Assuming you could get
-> something similar started by sytemd and/or udev inside the initrd it
-> might still work.
-
-Using an initramfs is obviously an option, but it complicates both the
-build setup and boot process, so we would like to avoid making this a
-hard requirement if possible.
-
-
+On Wed, Jun 10, 2020 at 11:59:54PM -0700, Christoph Hellwig wrote:
+> On Wed, Jun 10, 2020 at 01:12:54PM -0700, Matthew Wilcox wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > 
+> > Another fortnight, another dump of my current large pages work.
+> > I've squished a lot of bugs this time.  xfstests is much happier now,
+> > running for 1631 seconds and getting as far as generic/086.  This patchset
+> > is getting a little big, so I'm going to try to get some bits of it
+> > upstream soon (the bits that make sense regardless of whether the rest
+> > of this is merged).
 > 
-> On Wed, Jun 10, 2020 at 11:51 AM Ulf Hansson <ulf.hansson@linaro.org>
-> wrote:
-> > 
-> > On Wed, 10 Jun 2020 at 15:15, Matthias Schiffer
-> > <matthias.schiffer@ew.tq-group.com> wrote:
-> > > 
-> > > Hello all,
-> > > 
-> > > there have been numerous attempts to make the numbering of mmcblk
-> > > devices consistent, mostly by using aliases from the DTS ([1],
-> > > [2],
-> > > [3]), but all have been (rightfully) rejected. Unless I have
-> > > overlooked
-> > > a more recent development, no attempts for a different solution
-> > > were
-> > > made.
-> > 
-> > According to aliases attempts, I think those have failed, mainly
-> > because of two reasons.
-> > 
-> > 1. Arguments stating that LABELs/UUIDs are variable alternatives.
-> > This
-> > isn't the case, which I think was also concluded from the several
-> > earlier discussions.
-> > 2. Patches that tried adding support for mmc aliases, were not
-> > correctly coded. More precisely, what needs to be addressed is that
-> > the mmc core also preserves the same ids to be set for the host
-> > class
-> > as the block device, mmc[n] must correspond to mmcblk[n].
-> > 
-> > > 
-> > > As far as I can tell, the core of the issue seems to be the
-> > > following:
-> > > 
-> > > The existing solutions like LABELs and UUIDs are viable
-> > > alternatives in
-> > > many cases, but in particular on embedded systems, this is not
-> > > quite
-> > > sufficient: In addition to the problem that more knowledge about
-> > > the
-> > > system to boot is required in the bootloader, this approach fails
-> > > completely when the same firmware image exists on multiple
-> > > devices, for
-> > > example on an eMMC and an SD card - not an entirely uncommon
-> > > situation
-> > > during the development of embedded systems.
-> > > 
-> > > With udev, I can refer to a specific partition using a path like
-> > > /dev/disk/by-path/platform-2194000.usdhc-part2. In [4] it was
-> > > proposed
-> > > to add a way to refer to a device path/phandle from the kernel
-> > > command
-> > > line. Has there been any progress on this proposal?
-> > 
-> > Lots of time during the years I have been approached, both publicly
-> > and offlist, about whether it would be possible to add support for
-> > "consistent" mmcblk devices. To me, I am fine with the aliases
-> > approach, as long as it gets implemented correctly.
-> > 
-> > > 
-> > > Kind regards,
-> > > Matthias
-> > > 
-> > > 
-> > > [1] https://patchwork.kernel.org/patch/8685711/
-> > > [2] https://lore.kernel.org/patchwork/cover/674381/
-> > > [3] https://www.spinics.net/lists/linux-mmc/msg26586.html
-> > > [4] https://www.spinics.net/lists/linux-mmc/msg26708.html
-> > > 
-> > 
-> > Kind regards
-> > Uffe
+> At this size a git tree to pull would also be nice..
 
+That was literally the next paragraph ...
+
+It's now based on linus' master (6f630784cc0d), and you can get it from
+http://git.infradead.org/users/willy/linux-dax.git/shortlog/refs/heads/xarray-pa
++gecache
+if you'd rather see it there (this branch is force-pushed frequently)
+
+Or are you saying you'd rather see the git URL than the link to gitweb?
