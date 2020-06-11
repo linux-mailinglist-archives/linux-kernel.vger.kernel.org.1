@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C69E1F656C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224BE1F655E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgFKKKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 06:10:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59636 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgFKKKc (ORCPT
+        id S1727080AbgFKKIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 06:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgFKKH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 06:10:32 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BA6rAh013287;
-        Thu, 11 Jun 2020 10:10:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=IwBCM+hJeskaz3TsvUhPt5M+TeyH9rZ0QcVjuHy3CzI=;
- b=gcFsKcwModl8fFbU4ceDOW1iHkSpdpYA3SG5gmlxt6QGHnE7EKgNkdgxZUcWzFRX0XfR
- omRzdoRflJUgx2LObI4jNWIjLStXJyQHnikOx3yEzcLcMJwUDao8Xw2mNHEPHfoIwl+e
- r+KgN4tedJ9Oyf43MU4g5UhVLhOs2wikEktqZbRz74N5x8RQNUQCxZs07wByEEvOI6Hq
- X5Yx9kh5B6cP/KGfb03j47B27FbQep1eWSdriuwh7gCQAh20T/BHhN5esSiBOecF6mVP
- g4PwuF9z9Pk84yNDMfxKR5enQcjiOzV+3LkgG77G8JSP3L6ezSsiv5i0wWI3Ogjz/zLn Ng== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31jepp0vbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Jun 2020 10:10:25 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BA7lCL056640;
-        Thu, 11 Jun 2020 10:10:24 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 31gn319jv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 10:10:24 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05BAANGK016532;
-        Thu, 11 Jun 2020 10:10:23 GMT
-Received: from localhost.localdomain (/183.246.144.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 11 Jun 2020 03:10:21 -0700
-From:   Bob Liu <bob.liu@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tj@kernel.org, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
-        lduncan@suse.com, michael.christie@oracle.com,
-        Bob Liu <bob.liu@oracle.com>
-Subject: [PATCH 2/2] scsi: register sysfs for scsi/iscsi workqueues
-Date:   Thu, 11 Jun 2020 18:07:17 +0800
-Message-Id: <20200611100717.27506-2-bob.liu@oracle.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200611100717.27506-1-bob.liu@oracle.com>
-References: <20200611100717.27506-1-bob.liu@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=3
- priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006110078
+        Thu, 11 Jun 2020 06:07:58 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F23C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 03:07:58 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id e9so2336335pgo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 03:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cantona-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aKMw40QAEHjK+S+ezMDIXXaG/yrYUUF90WtikY/P0Os=;
+        b=qzwmWD/9k2NXJdGvmAjTf4fCY5oDmIOLmDKwSCGKedMX+n/T4yoAVsQJ8wVZdwQeNM
+         +cQnGl2w/6RhIqeqonlsqeaWAc11cVswPMC5vbgr+YyPpJnKPJ3BrZ7QW+YFJ0ublWEr
+         +QvCWWuw6v6cPzzGsBxIC9bRnpMqI294xJ84PkyFqwX6eGl5EKqsrT/ypX5NiPXNz+AG
+         JwpDfAPWllsDiGbD0BnrzFVWq0x84KkLCkt1xSzRBd/R/+TJIkhweuxWFPidLGnMzcRx
+         hZXJI2o9DJ+Oz9tXYA3dGnWKXBrQIdQqzbJeJrQtc9ittmCeoNaenb/ouNT1rTuOW+Tc
+         cl+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aKMw40QAEHjK+S+ezMDIXXaG/yrYUUF90WtikY/P0Os=;
+        b=AoZAu1P6Vu5lTheJjOUCbTdD6uodUYgsYB5edtMRM3eS7WGDNy7INyePqLueIvYc5y
+         uFQ+T8vJIcYyTG9VdVENHOeI+Z9/J35DD1oASSqummmWAt2xTSiOVUkR5bwHHepAZTlA
+         P6uJw6m14qAoffDjhYK/jwMUMFBqK4eBS2sE0o7QJmVt1CRFfcf3uk4hhxwF9EZrqlso
+         JgU+OKzD0jqFkbShcd3GWJ0e53NXF0u6+1Z+mO3w5tTuNq8VpgR5+S+rXifo5bUKtsAb
+         NQJkwWHMg7W48/aq8EsqT69PjOCBM13hOL19TmeANA0M5NIABaE1bCpSnWCpoaajU29M
+         yf4Q==
+X-Gm-Message-State: AOAM533QdFJPueJl8FeACMnELCraw6IXX2uFegq46Hlu3QPkw6e4CzjP
+        vC87+7bRb6HX7JHLMy0NpX9bPw==
+X-Google-Smtp-Source: ABdhPJyyilHCc9Y5Udw5M5OgruJWeqSofGNrzejr7O4RvuQ3h9eRppWd1VR/bUn4BkFPNfk/GHmgBw==
+X-Received: by 2002:a05:6a00:1342:: with SMTP id k2mr6493599pfu.32.1591870077544;
+        Thu, 11 Jun 2020 03:07:57 -0700 (PDT)
+Received: from localhost.localdomain ([116.92.204.89])
+        by smtp.googlemail.com with ESMTPSA id j1sm2251822pjv.21.2020.06.11.03.07.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 03:07:57 -0700 (PDT)
+From:   Su Kang Yin <cantona@cantona.net>
+To:     gregkh@linuxfoundation.org, linux-crypto@vger.kernel.org,
+        christophe.leroy@c-s.fr
+Cc:     Su Kang Yin <cantona@cantona.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: talitos - fix ECB and CBC algs ivsize
+Date:   Thu, 11 Jun 2020 18:07:45 +0800
+Message-Id: <20200611100745.6513-1-cantona@cantona.net>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <cantona@cantona.net>
+References: <cantona@cantona.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enable setting cpu affinity through "cpumask" for below
-scsi/iscsi workqueues, so as to get better isolation.
-- scsi_wq_*
-- scsi_tmf_*
-- iscsi_q_xx
-- iscsi_eh
+Patch for 4.9 upstream:
 
-Signed-off-by: Bob Liu <bob.liu@oracle.com>
+commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
+
+This restore the CBC algs original ivsize of removes ECB's ones.
+
+Signed-off-by: Su Kang Yin <cantona@cantona.net>
 ---
- drivers/scsi/hosts.c                | 4 ++--
- drivers/scsi/libiscsi.c             | 2 +-
- drivers/scsi/scsi_transport_iscsi.c | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/crypto/talitos.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
-index 1d669e4..4b9f80d 100644
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -272,7 +272,7 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
- 	if (shost->transportt->create_work_queue) {
- 		snprintf(shost->work_q_name, sizeof(shost->work_q_name),
- 			 "scsi_wq_%d", shost->host_no);
--		shost->work_q = create_singlethread_workqueue(
-+		shost->work_q = create_singlethread_workqueue_noorder(
- 					shost->work_q_name);
- 		if (!shost->work_q) {
- 			error = -EINVAL;
-@@ -487,7 +487,7 @@ struct Scsi_Host *scsi_host_alloc(struct scsi_host_template *sht, int privsize)
- 	}
- 
- 	shost->tmf_work_q = alloc_workqueue("scsi_tmf_%d",
--					    WQ_UNBOUND | WQ_MEM_RECLAIM,
-+				WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS | __WQ_ORDERED_DISABLE,
- 					   1, shost->host_no);
- 	if (!shost->tmf_work_q) {
- 		shost_printk(KERN_WARNING, shost,
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 70b99c0..6808cf3 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -2627,7 +2627,7 @@ struct Scsi_Host *iscsi_host_alloc(struct scsi_host_template *sht,
- 	if (xmit_can_sleep) {
- 		snprintf(ihost->workq_name, sizeof(ihost->workq_name),
- 			"iscsi_q_%d", shost->host_no);
--		ihost->workq = create_singlethread_workqueue(ihost->workq_name);
-+		ihost->workq = create_singlethread_workqueue_noorder(ihost->workq_name);
- 		if (!ihost->workq)
- 			goto free_host;
- 	}
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index dfc726f..d07a0e4 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -4602,7 +4602,7 @@ static __init int iscsi_transport_init(void)
- 		goto unregister_flashnode_bus;
- 	}
- 
--	iscsi_eh_timer_workq = create_singlethread_workqueue("iscsi_eh");
-+	iscsi_eh_timer_workq = create_singlethread_workqueue_noorder("iscsi_eh");
- 	if (!iscsi_eh_timer_workq) {
- 		err = -ENOMEM;
- 		goto release_nls;
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 8b383d3d21c2..05a35ab5595b 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -2636,7 +2636,6 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
+-				.ivsize = AES_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+@@ -2670,6 +2669,7 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
++				.ivsize = AES_BLOCK_SIZE,
+ 				.setkey = ablkcipher_aes_setkey,
+ 			}
+ 		},
+@@ -2687,7 +2687,6 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_ablkcipher = {
+ 				.min_keysize = DES_KEY_SIZE,
+ 				.max_keysize = DES_KEY_SIZE,
+-				.ivsize = DES_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+@@ -2720,7 +2719,6 @@ static struct talitos_alg_template driver_algs[] = {
+ 			.cra_ablkcipher = {
+ 				.min_keysize = DES3_EDE_KEY_SIZE,
+ 				.max_keysize = DES3_EDE_KEY_SIZE,
+-				.ivsize = DES3_EDE_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
 -- 
-2.9.5
+2.21.0
 
