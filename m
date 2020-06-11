@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873A61F6AE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120411F6AE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgFKPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S1728414AbgFKPXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 11:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728365AbgFKPWG (ORCPT
+        with ESMTP id S1728104AbgFKPXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:22:06 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA9DC08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:22:05 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c71so5323061wmd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:22:05 -0700 (PDT)
+        Thu, 11 Jun 2020 11:23:08 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BD8C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:23:08 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d5so6697142ios.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1nlSpRW9uKZkujI3ovnMqEgLfpyhYszTXX8pA7a9rw8=;
-        b=A/sme5V/cIhwe8I9Of5+XKkmePLK6qEFBuhVnLMz3sN9Y9LtjoVeRg2QC+gBfqakOo
-         D7ACqOpcgouR08YG/q+5EbqcykmmmZt8FjsEVm1zcHiHcdIQTBdOIh4Twa3JOP5WB5cF
-         v4Vkxtyf3AsgAFi7urVL2nqe8OI5y0bb89E8nXexnvfLWCc1s/OSw9tJgj3etzRiyuSG
-         nEiTzC9DYj/pd/8EeNBqDzHgigmRmo6AOBlxblrS4dp1AtsUkkw3jQyOHltBa+1xLZqN
-         Kq4uV2dgv/wfuUsT5lkpnNNuYH8nAOzuux679lKkZNeyusFXoMFckaP6pYxNJ49dTr24
-         +vtQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=05dAwFr23x6Wppd3aNSMMdwYxKpiRDbAuqlCwKPeXLs=;
+        b=bSz6Td8dFaOqGljMe+1eneoUKrmQkEKpijse6qYgWOnOjpf+lKXD+jhBG6dS39PsP0
+         OXni1wRiqAMdPUA7iHtVRQpprUmR9VRMyxsOxay3NgLezGIG6NbYfraE1bN8Ri7UjNuw
+         ZNrcfhRmEzqonmX9Q9RpTjgMcEEeqvxX/VfXyZspPNDSdRacTc7G1KawNqfrnAfruXTS
+         wNUoFIida5sohhd8IALsGjfKN4Ilq1EdQA1ALjP6dvEUXoR3kgB94mS8CnA4TpmlgImb
+         F6aanALco9UeNpBpWgUpCyuROUV4kMcKDHEnkm5aGCkM8qIDGd9mIsSK7Sbf8T+oBIsr
+         268g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1nlSpRW9uKZkujI3ovnMqEgLfpyhYszTXX8pA7a9rw8=;
-        b=ozDGVDFu5UFnl1wTnFPZGcC4gLZH2DlTVtqb5/g1JC7UExgwBCJThSUYoGesBSK7Ut
-         YRA2ycg+VW66BFtnBvMxajcDiLTCuXyaltlNTDSvNGQycYP886Db2pkOYAjg3G0/Ary1
-         zZxQDLF99I0RM1LHOEr5Iqy5twS+7E6fFDBSKMD/PnCYbDEJ8IO7JLq5YKGXpa8nZiLt
-         9zzsaePLoORmqjqOPPcdbux3jDwZkRPapU6U7Fb1BOTAEsWnOMn44DvmWh6DD4/uOmHP
-         yAiu0OHzORcde8F3FIW9nkvwB5hJzG2XRXnB6bmgomq0GnHvDeulIYcpGzriSriPC9/E
-         TYMg==
-X-Gm-Message-State: AOAM531O0QVB2VYTvpEv4jo7DugJY2Nb0ECV4+fsVx5sWqmeDczm8oLZ
-        ocvPXKTgGNfc1qlGojXkTL9EUQ==
-X-Google-Smtp-Source: ABdhPJwgOUF0ACQW0V2iGQEHEnECqPXsLPsoErKd6xk/1/oN48hrXu8XWttb4+F2J1GolhZuGaGGEg==
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr9144654wmj.185.1591888923973;
-        Thu, 11 Jun 2020 08:22:03 -0700 (PDT)
-Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id q8sm4290865wmq.1.2020.06.11.08.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 08:22:03 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 17:22:00 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Phong LE <ple@baylibre.com>
-Cc:     narmstrong@baylibre.com, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, mark.rutland@arm.com, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, sam@ravnborg.org, mripard@kernel.org,
-        heiko.stuebner@theobroma-systems.com, linus.walleij@linaro.org,
-        stephan@gerhold.net, icenowy@aosc.io, broonie@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
-        andriy.shevchenko@linux.intel.com, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Baozhu Zuo <zuobaozhu@gmail.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v2 3/4] drm: bridge: add it66121 driver
-Message-ID: <20200611152200.GA3106776@x1>
-References: <20200311125135.30832-1-ple@baylibre.com>
- <20200311125135.30832-4-ple@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=05dAwFr23x6Wppd3aNSMMdwYxKpiRDbAuqlCwKPeXLs=;
+        b=RbBLzT1293UhcGoa9z0CoKK6V5yM8muUoseBr6U714cCdE+rSXrefiINej/TCvHMow
+         7QQP178D4EvuPGys4zamtJNynrtuFvbsh9AhSz5RHWQtIJfW0gvPiiSpyUTt/bYZC/um
+         IUSalrFaCgJvlXcKrOxpW+72jnyuz2uyM/yPcHJR/QRLInAWS7wcVpheSsu0L5Z3x8Of
+         xuI2UsZeUABw5rluHISSt9cdcDcxPAXQGRs7m3cZ2ScV8HRHrygUgkXNDacJX9ON6EwH
+         Bfiaqv8iUEJ8X7u16pgNKPg+VNNoYheiZNWyv6nV/s/ZZQlELXMWf4FU87CfXj5YuMtI
+         +g8Q==
+X-Gm-Message-State: AOAM530MW1IxEO4bxCpD0gSPEyCJ/dvuqoTkvRJC73ISiI5bq9Riv+9z
+        T/uETJCEu9W66Ln6Mw/18hqIMCMqQwp7dtZFfRc=
+X-Google-Smtp-Source: ABdhPJycJe56RMdmTSlh49JWS/4xOF/jY8JcxrWNnB+gxvwV3TotTs2lDnPAQjHS4uzji26kHExgWy0GfGqPDMtFPHQ=
+X-Received: by 2002:a6b:f40a:: with SMTP id i10mr8810173iog.155.1591888986914;
+ Thu, 11 Jun 2020 08:23:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200311125135.30832-4-ple@baylibre.com>
+References: <20200611054454.2547-1-kdasu.kdev@gmail.com> <20200611091604.1bec2418@xps13>
+In-Reply-To: <20200611091604.1bec2418@xps13>
+From:   Kamal Dasu <kdasu.kdev@gmail.com>
+Date:   Thu, 11 Jun 2020 11:22:56 -0400
+Message-ID: <CAC=U0a0ReuPpxZjB2vV_YNynrMx4OjzPmPPyJeVbhueFgFeNbQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: rawnand: brcmnand: Don't default to edu transfer
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Brian Norris <computersforpeace@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 01:51:34PM +0100, Phong LE wrote:
-> This commit is a simple driver for bridge HMDI it66121.
-> The input format is RBG and there is no color conversion.
-> Audio, HDCP and CEC are not supported yet.
-> 
-> Signed-off-by: Phong LE <ple@baylibre.com>
-> ---
->  drivers/gpu/drm/bridge/Kconfig       |   8 +
->  drivers/gpu/drm/bridge/Makefile      |   1 +
->  drivers/gpu/drm/bridge/ite-it66121.c | 997 +++++++++++++++++++++++++++
->  3 files changed, 1006 insertions(+)
->  create mode 100644 drivers/gpu/drm/bridge/ite-it66121.c
+On Thu, Jun 11, 2020 at 3:16 AM Miquel Raynal <miquel.raynal@bootlin.com> w=
+rote:
+>
+> Hi Kamal,
+>
+> Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 01:44:53
+> -0400:
+>
+> > When flash-dma is absent do not default to using flash-edu.
+> > Make sure flash-edu is enabled before setting EDU transfer
+> > function.
+> >
+> > Fixes: a5d53ad26a8b ("mtd: rawnand: brcmnand: Add support for flash-edu=
+ for dma transfers")
+> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > ---
+> >  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nan=
+d/raw/brcmnand/brcmnand.c
+> > index 8f9ffb46a09f..0c1d6e543586 100644
+> > --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > @@ -2953,8 +2953,9 @@ int brcmnand_probe(struct platform_device *pdev, =
+struct brcmnand_soc *soc)
+> >               if (ret < 0)
+> >                       goto err;
+> >
+> > -             /* set edu transfer function to call */
+> > -             ctrl->dma_trans =3D brcmnand_edu_trans;
+> > +             if (has_edu(ctrl))
+> > +                     /* set edu transfer function to call */
+> > +                     ctrl->dma_trans =3D brcmnand_edu_trans;
+>
+> Does this fallback to returning an error in case !has_edu() ? Othewise,
+> how is it handled?
+>
 
-Thanks for working on this driver.  Do you plan to post a v3?
+ The driver will default to pio if both flash-dma and falsh-edu are
+not present.
 
-I am interested as the it66121 is used on the HDMI "cape" expansion
-board for the BeagleBone Green by Seeed Studio [0] and is currently
-supported by an out-of-tree driver [1]
+> Thanks,
+> Miqu=C3=A8l
 
--drew
-
-[0] https://wiki.seeedstudio.com/BeagleBone_Green_HDMI_Cape/
-[1] https://github.com/RobertCNelson/ti-linux-kernel-dev/blob/ti-linux-4.4.y/patches/drivers/it66121/0001-gpu-drm-i2c-suppot-it66121-hdmi-chip.patch
+Kamal
