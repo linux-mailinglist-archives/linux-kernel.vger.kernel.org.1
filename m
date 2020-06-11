@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399081F6D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACAC1F6D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgFKRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 13:47:55 -0400
-Received: from mail.efficios.com ([167.114.26.124]:46392 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgFKRrx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 13:47:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A05522BA1DF;
-        Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id NzCbs28iN5me; Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 466342BA62B;
-        Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 466342BA62B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1591897672;
-        bh=1TbQ8X9sMo4Kyo/r88yv2xIYB6h6ej7fHmdbLm+Aw4c=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=JEBUgERHzozSOhf4V0dkYHPmIKLI1d/tmPKm10dhKizvnDxe0kKer+Vbj15eoTmcX
-         9a40GLxM5kbBr40mdYUo4iPqwIkOMW24p8LwoTqEdD/M1PK/c4yUinY8+3FXQlmbfj
-         SokOXYHdr+4a9cpmBEIuQrlcw1EIXVwOEjEFT4L6BOuBMIkB78oIto2d6SS/DhHOXt
-         7ckqPWPnNGC/ms98JdVu+/N7Wlrjae4ZcZKSpNQMSoGi5qEYNEPh9bTKRwBHmWeTAa
-         9EYcImNf1c4rtJtp0xNRoiJyPvtijXrx9WtLDZoRM92rZQnUZEFy3Q0MSlhwuvLm1x
-         zPc2zcI8hyT8A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id IfOlAu90uq-G; Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3397A2BA177;
-        Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-Date:   Thu, 11 Jun 2020 13:47:52 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Joseph Myers <joseph@codesourcery.com>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>
-Message-ID: <419546979.1229.1591897672174.JavaMail.zimbra@efficios.com>
-In-Reply-To: <alpine.DEB.2.21.2006041745360.8237@digraph.polyomino.org.uk>
-References: <20200527185130.5604-1-mathieu.desnoyers@efficios.com> <20200527185130.5604-2-mathieu.desnoyers@efficios.com> <87d06gxsla.fsf@oldenburg2.str.redhat.com> <alpine.DEB.2.21.2006031718070.7179@digraph.polyomino.org.uk> <188671972.53608.1591269056445.JavaMail.zimbra@efficios.com> <alpine.DEB.2.21.2006041745360.8237@digraph.polyomino.org.uk>
-Subject: Re: [PATCH glibc 1/3] glibc: Perform rseq registration at C startup
- and thread creation (v20)
+        id S1728153AbgFKRtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 13:49:00 -0400
+Received: from mga07.intel.com ([134.134.136.100]:12262 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725824AbgFKRs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 13:48:59 -0400
+IronPort-SDR: 1npZfPRDTMvR7jEZiEK+ljNb7AeK4zNBQmrf6WYnYNFVZe4O5HfDQAalauHsDQO/aJc+VyVtGw
+ V+KGhYCn2gqQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 10:48:57 -0700
+IronPort-SDR: t8T5ThLb800ZCYyZU53/6ra7m2IakAD76dJbXTJlaMqV9KdUunjbV508yM5308qpZV5gBVDlDU
+ vefs3l/WeaIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,500,1583222400"; 
+   d="scan'208";a="275407817"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga006.jf.intel.com with ESMTP; 11 Jun 2020 10:48:57 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     lenb@kernel.org, viresh.kumar@linaro.org, rjw@rjwysocki.net
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] cpufreq: intel_pstate: Add additional OOB enabling bit
+Date:   Thu, 11 Jun 2020 10:48:38 -0700
+Message-Id: <20200611174838.2822533-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3945 (ZimbraWebClient - FF77 (Linux)/8.8.15_GA_3928)
-Thread-Topic: glibc: Perform rseq registration at C startup and thread creation (v20)
-Thread-Index: WQcwWCSA3B8qyXRzTZbTtj4Cnk7X+g==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 4, 2020, at 1:46 PM, Joseph Myers joseph@codesourcery.com wrote:
+Add additional bit for OOB (Out of band) enabling of P-states. In this
+case intel_pstate shouldn't load. Currently, only "BIT(8) == 1" of the
+MSR MSR_MISC_PWR_MGMT is considered as OOB. Also add "BIT(18) == 1" as
+OOB condition.
 
-> On Thu, 4 Jun 2020, Mathieu Desnoyers via Libc-alpha wrote:
-> 
->> That external piece of documentation would be part of the Linux man-pages
->> project, maintained by Michael Kerrisk. I have submitted a few revisions
->> of the rseq(2) man page, but have been waiting for Michael to reply for more
->> than a year now:
->> 
->>   https://lore.kernel.org/r/2021826204.69809.1588000508294.JavaMail.zimbra@efficios.com
->> 
->> I'm thinking about hosting a rseq(2) man-page into my librseq project, would
->> that make sense ?
-> 
-> I'm not particularly concerned with exactly where it goes, as long as it's
-> somewhere stable we can link to.
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/cpufreq/intel_pstate.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I managed to get a repository up and running for librseq, and have integrated
-the rseq.2 man page with comments from Michael Kerrisk here:
-
-https://git.kernel.org/pub/scm/libs/librseq/librseq.git/tree/doc/man/rseq.2
-
-Is that a suitable URL ? Can we simply point to it from glibc's manual ?
-
-Thanks,
-
-Mathieu
-
-
-> 
-> --
-> Joseph S. Myers
-> joseph@codesourcery.com
-
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 8e23a698ce04..f21761443c90 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2686,8 +2686,8 @@ static bool __init intel_pstate_platform_pwr_mgmt_exists(void)
+ 	id = x86_match_cpu(intel_pstate_cpu_oob_ids);
+ 	if (id) {
+ 		rdmsrl(MSR_MISC_PWR_MGMT, misc_pwr);
+-		if (misc_pwr & (1 << 8)) {
+-			pr_debug("Bit 8 in the MISC_PWR_MGMT MSR set\n");
++		if ((misc_pwr & BIT(8)) || (misc_pwr & BIT(18))) {
++			pr_debug("Bit 8 or 18 in the MISC_PWR_MGMT MSR set\n");
+ 			return true;
+ 		}
+ 	}
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.24.1
+
