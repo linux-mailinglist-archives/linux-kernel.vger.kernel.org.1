@@ -2,236 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FB71F67FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559791F6800
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgFKMmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgFKMmP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:42:15 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE08C08C5C2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:13 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l11so6025671wru.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0iaTLKqtIL8DWUk/Ea8kKTBBPz/6PkEw/a931KtnLFc=;
-        b=zUczEBChUUwZHT2y9ySJt1h7dVBb0LEw9r5//S1h6F4fWoxkLJoau/40zVwUrWsnpk
-         JDjotTYzFtz9N2DSwP3ENPIOJFEumgrCgrZ5t6UpiyumnADn7QRvdISsWTfKGDSJfPQQ
-         0AniWhMBQgQCxlD5qe/mUiBK3QQmRWwGQYnpAIDpR91/bVgESxEaWljVf4E7UYGDAE4J
-         fvlWL+/Y4TI/E4kiB0aih5sdsPKLcYDtnDBFtN9VQwLgAbFz8/LNiE2pcT4f525cZo/1
-         VoR0TRVOX4yTKEdbO8V9SwSaSvS9m2V38M0ahs//PwLBJN300nGy+x7txI5bXdIEBwty
-         glIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0iaTLKqtIL8DWUk/Ea8kKTBBPz/6PkEw/a931KtnLFc=;
-        b=ihLAq2z8YUottlR8IEaqEFpw/rUQi36o5jMHAzM3AD/VE5WWBXxzf0sBC8A9pcR6sl
-         S3OvA5G6Ps7SqSNOXAfK5/BNy4kssFqoe5WyjT6oBVlEQX1lSef4QNst5ZFdmdX2SbkE
-         JjcYB/ClkLr7OZxTxLtSURlFkSwDLYAdq7C8JQz9HreCvj01g2okVqQjDet/uypK0I6Z
-         KCIYyHgsa8E/ucDhNV+lkRsodEW5I4j/0sYadqbr7kX+GYspac06IEAF42d2ILyc4W4U
-         w4hPQolWztTq0mnHUPb53ttJ9mWfkzityzbiN4I5T9J7G+UZzcPSciPAoEuAQ0NPL3ge
-         WP1Q==
-X-Gm-Message-State: AOAM532nMallCwgA42qwm0p5/Lsfm2k4FyhtyKrR5DKiVqWHmzeyEJCq
-        qkjgllJ11WSzu5i37X/q+7gh5A==
-X-Google-Smtp-Source: ABdhPJz7ZNPReQj2HsAw5XGS9FL6huhrov1XnJBxu/pHO7FKy0P6cgVaxE/opwgqpHGEudbY8YDZLw==
-X-Received: by 2002:adf:f988:: with SMTP id f8mr10120025wrr.81.1591879332295;
-        Thu, 11 Jun 2020 05:42:12 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id q13sm4810355wrn.84.2020.06.11.05.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 05:42:11 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        id S1726699AbgFKMmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:42:32 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:55549 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726444AbgFKMm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:42:29 -0400
+IronPort-SDR: 6QnX83bhfwIv1Z4tDtveh3u1j+WPRJSeVorbP4ncaFK7bSs2xiFNRcwRO3k9bf4cQL7Ddc9+Mg
+ 5NEVUUJhPX1VK/OqH1BJEcC7rxmIlb58UtfsMbTkGAUH4V1uIv1c5bhU6mcrriZVvVtTMbbuLS
+ iuP6W8EmamhTz8ZTRrkvtOuCkVQ6EyewwObkjjnS40PWNs/WiwPY5KDIbElAA6tZZxkBe+btlz
+ uLeI5k8uidrcJ7kUBvTIUI8AeTHjLDutNZ8DryAf1tJYGaMBJUj1UE6ZAioLOMIXh7xc/WYeEW
+ bFQ=
+X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
+   d="scan'208";a="12649663"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 11 Jun 2020 14:42:26 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 11 Jun 2020 14:42:26 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 11 Jun 2020 14:42:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1591879346; x=1623415346;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=NNs0T11lkBWKAhTjjHyrxpI0XkkykM9XmH661Mwcs88=;
+  b=fsSJ58/e22UxJjae6B/e+653HRdwf+MJkgD6XeYgUvzenlr8yd1Iwnvl
+   SWMmzngtJXiHU0VM+f6pxi2wqPosDIbr06519xGBGZIglgfBqSiLGYAFW
+   PU4LvttKDlGjNdM5Z2Eid3EoirLCXCQZfRZgwsTQRuo88BQINQhnpqz2D
+   s5p1zcFJ297u/RM5xIsggGF9O4d7hJELbqZ6/5JPgXWvP7YnHL0bf1KGD
+   HeIbrrPC0xmseUNi+02d4mnpZhQRuuslD82QIBswOD5aAcyL1Zc/hIQyd
+   aecqV4YEoRYpnDD37SCQlQ+Uc/wi37oOm+GpVgUZlWSQFkvC09XXM7M2S
+   Q==;
+IronPort-SDR: F1rP2yFbODOsrNpGQkIWoLiPAoNvfFGTscZcMgcDODq9xCNSgQ3dC4mItNoE3q44WXCBL3AeAC
+ YipbP3XCn4HVo1eZ7ca/LCkFUX1z+Aa4z/TU8TF/buEBAedJh6fpd+KmIPU/RBHaPvXZjX/dzE
+ bFoMEDYqmyMCeKOfva698cC5jNWeynZ6jNeiu7YaLaL5lvozQrxDRnidzaH7L4w5BprslgParq
+ OQvAF1c0hWu8dZJWoe/p9Tq44+fT+HeyCn/X9s6cHLY9x8yYXkcS+IZ4kh/Qw4OJecmD9xmRa8
+ Jys=
+X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
+   d="scan'208";a="12649662"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 11 Jun 2020 14:42:26 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id B77A4280065;
+        Thu, 11 Jun 2020 14:42:27 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 8/8] ASoC: q6asm: allow to specify buffer offset in q6asm_write
-Date:   Thu, 11 Jun 2020 13:41:59 +0100
-Message-Id: <20200611124159.20742-9-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
-References: <20200611124159.20742-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2 1/4] dt-bindings: display: simple: add CDTech S070PWS19HP-FC21 and S070SWV29HG-DC44
+Date:   Thu, 11 Jun 2020 14:42:06 +0200
+Message-Id: <20200611124209.25028-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
+References: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In usecase like gapless, its possible that next stream/track
-can start an offset where previous track ends, and this offset
-may not be at period boundary.
+Add the CDTech Electronics displays S070PWS19HP-FC21 (7.0" WSVGA) and
+S070SWV29HG-DC44 (7.0" WVGA) to the panel-simple compatible list.
 
-So adding offset parameter to write function will provide ablity
-to send buffers with an offset inside period boundary.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 15 +++++++++------
- sound/soc/qcom/qdsp6/q6asm.c     | 21 ++++++++++++++-------
- sound/soc/qcom/qdsp6/q6asm.h     |  3 ++-
- 3 files changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 7aba3c07810b..113929e79407 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -187,7 +187,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
- 	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--				   prtd->pcm_count, 0, 0, 0);
-+				   0, prtd->pcm_count, 0, 0, 0);
- 		break;
- 	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
- 		prtd->state = Q6ASM_STREAM_STOPPED;
-@@ -197,7 +197,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
- 		snd_pcm_period_elapsed(substream);
- 		if (prtd->state == Q6ASM_STREAM_RUNNING)
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					   prtd->pcm_count, 0, 0, 0);
-+					  0, prtd->pcm_count, 0, 0, 0);
- 
- 		break;
- 		}
-@@ -509,14 +509,14 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
- 	struct snd_compr_stream *substream = prtd->cstream;
- 	unsigned long flags;
- 	uint64_t avail;
--	uint32_t bytes_written;
-+	uint32_t bytes_written, offset;
- 
- 	switch (opcode) {
- 	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
- 		spin_lock_irqsave(&prtd->lock, flags);
- 		if (!prtd->bytes_sent) {
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					  prtd->pcm_count, 0, 0, 0);
-+					  0, prtd->pcm_count, 0, 0, 0);
- 			prtd->bytes_sent += prtd->pcm_count;
- 		}
- 
-@@ -532,7 +532,10 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
- 
- 		bytes_written = token >> ASM_WRITE_TOKEN_LEN_SHIFT;
- 		prtd->copied_total += bytes_written;
--		snd_compr_fragment_elapsed(substream);
-+		offset = prtd->copied_total % prtd->pcm_count;
-+
-+		if (bytes_written && !offset)
-+			snd_compr_fragment_elapsed(substream);
- 
- 		avail = prtd->bytes_received - prtd->bytes_sent;
- 		if (prtd->state != Q6ASM_STREAM_RUNNING || avail <= 0) {
-@@ -542,7 +545,7 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
- 
- 		if (avail >= prtd->pcm_count) {
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					   prtd->pcm_count, 0, 0, 0);
-+					  0, prtd->pcm_count, 0, 0, 0);
- 			prtd->bytes_sent += prtd->pcm_count;
- 		}
- 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 205453d1c1fc..8e3746ce4fa4 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -238,6 +238,7 @@ struct asm_session_cmd_run_v2 {
- struct audio_buffer {
- 	phys_addr_t phys;
- 	uint32_t size;		/* size of buffer */
-+	uint32_t offset;
- };
- 
- struct audio_port_data {
-@@ -671,6 +672,7 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
- 			phys_addr_t phys;
- 			unsigned long flags;
- 			int token = hdr->token & ASM_WRITE_TOKEN_MASK;
-+			struct audio_buffer *ab;
- 
- 			spin_lock_irqsave(&ac->lock, flags);
- 
-@@ -682,12 +684,13 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
- 				goto done;
- 			}
- 
--			phys = port->buf[token].phys;
-+			ab = &port->buf[token];
-+			phys = ab->phys + ab->offset;
- 
--			if (lower_32_bits(phys) != result->opcode ||
-+			if (lower_32_bits(phys) != (result->opcode) ||
- 			    upper_32_bits(phys) != result->status) {
- 				dev_err(ac->dev, "Expected addr %pa\n",
--					&port->buf[token].phys);
-+					&ab->phys + ab->offset);
- 				spin_unlock_irqrestore(&ac->lock, flags);
- 				ret = -EINVAL;
- 				goto done;
-@@ -1504,6 +1507,7 @@ EXPORT_SYMBOL_GPL(q6asm_open_read);
-  *
-  * @ac: audio client pointer
-  * @stream_id: stream id
-+ * @offset: offset in the period buffer
-  * @len: length in bytes
-  * @msw_ts: timestamp msw
-  * @lsw_ts: timestamp lsw
-@@ -1511,8 +1515,9 @@ EXPORT_SYMBOL_GPL(q6asm_open_read);
-  *
-  * Return: Will be an negative value on error or zero on success
-  */
--int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
--		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags)
-+int q6asm_write_async(struct audio_client *ac, uint32_t stream_id,
-+		      uint32_t offset, uint32_t len, uint32_t msw_ts,
-+		      uint32_t lsw_ts, uint32_t wflags)
- {
- 	struct asm_data_cmd_write_v2 *write;
- 	struct audio_port_data *port;
-@@ -1538,7 +1543,7 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
- 	ab = &port->buf[port->dsp_buf];
- 	pkt->hdr.token = port->dsp_buf | (len << ASM_WRITE_TOKEN_LEN_SHIFT);
- 	pkt->hdr.opcode = ASM_DATA_CMD_WRITE_V2;
--	write->buf_addr_lsw = lower_32_bits(ab->phys);
-+	write->buf_addr_lsw = lower_32_bits(ab->phys + offset);
- 	write->buf_addr_msw = upper_32_bits(ab->phys);
- 	write->buf_size = len;
- 	write->seq_id = port->dsp_buf;
-@@ -1549,7 +1554,9 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
- 
- 	write->flags = wflags;
- 
--	port->dsp_buf++;
-+	ab->offset = offset;
-+	if ((offset + len) == ab->size)
-+		port->dsp_buf++;
- 
- 	if (port->dsp_buf >= port->num_periods)
- 		port->dsp_buf = 0;
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index 0379580f0742..ad7e2f6f122f 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -96,7 +96,8 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev,
- 					      q6asm_cb cb, void *priv,
- 					      int session_id, int perf_mode);
- void q6asm_audio_client_free(struct audio_client *ac);
--int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
-+int q6asm_write_async(struct audio_client *ac, uint32_t stream_id,
-+		      uint32_t offset, uint32_t len,
- 		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
- int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
- 		     uint32_t format, u32 codec_profile,
+v2: no changes
+
+ .../devicetree/bindings/display/panel/panel-simple.yaml       | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 31e3efc73e00..2ddb520edc6d 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -81,6 +81,10 @@ properties:
+       - boe,nv140fhmn49
+         # CDTech(H.K.) Electronics Limited 4.3" 480x272 color TFT-LCD panel
+       - cdtech,s043wq26h-ct7
++        # CDTech(H.K.) Electronics Limited 7" WSVGA (1024x600) TFT LCD Panel
++      - cdtech,s070pws19hp-fc21
++        # CDTech(H.K.) Electronics Limited 7" WVGA (800x480) TFT LCD Panel
++      - cdtech,s070swv29hg-dc44
+         # CDTech(H.K.) Electronics Limited 7" 800x480 color TFT-LCD panel
+       - cdtech,s070wv95-ct16
+         # Chunghwa Picture Tubes Ltd. 7" WXGA TFT LCD panel
 -- 
-2.21.0
+2.17.1
 
