@@ -2,110 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB071F6F42
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252761F6F4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgFKVOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 17:14:44 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:47740 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgFKVOn (ORCPT
+        id S1726448AbgFKVRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 17:17:24 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58196 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgFKVRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 17:14:43 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C4970806AC
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 09:14:39 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1591910079;
-        bh=gnWZOIGjj8uxjcxUa9qLsZsnfaNKGQItVqVlx322Hlw=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=pBN66u9ZEJJr0Kes6F7JMsCQdMA5uU0dLv8pSJmbakizxssJzSYuBomcct8CSdCnt
-         2CVuUL5QFx/q0lsdsM/9p7e287POfLVvolrPyvPjzoj/q+rtNoenqS7/4P32y1XgDK
-         LP4MRa387qeIZiqkdUew6iO4qpUoa3SzMkv+BcU7lQIOel9iLHoqQwguG5vILjzjfC
-         NXasZBtc272cXBKF02y2JdtVhA4ffXc6bfWpHYfVlioUYCrel+HGW/Ld/bKm+5ENws
-         OIms4SD+B7PiOhpEBmZ52m3jSaJ+4U6m2sEn8HA0vmtXn4JidbG1Noga0NcMdXOUZ3
-         Q5dwfXPGPfzgA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5ee29ec00001>; Fri, 12 Jun 2020 09:14:40 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Jun 2020 09:14:39 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Fri, 12 Jun 2020 09:14:39 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "christophe.leroy@c-s.fr" <christophe.leroy@c-s.fr>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] powerpc: Remove inaccessible CMDLINE default
-Thread-Topic: [PATCH v2] powerpc: Remove inaccessible CMDLINE default
-Thread-Index: AQHWP6I/tXmW8ZPpE0iYl1XQldsjyajSHuIAgAEDTwA=
-Date:   Thu, 11 Jun 2020 21:14:38 +0000
-Message-ID: <ab4db077-ae04-ada3-5bb0-79bfb0c94137@alliedtelesis.co.nz>
-References: <20200611034140.9133-1-chris.packham@alliedtelesis.co.nz>
- <34bb20ad-8522-6071-7a36-9f615204561f@csgroup.eu>
-In-Reply-To: <34bb20ad-8522-6071-7a36-9f615204561f@csgroup.eu>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CF0974C74629824FB29421077D9A1B0F@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Thu, 11 Jun 2020 17:17:20 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05BLH9CF102368;
+        Thu, 11 Jun 2020 16:17:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591910229;
+        bh=SmVf5z+uPxAwVHzHogMC1cxqd7jWMeEM7ZJxKNhZeGA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DL2kOzOgQWTQgQ9dPHKaKHF6MoqBD27joWzX0lJ0FvnkMdhoAJZgdoWGpFIyJRYnF
+         cux1f2ecvZSvnTOYP71W9m6qdmSaTvg8QgJAOHD2PLYNivH619grsArcBOlNIDtDaC
+         S0Rzs7VQUo3RMPuLfo67cGwi0BPw1MYnMmCibDTs=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05BLH9XL073055
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Jun 2020 16:17:09 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 11
+ Jun 2020 16:17:08 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 11 Jun 2020 16:17:09 -0500
+Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05BLH5Up051553;
+        Thu, 11 Jun 2020 16:17:08 -0500
+Subject: Re: [PATCH v7 3/5] remoteproc: Add support for runtime PM
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Loic Pallardy <loic.pallardy@st.com>, <od@zcrc.me>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Tero Kristo <t-kristo@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+References: <20200515104340.10473-1-paul@crapouillou.net>
+ <20200515104340.10473-3-paul@crapouillou.net>
+ <035bf8ad-3ef0-8314-ae5c-a94a24c230c8@ti.com>
+ <P2TQAQ.3VDG3B8W2EPF3@crapouillou.net>
+ <daa239fe-afd4-ff2e-3d5c-db09434cac95@ti.com>
+ <9XPMBQ.UM94FDID8MZW@crapouillou.net>
+ <107dc1d3-05c6-61be-b82c-197f0c43cdba@ti.com>
+ <VUEPBQ.GMXO6YRLF7N22@crapouillou.net> <20200611043951.GA3251@builder.lan>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <b877e6cf-b519-0926-01d2-ff5a41f0ef15@ti.com>
+Date:   Thu, 11 Jun 2020 16:17:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200611043951.GA3251@builder.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMS8wNi8yMCA1OjQ2IHBtLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPg0KPg0KPiBM
-ZSAxMS8wNi8yMDIwIMOgIDA1OjQxLCBDaHJpcyBQYWNraGFtIGEgw6ljcml0wqA6DQo+PiBTaW5j
-ZSBjb21taXQgY2JlNDZiZDRmNTEwICgicG93ZXJwYzogcmVtb3ZlIENPTkZJR19DTURMSU5FICNp
-ZmRlZiBtZXNzIikNCj4+IENPTkZJR19DTURMSU5FIGhhcyBhbHdheXMgaGFkIGEgdmFsdWUgcmVn
-YXJkbGVzcyBvZiBDT05GSUdfQ01ETElORV9CT09MLg0KPj4NCj4+IEZvciBleGFtcGxlOg0KPj4N
-Cj4+IMKgICQgbWFrZSBBUkNIPXBvd2VycGMgZGVmY29uZmlnDQo+PiDCoCAkIGNhdCAuY29uZmln
-DQo+PiDCoCAjIENPTkZJR19DTURMSU5FX0JPT0wgaXMgbm90IHNldA0KPj4gwqAgQ09ORklHX0NN
-RExJTkU9IiINCj4+DQo+PiBXaGVuIGVuYWJsaW5nIENPTkZJR19DTURMSU5FX0JPT0wgdGhpcyB2
-YWx1ZSBpcyBrZXB0IG1ha2luZyB0aGUgJ2RlZmF1bHQNCj4+ICIuLi4iIGlmIENPTkZJR19DTURM
-SU5FX0JPT0wnIGluZWZmZWN0aXZlLg0KPj4NCj4+IMKgICQgLi9zY3JpcHRzL2NvbmZpZyAtLWVu
-YWJsZSBDT05GSUdfQ01ETElORV9CT09MDQo+PiDCoCAkIGNhdCAuY29uZmlnDQo+PiDCoCBDT05G
-SUdfQ01ETElORV9CT09MPXkNCj4+IMKgIENPTkZJR19DTURMSU5FPSIiDQo+Pg0KPj4gUmVtb3Zl
-IENPTkZJR19DTURMSU5FX0JPT0wgYW5kIHRoZSBpbmFjY2Vzc2libGUgZGVmYXVsdC4NCj4NCj4g
-WW91IGFsc28gaGF2ZSB0byByZW1vdmUgYWxsIENPTkZJR19DTURMSU5FX0JPT0wgZnJvbSB0aGUg
-ZGVmY29uZmlncw0KDQpPSy4gSSdsbCBkbyBzbyBhcyBhIGZvbGxvdy11cCBwYXRjaCBhbmQgc2Vu
-ZCBhIHYzLg0KDQo+DQo+IENocmlzdG9waGUNCj4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDaHJp
-cyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQo+PiBSZXZpZXdl
-ZC1ieTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjLXMuZnI+DQo+PiAtLS0N
-Cj4+IEl0IHRvb2sgbWUgYSB3aGlsZSB0byBnZXQgcm91bmQgdG8gc2VuZGluZyBhIHYyLCBmb3Ig
-YSByZWZyZXNoZXIgdjEgDQo+PiBjYW4gYmUgZm91bmQgaGVyZToNCj4+DQo+PiBodHRwOi8vcGF0
-Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eHBwYy1kZXYvcGF0Y2gvMjAxOTA4MDIwNTAy
-MzIuMjI5NzgtMS1jaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubnovIA0KPj4NCj4+DQo+
-PiBDaGFuZ2VzIGluIHYyOg0KPj4gLSBSZWJhc2Ugb24gdG9wIG9mIExpbnVzJ3MgdHJlZQ0KPj4g
-LSBGaXggc29tZSB0eXBvcyBpbiBjb21taXQgbWVzc2FnZQ0KPj4gLSBBZGQgcmV2aWV3IGZyb20g
-Q2hyaXN0b3BoZQ0KPj4gLSBSZW1vdmUgQ09ORklHX0NNRExJTkVfQk9PTA0KPj4NCj4+IMKgIGFy
-Y2gvcG93ZXJwYy9LY29uZmlnIHwgNiArLS0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKSwgNSBkZWxldGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dl
-cnBjL0tjb25maWcgYi9hcmNoL3Bvd2VycGMvS2NvbmZpZw0KPj4gaW5kZXggOWZhMjNlYjMyMGZm
-Li41MWFiYzU5YzMzMzQgMTAwNjQ0DQo+PiAtLS0gYS9hcmNoL3Bvd2VycGMvS2NvbmZpZw0KPj4g
-KysrIGIvYXJjaC9wb3dlcnBjL0tjb25maWcNCj4+IEBAIC04NTksMTIgKzg1OSw4IEBAIGNvbmZp
-ZyBQUENfREVOT1JNQUxJU0FUSU9ODQo+PiDCoMKgwqDCoMKgwqDCoCBBZGQgc3VwcG9ydCBmb3Ig
-aGFuZGxpbmcgZGVub3JtYWxpc2F0aW9uIG9mIHNpbmdsZSBwcmVjaXNpb24NCj4+IMKgwqDCoMKg
-wqDCoMKgIHZhbHVlcy7CoCBVc2VmdWwgZm9yIGJhcmUgbWV0YWwgb25seS7CoCBJZiB1bnN1cmUg
-c2F5IFkgaGVyZS4NCj4+IMKgIC1jb25maWcgQ01ETElORV9CT09MDQo+PiAtwqDCoMKgIGJvb2wg
-IkRlZmF1bHQgYm9vdGxvYWRlciBrZXJuZWwgYXJndW1lbnRzIg0KPj4gLQ0KPj4gwqAgY29uZmln
-IENNRExJTkUNCj4+IC3CoMKgwqAgc3RyaW5nICJJbml0aWFsIGtlcm5lbCBjb21tYW5kIHN0cmlu
-ZyIgaWYgQ01ETElORV9CT09MDQo+PiAtwqDCoMKgIGRlZmF1bHQgImNvbnNvbGU9dHR5UzAsOTYw
-MCBjb25zb2xlPXR0eTAgcm9vdD0vZGV2L3NkYTIiIGlmIA0KPj4gQ01ETElORV9CT09MDQo+PiAr
-wqDCoMKgIHN0cmluZyAiSW5pdGlhbCBrZXJuZWwgY29tbWFuZCBzdHJpbmciDQo+PiDCoMKgwqDC
-oMKgIGRlZmF1bHQgIiINCj4+IMKgwqDCoMKgwqAgaGVscA0KPj4gwqDCoMKgwqDCoMKgwqAgT24g
-c29tZSBwbGF0Zm9ybXMsIHRoZXJlIGlzIGN1cnJlbnRseSBubyB3YXkgZm9yIHRoZSBib290IA0K
-Pj4gbG9hZGVyIHRvDQo+Pg==
+On 6/10/20 11:39 PM, Bjorn Andersson wrote:
+> On Wed 10 Jun 02:40 PDT 2020, Paul Cercueil wrote:
+> 
+>> Hi,
+>>
+>> Le lun. 8 juin 2020 à 18:10, Suman Anna <s-anna@ti.com> a écrit :
+>>> Hi Paul,
+>>>
+>>> On 6/8/20 5:46 PM, Paul Cercueil wrote:
+>>>> Hi Suman,
+>>>>
+>>>>>>> On 5/15/20 5:43 AM, Paul Cercueil wrote:
+>>>>>>>> Call pm_runtime_get_sync() before the firmware is loaded, and
+>>>>>>>> pm_runtime_put() after the remote processor has been stopped.
+>>>>>>>>
+>>>>>>>> Even though the remoteproc device has no PM
+>>>>>>>> callbacks, this allows the
+>>>>>>>> parent device's PM callbacks to be properly called.
+>>>>>>>
+>>>>>>> I see this patch staged now for 5.8, and the latest
+>>>>>>> -next branch has broken the pm-runtime autosuspend
+>>>>>>> feature we have in the OMAP remoteproc driver. See
+>>>>>>> commit 5f31b232c674 ("remoteproc/omap: Add support
+>>>>>>> for runtime auto-suspend/resume").
+>>>>>>>
+>>>>>>> What was the original purpose of this patch, because
+>>>>>>> there can be differing backends across different
+>>>>>>> SoCs.
+>>>>>>
+>>>>>> Did you try pm_suspend_ignore_children()? It looks like it
+>>>>>> was made for your use-case.
+>>>>>
+>>>>> Sorry for the delay in getting back. So, using
+>>>>> pm_suspend_ignore_children() does fix my current issue.
+>>>>>
+>>>>> But I still fail to see the original purpose of this patch in
+>>>>> the remoteproc core especially given that the core itself does
+>>>>> not have any callbacks. If the sole intention was to call the
+>>>>> parent pdev's callbacks, then I feel that state-machine is
+>>>>> better managed within that particular platform driver itself,
+>>>>> as the sequencing/device management can vary with different
+>>>>> platform drivers.
+>>>>
+>>>> The problem is that with Ingenic SoCs some clocks must be enabled in
+>>>> order to load the firmware, and the core doesn't give you an option
+>>>> to register a callback to be called before loading it.
+>>>
+>>> Yep, I have similar usage in one of my remoteproc drivers (see
+>>> keystone_remoteproc.c), and I think this all stems from the need to
+>>> use/support loading into a processor's internal memories. My driver does
+>>> leverage the pm-clks backend plugged into pm_runtime, so you won't see
+>>> explicit calls on the clocks.
+>>>
+>>> I guess the question is what exact PM features you are looking for with
+>>> the Ingenic SoC. I do see you are using pm_runtime autosuspend, and your
+>>> callbacks are managing the clocks, but reset is managed only in
+>>> start/stop.
+>>>
+>>>> The first version of my patchset added .prepare/.unprepare
+>>>> callbacks to the struct rproc_ops, but the feedback from the
+>>>> maintainers was that I should do it via runtime PM. However, it was
+>>>> not possible to keep it contained in the driver, since again the
+>>>> core doesn't provide a "prepare" callback, so no place to call
+>>>> pm_runtime_get_sync().
+>>> FWIW, the .prepare/.unprepare callbacks is actually now part of the
+>>> rproc core. Looks like multiple developers had a need for this, and this
+>>> functionality went in at the same time as your driver :). Not sure if
+>>> you looked up the prior patches, I leveraged the patch that Loic had
+>>> submitted a long-time ago, and a revised version of it is now part of
+>>> 5.8-rc1.
+>>
+>> WTF maintainers, you refuse my patchset for adding a .prepare/.unprepare,
+>> ask me to do it via runtime PM, then merge another patchset that adds these
+>> callback. At least be constant in your decisions.
+>>
+> 
+> Sorry, I missed this when applying the two patches, but you're of course
+> right.
+> 
+>> Anyway, now we have two methods added to linux-next for doing the exact same
+>> thing. What should we do about it?
+>>
+> 
+> I like the pm_runtime approach and as it was Arnaud that asked you to
+> change it, perhaps he and Loic can agree on updating the ST driver so we
+> can drop the prepare/unprepare ops again?
+
+These callbacks were added primarily in preparation for the TI K3 rproc 
+drivers, not just ST (the patch was resurrected from a very old patch 
+from Loic).
+
+I still think prepare/unprepare is actually better suited to scale well 
+for the long term. This pm_runtime logic will now make the early-boot 
+scenarios complicated, as you would have to match its status, but all 
+actual operations are on the actual parent remoteproc platform device 
+and not the child remoteproc device. I think it serves to mess up the 
+state-machines of different platform drivers due to additional refcounts 
+acquired and maybe performing some operations out of sequence to what a 
+platform driver wants esp. if there is automated backend usage like 
+genpd, pm_clks etc. I am yet to review Mathieu's latest MCU sync series, 
+but the concept of different sync_ops already scales w.r.t the 
+prepare/unprepare.
+
+As for my K3 drivers, the callbacks are doing more than just turning on 
+clocks, as the R5Fs in general as a complex power-on sequence. I do not 
+have remoteproc auto-suspend atm on the K3 drivers, but that typically 
+means shutting down and restoring the core and would involve all the 
+hardware-specific sequences, so the rpm callback implementations will be 
+more than just clocks.
+
+I looked through the patch history on the Ingenic remoteproc driver, and 
+the only reason for either of runtime pm usage or prepare/unprepare ops 
+usage is to ensure that clocks do not stay enabled in the case the 
+processor is not loaded/started. The driver is using auto-boot, so when 
+it probes, in general we expect the remoteproc to be running. So, the 
+only failure case is if there is no firmware. Otherwise, Paul could have 
+just used clk_bulk API in probe and remove.
+
+Anyway, I will provide some additional review comments on the pm_runtime 
+usage within the Ingenic rproc driver.
+
+regards
+Suman
+
