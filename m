@@ -2,166 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4691F6A66
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601721F6A71
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgFKO42 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Jun 2020 10:56:28 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60292 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728282AbgFKO41 (ORCPT
+        id S1728430AbgFKO54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:57:56 -0400
+Received: from sonic301-21.consmr.mail.ir2.yahoo.com ([77.238.176.98]:33842
+        "EHLO sonic301-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728104AbgFKO54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:56:27 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-232-tcofI8yIPCqzxiP3BiEhdQ-1; Thu, 11 Jun 2020 15:56:23 +0100
-X-MC-Unique: tcofI8yIPCqzxiP3BiEhdQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 11 Jun 2020 15:56:22 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 11 Jun 2020 15:56:22 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Sargun Dhillon' <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-CC:     Kees Cook <keescook@chromium.org>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        John Fastabend <john.r.fastabend@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: RE: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Topic: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Index: AQHWP+BcCi14oegu0U6J73sUpcDiU6jTfHDA
-Date:   Thu, 11 Jun 2020 14:56:22 +0000
-Message-ID: <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
-References: <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
- <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
- <202006091235.930519F5B@keescook>
- <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
- <202006091346.66B79E07@keescook>
- <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
- <202006092227.D2D0E1F8F@keescook>
- <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
- <202006101953.899EFB53@keescook>
- <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
- <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
-In-Reply-To: <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 11 Jun 2020 10:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591887472; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=G/fpNdWUM0KBG0JUJu0cYuSKUKpB41zMCD4Hejc3hxFiisS8YYV5kVVFLn68nDIUkb8jZfUDw/9jXUQQPnhOjYQ2qSug67MLOmAB3gU+ni0rQzg92dR2R2k7ST+PsUrhBjf8VIGiMz+5E0LtdrbiwbtrP2tQ1M1Sk7LT1MAOw3AGQ/xeNU/kkr0aXnisv8jquqdo+Jjs2iQGn+uKM4ZK5ZY0e3ojH8Z+A6akulwpXMLeLaDZvkLjo+xB7aBZxOYkmXWh6QuakqUTEsclaSjx6xee2gD/0bCbTzNLYzryu4onhOdzYkJozje16iK661YuDCexpxoLPCQXeO6Szz5cMA==
+X-YMail-OSG: Y2TX5qAVM1kKuSDSTp.oMXVtqG8wS1.BQ9ZLl7G6tvLTDjhXqLZZuJk5wMCba4w
+ vOuEslzhYHmUY2yCjJUTC.EJpybFywIods8fK02KsHd9jLnSL8_6YSK7LIDmSfl1EJe1hDlm4KGw
+ ARV5O4QliS9z8P7zo.GE5iYGm0F2BpaVgONHxj080XwbdHhw6BP.jBtmxA.KLcDk4D1GtFn8U0xj
+ N.4i8J75GkN7Xs.i1g1WsWGkm2m6sX7QoWdcSUFCyAgLIifJ81TU1X.4dXuO42Q2jmbtFGFphfAh
+ VQ0ZUMQyiInEOojxMAki13DwcxSpfK4g6qYQx_QIzoH3_cURciUWOGK.F6Dn0R2_W1j0r0Ydkpbk
+ jarVunOAoXSwuJszGj4orl4m9_ByxmJ2RGN1R37l6yBfinhiR_yFnLwMYSI.FfboXTJ5TIVrEsJS
+ FbSM1p3FzTFAjk7jQrHV.ssUwYPfOWGl0KfqZv.kDPkGbueRe7mOFIPDWjddBxbMTORdxZ1eVx57
+ nP.qZpPSFHSYwao3ESov40bhKwtSZe7c281MUO_aPMTV4EKZkXRmkGM7yMi8WEDJ3t42TjF1Mn.f
+ FrnmG90h3zKKvjcd2nADj4TE7O8sFPMMrjJDdKDKosUm.EL0OGhcDfzHNojRz2RYiZ5cb5Gjymux
+ _33mndqWV7ENiOBokYtpBtf.5lB9q1UxPtLNWdX_y_oUFQG7IMqZ7YTGUTW5gXXOuAa7FIrDWU_o
+ kB4k47kjPrh2_7tgleTCz_1RlhyQnkboBrjIGiJWYaAZANZLT0hVfc4sF.gLLWRx5TnladGoYBCi
+ Jd2oMBUUeeVM105zhSLqCiJ.Oqnh4FPQEGClstiqkWAdQ6X4scTK2eUPg3qYpBjTImIMgP5ckBHb
+ uyX3fmGCtbGyZ3jsOcFdnhrCXiu11_fRPUTlmu_bhrxLQeG4G_K.onu3SmIRfQ50olt_aRC9rxMh
+ gbQ1UnA00.48BiEGo79usJlQaHTic2Hx3tkW3uDK0Gr3mhRQ7McLvIJS9vABNhRVsd52cUrn423V
+ xG6wJ2Y1U.sWh2MjctOs.b.tjl38CgXqzb9rm25.QYWmBW7_2ep7i8gjk3UNXHxd7q0HsPsUYfNx
+ DyNYbMllPJPW7HHyoLxcXn5oMUEPx.fj_58Wko7tDQ.7VrPSOgPQaY8RgeJoU5bGc5MtT23JXlt_
+ E_1DB1oXXRKHtiRNJlSgCLgeEs.FXDywMc1upe7X_6JzSXJ.GUgWStV3tEJxF00qR8Z4AzubeS69
+ 8eDkYPjbHPNffvBVxo3LGfEZXyUOWUPMeKsSnFNXnE651vnaJrYKrC9SMUvyOcxS8f6IYLqjSmA-
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ir2.yahoo.com with HTTP; Thu, 11 Jun 2020 14:57:52 +0000
+Date:   Thu, 11 Jun 2020 14:57:49 +0000 (UTC)
+From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
+Reply-To: mrsminaabrunel57044@gmail.com
+Message-ID: <719366095.3010298.1591887469771@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+References: <719366095.3010298.1591887469771.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sargun Dhillon
-> Sent: 11 June 2020 12:07
-> Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to move fds across processes
-> 
-> On Thu, Jun 11, 2020 at 12:01:14PM +0200, Christian Brauner wrote:
-> > On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
-> > > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
-> > > > As an aside, all of this junk should be dropped:
-> > > > +	ret = get_user(size, &uaddfd->size);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > >
-> > > > and the size member of the seccomp_notif_addfd struct. I brought this up
-> > > > off-list with Tycho that ioctls have the size of the struct embedded in them. We
-> > > > should just use that. The ioctl definition is based on this[2]:
-> > > > #define _IOC(dir,type,nr,size) \
-> > > > 	(((dir)  << _IOC_DIRSHIFT) | \
-> > > > 	 ((type) << _IOC_TYPESHIFT) | \
-> > > > 	 ((nr)   << _IOC_NRSHIFT) | \
-> > > > 	 ((size) << _IOC_SIZESHIFT))
-> > > >
-> > > >
-> > > > We should just use copy_from_user for now. In the future, we can either
-> > > > introduce new ioctl names for new structs, or extract the size dynamically from
-> > > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
-> > >
-> > > Yeah, that seems reasonable. Here's the diff for that part:
-> >
-> > Why does it matter that the ioctl() has the size of the struct embedded
-> > within? Afaik, the kernel itself doesn't do anything with that size. It
-> > merely checks that the size is not pathological and it does so at
-> > compile time.
-> >
-> > #ifdef __CHECKER__
-> > #define _IOC_TYPECHECK(t) (sizeof(t))
-> > #else
-> > /* provoke compile error for invalid uses of size argument */
-> > extern unsigned int __invalid_size_argument_for_IOC;
-> > #define _IOC_TYPECHECK(t) \
-> > 	((sizeof(t) == sizeof(t[1]) && \
-> > 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
-> > 	  sizeof(t) : __invalid_size_argument_for_IOC)
-> > #endif
-> >
-> > The size itself is not verified at runtime. copy_struct_from_user()
-> > still makes sense at least if we're going to allow expanding the struct
-> > in the future.
-> Right, but if we simply change our headers and extend the struct, it will break
-> all existing programs compiled against those headers. In order to avoid that, if
-> we intend on extending this struct by appending to it, we need to have a
-> backwards compatibility mechanism. Just having copy_struct_from_user isn't
-> enough. The data structure either must be fixed size, or we need a way to handle
-> multiple ioctl numbers derived from headers with different sized struct arguments
-> 
-> The two approaches I see are:
-> 1. use more indirection. This has previous art in drm[1]. That's look
-> something like this:
-> 
-> struct seccomp_notif_addfd_ptr {
-> 	__u64 size;
-> 	__u64 addr;
-> }
-> 
-> ... And then it'd be up to us to dereference the addr and copy struct from user.
 
-Do not go down that route. It isn't worth the pain.
 
-You should also assume that userspace might have a compile-time check
-on the buffer length (I've written one - not hard) and that the kernel
-might (in the future - or on a BSD kernel) be doing the user copies
-for you.
+My Dear in the lord
 
-Also, if you change the structure you almost certainly need to
-change the name of the ioctl cmd as well as its value.
-Otherwise a recompiled program will pass the new cmd value (and
-hopefully the right sized buffer) but it won't have initialised
-the buffer properly.
-This is likely to lead to unexpected behaviour.
 
-	David
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
