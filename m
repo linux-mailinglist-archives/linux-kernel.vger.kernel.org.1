@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014C31F6627
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573491F6629
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgFKLC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727031AbgFKLCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:02:15 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8E0A2063A;
-        Thu, 11 Jun 2020 11:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591873334;
-        bh=nuPUldf+Kf9CVAl9O34INN3TkphjdnE+85M+SwBPsnM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gr7nGsgwaThhJknKPxLByb4nU7feVUzvO9XloD1l+jph11hLEJ7NBi1mXMAg096Tp
-         G42gjYb5+mHF5DNfP1QLJETMF1U3wzaxqAZhPfbahyixFcoT+j1Pjg9VxzyezdoIhq
-         dqabrDr1qq85AWPxOqlH9BCdg+IUgK1I/aX7H9l8=
-Date:   Thu, 11 Jun 2020 12:02:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, hao.wu@intel.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com
-Subject: Re: [PATCH 4/6] spi: altera: use regmap instead of direct mmio
- register access
-Message-ID: <20200611110211.GD4671@sirena.org.uk>
-References: <1591845911-10197-1-git-send-email-yilun.xu@intel.com>
- <1591845911-10197-5-git-send-email-yilun.xu@intel.com>
+        id S1727068AbgFKLCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:02:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45904 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727877AbgFKLCc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:02:32 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jjKyU-0007kK-ER; Thu, 11 Jun 2020 11:02:22 +0000
+Date:   Thu, 11 Jun 2020 13:02:21 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andrei Vagin <avagin@gmail.com>, Dmitry Safonov <dima@arista.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: vdso_join_timens() question
+Message-ID: <20200611110221.pgd3r5qkjrjmfqa2@wittgenstein>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1591845911-10197-5-git-send-email-yilun.xu@intel.com>
-X-Cookie: I like your SNOOPY POSTER!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey,
 
---wULyF7TL5taEdwHz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm about to finish a patch to add CLONE_NEWTIME support to setns().
+Since setns() now allows to attach to a multiple namespaces at the same
+time I've also reworked it to be atomic (already upstream). Either all
+namespaces are switched or no namespace is switched. All namespaces
+basically now have a commit mode after which installation should ideally
+not fail anymore. That could work for CLONE_NEWTIME too, I think. The
+only blocker to this is vdso_join_timens() which can fail due to
+mmap_write_lock_killable().
 
-On Thu, Jun 11, 2020 at 11:25:09AM +0800, Xu Yilun wrote:
+Is it possible to change this to mmap_write_lock()? So sm like:
 
-> +	if (pdata && pdata->use_parent_regmap) {
-> +		hw->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +		if (!hw->regmap) {
-> +			dev_err(&pdev->dev, "get regmap failed\n");
-> +			goto exit;
-> +		}
-> +		hw->base = pdata->regoff;
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index ea7c1f0b79df..5c5b4cc61fce 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -144,8 +144,7 @@ int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
+        struct mm_struct *mm = task->mm;
+        struct vm_area_struct *vma;
 
-This seems very confused - there's some abstraction problem here.  This
-looks like the driver should know about whatever is causing it to use
-the parent regmap, it shouldn't just be "use the parent regmap" directly
-since that is too much of an implementation detail.  This new feature
-also seems like a separate change which should be in a separate patch,
-the changelog only talked about converting to use regmap which I'd have
-expected to be a straight 1:1 replacement of non-regmap stuff with
-regmap stuff.
+-       if (mmap_write_lock_killable(mm))
+-               return -EINTR;
++       mmap_write_lock(mm);
 
---wULyF7TL5taEdwHz
-Content-Type: application/pgp-signature; name="signature.asc"
+        for (vma = mm->mmap; vma; vma = vma->vm_next) {
+                unsigned long size = vma->vm_end - vma->vm_start;
 
------BEGIN PGP SIGNATURE-----
+vdso_join_timens() is called in two places. Once during fork() and once
+during timens_install(). I would only need the mmap_write_lock() change
+for the latter. So alternatively we could have:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7iDzMACgkQJNaLcl1U
-h9DSDwf/a4sctmQVriGdxN8iwxuXftWGcODaBuBquFiDTHkID3HGDWyM3F8kl43W
-7uKBlEwY8WrHcnjd4uCjGVLhHNOlWCeev4shAo4Z0V59rCpOZ5n1TNpX2fkGdqWL
-9q2S6TpToXXJaEz7dU9prBbLRPMogWyG486n3/fyfmehUkW3jirIk+uh0qxP7vR+
-waYSe2I+HI9P+G2JRSZgadgEubNWrsItn6r7czty0Y7aEy1Hoxm+GViSmGCUDpG7
-cdyJT/f6YKdo+oeuvkEkYCdemrxbwxs3RzDBgT/fWQip+dz+s3xWDjeT/Oo2T9+4
-SYzdCf18XBXYwijvplcOWyQCq0n9RA==
-=/4g0
------END PGP SIGNATURE-----
+__vdso_join_timens_unlocked()
 
---wULyF7TL5taEdwHz--
+and then have/expose:
+
+vdso_join_timens_fork()
+{
+        if (mmap_write_lock_killable(mm))
+                return -EINTR;
+	__vdso_join_timens_unlocked()
+	mmap_write_unlock(mm);
+}
+
+and 
+
+vdso_join_timens_install()
+{
+        mmap_write_lock(mm);
+	__vdso_join_timens_unlocked()
+	mmap_write_unlock(mm);
+}
+
+Thanks!
+Christian
