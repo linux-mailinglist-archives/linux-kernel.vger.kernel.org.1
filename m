@@ -2,153 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40F61F68F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 15:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2641F68F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 15:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgFKNSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 09:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgFKNSb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 09:18:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEF2C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 06:18:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f185so5024518wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 06:18:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3D40KyYMeXLRFbWmcuYLD5ZmMexI/dbs3uEPHhCTA4U=;
-        b=S/jl+slL4mssBKVD02XQnVYrrTOFXjeWo7eAXEftnHakKzcEeJu79b3roxehmDRQLa
-         kzmUXI63zJ99Ff+zyFfuphDwSrKVjOOnFmkLlbzMUHsu7x8mz+FO5iQxXm+/R9kv6fCq
-         iTV1yBhl6egCeeQ33/ivG+d3xVEOcFFrSJqVs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3D40KyYMeXLRFbWmcuYLD5ZmMexI/dbs3uEPHhCTA4U=;
-        b=hoGiSRByEud47ilN7EfWOmfMeA3FK0i/0cJ+uvGmU3Qy5PhYxOT72H5KiUcm1iP4pS
-         +cM5AzajJ2ylMAoMwmf9jhdlqyLmddexGDlayqdy//J6CzRFcBIhXERJkSpP2G08RBZD
-         xTXq1xsFNQ/hbaGb3YFcf4qehuW6FMgr4Ti33wzZv8sM7dtddRLl5ZAwlPsUCUU9Yq7I
-         PIuhBYZiCWrVK0eru4OcZLGlkT7RpP/xwra7u23wGp3yMChw4wDYMBubnzJGY4PKIOMf
-         9fKXXWjH63nCUwOXejA0/ALAJaSMGXUY/m1uJEWggu3X3sqXjGC7cIksSWd/Lm5LclEC
-         DcQQ==
-X-Gm-Message-State: AOAM5306SaXf31B9iOopsbf64sIiPQT4ogNh07rhpn7zFY4nFcJsNomo
-        nOWLXjBUIN0NSqA8TJKmCyao6Q/1D0SHXexvW67eng==
-X-Google-Smtp-Source: ABdhPJyN9QaXL2/nALzV6Wm81/61c10NORZKfBtIvPfa3KPmZdM5dbRmE8hjWi4WODPLxAiHTdkMMTDuDyWSkjv413E=
-X-Received: by 2002:a1c:7206:: with SMTP id n6mr8461880wmc.4.1591881509341;
- Thu, 11 Jun 2020 06:18:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191014061617.10296-2-daniel@0x0f.com> <20200610090421.3428945-3-daniel@0x0f.com>
- <f66978d8-22c5-1883-c6bf-52c0c19d6603@suse.de>
-In-Reply-To: <f66978d8-22c5-1883-c6bf-52c0c19d6603@suse.de>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 11 Jun 2020 22:18:13 +0900
-Message-ID: <CAFr9PX=jNE-y++W=PVr=EQTiA4CtTM6xpsy2=pnJGPB_Z-BLqg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] ARM: mstar: Add machine for MStar/Sigmastar
- infinity/mercury family ARMv7 SoCs
-To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
-Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
-        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        id S1727887AbgFKNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 09:19:46 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29861 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726276AbgFKNTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 09:19:45 -0400
+IronPort-SDR: 9voUOXe7qsMnfFK//Btx9y89I78M7i++tD95md3NOn5mjhZROh6+ALRoS4hFPUFQMX3QbzZw87
+ zQ4m4lvDr69Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 06:19:44 -0700
+IronPort-SDR: k7j8rBE6g9HgGKgYAvKDrfmefDcOCD9VFXguJSUm6m9ifxfsULo+j802pwh81qXpwFOTCJOuVK
+ +Ly896XRD+WQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,499,1583222400"; 
+   d="scan'208";a="419097065"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by orsmga004.jf.intel.com with ESMTP; 11 Jun 2020 06:19:42 -0700
+Date:   Thu, 11 Jun 2020 21:19:07 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Doug Anderson <armlinux@m.disordat.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [kbuild-all] cc1: error: arch/um/include/uapi: No such file or
+ directory
+Message-ID: <20200611131906.GA11739@intel.com>
+References: <202006112008.S05RwFCJ%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006112008.S05RwFCJ%lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+On Thu, Jun 11, 2020 at 08:39:12PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   b29482fde649c72441d5478a4ea2c52c56d97a5e
+> commit: c348c16305280fe3e6c1186378f96c8634c149f9 lib: make a test module with set/clear bit
+> date:   6 days ago
+> config: um-allmodconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+> reproduce (this is a W=1 build):
+>         git checkout c348c16305280fe3e6c1186378f96c8634c149f9
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=um 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> cc1: error: arch/um/include/uapi: No such file or directory [-Werror=missing-include-dirs]
+> cc1: all warnings being treated as errors
+sorry, kindly ignore this report, which is a false positive.
 
-On Thu, 11 Jun 2020 at 21:58, Andreas F=C3=A4rber <afaerber@suse.de> wrote:
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-> You call the dir mach-mstar, but name the Kconfig ARCH_MSTARV7. I had
-> previously been asked to just use the vendor name, so this should
-> probably be just ARCH_MSTAR. Outside arch/arm/ you can then use ARM &&
-> ARCH_MSTAR condition to make things 32-bit only, allowing to reuse
-> ARCH_MSTAR for arm64 or whatever.
 
-The ARM9 MStar chips before they switched to a common ARMv7 base aren't dir=
-ectly
-compatible so I thought there should be some distinction there. I
-doubt anyone will do it
-but I made the directory mach-mstar so potentially someone could add
-machine support
-for the older stuff to without having more directories.
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
-> > +     bool "MStar/Sigmastar ARMv7 SoC Support"
-> > +     depends on ARCH_MULTI_V7
-> > +     select ARM_GIC
-> > +     select ARM_HEAVY_MB
-> > +     help
-> > +       Support for newer MStar/Sigmastar SoC families that are
-> > +       based on ARMv7 cores like the Cortex A7 and share the same
-> > +       basic hardware like the infinity and mercury series.
-> > +
-> > +if ARCH_MSTARV7
-> > +
-> > +config MACH_INFINITY
-> > +     bool "MStar/Sigmastar infinity SoC support"
-> > +     default ARCH_MSTARV7
-> > +     help
-> > +       Support for MStar/Sigmastar infinity IP camera SoCs.
-> > +
-> > +config MACH_MERCURY
-> > +     bool "MStar/Sigmastar mercury SoC support"
-> > +     default ARCH_MSTARV7
-> > +     help
-> > +       Support for MStar/Sigmastar mercury dash camera SoCs.
-> > +       Note that older Mercury2 SoCs are ARM9 based and not supported.
->
-> Is this comment really helpful? This menu item would only seem to come
-> up after having selected multi_v7, which kind of rules out ARM9.
-
-The older mercury2 based chips seem to still be available and used in
-drive recorders
-that are on the market right now. The infinity series is all ARMv7 so
-can be supported
-but for the mercury series only the newer ones are ARMv7 so I thought
-it was worth
-mentioning that "mercury SoC support" doesn't mean all of them. I'll
-take it out if you
-think it's unnecessary.
-
-> Consider adding mercury in a second step?
-
-I'll think about that. I wanted to try to get a machine that isn't one
-I'm personally making
-into the series.
-
-Cheers,
-
-Daniel
