@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8401F6568
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418E41F656F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgFKKJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 06:09:32 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:31768 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726965AbgFKKJc (ORCPT
+        id S1727774AbgFKKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 06:10:54 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39543 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726864AbgFKKKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 06:09:32 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05BA7Lfr003767;
-        Thu, 11 Jun 2020 12:09:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=io4QkYyPev1lFAk4WWD+YOdtfCEKcWGZV313SSMWam4=;
- b=Dfg8Bh6Vhx2dsVrLDsX09I4ViM0xyUXa6FCuXkjKTvZoDN/cXP4rVkspuAXlAku12pEI
- Nh8Zm+GNw16WVrhgo3hHmia75qDQ3oCHAMM01HT4+S+6AKbfYYu+rzKvB3oPbGIN/qRC
- FqipJob9rxIm5nv3I3lYnHW7rMETvn8k2EAHLiF3yS3w6WcWuEbs00aCMD5zSPUW3NcM
- B/huIlftPJ/ugddyWl+fFCILqYt/S8IFVenn+bdwJzp6UsuyiTBHvH9uvV5Gd9g+Q560
- HehTAN2G8PXEM0hDDL26wzGEhB55ow48vko78kVKIZ7JOTLE1gEItLxlibEALYs85x6T 9w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31jppnyg1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 12:09:17 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3B2C810002A;
-        Thu, 11 Jun 2020 12:09:16 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F075B20F366;
-        Thu, 11 Jun 2020 12:09:15 +0200 (CEST)
-Received: from [10.211.9.250] (10.75.127.45) by SFHDAG5NODE3.st.com
- (10.75.127.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Jun
- 2020 12:09:14 +0200
-Subject: Re: [PATCH v2] iio: adc: stm32-adc: fix runtime autosuspend delay
- when slow polling
-To:     Jonathan Cameron <jic23@kernel.org>, <rjw@rjwysocki.net>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <benjamin.gaignard@st.com>, <alexandre.torgue@st.com>,
-        <olivier.moysan@st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <1588163348-31640-1-git-send-email-fabrice.gasnier@st.com>
- <20200503124811.0abf7655@archlinux>
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-Message-ID: <b6e7d22c-2ea9-19f8-6065-519860575077@st.com>
-Date:   Thu, 11 Jun 2020 12:09:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 11 Jun 2020 06:10:53 -0400
+X-UUID: 11bf0e1ac7714195b6b7c71141af5c4a-20200611
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=x7vUWQFpnR/ub7QdtwzOjPmOJYfIbVlXp6l4yBKYLHw=;
+        b=A1BCONdoKjTbjvHdJerYczh7j+rXqtvTg8MmZCQBg56NrqMNX1n5k0zxv+p402jied5+fdkwJhTvYJwo6tuj2loRuXS0kdM2yUxXmRFdFsmhKRP8p0CSLpZikVD14uBqDrXjzBW+AKtQrrYgBJPAlhw9qVNWeywCRggFSY95kmQ=;
+X-UUID: 11bf0e1ac7714195b6b7c71141af5c4a-20200611
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1225472788; Thu, 11 Jun 2020 18:10:50 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 11 Jun 2020 18:10:42 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Jun 2020 18:10:42 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
+CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v5] scsi: ufs: Fix imprecise load calculation in devfreq window
+Date:   Thu, 11 Jun 2020 18:10:43 +0800
+Message-ID: <20200611101043.6379-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20200503124811.0abf7655@archlinux>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG5NODE3.st.com
- (10.75.127.15)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-11_10:2020-06-10,2020-06-11 signatures=0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 63D7B33707924DB214DD98270AC3D06C1753746E0E6DE21450E38B69674B86C92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/20 1:48 PM, Jonathan Cameron wrote:
-> On Wed, 29 Apr 2020 14:29:08 +0200
-> Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
-> 
->> When the ADC is runtime suspended and starting a conversion, the stm32-adc
->> driver calls pm_runtime_get_sync() that gets cascaded to the parent
->> (e.g. runtime resume of stm32-adc-core driver). This also kicks the
->> autosuspend delay (e.g. 2s) of the parent.
->> Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
->> capture) won't kick the autosuspend delay for the parent (stm32-adc-core
->> driver) as already active.
->>
->> Currently, this makes the stm32-adc-core driver go in suspend state
->> every 2s when doing slow polling. As an example, doing a capture, e.g.
->> cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
->> isn't refreshed. Once it expires, the parent immediately falls into
->> runtime suspended state, in between two captures, as soon as the child
->> driver falls into runtime suspend state:
->> - e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
->>   autosuspend delay of the child.
->> - stm32-adc-core switches off regulators, clocks and so on.
->> - They get switched on back again 100ms later in this example (at 2.2s).
->>
->> So, use runtime_idle() callback in stm32-adc-core driver to call
->> pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
->> to avoid this.
->>
->> Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
->>
->> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> 
-> Whilst this seems 'sensible' to me, I really don't have a good enough grasp
-> of runtime pm to be sure. 
-> 
-> I see something similar looking in the greybus driver, but not sure on the
-> reason it is there.
-> 
-> Hence, ideally looking for an ack from Rafael on this one!
+VGhlIFVGUyBsb2FkIGNhbGN1bGF0aW9uIGlzIGJhc2VkIG9uICJ0b3RhbF90aW1lIiBhbmQgImJ1
+c3lfdGltZSIgaW4gYQ0KZGV2ZnJlcSB3aW5kb3cuIEhvd2V2ZXIsIHRoZSBzb3VyY2Ugb2YgdGlt
+ZSBpcyBkaWZmZXJlbnQgZm9yIGJvdGgNCnBhcmFtZXRlcnM6ICJidXN5X3RpbWUiIGlzIGFzc2ln
+bmVkIGZyb20gImppZmZpZXMiIHRodXMgaGFzIGRpZmZlcmVudA0KYWNjdXJhY3kgZnJvbSAidG90
+YWxfdGltZSIgd2hpY2ggaXMgYXNzaWduZWQgZnJvbSBrdGltZV9nZXQoKS4NCg0KQmVzaWRlcywg
+dGhlIHRpbWUgb2Ygd2luZG93IGJvdW5kYXJ5IGlzIG5vdCBleGFjdGx5IHRoZSBzYW1lIGFzDQp0
+aGUgc3RhcnRpbmcgYnVzeSB0aW1lIGluIHRoaXMgd2luZG93IGlmIFVGUyBpcyBhY3R1YWxseSBi
+dXN5DQppbiB0aGUgYmVnaW5uaW5nIG9mIHRoZSB3aW5kb3cuIEEgc2ltaWxhciBhY2N1cmFjeSBl
+cnJvciBtYXkgYWxzbw0KaGFwcGVuIGZvciB0aGUgZW5kIG9mIGJ1c3kgdGltZSBpbiBjdXJyZW50
+IHdpbmRvdy4NCg0KVG8gZ3VhcmFudGVlIHRoZSBwcmVjaXNpb24gb2YgbG9hZCBjYWxjdWxhdGlv
+biwgd2UgbmVlZCB0bw0KDQoxLiBBbGlnbiB0aW1lIGFjY3VyYWN5IG9mIGJvdGggZGV2ZnJlcV9k
+ZXZfc3RhdHVzLnRvdGFsX3RpbWUgYW5kDQogICBkZXZmcmVxX2Rldl9zdGF0dXMuYnVzeV90aW1l
+LiBGb3IgZXhhbXBsZSwgdXNlICJrdGltZV9nZXQoKSINCiAgIGRpcmVjdGx5Lg0KDQoyLiBBbGln
+biBiZWxvdyB0aW1lbGluZXMsDQogICAtIFRoZSBiZWdpbm5pbmcgdGltZSBvZiBkZXZmcmVxIHdp
+bmRvd3MNCiAgIC0gVGhlIGJlZ2lubmluZyBvZiBidXN5IHRpbWUgaW4gYSBuZXcgd2luZG93DQog
+ICAtIFRoZSBlbmQgb2YgYnVzeSB0aW1lIGluIHRoZSBjdXJyZW50IHdpbmRvdw0KDQpGaXhlczog
+YTNjZDVlYzU1ZjZjICgic2NzaTogdWZzOiBhZGQgbG9hZCBiYXNlZCBzY2FsaW5nIG9mIFVGUyBn
+ZWFyIikNClNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5j
+b20+DQpSZXZpZXdlZC1ieTogQXZyaSBBbHRtYW4gPGF2cmkuYWx0bWFuQHdkYy5jb20+DQotLS0N
+CiBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgMTggKysrKysrKysrKy0tLS0tLS0tDQogZHJp
+dmVycy9zY3NpL3Vmcy91ZnNoY2QuaCB8ICAyICstDQogMiBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNl
+cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vm
+cy91ZnNoY2QuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCmluZGV4IGFkNGZjODI5Y2Ji
+Mi4uN2EzNDQ2NTgzMjVkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0K
+KysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KQEAgLTEzMTQsNiArMTMxNCw3IEBAIHN0
+YXRpYyBpbnQgdWZzaGNkX2RldmZyZXFfZ2V0X2Rldl9zdGF0dXMoc3RydWN0IGRldmljZSAqZGV2
+LA0KIAl1bnNpZ25lZCBsb25nIGZsYWdzOw0KIAlzdHJ1Y3QgbGlzdF9oZWFkICpjbGtfbGlzdCA9
+ICZoYmEtPmNsa19saXN0X2hlYWQ7DQogCXN0cnVjdCB1ZnNfY2xrX2luZm8gKmNsa2k7DQorCWt0
+aW1lX3QgY3Vycl90Ow0KIA0KIAlpZiAoIXVmc2hjZF9pc19jbGtzY2FsaW5nX3N1cHBvcnRlZCho
+YmEpKQ0KIAkJcmV0dXJuIC1FSU5WQUw7DQpAQCAtMTMyMSw2ICsxMzIyLDcgQEAgc3RhdGljIGlu
+dCB1ZnNoY2RfZGV2ZnJlcV9nZXRfZGV2X3N0YXR1cyhzdHJ1Y3QgZGV2aWNlICpkZXYsDQogCW1l
+bXNldChzdGF0LCAwLCBzaXplb2YoKnN0YXQpKTsNCiANCiAJc3Bpbl9sb2NrX2lycXNhdmUoaGJh
+LT5ob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCisJY3Vycl90ID0ga3RpbWVfZ2V0KCk7DQogCWlm
+ICghc2NhbGluZy0+d2luZG93X3N0YXJ0X3QpDQogCQlnb3RvIHN0YXJ0X3dpbmRvdzsNCiANCkBA
+IC0xMzMyLDE4ICsxMzM0LDE3IEBAIHN0YXRpYyBpbnQgdWZzaGNkX2RldmZyZXFfZ2V0X2Rldl9z
+dGF0dXMoc3RydWN0IGRldmljZSAqZGV2LA0KIAkgKi8NCiAJc3RhdC0+Y3VycmVudF9mcmVxdWVu
+Y3kgPSBjbGtpLT5jdXJyX2ZyZXE7DQogCWlmIChzY2FsaW5nLT5pc19idXN5X3N0YXJ0ZWQpDQot
+CQlzY2FsaW5nLT50b3RfYnVzeV90ICs9IGt0aW1lX3RvX3VzKGt0aW1lX3N1YihrdGltZV9nZXQo
+KSwNCi0JCQkJCXNjYWxpbmctPmJ1c3lfc3RhcnRfdCkpOw0KKwkJc2NhbGluZy0+dG90X2J1c3lf
+dCArPSBrdGltZV91c19kZWx0YShjdXJyX3QsDQorCQkJCXNjYWxpbmctPmJ1c3lfc3RhcnRfdCk7
+DQogDQotCXN0YXQtPnRvdGFsX3RpbWUgPSBqaWZmaWVzX3RvX3VzZWNzKChsb25nKWppZmZpZXMg
+LQ0KLQkJCQkobG9uZylzY2FsaW5nLT53aW5kb3dfc3RhcnRfdCk7DQorCXN0YXQtPnRvdGFsX3Rp
+bWUgPSBrdGltZV91c19kZWx0YShjdXJyX3QsIHNjYWxpbmctPndpbmRvd19zdGFydF90KTsNCiAJ
+c3RhdC0+YnVzeV90aW1lID0gc2NhbGluZy0+dG90X2J1c3lfdDsNCiBzdGFydF93aW5kb3c6DQot
+CXNjYWxpbmctPndpbmRvd19zdGFydF90ID0gamlmZmllczsNCisJc2NhbGluZy0+d2luZG93X3N0
+YXJ0X3QgPSBjdXJyX3Q7DQogCXNjYWxpbmctPnRvdF9idXN5X3QgPSAwOw0KIA0KIAlpZiAoaGJh
+LT5vdXRzdGFuZGluZ19yZXFzKSB7DQotCQlzY2FsaW5nLT5idXN5X3N0YXJ0X3QgPSBrdGltZV9n
+ZXQoKTsNCisJCXNjYWxpbmctPmJ1c3lfc3RhcnRfdCA9IGN1cnJfdDsNCiAJCXNjYWxpbmctPmlz
+X2J1c3lfc3RhcnRlZCA9IHRydWU7DQogCX0gZWxzZSB7DQogCQlzY2FsaW5nLT5idXN5X3N0YXJ0
+X3QgPSAwOw0KQEAgLTE4NzcsNiArMTg3OCw3IEBAIHN0YXRpYyB2b2lkIHVmc2hjZF9leGl0X2Ns
+a19nYXRpbmcoc3RydWN0IHVmc19oYmEgKmhiYSkNCiBzdGF0aWMgdm9pZCB1ZnNoY2RfY2xrX3Nj
+YWxpbmdfc3RhcnRfYnVzeShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KIHsNCiAJYm9vbCBxdWV1ZV9y
+ZXN1bWVfd29yayA9IGZhbHNlOw0KKwlrdGltZV90IGN1cnJfdCA9IGt0aW1lX2dldCgpOw0KIA0K
+IAlpZiAoIXVmc2hjZF9pc19jbGtzY2FsaW5nX3N1cHBvcnRlZChoYmEpKQ0KIAkJcmV0dXJuOw0K
+QEAgLTE4OTIsMTMgKzE4OTQsMTMgQEAgc3RhdGljIHZvaWQgdWZzaGNkX2Nsa19zY2FsaW5nX3N0
+YXJ0X2J1c3koc3RydWN0IHVmc19oYmEgKmhiYSkNCiAJCQkgICAmaGJhLT5jbGtfc2NhbGluZy5y
+ZXN1bWVfd29yayk7DQogDQogCWlmICghaGJhLT5jbGtfc2NhbGluZy53aW5kb3dfc3RhcnRfdCkg
+ew0KLQkJaGJhLT5jbGtfc2NhbGluZy53aW5kb3dfc3RhcnRfdCA9IGppZmZpZXM7DQorCQloYmEt
+PmNsa19zY2FsaW5nLndpbmRvd19zdGFydF90ID0gY3Vycl90Ow0KIAkJaGJhLT5jbGtfc2NhbGlu
+Zy50b3RfYnVzeV90ID0gMDsNCiAJCWhiYS0+Y2xrX3NjYWxpbmcuaXNfYnVzeV9zdGFydGVkID0g
+ZmFsc2U7DQogCX0NCiANCiAJaWYgKCFoYmEtPmNsa19zY2FsaW5nLmlzX2J1c3lfc3RhcnRlZCkg
+ew0KLQkJaGJhLT5jbGtfc2NhbGluZy5idXN5X3N0YXJ0X3QgPSBrdGltZV9nZXQoKTsNCisJCWhi
+YS0+Y2xrX3NjYWxpbmcuYnVzeV9zdGFydF90ID0gY3Vycl90Ow0KIAkJaGJhLT5jbGtfc2NhbGlu
+Zy5pc19idXN5X3N0YXJ0ZWQgPSB0cnVlOw0KIAl9DQogfQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+c2NzaS91ZnMvdWZzaGNkLmggYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5oDQppbmRleCBiZjk3
+ZDYxNmU1OTcuLjE2MTg3YmU5OGE5NCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZz
+aGNkLmgNCisrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmgNCkBAIC00MTEsNyArNDExLDcg
+QEAgc3RydWN0IHVmc19zYXZlZF9wd3JfaW5mbyB7DQogc3RydWN0IHVmc19jbGtfc2NhbGluZyB7
+DQogCWludCBhY3RpdmVfcmVxczsNCiAJdW5zaWduZWQgbG9uZyB0b3RfYnVzeV90Ow0KLQl1bnNp
+Z25lZCBsb25nIHdpbmRvd19zdGFydF90Ow0KKwlrdGltZV90IHdpbmRvd19zdGFydF90Ow0KIAlr
+dGltZV90IGJ1c3lfc3RhcnRfdDsNCiAJc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgZW5hYmxlX2F0
+dHI7DQogCXN0cnVjdCB1ZnNfc2F2ZWRfcHdyX2luZm8gc2F2ZWRfcHdyX2luZm87DQotLSANCjIu
+MTguMA0K
 
-Hi,
-
-Gentle reminder, I'm not sure how to progress on this patch.
-
-Rafael, or maybe Ulf, could take a look at it ?
-
-Thanks in advance,
-Best Regards,
-Fabrice
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
->> ---
->> Changes in v2:
->> - Use runtime_idle callback in stm32-adc-core driver, instead of refreshing
->>   last_busy from the child (for the parent) at many place. Initial patch v1
->>   looked like "somewhat adhoc solution" as commented by Jonathan.
->> ---
->>  drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
->>  1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
->> index 2df88d2..ebe5dbc 100644
->> --- a/drivers/iio/adc/stm32-adc-core.c
->> +++ b/drivers/iio/adc/stm32-adc-core.c
->> @@ -803,6 +803,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
->>  {
->>  	return stm32_adc_core_hw_start(dev);
->>  }
->> +
->> +static int stm32_adc_core_runtime_idle(struct device *dev)
->> +{
->> +	pm_runtime_mark_last_busy(dev);
->> +
->> +	return 0;
->> +}
->>  #endif
->>  
->>  static const struct dev_pm_ops stm32_adc_core_pm_ops = {
->> @@ -810,7 +817,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
->>  				pm_runtime_force_resume)
->>  	SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
->>  			   stm32_adc_core_runtime_resume,
->> -			   NULL)
->> +			   stm32_adc_core_runtime_idle)
->>  };
->>  
->>  static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
-> 
