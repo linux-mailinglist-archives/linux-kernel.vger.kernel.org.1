@@ -2,50 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE861F6817
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6A61F67DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgFKMph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:45:37 -0400
-Received: from hs2.cadns.ca ([149.56.24.197]:31442 "EHLO hs2.cadns.ca"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726254AbgFKMph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:45:37 -0400
-X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Jun 2020 08:45:37 EDT
-Received: from [192.168.0.20] (135-23-114-58.cpe.pppoe.ca [135.23.114.58])
-        by hs2.cadns.ca (Postfix) with ESMTPSA id AB4F914931;
-        Wed, 10 Jun 2020 18:29:52 -0400 (EDT)
-Authentication-Results: hs2.cadns.ca;
-        spf=pass (sender IP is 135.23.114.58) smtp.mailfrom=sriram.chadalavada@mindleap.ca smtp.helo=[192.168.0.20]
-Received-SPF: pass (hs2.cadns.ca: connection is authenticated)
-From:   Sriram Chadalavada <sriram.chadalavada@mindleap.ca>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Feedback on Marvell 6176 DSA switch device tree and driver module code
-Message-ID: <ee82e878-3337-c760-bd16-d5bcb9dbfa19@mindleap.ca>
-Date:   Wed, 10 Jun 2020 18:29:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727884AbgFKMbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgFKMbK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:31:10 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15812C08C5C2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:31:10 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c71so4804625wmd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 05:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dme-org.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:subject:in-reply-to:references:from:date:message-id
+         :mime-version;
+        bh=HOVgqrNF+UZt/ZblEAeFnOGGk9HKC6a+IPi5bRclrK0=;
+        b=qUn5CTYI8cZYIMeIBiuuqxWu/2eka/1oKU+kMldfJVkB0LvFxa8bmNn9Y8g76bB/9r
+         0Ck4SxxFXBOu3Z13kgwq6h8tObchc8+WOoh63G+V4JZUDRoUZdC3yenvMEhNakL2+E+S
+         thwYd02jYjoE7oWXGJ3rZfB7Nou0HwRuKkA1ZhqDMSVeBjri+Atq2d4DCqVN0/4XqnYs
+         45e4AICWUBWbsrl3o8czMtgJKlZMzWVvEmwh+CmZ/J1Tb7/ik99iPimvsbAeJXTx/sOg
+         KVucFC4QBF6jbhebJx7qcxes2gq38NawTuNI/wOX63UYbi2EmC5HvybQbqtO3DblNasB
+         VHDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
+         :message-id:mime-version;
+        bh=HOVgqrNF+UZt/ZblEAeFnOGGk9HKC6a+IPi5bRclrK0=;
+        b=P9Gvy9NJbY0CtyqfaGDZHJDY9JL1LWLwOyPAAD24m8mOgQfXOsnKJ31UWWztLllGyc
+         Y0ZvZcfdAO8TN9yVTL0JjBNREg7pYArMVifrd71MH619o9O0gKENoex+rQsJluK+B/uL
+         TAkW8lmsM9dOUWFZc0YS00DmL94YEivwm6NLEG5DrHV6bmOxq7qWf1fUofb1qBNVZ4bo
+         3S0YpY/vkhVgdL0Wy12uoDH757RRV4vBH7XUW/Qe75cCYq9yfXAz6K+jZIotjJaYeduN
+         1WQd3x5DmzJsLObfsybnJByTJ8HKxU9pRw4636W66FaTVeB0ZCjIPh3MpSsgkWRL5Qm9
+         dqvA==
+X-Gm-Message-State: AOAM5328K+FSMyhnHgTeQa9PXrUsnjhY3lBqJBwllk08vv2w57nOoNX2
+        IDI/NmCJakWudoc9oMKTVKYDJA==
+X-Google-Smtp-Source: ABdhPJzly/94q8CC3aGfhn5rP0EVxTOYZ3cG/SeJ/YVte9ql+owmzzWAtksVFoCrYrXOn6Kkl+Qfjg==
+X-Received: by 2002:a05:600c:4401:: with SMTP id u1mr7839800wmn.36.1591878668383;
+        Thu, 11 Jun 2020 05:31:08 -0700 (PDT)
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
+        by smtp.gmail.com with ESMTPSA id z12sm5268974wrg.9.2020.06.11.05.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 05:31:07 -0700 (PDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 894f5699;
+        Thu, 11 Jun 2020 12:31:06 +0000 (UTC)
+To:     Yan Zhao <yan.y.zhao@intel.com>, Cornelia Huck <cohuck@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, zhenyuw@linux.intel.com,
+        zhi.a.wang@intel.com, kevin.tian@intel.com, shaopeng.he@intel.com,
+        yi.l.liu@intel.com, xin.zeng@intel.com, hang.yuan@intel.com
+Subject: Re: [RFC PATCH v4 04/10] vfio/pci: let vfio_pci know number of
+ vendor regions and vendor irqs
+In-Reply-To: <20200605021542.GG12300@joy-OptiPlex-7040>
+References: <20200518024202.13996-1-yan.y.zhao@intel.com>
+ <20200518024944.14263-1-yan.y.zhao@intel.com>
+ <20200604172515.614e9864.cohuck@redhat.com>
+ <20200605021542.GG12300@joy-OptiPlex-7040>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <dme@dme.org>
+Date:   Thu, 11 Jun 2020 13:31:05 +0100
+Message-ID: <m23671943a.fsf@dme.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-PPP-Message-ID: <20200610222952.4822.29209@hs2.cadns.ca>
-X-PPP-Vhost: mindleap.ca
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's a detailed overview of what I have been grappling with:
+On Thursday, 2020-06-04 at 22:15:42 -04, Yan Zhao wrote:
 
-https://stackoverflow.com/questions/62311589/feedback-on-marvell-6176-dsa-switch-device-tree-and-driver-module-code
+> On Thu, Jun 04, 2020 at 05:25:15PM +0200, Cornelia Huck wrote:
+>> On Sun, 17 May 2020 22:49:44 -0400
+>> Yan Zhao <yan.y.zhao@intel.com> wrote:
+>> 
+>> > This allows a simpler VFIO_DEVICE_GET_INFO ioctl in vendor driver
+>> > 
+>> > Cc: Kevin Tian <kevin.tian@intel.com>
+>> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+>> > ---
+>> >  drivers/vfio/pci/vfio_pci.c         | 23 +++++++++++++++++++++--
+>> >  drivers/vfio/pci/vfio_pci_private.h |  2 ++
+>> >  include/linux/vfio.h                |  3 +++
+>> >  3 files changed, 26 insertions(+), 2 deletions(-)
+>> > 
+>> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+>> > index 290b7ab55ecf..30137c1c5308 100644
+>> > --- a/drivers/vfio/pci/vfio_pci.c
+>> > +++ b/drivers/vfio/pci/vfio_pci.c
+>> > @@ -105,6 +105,24 @@ void *vfio_pci_vendor_data(void *device_data)
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(vfio_pci_vendor_data);
+>> >  
+>> > +int vfio_pci_set_vendor_regions(void *device_data, int num_vendor_regions)
+>> > +{
+>> > +	struct vfio_pci_device *vdev = device_data;
+>> > +
+>> > +	vdev->num_vendor_regions = num_vendor_regions;
+>> 
+>> Do we need any kind of sanity check here, in case this is called with a
+>> bogus value?
+>>
+> you are right. it at least needs to be >=0.
+> maybe type of "unsigned int" is more appropriate for num_vendor_regions.
+> we don't need to check its max value as QEMU would check it.
 
-I also tried a version of the device tree where the mdio device is in 
-the dts file without being a subnode of the pci node. With that, the 
-kernel doesn't crash but igb based eth0 and ports on the 6176 switch are 
-NOT enumerated.
+That seems like a bad precedent - the caller may not be QEMU.
 
-Thanks,
-
-Sriram
-
+dme.
+-- 
+I'm not the reason you're looking for redemption.
