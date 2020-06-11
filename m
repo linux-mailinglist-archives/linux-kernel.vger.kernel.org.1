@@ -2,128 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8BA1F69EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6513B1F6A05
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgFKO1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:27:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49196 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbgFKO1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:27:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 810DFAB76;
-        Thu, 11 Jun 2020 14:27:33 +0000 (UTC)
-Subject: Re: [PATCH v2 2/5] ARM: mstar: Add machine for MStar/Sigmastar
- infinity/mercury family ARMv7 SoCs
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
-        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
+        id S1728364AbgFKO25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:28:57 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:25936 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728321AbgFKO2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:28:55 -0400
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Jun 2020 19:58:44 +0530
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 11 Jun 2020 19:58:16 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id E908B2AC5; Thu, 11 Jun 2020 19:58:14 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Doug Anderson <armlinux@m.disordat.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <20191014061617.10296-2-daniel@0x0f.com>
- <20200610090421.3428945-3-daniel@0x0f.com>
- <976e789e-edd7-c44d-ea99-840ecb883ff8@suse.de>
- <CAFr9PXkvmZv3_EakxvRR+X522xN-a8epvF0ns10JeYCLn2uUKw@mail.gmail.com>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <1e8262e0-9b30-0788-446a-5d88c1bb49ea@suse.de>
-Date:   Thu, 11 Jun 2020 16:27:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAFr9PXkvmZv3_EakxvRR+X522xN-a8epvF0ns10JeYCLn2uUKw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-clk@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH 0/2] usb: dwc3:  Host wake up support from system suspend
+Date:   Thu, 11 Jun 2020 19:58:01 +0530
+Message-Id: <1591885683-29514-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Avoiding phy powerdown in host mode so that it can be wake up by devices.
+Set usb controller wakeup capable when wakeup capable devices are
+connected to the host.
 
-Am 11.06.20 um 15:01 schrieb Daniel Palmer:
-> On Thu, 11 Jun 2020 at 21:49, Andreas Färber <afaerber@suse.de> wrote:
->>> peripherals and system memory in a single tiny QFN package that
->>> can be hand soldered allowing almost anyone to embed Linux
->>
->> "soldered, allowing"?
-> 
-> The original reads ok to me. Maybe I can just split that into two sentences?
-> Like ".. QFN package that can be hand soldered. This allows almost anyone..".
+Added GENPD_FLAG_ACTIVE_WAKEUP flag to keep usb30_prim gdsc active
+when  wakeup capable devices are connected to the host.
 
-As non-native speaker I merely wondered whether a comma should better be 
-inserted to separate the two parts of the sentence. Splitting it in two 
-or leaving as is should be fine, too - I assume you're a native speaker. 
-Most people will rather read the bindings document than old git history, 
-so you might want to consider adding such a description below its title.
+Sandeep Maheswaram (1):
+  usb: dwc3: Host wake up support from system suspend
 
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -2114,6 +2114,7 @@ ARM/MStar/Sigmastar ARMv7 SoC support
->>>    M:  Daniel Palmer <daniel@thingy.jp>
->>>    L:  linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>>    S:  Maintained
->>> +F:   arch/arm/mach-mstar/
->>>    F:  Documentation/devicetree/bindings/arm/mstar.yaml
->>>
->>>    ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
->> [snip]
->>
->> The sort order has recently been changed to case-sensitive, i.e., you
->> should append arch after Documentation.
-> 
-> Interesting. Checkpatch didn't complain about that although it
-> complained about the
-> original ordering I had.
+Taniya Das (1):
+  clk: qcom: gcc: Add genpd active wakeup flag for sc7180
 
-I only noticed because someone refactored my Realtek section, causing a 
-merge conflict.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3b50142d8528e1efc1c07f69c540f926c58ab3ad
-
-Which reminds me, in 1/5 you should probably add a W: line (after S: 
-according to above sort commit) pointing to your 
-http://linux-chenxing.org/ website.
-
-And for the community following your project, you may want to set up a 
-linux-chenxing mailing list on vger.kernel.org or on infradead.org and 
-add it as L:, to allow for error reports and patches to not just go to 
-you and crowded LAKML.
-
-Cheers,
-Andreas
+ drivers/clk/qcom/gcc-sc7180.c |  1 +
+ drivers/usb/dwc3/core.c       | 47 +++++++++++++++++++++++++-----
+ drivers/usb/dwc3/core.h       |  1 +
+ drivers/usb/dwc3/dwc3-qcom.c  | 66 ++++++++++++++++++++++++++++++++-----------
+ 4 files changed, 92 insertions(+), 23 deletions(-)
 
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
