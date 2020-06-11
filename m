@@ -2,117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132361F6B4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8D11F6B57
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgFKPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:44:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40538 "EHLO mga03.intel.com"
+        id S1728639AbgFKPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 11:45:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:54190 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728496AbgFKPn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:43:59 -0400
-IronPort-SDR: zVbYBjCm+9L7CvMejLIsQdTToMqnSAR/RHJ4NnfDXDmHKrJaHs392+3+drFf0F4Cv2P1+NSZnB
- los2p04MIFKQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 08:43:59 -0700
-IronPort-SDR: +Ydw/4Fg05XSUVeVdaVnYwXl169Eie8ePVgfFpQAiQZ2NUmXKZaRvV2IeZsKgMR2pcPAaKpDpn
- +n8lSwG3SLOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,499,1583222400"; 
-   d="scan'208";a="419144435"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga004.jf.intel.com with ESMTP; 11 Jun 2020 08:43:59 -0700
-Date:   Thu, 11 Jun 2020 08:43:59 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Feiner <pfeiner@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Christoffer Dall <christoffer.dall@arm.com>
-Subject: Re: [PATCH 17/21] KVM: arm64: Use common code's approach for
- __GFP_ZERO with memory caches
-Message-ID: <20200611154359.GF29918@linux.intel.com>
-References: <20200605213853.14959-1-sean.j.christopherson@intel.com>
- <20200605213853.14959-18-sean.j.christopherson@intel.com>
- <6cc08074c289cbea7b9c1deeaf18c63f@kernel.org>
+        id S1728422AbgFKPpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 11:45:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B6E71F1;
+        Thu, 11 Jun 2020 08:45:49 -0700 (PDT)
+Received: from [10.57.43.165] (unknown [10.57.43.165])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B299B3F6CF;
+        Thu, 11 Jun 2020 08:45:45 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arm-nommu: Add use_reserved_mem() to check if device
+ support reserved memory
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     kstewart@linuxfoundation.org, devicetree@vger.kernel.org,
+        alexandre.torgue@st.com, info@metux.net, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, mcoquelin.stm32@gmail.com,
+        tglx@linutronix.de, dillon.minfei@gmail.com,
+        linux-stm32@st-md-mailman.stormreply.com, allison@lohutok.net
+References: <1591605038-8682-1-git-send-email-dillon.minfei@gmail.com>
+ <1591605038-8682-3-git-send-email-dillon.minfei@gmail.com>
+ <90df5646-e0c4-fcac-d934-4cc922230dd2@arm.com>
+ <20200610072444.GA6293@infradead.org>
+ <9c3a7b4e-0190-e9bb-91fe-6d5692559888@arm.com>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <27881ee0-dc40-e8c6-34f6-712f9acc3fbc@arm.com>
+Date:   Thu, 11 Jun 2020 16:45:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6cc08074c289cbea7b9c1deeaf18c63f@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <9c3a7b4e-0190-e9bb-91fe-6d5692559888@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 08:59:05AM +0100, Marc Zyngier wrote:
-> >diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> >index 9398b66f8a87..688213ef34f0 100644
-> >--- a/arch/arm64/kvm/mmu.c
-> >+++ b/arch/arm64/kvm/mmu.c
-> >@@ -131,7 +131,8 @@ static int mmu_topup_memory_cache(struct
-> >kvm_mmu_memory_cache *cache, int min)
-> > 	if (cache->nobjs >= min)
-> > 		return 0;
-> > 	while (cache->nobjs < ARRAY_SIZE(cache->objects)) {
-> >-		page = (void *)__get_free_page(GFP_PGTABLE_USER);
-> >+		page = (void *)__get_free_page(GFP_KERNEL_ACCOUNT |
+On 6/10/20 9:19 AM, Vladimir Murzin wrote:
+> On 6/10/20 8:24 AM, Christoph Hellwig wrote:
+>> Ok, I finally found the original patch from Vladimir.  Comments below:
+>>
+>>> +++ b/kernel/dma/direct.c
+>>> @@ -456,14 +456,14 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+>>>  #else /* CONFIG_MMU */
+>>>  bool dma_direct_can_mmap(struct device *dev)
+>>>  {
+>>> -	return false;
+>>> +	return true;
+>>>  }
+>>>  
+>>>  int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+>>>  		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+>>>  		unsigned long attrs)
+>>>  {
+>>> -	return -ENXIO;
+>>> +	return vm_iomap_memory(vma, vma->vm_start, (vma->vm_end - vma->vm_start));;
+>>
+>> I think we should try to reuse the mmu dma_direct_mmap implementation,
+>> which does about the same.  This version has been compile tested on
+>> arm-nommu only, let me know what you think: (btw, a nommu_defconfig of
+>> some kind for arm would be nice..)
 > 
-> This is definitely a change in the way we account for guest
-> page tables allocation, although I find it bizarre that not
-> all architectures account for it the same way.
-
-It's not intended to be a functional change, i.e. the allocations should
-still be accounted:
-
-  #define GFP_PGTABLE_USER  (GFP_PGTABLE_KERNEL | __GFP_ACCOUNT)
-  |
-  -> #define GFP_PGTABLE_KERNEL        (GFP_KERNEL | __GFP_ZERO)
-
-  == GFP_KERNEL | __GFP_ACCOUNT | __GFP_ZERO
-
-versus 
-
-  #define GFP_KERNEL_ACCOUNT (GFP_KERNEL | __GFP_ACCOUNT)
-
-    with __GFP_ZERO explicitly OR'd in
-
-  == GFP_KERNEL | __GFP_ACCOUNT | __GFP_ZERO
-
-I can put the above in the changelog, unless of course it's wrong and I've
-missed something.
-
-> It seems logical to me that nested page tables would be accounted
-> against userspace, but I'm willing to be educated on the matter.
+> Catch-all nommu_defconfig is not easy for ARM, AFAIK folk carry few hacks
+> for randconfig...
 > 
-> Another possibility is that depending on the context, some allocations
-> should be accounted on either the kernel or userspace (NV on arm64
-> could definitely do something like that). If that was the case,
-> maybe moving most of the GFP_* flags into the per-cache flags,
-> and have the renaming that Ben suggested earlier.
+> Meanwhile, known working NOMMU configs
 > 
-> Thanks,
+> $ git grep "# CONFIG_MMU is not set" arch/arm/configs/
+> arch/arm/configs/efm32_defconfig:# CONFIG_MMU is not set
+> arch/arm/configs/lpc18xx_defconfig:# CONFIG_MMU is not set
+> arch/arm/configs/mps2_defconfig:# CONFIG_MMU is not set
+> arch/arm/configs/stm32_defconfig:# CONFIG_MMU is not set
+> arch/arm/configs/vf610m4_defconfig:# CONFIG_MMU is not set
 > 
->         M.
-> -- 
-> Jazz is not dead. It just smells funny...
+>>
+>> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+>> index d006668c0027d2..e0dae570a51530 100644
+>> --- a/kernel/dma/Kconfig
+>> +++ b/kernel/dma/Kconfig
+>> @@ -71,6 +71,7 @@ config SWIOTLB
+>>  # in the pagetables
+>>  #
+>>  config DMA_NONCOHERENT_MMAP
+>> +	default y if !MMU
+>>  	bool
+> 
+> Nit: def_bool !MMU
+> 
+>>  
+>>  config DMA_REMAP
+>> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+>> index 0a4881e59aa7d6..9ec6a5c3fc578c 100644
+>> --- a/kernel/dma/direct.c
+>> +++ b/kernel/dma/direct.c
+>> @@ -459,7 +459,6 @@ int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
+>>  	return ret;
+>>  }
+>>  
+>> -#ifdef CONFIG_MMU
+>>  bool dma_direct_can_mmap(struct device *dev)
+>>  {
+>>  	return dev_is_dma_coherent(dev) ||
+>> @@ -485,19 +484,6 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+>>  	return remap_pfn_range(vma, vma->vm_start, pfn + vma->vm_pgoff,
+>>  			user_count << PAGE_SHIFT, vma->vm_page_prot);
+>>  }
+>> -#else /* CONFIG_MMU */
+>> -bool dma_direct_can_mmap(struct device *dev)
+>> -{
+>> -	return false;
+>> -}
+>> -
+>> -int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+>> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+>> -		unsigned long attrs)
+>> -{
+>> -	return -ENXIO;
+>> -}
+>> -#endif /* CONFIG_MMU */
+>>  
+>>  int dma_direct_supported(struct device *dev, u64 mask)
+>>  {
+>>
+> 
+> LGTM. FWIW:
+> 
+> Reviewed-by: Vladimir Murzin <vladimir.murzin@arm.com>
+> 
+> 
+
+@dillon, can you give it a try?
+
+I think Christoph would appreciate your Tested-by and that might speed up
+getting fix mainline.
+
+
+Cheers
+Vladimir
+
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+
