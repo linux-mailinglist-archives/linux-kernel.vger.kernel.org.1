@@ -2,70 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9941F1F6555
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88F1F6578
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgFKKFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 06:05:24 -0400
-Received: from 8bytes.org ([81.169.241.247]:47152 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726708AbgFKKFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 06:05:23 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 3AD5C869; Thu, 11 Jun 2020 12:05:21 +0200 (CEST)
-Date:   Thu, 11 Jun 2020 12:05:19 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 40/75] x86/sev-es: Compile early handler code into
- kernel image
-Message-ID: <20200611100519.GB32093@8bytes.org>
-References: <20200428151725.31091-1-joro@8bytes.org>
- <20200428151725.31091-41-joro@8bytes.org>
- <20200520091415.GC1457@zn.tnic>
- <20200604115413.GB30945@8bytes.org>
- <20200604151945.GB2246@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200604151945.GB2246@zn.tnic>
+        id S1727784AbgFKKMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 06:12:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60602 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgFKKMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 06:12:06 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BA6r4m013263;
+        Thu, 11 Jun 2020 10:12:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=2QDDI0kD5A5seujqkA0+fH9fCS9E1vDtyTv8AY1OlxM=;
+ b=jiIaxZjQOgR3WBG/J3MJXa+JJiHeHi6CS23vv3RTlANm1Anv824jmkgU2bMQ98y6KNlM
+ vx1N3/zAA44DU3twDQGGxqB9u7Mgq4SqNyRCGfvUO5X6y1Zhqwd2bmBQ7NHzkJRK8CpI
+ YwhBRleFNPk0SgA5XnviJbXG856i/TNGdSuAGa45zEr6m3mRg67E3XVlRIMfuZn8AoNy
+ w5Nyu7wCyk67IXC6uzY6N6vYxxYlKSSlab9qcRUY2hGubuQ6sX6d297XVrCEXAPPRKtU
+ 7JrRgVu4k0YCyb1v3YbSmjRUV+1Hp46BBBoRRReM0kVIkOTPB96TbFhqRNlNvRfo45kg LQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31jepp0vhy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Jun 2020 10:12:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BA8VL7136609;
+        Thu, 11 Jun 2020 10:10:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31gmwuyx23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Jun 2020 10:10:00 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05BA9xwe018737;
+        Thu, 11 Jun 2020 10:09:59 GMT
+Received: from localhost.localdomain (/183.246.144.78)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Jun 2020 03:09:55 -0700
+From:   Bob Liu <bob.liu@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     tj@kernel.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
+        lduncan@suse.com, michael.christie@oracle.com,
+        Bob Liu <bob.liu@oracle.com>
+Subject: [PATCH 1/2] workqueue: don't always set __WQ_ORDERED implicitly
+Date:   Thu, 11 Jun 2020 18:07:16 +0800
+Message-Id: <20200611100717.27506-1-bob.liu@oracle.com>
+X-Mailer: git-send-email 2.9.5
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006110078
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9648 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=1
+ priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006110078
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 05:19:53PM +0200, Borislav Petkov wrote:
-> On Thu, Jun 04, 2020 at 01:54:13PM +0200, Joerg Roedel wrote:
-> > It is not only the trace-point, this would also eliminate exception
-> > handling in case the MSR access triggers a #GP. The "Unhandled MSR
-> > read/write" messages would turn into a "General Protection Fault"
-> > message.
-> 
-> But the early ones can trigger a #GP too. And there we can't handle
-> those #GPs.
-> 
-> Why would the late ones need exception handling all of a sudden? And
-> for the GHCB MSR, of all MSRs which the SEV-ES guest has used so far to
-> bootstrap?!
+Current code always set 'Unbound && max_active == 1' workqueues to ordered
+implicitly, while this may be not an expected behaviour for some use cases.
 
-For example when there is a bug in the code which triggers an SEV-ES-only
-code-path at runtime on bare-metal or in a non-SEV-ES VM. When the MSR
-is accessed accidentially in that code-path the exception handling will
-be helpful.
+E.g some scsi and iscsi workqueues(unbound && max_active = 1) want to be bind
+to different cpu so as to get better isolation, but their cpumask can't be
+changed because WQ_ORDERED is set implicitly.
 
+This patch adds a flag __WQ_ORDERED_DISABLE and also
+create_singlethread_workqueue_noorder() to offer an new option.
 
-	Joerg
+Signed-off-by: Bob Liu <bob.liu@oracle.com>
+---
+ include/linux/workqueue.h | 4 ++++
+ kernel/workqueue.c        | 4 +++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index e48554e..4c86913 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -344,6 +344,7 @@ enum {
+ 	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
+ 	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
+ 	__WQ_ORDERED_EXPLICIT	= 1 << 19, /* internal: alloc_ordered_workqueue() */
++	__WQ_ORDERED_DISABLE	= 1 << 20, /* internal: don't set __WQ_ORDERED implicitly */
+ 
+ 	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
+ 	WQ_MAX_UNBOUND_PER_CPU	= 4,	  /* 4 * #cpus for unbound wq */
+@@ -433,6 +434,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ #define create_singlethread_workqueue(name)				\
+ 	alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
+ 
++#define create_singlethread_workqueue_noorder(name)			\
++	alloc_workqueue("%s", WQ_SYSFS | __WQ_LEGACY | WQ_MEM_RECLAIM | \
++			WQ_UNBOUND | __WQ_ORDERED_DISABLE, 1, (name))
+ extern void destroy_workqueue(struct workqueue_struct *wq);
+ 
+ struct workqueue_attrs *alloc_workqueue_attrs(void);
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 4e01c44..2167013 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4237,7 +4237,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	 * on NUMA.
+ 	 */
+ 	if ((flags & WQ_UNBOUND) && max_active == 1)
+-		flags |= __WQ_ORDERED;
++		/* the caller may don't want __WQ_ORDERED to be set implicitly. */
++		if (!(flags & __WQ_ORDERED_DISABLE))
++			flags |= __WQ_ORDERED;
+ 
+ 	/* see the comment above the definition of WQ_POWER_EFFICIENT */
+ 	if ((flags & WQ_POWER_EFFICIENT) && wq_power_efficient)
+-- 
+2.9.5
+
