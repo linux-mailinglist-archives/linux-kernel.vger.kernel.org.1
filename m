@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFC51F6AE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA00B1F6AEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgFKPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:22:22 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35018 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728365AbgFKPWV (ORCPT
+        id S1728477AbgFKPYW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Jun 2020 11:24:22 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:43067 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgFKPYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:22:21 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BFGwIx189025;
-        Thu, 11 Jun 2020 15:22:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=F+errMLdvgi4MHt8jCQq09ZX5AvpbDZ+cZ9ta5vO2pQ=;
- b=qQeRu8d9AseQvkn6mmiWlD6UFRviqGajGZpCB4mNg4zU8Yg0+3HgGizUcCZRBNQD4DS8
- p8w8LmzJdXtq6u9UUWQQYHcXXXLHhk8hqI9y6gLjjt8hqxWlT0eGEYhx71kgkHGu6wII
- bzUaU3VJ/Zh88Dkzg0+Nn5YMEyucRur96i524mcIawwORJ176PEbMaSMhH8MT+UtASSt
- WX6ptbjkL6WVwZeKOa4VK/oUtoUJepBkRu7UI7wTNDdi8K0ggQHHm4KlzwwrpnIczYGU
- 9GBJOstKJZoXKJGRhdwAANFY7GseOg93bG+y9h6L28r1oXrVE0GU07nBVApJRaQcR5Cj 8Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 31g3sn8cv9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Jun 2020 15:22:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BFIXc3033187;
-        Thu, 11 Jun 2020 15:22:14 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31gmwvhfn3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 15:22:14 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05BFMDHj017504;
-        Thu, 11 Jun 2020 15:22:13 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 11 Jun 2020 08:22:13 -0700
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id EBBF46A0100; Thu, 11 Jun 2020 11:22:57 -0400 (EDT)
-Date:   Thu, 11 Jun 2020 11:22:57 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>, eperezma@redhat.com
-Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
-Message-ID: <20200611152257.GA1798@char.us.oracle.com>
-References: <20200611113404.17810-1-mst@redhat.com>
- <20200611113404.17810-3-mst@redhat.com>
+        Thu, 11 Jun 2020 11:24:22 -0400
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 523F120000C;
+        Thu, 11 Jun 2020 15:24:18 +0000 (UTC)
+Date:   Thu, 11 Jun 2020 17:24:17 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Kamal Dasu <kdasu.kdev@gmail.com>
+Cc:     Brian Norris <computersforpeace@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] mtd: rawnand: brcmnand: Don't default to edu
+ transfer
+Message-ID: <20200611172417.66eb6c3b@xps13>
+In-Reply-To: <CAC=U0a0ReuPpxZjB2vV_YNynrMx4OjzPmPPyJeVbhueFgFeNbQ@mail.gmail.com>
+References: <20200611054454.2547-1-kdasu.kdev@gmail.com>
+        <20200611091604.1bec2418@xps13>
+        <CAC=U0a0ReuPpxZjB2vV_YNynrMx4OjzPmPPyJeVbhueFgFeNbQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611113404.17810-3-mst@redhat.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
- mlxscore=0 mlxlogscore=944 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=995 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006110121
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 07:34:19AM -0400, Michael S. Tsirkin wrote:
-> As testing shows no performance change, switch to that now.
+Hi Kamal,
 
-What kind of testing? 100GiB? Low latency?
+Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 11:22:56
+-0400:
 
+> On Thu, Jun 11, 2020 at 3:16 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >
+> > Hi Kamal,
+> >
+> > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 01:44:53
+> > -0400:
+> >  
+> > > When flash-dma is absent do not default to using flash-edu.
+> > > Make sure flash-edu is enabled before setting EDU transfer
+> > > function.
+> > >
+> > > Fixes: a5d53ad26a8b ("mtd: rawnand: brcmnand: Add support for flash-edu for dma transfers")
+> > > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > > ---
+> > >  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > > index 8f9ffb46a09f..0c1d6e543586 100644
+> > > --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > > +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> > > @@ -2953,8 +2953,9 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+> > >               if (ret < 0)
+> > >                       goto err;
+> > >
+> > > -             /* set edu transfer function to call */
+> > > -             ctrl->dma_trans = brcmnand_edu_trans;
+> > > +             if (has_edu(ctrl))
+> > > +                     /* set edu transfer function to call */
+> > > +                     ctrl->dma_trans = brcmnand_edu_trans;  
+> >
+> > Does this fallback to returning an error in case !has_edu() ? Othewise,
+> > how is it handled?
+> >  
+> 
+>  The driver will default to pio if both flash-dma and falsh-edu are
+> not present.
+> 
+> > Thanks,
+> > Miquèl  
+> 
+> Kamal
+
+
+Ok, thanks for the clarification!
+
+Thanks,
+Miquèl
