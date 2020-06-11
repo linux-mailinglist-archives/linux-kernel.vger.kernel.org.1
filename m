@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93141F6682
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C750C1F667B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgFKLVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:21:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10500 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727907AbgFKLVG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:21:06 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05BB3s5G029997;
-        Thu, 11 Jun 2020 07:20:03 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31khbym853-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 07:20:03 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05BBFXcp001911;
-        Thu, 11 Jun 2020 11:20:01 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 31g2s81gh8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 11:20:01 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05BBJwBt63897802
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 11:19:59 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4FE3A4069;
-        Thu, 11 Jun 2020 11:19:58 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 056FAA405C;
-        Thu, 11 Jun 2020 11:19:58 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.183.79])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Jun 2020 11:19:57 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: [PATCH] ima: fix mprotect checking
-Date:   Thu, 11 Jun 2020 07:19:23 -0400
-Message-Id: <1591874363-28939-1-git-send-email-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.7.5
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-11_10:2020-06-10,2020-06-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 clxscore=1015 cotscore=-2147483648 mlxlogscore=999
- mlxscore=0 malwarescore=0 bulkscore=0 spamscore=0 adultscore=0
- priorityscore=1501 suspectscore=1 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110086
+        id S1728017AbgFKLUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727942AbgFKLUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:20:35 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BF622078D;
+        Thu, 11 Jun 2020 11:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591874433;
+        bh=0+sxtBect72jPqO+rq641H6d/+ec4oVrijKYw9rAwo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dCcT0jSPypweAOdofLdfgp2pOpmONzVnSW9dyk2kGe1bYIp7OWl4/97f6iD4a2Cql
+         B1T5zVmzFd7/toMVNoMgVCll0xC4ubCB/z8JdeTauCsDa9YSbfaV6OI1qtuWtqM51N
+         GgP57QNq8vl3kaebrObZaGsXGqN8Un/7ssRmkiWY=
+Date:   Thu, 11 Jun 2020 13:20:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vikash Bansal <bvikas@vmware.com>
+Cc:     stable@vger.kernel.org, srivatsab@vmware.com,
+        srivatsa@csail.mit.edu, amakhalov@vmware.com, srinidhir@vmware.com,
+        anishs@vmware.com, vsirnapalli@vmware.com, akaher@vmware.com,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4.19.y 0/2] btrfs: Fix for CVE-2019-18885
+Message-ID: <20200611112027.GJ3802953@kroah.com>
+References: <20200609065018.26378-1-bvikas@vmware.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200609065018.26378-1-bvikas@vmware.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure IMA is enabled before checking mprotect change.  Addresses
-report of a 3.7% regression of boot-time.dhcp.
+On Tue, Jun 09, 2020 at 12:20:16PM +0530, Vikash Bansal wrote:
+> CVE Description:
+> NVD Site Link: https://nvd.nist.gov/vuln/detail?vulnId=CVE-2019-18885
+> 
+> It was discovered that the btrfs file system in the Linux kernel did not
+> properly validate metadata, leading to a NULL pointer dereference. An
+> attacker could use this to specially craft a file system image that, when
+> mounted, could cause a denial of service (system crash).
+> 
+> [PATCH v4.19.y 1/2]:
+> Backporting of upsream commit 09ba3bc9dd15:
+> btrfs: merge btrfs_find_device and find_device
+> 
+> [PATCH v4.19.y 2/2]:
+> Backporting of upstream commit 62fdaa52a3d0:
+> btrfs: Detect unbalanced tree with empty leaf before crashing
+> 
+> On NVD site link of "commit 09ba3bc9dd150457c506e4661380a6183af651c1" 
+> was given as the fix for this CVE. But the issue was still reproducible.
+> So had to apply patch "Commit 62fdaa52a3d00a875da771719b6dc537ca79fce1"
+> to fix the issue.
 
-Fixes: 8eb613c0b8f1 ("ima: verify mprotect change is consistent with mmap policy")
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/ima/ima_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Looks good, now queued up,t hanks.
 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 800fb3bba418..c1583d98c5e5 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -419,7 +419,8 @@ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
- 	int pcr;
- 
- 	/* Is mprotect making an mmap'ed file executable? */
--	if (!vma->vm_file || !(prot & PROT_EXEC) || (vma->vm_flags & VM_EXEC))
-+	if (!(ima_policy_flag & IMA_APPRAISE) || !vma->vm_file ||
-+	    !(prot & PROT_EXEC) || (vma->vm_flags & VM_EXEC))
- 		return 0;
- 
- 	security_task_getsecid(current, &secid);
--- 
-2.7.5
-
+greg k-h
