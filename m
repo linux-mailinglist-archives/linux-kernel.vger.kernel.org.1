@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838711F6A63
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2F31F6A6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgFKOz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:55:57 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:44736 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgFKOz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:55:56 -0400
-Received: by mail-lf1-f67.google.com with SMTP id w15so3660673lfe.11;
-        Thu, 11 Jun 2020 07:55:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tG64BUJ8TS5taZg0hL83hvWeRis47PfXL8DPqNHCXxs=;
-        b=OLGuwP2CF7bZFkOiORcLAQoD8LxaWs33FqlC6HwRj/wKwRGjYUmnhCBfe8XI8yVkST
-         /q71OzWG+SXD1QCtxXKa5Nwi67ahQ6w48mmdVDn/oVuxBEOdRWKkauxJaueXmlD3PRBN
-         0gy9v9UCbletZUgbesUH3/K+2ypDa2lY0aM1buqeP9PSsJ8u2UaUWz0Y4R6p23PQ/aJY
-         cL33T4phHwvHRPL2MBxKFDlOqPhdFlA237PsPpwh4gGMjXHZL5I5hCcYz8SOKBdF0V2K
-         RLZm3t4X/JIbRXUYAzHqCLWQCsvSnNmchZSMt9pKNlYrs+ODFBtYfwEf8o9VVTTIItrs
-         llJg==
-X-Gm-Message-State: AOAM533lMhXrHWdBKuiu9uxwMG3FAZtIXMoCFGvVdsjEDTDfWxKPQVmw
-        PPRYwuBoEtSYbi38c6FRuCVP7O1ZNnM=
-X-Google-Smtp-Source: ABdhPJwejNPn8b2gu/doPN0PjZLXAZa8cOcqJeH5Z9QKV8/y5Hqe8mos8aIMBwkmj98yAh2/93RD/w==
-X-Received: by 2002:ac2:4ac2:: with SMTP id m2mr2721923lfp.94.1591887354536;
-        Thu, 11 Jun 2020 07:55:54 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id y12sm769380ljh.79.2020.06.11.07.55.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 07:55:54 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id c12so3664876lfc.10;
-        Thu, 11 Jun 2020 07:55:54 -0700 (PDT)
-X-Received: by 2002:ac2:5cd1:: with SMTP id f17mr4264517lfq.4.1591887353884;
- Thu, 11 Jun 2020 07:55:53 -0700 (PDT)
+        id S1728411AbgFKO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:56:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5819 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728382AbgFKO4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:56:33 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B921F8C62A168E5065F7;
+        Thu, 11 Jun 2020 22:56:30 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 11 Jun 2020 22:56:23 +0800
+From:   Chen Wandun <chenwandun@huawei.com>
+To:     <acme@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>,
+        <Markus.Elfring@web.de>, <cj.chengjian@huawei.com>,
+        <chenwandun@huawei.com>
+Subject: [PATCH next v2 0/2] fix potential memleak in perf events parser
+Date:   Thu, 11 Jun 2020 22:56:03 +0800
+Message-ID: <20200611145605.21427-1-chenwandun@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200609224524.108092-1-iamkeyur96@gmail.com> <20200609225035.108435-1-iamkeyur96@gmail.com>
-In-Reply-To: <20200609225035.108435-1-iamkeyur96@gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Thu, 11 Jun 2020 22:55:44 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64mEhd8d-=+bt=Di=L4+kyt6VLyp2ZbOxGnDoiV09iJ+g@mail.gmail.com>
-Message-ID: <CAGb2v64mEhd8d-=+bt=Di=L4+kyt6VLyp2ZbOxGnDoiV09iJ+g@mail.gmail.com>
-Subject: Re: [PATCH v2] power: supply: axp20x_usb_power: fix spelling mistake
-To:     Keyur Patel <iamkeyur96@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 6:50 AM Keyur Patel <iamkeyur96@gmail.com> wrote:
->
-> Fix typo: "triger" --> "trigger"
->
-> Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+fix some memleaks for parse_events_term__sym_hw and parse_events_term__clone.
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+v1 ==> v2
+1. split into two patches
+2. add jump targets common exception handling
+3. add Fixes tag
+
+Chen Wandun (1):
+  perf tools: fix potential memleak in perf events parser
+
+Cheng Jian (1):
+  perf tools: fix potential memleak in perf events parser
+
+ tools/perf/util/parse-events.c | 51 ++++++++++++++++++++++++++++------
+ 1 file changed, 43 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
+
