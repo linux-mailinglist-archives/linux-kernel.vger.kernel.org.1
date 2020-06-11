@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDEF1F6A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE291F6A34
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgFKOiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728193AbgFKOiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:38:21 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B447FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id h3so5594149ilh.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dF3hNbjUBSQwM8/VdlOfSEew66M2+2X1iPt+T7+avfg=;
-        b=UcfRzKubbiAogehSYuWmlXFgR4RDmCojE9/+/FKzFy9BzQIdhIhFAQKDSb1ssre2iT
-         NPWOPP6Z+CiFr1rdOA8Kh1aSWwSMXk18FGwfVeBpEw/9ubjLLyQFe0Tzb0nGvFEIaKl9
-         8o8mLqA7fldwmvH3GN4AsDZBvtmrua29LoXWw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dF3hNbjUBSQwM8/VdlOfSEew66M2+2X1iPt+T7+avfg=;
-        b=bP7HG5Q0FOrVALXphH6YoKeybvRAn+brugtl3b4TSDjNrBvIAE+Ug4xFV/SUlsYW/f
-         q+4tMcgvNIKxktITAwqGnF5j2iAUB8trLPy0Jn7h3igzjwRcDLcJRsd0vcnoIVhxDztY
-         KdYqPAxjJ9N/uafKUmKuZjkjbKvQodWAzMEAb+fPNxDwYb/8USr+l69k56u7hGlluoXl
-         FLJCmT7vi+Wv6XociwjCV46aBclFHmv0eeEUSleJYrvo77Eb9jCCvjQ2sn4EaPFKqlWt
-         NwNafgGtfFh21sZhWa87bsbJXKcPHGemT4ZjJ/ZnC3yn1kyOhRLM45fzzTA3e46kz6CR
-         Jmwg==
-X-Gm-Message-State: AOAM532TEaP8wmMvtWNepwHvOKfg0/I46Z96HNdtf7TPnEHYriE5shMx
-        SMQOPMMkdpm6JuZYiJGrJP4TbQ==
-X-Google-Smtp-Source: ABdhPJzKn2AV05PUIQzBsSu2r27bMvUJlu31y880zGD5aJYE7pVuAlx5fF7g/lZPrbDYUx84Y04BxA==
-X-Received: by 2002:a92:dacf:: with SMTP id o15mr7828271ilq.36.1591886300106;
-        Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n7sm1561133ile.76.2020.06.11.07.38.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 07:38:19 -0700 (PDT)
-Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
-To:     Petteri Aimonen <jpa@git.mail.kapsi.fi>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <8b1f0bfa-79b0-74e4-0241-8b2a94491807@linuxfoundation.org>
- <C6F6F6E4-CBD8-4E72-812B-99F008ECAA4F@amacapital.net>
- <b4629042-21c7-2b38-4c3f-44f9be469cca@linuxfoundation.org>
- <20200603051946.GF17423@lakka.kapsi.fi>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f5f80b20-c8e8-4f75-c5b2-dbd7ce56ca41@linuxfoundation.org>
-Date:   Thu, 11 Jun 2020 08:38:18 -0600
+        id S1728402AbgFKOjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:39:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54154 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728059AbgFKOjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:39:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1256DAC12;
+        Thu, 11 Jun 2020 14:39:32 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] ARM: mstar: Add infinity/mercury series dtsi
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
+        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Doug Anderson <armlinux@m.disordat.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <20191014061617.10296-2-daniel@0x0f.com>
+ <20200610090421.3428945-4-daniel@0x0f.com>
+ <bf26822d-acb0-ae40-df7f-80978bd26cfb@suse.de>
+ <CAFr9PXmp=mZhyRDpx_E0_1Zc5SFrSYUm9jP-k7VCDf9P37sT6g@mail.gmail.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <3d933b03-9757-f659-d19a-ce6d0fccebea@suse.de>
+Date:   Thu, 11 Jun 2020 16:39:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200603051946.GF17423@lakka.kapsi.fi>
+In-Reply-To: <CAFr9PXmp=mZhyRDpx_E0_1Zc5SFrSYUm9jP-k7VCDf9P37sT6g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/20 11:19 PM, Petteri Aimonen wrote:
-> Hi,
-> 
->> Is it correct to assume the stuff checked differs from test to test
->> and done in user-space.
+Hi,
+
+Am 11.06.20 um 16:19 schrieb Daniel Palmer:
+> On Thu, 11 Jun 2020 at 22:39, Andreas Färber <afaerber@suse.de> wrote:
+>>> diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
+>>> new file mode 100644
+>>> index 000000000000..0fccc4ca52a4
+>>> --- /dev/null
+>>> +++ b/arch/arm/boot/dts/mstar-v7.dtsi
 >>
->>> undo_evil_state();
->>
->> Is it correct to assume undoing evil differs from test to test
->> and done in user-space, provide it can be done from userspace.
+>> So this is the only file starting with mstar. Have you thought about
+>> prefixing infinity/mercury, so that they're grouped together?
 > 
-> Yes, currently the test works like:
-> 
-> do_test_setup();
-> read_from_debugfs_file();
-> check_results();
-> 
+> I have been thinking about that. I didn't see any other dts in arm that had
+> the vendor as a prefix though. With arm64 everything is in per vendor
+> subdirectories
+> to achieve the same thing.
 
-You will need a 4th clanup step step of undo_test_setup().
+qcom- and arm- are examples. Admittedly outliers, but for a new target 
+you don't have all the historical backwards-compatibility baggage.
 
-> and the middle step stays the same. But of course in general case there
-> could be argument passing etc, even though the test for this issue
-> doesn't need them.
-> 
-> Myself I don't see the problem with just adding a file under debugfs and
-> bind to its read.
-> 
+The downside would be if someone wanted to add newer sstar chips under 
+the new name later, then they wouldn't be grouped with predecessor 
+families. Right now it seems like mercury and infinity are not that 
+different, so I figured it might be useful for people contributing 
+patches to see that changes in one might require review of the other.
 
-thanks,
--- Shuah
+Cheers,
+Andreas
 
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
