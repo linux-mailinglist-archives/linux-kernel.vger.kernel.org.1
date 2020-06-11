@@ -2,398 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD151F707C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 00:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A7B1F7081
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 00:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgFKWml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 18:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbgFKWmk (ORCPT
+        id S1726416AbgFKWnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 18:43:39 -0400
+Received: from smtprelay0202.hostedemail.com ([216.40.44.202]:39680 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726159AbgFKWni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 18:42:40 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F25C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 15:42:39 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2F753806B7;
-        Fri, 12 Jun 2020 10:42:38 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1591915358;
-        bh=Eti+CYkcoKdG2j/gQPveQKce+SbFEvRu2kn2MA2fYbo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=f9W6RspaOmK8rY7FQ6elm6iqzJo/dffDoq1rMHudpgOlJbIAWbYE0kJAJC7qEY79+
-         lI7AdziW/BviUmCH9i+Wl51umGfqgnNOseiIIkIXw3gjkgeaFJmCJIpoTUtrxb5Yu4
-         MN+DbplfLl7rDBjQa9VHLFShoarh2TpSsp3zEW49y6k8U4ct6kzcDvI6vXMqIJDKx7
-         oemddG54dIw01YPZWOju/xalLttder5csl5Xl1p737k5obnRH0J3cOLid/oeYmOwkd
-         pF8CiIMyD+pf0RatQxaDaeMMlaAOOI63HSvHoXsNyfgk8WejCb0I/6LNOiATd5MTBA
-         Xa5PMeZth8OTA==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5ee2b35e0000>; Fri, 12 Jun 2020 10:42:38 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id 3433B13ED45;
-        Fri, 12 Jun 2020 10:42:37 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id C9E44280083; Fri, 12 Jun 2020 10:42:37 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@c-s.fr
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 2/2] powerpc: configs: remove CMDLINE_BOOL
-Date:   Fri, 12 Jun 2020 10:42:20 +1200
-Message-Id: <20200611224220.25066-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200611224220.25066-1-chris.packham@alliedtelesis.co.nz>
-References: <20200611224220.25066-1-chris.packham@alliedtelesis.co.nz>
+        Thu, 11 Jun 2020 18:43:38 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3ECB3181CB14C;
+        Thu, 11 Jun 2020 22:43:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:69:355:379:800:960:966:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1431:1437:1515:1516:1518:1535:1593:1594:1605:1730:1747:1777:1792:1981:2194:2196:2198:2199:2200:2201:2393:2525:2568:2629:2682:2685:2731:2828:2859:2894:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3167:3865:3866:3867:3868:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4043:4052:4120:4321:4384:4385:4395:4559:4659:5007:6117:6119:7514:7809:7904:8568:8660:9010:9025:9072:9149:9388:9592:10004:10049:10848:11026:11232:11257:11657:11658:11896:11914:12043:12114:12291:12297:12438:12555:12683:12760:13148:13230:13439:14096:14097:14106:14659:21080:21212:21325:21433:21451:21611:21627:21691:21740:21781:21939:30019:30034:30054:30056:30064,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: twig57_1e0970d26dd7
+X-Filterd-Recvd-Size: 9660
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 11 Jun 2020 22:43:36 +0000 (UTC)
+Message-ID: <2f77e88e02ba81f0496dba778854fae8d0b5e862.camel@perches.com>
+Subject: request: run scripts/parse-maintainers.pl  just before every -rc1
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 11 Jun 2020 15:43:34 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regenerate defconfigs to remove CONFIG_CMDLINE_BOOL and the default
-CONFIG_CMDLINE where applicable.
+It seems the last major reordering of the MAINTAINERS file
+did not create many issues for downstream branches.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Keeping these sections and file lists ordered has some utility.
+
+It seems that patches to the MAINTAINERS file frequently cause
+out-of-order sections and file entries as submitters aren't
+very good at alphabetizing.
+
+Right now running:
+
+$ ./scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS --order
+
+produces this diff:
 ---
-Changes in v3:
-- new
+ MAINTAINERS | 102 ++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 51 insertions(+), 51 deletions(-)
 
- arch/powerpc/configs/44x/akebono_defconfig     | 2 --
- arch/powerpc/configs/44x/arches_defconfig      | 2 --
- arch/powerpc/configs/44x/bamboo_defconfig      | 2 --
- arch/powerpc/configs/44x/bluestone_defconfig   | 2 --
- arch/powerpc/configs/44x/canyonlands_defconfig | 2 --
- arch/powerpc/configs/44x/currituck_defconfig   | 2 --
- arch/powerpc/configs/44x/eiger_defconfig       | 2 --
- arch/powerpc/configs/44x/fsp2_defconfig        | 1 -
- arch/powerpc/configs/44x/icon_defconfig        | 2 --
- arch/powerpc/configs/44x/iss476-smp_defconfig  | 1 -
- arch/powerpc/configs/44x/katmai_defconfig      | 2 --
- arch/powerpc/configs/44x/rainier_defconfig     | 2 --
- arch/powerpc/configs/44x/redwood_defconfig     | 2 --
- arch/powerpc/configs/44x/sam440ep_defconfig    | 2 --
- arch/powerpc/configs/44x/sequoia_defconfig     | 2 --
- arch/powerpc/configs/44x/taishan_defconfig     | 2 --
- arch/powerpc/configs/44x/warp_defconfig        | 1 -
- arch/powerpc/configs/holly_defconfig           | 1 -
- arch/powerpc/configs/mvme5100_defconfig        | 3 +--
- arch/powerpc/configs/ps3_defconfig             | 2 --
- arch/powerpc/configs/skiroot_defconfig         | 1 -
- arch/powerpc/configs/storcenter_defconfig      | 1 -
- 22 files changed, 1 insertion(+), 38 deletions(-)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9b4e836543a3..756a95d403a9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -900,11 +900,6 @@ F:	drivers/gpu/drm/amd/include/v9_structs.h
+ F:	drivers/gpu/drm/amd/include/vi_structs.h
+ F:	include/uapi/linux/kfd_ioctl.h
+ 
+-AMD SPI DRIVER
+-M:	Sanjay R Mehta <sanju.mehta@amd.com>
+-S:	Maintained
+-F:	drivers/spi/spi-amd.c
+-
+ AMD MP2 I2C DRIVER
+ M:	Elie Morisse <syniurge@gmail.com>
+ M:	Nehal Shah <nehal-bakulchandra.shah@amd.com>
+@@ -927,6 +922,11 @@ M:	Tom Lendacky <thomas.lendacky@amd.com>
+ S:	Supported
+ F:	arch/arm64/boot/dts/amd/
+ 
++AMD SPI DRIVER
++M:	Sanjay R Mehta <sanju.mehta@amd.com>
++S:	Maintained
++F:	drivers/spi/spi-amd.c
++
+ AMD XGBE DRIVER
+ M:	Tom Lendacky <thomas.lendacky@amd.com>
+ L:	netdev@vger.kernel.org
+@@ -1046,10 +1046,10 @@ F:	drivers/iio/imu/adis16460.c
+ ANALOG DEVICES INC ADIS16475 DRIVER
+ M:	Nuno Sa <nuno.sa@analog.com>
+ L:	linux-iio@vger.kernel.org
+-W:	http://ez.analog.com/community/linux-device-drivers
+ S:	Supported
+-F:	drivers/iio/imu/adis16475.c
++W:	http://ez.analog.com/community/linux-device-drivers
+ F:	Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
++F:	drivers/iio/imu/adis16475.c
+ 
+ ANALOG DEVICES INC ADM1177 DRIVER
+ M:	Beniamin Bia <beniamin.bia@analog.com>
+@@ -3943,10 +3943,10 @@ CCTRNG ARM TRUSTZONE CRYPTOCELL TRUE RANDOM NUMBER GENERATOR (TRNG) DRIVER
+ M:	Hadar Gat <hadar.gat@arm.com>
+ L:	linux-crypto@vger.kernel.org
+ S:	Supported
++W:	https://developer.arm.com/products/system-ip/trustzone-cryptocell/cryptocell-700-family
++F:	Documentation/devicetree/bindings/rng/arm-cctrng.txt
+ F:	drivers/char/hw_random/cctrng.c
+ F:	drivers/char/hw_random/cctrng.h
+-F:	Documentation/devicetree/bindings/rng/arm-cctrng.txt
+-W:	https://developer.arm.com/products/system-ip/trustzone-cryptocell/cryptocell-700-family
+ 
+ CEC FRAMEWORK
+ M:	Hans Verkuil <hverkuil-cisco@xs4all.nl>
+@@ -4700,6 +4700,12 @@ S:	Orphan
+ W:	http://www.cyclades.com/
+ F:	drivers/net/wan/pc300*
+ 
++CYPRESS CY8CTMA140 TOUCHSCREEN DRIVER
++M:	Linus Walleij <linus.walleij@linaro.org>
++L:	linux-input@vger.kernel.org
++S:	Maintained
++F:	drivers/input/touchscreen/cy8ctma140.c
++
+ CYPRESS_FIRMWARE MEDIA DRIVER
+ M:	Antti Palosaari <crope@iki.fi>
+ L:	linux-media@vger.kernel.org
+@@ -4710,12 +4716,6 @@ Q:	http://patchwork.linuxtv.org/project/linux-media/list/
+ T:	git git://linuxtv.org/anttip/media_tree.git
+ F:	drivers/media/common/cypress_firmware*
+ 
+-CYPRESS CY8CTMA140 TOUCHSCREEN DRIVER
+-M:	Linus Walleij <linus.walleij@linaro.org>
+-L:	linux-input@vger.kernel.org
+-S:	Maintained
+-F:	drivers/input/touchscreen/cy8ctma140.c
+-
+ CYTTSP TOUCHSCREEN DRIVER
+ M:	Ferruh Yigit <fery@cypress.com>
+ L:	linux-input@vger.kernel.org
+@@ -5399,10 +5399,10 @@ F:	include/uapi/drm/i810_drm.h
+ DRM DRIVER FOR LVDS PANELS
+ M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+ L:	dri-devel@lists.freedesktop.org
+-T:	git git://anongit.freedesktop.org/drm/drm-misc
+ S:	Maintained
+-F:	drivers/gpu/drm/panel/panel-lvds.c
++T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/devicetree/bindings/display/panel/lvds.yaml
++F:	drivers/gpu/drm/panel/panel-lvds.c
+ 
+ DRM DRIVER FOR MATROX G200/G400 GRAPHICS CARDS
+ S:	Orphan / Obsolete
+@@ -7100,32 +7100,32 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+ F:	Documentation/locking/*futex*
++F:	Documentation/locking/*futex*
+ F:	include/asm-generic/futex.h
+ F:	include/linux/futex.h
+ F:	include/uapi/linux/futex.h
+ F:	kernel/futex.c
+ F:	tools/perf/bench/futex*
+-F:	Documentation/locking/*futex*
++
++GASKET DRIVER FRAMEWORK
++M:	Rob Springer <rspringer@google.com>
++M:	Todd Poynor <toddpoynor@google.com>
++M:	Ben Chan <benchan@chromium.org>
++M:	Richard Yeh <rcy@google.com>
++S:	Maintained
++F:	drivers/staging/gasket/
+ 
+ GATEWORKS SYSTEM CONTROLLER (GSC) DRIVER
+ M:	Tim Harvey <tharvey@gateworks.com>
+ M:	Robert Jones <rjones@gateworks.com>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+-F:	drivers/mfd/gateworks-gsc.c
+-F:	include/linux/mfd/gsc.h
+ F:	Documentation/hwmon/gsc-hwmon.rst
+ F:	drivers/hwmon/gsc-hwmon.c
++F:	drivers/mfd/gateworks-gsc.c
++F:	include/linux/mfd/gsc.h
+ F:	include/linux/platform_data/gsc_hwmon.h
+ 
+-GASKET DRIVER FRAMEWORK
+-M:	Rob Springer <rspringer@google.com>
+-M:	Todd Poynor <toddpoynor@google.com>
+-M:	Ben Chan <benchan@chromium.org>
+-M:	Richard Yeh <rcy@google.com>
+-S:	Maintained
+-F:	drivers/staging/gasket/
+-
+ GCC PLUGINS
+ M:	Kees Cook <keescook@chromium.org>
+ R:	Emese Revfy <re.emese@gmail.com>
+@@ -9031,8 +9031,8 @@ M:	Corey Minyard <minyard@acm.org>
+ L:	openipmi-developer@lists.sourceforge.net (moderated for non-subscribers)
+ S:	Supported
+ W:	http://openipmi.sourceforge.net/
+-F:	Documentation/driver-api/ipmi.rst
+ F:	Documentation/devicetree/bindings/ipmi/
++F:	Documentation/driver-api/ipmi.rst
+ F:	drivers/char/ipmi/
+ F:	include/linux/ipmi*
+ F:	include/uapi/linux/ipmi*
+@@ -9855,9 +9855,9 @@ F:	include/uapi/linux/lightnvm.h
+ LINEAR RANGES HELPERS
+ M:	Mark Brown <broonie@kernel.org>
+ R:	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++F:	include/linux/linear_range.h
+ F:	lib/linear_ranges.c
+ F:	lib/test_linear_ranges.c
+-F:	include/linux/linear_range.h
+ 
+ LINUX FOR POWER MACINTOSH
+ M:	Benjamin Herrenschmidt <benh@kernel.crashing.org>
+@@ -13831,8 +13831,8 @@ M:	Colin Cross <ccross@android.com>
+ M:	Tony Luck <tony.luck@intel.com>
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/pstore
+-F:	Documentation/admin-guide/ramoops.rst
+ F:	Documentation/admin-guide/pstore-blk.rst
++F:	Documentation/admin-guide/ramoops.rst
+ F:	Documentation/devicetree/bindings/reserved-memory/ramoops.txt
+ F:	drivers/acpi/apei/erst.c
+ F:	drivers/firmware/efi/efi-pstore.c
+@@ -14852,9 +14852,9 @@ M:	Gerald Schaefer <gerald.schaefer@de.ibm.com>
+ L:	linux-s390@vger.kernel.org
+ S:	Supported
+ W:	http://www.ibm.com/developerworks/linux/linux390/
++F:	Documentation/s390/pci.rst
+ F:	arch/s390/pci/
+ F:	drivers/pci/hotplug/s390_pci_hpc.c
+-F:	Documentation/s390/pci.rst
+ 
+ S390 VFIO AP DRIVER
+ M:	Tony Krowiak <akrowiak@linux.ibm.com>
+@@ -15288,6 +15288,15 @@ F:	block/sed*
+ F:	include/linux/sed*
+ F:	include/uapi/linux/sed*
+ 
++SECURE MONITOR CALL(SMC) CALLING CONVENTION (SMCCC)
++M:	Mark Rutland <mark.rutland@arm.com>
++M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
++M:	Sudeep Holla <sudeep.holla@arm.com>
++L:	linux-arm-kernel@lists.infradead.org
++S:	Maintained
++F:	drivers/firmware/smccc/
++F:	include/linux/arm-smccc.h
++
+ SECURITY CONTACT
+ M:	Security Officers <security@kernel.org>
+ S:	Supported
+@@ -15656,15 +15665,6 @@ M:	Nicolas Pitre <nico@fluxnic.net>
+ S:	Odd Fixes
+ F:	drivers/net/ethernet/smsc/smc91x.*
+ 
+-SECURE MONITOR CALL(SMC) CALLING CONVENTION (SMCCC)
+-M:	Mark Rutland <mark.rutland@arm.com>
+-M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+-M:	Sudeep Holla <sudeep.holla@arm.com>
+-L:	linux-arm-kernel@lists.infradead.org
+-S:	Maintained
+-F:	drivers/firmware/smccc/
+-F:	include/linux/arm-smccc.h
+-
+ SMIA AND SMIA++ IMAGE SENSOR DRIVER
+ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
+ L:	linux-media@vger.kernel.org
+@@ -18085,6 +18085,16 @@ F:	net/vmw_vsock/virtio_transport_common.c
+ F:	net/vmw_vsock/vsock_loopback.c
+ F:	tools/testing/vsock/
+ 
++VIRTIO BALLOON
++M:	"Michael S. Tsirkin" <mst@redhat.com>
++M:	David Hildenbrand <david@redhat.com>
++L:	virtualization@lists.linux-foundation.org
++S:	Maintained
++F:	drivers/virtio/virtio_balloon.c
++F:	include/linux/balloon_compaction.h
++F:	include/uapi/linux/virtio_balloon.h
++F:	mm/balloon_compaction.c
++
+ VIRTIO BLOCK AND SCSI DRIVERS
+ M:	"Michael S. Tsirkin" <mst@redhat.com>
+ M:	Jason Wang <jasowang@redhat.com>
+@@ -18122,16 +18132,6 @@ F:	include/linux/virtio*.h
+ F:	include/uapi/linux/virtio_*.h
+ F:	tools/virtio/
+ 
+-VIRTIO BALLOON
+-M:	"Michael S. Tsirkin" <mst@redhat.com>
+-M:	David Hildenbrand <david@redhat.com>
+-L:	virtualization@lists.linux-foundation.org
+-S:	Maintained
+-F:	drivers/virtio/virtio_balloon.c
+-F:	include/uapi/linux/virtio_balloon.h
+-F:	include/linux/balloon_compaction.h
+-F:	mm/balloon_compaction.c
+-
+ VIRTIO CRYPTO DRIVER
+ M:	Gonglei <arei.gonglei@huawei.com>
+ L:	virtualization@lists.linux-foundation.org
 
-diff --git a/arch/powerpc/configs/44x/akebono_defconfig b/arch/powerpc/co=
-nfigs/44x/akebono_defconfig
-index 7705a5c3f4ea..60d5fa2c3b93 100644
---- a/arch/powerpc/configs/44x/akebono_defconfig
-+++ b/arch/powerpc/configs/44x/akebono_defconfig
-@@ -19,8 +19,6 @@ CONFIG_HIGHMEM=3Dy
- CONFIG_HZ_100=3Dy
- CONFIG_IRQ_ALL_CPUS=3Dy
- # CONFIG_COMPACTION is not set
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- # CONFIG_SUSPEND is not set
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
-diff --git a/arch/powerpc/configs/44x/arches_defconfig b/arch/powerpc/con=
-figs/44x/arches_defconfig
-index 82c6f49b8dcb..41d04e70d4fb 100644
---- a/arch/powerpc/configs/44x/arches_defconfig
-+++ b/arch/powerpc/configs/44x/arches_defconfig
-@@ -11,8 +11,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_EBONY is not set
- CONFIG_ARCHES=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/bamboo_defconfig b/arch/powerpc/con=
-figs/44x/bamboo_defconfig
-index 679213214a75..acbce718eaa8 100644
---- a/arch/powerpc/configs/44x/bamboo_defconfig
-+++ b/arch/powerpc/configs/44x/bamboo_defconfig
-@@ -9,8 +9,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- CONFIG_BAMBOO=3Dy
- # CONFIG_EBONY is not set
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/bluestone_defconfig b/arch/powerpc/=
-configs/44x/bluestone_defconfig
-index 8006a5728afd..37088f250c9e 100644
---- a/arch/powerpc/configs/44x/bluestone_defconfig
-+++ b/arch/powerpc/configs/44x/bluestone_defconfig
-@@ -11,8 +11,6 @@ CONFIG_EXPERT=3Dy
- # CONFIG_COMPAT_BRK is not set
- CONFIG_BLUESTONE=3Dy
- # CONFIG_EBONY is not set
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/canyonlands_defconfig b/arch/powerp=
-c/configs/44x/canyonlands_defconfig
-index ccc14eb7a2f1..61776ade572b 100644
---- a/arch/powerpc/configs/44x/canyonlands_defconfig
-+++ b/arch/powerpc/configs/44x/canyonlands_defconfig
-@@ -11,8 +11,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_EBONY is not set
- CONFIG_CANYONLANDS=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/currituck_defconfig b/arch/powerpc/=
-configs/44x/currituck_defconfig
-index be76e066df01..34c86b3abecb 100644
---- a/arch/powerpc/configs/44x/currituck_defconfig
-+++ b/arch/powerpc/configs/44x/currituck_defconfig
-@@ -17,8 +17,6 @@ CONFIG_HIGHMEM=3Dy
- CONFIG_HZ_100=3Dy
- CONFIG_MATH_EMULATION=3Dy
- CONFIG_IRQ_ALL_CPUS=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- # CONFIG_SUSPEND is not set
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
-diff --git a/arch/powerpc/configs/44x/eiger_defconfig b/arch/powerpc/conf=
-igs/44x/eiger_defconfig
-index 1abaa63e067f..509300f400e2 100644
---- a/arch/powerpc/configs/44x/eiger_defconfig
-+++ b/arch/powerpc/configs/44x/eiger_defconfig
-@@ -10,8 +10,6 @@ CONFIG_MODULES=3Dy
- CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_EBONY is not set
- CONFIG_EIGER=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_PCIEPORTBUS=3Dy
- # CONFIG_PCIEASPM is not set
- CONFIG_NET=3Dy
-diff --git a/arch/powerpc/configs/44x/fsp2_defconfig b/arch/powerpc/confi=
-gs/44x/fsp2_defconfig
-index e67fc041ca3e..30845ce0885a 100644
---- a/arch/powerpc/configs/44x/fsp2_defconfig
-+++ b/arch/powerpc/configs/44x/fsp2_defconfig
-@@ -28,7 +28,6 @@ CONFIG_476FPE_ERR46=3Dy
- CONFIG_SWIOTLB=3Dy
- CONFIG_KEXEC=3Dy
- CONFIG_CRASH_DUMP=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"ip=3Don rw"
- # CONFIG_SUSPEND is not set
- # CONFIG_PCI is not set
-diff --git a/arch/powerpc/configs/44x/icon_defconfig b/arch/powerpc/confi=
-gs/44x/icon_defconfig
-index 7d7ff84c8200..930948a1da76 100644
---- a/arch/powerpc/configs/44x/icon_defconfig
-+++ b/arch/powerpc/configs/44x/icon_defconfig
-@@ -9,8 +9,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_EBONY is not set
- CONFIG_ICON=3Dy
- CONFIG_HIGHMEM=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_PCIEPORTBUS=3Dy
- # CONFIG_PCIEASPM is not set
- CONFIG_NET=3Dy
-diff --git a/arch/powerpc/configs/44x/iss476-smp_defconfig b/arch/powerpc=
-/configs/44x/iss476-smp_defconfig
-index fb5c73a29bf4..2c3834eebca3 100644
---- a/arch/powerpc/configs/44x/iss476-smp_defconfig
-+++ b/arch/powerpc/configs/44x/iss476-smp_defconfig
-@@ -17,7 +17,6 @@ CONFIG_ISS4xx=3Dy
- CONFIG_HZ_100=3Dy
- CONFIG_MATH_EMULATION=3Dy
- CONFIG_IRQ_ALL_CPUS=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"root=3D/dev/issblk0"
- # CONFIG_PCI is not set
- CONFIG_ADVANCED_OPTIONS=3Dy
-diff --git a/arch/powerpc/configs/44x/katmai_defconfig b/arch/powerpc/con=
-figs/44x/katmai_defconfig
-index c6dc1445fc04..1a0f1c3e0ee9 100644
---- a/arch/powerpc/configs/44x/katmai_defconfig
-+++ b/arch/powerpc/configs/44x/katmai_defconfig
-@@ -9,8 +9,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_EBONY is not set
- CONFIG_KATMAI=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/rainier_defconfig b/arch/powerpc/co=
-nfigs/44x/rainier_defconfig
-index c83ad03182df..6dd67de06a0b 100644
---- a/arch/powerpc/configs/44x/rainier_defconfig
-+++ b/arch/powerpc/configs/44x/rainier_defconfig
-@@ -10,8 +10,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_EBONY is not set
- CONFIG_RAINIER=3Dy
- CONFIG_MATH_EMULATION=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/redwood_defconfig b/arch/powerpc/co=
-nfigs/44x/redwood_defconfig
-index 640fe1d5af28..e28d76416537 100644
---- a/arch/powerpc/configs/44x/redwood_defconfig
-+++ b/arch/powerpc/configs/44x/redwood_defconfig
-@@ -10,8 +10,6 @@ CONFIG_MODULES=3Dy
- CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_EBONY is not set
- CONFIG_REDWOOD=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_PCIEPORTBUS=3Dy
- # CONFIG_PCIEASPM is not set
- CONFIG_NET=3Dy
-diff --git a/arch/powerpc/configs/44x/sam440ep_defconfig b/arch/powerpc/c=
-onfigs/44x/sam440ep_defconfig
-index 22dc0dadf576..ef09786d49b9 100644
---- a/arch/powerpc/configs/44x/sam440ep_defconfig
-+++ b/arch/powerpc/configs/44x/sam440ep_defconfig
-@@ -12,8 +12,6 @@ CONFIG_PARTITION_ADVANCED=3Dy
- CONFIG_AMIGA_PARTITION=3Dy
- # CONFIG_EBONY is not set
- CONFIG_SAM440EP=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/sequoia_defconfig b/arch/powerpc/co=
-nfigs/44x/sequoia_defconfig
-index 2c0973db8837..b4984eab43eb 100644
---- a/arch/powerpc/configs/44x/sequoia_defconfig
-+++ b/arch/powerpc/configs/44x/sequoia_defconfig
-@@ -11,8 +11,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_EBONY is not set
- CONFIG_SEQUOIA=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/taishan_defconfig b/arch/powerpc/co=
-nfigs/44x/taishan_defconfig
-index a2d355ca62b2..3ea5932ab852 100644
---- a/arch/powerpc/configs/44x/taishan_defconfig
-+++ b/arch/powerpc/configs/44x/taishan_defconfig
-@@ -9,8 +9,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_EBONY is not set
- CONFIG_TAISHAN=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/44x/warp_defconfig b/arch/powerpc/confi=
-gs/44x/warp_defconfig
-index af66c69c49fe..47252c2d7669 100644
---- a/arch/powerpc/configs/44x/warp_defconfig
-+++ b/arch/powerpc/configs/44x/warp_defconfig
-@@ -14,7 +14,6 @@ CONFIG_MODULE_UNLOAD=3Dy
- CONFIG_WARP=3Dy
- CONFIG_PPC4xx_GPIO=3Dy
- CONFIG_HZ_1000=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"ip=3Don"
- # CONFIG_PCI is not set
- CONFIG_NET=3Dy
-diff --git a/arch/powerpc/configs/holly_defconfig b/arch/powerpc/configs/=
-holly_defconfig
-index 067f433c8f5e..271daff47d1d 100644
---- a/arch/powerpc/configs/holly_defconfig
-+++ b/arch/powerpc/configs/holly_defconfig
-@@ -13,7 +13,6 @@ CONFIG_EMBEDDED6xx=3Dy
- CONFIG_PPC_HOLLY=3Dy
- CONFIG_GEN_RTC=3Dy
- CONFIG_BINFMT_MISC=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"console=3DttyS0,115200"
- # CONFIG_SECCOMP is not set
- CONFIG_NET=3Dy
-diff --git a/arch/powerpc/configs/mvme5100_defconfig b/arch/powerpc/confi=
-gs/mvme5100_defconfig
-index 0a0d046fc445..3d53d69ed36c 100644
---- a/arch/powerpc/configs/mvme5100_defconfig
-+++ b/arch/powerpc/configs/mvme5100_defconfig
-@@ -20,10 +20,9 @@ CONFIG_EMBEDDED6xx=3Dy
- CONFIG_MVME5100=3Dy
- CONFIG_KVM_GUEST=3Dy
- CONFIG_HZ_100=3Dy
-+CONFIG_CMDLINE=3D"console=3DttyS0,9600 ip=3Ddhcp root=3D/dev/nfs"
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- # CONFIG_COMPACTION is not set
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D"console=3DttyS0,9600 ip=3Ddhcp root=3D/dev/nfs"
- CONFIG_NET=3Dy
- CONFIG_PACKET=3Dy
- CONFIG_UNIX=3Dy
-diff --git a/arch/powerpc/configs/ps3_defconfig b/arch/powerpc/configs/ps=
-3_defconfig
-index 81b55c880fc3..142f1321fa58 100644
---- a/arch/powerpc/configs/ps3_defconfig
-+++ b/arch/powerpc/configs/ps3_defconfig
-@@ -34,8 +34,6 @@ CONFIG_KEXEC=3Dy
- # CONFIG_SPARSEMEM_VMEMMAP is not set
- # CONFIG_COMPACTION is not set
- CONFIG_SCHED_SMT=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
--CONFIG_CMDLINE=3D""
- CONFIG_PM=3Dy
- CONFIG_PM_DEBUG=3Dy
- # CONFIG_SECCOMP is not set
-diff --git a/arch/powerpc/configs/skiroot_defconfig b/arch/powerpc/config=
-s/skiroot_defconfig
-index ad6739ac63dc..b806a5d3a695 100644
---- a/arch/powerpc/configs/skiroot_defconfig
-+++ b/arch/powerpc/configs/skiroot_defconfig
-@@ -45,7 +45,6 @@ CONFIG_IRQ_ALL_CPUS=3Dy
- CONFIG_NUMA=3Dy
- CONFIG_PPC_64K_PAGES=3Dy
- CONFIG_SCHED_SMT=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"console=3Dtty0 console=3Dhvc0 ipr.fast_reboot=3D1 quie=
-t"
- # CONFIG_SECCOMP is not set
- # CONFIG_PPC_MEM_KEYS is not set
-diff --git a/arch/powerpc/configs/storcenter_defconfig b/arch/powerpc/con=
-figs/storcenter_defconfig
-index b964084e4056..47dcfaddc1ac 100644
---- a/arch/powerpc/configs/storcenter_defconfig
-+++ b/arch/powerpc/configs/storcenter_defconfig
-@@ -12,7 +12,6 @@ CONFIG_EMBEDDED6xx=3Dy
- CONFIG_STORCENTER=3Dy
- CONFIG_HZ_100=3Dy
- CONFIG_BINFMT_MISC=3Dy
--CONFIG_CMDLINE_BOOL=3Dy
- CONFIG_CMDLINE=3D"console=3DttyS0,115200"
- # CONFIG_SECCOMP is not set
- CONFIG_NET=3Dy
---=20
-2.27.0
 
