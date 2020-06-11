@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF39F1F6F33
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1861F6F38
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgFKVMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 17:12:10 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:41618 "EHLO
+        id S1726508AbgFKVMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 17:12:21 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:51321 "EHLO
         hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726277AbgFKVME (ORCPT
+        by vger.kernel.org with ESMTP id S1726180AbgFKVMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 17:12:04 -0400
+        Thu, 11 Jun 2020 17:12:03 -0400
 Received: from [78.134.85.74] (port=40536 helo=melee.dev.aim)
         by hostingweb31.netsons.net with esmtpa (Exim 4.93)
         (envelope-from <luca@lucaceresoli.net>)
-        id 1jjUUN-000C9m-S7; Thu, 11 Jun 2020 23:11:55 +0200
+        id 1jjUUO-000C9m-8M; Thu, 11 Jun 2020 23:11:56 +0200
 From:   Luca Ceresoli <luca@lucaceresoli.net>
 To:     linux-fpga@vger.kernel.org
 Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
@@ -24,10 +24,12 @@ Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
         Michal Simek <michal.simek@xilinx.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, Anatolij Gustschin <agust@denx.de>
-Subject: [PATCH 1/5] dt-bindings: fpga: xilinx-slave-serial: valid for the 7 Series too
-Date:   Thu, 11 Jun 2020 23:11:40 +0200
-Message-Id: <20200611211144.9421-1-luca@lucaceresoli.net>
+Subject: [PATCH 2/5] fpga manager: xilinx-spi: valid for the 7 Series too
+Date:   Thu, 11 Jun 2020 23:11:41 +0200
+Message-Id: <20200611211144.9421-2-luca@lucaceresoli.net>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200611211144.9421-1-luca@lucaceresoli.net>
+References: <20200611211144.9421-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -49,31 +51,21 @@ The Xilinx 7-series uses the same protocol, mention that.
 
 Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 ---
- .../devicetree/bindings/fpga/xilinx-slave-serial.txt     | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/fpga/xilinx-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/fpga/xilinx-slave-serial.txt b/Documentation/devicetree/bindings/fpga/xilinx-slave-serial.txt
-index cfa4ed42b62f..9f103f3872e8 100644
---- a/Documentation/devicetree/bindings/fpga/xilinx-slave-serial.txt
-+++ b/Documentation/devicetree/bindings/fpga/xilinx-slave-serial.txt
-@@ -1,11 +1,14 @@
- Xilinx Slave Serial SPI FPGA Manager
- 
--Xilinx Spartan-6 FPGAs support a method of loading the bitstream over
--what is referred to as "slave serial" interface.
-+Xilinx Spartan-6 and 7 Series FPGAs support a method of loading the
-+bitstream over what is referred to as "slave serial" interface.
- The slave serial link is not technically SPI, and might require extra
- circuits in order to play nicely with other SPI slaves on the same bus.
- 
--See https://www.xilinx.com/support/documentation/user_guides/ug380.pdf
-+See:
-+- https://www.xilinx.com/support/documentation/user_guides/ug380.pdf
-+- https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
-+- https://www.xilinx.com/support/documentation/application_notes/xapp583-fpga-configuration.pdf
- 
- Required properties:
- - compatible: should contain "xlnx,fpga-slave-serial"
+diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
+index 272ee0c22822..79106626c3f8 100644
+--- a/drivers/fpga/xilinx-spi.c
++++ b/drivers/fpga/xilinx-spi.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Xilinx Spartan6 Slave Serial SPI Driver
++ * Xilinx Spartan6 and 7 Series Slave Serial SPI Driver
+  *
+  * Copyright (C) 2017 DENX Software Engineering
+  *
 -- 
 2.27.0
 
