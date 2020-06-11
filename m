@@ -2,251 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1111F6621
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730571F6628
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgFKLCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:02:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
+        id S1727885AbgFKLCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:02:32 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:50930 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727031AbgFKLBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:01:54 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 067ED2081A;
-        Thu, 11 Jun 2020 11:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591873313;
-        bh=gu1h/IUOYhI/7TOM9U7hb+/LUXvwcm40pAKhwgfcYJY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cqIboAqW4hHg8bgqsiAn5Q1joqHSy2u96T8WmDCoKNmUki3qY/n2Gi/NBM/JZe9ud
-         6suEbxCYhZvyHE+wTVEtc3xrPld+ha04U7LDPUafJVU0+drjHfXo7CCbpo5IljafZq
-         x65ETJPafXg64M4NzyodZhY36M1okkxf8OolFlkQ=
-Received: by mail-ej1-f50.google.com with SMTP id gl26so5974104ejb.11;
-        Thu, 11 Jun 2020 04:01:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530niEKC7kHppQF1g3Yje0Od3+8G/rPD8/UD9kQGWWHMsnXN63rH
-        u03kfm18TlhLap6/Tl56yWNyMteeaBEwVDjUFA==
-X-Google-Smtp-Source: ABdhPJw+wR6kRsb831SwdiEVc8DVKidgK603StbRz0iL76ismZz8YnpXgHH7FyP/vdg5X3AletAez5O8TnpELbZ50VE=
-X-Received: by 2002:a17:907:369:: with SMTP id rs9mr7631774ejb.187.1591873311470;
- Thu, 11 Jun 2020 04:01:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <1591698261-22639-1-git-send-email-neal.liu@mediatek.com>
- <1591698261-22639-3-git-send-email-neal.liu@mediatek.com> <CAAOTY__g3Fnwsoqx=x_tgdMii5K_L9TmF_9048XbAOSJwb-Cxg@mail.gmail.com>
- <1591867563.27949.9.camel@mtkswgap22>
-In-Reply-To: <1591867563.27949.9.camel@mtkswgap22>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 11 Jun 2020 19:01:39 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8gOjr9nBUVA6oNu0v+D0Rc0AbhJ41wBCvDpMme+kuHmA@mail.gmail.com>
-Message-ID: <CAAOTY_8gOjr9nBUVA6oNu0v+D0Rc0AbhJ41wBCvDpMme+kuHmA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] soc: mediatek: devapc: add devapc-mt6873 driver
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
+        id S1727788AbgFKLCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:02:22 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 7A959FD7E0;
+        Thu, 11 Jun 2020 11:02:11 +0000 (UTC)
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
+ Documentation/translations/it_IT
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Jacob Huisman <jacobhuisman@kernelthusiast.com>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Rob Herring <robh@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200609201241.81518-1-grandmaster@al2klimov.de>
+ <4235548.LvFx2qVVIh@harkonnen>
+ <cd260d03-27a4-7794-f58f-21e8e0be9755@al2klimov.de>
+ <202006102009.CB14D7F@keescook>
+ <8ee16c38-e28b-b4e6-ed30-55a59e216b49@al2klimov.de>
+ <CANiq72n50OVRtFAQkAmqjaj=dJTP9VqYYHN7++8O_t4cbfaJgw@mail.gmail.com>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <3a6354fd-90ec-914f-b5df-0c4c219bd26e@al2klimov.de>
+Date:   Thu, 11 Jun 2020 13:02:08 +0200
+MIME-Version: 1.0
+In-Reply-To: <CANiq72n50OVRtFAQkAmqjaj=dJTP9VqYYHN7++8O_t4cbfaJgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neal:
 
-Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B46=E6=9C=8811=E6=97=
-=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:26=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Wed, 2020-06-10 at 00:01 +0800, Chun-Kuang Hu wrote:
-> Hi Chun-Kuang,
->
-> [snip]
->
-> > > +
-> > > +/*
-> > > + * mtk_devapc_pd_get - get devapc pd_types of register address.
-> > > + *
-> > > + * Returns the value of reg addr
-> > > + */
-> > > +static void __iomem *mtk_devapc_pd_get(int slave_type,
-> > > +                                      enum DEVAPC_PD_REG_TYPE pd_reg=
-_type,
-> > > +                                      u32 index)
-> > > +{
-> > > +       struct mtk_devapc_vio_info *vio_info =3D mtk_devapc_ctx->soc-=
->vio_info;
-> > > +       u32 slave_type_num =3D mtk_devapc_ctx->soc->slave_type_num;
-> > > +       const u32 *devapc_pds =3D mtk_devapc_ctx->soc->devapc_pds;
-> > > +       void __iomem *reg;
-> > > +
-> > > +       if (!devapc_pds)
-> > > +               return NULL;
-> > > +
-> > > +       if ((slave_type < slave_type_num &&
-> > > +            index < vio_info->vio_mask_sta_num[slave_type]) &&
-> > > +           pd_reg_type < PD_REG_TYPE_NUM) {
-> > > +               reg =3D mtk_devapc_ctx->devapc_pd_base[slave_type] +
-> > > +                       devapc_pds[pd_reg_type];
-> > > +
-> > > +               if (pd_reg_type =3D=3D VIO_MASK || pd_reg_type =3D=3D=
- VIO_STA)
-> > > +                       reg +=3D 0x4 * index;
-> > > +
-> > > +       } else {
-> > > +               pr_err(PFX "%s:0x%x or %s:0x%x or %s:0x%x is out of b=
-oundary\n",
-> > > +                      "slave_type", slave_type,
-> >
-> > Move "slave_type" into format string.
->
-> Why is this necessary? Is there any benefit for moving this?
 
-Smaller code size, simple, intuition.
+Am 11.06.20 um 12:40 schrieb Miguel Ojeda:
+> On Thu, Jun 11, 2020 at 9:02 AM Alexander A. Klimov
+> <grandmaster@al2klimov.de> wrote:
+>>
+>> Is any of you familiar with Golang?
+> 
+> Don't worry about that! I'd expect seasoned C programmers to be able
+> to read Go (or near languages) -- at least to have a general idea of
+> what an algorithm does.
+> 
+> It is not APL, after all :-)
+Fine.
 
-> Since the line length is almost over 80 chars.
 
-Single string could be over 80 chars.
+package main
 
->
-> >
-> > > +                      "pd_reg_type", pd_reg_type,
-> > > +                      "index", index);
-> > > +               return NULL;
-> > > +       }
-> > > +
-> > > +       return reg;
-> > > +}
-> > > +
-> >
->
-> [snip]
->
-> >
-> > > +
-> > > +/*
-> > > + * devapc_violation_irq - the devapc Interrupt Service Routine (ISR)=
- will dump
-> > > + *                       violation information including which maste=
-r violates
-> > > + *                       access slave.
-> > > + */
-> > > +static irqreturn_t devapc_violation_irq(int irq_number, void *dev_id=
+import (
+	"bufio"
+	"bytes"
+	"context"
+	"errors"
+	"fmt"
+	fatomic "github.com/natefinch/atomic"
+	"golang.org/x/sync/semaphore"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"os/exec"
+	"regexp"
+	"runtime"
+	"sync"
+	"sync/atomic"
+	"time"
 )
-> > > +{
-> > > +       u32 slave_type_num =3D mtk_devapc_ctx->soc->slave_type_num;
-> > > +       const struct mtk_device_info **device_info;
-> > > +       struct mtk_devapc_vio_info *vio_info;
-> > > +       int slave_type, vio_idx, index;
-> > > +       const char *vio_master;
-> > > +       unsigned long flags;
-> > > +       bool normal;
-> > > +       u8 perm;
-> > > +
-> > > +       spin_lock_irqsave(&devapc_lock, flags);
-> > > +
-> > > +       device_info =3D mtk_devapc_ctx->soc->device_info;
-> > > +       vio_info =3D mtk_devapc_ctx->soc->vio_info;
-> > > +       normal =3D false;
-> > > +       vio_idx =3D -1;
-> > > +       index =3D -1;
-> > > +
-> > > +       /* There are multiple DEVAPC_PD */
-> > > +       for (slave_type =3D 0; slave_type < slave_type_num; slave_typ=
-e++) {
-> > > +               if (!check_type2_vio_status(slave_type, &vio_idx, &in=
-dex))
-> > > +                       if (!mtk_devapc_dump_vio_dbg(slave_type, &vio=
-_idx,
-> > > +                                                    &index))
-> > > +                               continue;
-> > > +
-> > > +               /* Ensure that violation info are written before
-> > > +                * further operations
-> > > +                */
-> > > +               smp_mb();
-> > > +               normal =3D true;
-> > > +
-> > > +               mask_module_irq(slave_type, vio_idx, true);
-> > > +
-> > > +               if (clear_vio_status(slave_type, vio_idx))
-> > > +                       pr_warn(PFX "%s, %s:0x%x, %s:0x%x\n",
-> > > +                               "clear vio status failed",
-> > > +                               "slave_type", slave_type,
-> > > +                               "vio_index", vio_idx);
-> > > +
-> > > +               perm =3D get_permission(slave_type, index, vio_info->=
-domain_id);
-> > > +
-> > > +               vio_master =3D mtk_devapc_ctx->soc->master_get
-> > > +                       (vio_info->master_id,
-> > > +                        vio_info->vio_addr,
-> > > +                        slave_type,
-> > > +                        vio_info->shift_sta_bit,
-> > > +                        vio_info->domain_id);
-> >
-> > Call mt6873_bus_id_to_master() directly. For first patch, make things
-> > as simple as possible.
->
-> In devapc_violation_irq() function, we use common flow to handle each
-> devapc violation on different platforms. The master_get() has different
-> implementation on different platforms, that why it called indirectly.
->
-> Once we have new platform, we only have to update devapc-mtxxxx.c
-> instead of common handler flow.
 
-You just upstream one SoC now, so I have no information of 2nd SoC.
-Without the 2nd SoC, how do we know what is common and what is SoC special?
-So the first patch should not consider the things which does not exist yet.
+var fileSemaphore = semaphore.NewWeighted(int64(runtime.NumCPU()) * 16)
+var wg sync.WaitGroup
 
-Regards,
-Chun-Kuang.
+var processingFiles = struct {
+	sync.RWMutex
 
->
-> >
-> > > +
-> > > +               if (!vio_master) {
-> > > +                       pr_warn(PFX "master_get failed\n");
-> > > +                       vio_master =3D "UNKNOWN_MASTER";
-> > > +               }
-> > > +
-> > > +               pr_info(PFX "%s - %s:0x%x, %s:0x%x, %s:0x%x, %s:0x%x\=
-n",
-> > > +                       "Violation", "slave_type", slave_type,
-> > > +                       "sys_index",
-> > > +                       device_info[slave_type][index].sys_index,
-> > > +                       "ctrl_index",
-> > > +                       device_info[slave_type][index].ctrl_index,
-> > > +                       "vio_index",
-> > > +                       device_info[slave_type][index].vio_index);
-> > > +
-> > > +               pr_info(PFX "%s %s %s %s\n",
-> > > +                       "Violation - master:", vio_master,
-> > > +                       "access violation slave:",
-> > > +                       device_info[slave_type][index].device);
-> > > +
-> > > +               devapc_vio_reason(perm);
-> > > +
-> > > +               devapc_extra_handler(slave_type, vio_master, vio_idx,
-> > > +                                    vio_info->vio_addr);
-> > > +
-> > > +               mask_module_irq(slave_type, vio_idx, false);
-> > > +       }
-> > > +
-> > > +       if (normal) {
-> > > +               spin_unlock_irqrestore(&devapc_lock, flags);
-> > > +               return IRQ_HANDLED;
-> > > +       }
-> > > +
-> > > +       spin_unlock_irqrestore(&devapc_lock, flags);
-> > > +       return IRQ_HANDLED;
-> > > +}
-> > > +
->
-> [snip]
->
->
+	files map[string]struct{}
+}{
+	files: map[string]struct{}{},
+}
+
+func main() {
+	cmd := exec.Command("git", "ls-files", "-sz")
+	cmd.Stderr = os.Stderr
+
+	out, errSP := cmd.StdoutPipe()
+	if errSP != nil {
+		fmt.Fprintln(os.Stderr, errSP.Error())
+		os.Exit(1)
+	}
+
+	if errSt := cmd.Start(); errSt != nil {
+		fmt.Fprintln(os.Stderr, errSt.Error())
+		os.Exit(1)
+	}
+
+	//go printProcessingFiles()
+
+	buf := bufio.NewReader(out)
+	for {
+		file, errRB := buf.ReadBytes(0)
+		if errRB != nil && errRB != io.EOF {
+			if errWt := cmd.Wait(); errWt != nil {
+				fmt.Fprintln(os.Stderr, errWt.Error())
+				wg.Wait()
+				os.Exit(1)
+			}
+
+			fmt.Fprintln(os.Stderr, errRB.Error())
+			wg.Wait()
+			os.Exit(1)
+		}
+
+		if bytes.HasPrefix(file, []byte{'1', '0', '0'}) {
+			if fields := bytes.SplitN(bytes.SplitN(file, []byte{0}, 2)[0], 
+[]byte{9}, 2); len(fields) == 2 {
+				_ = fileSemaphore.Acquire(context.Background(), 1)
+				wg.Add(1)
+				go processFile(string(fields[1]))
+			}
+		}
+
+		if errRB == io.EOF {
+			break
+		}
+	}
+
+	wg.Wait()
+
+	if errWt := cmd.Wait(); errWt != nil {
+		fmt.Fprintln(os.Stderr, errWt.Error())
+		os.Exit(1)
+	}
+}
+
+/*
+func printProcessingFiles() {
+	for {
+		time.Sleep(time.Second)
+
+		processingFiles.RLock()
+		fmt.Fprintln(os.Stderr, processingFiles.files)
+		processingFiles.RUnlock()
+	}
+}
+*/
+
+var httpLink = regexp.MustCompile(`\bhttp://[^# \t\r\n]*(?:\w|/)`)
+var xmlns = regexp.MustCompile(`\bxmlns\b`)
+
+func processFile(file string) error {
+	defer fileSemaphore.Release(1)
+	defer wg.Done()
+
+	processingFiles.Lock()
+	processingFiles.files[file] = struct{}{}
+	processingFiles.Unlock()
+
+	defer func() {
+		processingFiles.Lock()
+		delete(processingFiles.files, file)
+		processingFiles.Unlock()
+	}()
+
+	content, errRF := ioutil.ReadFile(file)
+	if errRF != nil {
+		return errRF
+	}
+
+	lines := bytes.Split(content, []byte{'\n'})
+	for i := range lines {
+		if !xmlns.Match(lines[i]) {
+			lines[i] = httpLink.ReplaceAllFunc(lines[i], processLink)
+		}
+	}
+
+	if modified := bytes.Join(lines, []byte{'\n'}); bytes.Compare(modified, 
+content) != 0 {
+		var buf bytes.Buffer
+		buf.Write(modified)
+		return fatomic.WriteFile(file, &buf)
+	}
+
+	return nil
+}
+
+type linkOk struct {
+	sync.Mutex
+
+	ok uint32
+}
+
+var links = map[string]*linkOk{}
+var linksLock sync.RWMutex
+var notsecure = http.Client{Timeout: 10 * time.Minute}
+var secure = http.Client{Timeout: 10 * time.Minute, CheckRedirect: 
+httpsRedirect}
+
+func processLink(link []byte) []byte {
+	linkStr := string(bytes.TrimPrefix(link, []byte("http://")))
+
+	linksLock.RLock()
+	lo, ok := links[linkStr]
+	linksLock.RUnlock()
+
+	if !ok {
+		linksLock.Lock()
+
+		lo, ok = links[linkStr]
+		if !ok {
+			lo = &linkOk{}
+			links[linkStr] = lo
+		}
+
+		linksLock.Unlock()
+	}
+
+	for {
+		switch atomic.LoadUint32(&lo.ok) {
+		case 0:
+			lo.Lock()
+
+			if atomic.LoadUint32(&lo.ok) == 0 {
+				if httpsAble(linkStr) {
+					atomic.StoreUint32(&lo.ok, 2)
+				} else {
+					atomic.StoreUint32(&lo.ok, 1)
+				}
+			}
+
+			lo.Unlock()
+
+			continue
+		case 2:
+			return bytes.Replace(link, []byte("http://"), []byte("https://"), 1)
+		default:
+			return link
+		}
+	}
+}
+
+func httpsAble(link string) bool {
+	resp, errGt := secure.Get("https://" + link)
+	if errGt != nil {
+		return false
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return false
+	}
+
+	resps, errGt := notsecure.Get("http://" + link)
+	if errGt != nil {
+		return false
+	}
+
+	defer resps.Body.Close()
+
+	if resps.StatusCode != 200 {
+		return false
+	}
+
+	var buf, bufs bytes.Buffer
+
+	if _, errCp := io.Copy(&buf, resp.Body); errCp != nil {
+		return false
+	}
+
+	if _, errCp := io.Copy(&bufs, resps.Body); errCp != nil {
+		return false
+	}
+
+	return bytes.Compare(buf.Bytes(), bufs.Bytes()) == 0
+}
+
+var insecure = errors.New("insecure")
+
+func httpsRedirect(req *http.Request, _ []*http.Request) error {
+	switch req.URL.Scheme {
+	case "", "https":
+		return nil
+	}
+
+	return insecure
+}
+
+
+
+> 
+>>
+>> @Maintainers Would any of you actually review like this? If yes, is the
+>> pseudo-code not enough?
+> 
+> Well, Kees already mentioned he would like to see it :-) As he said,
+> it is usually the way for bulk patches to present the
+> algorithm/semantic patch/etc. that was used.
+> 
+> It is also useful to have it around so that it can be reused/reapplied
+> later on, too.
+If you're going to reproduce one of my patches for reviewing, checkout 
+torvalds/master and travel back to the latest commit before I submitted 
+the patch. Then run the algo.
+
+> 
+>> I didn't log that link-by-link. Maybe because I also didn't follow plain
+>> HTTP redirects while opening HTTPS links. Maybe it even matched, but was
+>> added after I made the changes.
+> 
+> It would be nice to have a list of links which cannot be converted,
+> since nowadays they are likely to be the exception rather than the
+> rule.
+Don't worry, (by typing this words right now) I've noted this TODO of 
+mine (after this patch round).
+
+> 
+>> * Linus *didn't even respond* (at least I didn't receive anything) to my
+>> catch-them-all patch at all, not even like please not as .gz attachment
+>> or please split by subsystem
+> 
+> Please take into account that LKML volume is huge and Linus (like
+> everybody else) only reads a small subset. Further, as a general rule,
+I've addressed Linus directly (CC LKML) and explicitly asked like will 
+you have a look at this or not.
+
+> Linus shouldn't be picking individual patches to begin with because
+> that skips the review tree.
+Who if not Linus shall review one huge patch spreading across lots of 
+subsystems?
+
+> 
+> Cheers,
+> Miguel
+> 
