@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF081F5FD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286C81F5FDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgFKCMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 22:12:46 -0400
-Received: from ozlabs.org ([203.11.71.1]:48477 "EHLO ozlabs.org"
+        id S1726499AbgFKCO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 22:14:27 -0400
+Received: from mga12.intel.com ([192.55.52.136]:28347 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgFKCMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 22:12:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49j6nj0ljRz9sR4;
-        Thu, 11 Jun 2020 12:12:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1591841563;
-        bh=Ti4/i5bL9OOnPE6/+uEiwQ0QeYNMX1+rL2JOXR8WTxU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pwZuTqdpWj6LuyzyCFFnEFZbH9VtgsUdeybskJXRshdqoFYoUNVoIqGmK0hJCG7tf
-         jGTuEaXMHBz4sz/qW+nhdH1woHmi7UGEiANGF79cIUml6OW8osTsLSsymHdCBdkvuH
-         M4rAurZoaY31tdGKXW8qDCaUpthM7uuT+nIfv4P2sa5+44jRuXgZMpzqTtG/fS+a/2
-         +kXR0fkp7YsMHGjSHVAymnYCgQMJktI1x2krkrx3gGqNdWQr22ljWpzQaJkH3No0dC
-         aGYPJ24V9JHlcPkFfz4Ar2m9WGuvM7GFnFmfF8xN0OFwZFzPlCYTNSniAKG5iC/JgH
-         cqUOGh6ghRXNg==
-Date:   Thu, 11 Jun 2020 12:12:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Simon Arlott <simon@octiron.net>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: linux-next: manual merge of the scsi-mkp tree with Linus' tree
-Message-ID: <20200611121106.68108136@canb.auug.org.au>
-In-Reply-To: <20200610121707.1f4c4355@canb.auug.org.au>
-References: <20200610121707.1f4c4355@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KJ2VNu8x4nF9QujVQR8wAkr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726163AbgFKCO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 22:14:26 -0400
+IronPort-SDR: oLLWgJIt85OGOUj4CExmiavyh1ZIsYGe+jPgr0NeIopBXKag9jKvctVmOieAG70h2FEuDKIEmR
+ /GwxpD/J6OXQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 19:14:26 -0700
+IronPort-SDR: NV61z8+oA59guK0bpc44VaaOOX7fOlYzb6LCnwK8mBClybZv9681lL9qxUuydUYF0GV3K5FTbO
+ slZevB4k6q0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,498,1583222400"; 
+   d="scan'208";a="289393199"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga002.jf.intel.com with ESMTP; 10 Jun 2020 19:14:23 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, balbi@kernel.org,
+        p.zabel@pengutronix.de
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
+        andriy.shevchenko@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v2 0/2] usb : phy: Add USB PHY support on Intel LGM SoC
+Date:   Thu, 11 Jun 2020 10:12:44 +0800
+Message-Id: <20200611021246.3250-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KJ2VNu8x4nF9QujVQR8wAkr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
+Requires minimal external components, a single resistor, for best operation.
+Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable 
+---
+v2:
+  - Address Phillip's review comments
+  - replace devm_reset_control_get() by devm_reset_control_get_exclusive()
+  - re-design the assert and deassert fucntion calls as per review comments
+  - address kbuild bot warnings
+  - add the comments 
+v1:
+  - initial version
 
-Hi all,
+---
+dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+v2:
+  - No Change
+v1:
+  - initial version
 
-On Wed, 10 Jun 2020 12:17:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the scsi-mkp tree got a conflict in:
->=20
->   drivers/scsi/sr.c
->=20
-> between commit:
->=20
->   a711d91cd97e ("block: add a cdrom_device_info pointer to struct gendisk=
-")
->=20
-> from Linus' tree and commit:
->=20
->   6555781b3fde ("scsi: sr: Fix sr_probe() missing deallocate of device mi=
-nor")
->=20
-> from the scsi-mkp tree.
->=20
 
-> diff --cc drivers/scsi/sr.c
-> index 4dcd735ea49e,b9cff27e2c81..000000000000
-> --- a/drivers/scsi/sr.c
-> +++ b/drivers/scsi/sr.c
-> @@@ -790,9 -790,10 +790,9 @@@ static int sr_probe(struct device *dev
->   	set_capacity(disk, cd->capacity);
->   	disk->private_data =3D &cd->driver;
->   	disk->queue =3D sdev->request_queue;
->  -	cd->cdi.disk =3D disk;
->  =20
->  -	if (register_cdrom(&cd->cdi))
->  +	if (register_cdrom(disk, &cd->cdi))
-> - 		goto fail_put;
-> + 		goto fail_minor;
->  =20
->   	/*
->   	 * Initialize block layer runtime PM stuffs before the
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+  usb: phy: Add USB3 PHY support for Intel LGM SoC
 
-This is now a conflict between the scsi tree and Linus' tree.
+ .../devicetree/bindings/usb/intel,lgm-usb-phy.yaml |  53 ++++
+ drivers/usb/phy/Kconfig                            |  11 +
+ drivers/usb/phy/Makefile                           |   1 +
+ drivers/usb/phy/phy-lgm-usb.c                      | 280 +++++++++++++++++++++
+ 4 files changed, 345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/intel,lgm-usb-phy.yaml
+ create mode 100644 drivers/usb/phy/phy-lgm-usb.c
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.11.0
 
---Sig_/KJ2VNu8x4nF9QujVQR8wAkr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7hkxgACgkQAVBC80lX
-0Gzz+wf8CiKOoljcEObryAOzL+9DOEauAFNU+4JrJFRPfL3zUlUeeeqyIlh3nb4+
-kLZ7t2D6l1G3A2DbF2cYA52YR77gdP7bD8Ncl8VJpIkUzkLr0VpAO3MlSCLR6piJ
-+u42PjeZpdMSgNsPnpeXE54H11MFWNtwIAGNKEisSRWU/TT4uhoyuJTqOSXSokdB
-AlMUYLY70RTFrZhWDXwRpix6iqVvU/PDbGSDAx1fmAATHHPyIJpLXONUvBGDDGX0
-jRJJXWPxwA/yvqHfPxgav2vGljY0BTty82F/P3Bzy1j5+QuO549hILzq8RaXutmy
-pzj3cF6sXnFHXKvEMbjhzLpF+iC02w==
-=okmX
------END PGP SIGNATURE-----
-
---Sig_/KJ2VNu8x4nF9QujVQR8wAkr--
