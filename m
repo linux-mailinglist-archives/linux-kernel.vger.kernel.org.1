@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DF61F6B7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB5C1F6B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728664AbgFKPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 11:48:17 -0400
-Received: from outbound-smtp40.blacknight.com ([46.22.139.223]:42715 "EHLO
-        outbound-smtp40.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728104AbgFKPsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:48:17 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp40.blacknight.com (Postfix) with ESMTPS id 114AC1C3A4F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 16:48:16 +0100 (IST)
-Received: (qmail 2398 invoked from network); 11 Jun 2020 15:48:15 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jun 2020 15:48:15 -0000
-Date:   Thu, 11 Jun 2020 16:43:51 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Li Wang <liwang@redhat.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm, page_alloc: capture page in task context only
-Message-ID: <20200611154351.GA3183@techsingularity.net>
-References: <alpine.LSU.2.11.2006101342250.4607@eggly.anvils>
+        id S1728496AbgFKPoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 11:44:08 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58152 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728686AbgFKPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 11:44:05 -0400
+Received: from zn.tnic (p200300ec2f0bef00e16d68ab941b81be.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ef00:e16d:68ab:941b:81be])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C59E21EC0361;
+        Thu, 11 Jun 2020 17:44:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1591890242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zRjk4RBi0GnPGLmQJy0T5cJNf2UJsuqZOmkE4U6Bra8=;
+        b=VHjBHUTIxc+sw+NlJyhB6Vf0IOkw3ufXM2VUrGTBfB9q5S4ZDEkEa+xjsfPNe8F7dGQxkl
+        sWdQEGqxCHcq084KbL68NnAsvG8+AC0gy6LC92sM8Ur/06YQ1OYcLnJw1B8JIEGGatn1Jg
+        kXwRQjq8BDmeovBGncC0tgOamddFtuM=
+Date:   Thu, 11 Jun 2020 17:43:56 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Anthony Steinhauser <asteinhauser@google.com>
+Cc:     linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [tip: x86/urgent] x86/speculation: Avoid force-disabling IBPB
+ based on STIBP and enhanced IBRS.
+Message-ID: <20200611154356.GE30352@zn.tnic>
+References: <159169282952.17951.3529693809120577424.tip-bot2@tip-bot2>
+ <20200611140951.GD30352@zn.tnic>
+ <CAN_oZf16odNhpY6_LqkVY2wpy90jKM9-vgKo4LE8OJ-QTDCKiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2006101342250.4607@eggly.anvils>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAN_oZf16odNhpY6_LqkVY2wpy90jKM9-vgKo4LE8OJ-QTDCKiw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 01:48:59PM -0700, Hugh Dickins wrote:
-> While stressing compaction, one run oopsed on NULL capc->cc in
-> __free_one_page()'s task_capc(zone): compact_zone_order() had been
-> interrupted, and a page was being freed in the return from interrupt.
-> 
-> Though you would not expect it from the source, both gccs I was using
-> (a 4.8.1 and a 7.5.0) had chosen to compile compact_zone_order() with
-> the ".cc = &cc" implemented by mov %rbx,-0xb0(%rbp) immediately before
-> callq compact_zone - long after the "current->capture_control = &capc".
-> An interrupt in between those finds capc->cc NULL (zeroed by an earlier
-> rep stos).
-> 
-> This could presumably be fixed by a barrier() before setting
-> current->capture_control in compact_zone_order(); but would also need
-> more care on return from compact_zone(), in order not to risk leaking
-> a page captured by interrupt just before capture_control is reset.
-> 
-> Maybe that is the preferable fix, but I felt safer for task_capc() to
-> exclude the rather surprising possibility of capture at interrupt time.
-> 
-> Fixes: 5e1f0f098b46 ("mm, compaction: capture a page under direct compaction")
-> Cc: stable@vger.kernel.org # 5.1+
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On Thu, Jun 11, 2020 at 07:35:18AM -0700, Anthony Steinhauser wrote:
+> Yes, I think it's fine.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Ok thanks, I'll do a proper patch next week when -rc1 is done and those
+have gone in.
 
 -- 
-Mel Gorman
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
