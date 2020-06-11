@@ -2,114 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513EB1F5FDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601191F5FE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgFKCN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 22:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S1726375AbgFKCRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 22:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgFKCN2 (ORCPT
+        with ESMTP id S1726265AbgFKCRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 22:13:28 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE938C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 19:13:27 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id x1so4789845ejd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 19:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wSclIs7n5vpOSvxh2OrnHeX+5b5kOfOtKGtkOgLl0/Y=;
-        b=v8+6EYjaTY6Fw2wnUUu6UJNua3V+Lp53KEHLNac2TEyYj9A2BadRkPLnSl/9YGGSyY
-         T+OtnVMqO3xg/6L/4Nz08Mjb8nZo6NBSLdJSDqdfsJfSBLSCJh8KebIiyYCwV/s5cM9p
-         N4Xs60MSyKAQ/KYjoC7hCG5yphEFesouJle1fShaDIcorlZn0iBB3bbrrytdHDbAELFC
-         UYcuflCA6Bvrd9rGKshvhPFITNVjLQFiijsQMxQ7HyFPN9KDpI8QFlufe6imer80UQPr
-         4owye83ciH2aTw1fRvOmHgKrDhXFOgRLnp8gb82hFc5C85ZqJeNOSAiMFX+2AEbsAjdn
-         lRKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wSclIs7n5vpOSvxh2OrnHeX+5b5kOfOtKGtkOgLl0/Y=;
-        b=WHt5aucTT0/ChXwBJ9j5jdo+mWTxXHI64u+k79mvLg4rldAphk+PwolFhERt4VPh2X
-         IcYs/SyyYeWMDQjhlQSypV94zxEx9TQ77VHQKjkF0S/iZ4whFDKU7903nOB9/YKDPFv6
-         /91iXtsCPQDYI2fC9CweuCkq4M5ZKE/WJxPrQNUl0LaCyl3fTjp/ZgwxVp3bqBV4FuTo
-         wMytk2jQKoQuKQiNuQF0H2p7rhb9kUOsYbAhzLN8sq29a51G8UgsYzJuk5h+qEzHTpjz
-         Ydph8vkofHZLgcumBa/Ot4gSkeQZGrLcCjq/1vjC8w99Xqir6HpsFb1xZXTUvGzswYpb
-         B/1g==
-X-Gm-Message-State: AOAM533Cl0Zvkl0prUA4p9Bav6nDOe8YaMxBTmGIySzmgLpC8FhJkShm
-        UPG3LqbdvjXiCTH5aCPTZ9RYuDhPJDYRzRZv5Rq/
-X-Google-Smtp-Source: ABdhPJyoOh4d1o3ex77cQD0moZLEf9Ht3wehb6wOgCo5liChTu7jBmv/acKYI4ooL1J0tjr7yhg8ntLwvLjO71Zudho=
-X-Received: by 2002:a17:906:19d3:: with SMTP id h19mr6064005ejd.106.1591841606286;
- Wed, 10 Jun 2020 19:13:26 -0700 (PDT)
+        Wed, 10 Jun 2020 22:17:32 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA272C08C5C1;
+        Wed, 10 Jun 2020 19:17:31 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jjCmE-006lY6-E3; Thu, 11 Jun 2020 02:17:10 +0000
+Date:   Thu, 11 Jun 2020 03:17:10 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Colin Walters <walters@verbum.org>,
+        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Subject: Re: [PATCH v2] ovl: provide real_file() and overlayfs
+ get_unmapped_area()
+Message-ID: <20200611021710.GA23230@ZenIV.linux.org.uk>
+References: <4ebd0429-f715-d523-4c09-43fa2c3bc338@oracle.com>
+ <202005281652.QNakLkW3%lkp@intel.com>
+ <365d83b8-3af7-2113-3a20-2aed51d9de91@oracle.com>
+ <CAJfpegtz=tzndsF=_1tYHewGwEgvqEOA_4zj8HCAqyFdKe6mag@mail.gmail.com>
+ <ffc00a9e-5c2f-0c3e-aa1e-9836b98f7b54@oracle.com>
+ <20200611003726.GY23230@ZenIV.linux.org.uk>
+ <20200611013616.GM19604@bombadil.infradead.org>
 MIME-Version: 1.0
-References: <20200610215713.5319-1-trix@redhat.com> <20200610215713.5319-2-trix@redhat.com>
-In-Reply-To: <20200610215713.5319-2-trix@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 10 Jun 2020 22:13:15 -0400
-Message-ID: <CAHC9VhTd0HSv6Yk8NxJeC=U7wPb0AtRturAGYLfxg8B13h0FOA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] selinux: fix double free
-To:     trix@redhat.com
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, jeffv@google.com,
-        rgb@redhat.com, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611013616.GM19604@bombadil.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 5:57 PM <trix@redhat.com> wrote:
-> From: Tom Rix <trix@redhat.com>
->
-> Clang's static analysis tool reports these double free memory errors.
->
-> security/selinux/ss/services.c:2987:4: warning: Attempt to free released memory [unix.Malloc]
->                         kfree(bnames[i]);
->                         ^~~~~~~~~~~~~~~~
-> security/selinux/ss/services.c:2990:2: warning: Attempt to free released memory [unix.Malloc]
->         kfree(bvalues);
->         ^~~~~~~~~~~~~~
->
-> So improve the security_get_bools error handling by freeing these variables
-> and setting their return pointers to NULL and the return len to 0
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  security/selinux/ss/services.c | 4 ++++
->  1 file changed, 4 insertions(+)
+On Wed, Jun 10, 2020 at 06:36:16PM -0700, Matthew Wilcox wrote:
 
-Thanks Tom for the patch and Stephen for the review.
+> 	while (file->f_mode & FMODE_OVL_UPPER)
+> 		file = file->private_data;
+> 	return file;
+> 
+> Or are you proposing that overlayfs copy FMODE_HUGEPAGES from the
+> underlying fs to the overlaying fs?
 
-I've marked this for stable and merged it into selinux/stable-5.8.
-Considering we are just a few days away from the close of the merge
-window and -rc1, I'll probably hold off until next to send this up to
-Linus.
-
-> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-> index 313919bd42f8..ef0afd878bfc 100644
-> --- a/security/selinux/ss/services.c
-> +++ b/security/selinux/ss/services.c
-> @@ -2888,8 +2888,12 @@ int security_get_bools(struct selinux_state *state,
->         if (*names) {
->                 for (i = 0; i < *len; i++)
->                         kfree((*names)[i]);
-> +               kfree(*names);
->         }
->         kfree(*values);
-> +       *len = 0;
-> +       *names = NULL;
-> +       *values = NULL;
->         goto out;
->  }
->
-> --
-> 2.18.1
-
--- 
-paul moore
-www.paul-moore.com
+The latter - that way nobody outside of overlayfs needs to know what
+its ->private_data points to, for one thing.  And it's cheaper that
+way, obviously.
