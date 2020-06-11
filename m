@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67AA1F68FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 15:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B689B1F6902
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 15:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgFKNVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 09:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgFKNVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 09:21:17 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A69620747;
-        Thu, 11 Jun 2020 13:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591881677;
-        bh=I5ENpceYxIWNF/3WX7IIhHeshmGtz9rRT5nBSTNeWec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xx0gTELZP6mEKcRPnP4fyvM/iuxpVI1IBpgikLaX7CxIrqYt8sQ7frkk0f4bCtYMs
-         m6s3o72B3/Se4uq6LbatOlRZHKZPkdq1SadpQSyuMrWTD2slqNjFNfl2C6LunVhqJD
-         zk7A+boMeItv9ELSmDSfqAV7UYcTcbczQzAS59PI=
-Date:   Thu, 11 Jun 2020 14:21:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Yicheng Li <yichengli@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/2] regulator: Add driver for cros-ec-regulator
-Message-ID: <20200611132114.GF4671@sirena.org.uk>
-References: <20200611082542.219516-1-pihsun@chromium.org>
- <20200611082542.219516-3-pihsun@chromium.org>
- <e0a04440-bb15-921d-16e3-1b7ebd76b652@collabora.com>
+        id S1728054AbgFKNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 09:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgFKNXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 09:23:25 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13974C03E96F;
+        Thu, 11 Jun 2020 06:23:24 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u5so2541420pgn.5;
+        Thu, 11 Jun 2020 06:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=RliHtgH5GDZJdW6O7rVVUMcVWe1UZPdPGel4Uc/IOKA=;
+        b=ONIadxniVwOEeGtZIyrvAdqpL/WumnU/TUOG0bhC3ydZsb4LKNC7NtBgOlP4EjuhGh
+         WOF7UX1gFinqhibJ602iAs7NCiag5HrOBFDEokwWKN7er/SEtABwh17I93Ltt9VfsE0f
+         MYBDAqfiSmIDe0g/B2qzR6WazeETN2ZYGJr04TXj2YVxTK2HOwErd4wRWgJbqLafuxC1
+         bL1q5luzmET2we4GWr1MhjdLGbxgmqlclX/MwTX8xIxuXDrf+Q1N15tAJQtcttX1m7rm
+         cVtbtuX2HzRHc202uZkLAlmEB7zlkYW1Jfvlil3tymZpXcRDW53X0JbcNVZ77i8plind
+         uSOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=RliHtgH5GDZJdW6O7rVVUMcVWe1UZPdPGel4Uc/IOKA=;
+        b=blQ0qAULeaUtbFhKDI9uuoOiL3RU3LQFgCMOibV9n9kibRpZaANchAjhgH6Gw7hace
+         69lLwmQxYUUq+eXogYR5FZc50RIvUxJ1L/IFckJ7JgUxSqpBSr9hyOjVh6lOSzXSogzq
+         5hYHJUa/92XLBLszK8FEjTGDESsjHlJG/9VChHFiOtJsJQRcm8hnFmqBI4chFRUy95Ue
+         tymEcfDek+5VVsFWfg2wlaAxFVlKDZzG4PyligrYufSVY4c0IMY6RcE9VhnYxiJPi23N
+         gRtFJHcFhyxQxd3C7cD+QP1gi7QB8C9W/q5ex1l2Xdd3mK9imJEFro81SuReacZfLwb5
+         UKgA==
+X-Gm-Message-State: AOAM530arwOqmTElKcKX86JsXfEg4FuZ89kRWOZ60VnSNFtjZA1yBPnx
+        4KYmTJSxrLNfvyw5PM3TaUA8B+qW
+X-Google-Smtp-Source: ABdhPJxGwYOIO1nfvyor3U6z8NNHsYpEqXyWoT67kq18oE1pT6HzlqCM8FiU0HldPv7przQH38jVWQ==
+X-Received: by 2002:a62:1681:: with SMTP id 123mr6839795pfw.306.1591881804319;
+        Thu, 11 Jun 2020 06:23:24 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i37sm2842473pgl.68.2020.06.11.06.23.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Jun 2020 06:23:23 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 06:23:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <jroedel@suse.de>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Subject: Re: [PATCH] alpha: Fix build around srm_sysrq_reboot_op
+Message-ID: <20200611132322.GA52797@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e0a04440-bb15-921d-16e3-1b7ebd76b652@collabora.com>
-X-Cookie: I like your SNOOPY POSTER!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 11, 2020 at 11:11:39AM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> The patch introducing the struct was probably never compile tested,
+> because it sets a handler with a wrong function signature. Wrap the
+> handler into a functions with the correct signature to fix the build.
+> 
+> Fixes: 0f1c9688a194 ("tty/sysrq: alpha: export and use __sysrq_get_key_op()")
+> Cc: Emil Velikov <emil.l.velikov@gmail.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 
---i3lJ51RuaGWuFYNw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-On Thu, Jun 11, 2020 at 01:44:42PM +0200, Enric Balletbo i Serra wrote:
-> On 11/6/20 10:25, Pi-Hsun Shih wrote:
-> > Add driver for cros-ec-regulator, representing a voltage regulator that
-> > is connected and controlled by ChromeOS EC, and is controlled by kernel
-> > with EC host commands.
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
---i3lJ51RuaGWuFYNw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7iL8kACgkQJNaLcl1U
-h9C3MAf8DIvLY3fzotpeSPZ8iHWNIScgd5XL7q7SclE+gNlygeQzSlVQIXO2SQwr
-fFHO3DOmnAvYhY0CL1/qBrmaINol6yY0hkon+jxD3O2+JzNR1gq5WlEJPpwsxN38
-ornsBdSy7drV4lAMU24RKrqf6fXsKEeyHAZ0buOMaeerK0vJmMIAKgd3P3BB4J3r
-FkiQ/B71GGEsMGmtK1t9oaa3ZGP2kNH2UA5SrcxYN8jxMUtd3m4CX3fvbRs8HDbV
-i44H0u1fvuDlhI0j5qDBn0zAPuaeIwiD+VBUhxBIWXjmlkLp35kACjYbOu7nU1KT
-ugNiEk6lWeyEa8d/WvXM0jj9NDQC3Q==
-=FNEx
------END PGP SIGNATURE-----
-
---i3lJ51RuaGWuFYNw--
+> ---
+>  arch/alpha/kernel/setup.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+> index f5c42a8fcf9c..53520f8cb904 100644
+> --- a/arch/alpha/kernel/setup.c
+> +++ b/arch/alpha/kernel/setup.c
+> @@ -430,8 +430,13 @@ register_cpus(void)
+>  arch_initcall(register_cpus);
+>  
+>  #ifdef CONFIG_MAGIC_SYSRQ
+> +static void sysrq_reboot_handler(int unused)
+> +{
+> +	machine_halt();
+> +}
+> +
+>  static const struct sysrq_key_op srm_sysrq_reboot_op = {
+> -	.handler	= machine_halt,
+> +	.handler	= sysrq_reboot_handler,
+>  	.help_msg       = "reboot(b)",
+>  	.action_msg     = "Resetting",
+>  	.enable_mask    = SYSRQ_ENABLE_BOOT,
+> -- 
+> 2.26.2
+> 
