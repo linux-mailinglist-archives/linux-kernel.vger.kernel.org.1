@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710941F69A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306331F69AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgFKOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:11:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:53094 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726444AbgFKOLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:11:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E45301F1;
-        Thu, 11 Jun 2020 07:11:11 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4C0F3F6CF;
-        Thu, 11 Jun 2020 07:11:08 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 15:11:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Wooyeon Kim <wooy88.kim@samsung.com>
-Cc:     'Dave Martin' <Dave.Martin@arm.com>,
-        'Mark Rutland' <mark.rutland@arm.com>,
-        'Bhupesh Sharma' <bhsharma@redhat.com>,
-        'Julien Grall' <julien.grall@arm.com>,
-        'Vincenzo Frascino' <vincenzo.frascino@arm.com>,
-        'Will Deacon' <will@kernel.org>, yhwan.joo@samsung.com,
-        'Anisse Astier' <aastier@freebox.fr>,
-        'Marc Zyngier' <maz@kernel.org>,
-        'Allison Randal' <allison@lohutok.net>,
-        'Sanghoon Lee' <shoon114.lee@samsung.com>,
-        jihun.kim@samsung.com, 'Kees Cook' <keescook@chromium.org>,
-        'Suzuki K Poulose' <suzuki.poulose@arm.com>,
-        'Wooki Min' <wooki.min@samsung.com>,
-        'Kristina Martsenko' <kristina.martsenko@arm.com>,
-        'Jeongtae Park' <jtp.park@samsung.com>,
-        'Thomas Gleixner' <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        'Steve Capper' <steve.capper@arm.com>,
-        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, 'James Morse' <james.morse@arm.com>,
-        'Sudeep Holla' <sudeep.holla@arm.com>, dh.han@samsung.com
-Subject: Re: [PATCH] arm64: fpsimd: Added API to manage fpsimd state inside
- kernel
-Message-ID: <20200611141101.GA31408@gaia>
-References: <CGME20200605073214epcas2p1576f3f90dbcefaad6180f2559ca5980d@epcas2p1.samsung.com>
- <20200605073052.23044-1-wooy88.kim@samsung.com>
- <20200605103705.GD85498@C02TD0UTHF1T.local>
- <20200608103340.GA31466@arm.com>
- <001401d63fd4$95646690$c02d33b0$@samsung.com>
+        id S1728129AbgFKOLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726905AbgFKOLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:11:37 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B064BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:11:36 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: alyssa)
+        with ESMTPSA id 3800A2A4ACF
+Date:   Thu, 11 Jun 2020 10:11:27 -0400
+From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+To:     Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] panfrost: Make sure GPU is powered on when reading
+ GPU_LATEST_FLUSH_ID
+Message-ID: <20200611141127.GA1834@kevin>
+References: <20200611085900.49740-1-tomeu.vizoso@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Content-Disposition: inline
-In-Reply-To: <001401d63fd4$95646690$c02d33b0$@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200611085900.49740-1-tomeu.vizoso@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 06:42:12PM +0900, Wooyeon Kim wrote:
-> I am in charge of camera driver development in Samsung S.LSI division.
-> 
-> In order to guarantee real time processing such as Camera 3A algorithm in
-> current or ongoing projects, prebuilt binary is loaded and used in kernel
-> space, rather than user space.
 
-Thanks for the additional details.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If you do such intensive processing in an IRQ context you'd probably
-introduce additional IRQ latency. Wouldn't offloading such work to a
-real-time (user) thread help? In a non-preempt-rt kernel, I don't think
-you can get much in terms of (soft) guarantees for IRQ latency anyway.
+Both patches are Reviewed-by: Alyssa Rosenzweig
+<alyssa.rosenzweig@collabora.com>
 
-> Because the binary is built with other standard library which could use
-> FPSIMD register, kernel API should keep the original FPSIMD state for other
-> user tasks.
+On Thu, Jun 11, 2020 at 10:58:43AM +0200, Tomeu Vizoso wrote:
+> Bifrost devices do support the flush reduction feature, so on first job
+> submit we were trying to read the register while still powered off.
+>=20
+> If the GPU is powered off, the feature doesn't bring any benefit, so
+> don't try to read.
+>=20
+> Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_gpu.c
+> index f2c1ddc41a9b..e0f190e43813 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> =20
+>  #include "panfrost_device.h"
+>  #include "panfrost_features.h"
+> @@ -368,7 +369,16 @@ void panfrost_gpu_fini(struct panfrost_device *pfdev)
+> =20
+>  u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev)
+>  {
+> -	if (panfrost_has_hw_feature(pfdev, HW_FEATURE_FLUSH_REDUCTION))
+> -		return gpu_read(pfdev, GPU_LATEST_FLUSH_ID);
+> +	u32 flush_id;
+> +
+> +	if (panfrost_has_hw_feature(pfdev, HW_FEATURE_FLUSH_REDUCTION)) {
+> +		/* Flush reduction only makes sense when the GPU is kept powered on be=
+tween jobs */
+> +		if (pm_runtime_get_if_in_use(pfdev->dev)) {
+> +			flush_id =3D gpu_read(pfdev, GPU_LATEST_FLUSH_ID);
+> +			pm_runtime_put(pfdev->dev);
+> +			return flush_id;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+> --=20
+> 2.21.0
+>=20
 
-Can you not recompile those libraries not to use FP?
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-As Mark said, for a kernel API we require at least an in-kernel,
-upstreamed, user of that functionality.
+-----BEGIN PGP SIGNATURE-----
 
-> In the case of the kernel_neon_begin / kernel_neon_end that you mentioned,
-> there is a limitation that cannot be used in hardirq context.
-> Also, if another kernel task switching occurs while kernel API is being
-> used, fpsimd register corruption may occur.
+iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl7iO4YACgkQ/v5QWgr1
+WA0tPBAArzmVDiuBFirXaT97r1Ge78bboVEyZU99PhlWzzQsuA9Cxn5THkpl1Od+
+BYGXVCycozrZNwEvHnTzI6NruL1ZgLK9NrIT/afZSK4dzg6lLiZplyi7dCul/YAU
+J/UWU5/g4ae8aPWMXz2v1wiwcpA0N2PS/5WQxKwm6f45B7aBudchG7Ofdhpg8LrW
+EFP7ScKMWYmnGYzfwUZ2uXawnHpBrNoXS1ZQ21EfA22V4LOJvmH7zzh2o/ldhq5P
+3FHu8MdNyiNgrSyU07Fe+zJ3jt5MkGI4EiR36r90vvBlv3C75ov7wtPcPgyEsURI
+b51D5+osyt1Q9GmHYrpxFo73H/qPYqxCnZW1cVSrd74h2VKdv/QzSeALg2VHfQNW
+W9d1U3SjD+BKzwgCvNCEppken3nG5nsHPc39CXwoetZ5hOrzy0iQMCJ2rzjxLC3d
+TCIzOU6MbHvUVNYqeBqe+bkftoN98Gf9+JUnKyZJSbolkbaUF0vZyI3xoP5ga+wm
+PMyx89WjZauM0VQP6rUbkDmzhzQihvWYId276r37CTYrKY/jLo52b5RChWDUnIJb
+dfMZ6BF7fDoUPszOSEeaqkYmf8HtyLYl95h7FMLD56ewdMDUAKSujXyXq9D3+wYc
+1JSQEGBHIPhMw783zOmGWp+nVozQ/O2+9R28NJLYbDdQClQ4Gcc=
+=K7V+
+-----END PGP SIGNATURE-----
 
-kernel_neon_begin/end disable preemption, so you can't have a task
-switch (you can have interrupts though but we don't allow FPSIMD in IRQ
-context).
-
--- 
-Catalin
+--OgqxwSJOaUobr8KG--
