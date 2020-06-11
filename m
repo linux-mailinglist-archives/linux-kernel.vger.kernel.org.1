@@ -2,144 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE58A1F7113
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC331F710C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgFKXzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 19:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726284AbgFKXzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 19:55:40 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8360CC08C5C1;
-        Thu, 11 Jun 2020 16:55:39 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id g28so7458694qkl.0;
-        Thu, 11 Jun 2020 16:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F5v636w1U2r9faKtpDeWzBpWJiuE/GmNaYKlismlA8U=;
-        b=HyPFX0Dbl/lvpUQZOju2xEIns4jas8JFofOmGF46iajecbOcOMCerAYq/cbCcrvLNw
-         K4pktP2zZl5zFZSJjFEWXEp8owkTrkL/Fz0zgce2JkQ8bWJPDhu5h9uhmRP9VSMStnL3
-         QHzB7pNv3q9ppH7YH66NKNUHiROeAjCeR6BzyK5KGPOwaqgk4BMqqD6n5w2cpsqPLz20
-         vENNadkxflli0r1TtyWD89BmvN56PhouGxLPYFfpZG1dgTDFgiw5SuQqpB+UacB7RzYI
-         PWgIY3c/9I7eUUnXZRVj8ZxD4+2cq0xHNsAZ3LX2Ir+jGFZ/Zn0b/AQyzvkUVBp154cw
-         +PaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F5v636w1U2r9faKtpDeWzBpWJiuE/GmNaYKlismlA8U=;
-        b=s67JQxetp4+QdKLGj3/Xeh84nIz/eXE3b7vqzdb00Rhm/LptfFCMRFgL3ivgNc9vUj
-         AuTbf7H2WJM4j/KBIVcBWjLxF0TTCc10IBtvZZgV+Racv5o2UMbfvCc7r1/RlQgJ9Sa2
-         WKHY91amoBziTV88mVrQJtD6r/LNpqEXAXGNbIEO5KNvpnPyfcMSnHfli1duTd5FdlHf
-         hq1WeF4IaSt1HJwBpA2C3PL+p/u2T9Or/uzm6MpO+ZZe+SYbekSppe84meZ1gMsf+sWi
-         iG4qK/CxQryEsH44SGgdzK7XR0DkJBZ5otI1quQYFcUGqfH7sk4dTJVrMe5eJSI6IsXA
-         kuEw==
-X-Gm-Message-State: AOAM53246v0pWTNQJaT80ABUaPOiM0XSSn8/INm7+M2RJ/guw0v6GwJO
-        gVc2AOAWFwJYf4MOhOOHUvQ=
-X-Google-Smtp-Source: ABdhPJxCOrnRf8nwSUdwmtMf/rNeZwmr77UMJdROHZPgjMCqlypfCoJaxxWEnO5jkLoK/YqVG3jC2g==
-X-Received: by 2002:a37:a7c5:: with SMTP id q188mr492287qke.384.1591919738575;
-        Thu, 11 Jun 2020 16:55:38 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id q32sm3859272qtf.36.2020.06.11.16.55.36
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Jun 2020 16:55:37 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 339CB27C0054;
-        Thu, 11 Jun 2020 19:55:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 11 Jun 2020 19:55:36 -0400
-X-ME-Sender: <xms:b8TiXjdZZ4Whi3jp7-wUgmKt6dvRH52VirY_52Zwz9JKIqOWK7s9Hw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeitddgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
-    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphephedvrdduheehrdduud
-    durdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtd
-    eigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehf
-    ihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:b8TiXpOC0t-CX5R13OqK3l6eVl1IwaDANwjDfZGQec9tu6tDhjg-4A>
-    <xmx:b8TiXsgC1j4rj4iHTxZEzCW2qOaYtl3QOCheHGKf3x3969WhFE1lGg>
-    <xmx:b8TiXk9L4kwY0kTu-Ug1YaqZqTU8qZPOOpeqNkmMynhlOogtvHqFig>
-    <xmx:eMTiXjBMfBoZmvXPo3IDNoIf4Skm7XgWifSDGFzNUyoeBpLZxKbGleum4go>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4AB2D3060FE7;
-        Thu, 11 Jun 2020 19:55:27 -0400 (EDT)
-Date:   Fri, 12 Jun 2020 07:55:26 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+a9fb1457d720a55d6dc5@syzkaller.appspotmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, allison@lohutok.net,
-        areber@redhat.com, aubrey.li@linux.intel.com,
-        Andrei Vagin <avagin@gmail.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        Christian Brauner <christian@brauner.io>, cyphar@cyphar.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, guro@fb.com,
-        Jeff Layton <jlayton@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>, linmiaohe@huawei.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        id S1726405AbgFKXwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 19:52:11 -0400
+Received: from mga12.intel.com ([192.55.52.136]:38230 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726284AbgFKXwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 19:52:11 -0400
+IronPort-SDR: jC4hnUdj5DmY6Cu2zRJ3MJrwrfCkEAtLMaga+fl68QjfCAHYNZqOCKl2DSM4qmeec/tcBHOLJw
+ MIY8YmAJZDIQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 16:52:10 -0700
+IronPort-SDR: lFwOGuCA1SjpA7hLnPmN6CUzDgtav7nUF446DywvYOdRRzIqqIM+xsbEgs2dN2ZJ4wLnrvqjxa
+ GfjOv0wRtb1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
+   d="scan'208";a="289709909"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002.jf.intel.com with ESMTP; 11 Jun 2020 16:52:10 -0700
+Date:   Thu, 11 Jun 2020 16:58:35 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     iommu@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Ingo Molnar <mingo@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, sargun@sargun.me,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: possible deadlock in send_sigio
-Message-ID: <20200611235526.GC94665@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <000000000000760d0705a270ad0c@google.com>
- <69818a6c-7025-8950-da4b-7fdc065d90d6@redhat.com>
- <CACT4Y+brpePBoR7EUwPiSvGAgo6bhvpKvLTiCaCfRSadzn6yRw@mail.gmail.com>
- <88c172af-46df-116e-6f22-b77f98803dcb@redhat.com>
- <20200611142214.GI2531@hirez.programming.kicks-ass.net>
- <b405aca6-a3b2-cf11-a482-2b4af1e548bd@redhat.com>
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2 3/3] iommu/vt-d: Sanity check uapi argsz filled by
+ users
+Message-ID: <20200611165835.4de03911@jacob-builder>
+In-Reply-To: <20200611145518.0c2817d6@x1.home>
+References: <1591848735-12447-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1591848735-12447-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200611110816.4cea7204@x1.home>
+        <20200611130224.642ddde4@jacob-builder>
+        <20200611145518.0c2817d6@x1.home>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b405aca6-a3b2-cf11-a482-2b4af1e548bd@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter and Waiman,
+On Thu, 11 Jun 2020 14:55:18 -0600
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-On Thu, Jun 11, 2020 at 12:09:59PM -0400, Waiman Long wrote:
-> On 6/11/20 10:22 AM, Peter Zijlstra wrote:
-> > On Thu, Jun 11, 2020 at 09:51:29AM -0400, Waiman Long wrote:
+> On Thu, 11 Jun 2020 13:02:24 -0700
+> Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+> 
+> > On Thu, 11 Jun 2020 11:08:16 -0600
+> > Alex Williamson <alex.williamson@redhat.com> wrote:
+> >   
+> > > On Wed, 10 Jun 2020 21:12:15 -0700
+> > > Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+> > >     
+> > > > IOMMU UAPI data has an argsz field which is filled by user. As
+> > > > the data structures expands, argsz may change. As the UAPI data
+> > > > are shared among different architectures, extensions of UAPI
+> > > > data could be a result of one architecture which has no impact
+> > > > on another. Therefore, these argsz santity checks are performed
+> > > > in the model specific IOMMU drivers. This patch adds sanity
+> > > > checks in the VT-d to ensure argsz passed by userspace matches
+> > > > feature flags and other contents.
+> > > > 
+> > > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > ---
+> > > >  drivers/iommu/intel-iommu.c | 16 ++++++++++++++++
+> > > >  drivers/iommu/intel-svm.c   | 12 ++++++++++++
+> > > >  2 files changed, 28 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/iommu/intel-iommu.c
+> > > > b/drivers/iommu/intel-iommu.c index 27ebf4b9faef..c98b5109684b
+> > > > 100644 --- a/drivers/iommu/intel-iommu.c
+> > > > +++ b/drivers/iommu/intel-iommu.c
+> > > > @@ -5365,6 +5365,7 @@ intel_iommu_sva_invalidate(struct
+> > > > iommu_domain *domain, struct device *dev, struct
+> > > > device_domain_info *info; struct intel_iommu *iommu;
+> > > >  	unsigned long flags;
+> > > > +	unsigned long minsz;
+> > > >  	int cache_type;
+> > > >  	u8 bus, devfn;
+> > > >  	u16 did, sid;
+> > > > @@ -5385,6 +5386,21 @@ intel_iommu_sva_invalidate(struct
+> > > > iommu_domain *domain, struct device *dev, if
+> > > > (!(dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE)) return
+> > > > -EINVAL; 
+> > > > +	minsz = offsetofend(struct iommu_cache_invalidate_info,
+> > > > padding);      
+> > > 
+> > > Would it still be better to look for the end of the last field
+> > > that's actually used to avoid the code churn and oversights
+> > > if/when the padding field does get used and renamed?
+> > >     
+> > My thought was that if the padding gets partially re-purposed, the
+> > remaining padding would still be valid for minsz check. The
+> > extension rule ensures that there is no size change other the
+> > variable size union at the end. So use padding would avoid the
+> > churn, or i am totally wrong?  
+> 
+> No, it's trying to predict the future either way.  I figured checking
+> minsz against the fields we actually consume allows complete use of
+> the padding fields and provides a little leniency to the user.  We'd
+> need to be careful though that if those fields are later used by this
+> driver, the code would still need to accept the smaller size.  If the
+> union was named rather than anonymous we could just use offsetof() to
+> avoid directly referencing the padding fields.
+>  
+I will change it to named union.
+
+Thanks,
+
+> > > Per my comment on patch 1/, this also seems like where the device
+> > > specific IOMMU driver should also have the responsibility of
+> > > receiving a __user pointer to do the copy_from_user() here.  vfio
+> > > can't know which flags require which fields to make a UAPI with
+> > > acceptable compatibility guarantees otherwise.
+> > >     
+> > Right, VFIO cannot do compatibility guarantees, it is just seem to
+> > be that VFIO has enough information to copy_from_user sanely &
+> > safely and handle over to IOMMU. Please help define the
+> > roles/responsibilities in my other email. Then I will follow the
+> > guideline.  
+> 
+> We can keep that part of the discussion in the other thread.  Thanks,
+> 
+> Alex
+> 
+> > > > +	if (inv_info->argsz < minsz)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	/* Sanity check user filled invalidation dat sizes */
+> > > > +	if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
+> > > > +		inv_info->argsz != offsetofend(struct
+> > > > iommu_cache_invalidate_info,
+> > > > +					addr_info))
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (inv_info->granularity == IOMMU_INV_GRANU_PASID &&
+> > > > +		inv_info->argsz != offsetofend(struct
+> > > > iommu_cache_invalidate_info,
+> > > > +					pasid_info))
+> > > > +		return -EINVAL;
+> > > > +
+> > > >  	spin_lock_irqsave(&device_domain_lock, flags);
+> > > >  	spin_lock(&iommu->lock);
+> > > >  	info = get_domain_info(dev);
+> > > > diff --git a/drivers/iommu/intel-svm.c
+> > > > b/drivers/iommu/intel-svm.c index 35b43fe819ed..64dc2c66dfff
+> > > > 100644 --- a/drivers/iommu/intel-svm.c
+> > > > +++ b/drivers/iommu/intel-svm.c
+> > > > @@ -235,15 +235,27 @@ int intel_svm_bind_gpasid(struct
+> > > > iommu_domain *domain, struct device *dev, struct dmar_domain
+> > > > *dmar_domain; struct intel_svm_dev *sdev;
+> > > >  	struct intel_svm *svm;
+> > > > +	unsigned long minsz;
+> > > >  	int ret = 0;
+> > > >  
+> > > >  	if (WARN_ON(!iommu) || !data)
+> > > >  		return -EINVAL;
+> > > >  
+> > > > +	/*
+> > > > +	 * We mandate that no size change in IOMMU UAPI data
+> > > > before the
+> > > > +	 * variable size union at the end.
+> > > > +	 */
+> > > > +	minsz = offsetofend(struct iommu_gpasid_bind_data,
+> > > > padding);      
+> > > 
+> > > Same.  Thanks,
+> > > 
+> > > Alex
+> > >     
+> > > > +	if (data->argsz < minsz)
+> > > > +		return -EINVAL;
+> > > > +
+> > > >  	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
+> > > >  	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
+> > > >  		return -EINVAL;
+> > > >  
+> > > > +	if (data->argsz != offsetofend(struct
+> > > > iommu_gpasid_bind_data, vtd))
+> > > > +		return -EINVAL;
+> > > > +
+> > > >  	if (!dev_is_pci(dev))
+> > > >  		return -ENOTSUPP;
+> > > >        
+> > >     
 > > 
-> > > There was an old lockdep patch that I think may address the issue, but was
-> > > not merged at the time. I will need to dig it out and see if it can be
-> > > adapted to work in the current kernel. It may take some time.
-> > Boqun was working on that; I can't remember what happened, but ISTR it
-> > was shaping up nice.
-> > 
-> Yes, I am talking about Boqun's patch. However, I think he had moved to
-> another company and so may not be able to actively work on that again.
+> > [Jacob Pan]
+> >   
 > 
 
-I think you are talking about the rescursive read deadlock detection
-patchset:
-
-	https://lore.kernel.org/lkml/20180411135110.9217-1-boqun.feng@gmail.com/
-
-Let me have a good and send a new version based on today's master of tip
-tree.
-
-Regards,
-Boqun
-
-> Cheers,
-> Longman
-> 
+[Jacob Pan]
