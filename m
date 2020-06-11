@@ -2,376 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51691F5FE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513EB1F5FDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 04:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgFKCOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Jun 2020 22:14:37 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57216 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgFKCOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Jun 2020 22:14:35 -0400
-IronPort-SDR: Y8u4kR0vYHx2VhhAwOg0Aa6p2PxLf2TKEbulo8Jmh6KbenzulP4nU92OSrOBJjUGUGHi36KtGk
- UDAiK7QcgkOQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 19:14:33 -0700
-IronPort-SDR: 1XR+/Alms1outLIidkOeM2+ANtSdBGVxv8RExPGwlfv3wYESdGJfh4EsMO1l7JOi+mWZ1Lfr3S
- hipEMjFkNaVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,498,1583222400"; 
-   d="scan'208";a="447755036"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga005.jf.intel.com with ESMTP; 10 Jun 2020 19:14:30 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, balbi@kernel.org,
-        p.zabel@pengutronix.de
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
-        andriy.shevchenko@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v2 2/2] usb: phy: Add USB3 PHY support for Intel LGM SoC
-Date:   Thu, 11 Jun 2020 10:12:46 +0800
-Message-Id: <20200611021246.3250-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200611021246.3250-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200611021246.3250-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1726407AbgFKCN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Jun 2020 22:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgFKCN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Jun 2020 22:13:28 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE938C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 19:13:27 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x1so4789845ejd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 19:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wSclIs7n5vpOSvxh2OrnHeX+5b5kOfOtKGtkOgLl0/Y=;
+        b=v8+6EYjaTY6Fw2wnUUu6UJNua3V+Lp53KEHLNac2TEyYj9A2BadRkPLnSl/9YGGSyY
+         T+OtnVMqO3xg/6L/4Nz08Mjb8nZo6NBSLdJSDqdfsJfSBLSCJh8KebIiyYCwV/s5cM9p
+         N4Xs60MSyKAQ/KYjoC7hCG5yphEFesouJle1fShaDIcorlZn0iBB3bbrrytdHDbAELFC
+         UYcuflCA6Bvrd9rGKshvhPFITNVjLQFiijsQMxQ7HyFPN9KDpI8QFlufe6imer80UQPr
+         4owye83ciH2aTw1fRvOmHgKrDhXFOgRLnp8gb82hFc5C85ZqJeNOSAiMFX+2AEbsAjdn
+         lRKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wSclIs7n5vpOSvxh2OrnHeX+5b5kOfOtKGtkOgLl0/Y=;
+        b=WHt5aucTT0/ChXwBJ9j5jdo+mWTxXHI64u+k79mvLg4rldAphk+PwolFhERt4VPh2X
+         IcYs/SyyYeWMDQjhlQSypV94zxEx9TQ77VHQKjkF0S/iZ4whFDKU7903nOB9/YKDPFv6
+         /91iXtsCPQDYI2fC9CweuCkq4M5ZKE/WJxPrQNUl0LaCyl3fTjp/ZgwxVp3bqBV4FuTo
+         wMytk2jQKoQuKQiNuQF0H2p7rhb9kUOsYbAhzLN8sq29a51G8UgsYzJuk5h+qEzHTpjz
+         Ydph8vkofHZLgcumBa/Ot4gSkeQZGrLcCjq/1vjC8w99Xqir6HpsFb1xZXTUvGzswYpb
+         B/1g==
+X-Gm-Message-State: AOAM533Cl0Zvkl0prUA4p9Bav6nDOe8YaMxBTmGIySzmgLpC8FhJkShm
+        UPG3LqbdvjXiCTH5aCPTZ9RYuDhPJDYRzRZv5Rq/
+X-Google-Smtp-Source: ABdhPJyoOh4d1o3ex77cQD0moZLEf9Ht3wehb6wOgCo5liChTu7jBmv/acKYI4ooL1J0tjr7yhg8ntLwvLjO71Zudho=
+X-Received: by 2002:a17:906:19d3:: with SMTP id h19mr6064005ejd.106.1591841606286;
+ Wed, 10 Jun 2020 19:13:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200610215713.5319-1-trix@redhat.com> <20200610215713.5319-2-trix@redhat.com>
+In-Reply-To: <20200610215713.5319-2-trix@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 10 Jun 2020 22:13:15 -0400
+Message-ID: <CAHC9VhTd0HSv6Yk8NxJeC=U7wPb0AtRturAGYLfxg8B13h0FOA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] selinux: fix double free
+To:     trix@redhat.com
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>, jeffv@google.com,
+        rgb@redhat.com, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Wed, Jun 10, 2020 at 5:57 PM <trix@redhat.com> wrote:
+> From: Tom Rix <trix@redhat.com>
+>
+> Clang's static analysis tool reports these double free memory errors.
+>
+> security/selinux/ss/services.c:2987:4: warning: Attempt to free released memory [unix.Malloc]
+>                         kfree(bnames[i]);
+>                         ^~~~~~~~~~~~~~~~
+> security/selinux/ss/services.c:2990:2: warning: Attempt to free released memory [unix.Malloc]
+>         kfree(bvalues);
+>         ^~~~~~~~~~~~~~
+>
+> So improve the security_get_bools error handling by freeing these variables
+> and setting their return pointers to NULL and the return len to 0
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  security/selinux/ss/services.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Add support for USB PHY on Intel LGM SoC.
+Thanks Tom for the patch and Stephen for the review.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- drivers/usb/phy/Kconfig       |  11 ++
- drivers/usb/phy/Makefile      |   1 +
- drivers/usb/phy/phy-lgm-usb.c | 280 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 292 insertions(+)
- create mode 100644 drivers/usb/phy/phy-lgm-usb.c
+I've marked this for stable and merged it into selinux/stable-5.8.
+Considering we are just a few days away from the close of the merge
+window and -rc1, I'll probably hold off until next to send this up to
+Linus.
 
-diff --git a/drivers/usb/phy/Kconfig b/drivers/usb/phy/Kconfig
-index 4b3fa78995cf..95f2e737d663 100644
---- a/drivers/usb/phy/Kconfig
-+++ b/drivers/usb/phy/Kconfig
-@@ -192,4 +192,15 @@ config JZ4770_PHY
- 	  This driver provides PHY support for the USB controller found
- 	  on the JZ4770 SoC from Ingenic.
- 
-+config USB_LGM_PHY
-+	tristate "INTEL Lightning Mountain USB PHY Driver"
-+	depends on USB_SUPPORT
-+	select USB_PHY
-+	select REGULATOR
-+	select REGULATOR_FIXED_VOLTAGE
-+	help
-+	  Enable this to support Intel DWC3 PHY USB phy. This driver provides
-+	  interface to interact with USB GEN-II and USB 3.x PHY that is part
-+	  of the Intel network SOC.
-+
- endmenu
-diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
-index b352bdbe8712..ef5345164e10 100644
---- a/drivers/usb/phy/Makefile
-+++ b/drivers/usb/phy/Makefile
-@@ -25,3 +25,4 @@ obj-$(CONFIG_USB_ULPI)			+= phy-ulpi.o
- obj-$(CONFIG_USB_ULPI_VIEWPORT)		+= phy-ulpi-viewport.o
- obj-$(CONFIG_KEYSTONE_USB_PHY)		+= phy-keystone.o
- obj-$(CONFIG_JZ4770_PHY)		+= phy-jz4770.o
-+obj-$(CONFIG_USB_LGM_PHY)		+= phy-lgm-usb.o
-diff --git a/drivers/usb/phy/phy-lgm-usb.c b/drivers/usb/phy/phy-lgm-usb.c
-new file mode 100644
-index 000000000000..eb415533bc66
---- /dev/null
-+++ b/drivers/usb/phy/phy-lgm-usb.c
-@@ -0,0 +1,280 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel LGM USB PHY driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/delay.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
-+#include <linux/usb/phy.h>
-+#include <linux/workqueue.h>
-+
-+#define CTRL1_OFFSET		0x14
-+#define SRAM_EXT_LD_DONE	BIT(25)
-+#define SRAM_INIT_DONE		BIT(26)
-+
-+#define TCPC_OFFSET		0x1014
-+#define TCPC_MUX_CTL		GENMASK(1, 0)
-+#define MUX_NC			0
-+#define MUX_USB			1
-+#define MUX_DP			2
-+#define MUX_USBDP		3
-+#define TCPC_FLIPPED		BIT(2)
-+#define TCPC_LOW_POWER_EN	BIT(3)
-+#define TCPC_VALID		BIT(4)
-+#define TCPC_DISCONN		\
-+	(TCPC_VALID | FIELD_PREP(TCPC_MUX_CTL, MUX_NC) | TCPC_LOW_POWER_EN)
-+
-+static const char *const PHY_RESETS[] = { "phy31", "phy", };
-+static const char *const CTL_RESETS[] = { "apb", "ctrl", };
-+
-+struct tca_apb {
-+	struct reset_control *resets[ARRAY_SIZE(PHY_RESETS)];
-+	struct regulator *vbus;
-+	struct work_struct wk;
-+	struct usb_phy phy;
-+
-+	bool phy_initialized;
-+	bool connected;
-+};
-+
-+static int get_flipped(struct tca_apb *ta, bool *flipped)
-+{
-+	union extcon_property_value property;
-+	int ret;
-+
-+	ret = extcon_get_property(ta->phy.edev, EXTCON_USB_HOST,
-+				  EXTCON_PROP_USB_TYPEC_POLARITY, &property);
-+	if (ret) {
-+		dev_err(ta->phy.dev, "no polarity property from extcon\n");
-+		return false;
-+	}
-+
-+	*flipped = property.intval;
-+
-+	return *flipped;
-+}
-+
-+static int phy_init(struct usb_phy *phy)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	void __iomem *ctrl1 = phy->io_priv + CTRL1_OFFSET;
-+	int val, ret, i;
-+
-+	if (ta->phy_initialized)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_deassert(ta->resets[i]);
-+
-+	ret = readl_poll_timeout(ctrl1, val, val & SRAM_INIT_DONE,
-+				 10, 10 * 1000);
-+	if (ret) {
-+		dev_err(ta->phy.dev, "SRAM init failed, 0x%x\n", val);
-+		return ret;
-+	}
-+
-+	writel(readl(ctrl1) | SRAM_EXT_LD_DONE, ctrl1);
-+
-+	ta->phy_initialized = true;
-+	if (!ta->phy.edev)
-+		return phy->set_vbus(phy, true);
-+
-+	schedule_work(&ta->wk);
-+
-+	return 0;
-+}
-+
-+static void phy_shutdown(struct usb_phy *phy)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	int i;
-+
-+	if (!ta->phy_initialized)
-+		return;
-+
-+	ta->phy_initialized = false;
-+	flush_work(&ta->wk);
-+	ta->phy.set_vbus(&ta->phy, false);
-+	if (ta->connected) {
-+		ta->connected = false;
-+		writel(TCPC_DISCONN, ta->phy.io_priv + TCPC_OFFSET);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_assert(ta->resets[i]);
-+}
-+
-+static int phy_set_vbus(struct usb_phy *phy, int on)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	int ret = 0;
-+
-+	if (on) {
-+		ret = regulator_enable(ta->vbus);
-+		if (ret)
-+			dev_err(ta->phy.dev, "regulator not enabled\n");
-+	} else {
-+		ret = regulator_disable(ta->vbus);
-+		if (ret)
-+			dev_err(ta->phy.dev, "regulator not disabled\n");
-+	}
-+
-+	return ret;
-+}
-+
-+static void tca_work(struct work_struct *work)
-+{
-+	struct tca_apb *ta = container_of(work, struct tca_apb, wk);
-+	bool connected;
-+	bool flipped = false;
-+	u32 val;
-+	int ret;
-+
-+	ret = get_flipped(ta, &flipped);
-+	if (!ret)
-+		dev_err(ta->phy.dev, "no polarity property from extcon\n");
-+
-+	connected = extcon_get_state(ta->phy.edev, EXTCON_USB_HOST);
-+	if (connected == ta->connected)
-+		return;
-+
-+	ta->connected = connected;
-+	if (connected) {
-+		val = TCPC_VALID | FIELD_PREP(TCPC_MUX_CTL, MUX_USB);
-+		if (flipped)
-+			val |= TCPC_FLIPPED;
-+		dev_info(ta->phy.dev, "connected%s\n",
-+			 flipped ? " flipped" : "");
-+	} else {
-+		val = TCPC_DISCONN;
-+		dev_info(ta->phy.dev, "disconnected\n");
-+	}
-+
-+	writel(val, ta->phy.io_priv + TCPC_OFFSET);
-+
-+	if (ta->phy.set_vbus(&ta->phy, connected))
-+		dev_err(ta->phy.dev, "failed to set VBUS\n");
-+}
-+
-+static int id_notifier(struct notifier_block *nb, unsigned long event, void *ptr)
-+{
-+	struct tca_apb *ta = container_of(nb, struct tca_apb, phy.id_nb);
-+
-+	if (ta->phy_initialized)
-+		schedule_work(&ta->wk);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int vbus_notifier(struct notifier_block *nb,
-+			 unsigned long event, void *ptr)
-+{
-+	return NOTIFY_DONE;
-+}
-+
-+static int phy_probe(struct platform_device *pdev)
-+{
-+	struct reset_control *resets[ARRAY_SIZE(CTL_RESETS)];
-+	struct device *dev = &pdev->dev;
-+	struct usb_phy *phy;
-+	struct tca_apb *ta;
-+	int i;
-+
-+	ta = devm_kzalloc(dev, sizeof(*ta), GFP_KERNEL);
-+	if (!ta)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, ta);
-+	INIT_WORK(&ta->wk, tca_work);
-+
-+	phy = &ta->phy;
-+	phy->dev = dev;
-+	phy->label = dev_name(dev);
-+	phy->type = USB_PHY_TYPE_USB3;
-+	phy->init = phy_init;
-+	phy->shutdown = phy_shutdown;
-+	phy->set_vbus = phy_set_vbus;
-+	phy->id_nb.notifier_call = id_notifier;
-+	phy->vbus_nb.notifier_call = vbus_notifier;
-+
-+	phy->io_priv = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(phy->io_priv))
-+		return PTR_ERR(phy->io_priv);
-+
-+	ta->vbus = devm_regulator_get(dev, "vbus");
-+	if (IS_ERR(ta->vbus))
-+		return PTR_ERR(ta->vbus);
-+
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++) {
-+		resets[i] = devm_reset_control_get_exclusive(dev, CTL_RESETS[i]);
-+		if (IS_ERR(resets[i])) {
-+			dev_err(dev, "%s reset not found\n", CTL_RESETS[i]);
-+			return PTR_ERR(resets[i]);
-+		}
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++) {
-+		ta->resets[i] = devm_reset_control_get_exclusive(dev, PHY_RESETS[i]);
-+		if (IS_ERR(ta->resets[i])) {
-+			dev_err(dev, "%s reset not found\n", PHY_RESETS[i]);
-+			return PTR_ERR(ta->resets[i]);
-+		}
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
-+		reset_control_assert(resets[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_assert(ta->resets[i]);
-+	/*
-+	 * Out-of-band reset of the controller after PHY reset will cause
-+	 * controller malfunctioning, so we should use in-band controller
-+	 * reset only and leave the controller de-asserted here.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
-+		reset_control_deassert(resets[i]);
-+
-+	/* Need to wait at least 20us after de-assert the controller */
-+	usleep_range(20, 100);
-+
-+	return usb_add_phy_dev(phy);
-+}
-+
-+static int phy_remove(struct platform_device *pdev)
-+{
-+	struct tca_apb *ta = platform_get_drvdata(pdev);
-+
-+	usb_remove_phy(&ta->phy);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id intel_usb_phy_dt_ids[] = {
-+	{ .compatible = "intel,lgm-usb-phy" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, intel_usb_phy_dt_ids);
-+
-+static struct platform_driver lgm_phy_driver = {
-+	.driver = {
-+		.name = "lgm-usb-phy",
-+		.of_match_table = intel_usb_phy_dt_ids,
-+	},
-+	.probe = phy_probe,
-+	.remove = phy_remove,
-+};
-+
-+module_platform_driver(lgm_phy_driver);
-+
-+MODULE_DESCRIPTION("Intel LGM USB PHY driver");
-+MODULE_AUTHOR("Li Yin <yin1.li@intel.com>");
-+MODULE_AUTHOR("Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>");
-+MODULE_LICENSE("GPL v2");
+> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> index 313919bd42f8..ef0afd878bfc 100644
+> --- a/security/selinux/ss/services.c
+> +++ b/security/selinux/ss/services.c
+> @@ -2888,8 +2888,12 @@ int security_get_bools(struct selinux_state *state,
+>         if (*names) {
+>                 for (i = 0; i < *len; i++)
+>                         kfree((*names)[i]);
+> +               kfree(*names);
+>         }
+>         kfree(*values);
+> +       *len = 0;
+> +       *names = NULL;
+> +       *values = NULL;
+>         goto out;
+>  }
+>
+> --
+> 2.18.1
+
 -- 
-2.11.0
-
+paul moore
+www.paul-moore.com
