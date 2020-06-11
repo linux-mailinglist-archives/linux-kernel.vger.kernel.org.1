@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778951F6A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDEF1F6A2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbgFKOih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S1728363AbgFKOiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 10:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728059AbgFKOig (ORCPT
+        with ESMTP id S1728193AbgFKOiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:38:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B09C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l17so5212769wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:35 -0700 (PDT)
+        Thu, 11 Jun 2020 10:38:21 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B447FC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id h3so5594149ilh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OkSwpbu3nanzuKZFRobLrpEC9ZCDno96sQzcjNj/eXY=;
-        b=cI+OX7XoTGzmSDSsWCBAgUmvoYrhcn7OEtY/zt2TxdrMTXMKh0GXYchPkoZT+khQPD
-         nV8rBtdgwRtq55gdiZYS/FgVPKwGH5TEAiw5PDtJxEU2mA//8hWvWFd+9XHNZIPQqwJt
-         +O1X0H1P7QlKx+hbQ8bZ/P1XCLh3vXtzV68e4=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dF3hNbjUBSQwM8/VdlOfSEew66M2+2X1iPt+T7+avfg=;
+        b=UcfRzKubbiAogehSYuWmlXFgR4RDmCojE9/+/FKzFy9BzQIdhIhFAQKDSb1ssre2iT
+         NPWOPP6Z+CiFr1rdOA8Kh1aSWwSMXk18FGwfVeBpEw/9ubjLLyQFe0Tzb0nGvFEIaKl9
+         8o8mLqA7fldwmvH3GN4AsDZBvtmrua29LoXWw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OkSwpbu3nanzuKZFRobLrpEC9ZCDno96sQzcjNj/eXY=;
-        b=Ixn1RcA9iHxPejdUs9po84NcMnJOSSMM4keXZHDY0hmpf5xaoT8M0f9ZAcS/Ktxru3
-         6qfyM+jxR43qEqJj3bYmgS4BT1u+1VAfg7IyKBLOEj/ScC68JBe/ZXBgHHL55htUNIbE
-         V70sYsfTAo0yAcgO58ocg3SGlkGfKQEH1h0cDX5ebw0Y0h8YPAfcMPoYgfXS6izA8f5C
-         gmxttWK3NrSl2xa/XP/8VBZHwQDcs8rKfl++czmEjO1uNo4EM44IhgxAGU2VtSuzgslH
-         gjYSwaDG7VD2oXzluibbSSnW40ERcBE+MIb+H4vKBi4wcCbbLCJ4/gaFm9PAGxcqWiF+
-         zOvg==
-X-Gm-Message-State: AOAM532mFkmPRXhyXnCPMzjgOB6GiTIAOE/5nLTUbMw2P0BHFV0rsNVw
-        7PUm/pZWtf9VS7NIBSEiTjPpLtagbeqQR9Q5miowpw==
-X-Google-Smtp-Source: ABdhPJym84e7SJjEkEqSAakLhjhByUtudobqIP49Z3U2O/dZpWA1dZ+0tNVwVesl3Gq55GaV+1O9IkNIEKJMiPotclk=
-X-Received: by 2002:a7b:c3c6:: with SMTP id t6mr8182714wmj.159.1591886314439;
- Thu, 11 Jun 2020 07:38:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dF3hNbjUBSQwM8/VdlOfSEew66M2+2X1iPt+T7+avfg=;
+        b=bP7HG5Q0FOrVALXphH6YoKeybvRAn+brugtl3b4TSDjNrBvIAE+Ug4xFV/SUlsYW/f
+         q+4tMcgvNIKxktITAwqGnF5j2iAUB8trLPy0Jn7h3igzjwRcDLcJRsd0vcnoIVhxDztY
+         KdYqPAxjJ9N/uafKUmKuZjkjbKvQodWAzMEAb+fPNxDwYb/8USr+l69k56u7hGlluoXl
+         FLJCmT7vi+Wv6XociwjCV46aBclFHmv0eeEUSleJYrvo77Eb9jCCvjQ2sn4EaPFKqlWt
+         NwNafgGtfFh21sZhWa87bsbJXKcPHGemT4ZjJ/ZnC3yn1kyOhRLM45fzzTA3e46kz6CR
+         Jmwg==
+X-Gm-Message-State: AOAM532TEaP8wmMvtWNepwHvOKfg0/I46Z96HNdtf7TPnEHYriE5shMx
+        SMQOPMMkdpm6JuZYiJGrJP4TbQ==
+X-Google-Smtp-Source: ABdhPJzKn2AV05PUIQzBsSu2r27bMvUJlu31y880zGD5aJYE7pVuAlx5fF7g/lZPrbDYUx84Y04BxA==
+X-Received: by 2002:a92:dacf:: with SMTP id o15mr7828271ilq.36.1591886300106;
+        Thu, 11 Jun 2020 07:38:20 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n7sm1561133ile.76.2020.06.11.07.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jun 2020 07:38:19 -0700 (PDT)
+Subject: Re: [PATCH] arch/x86: reset MXCSR to default in kernel_fpu_begin()
+To:     Petteri Aimonen <jpa@git.mail.kapsi.fi>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Shuah Khan <shuah@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <8b1f0bfa-79b0-74e4-0241-8b2a94491807@linuxfoundation.org>
+ <C6F6F6E4-CBD8-4E72-812B-99F008ECAA4F@amacapital.net>
+ <b4629042-21c7-2b38-4c3f-44f9be469cca@linuxfoundation.org>
+ <20200603051946.GF17423@lakka.kapsi.fi>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f5f80b20-c8e8-4f75-c5b2-dbd7ce56ca41@linuxfoundation.org>
+Date:   Thu, 11 Jun 2020 08:38:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20191014061617.10296-2-daniel@0x0f.com> <20200610090421.3428945-6-daniel@0x0f.com>
- <a626d8a5-16c2-8f0a-b131-c124c06b0317@suse.de>
-In-Reply-To: <a626d8a5-16c2-8f0a-b131-c124c06b0317@suse.de>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 11 Jun 2020 23:38:18 +0900
-Message-ID: <CAFr9PX=Q+xeQvZD3diV5bTb7+T4oWJiq2kS6cFwv0=no5KxCLg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] ARM: mstar: Add dts for 70mai midrive d08
-To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
-Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
-        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Doug Anderson <armlinux@m.disordat.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200603051946.GF17423@lakka.kapsi.fi>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+On 6/2/20 11:19 PM, Petteri Aimonen wrote:
+> Hi,
+> 
+>> Is it correct to assume the stuff checked differs from test to test
+>> and done in user-space.
+>>
+>>> undo_evil_state();
+>>
+>> Is it correct to assume undoing evil differs from test to test
+>> and done in user-space, provide it can be done from userspace.
+> 
+> Yes, currently the test works like:
+> 
+> do_test_setup();
+> read_from_debugfs_file();
+> check_results();
+> 
 
-On Thu, 11 Jun 2020 at 22:54, Andreas F=C3=A4rber <afaerber@suse.de> wrote:
->
-> BTW I think the subject convention has been "ARM: dts: ...", with "ARM:
-> mstar: ..." more for mach-mstar.
+You will need a 4th clanup step step of undo_test_setup().
 
-I noticed this after sending out this series. I've fixed up the
-subjects in line with convention for the next try.
+> and the middle step stays the same. But of course in general case there
+> could be argument passing etc, even though the test for this issue
+> doesn't need them.
+> 
+> Myself I don't see the problem with just adding a file under debugfs and
+> bind to its read.
+> 
 
-> > diff --git a/arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts b/arch/a=
-rm/boot/dts/mercury5-ssc8336n-midrive08.dts
-> > new file mode 100644
-> > index 000000000000..4ee50ecf6ab1
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/mercury5-ssc8336n-midrive08.dts
-> > @@ -0,0 +1,25 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2019 thingy.jp.
-> > + * Author: Daniel Palmer <daniel@thingy.jp>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "mercury5-ssc8336n.dtsi"
-> > +
-> > +/ {
-> > +     model =3D "midrive d08";
->
-> Couldn't find this on their website. Should this be "70mai midrive ..."
-> or is "midrive" a different brand?
+thanks,
+-- Shuah
 
-I think it should be 70mai Midrive D08 based on your comments on the
-other model names.
-On their site this camera is now called "Dash Cam Lite".
-Midrive D08 is the name I bought it under and the name that was used
-for it's FCC approval (https://fccid.io/2AOK9-MIDRIVED08) so that's
-what I went
-with.
-
-> > +     compatible =3D "70mai,midrived08", "mstar,mercury5";
->
-> Have you considered naming it "70mai,midrive-d08" for better
-> readability? (affects 1/5)
-
-I went with midrived08 as that's what was used for the FCC and from
-what I remember was written on the casing.
-
-Thanks,
-
-Daniel
