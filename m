@@ -2,150 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2211F6F48
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB5F1F6F2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 23:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgFKVRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 17:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
+        id S1726305AbgFKVJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 17:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgFKVRL (ORCPT
+        with ESMTP id S1726153AbgFKVJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 17:17:11 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A0FC08C5C1;
-        Thu, 11 Jun 2020 14:17:11 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id q8so8017815iow.7;
-        Thu, 11 Jun 2020 14:17:11 -0700 (PDT)
+        Thu, 11 Jun 2020 17:09:35 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF65EC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 14:09:33 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v24so2801540plo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 14:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FLt18Y6W5gGwuw6RcLD1KD4cexUWiAcYxlXCoMhY/Zk=;
-        b=tP05nD18zyaPnjbVlSYPcWkm5O+mR5kSp+Bea8c0B39sT1mHxTIWV/AbGudu3IWuwj
-         rA7CYX35ckaGfR3Fq+P2SHJ8tG1CSzGoiwj/W1rceGoumqMrwGrSA9nK498/cEZeR5j7
-         YcRWV7ySvYHPI/YKRyZ1aIcVDRDfX2L7cNax4ynlrFvKuykNAAiG/+6+JBsrvaMAKyDc
-         tkzquw62Z67g0/IuY5fyBvSy2tflDQXnCmbdW0d9AWvR44z9E6r5gBLIr1d0VVxpojJo
-         BHykrz3Ooe6M5dNES1lPjZRBOrN7e7nBQzL7S+NtPdKAUCXuONCdVdDM6ZUUMz3u4klb
-         XjZw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hHMJFXhsuTqudS+iH/9s75IdmWWzAX89Y6jkRhlQC84=;
+        b=JbW0KEGZ9j+cEaHm0rZ95qN8lU9FSixYjlKu1RklhbiroddM0UMw9KV0yhs3g58oam
+         Ul7jBYIFuvAhXHISm0cA2R5WYSGm6zdt5nJb+CawsEGxXpEJvG1crPlycGaq4pNwSkyS
+         Td7BoKOCVx8XwE+qjIHmauAOFKfo/BYqpGg8bk8g49FwmdO17lQUJ6zQwkxAhyrilMFX
+         GVS4sUySkWCWPitfgOcq9sdtQmP0IbqnuFqspQF/Sfma1NGdM5Ha7voZFAbybBHBTyeF
+         E6PQdNJJA4Jy2exLOkJY7O4U8WdV3Ldl6hsGyBh5aeWrSUdiMXXECX4eQQ4Xmxk7pNOo
+         9nFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FLt18Y6W5gGwuw6RcLD1KD4cexUWiAcYxlXCoMhY/Zk=;
-        b=J3RoNFvTAY5rN9hyGCb9J8WgYgKZnn3J0ToNSjG8ZUVCIYeY3onOsKUWbK33PQybhz
-         rHCyYUN4ox57nQ3pcI60AeYwwI0RLmfdHzTqqUaExSnJa788ejypBV0TSV6+PKdl13XH
-         wUDPRXD2NUDBUa5xjY5xze35GeMPeLT+kPkLWdaDHBGdOGvXITAqtuWPXTHWn7I5MQ0c
-         /teIYjL1VECOlNSWmkxRhUfu1LmvKvsVc+xaB2A72s3Yq0ovjsPMfG++6wXF4IgbiTk+
-         VTst1jlSNcYDxJ8+Us6F6FMUe0D1qZ8CGDbqtzVqtZtQw/0DE5xQxhbUjw9PWj+2EOuh
-         QduQ==
-X-Gm-Message-State: AOAM532B3ufWDMt0LT12AUqMnKk0U6nsI+53WMcGU04IDHVbDSdYqn37
-        XG3LiDKoehc4A9vB6Pg4hzg=
-X-Google-Smtp-Source: ABdhPJykLH7xMIrgm/4Hl6xB7+2dr3D8cF3Z326nWJplAsfWiRQQc5uMdx6aA8SYE8/hbgBv9SxK+w==
-X-Received: by 2002:a6b:5f06:: with SMTP id t6mr10095418iob.88.1591910230430;
-        Thu, 11 Jun 2020 14:17:10 -0700 (PDT)
-Received: from urieldev.c.googlers.com.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id n7sm2031738ile.76.2020.06.11.14.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 14:17:09 -0700 (PDT)
-From:   Uriel Guajardo <urielguajardojr@gmail.com>
-To:     brendanhiggins@google.com
-Cc:     Uriel Guajardo <urielguajardo@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kunit: show error if kunit results are not present
-Date:   Thu, 11 Jun 2020 21:05:45 +0000
-Message-Id: <20200611210545.173886-1-urielguajardojr@gmail.com>
-X-Mailer: git-send-email 2.27.0.278.ge193c7cf3a9-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hHMJFXhsuTqudS+iH/9s75IdmWWzAX89Y6jkRhlQC84=;
+        b=uFdI9g0vG41YRManX/PaQQIfDitsEiFSbY/b/NHHQ41WHkjZvKNu8/ROf847q43dUv
+         zLWnlUGgHJcXXvOODQ5a9Wuj3YEpynfXkA9mVn8lVT9qjmWaZhFpzyAeCLWF1p4YjcD9
+         eCo3n9rCVH+H3DJkki3lDJr1AZrlUGaJyDmTwwGRGiUZuCccUtdxKhIcED4WzV7/bio4
+         cykqfAbu78SetAbFDEoq0zmv8/M23Q5jaiHnuPwa4TKYxggFLNfsX1DSgpV/pqszdN7a
+         Cmr6Fd9tFpWSQTP7zOTKxfMR8TbFy25rKgyf9q20umNo2EImBMI9RNi6x7vSuYftIEpS
+         KRSA==
+X-Gm-Message-State: AOAM530YnsOxHzvNK0GYOeGPu4u08CNKd1Tcn0V8dkyk5seA+jw6/W4V
+        v5xvIslq0Dj/cLfm8B+LUQSOtu7Y3jW4AKj+J8SQqw==
+X-Google-Smtp-Source: ABdhPJw7oRp2q2uDrmwToyO/TU8rthydadFc4D/arZLRkYOvYL0DwQH4Kk9VhzM4AmIrMS9Ah/xooa3+CA8gNoeg1/c=
+X-Received: by 2002:a17:902:7201:: with SMTP id ba1mr8546090plb.223.1591909772866;
+ Thu, 11 Jun 2020 14:09:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200610063715.v2qrqvwtegdxdwzl@google.com> <20200610191106.2662548-1-nivedita@alum.mit.edu>
+ <CAKwvOdnF9xhrs+FP4QXo6uXxgHMfHO8NvPYs1=KDE2ZyhCw2QQ@mail.gmail.com> <20200610233046.GA2941409@rani.riverdale.lan>
+In-Reply-To: <20200610233046.GA2941409@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Jun 2020 14:09:21 -0700
+Message-ID: <CAKwvOdnddAjiXDKA8fp3n2NN+R=Syp2N5DHbp1j=VRzM1dNnRw@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: Improve compressed debug info support detection
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uriel Guajardo <urielguajardo@google.com>
+On Wed, Jun 10, 2020 at 4:30 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Wed, Jun 10, 2020 at 02:27:55PM -0700, Nick Desaulniers wrote:
+> > On Wed, Jun 10, 2020 at 12:11 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > Commit
+> > >   10e68b02c861 ("Makefile: support compressed debug info")
+> > > added support for compressed debug sections.
+> > >
+> > > Support is detected by checking
+> > > - does the compiler support -gz=zlib
+> > > - does the assembler support --compressed-debug-sections=zlib
+> > > - does the linker support --compressed-debug-sections=zlib
+> > >
+> > > However, the gcc driver's support for this option is somewhat
+> > > convoluted. The driver's builtin specs are set based on the version of
+> > > binutils that it was configured with, and it reports an error only if
+> > > the assembler (or linker) is actually invoked.
+> > >
+> > > The cc-option check in scripts/Kconfig.include does not invoke the
+> > > assembler, so the gcc driver reports success even if it does not support
+> > > the option being passed to the assembler.
+> >
+> > Thanks for the patch! In that case, should we consider dropping the
+> > cc-option check from the Kconfg then, too?
+> >
+> > It seems it would help for clang-4 and older, since they do error
+> > about the unknown option, but I'm not too worried about trying to
+> > support that version of Clang with this config.
+>
+> Also for gcc4 which doesn't support this at all -- that will report
+> error on cc-option. We don't need to support it, but we shouldn't let it
+> be enabled either.
 
-Currently, if the kernel is configured incorrectly or if it crashes before any
-kunit tests are run, kunit finishes without error, reporting
-that 0 test cases were run.
+ah, right, good to fail early in that case then.
 
-To fix this, an error is shown when the tap header is not found, which
-indicates that kunit was not able to run at all.
+>
+> >
+> > > Combined with an installed
+> > > version of binutils that is more recent than the one the compiler was
+> > > built with, it is possible for all three tests to succeed, yet an actual
+> > > compilation with -gz=zlib to fail.
+> >
+> > It kind of sounds like the assembler must be invoked to verify this
+> > will work for the cflags then?
+> >
+>
+> Yes, the gcc driver reports an error when deciding what to pass to the
+> assembler for -gz=zlib, if it was configured with a linker that does not
+> support the flag. It's even more weird actually -- if it was configured
+> with a linker that supports the flag but an assembler that doesn't, it
+> will silently eat the flag when calling the assembler. At least that
+> won't break anything, though none of the .o files will be compressed.
 
-Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
----
- tools/testing/kunit/kunit_parser.py               |   8 ++++----
- tools/testing/kunit/kunit_tool_test.py            |  11 +++++++++++
- .../kunit/test_data/test_insufficient_memory.log  | Bin 0 -> 856 bytes
- 3 files changed, 15 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/kunit/test_data/test_insufficient_memory.log
+Not sure whether we'd like to prevent the option from being selectable
+in that case, or just to silently not compress the debug info.  Given
+that the compression is an optimization, it doesn't hurt to silently
+not do it, but it would be nice to notify the user their toolchain may
+have been misconfigured.  Though another part of me feels "garbage in,
+garbage out."
 
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 64aac9dcd431..f13e0c0d6663 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -265,11 +265,9 @@ def bubble_up_suite_errors(test_suite_list: List[TestSuite]) -> TestStatus:
- 	return bubble_up_errors(lambda x: x.status, test_suite_list)
- 
- def parse_test_result(lines: List[str]) -> TestResult:
--	if not lines:
--		return TestResult(TestStatus.NO_TESTS, [], lines)
- 	consume_non_diagnositic(lines)
--	if not parse_tap_header(lines):
--		return None
-+	if not lines or not parse_tap_header(lines):
-+		return TestResult(TestStatus.NO_TESTS, [], lines)
- 	test_suites = []
- 	test_suite = parse_test_suite(lines)
- 	while test_suite:
-@@ -282,6 +280,8 @@ def parse_run_tests(kernel_output) -> TestResult:
- 	failed_tests = 0
- 	crashed_tests = 0
- 	test_result = parse_test_result(list(isolate_kunit_output(kernel_output)))
-+	if test_result.status == TestStatus.NO_TESTS:
-+		print_with_timestamp(red('[ERROR] ') + 'no kunit output detected')
- 	for test_suite in test_result.suites:
- 		if test_suite.status == TestStatus.SUCCESS:
- 			print_suite_divider(green('[PASSED] ') + test_suite.name)
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 984588d6ba95..4a7ef2eef831 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -170,6 +170,17 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
- 		file.close()
- 
-+	def test_no_kunit_output(self):
-+		crash_log = get_absolute_path(
-+			'test_data/test_insufficient_memory.log')
-+		file = open(crash_log)
-+		print_mock = mock.patch('builtins.print').start()
-+		result = kunit_parser.parse_run_tests(
-+			kunit_parser.isolate_kunit_output(file.readlines()))
-+		print_mock.assert_any_call(StrContains("no kunit output detected"))
-+		print_mock.stop()
-+		file.close()
-+
- 	def test_crashed_test(self):
- 		crashed_log = get_absolute_path(
- 			'test_data/test_is_test_passed-crash.log')
-diff --git a/tools/testing/kunit/test_data/test_insufficient_memory.log b/tools/testing/kunit/test_data/test_insufficient_memory.log
-new file mode 100644
-index 0000000000000000000000000000000000000000..6c9e4da7b6d763a03c0c83302b2faa6dc21a6ea6
-GIT binary patch
-literal 856
-zcmbu6Piw<448`yH6xx0L3mw^@hf#VOv}5$J+fZ#KHj8CrJK6H>=Z2=CgO$<hA}n~n
-z_av{ZCy=#qP-&xMfG4=6vR)i)5n%+={(WUX@f3QQc$@8JeI=@sWh+JEQ*#MXVFVXF
-z3Ic%)LLrv~p$(Btnp72VZT95Dcs$;|{9!uqlCTqzsVj`yGB}JvL1F#T<`SpJ4?L6&
-zvLJa#bUk?B5jWafHpCGc^cwdSg)SXJ+Sp0$Q$V&%X;`!D6P@>grwf=!Y9>J$&;ioE
-z(YWH`vCdK5Yv8@UZFe8*_w@>lK?j;o`2XCkM`zDc9)5TBu*ma#3i~#uEu#ge+Mv@N
-z!H}`OJ&aI@v}o*ZK;I-rL20Tal*zuYY-cSL^z~bR2OA<uaygqX^7-Rzeh;N?h?hs>
-F><3Em&*A_8
+>
+> > >
+> > > Moreover, it is unnecessary to explicitly pass
+> > > --compressed-debug-sections=zlib to the assembler via -Wa, since the
+> > > driver will do that automatically.
+> > >
+> > > Convert the as-option to just -gz=zlib, simplifying it as well as
+> > > performing a better test of the gcc driver's capabilities.
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> >
+> > Does this imply all feature tests of as-option with -W(comma)... are
+> > broken?  IIUC, then the assembler is still not invoked, much as in
+> > this case?  (as in they all pass when maybe they should not?)  (or
+> > based on below, maybe just the Kconfig from 74afda4016a74 in
+> > arch/arm64/Kconfig, AS_HAS_PAC)
+>
+> No, as-option does invoke the assembler. The problem here is that with
+> -Wa, the option is only seen by the assembler, not the gcc driver. So it
+> will succeed because the assembler supports it, but it will not test
+> whether the gcc driver also supports it.
 
-literal 0
-HcmV?d00001
+^ Those 2 last sentences should go in the commit message, as the
+current form doesn't allude to that.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+>
+> >
+> > In the other thread, you discussed -c vs -s.  It looks like -c is used
+> > for as-option, so I expect the assembler to be invoked.
+> >
+> > Maybe we should look at the mismatch between Kbuild and Kconfig
+> > regarding -c vs -s in scripts/Kbuild.include vs
+> > scripts/Kconfig.include?  Otherwise it sounds like cc-option cannot be
+> > used to check for `-Wa,` flags in Kconfig, since if the assembler is
+> > never invoked, it may appear that GCC has support for
+> > -Wa,--compress-debug-sections=zlib when it indeed does not.
+> >
+>
+> Yeah, we might want to fix the mismatch there.  In Kconfig, there aren't
+> any instances of cc-option being used with -Wa, but there certainly are
+> in Kbuild. It actually originally used to only run the preprocessor and
+
+Yep. Got it.
+
+> got fixed to at least run the compiler in commit
+>   3bed1b7b9d79 ("kbuild: use -S instead of -E for precise cc-option test in Kconfig")
+>
+> > > ---
+> > >  Makefile          | 2 +-
+> > >  lib/Kconfig.debug | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 839f9fee22cb..cb29e56f227a 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -842,7 +842,7 @@ endif
+> > >
+> > >  ifdef CONFIG_DEBUG_INFO_COMPRESSED
+> > >  DEBUG_CFLAGS   += -gz=zlib
+> > > -KBUILD_AFLAGS  += -Wa,--compress-debug-sections=zlib
+> > > +KBUILD_AFLAGS  += -gz=zlib
+
+I verified that Clang will still produce compressed debug info
+sections for .s/.S input with -gz=zlib.  So this doesn't regress
+anything, AFAICT.
+
+Thanks for the patch.
+
+> > >  KBUILD_LDFLAGS += --compress-debug-sections=zlib
+> > >  endif
+> > >
+> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > > index cb98741601bd..94ce36be470c 100644
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -229,7 +229,7 @@ config DEBUG_INFO_COMPRESSED
+> > >         bool "Compressed debugging information"
+> > >         depends on DEBUG_INFO
+> > >         depends on $(cc-option,-gz=zlib)
+> > > -       depends on $(as-option,-Wa$(comma)--compress-debug-sections=zlib)
+> > > +       depends on $(as-option,-gz=zlib)
+> > >         depends on $(ld-option,--compress-debug-sections=zlib)
+> > >         help
+> > >           Compress the debug information using zlib.  Requires GCC 5.0+ or Clang
+> > > --
+> > > 2.26.2
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+
+
 
 -- 
-2.27.0.278.ge193c7cf3a9-goog
-
+Thanks,
+~Nick Desaulniers
