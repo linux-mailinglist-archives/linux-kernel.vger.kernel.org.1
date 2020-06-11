@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D111F66E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFAA1F66E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 13:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgFKLgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 07:36:05 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21342 "EHLO
+        id S1727029AbgFKLfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 07:35:51 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21294 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728017AbgFKLe2 (ORCPT
+        by vger.kernel.org with ESMTP id S1728009AbgFKLec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 07:34:28 -0400
+        Thu, 11 Jun 2020 07:34:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591875267;
+        s=mimecast20190719; t=1591875271;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VWXM+ipVrzQXYONFpt3zkOQmQtQZ231iT3DOSd7IMMo=;
-        b=eb7YR6MOmKlA9LpQJbN0S24wLZqG5yVHs4ubB21IGieH5P1HT3W1PQn5gsJ5VjEwyewv5P
-        UWGhK8ObBI5LvbozaN4zXyeJMCmoO3+zFgFy0/mMnvAVT79a7GGgjWTz1dAXaQKjZwJu1U
-        XhPzBQlYyHUr387Eu9VrEELgyO6a8LY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-f1SKrwRyNwWRsyEC-CfTBg-1; Thu, 11 Jun 2020 07:34:25 -0400
-X-MC-Unique: f1SKrwRyNwWRsyEC-CfTBg-1
-Received: by mail-wr1-f69.google.com with SMTP id e1so2462747wrm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 04:34:25 -0700 (PDT)
+        bh=GQeTVzMxKn8MhUVbsXHw7bWDPyusaDacrq6kngKNb/s=;
+        b=IAyFciqIRCFT+Y3sxrzN1KnvSNsYLnLT7N2IxGhqVOvH0CzMUFbrkg6pq+cc1IpArMFfEe
+        3YH5Tlale4b2YVIJk6LUoDJkv7WB+06v3HMDZOSbCvqNcMd7AdID9Kg2E0nDAEZFkaBpR3
+        feGdD/piN3RsNRzluX+wH82lRueRzQs=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-GOhMdGAMP7O6LeZpHXd62A-1; Thu, 11 Jun 2020 07:34:27 -0400
+X-MC-Unique: GOhMdGAMP7O6LeZpHXd62A-1
+Received: by mail-wr1-f70.google.com with SMTP id p9so2458551wrx.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 04:34:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VWXM+ipVrzQXYONFpt3zkOQmQtQZ231iT3DOSd7IMMo=;
-        b=fLjpdMbFEWjh663nKe5fIp6+w6XU2nZYROv4RQQwc59KKDNeaBkiDAlrM4oYDr45ay
-         3zGbokgLzuMqgcK0muiXBTmSO9thsPq1gFo6sJtlwhHghBKiSJfbtkbq05e7CyrKD06T
-         mDS5FsllMfMBUwCMmjDIkf/brNqM+WDS2HPDgCZxCCPhBgANTW8lcgpQ3+f6LY9tM1cn
-         EBUR8H19oBh/fGvZNaG9ML7rlwRCfiNWFcxIMrxom6He3/+XhgeacG7VumpJjgffkS+O
-         PWlKHVc58ecMrnlUJl0xuEGQTjNmdHqKxZ4tKsZdx8Adm4FhN9H5hVaIqT5q6jHqxYSq
-         6HGQ==
-X-Gm-Message-State: AOAM5311OegWW+Y+5cMJzYD8i8q/tALeMcX6M2BmZti1LeaFLud8penx
-        0e8PMsZv4tWm/9n87Vcl5RKKyl/+zq/jyVQlnpSnyxGlV2gygjD4uSkkkAfmkr1WpFhNbUKtDpC
-        pBp5U4XJvZGnj7R7B8Jy61Gju
-X-Received: by 2002:adf:e588:: with SMTP id l8mr9647062wrm.255.1591875264178;
-        Thu, 11 Jun 2020 04:34:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzp9renAKj8PmTNv1Sajxcl0ecOrev7nVeaEQM7VXOPARpXWTORRf8SSFeo90xhKgf6tYSZBQ==
-X-Received: by 2002:adf:e588:: with SMTP id l8mr9647034wrm.255.1591875263907;
-        Thu, 11 Jun 2020 04:34:23 -0700 (PDT)
+        bh=GQeTVzMxKn8MhUVbsXHw7bWDPyusaDacrq6kngKNb/s=;
+        b=pTydj0qBaKLpIryl2itmDOYVODfk42bOl5WideJpxuydC049gD+/1vH/koaAQGkJy2
+         voUMSZ2fcXdlcvlAQsuMiWRk7KFPIQ+O6j613m41ho2RM8bfPRkw9ifbH3PFc1wmnrUt
+         SUSj7KncfuzA8ZEB+MXva5NYmKSovgv+/bI2+qzlVMlMJ+rnpM2qtQYuDgHe12J/kgNz
+         g+mjQdmKATJsuaFIJnCxaT8AGC2CO/XzfcmIUl76wCoZzed19SieEAqC6g6CZmbqlTga
+         +/9CQoSjUIC8QLbMaasAp/TezNF3khxMj6J57ojCah2KPK/kE5FSAoEYQRT8rNeHS2tH
+         aN/A==
+X-Gm-Message-State: AOAM532807+pYiaaUAaa2g35g9A+UxivUa/cwMlPVdxgu7DUI4Ii5lyd
+        ouCzAGZ8r8KFhfYnv5zq17BnXda2OhC4enP/z7zwhyp6Tb0lKMcUDFNJxoLdO6JZbHdbra9K43S
+        MqIkZejnR0brA4WYj6DCvextI
+X-Received: by 2002:adf:f450:: with SMTP id f16mr9149829wrp.307.1591875266440;
+        Thu, 11 Jun 2020 04:34:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxu4RmLScea2SydO/nk/Zqnhh0evcgLZ860ln0HWt26ptj8Of6uBtznoHEKq49OIRHfJG06rw==
+X-Received: by 2002:adf:f450:: with SMTP id f16mr9149807wrp.307.1591875266209;
+        Thu, 11 Jun 2020 04:34:26 -0700 (PDT)
 Received: from redhat.com (bzq-79-181-55-232.red.bezeqint.net. [79.181.55.232])
-        by smtp.gmail.com with ESMTPSA id e12sm4620751wro.52.2020.06.11.04.34.22
+        by smtp.gmail.com with ESMTPSA id w3sm4155571wmg.44.2020.06.11.04.34.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 04:34:23 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 07:34:21 -0400
+        Thu, 11 Jun 2020 04:34:25 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 07:34:24 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
         netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
         eperezma@redhat.com
-Subject: [PATCH RFC v8 03/11] vhost/net: pass net specific struct pointer
-Message-ID: <20200611113404.17810-4-mst@redhat.com>
+Subject: [PATCH RFC v8 04/11] vhost: reorder functions
+Message-ID: <20200611113404.17810-5-mst@redhat.com>
 References: <20200611113404.17810-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,80 +70,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for further cleanup, pass net specific pointer
-to ubuf callbacks so we can move net specific fields
-out to net structures.
+Reorder functions in the file to not rely on forward
+declarations, in preparation to making them static
+down the road.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/vhost/net.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/vhost/vhost.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index bf5e1d81ae25..ff594eec8ae3 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -94,7 +94,7 @@ struct vhost_net_ubuf_ref {
- 	 */
- 	atomic_t refcount;
- 	wait_queue_head_t wait;
--	struct vhost_virtqueue *vq;
-+	struct vhost_net_virtqueue *nvq;
- };
- 
- #define VHOST_NET_BATCH 64
-@@ -231,7 +231,7 @@ static void vhost_net_enable_zcopy(int vq)
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index dfcdb36d4227..c38605b01080 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -2425,19 +2425,6 @@ void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
  }
+ EXPORT_SYMBOL_GPL(vhost_discard_vq_desc);
  
- static struct vhost_net_ubuf_ref *
--vhost_net_ubuf_alloc(struct vhost_virtqueue *vq, bool zcopy)
-+vhost_net_ubuf_alloc(struct vhost_net_virtqueue *nvq, bool zcopy)
+-/* After we've used one of their buffers, we tell them about it.  We'll then
+- * want to notify the guest, using eventfd. */
+-int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
+-{
+-	struct vring_used_elem heads = {
+-		cpu_to_vhost32(vq, head),
+-		cpu_to_vhost32(vq, len)
+-	};
+-
+-	return vhost_add_used_n(vq, &heads, 1);
+-}
+-EXPORT_SYMBOL_GPL(vhost_add_used);
+-
+ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
+ 			    struct vring_used_elem *heads,
+ 			    unsigned count)
+@@ -2507,6 +2494,19 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
+ }
+ EXPORT_SYMBOL_GPL(vhost_add_used_n);
+ 
++/* After we've used one of their buffers, we tell them about it.  We'll then
++ * want to notify the guest, using eventfd. */
++int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
++{
++	struct vring_used_elem heads = {
++		cpu_to_vhost32(vq, head),
++		cpu_to_vhost32(vq, len)
++	};
++
++	return vhost_add_used_n(vq, &heads, 1);
++}
++EXPORT_SYMBOL_GPL(vhost_add_used);
++
+ static bool vhost_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
  {
- 	struct vhost_net_ubuf_ref *ubufs;
- 	/* No zero copy backend? Nothing to count. */
-@@ -242,7 +242,7 @@ vhost_net_ubuf_alloc(struct vhost_virtqueue *vq, bool zcopy)
- 		return ERR_PTR(-ENOMEM);
- 	atomic_set(&ubufs->refcount, 1);
- 	init_waitqueue_head(&ubufs->wait);
--	ubufs->vq = vq;
-+	ubufs->nvq = nvq;
- 	return ubufs;
- }
- 
-@@ -384,13 +384,13 @@ static void vhost_zerocopy_signal_used(struct vhost_net *net,
- static void vhost_zerocopy_callback(struct ubuf_info *ubuf, bool success)
- {
- 	struct vhost_net_ubuf_ref *ubufs = ubuf->ctx;
--	struct vhost_virtqueue *vq = ubufs->vq;
-+	struct vhost_net_virtqueue *nvq = ubufs->nvq;
- 	int cnt;
- 
- 	rcu_read_lock_bh();
- 
- 	/* set len to mark this desc buffers done DMA */
--	vq->heads[ubuf->desc].len = success ?
-+	nvq->vq.heads[ubuf->desc].in_len = success ?
- 		VHOST_DMA_DONE_LEN : VHOST_DMA_FAILED_LEN;
- 	cnt = vhost_net_ubuf_put(ubufs);
- 
-@@ -402,7 +402,7 @@ static void vhost_zerocopy_callback(struct ubuf_info *ubuf, bool success)
- 	 * less than 10% of times).
- 	 */
- 	if (cnt <= 1 || !(cnt % 16))
--		vhost_poll_queue(&vq->poll);
-+		vhost_poll_queue(&nvq->vq.poll);
- 
- 	rcu_read_unlock_bh();
- }
-@@ -1525,7 +1525,7 @@ static long vhost_net_set_backend(struct vhost_net *n, unsigned index, int fd)
- 	/* start polling new socket */
- 	oldsock = vhost_vq_get_backend(vq);
- 	if (sock != oldsock) {
--		ubufs = vhost_net_ubuf_alloc(vq,
-+		ubufs = vhost_net_ubuf_alloc(nvq,
- 					     sock && vhost_sock_zcopy(sock));
- 		if (IS_ERR(ubufs)) {
- 			r = PTR_ERR(ubufs);
+ 	__u16 old, new;
 -- 
 MST
 
