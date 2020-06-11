@@ -2,169 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9301F6805
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E621C1F67FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 14:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgFKMmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 08:42:42 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:31030 "EHLO mx1.tq-group.com"
+        id S1726568AbgFKMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 08:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbgFKMmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 08:42:32 -0400
-IronPort-SDR: psf8eA06QA73cVgDhKf1qN31JERE9W4cEVl9fRg+WGHuclzohHqlixpO1TAGj6XEmznSWRBm6s
- xZupZCVqEVb85x9X6UYBSmiGo6G2c2u4qsJTIeWuOc+G/9Yy5o5ICv6q+IwCEAsWNPtiOiPbXM
- AqGoeibeDCW4oqpAo3fjJmsjhZZzcjFUfoupSPiZaMPW0mm4rSWoRaG3TlT5sFTA/HXyvAnUfA
- IPfkbSn5q2lyiAMREMx6xWWWtp1d4vReUMc/OOHgC95IbSmyv6RnPlaolI4wkINPJJ/pivGV7G
- +Mw=
-X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
-   d="scan'208";a="12649667"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 11 Jun 2020 14:42:26 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 11 Jun 2020 14:42:27 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 11 Jun 2020 14:42:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1591879347; x=1623415347;
-  h=from:to:cc:subject:date:message-id;
-  bh=w92AlLWT7nwDfbklnB9I+khUvogaeBHHV8tKD4NSxZk=;
-  b=RQQpzgmDedERRzPKaIo5YlWkWEQCx0G7gMnpGsnGibw83tShXc1k79ad
-   EVbJFgb1OENZrP3CClgbdDQ0MPAuJ8EciXOyZdC6yjSNkMR9sMa2p9bdx
-   NKrU+m2/S3pec2flzJKfLTQUjL5uufcfjUwmcsD+EM4PJz/oOyhq/suzg
-   /MuA+aTg9NB2E0Cv2l7t28jy142IOM69QgTc24GcP+h5INoDFxvVQHzXL
-   iF/ZRk+Qcu584qn32bT0ZyQnExhLqK0OgGcf683B2DpjPxYB6+tdfpvHM
-   /eDgrrb+KW7KUIf1uSiwZ5zs0n6HliVgHDvXl+fpjWSU/seuSeioaT8CL
-   A==;
-IronPort-SDR: EOnhYcJnjdJM6Gu+to8dm9odHIz97Z0LlsfClzwJV3AgkixJ4698sdcafFpKqcs2a84ffqci8L
- bpJI60Yeg42B1shkVVhoRac81DT7R1t2ppXYjuubeBs2hRLStqpFJbkW1h+E00xl5NdYLiF+XX
- aZLdCQzJs3ItforRLgmqa/BYf4wphedC76B+Ly0rV+fGJiku3V/1KQEHvVtsFsURHuMmnpUzE4
- 1xiSDbfgmSWScCBIYizpZOzH6ISdXRHtQgHmLCIs4MLY030kICzj3FWp1pxMmTdTXovj06C45Z
- WBw=
-X-IronPort-AV: E=Sophos;i="5.73,499,1583190000"; 
-   d="scan'208";a="12649666"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 11 Jun 2020 14:42:26 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 2CE9F280065;
-        Thu, 11 Jun 2020 14:42:28 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 3/4] drm/panel: simple: add CDTech S070PWS19HP-FC21 and S070SWV29HG-DC44
-Date:   Thu, 11 Jun 2020 14:42:08 +0200
-Message-Id: <20200611124209.25028-3-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200611124209.25028-1-matthias.schiffer@ew.tq-group.com>
-References: <20200611124209.25028-1-matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
-References: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
+        id S1726449AbgFKMmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 08:42:16 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AD26207ED;
+        Thu, 11 Jun 2020 12:42:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591879335;
+        bh=L1QAzfDIJTaNMjeS4vXX3SCcFVvZ5SmhAVMUgbEjC8o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Vd5VoEajxjyibQSKqnM6tQFSKLeW7GNkcleAtFqB5TFOxQ2UXahssgIjrDl5vtJZJ
+         pWaCzciklLlMcaWlioEEWcwh5tialB3j69uKlcwmh4LdPceYM/93Mkd+ErcLt/tzvM
+         aVjsDMB2NZT0WR9RBDB5vCoMcLcya5cg9hsXn29g=
+Date:   Thu, 11 Jun 2020 21:42:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        sumit.garg@linaro.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, will@kernel.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org, Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [RFC PATCH 0/4] kgdb: Honour the kprobe blacklist when setting
+ breakpoints
+Message-Id: <20200611214209.bd8fcd290d745ae50d898e69@kernel.org>
+In-Reply-To: <20200605142953.GP2750@hirez.programming.kicks-ass.net>
+References: <20200605132130.1411255-1-daniel.thompson@linaro.org>
+        <20200605142953.GP2750@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
+On Fri, 5 Jun 2020 16:29:53 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Add support for the CDTech Electronics displays S070PWS19HP-FC21
-(7.0" WSVGA) and S070SWV29HG-DC44 (7.0" WVGA) to panel-simple.
+> On Fri, Jun 05, 2020 at 02:21:26PM +0100, Daniel Thompson wrote:
+> > kgdb has traditionally adopted a no safety rails approach to breakpoint
+> > placement. If the debugger is commanded to place a breakpoint at an
+> > address then it will do so even if that breakpoint results in kgdb
+> > becoming inoperable.
+> > 
+> > A stop-the-world debugger with memory peek/poke does intrinsically
+> > provide its operator with the means to hose their system in all manner
+> > of exciting ways (not least because stopping-the-world is already a DoS
+> > attack ;-) ) but the current no safety rail approach is not easy to
+> > defend, especially given kprobes provides us with plenty of machinery to
+> > mark parts of the kernel where breakpointing is discouraged.
+> > 
+> > This patchset introduces some safety rails by using the existing
+> > kprobes infrastructure. It does not cover all locations where
+> > breakpoints can cause trouble but it will definitely block off several
+> > avenues, including the architecture specific parts that are handled by
+> > arch_within_kprobe_blacklist().
+> > 
+> > This patch is an RFC because:
+> > 
+> > 1. My workstation is still chugging through the compile testing.
+> > 
+> > 2. Patch 4 needs more runtime testing.
+> > 
+> > 3. The code to extract the kprobe blacklist code (patch 4 again) needs
+> >    more review especially for its impact on arch specific code.
+> > 
+> > To be clear I do plan to do the detailed review of the kprobe blacklist
+> > stuff but would like to check the direction of travel first since the
+> > change is already surprisingly big and maybe there's a better way to
+> > organise things.
+> 
+> Thanks for doing these patches, esp 1-3 look very good to me.
+> 
+> I've taken the liberty to bounce the entire set to Masami-San, who is
+> the kprobes maintainer for comments as well.
 
-Signed-off-by: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+Thanks Peter to Cc me.
 
-v2:
-- removed vrefresh
-- added connector_type
+Reusing kprobe blacklist is good to me as far as it doesn't expand it
+only for kgdb. For example, if a function which can cause a recursive
+trap issue only when the kgdb puts a breakpoint, it should be covered
+by kgdb blacklist, or we should make a "noinstr-list" including
+both :)
 
- drivers/gpu/drm/panel/panel-simple.c | 60 ++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+Thus, Nack for PATCH 4/4, that seems a bit selfish change. If kgdb wants
+to use the "kprobes blacklist", we should make CONFIG_KGDB depending on
+CONFIG_KPROBES. Or, (as I pointed) we should make independent "noinstr-list"
+and use it from both.
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 6764ac630e22..ee9815e5eee8 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1296,6 +1296,60 @@ static const struct panel_desc cdtech_s043wq26h_ct7 = {
- 	.bus_flags = DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
- };
- 
-+/* S070PWS19HP-FC21 2017/04/22 */
-+static const struct drm_display_mode cdtech_s070pws19hp_fc21_mode = {
-+	.clock = 51200,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1024 + 160 + 20,
-+	.htotal = 1024 + 160 + 20 + 140,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 3,
-+	.vtotal = 600 + 12 + 3 + 20,
-+	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc cdtech_s070pws19hp_fc21 = {
-+	.modes = &cdtech_s070pws19hp_fc21_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 154,
-+		.height = 86,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_POSEDGE,
-+	.connector_type = DRM_MODE_CONNECTOR_DPI,
-+};
-+
-+/* S070SWV29HG-DC44 2017/09/21 */
-+static const struct drm_display_mode cdtech_s070swv29hg_dc44_mode = {
-+	.clock = 33300,
-+	.hdisplay = 800,
-+	.hsync_start = 800 + 210,
-+	.hsync_end = 800 + 210 + 2,
-+	.htotal = 800 + 210 + 2 + 44,
-+	.vdisplay = 480,
-+	.vsync_start = 480 + 22,
-+	.vsync_end = 480 + 22 + 2,
-+	.vtotal = 480 + 22 + 2 + 21,
-+	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc cdtech_s070swv29hg_dc44 = {
-+	.modes = &cdtech_s070swv29hg_dc44_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 154,
-+		.height = 86,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_POSEDGE,
-+	.connector_type = DRM_MODE_CONNECTOR_DPI,
-+};
-+
- static const struct drm_display_mode cdtech_s070wv95_ct16_mode = {
- 	.clock = 35000,
- 	.hdisplay = 800,
-@@ -3674,6 +3728,12 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "cdtech,s043wq26h-ct7",
- 		.data = &cdtech_s043wq26h_ct7,
-+	}, {
-+		.compatible = "cdtech,s070pws19hp-fc21",
-+		.data = &cdtech_s070pws19hp_fc21,
-+	}, {
-+		.compatible = "cdtech,s070swv29hg-dc44",
-+		.data = &cdtech_s070swv29hg_dc44,
- 	}, {
- 		.compatible = "cdtech,s070wv95-ct16",
- 		.data = &cdtech_s070wv95_ct16,
+Thank you,
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
