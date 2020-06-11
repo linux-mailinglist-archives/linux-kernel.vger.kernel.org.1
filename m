@@ -2,163 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CA01F70CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302F91F70C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgFKXUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 19:20:53 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57714 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726284AbgFKXUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 19:20:52 -0400
-IronPort-SDR: 4TuFqZyGUEfZDtEKac1V2eKelE8A+T4L71/kYn74cUyA7p6B9Jn/ycxf0xmFy1x4yKohxzDwDR
- oc6NRe4dnX6A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 16:20:51 -0700
-IronPort-SDR: XhXMCmaBfuRgwtEFEXtJMZygbD7vqtJ8pGircQSzqdqyXnILtwUaucQYN/2ij0J2tfgHHt0zS8
- TZF78l9QkkIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
-   d="scan'208";a="260815830"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Jun 2020 16:20:48 -0700
-Date:   Thu, 11 Jun 2020 19:10:48 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Xiang Zheng <zhengxiang9@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, cohuck@redhat.com,
-        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
-        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
-        xin.zeng@intel.com, hang.yuan@intel.com,
-        Wang Haibin <wanghaibin.wang@huawei.com>
-Subject: Re: [RFC PATCH v4 08/10] i40e/vf_migration: VF live migration -
- pass-through VF first
-Message-ID: <20200611231048.GE13961@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
- <20200518025316.14491-1-yan.y.zhao@intel.com>
- <e45d5bb6-6f15-dd4d-6de2-478b36f88069@huawei.com>
- <20200611002319.GC13961@joy-OptiPlex-7040>
- <fe5c0a64-003c-1db6-8256-f0dc00333f1d@huawei.com>
+        id S1726306AbgFKXNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 19:13:45 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:7351 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgFKXNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 19:13:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1591917225; x=1623453225;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=/Nt2+kIN712BOJFz4irG0MDhl+bonaw/qcmmc2ryco8=;
+  b=R7wTRZtVYU7N6I62uaSoJwhdlTgKI39uz/FDq2bWR/kzZ2/Us9xBoPy+
+   A0YPbK/YFg64trjDc6q9x/F0gS3HGa/0ULv1nqsMitXDLwrLJok0RVE4Q
+   hI3akQQurrHtQKgFDtkfyD6PasHxfPG9DQCQ7YW2X6TeN/r1gJ9ytSz13
+   PzFV66t/VeuWJ7edKS8q2pzCO8z4Ds6uHGVduODkspbeYMlNzFW+9cUXw
+   NL38+oObcX+BpAVqhkVQdNK8Hti5VK7rXPnNLmVO9n6QSarZBjrF7vDVs
+   AEAW05gxP3UNKj+EAFhzogpjyOpumLbtIC1VW178OypGThrG9O/Or2XwP
+   g==;
+IronPort-SDR: yGvNtIaeuKVL+SRha3Fw/NPkdtEPOGaTbdb444UVYubiIBPW3nKYkBmmfjuCys4uoXhyyWWi7X
+ GXqTFyHGzfZr7oTAdiS2oJIgSHuqKtjnswut+zGRcsAKZfwVgdby4lfh0Y+fFvR+pnwKisiMIJ
+ CBUpV5xmrtvp/F0a9pGMU5AksTs6vh7FxAZYhwUHc6jAKjBnmOKfgAx7Kd6EZYYEfnbNOAvxD1
+ B15IZLCIGgE4alE42BYlHuOU/jUvcfSHTAA654w9cFZn8SjHdTRbdbfvpUjU3d+cutC9/E7pNU
+ HNQ=
+X-IronPort-AV: E=Sophos;i="5.73,501,1583164800"; 
+   d="scan'208";a="140061670"
+Received: from mail-dm6nam11lp2176.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.176])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Jun 2020 07:13:44 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ACMaea4E8H1a4w/L6LeSfYhzG2ExVP9oLF2/Q8QIDcHlbSJouSEGUZkhyLbHboaKQwtyjw5l48G1YnTJ+60sCvmHr96JmJyqxUtsXHBhLHQ3DJthQ3S7cxoad4QXLakAH8PJ/Nt1ZcrNcYOETjwG3uau3TVWZ69kR5tgsn01mXdTvzyWY7ejCAn+EhHbA4e4At6JBmEbd+rC1uTVULsqRYLYfaQAyAISO7YF9wpPM3ksoa61dPrCPmrLBt1jn8hiCdS8jkW5A66GC/8Glfa4B6ErRQNaRkGRZZxaXTQot4/SH7jrBP3cmy67pc7N3Z5JH2LxF4wAtUn4rLXJNUHB+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wkoSZkLqbMQf501OjlRv4HDlA8iQHnN2KkxKpL31rg8=;
+ b=hdC+pn6x4BXu34jLaqiZ0n+K4+hSOla+U47AXQn/YHRlG6vxlB4X+l6A+4z8TqveeTzNJzKV+Y7MU8vmPKY3y3UAOUW0uAcK/p0Z9cpiqCxjxv+xNWhf2fsR2I3QwjhGuJxs/wg3+c0cgKxPWl52fGsifi/VjtgaK49j/xO8+7Zx0vJKW11l0QKjn2bJX5SNon0vFXzVYgmHeZWaeGUDDUcHZrIP6D3ksb7KN4RJNezCO8b7IYjLbEU/TFrIeTtU1pFEmlmr9g+kqByQJRnOWf8Y9ZDXWI97YNCQgpFTe3C3UmSotuBD28Dugo8VWxp3IN7CwWtW9crHFSBtRSNoww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wkoSZkLqbMQf501OjlRv4HDlA8iQHnN2KkxKpL31rg8=;
+ b=DyBpeCLYvvvxeiJm+5pDV6XFsUIFvUX254p4EFcIRW8ak9rdcnGUN2VzMM1camdsXNdWEKrIDLOfdHjOs74UTtdGogmjX9Kw+UVTifw8Zk6Wt+Ke8JZVALvxvhEd1iEb1XBm0xUp/qlfSPfkdAHM3piosGxw0D+lvUAL1yVfXX0=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BY5PR04MB7123.namprd04.prod.outlook.com (2603:10b6:a03:227::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.22; Thu, 11 Jun
+ 2020 23:13:42 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6%7]) with mapi id 15.20.3066.023; Thu, 11 Jun 2020
+ 23:13:42 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+CC:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [PATCH v13 8/9] nvmet-passthru: Add enable/disable helpers
+Thread-Topic: [PATCH v13 8/9] nvmet-passthru: Add enable/disable helpers
+Thread-Index: AQHWKhRr7Wm2MqUdeUmSLdzKIjdSIQ==
+Date:   Thu, 11 Jun 2020 23:13:42 +0000
+Message-ID: <BYAPR04MB496581334E89E2E3086C268286800@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200514172253.6445-1-logang@deltatee.com>
+ <20200514172253.6445-9-logang@deltatee.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: deltatee.com; dkim=none (message not signed)
+ header.d=none;deltatee.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 475cb9b7-e807-469e-3c48-08d80e5d1524
+x-ms-traffictypediagnostic: BY5PR04MB7123:
+x-microsoft-antispam-prvs: <BY5PR04MB7123917BBCCBB3993C0D9AD586800@BY5PR04MB7123.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:901;
+x-forefront-prvs: 0431F981D8
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iZSTibywpYg411B7Ce46kku41gnzbCbpZ945HmMQn7J5qC50+Ti34lMF3mcbmZV6cDDgwTA0gvUSNQ5QFJp3IZ+szfJkre+VL4Oge8X3NmLJ4GOWwzmK5JIZbHXt1dg04STmRfwHvL6mwcpn53/RNArL2NV3TDCYBhmZMVEjoRp7ttINU0UtD1Wf8exdPnp/GmypnenhR9bfl4vOWai2//d5FPfatL+2uqdybPcbZQAyllbj94aL+Ut1OjnUYi4fwCCDtTsxkmOBWeivfiteNQfHymg+gTQWVU++spaWU66u2d6RB+KnFKfMn1lMMrRUxH3Yl5U7faWLjvPmouYqmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(8676002)(2906002)(8936002)(4744005)(83380400001)(5660300002)(52536014)(33656002)(86362001)(71200400001)(478600001)(316002)(54906003)(66476007)(66556008)(64756008)(66446008)(110136005)(4326008)(66946007)(26005)(9686003)(53546011)(76116006)(7696005)(55016002)(186003)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: m+3XNp5dr7bbj+ezzG/GYcQq65xtVY8fdPDkcAOFh+XtPtETZHBt6w9TMB03HyjIKKUVN9arg/uIAP9TOzCnNCjUdbH+fst0DD887EtL+75ADY1gdoBHn7SOKXQXxspO7Zi+7+Z7Gk05bJMmuOGk3wKU5GC5upu0fGgR6fRuusS1jLaTBIgBIIKkh7thEMaZY7dW4TOSO4iNnP5z0n4JAHZs37JuBfabn6FJzKP0IRKEW1llr9ZF8bkY7G0iDTdRnjjSzVDfxilppFyy5rSSBgxk0PkldTdwbIJRX/Yes6sqD+W+txk/r3Ojbd/pEJB9SsGH+7wA1Z6+cTReHIU5C/hcEwhzycUVJD7ceAdc6Upa9U8C7BgdQ3Z3VulIQHMSNr/OG7jYiaYY6/a657yqbZo83jK0CzVaREosIJYglWMcFAfoXbeXoeMyFJdVjlcw53oLojNLLWZtdW7/8zBa2yizBe8LhZ1aQCBPQJqLp/M=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe5c0a64-003c-1db6-8256-f0dc00333f1d@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 475cb9b7-e807-469e-3c48-08d80e5d1524
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2020 23:13:42.0819
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2Mb0c3wwZ+XXyFuKF7Vm+Em6QNaWENthjGBURdgFLJU9bETYp4dzGpA2UUOC7sbaVuCWEKvbDOnC7WoLueoYqr9BbhCYt6qfT7nwNF2SmbI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB7123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 10:27:34AM +0800, Xiang Zheng wrote:
-> 
-> 
-> On 2020/6/11 8:23, Yan Zhao wrote:
-> > On Wed, Jun 10, 2020 at 04:59:43PM +0800, Xiang Zheng wrote:
-> >> Hi Yan,
-> >>
-> >> few nits below...
-> >>
-> >> On 2020/5/18 10:53, Yan Zhao wrote:
-> >>> This driver intercepts all device operations as long as it's probed
-> >>> successfully by vfio-pci driver.
-> >>>
-> >>> It will process regions and irqs of its interest and then forward
-> >>> operations to default handlers exported from vfio pci if it wishes to.
-> >>>
-> >>> In this patch, this driver does nothing but pass through VFs to guest
-> >>> by calling to exported handlers from driver vfio-pci.
-> >>>
-> >>> Cc: Shaopeng He <shaopeng.he@intel.com>
-> >>>
-> >>> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> >>> ---
-> >>>  drivers/net/ethernet/intel/Kconfig            |  10 ++
-> >>>  drivers/net/ethernet/intel/i40e/Makefile      |   2 +
-> >>>  .../ethernet/intel/i40e/i40e_vf_migration.c   | 165 ++++++++++++++++++
-> >>>  .../ethernet/intel/i40e/i40e_vf_migration.h   |  59 +++++++
-> >>>  4 files changed, 236 insertions(+)
-> >>>  create mode 100644 drivers/net/ethernet/intel/i40e/i40e_vf_migration.c
-> >>>  create mode 100644 drivers/net/ethernet/intel/i40e/i40e_vf_migration.h
-> >>>
-> >>> diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-> >>> index ad34e4335df2..31780d9a59f1 100644
-> >>> --- a/drivers/net/ethernet/intel/Kconfig
-> >>> +++ b/drivers/net/ethernet/intel/Kconfig
-> >>> @@ -264,6 +264,16 @@ config I40E_DCB
-> >>>  
-> >>>  	  If unsure, say N.
-> >>>  
-> 
-> [...]
-> 
-> >>> diff --git a/drivers/net/ethernet/intel/i40e/i40e_vf_migration.h b/drivers/net/ethernet/intel/i40e/i40e_vf_migration.h
-> >>> new file mode 100644
-> >>> index 000000000000..696d40601ec3
-> >>> --- /dev/null
-> >>> +++ b/drivers/net/ethernet/intel/i40e/i40e_vf_migration.h
-> >>> @@ -0,0 +1,59 @@
-> >>> +/* SPDX-License-Identifier: GPL-2.0 */
-> >>> +/* Copyright(c) 2013 - 2019 Intel Corporation. */
-> >>> +
-> >>> +#ifndef I40E_MIG_H
-> >>> +#define I40E_MIG_H
-> >>> +
-> >>> +#include <linux/pci.h>
-> >>> +#include <linux/vfio.h>
-> >>> +#include <linux/mdev.h>
-> >>> +
-> >>> +#include "i40e.h"
-> >>> +#include "i40e_txrx.h"
-> >>> +
-> >>> +/* helper macros copied from vfio-pci */
-> >>> +#define VFIO_PCI_OFFSET_SHIFT   40
-> >>> +#define VFIO_PCI_OFFSET_TO_INDEX(off)   ((off) >> VFIO_PCI_OFFSET_SHIFT)
-> >>> +#define VFIO_PCI_INDEX_TO_OFFSET(index)	((u64)(index) << VFIO_PCI_OFFSET_SHIFT)
-> >>> +#define VFIO_PCI_OFFSET_MASK    (((u64)(1) << VFIO_PCI_OFFSET_SHIFT) - 1)
-> >>> +
-> >>> +/* Single Root I/O Virtualization */
-> >>> +struct pci_sriov {
-> >>> +	int		pos;		/* Capability position */
-> >>> +	int		nres;		/* Number of resources */
-> >>> +	u32		cap;		/* SR-IOV Capabilities */
-> >>> +	u16		ctrl;		/* SR-IOV Control */
-> >>> +	u16		total_VFs;	/* Total VFs associated with the PF */
-> >>> +	u16		initial_VFs;	/* Initial VFs associated with the PF */
-> >>> +	u16		num_VFs;	/* Number of VFs available */
-> >>> +	u16		offset;		/* First VF Routing ID offset */
-> >>> +	u16		stride;		/* Following VF stride */
-> >>> +	u16		vf_device;	/* VF device ID */
-> >>> +	u32		pgsz;		/* Page size for BAR alignment */
-> >>> +	u8		link;		/* Function Dependency Link */
-> >>> +	u8		max_VF_buses;	/* Max buses consumed by VFs */
-> >>> +	u16		driver_max_VFs;	/* Max num VFs driver supports */
-> >>> +	struct pci_dev	*dev;		/* Lowest numbered PF */
-> >>> +	struct pci_dev	*self;		/* This PF */
-> >>> +	u32		cfg_size;	/* VF config space size */
-> >>> +	u32		class;		/* VF device */
-> >>> +	u8		hdr_type;	/* VF header type */
-> >>> +	u16		subsystem_vendor; /* VF subsystem vendor */
-> >>> +	u16		subsystem_device; /* VF subsystem device */                                                                                   
-> >>> +	resource_size_t	barsz[PCI_SRIOV_NUM_BARS];	/* VF BAR size */
-> >>> +	bool		drivers_autoprobe; /* Auto probing of VFs by driver */
-> >>> +};
-> >>> +
-> >>
-> >> Can "struct pci_sriov" be extracted for common use? This should not be exclusive
-> >> for "i40e_vf migration support".
-> >>
-> > the definition of this structure is actually in driver/pci/pci.h.
-> > maybe removing the copy here and use below include is better?
-> > #include "../../../../pci/pci.h"
-> > 
-> 
-> How about moving the definition from driver/pci/pci.h into include/linux/pci.h? So
-> we can just include "linux/pci.h" and removing the copy here.
->
-I prefer to leaving it in drivers/pci/pci.h for now.
-
-Thanks
-Yan
+On 5/14/20 10:23 AM, Logan Gunthorpe wrote:=0A=
+> +	if (subsys->ver < NVME_VS(1, 2, 1)) {=0A=
+> +		pr_warn("nvme controller version is too old: %d.%d.%d, advertising 1.2=
+.1\n",=0A=
+Is it more than 80 char ? can it be ?=0A=
+                  pr_warn("nvme controller version is too old: ");=0A=
+                  pr_warn("%d.%d.%d, advertising 1.2.1\n",=0A=
+> +			(int)NVME_MAJOR(subsys->ver),=0A=
+> +			(int)NVME_MINOR(subsys->ver),=0A=
+> +			(int)NVME_TERTIARY(subsys->ver));=0A=
+> +		subsys->ver =3D NVME_VS(1, 2, 1);=0A=
+> +	}=0A=
+=0A=
+NVMe blktests are running on QEMU based controller. This will generate =0A=
+warning every-time.=0A=
+=0A=
+Also, I didn't understand int type cast, I wonder under what condition =0A=
+all these macros will return -ve values since ver of type u64 ?=0A=
