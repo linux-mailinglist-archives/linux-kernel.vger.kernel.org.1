@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F5C1F6D01
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7771F6D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 19:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgFKRsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 13:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
+        id S1728125AbgFKRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 13:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgFKRsz (ORCPT
+        with ESMTP id S1725824AbgFKRyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 13:48:55 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C862C03E96F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:48:55 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id g129so3890102vsc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:48:55 -0700 (PDT)
+        Thu, 11 Jun 2020 13:54:04 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0DCC03E96F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:54:03 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so2595452plv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=acirWtrOI5aXX0aAE7Go5x1+MEKzhG9T4nruOYiS7c4=;
-        b=SG3jcoZBkXk2ifRHzGvBnYoSfCtkFZBRFAIginsgbJIZBS+pWSLmpfD4AOBgoaCdLK
-         B8/EthGFAPz3qCoSQr9Iifvtby3G5VE+cTnfiZfGmnJRe8XOZQdNLgA5+olKutx4uVGN
-         iKOO7wzCdCHyPVjPCyiLN/wjVXP6numj+2aXI=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=fp+zT9km85FGnqPFWjENTTSWII2vpTFTYsBocgH2XVU=;
+        b=gz1R9td3whTeOsnqSemH0JyPz0DUhMYRZ/g6Y+uKLaSh8mDVJYFxq2wrTuBuifrbVM
+         ataNaaREFegmXoYMPMCfluJbCgkYlEHrc6eYq8uyVrmRV6bq2HB9RlYfs1HUhs6KxjI5
+         qQWCthLhkECbEA5aFgpw7tev4PV2Ryt66M212/OfKbWBCbC5HPaW5kebFyhxMwztSQoN
+         hP47iH0khzkwDpwiuu5Vd+9K4dscf3oo88mR/efR/N6i5UoDginbNAkp864ZlXlUS1v1
+         i00Chv3iI6i33RFDfYWM/ZRgkKARPnDAiQ6V3mI382DOeQuIbvEAYEXcn08/GFJwk4q/
+         HdGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=acirWtrOI5aXX0aAE7Go5x1+MEKzhG9T4nruOYiS7c4=;
-        b=IA3YScEUMOQr0uQ6R/CBXRcY9r+ErIuWv+wEKOwcdh5cINeWxHCMTjlC7VRf44LrY7
-         L0R/qMHuBcvNtWNtNMT+s0DA0jTohjqOeIqHIDJjmqNjt9LQdYJTmfZQNP8B2g323DNO
-         LRPRfTJNmwfQ1LSUpvUZe340mLabTqzaWNim477uX+buXg5nB1+3tS+n7m8FHVMgIb5f
-         xolVd92c1QHqGSydrBcfputDtlQScye4+aWY1j1NNWPaBpquuk4IdhSSHQYXdZrAJois
-         lONpldMMg/+6R6An+2SwT3OVWpunczcYWAkiQBy9SN+Z0mRrB62/J4V8SvOGc/uNcVBf
-         F6Ag==
-X-Gm-Message-State: AOAM533Wz/RyUP55vvCyIPgQmged2Z7r0lsSD1iTPsGbghkbr1JKYGED
-        myvcGahNCsMW16oaMde4J1jsj/1mFm4=
-X-Google-Smtp-Source: ABdhPJxx3HiypNFb1bCW0tbd1nIsQlQQUKmYeC5U4Dg78KXSd02L8We38K5ytFE8ww43uJXLaBTDgg==
-X-Received: by 2002:a67:e19d:: with SMTP id e29mr7621146vsl.9.1591897733454;
-        Thu, 11 Jun 2020 10:48:53 -0700 (PDT)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id 44sm455435uas.3.2020.06.11.10.48.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2020 10:48:53 -0700 (PDT)
-Received: by mail-vk1-f179.google.com with SMTP id i1so1660364vkp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 10:48:52 -0700 (PDT)
-X-Received: by 2002:a1f:280c:: with SMTP id o12mr7040118vko.92.1591897731903;
- Thu, 11 Jun 2020 10:48:51 -0700 (PDT)
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=fp+zT9km85FGnqPFWjENTTSWII2vpTFTYsBocgH2XVU=;
+        b=gKRZZiox9+DX7szRsFvfDLyJwbKZuWreHmxOVxzZ0DvclXrRdePrBeYF+edlQHvzCe
+         cMZFtKcwSj14tHjg+MTKj2YrLwD536nkq3hxiAgRbpheQiKjFNrpfwGrb8wYyinVchrn
+         ix4NJPCYOKExUBzqvry6QB+2GOq81EbVES5N75xUbmoQV2UzyiIhjX//1PvV0SRcGV9i
+         8hQS5GkbLwgYAKRX3o+EUL4zeQFG1kxbbwwebrXS0UezzAEtPI8ns0IgyaUQF98Vfiow
+         whrso0w0M3pFpvoP3Jt13BpErDpjPCdYcnQMCmI1x6cByIyvZgzh57bXPvjEqJpxg1Za
+         7DWQ==
+X-Gm-Message-State: AOAM531fXSaexSV69O+0XGvedy5zeCPsap53I66c5b8qdqIGS+2iyOrP
+        adJrn7t6tkaDNoyGZjEnC+SetQ==
+X-Google-Smtp-Source: ABdhPJx0LZGJuQSD2va3G0YwfetWlhas45vjWWqt1GSueHT4DcNiF6Lm9+8FFZQkMBwcuGYjsy0m9g==
+X-Received: by 2002:a17:90b:46cf:: with SMTP id jx15mr9184990pjb.121.1591898043186;
+        Thu, 11 Jun 2020 10:54:03 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x18sm3726356pfr.106.2020.06.11.10.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 10:54:02 -0700 (PDT)
+Subject: [PATCH] irqchip: riscv-intc: Fix a typo in a pr_warn()
+Date:   Thu, 11 Jun 2020 10:53:02 -0700
+Message-Id: <20200611175302.253540-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
 MIME-Version: 1.0
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200611110301.GA132747@google.com>
-In-Reply-To: <20200611110301.GA132747@google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 11 Jun 2020 10:48:40 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
-Message-ID: <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-To:     Quentin Perret <qperret@google.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc:     tglx@linutronix.de, jason@lakedaemon.net,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-On Thu, Jun 11, 2020 at 4:03 AM Quentin Perret <qperret@google.com> wrote:
->
-> Hi Doug,
->
-> On Wednesday 10 Jun 2020 at 15:18:43 (-0700), Douglas Anderson wrote:
-> > The cros_ec_spi driver is realtime priority so that it doesn't get
-> > preempted by other taks while it's talking to the EC but overall it
-> > really doesn't need lots of compute power.  Unfortunately, by default,
-> > the kernel assumes that all realtime tasks should cause the cpufreq to
-> > jump to max and burn through power to get things done as quickly as
-> > possible.  That's just not the correct behavior for cros_ec_spi.
->
-> Is this specific to this driver, or something you would want applied
-> more globally to all RT tasks in ChromeOS (which is what we'd like to
-> have in Android for instance)?
+Anup originally re-spun his patch set to include this fix, but it was a bit too
+late for my PR so I've split it out.
 
-Hrm.  I guess my first instinct is to say that we still want this
-patch even if we have something that is applied more globally.
-Specifically it sounds as if the patch you point at is suggesting that
-we'd tweak the boost value to something other than max but we'd still
-have a boost value.  In the case of cros_ec_spi I don't believe we
-need any boost value at all, so my patch would still be useful.  The
-computational needs of cros_ec_spi are very modest and it can do its
-work at lower CPU frequencies just fine.  It just can't be interrupted
-for large swaths of time.
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ drivers/irqchip/irq-riscv-intc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index a6f97fa6ff69..8017f6d32d52 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -99,7 +99,7 @@ static int __init riscv_intc_init(struct device_node *node,
+ 
+ 	hartid = riscv_of_parent_hartid(node);
+ 	if (hartid < 0) {
+-		pr_warn("unable to fine hart id for %pOF\n", node);
++		pr_warn("unable to find hart id for %pOF\n", node);
+ 		return 0;
+ 	}
+ 
+-- 
+2.27.0.290.gba653c62da-goog
 
-> IOW, how do you feel about 20200511154053.7822-1-qais.yousef@arm.com ?
-
-I'm not totally a fan, but I'm definitely not an expert in this area
-(I've also only read the patch description and not the patch or the
-whole thread).  I really don't want yet another value that I need to
-tune from board to board.  Even worse, this tuning value isn't
-board-specific but a combination of board and software specific.  By
-this, I'd imagine a scenario where you're using a real-time task to
-get audio decoding done within a certain latency.  I guess you'd tune
-this value to make sure that you can get all your audio decoding done
-in time but also not burn extra power.  Now, imagine that the OS
-upgrades and the audio task suddenly has to decode more complex
-streams.  You've got to go across all of your boards and re-tune every
-one?  ...or, nobody thinks about it and older boards start getting
-stuttery audio?  Perhaps the opposite happens and someone comes up
-with a newer lower-cpu-intensive codec and you could save power.
-Sounds like a bit of a nightmare.
-
-I'd rather have a boolean value: boost all RT threads to max vs. don't
-boost all RT threads to max.  Someone that just wanted RT stuff to run
-as fast as possible without any hassle on their system and didn't care
-about power efficiency could turn this on.  Anyone who really cared
-about power could turn this off and then could find a more targeted
-way to boost things, hopefully in a way that doesn't require tuning.
-One option would be to still boost the CPU to max but only for certain
-tasks known to be really latency sensitive.  Another might be to
-somehow measure whether or not the task is making its deadlines and
-boost the CPU frequency up if deadlines are not being met.  I'm sure
-there are fancier ways.
-
-...of course, I believe your patch allows me to do what I want: I can
-just set the default boost to 0.  It just leaves in the temptation for
-others to require a default boost of something else and then I'm stuck
-in my tuning nightmare.
-
--Doug
-
--Doug
