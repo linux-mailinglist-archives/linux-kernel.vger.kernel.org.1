@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D7A1F65E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BF41F65E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 12:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgFKKnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 06:43:22 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:33648 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726407AbgFKKnV (ORCPT
+        id S1727780AbgFKKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 06:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727081AbgFKKng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 06:43:21 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05BAdYdW014068;
-        Thu, 11 Jun 2020 05:42:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=hecjCZmbcbcFVoaRPrzhg4UVh2uD/Zn308eU+DldDzo=;
- b=HTd6NhjHsJ1utxmwA+HwNGN2KO2c2C2LCGg81uqtDkR1oKgm7TuPpr3wBOpYertH2Z+l
- jIVyH20CS/nD5nsdvMkn6ET0VedzAr/+2sp4/9Q+iaaWc5r5sLzxK/2RQE/Zs+PyjR20
- weEW5r4d+4JZ5tWZkr7ieAq49PAMNA2GJ2+4vrGfsJIkLQrvtPwmsQiIRArRGR0/lBV/
- bh1HUcc3ZxCsIwE1b86iZT96ZtxuJ0Nlqk6oEyc6JS+ztT8cWU5eG1K5OdamcNX9ZBhk
- 0+5bLGQ79XGotvK+bUmKaa3aSAz3NHQDJ8MyyZfV7ojL62XIHkLgzOK2M6wUadpmXf4H TA== 
-Authentication-Results: ppops.net;
-        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 31g8j47t17-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 11 Jun 2020 05:42:36 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 11 Jun
- 2020 11:42:34 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 11 Jun 2020 11:42:34 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 79F5B448;
-        Thu, 11 Jun 2020 10:42:34 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 10:42:34 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Jaroslav Kysela <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
-        <broonie@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH] ALSA: compress: Fix gapless playback state machine
-Message-ID: <20200611104234.GQ71940@ediswmail.ad.cirrus.com>
-References: <20200610100729.362-1-srinivas.kandagatla@linaro.org>
- <817d009e-fa09-e897-cfc3-997bf1dd5e30@perex.cz>
- <20200610105820.GA1393454@vkoul-mobl>
- <20200611084659.GO71940@ediswmail.ad.cirrus.com>
- <6a984302-ff01-e326-d338-e50e1f532cd9@perex.cz>
- <20200611094423.GB1393454@vkoul-mobl>
+        Thu, 11 Jun 2020 06:43:36 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDA4C08C5C1;
+        Thu, 11 Jun 2020 03:43:36 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jjKg9-0007F7-FG; Thu, 11 Jun 2020 12:43:25 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id E6245100F18; Thu, 11 Jun 2020 12:43:24 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with Linus' tree
+In-Reply-To: <20200611105254.1b14f070@canb.auug.org.au>
+References: <20200611105254.1b14f070@canb.auug.org.au>
+Date:   Thu, 11 Jun 2020 12:43:24 +0200
+Message-ID: <878sgtdgs3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200611094423.GB1393454@vkoul-mobl>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 suspectscore=0 cotscore=-2147483648 lowpriorityscore=0
- phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006110083
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 03:14:23PM +0530, Vinod Koul wrote:
-> On 11-06-20, 11:09, Jaroslav Kysela wrote:
-> > Dne 11. 06. 20 v 10:46 Charles Keepax napsal(a):
-> > > On Wed, Jun 10, 2020 at 04:28:20PM +0530, Vinod Koul wrote:
-> > > > On 10-06-20, 12:40, Jaroslav Kysela wrote:
-> > > > > Dne 10. 06. 20 v 12:07 Srinivas Kandagatla napsal(a):
-> > > > > > Here is the sequence of events and state transitions:
-> > > > > > 
-> > > > > > 1. set_params (Track 1), state =  SNDRV_PCM_STATE_SETUP
-> > > > > > 2. set_metadata (Track 1), no state change, state = SNDRV_PCM_STATE_SETUP
-> > > > > > 3. fill and trigger start (Track 1), state = SNDRV_PCM_STATE_RUNNING
-> > > > > > 4. set_next_track (Track 2), state = SNDRV_PCM_STATE_RUNNING
-> > > > > > 5. partial_drain (Track 1), state = SNDRV_PCM_STATE_SETUP
-> > > > > > 6  snd_compr_drain_notify (Track 1), state = SNDRV_PCM_STATE_SETUP
-> > > > > > 7. fill data (Track 2), state = SNDRV_PCM_STATE_PREPARED
-> > > > > > 8. set_metadata (Track 3), no state change, state = SNDRV_PCM_STATE_PREPARED
-> > > > > > 9. set_next_track (Track 3), !! FAILURE as state != SNDRV_PCM_STATE_RUNNING
-> Yeah sorry I overlooked that case and was thinking of it being invoked
-> from driver!
-> 
-> Yes this would make the snd_compr_stop() behave incorrectly.. so this
-> cant be done as proposed.
-> 
-> But we still need to set the draining stream state properly and I am
-> thinking below now:
-> 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index 509290f2efa8..9aba851732d7 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -929,7 +929,9 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
->         }
->  
->         stream->next_track = false;
-> -       return snd_compress_wait_for_drain(stream);
-> +       retval = snd_compress_wait_for_drain(stream);
-> +       stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
-> +       return retval;
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> Today's linux-next merge of the tip tree got conflicts in:
+>
+>   include/linux/compiler.h
+>
+> between commits:
+>
+>   dee081bf8f82 ("READ_ONCE: Drop pointer qualifiers when reading from scalar types")
+>   9e343b467c70 ("READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses")
+>   a5460b5e5fb8 ("READ_ONCE: Simplify implementations of {READ,WRITE}_ONCE()")
+>
+> from Linus' tree and commits:
+>
+>   2ab3a0a02905 ("READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses")
+>   7b364f0949ae ("READ_ONCE: Drop pointer qualifiers when reading from scalar types")
+>   bbfa112b46bd ("READ_ONCE: Simplify implementations of {READ,WRITE}_ONCE()")
+> (and maybe others)
+>
+> from the tip tree.
 
-This is looking better, I think you probably need to make the
-switch to RUNNING conditional on snd_compress_wait_for_drain
-succeeding, as the state should remain in DRAINING if we are
-interrupted or some such.
-
-I also have a slight concern that since
-snd_compress_wait_for_drain, releases the lock the set_next_track
-could come in before the state is moved to RUNNING, but I guess
-from user-spaces perspective that is the same as it coming in
-whilst the state is still DRAINING, so should be handled fine?
+Sorry for that inconveniance. I'm about to get rid of the conflicts on
+the tip side.
 
 Thanks,
-Charles
+
+        tglx
