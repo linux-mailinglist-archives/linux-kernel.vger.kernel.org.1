@@ -2,96 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601721F6A71
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 16:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315961F6A76
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 17:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgFKO54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 10:57:56 -0400
-Received: from sonic301-21.consmr.mail.ir2.yahoo.com ([77.238.176.98]:33842
-        "EHLO sonic301-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728104AbgFKO54 (ORCPT
+        id S1728437AbgFKPAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 11:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728059AbgFKPAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:57:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591887472; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=G/fpNdWUM0KBG0JUJu0cYuSKUKpB41zMCD4Hejc3hxFiisS8YYV5kVVFLn68nDIUkb8jZfUDw/9jXUQQPnhOjYQ2qSug67MLOmAB3gU+ni0rQzg92dR2R2k7ST+PsUrhBjf8VIGiMz+5E0LtdrbiwbtrP2tQ1M1Sk7LT1MAOw3AGQ/xeNU/kkr0aXnisv8jquqdo+Jjs2iQGn+uKM4ZK5ZY0e3ojH8Z+A6akulwpXMLeLaDZvkLjo+xB7aBZxOYkmXWh6QuakqUTEsclaSjx6xee2gD/0bCbTzNLYzryu4onhOdzYkJozje16iK661YuDCexpxoLPCQXeO6Szz5cMA==
-X-YMail-OSG: Y2TX5qAVM1kKuSDSTp.oMXVtqG8wS1.BQ9ZLl7G6tvLTDjhXqLZZuJk5wMCba4w
- vOuEslzhYHmUY2yCjJUTC.EJpybFywIods8fK02KsHd9jLnSL8_6YSK7LIDmSfl1EJe1hDlm4KGw
- ARV5O4QliS9z8P7zo.GE5iYGm0F2BpaVgONHxj080XwbdHhw6BP.jBtmxA.KLcDk4D1GtFn8U0xj
- N.4i8J75GkN7Xs.i1g1WsWGkm2m6sX7QoWdcSUFCyAgLIifJ81TU1X.4dXuO42Q2jmbtFGFphfAh
- VQ0ZUMQyiInEOojxMAki13DwcxSpfK4g6qYQx_QIzoH3_cURciUWOGK.F6Dn0R2_W1j0r0Ydkpbk
- jarVunOAoXSwuJszGj4orl4m9_ByxmJ2RGN1R37l6yBfinhiR_yFnLwMYSI.FfboXTJ5TIVrEsJS
- FbSM1p3FzTFAjk7jQrHV.ssUwYPfOWGl0KfqZv.kDPkGbueRe7mOFIPDWjddBxbMTORdxZ1eVx57
- nP.qZpPSFHSYwao3ESov40bhKwtSZe7c281MUO_aPMTV4EKZkXRmkGM7yMi8WEDJ3t42TjF1Mn.f
- FrnmG90h3zKKvjcd2nADj4TE7O8sFPMMrjJDdKDKosUm.EL0OGhcDfzHNojRz2RYiZ5cb5Gjymux
- _33mndqWV7ENiOBokYtpBtf.5lB9q1UxPtLNWdX_y_oUFQG7IMqZ7YTGUTW5gXXOuAa7FIrDWU_o
- kB4k47kjPrh2_7tgleTCz_1RlhyQnkboBrjIGiJWYaAZANZLT0hVfc4sF.gLLWRx5TnladGoYBCi
- Jd2oMBUUeeVM105zhSLqCiJ.Oqnh4FPQEGClstiqkWAdQ6X4scTK2eUPg3qYpBjTImIMgP5ckBHb
- uyX3fmGCtbGyZ3jsOcFdnhrCXiu11_fRPUTlmu_bhrxLQeG4G_K.onu3SmIRfQ50olt_aRC9rxMh
- gbQ1UnA00.48BiEGo79usJlQaHTic2Hx3tkW3uDK0Gr3mhRQ7McLvIJS9vABNhRVsd52cUrn423V
- xG6wJ2Y1U.sWh2MjctOs.b.tjl38CgXqzb9rm25.QYWmBW7_2ep7i8gjk3UNXHxd7q0HsPsUYfNx
- DyNYbMllPJPW7HHyoLxcXn5oMUEPx.fj_58Wko7tDQ.7VrPSOgPQaY8RgeJoU5bGc5MtT23JXlt_
- E_1DB1oXXRKHtiRNJlSgCLgeEs.FXDywMc1upe7X_6JzSXJ.GUgWStV3tEJxF00qR8Z4AzubeS69
- 8eDkYPjbHPNffvBVxo3LGfEZXyUOWUPMeKsSnFNXnE651vnaJrYKrC9SMUvyOcxS8f6IYLqjSmA-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ir2.yahoo.com with HTTP; Thu, 11 Jun 2020 14:57:52 +0000
-Date:   Thu, 11 Jun 2020 14:57:49 +0000 (UTC)
-From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
-Reply-To: mrsminaabrunel57044@gmail.com
-Message-ID: <719366095.3010298.1591887469771@mail.yahoo.com>
-Subject: My Dear in the lord
+        Thu, 11 Jun 2020 11:00:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C973C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:00:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y17so6486160wrn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 08:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Zn13stpxx1Rl6Xjq5ftH7LM2yq+qpmzz5Dz1MnQNUPM=;
+        b=B+Z3WDXPc51flB3UeEUdxOPDGME46i9EtyeRpwFsCr5JvF64iwG4FhswMrTGyj6mGn
+         s+USFO0qbs3Cf6fqQBGxT5h1ANuIBWP6Qsj6eVuGckh4r+Gl7BFlG73ifQUcbJ7jzL1n
+         PEdc9X0Kw9gtBSFMIj9AYMrDQR2Rs3rAp/Pmk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Zn13stpxx1Rl6Xjq5ftH7LM2yq+qpmzz5Dz1MnQNUPM=;
+        b=eN3AARy71VS7Dz51QUJ02ZZXYdUz5l7I+CFZKwPnnVVMJExiPqbwzZCnO9eY5XR3W2
+         T6IgtHGeTIt2v5SPb7mSaNMRMCdtT1h1o6ZE4RoNgSI4MCyLVWC9kc875b4iqX6X56iS
+         YexhCiuhqJKL74X12adslN8/ioMPXyIlZkqzeCL/KVKTAxYNnVvmFpqJ9zVqEElVUhSk
+         4mgmeqfo1Xidj0VqA0HDQgKhivl73r5w2ew8pnGzr4mYPvwhGDH9ZYwpl2GhhI1Wlvew
+         CyNce2oYxrW7bLD3w+FVPfEKTFI2w2I5aDlpDLUBXTh7ZFRK7loksShzk9q4rhPIMiVE
+         th9A==
+X-Gm-Message-State: AOAM530yXZWguPuFk1Wl4/V8oH4mHZCDF77TO0BhEtiPLYtWZeT7cHBC
+        U+vy8Z+iHypNXhrP0ODjLbwD0sqI/aRCxVdMBLDBLg==
+X-Google-Smtp-Source: ABdhPJxNJT/spy9XbHA9PU9q8cwSHEyiW4NzMoG2C4D+jtRZjp+QSEyOrmAAr+yM0n32lutR8zkOXLgsoPs/p1NMDZE=
+X-Received: by 2002:adf:f003:: with SMTP id j3mr10047392wro.228.1591887603896;
+ Thu, 11 Jun 2020 08:00:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20191014061617.10296-2-daniel@0x0f.com> <20200610090421.3428945-3-daniel@0x0f.com>
+ <976e789e-edd7-c44d-ea99-840ecb883ff8@suse.de> <CAFr9PXkvmZv3_EakxvRR+X522xN-a8epvF0ns10JeYCLn2uUKw@mail.gmail.com>
+ <1e8262e0-9b30-0788-446a-5d88c1bb49ea@suse.de>
+In-Reply-To: <1e8262e0-9b30-0788-446a-5d88c1bb49ea@suse.de>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Thu, 11 Jun 2020 23:58:44 +0900
+Message-ID: <CAFr9PXkU8jYMx2NBHzNu2Xa7BfC6n9wpgxps9YE2VAcPTwdMiw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] ARM: mstar: Add machine for MStar/Sigmastar
+ infinity/mercury family ARMv7 SoCs
+To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
+Cc:     Krzysztof Adamski <k@japko.eu>, tim.bird@sony.com,
+        devicetree@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Doug Anderson <armlinux@m.disordat.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-References: <719366095.3010298.1591887469771.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16072 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andreas,
 
+On Thu, 11 Jun 2020 at 23:27, Andreas F=C3=A4rber <afaerber@suse.de> wrote:
+>
+> Hi Daniel,
+>
+> Am 11.06.20 um 15:01 schrieb Daniel Palmer:
+> > On Thu, 11 Jun 2020 at 21:49, Andreas F=C3=A4rber <afaerber@suse.de> wr=
+ote:
+> >>> peripherals and system memory in a single tiny QFN package that
+> >>> can be hand soldered allowing almost anyone to embed Linux
+> >>
+> >> "soldered, allowing"?
+> >
+> > The original reads ok to me. Maybe I can just split that into two sente=
+nces?
+> > Like ".. QFN package that can be hand soldered. This allows almost anyo=
+ne..".
+>
+> As non-native speaker I merely wondered whether a comma should better be
+> inserted to separate the two parts of the sentence. Splitting it in two
+> or leaving as is should be fine, too - I assume you're a native speaker.
 
-My Dear in the lord
+I'm a native speaker but it's not my daily driver anymore so I often mangle=
+ it.
 
+> Most people will rather read the bindings document than old git history,
+> so you might want to consider adding such a description below its title.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+I'll move the blurb and maybe reword it.
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+> Which reminds me, in 1/5 you should probably add a W: line (after S:
+> according to above sort commit) pointing to your
+> http://linux-chenxing.org/ website.
+>
+> And for the community following your project, you may want to set up a
+> linux-chenxing mailing list on vger.kernel.org or on infradead.org and
+> add it as L:, to allow for error reports and patches to not just go to
+> you and crowded LAKML.
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+Very good points. I was thinking I should probably get this into mainline
+before setting up lists etc.
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+Thanks,
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+Daniel
