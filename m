@@ -2,121 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8D71F64A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 11:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486C51F64B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 11:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgFKJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 05:23:31 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:60531 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726868AbgFKJX1 (ORCPT
+        id S1726956AbgFKJ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 05:26:12 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:62507 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726560AbgFKJ0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 05:23:27 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3651558018F;
-        Thu, 11 Jun 2020 05:23:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 11 Jun 2020 05:23:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=2w0cp3nEr88sP
-        +MV7TWqwyUO3pJl2Co6QHKEM/4+4iE=; b=D9KYtJnso0yLpN7LL06zlKNHpB3WR
-        jObt6Zw/A6GW6r6tVON5GXSx4imn66XIWNtSx93DoKkt+hjCio97Cixn4t0DngV9
-        sRF9pfMX1LAEsNlMRf7D2kRqAI7TY9X+FVZvlg9b5Lx/KjEColzYX10XEZXabjRL
-        RsNNDpuDb8KmBM1k5wm5N3ePCqF4VRPw+Vk0OcNcLrDWt07QYoQqFCqv7yKEBHkm
-        /+ESJBtp3ItTM7V17faw/mcXLvA2RT2lPYOMG5LtKt/czc8tYBmWDq8mB805G5Ir
-        SGUVCUDA7m04L6hhXS+ja7IvPYS9Q0ctchWOmjFN+SvjaTmj93z+l3iew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=2w0cp3nEr88sP+MV7TWqwyUO3pJl2Co6QHKEM/4+4iE=; b=u9FoXXIY
-        PUqL/VJbaHBLnYn124cS0+7UrZg/saefEqDDe4AIYCG/3/U97yRfR47VYk2i4/k2
-        S+WwE4l07yjNZuvL/58W0r7NkAH9rQpKU7HibRjJ3uVklbiuq4E+pkxiYhZLHFDI
-        WnCsQoDVxttRrqEIa/Ftk6GtB7IGcNu2xwJQLXkzk80CTjUidLaCepEgOpWmD99G
-        WvVd4qGvvFiATQMaK/lrlnTKQ1gjrzRXSttd993PWuFWY0wDJslNFqNog8mbyjKL
-        GfGrBFUI7FAhijxh/N8aIC4mK0B1Eu67B6F/4DIt+0Ab50tN1QJTJ992bxzQmj/Z
-        RFslTXRhxqh0pw==
-X-ME-Sender: <xms:DvjhXtRg8_O_-RUGFzjFKAzrvS6ZPZHJWoDrNS5_ooXyptTipi9fWQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudehkedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:DvjhXmzOBOsC4-63dg5pyuGuzBh09ZAmR76RtoBcL-UaBGdSJoD3Ag>
-    <xmx:DvjhXi1EcU2hn3f0tuVa7xlXShP_AhPoa6f38sPYghzt1g8Dpj5CqA>
-    <xmx:DvjhXlDh2eC0d7GSgh3d-PLlx0JM30qJtNOB8voukjJOe853XCKjOg>
-    <xmx:DvjhXhP2aQDt09Qt-FK04VqpzIaRQJLHuWdUShyqyPrJgWrCPhtgxw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C72E73060FE7;
-        Thu, 11 Jun 2020 05:23:25 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH v4 3/3] ARM: dts: bcm2711: Add HDMI DVP
-Date:   Thu, 11 Jun 2020 11:23:17 +0200
-Message-Id: <e22222ca7f41b960e9bb1a31e0dd2de95b8c0cd1.1591867332.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.4c4625a8e076f3163b800b3d8986b282ee98d908.1591867332.git-series.maxime@cerno.tech>
-References: <cover.4c4625a8e076f3163b800b3d8986b282ee98d908.1591867332.git-series.maxime@cerno.tech>
+        Thu, 11 Jun 2020 05:26:11 -0400
+X-UUID: 28397743254d408eb15d093e40b26913-20200611
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=arPIeFMQZ1+NZeZaAa8iqxicI65qOT2Z+fn97VHkHyg=;
+        b=MympouM7ONPsFXos7gNFoAWJWkGuRm/EHTeuym7LbkREm4KgjMW6EHkJ/xlQOLjYc7RTe6IWMZ4IVI5qgit6V987xZTJtiTCWSVLh3NGBemS2JYlb610XWl3NVPtipSGbTBI3ICIGDDAgRsdRWPTaly/++FaNHEq+IgukLnlvSc=;
+X-UUID: 28397743254d408eb15d093e40b26913-20200611
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1041489277; Thu, 11 Jun 2020 17:26:04 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 11 Jun 2020 17:26:01 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Jun 2020 17:26:01 +0800
+Message-ID: <1591867563.27949.9.camel@mtkswgap22>
+Subject: Re: [PATCH 2/2] soc: mediatek: devapc: add devapc-mt6873 driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 11 Jun 2020 17:26:03 +0800
+In-Reply-To: <CAAOTY__g3Fnwsoqx=x_tgdMii5K_L9TmF_9048XbAOSJwb-Cxg@mail.gmail.com>
+References: <1591698261-22639-1-git-send-email-neal.liu@mediatek.com>
+         <1591698261-22639-3-git-send-email-neal.liu@mediatek.com>
+         <CAAOTY__g3Fnwsoqx=x_tgdMii5K_L9TmF_9048XbAOSJwb-Cxg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a driver for the DVP, let's add its DT node.
+T24gV2VkLCAyMDIwLTA2LTEwIGF0IDAwOjAxICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
+SGkgQ2h1bi1LdWFuZywNCg0KW3NuaXBdDQoNCj4gPiArDQo+ID4gKy8qDQo+ID4gKyAqIG10a19k
+ZXZhcGNfcGRfZ2V0IC0gZ2V0IGRldmFwYyBwZF90eXBlcyBvZiByZWdpc3RlciBhZGRyZXNzLg0K
+PiA+ICsgKg0KPiA+ICsgKiBSZXR1cm5zIHRoZSB2YWx1ZSBvZiByZWcgYWRkcg0KPiA+ICsgKi8N
+Cj4gPiArc3RhdGljIHZvaWQgX19pb21lbSAqbXRrX2RldmFwY19wZF9nZXQoaW50IHNsYXZlX3R5
+cGUsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZW51bSBERVZB
+UENfUERfUkVHX1RZUEUgcGRfcmVnX3R5cGUsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgdTMyIGluZGV4KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBzdHJ1Y3QgbXRr
+X2RldmFwY192aW9faW5mbyAqdmlvX2luZm8gPSBtdGtfZGV2YXBjX2N0eC0+c29jLT52aW9faW5m
+bzsNCj4gPiArICAgICAgIHUzMiBzbGF2ZV90eXBlX251bSA9IG10a19kZXZhcGNfY3R4LT5zb2Mt
+PnNsYXZlX3R5cGVfbnVtOw0KPiA+ICsgICAgICAgY29uc3QgdTMyICpkZXZhcGNfcGRzID0gbXRr
+X2RldmFwY19jdHgtPnNvYy0+ZGV2YXBjX3BkczsNCj4gPiArICAgICAgIHZvaWQgX19pb21lbSAq
+cmVnOw0KPiA+ICsNCj4gPiArICAgICAgIGlmICghZGV2YXBjX3BkcykNCj4gPiArICAgICAgICAg
+ICAgICAgcmV0dXJuIE5VTEw7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYgKChzbGF2ZV90eXBlIDwg
+c2xhdmVfdHlwZV9udW0gJiYNCj4gPiArICAgICAgICAgICAgaW5kZXggPCB2aW9faW5mby0+dmlv
+X21hc2tfc3RhX251bVtzbGF2ZV90eXBlXSkgJiYNCj4gPiArICAgICAgICAgICBwZF9yZWdfdHlw
+ZSA8IFBEX1JFR19UWVBFX05VTSkgew0KPiA+ICsgICAgICAgICAgICAgICByZWcgPSBtdGtfZGV2
+YXBjX2N0eC0+ZGV2YXBjX3BkX2Jhc2Vbc2xhdmVfdHlwZV0gKw0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGRldmFwY19wZHNbcGRfcmVnX3R5cGVdOw0KPiA+ICsNCj4gPiArICAgICAgICAg
+ICAgICAgaWYgKHBkX3JlZ190eXBlID09IFZJT19NQVNLIHx8IHBkX3JlZ190eXBlID09IFZJT19T
+VEEpDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmVnICs9IDB4NCAqIGluZGV4Ow0KPiA+
+ICsNCj4gPiArICAgICAgIH0gZWxzZSB7DQo+ID4gKyAgICAgICAgICAgICAgIHByX2VycihQRlgg
+IiVzOjB4JXggb3IgJXM6MHgleCBvciAlczoweCV4IGlzIG91dCBvZiBib3VuZGFyeVxuIiwNCj4g
+PiArICAgICAgICAgICAgICAgICAgICAgICJzbGF2ZV90eXBlIiwgc2xhdmVfdHlwZSwNCj4gDQo+
+IE1vdmUgInNsYXZlX3R5cGUiIGludG8gZm9ybWF0IHN0cmluZy4NCg0KV2h5IGlzIHRoaXMgbmVj
+ZXNzYXJ5PyBJcyB0aGVyZSBhbnkgYmVuZWZpdCBmb3IgbW92aW5nIHRoaXM/DQpTaW5jZSB0aGUg
+bGluZSBsZW5ndGggaXMgYWxtb3N0IG92ZXIgODAgY2hhcnMuDQoNCj4gDQo+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAicGRfcmVnX3R5cGUiLCBwZF9yZWdfdHlwZSwNCj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgICJpbmRleCIsIGluZGV4KTsNCj4gPiArICAgICAgICAgICAgICAgcmV0dXJu
+IE5VTEw7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIHJlZzsNCj4g
+PiArfQ0KPiA+ICsNCj4gDQoNCltzbmlwXQ0KDQo+IA0KPiA+ICsNCj4gPiArLyoNCj4gPiArICog
+ZGV2YXBjX3Zpb2xhdGlvbl9pcnEgLSB0aGUgZGV2YXBjIEludGVycnVwdCBTZXJ2aWNlIFJvdXRp
+bmUgKElTUikgd2lsbCBkdW1wDQo+ID4gKyAqICAgICAgICAgICAgICAgICAgICAgICB2aW9sYXRp
+b24gaW5mb3JtYXRpb24gaW5jbHVkaW5nIHdoaWNoIG1hc3RlciB2aW9sYXRlcw0KPiA+ICsgKiAg
+ICAgICAgICAgICAgICAgICAgICAgYWNjZXNzIHNsYXZlLg0KPiA+ICsgKi8NCj4gPiArc3RhdGlj
+IGlycXJldHVybl90IGRldmFwY192aW9sYXRpb25faXJxKGludCBpcnFfbnVtYmVyLCB2b2lkICpk
+ZXZfaWQpDQo+ID4gK3sNCj4gPiArICAgICAgIHUzMiBzbGF2ZV90eXBlX251bSA9IG10a19kZXZh
+cGNfY3R4LT5zb2MtPnNsYXZlX3R5cGVfbnVtOw0KPiA+ICsgICAgICAgY29uc3Qgc3RydWN0IG10
+a19kZXZpY2VfaW5mbyAqKmRldmljZV9pbmZvOw0KPiA+ICsgICAgICAgc3RydWN0IG10a19kZXZh
+cGNfdmlvX2luZm8gKnZpb19pbmZvOw0KPiA+ICsgICAgICAgaW50IHNsYXZlX3R5cGUsIHZpb19p
+ZHgsIGluZGV4Ow0KPiA+ICsgICAgICAgY29uc3QgY2hhciAqdmlvX21hc3RlcjsNCj4gPiArICAg
+ICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gKyAgICAgICBib29sIG5vcm1hbDsNCj4gPiAr
+ICAgICAgIHU4IHBlcm07DQo+ID4gKw0KPiA+ICsgICAgICAgc3Bpbl9sb2NrX2lycXNhdmUoJmRl
+dmFwY19sb2NrLCBmbGFncyk7DQo+ID4gKw0KPiA+ICsgICAgICAgZGV2aWNlX2luZm8gPSBtdGtf
+ZGV2YXBjX2N0eC0+c29jLT5kZXZpY2VfaW5mbzsNCj4gPiArICAgICAgIHZpb19pbmZvID0gbXRr
+X2RldmFwY19jdHgtPnNvYy0+dmlvX2luZm87DQo+ID4gKyAgICAgICBub3JtYWwgPSBmYWxzZTsN
+Cj4gPiArICAgICAgIHZpb19pZHggPSAtMTsNCj4gPiArICAgICAgIGluZGV4ID0gLTE7DQo+ID4g
+Kw0KPiA+ICsgICAgICAgLyogVGhlcmUgYXJlIG11bHRpcGxlIERFVkFQQ19QRCAqLw0KPiA+ICsg
+ICAgICAgZm9yIChzbGF2ZV90eXBlID0gMDsgc2xhdmVfdHlwZSA8IHNsYXZlX3R5cGVfbnVtOyBz
+bGF2ZV90eXBlKyspIHsNCj4gPiArICAgICAgICAgICAgICAgaWYgKCFjaGVja190eXBlMl92aW9f
+c3RhdHVzKHNsYXZlX3R5cGUsICZ2aW9faWR4LCAmaW5kZXgpKQ0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGlmICghbXRrX2RldmFwY19kdW1wX3Zpb19kYmcoc2xhdmVfdHlwZSwgJnZpb19p
+ZHgsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAmaW5kZXgpKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGlu
+dWU7DQo+ID4gKw0KPiA+ICsgICAgICAgICAgICAgICAvKiBFbnN1cmUgdGhhdCB2aW9sYXRpb24g
+aW5mbyBhcmUgd3JpdHRlbiBiZWZvcmUNCj4gPiArICAgICAgICAgICAgICAgICogZnVydGhlciBv
+cGVyYXRpb25zDQo+ID4gKyAgICAgICAgICAgICAgICAqLw0KPiA+ICsgICAgICAgICAgICAgICBz
+bXBfbWIoKTsNCj4gPiArICAgICAgICAgICAgICAgbm9ybWFsID0gdHJ1ZTsNCj4gPiArDQo+ID4g
+KyAgICAgICAgICAgICAgIG1hc2tfbW9kdWxlX2lycShzbGF2ZV90eXBlLCB2aW9faWR4LCB0cnVl
+KTsNCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAgIGlmIChjbGVhcl92aW9fc3RhdHVzKHNsYXZl
+X3R5cGUsIHZpb19pZHgpKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHByX3dhcm4oUEZY
+ICIlcywgJXM6MHgleCwgJXM6MHgleFxuIiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJjbGVhciB2aW8gc3RhdHVzIGZhaWxlZCIsDQo+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAic2xhdmVfdHlwZSIsIHNsYXZlX3R5cGUsDQo+ID4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAidmlvX2luZGV4IiwgdmlvX2lkeCk7DQo+ID4gKw0KPiA+ICsg
+ICAgICAgICAgICAgICBwZXJtID0gZ2V0X3Blcm1pc3Npb24oc2xhdmVfdHlwZSwgaW5kZXgsIHZp
+b19pbmZvLT5kb21haW5faWQpOw0KPiA+ICsNCj4gPiArICAgICAgICAgICAgICAgdmlvX21hc3Rl
+ciA9IG10a19kZXZhcGNfY3R4LT5zb2MtPm1hc3Rlcl9nZXQNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAodmlvX2luZm8tPm1hc3Rlcl9pZCwNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgdmlvX2luZm8tPnZpb19hZGRyLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICBzbGF2
+ZV90eXBlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICB2aW9faW5mby0+c2hpZnRfc3Rh
+X2JpdCwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgdmlvX2luZm8tPmRvbWFpbl9pZCk7
+DQo+IA0KPiBDYWxsIG10Njg3M19idXNfaWRfdG9fbWFzdGVyKCkgZGlyZWN0bHkuIEZvciBmaXJz
+dCBwYXRjaCwgbWFrZSB0aGluZ3MNCj4gYXMgc2ltcGxlIGFzIHBvc3NpYmxlLg0KDQpJbiBkZXZh
+cGNfdmlvbGF0aW9uX2lycSgpIGZ1bmN0aW9uLCB3ZSB1c2UgY29tbW9uIGZsb3cgdG8gaGFuZGxl
+IGVhY2gNCmRldmFwYyB2aW9sYXRpb24gb24gZGlmZmVyZW50IHBsYXRmb3Jtcy4gVGhlIG1hc3Rl
+cl9nZXQoKSBoYXMgZGlmZmVyZW50DQppbXBsZW1lbnRhdGlvbiBvbiBkaWZmZXJlbnQgcGxhdGZv
+cm1zLCB0aGF0IHdoeSBpdCBjYWxsZWQgaW5kaXJlY3RseS4NCg0KT25jZSB3ZSBoYXZlIG5ldyBw
+bGF0Zm9ybSwgd2Ugb25seSBoYXZlIHRvIHVwZGF0ZSBkZXZhcGMtbXR4eHh4LmMNCmluc3RlYWQg
+b2YgY29tbW9uIGhhbmRsZXIgZmxvdy4NCg0KPiANCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAg
+IGlmICghdmlvX21hc3Rlcikgew0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHByX3dhcm4o
+UEZYICJtYXN0ZXJfZ2V0IGZhaWxlZFxuIik7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+dmlvX21hc3RlciA9ICJVTktOT1dOX01BU1RFUiI7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4g
+PiArDQo+ID4gKyAgICAgICAgICAgICAgIHByX2luZm8oUEZYICIlcyAtICVzOjB4JXgsICVzOjB4
+JXgsICVzOjB4JXgsICVzOjB4JXhcbiIsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgIlZp
+b2xhdGlvbiIsICJzbGF2ZV90eXBlIiwgc2xhdmVfdHlwZSwNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAic3lzX2luZGV4IiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBkZXZpY2Vf
+aW5mb1tzbGF2ZV90eXBlXVtpbmRleF0uc3lzX2luZGV4LA0KPiA+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICJjdHJsX2luZGV4IiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBkZXZpY2Vf
+aW5mb1tzbGF2ZV90eXBlXVtpbmRleF0uY3RybF9pbmRleCwNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAidmlvX2luZGV4IiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBkZXZpY2Vf
+aW5mb1tzbGF2ZV90eXBlXVtpbmRleF0udmlvX2luZGV4KTsNCj4gPiArDQo+ID4gKyAgICAgICAg
+ICAgICAgIHByX2luZm8oUEZYICIlcyAlcyAlcyAlc1xuIiwNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAiVmlvbGF0aW9uIC0gbWFzdGVyOiIsIHZpb19tYXN0ZXIsDQo+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgImFjY2VzcyB2aW9sYXRpb24gc2xhdmU6IiwNCj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgICBkZXZpY2VfaW5mb1tzbGF2ZV90eXBlXVtpbmRleF0uZGV2aWNlKTsNCj4g
+PiArDQo+ID4gKyAgICAgICAgICAgICAgIGRldmFwY192aW9fcmVhc29uKHBlcm0pOw0KPiA+ICsN
+Cj4gPiArICAgICAgICAgICAgICAgZGV2YXBjX2V4dHJhX2hhbmRsZXIoc2xhdmVfdHlwZSwgdmlv
+X21hc3RlciwgdmlvX2lkeCwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgdmlvX2luZm8tPnZpb19hZGRyKTsNCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAgIG1hc2tf
+bW9kdWxlX2lycShzbGF2ZV90eXBlLCB2aW9faWR4LCBmYWxzZSk7DQo+ID4gKyAgICAgICB9DQo+
+ID4gKw0KPiA+ICsgICAgICAgaWYgKG5vcm1hbCkgew0KPiA+ICsgICAgICAgICAgICAgICBzcGlu
+X3VubG9ja19pcnFyZXN0b3JlKCZkZXZhcGNfbG9jaywgZmxhZ3MpOw0KPiA+ICsgICAgICAgICAg
+ICAgICByZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAg
+ICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2YXBjX2xvY2ssIGZsYWdzKTsNCj4gPiArICAg
+ICAgIHJldHVybiBJUlFfSEFORExFRDsNCj4gPiArfQ0KPiA+ICsNCg0KW3NuaXBdDQoNCg0K
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- arch/arm/boot/dts/bcm2711.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index a91cf68e3c4c..00bcaed1be32 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -12,6 +12,13 @@
- 
- 	interrupt-parent = <&gicv2>;
- 
-+	clk_108MHz: clk-108M {
-+		#clock-cells = <0>;
-+		compatible = "fixed-clock";
-+		clock-frequency = <108000000>;
-+		clock-output-names = "108MHz-clock";
-+	};
-+
- 	soc {
- 		/*
- 		 * Defined ranges:
-@@ -244,6 +251,14 @@
- 		hvs@7e400000 {
- 			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		dvp: clock@7ef00000 {
-+			compatible = "brcm,brcm2711-dvp";
-+			reg = <0x7ef00000 0x10>;
-+			clocks = <&clk_108MHz>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+		};
- 	};
- 
- 	/*
--- 
-git-series 0.9.1
