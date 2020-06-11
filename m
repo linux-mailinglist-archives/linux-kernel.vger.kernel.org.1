@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9C11F70BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71F71F70CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 01:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgFKXJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 19:09:44 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60786 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgFKXJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 19:09:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=x2I+4wEt+ndD3DAovJGmxH8wykiwurzy6HtFRBsQBso=; b=AOlOEr1h01xKYHXIq+FDtdK8fV
-        t938zGbURQF+SpD804shhOweuygX26rFPYZB7wOUfe8/fgjpwdu+sjbBNiG5Pgqzr6Bmszwk/L9kC
-        K1p0Bp8VHsoLXn+0yE8uAaYeOWiwcQ6zTuEieIYrLtSoX8QjFNsLfpYiPMM9g2oUtarlEt31gAVAK
-        O+ryzQeuT8086Kf71K3gMScjAJjWw4yQbz1G4F8xNuOOrLZQVnvLehDj7gAou8YBFUDH1Di74PCme
-        jkk7DtdgHIlGaIYu5E6MKYhgmA6sM7MsnjvcIktmfJMyJIPnO7cgQs2FXazslsuMYCB9Yi3Lpeshq
-        MHLudDUQ==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1jjWKF-0001kE-4v; Thu, 11 Jun 2020 17:09:35 -0600
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20200514172253.6445-1-logang@deltatee.com>
- <20200514172253.6445-6-logang@deltatee.com>
- <BYAPR04MB4965AE69900A7832EEC4141086800@BYAPR04MB4965.namprd04.prod.outlook.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3e198d5f-e303-25d9-0e8e-e5916809800d@deltatee.com>
-Date:   Thu, 11 Jun 2020 17:09:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726380AbgFKXTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 19:19:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:54817 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgFKXTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 19:19:42 -0400
+IronPort-SDR: /e8IMUcCmRV4SpnuVMO8EikxbhJF5FkY5r06R+jt6jua1sktp+ZidvAfGOazS+KLnr20SHWeo2
+ /GvZ7Bz2diNA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 16:19:41 -0700
+IronPort-SDR: AGUrCH3jTbmFw0VS5HaFBFEvT/Llroj3vgjcZqsmwo1bPwjfkUlLgdwXTuw1GBgZ2T00/h/SS1
+ uoy89sWFFWPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
+   d="scan'208";a="473995204"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Jun 2020 16:19:39 -0700
+Date:   Thu, 11 Jun 2020 19:09:40 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     David Edmondson <dme@dme.org>
+Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
+        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
+        xin.zeng@intel.com, hang.yuan@intel.com
+Subject: Re: [RFC PATCH v4 04/10] vfio/pci: let vfio_pci know number of
+ vendor regions and vendor irqs
+Message-ID: <20200611230940.GD13961@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200518024202.13996-1-yan.y.zhao@intel.com>
+ <20200518024944.14263-1-yan.y.zhao@intel.com>
+ <20200604172515.614e9864.cohuck@redhat.com>
+ <20200605021542.GG12300@joy-OptiPlex-7040>
+ <m23671943a.fsf@dme.org>
 MIME-Version: 1.0
-In-Reply-To: <BYAPR04MB4965AE69900A7832EEC4141086800@BYAPR04MB4965.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, maxg@mellanox.com, axboe@fb.com, kbusch@kernel.org, sagi@grimberg.me, hch@lst.de, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Chaitanya.Kulkarni@wdc.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v13 5/9] nvme-core: Introduce nvme_ctrl_get_by_path()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m23671943a.fsf@dme.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-06-11 5:02 p.m., Chaitanya Kulkarni wrote:
-> On 5/14/20 10:23 AM, Logan Gunthorpe wrote:
->> +#ifdef CONFIG_NVME_TARGET_PASSTHRU
->> +/*
->> + * The exports that follow within this ifdef are only for
->> + * use by the nvmet-passthru and should not be used for
->> + * other things.
->> + */
+On Thu, Jun 11, 2020 at 01:31:05PM +0100, David Edmondson wrote:
+> On Thursday, 2020-06-04 at 22:15:42 -04, Yan Zhao wrote:
 > 
-> The above comment is duplicate #ifdef is self explanatory and I didn't
-> find similar style in existing repo  (e.g. CONFIG_NVME_MULTIPATH,
-> CONFIG_BLK_SED_OPAL) so let's not introduce new style which will create
-> confusion to future code.
+> > On Thu, Jun 04, 2020 at 05:25:15PM +0200, Cornelia Huck wrote:
+> >> On Sun, 17 May 2020 22:49:44 -0400
+> >> Yan Zhao <yan.y.zhao@intel.com> wrote:
+> >> 
+> >> > This allows a simpler VFIO_DEVICE_GET_INFO ioctl in vendor driver
+> >> > 
+> >> > Cc: Kevin Tian <kevin.tian@intel.com>
+> >> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> >> > ---
+> >> >  drivers/vfio/pci/vfio_pci.c         | 23 +++++++++++++++++++++--
+> >> >  drivers/vfio/pci/vfio_pci_private.h |  2 ++
+> >> >  include/linux/vfio.h                |  3 +++
+> >> >  3 files changed, 26 insertions(+), 2 deletions(-)
+> >> > 
+> >> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> >> > index 290b7ab55ecf..30137c1c5308 100644
+> >> > --- a/drivers/vfio/pci/vfio_pci.c
+> >> > +++ b/drivers/vfio/pci/vfio_pci.c
+> >> > @@ -105,6 +105,24 @@ void *vfio_pci_vendor_data(void *device_data)
+> >> >  }
+> >> >  EXPORT_SYMBOL_GPL(vfio_pci_vendor_data);
+> >> >  
+> >> > +int vfio_pci_set_vendor_regions(void *device_data, int num_vendor_regions)
+> >> > +{
+> >> > +	struct vfio_pci_device *vdev = device_data;
+> >> > +
+> >> > +	vdev->num_vendor_regions = num_vendor_regions;
+> >> 
+> >> Do we need any kind of sanity check here, in case this is called with a
+> >> bogus value?
+> >>
+> > you are right. it at least needs to be >=0.
+> > maybe type of "unsigned int" is more appropriate for num_vendor_regions.
+> > we don't need to check its max value as QEMU would check it.
+> 
+> That seems like a bad precedent - the caller may not be QEMU.
+>
+but the caller has to query that through vfio_pci_ioctl() and at there
+info.num_regions = VFIO_PCI_NUM_REGIONS + vdev->num_regions +  vdev->num_vendor_regions;         
 
-Christoph specifically asked for this ifdef and comment.
+info.num_regions is of type __u32.
 
-Logan
+
+Thanks
+Yan
