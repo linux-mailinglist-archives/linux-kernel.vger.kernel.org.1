@@ -2,57 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1074C1F61C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 08:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBED41F61CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 08:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgFKGfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 02:35:30 -0400
-Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:52340 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725805AbgFKGf3 (ORCPT
+        id S1726631AbgFKGiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 02:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgFKGiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 02:35:29 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 6CAFA1803106D;
-        Thu, 11 Jun 2020 06:35:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3868:3870:3871:4321:5007:7576:8957:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21451:21627:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: art98_5a13b2226dd1
-X-Filterd-Recvd-Size: 1414
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 11 Jun 2020 06:35:25 +0000 (UTC)
-Message-ID: <d323a6a114690e4757c777befc997d60d82558f2.camel@perches.com>
-Subject: Re: [PATCH v4 0/2] Recommend denylist/allowlist instead of
- blacklist/whitelist
-From:   Joe Perches <joe@perches.com>
-To:     SeongJae Park <sjpark@amazon.com>, akpm@linux-foundation.org,
-        apw@canonical.com
-Cc:     SeongJae Park <sjpark@amazon.de>, colin.king@canonical.com,
-        sj38.park@gmail.com, jslaby@suse.cz, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Jun 2020 23:35:24 -0700
-In-Reply-To: <20200611062550.20113-1-sjpark@amazon.com>
-References: <20200611062550.20113-1-sjpark@amazon.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Thu, 11 Jun 2020 02:38:15 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC0FC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 23:38:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h5so4876742wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Jun 2020 23:38:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=h9/g3OLlPWijyvP1KuO9aQZyD9zG3rXcaVB4w89VOTo=;
+        b=PUVruPoiB0A/W4svTxm7GVSR4dG1YN+TPa+bNlh3UZacTzsJSuuqUwUX4bwsp3Lely
+         ASxTDl6wuhSgZOarrxAxx8FICf7hAf7X52rBFKQIVkWW8q0n2yFwsDeF01VUfJGKtNcF
+         utJBOp6IoDI69SKUEnBKV9+Q/HOyTyoIjU16kbXlrwTYEcykMxlelfLaNcGuySh9xt2T
+         1ZTKkdOr3czNBDINz7PYzvHrmf2itfCGWMg/ZLDftyjqYiEZE5Ym9sHoeR9H2Ixk8Nhn
+         rJTf1QcGGvC3lUEsbTj1SoSC3yJ+XeftVmBUrbdIFniiPlQau3zwDT+JHZxo61yfA/BT
+         /PxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=h9/g3OLlPWijyvP1KuO9aQZyD9zG3rXcaVB4w89VOTo=;
+        b=mJr4xQI6wPcTHlMV4QoezzQfTAKAnN8LdZwm7TrxRRNZyhKYR82Bn2mzwoOjdqCzFB
+         zJd91ISBZS5FiOpE/COdR4NUCeUpZhrJxKw9CLYxf05I3I+RRnyIDNB9yA5O6uh7L4Zf
+         rE21DVjkLQ39kAzPnLKcPQxEt9x3REVuZy1THZ3bMTEjk+npsDPB5dx/wDijsF/QD4Mz
+         yrt1Zb6BPM74bhofqQPJSz5nXpPx9JCUtCTex1f3V77RwdFFpe8Sa0zvHx5wxb1LJhz7
+         gK1Jsglgi8Fq9vxCtbDOksYHxWzGz/JNi7vVPrA/QdnkxhbZ2QD7Ml4+9pqZT3i9rsMc
+         qgqA==
+X-Gm-Message-State: AOAM530OPBb/u9wIyzgjl2K/lAiL5p5L00txBlW3v9M4qUt0TDSYzCam
+        yna3a9BtsQQnPyK2zoVJhwNV9A==
+X-Google-Smtp-Source: ABdhPJwJ6GGdUSF95PWK6acVorvArCdb/C7RGrbCcYZz+gm/V3GugbZmXgsyKMl74ZLpxctA64b1qQ==
+X-Received: by 2002:a5d:5489:: with SMTP id h9mr7521008wrv.125.1591857491567;
+        Wed, 10 Jun 2020 23:38:11 -0700 (PDT)
+Received: from dell ([2.27.167.101])
+        by smtp.gmail.com with ESMTPSA id x186sm2657865wmg.8.2020.06.10.23.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 23:38:10 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 07:38:09 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>, arnd@arndb.de
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH] dt-bindings: mfd: Ensure 'syscon' has a more specific
+ compatible
+Message-ID: <20200611063809.GW4106@dell>
+References: <20200610194625.3597460-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200610194625.3597460-1-robh@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-11 at 08:25 +0200, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
+Arnd,
+
+On Wed, 10 Jun 2020, Rob Herring wrote:
+
+> Using 'syscon' alone should be avoided as compatible strings should be
+> specific enough to identify the exact set of registers contained. Update
+> the schema to ensure at least 2 compatible strings are present.
+
+I'm assuming you're okay with this?
+
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> FYI, there's 43 cases of this on arm32 in my testing.
 > 
-> This patchset 1) adds support of deprecated terms in the 'checkpatch.pl'
-> and 2) set the 'blacklist' and 'whitelist' as deprecated with
-> replacement suggestion of 'denylist' and 'allowlist', because the
-> suggestions are incontrovertible, doesn't make people hurt, and more
-> self-explanatory.
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index 19bdaf781853..af7a68051392 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -43,7 +43,8 @@ properties:
+>  
+>        - contains:
+>            const: syscon
+> -        additionalItems: true
+> +        minItems: 2
+> +        maxItems: 4  # Should be enough
+>  
+>    reg:
+>      maxItems: 1
 
-While the checkpatch implementation is better,
-I'm still very "meh" about the whole concept.
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
