@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D901F6D20
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 20:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705681F6D19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 20:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgFKSCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 14:02:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21972 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726251AbgFKSCH (ORCPT
+        id S1728186AbgFKSBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 14:01:45 -0400
+Received: from smtprelay0128.hostedemail.com ([216.40.44.128]:49246 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726251AbgFKSBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 14:02:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591898525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PDcY/aNN0AijO6KeFZRrqAa1c2dHhA8tsB/uBtT8Fjk=;
-        b=CPZnbZJ1UhvPoBVorW8ZkBeoQ7TyZC9g5Lr6upuhb5R7vDKjP3T9voyOk+yiYmay9/5d3f
-        Ed9mS2OP7k/tvQ8gouaBrxWgdbVgste+u7NONbtdQAnDqYx/8QXOEfLPn26nxj8snpFJSI
-        f4MJKYxVIUSxnbXrSjsz2xtOGCmSElM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-V63-PS4kPWWBKyLEDIScKQ-1; Thu, 11 Jun 2020 14:01:51 -0400
-X-MC-Unique: V63-PS4kPWWBKyLEDIScKQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B46B0BFC6;
-        Thu, 11 Jun 2020 18:01:48 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECCD05D9DC;
+        Thu, 11 Jun 2020 14:01:45 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E01D5181D3042;
         Thu, 11 Jun 2020 18:01:43 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 20:01:40 +0200
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     Gaurav Singh <gaurav1086@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
-Message-ID: <20200611200140.259423b4@carbon>
-In-Reply-To: <20200611150221.15665-1-gaurav1086@gmail.com>
-References: <20200611150221.15665-1-gaurav1086@gmail.com>
-Organization: Red Hat Inc.
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3872:3873:3874:4321:4605:5007:6119:7576:7903:8603:10004:10400:10848:11232:11658:11914:12043:12048:12296:12297:12555:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:21939:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: ant15_2a17d4e26dd5
+X-Filterd-Recvd-Size: 2064
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 11 Jun 2020 18:01:41 +0000 (UTC)
+Message-ID: <17564b0632ef8ca6a64023fe430d69e861f252f1.camel@perches.com>
+Subject: Re: [PATCH] drm/bridge: make array frs_limits static, makes object
+ smaller
+From:   Joe Perches <joe@perches.com>
+To:     Colin King <colin.king@canonical.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 11 Jun 2020 11:01:41 -0700
+In-Reply-To: <20200611133924.923774-1-colin.king@canonical.com>
+References: <20200611133924.923774-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Jun 2020 11:02:21 -0400
-Gaurav Singh <gaurav1086@gmail.com> wrote:
-
-> Replace malloc/memset with calloc
-
-Please also mention/describe  that this also solves the bug you found.
-
-As this fix a potential bug, it will be appropriate to add a "Fixes:"
-line, just before "Signed-off-by" (meaning no newline between the two).
-
-Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
-> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-> ---
->  samples/bpf/xdp_rxq_info_user.c | 13 +++----------
->  1 file changed, 3 insertions(+), 10 deletions(-)
+On Thu, 2020-06-11 at 14:39 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-> index 4fe47502ebed..caa4e7ffcfc7 100644
-> --- a/samples/bpf/xdp_rxq_info_user.c
-> +++ b/samples/bpf/xdp_rxq_info_user.c
-> @@ -198,11 +198,8 @@ static struct datarec *alloc_record_per_cpu(void)
->  {
->  	unsigned int nr_cpus = bpf_num_possible_cpus();
->  	struct datarec *array;
-> -	size_t size;
->  
-> -	size = sizeof(struct datarec) * nr_cpus;
-> -	array = malloc(size);
-> -	memset(array, 0, size);
-> +	array = calloc(nr_cpus, sizeof(struct datarec));
->  	if (!array) {
->  		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
->  		exit(EXIT_FAIL_MEM);
-> @@ -214,11 +211,8 @@ static struct record *alloc_record_per_rxq(void)
->  {
->  	unsigned int nr_rxqs = bpf_map__def(rx_queue_index_map)->max_entries;
->  	struct record *array;
-> -	size_t size;
->  
-> -	size = sizeof(struct record) * nr_rxqs;
-> -	array = malloc(size);
-> -	memset(array, 0, size);
-> +	array = calloc(nr_rxqs, sizeof(struct record));
->  	if (!array) {
->  		fprintf(stderr, "Mem alloc error (nr_rxqs:%u)\n", nr_rxqs);
->  		exit(EXIT_FAIL_MEM);
-> @@ -232,8 +226,7 @@ static struct stats_record *alloc_stats_record(void)
->  	struct stats_record *rec;
->  	int i;
->  
-> -	rec = malloc(sizeof(*rec));
-> -	memset(rec, 0, sizeof(*rec));
-> +	rec = calloc(1, sizeof(struct stats_record));
->  	if (!rec) {
->  		fprintf(stderr, "Mem alloc error\n");
->  		exit(EXIT_FAIL_MEM);
+> Don't populate the array frs_limits on the stack but instead make it
+> static. Makes the object code smaller by 123 bytes
+> 
+> Before:
+>    text	   data	    bss	    dec	    hex	filename
+>   23456	   5712	     64	  29232	   7230	drivers/gpu/drm/bridge/tc358768.o
+> 
+> After:
+>    text	   data	    bss	    dec	    hex	filename
+>   23333	   5712	     64	  29109	   71b5	drivers/gpu/drm/bridge/tc358768.o
+> 
+> (gcc version 9.3.0, amd64)
 
+It's curious that the data size didn't change.
 
+Perhaps you should make sure you do not compile
+with allyesconfig when you show these change.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+For instance: x86-64 defconfig with this bridge
+enabled:
+
+$ size drivers/gpu/drm/bridge/tc358768.o
+   text	   data	    bss	    dec	    hex	filename
+   9423	    300	      0	   9723	   25fb	drivers/gpu/drm/bridge/tc358768.o
+
 
