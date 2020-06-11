@@ -2,359 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29D1F6DD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 21:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACFB1F6DE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 21:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgFKTSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 15:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S1728471AbgFKTTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 15:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbgFKTSB (ORCPT
+        with ESMTP id S1726812AbgFKTTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 15:18:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC22C08C5C3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 12:18:00 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1jjSi5-0002Md-0z; Thu, 11 Jun 2020 21:17:57 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1jjSi4-0001LM-OM; Thu, 11 Jun 2020 21:17:56 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, kernel@pengutronix.de,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Thu, 11 Jun 2020 15:19:03 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E498C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 12:19:03 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id i1so6513673ils.11
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 12:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HM3AqGJPElOxspsL/TgvLbkiRo8IGOBuT4DTNJYHMg8=;
+        b=sUWBelGwQdBKxP7Q7+e4/aI/TBJ5MwVvNzCRTCmliTWWuRG0lAgYpIWjIYrYZ5WhWe
+         9y7sCsLXeD1KvkJHDUHLqwr7FnDGQ0eSN15TuQ1zT16B1rSpL8sMznuGOFuzys0cyWHD
+         kMhj4/4akmpox7YkPhF32LDhdY4lrR9NJgic9zaGaYU4lwgvg+O7mfLQPVMjTMbuUrdI
+         btLwJBEi8qlMjloeHPtLCzv7ZDJ5oxmZxkoM5SZsH17wHoosSYXw0WRw09GM3cyp9bLZ
+         8BIT6ODT0tBTmGWkODYamKpjb4WHFg0dERi5VTO2eHQV0td/Xj3p33tKqi5xlqKVIcfU
+         6lYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HM3AqGJPElOxspsL/TgvLbkiRo8IGOBuT4DTNJYHMg8=;
+        b=qRhqvZRD7XNdCjvsj4swh9t/28NjbCYHCsF70C/dOVdDhQh1xZakGEUqYcdJnMyeEw
+         vUgGz3m8zimHaBbgDM3zmHR4vqukTjakWr7jLhiiNTw0As1ocvfIc1ggeB6bq1aTsVOV
+         sLdHaB1W7LfWh8OlWEIo7D9ff5Y3ad0pO/4T/aTvQBd3UxAUJGeofMXJVSgUlX99W/Y1
+         SfFSxuH6Ui0JulTUuPXmK1d6DheUjBem6P87uOJtOsrvE41D2XrDHieI664grOT59fk3
+         /1v/h3JjAhZVrHcTMjz8cnBI9Pwlzw+x3DvTAVy0B///tRgETVPeBw8isRCT7Rxa9SwG
+         Ln4w==
+X-Gm-Message-State: AOAM530lWBJJB1NSDgHOHvDqh+s9uvZLy19TcCxPbeDufaI1lksTUkXs
+        Wg1sNvaEYxZoVF4qGX14JTzcEhDhdnY=
+X-Google-Smtp-Source: ABdhPJyNPRrWvZNCyCyGu+KKHk2+mgEP/Y6Gc3xVljOvTqeQpLBInz1ETD28vaNjTn9xL0Wk4H40QA==
+X-Received: by 2002:a92:79d1:: with SMTP id u200mr8900913ilc.67.1591903141896;
+        Thu, 11 Jun 2020 12:19:01 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id e8sm2060103ill.25.2020.06.11.12.18.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jun 2020 12:19:00 -0700 (PDT)
+Subject: Re: [PATCH net 1/5] net: ipa: program metadata mask differently
+To:     kernel test robot <lkp@intel.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     kbuild-all@lists.01.org, evgreen@chromium.org,
+        subashab@codeaurora.org, cpratapa@codeaurora.org,
+        bjorn.andersson@linaro.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 8/8] watchdog: f71808e_wdt: rename variant-independent identifiers appropriately
-Date:   Thu, 11 Jun 2020 21:17:49 +0200
-Message-Id: <20200611191750.28096-9-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200611191750.28096-1-a.fatoum@pengutronix.de>
-References: <20200611191750.28096-1-a.fatoum@pengutronix.de>
+References: <20200610195332.2612233-2-elder@linaro.org>
+ <202006110832.hKzHUsMH%lkp@intel.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <c864cbed-39ff-3877-03a9-b51630fc2682@linaro.org>
+Date:   Thu, 11 Jun 2020 14:18:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <202006110832.hKzHUsMH%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Code for the common parts of the driver, either uses watchdog_ as
-prefix for the watchdog API or f71808e_ for everything else.
+On 6/10/20 7:19 PM, kernel test robot wrote:
+> Hi Alex,
+> 
+> I love your patch! Perhaps something to improve:
 
-The driver now supports 9 more variants besides the f71808e,
-so let's rename the common parts to start with fintek_ instead.
+Thanks kernel test robot!
 
-This makes code browsing easier, because it's readily apparent whether a
-function is variant-specific or not. Also the watchdog_ namespace isn't
-used anymore for the driver-internal functions.
+Somehow the "static" specifier got dropped in my patch.
 
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
- drivers/watchdog/f71808e_wdt.c | 98 +++++++++++++++++-----------------
- 1 file changed, 49 insertions(+), 49 deletions(-)
+I will fix this when I post version 2, shortly.
 
-diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-index 7c42cbf9912e..c866d05e8788 100644
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -114,18 +114,18 @@ static inline int superio_enter(int base);
- static inline void superio_select(int base, int ld);
- static inline void superio_exit(int base);
- 
--struct watchdog_data;
-+struct fintek_wdog_data;
- 
--struct f71808e_variant {
-+struct fintek_variant {
- 	u16 id;
- 	const char *wdt_name; /* NULL if chip lacks watchdog timer */
--	void (*pinconf)(struct watchdog_data *wd);
-+	void (*pinconf)(struct fintek_wdog_data *wd);
- };
- 
--struct watchdog_data {
-+struct fintek_wdog_data {
- 	struct watchdog_device wdd;
- 	unsigned short	sioaddr;
--	const struct f71808e_variant *variant;
-+	const struct fintek_variant *variant;
- 	struct watchdog_info ident;
- 
- 	u8		timer_val;	/* content for the wd_time register */
-@@ -134,7 +134,7 @@ struct watchdog_data {
- 	char		pulse_mode;	/* enable pulse output mode? */
- };
- 
--static inline bool has_f81865_wdo_conf(struct watchdog_data *wd)
-+static inline bool has_f81865_wdo_conf(struct fintek_wdog_data *wd)
- {
- 	return wd->variant->id == SIO_F81865_ID
- 		|| wd->variant->id == SIO_F81866_ID;
-@@ -202,9 +202,9 @@ static inline void superio_exit(int base)
- 	release_region(base, 2);
- }
- 
--static int watchdog_set_timeout(struct watchdog_device *wdd, unsigned int new_timeout)
-+static int fintek_wdog_set_timeout(struct watchdog_device *wdd, unsigned int new_timeout)
- {
--	struct watchdog_data *wd = watchdog_get_drvdata(wdd);
-+	struct fintek_wdog_data *wd = watchdog_get_drvdata(wdd);
- 
- 	wdd->timeout = new_timeout;
- 	if (new_timeout > 0xff) {
-@@ -218,7 +218,7 @@ static int watchdog_set_timeout(struct watchdog_device *wdd, unsigned int new_ti
- 	return 0;
- }
- 
--static int watchdog_set_pulse_width(struct watchdog_data *wd, unsigned int pw)
-+static int fintek_wdog_set_pulse_width(struct fintek_wdog_data *wd, unsigned int pw)
- {
- 	unsigned int t1 = 25, t2 = 125, t3 = 5000;
- 
-@@ -246,9 +246,9 @@ static int watchdog_set_pulse_width(struct watchdog_data *wd, unsigned int pw)
- 	return 0;
- }
- 
--static int watchdog_keepalive(struct watchdog_device *wdd)
-+static int fintek_wdog_keepalive(struct watchdog_device *wdd)
- {
--	struct watchdog_data *wd = watchdog_get_drvdata(wdd);
-+	struct fintek_wdog_data *wd = watchdog_get_drvdata(wdd);
- 	int err;
- 
- 	err = superio_enter(wd->sioaddr);
-@@ -274,13 +274,13 @@ static int watchdog_keepalive(struct watchdog_device *wdd)
- 	return 0;
- }
- 
--static int watchdog_start(struct watchdog_device *wdd)
-+static int fintek_wdog_start(struct watchdog_device *wdd)
- {
--	struct watchdog_data *wd = watchdog_get_drvdata(wdd);
-+	struct fintek_wdog_data *wd = watchdog_get_drvdata(wdd);
- 	int err;
- 
- 	/* Make sure we don't die as soon as the watchdog is enabled below */
--	err = watchdog_keepalive(wdd);
-+	err = fintek_wdog_keepalive(wdd);
- 	if (err)
- 		return err;
- 
-@@ -328,9 +328,9 @@ static int watchdog_start(struct watchdog_device *wdd)
- 	return err;
- }
- 
--static int watchdog_stop(struct watchdog_device *wdd)
-+static int fintek_wdog_stop(struct watchdog_device *wdd)
- {
--	struct watchdog_data *wd = watchdog_get_drvdata(wdd);
-+	struct fintek_wdog_data *wd = watchdog_get_drvdata(wdd);
- 	int err;
- 
- 	err = superio_enter(wd->sioaddr);
-@@ -346,21 +346,21 @@ static int watchdog_stop(struct watchdog_device *wdd)
- 	return 0;
- }
- 
--static const struct watchdog_ops f71808e_wdog_ops = {
-+static const struct watchdog_ops fintek_wdog_ops = {
- 	.owner = THIS_MODULE,
--	.start = watchdog_start,
--	.stop = watchdog_stop,
--	.ping = watchdog_keepalive,
--	.set_timeout = watchdog_set_timeout,
-+	.start = fintek_wdog_start,
-+	.stop = fintek_wdog_stop,
-+	.ping = fintek_wdog_keepalive,
-+	.set_timeout = fintek_wdog_set_timeout,
- };
- 
--static bool watchdog_is_running(struct watchdog_data *wd, u8 wdt_conf)
-+static bool fintek_wdog_is_running(struct fintek_wdog_data *wd, u8 wdt_conf)
- {
- 	return (superio_inb(wd->sioaddr, SIO_REG_ENABLE) & BIT(0))
- 		&& (wdt_conf & BIT(F71808FG_FLAG_WD_EN));
- }
- 
--static int __init watchdog_init(struct watchdog_data *wd)
-+static int __init fintek_wdog_init(struct fintek_wdog_data *wd)
- {
- 	struct watchdog_device *wdd = &wd->wdd;
- 	int wdt_conf, err = 0;
-@@ -390,17 +390,17 @@ static int __init watchdog_init(struct watchdog_data *wd)
- 	superio_outb(wd->sioaddr, F71808FG_REG_WDT_CONF,
- 		     wdt_conf | BIT(F71808FG_FLAG_WDTMOUT_STS));
- 
--	if (watchdog_is_running(wd, wdt_conf))
-+	if (fintek_wdog_is_running(wd, wdt_conf))
- 		set_bit(WDOG_HW_RUNNING, &wdd->status);
- 
- 	superio_exit(wd->sioaddr);
- 
--	err = watchdog_set_pulse_width(wd, pulse_width);
-+	err = fintek_wdog_set_pulse_width(wd, pulse_width);
- 	if (err)
- 		return err;
- 
- 	wdd->info		= &wd->ident;
--	wdd->ops		= &f71808e_wdog_ops;
-+	wdd->ops		= &fintek_wdog_ops;
- 	wdd->min_timeout	= 1;
- 	wdd->max_timeout	= max_timeout;
- 	wdd->timeout		= timeout;
-@@ -418,18 +418,18 @@ static int __init watchdog_init(struct watchdog_data *wd)
- 	 * WATCHDOG_HANDLE_BOOT_ENABLED can result in keepalive being directly
- 	 * called without a set_timeout before, so it needs to be done here once
- 	 */
--	watchdog_set_timeout(wdd, wdd->timeout);
-+	fintek_wdog_set_timeout(wdd, wdd->timeout);
- 
- 	return watchdog_register_device(wdd);
- }
- 
--static void f71808fg_pinconf(struct watchdog_data *wd)
-+static void f71808fg_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* Set pin 21 to GPIO23/WDTRST#, then to WDTRST# */
- 	superio_clear_bit(wd->sioaddr, SIO_REG_MFUNCT2, 3);
- 	superio_clear_bit(wd->sioaddr, SIO_REG_MFUNCT3, 3);
- }
--static void f71862fg_pinconf(struct watchdog_data *wd)
-+static void f71862fg_pinconf(struct fintek_wdog_data *wd)
- {
- 	if (f71862fg_pin == 63) {
- 		/* SPI must be disabled first to use this pin! */
-@@ -439,23 +439,23 @@ static void f71862fg_pinconf(struct watchdog_data *wd)
- 		superio_set_bit(wd->sioaddr, SIO_REG_MFUNCT1, 1);
- 	}
- }
--static void f71868_pinconf(struct watchdog_data *wd)
-+static void f71868_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* GPIO14 --> WDTRST# */
- 	superio_clear_bit(wd->sioaddr, SIO_REG_MFUNCT1, 4);
- }
--static void f71882fg_pinconf(struct watchdog_data *wd)
-+static void f71882fg_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* Set pin 56 to WDTRST# */
- 	superio_set_bit(wd->sioaddr, SIO_REG_MFUNCT1, 1);
- }
--static void f71889fg_pinconf(struct watchdog_data *wd)
-+static void f71889fg_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* set pin 40 to WDTRST# */
- 	superio_outb(wd->sioaddr, SIO_REG_MFUNCT3,
- 		     superio_inb(wd->sioaddr, SIO_REG_MFUNCT3) & 0xcf);
- }
--static void f81803_pinconf(struct watchdog_data *wd)
-+static void f81803_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* Enable TSI Level register bank */
- 	superio_clear_bit(wd->sioaddr, SIO_REG_CLOCK_SEL, 3);
-@@ -463,12 +463,12 @@ static void f81803_pinconf(struct watchdog_data *wd)
- 	superio_outb(wd->sioaddr, SIO_REG_TSI_LEVEL_SEL, 0x5f &
- 		     superio_inb(wd->sioaddr, SIO_REG_TSI_LEVEL_SEL));
- }
--static void f81865_pinconf(struct watchdog_data *wd)
-+static void f81865_pinconf(struct fintek_wdog_data *wd)
- {
- 	/* Set pin 70 to WDTRST# */
- 	superio_clear_bit(wd->sioaddr, SIO_REG_MFUNCT3, 5);
- }
--static void f81866_pinconf(struct watchdog_data *wd)
-+static void f81866_pinconf(struct fintek_wdog_data *wd)
- {
- 	/*
- 	 * GPIO1 Control Register when 27h BIT3:2 = 01 & BIT0 = 0.
-@@ -484,7 +484,7 @@ static void f81866_pinconf(struct watchdog_data *wd)
- 	superio_clear_bit(wd->sioaddr, SIO_F81866_REG_GPIO1, 5);
- }
- 
--struct f71808e_variant f71808e_variants[] = {
-+struct fintek_variant fintek_variants[] = {
- 	{ SIO_F71808_ID,  "f71808fg", f71808fg_pinconf },
- 	{ SIO_F71862_ID,  "f71862fg", f71862fg_pinconf },
- 	{ SIO_F71868_ID,  "f71868",   f71868_pinconf },
-@@ -500,9 +500,9 @@ struct f71808e_variant f71808e_variants[] = {
- 	{ /* sentinel */ }
- };
- 
--static struct f71808e_variant __init *f71808e_find(int sioaddr)
-+static struct fintek_variant __init *fintek_wdog_find(int sioaddr)
- {
--	struct f71808e_variant *variant;
-+	struct fintek_variant *variant;
- 	u16 devid;
- 	int err = superio_enter(sioaddr);
- 	if (err)
-@@ -516,7 +516,7 @@ static struct f71808e_variant __init *f71808e_find(int sioaddr)
- 	}
- 
- 	devid = force_id ? force_id : superio_inw(sioaddr, SIO_REG_DEVID);
--	for (variant = f71808e_variants; variant->id; variant++) {
-+	for (variant = fintek_variants; variant->id; variant++) {
- 		if (variant->id == devid)
- 			break;
- 	}
-@@ -536,13 +536,13 @@ static struct f71808e_variant __init *f71808e_find(int sioaddr)
- 	return variant;
- }
- 
--static struct watchdog_data watchdog;
-+static struct fintek_wdog_data watchdog;
- 
--static int __init f71808e_init(void)
-+static int __init fintek_wdog_probe(void)
- {
--	struct watchdog_data *wd = &watchdog;
-+	struct fintek_wdog_data *wd = &watchdog;
- 	static const unsigned short addrs[] = { 0x2e, 0x4e };
--	struct f71808e_variant *variant;
-+	struct fintek_variant *variant;
- 	int i;
- 
- 	if (f71862fg_pin != 63 && f71862fg_pin != 56) {
-@@ -551,7 +551,7 @@ static int __init f71808e_init(void)
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(addrs); i++) {
--		variant = f71808e_find(addrs[i]);
-+		variant = fintek_wdog_find(addrs[i]);
- 		if (!IS_ERR(variant))
- 			break;
- 	}
-@@ -561,17 +561,17 @@ static int __init f71808e_init(void)
- 	wd->variant = variant;
- 	wd->sioaddr = addrs[i];
- 
--	return watchdog_init(wd);
-+	return fintek_wdog_init(wd);
- }
- 
--static void __exit f71808e_exit(void)
-+static void __exit fintek_wdog_exit(void)
- {
- 	watchdog_unregister_device(&watchdog.wdd);
- }
- 
--MODULE_DESCRIPTION("F71808E Watchdog Driver");
-+MODULE_DESCRIPTION("Fintek F71808E Watchdog Driver");
- MODULE_AUTHOR("Giel van Schijndel <me@mortis.eu>");
- MODULE_LICENSE("GPL");
- 
--module_init(f71808e_init);
--module_exit(f71808e_exit);
-+module_init(fintek_wdog_probe);
-+module_exit(fintek_wdog_exit);
--- 
-2.27.0
+					-Alex
+
+> [auto build test WARNING on net/master]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Alex-Elder/net-ipa-endpoint-configuration-fixes/20200611-035600
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git 89dc68533b190117e1a2fb4298d88b96b3580abf
+> config: arm64-allyesconfig (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> <<                  from drivers/net/ipa/ipa_endpoint.c:8:
+>>> drivers/net/ipa/ipa_endpoint.c:457:6: warning: no previous prototype for 'ipa_endpoint_init_hdr' [-Wmissing-prototypes]
+> 457 | void ipa_endpoint_init_hdr(struct ipa_endpoint *endpoint)
+> |      ^~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/bits.h:23,
+> from include/linux/bitops.h:5,
+> from include/linux/kernel.h:12,
+> from include/linux/list.h:9,
+> from include/linux/rculist.h:10,
+> from include/linux/pid.h:5,
+> from include/linux/sched.h:14,
+> from include/linux/ratelimit.h:6,
+> from include/linux/dev_printk.h:16,
+> from include/linux/device.h:15,
+> from drivers/net/ipa/ipa_endpoint.c:8:
+> drivers/net/ipa/ipa_endpoint.c: In function 'ipa_endpoint_config':
+> include/linux/bits.h:26:28: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> 26 |   __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> |                            ^
+> include/linux/build_bug.h:16:62: notkke: in definition of macro 'BUILD_BUG_ON_ZERO'
+> 16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> |                                                              ^
+> include/linux/bits.h:39:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> 39 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> |   ^~~~~~~~~~~~~~~~~~~
+> drivers/net/ipa/ipa_endpoint.c:1546:12: note: in expansion of macro 'GENMASK'
+> 1546 |  tx_mask = GENMASK(max - 1, 0);
+> |            ^~~~~~~
+> include/linux/bits.h:26:40: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> 26 |   __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> |                                        ^
+> include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+> 16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> |                                                              ^
+> include/linux/bits.h:39:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> 39 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> |   ^~~~~~~~~~~~~~~~~~~
+> drivers/net/ipa/ipa_endpoint.c:1546:12: note: in expansion of macro 'GENMASK'
+> 1546 |  tx_mask = GENMASK(max - 1, 0);
+> |            ^~~~~~~
+> 
+> vim +/ipa_endpoint_init_hdr +457 drivers/net/ipa/ipa_endpoint.c
+> 
+>    438	
+>    439	/**
+>    440	 * We program QMAP endpoints so each packet received is preceded by a QMAP
+>    441	 * header structure.  The QMAP header contains a 1-byte mux_id and 2-byte
+>    442	 * packet size field, and we have the IPA hardware populate both for each
+>    443	 * received packet.  The header is configured (in the HDR_EXT register)
+>    444	 * to use big endian format.
+>    445	 *
+>    446	 * The packet size is written into the QMAP header's pkt_len field.  That
+>    447	 * location is defined here using the HDR_OFST_PKT_SIZE field.
+>    448	 *
+>    449	 * The mux_id comes from a 4-byte metadata value supplied with each packet
+>    450	 * by the modem.  It is *not* a QMAP header, but it does contain the mux_id
+>    451	 * value that we want, in its low-order byte.  A bitmask defined in the
+>    452	 * endpoint's METADATA_MASK register defines which byte within the modem
+>    453	 * metadata contains the mux_id.  And the OFST_METADATA field programmed
+>    454	 * here indicates where the extracted byte should be placed within the QMAP
+>    455	 * header.
+>    456	 */
+>  > 457	void ipa_endpoint_init_hdr(struct ipa_endpoint *endpoint)
+>    458	{
+>    459		u32 offset = IPA_REG_ENDP_INIT_HDR_N_OFFSET(endpoint->endpoint_id);
+>    460		u32 val = 0;
+>    461	
+>    462		if (endpoint->data->qmap) {
+>    463			size_t header_size = sizeof(struct rmnet_map_header);
+>    464	
+>    465			/* We might supply a checksum header after the QMAP header */
+>    466			if (endpoint->toward_ipa && endpoint->data->checksum)
+>    467				header_size += sizeof(struct rmnet_map_ul_csum_header);
+>    468			val |= u32_encode_bits(header_size, HDR_LEN_FMASK);
+>    469	
+>    470			/* Define how to fill mux_id in a received QMAP header */
+>    471			if (!endpoint->toward_ipa) {
+>    472				u32 off;	/* Field offset within header */
+>    473	
+>    474				/* Where IPA will write the metadata value */
+>    475				off = offsetof(struct rmnet_map_header, mux_id);
+>    476				val |= u32_encode_bits(off, HDR_OFST_METADATA_FMASK);
+>    477	
+>    478				/* Where IPA will write the length */
+>    479				off = offsetof(struct rmnet_map_header, pkt_len);
+>    480				val |= HDR_OFST_PKT_SIZE_VALID_FMASK;
+>    481				val |= u32_encode_bits(off, HDR_OFST_PKT_SIZE_FMASK);
+>    482			}
+>    483			/* For QMAP TX, metadata offset is 0 (modem assumes this) */
+>    484			val |= HDR_OFST_METADATA_VALID_FMASK;
+>    485	
+>    486			/* HDR_ADDITIONAL_CONST_LEN is 0; (RX only) */
+>    487			/* HDR_A5_MUX is 0 */
+>    488			/* HDR_LEN_INC_DEAGG_HDR is 0 */
+>    489			/* HDR_METADATA_REG_VALID is 0 (TX only) */
+>    490		}
+>    491	
+>    492		iowrite32(val, endpoint->ipa->reg_virt + offset);
+>    493	}
+>    494	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
