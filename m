@@ -2,80 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A011F6E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 21:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200141F6E22
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 21:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgFKTqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 15:46:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47260 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgFKTqa (ORCPT
+        id S1727812AbgFKTr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 15:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbgFKTr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 15:46:30 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05BJkS46079079;
-        Thu, 11 Jun 2020 14:46:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591904788;
-        bh=YuZ2zHvyVYgqCnf9DRpBa7biybrInY1I5skTmeiufwg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eG3gnZ8I3nuo/xoBOhCjGiv9DwcJfrbOEmBEwHmt1PGgGCJlcRtP8QiCm0i1UXU35
-         7dGOC6UJX/ocCe9+qOISSkubkWRogmerY2khCoT46fV6sCglfcVEz352/chnk9VRwO
-         39oSeVlJBRSiIhlXCG+d5X2KvfpRXdfZ+kjM870M=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05BJkSHk073200
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Jun 2020 14:46:28 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 11
- Jun 2020 14:46:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 11 Jun 2020 14:46:28 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05BJkSnu093360;
-        Thu, 11 Jun 2020 14:46:28 -0500
-Subject: Re: [RESEND PATCH] dt-bindings: property-units: Add picoseconds type
-To:     <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200602164219.3159-1-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <e7644623-e9c2-2ebc-8bbd-1bd5dea8942a@ti.com>
-Date:   Thu, 11 Jun 2020 14:46:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200602164219.3159-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Thu, 11 Jun 2020 15:47:27 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B37C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 12:47:27 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r2so7749395ioo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 12:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=JrOL277zrafU33/T667ymrrO3F/cxCPQRMCQNDYvGqU=;
+        b=fG2f7RD3K1uLCT3H1yUOpg/2k4gTC2W3mclS+KruzZt5IZ8lrz2QNyiktefCjJCZer
+         IAl+Lq34Z/HHUGdBerEenMW/ivdayxYDc9Yauqpr2rEAP3jlg5x4pxiusA7qqYSRVdj8
+         YzXHF8ccWhwatXkvfTMln8+D89ENDSsoaVSPIZE9e7BDvr4SYpG7nTFdYSszyWRkg8VG
+         jxzN0nrZv4uKypUeYaYIeDMIY0tjpfM3EmPVgVe3hQaLvD36yqWAD6rc7xn0INXS4j7D
+         1SxxCVAlL1MZf+8V6pRRaplT2JuItr8L/9pPWSJZkNdOAY84Wq5z8fJVAbEZUsipC/0+
+         HBVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=JrOL277zrafU33/T667ymrrO3F/cxCPQRMCQNDYvGqU=;
+        b=MAfiSzFJyPuUZK3MJ0Hv3BPwIt40u9Tfam/fAUg2WiBwUkdtwCQmKgItTzdcbuXJHj
+         g4V7+0v25C6h+ipPJIaQ7J/nETi8TjzX1kJGASy1dvEYOi+WnPqIt+vupJ7NlXnyG3tw
+         LRtkvAvnFooKQxm72ia6L8TBPqlNA36hDZ5la3VRby/Nnbf6bC4iIveRbSTktZcD9QGf
+         mBjinmq5Xg13X3By54a0P5qYzljJm6UPq5NgAWWtqJNFnDyCtYEU9fd8huffRIgXXgUi
+         XKMnBTSt1VmpT8Bpzap4fZsOfbdQRKn6vhqvN4HWNzuG65vaGaJFm4Xr3v/AW8G5p0/G
+         W7Ew==
+X-Gm-Message-State: AOAM531pxEBKC/KCDOCkAqkB/wcSwZWXRvHaRK4r1xJ0EMoQY381eCMa
+        Ru/CZOXfBYwfzyKjly++V3Q4wg==
+X-Google-Smtp-Source: ABdhPJyguEAJSNVqVHBd5o79x1osBKISIm+KzMiBu7vz9h0p37SZp/IFjJg8utwvzTplNWH74B8djA==
+X-Received: by 2002:a02:ce8a:: with SMTP id y10mr4861586jaq.136.1591904846868;
+        Thu, 11 Jun 2020 12:47:26 -0700 (PDT)
+Received: from ?IPv6:2603:9001:e08:d902:1d3d:b900:272a:b9ed? ([2603:9001:e08:d902:1d3d:b900:272a:b9ed])
+        by smtp.gmail.com with ESMTPSA id 13sm1983056ilg.24.2020.06.11.12.47.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Jun 2020 12:47:26 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] lib/vdso: use CLOCK_REALTIME_COARSE for time()
+From:   Mark Salyzyn <salyzyn@android.com>
+In-Reply-To: <878sgt1jo2.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 11 Jun 2020 12:47:24 -0700
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Chiawei Wang <chiaweiwang@google.com>, stable@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7147FC30-F9B4-4261-B2C1-08688A4E0D2B@android.com>
+References: <20200611155804.65204-1-salyzyn@android.com>
+ <878sgt1jo2.fsf@nanos.tec.linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bump
+On Jun 11, 2020, at 12:34 PM, Thomas Gleixner <tglx@linutronix.de> =
+wrote:
+>=20
+> Mark Salyzyn <salyzyn@android.com> writes:
+>> From: Chiawei Wang <chiaweiwang@google.com>
+>>=20
+>> CLOCK_REALTIME in vdso data won't be updated if
+>> __arch_use_vsyscall() returns false.
+>=20
+> Errm!
+>=20
+> # git grep __arch_use_vsyscall
+> #
+>=20
+> Aside of that update_vsyscall() updates CLOCK_REALTIME data
+> unconditionally. No idea what this patch is solving.
+>=20
+>> Cc: stable@vger.kernel.org # 5.4+
+>=20
+> This # 5.4+ is pointless. You really want to add a fixes tag which pin
+> points the commit which introduced the wreckage.
+>=20
+> But thats moot as this is not fixing anything not even in 5.4.
+>=20
+> I assume this was developed against some Frankenkernel which has a =
+messy
+> backport or a snapshot of some development version of that vdso stuff.
 
-On 6/2/20 11:42 AM, Dan Murphy wrote:
-> Add the '-ps' picosecond unit suffix for property names.
->
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->   Documentation/devicetree/bindings/property-units.txt | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/property-units.txt b/Documentation/devicetree/bindings/property-units.txt
-> index e9b8360b3288..00094070bdac 100644
-> --- a/Documentation/devicetree/bindings/property-units.txt
-> +++ b/Documentation/devicetree/bindings/property-units.txt
-> @@ -17,6 +17,7 @@ Time/Frequency
->   -ms		: millisecond
->   -us		: microsecond
->   -ns		: nanosecond
-> +-ps		: picosecond
->   
->   Distance
->   ----------------------------------------
+Yes, problem code was removed with =
+52338415cf4d4064ae6b8dd972dadbda841da4fa not applied.
+
+4.19 back port without time namespaces, chip vendor using =
+__arch_use_vsyscall to solve a chip errata.
+
+>=20
+> Not that I want to know, but please make sure that something you send =
+my
+> way makes sense on sane kernels.
+>=20
+> Oh well.
+>=20
+> Thanks,
+>=20
+>        tglx
+
+Sorry for your troubles.
+
+Sincerely =E2=80=94 Mark Salyzyn
+
