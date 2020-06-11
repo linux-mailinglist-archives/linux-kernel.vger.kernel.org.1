@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777011F6317
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD5C1F6310
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Jun 2020 09:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgFKH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 03:58:44 -0400
-Received: from outpost17.zedat.fu-berlin.de ([130.133.4.110]:57653 "EHLO
-        outpost17.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726950AbgFKH6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 03:58:41 -0400
-Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jjI6b-000sre-KZ; Thu, 11 Jun 2020 09:58:33 +0200
-Received: from z6.physik.fu-berlin.de ([160.45.32.137] helo=z6)
-          by relay1.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jjI6b-00291v-Hw; Thu, 11 Jun 2020 09:58:33 +0200
-Received: from glaubitz by z6 with local (Exim 4.94)
-        (envelope-from <glaubitz@physik.fu-berlin.de>)
-        id 1jjI6R-00COLi-8p; Thu, 11 Jun 2020 09:58:23 +0200
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     linux-sh@vger.kernel.org
-Cc:     Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        NIIBE Yutaka <gniibe@fsij.org>, linux-kernel@vger.kernel.org,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: [PATCH] sh: Implement __get_user_u64() required for 64-bit get_user()
-Date:   Thu, 11 Jun 2020 09:58:11 +0200
-Message-Id: <20200611075811.2949870-2-glaubitz@physik.fu-berlin.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200611075811.2949870-1-glaubitz@physik.fu-berlin.de>
-References: <20200611075811.2949870-1-glaubitz@physik.fu-berlin.de>
+        id S1726805AbgFKH6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 03:58:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726694AbgFKH6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 03:58:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D33BBACF9;
+        Thu, 11 Jun 2020 07:58:23 +0000 (UTC)
+Date:   Thu, 11 Jun 2020 09:58:18 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH] printk/kdb: Redirect printk messages into kdb in any
+ context
+Message-ID: <20200611075818.GC6581@linux-b0ei>
+References: <1589273314-12060-1-git-send-email-sumit.garg@linaro.org>
+ <20200512142533.ta4uejwmq5gchtlx@holly.lan>
+ <CAFA6WYOV7oPbYE=9fXueYMacb5wv0r9T6F8tmECt-Eafe-fctw@mail.gmail.com>
+ <20200514084230.GO17734@linux-b0ei>
+ <CAFA6WYPSsgdAB-wJC0e2YkVkW0XsqQsu5wrn4iB4M-cwvS7z2g@mail.gmail.com>
+ <20200515085021.GS17734@linux-b0ei>
+ <20200515103308.GD42471@jagdpanzerIV.localdomain>
+ <CAFA6WYOBsimP1j8Fwq4OcePEug4MGoaY3wTTTVydHtTphZ-FTw@mail.gmail.com>
+ <20200515163638.GI42471@jagdpanzerIV.localdomain>
+ <20200610164140.tgzcn5oip2gzgmze@holly.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: 160.45.32.137
-X-ZEDAT-Hint: RV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200610164140.tgzcn5oip2gzgmze@holly.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to build the kernel with CONFIG_INFINIBAND_USER_ACCESS enabled fails
+On Wed 2020-06-10 17:41:40, Daniel Thompson wrote:
+> On Sat, May 16, 2020 at 01:36:38AM +0900, Sergey Senozhatsky wrote:
+> > On (20/05/15 17:32), Sumit Garg wrote:
+> > > > Can I please have some context what problem does this solve?
+> > > 
+> > > You can find the problem description here [1] which leads to this fix.
+> > 
+> > [..]
+> > 
+> > > [1] https://lkml.org/lkml/2020/5/12/213
+> > 
+> > Thanks for the link. I'm slightly surprised it took so many years
+> > to notice the addition of printk_nmi/printk_safe :)
+> 
+> Rather by coincidence (at least I think its a coincidence) the problem
+> has recently become much more obvious.
+> 
+> 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()") just brought
+> this to the surface by treating debug traps as NMIs. This means the CPU
+> that takes a breakpoint, and where almost all of the kdb printk() calls
+> take place, will now unconditionally have printk() interception enabled.
 
-     ERROR: "__get_user_unknown" [drivers/infiniband/core/ib_uverbs.ko] undefined!
+Mea culpa. I have marked this patch as proceed by mistake. It has got
+enough acks and is ready for 5.8.
 
-with on SH since the kernel misses a 64-bit implementation of get_user().
+I have just commited the patch into printk/linux.git,
+branch for-5.8-kdb-nmi.
 
-Implement the missing 64-bit get_user() as __get_user_u64(), matching the
-already existing __put_user_u64() which implements the 64-bit put_user().
+I am going to push it to Linus when it passes linux-next integration,
+hopefully tomorrow.
 
-Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
----
- arch/sh/include/asm/uaccess_32.h | 53 ++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+Thanks a lot for poking me.
 
-diff --git a/arch/sh/include/asm/uaccess_32.h b/arch/sh/include/asm/uaccess_32.h
-index 624cf55acc27..5d7ddc092afd 100644
---- a/arch/sh/include/asm/uaccess_32.h
-+++ b/arch/sh/include/asm/uaccess_32.h
-@@ -26,6 +26,9 @@ do {								\
- 	case 4:							\
- 		__get_user_asm(x, ptr, retval, "l");		\
- 		break;						\
-+	case 8:							\
-+		__get_user_u64(x, ptr, retval);			\
-+		break;						\
- 	default:						\
- 		__get_user_unknown();				\
- 		break;						\
-@@ -66,6 +69,56 @@ do {							\
- 
- extern void __get_user_unknown(void);
- 
-+#if defined(CONFIG_CPU_LITTLE_ENDIAN)
-+#define __get_user_u64(x, addr, err) \
-+({ \
-+__asm__ __volatile__( \
-+	"1:\n\t" \
-+	"mov.l	%2,%R1\n\t" \
-+	"mov.l	%T2,%S1\n\t" \
-+	"2:\n" \
-+	".section	.fixup,\"ax\"\n" \
-+	"3:\n\t" \
-+	"mov  #0,%R1\n\t"   \
-+	"mov  #0,%S1\n\t"   \
-+	"mov.l	4f, %0\n\t" \
-+	"jmp	@%0\n\t" \
-+	" mov	%3, %0\n\t" \
-+	".balign	4\n" \
-+	"4:	.long	2b\n\t" \
-+	".previous\n" \
-+	".section	__ex_table,\"a\"\n\t" \
-+	".long	1b, 3b\n\t" \
-+	".long	1b + 2, 3b\n\t" \
-+	".previous" \
-+	:"=&r" (err), "=&r" (x) \
-+	:"m" (__m(addr)), "i" (-EFAULT), "0" (err)); })
-+#else
-+#define __get_user_u64(x, addr, err) \
-+({ \
-+__asm__ __volatile__( \
-+	"1:\n\t" \
-+	"mov.l	%2,%S1\n\t" \
-+	"mov.l	%T2,%R1\n\t" \
-+	"2:\n" \
-+	".section	.fixup,\"ax\"\n" \
-+	"3:\n\t" \
-+	"mov  #0,%S1\n\t"   \
-+	"mov  #0,%R1\n\t"   \
-+	"mov.l	4f, %0\n\t" \
-+	"jmp	@%0\n\t" \
-+	" mov	%3, %0\n\t" \
-+	".balign	4\n" \
-+	"4:	.long	2b\n\t" \
-+	".previous\n" \
-+	".section	__ex_table,\"a\"\n\t" \
-+	".long	1b, 3b\n\t" \
-+	".long	1b + 2, 3b\n\t" \
-+	".previous" \
-+	:"=&r" (err), "=&r" (x) \
-+	:"m" (__m(addr)), "i" (-EFAULT), "0" (err)); })
-+#endif
-+
- #define __put_user_size(x,ptr,size,retval)		\
- do {							\
- 	retval = 0;					\
--- 
-2.27.0
-
+Best Regards,
+Petr
