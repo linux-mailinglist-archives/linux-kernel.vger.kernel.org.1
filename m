@@ -2,162 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B01F73C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 08:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59081F73D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 08:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgFLGQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 02:16:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:12539 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgFLGQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 02:16:02 -0400
-IronPort-SDR: cY/UCXhvWARYpXZbw+vpwu0y2GU6BFbZMxqMuMfe/VJi2VIz7T4tMOP5i/RdL5qEiIzexe7dfX
- jyTtzgf+JeLw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 23:16:02 -0700
-IronPort-SDR: 3luFmiIe3X4V+MPkUKGxO4cWOxonjOAxi31TJhfyS0YDh5FUIEhuG8UFJJfT3OEe8NPupkgGvW
- kmrNwMsAI16A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,502,1583222400"; 
-   d="scan'208";a="260748083"
-Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jun 2020 23:16:02 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX107.amr.corp.intel.com (10.22.240.5) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 11 Jun 2020 23:16:01 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 11 Jun 2020 23:16:01 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 11 Jun 2020 23:16:01 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.177)
- by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 11 Jun 2020 23:16:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lxakwbe/TeLU3OYKIyB6JQSuGTgvamJlTe8Zp7iSOMyaFT9GVtCbG0cLHlBF1TBGSGvElWJxEnvLaItaaUUD45BrSuth2gK81rJKFA0hWcrUDFYBqkGbdyanpfAOuva10gcniyVN8tkAb8BIfqJVk800kGbVU713dhXg0SJmmq5THaEFpS8DPupExvEVnNPzDGDzdwIbVvcZqzcUCEJSpNc+XiCqvFs13HRnHGNL6szScK4J60pqiwFo5IZRMsLgD0WEwh2zzLF7ILiyYIoiJTGF5D23rVH10kJZWaWj8aB1Ayx7IWqYTY5WJdmB5w2Ifx/vxhNSs5PFt2n6dKC2HQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j0lBjlmXZcLKUJMtdzVWCqpg+RGiOlHN380p4TNOyUA=;
- b=PhuDrHpJdhAtDFgV/R9rivzTNQChN7T9w3MaYTZ7BR6WzARpgMHuuNDIxSNXFVWDa96A4LMQ2cw9N38hNpQ2a+FJG1uKHC/7lN9inUDGz2O1ckdLdy7rdCCQ+uDl5dQ9gPCJDi4aw2W4pgCoQ9w/OQS+OnQQwzrvavfJVO0Pn06V3JhvDYK2FytaYz1QDoGPDq/+ZIcrz1xmM7FiF5jZqbH+brk6t05LE9cxeaeo8R++y1GZ+PEgHg/E5FshIPGONDIU7rX0SU5l4hhqB7lLBS+LbqgdEcZnRFw+n/uPXGZHo3h5n0rdrkXVr/VZfmvzkfl8i0Vw/yJ2EV7uHEpvCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j0lBjlmXZcLKUJMtdzVWCqpg+RGiOlHN380p4TNOyUA=;
- b=K+sn4gF66v0F8QBPbds8eVJY+hSXuyKIReivdK0131+INhh08R5Myv5TlwB1oYx4KnbixRDKAJXEdiXdNt1G+LTfm/dDMxZ0pyWTK5JeofaQ2rogVasyUWE9C80+6XYqPPe82O/HpArig7cLWoJl9tMQcVa0bRZ9gUs1NHn26HE=
-Received: from DM6PR11MB4316.namprd11.prod.outlook.com (2603:10b6:5:205::16)
- by DM6PR11MB2586.namprd11.prod.outlook.com (2603:10b6:5:c0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.21; Fri, 12 Jun
- 2020 06:15:59 +0000
-Received: from DM6PR11MB4316.namprd11.prod.outlook.com
- ([fe80::b4fa:727e:34a9:b1a4]) by DM6PR11MB4316.namprd11.prod.outlook.com
- ([fe80::b4fa:727e:34a9:b1a4%5]) with mapi id 15.20.3066.023; Fri, 12 Jun 2020
- 06:15:58 +0000
-From:   "Lu, Brent" <brent.lu@intel.com>
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "Pierre-Louis Bossart DRIVERS" <pierre-louis.bossart@linux.intel.com>,
-        "authored:2/16=12%,added_lines:21/248=8%,removed_lines:5/84=6%,),Liam
-        Girdwood DRIVERS )" <lgirdwood@gmail.com>,
-        "commit_signer:6/16=38%,authored:6/16=38%,added_lines:123/248=50% 
-        ,removed_lines:36/84=43%,Kai Vehmanen DRIVERS )" 
-        <kai.vehmanen@linux.intel.com>,
-        "Daniel Baluta DRIVERS )" <daniel.baluta@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "sound-open-firmware@alsa-project.orgDRIVERS" 
-        <sound-open-firmware@alsa-project.orgDRIVERS>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ASoC: SOF: Intel: hda: unsolicited RIRB response
-Thread-Topic: [PATCH] ASoC: SOF: Intel: hda: unsolicited RIRB response
-Thread-Index: AQHWP/c4ukUWDBOd20aRgUpUZ24R5KjTeMYAgAAAtZCAADqtAIAAy8xA
-Date:   Fri, 12 Jun 2020 06:15:58 +0000
-Message-ID: <DM6PR11MB4316E9E9E965C123E797210E97810@DM6PR11MB4316.namprd11.prod.outlook.com>
-References: <1591883073-17190-1-git-send-email-brent.lu@intel.com>
-        <b7e0b822a9deea506acaa40e0e31cc9f488bb446.camel@linux.intel.com>
-        <DM6PR11MB4316108BCF449D52E49C7E4297800@DM6PR11MB4316.namprd11.prod.outlook.com>
- <s5h5zbxeb5t.wl-tiwai@suse.de>
-In-Reply-To: <s5h5zbxeb5t.wl-tiwai@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [36.230.210.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c1b523e8-dbd1-4dec-2321-08d80e981303
-x-ms-traffictypediagnostic: DM6PR11MB2586:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB25867FB39D97212621641B6497810@DM6PR11MB2586.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1468;
-x-forefront-prvs: 0432A04947
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PAf4Yh/vjzDrq/iu/oL2K7A00X6x0WlX5DnF9EXTsOJcmR+DF06xGHtAr0mCJITrcU80TDCJd0JvA/e3y2qt1NXzS2L4Rzb7NU5OYkxXcbreTF9seUPnQ1JF91+f8+X8nII/jECbsFn2B9attRmViFTZCdHAkqK6bTIvVvZC5E/8+83pjQw8BBuspXELGFXmaAWMz5ENiBGIdoz2kwigZelxIKr6GFfqPH99j0FJtQCnor48QxkNxSVVIFufsCSOQTvVBSBqL2SuYqWDZqgPCVEjd+xoUQ9zJAwILXCwzRe8Qg+9CEuDDrqV3byUZufrebCPNXFCKGKEUUPytGz4tA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4316.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(396003)(376002)(346002)(39860400002)(4744005)(6916009)(52536014)(54906003)(55016002)(8936002)(33656002)(316002)(7696005)(71200400001)(66476007)(6506007)(2906002)(66946007)(8676002)(66446008)(9686003)(83380400001)(4326008)(66556008)(86362001)(76116006)(7416002)(26005)(186003)(5660300002)(478600001)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 9iB0tpFYuLHsQeSZb1lvIolMvFQ/oDDhhd4u1OOhV6Iq3Ahh1qFlbBZmH3KdwOJOQdVe+eylxDVOkV6qAucgu3Qcgo+4FLK8q+6X4dCVwduNh1EuztBft4hJB2pbF/g+R/01Tv2nYNUHa099xk/qMegJr+HgzXhZltSVjPjz0YuYCEeDfHAtCS7It/wv430jgdxb7i7GRLJZrMuvUQ9nOd2RMH9UO540fTxkXz5QvSXbrTVtb+EX1wlIaUlFykegBCza7n9MRU3lm6YJuPoLsCpxY7xdb0GVWJ7qTYXZGgJPir2Cf9ifsG4O2bgQz6gG10PjRvB8hUmoDLmxR7e7fgasxmyLR1mT0ms3tlxRSJFvow5NaTMilxur7LmCwSPqOayBenGHmWDWBAp9pjnupLIegGrJiVHkTqzSHgrRVRD8DihkeqaXZJnL7zAXArukrmrwlfwcc0SltCsrG2LtqN9tcNgZr4v80dCroNTi7ngI5VZ+TcD4mnL01dDLzt3e
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726697AbgFLGRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 02:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgFLGRR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 02:17:17 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81ECFC03E96F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 23:17:17 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b201so3841360pfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 23:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zpNul/n24BGtA0wNEEb3Bqb48kl11YHKOy5UfmBsLkI=;
+        b=E4dphn7u1H3KUgTAblKyPzxsUnZOrvzjfhnEl5mYmP6Q0fDYgjGqlXgewWRJCDq01i
+         Xy4gkJ0c/FQTDK66FOyAk/VWoehlIxYbADReEIZhmBKcF2K3z6QorQl/60S++/VB8gk7
+         8u9l6aRCCAcx4KXYRnELq79FC0wI0YvGMv/sY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zpNul/n24BGtA0wNEEb3Bqb48kl11YHKOy5UfmBsLkI=;
+        b=Xuh3rjRIKQmcwRWOTYpWNLLGNXptuwDtfQkhYOIOLZCUTBwGj4NtUIRYR2XQuYdQme
+         R5dSSxGU6+/CqOdq7v2dxdH6Oz8xr9QKAWZ8q3CzTNUhIQKydx5F2oR3YUpV9utkoFmS
+         7hyhpaLaISj02hGw4hVCuSJh43Ak3+wiNDzM1eOaX45NMelu8sbho9QNsrle6iut7EOk
+         UmAQt8G56iiP7gtzsp1/6QAZbGWIKvOrsS65VBK4URvc8qwZDpnEndhS+ympv19fzg8+
+         njRk9/XTzCL7W+ILO2ZrQEIHgATvMkzoXCDwf1VQdZyha9w3VdoCdAYZH9bkd8uOmN1k
+         TzpA==
+X-Gm-Message-State: AOAM531uv/orig4HQB8x7MRdwrYwhcYFLPfXLk2itTAsALYdD0C6swQ4
+        vHMsctp/WO0b0tUvrxqTKj3CUg==
+X-Google-Smtp-Source: ABdhPJxydIJTq7+UxyA+1kUe/VOCN3WPnxT0CpkxlP8LyBceGpPVgC0UV3oPyd3kb5Aq1Z4wAxqKIQ==
+X-Received: by 2002:a63:3503:: with SMTP id c3mr9415517pga.371.1591942636884;
+        Thu, 11 Jun 2020 23:17:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r3sm4068757pjj.21.2020.06.11.23.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 23:17:15 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 23:17:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>,
+        yuu ichii <byahu140@heisei.be>
+Subject: Re: [PATCH] ACPI: sysfs: Fix pm_profile_attr type
+Message-ID: <202006112217.2E6CE093@keescook>
+References: <20200612045149.1837-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1b523e8-dbd1-4dec-2321-08d80e981303
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 06:15:58.6897
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xkU+IJO8TfQWZX9ecXcEcat/HsQNAhsxcrRcxeagEcCzTLCas5G4rnynMQry0NoOx2Aj9WA/usqBZ5oBTPnBkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2586
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612045149.1837-1-natechancellor@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Now I noticed that the legacy driver already addressed it recently via co=
-mmit
-> 6d011d5057ff
->     ALSA: hda: Clear RIRB status before reading WP
->=20
-> We should have checked SOF at the same time, too...
->=20
->=20
-> thanks,
->=20
-> Takashi
+On Thu, Jun 11, 2020 at 09:51:50PM -0700, Nathan Chancellor wrote:
+> When running a kernel with Clang's Control Flow Integrity implemented,
+> there is a violation that happens when accessing
+> /sys/firmware/acpi/pm_profile:
+> 
+> $ cat /sys/firmware/acpi/pm_profile
+> 0
+> 
+> $ dmesg
+> ...
+> [   17.352564] ------------[ cut here ]------------
+> [   17.352568] CFI failure (target: acpi_show_profile+0x0/0x8):
+> [   17.352572] WARNING: CPU: 3 PID: 497 at kernel/cfi.c:29 __cfi_check_fail+0x33/0x40
+> [   17.352573] Modules linked in:
+> [   17.352575] CPU: 3 PID: 497 Comm: cat Tainted: G        W         5.7.0-microsoft-standard+ #1
+> [   17.352576] RIP: 0010:__cfi_check_fail+0x33/0x40
+> [   17.352577] Code: 48 c7 c7 50 b3 85 84 48 c7 c6 50 0a 4e 84 e8 a4 d8 60 00 85 c0 75 02 5b c3 48 c7 c7 dc 5e 49 84 48 89 de 31 c0 e8 7d 06 eb ff <0f> 0b 5b c3 00 00 cc cc 00 00 cc cc 00 85 f6 74 25 41 b9 ea ff ff
+> [   17.352577] RSP: 0018:ffffaa6dc3c53d30 EFLAGS: 00010246
+> [   17.352578] RAX: 331267e0c06cee00 RBX: ffffffff83d85890 RCX: ffffffff8483a6f8
+> [   17.352579] RDX: ffff9cceabbb37c0 RSI: 0000000000000082 RDI: ffffffff84bb9e1c
+> [   17.352579] RBP: ffffffff845b2bc8 R08: 0000000000000001 R09: ffff9cceabbba200
+> [   17.352579] R10: 000000000000019d R11: 0000000000000000 R12: ffff9cc947766f00
+> [   17.352580] R13: ffffffff83d6bd50 R14: ffff9ccc6fa80000 R15: ffffffff845bd328
+> [   17.352582] FS:  00007fdbc8d13580(0000) GS:ffff9cce91ac0000(0000) knlGS:0000000000000000
+> [   17.352582] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   17.352583] CR2: 00007fdbc858e000 CR3: 00000005174d0000 CR4: 0000000000340ea0
+> [   17.352584] Call Trace:
+> [   17.352586]  ? rev_id_show+0x8/0x8
+> [   17.352587]  ? __cfi_check+0x45bac/0x4b640
+> [   17.352589]  ? kobj_attr_show+0x73/0x80
+> [   17.352590]  ? sysfs_kf_seq_show+0xc1/0x140
+> [   17.352592]  ? ext4_seq_options_show.cfi_jt+0x8/0x8
+> [   17.352593]  ? seq_read+0x180/0x600
+> [   17.352595]  ? sysfs_create_file_ns.cfi_jt+0x10/0x10
+> [   17.352596]  ? tlbflush_read_file+0x8/0x8
+> [   17.352597]  ? __vfs_read+0x6b/0x220
+> [   17.352598]  ? handle_mm_fault+0xa23/0x11b0
+> [   17.352599]  ? vfs_read+0xa2/0x130
+> [   17.352599]  ? ksys_read+0x6a/0xd0
+> [   17.352601]  ? __do_sys_getpgrp+0x8/0x8
+> [   17.352602]  ? do_syscall_64+0x72/0x120
+> [   17.352603]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   17.352604] ---[ end trace 7b1fa81dc897e419 ]---
+> 
+> When /sys/firmware/acpi/pm_profile is read, sysfs_kf_seq_show is called,
+> which in turn calls kobj_attr_show, which gets the ->show callback
+> member by calling container_of on attr (casting it to struct
+> kobj_attribute) then calls it.
+> 
+> There is a CFI violation because pm_profile_attr is of type
+> struct device_attribute but kobj_attr_show calls ->show expecting it
+> to be from struct kobj_attribute. CFI checking ensures that function
+> pointer types match when doing indirect calls. Fix pm_profile_attr to
+> be defined in terms of kobj_attribute so there is no violation or
+> mismatch.
+> 
+> Fixes: 362b646062b2 ("ACPI: Export FADT pm_profile integer value to userspace")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1051
+> Reported-by: yuu ichii <byahu140@heisei.be>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/acpi/sysfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
+> index 3a89909b50a6..76c668c05fa0 100644
+> --- a/drivers/acpi/sysfs.c
+> +++ b/drivers/acpi/sysfs.c
+> @@ -938,13 +938,13 @@ static void __exit interrupt_stats_exit(void)
+>  }
+>  
+>  static ssize_t
+> -acpi_show_profile(struct device *dev, struct device_attribute *attr,
+> +acpi_show_profile(struct kobject *kobj, struct kobj_attribute *attr,
+>  		  char *buf)
+>  {
+>  	return sprintf(buf, "%d\n", acpi_gbl_FADT.preferred_profile);
+>  }
+>  
+> -static const struct device_attribute pm_profile_attr =
+> +static const struct kobj_attribute pm_profile_attr =
+>  	__ATTR(pm_profile, S_IRUGO, acpi_show_profile, NULL);
 
-Hi Takashi-san,
+My mind absolutely rebelled at how this could not have been caught
+at compile time nor runtime already. Everything appears to be wrong
+here. It's a different structure, it's getting assigned, it's getting
+called! And then I went looking and started to scream. Apologies if this
+investigation is redundant to a thread I didn't see...
 
-Yes you are correct. I tested Chrome v5.4 on a CML Chromebook 'hatch' and
-realize the SOF does no suffer from this issue because the 'sync write' fea=
-ture
-is enabled in hda_init. Soon I can reproduce the issue after turning it off=
-. So I
-think it's still worthy to have this fix in case we need to disable 'sync w=
-rite'
-someday.
+First, __ATTR(), like most static initializer macros, is not typed.
+Normally this is okay because different structures have different
+members, so it wouldn't compile. But not in this case here. Everything
+assigned by __ATTR exists in both because ... they have an identical set
+of structure member names:
 
+struct device_attribute {
+        struct attribute        attr;
+        ssize_t (*show)(struct device *dev, struct device_attribute *attr,
+                        char *buf);
+        ssize_t (*store)(struct device *dev, struct device_attribute *attr,
+                         const char *buf, size_t count);
+};
 
-Regards,
-Brent
+struct kobj_attribute {
+        struct attribute attr;
+        ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *attr,
+                        char *buf);
+        ssize_t (*store)(struct kobject *kobj, struct kobj_attribute *attr,
+                         const char *buf, size_t count);
+};
 
+But the show and store are different prototypes, so surely any variable
+assignments or argument passing would catch the mismatch. But no!
+The sysfs API only takes the .attr member address:
+
+        result = sysfs_create_file(acpi_kobj, &pm_profile_attr.attr);
+
+and, of course, that doesn't break because both struct device_attribute
+and struct kobj_attribute do, in fact, use the same structure for their
+.attr (struct attribute).
+
+But here's the kicker:
+
+static ssize_t kobj_attr_show(struct kobject *kobj, struct attribute *attr,
+                              char *buf)
+{
+        struct kobj_attribute *kattr;
+        ssize_t ret = -EIO;
+
+        kattr = container_of(attr, struct kobj_attribute, attr);
+        if (kattr->show)
+                ret = kattr->show(kobj, kattr, buf);
+	...
+
+A container_of() is used to calculate the offset. This doesn't explode
+(normally) at runtime because, as established, these structures have the
+same layout, so .show is in the same place.
+
+Some thoughts that I am terrified to check or attempt, but I can't help
+myself:
+
+1) Is __ATTR() regularly used to perform cross-structure initialization?
+
+Answer appears to be "yes":
+
+include/linux/device.h: struct device_attribute dev_attr_##_name = __ATTR_WO(_name)
+include/linux/device/bus.h:     struct bus_attribute bus_attr_##_name = __ATTR_RW(_name)
+
+2) Should static initializer macros be typed to catch bad cross-type
+   assignments? (Which depends on "1" being "no".)
+
+Changing this looks very hard, but it does make me wonder about doing
+stuff like this for static initializer macros:
+
+-#define __ATTR(_name, _mode, _show, _store) { \
++#define __ATTR(_name, _mode, _show, _store) (struct kobject *) { \
+
+Obviously not possible here, though.
+
+3) This cannot possibly be the only case of this. Given the answer to
+   #1, this bug must be endemic.
+
+static inline int __must_check sysfs_create_file(struct kobject *kobj,
+                                                 const struct attribute *attr)
+{
+        return sysfs_create_file_ns(kobj, attr, NULL);
+}
+
+$ git grep 'sysfs_create_file.*, &.*\.attr' | wc -l
+51
+
+16 appear to actually be kobj_attribute. Those are fine.
+
+Similar to the patch above, 9 more are from DEVICE_ATTR() (named
+"dev_attr_$foo):
+
+#define DEVICE_ATTR(_name, _mode, _show, _store) \
+        struct device_attribute dev_attr_##_name = __ATTR(_name, _mode, _show, _store)
+
+And a here are a bunch more macro-based ones:
+
+class_attr	is struct class_attribute
+
+mdev_type_attr	is struct mdev_type_attribute
+
+format_attr	is half struct device_attribute and half struct kobj_attribute:
+
+arch/x86/events/amd/uncore.c:static struct device_attribute format_attr_##_dev##_name = __ATTR_RO(_dev);
+arch/x86/events/intel/cstate.c:static struct kobj_attribute format_attr_##_var =                \
+arch/x86/events/intel/uncore.h:static struct kobj_attribute format_attr_##_var =                   \
+arch/x86/events/rapl.c:static struct kobj_attribute format_attr_##_var = \
+drivers/perf/thunderx2_pmu.c:static struct device_attribute format_attr_##_var =                   \
+include/linux/perf_event.h:static struct device_attribute format_attr_##_name = __ATTR_RO(_name)
+
+These 2 are also not kobj_attribute:
+
+include/linux/module.h:extern struct module_attribute module_uevent;
+kernel/module.c:struct module_attribute module_uevent =
+
+I think all of these non-kobj_attribute cases will trip CFI too, and
+this design pattern appears to be intentional. So that will be fun! :)
+
+I haven't gone through all of the 51 carefully, but this looks like a
+much larger problem than just this one place. :(
+
+-- 
+Kees Cook
