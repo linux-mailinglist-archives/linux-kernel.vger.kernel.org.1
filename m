@@ -2,54 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D12F1F7D8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 21:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B401F7D92
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 21:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgFLTZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 15:25:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726492AbgFLTZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 15:25:35 -0400
-Subject: Re: [GIT PULL] Devicetree fixes for v5.8-rc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591989935;
-        bh=DcjK10GvDFeAl9mARoMVV4tuAvpVpKVU/efnkMi2GfM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Gq0jNa65zyKidBw9g5liYqzdlMvMwg+E1yD6e48slKnfeJQ6mZ8mTpmWDYId8wbfD
-         BvqhnIG7uYIzSstb5iTLuv31QIyAce1vEuNA7fR4LUyyIBWI7tlPrdeINuW1FFg//L
-         yYRm4j2Xk2zIqe4KscEhPXHmh/OmbGYuoW4/N5DU=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200612174800.GA3459802@bogus>
-References: <20200612174800.GA3459802@bogus>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200612174800.GA3459802@bogus>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
- tags/devicetree-fixes-for-5.8-1
-X-PR-Tracked-Commit-Id: 8440d4a75d90556cfb8fb3e244443f67381aafd6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4071b856afc8a49ec41e98ff45151bb0800bc46d
-Message-Id: <159198993544.4050.9158713986979540025.pr-tracker-bot@kernel.org>
-Date:   Fri, 12 Jun 2020 19:25:35 +0000
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
+        id S1726650AbgFLT0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 15:26:30 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6630 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgFLT03 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 15:26:29 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ee3d6870000>; Fri, 12 Jun 2020 12:24:55 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 12 Jun 2020 12:26:29 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 12 Jun 2020 12:26:29 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 12 Jun
+ 2020 19:26:21 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 12 Jun 2020 19:26:21 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ee3d6dd0001>; Fri, 12 Jun 2020 12:26:21 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH] mm/hmm: remove redundant check non_swap_entry()
+Date:   Fri, 12 Jun 2020 12:26:18 -0700
+Message-ID: <20200612192618.32579-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1591989895; bh=icsVOdgmAkRserHRvC2Osttgk9x3GM+LGacD67WObIc=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=g3KYVEGlWLmJzmMnSj6C5n05opBwBpp+vfJZwrSgLFHWsR7KWI6rT8AU5cWxhvuzm
+         JPS1/JkvO9NCmbtYXaMe2RgJeWutLsLWGRskZevRYZVV49jdnd4b7pN8ocAvVJaf8r
+         d3qvbj4rDOK2tLwPUChEILsEdEwuErcSQV5EvZpDKoXUcwCyz+qYDuGQLGpsLOFSZB
+         IdLwRkSkKqAGF6DHgp9zjmSpyxiSWYWZbcCottT+ymYGg+ttuxA6O0tkQNFUXjWSjV
+         gu12wA48zxIzms9WaZKThPPnRFmt8JKj20gxqbv9RxDXKoTkbmqGUp9sefjDvIUM2y
+         A7jN80UJypEzg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 12 Jun 2020 11:48:00 -0600:
+In zap_pte_range(), the check for non_swap_entry() and
+is_device_private_entry() is redundant since the latter is a subset of the
+former. Remove the redundant check to simplify the code and for clarity.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.8-1
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+---
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4071b856afc8a49ec41e98ff45151bb0800bc46d
+This is based on the current linux tree and is intended for Andrew's mm
+tree. There is no rush so it could go into 5.9 but I think it is safe
+enough to go into an rc after the patch is reviewed.
 
-Thank you!
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+diff --git a/mm/memory.c b/mm/memory.c
+index dc7f3543b1fd..bdbb4f97e7d0 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1098,7 +1098,7 @@ static unsigned long zap_pte_range(struct mmu_gather =
+*tlb,
+ 		}
+=20
+ 		entry =3D pte_to_swp_entry(ptent);
+-		if (non_swap_entry(entry) && is_device_private_entry(entry)) {
++		if (is_device_private_entry(entry)) {
+ 			struct page *page =3D device_private_entry_to_page(entry);
+=20
+ 			if (unlikely(details && details->check_mapping)) {
+--=20
+2.20.1
+
