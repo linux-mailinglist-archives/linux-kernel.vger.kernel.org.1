@@ -2,182 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2C71F76E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 12:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCF31F76F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgFLKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 06:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S1726398AbgFLKvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 06:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgFLKui (ORCPT
+        with ESMTP id S1726039AbgFLKvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 06:50:38 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B54C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 03:50:37 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0af400c173145ce686c7e8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:f400:c173:145c:e686:c7e8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7CF6D1EC02E0;
-        Fri, 12 Jun 2020 12:50:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1591959034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=i67OvWK19gpLvFCtSsadQeL9dLaZioiCanotMz9MAN4=;
-        b=n2lti7DGntdg6i8Xr02yv60JBjBlu4dSe7Jl39iorfmHHkkPCpskSkS7GPXhxuya1pkyag
-        Zph75nKViDADXboKl4MFuuI2wd94mFYp1gQiFR63xLZgx3g1mHi65f42wY9+Vj0kLxXvxo
-        NX4B+nrVEItKlgBDsIh+QaSLeKqe9Y8=
-Date:   Fri, 12 Jun 2020 12:50:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     x86-ml <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH] x86/msr: Filter MSR writes
-Message-ID: <20200612105026.GA22660@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Fri, 12 Jun 2020 06:51:18 -0400
+Received: from mail-lj1-x263.google.com (mail-lj1-x263.google.com [IPv6:2a00:1450:4864:20::263])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9558AC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 03:51:16 -0700 (PDT)
+Received: by mail-lj1-x263.google.com with SMTP id i27so10504952ljb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 03:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flowbird.group; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=9xShxsKUNMqmSQXfpVKNhUGE/vHSJ0ICHSUk07MYv6w=;
+        b=aeCiUAvtqmXONLtEJ5VYCH7MXgY/YxyjgLOuKB33gyiMADtTQu/oK7Nc+p4HEXqIjG
+         2TRkb2/CjOcWzYdcEls6BpZK1BPC360LJ5+cjzM8m9Co4/GIstshE/Q5FuiZEblDn+kc
+         Xfp6RzerJEs2u5zGVQ9s6gGho/U384xfya+2Cj+DD3AzbHqtNQm6coMGvyE7pdC5iTvQ
+         QBjt24xopICBs+O6KINq59IRrk+R4efAYeU5KA/XxeqrX0Hax5ZmQQh7APd1DsxcRWfm
+         AuWX8dTnWc01K7V6gJNMrVD/GMNS9WXuIWQEDyFZmnzdfl2J8/Q5pQR/vQ2UnaIp+w6Y
+         dKRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9xShxsKUNMqmSQXfpVKNhUGE/vHSJ0ICHSUk07MYv6w=;
+        b=VCB8bPK/DPucjjjEQ5cwgFuUawHz9q2xrpUAnDLL/3R19DI4H8461HT1zfKVEU1t3p
+         iozh6gkaHSDkXJcXWgHpebZ5gch8bU5z9C6APRPd3uDUaErhPpqzKnLmtJ3/Qo7wHr4J
+         z6qrqqH0y8Fz+HSLyaEWsoLIF/KTuSnq7YVb22d3ButAPVbJS/A8XoO9E4dm6PlM4HAG
+         +7SpA+YR9VNLFMxwDI3uMQAMDimF5hqbCmIQTINF/qMwlhYPJFkiFdkFK3QZsWAEg2NW
+         NTdGwBRNhsGXwX/Q6ZWAWVQuTxmVmLenq5nTdti7xRGkuNzgvmEWwHj+m0O9tvDkWqJT
+         qsAQ==
+X-Gm-Message-State: AOAM532Kcd1hvWA+T+5JWhNTT10a2TZF31V7xYSC7pF2vTJLjTjaJ9fb
+        4UD+PGGsL/HBsD32HTXY5xExf2HEG2OXReJVwoeU7sEdso+A
+X-Google-Smtp-Source: ABdhPJx9t7+m3qnOb2JwYk2bQndYk6kK7fnAklWFqm1Rn+c1vM/aclElSqQK59ZAsoGu97DkcVlJlZiENgja
+X-Received: by 2002:a2e:9246:: with SMTP id v6mr6770232ljg.47.1591959074239;
+        Fri, 12 Jun 2020 03:51:14 -0700 (PDT)
+Received: from mta1.parkeon.com ([185.149.63.251])
+        by smtp-relay.gmail.com with ESMTPS id h19sm21014lfl.40.2020.06.12.03.51.14
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 12 Jun 2020 03:51:14 -0700 (PDT)
+X-Relaying-Domain: flowbird.group
+Received: from [172.16.12.38] (port=52492 helo=PC12445-BES.dynamic.besancon.parkeon.com)
+        by mta1.parkeon.com with esmtp (Exim 4.71)
+        (envelope-from <martin.fuzzey@flowbird.group>)
+        id 1jjhHF-0002Me-FJ; Fri, 12 Jun 2020 12:51:13 +0200
+From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: da9063: fix LDO9 suspend and warning.
+Date:   Fri, 12 Jun 2020 12:50:33 +0200
+Message-Id: <1591959073-16792-1-git-send-email-martin.fuzzey@flowbird.group>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit 99f75ce66619 ("regulator: da9063: fix suspend") converted
+the regulators to use a common (corrected) suspend bit setting but
+one of regulators (LDO9) slipped through the crack.
 
-so this has been popping up from time to time in the last couple of
-years so let's have a go at it. The reason for it is explained in the
-commit message below but basically the goal is to have MSR writes
-disabled by default on distros and on the general Linux setup and only
-those who know what they're doing, can reenable them if they really need
-to.
 
-The other, more important goal is to stop the perpetuation of poking at
-naked MSRs from userspace instead of defining proper functionality and
-interfaces which synchronize with the kernel's access to those MSRs.
+This means that the original problem was not fixed for LDO9 and
+also leads to a warning found by the test robot.
+	da9063-regulator.c:515:3: warning: initialized field overwritten
 
-Hell, even while testing this, I did
+Fix this by converting that regulator too like the others.
 
-# wrmsr --all 0x10 12; rdmsr --all 0x10
 
-0x10 being the TSC MSR and the module wouldn't unload after that. And
-this is just the latest example of what can go wrong.
+Fixes: 99f75ce66619 ("regulator: da9063: fix suspend")
+Reported-by: kernel test robot <lkp@intel.com>
 
-Now, a concern with questionable validity has been raised that this
-might break "some tools on github" which poke directly at MSRs. And we
-don't break userspace.
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+---
+ drivers/regulator/da9063-regulator.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Well, for starters, the functionality is still there - it is just behind
-a module parameter. Then, it'll hopefully convince people providing the
-functionality controlled by those MSRs, to design proper interfaces for
-that.
+diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
+index e1d6c8f..fe65b5ac 100644
+--- a/drivers/regulator/da9063-regulator.c
++++ b/drivers/regulator/da9063-regulator.c
+@@ -512,7 +512,6 @@ static int da9063_ldo_set_suspend_mode(struct regulator_dev *rdev,
+ 	},
+ 	{
+ 		DA9063_LDO(DA9063, LDO9, 950, 50, 3600),
+-		.suspend = BFIELD(DA9063_REG_LDO9_CONT, DA9063_VLDO9_SEL),
+ 	},
+ 	{
+ 		DA9063_LDO(DA9063, LDO11, 900, 50, 3600),
+-- 
+1.9.1
 
-For example, the whitelisted MSR_IA32_ENERGY_PERF_BIAS is used by
-cpupower in tools/. The hope is that this gets converted to a proper
-interface too.
-
-In any case, let me add Linus as I might be missing some angle here.
-
-Thx.
-
---
-
-Disable writing to MSRs from userspace by default. Writes can still be
-allowed by supplying the allow_writes=1 module parameter and the kernel
-will be tainted so that it shows in oopses.
-
-Having unfettered access to all MSRs on a system is and has always been
-a disaster waiting to happen. Think performance counter MSRs, MSRs with
-sticky or locked bits, MSRs making major system changes like loading
-microcode, MTRRs, PAT configuration, TSC counter, security mitigations
-MSRs, you name it.
-
-This also destroys all the kernel's caching of MSR values for
-performance, as the recent case with MSR_AMD64_LS_CFG showed.
-
-Another example is writing MSRs by mistake by simply typing the wrong
-MSR address. System freezes have been experienced that way.
-
-In general, poking at MSRs under the kernel's feet is a bad bad idea.
-
-So disable poking directly at the MSRs by default. If userspace still
-wants to do that, then proper interfaces should be defined which
-are under the kernel's control and accesses to those MSRs can be
-synchronized and sanitized properly.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 1547be359d7f..931e7b00ffb7 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -41,6 +41,7 @@
- 
- static struct class *msr_class;
- static enum cpuhp_state cpuhp_msr_state;
-+static bool allow_writes;
- 
- static ssize_t msr_read(struct file *file, char __user *buf,
- 			size_t count, loff_t *ppos)
-@@ -70,6 +71,18 @@ static ssize_t msr_read(struct file *file, char __user *buf,
- 	return bytes ? bytes : err;
- }
- 
-+static int filter_write(u32 reg)
-+{
-+	switch (reg) {
-+	case MSR_IA32_ENERGY_PERF_BIAS:
-+		return 0;
-+
-+	default:
-+		pr_err("%s: Filter out MSR write to 0x%x\n", __func__, reg);
-+		return -EPERM;
-+	}
-+}
-+
- static ssize_t msr_write(struct file *file, const char __user *buf,
- 			 size_t count, loff_t *ppos)
- {
-@@ -84,6 +97,12 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
- 	if (err)
- 		return err;
- 
-+	if (!allow_writes) {
-+		err = filter_write(reg);
-+		if (err)
-+			return err;
-+	}
-+
- 	if (count % 8)
- 		return -EINVAL;	/* Invalid chunk size */
- 
-@@ -95,11 +114,18 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
- 		err = wrmsr_safe_on_cpu(cpu, reg, data[0], data[1]);
- 		if (err)
- 			break;
-+
- 		tmp += 2;
- 		bytes += 8;
- 	}
- 
--	return bytes ? bytes : err;
-+	if (bytes) {
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
-+		return bytes;
-+	}
-+
-+	return err;
- }
- 
- static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
-@@ -242,6 +268,8 @@ static void __exit msr_exit(void)
- }
- module_exit(msr_exit)
- 
-+module_param(allow_writes, bool, 0400);
-+
- MODULE_AUTHOR("H. Peter Anvin <hpa@zytor.com>");
- MODULE_DESCRIPTION("x86 generic MSR driver");
- MODULE_LICENSE("GPL");
