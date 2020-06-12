@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5C61F7C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237431F7C98
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgFLRnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:43:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50155 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgFLRnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:43:08 -0400
-IronPort-SDR: Gey2vFqDNLwq8mWskcfR2rYJ8SzcHHctWBJ3r70UIM/wn5Fixc08nisp91q/kXcapYbYc4qfR6
- 4YvLUtzkzIlw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2020 10:43:07 -0700
-IronPort-SDR: 0Lbe9ZUz45hL+o9jfKw8BJKKb6Tbmv7wGJamhC/TkFjY7ubOLMpdOFLFnIfgrRMJzrdkE7Skjs
- fbNFXwlqHdbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,504,1583222400"; 
-   d="scan'208";a="419537122"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga004.jf.intel.com with ESMTP; 12 Jun 2020 10:43:07 -0700
-Date:   Fri, 12 Jun 2020 10:43:07 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] x86/msr: Filter MSR writes
-Message-ID: <20200612174307.GD1026@linux.intel.com>
-References: <20200612105026.GA22660@zn.tnic>
- <20200612163406.GA1026@linux.intel.com>
- <20200612164602.GC22660@zn.tnic>
- <20200612165709.GB1026@linux.intel.com>
- <20200612170303.GD22660@zn.tnic>
+        id S1726391AbgFLRol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgFLRol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:44:41 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCCBC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:44:40 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w16so10363568ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=El2ZhOBNpOphhFc1XzfVOf5zdV0ZOf8ZqDSCzO0pdXQ=;
+        b=ExSMmNiIU7w2dNRKqM6HiRU9brV5dI+iTGVf+mxt7q63rlToikgj3nMb1iq3YADJBF
+         ev3ed8upaGQ+qe9wjcso2C9F45/3Ud5jGOhB8d1Zvs+Wj38uxrM0oQtF8lKK95/K5WGi
+         81VPI2Bpm1n5W2VpKPUy+7srzOYLycHM1Rup4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=El2ZhOBNpOphhFc1XzfVOf5zdV0ZOf8ZqDSCzO0pdXQ=;
+        b=kATwbaUCIk2p63ZXM5mtG5/9a88i2h3k4tjD8VNUkmn41N8ejeNIwretKuyFBgqfg4
+         dPfHD0BcTwrIHcHjiWPv4ZPW71AvfReX3PFMt+RKWsp+MKjb8nDNHJbpnQQL8h1Ia4fd
+         Zy2wqACDiEGdBr1PEvDv/8s0KYiNYmO5NAGO6ihzJN2NF18y60g05YMcVfzNTFKGyaGI
+         LU4VcIQA2g9nFFJeD/ImDHw8rBLRi4l1HWiWOXrApFX/vmbXnJSWbO/gSCS2MZcBaRxb
+         kfUvwcGsKbPlNOHslSgNxpyhcgSb4SsRy2Ai+vwMi7leYv7p6QpHtOSMgjbBECqXSbTr
+         EGBA==
+X-Gm-Message-State: AOAM530IonXKv8xSDOZdEft0P22i2GXz36cLjP3e5Umhtdic3F3Cut7v
+        6xsbm8MdkfiEDqcZry8BBW6HoywCxqWQPg==
+X-Google-Smtp-Source: ABdhPJxjGBObU+iuR5VFNURPaq/Kot+BO1JubX/YelHlAX2HwCoqdG4luT5UYW9Jpmd9kPxVsKQr+w==
+X-Received: by 2002:a17:906:c952:: with SMTP id fw18mr13976047ejb.505.1591983878004;
+        Fri, 12 Jun 2020 10:44:38 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:18e1])
+        by smtp.gmail.com with ESMTPSA id d35sm3443742edc.40.2020.06.12.10.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 10:44:37 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 18:44:37 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: [PATCH] mm, memcg: prevent missed memory.low load tears
+Message-ID: <20200612174437.GA391453@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200612170303.GD22660@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.14.2 (2020-05-25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 07:03:03PM +0200, Borislav Petkov wrote:
-> On Fri, Jun 12, 2020 at 09:57:09AM -0700, Sean Christopherson wrote:
-> > DS_AREA takes a virtual (linear) address, i.e. the address can be legal from
-> > the CPUs perspective but still lead to a #PF due to the address not being
-> > mapped in the page tables.
-> 
-> It's not that - peterz and tglx - and I assume you meant that too - you
-> all want to taint on the very *attempt* to WRMSR, regardless of whether
-> the MSR exists or not.
-> 
-> I don't necessarily agree with that because I don't think we should
-> taint when the MSR doesn't exist but if you all want it, sure, whatever.
-> I don't care that deeply.
+Looks like one of these got missed when massaging in f86b810c2610 ("mm,
+memcg: prevent memory.low load/store tearing") with other linux-mm
+changes.
 
-The problem is a fault on WRMSR doesn't mean the MSR doesn't exist, it only
-means WRMSR faulted.  WRMSR can for all intents and purpose trigger completely
-arbitrary microcode flows, e.g. WRMSR 0x79 can fundamentally change the
-behavior of the CPU.
+Reported-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Chris Down <chris@chrisdown.name>
+---
+ mm/memcontrol.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-And it's not like the WRMSR->taint is atomic, e.g. changing a platform scoped
-MSR that affects voltage settings or something of that nature could easily
-tank the system on a successful WRMSR before the kernel can be marked tainted.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0b38b6ad547d..f7cc66a80348 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6416,7 +6416,7 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+ 
+ 	if (parent == root) {
+ 		memcg->memory.emin = READ_ONCE(memcg->memory.min);
+-		memcg->memory.elow = memcg->memory.low;
++		memcg->memory.elow = READ_ONCE(memcg->memory.low);
+ 		goto out;
+ 	}
+ 
+@@ -6428,7 +6428,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+ 			atomic_long_read(&parent->memory.children_min_usage)));
+ 
+ 	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
+-			memcg->memory.low, READ_ONCE(parent->memory.elow),
++			READ_ONCE(memcg->memory.low),
++			READ_ONCE(parent->memory.elow),
+ 			atomic_long_read(&parent->memory.children_low_usage)));
+ 
+ out:
+-- 
+2.27.0
 
-> > So users don't have to unload and reload the module just to enable or
-> > disable writes.  I don't think it changes the protections in any way, a
-> > priveleged user still needs to explicitly toggle the control.
-> 
-> There's /sys/module/msr/parameters/. A privileged user can do whatever.
-> A non-privileged should not disable that.
-
-0400 only allows a privelged user to read the parameter, e.g. for parameters
-that are snapshotted at module load time and/or changing the param while the
-module is running would cause breakage.
-
-0600 allows a priveleged user to read and write the parameter, which AFAICT
-is safe here.
-
-0644 allows a priveleged user to read and write the parameter, and allows an
-unpriveleged user to read the param.  
-
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
