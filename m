@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C8A1F774B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 13:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32C31F7750
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 13:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgFLL2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 07:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S1726219AbgFLLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 07:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgFLL2D (ORCPT
+        with ESMTP id S1725791AbgFLLah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 07:28:03 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD5AC08C5C2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 04:28:02 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id q19so9730693eja.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 04:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=x+EzCa13oBkDmmedkJhpOdOSq/9OAyMQhRjI6L6Gk/o=;
-        b=S9sT7t5ZIpfYCDAbMcB8jwtLa9MGKk4nqPnImEddN0kepR2Z2qESMoSN67etrUmroP
-         5QE5GwFi7YDu7pm2Eqp1OZ7LmU+DXSlFqm3Js6tHBg6u2TDbxzqtQu940+Cgd+XtqYhl
-         //2bmHmnG6qgnSQSqHZ/epqvSiZ1jb8gbfaJX0fko6dCVNmJs4BFRpdReRJ9d76Ui4vY
-         qgwSALEkjxQjQiiTAhpqu1t/sst2pzjGpuSjiz+7iL5YL6q9Yf4rqQBCxWyw1U2TplfR
-         ou4iHSigiIisVr6BInNL7yCRKp2Uz+nkp1juM7ujUqL0KImK8i0aA00J+oiEpe6FJLet
-         V0Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=x+EzCa13oBkDmmedkJhpOdOSq/9OAyMQhRjI6L6Gk/o=;
-        b=Aif5CId7taTYmhdUMN8gaF37fe45ATDV6IIQZe7+mm8TRTrwjws9Y0DOiIVcbOabTU
-         yOWPg5cgkyvsw4S24Ph0aGgzQC5DrUOrOyZh0VdFFnUkUHUFZFokYNBt+4xyA4+dmPhQ
-         GhWdQVzBbpKTfWbqqLNrmYVENoSKpxNH8RzNXyRPfhOiZFBAlbMXSJsz/bKzzDhc2Gpa
-         OavwRFhFTXX0m6jElEx/uJ6PsDlSOTdKPv57fbmFDFHlZPgsLwu1BHx5nPKgn7lciLVp
-         C0mRhIJ0uuBBx0MF5sTEd9ABRNIXlSzt2RZrAezICnGgrgURrrPnamDeXw5aHMz5wPUA
-         mgdw==
-X-Gm-Message-State: AOAM530Wzrx6fhxVTu5RM0YVlXT7jcJzgY9n98QTqX7IkHlW2kcAt5NZ
-        MVWwNMbwfzTXHSjxCOSpul3AKg==
-X-Google-Smtp-Source: ABdhPJz41qD396e8oQ3tm1hW5XAIn/LJUid1p+0iAEYyEf4Y0r8td0r8b0A9+lQuL6oaAsmx37Tuzg==
-X-Received: by 2002:a17:906:3548:: with SMTP id s8mr12279231eja.202.1591961281224;
-        Fri, 12 Jun 2020 04:28:01 -0700 (PDT)
-Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id y62sm2957534edy.61.2020.06.12.04.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 04:28:00 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 13:27:58 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: [PATCH] pinctrl: single: fix function name in documentation
-Message-ID: <20200612112758.GA3407886@x1>
+        Fri, 12 Jun 2020 07:30:37 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC7EC03E96F;
+        Fri, 12 Jun 2020 04:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=etPHGVYvPw7yw2ygbiMI5MNxWS/RjHHBmbLSJinvfLQ=; b=BPPJPbvODmjIQrnUW1eLG3MI8
+        MmiCthfkt1Hdtyn/HSY9hCKkDpas84Fqt+nvsYXWDKexRAJBWEinHZKdspRfDwE7Ig5eFUfrFAZNP
+        bauAmpNpZMXsNcOqJQljGkcypGA86h/mqpjRBiwgMfehzxmQqfhnB5Yjed2maatQ59ghRdxsMjsLO
+        6yGON/9In+kv6jrt8fAP5TOaq3LQ+8g+WUYZPYAeN77Rr1nU6bEUWW/EmtR5UllksU4OXAJwM9Sr6
+        46OimonqgIi2TUGEAyr6ZdgVgDM5S8n3flbzOok+2Xr+sXSRn8NOVOcpvpPaPHSdiJSsQcnofxVT9
+        IbazVLegA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44598)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jjhtI-0002jO-3N; Fri, 12 Jun 2020 12:30:32 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jjhtH-0006Dh-Eb; Fri, 12 Jun 2020 12:30:31 +0100
+Date:   Fri, 12 Jun 2020 12:30:31 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kernel@pengutronix.de
+Subject: Re: [PATCH v2] net: mvneta: Fix Serdes configuration for 2.5Gbps
+ modes
+Message-ID: <20200612113031.GI1551@shell.armlinux.org.uk>
+References: <20200612083847.29942-1-s.hauer@pengutronix.de>
+ <20200612084710.GC1551@shell.armlinux.org.uk>
+ <20200612100114.GE1551@shell.armlinux.org.uk>
+ <20200612101820.GF1551@shell.armlinux.org.uk>
+ <20200612104208.GG1551@shell.armlinux.org.uk>
+ <20200612112213.GH1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200612112213.GH1551@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the correct the function name in the documentation for
-"pcs_parse_one_pinctrl_entry()".
+On Fri, Jun 12, 2020 at 12:22:13PM +0100, Russell King - ARM Linux admin wrote:
+> On Fri, Jun 12, 2020 at 11:42:08AM +0100, Russell King - ARM Linux admin wrote:
+> > With the obvious mistakes fixed (extraneous 'i' and lack of default
+> > case), it seems to still work on Armada 388 Clearfog Pro with 2.5G
+> > modules.
+> 
+> ... and the other bug fixed - mvneta_comphy_init() needs to be passed
+> the interface mode.
 
-"smux_parse_one_pinctrl_entry()" appears to be an artifact from the
-development of a prior patch series ("simple pinmux driver") which
-transformed into pinctrl-single.
+Unrelated to the patch, has anyone noticed that mvneta's performance
+seems to have reduced?  I've only just noticed it (which makes 2.5Gbps
+rather pointless).  This is iperf between two clearfogs with a 2.5G
+fibre link:
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- drivers/pinctrl/pinctrl-single.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+root@clearfog21:~# iperf -V -c fe80::250:43ff:fe02:303%eno2
+------------------------------------------------------------
+Client connecting to fe80::250:43ff:fe02:303%eno2, TCP port 5001
+TCP window size: 43.8 KByte (default)
+------------------------------------------------------------
+[  3] local fe80::250:43ff:fe21:203 port 48928 connected with fe80::250:43ff:fe02:303 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-10.0 sec   553 MBytes   464 Mbits/sec
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index a9d511982780..02f677eb1d53 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -958,7 +958,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
- }
- 
- /**
-- * smux_parse_one_pinctrl_entry() - parses a device tree mux entry
-+ * pcs_parse_one_pinctrl_entry() - parses a device tree mux entry
-  * @pctldev: pin controller device
-  * @pcs: pinctrl driver instance
-  * @np: device node of the mux entry
+I checked with Jon Nettleton, and he confirms my recollection that
+mvneta on Armada 388 used to be able to fill a 2.5Gbps link.
+
+If Armada 388 can't manage, then I suspect Armada XP will have worse
+performance being an earlier revision SoC.
+
 -- 
-2.25.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
