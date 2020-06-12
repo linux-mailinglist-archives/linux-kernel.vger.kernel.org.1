@@ -2,119 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5910E1F7232
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 04:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4945E1F7238
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 04:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgFLCZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 22:25:29 -0400
-Received: from mail-eopbgr140052.outbound.protection.outlook.com ([40.107.14.52]:33766
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725796AbgFLCZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 22:25:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R6EWx1aRFsOF7S5OhVmM6M6u+x+lWB/eG/VsuG54e/smPOZ9YRSYagpJAz/3wwbMMA173tNweYInPAM1Kw75jWrRpYGqmaGQUTRtx/ZAEoBqJXiLqrNorXII+YmnM7ASLDp4v1FUtbJQ+QO8QRRKq1DIhRI/DUVCgTVcuRXUF0haIpjip1SOt82e7K9MD8j1at0zlAiadn7NP93C3NGRkkE7egWXinLDu8N3iYCK8aVDG5mPX5UxmtC+dINOclE2nJ+KIEJrly9HCEuH4qJHutQHokGab+cqeXO68NVeziRrCO619lM0LMjVd6Y06+9xUcL3Eez2708G1Os+hRclCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jwuyytll5DDwJ1AE++igA92l489p9yRGrCwzd82KgYA=;
- b=lXKiyFpEt0zR+31BCHJEE1jvVJ3iwpi3/lHQxhRRsHS/GwFBvk6Z2HslirrRMarBXD6GXfB1dTEl7/nI5eimtqV6Y+bFdeJkOsPpD6OFbaJad8ovpifK3ZX2wf5pGdnHFXZk72yW7qIq2Df7XVhw9N3KTRQt2auz6ozQ8YeLmlkzH1cieuKp6OwI8WO6dBrjsaTUhM2uqLPr4nntTSOWgArDqyEGyCjS6QxNGkgq5UuHFMYEExE0zJluzLLteOP++wsQdM9P4PBvH+Y4t9EePB0YYMlESawmcGbjFGz3qUgyjNTpwYmzVt55DeY+FeEaCRH9d8uhhGs5qgimeIKCWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jwuyytll5DDwJ1AE++igA92l489p9yRGrCwzd82KgYA=;
- b=IyehKfnSG3l57MkURLqfxZXtu6lGMn7puPBXhYgD5R+l0ljVrb7rpKSiWM11/cNrDWLcaMvDdznORyZXGNQD4d6ISO6pAxDYqy2p7EvZFquVK33tVY0cmFmLeA7WNfL1z9uxCZj3fyo1WCLjQQQ8aHXGLvVAORzcYgZ8r/ALUcM=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VE1PR04MB6352.eurprd04.prod.outlook.com (2603:10a6:803:129::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.20; Fri, 12 Jun
- 2020 02:25:23 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3066.023; Fri, 12 Jun 2020
- 02:25:23 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Peng Ma <peng.ma@nxp.com>, Fabio Estevam <festevam@gmail.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] dmaengine: fsl-edma: Add lockdep assert for exported
- function
-Thread-Topic: [PATCH 1/2] dmaengine: fsl-edma: Add lockdep assert for exported
- function
-Thread-Index: AQHWP+pTL/vNe9LSdkC2zrFncJYm2qjUQMKQ
-Date:   Fri, 12 Jun 2020 02:25:23 +0000
-Message-ID: <VE1PR04MB663853E48FC2DA385134C66A89810@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <1591877861-28156-1-git-send-email-krzk@kernel.org>
-In-Reply-To: <1591877861-28156-1-git-send-email-krzk@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d783d9d3-1fe4-44f3-4cca-08d80e77dc71
-x-ms-traffictypediagnostic: VE1PR04MB6352:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB635267D32D0660F73434E93E89810@VE1PR04MB6352.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-forefront-prvs: 0432A04947
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nAmmFLsaAhouKw3khdQ/1UVnXwysdVVHm29xEaX3Nx2gw6hrw/PVOZjsgTrkZ/hlOFqlgZ+ayurxUdy9e/Xplm/Ow1Pyx7AAWmvlMy0OpGaCO5sAMgZmmkScpyFpIzK1DDzeEX+HlOWqdpHgvBzYS5QtDeYJpqZOXVGB4pPTdXa2ZXUGTUnlaC0d6xy6Ss2QXhx1/WKf7gcIfWi4MqR6RSMVGnQVOv01Ghte+IRLO88o4fyKxtIvoN09F48ejZgPRUNiWqvxrRCTOscszRelRWWDc4Us+EkYwM8F74gh3TGVqONKcKPyCTY/tcW/g5Mu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(110136005)(2906002)(66556008)(316002)(5660300002)(7696005)(64756008)(53546011)(66476007)(9686003)(6506007)(71200400001)(66946007)(66446008)(76116006)(33656002)(55016002)(83380400001)(4744005)(186003)(26005)(8676002)(52536014)(478600001)(86362001)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: WOElsHVQIIqNT0G/5NUH2mIn7uo84tlBwoF2fuwQ41RJuBxM6ay8akYFqwJjhBiQJHs1ZF5gaGCLRy/11/QhS0k0jJQuuCMPqHxgYHd7C5tvuuvXBLGlWI79s7gLishoWEyMejQiCH3M+0U7f/nf4EbdrMY8K3KVFDKVVReBdgW6rPZOCjcVXwcNbI2KSEWXt1xbJvYztNTBAd+YKRerKZb0C1B8F9YWBjCHY/CMeKwGGk3zSz5lxuT0eSLa4QXPPDjfRaJ09/Q8Vay3AOuu2DdSZDt3RW44p9ZiVt5ZSBsbqXzyn8RhYqIHbaXGhmcv2n1TNCwf7z+W4mfEQNgP+llv4aYElwMy2ZqgMMPk0kM3NynFvMom8/l8z4oQzJHJOp37EnTKeYuPAFcNq80ki2AeFj5xXcp0tLcLANO0rSwI/IvSCVMVlHeV+vT5hYHlTJAwZKydmz2nKEMT3aSkJusQSI0J8GXqxhJE1WX3QYA=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d783d9d3-1fe4-44f3-4cca-08d80e77dc71
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 02:25:23.0837
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /+UQVWm82z8Kz0uilLjSliS4/vag7mtsOkye02ciVpSofeJ8nqxVPD26HXF3uOBopX1uZK2Xv4J6UjYr3xze0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6352
+        id S1726535AbgFLC2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 22:28:10 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:21170 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgFLC2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 22:28:07 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200612022803epoutp03e6a1dd88d680393e59d7530eba843d6f~XquKIbVkN2065220652epoutp03V
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 02:28:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200612022803epoutp03e6a1dd88d680393e59d7530eba843d6f~XquKIbVkN2065220652epoutp03V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591928883;
+        bh=hdov1UyoasQI8pS6FcIxfYTfSmxps6Svz6JY4APTa/A=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=RHl1lg3XUHpp+pyXqVMHyr6U/M+jGbYyNP7C6bGNpnnW04Ut0jnIOjpEAuY7mgdHS
+         gCu2cAOrc74+nke7tJFmjO0lWyKY2djH5otc57S7O71JEEUhScJEU+Aw06PqugP3dp
+         JeYHfylhx56NL//rmVrNfCRWClTkdrR7Ss+nmBVA=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20200612022802epcas2p42b47335386aea0f153933fec99d2048f~XquJHdqaF1818718187epcas2p4O;
+        Fri, 12 Jun 2020 02:28:02 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 49jl4x0bZKzMqYkl; Fri, 12 Jun
+        2020 02:28:01 +0000 (GMT)
+X-AuditID: b6c32a47-fc5ff70000006b31-1d-5ee2e830fab6
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3C.75.27441.038E2EE5; Fri, 12 Jun 2020 11:28:00 +0900 (KST)
+Mime-Version: 1.0
+Subject: Re: [RFC PATCH 2/5] scsi: ufs: Add UFS-feature layer
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1319810e-a323-c022-5e27-902f88cefe8f@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20200612022759epcms2p47929b76eb2e809240f415c19f9383f92@epcms2p4>
+Date:   Fri, 12 Jun 2020 11:27:59 +0900
+X-CMS-MailID: 20200612022759epcms2p47929b76eb2e809240f415c19f9383f92
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJsWRmVeSWpSXmKPExsWy7bCmqa7Bi0dxBvsOiVhsvPuK1eLBvG1s
+        FnvbTrBbvPx5lc3i4MNOFovDt9+xW0z78JPZ4tP6ZawWLw9pWqx6EG7R27+VzWLRjW1MFpd3
+        zWGz6L6+g81i+fF/TBYTXi5hsVi69SajRef0NSwWH3rqLBYt3M3iIOJx+Yq3x+W+XiaPxXte
+        MnlMWHSA0aPl5H4Wj+/rO9g8Pj69xeLRt2UVo8fnTXIe7Qe6mQK4onJsMlITU1KLFFLzkvNT
+        MvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4CeU1IoS8wpBQoFJBYXK+nb2RTl
+        l5akKmTkF5fYKqUWpOQUGBoW6BUn5haX5qXrJefnWhkaGBiZAlUm5GT8u32SveCmSMXVzR/Z
+        Ghi7BLoYOTkkBEwkThxYzdjFyMUhJLCDUeL+8WNADgcHr4CgxN8dwiA1wgK2EhfXLGEGsYUE
+        lCTWX5zFDhHXk7j1cA0jiM0moCMx/cR9sLiIwEQWief7XUFmMgt8Y5LYfPEIG8QyXokZ7U9Z
+        IGxpie3Lt4Lt4hSwlvj/SAwirCHxY1kvM4QtKnFz9Vt2GPv9sfmMELaIROu9s1A1ghIPfu6G
+        iktKHNv9gQnCrpfYeucX2F8SAj2MEod33mKFSOhLXOvYCHYDr4CvxJxrEMtYBFQlZrzfAdXs
+        IvGi5T9YPbOAvMT2t3OYQe5kFtCUWL9LH8SUEFCWOHKLBearho2/2dHZzAJ8Eh2H/8LFd8x7
+        AjVdTWLdz/VMExiVZyECehaSXbMQdi1gZF7FKJZaUJybnlpsVGCMHLebGMHpXMt9B+OMtx/0
+        DjEycTAeYpTgYFYS4RUUfxgnxJuSWFmVWpQfX1Sak1p8iNEU6MuJzFKiyfnAjJJXEm9oamRm
+        ZmBpamFqZmShJM5bbHUhTkggPbEkNTs1tSC1CKaPiYNTqoGpRHGD1g9n7dTfa5Tb5uqcWsCp
+        WeXkdunn/TCxuHM/GP4p3jH6eUZRy6d0zWpDNfnLTYFvf1xu/K5Q+/rJTpubO7IvxCZZP/Bn
+        0Np8f31C7qS4M/+Nuoyyf9YqnBSsFjkzucW+qfdjHqu/vtia4nuF37qeXX3DmHOQ+a3Q+44d
+        ke088s9rmLqriv2+ih/da1TZkf752x+Xp9EhxXsDX6VfDjzpErW28OxxAa3J614X3WLuP7NM
+        Qvmk1vng8vSyH4vk/Pb4G9t8y3J4HeUoHyt2bv4nrcvdcxYtftf9f7lUCcfjQ6pP7Ux9+6T0
+        gkJNJzwodGwROiE2u3dGM9POZTecM4v2vzh9NqzlwuJvCgeUWIozEg21mIuKEwFtWO/BcAQA
+        AA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <1319810e-a323-c022-5e27-902f88cefe8f@acm.org>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p4>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/06/11 20:18 Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> Add lockdep assert for an exported function expected to be called under s=
-pin
-> lock.  Since this function is called in different modules, the lockdep as=
-sert will
-> be self-documenting note about need for locking.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Robin Gong <yibin.gong@nxp.com>=20
-> ---
->  drivers/dma/fsl-edma-common.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/dma/fsl-edma-common.c
-> b/drivers/dma/fsl-edma-common.c index 5697c3622699..4550818cca4a
-> 100644
-> --- a/drivers/dma/fsl-edma-common.c
-> +++ b/drivers/dma/fsl-edma-common.c
-> @@ -589,6 +589,8 @@ void fsl_edma_xfer_desc(struct fsl_edma_chan
-> *fsl_chan)  {
->  	struct virt_dma_desc *vdesc;
->=20
-> +	lockdep_assert_held(&fsl_chan->vchan.lock);
-> +
->  	vdesc =3D vchan_next_desc(&fsl_chan->vchan);
->  	if (!vdesc)
->  		return;
-> --
-> 2.7.4
+Hi Bart,
+
+On 2020-06-04 18:30, Daejun Park wrote:
+> > +inline void ufsf_slave_configure(struct ufs_hba *hba,
+> > +         struct scsi_device *sdev)
+> > +{
+> > +  /* skip well-known LU */
+> > +  if (sdev->lun >= UFS_UPIU_MAX_UNIT_NUM_ID)
+> > +    return;
+> > +
+> > +  if (!(hba->dev_info.b_ufs_feature_sup & UFS_FEATURE_SUPPORT_HPB_BIT))
+> > +    return;
+> > +
+> > +  atomic_inc(&hba->ufsf.slave_conf_cnt);
+> > +  smp_mb__after_atomic(); /* for slave_conf_cnt */
+> > +
+> > +  /* waiting sdev init.*/
+> > +  if (waitqueue_active(&hba->ufsf.sdev_wait))
+> > +    wake_up(&hba->ufsf.sdev_wait);
+> > +}
+
+> Guarding a wake_up() call with a waitqueue_active() check is an
+> anti-pattern. Please don't do that and call wake_up() directly.
+> Additionally, wake_up() includes a barrier if it wakes up a kernel
+> thread so the smp_mb__after_atomic() can be left out if the
+> waitqueue_active() call is removed.
+OK, I will change it.
+
+> > +/**
+> > + * struct ufsf_operation - UFS feature specific callbacks
+> > + * @prep_fn: called after construct upiu structure
+> > + * @reset: called after proving hba
+                           ^^^^^^^
+> Is this a typo? Should "proving" perhaps be changed into "probing"?
+Yes, I will change.
+
+> > +struct ufshpb_driver {
+> > +  struct device_driver drv;
+> > +  struct list_head lh_hpb_lu;
+> > +
+> > +  struct ufsf_operation ufshpb_ops;
+> > +
+> > +  /* memory management */
+> > +  struct kmem_cache *ufshpb_mctx_cache;
+> > +  mempool_t *ufshpb_mctx_pool;
+> > +  mempool_t *ufshpb_page_pool;
+> > +
+> > +  struct workqueue_struct *ufshpb_wq;
+> > +};
+
+> Why is a dedicated workqueue needed? Why are the standard workqueues not
+> good enough?
+The map_work handles map related operations, including IO operations. So, adding
+this task to the standard WQ can interfere with other jobs and degrade HPB related performance.
+
+
+> > @@ -2525,6 +2525,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+> >  
+> >    ufshcd_comp_scsi_upiu(hba, lrbp);
+> >  
+> > +  ufsf_ops_prep_fn(hba, lrbp);
+> > +
+> >    err = ufshcd_map_sg(hba, lrbp);
+> >    if (err) {
+> >      lrbp->cmd = NULL;
+
+> What happens if a SCSI command is retried and hence ufsf_ops_prep_fn()
+> is called multiple times for the same SCSI command?
+Developers of UFS features should implement it so that prep_fn does not have
+any problems even if it processes the same SCSI command multiple times.
+In HPB feature, prep_fn modifies only upiu  structure. So it is ok to call
+it multiple times because the upiu is rebuilt from ufshcd_comp_scsi_upiu().
+
+Thanks,
+
+Daejun.
 
