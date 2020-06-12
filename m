@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAACB1F7297
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 05:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD9B1F72A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 05:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgFLDoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 23:44:11 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:41402 "EHLO mail5.wrs.com"
+        id S1726552AbgFLDzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 23:55:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:35192 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgFLDoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 23:44:11 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 05C3hK26019534
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Thu, 11 Jun 2020 20:43:41 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 11 Jun 2020 20:43:15 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
-Date:   Fri, 12 Jun 2020 11:52:10 +0800
-Message-ID: <20200612035210.20494-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+        id S1726364AbgFLDzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 23:55:42 -0400
+IronPort-SDR: F8g412rEZ0wYbLs8xloYmGORc5HRa6WKaEd3Cz3bgRJ+pI/rD1ZpmH+XGV3MrWXAgpFojcO/h5
+ QK6aXmuEpy4g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 20:55:41 -0700
+IronPort-SDR: 7iAWC5oVubBZfF9u5JkObOD01nNyARgeg55zaB60qAs1zKqSKybXxU9w/kBwvpsTw5esWJ7Wse
+ zmSoCkcQ2KTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
+   d="scan'208";a="419330139"
+Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
+  by orsmga004.jf.intel.com with ESMTP; 11 Jun 2020 20:55:39 -0700
+From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, adrian.hunter@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com
+Subject: [PATCH v4 0/2] phy: intel: Add Keem Bay eMMC PHY support
+Date:   Fri, 12 Jun 2020 11:53:57 +0800
+Message-Id: <20200612035359.14246-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+Hi.
 
-BUG: memory leak
-unreferenced object 0xffff888055046e00 (size 256):
-  comm "kworker/2:9", pid 2570, jiffies 4294942129 (age 1095.500s)
-  hex dump (first 32 bytes):
-    00 70 04 55 80 88 ff ff 18 bb 5a 81 ff ff ff ff  .p.U......Z.....
-    f5 96 78 81 ff ff ff ff 37 de 8e 81 ff ff ff ff  ..x.....7.......
-  backtrace:
-    [<00000000d121dccf>] kmemleak_alloc_recursive
-include/linux/kmemleak.h:43 [inline]
-    [<00000000d121dccf>] slab_post_alloc_hook mm/slab.h:586 [inline]
-    [<00000000d121dccf>] slab_alloc_node mm/slub.c:2786 [inline]
-    [<00000000d121dccf>] slab_alloc mm/slub.c:2794 [inline]
-    [<00000000d121dccf>] kmem_cache_alloc_trace+0x15e/0x2d0 mm/slub.c:2811
-    [<000000005c3c3381>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000005c3c3381>] usbtest_probe+0x286/0x19d0
-drivers/usb/misc/usbtest.c:2790
-    [<000000001cec6910>] usb_probe_interface+0x2bd/0x870
-drivers/usb/core/driver.c:361
-    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
-    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
-    [<000000003ef66004>] __device_attach_driver+0x1b6/0x240
-drivers/base/dd.c:831
-    [<00000000eee53e97>] bus_for_each_drv+0x14e/0x1e0 drivers/base/bus.c:431
-    [<00000000bb0648d0>] __device_attach+0x1f9/0x350 drivers/base/dd.c:897
-    [<00000000838b324a>] device_initial_probe+0x1a/0x20 drivers/base/dd.c:944
-    [<0000000030d501c1>] bus_probe_device+0x1e1/0x280 drivers/base/bus.c:491
-    [<000000005bd7adef>] device_add+0x131d/0x1c40 drivers/base/core.c:2504
-    [<00000000a0937814>] usb_set_configuration+0xe84/0x1ab0
-drivers/usb/core/message.c:2030
-    [<00000000e3934741>] generic_probe+0x6a/0xe0 drivers/usb/core/generic.c:210
-    [<0000000098ade0f1>] usb_probe_device+0x90/0xd0
-drivers/usb/core/driver.c:266
-    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
-    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
+The first part is to document DT bindings for Keem Bay eMMC PHY.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: Kyungtae Kim <kt0755@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- v1->v2:
- Remove Fixes field.
- v2->v3:
- Add Acked-by tags.
+The second is the driver file, loosely based on phy-rockchip-emmc.c
+and phy-intel-emmc.c. The latter is not being reused as there are
+quite a number of differences i.e. registers offset, supported clock
+rates, bitfield to set.
 
- drivers/usb/misc/usbtest.c | 1 +
- 1 file changed, 1 insertion(+)
+The patch was tested with Keem Bay evaluation module board.
 
-diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
-index 98ada1a3425c..bae88893ee8e 100644
---- a/drivers/usb/misc/usbtest.c
-+++ b/drivers/usb/misc/usbtest.c
-@@ -2873,6 +2873,7 @@ static void usbtest_disconnect(struct usb_interface *intf)
- 
- 	usb_set_intfdata(intf, NULL);
- 	dev_dbg(&intf->dev, "disconnect\n");
-+	kfree(dev->buf);
- 	kfree(dev);
- }
- 
+Thank you.
+
+Best regards,
+Zainie
+
+Changes since v3:
+- Exit keembay_emmc_phy_power() with return ret;.
+- In keembay_emmc_phy_init(), use PTR_ERR_OR_ZERO(...).
+- In keembay_emmc_phy_probe(), devm_regmap_init_mmio(...) in single line.
+
+Changes since v2:
+- Modify DT example to use single cell for address and size.
+
+Changes since v1:
+- Rework phy-keembay-emmc.c to make it similar to phy-intel-emmc.c.
+- Use regmap_mmio, and remove reference to intel,syscon.
+- Use node name phy@....
+- Update license i.e. use dual license.
+
+
+Wan Ahmad Zainie (2):
+  dt-bindings: phy: intel: Add Keem Bay eMMC PHY bindings
+  phy: intel: Add Keem Bay eMMC PHY support
+
+ .../bindings/phy/intel,keembay-emmc-phy.yaml  |  45 +++
+ drivers/phy/intel/Kconfig                     |   8 +
+ drivers/phy/intel/Makefile                    |   1 +
+ drivers/phy/intel/phy-keembay-emmc.c          | 316 ++++++++++++++++++
+ 4 files changed, 370 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
+ create mode 100644 drivers/phy/intel/phy-keembay-emmc.c
+
 -- 
-2.24.1
+2.17.1
 
