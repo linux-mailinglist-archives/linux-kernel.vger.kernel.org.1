@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C68C1F7CF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D811F7CF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 20:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgFLSeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 14:34:25 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:42843 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgFLSeV (ORCPT
+        id S1726384AbgFLSfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 14:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgFLSfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 14:34:21 -0400
-Received: by mail-io1-f72.google.com with SMTP id a16so6703962iow.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 11:34:19 -0700 (PDT)
+        Fri, 12 Jun 2020 14:35:04 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7688FC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 11:35:04 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t7so4510614pgt.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 11:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j8/1IyDwgaYKXdI9dp4YmKReEuS3zredW9XpaRoJ5Ww=;
+        b=ea74ul+pjDI83LXshbpVoH4wVDxcw27fp6LlmZZj2Ta1WJJ8tvGq3/u6u+qkhM3jjM
+         3ka7mObye2pcNqMktQNqFpiGjZoZwAtYheNn5Q5XUHcGy0vB70NwtcsV4nks2C7Zyzas
+         1FfWgykVawtL/lp0r26LIbVny/SB+c7wK96IM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GP5kyNnAoMO+Y+j8GajalB1W8y9R1MA095I7NPSnTDs=;
-        b=U5O+7ZK7OVuPzQF3FAZNHEOmWwtfnRPXvDkoyvrGqgOepntaMPfj10sDoP0uAOzME2
-         V5EnhNTvPAd9hPUwscXTAq+2ehuufBue0WKK9yKQBihvNzZS8AEQ1TH3rzjcDGYYGKoY
-         yJRU8bAm9MfvaQbUI64XFDdPNcC688tqieTJRBFl+vTk/rkj3s8qz8xFGkP9RSbCdlpb
-         6ryVIK4YHW5QrSln+48qeLsZA44MhU2iiMlhYV7qmZXjtyZRVzqhRmnxpQSKbEVcSDq8
-         RtJa4/FDdH3iLLKnmtLwUuDOSPomvSGNY+Qkj5LDtd9Lv5li6N1okCNplRtnQBOcVu6U
-         Vczg==
-X-Gm-Message-State: AOAM53109u0J7uSho9EO2Nf4p0YrXAUtAKouL0qSPAY7SruwrAC5BCS9
-        u7ynMpzRzWZR5p5bdDPeeerO98ZBQ3jf67HnAFbIlWshcV9x
-X-Google-Smtp-Source: ABdhPJxkzP1X/Sc4h5xBvzyleoSa7OQigmndmQWmhwM/LOvU0piOR/suDQx5LmuSsPprWS5mCsm1uSWYK6gTZMac3FGouptucEre
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j8/1IyDwgaYKXdI9dp4YmKReEuS3zredW9XpaRoJ5Ww=;
+        b=eZtOs+HadKHN3e6YWx36O/84Nzj3awa6yG0pF3QQDMvXDqd6C3gvSdUwCbdAs5KX/B
+         HxGZPry47CXG75ivMwpH/NQykwUrbns65Pis5djn80lhXbDXPOH5nmuY7MXaxphx1Taw
+         ODlk5uyn9uWrm7MqrP/IniIX8z2498idSg22kp6nH17YnK6Kx1dyHmeAzYC5PMweMaj0
+         SDa3IApdAhfFaPWHAZT8dxvm3ShW+PfbMzgEllH8jAhpXR4+5XgWcw1XcpQu3OKht3Wq
+         lc8uJgkTu5ibQkyqrgDEKjA/RfVrK/JhPFggeke8FC+KykOKLMg18dVQv97g3cUAaa1J
+         FsRA==
+X-Gm-Message-State: AOAM530AOInuVciwhikvsBD8mN1eGckP942uEgSfrok+P2x1Bahj8K9d
+        jidCyiZ3NMZblEI3Xz7iBBtaZQ==
+X-Google-Smtp-Source: ABdhPJwbK0m4NUSki8u8yVXlyQrFMj4o0oTxfll03vHnYvjrBR9V8sprSlMS0rp5CHtuTGbEOSV/nw==
+X-Received: by 2002:a63:531d:: with SMTP id h29mr8596670pgb.282.1591986904084;
+        Fri, 12 Jun 2020 11:35:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j6sm6785624pfi.183.2020.06.12.11.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 11:35:01 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
+        paulmck@kernel.org, David Howells <dhowells@redhat.com>,
+        shakeelb@google.com, James Morris <jamorris@linux.microsoft.com>,
+        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
+        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
+Date:   Fri, 12 Jun 2020 11:34:47 -0700
+Message-Id: <20200612183450.4189588-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:ce:: with SMTP id w14mr9773000jao.27.1591986857779;
- Fri, 12 Jun 2020 11:34:17 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 11:34:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000025269c05a7e753d0@google.com>
-Subject: net test error: BUG: using smp_processor_id() in preemptible code in ext4_mb_new_blocks
-From:   syzbot <syzbot+38af52cdcc116cee7742@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, davem@davemloft.net, kuba@kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series was never applied[1], and was recently pointed out as
+missing[2]. If someone has a tree for this, please take it. Otherwise,
+please Ack and I'll send it to Linus.
 
-syzbot found the following crash on:
+Thanks!
 
-HEAD commit:    18dbd4cd Merge branch 'net-ipa-endpoint-configuration-fixes'
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f762ea100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b366fd92adf6f8b4
-dashboard link: https://syzkaller.appspot.com/bug?extid=38af52cdcc116cee7742
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+-Kees
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+38af52cdcc116cee7742@syzkaller.appspotmail.com
+[1] https://lore.kernel.org/lkml/20190306110549.7628-1-elena.reshetova@intel.com/
+[2] https://lore.kernel.org/lkml/1591957695-118312-1-git-send-email-nixiaoming@huawei.com/
 
-BUG: using smp_processor_id() in preemptible [00000000] code: systemd-rfkill/6838
-caller is ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
-CPU: 1 PID: 6838 Comm: systemd-rfkill Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- debug_smp_processor_id.cold+0x88/0x9b lib/smp_processor_id.c:57
- ext4_mb_new_blocks+0xa77/0x3b30 fs/ext4/mballoc.c:4711
- ext4_ext_map_blocks+0x2044/0x3410 fs/ext4/extents.c:4244
- ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
- ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
- ext4_append+0x153/0x360 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
- vfs_mkdir+0x419/0x690 fs/namei.c:3627
- do_mkdirat+0x21e/0x280 fs/namei.c:3650
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x7fa2f1d24687
-Code: 00 b8 ff ff ff ff c3 0f 1f 40 00 48 8b 05 09 d8 2b 00 64 c7 00 5f 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 d7 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007fffeaa243a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 00005638ed5e0985 RCX: 00007fa2f1d24687
-RDX: 00007fffeaa24270 RSI: 00000000000001ed RDI: 00005638ed5e0985
-RBP: 00007fa2f1d24680 R08: 0000000000000100 R09: 0000000000000000
-R10: 00005638ed5e0980 R11: 0000000000000246 R12: 00000000000001ed
-R13: 00007fffeaa24530 R14: 0000000000000000 R15: 0000000000000000
+Elena Reshetova (3):
+  nsproxy: convert nsproxy.count to refcount_t
+  groups: convert group_info.usage to refcount_t
+  creds: convert cred.usage to refcount_t
 
+ include/linux/cred.h    | 15 +++++++-------
+ include/linux/nsproxy.h |  7 +++----
+ kernel/cred.c           | 44 ++++++++++++++++++++---------------------
+ kernel/groups.c         |  2 +-
+ kernel/nsproxy.c        |  6 +++---
+ net/sunrpc/auth.c       |  2 +-
+ 6 files changed, 38 insertions(+), 38 deletions(-)
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+2.25.1
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
