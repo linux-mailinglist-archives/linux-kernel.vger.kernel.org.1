@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7231F7C21
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA51C1F7C4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgFLRNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgFLRNj (ORCPT
+        id S1726614AbgFLROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:14:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36358 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgFLROq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:13:39 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED370C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:13:37 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l10so10458708wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6/WKj2RP2D9n4+fw5DYObbawXZCZEXk2atts5/6vXZA=;
-        b=TI6S+MwlPkt8KC/tPABYYKsT1TobgOSEYvn7gfp61hj7IWbDiaISOUSExWX249s6fi
-         EIYHO6hkn1K1f6HNJlpcgTM7TC6HcJ9Bz/i/U+52KQ4SDr9GmgcRXdjV7av4HWETWXxM
-         fxu5PbxWzUePUak1TSIszwbrfNsSF2Mef0XA8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6/WKj2RP2D9n4+fw5DYObbawXZCZEXk2atts5/6vXZA=;
-        b=rVqqCFmG4SQXb3Qn/FFGzS9KHNoxro5NBRYncjCRZkJYdsrekdN2XrbAujvYA0rnKy
-         x+2mEBKMV3T1jCQEYiey5ybGPm2BdDqgpHJtSAR62QgSZaD4+4FCdU0LgN6K2lhtqRJe
-         Bvu3gj+MLjfiGUgktcIG/BQdINYPKa2iAhV3BpiPHAlM7uQW346ISYk/V1AajkTdpCrI
-         0LbD3tE3CjwaVD6hSVKfKO5OaGI/94abvHtQqfhQq1BMs7U3n7A3XIkWZPz3QiMomcZL
-         ihfPerQOdNBccp50IH/fFbrybx9hwSn/iF/xqCAjCeIZZ62zSN+N6+xZ44xgg5u5IJej
-         j99A==
-X-Gm-Message-State: AOAM533JZluhG4MFJzJJyWAUmnPh8FgOuKmF5DckaWjZzE53Ziv9v8rl
-        VdURj9sTcVZ5s8PReojHFyhIrg==
-X-Google-Smtp-Source: ABdhPJzlc5PIQbzc9wrrQMNksbeyPR5ziC+iT8uaWIdBJcsqaBBESl71xk5jFNvubBzbMwIi3XoqOw==
-X-Received: by 2002:a5d:4404:: with SMTP id z4mr16439075wrq.189.1591982016383;
-        Fri, 12 Jun 2020 10:13:36 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id b185sm16603283wmd.3.2020.06.12.10.13.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 10:13:35 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 18:13:35 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 3/6] mm, memcg: Prevent memory.low load/store tearing
-Message-ID: <20200612171335.GA341094@chrisdown.name>
-References: <cover.1584034301.git.chris@chrisdown.name>
- <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
- <20200612170352.GA40768@blackbook>
+        Fri, 12 Jun 2020 13:14:46 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CHDnO8017540;
+        Fri, 12 Jun 2020 12:13:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591982029;
+        bh=Eh9UAOjUzWioaZG3am18FwLSncclY2ToXxZVUuvMnBA=;
+        h=From:To:CC:Subject:Date;
+        b=hJLaWsgFf6I92X2hrkEQ03u/3R4RuAl7yB+WHRRIjObdUIpCngLXlxk0248vtM4bz
+         rCeBSRwFzNM0KihxUZbe8mFyn/XzzXCLoeGfmshk/AzdtNx5/MLfs+2gdPopBqteve
+         fMqVJHo3lLkd3ALQu8gegdfsO5YM3mna11XiWVMg=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CHDn0t093355;
+        Fri, 12 Jun 2020 12:13:49 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Jun 2020 12:13:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Jun 2020 12:13:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CHDm7X123904;
+        Fri, 12 Jun 2020 12:13:48 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh@kernel.org>, <shifu0704@thundersoft.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: tas2770: Convert tas2770 binding to yaml
+Date:   Fri, 12 Jun 2020 12:13:41 -0500
+Message-ID: <20200612171342.25364-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
-In-Reply-To: <20200612170352.GA40768@blackbook>
-User-Agent: Mutt/1.14.2 (2020-05-25)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the tas2770 binding to yaml format.
+Add in the reset-gpio to the binding as it is in the code but not
+documented in the binding.
 
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/sound/tas2770.txt     | 37 ---------
+ .../devicetree/bindings/sound/tas2770.yaml    | 76 +++++++++++++++++++
+ 2 files changed, 76 insertions(+), 37 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/tas2770.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2770.yaml
 
-Hi Michal,
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.txt b/Documentation/devicetree/bindings/sound/tas2770.txt
+deleted file mode 100644
+index ede6bb3d9637..000000000000
+--- a/Documentation/devicetree/bindings/sound/tas2770.txt
++++ /dev/null
+@@ -1,37 +0,0 @@
+-Texas Instruments TAS2770 Smart PA
+-
+-The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
+-efficiently driving high peak power into small loudspeakers.
+-Integrated speaker voltage and current sense provides for
+-real time monitoring of loudspeaker behavior.
+-
+-Required properties:
+-
+- - compatible:	   - Should contain "ti,tas2770".
+- - reg:		       - The i2c address. Should contain <0x4c>, <0x4d>,<0x4e>, or <0x4f>.
+- - #address-cells  - Should be <1>.
+- - #size-cells     - Should be <0>.
+- - ti,asi-format:  - Sets TDM RX capture edge. 0->Rising; 1->Falling.
+- - ti,imon-slot-no:- TDM TX current sense time slot.
+- - ti,vmon-slot-no:- TDM TX voltage sense time slot.
+-
+-Optional properties:
+-
+-- interrupt-parent: the phandle to the interrupt controller which provides
+-                     the interrupt.
+-- interrupts: interrupt specification for data-ready.
+-
+-Examples:
+-
+-    tas2770@4c {
+-                compatible = "ti,tas2770";
+-                reg = <0x4c>;
+-                #address-cells = <1>;
+-                #size-cells = <0>;
+-                interrupt-parent = <&msm_gpio>;
+-                interrupts = <97 0>;
+-                ti,asi-format = <0>;
+-                ti,imon-slot-no = <0>;
+-                ti,vmon-slot-no = <2>;
+-        };
+-
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+new file mode 100644
+index 000000000000..8c667fd37a57
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++# Copyright (C) 2019-20 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2770.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Texas Instruments TAS2770 Smart PA
++
++maintainers:
++  - Shi Fu <shifu0704@thundersoft.com>
++
++description: |
++  The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2770
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
++
++  reset-gpio:
++    description: GPIO used to reset the device.
++
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  ti,vmon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX voltage sense time slot.
++
++  ti,asi-format:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Sets TDM RX capture edge.
++    enum:
++          - 0 # Rising edge
++          - 1 # Falling edge
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@4c {
++       compatible = "ti,tas2770";
++       reg = <0x4c>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       reset-gpio = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++       ti,vmon-slot-no = <2>;
++     };
++   };
++
+-- 
+2.26.2
 
-Good catch! Andrew and I must have missed these when massaging the commits =
-with=20
-other stuff in -mm, which is totally understandable considering the amount =
-of=20
-places being touched by this and other patch series at the same time. Just =
-goes=20
-to show how complex it can be sometimes, since I even double checked these =
-and=20
-didn't see that missed hunk :-)
-
-The good news is that these are belt-and-suspenders: this avoids a rare=20
-theoretical case, not something likely to be practically dangerous. But yes=
-, we=20
-should fix it up. Since the commit is already out, I'll just submit a new o=
-ne.
-
-Thanks for the report!
-
-Chris
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQKTBAEBCgB9FiEECEkprPvCOwsaJqhB340hthYRgHAFAl7jt79fFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDA4
-NDkyOUFDRkJDMjNCMEIxQTI2QTg0MURGOEQyMUI2MTYxMTgwNzAACgkQ340hthYR
-gHAerQ//Zf+6DzdEaZvfnvPNq5+6NbmAAs+Pw1AZn2s81dipkRY38MGPNTqY8oBL
-qd46ZDJ24zSUPAcHvu6E3UGwpjO8VSynvP+CfEoFlS+R5k15oEqTe36C7l9eA+IY
-zTDyLj9LrFhy5qD2V2GKH9Dp9ZQC9BrIls1Gc0J+XaB7h9umEc2g1Ybadj1d3ouk
-xAX/6iV19fAW4uFgXVOq70BhYGXGXvWCX0NYQ3Yz18Kkr5bSnjzTz2irIxCbaWZ+
-q2Gj+Q1JFN/yhkRUt+m+8qtJZAb/i4cXqDJp9kqJ6t9cLjIhybFNRnXMueGr1Puc
-byWoWK7i9+vEjnY6VbjToicAWQPeId063wxJzzhp/uqQ+zoCMDX+P7Iz4s1u+6l6
-R3nXQSRcrw9VNc3ZOfJjXy1R/hIwGBbeGt/ndPnyNrznWu8yYJJr7qZirk8Uy4lp
-wTmv/5QTkal+TiVXOMW6VwXMLLvu50Q+E3/7dIz4waKt98kfM8hd8zjB676rwcGD
-olHRJHD956i7HOAU3uzFrijiMOgOnXAiJIDj1+MxLXdTL0ZidJizBh6eeSbxUrcg
-egr+KPJSKcxuZ+K8c+yZD8MoCLJX84xTU1LdtTwQC9x10M1HnT1OMFLrfso4yWTK
-SYtQxYe6sGiKMLvN3tYD5Ql63m8D2CIK5NDiK/hxG9hZtiYOH9k=
-=2HeI
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
