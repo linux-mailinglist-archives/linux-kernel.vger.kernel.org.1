@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AC11F7C8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFB51F7C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgFLRir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:38:47 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56165 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726085AbgFLRir (ORCPT
+        id S1726381AbgFLRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:43:54 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49880 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgFLRnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:38:47 -0400
-Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 05CHcZka021591
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Jun 2020 13:38:36 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 5F645420E61; Fri, 12 Jun 2020 13:38:35 -0400 (EDT)
-Date:   Fri, 12 Jun 2020 13:38:35 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Nieuwenhuizen <janneke@gnu.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Danny Milosavljevic <dannym@scratchpost.org>,
-        Samuel Thibault <samuel.thibault@gnu.org>
-Subject: Re: [PATCH v2] ext4: support xattr gnu.* namespace for the Hurd
-Message-ID: <20200612173835.GA2863913@mit.edu>
-References: <20200525193940.878-1-janneke@gnu.org>
- <20200529032505.GM228632@mit.edu>
- <87imgfuoc4.fsf@gnu.org>
+        Fri, 12 Jun 2020 13:43:53 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CHh9hb020476;
+        Fri, 12 Jun 2020 17:43:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=sDXzqeSxZKG8oEBI8F3mco5PsGVz1ZSzi3GmCkClRpM=;
+ b=dLaoF70Ho+GVFZ+vOzknqvVG7qIkq9hVDWyW9ONL3/v5dj3g3fENcu4GYiCbGw1vUpKH
+ t2swAKm2sSFIPp2WiVj2hzLY092JfOMMw+odVzo5mUga+aoYThxeIpAYhYFgc81i0DTZ
+ 6qcNMH1k2Peu8NmEetS8w8yWaoEgQtk/OtcDe+hy3EtqPMDvVXViI4FOQZGqpGI2/IDC
+ tzfzVFqDAhfHsf8w8PsWktkSu08S/IUrdx6Xow9G+e5W+imuYIa6Xayf4sHQ80/6cpL/
+ HtRKoOPWb7Q/TPaX/5MiSYS/lqRn+atHx+We53N3nT2RRG6onwl9n7felGhcUjSMebF3 oA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 31jepp7xvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Jun 2020 17:43:35 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CHgkrC132293;
+        Fri, 12 Jun 2020 17:43:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 31mebng8pe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jun 2020 17:43:34 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05CHcjqF028407;
+        Fri, 12 Jun 2020 17:38:46 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 12 Jun 2020 10:38:45 -0700
+Date:   Fri, 12 Jun 2020 20:38:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Walter Harms <wharms@bfs.de>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] coresight: cti: Fix error handling in probe
+Message-ID: <20200612173838.GH4282@kadam>
+References: <20200612121047.GF4282@kadam>
+ <20200612121133.GA1139533@mwanda>
+ <6c59bdbc15714b089d256ad50aee58cb@bfs.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87imgfuoc4.fsf@gnu.org>
+In-Reply-To: <6c59bdbc15714b089d256ad50aee58cb@bfs.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006120128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006120128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 29, 2020 at 10:39:39AM +0200, Jan Nieuwenhuizen wrote:
-> Theodore Y. Ts'o writes:
+On Fri, Jun 12, 2020 at 02:11:16PM +0000, Walter Harms wrote:
+> Hi Dan,
 > 
-> Hello!
+> nit picking in cti_pm_release()
 > 
-> > On Mon, May 25, 2020 at 09:39:40PM +0200, Jan (janneke) Nieuwenhuizen wrote:
-> >> The Hurd gained[0] support for moving the translator and author
-> >> fields out of the inode and into the "gnu.*" xattr namespace.
-> >> 
-> >> In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
-> >> now been brought into compliance[2] with that.
-> >> 
-> >> This patch adds support for reading and writing such attributes from
-> >> Linux; you can now do something like
-> 
-> [...]
-> >
-> > This patch is missing a Signed-off-by.  If you don't understand why
-> > this is really important, please read: 
-> >
-> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-> 
-> Ah, that makes sense.  Sorry for omitting that/being not clear on it.
-> 
-> > Can you resubmit with the DCO or confirm that it's OK for me to add
-> > your Signed-off-by?
-> 
-> Yes, that's OK, please do!  I am the original author of this patch.
+> IMHO this should be done in 2 steps:
+>       if (--nr_cti_cpu == 0)
+> ->
+>   --nr_cti_cpu ;
+>  if ( nr_cti_cpu == 0)
 
-Thanks, I've applied this to the ext4.git tree.
+The first way is sort of the more canonical way to write it...  By far.
 
-						- Ted
+regards,
+carpenter
+
