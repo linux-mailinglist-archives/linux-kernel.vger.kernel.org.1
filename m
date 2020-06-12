@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACDF1F78D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D685E1F78D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgFLNja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 09:39:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59188 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726053AbgFLNj3 (ORCPT
+        id S1726311AbgFLNpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 09:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgFLNpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 09:39:29 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CD5EeP062360;
-        Fri, 12 Jun 2020 09:39:13 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31kw207kkg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Jun 2020 09:39:12 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05CDUcPk002182;
-        Fri, 12 Jun 2020 13:39:10 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 31ku7c0g7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Jun 2020 13:39:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05CDd7mX63963198
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 13:39:07 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A12165204F;
-        Fri, 12 Jun 2020 13:39:07 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.93.125])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CDF9A5204E;
-        Fri, 12 Jun 2020 13:39:05 +0000 (GMT)
-Subject: Re: linux-next test error: BUG: using smp_processor_id() in
- preemptible [ADDR] code: syz-fuzzer/6792
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-References: <0000000000008ff8ea05a71818b5@google.com>
- <20200602124130.256274203F@d06av24.portsmouth.uk.ibm.com>
- <20200612124340.GA23832@splinter>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Fri, 12 Jun 2020 19:09:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 12 Jun 2020 09:45:55 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C852C03E96F;
+        Fri, 12 Jun 2020 06:45:54 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g7so7336946oti.13;
+        Fri, 12 Jun 2020 06:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tnWRCjyW1p7dTLnn3crfMwsFLtsc5KLsrHO4pffPzmQ=;
+        b=esCMfmLir71/oNBSQV4h3Ga/4HPb3WQxpX3k4ZzCUdanFkKEtOWRHtxg8+1Mi08Res
+         ROgBkyzIAXp9iVWJ17h7vEQqRAH4y1elxnTgHtWKmkhxokfTLl9rp9Rya5/M0xq7gcgR
+         t7Enp4adykZHOHH4Z58t3AEXjqmRGHFMmJHUPjcLH+6XedtKYtOJKt1QG+bPElhkA213
+         i1Fwvf+GZeChOPwcojkHzxF0o97GIbRyAUwEsVT4z7MudYAreKMTwNlFIccPf4e3xmmC
+         gZwGqVgXv21l2uRFLtTt0RbXAO9ZoPVjfCUOelQvB45Nefk6nCb0ctHkBs4iDDbhMFYq
+         VSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tnWRCjyW1p7dTLnn3crfMwsFLtsc5KLsrHO4pffPzmQ=;
+        b=fFM/X5og9j9Cp4vfx9gBa8M/YkvanlndSI/zmZSe9MUAlT3ilOj9ntsKb0u9H4H3Fu
+         i3xSiFIAqi1XWHc7PODEhwUVCPEuWADiyo2ekzxWkg0qEwPpVTnAvkTPeMNV00OPBQOy
+         6jkwOyoYul/ORLWsc49L//oKXF4x2vNUf8QbvrzUfsu68Y9ayKL3KftbfuNQdcueFatH
+         WoHzTqZYv3gtvi1Zr/46EEG1ICrfwLJ0qpjtD9k3/NMUua1W1jWlRBcJd4EEq/pt48xq
+         6R+/bknEQuzVmu/YgfrKVe9b2rPHvUid3pa4+Gybpt31P+DLR09IyQUnVd6h2MgU610p
+         RESQ==
+X-Gm-Message-State: AOAM5339SGYePv4BJJyioiuRr8D1CWaAFsOy2aeo2vNEou15Xv5/au8e
+        UQjPUMSTUjU0T81+lIVIlgJ2VkmLVuEUVtZEFaDLv7Wu+LY=
+X-Google-Smtp-Source: ABdhPJyZZnwfYxtAfnjbR7dGVncR++QcXgO4k7Xt9pQ1VivLYQ03E2vJ+ZC8E5NJpGrb7H6JVSpx86KPoQqDN/ysaO0=
+X-Received: by 2002:a9d:58c9:: with SMTP id s9mr11511066oth.233.1591969553714;
+ Fri, 12 Jun 2020 06:45:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200612124340.GA23832@splinter>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200612133905.CDF9A5204E@d06av21.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-11_23:2020-06-11,2020-06-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- cotscore=-2147483648 bulkscore=0 clxscore=1011 priorityscore=1501
- phishscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0
- suspectscore=0 impostorscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110174
+References: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
+In-Reply-To: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
+From:   Mauricio Tavares <raubvogel@gmail.com>
+Date:   Fri, 12 Jun 2020 09:45:42 -0400
+Message-ID: <CAHEKYV6edAHyrW-VQtW5ufZkqpXbfd1sU9N4BqOktezdffHTsg@mail.gmail.com>
+Subject: Re: [PATCH] s390: protvirt: virtio: Refuse device without IOMMU
+To:     Pierre Morel <pmorel@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 10, 2020 at 12:32 PM Pierre Morel <pmorel@linux.ibm.com> wrote:
+>
+> Protected Virtualisation protects the memory of the guest and
+> do not allow a the host to access all of its memory.
+>
+> Let's refuse a VIRTIO device which does not use IOMMU
+> protected access.
+>
+      Stupid questions:
 
-On 6/12/20 6:13 PM, Ido Schimmel wrote:
-> On Tue, Jun 02, 2020 at 06:11:29PM +0530, Ritesh Harjani wrote:
->> #syz test:
->> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->> 0e21d4620dd047da7952f44a2e1ac777ded2d57e
-> 
->> >From cc1cf67d99d5fa61db0651c89c288df31bad6b8e Mon Sep 17 00:00:00 2001
->> From: Ritesh Harjani <riteshh@linux.ibm.com>
->> Date: Tue, 2 Jun 2020 17:54:12 +0530
->> Subject: [PATCH 1/1] ext4: mballoc: Use raw_cpu_ptr in case if preemption is enabled
->>
->> It doesn't matter really in ext4_mb_new_blocks() about whether the code
->> is rescheduled on any other cpu due to preemption. Because we care
->> about discard_pa_seq only when the block allocation fails and then too
->> we add the seq counter of all the cpus against the initial sampled one
->> to check if anyone has freed any blocks while we were doing allocation.
->>
->> So just use raw_cpu_ptr to not trigger this BUG.
->>
->> BUG: using smp_processor_id() in preemptible [00000000] code: syz-fuzzer/6927
->> caller is ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
->> CPU: 1 PID: 6927 Comm: syz-fuzzer Not tainted 5.7.0-next-20200602-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x18f/0x20d lib/dump_stack.c:118
->>   check_preemption_disabled+0x20d/0x220 lib/smp_processor_id.c:48
->>   ext4_mb_new_blocks+0xa4d/0x3b70 fs/ext4/mballoc.c:4711
->>   ext4_ext_map_blocks+0x201b/0x33e0 fs/ext4/extents.c:4244
->>   ext4_map_blocks+0x4cb/0x1640 fs/ext4/inode.c:626
->>   ext4_getblk+0xad/0x520 fs/ext4/inode.c:833
->>   ext4_bread+0x7c/0x380 fs/ext4/inode.c:883
->>   ext4_append+0x153/0x360 fs/ext4/namei.c:67
->>   ext4_init_new_dir fs/ext4/namei.c:2757 [inline]
->>   ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2802
->>   vfs_mkdir+0x419/0x690 fs/namei.c:3632
->>   do_mkdirat+0x21e/0x280 fs/namei.c:3655
->>   do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
->> Reported-by: syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com
-> 
-> Hi,
-> 
-> Are you going to submit this patch formally? Without it I'm constantly
-> seeing the above splat.
-> 
+1. Do all CPU families we care about (which are?) support IOMMU? Ex:
+would it recognize an ARM thingie with SMMU? [1]
+2. Would it make sense to have some kind of
+yes-I-know-the-consequences-but-I-need-to-have-a-virtio-device-without-iommu-in-this-guest
+flag?
 
-I see Ted has already taken v2 of this patch in his dev repo.
-Should be able to see in linux tree soon.
+> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+> ---
+>  drivers/s390/virtio/virtio_ccw.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index 5730572b52cd..06ffbc96587a 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -986,6 +986,11 @@ static void virtio_ccw_set_status(struct virtio_device *vdev, u8 status)
+>         if (!ccw)
+>                 return;
+>
+> +       /* Protected Virtualisation guest needs IOMMU */
+> +       if (is_prot_virt_guest() &&
+> +           !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
+> +                       status &= ~VIRTIO_CONFIG_S_FEATURES_OK;
+> +
+>         /* Write the status to the host. */
+>         vcdev->dma_area->status = status;
+>         ccw->cmd_code = CCW_CMD_WRITE_STATUS;
+> --
+> 2.25.1
+>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=811985365378df01386c3cfb7ff716e74ca376d5
-
-
--ritesh
+[1] https://developer.arm.com/architectures/system-architectures/system-components/system-mmu-support
