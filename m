@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DDF1F7901
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED05E1F790A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgFLNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 09:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        id S1726573AbgFLNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 09:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgFLNyo (ORCPT
+        with ESMTP id S1726527AbgFLNyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 09:54:44 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6992DC08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:54:43 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id x18so11161119lji.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:54:43 -0700 (PDT)
+        Fri, 12 Jun 2020 09:54:46 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6159BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:54:45 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w15so5508843lfe.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ZN8pb1DxbDLuAa3GwJ440N0/6Zk96TU9nPo+rlxSNXs=;
-        b=tTPvo9D/MvRXBYX/MuHpkfqpCLq6atXifgP7LV4e3/6UtF3iJJK1XIhlokPt2be/6X
-         rw06kE/rT6je/Hm8AxKVhHSpwcD+crQqHu6WtC9W7UQF6Ct8K8ketGlK08BDO8RJN6Hj
-         IvQgKQDZG+OK05stM197t5SLomRYn6ffu/eNGlE19PdVcXVDW1LXmeX7EmruPAx49R7l
-         Nyz88Fqrv44x2YQC55PAOcnj54GBa9z/VouaaLk4m6Ek0tPFwMoeqebHz1NxqFI4JA5m
-         oI+x8tjGs4Afg7PiQMsAj4KTf/VfwO7cMmc2fojYCf0abdsoKvQ4+N+QlrcJ4khYofCr
-         Opyw==
+        bh=Rt6ATyUj+kngO18ntOXAOOJDegUILp5okUOOJZj7u30=;
+        b=wO7KwHdto8wlA0AV82uro7r1mK8DBbXdgWCWNK/MHmIEZNZswGO4HSzn48aJdHLwZo
+         4FzLRbwhsBUHqDFgtuTSNvdAopkP1kXPR+tNGagHOodO2CH/OX2VB5P7t78pzMNaba2l
+         2lvPmRYZ+er5+r7VhVBhp9YYNQuuUZfLmedjZWePBXNM/U7o23C0oYHsLdS0dG2rbGgA
+         0pkFdjWn4K8I4Tp9zZGgXDov0m97rJ24qVbVgJIxdYQ23STL5mCFH0uN1cZ7c42GB7pK
+         c5OsfvVDrRMsrf216jVMdXeqlb8U3vtsT9ZC1P1QvU9lnF0YT1AQyoxT5PAE9w9C6+p6
+         AY0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ZN8pb1DxbDLuAa3GwJ440N0/6Zk96TU9nPo+rlxSNXs=;
-        b=Wue4JxSMU8CVa9h/XsXTaqcFF9eYhDz8UIpdtUAhk7SGlyvzlMvfx/0hJEUU9wqiTp
-         1DfMbozTwhheCEwZKW0lMZzx6Kxovg/YGWEcrayAkp45Rsut//7WkAVKOAZQAr89Gicl
-         v4tI7uRFx1D3rbCoTWuH+wE/0udj+/TGygWOTbckv8T5qp0ClQRb7BFE28iN9BFOtQot
-         pKgnGLCJXymHdHYQh+FlG1/cmg/avNIGIqPOVzkomwVsYyL0KYoqloCNdEtnFNSMz2rh
-         L1v9XRMfy9xGfyNfbduUmzf083NKMo1Tj+A5v41vNCt9ds+l9EY0mOG4BA7wXVny4TJf
-         7pHw==
-X-Gm-Message-State: AOAM530ru204LZksoqgwLB31A1jQdEN5Q2iPQgp2xoM0cbsKgzCsE9tA
-        /X0ICOYkgQVSECJBhgasmnCYrg==
-X-Google-Smtp-Source: ABdhPJyd0K77IMACgsooS/25EwC76SwVSTRSStSbsi4StlxM/eYk+QNKB3QOHNFROB4+6VQH2CxZbw==
-X-Received: by 2002:a05:651c:50d:: with SMTP id o13mr7303244ljp.181.1591970081900;
-        Fri, 12 Jun 2020 06:54:41 -0700 (PDT)
+        bh=Rt6ATyUj+kngO18ntOXAOOJDegUILp5okUOOJZj7u30=;
+        b=lUz0MrEcRvb7/EZhqFCV8edGZo7EAynATLfvzxkQ7jcNpD0lzmQzjcCB5ImeP91Okj
+         3qkODTv0EL9OqIHCaApFAnWcFlv3ny99gJmnE7AYllm2pS2uM8qUDtfI+Uz7WuW+T4Jw
+         jmUgV38DejB3yy3r8hD8//uRkdYLKqLGpR+xfQbAj+i0dn6P08WeASHZ+yQhP28MRHzd
+         HcQz2KrVtvmpdrFg3SxlLdadQCLb3d+1lvmnrIQya0r7CYjmzVeQyadBUGcBpmr/hVWK
+         p7/OkOn31H4P/98x/c36mgbjWpqxwhhOWy+jmo2CZ2YA8bEsbFqBqjbeIhKqooHt7SOy
+         M/uA==
+X-Gm-Message-State: AOAM531vsaYGfFRWFui85NgC4zW+ZgudGs2j3yeZ7PWwMlQYZA98Txej
+        OgTB85KNr4ETTo9XSrj91fPt6g==
+X-Google-Smtp-Source: ABdhPJwV3q5S6l7asf3glLNkw33gfxAahHfBbXmsX8m8y7tdd0ypHlX1K1zB1nF2jJOXj6UeKr7sxA==
+X-Received: by 2002:a05:6512:488:: with SMTP id v8mr7079139lfq.205.1591970083855;
+        Fri, 12 Jun 2020 06:54:43 -0700 (PDT)
 Received: from localhost.localdomain (37-144-159-139.broadband.corbina.ru. [37.144.159.139])
-        by smtp.googlemail.com with ESMTPSA id a1sm2414415lfi.36.2020.06.12.06.54.40
+        by smtp.googlemail.com with ESMTPSA id a1sm2414415lfi.36.2020.06.12.06.54.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 06:54:41 -0700 (PDT)
+        Fri, 12 Jun 2020 06:54:43 -0700 (PDT)
 From:   Andrey Konovalov <andrey.konovalov@linaro.org>
 To:     mchehab@kernel.org, sakari.ailus@iki.fi,
         manivannan.sadhasivam@linaro.org
@@ -54,9 +54,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         c.barrett@framos.com, a.brela@framos.com, peter.griffin@linaro.org,
         Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v5 08/10] media: i2c: imx290: Add support to enumerate all frame sizes
-Date:   Fri, 12 Jun 2020 16:53:53 +0300
-Message-Id: <20200612135355.30286-9-andrey.konovalov@linaro.org>
+Subject: [PATCH v5 09/10] media: i2c: imx290: Move the settle time delay out of loop
+Date:   Fri, 12 Jun 2020 16:53:54 +0300
+Message-Id: <20200612135355.30286-10-andrey.konovalov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200612135355.30286-1-andrey.konovalov@linaro.org>
 References: <20200612135355.30286-1-andrey.konovalov@linaro.org>
@@ -67,56 +67,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Add support to enumerate all frame sizes supported by IMX290. This is
-required for using with userspace tools such as libcamera.
+The 10ms settle time is needed only at the end of all consecutive
+register writes. So move the delay to outside of the for loop of
+imx290_set_register_array().
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 ---
- drivers/media/i2c/imx290.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/media/i2c/imx290.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
-index c654a9a8fb08..fd147fac5ef2 100644
+index fd147fac5ef2..02001c1b0dfc 100644
 --- a/drivers/media/i2c/imx290.c
 +++ b/drivers/media/i2c/imx290.c
-@@ -528,6 +528,28 @@ static int imx290_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -404,11 +404,11 @@ static int imx290_set_register_array(struct imx290 *imx290,
+ 		ret = imx290_write_reg(imx290, settings->reg, settings->val);
+ 		if (ret < 0)
+ 			return ret;
+-
+-		/* Settle time is 10ms for all registers */
+-		msleep(10);
+ 	}
+ 
++	/* Provide 10ms settle time */
++	msleep(10);
++
  	return 0;
  }
  
-+static int imx290_enum_frame_size(struct v4l2_subdev *sd,
-+				  struct v4l2_subdev_pad_config *cfg,
-+				  struct v4l2_subdev_frame_size_enum *fse)
-+{
-+	const struct imx290 *imx290 = to_imx290(sd);
-+	const struct imx290_mode *imx290_modes = imx290_modes_ptr(imx290);
-+
-+	if ((fse->code != imx290_formats[0].code) &&
-+	    (fse->code != imx290_formats[1].code))
-+		return -EINVAL;
-+
-+	if (fse->index >= imx290_modes_num(imx290))
-+		return -EINVAL;
-+
-+	fse->min_width = imx290_modes[fse->index].width;
-+	fse->max_width = imx290_modes[fse->index].width;
-+	fse->min_height = imx290_modes[fse->index].height;
-+	fse->max_height = imx290_modes[fse->index].height;
-+
-+	return 0;
-+}
-+
- static int imx290_get_fmt(struct v4l2_subdev *sd,
- 			  struct v4l2_subdev_pad_config *cfg,
- 			  struct v4l2_subdev_format *fmt)
-@@ -873,6 +895,7 @@ static const struct v4l2_subdev_video_ops imx290_video_ops = {
- static const struct v4l2_subdev_pad_ops imx290_pad_ops = {
- 	.init_cfg = imx290_entity_init_cfg,
- 	.enum_mbus_code = imx290_enum_mbus_code,
-+	.enum_frame_size = imx290_enum_frame_size,
- 	.get_fmt = imx290_get_fmt,
- 	.set_fmt = imx290_set_fmt,
- };
 -- 
 2.17.1
 
