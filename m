@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D834A1F7CA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20441F7CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgFLRtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:49:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38336 "EHLO mx2.suse.de"
+        id S1726404AbgFLRt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgFLRtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:49:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 227E5AB8F;
-        Fri, 12 Jun 2020 17:49:04 +0000 (UTC)
-Subject: Re: [PATCH] qla2xxx: Set NVME status code for failed NVME FCP request
-To:     Daniel Wagner <dwagner@suse.de>, linux-scsi@vger.kernel.org
-Cc:     Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        linux-kernel@vger.kernel.org
-References: <20200604100745.89250-1-dwagner@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <95091326-e5b4-e747-b187-21a049a1c541@suse.de>
-Date:   Fri, 12 Jun 2020 19:48:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726367AbgFLRtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:49:55 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E46D20835;
+        Fri, 12 Jun 2020 17:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591984195;
+        bh=J0DPukvkbx9lZmoUXIpR5Hr1tA3Fg6w8OyFfhndfJdg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ycGb4OgHXuBinxtKbBaVran6kE/iPBBGzgynhheGbRsY6QIsEiwJojYxeEGQswOR0
+         obF/zqOAsHYdcBZgVKUmtl6EQkO9WgdMJe1sOkTI6Qv7HJ2ot1FgPOOPp6JE6l4R38
+         3E6fPh2ncSMexCuYCljeTOleyf01XlgdhZA29T5w=
+Date:   Fri, 12 Jun 2020 10:49:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Miao-chen Chou <mcchou@chromium.org>
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Michael Sun <michaelfsun@google.com>,
+        Yoni Shavit <yshavit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] Bluetooth: Add handler of
+ MGMT_OP_REMOVE_ADV_MONITOR
+Message-ID: <20200612104952.0955d965@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200611231459.v3.4.Ib4effd5813fb2f8585e2c7394735050c16a765eb@changeid>
+References: <20200611231459.v3.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+        <20200611231459.v3.4.Ib4effd5813fb2f8585e2c7394735050c16a765eb@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20200604100745.89250-1-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/20 12:07 PM, Daniel Wagner wrote:
-> The qla2xxx driver knows when request was processed successfully or
-> not. But it always sets the NVME status code to 0/NVME_SC_SUCCESS. The
-> upper layer needs to figure out from the rcv_rsplen and
-> transferred_length variables if the request was successfully. This is
-> not always possible, e.g. when the request data length is 0, the
-> transferred_length is also set 0 which is interpreted as success in
-> nvme_fc_fcpio_done(). Let's inform the upper
-> layer (nvme_fc_fcpio_done()) when something went wrong.
+On Thu, 11 Jun 2020 23:15:26 -0700 Miao-chen Chou wrote:
+> This adds the request handler of MGMT_OP_REMOVE_ADV_MONITOR command.
+> Note that the controller-based monitoring is not yet in place. This
+> removes the internal monitor(s) without sending HCI traffic, so the
+> request returns immediately.
 > 
-> nvme_fc_fcpio_done() maps all non NVME_SC_SUCCESS status codes to
-> NVME_SC_HOST_PATH_ERROR. There isn't any benefit to map the QLA status
-> code to the NVME status code. Therefore, let's use NVME_SC_INTERNAL to
-> indicate an error which aligns it with the lpfc driver.
+> The following test was performed.
+> - Issue btmgmt advmon-remove with valid and invalid handles.
 > 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/scsi/qla2xxx/qla_nvme.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-> index d66d47a0f958..fa695a4007f8 100644
-> --- a/drivers/scsi/qla2xxx/qla_nvme.c
-> +++ b/drivers/scsi/qla2xxx/qla_nvme.c
-> @@ -139,11 +139,12 @@ static void qla_nvme_release_fcp_cmd_kref(struct kref *kref)
->   	sp->priv = NULL;
->   	if (priv->comp_status == QLA_SUCCESS) {
->   		fd->rcv_rsplen = le16_to_cpu(nvme->u.nvme.rsp_pyld_len);
-> +		fd->status = NVME_SC_SUCCESS;
->   	} else {
->   		fd->rcv_rsplen = 0;
->   		fd->transferred_length = 0;
-> +		fd->status = NVME_SC_INTERNAL;
->   	}
-> -	fd->status = 0;
->   	spin_unlock_irqrestore(&priv->cmd_lock, flags);
->   
->   	fd->done(fd);
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
 
-Cheers,
+Still doesn't build cleanly with W=1 C=1
 
-Hannes
--- 
-Dr. Hannes Reinecke            Teamlead Storage & Networking
-hare@suse.de                               +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+net/bluetooth/mgmt.c:4009:46: warning: incorrect type in argument 2 (different base types)
+net/bluetooth/mgmt.c:4009:46:    expected unsigned short [usertype] handle
+net/bluetooth/mgmt.c:4009:46:    got restricted __le16 [usertype] monitor_handle
+net/bluetooth/mgmt.c:4018:29: warning: cast from restricted __le16
