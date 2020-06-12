@@ -2,199 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935101F7A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459531F7A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgFLPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:08:54 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:58039 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgFLPIx (ORCPT
+        id S1726501AbgFLPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgFLPNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:08:53 -0400
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E67C8100012;
-        Fri, 12 Jun 2020 15:08:44 +0000 (UTC)
-Date:   Fri, 12 Jun 2020 17:12:09 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        hien.dang.eb@renesas.com, michael.klein@renesas.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com, geert@linux-m68k.org,
-        horms@verge.net.au, uli+renesas@fpond.eu,
-        VenkataRajesh.Kalakodima@in.bosch.com, airlied@linux.ie,
-        daniel@ffwll.ch, koji.matsuoka.xm@renesas.com, muroya@ksk.co.jp,
-        Harsha.ManjulaMallikarjun@in.bosch.com, ezequiel@collabora.com,
-        seanpaul@chromium.org, linux-renesas-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        michael.dege@renesas.com, gotthard.voellmeke@renesas.com,
-        efriedrich@de.adit-jv.com, mrodin@de.adit-jv.com,
-        ChaitanyaKumar.Borah@in.bosch.com,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Subject: Re: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
-Message-ID: <20200612151209.xdaqimvpq7ysvu2q@uno.localdomain>
-References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
- <20200527071555.GA23912@lxhi-065.adit-jv.com>
- <20200605132900.on527xcggg6f6pil@uno.localdomain>
- <20200605134124.GA28734@lxhi-065.adit-jv.com>
- <20200605135315.xlph44pl7kvmt23a@uno.localdomain>
- <20200607024158.GD7339@pendragon.ideasonboard.com>
- <20200608094432.GA27063@lxhi-065.adit-jv.com>
+        Fri, 12 Jun 2020 11:13:30 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B95C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:13:28 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e18so4260618pgn.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Pno+5kYSHMw8xwXOucwExt5jksL9Xbw8epr6Z7fMvHE=;
+        b=JSjDP2ux5xIsExDkMu+jKwnIWyDo4yP7FcO/2uWZWDhSupr7sF/6Bfpw0z0x2wQ2jD
+         j1ozQAHLCGlCTem8qZTE8r5BEHrMzvoaVFkJpu0QI/WYFW09ANKlCOnUPTxBzpCa6lzT
+         u+IsrxgbSZPWpttOWWycjfaNnRDFQE2NPKRQo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pno+5kYSHMw8xwXOucwExt5jksL9Xbw8epr6Z7fMvHE=;
+        b=dtZR+9obKyoUyMcbdZPA4jMfILzapqgAe6oof286f0bBXtgjNShoVgH6St1cKbJh2P
+         QVBxjooawvQHBrx25vs4xlUNht6ofGNWaQIKtLOE9AogMvUPN5qp1TjYc2NSaY54rFcJ
+         FZDm/2cVAhdbkKGKxI83oZmdbUziXGk69+vZK9TA3LI/Zlu3BouY4DHP6Qp19MeJzSuG
+         DeYKng4BGasJ+KEoWuD72wDXq9YIDomeID56ICgKUNUgzfGPiVUFwzCzjaCik8WUMvbd
+         JGHs+nx7IeE+RHuaAPqmLvwkEB0wNVpLno7syRPtc+VInmNqeiNwEvyNYPdAODAtwrQJ
+         8kRQ==
+X-Gm-Message-State: AOAM5316Ew8qRFEcoWKjeaVKPlaDdMYXZkuIzCXmQcpB9+iWeTcjnuTi
+        OTGyKDs1x8LZqoHHRFzeNhVZag==
+X-Google-Smtp-Source: ABdhPJyXqtcPGd0aOR35qpAPznOfkgdDl72Ymk+kTDk2BJaQ8wwoEcZmw5DNB85G8nblxzhkxmohAQ==
+X-Received: by 2002:a62:8c15:: with SMTP id m21mr11771587pfd.182.1591974808293;
+        Fri, 12 Jun 2020 08:13:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y4sm6573117pfr.182.2020.06.12.08.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 08:13:27 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 08:13:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Matt Denton <mpdenton@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Message-ID: <202006120806.E770867EF@keescook>
+References: <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
+ <202006092227.D2D0E1F8F@keescook>
+ <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006101953.899EFB53@keescook>
+ <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
+ <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
+ <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
+ <202006111634.8237E6A5C6@keescook>
+ <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
+ <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200608094432.GA27063@lxhi-065.adit-jv.com>
+In-Reply-To: <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugeniu
+On Fri, Jun 12, 2020 at 10:46:30AM +0000, Sargun Dhillon wrote:
+> My suggest, written out (no idea if this code actually works), is as follows:
+> 
+> ioctl.h:
+> /* This needs to be added */
+> #define IOCDIR_MASK	(_IOC_DIRMASK << _IOC_DIRSHIFT)
 
-On Mon, Jun 08, 2020 at 11:44:32AM +0200, Eugeniu Rosca wrote:
-> Hello,
->
-> Many thanks for your comments and involvement.
->
-> On Sun, Jun 07, 2020 at 05:41:58AM +0300, Laurent Pinchart wrote:
-> > On Fri, Jun 05, 2020 at 03:53:15PM +0200, Jacopo Mondi wrote:
-> > > On Fri, Jun 05, 2020 at 03:41:24PM +0200, Eugeniu Rosca wrote:
-> > > > On Fri, Jun 05, 2020 at 03:29:00PM +0200, Jacopo Mondi wrote:
-> > > >> On Wed, May 27, 2020 at 09:15:55AM +0200, Eugeniu Rosca wrote:
-> > > >>> Could you kindly share the cross compilation steps for your kmsxx fork?
-> > > >>
-> > > >> I usually build it on the target :)
-> > > >
-> > > > Interesting approach. With ARM getting more and more potent, why not? :)
-> > >
-> > > For 'small' utilities like kmsxx it's doable
-> > >
-> > > >>> Just out of curiosity, have you ever tried to pull the display's HDMI
-> > > >>> cable while reading from CM2_LUT_TBL?
-> > > >>
-> > > >> Ahem, not really :) Did I get you right, you mean disconnecting the
-> > > >> HDMI cable from the board ?
-> > > >
-> > > > Right.
-> > >
-> > > So, no, I have not tried. Do you see any intersting failure with the
-> > > mainline version ?
-> >
-> > Jacopo, would you be able to give this a try ?
->
-> FWIW, I seem to hit pre-existing issues in vanilla rcar-du,
-> while unplugging HDMI cable during a cyclic suspend-resume:
->
-> HW: H3 ES2.0 Salvator-X
-> SW: renesas-drivers-2020-06-02-v5.7
-> .config: renesas_defconfig +CONFIG_PM_DEBUG +CONFIG_PM_ADVANCED_DEBUG
-> Use-case:
->
->   --------8<---------
-> $ cat s2ram.sh
-> modprobe i2c-dev
-> echo 9 > /proc/sys/kernel/printk
-> i2cset -f -y 7 0x30 0x20 0x0F
+This exists already:
 
-According to
-https://elinux.org/R-Car/Boards/Salvator-X#Suspend-to-RAM
-this is not needed anymore
+#define _IOC_DIRMASK    ((1 << _IOC_DIRBITS)-1)
 
-> echo 0 > /sys/module/suspend/parameters/pm_test_delay
-> echo core  > /sys/power/pm_test
-> echo deep > /sys/power/mem_sleep
-> echo 1 > /sys/power/pm_debug_messages
-> echo 0 > /sys/power/pm_print_times
-> echo mem > /sys/power/state
->
-> $ while true; do sh s2ram.sh ; done
-> $ # unplug HDMI cable several times
+> 
+> 
+> seccomp.h:
+> 
+> struct struct seccomp_notif_addfd {
+> 	__u64 fd;
+> 	...
+> }
+> 
+> /* or IOW? */
+> #define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOWR(3, struct seccomp_notif_addfd)
+> 
+> seccomp.c:
+> static long seccomp_notify_addfd(struct seccomp_filter *filter,
+> 				 struct seccomp_notif_addfd __user *uaddfd int size)
+> {
+> 	struct seccomp_notif_addfd addfd;
+> 	int ret;
+> 
+> 	if (size < 32)
+> 		return -EINVAL;
+> 	if (size > PAGE_SIZE)
+> 		return -E2BIG;
 
-I tried unplugging an plugging the cable while the system was
-suspended and after resume but I was not able to reproduce anything.
+(Tanget: what was the reason for copy_struct_from_user() not including
+the min/max check? I have a memory of Al objecting to having an
+"internal" limit?)
 
-Could you provide more precise instructions on how to reproduce this ?
-I.e. when to disconnect the cable to trigger the below error.
+> 
+> 	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> 	if (ret)
+> 		return ret;
+> 
+> 	...
+> }
+> 
+> /* Mask out size */
+> #define SIZE_MASK(cmd)	(~IOCSIZE_MASK & cmd)
+> 
+> /* Mask out direction */
+> #define DIR_MASK(cmd)	(~IOCDIR_MASK & cmd)
+> 
+> static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
+> 				 unsigned long arg)
+> {
+> 	struct seccomp_filter *filter = file->private_data;
+> 	void __user *buf = (void __user *)arg;
+> 
+> 	/* Fixed size ioctls. Can be converted later on? */
+> 	switch (cmd) {
+> 	case SECCOMP_IOCTL_NOTIF_RECV:
+> 		return seccomp_notify_recv(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_SEND:
+> 		return seccomp_notify_send(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
+> 		return seccomp_notify_id_valid(filter, buf);
+> 	}
+> 
+> 	/* Probably should make some nicer macros here */
+> 	switch (SIZE_MASK(DIR_MASK(cmd))) {
+> 	case SIZE_MASK(DIR_MASK(SECCOMP_IOCTL_NOTIF_ADDFD)):
 
-Thanks
-  j
+Ah yeah, I like this because of what you mention below: it's forward
+compat too. (I'd just use the ioctl masks directly...)
 
->
-> [   55.568051] PM: noirq resume of devices complete after 3.862 msecs
-> [   55.583253] PM: early resume of devices complete after 8.496 msecs
-> [   65.757023] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
-> [   75.996123] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
-> [   86.236112] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:74:crtc-1] flip_done timed out
-> [   96.476111] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:80:HDMI-A-1] flip_done timed out
-> [  106.716109] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:45:plane-5] flip_done timed out
-> [  116.956111] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
-> [  127.196112] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:74:crtc-1] flip_done timed out
-> [  137.436116] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:80:HDMI-A-1] flip_done timed out
-> [  147.676111] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:45:plane-5] flip_done timed out
-> [  157.916110] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
->   --------8<---------
->
-> This looks to be unrelated to the CMM lockup I initially reported.
->
-> JYI, graphics pipelines in production R-Car3 targets are significantly
-> more complex (involving binding/unbinding serializer ICs at runtime
-> during non-trivial shutdown/suspend/resume sequences), as opposed
-> to the relatively straightforward VGA/HDMI outputs present on the
-> reference targets. So, my hope is that Renesas community can take
-> HDMI hot plugging seriously and make it a regular test-case during
-> rcar-du patch review, since this is a precondition for the R-Car3
-> platform and products to succeed as a whole.
->
-> BTW, if you happen to know an affordable programmable HDMI switcher
-> which can do the hot-plugging job in an automated test environment,
-> please let me know.
->
-> >
-> > > >>> At least with the out-of-tree CMM implementation [*], this sends the
-> > > >>> R-Car3 reference targets into an unrecoverable freeze, with no lockup
-> > > >>> reported by the kernel (i.e. looks like an serious HW issue).
-> > > >>>
-> > > >>>> CMM functionalities are retained between suspend/resume cycles (tested with
-> > > >>>> suspend-to-idle) without requiring a re-programming of the LUT tables.
-> > > >>>
-> > > >>> Hmm. Is this backed up by any statement in the HW User's manual?
-> > > >>> This comes in contrast with the original Renesas CMM implementation [**]
-> > > >>> which does make use of suspend (where the freeze actually happens).
-> > > >>>
-> > > >>> Can we infer, based on your statement, that we could also get rid of
-> > > >>> the suspend callback in [**]?
-> > > >>
-> > > >> As Geert (thanks) explained what I've tested with is suspend-to-idle,
-> > > >> which retains the state of the LUT tables (and I assume other
-> > > >> not-yet-implemented CMM features, like CLU). I recall the out-of-tree
-> > > >> driver has suspend/resume routines but I never really tested that.
-> > > >
-> > > > I see. JFYI, there is a flaw in the suspend handling in the out-of-tree
-> > > > CMM patch [*], which renders the SoC unresponsive on HDMI hotplug. The
-> > > > fix is currently under review. Hopefully it will make its way to [*]
-> > > > in the nearest future. Just to keep in mind for the moment when CMM
-> > > > s2ram will become a mainline feature.
-> > >
-> > > Thanks, let's keep this in mind. Next week I'll run a few tests again
-> > > with s2ram and will get back to you.
-> >
-> > Note that the CMM driver is controlled by the DU driver. As the DU
-> > driver will reenable the display during resume, it will call
-> > rcar_du_cmm_setup() at resume time, which will reprogram the CMM. There
-> > should thus be no need for manual suspend/resume handling in the CMM as
-> > far as I can tell, but we need to ensure that the CMM is suspended
-> > before and resumed after the DU. I believe this could be implemented
-> > using device links.
->
-> Does this apply to vanilla rcar-du only (where CMM support differs
-> from [*]) or would also be relevant for rcar.9.6 kernel?
->
-> >
-> > > >>> [*] https://github.com/renesas-rcar/du_cmm
-> > > >>> [**] https://github.com/renesas-rcar/du_cmm/blob/c393ed49834bdbc/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-drm-rcar-du-Add-DU-CMM-support.patch#L1912
->
-> --
-> Best regards,
-> Eugeniu Rosca
+	switch (cmd & ~(_IOC_SIZEMASK | _IOC_DIRMASK))
+
+> 		return seccomp_notify_addfd(filter, buf, _IOC_SIZE(cmd));
+
+I really like that this ends up having the same construction as a
+standard EA syscall: the size is part of the syscall arguments.
+
+> 	default:
+> 		return -EINVAL;
+> 	}
+> }
+> 
+> --------
+> 
+> What boxes does this tick?
+> * Forwards (and backwards) compatibility
+> * Applies to existing commands
+> * Command can be extended without requiring new ioctl to be defined
+
+(Technically, a new one is always redefined, but it's automatic in that
+the kernel needs to do nothing.)
+
+> * It well accomodates the future where we want to have a kernel
+>   helper copy the structures from userspace
+
+Yeah, this is a good solution.
+
+> The fact that the size of the argument struct, and the ioctl are defined in the 
+> same header gives us the ability to "cheat", and for the argument size to be 
+> included / embedded for free in the command passed to ioctl. In turn, this
+> gives us two benefits. First, it means we don't have to copy from user twice,
+> and can just do it all in one shot since the size is passed with the syscall
+> arguments. Second, it means that the user does not have to do the following:
+> 
+> seccomp_notif_addfd addfd = {};
+> addfd.size = sizeof(struct seccomp_notif_addfd)
+> 
+> Because sizeof(struct seccomp_notif_addfd) is embedded in 
+> SECCOMP_IOCTL_NOTIF_ADDFD based on the same headers they plucked the struct out of.
+
+Cool. I will do more patch reworking! ;)
+
+-- 
+Kees Cook
