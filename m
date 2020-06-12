@@ -2,234 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71D21F7FBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 01:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E82B1F7FC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 01:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgFLXqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 19:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgFLXqZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 19:46:25 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DD7C08C5C3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 16:46:24 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id h95so4517844pje.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 16:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GMh9znkko3Eeh+wj8HArzemUcagcDQr49Ksm6hwe3xM=;
-        b=bYIfnUI3ZsF13U18gugxCWcabmkVVttN6ouoWxFNjLXkQxBw4bOLvhNQXHwfl5Ta78
-         qSTu/nhbk6kErxjVmwNX6FgFULT86Jo1njCz46rxueK4oOfUw/M6fgnCPO/7jj8Bl0qf
-         x9dVQ4qJtVaLIVRSCkzay00w19I5VhxZTNU+4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GMh9znkko3Eeh+wj8HArzemUcagcDQr49Ksm6hwe3xM=;
-        b=PVNe8UJp3v5Je1MV/cF4087oVtri83UeyOm3MEeHlZG8PaKRzVVtt8cjeLoPF31Ux6
-         mETZQ9y9VU8/Zg60nGW9zwqHWvS3pkmolwSQTNeQeTTsmH799KK5opF4t0wckVEIvMch
-         VwcJ8zG4csdqYUytnyzd2tGTUlu1Sk43CRBUFBVvEpMMRX+ZpZBVWQWNFVN7nBKQgomo
-         yqPZ2yA/Pbob+c9bV1frD5tm9Xjbzp0khwLt56MDK302OcQfveoAT4GReZZuUQmwbTE+
-         ESBN/Yz/ting4SoZs5SYUJMjL5ObF6ivQzFz8JGaF5zBgCa3n4CzK7Ue2grPuN++9wvP
-         fHdA==
-X-Gm-Message-State: AOAM5319ZopxviVdNDLyXNOeEWB8rOZcaKTQGbG0hclGlEfLKEN85OTW
-        T7RskzTI8MMVPHpRmQQ/mkmc+w==
-X-Google-Smtp-Source: ABdhPJzfVJcmfIwdz1PSyA1t6VJIL0U0DwB9RBAIapD125Ni28J2wNcedoi2eX/MR0IitTtm0JxyKw==
-X-Received: by 2002:a17:902:d711:: with SMTP id w17mr13815334ply.122.1592005583736;
-        Fri, 12 Jun 2020 16:46:23 -0700 (PDT)
-Received: from mcchou0.mtv.corp.google.com ([2620:15c:202:201:b46:ac84:1014:9555])
-        by smtp.gmail.com with ESMTPSA id b19sm6198639pjo.57.2020.06.12.16.46.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Jun 2020 16:46:23 -0700 (PDT)
-From:   Miao-chen Chou <mcchou@chromium.org>
-To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
-Cc:     Alain Michaud <alainm@chromium.org>,
-        Michael Sun <michaelfsun@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Yoni Shavit <yshavit@chromium.org>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v4 7/7] Bluetooth: Update background scan and report device based on advertisement monitors
-Date:   Fri, 12 Jun 2020 16:45:56 -0700
-Message-Id: <20200612164243.v4.7.Id9ca021d5a3e8c748ea5c0a1c81582b9a8183f45@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200612164243.v4.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
-References: <20200612164243.v4.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+        id S1726449AbgFLXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 19:50:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58367 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726347AbgFLXuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 19:50:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49kHX90FPGz9sQx;
+        Sat, 13 Jun 2020 09:50:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592005802;
+        bh=YaUSe/3jMjb3GMzJf2b7UpGp9KDpxGa/2D3YEl9DgQU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P/u+yOXKhtU0H5tF0mq4C8mVCAz71fx64wyR4ZNnWKfoJdt3Xca/Kjv45qug8/FBy
+         vWerKerJD09bJOwKScMN+1Cse+hV3DNo+UqJ0N1tP1tRk3CGfG97gx9A6zwYTmCluh
+         oI+HrM+mpL2DE3UBW56VQRgKhLQHPvcV05Srs3u3NwfoTv4P/5TVTTj+pigcg3IUS1
+         A0T5WkmYeH6JpL844oYUJsT/XYJFPVmEXSgc10ySrQNk7sdq8sqESfJvaI0JRqQ2NJ
+         7smWzEHf/fe2nsLbzVS1EAATgTpxiBeUwjhKnlFYgzCt5uPLZPjarqJ6FuZq8N/E0W
+         QyEYB6Pqws0Kw==
+Date:   Sat, 13 Jun 2020 09:49:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: linux-next: manual merge of the crypto-current tree with Linus'
+ tree
+Message-ID: <20200613094959.05d121d5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/oeTGdJte5dvEadvZ+v6GZoL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This calls hci_update_background_scan() when there is any update on the
-advertisement monitors. If there is at least one advertisement monitor,
-the filtering policy of scan parameters should be 0x00. This also reports
-device found mgmt events if there is at least one monitor.
+--Sig_/oeTGdJte5dvEadvZ+v6GZoL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The following cases were tested with btmgmt advmon-* commands.
-(1) add a ADV monitor and observe that the passive scanning is
-triggered.
-(2) remove the last ADV monitor and observe that the passive scanning is
-terminated.
-(3) with a LE peripheral paired, repeat (1) and observe the passive
-scanning continues.
-(4) with a LE peripheral paired, repeat (2) and observe the passive
-scanning continues.
-(5) with a ADV monitor, suspend/resume the host and observe the passive
-scanning continues.
+Hi all,
 
-Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
----
+Today's linux-next merge of the crypto-current tree got a conflict in:
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
+  drivers/crypto/ccp/sev-dev.c
 
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         | 13 +++++++++++++
- net/bluetooth/hci_event.c        |  5 +++--
- net/bluetooth/hci_request.c      | 17 ++++++++++++++---
- net/bluetooth/mgmt.c             |  5 ++++-
- 5 files changed, 35 insertions(+), 6 deletions(-)
+between commit:
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 78ac7fd282d77..1ce89e546a64e 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1243,6 +1243,7 @@ void hci_adv_monitors_clear(struct hci_dev *hdev);
- void hci_free_adv_monitor(struct adv_monitor *monitor);
- int hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor);
- int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle);
-+bool hci_is_adv_monitoring(struct hci_dev *hdev);
- 
- void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb);
- 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index d0f30e2e29471..2d318916e9ebc 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3005,6 +3005,8 @@ void hci_adv_monitors_clear(struct hci_dev *hdev)
- 		hci_free_adv_monitor(monitor);
- 
- 	idr_destroy(&hdev->adv_monitors_idr);
-+
-+	hci_update_background_scan(hdev);
- }
- 
- void hci_free_adv_monitor(struct adv_monitor *monitor)
-@@ -3038,6 +3040,9 @@ int hci_add_adv_monitor(struct hci_dev *hdev, struct adv_monitor *monitor)
- 
- 	hdev->adv_monitors_cnt++;
- 	monitor->handle = handle;
-+
-+	hci_update_background_scan(hdev);
-+
- 	return 0;
- }
- 
-@@ -3069,9 +3074,17 @@ int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
- 		idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
- 	}
- 
-+	hci_update_background_scan(hdev);
-+
- 	return 0;
- }
- 
-+/* This function requires the caller holds hdev->lock */
-+bool hci_is_adv_monitoring(struct hci_dev *hdev)
-+{
-+	return !idr_is_empty(&hdev->adv_monitors_idr);
-+}
-+
- struct bdaddr_list *hci_bdaddr_list_lookup(struct list_head *bdaddr_list,
- 					 bdaddr_t *bdaddr, u8 type)
- {
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index cfeaee347db32..cbcc0b590fd41 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5447,14 +5447,15 @@ static void process_adv_report(struct hci_dev *hdev, u8 type, bdaddr_t *bdaddr,
- 
- 	/* Passive scanning shouldn't trigger any device found events,
- 	 * except for devices marked as CONN_REPORT for which we do send
--	 * device found events.
-+	 * device found events, or advertisement monitoring requested.
- 	 */
- 	if (hdev->le_scan_type == LE_SCAN_PASSIVE) {
- 		if (type == LE_ADV_DIRECT_IND)
- 			return;
- 
- 		if (!hci_pend_le_action_lookup(&hdev->pend_le_reports,
--					       bdaddr, bdaddr_type))
-+					       bdaddr, bdaddr_type) &&
-+		    idr_is_empty(&hdev->adv_monitors_idr))
- 			return;
- 
- 		if (type == LE_ADV_NONCONN_IND || type == LE_ADV_SCAN_IND)
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 1acf5b8e0910c..d465dbbb1963c 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -418,11 +418,15 @@ static void __hci_update_background_scan(struct hci_request *req)
- 	 */
- 	hci_discovery_filter_clear(hdev);
- 
-+	BT_DBG("%s ADV monitoring is %s", hdev->name,
-+	       hci_is_adv_monitoring(hdev) ? "on" : "off");
-+
- 	if (list_empty(&hdev->pend_le_conns) &&
--	    list_empty(&hdev->pend_le_reports)) {
-+	    list_empty(&hdev->pend_le_reports) &&
-+	    !hci_is_adv_monitoring(hdev)) {
- 		/* If there is no pending LE connections or devices
--		 * to be scanned for, we should stop the background
--		 * scanning.
-+		 * to be scanned for or no ADV monitors, we should stop the
-+		 * background scanning.
- 		 */
- 
- 		/* If controller is not scanning we are done. */
-@@ -798,6 +802,13 @@ static u8 update_white_list(struct hci_request *req)
- 			return 0x00;
- 	}
- 
-+	/* Once the controller offloading of advertisement monitor is in place,
-+	 * the if condition should include the support of MSFT extension
-+	 * support.
-+	 */
-+	if (!idr_is_empty(&hdev->adv_monitors_idr))
-+		return 0x00;
-+
- 	/* Select filter policy to use white list */
- 	return 0x01;
- }
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 325e528a1773e..10a239d396827 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -8435,8 +8435,11 @@ void mgmt_device_found(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
- 	if (!hci_discovery_active(hdev)) {
- 		if (link_type == ACL_LINK)
- 			return;
--		if (link_type == LE_LINK && list_empty(&hdev->pend_le_reports))
-+		if (link_type == LE_LINK &&
-+		    list_empty(&hdev->pend_le_reports) &&
-+		    !hci_is_adv_monitoring(hdev)) {
- 			return;
-+		}
- 	}
- 
- 	if (hdev->discovery.result_filtering) {
--- 
-2.26.2
+  835ae3bb530a ("drivers/crypto/ccp/sev-dev.c: get rid of pointless access_=
+ok()")
 
+from Linus' tree and commit:
+
+  832910f2e6b5 ("crypto: ccp - Fix sparse warnings in sev-dev")
+
+from the crypto-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/crypto/ccp/sev-dev.c
+index a2426334be61,aa576529283b..000000000000
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@@ -394,7 -395,9 +395,8 @@@ static int sev_ioctl_do_pek_csr(struct=20
+  		goto cmd;
+ =20
+  	/* allocate a physically contiguous buffer to store the CSR blob */
++ 	input_address =3D (void __user *)input.address;
+ -	if (!access_ok(input_address, input.length) ||
+ -	    input.length > SEV_FW_BLOB_MAX_SIZE) {
+ +	if (input.length > SEV_FW_BLOB_MAX_SIZE) {
+  		ret =3D -EFAULT;
+  		goto e_free;
+  	}
+@@@ -631,6 -635,13 +634,7 @@@ static int sev_ioctl_do_get_id2(struct=20
+  	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
+  		return -EFAULT;
+ =20
+ -	/* Check if we have write access to the userspace buffer */
++ 	input_address =3D (void __user *)input.address;
+ -	if (input.address &&
+ -	    input.length &&
+ -	    !access_ok(input_address, input.length))
+ -		return -EFAULT;
+ -
+  	data =3D kzalloc(sizeof(*data), GFP_KERNEL);
+  	if (!data)
+  		return -ENOMEM;
+@@@ -745,8 -757,12 +750,11 @@@ static int sev_ioctl_do_pdh_export(stru
+  	    !input.cert_chain_address)
+  		goto cmd;
+ =20
++ 	input_pdh_cert_address =3D (void __user *)input.pdh_cert_address;
++ 	input_cert_chain_address =3D (void __user *)input.cert_chain_address;
++=20
+  	/* Allocate a physically contiguous buffer to store the PDH blob. */
+ -	if ((input.pdh_cert_len > SEV_FW_BLOB_MAX_SIZE) ||
+ -	    !access_ok(input_pdh_cert_address, input.pdh_cert_len)) {
+ +	if (input.pdh_cert_len > SEV_FW_BLOB_MAX_SIZE) {
+  		ret =3D -EFAULT;
+  		goto e_free;
+  	}
+
+--Sig_/oeTGdJte5dvEadvZ+v6GZoL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7kFKcACgkQAVBC80lX
+0GwevQf9FJx6pTuxK869Sy9FWnywSAbBm+MJQGvfF+Ms/lpHMJsxRGtyVuqzpYsP
+oYFbOgvog+ojjCrrffIJEe2sa1UWTDBeVqEF8TTWjnAbYkn1up6jh4SYRm7OXWiz
+YYuB/XNjZfWwBjFEWGs4fQKJQ7PfaNEx48R8HLXR+schRXJwFWtMAEMIm7bqcYT4
+jHYuAEOIfeQezPl85Q7Ey7sE9J2l1jeBSdHKlydnaE4hxF1Ta1DtaLlHuXrzc4jE
+XeMANSlJAQqNSrFbKbIsEdwEVBsoaIz7+2HIrJBo1CQ3zE0JVt5cxLgoi1dvJ9Jr
+xNHfCM7DxPIVhEZyKWsi0lVOB7mZnw==
+=W5G7
+-----END PGP SIGNATURE-----
+
+--Sig_/oeTGdJte5dvEadvZ+v6GZoL--
