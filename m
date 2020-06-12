@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883AA1F7E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D021F7E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgFLVYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 17:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
+        id S1726363AbgFLV1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 17:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbgFLVYb (ORCPT
+        with ESMTP id S1726268AbgFLV1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 17:24:31 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BDFC08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:24:30 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x202so10019485oix.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:24:30 -0700 (PDT)
+        Fri, 12 Jun 2020 17:27:07 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4935C03E96F;
+        Fri, 12 Jun 2020 14:27:05 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w9so8264503qtv.3;
+        Fri, 12 Jun 2020 14:27:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
-        b=eRNis4OMnZrRDplmSMt/3zLdAx/9tw6XTLV83RYZGlfj6MLBFpNUAxVfTqVkXJDOh/
-         tFrMEaMKIobVGs3aFDIZF9PlVRl5O+gLIIya2W+zs3sIOXKAWC2whKk/hN3/4GU+4ZQ0
-         QvfbUSNDTKU3BH0vmcRNJO1q9GuEjKGfOtE6TOYCuNj/8itgceVS0dh5nZCZ1Tz+6JZr
-         sf5pWAVo5HR3qoENO+L2aVxTkRb1VJUY5EGTTVcKocJqCengXaY1BC/VwVJPZEkHmEdA
-         jLJ4RywnrbTyq6BJNtG1kmAKczO4xLadidGQR3KOd+S7F9JOODOPQlLuQ+9Xrjl4kUev
-         CQcQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/FNlqd4vn3jX2Jmt/9TRki01CcbjDa14Kvi+mmqzptw=;
+        b=nj+J/VvwqCfTau72ioAUq5oKCN8g/qV2edpgsv0WnT8SfdZZjxrZTwItqS70PsWwdD
+         a+DndK94Nv/Q2gKHO36aCfthMvlOfhDuzJwOqeFlwRMq1KaepTKUb3ekksGHu8R4JJaQ
+         8yG9PsQjVXRtvmbyYKoxjHEAzr57B+xliKfzoIJp0MR4lHx71tMOrifp0PQhCDn67JUU
+         HfYInEI4L/4MRLE6EF+t//e+99m3vgl94UAgMm358K7qP9mGh7SAA/gasjVePvINUlIc
+         jYzVvZsHhy+KlQwjv/uvc88/DMPtB3to2fMey6wBlC1HCy7I2BWlbt1t8Dm60fzYev/X
+         R1mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
-        b=YwJpJrxafnpP+Ai0U3LIh1ynGnUjCrJ8qW41iy2Pn2nQn4oJrNP3A7IcIU9OMJyRuP
-         ITpHzGYQps7QFeuHil9Sfxd1BmLEkGWDQSUiXJaJUgNvRyQdSuKK5P11HZHKkZuwy242
-         6bwsOFwYYqWxNdOB3brTthkMgkNDenwsxG5+ADf13gqN20qzL1WG0LRxJJlXS5FtYPKR
-         J50Vol7fnHq0JHB8EV3GjAg0e6+34PWSmv2m7RKDqQwA0ZqZUycOEwSjCkqaCNyhdoG/
-         xyVC8ZRHRfvQu3+tmfBzkVEFoY7cwJMqiZSK3hIFFha1mv+aHRe7Na+B2Q588MdHoTFN
-         ILvQ==
-X-Gm-Message-State: AOAM532PE0Z8fjQtQEv+xE0WGB6emXN2x1AKoMMc0i+sqdpcV30YDjoo
-        c0+C40DU0bmLp8VHQK3F+ttq/wYn+8N0kfojLc0=
-X-Google-Smtp-Source: ABdhPJwDkJXYZ/JFic/5XuI6qBJ7jl6sx9JJK/8tRk0SLbquw9saSs/TMR7vI8c1On1cm2dvW34DgZcGpYbip21hUyU=
-X-Received: by 2002:aca:564e:: with SMTP id k75mr780643oib.2.1591997069958;
- Fri, 12 Jun 2020 14:24:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/FNlqd4vn3jX2Jmt/9TRki01CcbjDa14Kvi+mmqzptw=;
+        b=CyHsUVbzooAeYF2HNTVtHQ5dUHowXHbIGKv9H0BHICczAqkm/c9HPQFNe1m6oxYmbk
+         BjmqL/bjQr8svO1TaVNq2VMA7gFP1kzNryO2HXE1aYDOGucgo9bQEwwXhfswHEkhRwhH
+         0BAYcU6EwJKCRi3pjZfHCpsX7YUiPiuEau52iSM4GEBicTRi/Yno9SPYGKrAerXlukZA
+         6gYgJzhoEloAfEeDcr3OqmezII6eGIBEtNi939Woode5DZHNtK5oQE/tkAJOcMYHK4Kq
+         1iCRXFiFKxdlWmY9THfwd6aq/Uyz7a0BeqWLmPeSNwKOPwyhUKIuqV+Go8PD/192Jb9R
+         R62w==
+X-Gm-Message-State: AOAM533XLyrZ8o+VQUAh7mWPCBAHAktR72A+w59mQHyNvFZprgMZFJTO
+        TzC1xDnDgLaaNF+bp70Hhw==
+X-Google-Smtp-Source: ABdhPJz8TotqDhM9hw4Dp+f1CREb1prIfiQgFl+jpkq+iCMCGtdgqNOgjFQPhkBhkd1zHV//PcGaWA==
+X-Received: by 2002:ac8:1285:: with SMTP id y5mr5208330qti.245.1591997224732;
+        Fri, 12 Jun 2020 14:27:04 -0700 (PDT)
+Received: from localhost.localdomain ([142.118.26.59])
+        by smtp.googlemail.com with ESMTPSA id m82sm5340591qke.3.2020.06.12.14.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 14:27:04 -0700 (PDT)
+From:   Keyur Patel <iamkeyur96@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Keyur Patel <iamkeyur96@gmail.com>
+Subject: [PATCH] i2c: smbus: Fix spelling mistake in the comments
+Date:   Fri, 12 Jun 2020 17:26:35 -0400
+Message-Id: <20200612212635.177380-1-iamkeyur96@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a05:6838:20ce:0:0:0:0 with HTTP; Fri, 12 Jun 2020 14:24:29
- -0700 (PDT)
-Reply-To: mgaddafi034@gmail.com
-From:   Aisha Gaddafi <asani4006@gmail.com>
-Date:   Fri, 12 Jun 2020 14:24:29 -0700
-Message-ID: <CADM5EyEgKZNxk4nh5MbizAmCkYVJ6Q0NuqG+hDWXYdJs+19ZZg@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh,
+Fix spelling mistake in the comments with help of `codespell`.
+seperate ==> separate
 
-Hello Dear
+Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+---
+ drivers/i2c/i2c-core-smbus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How are you doing today,I came across your e-mail contact prior a
-private search while in need of your assistance.
- I hope my mail meet you in good condition of health? Dear I have
-decided to contact you after much thought considering the fact that we
-have not meet before, but because of some circumstance obliged me, I
-decided to contact you due to the urgency of my present situation here
-in the refugee camp for your rescue and also for a business
-venture/project which I need your assistant in this business
-establishment in your country as my foreign partner as well as my
-legal appointed trustee.
+diff --git a/drivers/i2c/i2c-core-smbus.c b/drivers/i2c/i2c-core-smbus.c
+index b34d2ff06931..56bb840142e3 100644
+--- a/drivers/i2c/i2c-core-smbus.c
++++ b/drivers/i2c/i2c-core-smbus.c
+@@ -4,7 +4,7 @@
+  *
+  * This file contains the SMBus functions which are always included in the I2C
+  * core because they can be emulated via I2C. SMBus specific extensions
+- * (e.g. smbalert) are handled in a seperate i2c-smbus module.
++ * (e.g. smbalert) are handled in a separate i2c-smbus module.
+  *
+  * All SMBus-related things are written by Frodo Looijaard <frodol@dds.nl>
+  * SMBus 2.0 support by Mark Studebaker <mdsxyz123@yahoo.com> and
+-- 
+2.26.2
 
-I am Aisha Muammar Gaddafi, the only daughter of the embattled
-president of Libya, Hon. Muammar Gaddafi. Am a single Mother and a
-Widow with three Children.
- I am currently residing in Burkina Faso unfortunately as a refugee. I
-am writing this mail with tears and sorrow from my heart asking for
-your urgent help. I have passed through pains and sorrowful moment
-since the death of my late father.
-
-At the meantime, my family is the target of Western nations led by
-Nato who wants to destroy my father at all costs. Our investments and
-bank accounts in several countries are their targets to freeze. My
-Father of blessed memory deposited the sum of Twenty Seven Million,
-Five Hundred Thousand, Dollars ($27.500.000.000) in Bank Of Africa
-Burkina Faso which he used my name as the next of kin. I have been
-commissioned by the Bank to present an interested foreign
-investor/partner who can stand as my trustee and receive the fund in
-his account for a possible investment in his country due to my refugee
-status here in Burkina Faso.
-
-I am in search of an honest and reliable person who will help me and
-stand as my trustee so that I will present him to the Bank for the
-transfer of the fund to his bank account overseas. I have chosen to
-contact you after my prayers and I believe that you will not betray my
-trust. But rather take me as your own sister or daughter. I am willing
-to negotiate investment/business profit sharing ratio with you base on
-the future investment earning profits.
-Apologetic for my pictures I will enclose it in my next mail and more
-about me when I hear from you okay. Please I want you to contact me
-here (mgaddafi034@gmail.com) for more details.
-
-best regard
-Yours Sincerely.
-Aisha Gaddafi
