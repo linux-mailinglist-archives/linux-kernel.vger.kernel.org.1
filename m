@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216031F7DEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 22:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040911F7DF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 22:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgFLUDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 16:03:12 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14320 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgFLUDH (ORCPT
+        id S1726363AbgFLUHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 16:07:07 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:46170 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgFLUHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 16:03:07 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ee3df4d0000>; Fri, 12 Jun 2020 13:02:21 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 12 Jun 2020 13:03:07 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 12 Jun 2020 13:03:07 -0700
-Received: from [10.2.62.89] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 12 Jun
- 2020 20:03:07 +0000
-Subject: Re: [PATCH 1/2] docs: mm/gup: pin_user_pages.rst: add a "case 5"
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20200529234309.484480-1-jhubbard@nvidia.com>
- <20200529234309.484480-2-jhubbard@nvidia.com>
- <20200612192426.GK8681@bombadil.infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <d717e596-4ac7-9350-8734-379852c151d2@nvidia.com>
-Date:   Fri, 12 Jun 2020 13:03:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 12 Jun 2020 16:07:02 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49kBZt0TJ0z9vrWT
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 20:07:02 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ixJYb0AFYOl3 for <linux-kernel@vger.kernel.org>;
+        Fri, 12 Jun 2020 15:07:01 -0500 (CDT)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49kBZs5xlLz9vrWM
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 15:07:01 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49kBZs5xlLz9vrWM
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49kBZs5xlLz9vrWM
+Received: by mail-io1-f70.google.com with SMTP id l22so6782514iob.23
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 13:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEHhynpdM5DMn747yDxQHAnOD63fP4aU5muENxpDExw=;
+        b=NNff1R45Wt7qhp9gZnQWqRRJM7xIw8QuDw6QH+au+QeUWCpUdR3TMbC/KLXgNbQluY
+         l2h7S8zvLys0BdKsAaUC8RQpW+Se0yRnyiXkkCwy0ujtqgylzwhGT0gUY72jhFbbvT7e
+         q9J2wudVLZvys41s0Fbj8BalOTLQ7xG5xU5ohUYLxGhwmFkzvaIRe+7256kR97osmIva
+         uWSaKtH2SVTS8QDw3k4LTE6RuCi1v9GY0PR6PVTVnBay2R28q8jcp568vEEybHByqkR4
+         iUSKAQX7OEI9MFw6iZsHaYbLOeYDexnwUs7ZhJ2hvxD+jR3Ruba0+OyijrLz8TZKTVud
+         KElQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEHhynpdM5DMn747yDxQHAnOD63fP4aU5muENxpDExw=;
+        b=IzT3QPz1eu4E6ZEFdL5YyIixCjROLoR2872HT+cb1SujiCN6vGlFbisJ/nzFklzxfs
+         pLkWbbTuh6hDMBkVo0Lvl/KRBSXjcROF9z5P8ws0gMQkBKtTjwE26NetT/bV3zcYy68S
+         lS4MQeVrWqsoBAEiMQ4zpNIEfPrc/u63NC3GKotX6fYvuDizUD7gROLeRIbkvi3YKstb
+         yc1oVrPqJJM8+SaR6yTHpB2EAsJc5ecptaJ9Af1cVORduyNxDyymtgm998AelekzFMbE
+         ZRrldjich9q7+5bQTd1gVKfcPcHcIu7gf+nQS9IbXuMz3+X3JVrDPd8zLZMtwhAvqZjo
+         48pA==
+X-Gm-Message-State: AOAM5304758/i1YKXxW9YDd/LXk6LZWmx+0gbcqiEvRo6ow6Z3CKoJIQ
+        73dPN8NqMUi3vFGwR0muek/Nrrhys3Mb0TvFEvMkaEapCpNrnz7ZMyi2obAZaxpcxmCLrxNuMAG
+        lVviN5TrebfeRwaGRvITLP1PKcNIz
+X-Received: by 2002:a92:8488:: with SMTP id y8mr14815054ilk.262.1591992421415;
+        Fri, 12 Jun 2020 13:07:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyEETRnG9c5znkFcuVG3mipCUc4zEHS2GMklQoD0zcw7+4vuJEA2jNGyCrCmH/WR/w3DcPzA==
+X-Received: by 2002:a92:8488:: with SMTP id y8mr14815037ilk.262.1591992421246;
+        Fri, 12 Jun 2020 13:07:01 -0700 (PDT)
+Received: from piston-t1.hsd1.mn.comcast.net ([2601:445:4380:5b90:79cf:2597:a8f1:4c97])
+        by smtp.googlemail.com with ESMTPSA id n21sm3584221ioj.43.2020.06.12.13.07.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 13:07:00 -0700 (PDT)
+From:   Aditya Pakki <pakki001@umn.edu>
+To:     pakki001@umn.edu
+Cc:     kjlu@umn.edu, wu000273@umn.edu,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Enrico Weigelt <info@metux.net>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ethernet: Fix potential memory leak caused in error handling
+Date:   Fri, 12 Jun 2020 15:06:54 -0500
+Message-Id: <20200612200656.56019-1-pakki001@umn.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200612192426.GK8681@bombadil.infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1591992141; bh=fN6zAnkb8dRIBQrks+Oz4+vRiYcHSYaYUuw0BewGGEk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Mrwrs2/WN8fnEejZcAvFi1E+ICWIQc+5sT7wEIyruy1+L8O2vF2rU8etd+2m3Rcye
-         /0MGen72j1T2YMz8qzXatSCP76QXdLxycn/9MxrzFz+r0k+oGKr5wqPp43sFbsvvxJ
-         kG6DIrwJ31WVrfLqK6RrOt/FtCmOVWN8cByBMW2OYkwN5lYUueiqAzGuWU0cmQv94Q
-         Uvvv505bPXRH5YPkRvyIKX1owhLczul7/YDNdthyhbC86t0EtjEp8X1e75YFPqEGn9
-         iBucQvKo4smd+Vzmm9MOxV5oQ6ufLiUCUz2qRrkZ0AZiZ94MfBBuULhA48FkMlAfRC
-         xpX4UyB4FOplg==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-12 12:24, Matthew Wilcox wrote:
-> On Fri, May 29, 2020 at 04:43:08PM -0700, John Hubbard wrote:
->> +CASE 5: Pinning in order to write to the data within the page
->> +-------------------------------------------------------------
->> +Even though neither DMA nor Direct IO is involved, just a simple case of "pin,
->> +access page's data, unpin" can cause a problem. Case 5 may be considered a
->> +superset of Case 1, plus Case 2, plus anything that invokes that pattern. In
->> +other words, if the code is neither Case 1 nor Case 2, it may still require
->> +FOLL_PIN, for patterns like this:
->> +
->> +Correct (uses FOLL_PIN calls):
->> +    pin_user_pages()
->> +    access the data within the pages
->> +    set_page_dirty_lock()
->> +    unpin_user_pages()
->> +
->> +INCORRECT (uses FOLL_GET calls):
->> +    get_user_pages()
->> +    access the data within the pages
->> +    set_page_dirty_lock()
->> +    put_page()
-> 
-> Why does this case need to pin?  Why can't it just do ...
-> 
-> 	get_user_pages()
-> 	lock_page(page);
-> 	... modify the data ...
-> 	set_page_dirty(page);
-> 	unlock_page(page);
-> 
+In ethoc_probe, a failure of mdiobus_register() does not release
+the memory allocated by mdiobus_alloc. The patch fixes this issue.
 
-Yes, it could do that. And that would also make a good additional "correct"
-example. Especially for the case of just dealing with a single page,
-lock_page() has the benefit of completely fixing the problem *today*,
-without waiting for the pin_user_pages*() handling improvements to get
-implemented.
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+---
+ drivers/net/ethernet/ethoc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-And it's also another (probably better) way to fix the vhost.c problem, than
-commit 690623e1b496 ("vhost: convert get_user_pages() --> pin_user_pages()").
-
-I'm inclined to leave vhost.c alone for now, unless someone really prefers
-it to be changed, but to update the Case 5 documentation with your point
-above. Sound about right?
-
-
-thanks,
+diff --git a/drivers/net/ethernet/ethoc.c b/drivers/net/ethernet/ethoc.c
+index a817ca661c1f..2f6bab9f1d71 100644
+--- a/drivers/net/ethernet/ethoc.c
++++ b/drivers/net/ethernet/ethoc.c
+@@ -1207,7 +1207,7 @@ static int ethoc_probe(struct platform_device *pdev)
+ 	ret = mdiobus_register(priv->mdio);
+ 	if (ret) {
+ 		dev_err(&netdev->dev, "failed to register MDIO bus\n");
+-		goto free2;
++		goto free_mdio;
+ 	}
+ 
+ 	ret = ethoc_mdio_probe(netdev);
+@@ -1239,6 +1239,7 @@ static int ethoc_probe(struct platform_device *pdev)
+ 	netif_napi_del(&priv->napi);
+ error:
+ 	mdiobus_unregister(priv->mdio);
++free_mdio:
+ 	mdiobus_free(priv->mdio);
+ free2:
+ 	clk_disable_unprepare(priv->clk);
 -- 
-John Hubbard
-NVIDIA
+2.25.1
+
