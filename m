@@ -2,92 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D861F7551
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11E41F7557
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgFLIdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 04:33:02 -0400
-Received: from mail-eopbgr40130.outbound.protection.outlook.com ([40.107.4.130]:15114
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726264AbgFLIdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 04:33:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I9jZXJnVGlyjQ1eJaflt+aHxbAF56JqDoI7j0VNBWYEu+4WyHJ/f+EddKv07a+yBpozQKuYpzeShhtE0mplefYH1xAgkxYPq5vRELgI4bqSrbCSg3QfjojpvlIQPFa1W92udN4vum/xze0FbzWDDwTuMlRwuxomxO1mVGfPWrX5VKdmdMG5vNNA42DEMOxBd3QPlL5Z596Cb6QQo4uee9rlQ2rmaNcBPZQxljWJFqG/C5sBo3BGuaVvarWQ1VmQidbtPWNXJe0O3ZfplyVgtURCefCHpvz2cHEj1QetnyZFGSVDNuBD9dsUSK5y8zd+SMv3a85fYiCt64eTFXBJ3TQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U5jj+vXUzlcQkJqOxckoGrvDNGMTGeCtpH/i0mUjoNQ=;
- b=aaVWk3yfK4AXpmFiAdtTJKYLBbrxdTQaVozykioqw1oh5nCxRi0Ki174ndZaw2ZQe6NR5/+pI5JS8JJZhBi3/cxRxvhYZU4kukd5+1LzutvLBBxeBMW8VPLGUhiANKQYFx14WAjk0BGnYlzlCRXb1yRtpZH6AfkRxOhCjY2P6l3t6m76v5PxwniQ83AC3BEPJGNp9oidinDHY7e1qjeoo6DzmC4yENWJ1e+PUXo9d9HoDpP+3oZ6cw6SPChx2C7OBRq1ktw8RHhJvGr5+rTjlW8v7mdwe624XlLlHkWu/p93wKYO1mOx3ha0GeCNlOZfmJ9tJcJ9Pw5eW6rvsLVLnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
- dkim=pass header.d=habana.ai; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U5jj+vXUzlcQkJqOxckoGrvDNGMTGeCtpH/i0mUjoNQ=;
- b=umMyvuUCnfLlg99s7TmR8Z3eZ1auEB5UGYgTDUCKyXZ9jZisemeRc+77cAUBOiawvvkfVzVtHmEDJUzdK9Z5wyTXq0cfs06f6JxSSs5kwkrf4l0wh0Uj7eYeF0K0bqwqxp3ceZktnCyyP7qsHf1iUCNEmse2CXNvB5UKIpOuyPA=
-Received: from DB8PR02MB5468.eurprd02.prod.outlook.com (2603:10a6:10:ef::22)
- by DB8PR02MB5386.eurprd02.prod.outlook.com (2603:10a6:10:ec::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.22; Fri, 12 Jun
- 2020 08:32:56 +0000
-Received: from DB8PR02MB5468.eurprd02.prod.outlook.com
- ([fe80::207a:b49c:79e1:d713]) by DB8PR02MB5468.eurprd02.prod.outlook.com
- ([fe80::207a:b49c:79e1:d713%6]) with mapi id 15.20.3088.025; Fri, 12 Jun 2020
- 08:32:56 +0000
-From:   Tomer Tayar <ttayar@habana.ai>
-To:     Oded Gabbay <oded.gabbay@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH] habanalabs: increase GAUDI QMAN ARB WDT timeout
-Thread-Topic: [PATCH] habanalabs: increase GAUDI QMAN ARB WDT timeout
-Thread-Index: AQHWQIKZBIpvatRonk2sYQ2qmaGDzKjUpsWg
-Date:   Fri, 12 Jun 2020 08:32:56 +0000
-Message-ID: <DB8PR02MB546893BB8105D9B4F9B96F64D2810@DB8PR02MB5468.eurprd02.prod.outlook.com>
-References: <20200612062744.29316-1-oded.gabbay@gmail.com>
-In-Reply-To: <20200612062744.29316-1-oded.gabbay@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
-x-originating-ip: [46.116.101.49]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bc5995b2-6ede-46e4-39bc-08d80eab351f
-x-ms-traffictypediagnostic: DB8PR02MB5386:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR02MB53868B6C9BB67E9523746FD1D2810@DB8PR02MB5386.eurprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2399;
-x-forefront-prvs: 0432A04947
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Uy/NKEthNVfJykGfMEkECST9jq4bNZdJu9mVYS/jNTGYvOJ87xBZpLFCBl+oELEt0H9ENmJh3Dbtbs0cjm1huiikDBAFibmI5Uo0GfcRSV4ldyh68TFxjW5zTtfa69HhRYPSQX1tsp3lmFdoCC+9SVLG56zn67xt1c7E5hUU/fvKBGwrx9++EJgZc97ATaKj4XUvS9vSnxt8A8tBli9vjZqN5zlmSNmdW2W/ptZao4m1eo/dq+QSe4ohHZBMrYvmAwAn78kAllZqIxzSWBunIAICbUthNyoKaS2isCmBSF+bTVblZAURCqaTAZS0ZAAmB/L/qhUDV4gG2HYMLyL9Ow==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5468.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(136003)(346002)(376002)(396003)(366004)(71200400001)(478600001)(76116006)(66476007)(66446008)(33656002)(86362001)(64756008)(52536014)(66946007)(66556008)(7696005)(186003)(6506007)(53546011)(26005)(4326008)(5660300002)(8676002)(316002)(8936002)(558084003)(9686003)(2906002)(55016002)(6636002)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: g4eErcxp5WOb90xjR6o8xVaMgbR6vEgs26zWWVFofKUEDJEKnssy/o0Pq0OGV2yFtgBqM5KbRL/CapbSGyZr9z0h2CuZ/7fRrBpwkIsXNeNr9uomz6ILmJy3g/Lp2+tHN06RjRS13Z5V552H5kikrF44RLy11OhOVnYc+GLtwxB3Y4iSw2fzHAH5GSNoCb6ab57+b1DSk0IFRUdzlJNCy1C6IKMXzvYbnN9thNOf/u46ED0VmncnMD/Yo66HGsK+2JsnAOb8nXonotKkejF6PmMJ9R3PwCXOib+FrKVRW565l/lIhTaN/c6mCwNiIGZZ/A7On+mx/UewJlW2IzzvK+uhClsSv8ZdSt6Yyzv+pG2M+Lz5p6dVHqeHvvEEhyu9O9uw6M+j8hrj9FwzWLpHVQC7VHRalWvEvDHkKueMD80rjPZGx5dwFZ7r1ly0AYqGrxizFA2kNRnAnL4rFkq9HhIbLoJI5O6Pr9o/2MJLeiw=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726448AbgFLIey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 04:34:54 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:48955 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbgFLIex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 04:34:53 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200612083448epoutp021d2823fcf35b08924e5eea1b4243cb11~XvuYcMRWQ0563705637epoutp023
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:34:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200612083448epoutp021d2823fcf35b08924e5eea1b4243cb11~XvuYcMRWQ0563705637epoutp023
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591950888;
+        bh=gAAldD/B9B3N4Tw0s7+MAFW/ThmYfm6H+aM1y5UC4+I=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=J6oeIKdTxKxSk1Lq4insvt7UUvQZGQIzWOc2Cp0Wuj3fxUD4zMlV1dbkyemccxgNT
+         guRsdHl/BuJWLkJ4moDDc4bF6ydV+C1UGzvIND2iOk7h1NbXGJIIVJ65fGqj7rAl+W
+         zvGtlPV4jUb5AY0tvtoS3eoJxaBCJchmd8PWCL7I=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200612083448epcas1p24f83d90677700e9a4702dad87f7bbe53~XvuX86sjL1023310233epcas1p2P;
+        Fri, 12 Jun 2020 08:34:48 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49jvD71hGqzMqYm0; Fri, 12 Jun
+        2020 08:34:47 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C9.51.29173.72E33EE5; Fri, 12 Jun 2020 17:34:47 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200612083446epcas1p1595422de7bf3dc820cd062870ebef384~XvuWcKk6x1836618366epcas1p19;
+        Fri, 12 Jun 2020 08:34:46 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200612083446epsmtrp2f24b60e4b5f796ca6e85201960f3bbac~XvuWbd_2V0401604016epsmtrp2i;
+        Fri, 12 Jun 2020 08:34:46 +0000 (GMT)
+X-AuditID: b6c32a37-9cdff700000071f5-ce-5ee33e275b6b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7B.D0.08303.62E33EE5; Fri, 12 Jun 2020 17:34:46 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200612083446epsmtip2cd48bd17cd3212574f7eb8469b45d78b~XvuWPiA681677716777epsmtip2E;
+        Fri, 12 Jun 2020 08:34:46 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
+Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
+        <mori.takahiro@ab.mitsubishielectric.co.jp>,
+        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
+        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200612012834.13503-1-kohada.t2@gmail.com>
+Subject: RE: [PATCH] exfat: remove EXFAT_SB_DIRTY flag
+Date:   Fri, 12 Jun 2020 17:34:46 +0900
+Message-ID: <219a01d64094$5418d7a0$fc4a86e0$@samsung.com>
 MIME-Version: 1.0
-X-OriginatorOrg: habana.ai
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc5995b2-6ede-46e4-39bc-08d80eab351f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 08:32:56.3801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: r4QaIY474/NQVj2j/w1/8hx1prqCL0Yf/72UwjNkRP4sEx8jQHDFDDZ/KUNfy3AQIYyhVeV3rlWpBuBeQzywXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5386
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQJnvEdqdI23glRQ63sAxRdAmHabxwH6sMC1p6HGlLA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmga663eM4g2mN7BY/5t5msXhzciqL
+        xZ69J1ksLu+aw2Zx+f8nFotlXyazWPyYXu/A7vFlznF2j7bJ/9g9mo+tZPPYOesuu0ffllWM
+        Hp83yQWwReXYZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
+        5gCdoqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMDQo0CtOzC0uzUvXS87PtTI0
+        MDAyBapMyMmYtcOyYKdAxZ0+5QbGVt4uRk4OCQETicNP2hm7GLk4hAR2MEpM2HqUHcL5xCgx
+        e85GqMxnRomJM16ywbR82LiaFSKxi1Fi2ds2NgjnJaPEyyePmUGq2AR0JZ7c+AlmiwjoSZw8
+        eR2sm1mgkUnixMtsEJtTwFJi6oLNLCC2sICZxNKuvWA2i4CqRPvF02A2L1DN86mnmCBsQYmT
+        M5+wQMyRl9j+dg4zxEUKErs/HWWF2GUlsej0I0aIGhGJ2Z1tzCDHSQjM5JBYsfY6I0SDi8S7
+        29tYIWxhiVfHt7BD2FISn9/thXqzXmL3qlMsEM0NjBJHHi1kgUgYS8xvWQg0lQNog6bE+l36
+        EGFFiZ2/50It5pN497WHFaREQoBXoqNNCKJEReL7h50sMKuu/LjKNIFRaRaS12YheW0Wkhdm
+        ISxbwMiyilEstaA4Nz212LDAGDmyNzGCk6mW+Q7GaW8/6B1iZOJgPMQowcGsJMIrKP4wTog3
+        JbGyKrUoP76oNCe1+BCjKTCwJzJLiSbnA9N5Xkm8oamRsbGxhYmZuZmpsZI4r6/VhTghgfTE
+        ktTs1NSC1CKYPiYOTqkGJvbLR6XX3Jm9Zp8iw/Utx07/zn/a6c0m46q2jm/elLRZLw0evHFP
+        +z9zzpf3s6POMFcf0BZojc0XEa5yXalQ9s0jf9mJGVV3NivtMdnz79Uc/0+v1rTM4fO55BPA
+        Yvs/VvHoPgP/fzs3tbzkkJkcyXBoVdwxkVQWJrllCir1Tr1VmcsEslclzD7bql8kfPfD1zqf
+        w8wrPfu7eqf8uvsoNo//3FsZ3jsOG77x8btNm6t0dv5dxj/KjUvnT/+YP9tfaFX4x2c14ebc
+        toKl501twn9rqz99V7WzN3PFr1Z7SX/1CQyq+puFrxQtOXBtndjSDq/rF3VS+ie2lvYo72NZ
+        +Ieh9uwxtflllivvcXL61CixFGckGmoxFxUnAgC3CbnRLwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LZdlhJXlfN7nGcweRFShY/5t5msXhzciqL
+        xZ69J1ksLu+aw2Zx+f8nFotlXyazWPyYXu/A7vFlznF2j7bJ/9g9mo+tZPPYOesuu0ffllWM
+        Hp83yQWwRXHZpKTmZJalFunbJXBlzNphWbBToOJOn3IDYytvFyMnh4SAicSHjatZuxi5OIQE
+        djBKLHh/AsjhAEpISRzcpwlhCkscPlwMUfKcUWLex5dsIL1sAroST278ZAaxRQT0JE6evM4G
+        UsQs0Mwk0fqlmQkkISTQxSjxapkiiM0pYCkxdcFmFhBbWMBMYmnXXjCbRUBVov3iaTCbF6jm
+        +dRTTBC2oMTJmU9YQI5gBlrQtpERJMwsIC+x/e0cZoj7FSR2fzrKCnGDlcSi04+gakQkZne2
+        MU9gFJ6FZNIshEmzkEyahaRjASPLKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4GjS
+        0trBuGfVB71DjEwcjIcYJTiYlUR4BcUfxgnxpiRWVqUW5ccXleakFh9ilOZgURLn/TprYZyQ
+        QHpiSWp2ampBahFMlomDU6qBKW+jQeD1CUz3kn9KufM9MCyVEf3k1aPULcqWq/jJo2lq2rJu
+        f/fTPYyLZyos/f00/uVKEWE5o4ea0zOf23nfS/nzPzigQu/XUW67ZckfTlh567mcLYlR7Il1
+        +z3povYuTmXf8tNODjNfJ17tZmfbtLfTjnuzgFfWfsOT2h+su/n5f0lIlCyPU+R2Ldyuav11
+        8wNpno0SIop1wlVSi082GOxhkN7Vf9B8Yv6LyBsrFNQPH2hS9mwU1cl6sFt5mkBWbvXSZV++
+        C03IlJr/78pVpZfnv3Jpr/JL/fehef5x+YcSWV6HJtpa//Aqu7BKi9M2/r7GntbqZTm3gx33
+        NT/tPC873cX3X3EL65y35+crsRRnJBpqMRcVJwIAlRYz3xUDAAA=
+X-CMS-MailID: 20200612083446epcas1p1595422de7bf3dc820cd062870ebef384
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200612012902epcas1p4194d6fa3b3f7c46a8becb9bb6ce23d56
+References: <CGME20200612012902epcas1p4194d6fa3b3f7c46a8becb9bb6ce23d56@epcas1p4.samsung.com>
+        <20200612012834.13503-1-kohada.t2@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 9:28 AM, Oded Gabbay <oded.gabbay@gmail.com> wrote:
-> The current timeout is too low for some of the workloads and we see false
-> errors as a result.
->=20
-> Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+> remove EXFAT_SB_DIRTY flag and related codes.
+> 
+> This flag is set/reset in exfat_put_super()/exfat_sync_fs() to avoid
+> sync_blockdev().
+> However ...
+> - exfat_put_super():
+> Before calling this, the VFS has already called sync_filesystem(), so sync
+> is never performed here.
+> - exfat_sync_fs():
+> After calling this, the VFS calls sync_blockdev(), so, it is meaningless
+> to check EXFAT_SB_DIRTY or to bypass sync_blockdev() here.
+> Not only that, but in some cases can't clear VOL_DIRTY.
+> ex:
+> VOL_DIRTY is set when rmdir starts, but when non-empty-dir is detected,
+> return error without setting EXFAT_SB_DIRTY.
+> If performe 'sync' in this state, VOL_DIRTY will not be cleared.
+> 
+> Remove the EXFAT_SB_DIRTY check to ensure synchronization.
+> And, remove the code related to the flag.
+> 
+> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+> ---
+>  fs/exfat/balloc.c   |  4 ++--
+>  fs/exfat/dir.c      | 16 ++++++++--------
+>  fs/exfat/exfat_fs.h |  5 +----
+>  fs/exfat/fatent.c   |  7 ++-----
+>  fs/exfat/misc.c     |  3 +--
+>  fs/exfat/namei.c    | 12 ++++++------
+>  fs/exfat/super.c    | 11 +++--------
+>  7 files changed, 23 insertions(+), 35 deletions(-)
+> 
+[snip]
+> 
+> @@ -62,11 +59,9 @@ static int exfat_sync_fs(struct super_block *sb, int
+> wait)
+> 
+>  	/* If there are some dirty buffers in the bdev inode */
+>  	mutex_lock(&sbi->s_lock);
+> -	if (test_and_clear_bit(EXFAT_SB_DIRTY, &sbi->s_state)) {
+> -		sync_blockdev(sb->s_bdev);
+> -		if (exfat_set_vol_flags(sb, VOL_CLEAN))
+> -			err = -EIO;
+> -	}
 
-Reviewed-by: Tomer Tayar <ttayar@habana.ai>
+I looked through most codes related to EXFAT_SB_DIRTY and VOL_DIRTY.
+And your approach looks good because all of them seem to be protected by
+s_lock.
+
+BTW, as you know, sync_filesystem() calls sync_fs() with 'nowait' first,
+and then calls it again with 'wait' twice. No need to sync with lock twice.
+If so, isn't it okay to do nothing when wait is 0?
+
+> +	sync_blockdev(sb->s_bdev);
+> +	if (exfat_set_vol_flags(sb, VOL_CLEAN))
+> +		err = -EIO;
+>  	mutex_unlock(&sbi->s_lock);
+>  	return err;
+>  }
+> --
+> 2.25.1
+
+
