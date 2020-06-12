@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527041F75FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 11:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BF01F761E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 11:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgFLJdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 05:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgFLJdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 05:33:16 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A9FC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 02:33:16 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g5so6858862otg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 02:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Mg3BoW/fLQCp/N5h+7pNt3hqP5JwJpsTjWnCagvdKGU=;
-        b=FXChjyH4Y3Z4wuIITN/UTDCR1904AF/0IeeMKjmlf5hMP0rVvzZc5wTnJ4pPCp8jhz
-         289GuoPeirVUEjMuankehfWE4S3e60WoenhplSHwTBJXnji9U58WzR4klud0gjWTmyEK
-         xOpulLrdtP9W16EEkB4Et6oIqWccfcjOSdL429SXhowr+8tHomMZbgvQ6+Iy3WFIsME3
-         BVU34V1jYpXFQ7Ut4bVWQwkx2GgPtwcWGWLDqKN1T5ckzWad3dTujeYYGcR+Ug/ziy+E
-         3KXG8tWJ4oiTKRvl5Ek4CoCZpT0KnovSAEMSFElUvm4MUtJuBf47vEihzOmF61RKc9KP
-         JKwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=Mg3BoW/fLQCp/N5h+7pNt3hqP5JwJpsTjWnCagvdKGU=;
-        b=ZRVNkUNh4/9uTsV/9rmJAdLEfuTuvZu5WDtL8v7MgJv46932kOW8Y0rVb+6trdfUMk
-         nle+8ULxQiBvvJZ45tubdTE8PNLXTx8NMuMTjmS261toCr972VDBn6qjgBUMpNdTCu+D
-         9SNpMsVjb7MqbCN/DefuSFpSko5vV/+gn/4WZaMducKaIXSx//rvwUxHvQ2T1/ZQAVDU
-         DWVkYM5s5PmcCRfqed0adsoQxASM33xIgkq3tpg2J/QQ513DBu5sZMzM0qfYM0CzTgrw
-         UN12+OZC5dDranb7gYVmvHSC4NA5J4zD5S/UY1DXOk7D2izHl26mgMWtxzPn8JX3Jlrp
-         aImQ==
-X-Gm-Message-State: AOAM5332vVxm/iOoOGuVWzeWm8KJE/jA67sGHDovAeE5qIEgugMWkDB0
-        x0DSE37NiJlK6ncJFPcp7kCwJDDLi6Ctum1QwhM=
-X-Google-Smtp-Source: ABdhPJwSnTk6LEjwKrWbpukLpO/olw+NByjyPOcJRwCpm+C2fpStdO4QDEohLuJcEv37n5sbs09s1F5oQcJbQSrpjCY=
-X-Received: by 2002:a9d:7ccb:: with SMTP id r11mr10691451otn.209.1591954394739;
- Fri, 12 Jun 2020 02:33:14 -0700 (PDT)
+        id S1726134AbgFLJhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 05:37:50 -0400
+Received: from mout.web.de ([217.72.192.78]:38973 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgFLJhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 05:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1591954655;
+        bh=kuWFZ8oSr+pwcbI4QywrW6/nLWqzxloT2RQ5wBq9vTc=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=SRdxiHa/fkKEof8XVkQMTzGXd5AtUqvJFmnKfXa/u04g16tLDh3vaC4ZrAq5nm/fY
+         n0YussoWJlIaFtjBjKO1AeKTXtkn+QzQ9CRLPZRE9UJHYpelm6h/LgwaG5gY4bN2jQ
+         t3i1TFVB/ulEvcFc0ECblztWft0CdSkUsFypbYNM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.95.40]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MtyA2-1iwEja3NQy-00uCmn; Fri, 12
+ Jun 2020 11:37:34 +0200
+Cc:     linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH] drm/msm: Fix memory leak in msm_submitqueue_create()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Bernard Zhao <bernard@vivo.com>, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        opensource.kernel@vivo.com
+Message-ID: <acd53f06-845b-75e0-24c5-40c751d12945@web.de>
+Date:   Fri, 12 Jun 2020 11:37:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Reply-To: pamela.render174@gmail.com
-Received: by 2002:a05:6838:e4aa:0:0:0:0 with HTTP; Fri, 12 Jun 2020 02:33:13
- -0700 (PDT)
-From:   "pamela.render" <pamela.render174@gmail.com>
-Date:   Fri, 12 Jun 2020 02:33:13 -0700
-X-Google-Sender-Auth: VfikhdxWrdWRG3ZC3ykYwdpBYn0
-Message-ID: <CAJu2NFgsprzUfSXNtgM4n1kpd_iofVoTAx3VLZwDdyqp1_eBoA@mail.gmail.com>
-Subject: My Dearest,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qaXAm6Q9wV9VhMqjFLP6tY0gcA2He1dT9KWiGh6g8sxPdYxPSS+
+ xAG61gafXJblj4/iONwtirdhDf1sg2OPviJqUGaVn29vgp038pDESbJ18EFQz3qh+yyrJss
+ /CTCQ+1LyeB4JKPuMYPiz5UD8CLt/xOcWxDJ4xT2+JusNTaI/QuGqKDbrrb19WtlqFaRhst
+ iOS8dSnVKNGE/zMNQwLRA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ScQ2l+7H0Ok=:RJnBEIvtOBFJMuQa2CT6qU
+ J3ur9yzgD2xZ4pBWXVGIUBg3qLPn6vIYKAca8ovyVG0TkSbaGX53H1T4GAW928u1RlyWJ1s2G
+ XRPz1G2f+syD17kjPICMrJiSMcCVQNGYtYgD/JYZiPRMa+SriTrOcx3YPDp6rMHmCX9pyCqap
+ QfbZyZF8NynxrGZJOOcObebUndNO3xzdT07H+pF7RXqGjB3sM5b4AEtxImjZTekCBN/dXsYyX
+ S/ZGx3EvZiyPPGBM55vsv9RqyrViXKtPABfhdQ9w/Bb36AH+BSIaiw/o4U1fSbj3LGEWvZNW5
+ xqRpW/9WDasDf0fZRbupErewIk0jkrO7UGsgfMjDxDUEclKj+T8dJvwUQyyn4fIZs0mEFw8qU
+ gEMvmWf2RDd6mTxaAo23KJu0s+G5D+EGnoMuiR+y/3EZ9Wjx3E5x1wgaXkLKQ/Y1eKdb1RWc7
+ oOfNyAYzzxW1kVxTQMlgAscueLHAjzZp/XieBdDQfUVUsj8Q1D0YdxMk7Y0H/5pQQOXS8xR2G
+ Pe/3gW8/aRxX0Ot9vsrNUhInJvnobMSklKvyXXw3uyaoUYOgdihSidjsjpEyxoba0N09mE1fx
+ IJ07zZHnkbSLR3PDLyf9061XY4baqGzRzkpBEVQgR7uSAkKrCTjo9N5LzaArsW7DkXreXtued
+ nUzlnqW6HssjDlC43PHIh9Yt5XzuoOqtLSs4afZK0731cLfL/PvtpT3n5v6ZRFu2SCHgt3LQm
+ dG2zizpV0iYurNiZ423Red36qB/lQiEPD8FSecQYhn2Y2XHuWDTB/HDAV+/r8FfD/+tzfzKcp
+ LcAgXoUpKuqBdl8x1G6fvaAnyol4HOdeVxq9X78VEmyPNOC6k0m52yCynOab1luhpKN+z0+4F
+ 2k+Wk2ErrVN8025/0d4frS25RI6cXeAXb5hyOgLZf0aEMPLmbKTTwGiqRVofiohk4lU0HEjOK
+ WULOiT+v4W+/7HAznesqfRSHRMdirnx4MS0xO27aVOlWL2Xk+o9lO3RuqlHOSc5X5ckzhOBew
+ 7kN5OG3d6aHq0xXUAvGNUE6y3P+fv7WufHwIhnDii5Uds7ncgcMl6r5jT22mRh4bdmmf2sres
+ L7NU09bd45FyvkJWhlTun3N8xUTkdNMcUL7DrFU3oFRCf7GMjuobAKXKAhUZh91FCFj9dB85J
+ pD2cXCXYdTAA+E47XUY7j7+p/8o04NTAWhZkYeHRVxre/iUk3LlVw+57dVuMdEmRWoaFXAP1S
+ YvQ6wMIyIaT1rc1EW
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dearest,
+> In fucntin msm_submitqueue_create, the queue is a local
+> variable, in return -EINVAL branch, queue didn`t add to ctx`s
+> list yet, and also didn`t kfree, this maybe bring in potential
+> memleak.
 
-I am writing this mail to you with tears and sorrow from my heart.With
-due respect, trust and humanity, i appeal to you to exercise a little
-patience and read through my letter i feel quite safe dealing with you
-in this important business having gone through your remarkable
-profile, honestly i am writing this email to you with pains, tears and
-sorrow from my heart, i will really like to have a good relationship
-with you and i have a special reason why I decided to contact you. I
-decided to contact you due to the urgency of my situation.
+I suggest to improve also this change description.
+How do you think about a wording variant like the following?
 
-My name is Miss.Colette Kipkalya, 23yrs old female and i am from Kenya
-in East Africa. Light in complexion, single (never married) but
-presently i am residing here in Ouagadougou, Burkina Faso refugee
-camp. My father Late Dr Kipkalya Kones was the former Kenyan road
-Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
-been on board the Cessna 210, which was headed to Kericho and crashed
-in a remote area called Kajong'a, in western Kenya. The plane crashed
-on the Tuesday 10th, June, 2008. You can read more about the crash
-through the belowsite:
-http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?iref=
-=3Dnextin
+   Release the GPU submission queue object after an input parameter valida=
+tion failed.
 
-After the burial of my father, my Fathers brother conspired and sold
-my father' s property to an Italian Expert rate which they shared the
-money among themselves and live nothing for me. One faithful morning,
-I opened my father's briefcase and found out the documents which he
-have deposited huge amount of money in one bank in Burkina Faso with
-my name as the next of kin because when he was alive he deposited some
-amount of money in a Bank in Burkina Faso which he used my name as the
-next of kin. The amount in question is $4.7Million.
 
-I have informed the bank about claiming this money and the only thing
-they told me is to look for a foreign partner who will assist me in
-the transfer due to my refugee status here in Burkina Faso. God told
-me that you are the honest and reliable person who will help me and
-stand as my trustee so that I will present you to the Bank for
-transferring of my father=E2=80=99s money to your bank account in overseas.=
-I
-have chosen to contact you after my prayers and I believe that you
-will not betray my trust. But rather take me as your own biological
-sister or daughter which I will be coming to your country as soon as
-this money is transferred to your account.
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the commit messag=
+e?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?id=3Db791d1bdf9212d944d749a5c7f=
+f6febdba241771#n183
 
-My dearest, things are very bad for me here in the refugee camp where
-i am living today. People are dying here day after day because of lack
-of food and poor medical treatment. Even one of us died last night and
-was buried this morning. I am afraid of what i am seeing here. I don't
-know who it will be her turn tomorrow, I was planning to read law in
-my life before the ugly incident that killed my parents that put me in
-this horrible place i found myself toady. This place is like a prison
-as we are only allowed to go out on Monday and Friday of the week as
-given
-by the united nation rules and regulation here in Burkina Faso.
-It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
-eek
-it=E2=80=99s just like one staying in the prison and i hope by Gods grace i
-will come out here soon. I don' t have any relatives now whom i can go
-to and the only person i have now is Rev Isaac Ambrose who is the
-pastor of the (Christ for all Churches) here in the refugee he has
-been very nice to me since i came here but i am not living with him
-rather i am leaving in the women's hostel because the refugee have two
-hostels one for men the other for women, so you can always contact me
-through this my both email address here (colettekipkalya@gmail.com)
-thanks and am waiting for your reply. Please if you want to help me
-out of this situation respond back so that i will tell you more about
-me.
 
-Yours faithful
-Miss. Colette Kipkalya
+How do you think about to reorder any statements for this function impleme=
+ntation?
+
+Regards,
+Markus
