@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F401F77F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35E11F77FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgFLMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 08:34:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:35722 "EHLO foss.arm.com"
+        id S1726308AbgFLMf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 08:35:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgFLMey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 08:34:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18F191F1;
-        Fri, 12 Jun 2020 05:34:53 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 575AB3F6CF;
-        Fri, 12 Jun 2020 05:34:51 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 13:34:48 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-Message-ID: <20200612123448.fcmzv3rdtsbawmpd@e107158-lin.cambridge.arm.com>
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200611110301.GA132747@google.com>
- <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
- <20200612092454.GA94228@google.com>
+        id S1726089AbgFLMfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 08:35:54 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B58192074B;
+        Fri, 12 Jun 2020 12:35:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591965354;
+        bh=dvfhF03OLy1cljerZ+W0XOM0w/Imr2u1Tdky5STILqc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NKeJQH1kcC96YrGTLhYXgewLXWelLvsG7j3SNGm/XZREhYaeNOFPUXw4BE5PMKZmZ
+         rnZ51aHrKhe1QIDhCma/khU6XqQlj0w2cRIztwr1zJiVJwSKpQ9uU4vC6Y8TCn4l+Q
+         vLrmJeGAcrV5vM0RpKDCIeMtCom94g7tok802qtg=
+Date:   Fri, 12 Jun 2020 13:35:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>, Takashi Iwai <tiwai@suse.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [GIT PULL] sound fixes for 5.8-rc1
+Message-ID: <20200612123551.GG5396@sirena.org.uk>
+References: <s5himfxet1c.wl-tiwai@suse.de>
+ <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
+ <CALAqxLWEfRJ_Jr0iDgmvqop5Etz5xve89Zy3OeUbnKUGtqjCqQ@mail.gmail.com>
+ <4d692acd-6fe8-7a5f-34d5-78a4d6dd03cf@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Fnm8lRGFTVS/3GuM"
 Content-Disposition: inline
-In-Reply-To: <20200612092454.GA94228@google.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <4d692acd-6fe8-7a5f-34d5-78a4d6dd03cf@linaro.org>
+X-Cookie: As seen on TV.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/20 10:24, Quentin Perret wrote:
-> +CC Qais [FYI]
 
-Thanks for the CC.
+--Fnm8lRGFTVS/3GuM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> On Thursday 11 Jun 2020 at 10:48:40 (-0700), Doug Anderson wrote:
-> > Hrm.  I guess my first instinct is to say that we still want this
-> > patch even if we have something that is applied more globally.
-> 
-> Fair enough.
-> 
-> > Specifically it sounds as if the patch you point at is suggesting that
-> > we'd tweak the boost value to something other than max but we'd still
-> > have a boost value.  In the case of cros_ec_spi I don't believe we
-> > need any boost value at all, so my patch would still be useful.  The
-> > computational needs of cros_ec_spi are very modest and it can do its
-> > work at lower CPU frequencies just fine.  It just can't be interrupted
-> > for large swaths of time.
-> > 
-> > 
-> > > IOW, how do you feel about 20200511154053.7822-1-qais.yousef@arm.com ?
-> > 
-> > I'm not totally a fan, but I'm definitely not an expert in this area
-> > (I've also only read the patch description and not the patch or the
-> > whole thread).  I really don't want yet another value that I need to
-> > tune from board to board.  Even worse, this tuning value isn't
-> > board-specific but a combination of board and software specific.  By
-> > this, I'd imagine a scenario where you're using a real-time task to
-> > get audio decoding done within a certain latency.  I guess you'd tune
-> > this value to make sure that you can get all your audio decoding done
-> > in time but also not burn extra power.  Now, imagine that the OS
-> > upgrades and the audio task suddenly has to decode more complex
-> > streams.  You've got to go across all of your boards and re-tune every
-> > one?  ...or, nobody thinks about it and older boards start getting
-> > stuttery audio?  Perhaps the opposite happens and someone comes up
-> > with a newer lower-cpu-intensive codec and you could save power.
-> > Sounds like a bit of a nightmare.
+On Fri, Jun 12, 2020 at 12:41:59PM +0100, Srinivas Kandagatla wrote:
 
-Generally I would expect this global tunable to be part of a vendor's SoC BSP.
+> Can you please try these two patches, I think the problem is that FE
+> dailinks are always set to bidirectional, this two patches should fix it.
 
-People tend to think of the flagship SoCs which are powerful, but if you
-consider the low and medium end devices there's a massive spectrum over there
-that this range is trying to cover.
+> https://git.linaro.org/people/srinivas.kandagatla/linux.git/commit/?h=gapless/v2&id=bb7ce65a0ca1640cd9ff301c885f56ce00519834
 
-I would expect older boards init script to be separate for newer boards init
-script. The OS by default boosts all RT tasks unless a platform specific script
-overrides that. So I can't see how an OS upgrade would affect older boards.
+> https://git.linaro.org/people/srinivas.kandagatla/linux.git/commit/?h=gapless/v2&id=9b568e491f0410b453aaf5a147b75252a6943ffd
 
-This knob still allows you to disable the max boosting and use the per-task
-uclamp interface to boost only those tasks you care about. AFAIK this is
-already done in a hacky way in android devices via special vendors provisions.
+> Once you confirm I can send them to list as fixes.
 
-> > 
-> > I'd rather have a boolean value: boost all RT threads to max vs. don't
-> > boost all RT threads to max.  Someone that just wanted RT stuff to run
+These seem sensible to me, probably worth submitting them even if more
+investigation is needed on the original issue.
 
-If that's what your use case requires, you can certainly treat it like
-a boolean if you want.
+--Fnm8lRGFTVS/3GuM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > as fast as possible without any hassle on their system and didn't care
-> > about power efficiency could turn this on.  Anyone who really cared
-> > about power could turn this off and then could find a more targeted
-> > way to boost things, hopefully in a way that doesn't require tuning.
-> > One option would be to still boost the CPU to max but only for certain
-> > tasks known to be really latency sensitive.  Another might be to
+-----BEGIN PGP SIGNATURE-----
 
-per-task uclamp interface allows you to do that. But SoC vendors/system
-integrators need to decide that. I'm saying this with Android in mind
-specifically. Linux based laptops that are tuned in similar way are rare. But
-hopefully this will change at some point :)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jdqYACgkQJNaLcl1U
+h9BcHggAhw+IjXtENGgS/PkLO+DIlqb7o4HGG6VP1fwBdJnviYllEpRAAdFGQqwp
+vkLQE89dayJM9tZlpfXHEBZccHwP+UQuG0w7SuoM/mrWNgqZhZ+rd25w72oOeJTy
+ftwaXJT9AXz/PWMNOf3VmoX0t3lWcZ9sPvts/766O7eqAiVEoM0phfYDDdq42E0i
+eBFdSpiDV/QX8FH9rRJSJgZguKwXNwfG/sdr+u59/2sV9M8XCmwt5+dRqU7sliQI
+bev+u7+EVVMY29z/fbhcTXMREgwcffudgzZIGrAWUcNKgws3Ynfww9LklX6hiDNc
+rkGo8WbaF1XKDHliJHkbH/nR/XKvbg==
+=BRMX
+-----END PGP SIGNATURE-----
 
-> > somehow measure whether or not the task is making its deadlines and
-> > boost the CPU frequency up if deadlines are not being met.  I'm sure
-> > there are fancier ways.
-
-You need to use SCHED_DEADLINE then :)
-
-Making sure that RT tasks meet their deadlines is a userspace tuning problem.
-There's no way the kernel can know if an RT task is meeting its deadline.
-
-> > 
-> > ...of course, I believe your patch allows me to do what I want: I can
-> > just set the default boost to 0.  It just leaves in the temptation for
-> > others to require a default boost of something else and then I'm stuck
-> > in my tuning nightmare.
-
-To cover all possible systems Linux can run on, this variability is required.
-On general purpose systems with decent SoCs, I'd expect them to just want to
-set this to 0 and selectively boost specific RT tasks.
-
-> 
-> Right, so I am not disagreeing at all with the above. FWIW, I expect
-> Android to set this default value to 0 as you mentioned, so that uclamp
-> basically becomes 'opt-in' for _all_ tasks, including RT.
-> 
-> Now, given that Qais' patch is commiting something to userspace, I think
-> it makes sense to expose the full range rather than a boolean value, as
-> it's probably more future-proof. That is, if we expose a boolean knob
-> now, and somebody wants to be able to set a default value in the middle
-> in a few years, we'll have to add another knob, and maintain both (which
-> sucks). But it's just my personal opinion. Feel free to jump in the
-> other thread if you feel differently :)
-
-I guess you're talking about Android/Chromium specific knobs on top of the
-sysctl one here. Not sure why you need that since init scripts should be able
-to modify this directly since they run as root.
-
-Cheers
-
---
-Qais Yousef
+--Fnm8lRGFTVS/3GuM--
