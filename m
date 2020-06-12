@@ -2,213 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99001F7F2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 00:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976601F7F43
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 00:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgFLWtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 18:49:52 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49212 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726376AbgFLWti (ORCPT
+        id S1726401AbgFLWwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 18:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726335AbgFLWwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 18:49:38 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CMnW69103516;
-        Fri, 12 Jun 2020 17:49:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592002172;
-        bh=dJfNet5z/jwMk1KyTLxkDrBpDH/7oBNjz2rfy7DYy2k=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lR6+haSK7Q96LT+l3dgEHmT3JM9s7Op/GiuFx8ZW0aTA16ULzKblbmVpmdDyeCdAk
-         4EigFPgX5On2KBpD8NSdXG1yR+MvWFDgVSL99Y8INp7b89h5stoYQE4Vxrud0aAjc2
-         jef3So1ghR/1D0Z4x6xsneilteNme/evCfQlwOTc=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05CMnW1f119692
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 17:49:32 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Jun 2020 17:49:32 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Jun 2020 17:49:32 -0500
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CMnW0e112307;
-        Fri, 12 Jun 2020 17:49:32 -0500
-Received: from localhost ([10.250.48.148])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 05CMnWtG062201;
-        Fri, 12 Jun 2020 17:49:32 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH v3 6/6] remoteproc: k3-dsp: Add support for L2RAM loading on C66x DSPs
-Date:   Fri, 12 Jun 2020 17:49:14 -0500
-Message-ID: <20200612224914.7634-7-s-anna@ti.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200612224914.7634-1-s-anna@ti.com>
-References: <20200612224914.7634-1-s-anna@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 12 Jun 2020 18:52:30 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393C8C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 15:52:30 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id w16so11085295ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 15:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=D7ORPB0O89tNgrN/9KBjll99io72ZKSooj4kx4IJCSE=;
+        b=MwdW3bCR8Nn+pk+s1Vi4ICKQC9dSGSV7uklsiaqbyA4sLPSP98M06Sxk0YnRlmPcaZ
+         sA7BYFEl8mLWqFwZ6wfjbYseyHtR8VYf9R5sU5mUCoCPrOHvU3Bmm0NqwEiMLZ/1QGLO
+         xDid7EfTuEq18gwFvbjfAc7FvGZ8gdm7Zbzio=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=D7ORPB0O89tNgrN/9KBjll99io72ZKSooj4kx4IJCSE=;
+        b=txcvKCbSFBuAqAmsvKkMyBhHaXcwpeuTrPoQIplPWgdQDpuTUnwSvXHSEUAIQkg1i8
+         WoZax3UTnd6HaRdzYPjcoJPCHKJ1fvVInanMNlZqHq5Xn4t6hHweeR6nSFg0p0Xw9gl3
+         H7zl5hHl7sIVnISo5XutM+1YrF/jw9v3HRk2PYLDNIOlDASHvMt0fdDlHMXcXzf93IH3
+         DODZCQqbTkdG6+ITkNdDdbEmIf/9ebNBQgC8lzSyAYRtofsxWuOKde51kHFlktPQNJeh
+         xQaBG6TUW7rttSreQedBJ9ilHQhXruPPEKEAhJhuzQA8Ec6vSlwIpHiLc0Ri8BZcFT5W
+         DhYQ==
+X-Gm-Message-State: AOAM532BsmmaAnqffjxNJKsLZZo4Cwe3E9FoWcwMw5oq6X1nQEi5DV+L
+        0J4X9JcexPJY4Nc7rvR8VpZstncZd2L2UQ==
+X-Google-Smtp-Source: ABdhPJxSGVAxKxCFLMfetzl0IrrTxR2FBwpvNDo6LG/SnBb8uMHJ8SUDonYdOSLdrekVRGIKMJE5Vw==
+X-Received: by 2002:a17:906:799:: with SMTP id l25mr15073991ejc.234.1592002348562;
+        Fri, 12 Jun 2020 15:52:28 -0700 (PDT)
+Received: from rj-aorus.ric.broadcom.com ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id di14sm3781434edb.77.2020.06.12.15.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 15:52:27 -0700 (PDT)
+From:   Ray Jui <ray.jui@broadcom.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lori Hikichi <lhikichi@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>
+Subject: [PATCH] clk: iproc: round clock rate to the closest
+Date:   Fri, 12 Jun 2020 15:52:12 -0700
+Message-Id: <20200612225212.124301-1-ray.jui@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The resets for the DSP processors on K3 SoCs are managed through the
-Power and Sleep Controller (PSC) module. Each DSP typically has two
-resets - a global module reset for powering on the device, and a local
-reset that affects only the CPU while allowing access to the other
-sub-modules within the DSP processor sub-systems.
+From: Lori Hikichi <lhikichi@broadcom.com>
 
-The C66x DSPs have two levels of internal RAMs that can be used to
-boot from, and the firmware loading into these RAMs require the
-local reset to be asserted with the device powered on/enabled using
-the module reset. Enhance the K3 DSP remoteproc driver to add support
-for loading into the internal RAMs. The local reset is deasserted on
-SoC power-on-reset, so logic has to be added in probe in remoteproc
-mode to balance the remoteproc state-machine.
+Change from 'DIV_ROUND_UP' to 'DIV_ROUND_CLOSEST' when calculating the
+clock divisor in the iProc ASIU clock driver to allow to get to the
+closest clock rate.
 
-Note that the local resets are a no-op on C71x cores, and the hardware
-does not supporting loading into its internal RAMs.
-
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Fixes: 5fe225c105fd ("clk: iproc: add initial common clock support")
+Signed-off-by: Lori Hikichi <lhikichi@broadcom.com>
+Signed-off-by: Ray Jui <ray.jui@broadcom.com>
 ---
-v3: No code changes, picked up review tags, switched to : in patch title
-v2: https://patchwork.kernel.org/patch/11561785/
+ drivers/clk/bcm/clk-iproc-asiu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/remoteproc/ti_k3_dsp_remoteproc.c | 72 +++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-index 2f8b3ff5427d..668bb45b3fe8 100644
---- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-+++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-@@ -175,6 +175,9 @@ static int k3_dsp_rproc_reset(struct k3_dsp_rproc *kproc)
- 		return ret;
+diff --git a/drivers/clk/bcm/clk-iproc-asiu.c b/drivers/clk/bcm/clk-iproc-asiu.c
+index 6fb8af506777..e062dd4992ea 100644
+--- a/drivers/clk/bcm/clk-iproc-asiu.c
++++ b/drivers/clk/bcm/clk-iproc-asiu.c
+@@ -119,7 +119,7 @@ static long iproc_asiu_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	if (rate == *parent_rate)
+ 		return *parent_rate;
+ 
+-	div = DIV_ROUND_UP(*parent_rate, rate);
++	div = DIV_ROUND_CLOSEST(*parent_rate, rate);
+ 	if (div < 2)
+ 		return *parent_rate;
+ 
+@@ -145,7 +145,7 @@ static int iproc_asiu_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 		return 0;
  	}
  
-+	if (kproc->data->uses_lreset)
-+		return ret;
-+
- 	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
- 						    kproc->ti_sci_id);
- 	if (ret) {
-@@ -192,6 +195,9 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 	struct device *dev = kproc->dev;
- 	int ret;
+-	div = DIV_ROUND_UP(parent_rate, rate);
++	div = DIV_ROUND_CLOSEST(parent_rate, rate);
+ 	if (div < 2)
+ 		return -EINVAL;
  
-+	if (kproc->data->uses_lreset)
-+		goto lreset;
-+
- 	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
- 						    kproc->ti_sci_id);
- 	if (ret) {
-@@ -199,6 +205,7 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 		return ret;
- 	}
- 
-+lreset:
- 	ret = reset_control_deassert(kproc->reset);
- 	if (ret) {
- 		dev_err(dev, "local-reset deassert failed, ret = %d\n", ret);
-@@ -210,6 +217,53 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
- 	return ret;
- }
- 
-+/*
-+ * The C66x DSP cores have a local reset that affects only the CPU, and a
-+ * generic module reset that powers on the device and allows the DSP internal
-+ * memories to be accessed while the local reset is asserted. This function is
-+ * used to release the global reset on C66x DSPs to allow loading into the DSP
-+ * internal RAMs. The .prepare() ops is invoked by remoteproc core before any
-+ * firmware loading, and is followed by the .start() ops after loading to
-+ * actually let the C66x DSP cores run.
-+ */
-+static int k3_dsp_rproc_prepare(struct rproc *rproc)
-+{
-+	struct k3_dsp_rproc *kproc = rproc->priv;
-+	struct device *dev = kproc->dev;
-+	int ret;
-+
-+	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
-+						    kproc->ti_sci_id);
-+	if (ret)
-+		dev_err(dev, "module-reset deassert failed, cannot enable internal RAM loading, ret = %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This function implements the .unprepare() ops and performs the complimentary
-+ * operations to that of the .prepare() ops. The function is used to assert the
-+ * global reset on applicable C66x cores. This completes the second portion of
-+ * powering down the C66x DSP cores. The cores themselves are only halted in the
-+ * .stop() callback through the local reset, and the .unprepare() ops is invoked
-+ * by the remoteproc core after the remoteproc is stopped to balance the global
-+ * reset.
-+ */
-+static int k3_dsp_rproc_unprepare(struct rproc *rproc)
-+{
-+	struct k3_dsp_rproc *kproc = rproc->priv;
-+	struct device *dev = kproc->dev;
-+	int ret;
-+
-+	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
-+						    kproc->ti_sci_id);
-+	if (ret)
-+		dev_err(dev, "module-reset assert failed, ret = %d\n", ret);
-+
-+	return ret;
-+}
-+
- /*
-  * Power up the DSP remote processor.
-  *
-@@ -353,6 +407,8 @@ static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
- }
- 
- static const struct rproc_ops k3_dsp_rproc_ops = {
-+	.prepare	= k3_dsp_rproc_prepare,
-+	.unprepare	= k3_dsp_rproc_unprepare,
- 	.start		= k3_dsp_rproc_start,
- 	.stop		= k3_dsp_rproc_stop,
- 	.kick		= k3_dsp_rproc_kick,
-@@ -615,6 +671,22 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
- 		goto release_tsp;
- 	}
- 
-+	/*
-+	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
-+	 * execute bogus code in .prepare() when the module reset is released.
-+	 */
-+	if (data->uses_lreset) {
-+		ret = reset_control_status(kproc->reset);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to get reset status, status = %d\n",
-+				ret);
-+			goto release_mem;
-+		} else if (ret == 0) {
-+			dev_warn(dev, "local reset is deasserted for device\n");
-+			k3_dsp_rproc_reset(kproc);
-+		}
-+	}
-+
- 	ret = rproc_add(rproc);
- 	if (ret) {
- 		dev_err(dev, "failed to add register device with remoteproc core, status = %d\n",
 -- 
-2.26.0
+2.17.1
 
