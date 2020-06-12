@@ -2,249 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8081F7162
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881461F716D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgFLAbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 20:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        id S1726396AbgFLAee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 20:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgFLAbQ (ORCPT
+        with ESMTP id S1726306AbgFLAed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:31:16 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6632BC03E96F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 17:31:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z63so2523136pfb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 17:31:16 -0700 (PDT)
+        Thu, 11 Jun 2020 20:34:33 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBD7C03E96F;
+        Thu, 11 Jun 2020 17:34:32 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id o5so8446475iow.8;
+        Thu, 11 Jun 2020 17:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ynp2Ywh0TeTSOhhf2AKkRBib7Iyqqnx9iZi2CH+BUCI=;
-        b=oqqdgIagHUplXQwh3jjLPuNuFgwozom5py97t6fCsmiZOq8/fv4dP9+MJgxl43mXvr
-         QaX6sN+IZnyzFc/n3w+Y7KKijtlKv2vLa9Jk+9BADSe83oALF69CYmhRFvO3r0pvAaK5
-         qsD4pvbeEv4nN5OUfK22rP8jHN3WfhXBXtQNbXVXUoc5FfH9bceomRRBmOhYXUCaxIwn
-         BuL6sJI8UF0bawkkdFJGigJ2F4NzmjCaXTvz9d4SmoPVC6wIV38tgWV8r1tBMk/QHi3i
-         d9dGsyvL/zcNmOYFWhaR3UMpfSqfPJc9M7gOCVOEBWsl6LCfm+fmzlgqKYktAvasOsIl
-         h6ig==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zqAXLZX8TTyfYw2OboHQenLiZ8rdFnWo4aB6MdUN6iU=;
+        b=F61cC8UcxjV48CcghdFLkde51ipu99aJTlc097t1fSE8p9YHX9CB8jpC64s1W+ps4V
+         HT8GjqcHyIvGaiHE7H6rjSxWNZyQdKqJnBQHearjAtI4yogdfPzQjsAVE/kMULDQtb/G
+         4NV9gcn47T2J70hJoC+em/Dv9VqPmCP7EFjTFGuvI14wziI298U9Rw+W17Zx1Oyp7UeK
+         NcfhlKKRYeoDSnNfiJDFdQf/H2FbqB8F69bZRNU5GW02RlXd7Dckj4KdYBc1udCHUXLt
+         1duD8AY3vBNRKGoyEryJOgGoLtpWYSb32p24H+FwUP6SjsdmM0msoxg7tZz31di2J5Ud
+         tppQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ynp2Ywh0TeTSOhhf2AKkRBib7Iyqqnx9iZi2CH+BUCI=;
-        b=XC0/sh4Og3kIDbUofXvzZRCe00MbI2iaW0DWVMisKlpCcFTQzk2ozRU1dKF1S/H+Q0
-         uUhFfgJiXRQLzRIcDe6bbeIc2J4C6Zj8bBI8bnrSn0J9+ByCL65cuMeAk0DbwqYpHA8r
-         /ebB+WmB4iEmNbCoCmowiy4b+NCCcrpuM4NJir16iv/Udy+Xoh8wK9228bkCF8OiXG1u
-         vrBM2TCVM6gTUJBD5ppoYBuvDGs3hUEey4T5dqTIrmSQ1e7NMI2tj5VHbZSWUcGmrBLA
-         +Rr7RPAvVSegT5JBdiZJCloc8vCeMjIM+hEXvK9xUcGgPr8djH0nf4KkPZB9vngI8J3O
-         /Elg==
-X-Gm-Message-State: AOAM533cN8AJUs01Fc340Moc6VmP0AjEZkpsMva8Uw+EqPCVJkw6frRP
-        Gn7/dfb7WY6qB3akvf6Zj0Q=
-X-Google-Smtp-Source: ABdhPJxcyJcM/ByQW/MIW6ihwmGi9lSpmej6qKyCH4YVIojXhzyJ5iHr4J9FyCeeOy3rh95fFAZnyQ==
-X-Received: by 2002:a62:fc86:: with SMTP id e128mr9855537pfh.133.1591921875669;
-        Thu, 11 Jun 2020 17:31:15 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id y6sm4433379pfp.144.2020.06.11.17.31.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Jun 2020 17:31:15 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 17:31:04 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, broonie@kernel.org, timur@kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v2 3/3] ASoC: fsl_asrc_dma: Reuse the dma channel if
- available in Back-End
-Message-ID: <20200612003103.GA28228@Asurada-Nvidia>
-References: <cover.1591783089.git.shengjiu.wang@nxp.com>
- <0473d4191ae04ab711d63c5c875e47f45f598137.1591783089.git.shengjiu.wang@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zqAXLZX8TTyfYw2OboHQenLiZ8rdFnWo4aB6MdUN6iU=;
+        b=ZkgktWR+3dKqoEf6IVAa9hbUK9S94qki0FudTY8thI/IIShPUXkohhUD8qFf4WM/sc
+         N6KGZKkM5Od3eINud3C7ziI4hDtSRLt+t7ikim5bPCOXrEY55T/RcPF/wmbEqEH3OJLH
+         gSIYqJ+0JgAsdt1TmbL/MHrDegpDfxBqlXw/pUc0ailEraK5rqV+i+7OhLXrU2VAF9s0
+         N3oZKGQA1XBUTIzSQ9uGA+Vd1cdO3WqN2JvieIIjva7OFhWKAfFKzqrJh1yXOOLkMgN1
+         ba8eDfLpoPWXpeFwYjR5/U5o21w5bkvR4pZWIh5zzJ/h6QcXucydryodi6QqoAFrI8fL
+         2IJw==
+X-Gm-Message-State: AOAM531CvR/apPVBPQeN0QL22qW/XgZ19CzkhaYKqtGzuoZHp2+6yWjP
+        1g0QgaxIUhq7hhjt01BQdm3F+Ja9l+qd1pqhAeg=
+X-Google-Smtp-Source: ABdhPJxnE06UePPNmfs3VQ+1tcmElRjZgtBMF5m6+O2osNGMQK9HxZMo05YiqzSr/fTz95+5ChTNvLuenG4Fv4EN0WU=
+X-Received: by 2002:a6b:b515:: with SMTP id e21mr11198076iof.53.1591922071349;
+ Thu, 11 Jun 2020 17:34:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0473d4191ae04ab711d63c5c875e47f45f598137.1591783089.git.shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200529040758.kneg2j4n3gxh2rfv@vireshk-i7> <20200603180435.GB23722@bogus>
+ <CABb+yY0cW1GZHVmwEr19JRdJTmsAxw9uq83QV_aq-tdPJO5_Fg@mail.gmail.com>
+ <20200604092052.GD8814@bogus> <CABb+yY27Ngb0C-onkU2qyt=uKgG4iVrcv8hGkC+anypQbTRA1w@mail.gmail.com>
+ <20200605045645.GD12397@bogus> <CABb+yY2YZ99NjHYNi0=KLGFDsVUeJmqiJD3E25Chwk-THJV4iw@mail.gmail.com>
+ <20200605085830.GA32372@bogus> <CABb+yY2TR7tuMx6u8yah6mO2GwZ5SWYOO80EQRL-i=ybgn=Wog@mail.gmail.com>
+ <20200610093334.yznxl2esv5ht27ns@vireshk-i7> <20200611100027.GB18781@bogus>
+In-Reply-To: <20200611100027.GB18781@bogus>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Thu, 11 Jun 2020 19:34:20 -0500
+Message-ID: <CABb+yY1OwVB+uk+0w+D-4Xy46iYn8tPZYBZ0qjrzQFLA6SaTvw@mail.gmail.com>
+Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 06:05:49PM +0800, Shengjiu Wang wrote:
-> The dma channel has been requested by Back-End cpu dai driver already.
-> If fsl_asrc_dma requests dma chan with same dma:tx symlink, then
-> there will be below warning with SDMA.
-> 
-> [   48.174236] fsl-esai-dai 2024000.esai: Cannot create DMA dma:tx symlink
-> 
-> or with EDMA the request operation will fail for EDMA channel
-> can only be requested once.
-> 
-> So If we can reuse the dma channel of Back-End, then the issue can be
-> fixed.
-> 
-> In order to get the dma channel which is already requested in Back-End.
-> we use the exported two functions (snd_soc_lookup_component_nolocked
-> and soc_component_to_pcm). If we can get the dma channel, then reuse it,
-> if can't, then request a new one.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_asrc_common.h |  2 ++
->  sound/soc/fsl/fsl_asrc_dma.c    | 52 +++++++++++++++++++++++++--------
->  2 files changed, 42 insertions(+), 12 deletions(-)
+On Thu, Jun 11, 2020 at 5:00 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
 
-> diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
-> index 77665b15c8db..09512bc79b80 100644
-> --- a/sound/soc/fsl/fsl_asrc_common.h
-> +++ b/sound/soc/fsl/fsl_asrc_common.h
-> @@ -32,6 +32,7 @@ enum asrc_pair_index {
->   * @dma_chan: inputer and output DMA channels
->   * @dma_data: private dma data
->   * @pos: hardware pointer position
-> + * @req_dma_chan_dev_to_dev: flag for release dev_to_dev chan
+> >
+> > > Interesting logs !  The time taken to complete _successful_ requests
+> > > are arguably better in bad_trace ... there are many <10usec responses
+> > > in bad_trace, while the fastest response in good_trace is  53usec.
+> >
+> > Indeed this is interesting. It may be worth looking (separately) into
+> > why don't we see those 3 us long requests anymore, or maybe they were
+> > just not there in the logs.
+> >
+>
+> As I mentioned in another thread that non-dvfs requests may be prioritised
+> lower when there are parallel request to the remote. The so called bad
+> trace doesn't have such scenario with single channel and all requests
+> from OS being serialised. The good trace has 2 channels and requests to
+> remote happen in parallel and hence it is fair to see slightly higher
+> latencies for lower priority requests.
+>
+In the first post in this thread, Viresh lamented that mailbox
+introduces "a few ms" delay in the scheduler path.
+Your own tests show that is certainly not the case -- average is the
+same as proposed virtual channels 50-100us, the best case is 3us vs
+53us for virtual channels.
 
-Since we only have dma_request call for back-end only:
-+ * @req_dma_chan: flag to release back-end dma chan
+-#define SCMI_MAX_POLL_TO_NS (100 * NSEC_PER_USEC)
++#define SCMI_MAX_POLL_TO_NS (30 * 1000 * NSEC_PER_USEC)
 
-> diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-> index d6a3fc5f87e5..5ecb77d466d3 100644
-> --- a/sound/soc/fsl/fsl_asrc_dma.c
-> +++ b/sound/soc/fsl/fsl_asrc_dma.c
-> @@ -160,6 +161,9 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
->  		substream_be = snd_soc_dpcm_get_substream(be, stream);
->  		dma_params_be = snd_soc_dai_get_dma_data(dai, substream_be);
->  		dev_be = dai->dev;
-> +		component_be = snd_soc_lookup_component_nolocked(dev_be, SND_DMAENGINE_PCM_DRV_NAME);
-> +		if (component_be)
-> +			tmp_chan = soc_component_to_pcm(component_be)->chan[substream->stream];
+The above simple fix (not a hack or workaround) avoids the need of
+virtual channels' implementation, as per tests you conducted.
 
-Should we use substream_be->stream or just substream->stream?
+It might have been silly to not implement virtual channels originally,
+but it would be just as silly now to implement if we can reuse the
+code.
+So I welcome new tests.
 
-And would be better to add these lines right before we really use
-tmp_chan because there's still some distance till it reaches that
-point. And would be better to have a line of comments too.
-
-> @@ -205,10 +209,14 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
->  	 */
->  	if (!asrc->use_edma) {
->  		/* Get DMA request of Back-End */
-> -		tmp_chan = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-> +		if (!tmp_chan) {
-> +			tmp_chan_new = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-> +			tmp_chan = tmp_chan_new;
-
-This is a bit confusing...though I finally got it :)
-So probably better to have a line of comments.
-
-> @@ -220,9 +228,26 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
->  
->  		pair->dma_chan[dir] =
->  			dma_request_channel(mask, filter, &pair->dma_data);
-> +		pair->req_dma_chan_dev_to_dev = true;
->  	} else {
-> -		pair->dma_chan[dir] =
-> -			asrc->get_dma_channel(pair, dir);
-> +		/*
-> +		 * With EDMA, there is two dma channels can be used for p2p,
-> +		 * one is from ASRC, one is from another peripheral
-> +		 * (ESAI or SAI). Previously we select the dma channel of ASRC,
-> +		 * but find an issue for ideal ratio case, there is no control
-> +		 * for data copy speed, the speed is faster than sample
-> +		 * frequency.
-> +		 *
-> +		 * So we switch to use dma channel of peripheral (ESAI or SAI),
-> +		 * that copy speed of DMA is controlled by data consumption
-> +		 * speed in the peripheral FIFO.
-> +		 */
-
-This sounds like a different issue and should be fixed separately?
-If you prefer not to, better to move this one to commit log, other
-than having a changelog here, in my opinion.
-
-Since it no longer uses get_dma_channel() for EDMA case, we should
-update the comments at the top as well.
-
-> +		pair->req_dma_chan_dev_to_dev = false;
-> +		pair->dma_chan[dir] = tmp_chan;
-> +		if (!pair->dma_chan[dir]) {
-> +			pair->dma_chan[dir] = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-> +			pair->req_dma_chan_dev_to_dev = true;
-> +		}
->  	}
-
-Now there are some duplicated lines between these if-else routines, so
-combining my previous comments, we can do (sample change, not tested):
-
-@@ -197,18 +199,29 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 	dma_cap_set(DMA_SLAVE, mask);
- 	dma_cap_set(DMA_CYCLIC, mask);
- 
-+	/*
-+	 * The Back-End device might have already requested a DMA channel,
-+	 * so try to reuse it first, and then request a new one upon NULL.
-+	 */
-+	component_be = snd_soc_lookup_component_nolocked(dev_be, SND_DMAENGINE_PCM_DRV_NAME);
-+	if (component_be)	// should probably error out if !component_be?
-+		tmp_chan = be_chan = soc_component_to_pcm(component_be)->chan[substream->stream];
-+	if (!tmp_chan)
-+		tmp_chan = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
-+
- 	/*
- 	 * An EDMA DEV_TO_DEV channel is fixed and bound with DMA event of each
- 	 * peripheral, unlike SDMA channel that is allocated dynamically. So no
--	 * need to configure dma_request and dma_request2, but get dma_chan via
--	 * dma_request_slave_channel directly with dma name of Front-End device
-+	 * need to configure dma_request and dma_request2, but get dma_chan of
-+	 * Back-End device directly via dma_request_slave_channel.
- 	 */
- 	if (!asrc->use_edma) {
- 		/* Get DMA request of Back-End */
--		tmp_chan = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
- 		tmp_data = tmp_chan->private;
- 		pair->dma_data.dma_request = tmp_data->dma_request;
--		dma_release_channel(tmp_chan);
-+		/* Do not release tmp_chan if we are reusing the Back-End one */
-+		if (!be_chan)
-+			dma_release_channel(tmp_chan);
- 
- 		/* Get DMA request of Front-End */
- 		tmp_chan = asrc->get_dma_channel(pair, dir);
-@@ -220,9 +233,11 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 
- 		pair->dma_chan[dir] =
- 			dma_request_channel(mask, filter, &pair->dma_data);
-+		pair->req_dma_chan = true;
- 	} else {
--		pair->dma_chan[dir] =
--			asrc->get_dma_channel(pair, dir);
-+		pair->dma_chan[dir] = tmp_chan;
-+		/* Do not flag to release if we are reusing the Back-End one */
-+		pair->req_dma_chan = !be_chan;
- 	}
- 
- 	if (!pair->dma_chan[dir]) {
-
-> @@ -273,19 +299,21 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
->  static int fsl_asrc_dma_hw_free(struct snd_soc_component *component,
->  				struct snd_pcm_substream *substream)
->  {
-> +	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->  	struct snd_pcm_runtime *runtime = substream->runtime;
->  	struct fsl_asrc_pair *pair = runtime->private_data;
-> +	u8 dir = tx ? OUT : IN;
->  
->  	snd_pcm_set_runtime_buffer(substream, NULL);
->  
-> -	if (pair->dma_chan[IN])
-> -		dma_release_channel(pair->dma_chan[IN]);
-> +	if (pair->dma_chan[!dir])
-> +		dma_release_channel(pair->dma_chan[!dir]);
->  
-> -	if (pair->dma_chan[OUT])
-> -		dma_release_channel(pair->dma_chan[OUT]);
-> +	if (pair->dma_chan[dir] && pair->req_dma_chan_dev_to_dev)
-> +		dma_release_channel(pair->dma_chan[dir]);
-
-Why we only apply this to one direction?
+thanks.
