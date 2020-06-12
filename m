@@ -2,111 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691341F7A65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C36D1F7A74
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgFLPKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:10:31 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:55996 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgFLPKa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:10:30 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4444E24F;
-        Fri, 12 Jun 2020 17:10:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1591974626;
-        bh=SSuOGDqv8rqKOzejgdO9SGLPWgm9R0N81SolLTYDpr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wFlkE5SqP+m9RJWQsRC0dbw7Xw67arphpXNe3OdACDHvNp4ihNn+U+LBMccieFQf8
-         7tGCX1R2Dt7Ol4mVk69EoNvmy86/3zLaTImwDZfhErcNyU96OCC1ZAnRv0v/j6dnsD
-         LvC8FAvwlJsVYU9EVf+bEUHnCeZApBK73GniDF8o=
-Date:   Fri, 12 Jun 2020 18:10:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com, geert@linux-m68k.org,
-        horms@verge.net.au, uli+renesas@fpond.eu,
-        VenkataRajesh.Kalakodima@in.bosch.com, airlied@linux.ie,
-        daniel@ffwll.ch, koji.matsuoka.xm@renesas.com, muroya@ksk.co.jp,
-        Harsha.ManjulaMallikarjun@in.bosch.com, ezequiel@collabora.com,
-        seanpaul@chromium.org, linux-renesas-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        michael.dege@renesas.com, gotthard.voellmeke@renesas.com,
-        efriedrich@de.adit-jv.com, mrodin@de.adit-jv.com,
-        ChaitanyaKumar.Borah@in.bosch.com,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Subject: Re: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
-Message-ID: <20200612151005.GA28336@pendragon.ideasonboard.com>
-References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
- <20200527071555.GA23912@lxhi-065.adit-jv.com>
- <20200605132900.on527xcggg6f6pil@uno.localdomain>
- <20200605134124.GA28734@lxhi-065.adit-jv.com>
- <20200605135315.xlph44pl7kvmt23a@uno.localdomain>
- <20200607024158.GD7339@pendragon.ideasonboard.com>
- <20200609142959.GA621@lxhi-065.adit-jv.com>
- <20200612150032.pnqaqip54qfrbqst@uno.localdomain>
+        id S1726595AbgFLPL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:11:57 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2304 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726286AbgFLPL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 11:11:56 -0400
+Received: from lhreml705-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 6750ADA06B09320AA0F5;
+        Fri, 12 Jun 2020 16:11:54 +0100 (IST)
+Received: from fraeml704-chm.china.huawei.com (10.206.15.53) by
+ lhreml705-chm.china.huawei.com (10.201.108.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 12 Jun 2020 16:11:54 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 12 Jun 2020 17:11:53 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Fri, 12 Jun 2020 17:11:53 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Maurizio Drocco <maurizio.drocco@ibm.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
+CC:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [PATCH] extend IMA boot_aggregate with kernel measurements
+Thread-Topic: [PATCH] extend IMA boot_aggregate with kernel measurements
+Thread-Index: AQHWQCo8nqt7HKCznkGnNWX+y9c+NajT/1SAgADtAgCAACbgMA==
+Date:   Fri, 12 Jun 2020 15:11:53 +0000
+Message-ID: <380af929b2d2440a9dc35ba0b374247d@huawei.com>
+References: <1591921795.11061.12.camel@linux.ibm.com>
+ <20200612143812.1609-1-maurizio.drocco@ibm.com>
+In-Reply-To: <20200612143812.1609-1-maurizio.drocco@ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.96.108]
+Content-Type: multipart/mixed;
+        boundary="_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200612150032.pnqaqip54qfrbqst@uno.localdomain>
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+--_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 12, 2020 at 05:00:32PM +0200, Jacopo Mondi wrote:
-> On Tue, Jun 09, 2020 at 04:29:59PM +0200, Eugeniu Rosca wrote:
-> > On Sun, Jun 07, 2020 at 05:41:58AM +0300, Laurent Pinchart wrote:
-> > > Note that the CMM driver is controlled by the DU driver. As the DU
-> > > driver will reenable the display during resume, it will call
-> > > rcar_du_cmm_setup() at resume time, which will reprogram the CMM. There
-> > > should thus be no need for manual suspend/resume handling in the CMM as
-> > > far as I can tell, but we need to ensure that the CMM is suspended
-> > > before and resumed after the DU. I believe this could be implemented
-> > > using device links.
-> >
-> > Based on below quote [*] from Jacopo's commit [**], isn't the device
-> > link relationship already in place?
-> 
-> Yes, it's in place already.
-> 
-> I added pm_ops to cmm just to be able to printout when suspend/resume
-> happens and the sequence is what comment [*] reports
-> 
-> [  222.909002] rcar_du_pm_suspend:505
-> [  223.145497] rcar_cmm_pm_suspend:193
-> 
-> [  223.208053] rcar_cmm_pm_resume:200
-> [  223.460094] rcar_du_pm_resume:513
-> 
-> However, Laurent mentioned that in his comment here that he expects
-> the opposite sequence to happen (CMM to suspend before and resume after
-> DU).
-> 
-> I still think what is implemented is correct:
-> - CMM is suspended after DU: when CMM is suspended, DU is not feeding
->   it with data
-> - CMM is resumed before: once DU restart operations CMM is ready to
->   receive data.
-> 
-> Laurent, what do you think ?
+> From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
+> owner@vger.kernel.org] On Behalf Of Maurizio Drocco
+> Sent: Friday, June 12, 2020 4:38 PM
+> IMA is not considering TPM registers 8-9 when calculating the boot
+> aggregate. When registers 8-9 are used to store measurements of the
+> kernel and its command line (e.g., grub2 bootloader with tpm module
+> enabled), IMA should include them in the boot aggregate.
+>=20
+> Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
+> ---
+>  security/integrity/ima/ima.h        |  2 +-
+>  security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
+>  2 files changed, 15 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index df93ac258e01..9d94080bdad8 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -30,7 +30,7 @@
+>=20
+>  enum ima_show_type { IMA_SHOW_BINARY,
+> IMA_SHOW_BINARY_NO_FIELD_LEN,
+>  		     IMA_SHOW_BINARY_OLD_STRING_FMT,
+> IMA_SHOW_ASCII };
+> -enum tpm_pcrs { TPM_PCR0 =3D 0, TPM_PCR8 =3D 8 };
+> +enum tpm_pcrs { TPM_PCR0 =3D 0, TPM_PCR8 =3D 8, TPM_PCR10 =3D 10 };
+>=20
+>  /* digest size for IMA, fits SHA1 or MD5 */
+>  #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
+> diff --git a/security/integrity/ima/ima_crypto.c
+> b/security/integrity/ima/ima_crypto.c
+> index 220b14920c37..64f5e3151e18 100644
+> --- a/security/integrity/ima/ima_crypto.c
+> +++ b/security/integrity/ima/ima_crypto.c
+> @@ -809,7 +809,7 @@ static void ima_pcrread(u32 idx, struct tpm_digest *d=
+)
+>  static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
+>  				       struct crypto_shash *tfm)
+>  {
+> -	struct tpm_digest d =3D { .alg_id =3D alg_id, .digest =3D {0} };
+> +	struct tpm_digest d =3D { .alg_id =3D alg_id, .digest =3D {0} }, d0 =3D=
+ d;
+>  	int rc;
+>  	u32 i;
+>  	SHASH_DESC_ON_STACK(shash, tfm);
+> @@ -830,6 +830,19 @@ static int ima_calc_boot_aggregate_tfm(char
+> *digest, u16 alg_id,
+>  		rc =3D crypto_shash_update(shash, d.digest,
+>  					 crypto_shash_digestsize(tfm));
+>  	}
+> +	/*
+> +	 * extend cumulative sha1 over tpm registers 8-9, which contain
 
-I think I shouldn't have written the previous e-mail in the middle of
-the night :-) Suspending CMM after DU is obviously correct.
+Hi Maurizio
 
-> > [*] Quote from commit [**]
-> >    Enforce the probe and suspend/resume ordering of DU and CMM by
-> >    creating a stateless device link between the two.
-> >
-> > [**] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8de707aeb45241
-> >     ("drm: rcar-du: kms: Initialize CMM instances")
+with recent patches, boot_aggregate can be calculated from non-SHA1
+PCR banks. I would replace with:
 
--- 
-Regards,
+Extend cumulative digest over ...
 
-Laurent Pinchart
+Given that with this patch boot_aggregate is calculated differently,
+shouldn't we call it boot_aggregate_v2 and enable it with a new
+option?
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> +	 * measurement for the kernel command line (reg. 8) and image
+> (reg. 9)
+> +	 * in a typical PCR allocation.
+> +	 */
+> +	for (i =3D TPM_PCR8; i < TPM_PCR10; i++) {
+> +		ima_pcrread(i, &d);
+> +		/* if not zero, accumulate with current aggregate */
+> +		if (memcmp(d.digest, d0.digest,
+> +			   crypto_shash_digestsize(tfm)) !=3D 0)
+> +			rc =3D crypto_shash_update(shash, d.digest,
+> +
+> crypto_shash_digestsize(tfm));
+> +	}
+>  	if (!rc)
+>  		crypto_shash_final(shash, digest);
+>  	return rc;
+> --
+> 2.17.1
+
+
+--_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_
+Content-Type: message/rfc822
+Content-Disposition: attachment;
+	creation-date="Fri, 12 Jun 2020 15:11:53 GMT";
+	modification-date="Fri, 12 Jun 2020 15:11:53 GMT"
+
+Received: from fraeml709-chm.china.huawei.com (10.206.15.37) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5
+ via Mailbox Transport; Thu, 28 May 2020 09:33:39 +0200
+Received: from fraeml703-chm.china.huawei.com (10.206.15.52) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 28 May 2020 09:33:39 +0200
+Received: from fraeml703-chm.china.huawei.com (10.206.15.52) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 28 May 2020 09:33:38 +0200
+Received: from DGGEMS412-HUB.china.huawei.com (10.3.19.212) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256) id
+ 15.1.1913.5 via Frontend Transport; Thu, 28 May 2020 09:33:38 +0200
+Received: from hulknmm (10.175.113.134) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 28 May
+ 2020 15:33:32 +0800
+From: pmail_patchwork <patchwork@huawei.com>
+To: Roberto Sassu <roberto.sassu@huawei.com>
+CC: pmail_hulkcommits <hulkcommits@huawei.com>, pmail_hulkcommits
+	<hulkcommits@huawei.com>
+Subject: re: [PATCH 9/9] ima: Don't remove security.ima if file must not be
+ appraised
+Thread-Topic: [PATCH 9/9] ima: Don't remove security.ima if file must not be
+ appraised
+Thread-Index: AQHWNMJOo5mVCMbjDE6NnqkX1hFZvg==
+Date: Thu, 28 May 2020 08:03:43 +0000
+Message-ID: <20200528080343.54677.49365@hulknmm>
+References: <20200528065732.22351-4-roberto.sassu@huawei.com>
+In-Reply-To: <20200528065732.22351-4-roberto.sassu@huawei.com>
+Content-Language: en-US
+X-MS-Exchange-Organization-AuthMechanism: 06
+X-MS-Exchange-Organization-AuthSource: DGGEMS412-HUB.china.huawei.com
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-Network-Message-Id: f8904490-833d-4cc6-2086-08d802d9700c
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+x-ms-exchange-organization-originalserveripaddress: 10.3.19.212
+x-ms-exchange-organization-originalclientipaddress: 10.175.113.134
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0235E133B9F18A49A545EE45BB2C6001@huawei.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+VG90YWw6IDAgd2FybmluZ3MsIDAgZXJyb3JzLCAzIGl0ZW1zIGNoZWNrZWQNCg0KQWxsIDMgdGVz
+dCBpdGVtcyBTVUNDRVNTLg0KDQpMaW5rOiBodHRwOi8vcGF0Y2h3b3JrLmh1YXdlaS5jb20vcGF0
+Y2gvNTI4OTAvDQoNCi0tLQ0KSHVsayBSb2JvdA0K
+
+--_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_--
