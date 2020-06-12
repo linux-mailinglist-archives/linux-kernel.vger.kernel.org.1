@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED511F7A96
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614DF1F7A99
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgFLPTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:19:19 -0400
-Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:56422 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726085AbgFLPTQ (ORCPT
+        id S1726597AbgFLPTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:19:32 -0400
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:52335 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgFLPTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:19:16 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id CD2A7100E4720;
-        Fri, 12 Jun 2020 15:19:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:2895:2901:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:4425:5007:6119:6742:7514:7903:10004:10400:10848:10967:11026:11232:11658:11914:12297:12740:12760:12895:13069:13095:13311:13357:13439:14096:14097:14181:14659:14721:21067:21080:21212:21433:21451:21627:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: toy64_4f084a126ddd
-X-Filterd-Recvd-Size: 2858
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 12 Jun 2020 15:19:12 +0000 (UTC)
-Message-ID: <0b82952a6e0b4a05c93f4d18b3d0b2f43b61ab98.camel@perches.com>
-Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
-From:   Joe Perches <joe@perches.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Gaurav Singh <gaurav1086@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "open list:XDP (eXpress Data Path)" <netdev@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Fri, 12 Jun 2020 08:19:10 -0700
-In-Reply-To: <20200612140520.1e3c0461@carbon>
-References: <20200611150221.15665-1-gaurav1086@gmail.com>
-         <20200612003640.16248-1-gaurav1086@gmail.com>
-         <20200612084244.4ab4f6c6@carbon>
-         <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
-         <20200612140520.1e3c0461@carbon>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Fri, 12 Jun 2020 11:19:32 -0400
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 1ED59E4CC8;
+        Fri, 12 Jun 2020 11:19:30 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=22t9Ut8LGNPQZcuwBoygY9sFDBQ=; b=ch+G5F
+        f+rL9Y26JkM0TLDTfVupXzFMDulMjp1sMBUdGKFMmjp1modPgIygeyoZTyVOuRw+
+        fAuBoAQA+HW7pEcZbxOFf4Dghu2GwFStiVqRRRR3Q8O6UK3MSddf8ZTSVi45wdPK
+        /tknsJa6jpntcZs4/0B54vnBDPDs0lG8k5Qso=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 1609AE4CC7;
+        Fri, 12 Jun 2020 11:19:30 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=+j2zvxY3yyACYmz62lMN5mkK3euzNoR2JXP7LPUWCaA=; b=v5jS8qjxtE91zh+Qiqg4lLx/8UpHSwhsar4xdmNNdFLRGtCwuesR9hp4v2lgfr+ll9ZTtCwf8AN6/HgHuXA2zK9L8ITkZ6F2455mW1BwgExJK+QV1xJsoYm/cGlhr4iSM6jEV/K36ENBr7MQ3cqJMoLFd3dgAtYHEZXMvAR3AN4=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id DCCC5E4CC3;
+        Fri, 12 Jun 2020 11:19:25 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 011CC2DA0AF0;
+        Fri, 12 Jun 2020 11:19:23 -0400 (EDT)
+Date:   Fri, 12 Jun 2020 11:19:23 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>
+cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [RFC 0/3] ARM: copy_{from,to}_user() for vmsplit 4g/4g
+In-Reply-To: <cover.1591885760.git.afzal.mohd.ma@gmail.com>
+Message-ID: <nycvar.YSQ.7.77.849.2006121117250.3341460@knanqh.ubzr>
+References: <cover.1591885760.git.afzal.mohd.ma@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 1A10A78E-ACC0-11EA-AF12-B0405B776F7B-78420484!pb-smtp20.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-06-12 at 14:05 +0200, Jesper Dangaard Brouer wrote:
-> On Fri, 12 Jun 2020 03:14:58 -0700
-> Joe Perches <joe@perches.com> wrote:
+On Fri, 12 Jun 2020, afzal mohammed wrote:
+
+> Performance wise, results are not encouraging, 'dd' on tmpfs results,
 > 
-> > On Fri, 2020-06-12 at 08:42 +0200, Jesper Dangaard Brouer wrote:
-> > > On Thu, 11 Jun 2020 20:36:40 -0400
-> > > Gaurav Singh <gaurav1086@gmail.com> wrote:
-> > >   
-> > > > Replace malloc/memset with calloc
-> > > > 
-> > > > Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
-> > > > Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>  
-> > > 
-> > > Above is the correct use of Fixes + Signed-off-by.
-> > > 
-> > > Now you need to update/improve the description, to also
-> > > mention/describe that this also solves the bug you found.  
-> > 
-> > This is not a fix, it's a conversion of one
-> > correct code to a shorter one.
+> ARM Cortex-A8, BeagleBone White (256MiB RAM):
+> w/o series - ~29.5 MB/s
+> w/ series - ~20.5 MB/s
+> w/ series & highmem disabled - ~21.2 MB/s
 > 
-> Read the code again Joe.  There is a bug in the code that gets removed,
-> as it runs memset on the memory before checking if it was NULL.
+> On Cortex-A15(2GiB RAM) in QEMU:
+> w/o series - ~4 MB/s
+> w/ series - ~2.6 MB/s
 > 
-> IHMO this proves why is it is necessary to mention in the commit
-> message, as you didn't notice the bug in your code review.
+> Roughly a one-third drop in performance. Disabling highmem improves
+> performance only slightly.
 
-I didn't review the code at all, just the commit message,
-
-It's important to have commit messages that describe the
-defect being corrected too.
-
-Otherwise, a simple malloc/memset(0) vs zalloc equivalent
-is not actually a defect.
+Could you compare with CONFIG_UACCESS_WITH_MEMCPY as well?
 
 
+Nicolas
