@@ -2,163 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD6F1F7CA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D771F7CA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgFLRtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S1726343AbgFLRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:51:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgFLRty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:49:54 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1726085AbgFLRvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:51:50 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A03C5207F7;
-        Fri, 12 Jun 2020 17:49:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1402207ED;
+        Fri, 12 Jun 2020 17:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591984193;
-        bh=jo8lt1JK0lHAzLQTuBXj36bMrDzyFAd71Xxja7MfM7Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QW2wR2Rsg6+yzgfZC8NuY5s5YkvV5CZg0w4AKYYuUzln6fI5+s4q42JVOPgFLbnBr
-         +n/xLrTGfbXeozcCuVtdYW4KlEMpU/8PawP3IacvUid1Q/G9rhCKOIoHhnk9uzbhZU
-         X3qDir3eOOCTi+pHTKWaZtWForlA2DVDdczRE6RI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 269C63522658; Fri, 12 Jun 2020 10:49:53 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 10:49:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH x86/entry: Force rcu_irq_enter() when in idle task
-Message-ID: <20200612174953.GA19188@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200611235305.GA32342@paulmck-ThinkPad-P72>
- <CALCETrWo-zpiDsYGtKvm8LzW6CQ5L19a3+Ag_9g8aL4wHaJj9g@mail.gmail.com>
- <871rmkzcc8.fsf@nanos.tec.linutronix.de>
- <87wo4cxubv.fsf@nanos.tec.linutronix.de>
+        s=default; t=1591984310;
+        bh=jE1Kxz2Q5wrlavTl5ZVstoZ1/4ZvO5O8KR250OyGjB8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2GWLVH09vN3J8G3JrxTqgRA1rtLQN8CflYHzrglIClD7/pAlMY2Hpfd9Sgga6+yCZ
+         uyWsEtFQcmyxbR0tTa8Y+VMjD2HohYsbM0y5W2ChDP+Hx/hopa2UtzSyMjpLAvZH53
+         ygcX6VXAZ0AOab9buV0Xkud/7HIxZCsINc84SIok=
+Date:   Fri, 12 Jun 2020 10:51:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Donald Sharp <sharpd@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Dinesh Dutt <didutt@gmail.com>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels@gmail.com>
+Subject: Re: [RFC,net-next, 1/5] l3mdev: add infrastructure for table to VRF
+ mapping
+Message-ID: <20200612105148.1b977dc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200612164937.5468-2-andrea.mayer@uniroma2.it>
+References: <20200612164937.5468-1-andrea.mayer@uniroma2.it>
+        <20200612164937.5468-2-andrea.mayer@uniroma2.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wo4cxubv.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 03:55:00PM +0200, Thomas Gleixner wrote:
-> The idea of conditionally calling into rcu_irq_enter() only when RCU is
-> not watching turned out to be not completely thought through.
+On Fri, 12 Jun 2020 18:49:33 +0200 Andrea Mayer wrote:
+> Add infrastructure to l3mdev (the core code for Layer 3 master devices) in
+> order to find out the corresponding VRF device for a given table id.
+> Therefore, the l3mdev implementations:
+>  - can register a callback that returns the device index of the l3mdev
+>    associated with a given table id;
+>  - can offer the lookup function (table to VRF device).
 > 
-> Paul noticed occasional premature end of grace periods in RCU torture
-> testing. Bisection led to the commit which made the invocation of
-> rcu_irq_enter() conditional on !rcu_is_watching().
-> 
-> It turned out that this conditional breaks RCU assumptions about the idle
-> task when the scheduler tick happens to be a nested interrupt. Nested
-> interrupts can happen when the first interrupt invokes softirq processing
-> on return which enables interrupts. If that nested tick interrupt does not
-> invoke rcu_irq_enter() then the nest accounting in RCU claims that this is
-> the first interrupt which might mark a quiescient state and end grace
-> periods prematurely.
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
 
-For this last sentence, how about the following?
+net/l3mdev/l3mdev.c:12:1: warning: symbol 'l3mdev_lock' was not declared. Should it be static?
 
-If that nested tick interrupt does not invoke rcu_irq_enter() then the
-RCU's irq-nesting checks will believe that this interrupt came directly
-from idle, which will cause RCU to report a quiescent state.  Because
-this interrupt instead came from a softirq handler which might have
-been executing an RCU read-side critical section, this can cause the
-grace period to end prematurely.
-
-> Change the condition from !rcu_is_watching() to is_idle_task(current) which
-> enforces that interrupts in the idle task unconditionally invoke
-> rcu_irq_enter() independent of the RCU state.
-> 
-> This is also correct vs. user mode entries in NOHZ full scenarios because
-> user mode entries bring RCU out of EQS and force the RCU irq nesting state
-> accounting to nested. As only the first interrupt can enter from user mode
-> a nested tick interrupt will enter from kernel mode and as the nesting
-> state accounting is forced to nesting it will not do anything stupid even
-> if rcu_irq_enter() has not been invoked.
-
-On the testing front, just like with my busted patch yesterday, this
-patch breaks the TASKS03 rcutorture scenario by preventing the Tasks
-RCU grace periods from ever completing.  However, this is an unusual
-configuration with NO_HZ_FULL and one CPU actually being nohz_full.
-The more conventional TASKS01 and TASKS02 scenarios do just fine.
-
-I will therefore address this issue in a follow-on patch.
-
-> Fixes: 3eeec3858488 ("x86/entry: Provide idtentry_entry/exit_cond_rcu()")
-> Reported-by: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-Reviewed-by: "Paul E. McKenney" <paulmck@kernel.org>
-Tested-by: "Paul E. McKenney" <paulmck@kernel.org>
-
-> ---
->  arch/x86/entry/common.c |   35 ++++++++++++++++++++++++++++-------
->  1 file changed, 28 insertions(+), 7 deletions(-)
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -557,14 +557,34 @@ bool noinstr idtentry_enter_cond_rcu(str
->  		return false;
->  	}
->  
-> -	if (!__rcu_is_watching()) {
-> +	/*
-> +	 * If this entry hit the idle task invoke rcu_irq_enter() whether
-> +	 * RCU is watching or not.
-> +	 *
-> +	 * Interupts can nest when the first interrupt invokes softirq
-> +	 * processing on return which enables interrupts.
-> +	 *
-> +	 * Scheduler ticks in the idle task can mark quiescent state and
-> +	 * terminate a grace period, if and only if the timer interrupt is
-> +	 * not nested into another interrupt.
-> +	 *
-> +	 * Checking for __rcu_is_watching() here would prevent the nesting
-> +	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
-> +	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
-> +	 * assume that it is the first interupt and eventually claim
-> +	 * quiescient state and end grace periods prematurely.
-> +	 *
-> +	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
-> +	 * consistent.
-> +	 *
-> +	 * TINY_RCU does not support EQS, so let the compiler eliminate
-> +	 * this part when enabled.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_TINY_RCU) && is_idle_task(current)) {
->  		/*
->  		 * If RCU is not watching then the same careful
->  		 * sequence vs. lockdep and tracing is required
->  		 * as in enter_from_user_mode().
-> -		 *
-> -		 * This only happens for IRQs that hit the idle
-> -		 * loop, i.e. if idle is not using MWAIT.
->  		 */
->  		lockdep_hardirqs_off(CALLER_ADDR0);
->  		rcu_irq_enter();
-> @@ -576,9 +596,10 @@ bool noinstr idtentry_enter_cond_rcu(str
->  	}
->  
->  	/*
-> -	 * If RCU is watching then RCU only wants to check
-> -	 * whether it needs to restart the tick in NOHZ
-> -	 * mode.
-> +	 * If RCU is watching then RCU only wants to check whether it needs
-> +	 * to restart the tick in NOHZ mode. rcu_irq_enter_check_tick()
-> +	 * already contains a warning when RCU is not watching, so no point
-> +	 * in having another one here.
->  	 */
->  	instrumentation_begin();
->  	rcu_irq_enter_check_tick();
+Please make sure it doesn't add errors with W=1 C=1 :)
