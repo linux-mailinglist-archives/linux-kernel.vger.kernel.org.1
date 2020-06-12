@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A0B1F77FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036D51F7800
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgFLMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 08:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgFLMiK (ORCPT
+        id S1726263AbgFLMkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 08:40:17 -0400
+Received: from m17617.mail.qiye.163.com ([59.111.176.17]:49190 "EHLO
+        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgFLMkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 08:38:10 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F898C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 05:38:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c3so9544908wru.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 05:38:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3GhP3uz0XN6OU0twcZsptRwHlkZxcUOkI66yWE4C4Ro=;
-        b=iQ5hcO8xBJOgPqnUvGNqnCuAYoyYn9av0SSPL1mJ2dW+9FHnsIeqKkfAkNk0/pQ5mj
-         oez3VPL1T2Axh07pvGsbzc3fGus+FREEDOW7lQetNbN7Vso5Mfl+rWFlK+pSWrjiwUa2
-         U4h/tV74irexipyOiFC21F6b9VgktOC7kDNTgGcsrmad6hGchmGarfpscpvfQGOJ+SKe
-         IofO62pX+G8cqrgAMpCEdyK8IRpc/8gs5Sb06WKm3k2dTP1VlQ/6ZGhS/9yr2kOWDe0O
-         sppflITo/T6kMHKhuHDhY7pzoxRrIpXaacmhOSacCU2Y/QCAKpO+p0nPFkilZeXkrqjN
-         Mn3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3GhP3uz0XN6OU0twcZsptRwHlkZxcUOkI66yWE4C4Ro=;
-        b=XLjX1e95D0OUPf7PVq5anSj9ZGiXKrmB7SUvGRlgGcJCirYZfw6/tb9kX1XcUxCbKM
-         pPv57seFMDPpN2FId4IxwLc3StF1/P59yppsJthARk8TZCjxDLdld+N99Sss4Rq+zxPP
-         mHqcxwjQxW9d22fxu/oX6WC4YUc7fgyMcd2gWq+vDFc8LsJAbX6xG7TQ7BoumrFvIbBP
-         3ugzALHPZR67IrVQeDb8IrpX6ukV9KYOzvaQ7Ykp8StLM32Px/6Uxj+SS1rHC0/DkNoO
-         t4XjMiidF9JZme/cTdonD9eqsJYYER3H0AMJ5qxHc0V+r6lz3+EWHH6yZ4C+122q7FR/
-         jVSw==
-X-Gm-Message-State: AOAM530ER5KBAT9OJ3WKOl/BFUwp93mBquqn+Klec4VCEaELJUxrwjW9
-        cz0Hg5BjgFyqHJsDvgoTuOp/iw==
-X-Google-Smtp-Source: ABdhPJzSPU3xAksW5P8P/fHH+J+BcWe+8ALGCptbAJ4fCUPMaUis1RTCbWo6ng9R3/v3s8Hab9j61A==
-X-Received: by 2002:a5d:4f81:: with SMTP id d1mr15556564wru.95.1591965486947;
-        Fri, 12 Jun 2020 05:38:06 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id g18sm9392299wme.17.2020.06.12.05.38.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 05:38:06 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        John Stultz <john.stultz@linaro.org>
-Subject: [PATCH 2/2] ASoC: qcom: common: set correct directions for dailinks
-Date:   Fri, 12 Jun 2020 13:37:11 +0100
-Message-Id: <20200612123711.29130-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-References: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 12 Jun 2020 08:40:17 -0400
+Received: from njvxl5505.vivo.xyz (unknown [157.0.31.125])
+        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id B7F9426177A;
+        Fri, 12 Jun 2020 20:40:13 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/mediatek: remove unnecessary conversion to bool
+Date:   Fri, 12 Jun 2020 20:40:06 +0800
+Message-Id: <20200612124007.4990-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQx5LTBoeH0JCHhodVkpOQkpCTU5NSkhCTEJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PAg6PSo*GDg5Mws9Dw8LMxYz
+        SS5PFApVSlVKTkJKQk1OTUpPSExLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU5ZV1kIAVlBSUtPSzcG
+X-HM-Tid: 0a72a88b7f4c9375kuwsb7f9426177a
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently both FE and BE dai-links are configured bi-directional,
-However the DSP BE dais are only single directional,
-so set the directions as supported by the BE dais.
+In function mtk_dsi_clk_hs_state, remove unnecessary conversion
+to bool return, this change is to make the code a bit readable.
 
-Fixes: c25e295cd77b (ASoC: qcom: Add support to parse common audio device nodes")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- sound/soc/qcom/common.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 6c20bdd850f3..8ada4ecba847 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -4,6 +4,7 @@
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index 270bf22c98fe..4491e64b3f06 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -319,7 +319,7 @@ static bool mtk_dsi_clk_hs_state(struct mtk_dsi *dsi)
+ 	u32 tmp_reg1;
  
- #include <linux/module.h>
- #include "common.h"
-+#include "qdsp6/q6afe.h"
+ 	tmp_reg1 = readl(dsi->regs + DSI_PHY_LCCON);
+-	return ((tmp_reg1 & LC_HS_TX_EN) == 1) ? true : false;
++	return ((tmp_reg1 & LC_HS_TX_EN) == 1);
+ }
  
- int qcom_snd_parse_of(struct snd_soc_card *card)
- {
-@@ -101,6 +102,15 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 			}
- 			link->no_pcm = 1;
- 			link->ignore_pmdown_time = 1;
-+
-+			if (q6afe_is_rx_port(link->id)) {
-+				link->dpcm_playback = 1;
-+				link->dpcm_capture = 0;
-+			} else {
-+				link->dpcm_playback = 0;
-+				link->dpcm_capture = 1;
-+			}
-+
- 		} else {
- 			dlc = devm_kzalloc(dev, sizeof(*dlc), GFP_KERNEL);
- 			if (!dlc)
-@@ -113,12 +123,12 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 			link->codecs->dai_name = "snd-soc-dummy-dai";
- 			link->codecs->name = "snd-soc-dummy";
- 			link->dynamic = 1;
-+			link->dpcm_playback = 1;
-+			link->dpcm_capture = 1;
- 		}
- 
- 		link->ignore_suspend = 1;
- 		link->nonatomic = 1;
--		link->dpcm_playback = 1;
--		link->dpcm_capture = 1;
- 		link->stream_name = link->name;
- 		link++;
- 
+ static void mtk_dsi_clk_hs_mode(struct mtk_dsi *dsi, bool enter)
 -- 
-2.21.0
+2.17.1
 
