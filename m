@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143941F7182
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18C91F7177
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgFLA5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 20:57:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56182 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgFLA5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:57:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05C0uWCT139167;
-        Fri, 12 Jun 2020 00:57:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=G7qsYAo6+TVtQ8VyceFO8x8YzKDVMYcOi5p/gHiivcY=;
- b=v2kfQ6gZ8eybpn9y2AU/igZyxPMPc+VkN7QoINeR29tTCSc4TJDVhZMjelqf9udxerVz
- k7k4WoJIn8Ol+wgaGXgjeBImAlcZchgaLhmVXBEcka1y07Vtqb897vSPkNkJMbv4T4pT
- XzVAB2ix3lnwB9iZp2C7APoeTiNg2ycTtQHd+DYb577ibCPOZEqWVFTc9iSKFlrXJ1g0
- wJst+s30PQLysUXnSVyhLgXTmjXX4MRIgLo5IZdlHSkQr0YG71K/NO3pkInbSTFas1hu
- d3c7k0GvTofyNfK9X1ZmqMRH9TwzRgyhK0N9shgxOObNUK51LGUZ3Mj2QvM4CwBRJVRj kQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31g3snagvu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 00:57:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05C0lmKr021833;
-        Fri, 12 Jun 2020 00:57:05 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 31kye50grm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 00:57:05 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05C0l0tH007043;
-        Fri, 12 Jun 2020 00:47:00 GMT
-Received: from monkey.oracle.com (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 11 Jun 2020 17:46:59 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Colin Walters <walters@verbum.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v4 2/2] ovl: call underlying get_unmapped_area() routine. propogate FMODE_HUGETLBFS
-Date:   Thu, 11 Jun 2020 17:46:44 -0700
-Message-Id: <20200612004644.255692-2-mike.kravetz@oracle.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200612004644.255692-1-mike.kravetz@oracle.com>
-References: <20200612004644.255692-1-mike.kravetz@oracle.com>
+        id S1726364AbgFLAtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 20:49:22 -0400
+Received: from mail-eopbgr80050.outbound.protection.outlook.com ([40.107.8.50]:35200
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726305AbgFLAtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 20:49:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TgKvDs0itCNwBoNwvZZH+rY3ZgMy+fhOlHqiZ7kRZn7V3uJRMf/NruPVxqA64+I8swwiUAy9oNXxbw309VJhv/TgOUbzpHKTgrS38FQi/xTweGViSYkmXK3HvAzQiqfDhFXWzxBtNUhBeYVA0SWXM/jbbuFYangpW8eazBKX68AbH0/SZVp59uYzFDfd2AtUrQYekrWDROG/qr+vuhfATBgLUPaitcJpcG7Xu06aJ5BfFZ6/GHBJcZfuIS/RG6ccqv4tmrIZA9gZItKgCJ6/iB55SDjaU3MU4vp4bMuYKWT2Q69J05Q2wwNhorDVmauOoYrDuGrC8VuvFzM1XtEgAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=azDjWR9doyCywmdhAdppsha7g06leW4SRB9ro9Thbhw=;
+ b=TOWCXRnT36GEbdqOoXlDJCfDt1QjJV4hlSwtZOge4vBrgtwHN3hN6Wn/KJ4y+dGkkubMz2gpE6n1PbPaSKbKP/s75jQ0RMP3K8OytIlwGw+znL9006B7jWLtV5KB75IiXfZu/WNvd+UFQfny6NCz8PxPjE9vlTjsh+wnbMCvomt8o7SS2EVZuI+snp54wx6KDnyIxBkIJnUjr+PHtBYj/2s9/+iym3Jdvt38VN5qUshJVVqERdOC5D6BDSd5kZo8JnEex+JvX5GId2FtH80GbpmPYzx0SfFQq50xbN60ZcpKNKlWLuSYvHMIegRYXwqdEYzD+I9tT4QlgwZbFz6+2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=azDjWR9doyCywmdhAdppsha7g06leW4SRB9ro9Thbhw=;
+ b=MWTbei/sBegLJXvjA/Bd0ZP8NYCsufMX2+VZGm/6VSIeDtP+b8tcnDbPoEPo8cMN7wb81zsfA2jFDKgGsi6oFwL8aNBAlcgDnU/C8fPXeMWNZbmxkGckWFKsSIjwIxgNT3psRwIAkU5nM2RQIvXyYPPnGb0/AZw4RKQ2vdrf1yw=
+Received: from AM0PR04MB4772.eurprd04.prod.outlook.com (2603:10a6:208:c2::17)
+ by AM0PR04MB5281.eurprd04.prod.outlook.com (2603:10a6:208:c6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.19; Fri, 12 Jun
+ 2020 00:49:17 +0000
+Received: from AM0PR04MB4772.eurprd04.prod.outlook.com
+ ([fe80::e906:2df6:5f0f:8c01]) by AM0PR04MB4772.eurprd04.prod.outlook.com
+ ([fe80::e906:2df6:5f0f:8c01%2]) with mapi id 15.20.3066.023; Fri, 12 Jun 2020
+ 00:49:17 +0000
+From:   Jiafei Pan <jiafei.pan@nxp.com>
+To:     Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        Vladimir Oltean <olteanv@gmail.com>
+CC:     "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Colin King <colin.king@canonical.com>,
+        Jiafei Pan <jiafei.pan@nxp.com>
+Subject: RE: [EXT] Re: stress-ng --hrtimers hangs system
+Thread-Topic: [EXT] Re: stress-ng --hrtimers hangs system
+Thread-Index: AQHWOzjXl4hxTFW9UUeYcrHfuUnL/6jKAZSAgAaAYICAAN+6AIACzZKQ
+Date:   Fri, 12 Jun 2020 00:49:17 +0000
+Message-ID: <AM0PR04MB47726B40110E1B02471EEEDF8A810@AM0PR04MB4772.eurprd04.prod.outlook.com>
+References: <4781d250-9a29-cef3-268d-7d83c98bf16a@gmail.com>
+ <87wo4lekm5.fsf@kurt>
+ <CA+h21hqbKasMAuHL+B-2Gb-YQ3QGF+_pWGCxr8LTcusjvuqFeg@mail.gmail.com>
+ <CA+h21hp+UsW+Uc-xHyQAMrRVLX9CXZu8B2Svq+9npLtxs0_DWw@mail.gmail.com>
+ <87y2ovzcmd.fsf@kurt>
+In-Reply-To: <87y2ovzcmd.fsf@kurt>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [124.64.121.250]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 781a382e-ef78-41cc-007d-08d80e6a6f99
+x-ms-traffictypediagnostic: AM0PR04MB5281:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR04MB5281FD791D1B3CC85DB7EC6C8A810@AM0PR04MB5281.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0432A04947
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: V+dRRHJL7awiM+BhwM2TMx4BqatQNDC1Anmz2xesa+54O5sPS+vCaDCiL8sfN+CKGMLZzn+lYQEnHLyNhD7E5784Gspxlm0+hltWwpTLX6Tnt7Nt2kXVDss4EKo9xdOk2SqfoLEYYjMCgpazYm735wNiSwWv6x40F2hEPt3m0rOzueKtjxMXOUefpNbu8uHPXq2nJLnP11jaY7TXQkey5cZHAahqKWB5mS1S1Px6rSpBscV2oZXvcFnkUOag9VaOK3rsT8Zl4ok98tyE1mvbLDLEqb7nsk+MXmVtCttpB5d18JL5wludwGIioc+vvHbrNKDDy/2XIg2o8pH8/aQkDg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4772.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(376002)(39860400002)(346002)(396003)(86362001)(4326008)(66556008)(52536014)(6506007)(8676002)(8936002)(66946007)(66476007)(53546011)(76116006)(66446008)(64756008)(26005)(4744005)(5660300002)(186003)(33656002)(316002)(110136005)(2906002)(55016002)(44832011)(54906003)(71200400001)(9686003)(478600001)(83380400001)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: aYGtA6hDWXJ4LdCFtiNKK+3GerOQQyUSDllqupAtitp1QAmVXQEkoyLfL8mxMjgae5MYHlWp3PG8C6zeNErprrJ/xUdprxskSKOR8rHCaSWxK57qUXG323vgPg/dCIu8daJ8u+cDox9t3tCBj+5fVD3TQJHJNG7wyEJEIXyNu6Mzh6c5/r8lc2Lc4veA0JNhAXUT4OvIuWPz7hmTPW0opOe3rGFWMuEvQ+DwWRh+2tfBGfspwtb+ce39We7LwkiR+2ov4GdID0TqP8vzOKxC1L7Z2XF3i56rl1t3r5QcrOI9LlhQhAiytxXAGXIQB9i+AqjlSEDRd+ytA+JlKwCksT8yHRp9UO76wwxWvgY0LBYW8cOZ9WoMTAEfwdTy6REejMidu1cBRw5UYeCtkgJfj1HUfzq2x8OqskJquwCwiLiQxq5uIrtL6G442aUcE69CXyOe44zels2k6Zd8fMhlfVdSoI1e8i7DfK8QOHBG43zmwjAOwo0oKX8JpDGp5f4v
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006120003
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006120004
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 781a382e-ef78-41cc-007d-08d80e6a6f99
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 00:49:17.2776
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MH1NUdLerpDX/QxxBGsD38LzbfNf7LCMH4n9jPrVzzmtvUMcECciI4+n0Z9poIAhytyvrAbrNZ5nP61vj2dqgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5281
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core routine get_unmapped_area will call a filesystem specific version
-of get_unmapped_area if it exists in file operations.  If a file is on a
-union/overlay, overlayfs does not contain a get_unmapped_area f_op and the
-underlying filesystem routine may be ignored.  Add an overlayfs f_op to call
-the underlying f_op if it exists.
+Hi, Kurt,
 
-The routine is_file_hugetlbfs() is used to determine if a file is on
-hugetlbfs.  This is determined by f_mode & FMODE_HUGETLBFS.  Copy the mode
-to the overlayfs file during open so that is_file_hugetlbfs() will work as
-intended.
+May I know whether you used "root" user to run stress-ng? using "root" user=
+ will change the scheduler to be "SCHED_RR", so would you please share test=
+ result with root and non-root users? Thanks.=20
 
-These two issues can result in the BUG as shown in [1].
+Best Regards,
+Jiafei.
 
-[1] https://lore.kernel.org/linux-mm/000000000000b4684e05a2968ca6@google.com/
+-----Original Message-----
+From: linux-rt-users-owner@vger.kernel.org <linux-rt-users-owner@vger.kerne=
+l.org> On Behalf Of Kurt Kanzenbach
+Sent: Wednesday, June 10, 2020 1:58 PM
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: linux-rt-users@vger.kernel.org; lkml <linux-kernel@vger.kernel.org>; rc=
+u@vger.kernel.org; Colin King <colin.king@canonical.com>
+Subject: [EXT] Re: stress-ng --hrtimers hangs system
 
-Reported-by: syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com
-Signed-off-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- fs/overlayfs/file.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Hi Vladimir,
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index 87c362f65448..41e5746ba3c6 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -124,6 +124,8 @@ static int ovl_real_fdget(const struct file *file, struct fd *real)
- 	return ovl_real_fdget_meta(file, real, false);
- }
- 
-+#define OVL_F_MODE_TO_UPPER	(FMODE_HUGETLBFS)
-+
- static int ovl_open(struct inode *inode, struct file *file)
- {
- 	struct file *realfile;
-@@ -140,6 +142,9 @@ static int ovl_open(struct inode *inode, struct file *file)
- 	if (IS_ERR(realfile))
- 		return PTR_ERR(realfile);
- 
-+	/* Copy modes from underlying file */
-+	file->f_mode |= (realfile->f_mode & OVL_F_MODE_TO_UPPER);
-+
- 	file->private_data = realfile;
- 
- 	return 0;
-@@ -757,6 +762,21 @@ static loff_t ovl_remap_file_range(struct file *file_in, loff_t pos_in,
- 			    remap_flags, op);
- }
- 
-+#ifdef CONFIG_MMU
-+static unsigned long ovl_get_unmapped_area(struct file *file,
-+				unsigned long uaddr, unsigned long len,
-+				unsigned long pgoff, unsigned long flags)
-+{
-+	struct file *realfile = file->private_data;
-+
-+	return (realfile->f_op->get_unmapped_area ?:
-+		current->mm->get_unmapped_area)(realfile,
-+						uaddr, len, pgoff, flags);
-+}
-+#else
-+#define ovl_get_unmapped_area NULL
-+#endif
-+
- const struct file_operations ovl_file_operations = {
- 	.open		= ovl_open,
- 	.release	= ovl_release,
-@@ -774,6 +794,7 @@ const struct file_operations ovl_file_operations = {
- 
- 	.copy_file_range	= ovl_copy_file_range,
- 	.remap_file_range	= ovl_remap_file_range,
-+	.get_unmapped_area	= ovl_get_unmapped_area,
- };
- 
- int __init ovl_aio_request_cache_init(void)
--- 
-2.25.4
+On Tue Jun 09 2020, Vladimir Oltean wrote:
+> Just out of curiosity, what and how many CPU cores does your ARM64 box=20
+> have, and what frequency are you running them at?
+> Mine is a dual-core A72 machine running at 1500 MHz.
 
+That particular machine has a dual core Cortex A53 running at 1GHz.
+
+Thanks,
+Kurt
