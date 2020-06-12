@@ -2,221 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5333B1F71EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 03:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E061F71F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 03:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgFLBw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 21:52:58 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:26100 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726468AbgFLBw5 (ORCPT
+        id S1726597AbgFLBxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 21:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgFLBxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 21:52:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1591926775; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/aZaIYLpDRo9Jmnv3uRBjAFuGehCfPcRUaFTYev5WAs=; b=UduQL+Is5c0vGils5vf/C9AdwwSEQw+ohpWnAGFXeyCZ/uk0VNMm77f5NFbN0LFe11Qwf1td
- iALUulDrp753wl6FvATP9UKbm2ML+uDJeaW7N4e0uRjlkEgL15nu/P81tnVbcd/Y0xcPz7Mn
- V5qOQ945vtKVx4f3QxizR4mMatk=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n14.prod.us-east-1.postgun.com with SMTP id
- 5ee2dfde0206ad41d11e0346 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Jun 2020 01:52:30
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E7E0FC433AD; Fri, 12 Jun 2020 01:52:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from linuxdisplay-lab-04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tanmay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92D23C433CB;
-        Fri, 12 Jun 2020 01:52:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 92D23C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tanmay@codeaurora.org
-From:   Tanmay Shah <tanmay@codeaurora.org>
-To:     sam@ravnborg.org, robh+dt@kernel.org, swboyd@chromium.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, seanpaul@chromium.org,
-        robdclark@gmail.com, aravindh@codeaurora.org,
-        abhinavk@codeaurora.org, Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>
-Subject: [PATCH v6 5/5] drm/msm/dpu: add display port support in DPU
-Date:   Thu, 11 Jun 2020 18:50:30 -0700
-Message-Id: <20200612015030.16072-6-tanmay@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200612015030.16072-1-tanmay@codeaurora.org>
-References: <20200612015030.16072-1-tanmay@codeaurora.org>
+        Thu, 11 Jun 2020 21:53:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778FFC03E96F;
+        Thu, 11 Jun 2020 18:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cStLTJ8R6X6N3Wfmxkjdz1h2n4pTx9jO+4oGXH0Nk+U=; b=PDm/mf4V+mea+4FjDe9dRrySZm
+        1PQV3PkeeQydNP0pEbEeydYpOY6TBnb2aN5XtKW36ybqCahPFDrhLIL5/oWZUkM5bRvsJ1Ifi/or5
+        tRjIh2i9o8LjPat8GBLJCVjy+ZXRuXuVRQEApCSttRtSOkb4vn/HPp4qvsqxRlR/F3ecIywg7kqyF
+        txNyAEzHkHeRDNdn8Cawq2zCu7aKl1akzpcC4Na5Hb1vFMhd8KYT2q3VT2KgEMFvntgbwR9njMPya
+        6k4fa/2vy1OZL+dcZR1YbRQ3rh1E1XN5Kk8SCNfSQXHbHkyYsjANp/wFk115nRsi2VRZE7HG7iUEW
+        bssQishg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jjYso-0006WI-Ve; Fri, 12 Jun 2020 01:53:26 +0000
+Date:   Thu, 11 Jun 2020 18:53:26 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Colin Walters <walters@verbum.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [PATCH v4 1/2] hugetlb: use f_mode & FMODE_HUGETLBFS to identify
+ hugetlbfs files
+Message-ID: <20200612015326.GD8681@bombadil.infradead.org>
+References: <20200612004644.255692-1-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612004644.255692-1-mike.kravetz@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeykumar Sankaran <jsanka@codeaurora.org>
+On Thu, Jun 11, 2020 at 05:46:43PM -0700, Mike Kravetz wrote:
+> The routine is_file_hugepages() checks f_op == hugetlbfs_file_operations
+> to determine if the file resides in hugetlbfs.  This is problematic when
+> the file is on a union or overlay.  Instead, define a new file mode
+> FMODE_HUGETLBFS which is set when a hugetlbfs file is opened.  The mode
+> can easily be copied to other 'files' derived from the original hugetlbfs
+> file.
+> 
+> With this change hugetlbfs_file_operations can be static as it should be.
+> 
+> There is also a (duplicate) set of shm file operations used for the routine
+> is_file_shm_hugepages().  Instead of setting/using special f_op's, just
+> propagate the FMODE_HUGETLBFS mode.  This means is_file_shm_hugepages() and
+> the duplicate f_ops can be removed.
+> 
+> While cleaning things up, change the name of is_file_hugepages() to
+> is_file_hugetlbfs().  The term hugepages is a bit ambiguous.
 
-Add display port support in DPU by creating hooks
-for DP encoder enumeration and encoder mode
-initialization.
+I was going to have objections to this before I read it more carefully
+and realised that the "shm" here is sysvipc and doesn't have anything
+to do with the huge page support in shmfs.
 
-This change is based on the Snapdragon Display port
-driver changes[1].
+> A subsequent patch will propagate FMODE_HUGETLBFS in overlayfs.
+> 
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-changes in v2:
-	- rebase on [2] (Sean Paul)
-	- remove unwanted error checks and
-	  switch cases (Jordan Crouse)
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[1] https://lwn.net/Articles/768265/
-[2] https://lkml.org/lkml/2018/11/17/87
-
-changes in V3:
--- Moved this change as part of the DP driver changes.
--- Addressed compilation issues on the latest code base.
-
-Changes in v6:
--- Fix checkpatch.pl warning
-
-Signed-off-by: Jeykumar Sankaran <jsanka@codeaurora.org>
-Signed-off-by: Chandan Uddaraju <chandanu@codeaurora.org>
-Signed-off-by: Vara Reddy <varar@codeaurora.org>
-Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  8 +--
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     | 65 +++++++++++++++++----
- 2 files changed, 58 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index d796710ff4aa..745d5ce7e821 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -2017,7 +2017,7 @@ static int dpu_encoder_setup_display(struct dpu_encoder_virt *dpu_enc,
- {
- 	int ret = 0;
- 	int i = 0;
--	enum dpu_intf_type intf_type;
-+	enum dpu_intf_type intf_type = INTF_NONE;
- 	struct dpu_enc_phys_init_params phys_params;
- 
- 	if (!dpu_enc) {
-@@ -2039,9 +2039,9 @@ static int dpu_encoder_setup_display(struct dpu_encoder_virt *dpu_enc,
- 	case DRM_MODE_ENCODER_DSI:
- 		intf_type = INTF_DSI;
- 		break;
--	default:
--		DPU_ERROR_ENC(dpu_enc, "unsupported display interface type\n");
--		return -EINVAL;
-+	case DRM_MODE_ENCODER_TMDS:
-+		intf_type = INTF_DP;
-+		break;
- 	}
- 
- 	WARN_ON(disp_info->num_of_h_tiles < 1);
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index b8615d4fe8a3..f6c219f875db 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -492,6 +492,33 @@ static int _dpu_kms_initialize_dsi(struct drm_device *dev,
- 	return rc;
- }
- 
-+static int _dpu_kms_initialize_displayport(struct drm_device *dev,
-+					    struct msm_drm_private *priv,
-+					    struct dpu_kms *dpu_kms)
-+{
-+	struct drm_encoder *encoder = NULL;
-+	int rc = 0;
-+
-+	if (!priv->dp)
-+		return rc;
-+
-+	encoder = dpu_encoder_init(dev, DRM_MODE_ENCODER_TMDS);
-+	if (IS_ERR(encoder)) {
-+		DPU_ERROR("encoder init failed for dsi display\n");
-+		return PTR_ERR(encoder);
-+	}
-+
-+	rc = msm_dp_modeset_init(priv->dp, dev, encoder);
-+	if (rc) {
-+		DPU_ERROR("modeset_init failed for DP, rc = %d\n", rc);
-+		drm_encoder_cleanup(encoder);
-+		return rc;
-+	}
-+
-+	priv->encoders[priv->num_encoders++] = encoder;
-+	return rc;
-+}
-+
- /**
-  * _dpu_kms_setup_displays - create encoders, bridges and connectors
-  *                           for underlying displays
-@@ -504,12 +531,21 @@ static int _dpu_kms_setup_displays(struct drm_device *dev,
- 				    struct msm_drm_private *priv,
- 				    struct dpu_kms *dpu_kms)
- {
--	/**
--	 * Extend this function to initialize other
--	 * types of displays
--	 */
-+	int rc = 0;
-+
-+	rc = _dpu_kms_initialize_dsi(dev, priv, dpu_kms);
-+	if (rc) {
-+		DPU_ERROR("initialize_dsi failed, rc = %d\n", rc);
-+		return rc;
-+	}
- 
--	return _dpu_kms_initialize_dsi(dev, priv, dpu_kms);
-+	rc = _dpu_kms_initialize_displayport(dev, priv, dpu_kms);
-+	if (rc) {
-+		DPU_ERROR("initialize_DP failed, rc = %d\n", rc);
-+		return rc;
-+	}
-+
-+	return rc;
- }
- 
- static void _dpu_kms_drm_obj_destroy(struct dpu_kms *dpu_kms)
-@@ -694,13 +730,20 @@ static void _dpu_kms_set_encoder_mode(struct msm_kms *kms,
- 	info.capabilities = cmd_mode ? MSM_DISPLAY_CAP_CMD_MODE :
- 			MSM_DISPLAY_CAP_VID_MODE;
- 
--	/* TODO: No support for DSI swap */
--	for (i = 0; i < ARRAY_SIZE(priv->dsi); i++) {
--		if (priv->dsi[i]) {
--			info.h_tile_instance[info.num_of_h_tiles] = i;
--			info.num_of_h_tiles++;
-+	switch (info.intf_type) {
-+	case DRM_MODE_ENCODER_DSI:
-+		/* TODO: No support for DSI swap */
-+		for (i = 0; i < ARRAY_SIZE(priv->dsi); i++) {
-+			if (priv->dsi[i]) {
-+				info.h_tile_instance[info.num_of_h_tiles] = i;
-+				info.num_of_h_tiles++;
-+			}
- 		}
--	}
-+		break;
-+	case DRM_MODE_ENCODER_TMDS:
-+		info.num_of_h_tiles = 1;
-+		break;
-+	};
- 
- 	rc = dpu_encoder_setup(encoder->dev, encoder, &info);
- 	if (rc)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+I might have suggested splitting the rename of is_file_hugetlbfs() from
+the rest of this patch, but I wouldn't resend to change that.
