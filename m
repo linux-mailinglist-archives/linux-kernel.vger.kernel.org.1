@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F731F7473
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C321F7471
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgFLHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 03:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        id S1726671AbgFLHKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 03:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgFLHKf (ORCPT
+        with ESMTP id S1726616AbgFLHKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:10:35 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703DAC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:35 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x11so3383051plv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:35 -0700 (PDT)
+        Fri, 12 Jun 2020 03:10:37 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1CCC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:37 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e9so3704719pgo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=A2QaBTJhBJQRzylOX9vPhPzTgEPwvSh2CxTZj+1fI78=;
-        b=lzm/7SHi4Y2LnyTA2A6iUc8tChivg1S6hfjql+7CInfU7VGpxRokFhUHYMnD8+Wi91
-         ctpVZi3Rn9n6ZrzfRbrfTLRxG1DorH3KDQrEWyhdGpOZpg414iGAyH8q+vT64LqlgLwY
-         aRBMLWzD2ce9ZQJ5LbdubChokm0OqeOeklDcc10mRMUO/SVoR1PT5nI58TZm8JRTOPdK
-         qtwfn78qSOYNsOC8XPIX08/SLIY03WtsZfThrWRmErGEFoBydRpxcNK8y9/HlTABJspM
-         V0OIZiy+xSK37sJlqwy4MLNvhX09bUHvwuoZKk76m7a/+Tyu2Xm0IJ+HHWqH1iZRudDU
-         IlwA==
+        bh=P9Pa9sX2hCWEpSvVJf+FpLMUkYZkkhyDVpp3YBSMMho=;
+        b=YPopjf7BjgfR9P6MH2P5gmjjphEm5PftEMUk4KVtGergK6VXmdMIvx8AbuVSTla928
+         Pyk7F+QztXyTZr2LFXm+lhPMTgPxHj/w5rLH2FkDJ6DCT3M4KfifnsIBHl98QJMk8kPL
+         aaYxBV6sXMijkd2fNrlTv5/gyEYQZmKNnFi6m50G43UohbFWL+/TZHCNbmC4UNXrA8fC
+         Vbk5pN6LQsWxIK0jxq/hpdlswusFQZyG8PXy4JKC0hTn9QbE+fX6s2MHpzfW48YtXKDy
+         t/j4SQPEkhRrXsZnwHKxPmosWimYFMBJaOKDggmdjJPzFNZrLzdhPFfeM7EdkOwotr8i
+         nE5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A2QaBTJhBJQRzylOX9vPhPzTgEPwvSh2CxTZj+1fI78=;
-        b=OBVD9ZNuXl0CKwskW01aC9RsPAmsiJJXXvGTd6hqUWm8Rsn2y7x7uH6WHy2alfe+wN
-         M6AUR4Rvgoy/7Xj4mQinMeyIw6sYnVP53dXvfi+75k1azGhFC9DkSMYU9aYT1zakQOWQ
-         F1n8SB+uTHwCoIdi1X35M+Q9A0VW+NURz4q8cwit4UPG7cSZhG2SkTjiLJ5rdIG25FOe
-         pBZE23XNlKdLwGFXuk5fHMQNf5bT+z8iH1PdCok+H1V8t7m6GHOOXKXmqFJO0z+OfaQ6
-         gEav5zihYFrQ9zDJMuhDf5hG3UXv8G2fbAvb/YMvZ+Oz6eZWM/ceqCgTZTMSPBtla8XH
-         D09g==
-X-Gm-Message-State: AOAM530MUC5vQgS4QU9P0Bz9SlVZrGT6gvYXdJL0Zt28cW/NuqpStvhD
-        Bs/747cQT+MZ1TijZvuFWG9hYHdnQHyyoQ==
-X-Google-Smtp-Source: ABdhPJyoKYtGQArQjTuuVyk6DTQSNswCQAgwB0evJSXQ5wo1oNwLXoJhzMrYI9PQQTF4Yt6WX7vQ+A==
-X-Received: by 2002:a17:902:8342:: with SMTP id z2mr10294966pln.300.1591945834535;
-        Fri, 12 Jun 2020 00:10:34 -0700 (PDT)
+        bh=P9Pa9sX2hCWEpSvVJf+FpLMUkYZkkhyDVpp3YBSMMho=;
+        b=tDL2gjqLgoVOPn7vqfhqfn5uaMBmRsT7rUKfvtyX14C19TwmhPuIkZhjxK5isZ3K3S
+         8DkkRjcYO/d1JvWHb7er0Xz362Ymm8J21zoYqTegKH1kypMLryvKbcQ3/e8UHt0xu9O8
+         nDShi1nKpi3VKD25GTTWX56AA5pPwnYwfCIkxd/a32lOGJGpKKqNMqkZYBaoOwhoklgs
+         WEdAeSfe5ZYVRWn4YDETc/VydRvBd5Rkd8vsahpP8eWQ5eZCyWOte2iBm3IJ+jrg05ga
+         h4m2X5toT5YDjNj+MoevcNIvIek3qGRt4ocL8hUKy37kEn1ij6UH9Mu7HVKmti4qGZx8
+         W6/A==
+X-Gm-Message-State: AOAM5326c/UnRzv41f7ACLy+6sShRpSWIBYQWf/lkoG4zR3PT6PVb1I7
+        lf0oEgzQInAUJHBh3a3jmeRB5w==
+X-Google-Smtp-Source: ABdhPJzsRw6oDxsMkoH09iu+rTk7MoFSiqjbxsoMOkY49g2MoPX+b/PCxGziRX2lD3N4N5swVaZc2w==
+X-Received: by 2002:a63:235c:: with SMTP id u28mr9409667pgm.278.1591945836587;
+        Fri, 12 Jun 2020 00:10:36 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.32
+        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 00:10:34 -0700 (PDT)
+        Fri, 12 Jun 2020 00:10:36 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, oleg@redhat.com, guoren@linux.alibaba.com,
         vincent.chen@sifive.com, paul.walmsley@sifive.com,
         palmerdabbelt@google.com, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 11/13] riscv: Add ptrace vector support
-Date:   Fri, 12 Jun 2020 15:10:00 +0800
-Message-Id: <32bf683f9e25b3dd291edd77cc9a75c7bac07e88.1591344965.git.greentime.hu@sifive.com>
+Subject: [PATCH 12/13] riscv: Add sigcontext save/restore for vector
+Date:   Fri, 12 Jun 2020 15:10:01 +0800
+Message-Id: <c407847d2b05d04c18b563430643fa7d8e7f9813.1591344965.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1591344965.git.greentime.hu@sifive.com>
 References: <cover.1591344965.git.greentime.hu@sifive.com>
@@ -66,193 +66,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds ptrace support for riscv vector. The vector registers will
-be saved in datap pointer of __riscv_v_state. This pointer will be set
-right after the __riscv_v_state data structure then it will be put in ubuf
-for ptrace system call to get or set. It will check if the datap got from
-ubuf is set to the correct address or not when the ptrace system call is
-trying to set the vector registers.
+This patch adds sigcontext save/restore for vector. The vector registers
+will be saved in datap pointer. The datap pointer will be allocaed
+dynamically when the task needs in kernel space. The datap pointer will
+be set right after the __riscv_v_state data structure to save all the
+vector registers in the signal handler stack.
 
-[guoren@linux.alibaba.com: Add the first version porting to support vector
-of ptrace]
+[guoren@linux.alibaba.com: add the first porting for vector signal and
+sigcontext support]
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/riscv/include/uapi/asm/elf.h |   1 +
- arch/riscv/kernel/ptrace.c        | 114 ++++++++++++++++++++++++++++++
- include/uapi/linux/elf.h          |   1 +
- 3 files changed, 116 insertions(+)
+ arch/riscv/include/uapi/asm/sigcontext.h |  2 +
+ arch/riscv/kernel/signal.c               | 92 +++++++++++++++++++++++-
+ 2 files changed, 91 insertions(+), 3 deletions(-)
 
-diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
-index d696d6610231..099434d075a7 100644
---- a/arch/riscv/include/uapi/asm/elf.h
-+++ b/arch/riscv/include/uapi/asm/elf.h
-@@ -23,6 +23,7 @@ typedef struct user_regs_struct elf_gregset_t;
- typedef __u64 elf_fpreg_t;
- typedef union __riscv_fp_state elf_fpregset_t;
- #define ELF_NFPREG (sizeof(struct __riscv_d_ext_state) / sizeof(elf_fpreg_t))
-+#define ELF_NVREG  (sizeof(struct __riscv_v_state) / sizeof(elf_greg_t))
+diff --git a/arch/riscv/include/uapi/asm/sigcontext.h b/arch/riscv/include/uapi/asm/sigcontext.h
+index 84f2dfcfdbce..4217f3f1c8ba 100644
+--- a/arch/riscv/include/uapi/asm/sigcontext.h
++++ b/arch/riscv/include/uapi/asm/sigcontext.h
+@@ -8,6 +8,7 @@
  
- #if __riscv_xlen == 64
- #define ELF_RISCV_R_SYM(r_info)		ELF64_R_SYM(r_info)
-diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
-index 444dc7b0fd78..b5b83260e674 100644
---- a/arch/riscv/kernel/ptrace.c
-+++ b/arch/riscv/kernel/ptrace.c
-@@ -10,6 +10,7 @@
  #include <asm/ptrace.h>
- #include <asm/syscall.h>
- #include <asm/thread_info.h>
-+#include <asm/switch_to.h>
- #include <linux/audit.h>
- #include <linux/ptrace.h>
- #include <linux/elf.h>
-@@ -26,6 +27,9 @@ enum riscv_regset {
- #ifdef CONFIG_FPU
- 	REGSET_F,
- #endif
-+#ifdef CONFIG_VECTOR
-+	REGSET_V,
-+#endif
+ 
++#define RVV_MAGIC	0x53465457
+ /*
+  * Signal context structure
+  *
+@@ -17,6 +18,7 @@
+ struct sigcontext {
+ 	struct user_regs_struct sc_regs;
+ 	union __riscv_fp_state sc_fpregs;
++	struct __riscv_v_state sc_vregs;
  };
  
- static int riscv_gpr_get(struct task_struct *target,
-@@ -92,6 +96,106 @@ static int riscv_fpr_set(struct task_struct *target,
- }
+ #endif /* _UAPI_ASM_RISCV_SIGCONTEXT_H */
+diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+index 17ba190e84a5..9ada6f74bb95 100644
+--- a/arch/riscv/kernel/signal.c
++++ b/arch/riscv/kernel/signal.c
+@@ -83,6 +83,80 @@ static long save_fp_state(struct pt_regs *regs,
+ #define restore_fp_state(task, regs) (0)
  #endif
  
 +#ifdef CONFIG_VECTOR
-+static int riscv_vr_get(struct task_struct *target,
-+			 const struct user_regset *regset,
-+			 unsigned int pos, unsigned int count,
-+			 void *kbuf, void __user *ubuf)
++static long restore_v_state(struct pt_regs *regs, struct sigcontext *sc)
 +{
-+	int ret;
-+	struct __riscv_v_state *vstate = &target->thread.vstate;
-+	/* Set the datap right after the address of vstate. */
-+	void *datap = ubuf + sizeof(struct __riscv_v_state);
-+	u32 magic = RVV_MAGIC;
++	long err;
++	struct __riscv_v_state __user *state = &sc->sc_vregs;
++	void *datap;
++	__u32 magic;
 +
-+	/* Copy the magic number. */
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, &magic, 0,
-+				  sizeof(u32));
-+	if (unlikely(ret))
-+		return ret;
++	/* Get magic number and check it. */
++	err = __get_user(magic, &state->magic);
++	if (unlikely(err))
++		return err;
 +
-+	/* Copy rest of vstate except datap. */
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, vstate, 0,
-+				  RISCV_V_STATE_DATAP);
-+	if (unlikely(ret))
-+		return ret;
++	if (magic != RVV_MAGIC)
++		return -EINVAL;
++
++	/* Copy everything of __riscv_v_state except datap. */
++	err = __copy_from_user(&current->thread.vstate, state,
++			       RISCV_V_STATE_DATAP);
++	if (unlikely(err))
++		return err;
 +
 +	/* Copy the pointer datap itself. */
-+	pos = 0;
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, &datap, 0,
-+				  sizeof(vstate->datap));
-+	if (unlikely(ret))
-+		return ret;
++	err = __get_user(datap, &state->datap);
++	if (unlikely(err))
++		return err;
 +
-+#if __riscv_xlen == 32
-+	/* Skip copy _padding. */
-+	count -= sizeof(vstate->__padding);
-+	ubuf += sizeof(vstate->__padding);
-+#endif
 +
-+	/* Copy all the vector registers. */
-+	pos = 0;
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+				  vstate->datap, 0, vstate->size);
-+	return ret;
++	/* Copy the whole vector content from user space datap. */
++	err = __copy_from_user(current->thread.vstate.datap, datap,
++			       current->thread.vstate.size);
++	if (unlikely(err))
++		return err;
++
++	vstate_restore(current, regs);
++
++	return err;
 +}
 +
-+static int riscv_vr_set(struct task_struct *target,
-+			 const struct user_regset *regset,
-+			 unsigned int pos, unsigned int count,
-+			 const void *kbuf, const void __user *ubuf)
++static long save_v_state(struct pt_regs *regs, struct sigcontext *sc)
 +{
-+	int ret, size;
-+	struct __riscv_v_state *vstate = &target->thread.vstate;
-+	const void *datap = ubuf + sizeof(struct __riscv_v_state);
-+	const void *datap_addr = ubuf + RISCV_V_STATE_DATAP;
-+	long val_datap;
++	long err;
++	struct __riscv_v_state __user *state = &sc->sc_vregs;
++	/* Set the datap right after the sigcntext structure. */
++	void *datap = sc + 1;
 +
-+	/* Skip copy magic because kernel doesn't need to use it. */
-+	size = sizeof(vstate->magic);
-+	pos += size;
-+	count -= size;
-+	ubuf += size;
++	vstate_save(current, regs);
++	/* Copy everything of vstate but datap. */
++	err = __copy_to_user(state, &current->thread.vstate,
++			     RISCV_V_STATE_DATAP);
++	if (unlikely(err))
++		return err;
 +
-+	/* Copy rest of the vstate except datap and __padding. */
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, vstate, 0,
-+				 RISCV_V_STATE_DATAP);
-+	if (unlikely(ret))
-+		return ret;
++	/* Copy the magic number. */
++	err = __put_user(RVV_MAGIC, &state->magic);
++	if (unlikely(err))
++		return err;
 +
-+	/* Check if the datap is correct address of ubuf. */
-+	__get_user(val_datap, (long *)datap_addr);
-+	if (val_datap != (long)datap)
-+		return -EFAULT;
++	/* Copy the pointer datap itself. */
++	err = __put_user(datap, &state->datap);
++	if (unlikely(err))
++		return err;
 +
-+	/* Skip copy datap. */
-+	size = sizeof(vstate->datap);
-+	count -= size;
-+	ubuf += size;
++	/* Copy the whole vector content to user space datap. */
++	err = __copy_to_user(datap, current->thread.vstate.datap,
++			     current->thread.vstate.size);
 +
-+#if __riscv_xlen == 32
-+	/* Skip copy _padding. */
-+	size = sizeof(vstate->__padding);
-+	count -= size;
-+	ubuf += size;
-+#endif
-+
-+	/* Copy all the vector registers. */
-+	pos = 0;
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, vstate->datap,
-+				 0, vstate->size);
-+	return ret;
++	return err;
 +}
-+static unsigned int riscv_vr_get_size(struct task_struct *target,
-+				      const struct user_regset *regset)
-+{
-+	if (!has_vector)
-+		return 0;
-+
-+	return sizeof(struct __riscv_v_state) + riscv_vsize;
-+}
++#else
++#define save_v_state(task, regs) (0)
++#define restore_v_state(task, regs) (0)
 +#endif
 +
- static const struct user_regset riscv_user_regset[] = {
- 	[REGSET_X] = {
- 		.core_note_type = NT_PRSTATUS,
-@@ -111,6 +215,16 @@ static const struct user_regset riscv_user_regset[] = {
- 		.set = &riscv_fpr_set,
- 	},
- #endif
-+#ifdef CONFIG_VECTOR
-+	[REGSET_V] = {
-+		.core_note_type = NT_RISCV_VECTOR,
-+		.align = 16,
-+		.size = sizeof(unsigned long),
-+		.get = riscv_vr_get,
-+		.set = riscv_vr_set,
-+		.get_size = riscv_vr_get_size,
-+	},
-+#endif
- };
+ static long restore_sigcontext(struct pt_regs *regs,
+ 	struct sigcontext __user *sc)
+ {
+@@ -92,6 +166,9 @@ static long restore_sigcontext(struct pt_regs *regs,
+ 	/* Restore the floating-point state. */
+ 	if (has_fpu)
+ 		err |= restore_fp_state(regs, &sc->sc_fpregs);
++	/* Restore the vector state. */
++	if (has_vector)
++		err |= restore_v_state(regs, sc);
+ 	return err;
+ }
  
- static const struct user_regset_view riscv_user_native_view = {
-diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-index 34c02e4290fe..e428f9e8710a 100644
---- a/include/uapi/linux/elf.h
-+++ b/include/uapi/linux/elf.h
-@@ -428,6 +428,7 @@ typedef struct elf64_shdr {
- #define NT_MIPS_DSP	0x800		/* MIPS DSP ASE registers */
- #define NT_MIPS_FP_MODE	0x801		/* MIPS floating-point mode */
- #define NT_MIPS_MSA	0x802		/* MIPS SIMD registers */
-+#define NT_RISCV_VECTOR	0x900		/* RISC-V vector registers */
+@@ -101,13 +178,16 @@ SYSCALL_DEFINE0(rt_sigreturn)
+ 	struct rt_sigframe __user *frame;
+ 	struct task_struct *task;
+ 	sigset_t set;
++	size_t frame_size = sizeof(*frame);
  
- /* Note header in a PT_NOTE section */
- typedef struct elf32_note {
+ 	/* Always make any pending restarted system calls return -EINTR */
+ 	current->restart_block.fn = do_no_restart_syscall;
+ 
+ 	frame = (struct rt_sigframe __user *)regs->sp;
+ 
+-	if (!access_ok(frame, sizeof(*frame)))
++	if (has_vector)
++		frame_size += current->thread.vstate.size;
++	if (!access_ok(frame, frame_size))
+ 		goto badframe;
+ 
+ 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
+@@ -145,6 +225,9 @@ static long setup_sigcontext(struct rt_sigframe __user *frame,
+ 	/* Save the floating-point state. */
+ 	if (has_fpu)
+ 		err |= save_fp_state(regs, &sc->sc_fpregs);
++	/* Save the vector state. */
++	if (has_vector)
++		err |= save_v_state(regs, sc);
+ 	return err;
+ }
+ 
+@@ -176,9 +259,12 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ {
+ 	struct rt_sigframe __user *frame;
+ 	long err = 0;
++	size_t frame_size = sizeof(*frame);
+ 
+-	frame = get_sigframe(ksig, regs, sizeof(*frame));
+-	if (!access_ok(frame, sizeof(*frame)))
++	if (has_vector)
++		frame_size += current->thread.vstate.size;
++	frame = get_sigframe(ksig, regs, frame_size);
++	if (!access_ok(frame, frame_size))
+ 		return -EFAULT;
+ 
+ 	err |= copy_siginfo_to_user(&frame->info, &ksig->info);
 -- 
 2.27.0
 
