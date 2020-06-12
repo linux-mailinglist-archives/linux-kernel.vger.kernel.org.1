@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A714A1F71A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 03:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7B71F71AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 03:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgFLBSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 21:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgFLBSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 21:18:49 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360EEC03E96F;
-        Thu, 11 Jun 2020 18:18:49 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id EC35A128AE837;
-        Thu, 11 Jun 2020 18:18:45 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 18:18:42 -0700 (PDT)
-Message-Id: <20200611.181842.2083721665296210889.davem@davemloft.net>
-To:     dhowells@redhat.com
-Cc:     netdev@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Fix race between incoming ACK parser and
- retransmitter
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <159190902048.3557242.17524953697020439394.stgit@warthog.procyon.org.uk>
-References: <159190902048.3557242.17524953697020439394.stgit@warthog.procyon.org.uk>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        id S1726535AbgFLB0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 21:26:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56360 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726507AbgFLB0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 21:26:38 -0400
+Received: from [10.130.0.52] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2uG2OJeckpBAA--.2793S3;
+        Fri, 12 Jun 2020 09:21:11 +0800 (CST)
+Subject: Re: [PATCH] PCI: Loongson: Use DECLARE_PCI_FIXUP_EARLY for
+ bridge_class_quirk()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+References: <20200611202604.GA1607130@bjorn-Precision-5520>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <3027869e-ae17-5387-ce98-f89b6b1e4915@loongson.cn>
+Date:   Fri, 12 Jun 2020 09:21:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <20200611202604.GA1607130@bjorn-Precision-5520>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 11 Jun 2020 18:18:46 -0700 (PDT)
+X-CM-TRANSID: AQAAf9Dxz2uG2OJeckpBAA--.2793S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFy3uFyxCr4kKr4kuw15Arb_yoW8CFWxpr
+        15Ja17KF4ftFs8C3ZFqw4DG3Z8ZF9xGa48CFW5u3W2gF9xX3W5WrnFk3WFvF4UJrWDJa18
+        ZFWkCayrCa15Wr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHpB-UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 11 Jun 2020 21:57:00 +0100
+On 06/12/2020 04:26 AM, Bjorn Helgaas wrote:
+> Subject line:
+>
+>    PCI: loongson: Use DECLARE_PCI_FIXUP_EARLY for bridge_class_quirk()
+>
+> (Driver names are conventionally lower case.)
+>
+> Lorenzo will probably silently fix this when applying, so this is
+> mostly just a reminder in case you need to revise this or for future
+> patches.
+Hi Bjorn,
 
-> There's a race between the retransmission code and the received ACK parser.
-> The problem is that the retransmission loop has to drop the lock under
-> which it is iterating through the transmission buffer in order to transmit
-> a packet, but whilst the lock is dropped, the ACK parser can crank the Tx
-> window round and discard the packets from the buffer.
-> 
-> The retransmission code then updated the annotations for the wrong packet
-> and a later retransmission thought it had to retransmit a packet that
-> wasn't there, leading to a NULL pointer dereference.
-> 
-> Fix this by:
-> 
->  (1) Moving the annotation change to before we drop the lock prior to
->      transmission.  This means we can't vary the annotation depending on
->      the outcome of the transmission, but that's fine - we'll retransmit
->      again later if it failed now.
-> 
->  (2) Skipping the packet if the skb pointer is NULL.
-> 
-> The following oops was seen:
-> 
-> 	BUG: kernel NULL pointer dereference, address: 000000000000002d
-> 	Workqueue: krxrpcd rxrpc_process_call
-> 	RIP: 0010:rxrpc_get_skb+0x14/0x8a
-> 	...
-> 	Call Trace:
-> 	 rxrpc_resend+0x331/0x41e
-> 	 ? get_vtime_delta+0x13/0x20
-> 	 rxrpc_process_call+0x3c0/0x4ac
-> 	 process_one_work+0x18f/0x27f
-> 	 worker_thread+0x1a3/0x247
-> 	 ? create_worker+0x17d/0x17d
-> 	 kthread+0xe6/0xeb
-> 	 ? kthread_delayed_work_timer_fn+0x83/0x83
-> 	 ret_from_fork+0x1f/0x30
-> 
-> Fixes: 248f219cb8bc ("rxrpc: Rewrite the data and ack handling code")
-> Signed-off-by: David Howells <dhowells@redhat.com>
+Thanks for your reminder, sorry for that.
+I will modify it and then send v2.
 
-Applied, thanks.
+>
+> On Wed, Jun 10, 2020 at 10:39:50AM +0800, Tiezhu Yang wrote:
+>> Use DECLARE_PCI_FIXUP_EARLY instead of DECLARE_PCI_FIXUP_HEADER
+>> for bridge_class_quirk() in pci-loongson.c, otherwise the fixup
+>> has no effect.
+>>
+>> Fixes: 1f58cca5cf2b ("PCI: Add Loongson PCI Controller support")
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> This patch is based on mips-next tree.
+>>
+>>   drivers/pci/controller/pci-loongson.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controller/pci-loongson.c
+>> index 459009c..58b862a 100644
+>> --- a/drivers/pci/controller/pci-loongson.c
+>> +++ b/drivers/pci/controller/pci-loongson.c
+>> @@ -37,11 +37,11 @@ static void bridge_class_quirk(struct pci_dev *dev)
+>>   {
+>>   	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
+>>   }
+>> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
+>> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>>   			DEV_PCIE_PORT_0, bridge_class_quirk);
+>> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
+>> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>>   			DEV_PCIE_PORT_1, bridge_class_quirk);
+>> -DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LOONGSON,
+>> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
+>>   			DEV_PCIE_PORT_2, bridge_class_quirk);
+>>   
+>>   static void system_bus_quirk(struct pci_dev *pdev)
+>> -- 
+>> 2.1.0
+>>
+
