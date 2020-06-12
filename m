@@ -2,198 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5031F74C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89691F74CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgFLHss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 03:48:48 -0400
-Received: from mail-eopbgr1320123.outbound.protection.outlook.com ([40.107.132.123]:37312
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726292AbgFLHsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:48:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EIVjrnaoWZusxI8ws+QjSPgzZOveVLwsEHCseRhILfF0/mjeClVJl+CnnA7uEU0kIWUl7kpJyLGjqYtAlJdtVulhCYNEsqgbu5nKuOHajKHKfmW2H51uy1ZRMfE8BDU9s6NKAzPzcsFeojOjCh/2DRsHSc04OJuDFT3FY6q4ohiBHrOqDFtPbKn1U7ZklL0VL2ljDRPJ5S0Hj4EFRCwnEn3sqrQB45xlJNe2UI4WSEMS+n4vD0drZ3oUwCd3awSg1nWk3EvuwLHI8bnwHenf906XsbIdfLWjY3qr1syIPGMg3aKsV97tMDqdGz4nev129pgZvzKA6wlL0cLSpQ7LKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NOQZl+IWeDYkZ9MQWY8HrCb89kVwEocijMChDSLgnrc=;
- b=bCNt133tyg3+374l4+EACQf5KjOJj0nPxppf2N2NvxNhk9kPXKNHVkCV6CGvQw3n6ie8S1dQSdro8FPx9KTOXGgUSqLycAEQl12xeBGUwIFAKGZ7Jb4rbDbGtKzMjgtQ7ZJC8dPdWeCc8M8VNV1jBnV7jvMLTIatHZVogk99Wo1y4NtfG7NQ4UQmZuftm9M2x1lmGnf9zKCbb/fL7F3rh1HLUWObxsagSteHYFUacegpzheDpFBQjOsh0FIefrWIn1NkbaqN74VH5kXIZhjFq429MWfHpxuwdURfP0yxAsPkLzl4AVQFmp+p0R5k9DtpzERud1yo+Rfzr9HctL4INQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NOQZl+IWeDYkZ9MQWY8HrCb89kVwEocijMChDSLgnrc=;
- b=RgJUuAKIVm7voSZuD+EdLuZsh6xT5fDko4jUtcqZgchDJWsWef/qXBj6nPP1Ow2vGKfmps3ZbJL6iynDMUvFSAgXTogv6mg3BD0bcdnzzwC3uicxGcPO+s3HEnJx+3TH/TU+U4VPNfHgluZIWgPfFll7Nv3HaaTSNwX/j4bjNE0=
-Received: from HK0P153MB0322.APCP153.PROD.OUTLOOK.COM (2603:1096:203:b5::19)
- by HK0P153MB0322.APCP153.PROD.OUTLOOK.COM (2603:1096:203:b5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.3; Fri, 12 Jun
- 2020 07:48:20 +0000
-Received: from HK0P153MB0322.APCP153.PROD.OUTLOOK.COM
- ([fe80::e567:3a32:6574:8983]) by HK0P153MB0322.APCP153.PROD.OUTLOOK.COM
- ([fe80::e567:3a32:6574:8983%7]) with mapi id 15.20.3109.012; Fri, 12 Jun 2020
- 07:48:20 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Andy Lutomirski <luto@amacapital.net>,
-        vkuznets <vkuznets@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Ju-Hyoung Lee <juhlee@microsoft.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: RE: hv_hypercall_pg page permissios
-Thread-Topic: hv_hypercall_pg page permissios
-Thread-Index: AQHWDR+7o7IWH4OD3UKrKLNTyqpwjqjU/2Dw
-Date:   Fri, 12 Jun 2020 07:48:20 +0000
-Message-ID: <HK0P153MB0322D52F61E540CA7515CC4BBF810@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM>
-References: <20200407073830.GA29279@lst.de>
- <C311EB52-A796-4B94-AADD-CCABD19B377E@amacapital.net>
-In-Reply-To: <C311EB52-A796-4B94-AADD-CCABD19B377E@amacapital.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-06-12T07:48:16Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4dfad0bb-a30f-45e2-88fa-6b71d2898fb5;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: amacapital.net; dkim=none (message not signed)
- header.d=none;amacapital.net; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:a280:7f70:968:aff2:3627:f17]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: cea13d8e-8537-4899-23e1-08d80ea4fa17
-x-ms-traffictypediagnostic: HK0P153MB0322:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <HK0P153MB0322AFE024A4503D5F6AF3EEBF810@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0432A04947
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7F5ZnTm18TmCmktdfs/v/5vnHvk3GxU/ky6gD9ZStpAkiTGGWV2ttov3iziOFNFceTihDBO3QEdF+Z+zmOJFnKa4IKOkILb0uLyRqf8qc2HveTT+RGo7BW2kWI/0Jwcl/OC0x4DnjQM0Wejrl2T6toDZCcBdJ9Xdip5K2Rxvwui1640KQRLxLH2wZ+WKMAtoaCmzRBH3dlSZuG1M4A6JjVgpGfXvR1I2usndK8xElN0ImjOlIZSpdDL5wJwkpRlJokibSKqz80ZZj6yIblUUJREkLdUscJhoro/elgAiJvvweDP2x0V1zCnTDCZLd1uyYwVHpC7H/v6pVAUbXZ6TwQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0P153MB0322.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(71200400001)(33656002)(186003)(8990500004)(83380400001)(110136005)(54906003)(2906002)(316002)(8936002)(7116003)(8676002)(55016002)(4326008)(53546011)(6506007)(9686003)(478600001)(66946007)(66476007)(66556008)(64756008)(66446008)(82960400001)(52536014)(86362001)(5660300002)(82950400001)(7696005)(76116006)(10290500003)(6636002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: eZdFPgViWXw5hEAPREbgo9BgeJG33n5hmz28pFiS/S3s0iZoBVPMygTTFGVI4g2M53ehcav9RHVvfg4GP4tgwKEffNVwm7dZrJ+D1rnGQwMd7HgFpA6OWvhvqYiarnxmT3MbejlgOqS4edwdao5xnZIwZuRKrGeKy5jcqFKwuZYVKkUmA9g8CGMEqy3TnP0awDoRhFDo3YQ/GYyT7iXbRDqi+DaWMYX0yu2A7+vA1b9ewya+WVbhC2O1DmRVACQw11Lj2HFiCUHmF1GX9fEKl1KMgaoNykMgPtVdIzdTJRY/8ijOX6iq1gLIuPhiZEZc5MaKHSWgXcxTxF9FHGENx1dQRdwCBxOAk6AmBCLjNOak/9YEaVC01LuFk4MCWgyDOkdmRini5zhoacN1A/dLLr6NcwbJ0s3tdFN3H131PhXCB34fV8JfK92VRxc+uB7hyF3yHsdyWpmHRkDGgsNxmo32tL+pVi6XrHG0gnovwd2B/om9Sdx+3El7hOUVAHmDDYLRk2LbBpcHaFNnEIsJIGo6jYQSHaEGp7jbUg5GE/Q=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726401AbgFLHtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 03:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgFLHs5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 03:48:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8CDC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:48:56 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1jjeQk-0004do-Kf; Fri, 12 Jun 2020 09:48:50 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:b44d:6713:e0e9:e23c] (2a03-f580-87bc-d400-b44d-6713-e0e9-e23c.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:b44d:6713:e0e9:e23c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 90FEB5143FD;
+        Fri, 12 Jun 2020 07:48:47 +0000 (UTC)
+Subject: Re: drivers/net/can/kvaser_pciefd.c:801:17: sparse: sparse: cast
+ removes address space '<asn:2>' of expression
+To:     kernel test robot <lkp@intel.com>,
+        Henning Colliander <henning.colliander@evidente.se>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Jimmy Assarsson <extja@kvaser.com>,
+        Christer Beskow <chbe@kvaser.com>
+References: <202006121356.lKucoVPo%lkp@intel.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
+ zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
+ QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
+ 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
+ Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
+ XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
+ nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
+ Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
+ eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
+ kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
+ ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
+ CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUsSbBQkM366zAAoJECte4hHF
+ iupUgkAP/2RdxKPZ3GMqag33jKwKAbn/fRqAFWqUH9TCsRH3h6+/uEPnZdzhkL4a9p/6OeJn
+ Z6NXqgsyRAOTZsSFcwlfxLNHVxBWm8pMwrBecdt4lzrjSt/3ws2GqxPsmza1Gs61lEdYvLST
+ Ix2vPbB4FAfE0kizKAjRZzlwOyuHOr2ilujDsKTpFtd8lV1nBNNn6HBIBR5ShvJnwyUdzuby
+ tOsSt7qJEvF1x3y49bHCy3uy+MmYuoEyG6zo9udUzhVsKe3hHYC2kfB16ZOBjFC3lH2U5An+
+ yQYIIPZrSWXUeKjeMaKGvbg6W9Oi4XEtrwpzUGhbewxCZZCIrzAH2hz0dUhacxB201Y/faY6
+ BdTS75SPs+zjTYo8yE9Y9eG7x/lB60nQjJiZVNvZ88QDfVuLl/heuIq+fyNajBbqbtBT5CWf
+ mOP4Dh4xjm3Vwlz8imWW/drEVJZJrPYqv0HdPbY8jVMpqoe5jDloyVn3prfLdXSbKPexlJaW
+ 5tnPd4lj8rqOFShRnLFCibpeHWIumqrIqIkiRA9kFW3XMgtU6JkIrQzhJb6Tc6mZg2wuYW0d
+ Wo2qvdziMgPkMFiWJpsxM9xPk9BBVwR+uojNq5LzdCsXQ2seG0dhaOTaaIDWVS8U/V8Nqjrl
+ 6bGG2quo5YzJuXKjtKjZ4R6k762pHJ3tnzI/jnlc1sXz
+Message-ID: <e93fe895-a6b8-34ff-f9c8-00ec7138b1c1@pengutronix.de>
+Date:   Fri, 12 Jun 2020 09:48:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cea13d8e-8537-4899-23e1-08d80ea4fa17
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 07:48:20.1903
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pP+X/mL/aHi9GGgESyGPdYJ6wuBU85Uai20uiZSWgwUi/R95IA17hw7BzBqDRYsXVs2csdnEGr/sS994fQEgPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0P153MB0322
+In-Reply-To: <202006121356.lKucoVPo%lkp@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBsaW51eC1oeXBlcnYtb3duZXJAdmdlci5rZXJuZWwub3JnDQo+IDxsaW51eC1oeXBl
-cnYtb3duZXJAdmdlci5rZXJuZWwub3JnPiBPbiBCZWhhbGYgT2YgQW5keSBMdXRvbWlyc2tpDQo+
-IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDcsIDIwMjAgMjowMSBQTQ0KPiBUbzogQ2hyaXN0b3BoIEhl
-bGx3aWcgPGhjaEBsc3QuZGU+DQo+IENjOiB2a3V6bmV0cyA8dmt1em5ldHNAcmVkaGF0LmNvbT47
-IHg4NkBrZXJuZWwub3JnOw0KPiBsaW51eC1oeXBlcnZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBLWSBTcmluaXZhc2FuDQo+IDxreXNAbWljcm9zb2Z0LmNv
-bT47IFN0ZXBoZW4gSGVtbWluZ2VyIDxzdGVwaGVuQG5ldHdvcmtwbHVtYmVyLm9yZz47DQo+IEFu
-ZHkgTHV0b21pcnNraSA8bHV0b0BrZXJuZWwub3JnPjsgUGV0ZXIgWmlqbHN0cmEgPHBldGVyekBp
-bmZyYWRlYWQub3JnPg0KPiBTdWJqZWN0OiBSZTogaHZfaHlwZXJjYWxsX3BnIHBhZ2UgcGVybWlz
-c2lvcw0KPiANCj4gDQo+ID4gT24gQXByIDcsIDIwMjAsIGF0IDEyOjM4IEFNLCBDaHJpc3RvcGgg
-SGVsbHdpZyA8aGNoQGxzdC5kZT4gd3JvdGU6DQo+ID4NCj4gPiDvu79PbiBUdWUsIEFwciAwNywg
-MjAyMCBhdCAwOToyODowMUFNICswMjAwLCBWaXRhbHkgS3V6bmV0c292IHdyb3RlOg0KPiA+PiBD
-aHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4gd3JpdGVzOg0KPiA+Pg0KPiA+Pj4gSGkgYWxs
-LA0KPiA+Pj4NCj4gPj4+IFRoZSB4ODYgSHlwZXItViBoeXBlcmNhbGwgcGFnZSAoaHZfaHlwZXJj
-YWxsX3BnKSBpcyB0aGUgb25seSBhbGxvY2F0aW9uDQo+ID4+PiBpbiB0aGUga2VybmVsIHVzaW5n
-IF9fdm1hbGxvYyB3aXRoIGV4ZWN0dXRhYmxlIHBlcnNtaXNzaW9ucywgYW5kIHRoZQ0KPiA+Pj4g
-b25seSB1c2VyIG9mIFBBR0VfS0VSTkVMX1JYLiAgSXMgdGhlcmUgYW55IGdvb2QgcmVhc29uIGl0
-IG5lZWRzIHRvDQo+ID4+PiBiZSByZWFkYWJsZT8gIE90aGVyd2lzZSB3ZSBjb3VsZCB1c2Ugdm1h
-bGxvY19leGVjIGFuZCBraWxsIG9mZg0KPiA+Pj4gUEFHRV9LRVJORUxfUlguICBOb3RlIHRoYXQg
-YmVmb3JlIDM3MmIxZTkxMzQzZTYgKCJkcml2ZXJzOiBodjogVHVybg0KPiBvZmYNCj4gPj4+IHdy
-aXRlIHBlcm1pc3Npb24gb24gdGhlIGh5cGVyY2FsbCBwYWdlIikgaXQgd2FzIGV2ZW4gbWFwcGVk
-IHdyaXRhYmxlLi4NCj4gPj4NCj4gPj4gW1RoZXJlIGlzIG5vdGhpbmcgc2VjcmV0IGluIHRoZSBo
-eXBlcmNhbGwgcGFnZSwgYnkgcmVhZGluZyBpdCB5b3UgY2FuDQo+ID4+IGZpZ3VyZSBvdXQgaWYg
-eW91J3JlIHJ1bm5pbmcgb24gSW50ZWwgb3IgQU1EIChWTUNBTEwvVk1NQ0FMTCkgYnV0IGl0J3MN
-Cj4gPj4gbGlrZWx5IG5vdCB0aGUgb25seSBwb3NzaWJsZSB3YXkgOi0pXQ0KPiA+Pg0KPiA+PiBJ
-IHNlZSBubyByZWFzb24gZm9yIGh2X2h5cGVyY2FsbF9wZyB0byByZW1haW4gcmVhZGFibGUuIEkg
-anVzdA0KPiA+PiBzbW9rZS10ZXN0ZWQNCj4gPg0KPiA+IFRoYW5rcywgSSBoYXZlIHRoZSBzYW1l
-IGluIG15IFdJUCB0cmVlLCBidXQganVzdCB3YW50ZWQgdG8gY29uZmlybSB0aGlzDQo+ID4gbWFr
-ZXMgc2Vuc2UuDQo+IA0KPiBKdXN0IHRvIG1ha2Ugc3VyZSB3ZeKAmXJlIGFsbCBvbiB0aGUgc2Ft
-ZSBwYWdlOiB4ODYgZG9lc27igJl0IG5vcm1hbGx5IGhhdmUgYW4NCj4gZXhlY3V0ZS1vbmx5IG1v
-ZGUuIEV4ZWN1dGFibGUgbWVtb3J5IGluIHRoZSBrZXJuZWwgaXMgcmVhZGFibGUgdW5sZXNzIHlv
-dQ0KPiBhcmUgdXNpbmcgZmFuY3kgaHlwZXJ2aXNvci1iYXNlZCBYTyBzdXBwb3J0Lg0KDQpIaSBo
-Y2gsDQpUaGUgcGF0Y2ggaXMgbWVyZ2VkIGludG8gdGhlIG1haW5pbmUgcmVjZW50bHksIGJ1dCB1
-bmx1Y2tpbHkgd2Ugbm90aWNlZA0KYSB3YXJuaW5nIHdpdGggQ09ORklHX0RFQlVHX1dYPXkgKGl0
-IGxvb2tzIHR5cGljYWxseSB0aGlzIGNvbmZpZyBpcyBkZWZpbmVkDQpieSBkZWZhdWx0IGluIExp
-bnV4IGRpc3Ryb3MsIGF0IGxlYXN0IGluIFVidW50dSAxOC4wNCdzICANCi9ib290L2NvbmZpZy00
-LjE4LjAtMTEtZ2VuZXJpYykuDQoNClNob3VsZCB3ZSByZXZlcnQgdGhpcyBwYXRjaCwgb3IgZmln
-dXJlIG91dCBhIHdheSB0byBhc2sgdGhlIERFQlVHX1dYIGNvZGUgdG8NCmlnbm9yZSB0aGlzIHBh
-Z2U/DQoNClsgICAxOS4zODc1MzZdIGRlYnVnOiB1bm1hcHBpbmcgaW5pdCBbbWVtIDB4ZmZmZmZm
-ZmY4MjcxMzAwMC0weGZmZmZmZmZmODI4ODZmZmZdDQpbICAgMTkuNDMxNzY2XSBXcml0ZSBwcm90
-ZWN0aW5nIHRoZSBrZXJuZWwgcmVhZC1vbmx5IGRhdGE6IDE4NDMyaw0KWyAgIDE5LjQzODY2Ml0g
-ZGVidWc6IHVubWFwcGluZyBpbml0IFttZW0gMHhmZmZmZmZmZjgxYzAyMDAwLTB4ZmZmZmZmZmY4
-MWRmZmZmZl0NClsgICAxOS40NDY4MzBdIGRlYnVnOiB1bm1hcHBpbmcgaW5pdCBbbWVtIDB4ZmZm
-ZmZmZmY4MjFkNjAwMC0weGZmZmZmZmZmODIxZmZmZmZdDQpbICAgMTkuNTIyMzY4XSAtLS0tLS0t
-LS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NClsgICAxOS41Mjc0OTVdIHg4Ni9tbTogRm91
-bmQgaW5zZWN1cmUgVytYIG1hcHBpbmcgYXQgYWRkcmVzcyAweGZmZmZjOTAwMDAwMTIwMDANClsg
-ICAxOS41MzUwNjZdIFdBUk5JTkc6IENQVTogMjYgUElEOiAxIGF0IGFyY2gveDg2L21tL2R1bXBf
-cGFnZXRhYmxlcy5jOjI0OCBub3RlX3BhZ2UrMHg2MzkvMHg2OTANClsgICAxOS41MzkwMzhdIE1v
-ZHVsZXMgbGlua2VkIGluOg0KWyAgIDE5LjUzOTAzOF0gQ1BVOiAyNiBQSUQ6IDEgQ29tbTogc3dh
-cHBlci8wIE5vdCB0YWludGVkIDUuNy4wKyAjMQ0KWyAgIDE5LjUzOTAzOF0gSGFyZHdhcmUgbmFt
-ZTogTWljcm9zb2Z0IENvcnBvcmF0aW9uIFZpcnR1YWwgTWFjaGluZS9WaXJ0dWFsIE1hY2hpbmUs
-IEJJT1MgMDkwMDA4ICAxMi8wNy8yMDE4DQpbICAgMTkuNTM5MDM4XSBSSVA6IDAwMTA6bm90ZV9w
-YWdlKzB4NjM5LzB4NjkwDQpbICAgMTkuNTM5MDM4XSBDb2RlOiBmZSBmZiBmZiAzMSBjMCBlOSBh
-MCBmZSBmZiBmZiA4MCAzZCAzOSBkMSAzMSAwMSAwMCAwZiA4NSA3NiBmYSBmZiBmZiA0OCBjNyBj
-NyA5OCA1NSAwYSA4MiBjNiAwNSAyNSBkMSAzMSAwMSAwMSBlOCBmNyBjOSAwMCAwMCA8MGY+IDBi
-IGU5IDVjIGZhIGZmIGZmIDQ4IDgzIGMwIDE4IDQ4IGM3IDQ1IDY4IDAwIDAwIDAwIDAwIDQ4IDg5
-IDQ1DQpbICAgMTkuNTM5MDM4XSBSU1A6IDAwMDA6ZmZmZmM5MDAwMzEzN2NiMCBFRkxBR1M6IDAw
-MDEwMjgyDQpbICAgMTkuNTM5MDM4XSBSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiAwMDAwMDAw
-MDAwMDAwMDAwIFJDWDogMDAwMDAwMDAwMDAwMDAwNw0KWyAgIDE5LjUzOTAzOF0gUkRYOiAwMDAw
-MDAwMDAwMDAwMDAwIFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6IGZmZmZmZmZmODEwZmE5YzQN
-ClsgICAxOS41MzkwMzhdIFJCUDogZmZmZmM5MDAwMzEzN2VhMCBSMDg6IDAwMDAwMDAwMDAwMDAw
-MDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpbICAgMTkuNTM5MDM4XSBSMTA6IDAwMDAwMDAwMDAw
-MDAwMDEgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogZmZmZmM5MDAwMDAxMzAwMA0KWyAgIDE5
-LjUzOTAzOF0gUjEzOiAwMDAwMDAwMDAwMDAwMDAwIFIxNDogZmZmZmM5MDAwMDFmZjAwMCBSMTU6
-IDAwMDAwMDAwMDAwMDAwMDANClsgICAxOS41MzkwMzhdIEZTOiAgMDAwMDAwMDAwMDAwMDAwMCgw
-MDAwKSBHUzpmZmZmODg4NGRhZDAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANClsg
-ICAxOS41MzkwMzhdIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAw
-NTAwMzMNClsgICAxOS41MzkwMzhdIENSMjogMDAwMDAwMDAwMDAwMDAwMCBDUjM6IDAwMDAwMDAw
-MDIyMTAwMDEgQ1I0OiAwMDAwMDAwMDAwMzYwNmUwDQpbICAgMTkuNTM5MDM4XSBEUjA6IDAwMDAw
-MDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0K
-WyAgIDE5LjUzOTAzOF0gRFIzOiAwMDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZm
-MCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANClsgICAxOS41MzkwMzhdIENhbGwgVHJhY2U6DQpbICAg
-MTkuNTM5MDM4XSAgcHRkdW1wX3B0ZV9lbnRyeSsweDM5LzB4NDANClsgICAxOS41MzkwMzhdICBf
-X3dhbGtfcGFnZV9yYW5nZSsweDViNy8weDk2MA0KWyAgIDE5LjUzOTAzOF0gIHdhbGtfcGFnZV9y
-YW5nZV9ub3ZtYSsweDdlLzB4ZDANClsgICAxOS41MzkwMzhdICBwdGR1bXBfd2Fsa19wZ2QrMHg1
-My8weDkwDQpbICAgMTkuNTM5MDM4XSAgcHRkdW1wX3dhbGtfcGdkX2xldmVsX2NvcmUrMHhkZi8w
-eDExMA0KWyAgIDE5LjUzOTAzOF0gID8gcHRkdW1wX3dhbGtfcGdkX2xldmVsX2RlYnVnZnMrMHg0
-MC8weDQwDQpbICAgMTkuNTM5MDM4XSAgPyBodWdldGxiX2dldF91bm1hcHBlZF9hcmVhKzB4MmYw
-LzB4MmYwDQpbICAgMTkuNzAzNjkyXSAgPyByZXN0X2luaXQrMHgyNGQvMHgyNGQNClsgICAxOS43
-MDM2OTJdICA/IHJlc3RfaW5pdCsweDI0ZC8weDI0ZA0KWyAgIDE5LjcwMzY5Ml0gIGtlcm5lbF9p
-bml0KzB4MmMvMHgxMTMNClsgICAxOS43MDM2OTJdICByZXRfZnJvbV9mb3JrKzB4MjQvMHgzMA0K
-WyAgIDE5LjcwMzY5Ml0gaXJxIGV2ZW50IHN0YW1wOiAyODQwNjY2DQpbICAgMTkuNzAzNjkyXSBo
-YXJkaXJxcyBsYXN0ICBlbmFibGVkIGF0ICgyODQwNjY1KTogWzxmZmZmZmZmZjgxMGZhOWM0Pl0g
-Y29uc29sZV91bmxvY2srMHg0NDQvMHg1YjANClsgICAxOS43MDM2OTJdIGhhcmRpcnFzIGxhc3Qg
-ZGlzYWJsZWQgYXQgKDI4NDA2NjYpOiBbPGZmZmZmZmZmODEwMDFlYzk+XSB0cmFjZV9oYXJkaXJx
-c19vZmZfdGh1bmsrMHgxYS8weDFjDQpbICAgMTkuNzAzNjkyXSBzb2Z0aXJxcyBsYXN0ICBlbmFi
-bGVkIGF0ICgyODQwNjYyKTogWzxmZmZmZmZmZjgxYzAwMzY2Pl0gX19kb19zb2Z0aXJxKzB4MzY2
-LzB4NDkwDQpbICAgMTkuNzAzNjkyXSBzb2Z0aXJxcyBsYXN0IGRpc2FibGVkIGF0ICgyODQwNjU1
-KTogWzxmZmZmZmZmZjgxMDdkYmE4Pl0gaXJxX2V4aXQrMHhlOC8weDEwMA0KWyAgIDE5LjcwMzY5
-Ml0gLS0tWyBlbmQgdHJhY2UgOTljYTkwODA2YThlNjU3YyBdLS0tDQpbICAgMTkuNzg2MjM1XSB4
-ODYvbW06IENoZWNrZWQgVytYIG1hcHBpbmdzOiBGQUlMRUQsIDEgVytYIHBhZ2VzIGZvdW5kLg0K
-WyAgIDE5Ljc5MzI5OF0gcm9kYXRhX3Rlc3Q6IGFsbCB0ZXN0cyB3ZXJlIHN1Y2Nlc3NmdWwNClsg
-ICAxOS43OTg1MDhdIHg4Ni9tbTogQ2hlY2tpbmcgdXNlciBzcGFjZSBwYWdlIHRhYmxlcw0KWyAg
-IDE5LjgxODAwN10geDg2L21tOiBDaGVja2VkIFcrWCBtYXBwaW5nczogcGFzc2VkLCBubyBXK1gg
-cGFnZXMgZm91bmQuDQoNClRoYW5rcywNCi0tIERleHVhbg0K
+Hello Greg,
+
+the k-build robot found this sparse problem, triggered by building a CAN driver
+for m68k. Is this a problem in our CAN driver or in the m68k headers?
+
+Marc
+
+On 6/12/20 7:28 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   b791d1bdf9212d944d749a5c7ff6febdba241771
+> commit: 26ad340e582d3d5958ed8456a1911d79cfb567b4 can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices
+> date:   11 months ago
+> config: m68k-randconfig-s032-20200612 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.1-250-g42323db3-dirty
+>         git checkout 26ad340e582d3d5958ed8456a1911d79cfb567b4
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 ARCH=m68k CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+>>> drivers/net/can/kvaser_pciefd.c:801:17: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    drivers/net/can/kvaser_pciefd.c:805:17: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:77:24: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:77:24: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:77:24: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:77:24: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast removes address space '<asn:2>' of expression
+>    arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
+> 
+> vim +801 drivers/net/can/kvaser_pciefd.c
+> 
+>    764	
+>    765	static netdev_tx_t kvaser_pciefd_start_xmit(struct sk_buff *skb,
+>    766						    struct net_device *netdev)
+>    767	{
+>    768		struct kvaser_pciefd_can *can = netdev_priv(netdev);
+>    769		unsigned long irq_flags;
+>    770		struct kvaser_pciefd_tx_packet packet;
+>    771		int nwords;
+>    772		u8 count;
+>    773	
+>    774		if (can_dropped_invalid_skb(netdev, skb))
+>    775			return NETDEV_TX_OK;
+>    776	
+>    777		nwords = kvaser_pciefd_prepare_tx_packet(&packet, can, skb);
+>    778	
+>    779		spin_lock_irqsave(&can->echo_lock, irq_flags);
+>    780	
+>    781		/* Prepare and save echo skb in internal slot */
+>    782		can_put_echo_skb(skb, netdev, can->echo_idx);
+>    783	
+>    784		/* Move echo index to the next slot */
+>    785		can->echo_idx = (can->echo_idx + 1) % can->can.echo_skb_max;
+>    786	
+>    787		/* Write header to fifo */
+>    788		iowrite32(packet.header[0],
+>    789			  can->reg_base + KVASER_PCIEFD_KCAN_FIFO_REG);
+>    790		iowrite32(packet.header[1],
+>    791			  can->reg_base + KVASER_PCIEFD_KCAN_FIFO_REG);
+>    792	
+>    793		if (nwords) {
+>    794			u32 data_last = ((u32 *)packet.data)[nwords - 1];
+>    795	
+>    796			/* Write data to fifo, except last word */
+>    797			iowrite32_rep(can->reg_base +
+>    798				      KVASER_PCIEFD_KCAN_FIFO_REG, packet.data,
+>    799				      nwords - 1);
+>    800			/* Write last word to end of fifo */
+>  > 801			__raw_writel(data_last, can->reg_base +
+>    802				     KVASER_PCIEFD_KCAN_FIFO_LAST_REG);
+>    803		} else {
+>    804			/* Complete write to fifo */
+>    805			__raw_writel(0, can->reg_base +
+>    806				     KVASER_PCIEFD_KCAN_FIFO_LAST_REG);
+>    807		}
+>    808	
+>    809		count = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
+>    810		/* No room for a new message, stop the queue until at least one
+>    811		 * successful transmit
+>    812		 */
+>    813		if (count >= KVASER_PCIEFD_CAN_TX_MAX_COUNT ||
+>    814		    can->can.echo_skb[can->echo_idx])
+>    815			netif_stop_queue(netdev);
+>    816	
+>    817		spin_unlock_irqrestore(&can->echo_lock, irq_flags);
+>    818	
+>    819		return NETDEV_TX_OK;
+>    820	}
+>    821	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+
+
+-- 
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
