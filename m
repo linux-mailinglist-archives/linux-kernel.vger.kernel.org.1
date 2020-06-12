@@ -2,291 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223E71F7241
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 04:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2775F1F723F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 04:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgFLCfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 22:35:09 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:35827 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgFLCfH (ORCPT
+        id S1726396AbgFLCes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 22:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgFLCes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 22:35:07 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200612023503epoutp016c4e67745aa5c7424153c43e6bcf60f8~Xq0RLtNq61763017630epoutp01i
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 02:35:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200612023503epoutp016c4e67745aa5c7424153c43e6bcf60f8~Xq0RLtNq61763017630epoutp01i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591929303;
-        bh=OfPXcKb6SWjuFyRP7Ix12rFArx8O98KZKofQrzhVp9Q=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=CCfpYwFcuqQkD8Sx9Fo/XF7SN1F0Gw89K/qotvAevuKanoMd5yWfeEFlXxMY9Nrqa
-         iC1wxAV4ea6du7RO5vhVuKUYsmARjP3RcTUUqcXZf97J5tAJmIefmx+Z0+dQzObbp4
-         Q3PHNL+M+Y9WMn8cAK0aFPhq5SOMG7EPhPXkpMDc=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200612023502epcas1p1c157b3977b551021cf2290af43e63356~Xq0Qz5bYo3017330173epcas1p1J;
-        Fri, 12 Jun 2020 02:35:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: Re: [RFC PATCH 3/5] scsi: ufs: Introduce HPB module
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <76831c81-7879-8be7-54a4-ca6bfa68c30e@acm.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <336371513.41591929302700.JavaMail.epsvc@epcpadp1>
-Date:   Fri, 12 Jun 2020 11:29:53 +0900
-X-CMS-MailID: 20200612022953epcms2p6ba18adf3e029bcab69d1382a6ec82b00
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
-References: <76831c81-7879-8be7-54a4-ca6bfa68c30e@acm.org>
-        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
-        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
-        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
-        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
-        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p6>
+        Thu, 11 Jun 2020 22:34:48 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2596C03E96F
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 19:34:47 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id x93so5351721ede.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 19:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=He9kpFQwq1I68wdOjeNvE0LON5OL4PlSGVKoCJBAUEM=;
+        b=qarx+oqQfbKEZnMx64j5IL3++954Nxdg6ERiiYMXFFIY+C1T4xcwaKX/sp8pPwbEZV
+         qG4a6+W9b/FN4AaIHVdl19G5yIOXVk0rUSnghcDBrJwU7XLtm24ZySORedtedu3p6cNb
+         /nlwS65ZTFmCRPrbeA9ane3q+auEAOHYastVswrA6xiCVTcIxJ1hoc/ATaLFBdmdRyke
+         v8LvZ1udHpxPZAsFsRBf7gZYkjnA30LTwJQxXfvXE3NUlwBzxUIV3jeaqKgz+ULVxrvW
+         40otuQJlCNKArvoXuYTYklIk4FLNAUJ7AqBRl+UD7R+VbQ+yxU90f6LgjAZ32ust9LJO
+         NHMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=He9kpFQwq1I68wdOjeNvE0LON5OL4PlSGVKoCJBAUEM=;
+        b=YNuP+d85MBE7DbuKU1ikZNQsISpxeRyTyBu+wCqvHmbyQ+r1gFCVaTo0D4W+nm9xUa
+         n5MfuofRhLCSZEQ9JpoUdPJ6jsCJV/nvuSO0LfSHthwwGoZTejNlOr4z2nc8XcVz2Mnn
+         9FGN0Dhi9E/TXGt0otFGv2Zm92R/OtuMzYWnNpvPlesm3Ns+XEoffFPBKHslZFOae9Ja
+         UE8fE5fwfNBRjSAxiribxBnx0lj5SPabXTJa2d1OTO/3Gwt+im116xwnX6x+n7xSHg8X
+         k1+o3sXbIxBoC7eShWIt1kJVbsGPnx/LEHScTLFiKrQoKzX6rlnyylC0npXfJ4hrtuEw
+         qV0g==
+X-Gm-Message-State: AOAM531ZGQVKB2sqpML899BpIruNSrSJ/21qRXW3mImn7JGvJreq2Lk2
+        l+XN5w9VP8dhkLlSTIEg0D/A61BNDWWXe4aHcfg=
+X-Google-Smtp-Source: ABdhPJxCSg398MOdxHn9jZsX8YF3iLDoDpmUkTVvi1kpa31cJOmdZfDfBFXAdwFQh5a04mK+lW9dHu+HnJaLZ3VxlNI=
+X-Received: by 2002:aa7:c81a:: with SMTP id a26mr9995717edt.353.1591929286458;
+ Thu, 11 Jun 2020 19:34:46 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a54:2302:0:0:0:0:0 with HTTP; Thu, 11 Jun 2020 19:34:45
+ -0700 (PDT)
+Reply-To: mrs_kad4233@hotmail.com
+From:   mrs kadi <mrs1alice65@gmail.com>
+Date:   Thu, 11 Jun 2020 19:34:45 -0700
+Message-ID: <CADLonbre2Dkb7da9KB_KcfjXyFy4_h1Z3O+=jea0RpH=iZ1ZPg@mail.gmail.com>
+Subject: Compliment of the day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +  if (total_srgn_cnt != 0) {
-> > +    dev_err(hba->dev, "ufshpb(%d) error total_subregion_count %d",
-> > +      hpb->lun, total_srgn_cnt);
-> > +    goto release_srgn_table;
-> > +  }
-> > +
-> > +  return 0;
-> > +release_srgn_table:
-> > +  for (i = 0; i < rgn_idx; i++) {
-> > +    rgn = rgn_table + i;
-> > +    if (rgn->srgn_tbl)
-> > +      kvfree(rgn->srgn_tbl);
-> > +  }
+Dear sir/madam
 
-> Please insert a blank line above goto labels as is done in most of the
-> kernel code.
-OK, I will fix it.
+My name is Mrs Kadi Hamanin.I have decided to seek a confidential
+co-operation with you for the execution of the deal described
+hereunder for our mutual benefit. I Hope you will keep it a secret due
+to the nature of the transaction. During the course of our audit last
+month, I discovered an unclaimed/abandoned fund total US$3.5 million
+in a bank account that belongs to a customer who unfortunately lost
+his life and entire family in a car accident.
 
-> > +static struct device_attribute ufshpb_sysfs_entries[] = {
-> > +  __ATTR(hit_count, 0444, ufshpb_sysfs_show_hit_cnt, NULL),
-> > +  __ATTR(miss_count, 0444, ufshpb_sysfs_show_miss_cnt, NULL),
-> > +  __ATTR(rb_noti_count, 0444, ufshpb_sysfs_show_rb_noti_cnt, NULL),
-> > +  __ATTR(rb_active_count, 0444, ufshpb_sysfs_show_rb_active_cnt, NULL),
-> > +  __ATTR(rb_inactive_count, 0444, ufshpb_sysfs_show_rb_inactive_cnt,
-> > +         NULL),
-> > +  __ATTR(map_req_count, 0444, ufshpb_sysfs_show_map_req_cnt, NULL),
-> > +  __ATTR_NULL
-> > +};
+Now our bank has been waiting for any of the relatives to come-up for
+the claim but nobody has done that. I personally has been unsuccessful
+in locating any of the relatives, now, I sincerely seek your consent
+to present you as the next of kin / Will Beneficiary to the deceased
+so that the proceeds of this account valued at {US$3.5 Million United
+State Dollars} can be paid to you, which we will share in these
+percentages ratio, 60% to me and 40% to you. All I request is your
+utmost sincere co- operation; trust and maximum confidentiality to
+achieve this project successfully. I have carefully mapped out the
+moralities for execution of this transaction under a legitimate
+arrangement to protect you from any breach of the law both in your
+country and here in my country when the fund is being transferred to
+your bank account.
 
-> Please use __ATTR_RO() where appropriate.
-They are only readable attributes. So I changed the code to use __ATTR_RO.
+I will have to provide the entire relevant document that will be
+requested to indicate that you are the rightful beneficiary of this
+legacy and our bank will release the fund to you without any further
+delay, upon your consideration and acceptance of this offer, please
+send me the following information as stated below so we can proceed
+and get this fund transferred to your designated bank account
+immediately. I know much about the existence of this fund and the
+secrets surrounding this money.
 
-> > +static int ufshpb_create_sysfs(struct ufs_hba *hba, struct ufshpb_lu *hpb)
-> > +{
-> > +  struct device_attribute *attr;
-> > +  int ret;
-> > +
-> > +  device_initialize(&hpb->hpb_lu_dev);
-> > +
-> > +  ufshpb_stat_init(hpb);
-> > +
-> > +  hpb->hpb_lu_dev.parent = get_device(&hba->ufsf.hpb_dev);
-> > +  hpb->hpb_lu_dev.release = ufshpb_dev_release;
-> > +  dev_set_name(&hpb->hpb_lu_dev, "ufshpb_lu%d", hpb->lun);
-> > +
-> > +  ret = device_add(&hpb->hpb_lu_dev);
-> > +  if (ret) {
-> > +    dev_err(hba->dev, "ufshpb(%d) device_add failed",
-> > +      hpb->lun);
-> > +    return -ENODEV;
-> > +  }
-> > +
-> > +  for (attr = ufshpb_sysfs_entries; attr->attr.name != NULL; attr++) {
-> > +    if (device_create_file(&hpb->hpb_lu_dev, attr))
-> > +      dev_err(hba->dev, "ufshpb(%d) %s create file error\n",
-> > +        hpb->lun, attr->attr.name);
-> > +  }
-> > +
-> > +  return 0;
-> > +}
-
-> This is the wrong way to create sysfs attributes. Please set the
-> 'groups' member of struct device instead of using a loop to create sysfs
-> attributes. The former approach is compatible with udev but the latter
-> approach is not.
-OK, I changed to create attributes without loop.
-
-> > +static void ufshpb_probe_async(void *data, async_cookie_t cookie)
-> > +{
-> > +  struct ufshpb_dev_info hpb_dev_info = { 0 };
-> > +  struct ufs_hba *hba = data;
-> > +  char *desc_buf;
-> > +  int ret;
-> > +
-> > +  desc_buf = kzalloc(QUERY_DESC_MAX_SIZE, GFP_KERNEL);
-> > +  if (!desc_buf)
-> > +    goto release_desc_buf;
-> > +
-> > +  ret = ufshpb_get_dev_info(hba, &hpb_dev_info, desc_buf);
-> > +  if (ret)
-> > +    goto release_desc_buf;
-> > +
-> > +  /*
-> > +   * Because HPB driver uses scsi_device data structure,
-> > +   * we should wait at this point until finishing initialization of all
-> > +   * scsi devices. Even if timeout occurs, HPB driver will search
-> > +   * the scsi_device list on struct scsi_host (shost->__host list_head)
-> > +   * and can find out HPB logical units in all scsi_devices
-> > +   */
-> > +  wait_event_timeout(hba->ufsf.sdev_wait,
-> > +         (atomic_read(&hba->ufsf.slave_conf_cnt)
-> > +        == hpb_dev_info.num_lu),
-> > +         SDEV_WAIT_TIMEOUT);
-> > +
-> > +  dev_dbg(hba->dev, "ufshpb: slave count %d, lu count %d\n",
-> > +    atomic_read(&hba->ufsf.slave_conf_cnt), hpb_dev_info.num_lu);
-> > +
-> > +  ufshpb_scan_hpb_lu(hba, &hpb_dev_info, desc_buf);
-> > +release_desc_buf:
-> > +  kfree(desc_buf);
-> > +}
-
-> What happens if two LUNs are added before the above code is woken up?
-> Will that perhaps cause the wait_event_timeout() call to wait forever?
-I don't think it is problem. I think that the wait_event_timeout() will
-check the condition before waiting.
-
-> > +static int ufshpb_probe(struct device *dev)
-> > +{
-> > +  struct ufs_hba *hba;
-> > +  struct ufsf_feature_info *ufsf;
-> > +
-> > +  if (dev->type != &ufshpb_dev_type)
-> > +    return -ENODEV;
-> > +
-> > +  ufsf = container_of(dev, struct ufsf_feature_info, hpb_dev);
-> > +  hba = container_of(ufsf, struct ufs_hba, ufsf);
-> > +
-> > +  async_schedule(ufshpb_probe_async, hba);
-> > +  return 0;
-> > +}
-
-> So this is an asynchronous probe that is not visible to the device
-> driver core? Could the PROBE_PREFER_ASYNCHRONOUS flag have been used
-> instead to make device probing asynchronous?
-I added the PROBE_PREFER_ASYNCHRONOUS flag to code and changed it to 
-probe synchronously.
- 
-> > +static int ufshpb_remove(struct device *dev)
-> > +{
-> > +  struct ufshpb_lu *hpb, *n_hpb;
-> > +  struct ufsf_feature_info *ufsf;
-> > +  struct scsi_device *sdev;
-> > +
-> > +  ufsf = container_of(dev, struct ufsf_feature_info, hpb_dev);
-> > +
-> > +  dev_set_drvdata(&ufsf->hpb_dev, NULL);
-> > +
-> > +  list_for_each_entry_safe(hpb, n_hpb, &ufshpb_drv.lh_hpb_lu,
-> > +         list_hpb_lu) {
-> > +    ufshpb_set_state(hpb, HPB_FAILED);
-> > +
-> > +    sdev = hpb->sdev_ufs_lu;
-> > +    sdev->hostdata = NULL;
-> > +
-> > +    device_del(&hpb->hpb_lu_dev);
-> > +
-> > +    dev_info(&hpb->hpb_lu_dev, "hpb_lu_dev refcnt %d\n",
-> > +       kref_read(&hpb->hpb_lu_dev.kobj.kref));
-> > +    put_device(&hpb->hpb_lu_dev);
-> > +  }
-> > +  dev_info(dev, "ufshpb: remove success\n");
-> > +
-> > +  return 0;
-> > +}
-
-> Where is the code that waits for the asynchronously scheduled probe
-> calls to finish?
-I changed it to probe without async_schedule.
-
-> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> > new file mode 100644
-> > index 000000000000..c6dd88e00849
-> > --- /dev/null
-> > +++ b/drivers/scsi/ufs/ufshpb.h
-> > @@ -0,0 +1,185 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Universal Flash Storage Host Performance Booster
-> > + *
-> > + * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
-> > + *
-> > + * Authors:
-> > + *  Yongmyung Lee <ymhungry.lee@samsung.com>
-> > + *  Jinyoung Choi <j-young.choi@samsung.com>
-> > + *
-> > + * This program is free software; you can redistribute it and/or
-> > + * modify it under the terms of the GNU General Public License
-> > + * as published by the Free Software Foundation; either version 2
-> > + * of the License, or (at your option) any later version.
-> > + * See the COPYING file in the top-level directory or visit
-> > + * <http://www.gnu.org/licenses/gpl-2.0.html>
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > + * GNU General Public License for more details.
-> > + *
-> > + * This program is provided "AS IS" and "WITH ALL FAULTS" and
-> > + * without warranty of any kind. You are solely responsible for
-> > + * determining the appropriateness of using and distributing
-> > + * the program and assume all risks associated with your exercise
-> > + * of rights with respect to the program, including but not limited
-> > + * to infringement of third party rights, the risks and costs of
-> > + * program errors, damage to or loss of data, programs or equipment,
-> > + * and unavailability or interruption of operations. Under no
-> > + * circumstances will the contributor of this Program be liable for
-> > + * any damages of any kind arising from your use or distribution of
-> > + * this program.
-> > + *
-> > + * The Linux Foundation chooses to take subject only to the GPLv2
-> > + * license terms, and distributes only under these terms.
-> > + */
-
-> Please use an SPDX declaration instead of the full GPLv2 text.
-OK, I will.
-
-Thanks,
-Daejun.
-
-
+-Your Full Name:
+-Your Contact Address:
+-Your direct Mobile telephone Number:
+-Your Date of Birth:
