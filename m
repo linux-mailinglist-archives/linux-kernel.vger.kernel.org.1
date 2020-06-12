@@ -2,138 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE811F764E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 11:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEF51F7685
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 12:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgFLJ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 05:58:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgFLJ6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 05:58:12 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A36C2081A;
-        Fri, 12 Jun 2020 09:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591955892;
-        bh=zB8nnD4dSrmu1H8yiyDof1V2xaA4bkUPyZgJNCeNi5A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xyn5hOGMz68FhQ9lPv4Mm106ducViZZ9wAT4x1JFbGpIRYMhJF015PrfnXV70jetq
-         8VqZPrm3vfT0X7/6j9X5y9JWozYLdV2zqjxBlShwOsECiJ8iH8RR/9evZ36u3LhUqp
-         cFv5nrXZE9lDokCwApcqHkmowhUOybkli233G3Vo=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jjgRu-002MB1-9C; Fri, 12 Jun 2020 10:58:10 +0100
-Date:   Fri, 12 Jun 2020 10:58:09 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com
-Subject: Re: [PATCH 01/11] genirq: Add fasteoi IPI flow
-Message-ID: <20200612105809.535ea250@why>
-In-Reply-To: <jhj8shnr28o.mognet@arm.com>
-References: <20200519161755.209565-1-maz@kernel.org>
-        <20200519161755.209565-2-maz@kernel.org>
-        <jhj8shnr28o.mognet@arm.com>
-Organization: Approximate
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726277AbgFLKNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 06:13:18 -0400
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:51495 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725868AbgFLKNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 06:13:14 -0400
+X-Greylist: delayed 1799 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Jun 2020 06:13:14 EDT
+Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
+        by 156.147.23.53 with ESMTP; 12 Jun 2020 18:43:11 +0900
+X-Original-SENDERIP: 156.147.1.121
+X-Original-MAILFROM: hyc.lee@gmail.com
+Received: from unknown (HELO localhost.localdomain) (10.177.225.35)
+        by 156.147.1.121 with ESMTP; 12 Jun 2020 18:43:11 +0900
+X-Original-SENDERIP: 10.177.225.35
+X-Original-MAILFROM: hyc.lee@gmail.com
+From:   Hyunchul Lee <hyc.lee@gmail.com>
+To:     Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com
+Subject: [PATCH 1/2] exfat: call sync_filesystem for read-only remount
+Date:   Fri, 12 Jun 2020 18:42:49 +0900
+Message-Id: <20200612094250.9347-1-hyc.lee@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020 23:25:43 +0100
-Valentin Schneider <valentin.schneider@arm.com> wrote:
+We need to commit dirty metadata and pages to disk
+before remounting exfat as read-only.
 
-> On 19/05/20 17:17, Marc Zyngier wrote:
-> > For irqchips using the fasteoi flow, IPIs are a bit special.
-> >
-> > They need to be EOId early (before calling the handler), as
-> > funny things may happen in the handler (they do not necessarily
-> > behave like a normal interrupt), and that the arch code is
-> > already handling the stats.
-> >
-> > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > ---
-> >  include/linux/irq.h |  1 +
-> >  kernel/irq/chip.c   | 26 ++++++++++++++++++++++++++
-> >  2 files changed, 27 insertions(+)
-> >
-> > diff --git a/include/linux/irq.h b/include/linux/irq.h
-> > index 8d5bc2c237d7..726f94d8b8cc 100644
-> > --- a/include/linux/irq.h
-> > +++ b/include/linux/irq.h
-> > @@ -621,6 +621,7 @@ static inline int irq_set_parent(int irq, int parent_irq)
-> >   */
-> >  extern void handle_level_irq(struct irq_desc *desc);
-> >  extern void handle_fasteoi_irq(struct irq_desc *desc);
-> > +extern void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc);
-> >  extern void handle_edge_irq(struct irq_desc *desc);
-> >  extern void handle_edge_eoi_irq(struct irq_desc *desc);
-> >  extern void handle_simple_irq(struct irq_desc *desc);
-> > diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-> > index 41e7e37a0928..7b0b789cfed4 100644
-> > --- a/kernel/irq/chip.c
-> > +++ b/kernel/irq/chip.c
-> > @@ -955,6 +955,32 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
-> >               chip->irq_eoi(&desc->irq_data);
-> >  }
-> >
-> > +/**
-> > + * handle_percpu_devid_fasteoi_ipi - Per CPU local IPI handler with per cpu
-> > + *				     dev ids
-> > + * @desc:	the interrupt description structure for this irq
-> > + *
-> > + * The biggest differences with the IRQ version are that:
-> > + * - the interrupt is EOIed early, as the IPI could result in a context
-> > + *   switch, and we need to make sure the IPI can fire again
-> > + * - Stats are usually handled at the architecture level, so we ignore them
-> > + *   here
-> > + */
-> > +void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc)
-> > +{
-> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
-> > +	struct irqaction *action = desc->action;
-> > +	unsigned int irq = irq_desc_get_irq(desc);
-> > +	irqreturn_t res;
-> > +  
-> 
-> Tied to the following patch, does that want something like
-> 
-> +	if (!irq_settings_is_no_accounting(desc))
-> +		__kstat_incr_irqs_this_cpu(desc);
-> +
-> 
-> While I'm at it, now that we would have IPIs as 'normal' interrupts, what
-> prevents us from getting rid of the arch-side accounting? Is it just that
-> we are keeping it as long as handle_IPI() lives, or are there more hurdles
-> hidden around?
+This fixes a failure in xfstests generic/452
 
-See my reply to Florian. I need to mop the rest of the 32bit irqchips
-without having the HW (hip04 is almost a copy of the GIC driver, and
-the Marvell horror is very RPi like).
+Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
+---
+ fs/exfat/super.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Once this is done, we can kill the home-brewed stuff and rely on core
-infrastructure.
-
-Thanks,
-
-	M.
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index e650e65536f8..61c6cf240c19 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -693,10 +693,29 @@ static void exfat_free(struct fs_context *fc)
+ 	}
+ }
+ 
++static int exfat_reconfigure(struct fs_context *fc)
++{
++	struct super_block *sb = fc->root->d_sb;
++	int ret;
++	bool new_rdonly;
++
++	new_rdonly = fc->sb_flags & SB_RDONLY;
++	if (new_rdonly != sb_rdonly(sb)) {
++		if (new_rdonly) {
++			/* volume flag will be updated in exfat_sync_fs */
++			ret = sync_filesystem(sb);
++			if (ret < 0)
++				return ret;
++		}
++	}
++	return 0;
++}
++
+ static const struct fs_context_operations exfat_context_ops = {
+ 	.parse_param	= exfat_parse_param,
+ 	.get_tree	= exfat_get_tree,
+ 	.free		= exfat_free,
++	.reconfigure	= exfat_reconfigure,
+ };
+ 
+ static int exfat_init_fs_context(struct fs_context *fc)
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
