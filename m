@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB501F7B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DDB1F7B2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgFLPzU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Jun 2020 11:55:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:40534 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726085AbgFLPzT (ORCPT
+        id S1726347AbgFLP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:56:14 -0400
+Received: from sender4-pp-o92.zoho.com ([136.143.188.92]:25213 "EHLO
+        sender4-pp-o92.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgFLP4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:55:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-256-WF26PnyoMeW0bYbJgCCLOA-1; Fri, 12 Jun 2020 16:55:15 +0100
-X-MC-Unique: WF26PnyoMeW0bYbJgCCLOA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 12 Jun 2020 16:55:15 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 12 Jun 2020 16:55:15 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>
-CC:     Christian Brauner <christian.brauner@ubuntu.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: RE: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Topic: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Index: AQHWP+BcCi14oegu0U6J73sUpcDiU6jTfHDAgACI+YCAAKH2YIAAcPLvgAAKH6A=
-Date:   Fri, 12 Jun 2020 15:55:14 +0000
-Message-ID: <b598484958d140fc9f523e200490b942@AcuMS.aculab.com>
-References: <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
- <202006092227.D2D0E1F8F@keescook>
- <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
- <202006101953.899EFB53@keescook>
- <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
- <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
- <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
- <202006111634.8237E6A5C6@keescook>
- <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
- <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
- <202006120806.E770867EF@keescook>
-In-Reply-To: <202006120806.E770867EF@keescook>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Fri, 12 Jun 2020 11:56:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1591977365; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Agc3IKRHXUGW6x+nrxvlCv3cOc8hz+yosPNHClx+b8o3ba8vWHSbHXW86oDJkehi3F5+5nO2RM0bUTidbUBldiwIyUyfZpYcp5jvc9amj/2pEextemRDuddCKWdjXlXuoroWXw0PcXebxpQECzQhW3qdiYtg4BBd4+ODHI8p7Kw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1591977365; h=Cc:Date:From:Message-ID:Subject:To; 
+        bh=ux0XK/KllVcDT9frERy+i5aI2PpALEGnPgdm8/WW9NU=; 
+        b=Zdw7hqhzqVNC+Q4aGs+S5KyngKcx0WYG6EO72lEFH87vMSffsYSbfPOAR7RlErlFXvCUGhGH/5GuMXsUSC8aEV+9bB1aC6n60oNA1GnesNyQhpa/pnPovTfnOQG3v7mlXwNJ9iU9GBQJyATBQvfmOPQ5eGLDM8mP2DvHVZ4ujKM=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=zoho.com;
+        spf=pass  smtp.mailfrom=yehs2007@zoho.com;
+        dmarc=pass header.from=<yehs2007@zoho.com> header.from=<yehs2007@zoho.com>
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
+  s=zapps768; d=zoho.com; 
+  h=from:to:cc:subject:date:message-id; 
+  b=vJwJXSqwD1evDm12+N1z4hvQCTPTSLWJGxgC/c2OJlC9xkFqYBUScBdtOV/goP9K5kVLd3ZI0FqP
+    T1Mh4XAWe6sIpWT9EUMS3UlgkiqnShLznaL0niRTvEOQhWPKJdFj  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1591977365;
+        s=zm2020; d=zoho.com; i=yehs2007@zoho.com;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=ux0XK/KllVcDT9frERy+i5aI2PpALEGnPgdm8/WW9NU=;
+        b=nqvwkCtV1ql3bNG9cYgOEq4I+QzXSEYJhvvnmz7Lk/Iz8ZonFR9Bd2pN4+c9QpRD
+        HcI4/cK3HHqATclVd1KHv4TEkeYx9tk82Uqhfr7Ui712w1AuxsMZSgRXBXdC+c6OhMj
+        xZpk8ZkRnHdvJaUFfCoqt52NEIutABDUTpMIgu18=
+Received: from YEHS1XPF1D05WL.lenovo.com (111.197.254.230 [111.197.254.230]) by mx.zohomail.com
+        with SMTPS id 159197736366961.0283403658716; Fri, 12 Jun 2020 08:56:03 -0700 (PDT)
+From:   Huaisheng Ye <yehs2007@zoho.com>
+To:     mpatocka@redhat.com, snitzer@redhat.com, agk@redhat.com
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Huaisheng Ye <yehs1@lenovo.com>
+Subject: [PATCH] dm writecache: skip writecache_wait when using pmem mode
+Date:   Fri, 12 Jun 2020 23:55:44 +0800
+Message-Id: <20200612155544.90348-1-yehs2007@zoho.com>
+X-Mailer: git-send-email 2.17.0.windows.1
+X-ZohoMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook
-> Sent: 12 June 2020 16:13
-...
-> > 	/* Fixed size ioctls. Can be converted later on? */
-> > 	switch (cmd) {
-> > 	case SECCOMP_IOCTL_NOTIF_RECV:
-> > 		return seccomp_notify_recv(filter, buf);
-> > 	case SECCOMP_IOCTL_NOTIF_SEND:
-> > 		return seccomp_notify_send(filter, buf);
-> > 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
-> > 		return seccomp_notify_id_valid(filter, buf);
-> > 	}
-> >
-> > 	/* Probably should make some nicer macros here */
-> > 	switch (SIZE_MASK(DIR_MASK(cmd))) {
-> > 	case SIZE_MASK(DIR_MASK(SECCOMP_IOCTL_NOTIF_ADDFD)):
-> 
-> Ah yeah, I like this because of what you mention below: it's forward
-> compat too. (I'd just use the ioctl masks directly...)
-> 
-> 	switch (cmd & ~(_IOC_SIZEMASK | _IOC_DIRMASK))
+From: Huaisheng Ye <yehs1@lenovo.com>
 
-Since you need the same mask on the case labels I think
-I'd define a helper just across the switch statement:
+The array bio_in_progress is only used with ssd mode. So skip
+writecache_wait_for_ios in writecache_discard when pmem mode.
 
-#define M(cmd) ((cmd & ~(_IOC_SIZEMASK | _IOC_DIRMASK))
-	switch (M(cmd)) {
-	case M(SECCOMP_IOCTL_NOTIF_RECV):
-	...
-	}
-#undef M
+Signed-off-by: Huaisheng Ye <yehs1@lenovo.com>
+---
+ drivers/md/dm-writecache.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-It is probably wrong to mask off DIRMASK.
-But you might need to add extra case labels for
-the broken one(s).
-
-Prior to worries about indirect jumps you could
-get a dense set of case label and faster code.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+index 66f3a3b..4367cc7 100644
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -849,8 +849,10 @@ static void writecache_discard(struct dm_writecache *wc, sector_t start, sector_
+ 
+ 		if (likely(!e->write_in_progress)) {
+ 			if (!discarded_something) {
+-				writecache_wait_for_ios(wc, READ);
+-				writecache_wait_for_ios(wc, WRITE);
++				if (!WC_MODE_PMEM(wc)) {
++					writecache_wait_for_ios(wc, READ);
++					writecache_wait_for_ios(wc, WRITE);
++				}
+ 				discarded_something = true;
+ 			}
+ 			writecache_free_entry(wc, e);
+-- 
+1.8.3.1
 
