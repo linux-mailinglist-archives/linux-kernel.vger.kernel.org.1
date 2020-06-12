@@ -2,171 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A9C1F7B63
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FEF1F7B68
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgFLQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 12:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgFLQGF (ORCPT
+        id S1726366AbgFLQG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 12:06:57 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:41966 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgFLQG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:06:05 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CACEC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 09:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N1uaLpyQMdwVjun7pUEBDc50plR3DjmpgwYvI+V9ogo=; b=TWFYJhy9OxMpaFG1lwTqeVGxib
-        75Y2VwSLQUxKx92r9Vh0nNiA/53AXfMu//G9WrL7mjR13Pc5GK3U4LkD9U2HJEWQ6SvlbYX44WJHl
-        dmdIg/4IqctMS6qbRJ1Fv1UD0gVskFs30vZUBiSmR8FP6C+V7dRrkpuVgqY+VbReBHNsM4rAp/QwQ
-        AqkHMqpDxYB/9fV4BSFv+W7o0E9WQGfQIQ1Hbd1WQHVqtRvw5YQTFZkbhcj3s9Pw2aJasM3rzi8Hn
-        MjQR5x6pNBCMz4q49yPdAvPR2EMuWuU16XkKnykpSA5W2d2yVwKfB1NAfB4Fq0Y2e8Lp2p+cAlKV/
-        BVk+6cSw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jjmBV-00075H-QS; Fri, 12 Jun 2020 16:05:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79106301AC6;
-        Fri, 12 Jun 2020 18:05:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 322E32146F532; Fri, 12 Jun 2020 18:05:34 +0200 (CEST)
-Date:   Fri, 12 Jun 2020 18:05:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matt Helsley <mhelsley@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Subject: Re: [RFC][PATCH v4 18/32] objtool: mcount: Move nop_mcount()
-Message-ID: <20200612160534.GD2554@hirez.programming.kicks-ass.net>
-References: <cover.1591125127.git.mhelsley@vmware.com>
- <7109ceb239a88c2901eeb7f52c29f69cdb413cd3.1591125127.git.mhelsley@vmware.com>
- <20200612132656.GQ2531@hirez.programming.kicks-ass.net>
+        Fri, 12 Jun 2020 12:06:56 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CG69T9010005;
+        Fri, 12 Jun 2020 11:06:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591977969;
+        bh=oH4sCsgtmwbi7NkuTRS7n+qQ1L2k/HKZgTqy4o67u2U=;
+        h=From:To:CC:Subject:Date;
+        b=IFvQsvCFwqDXDDwrI/RO83GqmIiRIbKfz8nVWwgLWSgjCu23uhqqdMY13zARTZBiw
+         qyckZXF+N3huPHgaiJddtDQ+NHaZ4nxTdcmScqS+vIuHBINn3BMq5JPRKjqbYUWkcU
+         tNosDs/Wp7qH3DtHfQZY6QDeRjP3IKKfOJjqj9UQ=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05CG69vb119325
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Jun 2020 11:06:09 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Jun 2020 11:06:09 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Jun 2020 11:06:09 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CG690Y042915;
+        Fri, 12 Jun 2020 11:06:09 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <robh@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v3 1/2] dt-bindings: tas2562: Convert the tas2562 binding to yaml
+Date:   Fri, 12 Jun 2020 11:06:02 -0500
+Message-ID: <20200612160603.2456-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612132656.GQ2531@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 03:26:57PM +0200, Peter Zijlstra wrote:
-> On Tue, Jun 02, 2020 at 12:50:11PM -0700, Matt Helsley wrote:
-> > +static int nop_mcount(struct section * const rels,
-> > +		      const char *const txtname)
-> > +{
-> > +	struct reloc *reloc;
-> > +	struct section *txts = find_section_by_index(lf, rels->sh.sh_info);
-> > +	unsigned mcountsym = 0;
-> > +	int once = 0;
-> > +
-> > +	list_for_each_entry(reloc, &rels->reloc_list, list) {
-> > +		int ret = -1;
-> > +
-> > +		if (!mcountsym)
-> > +			mcountsym = get_mcountsym(reloc);
-> > +
-> > +		if (mcountsym == GELF_R_INFO(reloc->sym->idx, reloc->type) && !is_fake_mcount(reloc)) {
-> 
-> This makes no sense to me; why not have mcountsym be a 'struct symbol
-> *' and have get_mcountsym() return one of those.
-> 
-> 	if (reloc->sym == mcountsym && ... )
-> 
-> is much nicer, no?
+Convert the TAS2562 text file to yaml format.
 
-On top of that, I suppose we can do something like the below.
-
-Then you can simply write:
-
-	if (reloc->sym->class == SYM_MCOUNT && ..)
-
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
+ .../devicetree/bindings/sound/tas2562.txt     | 34 ----------
+ .../devicetree/bindings/sound/tas2562.yaml    | 65 +++++++++++++++++++
+ 2 files changed, 65 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
 
-diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
-index 45452facff3b..94e4b8fcf9c1 100644
---- a/kernel/locking/Makefile
-+++ b/kernel/locking/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- # Any varying coverage in these files is non-deterministic
- # and is generally not a function of system call inputs.
--KCOV_INSTRUMENT		:= n
-+# KCOV_INSTRUMENT		:= n
- 
- obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
- 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 432417a83902..133c0c285be6 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -341,6 +341,24 @@ static int read_sections(struct elf *elf)
- 	return 0;
- }
- 
-+static bool is_mcount_symbol(const char *name)
-+{
-+	if (name[0] == '.')
-+		name++;
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+deleted file mode 100644
+index 94796b547184..000000000000
+--- a/Documentation/devicetree/bindings/sound/tas2562.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-Texas Instruments TAS2562 Smart PA
+-
+-The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
+-efficiently driving high peak power into small loudspeakers.
+-Integrated speaker voltage and current sense provides for
+-real time monitoring of loudspeaker behavior.
+-
+-Required properties:
+- - #address-cells  - Should be <1>.
+- - #size-cells     - Should be <0>.
+- - compatible:	   - Should contain "ti,tas2562", "ti,tas2563".
+- - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
+- - ti,imon-slot-no:- TDM TX current sense time slot.
+-
+-Optional properties:
+-- interrupt-parent: phandle to the interrupt controller which provides
+-                    the interrupt.
+-- interrupts: (GPIO) interrupt to which the chip is connected.
+-- shut-down: GPIO used to control the state of the device.
+-
+-Examples:
+-tas2562@4c {
+-        #address-cells = <1>;
+-        #size-cells = <0>;
+-        compatible = "ti,tas2562";
+-        reg = <0x4c>;
+-
+-        interrupt-parent = <&gpio1>;
+-        interrupts = <14>;
+-
+-	shut-down = <&gpio1 15 0>;
+-        ti,imon-slot-no = <0>;
+-};
+-
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+new file mode 100644
+index 000000000000..bb51fd88c41a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++# Copyright (C) 2019 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	if (name[0] == '_')
-+		name++;
++title: Texas Instruments TAS2562 Smart PA
 +
-+	return !strcmp(name, "mcount", 6) ||
-+	       !strcmp(name, "_fentry__") ||
-+	       !strcmp(name, "_gnu_mcount_nc");
-+}
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
 +
-+static bool is_kcov_symbol(const char *name)
-+{
-+	return !strncmp(name, "__sanitizer_cov_", 16);
-+}
++description: |
++  The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
 +
- static int read_symbols(struct elf *elf)
- {
- 	struct section *symtab, *symtab_shndx, *sec;
-@@ -410,6 +428,12 @@ static int read_symbols(struct elf *elf)
- 		} else
- 			sym->sec = find_section_by_index(elf, 0);
- 
++properties:
++  compatible:
++    enum:
++      - ti,tas2562
++      - ti,tas2563
 +
-+		if (is_mcount_symbol(sym->name))
-+			sym->class = SYM_MCOUNT;
-+		else if (is_kcov_symbol(sym->name))
-+			sym->class = SYM_KCOV;
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be one of these 0x4c, 0x4d, 0x4e or 0x4f
 +
- 		sym->offset = sym->sym.st_value;
- 		sym->len = sym->sym.st_size;
- 
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 78a2db23b8b6..3c1cccb7b5ff 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -42,6 +42,12 @@ struct section {
- 	bool changed, text, rodata, noinstr;
- };
- 
-+enum symbol_class {
-+	SYM_REGULAR = 0,
-+	SYM_MCOUNT,
-+	SYM_KCOV,
-+};
++  shutdown-gpio:
++    description: GPIO used to control the state of the device.
 +
- struct symbol {
- 	struct list_head list;
- 	struct rb_node node;
-@@ -55,6 +61,7 @@ struct symbol {
- 	unsigned long offset;
- 	unsigned int len;
- 	struct symbol *pfunc, *cfunc, *alias;
-+	enum symbol_class class;
- 	bool uaccess_safe;
- };
- 
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@4c {
++       compatible = "ti,tas2562";
++       reg = <0x4c>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       shutdown-gpio = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++     };
++   };
++
+-- 
+2.26.2
+
