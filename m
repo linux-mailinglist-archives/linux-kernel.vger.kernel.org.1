@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2591F7A0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4403B1F7A23
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgFLOr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:47:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38646 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgFLOrw (ORCPT
+        id S1726484AbgFLOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgFLOwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:47:52 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jjky8-0003HN-V9; Fri, 12 Jun 2020 14:47:45 +0000
-Date:   Fri, 12 Jun 2020 16:47:44 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: vdso_join_timens() question
-Message-ID: <20200612144744.orw4yiaosghqlv4w@wittgenstein>
-References: <20200611110221.pgd3r5qkjrjmfqa2@wittgenstein>
- <97732762-de71-e015-3989-b87d6e5c4dd4@arista.com>
+        Fri, 12 Jun 2020 10:52:21 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C7DC03E96F;
+        Fri, 12 Jun 2020 07:52:20 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id p20so10464344iop.11;
+        Fri, 12 Jun 2020 07:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qxIGr9FPyH+Gs91n0/fHkQIhX/ZfGolDhhvbaK9CMlU=;
+        b=qfmIpy0vKvOQEg/Mekd63hToHWPWLlIvidIzy+oN0SOwAisx5FaGV15mzFf4/SG1XD
+         YkkeaiRj7mIZnBq6r3kLIUASIbZeSu8HznRwCFWmNMbbEq6qTLki9uRl/2bA37R0Yd8f
+         x1BT9M8ZDilHh7sgnQfXaJEg50uQ6CSlIqzCStBBrKrEYU6u5T3+lE1PvOVHytWhvX7o
+         HZLneUwAmGVYQZa8vOEeO8p8EQmsPvqSLeipOxZNj/gj9FRuZEccTkNCBQfIZ4WzsD8I
+         H82KAkf9tQpw3z5iVbukpynC6cAX/HddRbOOUP7jADQxGuvEpfAbnlHWDguonIx2hLwd
+         W2Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qxIGr9FPyH+Gs91n0/fHkQIhX/ZfGolDhhvbaK9CMlU=;
+        b=ikUfAj0sA6fMDqmhaPJm/AmZIqE8vqFPgE34ezR3W3cIO2AsN1ZpEv2hZxaxBfju8K
+         fnnP44BTwCOke3vEaBY9f9z6Wt7x3xtmPr0I3n7JPHZrx5WnW+jyX53Z6mgAop+WPPfz
+         mhJzX2OrVSUzKLKzu338somYvsBd59qqEgYbS84pxwPw3MEkPQlwxfuTGKE9o53GPn9n
+         z6j5Lw8nq4r0K8wflVGgf8gUHrXKw99aZ3hmJ9NHKXgt9tgiaIDgXA/IfdNfwV39+Cyx
+         o0/Ub1PdTjauCPbmDpMINEoUkxpYBCe6pxBEvsdqBfcYNqbb1743UQ2/Af68hq/CAXhe
+         GvwA==
+X-Gm-Message-State: AOAM532VnJcvg1T+Tm7k5bFU2cGOyBPqV11Q8kRarJl/Ejc7098m7NUM
+        1XG2wNjdTlABm3UUgmongFxjgV4CCxU4JT31jng=
+X-Google-Smtp-Source: ABdhPJwkwYAHKc1eSyBzc7anF6WXW3t6WgRRKZVAv0DvCcQ7TbDLRDreyBbhq8KXqUrYsEfQKddTA6prsuzBI4O8TTA=
+X-Received: by 2002:a05:6602:491:: with SMTP id y17mr14024412iov.72.1591973539142;
+ Fri, 12 Jun 2020 07:52:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <97732762-de71-e015-3989-b87d6e5c4dd4@arista.com>
+References: <20200612092603.GB3183@techsingularity.net> <CAOQ4uxikbJ19npQFWzGm6xnqXm0W8pV3NOWE0ZxS9p_G2A39Aw@mail.gmail.com>
+ <20200612131854.GD3183@techsingularity.net>
+In-Reply-To: <20200612131854.GD3183@techsingularity.net>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 12 Jun 2020 17:52:08 +0300
+Message-ID: <CAOQ4uxghy5zOT6i=shZfFHsXOgPrd7-4iPkJBDcsHU6bUSFUFg@mail.gmail.com>
+Subject: Re: [PATCH] fs: Do not check if there is a fsnotify watcher on pseudo inodes
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 08:17:12PM +0100, Dmitry Safonov wrote:
-> Hi Christian,
-> 
-> On 6/11/20 12:02 PM, Christian Brauner wrote:
-> > Hey,
-> > 
-> > I'm about to finish a patch to add CLONE_NEWTIME support to setns().
-> > Since setns() now allows to attach to a multiple namespaces at the same
-> > time I've also reworked it to be atomic (already upstream). Either all
-> > namespaces are switched or no namespace is switched. All namespaces
-> > basically now have a commit mode after which installation should ideally
-> > not fail anymore. That could work for CLONE_NEWTIME too, I think. The
-> > only blocker to this is vdso_join_timens() which can fail due to
-> > mmap_write_lock_killable().
-> > 
-> > Is it possible to change this to mmap_write_lock()? So sm like:
-> > 
-> > diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-> > index ea7c1f0b79df..5c5b4cc61fce 100644
-> > --- a/arch/x86/entry/vdso/vma.c
-> > +++ b/arch/x86/entry/vdso/vma.c
-> > @@ -144,8 +144,7 @@ int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
-> >         struct mm_struct *mm = task->mm;
-> >         struct vm_area_struct *vma;
-> > 
-> > -       if (mmap_write_lock_killable(mm))
-> > -               return -EINTR;
-> > +       mmap_write_lock(mm);
-> > 
-> >         for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> >                 unsigned long size = vma->vm_end - vma->vm_start;
-> 
-> I think, it should be fine.
+On Fri, Jun 12, 2020 at 4:18 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Fri, Jun 12, 2020 at 12:52:28PM +0300, Amir Goldstein wrote:
+> > On Fri, Jun 12, 2020 at 12:26 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > > The kernel uses internal mounts for a number of purposes including pipes.
+> > > On every vfs_write regardless of filesystem, fsnotify_modify() is called
+> > > to notify of any changes which incurs a small amount of overhead in fsnotify
+> > > even when there are no watchers.
+> > >
+> > > A patch is pending that reduces, but does not eliminte, the overhead
+> > > of fsnotify but for the internal mounts, even the small overhead is
+> > > unnecessary. The user API is based on the pathname and a dirfd and proc
+> > > is the only visible path for inodes on an internal mount. Proc does not
+> > > have the same pathname as the internal entry so even if fatrace is used
+> > > on /proc, no events trigger for the /proc/X/fd/ files.
+> > >
+> >
+> > This looks like a good direction and I was going to suggest that as well.
+> > However, I am confused by the use of terminology "internal mount".
+> > The patch does not do anything dealing with "internal mount".
+>
+> I was referring to users of kern_mount.
 
-Great! :)
+I see. I am not sure if all kern_mount hand out only anonymous inodes,
+but FYI, now there a MNT_NS_INTERNAL that is not SB_KERNMOUNT:
+df820f8de4e4 ovl: make private mounts longterm
 
-> 
-> I'm thinking if it actually could be downgraded to mmap_read_lock()..
-> Probably, write lock was being over-cautious.
+>
+> > If alloc_file_pseudo() is only called for filesystems mounted as
+> > internal mounts,
+>
+> I believe this is the case and I did not find a counter-example.  The
+> changelog that introduced the helper is not explicit but it was created
+> in the context of converting a number of internal mounts like pipes,
+> anon inodes to a common helper. If I'm wrong, Al will likely point it out.
+>
+> > please include this analysis in commit message.
+> > In any case, not every file of internal mount is allocated with
+> > alloc_file_pseudo(),
+> > right?
+>
+> Correct. It is not required and there is at least one counter example
+> in arch/ia64/kernel/perfmon.c but I don't think that is particularly
+> important, I don't think anyone is kept awake at night worrying about
+> small performance overhead on Itanium.
+>
+> > So maybe it would be better to list all users of alloc_file_pseudo()
+> > and say that they all should be opted out of fsnotify, without mentioning
+> > "internal mount"?
+> >
+>
+> The users are DMA buffers, CXL, aio, anon inodes, hugetlbfs, anonymous
+> pipes, shmem and sockets although not all of them necessary end up using
+> a VFS operation that triggers fsnotify.  Either way, I don't think it
+> makes sense (or even possible) to watch any of those with fanotify so
+> setting the flag seems reasonable.
+>
 
-Let's use mmap_write_lock() for now and revisit this later, I guess.
+I also think this seems reasonable, but the more accurate reason IMO
+is found in the comment for d_alloc_pseudo():
+"allocate a dentry (for lookup-less filesystems)..."
 
-> 
-> > vdso_join_timens() is called in two places. Once during fork() and once
-> > during timens_install(). I would only need the mmap_write_lock() change
-> > for the latter. So alternatively we could have:
-> > 
-> > __vdso_join_timens_unlocked()
-> > 
-> > and then have/expose:
-> > 
-> > vdso_join_timens_fork()
-> > {
-> >         if (mmap_write_lock_killable(mm))
-> >                 return -EINTR;
-> > 	__vdso_join_timens_unlocked()
-> > 	mmap_write_unlock(mm);
-> > }
-> > 
-> > and 
-> > 
-> > vdso_join_timens_install()
-> > {
-> >         mmap_write_lock(mm);
-> > 	__vdso_join_timens_unlocked()
-> > 	mmap_write_unlock(mm);
-> > }
-> 
-> I think it's not needed. On fork() it's called on creation of new timens:
-> 
-> :	if (nsproxy->time_ns == nsproxy->time_ns_for_children)
-> :		return 0;
-> 
-> So the vdso_join_timens() is called on setns() or on creation of new
-> namespace, which both are quite heavy operations themselves (in sense of
-> locking).
+> I updated the changelog and maybe this is clearer.
 
-Ok, great. It'll like be the week after next until I can send the
-patchset for setns(<nsfd>/<pidfd>, CLONE_NEWTIME) out.
+I still find the use of "internal mount" terminology too vague.
+"lookup-less filesystems" would have been more accurate,
+because as you correctly point out, the user API to set a watch
+requires that the marked object is looked up in the filesystem.
 
-Thanks!
-Christian
+There are also some kernel internal users that set watches
+like audit and nfsd, but I think they are also only interested in
+inodes that have a path at the time that the mark is setup.
+
+Thanks,
+Amir.
