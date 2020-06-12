@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CD01F748E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89B61F7490
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgFLHW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 03:22:56 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:36108 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgFLHWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:22:47 -0400
-IronPort-SDR: JvtKvJgNDhMfCgb8pjHZ0UFAXd48YST0yC8xM5K/DtmUebebOnrCWQ7d44uOlpEW+YtSZmBoTq
- qf0Z5QQTT1C4Rq0myE2N0vDAnT0cHbGnNxzwuaWLfUu4RBRHnDImQInTmNb3S/3v8WftDGZ8rx
- 2c4kHCL4zDXYR+joSj6Jd3gjldX2aXM+l21uixN4AolY8S2b/Obc22kiVOwFG/8APHmRZ7IAkb
- 7XZqpoHx1f+QFDM+jDnKqV+KSiP4EoUUxgR5ISvyqL/ZYOfBG6uD92C/zpVPXyUuwzeD1LTOiu
- xfU=
-X-IronPort-AV: E=Sophos;i="5.73,502,1583190000"; 
-   d="scan'208";a="12657248"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 12 Jun 2020 09:22:41 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 12 Jun 2020 09:22:41 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 12 Jun 2020 09:22:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1591946561; x=1623482561;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=Z1KnUC/hvmXTSff/Y1nN8ENTL/SaSbNXTvnFH3mC13w=;
-  b=ksOpC1QxMZUaC+fKqe8AZGIEGnPP1QT2ItyDAMQJcnh0ryy0ST+uF2xv
-   RMEjVePZQEd0k5LjGkpvyIphxZZhMfarYkf1L0jmiwAbr41YS55xxA3eN
-   BzWToZgtrSgoUJOibkREjbfTxamk+fMKhlREplRAB2tQVUJNKmAabp2hM
-   D6MkTNgb5kqeQlfd5ciUOxC8499w0W7p1djiR/b4EPs8e0a1r61BtVBax
-   d+CX4+RjVbQvC+TywzoFJcUu7u909v+i1ZgqfWtakSuLgl4EoUTd3/9rT
-   13M/cLYLlpgevvINiHD01d/b+ypFs0K0glxQM9KxEJ6jnJcfa4Oyt1sbW
-   g==;
-IronPort-SDR: ciwQqwqYChn3hIWeHbgQTR5ZdwT/blv2K37gknapFQwgtI71iFbw4X/1MmkT70W1e+eVczqF/5
- R8OVaRAvFJ6Ua93WXKP3vbUdH/0jufIojJZjD6cLnx/tO/Uwc9Q5sbSK3yNVc0xiQ5SqRrzciv
- ipi+rgQaYDsQaSK3kIfFuMZk/WCq2Htzh9NOBa0aYdwVz38pwUaB72ahrMqGyBZu43uZvjaIuR
- ZCmwT/fOKJnthBrPJ4NOmyJES/O57cD/FDixjYIqZbJcT6opsjEcv4OTTJOSAS2M3GAaUq1tSN
- Yps=
-X-IronPort-AV: E=Sophos;i="5.73,502,1583190000"; 
-   d="scan'208";a="12657247"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 12 Jun 2020 09:22:41 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 11917280065;
-        Fri, 12 Jun 2020 09:22:41 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH RESEND v2 4/4] drm/panel: simple: add Tianma TM070JVHG33
-Date:   Fri, 12 Jun 2020 09:22:19 +0200
-Message-Id: <20200612072219.13669-5-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200612072219.13669-1-matthias.schiffer@ew.tq-group.com>
-References: <20200612072219.13669-1-matthias.schiffer@ew.tq-group.com>
+        id S1726574AbgFLHXR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Jun 2020 03:23:17 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:54707 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbgFLHXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 03:23:16 -0400
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 926A320003;
+        Fri, 12 Jun 2020 07:23:14 +0000 (UTC)
+Date:   Fri, 12 Jun 2020 09:23:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Cc:     richard@nod.at, vigneshr@ti.com, peter.ujfalusi@ti.com,
+        boris.brezillon@collabora.com, architt@codeaurora.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] mtd: rawnand: qcom: set BAM mode only if not set
+ already
+Message-ID: <20200612092313.3d8df859@xps13>
+In-Reply-To: <1591944589-14357-3-git-send-email-sivaprak@codeaurora.org>
+References: <1591944589-14357-1-git-send-email-sivaprak@codeaurora.org>
+        <1591944589-14357-3-git-send-email-sivaprak@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Merchel <Max.Merchel@tq-group.com>
+Hi Sivaprakash,
 
-Add support for the Tianma Micro-electronics TM070JVHG33 7.0" WXGA display
-to panel-simple.
+Sivaprakash Murugesan <sivaprak@codeaurora.org> wrote on Fri, 12 Jun
+2020 12:19:49 +0530:
 
-Signed-off-by: Max Merchel <Max.Merchel@tq-group.com>
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+> BAM is DMA controller on QCOM ipq platforms, BAM mode on NAND driver
+> is set by writing BAM_MODE_EN bit on NAND_CTRL register.
+> 
+> NAND_CTRL is an operational register and in BAM mode operational
+> registers are read only.
+> 
+> So, before writing into NAND_CTRL register check if BAM mode is already
 
-v2:
-- added connector_type
-- fixed bus_format
+So, before enabling BAM mode by writing the NAND_CTRL register, check
+if BAM mode was already enabled by the bootloader.
 
- drivers/gpu/drm/panel/panel-simple.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> enabled by bootloader, and set BAM mode only if it is not set already.
+> 
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> ---
+> [V3]
+>  * Changed commit message to give a small info about BAM
+>  drivers/mtd/nand/raw/qcom_nandc.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index e0c55bb..4827edd 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -2784,7 +2784,14 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+>  	/* enable ADM or BAM DMA */
+>  	if (nandc->props->is_bam) {
+>  		nand_ctrl = nandc_read(nandc, NAND_CTRL);
+> -		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
+> +		/* NAND_CTRL is an operational registers, and CPU
+> +		 * access to operational registers are read only
+> +		 * in BAM mode. So update the NAND_CTRL register
+> +		 * only if it is not in BAM mode. In most cases BAM
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index ee9815e5eee8..54f121256832 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3380,6 +3380,18 @@ static const struct panel_desc tianma_tm070jdhg30 = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct panel_desc tianma_tm070jvhg33 = {
-+	.timings = &tianma_tm070jdhg30_timing,
-+	.num_timings = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 150,
-+		.height = 94,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-+};
-+
- static const struct display_timing tianma_tm070rvhg71_timing = {
- 	.pixelclock = { 27700000, 29200000, 39600000 },
- 	.hactive = { 800, 800, 800 },
-@@ -3983,6 +3995,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "tianma,tm070jdhg30",
- 		.data = &tianma_tm070jdhg30,
-+	}, {
-+		.compatible = "tianma,tm070jvhg33",
-+		.data = &tianma_tm070jvhg33,
- 	}, {
- 		.compatible = "tianma,tm070rvhg71",
- 		.data = &tianma_tm070rvhg71,
--- 
-2.17.1
+                                        BAM mode already (Bootloaders
+                                        might have already entered
+                                        this mode).
 
+> +		 * mode will be enabled in bootloader
+> +		 */
+> +		if (!(nand_ctrl | BAM_MODE_EN))
+> +			nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
+>  	} else {
+>  		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
+>  	}
+
+Thanks,
+Miquèl
