@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C325E1F7460
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C155B1F7478
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgFLHKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 03:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
+        id S1726708AbgFLHLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 03:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgFLHKS (ORCPT
+        with ESMTP id S1726536AbgFLHKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:10:18 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7466EC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id s88so3478013pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:17 -0700 (PDT)
+        Fri, 12 Jun 2020 03:10:19 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C48C03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:19 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id i12so3287184pju.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zQ9MqfWdvKY0A/nub4Fo1FL/E8bJu3O4TVW1RUvcWdg=;
-        b=lj5U69Cksq6OCRUwr5FSFcfeGktJxkA9FTX+22+Wu+8dwxBHR77hXuHnIPRGOGie44
-         ERN9/bY0xBVAOg9TX0F1fwANzNIdEZDZ8O4zqyQKeVct1npSg+vhxUXazCaPOanobztU
-         9IPlSXq8y3X0DOryWc0JvgfCJkQrIvmRxtFpBJoIO0umdmsg88SzIQzbrWuSS5IaaqiC
-         7jVNrkCGrcOhX9nUMKOmAks8AXBrZNwWlqrDsZmzAFXqqRLSuMEsdwLqtJCyTc7uVnbg
-         trwbYhhJV97v47brW5F6K0w52j/zZa2BihQAIGVXfIz7oMjc6oE8qumbzxHB5NHRp0JI
-         AMPg==
+        bh=Qon66DpP/9C+tl7pgvKjepLx67Alsh8Vu/kEKeYzw5s=;
+        b=doTShxH7Y/dsPbNJ+cLPM0V+vYloqDfRvNPzA9RkizxyoybW7ndmznNSSY+wG1kDqm
+         Ng+Eel87SwVZG83rOIZadRsSt3gxAR7jpYOX2FZ+aSDonbP5BgLDL9Pv325SEpwng3zr
+         w+fgz2zljiaSQJmyjD/FhBu/apLQfKrqkwC4woE4TkgM4xjLq/JnzouAN3b30HOUFFUq
+         +OMlTPdI6Dd6ZD9Ai/V7Lk7hnrJ/taVd8hS3a4cJ3DTtV/4eTt8VuXGsKw90DlX7CIdA
+         DDYzPhr/m3TDfkbCMK1PRnMVDq436bX1UGTNY4/lsHiPOywNL9Z2r7AkZSQTb0np1pfc
+         QLjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zQ9MqfWdvKY0A/nub4Fo1FL/E8bJu3O4TVW1RUvcWdg=;
-        b=gINSqIBTfzmlxJbUH4cF8KHwyWOxF8BP/weoan9oX8DqRtgqjwhqBMoTlOt/7vvB1w
-         nYik8SNnonD9G+/P/uvnlteWyErNnJ268l8NWHkUZN2CrSnp7U9YARVX2dhmt/yJrdfG
-         UHbQ0kOgMcb2FGt4iOKEROEUnTfujMXrdUhreCCyA9bzZ/BeDtxGsoZGkpnxuT75cTyM
-         DQdcKtHixueJjIqboExOGTt/t4Fl88W+CbXA2NOc8dtyUzrIOymosAN6ykGm/sywLp89
-         c5yNjkgRRhr+XS+0yk7j5aSAKZP6JqiQMdyTrgTeTxiT0XKt7bgDyycb0DPT3gnEBYpi
-         9bfQ==
-X-Gm-Message-State: AOAM532K9+3gntywKbzTEa0CnpHCTKeMGrdqH2WydNbHTvDVx4DS+qY2
-        tlx3p57rREAHwqcf/Lkv9cXyhg==
-X-Google-Smtp-Source: ABdhPJwXTT29gm2ifat7CTG4weeyGOi00tGqBa0Ywljl2zNKwiR1hC9l0czmEkulm7P+V+zLBD+x/w==
-X-Received: by 2002:a17:90a:3b09:: with SMTP id d9mr12421250pjc.225.1591945817016;
-        Fri, 12 Jun 2020 00:10:17 -0700 (PDT)
+        bh=Qon66DpP/9C+tl7pgvKjepLx67Alsh8Vu/kEKeYzw5s=;
+        b=BZKtb5QYA3jIkUqbXJ5ACz4jDKLxDM9jyHH8mSMX3BLLx6SrcaXrD91wpNxvcWknSx
+         oRR4YSSPf8Kkhn9M7fXx+y+Qpms/4n1waJm4fAhIzsrYnMjj0ZnxHYEKpu8wudQlYKhR
+         P7Um0VLlQWT+vPKSbJWXsXoTotVFOj6keTn/WRbsXCNuGzdzPkP+nbeGm5NYrPJfBDWx
+         SONySmeSsNJuZMD6GSla2anz6/vPDOj7DS4om3DwzGUeM5FJvYee014nHdXrFQ53l0Bk
+         qt3ebtVEIFztaAMiLF8KDHFV/BMIDxDA2kKZolri1x97XWZWsPoTdHJ6Wrf3Z93UQIja
+         vPsw==
+X-Gm-Message-State: AOAM531sUg8KBuFeyCehn5yFIJzyer62y+4WQCAxH22u25438cksjYnm
+        SJtBCq2Y2ciIsN+4ydciBdDguA==
+X-Google-Smtp-Source: ABdhPJxdL3oZhAFHxU1Uft6EO9Gm7i++9n8ABoOq3s6toXlmfYm7sY3HquRLodQM9zQo9yUiedVebQ==
+X-Received: by 2002:a17:90b:882:: with SMTP id bj2mr12458129pjb.122.1591945819238;
+        Fri, 12 Jun 2020 00:10:19 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.15
+        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 00:10:16 -0700 (PDT)
+        Fri, 12 Jun 2020 00:10:18 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, oleg@redhat.com, guoren@linux.alibaba.com,
         vincent.chen@sifive.com, paul.walmsley@sifive.com,
         palmerdabbelt@google.com, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Anup Patel <anup@brainfault.org>
-Subject: [PATCH 03/13] riscv: Rename __switch_to_aux -> fpu
-Date:   Fri, 12 Jun 2020 15:09:52 +0800
-Message-Id: <28ce87a2bf6b73b01faa33b35df440effaab9a8b.1591344965.git.greentime.hu@sifive.com>
+Subject: [PATCH 04/13] riscv: Extending cpufeature.c to detect V-extension
+Date:   Fri, 12 Jun 2020 15:09:53 +0800
+Message-Id: <a5568f4547da37b48852f4bce08a646fb9aef903.1591344965.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1591344965.git.greentime.hu@sifive.com>
 References: <cover.1591344965.git.greentime.hu@sifive.com>
@@ -71,47 +71,49 @@ From: Guo Ren <guoren@linux.alibaba.com>
 
 From: Guo Ren <ren_guo@c-sky.com>
 
-The name of __switch_to_aux is not clear and rename it with the
-determine function: __switch_to_fpu. Next we could add other regs'
-switch.
+Current cpufeature.c doesn't support detecting V-extension, because
+"rv64" also contain a 'v' letter and we need to skip it.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Reviewed-by: Anup Patel <anup@brainfault.org>
 ---
- arch/riscv/include/asm/switch_to.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/riscv/include/uapi/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c      | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index 407bcc96a710..b9234e7178d0 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -44,7 +44,7 @@ static inline void fstate_restore(struct task_struct *task,
- 	}
- }
+diff --git a/arch/riscv/include/uapi/asm/hwcap.h b/arch/riscv/include/uapi/asm/hwcap.h
+index dee98ee28318..a913e9a38819 100644
+--- a/arch/riscv/include/uapi/asm/hwcap.h
++++ b/arch/riscv/include/uapi/asm/hwcap.h
+@@ -21,5 +21,6 @@
+ #define COMPAT_HWCAP_ISA_F	(1 << ('F' - 'A'))
+ #define COMPAT_HWCAP_ISA_D	(1 << ('D' - 'A'))
+ #define COMPAT_HWCAP_ISA_C	(1 << ('C' - 'A'))
++#define COMPAT_HWCAP_ISA_V	(1 << ('V' - 'A'))
  
--static inline void __switch_to_aux(struct task_struct *prev,
-+static inline void __switch_to_fpu(struct task_struct *prev,
- 				   struct task_struct *next)
- {
- 	struct pt_regs *regs;
-@@ -60,7 +60,7 @@ extern bool has_fpu;
- #define has_fpu false
- #define fstate_save(task, regs) do { } while (0)
- #define fstate_restore(task, regs) do { } while (0)
--#define __switch_to_aux(__prev, __next) do { } while (0)
-+#define __switch_to_fpu(__prev, __next) do { } while (0)
- #endif
+ #endif /* _UAPI_ASM_RISCV_HWCAP_H */
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index a5ad00043104..c8527d770c98 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -30,6 +30,7 @@ void riscv_fill_hwcap(void)
+ 	isa2hwcap['f'] = isa2hwcap['F'] = COMPAT_HWCAP_ISA_F;
+ 	isa2hwcap['d'] = isa2hwcap['D'] = COMPAT_HWCAP_ISA_D;
+ 	isa2hwcap['c'] = isa2hwcap['C'] = COMPAT_HWCAP_ISA_C;
++	isa2hwcap['v'] = isa2hwcap['V'] = COMPAT_HWCAP_ISA_V;
  
- extern struct task_struct *__switch_to(struct task_struct *,
-@@ -71,7 +71,7 @@ do {							\
- 	struct task_struct *__prev = (prev);		\
- 	struct task_struct *__next = (next);		\
- 	if (has_fpu)					\
--		__switch_to_aux(__prev, __next);	\
-+		__switch_to_fpu(__prev, __next);	\
- 	((last) = __switch_to(__prev, __next));		\
- } while (0)
+ 	elf_hwcap = 0;
  
+@@ -44,7 +45,8 @@ void riscv_fill_hwcap(void)
+ 			continue;
+ 		}
+ 
+-		for (i = 0; i < strlen(isa); ++i)
++		/* Skip rv64/rv32 to support v/V:vector */
++		for (i = 4; i < strlen(isa); ++i)
+ 			this_hwcap |= isa2hwcap[(unsigned char)(isa[i])];
+ 
+ 		/*
 -- 
 2.27.0
 
