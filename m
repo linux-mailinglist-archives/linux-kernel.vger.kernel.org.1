@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EB91F750D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5191F7504
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgFLIKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 04:10:30 -0400
-Received: from smail.rz.tu-ilmenau.de ([141.24.186.67]:48099 "EHLO
-        smail.rz.tu-ilmenau.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgFLIK3 (ORCPT
+        id S1726357AbgFLIF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 04:05:56 -0400
+Received: from m17617.mail.qiye.163.com ([59.111.176.17]:13451 "EHLO
+        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726264AbgFLIF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 04:10:29 -0400
-X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Jun 2020 04:10:29 EDT
-Received: from legolas.fritz.box (unknown [87.147.49.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smail.rz.tu-ilmenau.de (Postfix) with ESMTPSA id D3673580075;
-        Fri, 12 Jun 2020 10:05:26 +0200 (CEST)
-From:   Markus Theil <markus.theil@tu-ilmenau.de>
-To:     lorenzo@kernel.org, linux-kernel@vger.kernel.org,
-        kvalo@codeaurora.org, nbd@nbd.name
-Cc:     linux-wireless@vger.kernel.org,
-        Markus Theil <markus.theil@tu-ilmenau.de>
-Subject: [PATCH] mt76: fix include in pci.h
-Date:   Fri, 12 Jun 2020 10:05:23 +0200
-Message-Id: <20200612080523.250247-1-markus.theil@tu-ilmenau.de>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 12 Jun 2020 04:05:56 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.226])
+        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id 57FD526190E;
+        Fri, 12 Jun 2020 16:05:53 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] drivers\gpio: use kobj_to_dev
+Date:   Fri, 12 Jun 2020 16:05:45 +0800
+Message-Id: <1591949145-17098-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGkxISUMdGU9PHR5NVkpOQkpCT0JKTkhMTU1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MyI6NDo5Azg#PwsKMzVNEk0K
+        FREwFDhVSlVKTkJKQk9CSk5PSU5PVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlJTVlXWQgBWUFKTU9ONwY+
+X-HM-Tid: 0a72a79055869375kuws57fd526190e
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> found the following issue
-and Kalle Valo forwarded it to Linux wireless.
+Use kobj_to_dev() API instead of container_of().
 
-drivers/net/wireless/mediatek/mt76/pci.c:8:6:
-warning: no previous prototype for 'mt76_pci_disable_aspm'
-
-Fix this by adding the missing include of mt76.h as Kalle
-suggested.
-
-Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/net/wireless/mediatek/mt76/pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpio/gpiolib-sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ mode change 100644 => 100755 drivers/gpio/gpiolib-sysfs.c
 
-diff --git a/drivers/net/wireless/mediatek/mt76/pci.c b/drivers/net/wireless/mediatek/mt76/pci.c
-index 04c5a692bc85..4c1c159fbb62 100644
---- a/drivers/net/wireless/mediatek/mt76/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/pci.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2019 Lorenzo Bianconi <lorenzo@kernel.org>
-  */
- 
-+#include "mt76.h"
- #include <linux/pci.h>
- 
- void mt76_pci_disable_aspm(struct pci_dev *pdev)
+diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+index 23e3d33..82371fe
+--- a/drivers/gpio/gpiolib-sysfs.c
++++ b/drivers/gpio/gpiolib-sysfs.c
+@@ -365,7 +365,7 @@ static DEVICE_ATTR_RW(active_low);
+ static umode_t gpio_is_visible(struct kobject *kobj, struct attribute *attr,
+ 			       int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct gpiod_data *data = dev_get_drvdata(dev);
+ 	struct gpio_desc *desc = data->desc;
+ 	umode_t mode = attr->mode;
 -- 
-2.27.0
+2.7.4
 
