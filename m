@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A111C1F7C07
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5051F7C0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgFLREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:04:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41048 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgFLREA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:04:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7629CAECE;
-        Fri, 12 Jun 2020 17:04:01 +0000 (UTC)
-Date:   Fri, 12 Jun 2020 19:03:52 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 3/6] mm, memcg: Prevent memory.low load/store tearing
-Message-ID: <20200612170352.GA40768@blackbook>
-References: <cover.1584034301.git.chris@chrisdown.name>
- <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
+        id S1726590AbgFLREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgFLREb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:04:31 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AE5C03E96F;
+        Fri, 12 Jun 2020 10:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=qjz2DxxHjX1AszTx5TAMHcOt/ERrUE8Sugt/lsPH6Xc=; b=Vj26xR7ZuawPvLWBqn3Dp7Z/mB
+        foePpiqYcNhO/KOnBf/9iVcaLzEmkioc4Vm9ZD1wyER2Zzvq5pUWbKqqXFLQJcL+aGKSiVn8GQEOQ
+        dKHKcTEMFs/Oisp9/YgzxjMle8ejH68iA5Wwye7yq20NCS5mtAUPpCLK9QFQ0h8kKRTJFhNqOBxTk
+        65Elfcmjbp3UkrHCBikiH8bgGRkwpzVrlrehDRPnO//TfYrLCQa0d7a67Di4dTtogpUVDnrR1OTTQ
+        xaZwNSkUE7I2J2OLiQosgQKBmF5Z5aI26Ty87WT2jjjf41RN5tExvTYvqc1I+f8lHFO4cZfcRYHMv
+        ajEoWyOQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jjn6V-00048n-8I; Fri, 12 Jun 2020 17:04:31 +0000
+Date:   Fri, 12 Jun 2020 10:04:31 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Kaitao Cheng <pilgrimtao@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v2] proc/fd: Remove unnecessary variable initialisations
+ in seq_show()
+Message-ID: <20200612170431.GG8681@bombadil.infradead.org>
+References: <20200612160946.21187-1-pilgrimtao@gmail.com>
+ <7fdada40-370d-37b3-3aab-bfbedaa1804f@web.de>
+ <20200612170033.GF8681@bombadil.infradead.org>
+ <80794080-138f-d015-39df-36832e9ab5d4@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <80794080-138f-d015-39df-36832e9ab5d4@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 12, 2020 at 07:03:49PM +0200, Markus Elfring wrote:
+> >>> 'files' will be immediately reassigned. 'f_flags' and 'file' will be
+> >>> overwritten in the if{} or seq_show() directly exits with an error.
+> >>> so we don't need to consume CPU resources to initialize them.
+> >>
+> >> I suggest to improve also this change description.
+> >>
+> >> * Should the mentioned identifiers refer to variables?
+> >>
+> >> * Will another imperative wording be preferred?
+> >>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=b791d1bdf9212d944d749a5c7ff6febdba241771#n151
+> >>
+> >> * I propose to extend the patch a bit more.
+> >>   How do you think about to convert the initialisation for the variable “ret”
+> >>   also into a later assignment?
+> >
+> > Please stop commenting on people's changelogs.  You add no value.
+> 
+> Would you like to clarify concrete software development ideas?
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello.
-
-I see suspicious asymmetry, in the current mainline:
->	WRITE_ONCE(memcg->memory.emin, effective_protection(usage, parent_usage,
->			READ_ONCE(memcg->memory.min),
->			READ_ONCE(parent->memory.emin),
->			atomic_long_read(&parent->memory.children_min_usage)));
->
->	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
->			memcg->memory.low, READ_ONCE(parent->memory.elow),
->			atomic_long_read(&parent->memory.children_low_usage)));
-
-On Thu, Mar 12, 2020 at 05:33:01PM +0000, Chris Down <chris@chrisdown.name>=
- wrote:
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index aca2964ea494..c85a304fa4a1 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6262,7 +6262,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
-uct mem_cgroup *root,
->  		return MEMCG_PROT_NONE;
-> =20
->  	emin =3D memcg->memory.min;
-> -	elow =3D memcg->memory.low;
-> +	elow =3D READ_ONCE(memcg->memory.low);
-> =20
->  	parent =3D parent_mem_cgroup(memcg);
->  	/* No parent means a non-hierarchical mode on v1 memcg */
-> @@ -6291,7 +6291,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
-uct mem_cgroup *root,
->  	if (elow && parent_elow) {
->  		unsigned long low_usage, siblings_low_usage;
-> =20
-> -		low_usage =3D min(usage, memcg->memory.low);
-> +		low_usage =3D min(usage, READ_ONCE(memcg->memory.low));
->  		siblings_low_usage =3D atomic_long_read(
->  			&parent->memory.children_low_usage);
-Is it possible that these hunks were lost during rebase/merge?
-
-IMHO it should apply as:
-
--- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6428,7 +6428,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struc=
-t mem_cgroup *root,
-                        atomic_long_read(&parent->memory.children_min_usage=
-)));
-
-        WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_u=
-sage,
--                       memcg->memory.low, READ_ONCE(parent->memory.elow),
-+                       READ_ONCE(memcg->memory.low),
-+                       READ_ONCE(parent->memory.elow),
-                        atomic_long_read(&parent->memory.children_low_usage=
-)));
-
- out:
-
-
-Michal
-
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl7jtXIACgkQia1+riC5
-qSjUig//d3bjL+7mCpm6speHzN1vPZbVuEsBjl+P4DhMwGSl1iiwWP8chYdm30Xg
-5l8eACsZox2Zta2TvNkqUKaYSanJ3+cY4j6vFecnJ2ADRwTG5OgKJHz4pPpTSDox
-9YVzYsOzLVF/cfoOiD2GPer+YBaEMyppaqWwfzAb2XoKUmdHsY1A/nBllvbTSm6c
-zbGdMqb3kt/ixm8cljE/0Wyk26QeyydHBQuU9XW1VQZniQhDWwi4tR7lfFCxMYtQ
-9/PUKtgmZ+ku8YOEoc9twXbOxR8C3MZo7zZslrcVvqrF1bVOkpYAZMIMGnSLFf9Q
-Mdcmbf81yPWEd/7hRO8vC8ICfBnU1nN14f1+MuXt56VWtmLnn/UqJ5sS3vqF5tgV
-iBlucq9xjxMKsvoT15tNq3DX+CKL5bdqAOglSmT/XwUW1hsVycQ0spCWQ5J4K/bQ
-ljahv3T9G4UgGouUwrVTZxU2+JC7YQg5BqJoC4sf0hLdFcVjdcq/aQis4b8TZLVs
-36wBd/QpHGVEh1bZ5LN2AcFY+WhahNswJjM2rx2WB1S9IMhukeIe2C/PjpKnc2Zw
-ff7+GBkyif/+0Xwj7N+aXSsLQ/0Xjv3kgcbOXGU0jjdoEpQxyOVtb8mAKGDRHt1D
-hIr7XNHBIOUgzGC+YBl0fGDVYCWXEg45umFPdf6OTx8MCONUjQI=
-=Uooi
------END PGP SIGNATURE-----
-
---6TrnltStXW4iwmi0--
+Yes.  Learn something deeply, then your opinion will have value.
