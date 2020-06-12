@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A912C1F750B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461F81F750F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgFLIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 04:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgFLIKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 04:10:10 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7F9C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 01:10:10 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id h95so3546879pje.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 01:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FrBOISxwKyWg3yFgNawz44Si/Jo/mcOoYEJcWJFfVoU=;
-        b=ZK69Co/lXBcRsFD7SUsxis7MvrrcFiGb9wXzfn7QAfqobBYK9JDAVVUXXpRpFHMLg0
-         bvEppJLtKU+QvKbxuYgo0rxwsXP9WiA9uF0rGQy43dpzucJAnjc2IyzVcZ1ElnYntB7l
-         ATrDNsHmMMemgc2y/R9TU7A9JQ3Ve8RNKb8SnaShfdenzGbXzILlFzjWK9lvsREaci4G
-         VYteP+8a1FKn/dMhPPSzX5EuZSXt2zkupMCmExVRxk+qmMa3SQ8qmPp74Y8Ln/IZJW5M
-         g+BVoCzM2yWQoUraZtQxS5HGxkw+Jgl24vvTzDytIgPnaEyNS+OHC2lqEYxJlor1u0zK
-         Q1Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FrBOISxwKyWg3yFgNawz44Si/Jo/mcOoYEJcWJFfVoU=;
-        b=RvHMm+vBBcACqgn5EMhZYeESQ9FH9XnJdeeoe/sByGEVuuadPjnaStCnAf7E/5BQQE
-         5BOckRKngiF2FrvzirjU3SZibygFhHkreTRmxL9UVldWvArRutACDv6iAs7vOUlhVEh8
-         vt1sAmrdohwxaIRHLWnhKfajEUZaGSElepn5pLip9ce0yYragNJ6/SwaznOYlTiFOnzU
-         6OqlbsYJyrsF4Y3j/FkTSzC6ZUo7wFM7jxhdMTmNlqrVbdQ6+/eVlqX+byA2udJH3Pv3
-         QjCQkvLmxTQzXd3Zp+kAVtJ95+23pZ4PVv+TMLNwiZq1kkbjLyXzHlvi6gurofligxwg
-         AmnA==
-X-Gm-Message-State: AOAM5329n64ymo2cUTT/EpSix9OJZLDFrE1zEB0zXHYEuhYHrFzb25HE
-        J6ueJ1Buno3ge/KteRvYfE8=
-X-Google-Smtp-Source: ABdhPJyS8XQ1B9/rurFHEaifuL86DzzigqQvEbE5slis0FR6ePbWM33oVYWhL/dvgVit13H7C4fJKw==
-X-Received: by 2002:a17:902:bd09:: with SMTP id p9mr10817945pls.214.1591949409605;
-        Fri, 12 Jun 2020 01:10:09 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id 191sm4484589pfz.30.2020.06.12.01.10.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jun 2020 01:10:09 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 01:10:00 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, broonie@kernel.org, timur@kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v3 4/4] ASoC: fsl_asrc_dma: Fix data copying speed
- issue with EDMA
-Message-ID: <20200612081000.GD22422@Asurada-Nvidia>
-References: <cover.1591947428.git.shengjiu.wang@nxp.com>
- <424ed6c249bafcbe30791c9de0352821c5ea67e2.1591947428.git.shengjiu.wang@nxp.com>
+        id S1726403AbgFLILR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 04:11:17 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62064 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726264AbgFLILR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 04:11:17 -0400
+IronPort-SDR: 0VrjcI8RchfQG0MvgjQ9iOIFCVfVXM6zVVfwX3t5Q3TPxOs0Jsh59PiVzo4hVBfITg7krsiGX0
+ Rh+KfKoOsHOA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2020 01:11:17 -0700
+IronPort-SDR: WPgTk23d3CEmUaBpcbTjannm6eiL/gNRXu1N5ekMsIm9rCp4Dck56hZiqaw4qSCwY02gmKmoGa
+ avV/yRfh8fSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,502,1583222400"; 
+   d="scan'208";a="380640438"
+Received: from xingzhen-mobl1.ccr.corp.intel.com (HELO [10.238.6.47]) ([10.238.6.47])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Jun 2020 01:11:14 -0700
+Subject: Re: [LKP] [x86, sched] 1567c3e346: vm-scalability.median -15.8%
+ regression
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, lkp@lists.01.org
+References: <20200306051916.GA23395@xsang-OptiPlex-9020>
+ <a5b0b58d-54a9-0f06-c822-3087346a0ae8@linux.intel.com>
+ <1587018059.32139.22.camel@suse.cz>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <fdcab17c-91aa-fba0-65d1-c08af6f50842@linux.intel.com>
+Date:   Fri, 12 Jun 2020 16:11:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <424ed6c249bafcbe30791c9de0352821c5ea67e2.1591947428.git.shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1587018059.32139.22.camel@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 03:37:51PM +0800, Shengjiu Wang wrote:
-> With EDMA, there is two dma channels can be used for dev_to_dev,
-> one is from ASRC, one is from another peripheral (ESAI or SAI).
-> 
-> If we select the dma channel of ASRC, there is an issue for ideal
-> ratio case, the speed of copy data is faster than sample
-> frequency, because ASRC output data is very fast in ideal ratio
-> mode.
-> 
-> So it is reasonable to use the dma channel of Back-End peripheral.
-> then copying speed of DMA is controlled by data consumption
-> speed in the peripheral FIFO,
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Hi Giovanni,
 
-Reviewed-by: Nicolin Chen <nicoleotsuka@gmail.com>
+    I test the regression, it still existed in v5.7.  Do you have time 
+to take a look at this? Thanks.
+
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/runtime/debug-setup/size/test/cpufreq_governor/ucode:
+ 
+lkp-hsw-4ex1/vm-scalability/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/test/8T/anon-cow-seq/performance/0x16
+
+commit:
+   2a4b03ffc69f2dedc6388e9a6438b5f4c133a40d
+   1567c3e3467cddeb019a7b53ec632f834b6a9239
+   v5.7-rc1
+   v5.7
+
+2a4b03ffc69f2ded 1567c3e3467cddeb019a7b53ec6                    v5.7-rc1 
+                        v5.7
+---------------- --------------------------- --------------------------- 
+---------------------------
+          %stddev     %change         %stddev     %change 
+%stddev     %change         %stddev
+              \          |                \          |                \ 
+         |                \
+     211462           -16.0%     177702           -15.0%     179809 
+      -15.1%     179510        vm-scalability.median
+       5.34 ±  9%      -3.1        2.23 ± 11%      -2.9        2.49 ± 
+5%      -2.7        2.61 ± 11%  vm-scalability.median_stddev%
+   30430671           -16.3%   25461360           -15.5%   25707029 
+      -15.5%   25701713        vm-scalability.throughput
+  7.967e+09           -11.1%  7.082e+09           -11.1%  7.082e+09 
+      -11.1%  7.082e+09        vm-scalability.workload
+
+
+
+On 4/16/2020 2:20 PM, Giovanni Gherdovich wrote:
+> On Thu, 2020-04-16 at 14:10 +0800, Xing Zhengjun wrote:
+>> Hi Giovanni,
+>>
+>>     1567c3e346("x86, sched: Add support for frequency invariance") has
+>> been merged into Linux mainline v5.7-rc1 now. Do you have time to take a
+>> look at this? Thanks.
+>>
+> 
+> Apologies, this slipped under my radar. I'm on it, thanks.
+> 
+> 
+> Giovanni Gherdovich
+> 
+
+-- 
+Zhengjun Xing
