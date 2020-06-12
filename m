@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD7B1F78F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8031F7919
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgFLNyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 09:54:15 -0400
-Received: from mga07.intel.com ([134.134.136.100]:1771 "EHLO mga07.intel.com"
+        id S1726632AbgFLN4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 09:56:30 -0400
+Received: from m12-15.163.com ([220.181.12.15]:37007 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgFLNyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 09:54:13 -0400
-IronPort-SDR: gNmQgvGGfcuLLcteRZO90T7juy8DowFBomZpiKZ9d0iK4q+2qfjSiC+nsDny2KExKOcUbwVEQO
- z1iOhFnQER3w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2020 06:54:13 -0700
-IronPort-SDR: iU+h/Z8i+sjCatce5NdcOtdhdZZDJIOZGF71b5m5MN4vThRRmEjquCTlpE/3j38okJWWhCb356
- YC6OBGMqmNhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,503,1583222400"; 
-   d="scan'208";a="315134584"
-Received: from rrhill-mobl1.amr.corp.intel.com (HELO [10.254.71.222]) ([10.254.71.222])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Jun 2020 06:54:11 -0700
-Subject: Re: [GIT PULL] sound fixes for 5.8-rc1
-To:     Mark Brown <broonie@kernel.org>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Vinod Koul <vinod.koul@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <s5himfxet1c.wl-tiwai@suse.de>
- <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
- <CALAqxLWEfRJ_Jr0iDgmvqop5Etz5xve89Zy3OeUbnKUGtqjCqQ@mail.gmail.com>
- <20200612121946.GE5396@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7cd79261-6f8d-cad0-c65b-57570a40a6b6@linux.intel.com>
-Date:   Fri, 12 Jun 2020 08:54:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200612121946.GE5396@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726474AbgFLN4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 09:56:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=L2UPa91bTaGr2nGxt5
+        46epMlCxYbdwpTFHQ6idsU4S4=; b=DUtxQ+F39DdxT4/o5nwzw+dQRvWV6hXvsh
+        cT+dsbwpbNQIrxYtZhf+JsJu7IGssukccNGHHleJPkYGyQmcDBM2Ki6cKLuwhgmj
+        3BnWVewvWWhTvxJCDgX4EC9NL3hZe9qdxJRUAIio2uII9TsLxK1Yv4hVpxl291HM
+        4Ye2IkZNA=
+Received: from localhost.localdomain (unknown [111.202.190.28])
+        by smtp11 (Coremail) with SMTP id D8CowABnbn5xieNeLmwJGg--.23390S2;
+        Fri, 12 Jun 2020 21:56:02 +0800 (CST)
+From:   zzuedu2000@163.com
+To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        weifenghai <zzuedu2000@163.com>
+Subject: [PATCH] Fix code style same in one function
+Date:   Fri, 12 Jun 2020 21:54:59 +0800
+Message-Id: <20200612135459.28537-1-zzuedu2000@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: D8CowABnbn5xieNeLmwJGg--.23390S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruFW8JryrtFW5GrWfXFWfAFb_yoWxCrb_Z3
+        s3Xw1xKryIyw1qyrZ8ZwsaqaykKayrKrWv9r17trW7AF1UJrs8JwnxKFn8JFsruwn3Cr98
+        Ar93KF93tFsrWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjRVbtUUUUU==
+X-Originating-IP: [111.202.190.28]
+X-CM-SenderInfo: p22xvvbxsqiii6rwjhhfrp/1tbiJRJBQlUMYHoY5gAAsJ
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: weifenghai <zzuedu2000@163.com>
+
+One line similar code before in this function
+
+Signed-off-by: weifenghai <zzuedu2000@163.com>
+---
+ kernel/cgroup/cgroup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1ea181a58465..c3e6db6e44d8 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4352,8 +4352,7 @@ static struct css_set *css_task_iter_next_css_set(struct css_task_iter *it)
+ 	}
+ 
+ 	/* find the next cset */
+-	l = it->cset_pos;
+-	l = l->next;
++	l = it->cset_pos->next;
+ 	if (l == it->cset_head) {
+ 		it->cset_pos = NULL;
+ 		return NULL;
+-- 
+2.17.1
 
 
-On 6/12/20 7:19 AM, Mark Brown wrote:
-> On Thu, Jun 11, 2020 at 05:49:29PM -0700, John Stultz wrote:
->> On Thu, Jun 11, 2020 at 5:13 PM John Stultz <john.stultz@linaro.org> wrote:
-> 
->>>   I've bisected it down to the following commit from this pull req:
->>>    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b73287f0b0745961b14e5ebcce92cc8ed24d4d52
-> 
-> For the benefit of readers that's "ASoC: soc-pcm: dpcm: fix
-> playback/capture checks".
-> 
->> I don't know the backgroun again, but would something like the
->> following make sense?
->> https://git.linaro.org/people/john.stultz/android-dev.git/commit/?h=dev/db845c-mainline-WIP&id=7e49b248db77b5ed29b2aa278268e77650c75482
-> 
-> That's a small out of tree test patch which has no changelog so I'm not
-> entirely clear what the intent or motivation is but it looks like the
-> goal is to change so that we only warn when a link says it supports
-> playback/capture but some of the DAIs lack the capability instead of
-> returning an error.  I'm not sure I understand how that helps, it seems
-> like the link is still misconfigured and we still have a warning which
-> isn't great?  Surely the issue is that we've flagged the link as
-> supporting capture when it doesn't?
-
-Indeed the addition of stricter checks will expose cases where the links 
-are not well configured, probably for years. The patch "ASoC: soc-pcm: 
-dpcm: fix playback/capture checks" did not add those checks, only fixed 
-them for the multi-dai case.
-
-I think that those configuration errors are the problem and should be 
-fixed as a prerequisite to the removal of the duplication between 
-dpcm_playback/dpcm_capture/playback_only/capture_only. it may be painful 
-and generate noise for a while, but if we only throw a warning what are 
-the odds all those configuration errors will eventually be fixed?
-
-If we need more time for validation on all platforms, then maybe we can 
-first relax the check for 5.8-rc1 as suggested by John, but re-add the 
--EINVAL on -next to give a target of 5.9 with all configurations fixed?
