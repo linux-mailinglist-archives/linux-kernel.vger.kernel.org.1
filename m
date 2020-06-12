@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCE91F7BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10E81F7BDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgFLQxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 12:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgFLQxH (ORCPT
+        id S1726341AbgFLQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 12:57:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42586 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgFLQ5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:53:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985DAC03E96F;
-        Fri, 12 Jun 2020 09:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P/jNQXjNSM/A6oN+60RJrl9Lv/d/a/2jIE6Q5ifN8/s=; b=LKj+wOy3l57klhVmnW+yujCrgG
-        K7vkYi8Xm/4X3STZKa3XkUVc5AWgi7GO+GsOh+Bf1JE7dJHBKvlapqkZV0d9gYyCrh2J2Z4/kPTY9
-        eelN7KE71KCqEPJLY22K0lXk1Ybhak4ch2hFNUsnJOnAq0JnQ/5vGXDnAmn/SHUfGAH/r3rjIEoH+
-        GaaphLBJxhYFqpz+IeuImATeDu4sovDgngfnxkVC8r35iNWt+5x3sr+LWGuKxIjjCP9Qog63+PLHF
-        jIphBiN6QCX8C98YlF0kJECi8dCAaccSYeNUekLCIHGQG7AgjrszTRsgowpiiHyc8cPivjxu43f3L
-        XtfHf8Cw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jjmvG-0006Qb-09; Fri, 12 Jun 2020 16:52:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB7CB3003E4;
-        Fri, 12 Jun 2020 18:52:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9937E213DCC6A; Fri, 12 Jun 2020 18:52:51 +0200 (CEST)
-Date:   Fri, 12 Jun 2020 18:52:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [v2 PATCH] printk: Make linux/printk.h self-contained
-Message-ID: <20200612165251.GG2497@hirez.programming.kicks-ass.net>
-References: <20200611125144.GA2506@gondor.apana.org.au>
- <20200612043634.GA30181@gondor.apana.org.au>
- <20200612131405.GI4311@linux-b0ei>
+        Fri, 12 Jun 2020 12:57:40 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CGuuJu030516;
+        Fri, 12 Jun 2020 11:56:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591981016;
+        bh=OU3pn1t5FYea3bFqCtFWnP4GmmnGVMj/bcuK7sNhq10=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vGI28vVXGx+yv1vsG9v42c/WH5sZlY170secgk19y4iOCb9VMs095BEw/Hq1ZmC8x
+         YMpMZKxs1jDdFEJMazl1C2o/Ak7uiiCqa+LEs5dOcKXEuBkrJeZ+7CSiFm8JQCA6h0
+         Zhr71oyZ/rnm3IcRffZFU+osSZZTxcHk0sshD/y8=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CGutYk068326;
+        Fri, 12 Jun 2020 11:56:56 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Jun 2020 11:56:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Jun 2020 11:56:55 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CGutnF006600;
+        Fri, 12 Jun 2020 11:56:55 -0500
+Subject: Re: [PATCH v3 2/2] ASoC: tas2562: Update shutdown GPIO property
+To:     Mark Brown <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+        <robh@kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200612160603.2456-1-dmurphy@ti.com>
+ <20200612160603.2456-2-dmurphy@ti.com> <20200612160922.GL5396@sirena.org.uk>
+ <0e482167-71c2-a128-b8b4-a054557d30e9@ti.com>
+ <20200612162200.GM5396@sirena.org.uk>
+ <432c41fe-8afa-2ccb-8917-fd64f4895144@ti.com>
+ <20200612163009.GN5396@sirena.org.uk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <531b2af3-43b2-d753-ddd4-8dd68cae9a71@ti.com>
+Date:   Fri, 12 Jun 2020 11:56:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612131405.GI4311@linux-b0ei>
+In-Reply-To: <20200612163009.GN5396@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 03:14:05PM +0200, Petr Mladek wrote:
-> On Fri 2020-06-12 14:36:35, Herbert Xu wrote:
-> > As it stands if you include printk.h by itself it will fail to
-> > compile because it requires definitions from ratelimit.h.  However,
-> > simply including ratelimit.h from printk.h does not work due to
-> > inclusion loops involving sched.h and kernel.h.
-> > 
-> > This patch solves this by moving bits from ratelimit.h into a new
-> > header file which can then be included by printk.h without any
-> > worries about header loops.
-> > 
-> > The build bot then revealed some intriguing failures arising out
-> > of this patch.  On s390 there is an inclusion loop with asm/bug.h
-> > and linux/kernel.h that triggers a compile failure, because kernel.h
-> > will cause asm-generic/bug.h to be included before s390's own
-> > asm/bug.h has finished processing.  This has been fixed by not
-> > including kernel.h in arch/s390/include/asm/bug.h.
-> > 
-> > A related failure was seen on powerpc where asm/bug.h leads to
-> > the inclusion of linux/kernel.h via asm-generic/bug.h which then
-> > prematurely tries to use the very macros defined in asm/bug.h.
-> > The particular inclusion path which led to this involves lockdep.h.
-> > I have fixed this moving the type definitions lockdep.h into the
-> > new lockdep_types.h.
-> > 
-> > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> I am fine with the changes as long as the kernel test robot
-> does not complain ;-)
-> 
-> Acked-by: Petr Mladek <pmladek@suse.com>
-> 
-> Well, I wonder if PeterZ is fine with the lockdep part. It might make
-> sense to split it into separate patch as a prerequisite.
+Mark
 
-They look fine, but yes, I think it makes sense to split that out.
+On 6/12/20 11:30 AM, Mark Brown wrote:
+> On Fri, Jun 12, 2020 at 11:27:04AM -0500, Dan Murphy wrote:
+>
+>> Well should we then just revert back to the non-standard name and just fix
+>> up the code?
+>> Or should we support both properties?
+> Either option is fine for me, supporting both is a little nicer.
+
+Sounds good I will mark the incorrect property as deprecated: true
+
+Dan
+
