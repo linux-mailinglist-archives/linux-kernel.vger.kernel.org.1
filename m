@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDB61F7311
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 06:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7821F7314
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 06:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgFLEhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 00:37:43 -0400
-Received: from mga07.intel.com ([134.134.136.100]:65452 "EHLO mga07.intel.com"
+        id S1726547AbgFLEhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 00:37:51 -0400
+Received: from mga17.intel.com ([192.55.52.151]:10209 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgFLEhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 00:37:41 -0400
-IronPort-SDR: 4DfNwFhLA1qW4HQRDgzzYToV0vd0bpoV6onI8hzv+aIuGBXm6fM+lP3jAg7iMCRk6WrOhVYhGX
- LKjMSiaw4SUQ==
+        id S1726499AbgFLEhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 00:37:42 -0400
+IronPort-SDR: JnDQn4dKAS7leuAIxLCkmxNTrPWmwPl35AcFcwU8sK1bgL3ekCgYSpf1ZrSxozMCTtYPdTlgRw
+ 08lnaVoJxKCA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 21:37:40 -0700
-IronPort-SDR: tmWgcBz5T5neyc4zyDXCoe2aKU0gifPCchazESvPmh7pxaR6KcvaWVSM8QJuxaeiVJK5HkTJUJ
- EONhliFDQBpQ==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 21:37:41 -0700
+IronPort-SDR: YuYqQAMD1opv6R7TFgoJbyzRaLJJfg9ndXVftHkg4PiHs8e4LmvahfGRRiBRgEMKI3npIeEn+L
+ vJP9M8+BIC1Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
-   d="scan'208";a="259792723"
+   d="scan'208";a="350421417"
 Received: from lkp-server01.sh.intel.com (HELO b6eec31c25be) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Jun 2020 21:37:39 -0700
+  by orsmga001.jf.intel.com with ESMTP; 11 Jun 2020 21:37:39 -0700
 Received: from kbuild by b6eec31c25be with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jjbRi-0000V8-TT; Fri, 12 Jun 2020 04:37:38 +0000
-Date:   Fri, 12 Jun 2020 12:36:51 +0800
+        id 1jjbRj-0000VE-3S; Fri, 12 Jun 2020 04:37:39 +0000
+Date:   Fri, 12 Jun 2020 12:36:54 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/kcsan] BUILD SUCCESS
- 1f44328ea24c9de368a3cfe5cc0e110b949afb2e
-Message-ID: <5ee30663.pnjVdhcvNLatfGUL%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ 8a7fd399f1a0bcf4943245dc87d75964546596a8
+Message-ID: <5ee30666.sAs6r1IHPtM+ILBd%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,10 +43,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/kcsan
-branch HEAD: 1f44328ea24c9de368a3cfe5cc0e110b949afb2e  compiler_types.h, kasan: Use __SANITIZE_ADDRESS__ instead of CONFIG_KASAN to decide inlining
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 8a7fd399f1a0bcf4943245dc87d75964546596a8  Merge branch 'ras/core' into auto-latest
 
-elapsed time: 628m
+elapsed time: 625m
 
 configs tested: 96
 configs skipped: 1
@@ -68,12 +68,6 @@ alpha                            alldefconfig
 mips                     loongson1b_defconfig
 alpha                               defconfig
 mips                       bmips_be_defconfig
-c6x                        evmc6678_defconfig
-powerpc                          g5_defconfig
-arc                            hsdk_defconfig
-arm                          tango4_defconfig
-mips                           ip32_defconfig
-sh                        edosk7705_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -113,11 +107,17 @@ parisc                            allnoconfig
 parisc                              defconfig
 parisc                           allyesconfig
 parisc                           allmodconfig
+powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-powerpc                             defconfig
+x86_64               randconfig-a015-20200611
+x86_64               randconfig-a011-20200611
+x86_64               randconfig-a016-20200611
+x86_64               randconfig-a012-20200611
+x86_64               randconfig-a014-20200611
+x86_64               randconfig-a013-20200611
 i386                 randconfig-a015-20200612
 i386                 randconfig-a011-20200612
 i386                 randconfig-a014-20200612
@@ -140,12 +140,12 @@ sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                               allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allyesconfig
 x86_64                                   rhel
-x86_64                         rhel-7.2-clear
 x86_64                                    lkp
 x86_64                              fedora-25
+x86_64                         rhel-7.2-clear
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
 x86_64                               rhel-8.3
