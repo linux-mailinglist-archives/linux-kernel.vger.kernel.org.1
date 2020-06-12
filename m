@@ -2,203 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CB01F7ACA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106621F7AD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgFLPYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        id S1726586AbgFLPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgFLPYK (ORCPT
+        with ESMTP id S1726085AbgFLPYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:24:10 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8665C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:24:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n24so11474030lji.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:24:09 -0700 (PDT)
+        Fri, 12 Jun 2020 11:24:55 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B296BC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:24:54 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x13so10150797wrv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:24:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bAh8721ff0zxVTQ7hlR9HkFMJiyxASog15I9PWqvhq8=;
-        b=kEIWqEi1rhw0p7GStlsrxpf8GLksMlGZUeBltojOpr/EYUkGZ2PWxT+tLTSlG0K2bW
-         Y5FdKykMFpqbZ5TDq2o/w6+VdCc1LNTjBP1V7ksVhGr0uM/wRmaIDPZIbcDhN3PnqBtz
-         1cMjOEsy7TH1ONqkVOB9yP4Lh0LbN2MkmB85Ywq7RPp7HlaLc7LkB6lsZ6uxD/lbbHsb
-         KaYdcIhgyjFc0Hw46BuykfJq7qWirHzvE66ad/+67/iL1Lv8+8SX8pL4k7T4MdCQpVte
-         UN0jVk03qaVzEbRNfjw/59vnX3nqTU0VKHpMAgFY2rgvLfcT9616UDuh1gezZyy/O9Dj
-         +/0w==
+         :cc;
+        bh=fdrA1iXEBobTaCltTFCacW9YJrABdUKyjxuRObbJj7Q=;
+        b=fopozOD8Q9Z316h4yVtPKbKc4/uZH8jo/Yv8Ed+vhZ2zQeOnNIBp9uuZ3U7aHsCENZ
+         Hk/OB/Jw+k4+xKCd61Eybax+nVK94EPdXXonB+vQHqFF1Q4BOHDnZSUL1MdaBRxPxr+Y
+         GqWlriaM/FTUdVrsgIZnkaCQhATCDCZ7RvqsmAxaz+uNfcewFS6su67gOj3XcHr6BDkl
+         o5okfVLgoB+TN7NAdJwRNQsiE3XNI3NVs91y+Gb/BwjP2eUdYIP+qYTFmWWMmPosv5+A
+         YHx94AkQtK5nH45f79IQw+yy+vjGFBKc8SeSQIkgx5MqP3dMhtbi98OFtObjwTQqTwwj
+         4Nag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bAh8721ff0zxVTQ7hlR9HkFMJiyxASog15I9PWqvhq8=;
-        b=Zwne6cG044OI6ZnCyWU7NtZOP+Q8tbIYqplqPlZTy2zVkSdFJWLriFwAvjChYaxXVW
-         NwvJGvX0HbdcgVusx7PJeCeTAZBekaJTmapQYRfQyygOjmlqrh+zNK7Dhu4jw8/7OO0g
-         0EKHzxrAQ9Su70QyY4Z+iMVkOpa1IOukFLZOMigvPWsG17hSnlHQh6OCQfD+SNW8URq9
-         mmokfT0Dhq3upcTDK8C6V9rH1FZQhOWvz8dNyObANo2Kxb6O0berNpxMQ1e7d8Rk1ctn
-         BhdQz5YmXLdzxWFeIDk3RoBnTiSUIQQAJbH7f5NTYldmq4UKMWO0pt3Fu64BBkY5iEdP
-         6+nw==
-X-Gm-Message-State: AOAM532r9rSvDZgoQ4+RVwYQKF+jw6rEkkB9ak/DHsnDX9CBk6nmJzks
-        +IQ0Nsz4WvY1cenKjkhg3R2KC2plV7KJkXrdHFDzpw==
-X-Google-Smtp-Source: ABdhPJw+5sHsTXI/Olks1ieek5VgXIJV7Am3PhqA1N6TAqIrjwg8xQ9eUZxkepjywTI76vPbAleoKKbszkxWlli22ms=
-X-Received: by 2002:a2e:3512:: with SMTP id z18mr7149877ljz.423.1591975448109;
- Fri, 12 Jun 2020 08:24:08 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=fdrA1iXEBobTaCltTFCacW9YJrABdUKyjxuRObbJj7Q=;
+        b=LQJF19Yhr+TSBVv4AH4x+ngkpctR0A0Y0u7mjl6wIMbphdn7jzPwuV26MlwitRDkmu
+         jioONGWHDtxIyErhccJ+0gvqgnrnnzFbSw3hnfBUW5FY/Oa2wRmzUGU+NELYPPC8cIMC
+         i76KWSQW6D3dvjB/yibOG963z4SNb+o3cdALHzePEVvtW6VymLRDm96KdFmuW30uWms1
+         IKIdi5SKKFxkx0aJKC7Q6/AP2dPb8v0pQnqDDRpzRUZ5uq6guJRaAjp1t7Bta9WXMx5X
+         ty6jOeyu1c8njQtiRiXd4JXS/M54GdWKYxRAgOqre6hw12B6eUJaYdhuv5xsqfeuWKnk
+         JXeA==
+X-Gm-Message-State: AOAM533C6iH4Bd0zD2pEG/NDBzEtY60ATunVWRrsBSnxW4ztEyR+ANln
+        U9D2BqIqxdOG33uZp/XAiL6JBEF7gXQQw22JtMc=
+X-Google-Smtp-Source: ABdhPJw/HQbjV25QRzQyt5NHirKIUr0sdJ8NaQMgtbOdZDHffLIShgu8/5/AFDXmgcgg3APrFmdNsuef1af5bjqGHh8=
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr16355895wrp.419.1591975493465;
+ Fri, 12 Jun 2020 08:24:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200319023819.GO11705@shao2-debian> <f5d91003-800c-5439-3159-67b5f7b6b744@linux.intel.com>
- <20200612110616.20264-1-hdanton@sina.com>
-In-Reply-To: <20200612110616.20264-1-hdanton@sina.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 12 Jun 2020 17:23:56 +0200
-Message-ID: <CAKfTPtAv8X7TsYz7OrG8qYHCGx3XUvBKKBMHX1mKNy26ctytvQ@mail.gmail.com>
-Subject: Re: [LKP] [sched/fair] 070f5e860e: reaim.jobs_per_min -10.5% regression
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Phil Auld <pauld@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200612122825.10450-1-bernard@vivo.com>
+In-Reply-To: <20200612122825.10450-1-bernard@vivo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 12 Jun 2020 11:24:42 -0400
+Message-ID: <CADnq5_M2V3g9AA2HpL_XEbRvLW=BWUbiE=RpZa2YKnTX24Zqkg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: remove unnecessary conversion to bool
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Jun 2020 at 13:06, Hillf Danton <hdanton@sina.com> wrote:
+On Fri, Jun 12, 2020 at 9:22 AM Bernard Zhao <bernard@vivo.com> wrote:
 >
+> In function is_support_sw_smu, remove unnecessary conversion
+> to bool return, this change is to make the code a bit readable.
 >
-> On Fri, 12 Jun 2020 14:36:49 +0800 Xing Zhengjun wrote:
-> > Hi Vincent,
-> >
-> >    We test the regression still existed in v5.7, do you have time to
-> > look at it? Thanks.
-> >
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup=
-/test/cpufreq_governor/ucode:
-> >
-> > lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s=
-/100%/test/five_sec/performance/0x21
-> >
-> > commit:
-> >    9f68395333ad7f5bfe2f83473fed363d4229f11c
-> >    070f5e860ee2bf588c99ef7b4c202451faa48236
-> >    v5.7
-> >
-> > 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.=
-7
-> > ---------------- --------------------------- --------------------------=
--
-> >           %stddev     %change         %stddev     %change         %stdd=
-ev
-> >               \          |                \          |                \
-> >        0.69           -10.3%       0.62            -9.1%       0.62    =
- reaim.child_systime
-> >        0.62            -1.0%       0.61            +0.5%       0.62    =
- reaim.child_utime
-> >       66870           -10.0%      60187            -7.6%      61787    =
- reaim.jobs_per_min
-> >       16717           -10.0%      15046            -7.6%      15446    =
- reaim.jobs_per_min_child
-> >       97.84            -1.1%      96.75            -0.4%      97.43    =
- reaim.jti
-> >       72000           -10.8%      64216            -8.3%      66000    =
- reaim.max_jobs_per_min
-> >        0.36           +10.6%       0.40            +7.8%       0.39    =
- reaim.parent_time
-> >        1.58 =C4=85  2%     +71.0%       2.70 =C4=85  2%     +26.9%     =
-  2.01 =C4=85  2%  reaim.std_dev_percent
-> >        0.00 =C4=85  5%    +110.4%       0.01 =C4=85  3%     +48.8%     =
-  0.01 =C4=85  7%  reaim.std_dev_time
-> >       50800            -2.4%      49600            -1.6%      50000    =
- reaim.workload
-> >
-> >
-> > On 3/19/2020 10:38 AM, kernel test robot wrote:
-> > > Greeting,
-> > >
-> > > FYI, we noticed a -10.5% regression of reaim.jobs_per_min due to comm=
-it:
-> > >
-> > >
-> > > commit: 070f5e860ee2bf588c99ef7b4c202451faa48236 ("sched/fair: Take i=
-nto account runnable_avg to classify group")
-> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git mast=
-er
-> > >
-> > > in testcase: reaim
-> > > on test machine: 4 threads Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz wi=
-th 4G memory
-> > > with following parameters:
-> > >
-> > >     runtime: 300s
-> > >     nr_task: 100%
-> > >     test: five_sec
-> > >     cpufreq_governor: performance
-> > >     ucode: 0x21
-> > >
-> > > test-description: REAIM is an updated and improved version of AIM 7 b=
-enchmark.
-> > > test-url: https://sourceforge.net/projects/re-aim-7/
->
-> Hi Xing
->
-> After 070f5e860ee2 let's treat runnable the same way as util on
-> comparing capacity in the assumption that
-> (125 + 110 + 117) / 3 =3D 117 accounts for 105 within margin of error
-> before any other proposal with some more reasons.
->
-> thanks
-> Hillf
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8215,12 +8215,8 @@ group_has_capacity(unsigned int imbalanc
->         if (sgs->sum_nr_running < sgs->group_weight)
->                 return true;
->
-> -       if ((sgs->group_capacity * imbalance_pct) <
-> -                       (sgs->group_runnable * 100))
-> -               return false;
-> -
-> -       if ((sgs->group_capacity * 100) >
-> -                       (sgs->group_util * imbalance_pct))
-> +       if ((sgs->group_capacity * 100) > (sgs->group_util * imbalance_pc=
-t) &&
-> +           (sgs->group_capacity * 100) > (sgs->group_runnable * imbalanc=
-e_pct))
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-This change amplifies what the original patch is doing by reducing the
-threshold that move cases from "has spare capacity" to "is overloaded"
-state
+Vega20 support was removed from this code path so the patch is no
+longer relevant.
 
->                 return true;
+Thanks,
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/powerplay/amdgpu_smu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->         return false;
-> @@ -8240,12 +8236,8 @@ group_is_overloaded(unsigned int imbalan
->         if (sgs->sum_nr_running <=3D sgs->group_weight)
->                 return false;
+> diff --git a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
+> index 8c684a6e0156..3e1cfb010378 100644
+> --- a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
+> +++ b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
+> @@ -568,7 +568,7 @@ int smu_update_table(struct smu_context *smu, enum smu_table_id table_index, int
+>  bool is_support_sw_smu(struct amdgpu_device *adev)
+>  {
+>         if (adev->asic_type == CHIP_VEGA20)
+> -               return (amdgpu_dpm == 2) ? true : false;
+> +               return (amdgpu_dpm == 2);
+>         else if (adev->asic_type >= CHIP_ARCTURUS) {
+>               if (amdgpu_sriov_is_pp_one_vf(adev) || !amdgpu_sriov_vf(adev))
+>                         return true;
+> --
+> 2.17.1
 >
-> -       if ((sgs->group_capacity * 100) <
-> -                       (sgs->group_util * imbalance_pct))
-> -               return true;
-> -
-> -       if ((sgs->group_capacity * imbalance_pct) <
-> -                       (sgs->group_runnable * 100))
-> +       if ((sgs->group_capacity * 100) < (sgs->group_util * imbalance_pc=
-t) ||
-> +           (sgs->group_capacity * 100) < (sgs->group_runnable * imbalanc=
-e_pct))
->                 return true;
->
->         return false;
->
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
