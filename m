@@ -2,97 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5122D1F7E9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFB21F7EA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgFLV7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 17:59:04 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:32930 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgFLV7D (ORCPT
+        id S1726448AbgFLV7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 17:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgFLV73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 17:59:03 -0400
-Received: by mail-io1-f65.google.com with SMTP id i25so11887962iog.0;
-        Fri, 12 Jun 2020 14:59:02 -0700 (PDT)
+        Fri, 12 Jun 2020 17:59:29 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7689BC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:59:28 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id r11so6170041vsj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d7ITOnMUL2jWtuh6dUhbbdg5TKO2HZFhIcQb3JSY0gM=;
+        b=nwwYt3CjY63+zN9/TQ443ZnVpVTciypoT5lckDpVhGYhjjaRwaE4WxTDYxkKHVEEpd
+         Ll6tw9x0q1COlij/j77TXOHgCFDWB70rZtlg7n3Wk11hCYG0X+2MV9vhGaxZLVw+dNjL
+         mGFOKwh24JcvkbS694ZQQuPntZxSSKDTBGFmc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IcwIzuXXIINmTNZ5dabq3OUq+ijaCK5xyZMr6C5bYNU=;
-        b=Fm1RD9ptNDKEY03zNasGKIXrdZ0xMxsF66dj23XjDwJ5v+9zshpYrhNIlrWwFCt8s5
-         DAOBKBNH0/G3BULTEM3ewbch5WXONU2hHprLN1+sPYPZohsOygefYZ0cPcfYz/ZiaMag
-         tb1Be+PNw9fjtN5LqWAzOgGGjSqp0SVA0swsiQ5I739mNMX2yM60BcYD+iHDur6r9ek1
-         zDVbjSKLFICl7/rjnioXRIdq9L4m7Bhl9KLd/h1kH8l+0HSD9fehkTwy1MBpWCgrO3nW
-         tU+fp6OYZjAxjp168AOr71OgeKORu+pcRDrCDTdlcWFhXdWHNX63L8EtFCIcLWLIEdIZ
-         xYRg==
-X-Gm-Message-State: AOAM532TMqV6tY0ophcy6mmXGqeqsgseRlaRSYRGn7nQkkOHgtAU/zsw
-        lv0GxvkOGA95Z2YbRl985A==
-X-Google-Smtp-Source: ABdhPJzJbmuNyKxUznuNFYomkX61jS1RECoO+1RR1nZWWD5CDCxryf1kJOvGG091Xx5OpgwCRBLhng==
-X-Received: by 2002:a6b:9355:: with SMTP id v82mr14853058iod.92.1591999141862;
-        Fri, 12 Jun 2020 14:59:01 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id w21sm3819223ioa.48.2020.06.12.14.59.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 14:59:01 -0700 (PDT)
-Received: (nullmailer pid 3887135 invoked by uid 1000);
-        Fri, 12 Jun 2020 21:58:59 -0000
-Date:   Fri, 12 Jun 2020 15:58:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ravi Kumar Bokka <rbokka@codeaurora.org>
-Cc:     mkurumel@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        linux-kernel@vger.kernel.org, sparate@codeaurora.org,
-        devicetree@vger.kernel.org, dhavalp@codeaurora.org,
-        mturney@codeaurora.org, Rob Herring <robh+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        rnayak@codeaurora.org, c_rbokka@codeaurora.org
-Subject: Re: [RFC v2 1/3] dt-bindings: nvmem: Add devicetree bindings for
- qfprom-efuse
-Message-ID: <20200612215859.GA3886706@bogus>
-References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org>
- <1591868882-16553-2-git-send-email-rbokka@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d7ITOnMUL2jWtuh6dUhbbdg5TKO2HZFhIcQb3JSY0gM=;
+        b=AxzFE+p6QB+Fts0Bm/33Zq+o7UnYJ4k4d6LW9ZZHvJhAa4rK8kWfwsg8iJIH0cLqYl
+         6UmGw5h/O1EUL6SULY+OXIimrx0CMh4it9CCI563xbnENpKIAPqKoAYZ7mSYnDx0wC3i
+         oPHh5mAPHHZ73SkhM3mRrQYy67obxRu0/r1yaW+RDXpLoXWwizDeFdBvzf05QgIfqPPn
+         OjgxqDNiFI4rPr2kJZ1bQ71lMtD0A8Nabw4B3JYT27SpCmUQJkPQ++OtEFvgTSL3pygI
+         w8g/Z/Bisa/9cwT3n3cxxlfiKWgTt/YlqN6KqNgBxGNlq5XZE2DYKKjmuWlW6GLvx3tE
+         +YRg==
+X-Gm-Message-State: AOAM533XYwLJ8OPawtJibFzbuXMkFit2WVN2gk5kx+PoSjX5SWAPa4SG
+        7Xn2NzoXJC1NiMGFoUaLuddoruNws9A=
+X-Google-Smtp-Source: ABdhPJzPvVqomvy9WmTWgcR3fJhZ3QuTOQ80W8pvCiRdoXk0eAZWxSzSwb8pyIma/6b5vMxQX/WIGQ==
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr12191530vsr.158.1591999166759;
+        Fri, 12 Jun 2020 14:59:26 -0700 (PDT)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
+        by smtp.gmail.com with ESMTPSA id q76sm1216633vkb.36.2020.06.12.14.59.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jun 2020 14:59:26 -0700 (PDT)
+Received: by mail-vs1-f54.google.com with SMTP id r11so6170016vsj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:59:25 -0700 (PDT)
+X-Received: by 2002:a67:1703:: with SMTP id 3mr13000459vsx.169.1591999165480;
+ Fri, 12 Jun 2020 14:59:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org> <1591868882-16553-2-git-send-email-rbokka@codeaurora.org>
 In-Reply-To: <1591868882-16553-2-git-send-email-rbokka@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 12 Jun 2020 14:59:14 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com>
+Message-ID: <CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com>
+Subject: Re: [RFC v2 1/3] dt-bindings: nvmem: Add devicetree bindings for qfprom-efuse
+To:     Ravi Kumar Bokka <rbokka@codeaurora.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        dhavalp@codeaurora.org, mturney@codeaurora.org,
+        sparate@codeaurora.org, c_rbokka@codeaurora.org,
+        mkurumel@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Jun 2020 15:18:00 +0530, Ravi Kumar Bokka wrote:
+Hi,
+
+On Thu, Jun 11, 2020 at 2:49 AM Ravi Kumar Bokka <rbokka@codeaurora.org> wrote:
+>
 > This patch adds dt-bindings document for qfprom-efuse controller.
-> 
+>
 > Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
 > ---
 >  .../devicetree/bindings/nvmem/qfprom.yaml          | 52 ++++++++++++++++++++++
 >  1 file changed, 52 insertions(+)
+
+Overall comment: I reviewed your v1 series and so I'm obviously
+interested in your series.  Please CC me on future versions.
+
+I would also note that, since this is relevant to Qualcomm SoCs that
+you probably should be CCing "linux-arm-msm@vger.kernel.org" on your
+series.
+
+
 >  create mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.yaml
-> 
+>
+> diff --git a/Documentation/devicetree/bindings/nvmem/qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qfprom.yaml
+> new file mode 100644
+> index 0000000..7c8fc31
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/qfprom.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/qfprom.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies Inc, QFPROM Efuse bindings
+> +
+> +maintainers:
+> +  - Ravi Kumar Bokka <rbokka@codeaurora.org>
+> +
+> +allOf:
+> +  - $ref: "nvmem.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qfprom
+
+As per discussion in patch #1, I believe SoC compatible should be here
+too in case it is ever needed.  This is standard practice for dts
+files for IP blocks embedded in an SoC.  AKA, this should be:
+
+    items:
+      - enum:
+          - qcom,apq8064-qfprom
+          - qcom,apq8084-qfprom
+          - qcom,msm8974-qfprom
+          - qcom,msm8916-qfprom
+          - qcom,msm8996-qfprom
+          - qcom,msm8998-qfprom
+          - qcom,qcs404-qfprom
+          - qcom,sc7180-qfprom
+          - qcom,sdm845-qfprom
+      - const: qcom,qfprom
+
+NOTE: old SoCs won't have both of these and thus they will get flagged
+with "dtbs_check", but I believe that's fine (Rob can correct me if
+I'm wrong).  The code should still work OK if the SoC isn't there but
+it would be good to fix old dts files to have the SoC specific string
+too.
 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> +
+> +  reg:
+> +    maxItems: 3
 
-Documentation/devicetree/bindings/nvmem/qfprom.yaml:  while scanning a block scalar
-  in "<unicode string>", line 31, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 35, column 1
-Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/nvmem/qfprom.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/nvmem/qfprom.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/qfprom.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/nvmem/qfprom.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/qfprom.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/nvmem/qfprom.yaml
-Makefile:1300: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+Please address feedback feedback on v1.  If you disagree with my
+feedback it's OK to say so (I make no claims of being always right),
+but silently ignoring my feedback and sending the next version doesn't
+make me feel like it's a good use of my time to keep reviewing your
+series.  Specifically I suggested that you actually add descriptions
+rather than just putting "maxItems: 3".
+
+With all that has been discussed, I think the current best thing to
+put there is:
+
+    # If the QFPROM is read-only OS image then only the corrected region
+    # needs to be provided.  If the QFPROM is writable then all 3 regions
+    # must be provided.
+    oneOf:
+      - items:
+          - description: The start of the corrected region.
+      - items:
+          - description: The start of the raw region.
+          - description: The start of the config region.
+          - description: The start of the corrected region.
+
+> +
+
+You missed a bunch of things that you should document:
+
+  # Clocks must be provided if QFPROM is writable from the OS image.
+  clocks:
+    maxItems: 1
+  clock-names:
+    const: sec
+
+  # Supply reference must be provided if QFPROM is writable from the OS image.
+  vcc-supply:
+    description: Our power supply.
+
+  # Needed if any child nodes are present.
+  "#address-cells":
+    const: 1
+  "#size-cells":
+    const: 1
+
+> +required:
+> +   - compatible
+> +   - reg
+> +   - reg-names
+
+reg-names is discouraged.  Please remove.  I always point people here
+as a reference:
+
+https://lore.kernel.org/r/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
+
+You can just figure out whether there are 3 register fields or 1 register field.
 
 
-See https://patchwork.ozlabs.org/patch/1307399
+> +   - clocks
+> +   - clock-names
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+You can't retroactively make things required.  In read-only mode I
+believe we don't require clocks/clock-names.  Presumably the clock is
+only needed if we're writing?
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-Please check and re-submit.
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
+> +
+> +    qfprom@780000 {
+> +       compatible = "qcom,qfprom";
 
+As pointed out by Rob H in v1, you have a whole bunch of tabs in here
+that "dt_binding_check" yells about.  Please fix and confirm that you
+ran "dt_binding_check" on your bindings and they passed with no
+errors.  This is another case where someone took the time to respond
+to your v1 but you didn't address their comments in sending v2.
+
+
+> +       reg = <0 0x00780000 0 0x7a0>,
+> +             <0 0x00782000 0 0x100>,
+> +             <0 0x00784000 0 0x8ff>;
+> +       reg-names = "raw", "conf", "corrected";
+
+You are missing #address-cells and #size-cells, which are required
+because you have a sub-node.
+
+
+> +       clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
+> +       clock-names = "secclk";
+
+As pointed out in v1, people don't like clock names to end in "clk".
+Just call this "sec".
+
+
+> +       qusb2p_hstx_trim: hstx-trim-primary@25b {
+> +               reg = <0x25b 0x1>;
+> +               bits = <1 3>;
+> +       };
+> +    };
+> +
+> +    &qfprom {
+> +        vcc-supply = <&vreg_l11a_1p8>;
+> +    };
+
+Just fold the vcc-supply into the above node.  Note that your current
+example refers to a phandle that doesn't exist.
+
+
+> +
+> --
+> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, hosted by the Linux Foundation.
+
+For your edification, I have placed a patch that fixes all my own
+review feedback (and passes dt_binding_check) at:
+
+https://crrev.com/c/2243853
+
+Please either fold this into your next patch or provide comments about
+why you aren't taking one of my suggestions.
+
+-Doug
