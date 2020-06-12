@@ -2,167 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77E71F79EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623BC1F79F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgFLOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:41:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38299 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgFLOlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:41:25 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jjkrw-0002S8-Ok; Fri, 12 Jun 2020 14:41:20 +0000
-Date:   Fri, 12 Jun 2020 16:41:20 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Tan, Ley Foon" <ley.foon.tan@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH] nios2: enable HAVE_COPY_THREAD_TLS, switch to
- kernel_clone_args
-Message-ID: <20200612144120.tzjs675xjsu4wkkf@wittgenstein>
-References: <20200524100606.1378815-1-christian.brauner@ubuntu.com>
- <BY5PR11MB38931405FE73FF989B773B77CC810@BY5PR11MB3893.namprd11.prod.outlook.com>
+        id S1726367AbgFLOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgFLOqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 10:46:50 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B33EF20835;
+        Fri, 12 Jun 2020 14:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591973209;
+        bh=e2wrmF2r0OcaNhlokIiC2fi/L8XvsTF2HTqhhKNFUqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o3U3jWfswzk6g0JGzBz1qQHIXmOl6/sYnzhA34swZY6Hh5DOUlVgABdri4fTni+iL
+         HRuL06R0JHrtIKJKJdyCKk82Swo2LsnhsFCbNyjLeHiAarMuiMzPajQ5/hV6Jkhdqb
+         LAu8KwyH1ngCFHOMGzkd9OVV8m3CPqUOjepFzgUM=
+Date:   Fri, 12 Jun 2020 15:46:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     John Stultz <john.stultz@linaro.org>, Takashi Iwai <tiwai@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [GIT PULL] sound fixes for 5.8-rc1
+Message-ID: <20200612144646.GJ5396@sirena.org.uk>
+References: <s5himfxet1c.wl-tiwai@suse.de>
+ <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
+ <CALAqxLWEfRJ_Jr0iDgmvqop5Etz5xve89Zy3OeUbnKUGtqjCqQ@mail.gmail.com>
+ <20200612121946.GE5396@sirena.org.uk>
+ <7cd79261-6f8d-cad0-c65b-57570a40a6b6@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MzdA25v054BPvyZa"
 Content-Disposition: inline
-In-Reply-To: <BY5PR11MB38931405FE73FF989B773B77CC810@BY5PR11MB3893.namprd11.prod.outlook.com>
+In-Reply-To: <7cd79261-6f8d-cad0-c65b-57570a40a6b6@linux.intel.com>
+X-Cookie: As seen on TV.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 06:20:48AM +0000, Tan, Ley Foon wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Christian Brauner <christian.brauner@ubuntu.com>
-> > Sent: Sunday, May 24, 2020 6:06 PM
-> > To: Tan, Ley Foon <ley.foon.tan@intel.com>; Arnd Bergmann
-> > <arnd@arndb.de>
-> > Cc: linux-kernel@vger.kernel.org; Thomas Gleixner <tglx@linutronix.de>;
-> > Sebastian Andrzej Siewior <bigeasy@linutronix.de>; Christian Brauner
-> > <christian.brauner@ubuntu.com>
-> > Subject: [PATCH] nios2: enable HAVE_COPY_THREAD_TLS, switch to
-> > kernel_clone_args
-> > 
-> > This is part of a larger series that aims at getting rid of the
-> > copy_thread()/copy_thread_tls() split that makes the process creation
-> > codepaths in the kernel more convoluted and error-prone than they need to
-> > be.
-> > I'm converting all the remaining arches that haven't yet switched and am
-> > collecting individual acks. Once I have them, I'll send the whole series
-> > removing the copy_thread()/copy_thread_tls() split, the
-> > HAVE_COPY_THREAD_TLS define and the legacy do_fork() helper. The only
-> > kernel-wide process creation entry point for anything not going directly
-> > through the syscall path will then be based on struct kernel_clone_args.
-> > No more danger of weird process creation abi quirks between architectures
-> > hopefully, and easier to maintain overall.
-> > It also unblocks implementing clone3() on architectures not support
-> > copy_thread_tls(). Any architecture that wants to implement clone3() will
-> > need to select HAVE_COPY_THREAD_TLS and thus need to implement
-> > copy_thread_tls(). So both goals are connected but independently beneficial.
-> > 
-> > HAVE_COPY_THREAD_TLS means that a given architecture supports
-> > CLONE_SETTLS and not setting it should usually mean that the architectures
-> > doesn't implement it but that's not how things are. In fact all architectures
-> > support CLONE_TLS it's just that they don't follow the calling convention that
-> > HAVE_COPY_THREAD_TLS implies. That means all architectures can be
-> > switched over to select HAVE_COPY_THREAD_TLS. Once that is done we can
-> > remove that macro (yay, less code), the unnecessary do_fork() export in
-> > kernel/fork.c, and also rename copy_thread_tls() back to copy_thread(). At
-> > this point
-> > copy_thread() becomes the main architecture specific part of process
-> > creation but it will be the same layout and calling convention for all
-> > architectures. (Once that is done we can probably cleanup each
-> > copy_thread() function even more but that's for the future.)
-> > 
-> > Since nios2 does support CLONE_SETTLS there's no reason to not select
-> > HAVE_COPY_THREAD_TLS. This brings us one step closer to getting rid of the
-> > copy_thread()/copy_thread_tls() split we still have and ultimately the
-> > HAVE_COPY_THREAD_TLS define in general. A lot of architectures have
-> > already converted and nios2 is one of the few hat haven't yet. This also
-> > unblocks implementing the clone3() syscall on nios2. Once that is done we
-> > can get of another ARCH_WANTS_* macro.
-> > 
-> > Once Any architecture that supports HAVE_COPY_THREAD_TLS cannot call
-> > the
-> > do_fork() helper anymore. This is fine and intended since it should be
-> > removed in favor of the new, cleaner _do_fork() calling convention based on
-> > struct kernel_clone_args. In fact, most architectures have already switched.
-> > With this patch, nios2 joins the other arches which can't use the fork(),
-> > vfork(), clone(), clone3() syscalls directly and who follow the new process
-> > creation calling convention that is based on struct kernel_clone_args which
-> > we introduced a while back. This means less custom assembly in the
-> > architectures entry path to set up the registers before calling into the process
-> > creation helper and it is easier to to support new features without having to
-> > adapt calling conventions. It also unifies all process creation paths between
-> > fork(), vfork(), clone(), and clone3(). (We can't fix the ABI nightmare that
-> > legacy
-> > clone() is but we can prevent stuff like this happening in the future.)
-> > 
-> > For some more context, please see:
-> > commit 606e9ad20094f6d500166881d301f31a51bc8aa7
-> > Merge: ac61145a725a 457677c70c76
-> > Author: Linus Torvalds <torvalds@linux-foundation.org>
-> > Date:   Sat Jan 11 15:33:48 2020 -0800
-> > 
-> >     Merge tag 'clone3-tls-v5.5-rc6' of
-> > git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux
-> > 
-> >     Pull thread fixes from Christian Brauner:
-> >      "This contains a series of patches to fix CLONE_SETTLS when used with
-> >       clone3().
-> > 
-> >       The clone3() syscall passes the tls argument through struct clone_args
-> >       instead of a register. This means, all architectures that do not
-> >       implement copy_thread_tls() but still support CLONE_SETTLS via
-> >       copy_thread() expecting the tls to be located in a register argument
-> >       based on clone() are currently unfortunately broken. Their tls value
-> >       will be garbage.
-> > 
-> >       The patch series fixes this on all architectures that currently define
-> >       __ARCH_WANT_SYS_CLONE3. It also adds a compile-time check to
-> > ensure
-> >       that any architecture that enables clone3() in the future is forced to
-> >       also implement copy_thread_tls().
-> > 
-> >       My ultimate goal is to get rid of the copy_thread()/copy_thread_tls()
-> >       split and just have copy_thread_tls() at some point in the not too
-> >       distant future (Maybe even renaming copy_thread_tls() back to simply
-> >       copy_thread() once the old function is ripped from all arches). This
-> >       is dependent now on all arches supporting clone3().
-> > 
-> >       While all relevant arches do that now there are still four missing:
-> >       ia64, m68k, sh and sparc. They have the system call reserved, but not
-> >       implemented. Once they all implement clone3() we can get rid of
-> >       ARCH_WANT_SYS_CLONE3 and HAVE_COPY_THREAD_TLS.
-> > 
-> > Note that in the meantime, m68k has already switched to the new calling
-> > convention. And I've got sparc patches acked by Dave and ia64 is already
-> > done too. You can find a link to a booting qemu nios2 system with all the
-> > changes here at [1].
-> > 
-> > [1]: https://asciinema.org/a/333353
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Ley Foon Tan <ley.foon.tan@intel.com>
 
-Thanks!
+--MzdA25v054BPvyZa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> Assume this patch will merge with your series.
+On Fri, Jun 12, 2020 at 08:54:11AM -0500, Pierre-Louis Bossart wrote:
 
-If people agree with it, then yep. Just waiting for rc1 before sending
-it out.
+> I think that those configuration errors are the problem and should be fixed
+> as a prerequisite to the removal of the duplication between
+> dpcm_playback/dpcm_capture/playback_only/capture_only. it may be painful and
+> generate noise for a while, but if we only throw a warning what are the odds
+> all those configuration errors will eventually be fixed?
 
-Christian
+Yeah, I'm kind of pessimistic about the likelyhood of people paying
+attention to warnings.
+
+> If we need more time for validation on all platforms, then maybe we can
+> first relax the check for 5.8-rc1 as suggested by John, but re-add the
+> -EINVAL on -next to give a target of 5.9 with all configurations fixed?
+
+I can't help feeling that it'd be postponing the inevitable, but perhaps
+I'm being overly pessimistic here.  The change did obviously go in quite
+late though so it's not the worst idea if you want to send the patch?
+
+--MzdA25v054BPvyZa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jlVUACgkQJNaLcl1U
+h9Drbgf/YOzUpG9GiasbxXlFoCtJxiuv+Ekh55z/P1+oz7I2MZrDRSv5mAm58FnI
+BWvduP4pRvf40KI11PT+FAQc3ep02VngltU+ZAxvwPuGtUq3+rZcfU/RwIfrZkf/
+BX9z9b8mxWYloF5qMvyswDHSxzZB8Ie777CEIGfpAkYmvGI+mWblSa4JbXVT2jU3
+Iou25XVjSyU9f+sgjCMMFlfgmleWRwC+aDqQWhI6FNMPycsiEO0YcKBlh32iF6ku
+p+wZIh/eOkDd9gGqN9tUgjl/jIu2cx/LgbYihlDcrpH0DvviY2cwTGFi61ODChTA
+/Casiwx2AouvAnawiIxzar0WxH57bw==
+=mrUj
+-----END PGP SIGNATURE-----
+
+--MzdA25v054BPvyZa--
