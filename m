@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B62B1F7A2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806471F7A3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgFLO4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:56:15 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22980 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgFLO4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:56:14 -0400
-IronPort-SDR: h8lMnBsfWzjtfZjvLRYWWupsKPAOcfmn3krDb3CAMtkpmMDZVMvrgn+k5w00gHFaZC/lm+yE/D
- f0Vv2uzfGMRw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2020 07:56:11 -0700
-IronPort-SDR: asisTQgMwswpJfxS/ZiJlY5lEmVksHF6rrVuDzDH7o1EIu3myWbGMGgaZFSQt6NV8iBf0sso0X
- q+2wJTdsUvvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,503,1583222400"; 
-   d="scan'208";a="315148421"
-Received: from rrhill-mobl1.amr.corp.intel.com (HELO [10.254.71.222]) ([10.254.71.222])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Jun 2020 07:56:09 -0700
-Subject: Re: [GIT PULL] sound fixes for 5.8-rc1
-To:     Mark Brown <broonie@kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>, Takashi Iwai <tiwai@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Vinod Koul <vinod.koul@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <s5himfxet1c.wl-tiwai@suse.de>
- <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
- <CALAqxLWEfRJ_Jr0iDgmvqop5Etz5xve89Zy3OeUbnKUGtqjCqQ@mail.gmail.com>
- <20200612121946.GE5396@sirena.org.uk>
- <7cd79261-6f8d-cad0-c65b-57570a40a6b6@linux.intel.com>
- <20200612144646.GJ5396@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <26a99d25-4333-9496-ad5d-b96f7b7e2a33@linux.intel.com>
-Date:   Fri, 12 Jun 2020 09:56:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200612144646.GJ5396@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+        id S1726358AbgFLO7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:59:44 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:21226 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726085AbgFLO7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 10:59:43 -0400
+Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CEvLT5020933;
+        Fri, 12 Jun 2020 10:59:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=HdF98p29Q7CNEkv51WtLm3X1tX8y+8fRalE+qCj//kQ=;
+ b=CfJ+XwhUERFBqXUOKY08IL0IHfabBYdeG5/v26NKkVvvzuF3Znw9meSg0a9YvewUMbN+
+ JRWqSl84tV69NTLy19qeIzdpn6GHWrYctWX6ZiardiKDzCWAzFQo8X1q9xJ+GUgWXSnt
+ jwifvb8kiZZ81va5IDykxJ5Q+C4OoviBFiwV2gdGbNE/Bfj7cklkQw4d5FDhmmxl5VJk
+ NKxAYIeyqcTX458WP1AUZCdtaMxhQbG36smXhl7Sj0GVJzrsO0QOYusGkTKMFi5uhDWc
+ d9IgDp5CNG3jDbvGPSa9qpUhqKSD2cnHFuRoJBFeXP44iMhSUq0mxyDvWAC/QMdSwoov Ew== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 31jjr6b5tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jun 2020 10:59:42 -0400
+Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CEsMK8186782;
+        Fri, 12 Jun 2020 10:59:42 -0400
+Received: from ausxippc106.us.dell.com (AUSXIPPC106.us.dell.com [143.166.85.156])
+        by mx0a-00154901.pphosted.com with ESMTP id 31kxw8a56j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jun 2020 10:59:42 -0400
+X-LoopCount0: from 10.166.132.127
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
+   d="scan'208";a="558293660"
+From:   <Mario.Limonciello@dell.com>
+To:     <pali@kernel.org>
+CC:     <rdunlap@infradead.org>, <y.linux@paritcher.com>,
+        <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>, <mjg59@srcf.ucam.org>
+Subject: RE: [PATCH v2 3/3] platform/x86: dell-wmi: add new dmi keys to
+ bios_to_linux_keycode
+Thread-Topic: [PATCH v2 3/3] platform/x86: dell-wmi: add new dmi keys to
+ bios_to_linux_keycode
+Thread-Index: AQHWPelqfgxdvjwP/0a7+jtlxWF6SqjPsKgAgAAH0ACAAPg6kIABPt2A///ajtCAA5VdAP//sP+Q
+Date:   Fri, 12 Jun 2020 14:59:39 +0000
+Message-ID: <a8b5465e4c834f1c98c8499acb0cacb7@AUSX13MPC105.AMER.DELL.COM>
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <cover.1591656154.git.y.linux@paritcher.com>
+ <d585d2a0f01a6b9480352530b571dec2d1afd79f.1591656154.git.y.linux@paritcher.com>
+ <8053252a-83ad-bcaa-2830-ccfbca1b4152@infradead.org>
+ <20200608235508.wthtgilgmifwfgz2@pali>
+ <ced5832cfe984c68b27a577cac0f02f1@AUSX13MPC105.AMER.DELL.COM>
+ <20200610094449.xltvs2y6kp7driyh@pali>
+ <a7b5dd31dd32461aad51e08d38777edf@AUSX13MPC105.AMER.DELL.COM>
+ <20200612141410.7sp7brcmgcel3bfc@pali>
+In-Reply-To: <20200612141410.7sp7brcmgcel3bfc@pali>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-06-12T14:59:36.0531058Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=3521e052-dc24-4cb0-a85a-3375346127c0;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [143.166.24.40]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-12_11:2020-06-12,2020-06-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ clxscore=1015 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006120112
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006120113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/12/20 9:46 AM, Mark Brown wrote:
-> On Fri, Jun 12, 2020 at 08:54:11AM -0500, Pierre-Louis Bossart wrote:
-> 
->> I think that those configuration errors are the problem and should be fixed
->> as a prerequisite to the removal of the duplication between
->> dpcm_playback/dpcm_capture/playback_only/capture_only. it may be painful and
->> generate noise for a while, but if we only throw a warning what are the odds
->> all those configuration errors will eventually be fixed?
-> 
-> Yeah, I'm kind of pessimistic about the likelyhood of people paying
-> attention to warnings.
-> 
->> If we need more time for validation on all platforms, then maybe we can
->> first relax the check for 5.8-rc1 as suggested by John, but re-add the
->> -EINVAL on -next to give a target of 5.9 with all configurations fixed?
-> 
-> I can't help feeling that it'd be postponing the inevitable, but perhaps
-> I'm being overly pessimistic here.  The change did obviously go in quite
-> late though so it's not the worst idea if you want to send the patch?
-
-I see patches from Srinivas to fix the issue reported by John, so maybe 
-apply those patches first and if we see another issue on another 
-platform we relax the check?
+PiA+DQo+ID4gPg0KPiA+ID4gQW5kIHdoYXQgZG9lcyBtZWFuICJubyBmdW5jdGlvbiI/IEkgZG8g
+bm90IGtub3cgd2hhdCBzaG91bGQgSSBpbWFnaW5lDQo+IGlmDQo+ID4gPiBJIHJlY2VpdmUga2V5
+IHByZXNzIG1hcmtlZCBhcyAibm8gZnVuY3Rpb24iLg0KPiA+DQo+ID4gSXQgbWVhbnMgbm8gYWN0
+aW9uIGlzIGV4cGVjdGVkIHRvIG9jY3VyLCBzaG91bGQgYmVoYXZlIGxpa2UgYSBuby1vcC4gIEkN
+Cj4gdGhpbmsNCj4gPiBkaXNjYXJkaW5nIGl0IG1ha2VzIGZpbmUgc2Vuc2UuDQo+IA0KPiBUaGFu
+ayB5b3UhIFRoaXMgd2FzIG1pc3NpbmcgYml0IG9mIGluZm9ybWF0aW9uLg0KPiANCj4gSnVzdCBJ
+J20gY3VyaW91cywgd2h5IGZpcm13YXJlIHNlbmRzICJuby1vcCIgZXZlbnQgd2hpY2ggd2UgY291
+bGQgaWdub3JlPw0KPiA6RA0KPiANCg0KSSBkb24ndCBoYXZlIGRldGFpbHMgb24gdGhpcywgYnV0
+IEkgY2FuIGF0IGxlYXN0IGh5cG90aGVzaXplIGEgc2l0dWF0aW9uIHRoYXQNCnRoZXJlIHdhcyBh
+IG1hbnVmYWN0dXJpbmcgZXJyb3Igd2l0aCB0aGUgd3Jvbmcga2V5Ym9hcmQgYXBwbGllZC4gIExp
+a2UgdGhpbmsgaWYNCnRoZSBzeXN0ZW0gaGFzIGtleWJvYXJkIHdpdGhvdXQgYSBiYWNrbGlnaHQg
+YW5kIHRoZXJlIHdhcyBhIGtleWJvYXJkIHdpdGgNCmEgc2lsa3NjcmVlbmVkIGtleSBmb3IgbW9k
+aWZ5aW5nIGJhY2tsaWdodC4gIEluIHRoaXMgY2FzZSBmaXJtd2FyZSBldmVudHMNCnJlbGF0ZWQg
+dG8ga2V5Ym9hcmQgYmFja2xpZ2h0IHNob3VsZG4ndCBmbG93IHRocm91Z2ggc28gZmlybXdhcmUg
+Y291bGQgaW5zdGVhZA0Kc2VuZCB0aGlzIHR5cGUgb2YgZXZlbnQuDQoNCj4gSSBjYW4gaW1hZ2lu
+ZSB0aGF0IHRob3NlIGV2ZW50cyAvIHNjYW4gY29kZXMgbWF5IGNvbnRhaW4gc29tZQ0KPiBpbmZv
+cm1hdGlvbiB3aGljaCB3ZSBjYW4gdXNlLi4uDQoNCkkgbWVhbiBJIHN1cHBvc2UgeW91IGNhbiBj
+aG9vc2UgdG8gaWdub3JlIG15IGNvbW1lbnRzLCBidXQgSSdtIHRlbGxpbmcgeW91IHRoaXMNCmV2
+ZW50IGRvZXNuJ3QgY29udGFpbiBhbnl0aGluZyB1c2VmdWwuDQoNCj4gDQo+ID4gPg0KPiA+ID4g
+PiA+IEUuZy4gSSByZW1lbWJlciB0aGF0IHByZXNzaW5nIEZuK1Egb3IgRm4rVyBvbiBzb21lIERl
+bGwgTGF0aXR1ZGUNCj4gPiA+ID4gPiBnZW5lcmF0ZXMgY29kZSAyNTUsIHdoaWNoIGNvdWxkIHBy
+b3ZlIG15IHRoZXNpcyBhYm91dCAic3BlY2lhbA0KPiBjb2RlcyINCj4gPiA+ID4gPiAod2hpY2gg
+YXJlIHByb2JhYmx5IG5vdCBmb3VuZCBpbiBlLmcuIFdpbmRvd3Mgb3IgTGludXggbWFwcGluZw0K
+PiB0YWJsZXMpLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ICB9Ow0KPiA+ID4gPiA+ID4gPg0K
+PiA+ID4gPiA+ID4gPiAgLyoNCj4gPiA+ID4gPiA+ID4gQEAgLTUwMywxMCArNTA0LDcgQEAgc3Rh
+dGljIHZvaWQgaGFuZGxlX2RtaV9lbnRyeShjb25zdCBzdHJ1Y3QNCj4gPiA+ID4gPiBkbWlfaGVh
+ZGVyICpkbSwgdm9pZCAqb3BhcXVlKQ0KPiA+ID4gPiA+ID4gPiAgCQkJCQkmdGFibGUtPmtleW1h
+cFtpXTsNCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gIAkJLyogVW5pbml0aWFsaXplZCBl
+bnRyaWVzIGFyZSAwIGFrYSBLRVlfUkVTRVJWRUQuICovDQo+ID4gPiA+ID4gPiA+IC0JCXUxNiBr
+ZXljb2RlID0gKGJpb3NfZW50cnktPmtleWNvZGUgPA0KPiA+ID4gPiA+ID4gPiAtCQkJICAgICAg
+IEFSUkFZX1NJWkUoYmlvc190b19saW51eF9rZXljb2RlKSkgPw0KPiA+ID4gPiA+ID4gPiAtCQkJ
+Ymlvc190b19saW51eF9rZXljb2RlW2Jpb3NfZW50cnktPmtleWNvZGVdIDoNCj4gPiA+ID4gPiA+
+ID4gLQkJCUtFWV9SRVNFUlZFRDsNCj4gPiA+ID4gPiA+ID4gKwkJdTE2IGtleWNvZGUgPSBiaW9z
+X3RvX2xpbnV4X2tleWNvZGVbYmlvc19lbnRyeS0NCj4gPmtleWNvZGVdOw0KPiA+ID4gPiA+ID4g
+Pg0KPiA+ID4gPiA+ID4gPiAgCQkvKg0KPiA+ID4gPiA+ID4gPiAgCQkgKiBMb2cgaWYgd2UgZmlu
+ZCBhbiBlbnRyeSBpbiB0aGUgRE1JIHRhYmxlIHRoYXQgd2UNCj4gZG9uJ3QNCj4gPiA+ID4gPiA+
+ID4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBTb21ldGhpbmcgbGlrZToNCj4gPiA+ID4gPiA+
+DQo+ID4gPiA+ID4gPiAJCXUxNiBrZXljb2RlOw0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IAkJ
+a2V5Y29kZSA9IGJpb3NfZW50cnktPmtleWNvZGUgPT0gMHhmZmZmID8gS0VZX1VOS05PV04gOg0K
+PiA+ID4gPiA+ID4gCQkJKGJpb3NfZW50cnktPmtleWNvZGUgPA0KPiA+ID4gPiA+ID4gCQkJICAg
+ICAgIEFSUkFZX1NJWkUoYmlvc190b19saW51eF9rZXljb2RlKSkgPw0KPiA+ID4gPiA+ID4gCQkJ
+Ymlvc190b19saW51eF9rZXljb2RlW2Jpb3NfZW50cnktPmtleWNvZGVdIDoNCj4gPiA+ID4gPiA+
+IAkJCUtFWV9SRVNFUlZFRDsNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiA+IEFsc28gcGxlYXNlIGZpeCB0aGlzOg0KPiA+ID4gPiA+ID4gKG5vIFRvLWhl
+YWRlciBvbiBpbnB1dCkgPD4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEhpbnQ6IHNwZWNpZnlpbmcg
+Z2l0IHNlbmQtZW1haWwgd2l0aCAnLS10bycgYXJndW1lbnQgaW5zdGVhZCBvZiAnLS0NCj4gY2Mn
+DQo+ID4gPiA+ID4gc2hvdWxkIGhlbHAuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+
+ID4gPiAtLQ0KPiA+ID4gPiA+ID4gflJhbmR5DQo+ID4gPiA+ID4gPg0K
