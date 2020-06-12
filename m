@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10E81F7BDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EE01F7BD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgFLQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 12:57:40 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42586 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgFLQ5k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:57:40 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CGuuJu030516;
-        Fri, 12 Jun 2020 11:56:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591981016;
-        bh=OU3pn1t5FYea3bFqCtFWnP4GmmnGVMj/bcuK7sNhq10=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vGI28vVXGx+yv1vsG9v42c/WH5sZlY170secgk19y4iOCb9VMs095BEw/Hq1ZmC8x
-         YMpMZKxs1jDdFEJMazl1C2o/Ak7uiiCqa+LEs5dOcKXEuBkrJeZ+7CSiFm8JQCA6h0
-         Zhr71oyZ/rnm3IcRffZFU+osSZZTxcHk0sshD/y8=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CGutYk068326;
-        Fri, 12 Jun 2020 11:56:56 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Jun 2020 11:56:55 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Jun 2020 11:56:55 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CGutnF006600;
-        Fri, 12 Jun 2020 11:56:55 -0500
-Subject: Re: [PATCH v3 2/2] ASoC: tas2562: Update shutdown GPIO property
-To:     Mark Brown <broonie@kernel.org>
-CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
-        <robh@kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200612160603.2456-1-dmurphy@ti.com>
- <20200612160603.2456-2-dmurphy@ti.com> <20200612160922.GL5396@sirena.org.uk>
- <0e482167-71c2-a128-b8b4-a054557d30e9@ti.com>
- <20200612162200.GM5396@sirena.org.uk>
- <432c41fe-8afa-2ccb-8917-fd64f4895144@ti.com>
- <20200612163009.GN5396@sirena.org.uk>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <531b2af3-43b2-d753-ddd4-8dd68cae9a71@ti.com>
-Date:   Fri, 12 Jun 2020 11:56:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726289AbgFLQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 12:57:10 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11811 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbgFLQ5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 12:57:10 -0400
+IronPort-SDR: VIUf/z2wTphMuL2ttR0KUfnPlB/jW3+lR1rJsyAB9QFjU7EKgsj60eWd9sFIb0ZNX99/JI6mHq
+ aI2kzYGpGwtQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2020 09:57:09 -0700
+IronPort-SDR: cYN3WB/aLCmrvg2twmOVAfJCGnnMVkSlh5fXJOYYF2pl53pieeTrb47U/DJlOihIZyxGGIv+9F
+ 0Jgj9hwZiumA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,504,1583222400"; 
+   d="scan'208";a="261013310"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga008.fm.intel.com with ESMTP; 12 Jun 2020 09:57:09 -0700
+Date:   Fri, 12 Jun 2020 09:57:09 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] x86/msr: Filter MSR writes
+Message-ID: <20200612165709.GB1026@linux.intel.com>
+References: <20200612105026.GA22660@zn.tnic>
+ <20200612163406.GA1026@linux.intel.com>
+ <20200612164602.GC22660@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200612163009.GN5396@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612164602.GC22660@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark
+On Fri, Jun 12, 2020 at 06:46:02PM +0200, Borislav Petkov wrote:
+> On Fri, Jun 12, 2020 at 09:34:06AM -0700, Sean Christopherson wrote:
+> > The kernel should be tainted if the WRMSR is attempted, regardless of
+> > whether it succeeds, and it should happen before the WRMSR.  E.g. pointing
+> > MSR_IA32_DS_AREA at a bad address will likely cause an OOPS on the #PF
+> 
+> If the MSR write fails, MSR_IA32_DS_AREA won't have the bad address. If
+> the writes fail, nothing has been changed.
 
-On 6/12/20 11:30 AM, Mark Brown wrote:
-> On Fri, Jun 12, 2020 at 11:27:04AM -0500, Dan Murphy wrote:
->
->> Well should we then just revert back to the non-standard name and just fix
->> up the code?
->> Or should we support both properties?
-> Either option is fine for me, supporting both is a little nicer.
+DS_AREA takes a virtual (linear) address, i.e. the address can be legal from
+the CPUs perspective but still lead to a #PF due to the address not being
+mapped in the page tables.
 
-Sounds good I will mark the incorrect property as deprecated: true
+> > This can be 0600, or maybe 0644, i.e. allow the user to enable/disable
+> > writes after the module has been loaded.
+> 
+> What for?
 
-Dan
+So users don't have to unload and reload the module just to enable or
+disable writes.  I don't think it changes the protections in any way, a
+priveleged user still needs to explicitly toggle the control.
 
+> crw------- 1 root root 202, 0 Jun 10 19:54 /dev/cpu/0/msr
+> 
+> You need root to write to the chrdev.
+> 
+> Also, the intent is *not* to open it more but to close it so that the
+> incentive to design proper interfaces is there.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
