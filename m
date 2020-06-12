@@ -2,214 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F9B1F7962
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CA81F794B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgFLOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:18:05 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54280 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgFLOSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:18:04 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CEGVHu072690;
-        Fri, 12 Jun 2020 14:18:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=FLO2dmSYnd+8KwMbQIvAENHAq6wW4XjxXYdHK1Ch854=;
- b=fGmwpg13pPmieOAX/2wjjkE3cxHST4RkEfRZUF3LtLDDasAbO4DsmthjyLg6UokIc+dD
- ba9hqZ6m2TQVFcs5igpHjApjRCoXFSSvz7RNBXn9gGtw4bxunZLDvKZTszlLKMxXPs8P
- r/gYzJSU8putOgo9B3IQJdLEAGWIm4OMec/sekDTbJE7lg8iqXMf2ZamLQkUYx4KMt5B
- Zd3K3VBpH6gkwoqTjLFd6O+814l1YDTUeuB4d6rmlYYGIwLX0oEYbgCuRwn35MCdsi0R
- gsUKwV2JUN5FBRRohMk1st8hz89JYYSKSZ0f2xlDv8nX5iy8by6a55ZoIG1Th2e9GqSQ tQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 31g3snd4uu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 14:18:01 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CEHfel002650;
-        Fri, 12 Jun 2020 14:18:01 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31mb9mg0ms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 14:18:01 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05CE7xG0006062;
-        Fri, 12 Jun 2020 14:07:59 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Jun 2020 07:07:59 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
-Subject: Re: net/sunrpc/svcsock.c:226:5: warning:
- "ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE" is not defined
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <202006121445.hPwlQgTl%lkp@intel.com>
-Date:   Fri, 12 Jun 2020 10:07:58 -0400
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AC2CCF35-1313-464A-B20F-AC3424692C31@oracle.com>
-References: <202006121445.hPwlQgTl%lkp@intel.com>
-To:     kernel test robot <lkp@intel.com>
-X-Mailer: Apple Mail (2.3445.104.14)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006120107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006120106
+        id S1726376AbgFLOJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:09:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbgFLOJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 10:09:52 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A413E20801;
+        Fri, 12 Jun 2020 14:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591970991;
+        bh=q4krEbdPco7MsiBYtM/F7P1LJc3hlmshAKjwldfNwTE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tWcomgAeMEBeuf76DvFJWGzTcD6h7N9jQN02h3R/5OvMUTq1SF90tAwLFZwrkJD7E
+         y0GOwgmPmcv99vcGGRWnK0F3C9WfbA9yKKdzL5kLM4ePW7hb7RBsW/cXmoHrMy/6dI
+         iUEs14NqIWBrVrzR/6dY5nYghwwVvSdi0wegyHdo=
+Received: by pali.im (Postfix)
+        id B0786582; Fri, 12 Jun 2020 16:09:49 +0200 (CEST)
+Date:   Fri, 12 Jun 2020 16:09:49 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Y Paritcher <y.linux@paritcher.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mario.Limonciello@dell.com
+Subject: Re: [PATCH v4 0/3] platform/x86: dell-wmi: new keys
+Message-ID: <20200612140949.523opfqkxfv3x5cx@pali>
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <cover.1591811549.git.y.linux@paritcher.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1591811549.git.y.linux@paritcher.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello-
+On Wednesday 10 June 2020 13:56:55 Y Paritcher wrote:
+> change since v3:
+>     No code changes.
+>     Update commit message to reflect info given by Mario at dell.
+>     
+> Is there anything more i have to do for the patches that were reviewed
+> or will they be picked up by the maintainers?
+> Thanks
+> 
+> Y Paritcher (3):
+>   platform/x86: dell-wmi: add new backlight events
+>   platform/x86: dell-wmi: add new keymap type 0x0012
+>   platform/x86: dell-wmi: add new dmi mapping for keycode 0xffff
+> 
+>  drivers/platform/x86/dell-wmi.c | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
 
-> On Jun 12, 2020, at 2:31 AM, kernel test robot <lkp@intel.com> wrote:
->=20
-> Hi Chuck,
->=20
-> FYI, the error/warning still remains.
->=20
-> tree:   =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
-master
-> head:   b791d1bdf9212d944d749a5c7ff6febdba241771
-> commit: ca07eda33e01eafa7a26ec06974f7eacee6a89c8 SUNRPC: Refactor =
-svc_recvfrom()
-> date:   3 weeks ago
-> config: i386-randconfig-r016-20200612 (attached as .config)
-> compiler: gcc-6 (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
-> reproduce (this is a W=3D1 build):
->        git checkout ca07eda33e01eafa7a26ec06974f7eacee6a89c8
->        # save the attached .config to linux build tree
->        make W=3D1 ARCH=3Di386=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
->=20
->>> net/sunrpc/svcsock.c:226:5: warning: =
-"ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE" is not defined [-Wundef]
-> #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm fine with this patch series too.
 
-IIUC this is a problem with the headers for the i386 architecture.
-That macro is defined for most others:
-
-[cel@klimt linux]$ git grep ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-arch/alpha/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-arch/arc/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/arm/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/arm64/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/c6x/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-arch/csky/abiv1/inc/abi/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/csky/abiv2/inc/abi/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/hexagon/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-arch/ia64/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/m68k/include/asm/cacheflush_mm.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/m68k/include/asm/cacheflush_no.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-arch/microblaze/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/mips/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/nds32/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/nios2/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/openrisc/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/parisc/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/powerpc/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/riscv/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-arch/sh/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/sparc/include/asm/cacheflush_32.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/sparc/include/asm/cacheflush_64.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/unicore32/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/xtensa/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
-arch/xtensa/include/asm/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-block/blk-core.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-include/asm-generic/cacheflush.h:#define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-include/crypto/scatterwalk.h:           /* Test =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE first as
-include/crypto/scatterwalk.h:           if =
-(ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE && !PageSlab(page))
-include/linux/blkdev.h:#ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-include/linux/blkdev.h:# error  "You should define =
-ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE for your platform"
-include/linux/blkdev.h:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
-net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
-net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
-net/sunrpc/svcsock.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-net/sunrpc/xprtsock.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-[cel@klimt linux]$
-
-Please let me know how to proceed.
-
-
-> vim +/ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE +226 net/sunrpc/svcsock.c
->=20
->   225=09
->> 226	#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
->   227	static void svc_flush_bvec(const struct bio_vec *bvec, size_t =
-size, size_t seek)
->   228	{
->   229		struct bvec_iter bi =3D {
->   230			.bi_size	=3D size,
->   231		};
->   232		struct bio_vec bv;
->   233=09
->   234		bvec_iter_advance(bvec, &bi, seek & PAGE_MASK);
->   235		for_each_bvec(bv, bvec, bi, bi)
->   236			flush_dcache_page(bv.bv_page);
->   237	}
->   238	#else
->   239	static inline void svc_flush_bvec(const struct bio_vec *bvec, =
-size_t size,
->   240					  size_t seek)
->   241	{
->   242	}
->   243	#endif
->   244=09
->=20
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> <.config.gz>
-
---
-Chuck Lever
-
-
-
+Reviewed-by: Pali Rohár <pali@kernel.org>
