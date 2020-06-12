@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3B61F7953
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF791F793E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgFLOLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:11:39 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:59147 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726451AbgFLOLg (ORCPT
+        id S1726416AbgFLOCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:02:13 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59631 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726085AbgFLOCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:11:36 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6BFE05C0198;
-        Fri, 12 Jun 2020 10:11:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 12 Jun 2020 10:11:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=N2UTN5
-        zf4fI0fEU1GAssqOF62PIajnZlEs++lgSKQbc=; b=b+qIjrVXrY+JWnlhm+V7kj
-        KCEFRHny1iUTmOd1iSHkK8slA/Rmg52yRFS3Dbl8ysb2m6LGfLlPvUavZgEch1D1
-        50wDCaGsNwqoUM3DGsmmTAsmMvNoSEnohbNjiF12V68ehGOPkuy6czWEX++b1Fbc
-        7jL3nE0XeYby72N1WzjwVErOatuQXkxyATCn3AePyBR5OHycWsKc1wQAT8/qHTYF
-        4I+C/j2VG6x6pa1v8GwWFAQQKXW+7oQIMTe/zyR/GJOlbinmwO/ogyhwdShcP8xn
-        ysqgFPTy59ijXmy56iEHo2bJztvn1Llo5ztP4FsWmZq0p3LL3fkN2iOOFS+To1tQ
-        ==
-X-ME-Sender: <xms:FI3jXr7zLtYmKIwGNCcWN3YyA4cxOdiGQQ36vu6_6pES5fUAnWXSzQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeiuddgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpefgvefgveeuudeuffeiffehieffgfejleevtdetueetueffkeevgffgtddugfek
-    veenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeejledrudejledrledtrd
-    efvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehi
-    ughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:FI3jXg6YGCCa8T3yZL8FddXBYToroM75whLfyMMtWLvsetLmKNjs5w>
-    <xmx:FI3jXieqXQv6Etc3KefcYG9j9RPrz0cbVXvvNBNQsCk93tTqGMCG0g>
-    <xmx:FI3jXsLol_COGgpBtXEfJZup2-MVr8Qvsd8QG6LGDw0Jx3NDDBS0Jw>
-    <xmx:F43jXsGwt9-2XShtxzNUuXCg5z4DLWfgwG0kRhaR9e5NgeZljYXQMg>
-Received: from localhost (bzq-79-179-90-32.red.bezeqint.net [79.179.90.32])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E060432800D0;
-        Fri, 12 Jun 2020 09:51:35 -0400 (EDT)
-Date:   Fri, 12 Jun 2020 16:51:33 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     syzbot <syzbot+82f324bb69744c5f6969@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: linux-next test error: BUG: using smp_processor_id() in
- preemptible [ADDR] code: syz-fuzzer/6792
-Message-ID: <20200612135133.GA28968@splinter>
-References: <0000000000008ff8ea05a71818b5@google.com>
- <20200602124130.256274203F@d06av24.portsmouth.uk.ibm.com>
- <20200612124340.GA23832@splinter>
- <20200612133905.CDF9A5204E@d06av21.portsmouth.uk.ibm.com>
+        Fri, 12 Jun 2020 10:02:12 -0400
+Received: (qmail 13466 invoked by uid 1000); 12 Jun 2020 10:02:11 -0400
+Date:   Fri, 12 Jun 2020 10:02:11 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Jim Lin <jilin@nvidia.com>,
+        Siqi Lin <siqilin@google.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>
+Subject: Re: [PATCH] usb: replace hardcoded maximum usb string length by
+ definition
+Message-ID: <20200612140211.GA12639@rowland.harvard.edu>
+References: <y>
+ <1591939967-29943-1-git-send-email-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200612133905.CDF9A5204E@d06av21.portsmouth.uk.ibm.com>
+In-Reply-To: <1591939967-29943-1-git-send-email-macpaul.lin@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 07:09:04PM +0530, Ritesh Harjani wrote:
-> I see Ted has already taken v2 of this patch in his dev repo.
-> Should be able to see in linux tree soon.
+On Fri, Jun 12, 2020 at 01:32:47PM +0800, Macpaul Lin wrote:
+> Replace hardcoded maximum usb string length (126 bytes) by definition
+> "MAX_USB_STRING_LEN".
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=811985365378df01386c3cfb7ff716e74ca376d5
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
 
-Great, thanks a lot. I've replaced previous patch with this one in my
-testing tree.
+...
+
+> diff --git a/include/linux/usb.h b/include/linux/usb.h
+> index 9f3c721..df4a9cb 100644
+> --- a/include/linux/usb.h
+> +++ b/include/linux/usb.h
+> @@ -1815,6 +1815,8 @@ static inline int usb_get_ptm_status(struct usb_device *dev, void *data)
+>  		0, data);
+>  }
+>  
+> +/* USB String descriptors can contain at most 126 characters. */
+> +#define MAX_USB_STRING_LEN	126
+
+This definition belongs in include/uapi/linux/usb/ch9.h (near the 
+definition of struct usb_string_descriptor) because it is part of the USB 
+standard rather than specific to the Linux USB stack.
+
+Alan Stern
