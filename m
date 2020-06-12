@@ -2,90 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B261F7947
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F9B1F7962
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgFLOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgFLOGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:06:31 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A47A32074B;
-        Fri, 12 Jun 2020 14:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591970790;
-        bh=K18l24DjovwEYHOQ7k+M0/KaNKer8w4ba5zMXo429sQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sZNeKKbaFCkzh0sVwnu9L6NEeK7rsl/cYeBGCZDvl8Uf8kWQBOqc+zeACzfSy8RDd
-         xtuVe1d6VozAs99+I9ZCpB+9zDdmTw0i1KHUgWeRAZhdF04zF3RM32RgyLZoJ5Fzk2
-         eh54rqt6O9LOhFARvsciOsT5exE+dceTq1UF69Es=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jjkKD-002Q27-4o; Fri, 12 Jun 2020 15:06:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 12 Jun 2020 15:06:29 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>, tglx@linutronix.de,
-        jason@lakedaemon.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH] irqchip: riscv-intc: Fix a typo in a pr_warn()
-In-Reply-To: <20200611175302.253540-1-palmer@dabbelt.com>
-References: <20200611175302.253540-1-palmer@dabbelt.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <edd04e6af3c16eabc83f28fe650a36f0@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: palmer@dabbelt.com, Anup.Patel@wdc.com, tglx@linutronix.de, jason@lakedaemon.net, paul.walmsley@sifive.com, aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, kernel-team@android.com, palmerdabbelt@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726466AbgFLOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:18:05 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54280 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgFLOSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 10:18:04 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CEGVHu072690;
+        Fri, 12 Jun 2020 14:18:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=FLO2dmSYnd+8KwMbQIvAENHAq6wW4XjxXYdHK1Ch854=;
+ b=fGmwpg13pPmieOAX/2wjjkE3cxHST4RkEfRZUF3LtLDDasAbO4DsmthjyLg6UokIc+dD
+ ba9hqZ6m2TQVFcs5igpHjApjRCoXFSSvz7RNBXn9gGtw4bxunZLDvKZTszlLKMxXPs8P
+ r/gYzJSU8putOgo9B3IQJdLEAGWIm4OMec/sekDTbJE7lg8iqXMf2ZamLQkUYx4KMt5B
+ Zd3K3VBpH6gkwoqTjLFd6O+814l1YDTUeuB4d6rmlYYGIwLX0oEYbgCuRwn35MCdsi0R
+ gsUKwV2JUN5FBRRohMk1st8hz89JYYSKSZ0f2xlDv8nX5iy8by6a55ZoIG1Th2e9GqSQ tQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 31g3snd4uu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Jun 2020 14:18:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CEHfel002650;
+        Fri, 12 Jun 2020 14:18:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31mb9mg0ms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jun 2020 14:18:01 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05CE7xG0006062;
+        Fri, 12 Jun 2020 14:07:59 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 12 Jun 2020 07:07:59 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
+Subject: Re: net/sunrpc/svcsock.c:226:5: warning:
+ "ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE" is not defined
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <202006121445.hPwlQgTl%lkp@intel.com>
+Date:   Fri, 12 Jun 2020 10:07:58 -0400
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AC2CCF35-1313-464A-B20F-AC3424692C31@oracle.com>
+References: <202006121445.hPwlQgTl%lkp@intel.com>
+To:     kernel test robot <lkp@intel.com>
+X-Mailer: Apple Mail (2.3445.104.14)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006120107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006120106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-11 18:53, Palmer Dabbelt wrote:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> Anup originally re-spun his patch set to include this fix, but it was a 
-> bit too
-> late for my PR so I've split it out.
-> 
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Hello-
+
+> On Jun 12, 2020, at 2:31 AM, kernel test robot <lkp@intel.com> wrote:
+>=20
+> Hi Chuck,
+>=20
+> FYI, the error/warning still remains.
+>=20
+> tree:   =
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
+master
+> head:   b791d1bdf9212d944d749a5c7ff6febdba241771
+> commit: ca07eda33e01eafa7a26ec06974f7eacee6a89c8 SUNRPC: Refactor =
+svc_recvfrom()
+> date:   3 weeks ago
+> config: i386-randconfig-r016-20200612 (attached as .config)
+> compiler: gcc-6 (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+> reproduce (this is a W=3D1 build):
+>        git checkout ca07eda33e01eafa7a26ec06974f7eacee6a89c8
+>        # save the attached .config to linux build tree
+>        make W=3D1 ARCH=3Di386=20
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+>=20
+>>> net/sunrpc/svcsock.c:226:5: warning: =
+"ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE" is not defined [-Wundef]
+> #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+IIUC this is a problem with the headers for the i386 architecture.
+That macro is defined for most others:
+
+[cel@klimt linux]$ git grep ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+arch/alpha/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+arch/arc/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/arm/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/arm64/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/c6x/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+arch/csky/abiv1/inc/abi/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/csky/abiv2/inc/abi/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/hexagon/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+arch/ia64/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/m68k/include/asm/cacheflush_mm.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/m68k/include/asm/cacheflush_no.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+arch/microblaze/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/mips/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/nds32/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/nios2/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/openrisc/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/parisc/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/powerpc/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/riscv/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+arch/sh/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/sparc/include/asm/cacheflush_32.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/sparc/include/asm/cacheflush_64.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/unicore32/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/xtensa/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+arch/xtensa/include/asm/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+block/blk-core.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+include/asm-generic/cacheflush.h:#define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+include/crypto/scatterwalk.h:           /* Test =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE first as
+include/crypto/scatterwalk.h:           if =
+(ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE && !PageSlab(page))
+include/linux/blkdev.h:#ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+include/linux/blkdev.h:# error  "You should define =
+ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE for your platform"
+include/linux/blkdev.h:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
+net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
+net/packet/af_packet.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE =3D=3D 1
+net/sunrpc/svcsock.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+net/sunrpc/xprtsock.c:#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+[cel@klimt linux]$
+
+Please let me know how to proceed.
+
+
+> vim +/ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE +226 net/sunrpc/svcsock.c
+>=20
+>   225=09
+>> 226	#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+>   227	static void svc_flush_bvec(const struct bio_vec *bvec, size_t =
+size, size_t seek)
+>   228	{
+>   229		struct bvec_iter bi =3D {
+>   230			.bi_size	=3D size,
+>   231		};
+>   232		struct bio_vec bv;
+>   233=09
+>   234		bvec_iter_advance(bvec, &bi, seek & PAGE_MASK);
+>   235		for_each_bvec(bv, bvec, bi, bi)
+>   236			flush_dcache_page(bv.bv_page);
+>   237	}
+>   238	#else
+>   239	static inline void svc_flush_bvec(const struct bio_vec *bvec, =
+size_t size,
+>   240					  size_t seek)
+>   241	{
+>   242	}
+>   243	#endif
+>   244=09
+>=20
 > ---
->  drivers/irqchip/irq-riscv-intc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-riscv-intc.c 
-> b/drivers/irqchip/irq-riscv-intc.c
-> index a6f97fa6ff69..8017f6d32d52 100644
-> --- a/drivers/irqchip/irq-riscv-intc.c
-> +++ b/drivers/irqchip/irq-riscv-intc.c
-> @@ -99,7 +99,7 @@ static int __init riscv_intc_init(struct device_node 
-> *node,
-> 
->  	hartid = riscv_of_parent_hartid(node);
->  	if (hartid < 0) {
-> -		pr_warn("unable to fine hart id for %pOF\n", node);
-> +		pr_warn("unable to find hart id for %pOF\n", node);
->  		return 0;
->  	}
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> <.config.gz>
 
-I'll pick it post -rc1, once I merge Linus' tree into mine.
+--
+Chuck Lever
 
-Thanks,
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+
