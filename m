@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747E71F745E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE011F7462
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 09:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgFLHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 03:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        id S1726568AbgFLHKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 03:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgFLHKO (ORCPT
+        with ESMTP id S1726468AbgFLHKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:10:14 -0400
+        Fri, 12 Jun 2020 03:10:16 -0400
 Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3715AC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:13 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u5so3718408pgn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53134C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:15 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b5so2756285pgm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 00:10:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=sg9Lm/YutbN5f9zW+xwWCgs+u3zx03mdOZcDLL5rZHc=;
-        b=NR8c5r2kPGt+D0zWH9UJWCDD2OEW7VmcBPlOHMIBQUrkGr2OhTIWw3v/sA0WFNp0l8
-         oIiWwckAic2yAcXOdvffdq2BnAXDFzUrfjAyhGtO1RkrWvLtaUDvJGqmHnwK89xPw4BT
-         R2hLzzQUUinFlUjDgqWv3xAcmzsKa2KRV4ijhNJspVA6jeqMLl4qRP4J6R84fvoO7Lz1
-         SqynqQGZqLAn0ljjQ6Ep92AC/MEF0A/XtrgvXND0Hlf3h+MatmYKE5PFso3iSbtHKmaN
-         /PqC7EDDJ1MCj0DI4vtRbnB9V7RvxNU43bhjmwj99gXsyea2BpM+xCVxZJkexlIhH9Xk
-         dkRQ==
+        bh=TqEeZZCFAo9j2EFFuYpPOcmAMjD+t0h5vXYjlCC88NI=;
+        b=Vk8nXv4lbi60VdlETy0d9EHMvCMv6fvKZN7WSJqO8Yazl8SmgsXXBVnpEdhhbfA6U6
+         IsRjgiXT1RcyvifqbfANAKXfWf9zgSjGNNC8zwH2SOwquvk0yPTzl/bgCFuQvzFqJVyx
+         T/QnIAE8JHW27tQv2laLYiXgPZnqbMeTEMiE2nvFH+fCSSAfZjuwOK4wkAmNt3J4egyL
+         gktCEfFKGLc2yAws1DCe3q7msFiIg+t0pCeXmtIz1dc3lyIA1jA4hgQBOWSVnW1zVIaZ
+         xRD8wy6R1sSLyOKQ3EMRr9OAKnrmjNq17Y7jyMTfEQM9LNMIv38SwTMU/MwVxNnmXpwG
+         mlyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sg9Lm/YutbN5f9zW+xwWCgs+u3zx03mdOZcDLL5rZHc=;
-        b=h1q1DsidrhskVQYaiM8pD8tQ7i0qgCmsRQyuuQuwmIGlMXOVKcBGaF6slZbzueImHQ
-         lXEKUWQfFT8WjXiqxySbPsRpngqidz6a1+voz42emDS8RuOffODnlvgCkOH7fQZNhZ7s
-         SikCmGIETxXuqxvM5BgMUeohyP+7m7+DHw9YE8gLibYjkaJq9mym7sZmfvRvsb+/5CJ0
-         V5jmO2gkQii1AyZosWrFX0pwZCM0aW92vMHg6TawFJqxh/g3xfEydTVlyGXjPsexmqio
-         FpKkwaQDiqrnQ0vmjylFdBGR3/Qj62VjiD4/7xS6OkVdzPb5GBB0M82coGCjjyNpA0e9
-         S+oA==
-X-Gm-Message-State: AOAM5327TTXRl1qaKLnlSiH9q2RBQj2LBuIgJDtcUZ65d5rbJK7Ioni1
-        sfuxC9iSNAkxfYMx8ciMXxVBOQ==
-X-Google-Smtp-Source: ABdhPJw5olV/JxsKv5JjihxwMCdrSsnylXvH/fyL7TAdlyOQFSWFNE+nFZeLa7jXucofV5WiDoQU9g==
-X-Received: by 2002:aa7:85da:: with SMTP id z26mr10312343pfn.13.1591945812666;
-        Fri, 12 Jun 2020 00:10:12 -0700 (PDT)
+        bh=TqEeZZCFAo9j2EFFuYpPOcmAMjD+t0h5vXYjlCC88NI=;
+        b=hTX4FveDZVWNwMOJSdgfCYLvCa4R9bZanlpuiOsl3y25SQ+hzeyS8CmgcMGbRFhFra
+         3c5NmJ8XfBuFIxipdhTgu8xzeiD2AqDrTh3u+dnQnoNBw/rY+jzjlhj570kRwX355Xf7
+         f8BdBnH9xlvVDPB/I5HFbV+NGFPs8zSUAvdBK2IZwT4TgpM3xtlKLWbtAWsYCclbJ99Q
+         pAsjzQISAU+6bpbDBzK2sKBbql52amvIw8OR+tNV525afQgV9X2yUNRDJY8YxKs1J35S
+         WYOjHWNfOyMbZgs5WxOp7qHDTaqnKFtsDMol1JaEDMbiRLEhqB99A9wkOcvS9rJ9pKFh
+         K1bQ==
+X-Gm-Message-State: AOAM531ysL08DbuchHSPtPt6/f1YitAOlpKQ1O6h/tkE0k5kM4Kwk9GF
+        /XhpchIj0NB8yuIzoBK8xdFOsw==
+X-Google-Smtp-Source: ABdhPJyjEH+ADL2W4THCxsHXC9WxaaeveHWyMCLC47yacVreM5QB1kMYVKztlYuLn7XFuwTbzNN8eQ==
+X-Received: by 2002:a62:7b41:: with SMTP id w62mr9986107pfc.142.1591945814828;
+        Fri, 12 Jun 2020 00:10:14 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.10
+        by smtp.gmail.com with ESMTPSA id d2sm4336919pgp.56.2020.06.12.00.10.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 00:10:12 -0700 (PDT)
+        Fri, 12 Jun 2020 00:10:14 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, oleg@redhat.com, guoren@linux.alibaba.com,
         vincent.chen@sifive.com, paul.walmsley@sifive.com,
         palmerdabbelt@google.com, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 01/13] ptrace: Use regset_size() for dynamic regset
-Date:   Fri, 12 Jun 2020 15:09:50 +0800
-Message-Id: <8dbfdc77d4fac81a113ae2572ff9d01d9f155bfb.1591344965.git.greentime.hu@sifive.com>
+Subject: [PATCH 02/13] riscv: Separate patch for cflags and aflags
+Date:   Fri, 12 Jun 2020 15:09:51 +0800
+Message-Id: <fb337ff3ed0f6d04da25f45db3c5c7713824ab13.1591344965.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1591344965.git.greentime.hu@sifive.com>
 References: <cover.1591344965.git.greentime.hu@sifive.com>
@@ -66,29 +66,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch uses regset_size() instead of using regset->n and regset->size
-directly. In this case, it will call the get_size() ported by arch
-dynamically to support dynamic regset size case.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+From: Guo Ren <ren_guo@c-sky.com>
+
+Use "subst fd" in Makefile is a hack way and it's not convenient
+to add new ISA feature. Just separate them into riscv-march-cflags
+and riscv-march-aflags.
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- kernel/ptrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/Makefile | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 43d6179508d6..946b2c4ec4fa 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -888,7 +888,7 @@ static int ptrace_regset(struct task_struct *task, int req, unsigned int type,
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index fb6e37db836d..957d064bead0 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -37,12 +37,18 @@ else
+ endif
  
- 	regset_no = regset - view->regsets;
- 	kiov->iov_len = min(kiov->iov_len,
--			    (__kernel_size_t) (regset->n * regset->size));
-+			    (__kernel_size_t) regset_size(task, regset));
+ # ISA string setting
+-riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
+-riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
+-riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
+-riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
+-KBUILD_CFLAGS += -march=$(subst fd,,$(riscv-march-y))
+-KBUILD_AFLAGS += -march=$(riscv-march-y)
++riscv-march-cflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
++riscv-march-cflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
++riscv-march-$(CONFIG_FPU)			:= $(riscv-march-y)fd
++riscv-march-cflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-cflags-y)c
++
++riscv-march-aflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
++riscv-march-aflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
++riscv-march-aflags-$(CONFIG_FPU)		:= $(riscv-march-aflags-y)fd
++riscv-march-aflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-aflags-y)c
++
++KBUILD_CFLAGS += -march=$(riscv-march-cflags-y)
++KBUILD_AFLAGS += -march=$(riscv-march-aflags-y)
  
- 	if (req == PTRACE_GETREGSET)
- 		return copy_regset_to_user(task, view, regset_no, 0,
+ KBUILD_CFLAGS += -mno-save-restore
+ KBUILD_CFLAGS += -DCONFIG_PAGE_OFFSET=$(CONFIG_PAGE_OFFSET)
 -- 
 2.27.0
 
