@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C041F7C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D934A1F7C4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgFLRPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:15:10 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44848 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgFLRPD (ORCPT
+        id S1726599AbgFLROq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:14:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1480 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726573AbgFLROk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:15:03 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05CHEOIc035407;
-        Fri, 12 Jun 2020 12:14:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591982064;
-        bh=0CHEg/2YdJEaIawncJx10SE2riY6XRSDzxRhI2/Jvlg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=OK5Nh3Z2OTYUVBCeVNRk4E+OPFD5HYCeYi8rMkyH5xA4x6HX7+yjEFqUPLHDrsEE0
-         UTnU+o3aM5yrZd4uwke2n/ngzPqioCd5QgF3kzNPjNjoptlzP1++VN/Aq4FqCxEp7E
-         8DdRtJaw1072Urtb/ncJSDBfhdn2bzJnybK5BFD8=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05CHENbX014806
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 12:14:24 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Jun 2020 12:14:23 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Jun 2020 12:14:23 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05CHENtL091610;
-        Fri, 12 Jun 2020 12:14:23 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <robh@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v4 2/2] ASoC: tas2562: Update shutdown GPIO property
-Date:   Fri, 12 Jun 2020 12:14:12 -0500
-Message-ID: <20200612171412.25423-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200612171412.25423-1-dmurphy@ti.com>
-References: <20200612171412.25423-1-dmurphy@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 12 Jun 2020 13:14:40 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CH3xXg028194;
+        Fri, 12 Jun 2020 13:14:25 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31mdmf8hrg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jun 2020 13:14:25 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05CH433Z028513;
+        Fri, 12 Jun 2020 13:14:25 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31mdmf8hr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jun 2020 13:14:25 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05CH0k5F032402;
+        Fri, 12 Jun 2020 17:14:24 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 31jqymc0q6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jun 2020 17:14:24 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05CHELGP22675936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jun 2020 17:14:21 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AED4B7805E;
+        Fri, 12 Jun 2020 17:14:22 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BFDE78064;
+        Fri, 12 Jun 2020 17:14:20 +0000 (GMT)
+Received: from [153.66.254.194] (unknown [9.85.161.109])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Jun 2020 17:14:20 +0000 (GMT)
+Message-ID: <1591982059.7235.29.camel@linux.ibm.com>
+Subject: Re: [PATCH] extend IMA boot_aggregate with kernel measurements
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Maurizio Drocco <maurizio.drocco@ibm.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Date:   Fri, 12 Jun 2020 10:14:19 -0700
+In-Reply-To: <380af929b2d2440a9dc35ba0b374247d@huawei.com>
+References: <1591921795.11061.12.camel@linux.ibm.com>
+         <20200612143812.1609-1-maurizio.drocco@ibm.com>
+         <380af929b2d2440a9dc35ba0b374247d@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-11_23:2020-06-11,2020-06-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 malwarescore=0 clxscore=1011
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006110174
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the shutdown GPIO property to be shutdown from shut-down.
+On Fri, 2020-06-12 at 15:11 +0000, Roberto Sassu wrote:
+> with recent patches, boot_aggregate can be calculated from non-SHA1
+> PCR banks. I would replace with:
+> 
+> Extend cumulative digest over ...
+> 
+> Given that with this patch boot_aggregate is calculated differently,
+> shouldn't we call it boot_aggregate_v2 and enable it with a new
+> option?
 
-Fixes: c173dba44c2d2 ("ASoC: tas2562: Introduce the TAS2562 amplifier")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tas2562.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+So here's the problem: if your current grub doesn't do any TPM
+extensions (as most don't), then the two boot aggregates are the same
+because PCRs 8 and 9 are zero and there's a test that doesn't add them
+to the aggregate if they are zero.  For these people its a nop so we
+shouldn't force them to choose a different version of the same thing.
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index 7fae88655a0f..6026d8b1e7d3 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -619,7 +619,7 @@ static int tas2562_parse_dt(struct tas2562_data *tas2562)
- 	struct device *dev = tas2562->dev;
- 	int ret = 0;
- 
--	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down-gpio",
-+	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shutdown",
- 						      GPIOD_OUT_HIGH);
- 	if (IS_ERR(tas2562->sdz_gpio)) {
- 		if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER) {
-@@ -628,6 +628,21 @@ static int tas2562_parse_dt(struct tas2562_data *tas2562)
- 		}
- 	}
- 
-+	/*
-+	 * The shut-down property is deprecated but needs to be checked for
-+	 * backwards compatibility.
-+	 */
-+	if (tas2562->sdz_gpio == NULL) {
-+		tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down",
-+							      GPIOD_OUT_HIGH);
-+		if (IS_ERR(tas2562->sdz_gpio)) {
-+			if (PTR_ERR(tas2562->sdz_gpio) == -EPROBE_DEFER) {
-+				tas2562->sdz_gpio = NULL;
-+				return -EPROBE_DEFER;
-+			}
-+		}
-+	}
-+
- 	ret = fwnode_property_read_u32(dev->fwnode, "ti,imon-slot-no",
- 			&tas2562->i_sense_slot);
- 	if (ret)
--- 
-2.26.2
+If, however, you're on a distribution where grub is automatically
+measuring the kernel and command line into PCRs 8 and 9 (I think Fedora
+32 does this), your boot aggregate will change.  It strikes me in that
+case we can call this a bug fix, since the boot aggregate isn't
+properly binding to the previous measurements without PCRs 8 and 9.  In
+this case, do we want to allow people to select an option which doesn't
+properly bind the IMA log to the boot measurements?  That sounds like a
+security hole to me.
+
+However, since it causes a user visible difference in the grub already
+measures case, do you have a current use case that would be affected? 
+As in are lots of people already running a distro with the TPM grub
+updates and relying on the old boot aggregate?
+
+James
 
