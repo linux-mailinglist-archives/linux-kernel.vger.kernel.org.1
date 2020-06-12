@@ -2,139 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA58A1F7AA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393BF1F7AB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgFLPWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgFLPWP (ORCPT
+        id S1726654AbgFLPXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:23:43 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26444 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726644AbgFLPXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:22:15 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A207C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:22:15 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 0F1EC3A2; Fri, 12 Jun 2020 17:22:11 +0200 (CEST)
-Date:   Fri, 12 Jun 2020 17:22:10 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [git pull] iommu: Move Intel and AMD drivers to a subdirectory
-Message-ID: <20200612152205.GA18833@8bytes.org>
+        Fri, 12 Jun 2020 11:23:43 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05CF1VeH016986;
+        Fri, 12 Jun 2020 17:23:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=ZNCgFY29ushPSChdQisNmd/nPHJRu5GNLEvEuVDL5BM=;
+ b=V3oHbThVFkfRLV1aqUq4Dvf3ONhnmS7OuMBOhlANd777f+fD9tVVoIHaEwJ4vgFpvSZg
+ ny2jfjYOv8WKIkMSjIjFTk1FrvIB5BnbeNpKH6maohfuQ408ijgATIlmvcpp/WGF8ken
+ yhOmcT8+nBDSVFsBEFSOcrzGFWyKtA25YStyyT1nOgNdn/yyBXg0p/abfGQW5Mu3KYKX
+ nh9D9z8m9I6iztupBtDMJEcYx/OnMXF3EgJXK8zxXq0gOzsqig1v2pffJtgeN0ILZPS+
+ ieUcR3UoocZX38owaQxDBdc4zbuFRzQM5+meJgD+bGymcZCR8WxA2oGIDZ2Qx+LWV0Ay LQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31g097s1j5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jun 2020 17:23:14 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF14210002A;
+        Fri, 12 Jun 2020 17:23:12 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 960112B9918;
+        Fri, 12 Jun 2020 17:23:12 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 12 Jun 2020 17:23:11
+ +0200
+From:   Christophe Kerello <christophe.kerello@st.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>, <arnd@linaro.org>,
+        <alexandre.torgue@st.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <marex@denx.de>,
+        Christophe Kerello <christophe.kerello@st.com>
+Subject: [PATCH v5 0/6] add STM32 FMC2 EBI controller driver
+Date:   Fri, 12 Jun 2020 17:22:36 +0200
+Message-ID: <1591975362-22009-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-12_11:2020-06-12,2020-06-12 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The FMC2 functional block makes the interface with: synchronous and
+asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
+peripherals) and NAND flash memories.
+Its main purposes are:
+  - to translate AXI transactions into the appropriate external device
+    protocol
+  - to meet the access time requirements of the external devices
+All external devices share the addresses, data and control signals with the
+controller. Each external device is accessed by means of a unique Chip
+Select. The FMC2 performs only one access at a time to an external device.
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes in v5:
+ - NAND:
+   - do not display errors if the driver is deferred.
+   - look at the parent compatible string to match what we expect.
+ - bindings:
+   - add Rob reviewed-by tag on patch 3.
+   - fix indent descriptions.
+   - add new NFC compatible string to handle reg number of entries. 
 
-Hi Linus,
+Changes in v4:
+ - bindings:
+   - fix filename: st,stm32-fmc2-ebi.yaml
 
-I am not sure it is the right time to send this. The patches below have
-not been part of the IOMMU updates for v5.8, in the AMD case because it
-made the merge conflicts even worse, and in the Intel case because it
-was not done yet.
+Changes in v3:
+ - NAND:
+   - rename labels used on errors
+   - add in the commit log the reason to increase FMC2_TIMEOUT_MS (patch 3)
+   - add Miquel reviewed-by tag (patches 2/4/5/9)
+ - EBI:
+   - move in memory folder
+   - merge MFD and BUS drivers to avoid a MFD driver
+ - bindings:
+   - pattern name has been modified
+   - vendor properties have been modified
+     - s/_/-/
+     - add unit suffix (-ns) on timing properties
 
-It would be good to have both drivers moved in v5.8-rc1, mostly because
-it avoids conflicts between fixes and v5.9 updates later in the cycle.
-But it is also no problem to defer these changes, I can put them again
-into the IOMMU tree and the end of the v5.8 cycle when you feel this
-should have been ready earlier. With that said:
+Christophe Kerello (6):
+  mtd: rawnand: stm32_fmc2: do not display errors if the driver is
+    deferred
+  dt-bindings: mtd: update STM32 FMC2 NAND controller documentation
+  dt-bindings: memory-controller: add STM32 FMC2 EBI controller
+    documentation
+  memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
+  mtd: rawnand: stm32_fmc2: use regmap APIs
+  mtd: rawnand: stm32_fmc2: get resources from parent node
 
-The following changes since commit 431275afdc7155415254aef4bd3816a1b8a2ead0:
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml      |  252 ++++
+ .../bindings/mtd/st,stm32-fmc2-nand.yaml           |   83 +-
+ drivers/memory/Kconfig                             |   10 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/stm32-fmc2-ebi.c                    | 1206 ++++++++++++++++++++
+ drivers/mtd/nand/raw/Kconfig                       |    1 +
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c             |  311 ++---
+ 7 files changed, 1688 insertions(+), 176 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+ create mode 100644 drivers/memory/stm32-fmc2-ebi.c
 
-  iommu: Check for deferred attach in iommu_group_do_dma_attach() (2020-06-04 11:38:17 +0200)
+-- 
+1.9.1
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-drivers-move-v5.8
-
-for you to fetch changes up to 672cf6df9b8a3a6d70a6a5c30397f76fa40d3178:
-
-  iommu/vt-d: Move Intel IOMMU driver into subdirectory (2020-06-10 17:46:43 +0200)
-
-----------------------------------------------------------------
-IOMMU drivers directory structure cleanup:
-
-	- Move the Intel and AMD IOMMU drivers into their own
-	  subdirectory. Both drivers consist of several files by now and
-	  giving them their own directory unclutters the IOMMU top-level
-	  directory a bit.
-
-----------------------------------------------------------------
-Joerg Roedel (2):
-      iommu/amd: Move AMD IOMMU driver into subdirectory
-      iommu/vt-d: Move Intel IOMMU driver into subdirectory
-
- MAINTAINERS                                            |  5 ++---
- drivers/iommu/Makefile                                 | 18 +++++++++---------
- drivers/iommu/{ => amd}/amd_iommu.h                    |  0
- drivers/iommu/{ => amd}/amd_iommu_types.h              |  0
- drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c}   |  0
- drivers/iommu/{amd_iommu_init.c => amd/init.c}         |  2 +-
- drivers/iommu/{amd_iommu.c => amd/iommu.c}             |  2 +-
- drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c}       |  0
- drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c}     |  0
- .../iommu/{intel-iommu-debugfs.c => intel/debugfs.c}   |  0
- drivers/iommu/{ => intel}/dmar.c                       |  2 +-
- drivers/iommu/{ => intel}/intel-pasid.h                |  0
- drivers/iommu/{intel-iommu.c => intel/iommu.c}         |  2 +-
- .../{intel_irq_remapping.c => intel/irq_remapping.c}   |  2 +-
- drivers/iommu/{intel-pasid.c => intel/pasid.c}         |  0
- drivers/iommu/{intel-svm.c => intel/svm.c}             |  0
- drivers/iommu/{intel-trace.c => intel/trace.c}         |  0
- 17 files changed, 16 insertions(+), 17 deletions(-)
- rename drivers/iommu/{ => amd}/amd_iommu.h (100%)
- rename drivers/iommu/{ => amd}/amd_iommu_types.h (100%)
- rename drivers/iommu/{amd_iommu_debugfs.c => amd/debugfs.c} (100%)
- rename drivers/iommu/{amd_iommu_init.c => amd/init.c} (99%)
- rename drivers/iommu/{amd_iommu.c => amd/iommu.c} (99%)
- rename drivers/iommu/{amd_iommu_v2.c => amd/iommu_v2.c} (100%)
- rename drivers/iommu/{amd_iommu_quirks.c => amd/quirks.c} (100%)
- rename drivers/iommu/{intel-iommu-debugfs.c => intel/debugfs.c} (100%)
- rename drivers/iommu/{ => intel}/dmar.c (99%)
- rename drivers/iommu/{ => intel}/intel-pasid.h (100%)
- rename drivers/iommu/{intel-iommu.c => intel/iommu.c} (99%)
- rename drivers/iommu/{intel_irq_remapping.c => intel/irq_remapping.c} (99%)
- rename drivers/iommu/{intel-pasid.c => intel/pasid.c} (100%)
- rename drivers/iommu/{intel-svm.c => intel/svm.c} (100%)
- rename drivers/iommu/{intel-trace.c => intel/trace.c} (100%)
-
-Please pull.
-
-Thanks,
-
-	Joerg
-
---OXfL5xGRrasGEqWY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAl7jnZkACgkQK/BELZcB
-GuMCwRAAnfsSfW4OvKQ8lSOp2CfpXDKojX9nZ+pUuKjngIb/VKATSWuoEK6bSYJy
-yAvu6itq2ftA4oQe5htoX4x5NpFJc8Yu7NOlMLCPkDa0s+ylqac7R+YZONgBnTCJ
-LM9Am/UAxFvY9AJCFyKOqlOfHy6sYhzWSUTXlZk+WvXWznaNhec5rUFIOCgdbPAt
-shPcTA39ilxOhyz/APN3DyP3SHah5odG+MO9Q5u40BzFl4M5pR80q0lCb0I29ejk
-+llm/jbhnkE0E6W+SqvZkJoHdsnmnnoG2pQDhY1APmGXlhuJhsQGCHR+K3e6r+Hz
-rYdyhiNVu7nXZ+yj/5tW+IemHMVayyGrsybe1L8RgoAMF12FyLcpTECQWgp6ceI4
-hDtF1zmT5yQMTCZUI3W5V/ByfizTvhs4Y5H3gvc9ISvwzVD4vSZ9Eb6xnqypegi+
-PRh1kOFUdEJTgAGOkIC4jVJwvs6NbO05eGOL4xpKd4jACrWUUNv0MYOry/+Q9Ot4
-n4DMKuT4ML3mF/YZ3zilp2MrSzvXSoTMVfdrIEpXeSgHDBbp8ribOWQKYh8wsqLn
-/Lox1b1AuqZGd1fGCjaKEoGDAx6djTcAVzVyMhpp98qEQDLO5X0CQnISf7v/C6+1
-0oheyGvH2I89ui7VseYf8CMiJyAUWWNQ4ieKg8mDmLJpW9rvYPM=
-=rI59
------END PGP SIGNATURE-----
-
---OXfL5xGRrasGEqWY--
