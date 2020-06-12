@@ -2,207 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495F81F7F7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 01:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400D11F7F7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 01:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgFLXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 19:15:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52550 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726310AbgFLXP5 (ORCPT
+        id S1726376AbgFLXPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 19:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgFLXPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 19:15:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592003755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BIQD4d2xH0X1MAj8QZUOv2clh3zquYurbViFyUiFSeA=;
-        b=LckGgkSP6kPMSXKilTMpOdOWIK20rhX59obBbcNMoEkkfOTdpCgNmLBPHvkXEVpV6vUXPm
-        mwX4bTR9O+sKVqN99syobQFztlIHQtvSMFYbjhZFykChUommuXC1VnNi+7U/aaoxp+GYJg
-        LrpAqaVLdOPwqTIBxQenwQ5j2krEONQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-5At6G9DnOvC_mVs-5yzU4w-1; Fri, 12 Jun 2020 19:15:41 -0400
-X-MC-Unique: 5At6G9DnOvC_mVs-5yzU4w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A1FA18A8221;
-        Fri, 12 Jun 2020 23:15:40 +0000 (UTC)
-Received: from cantor.redhat.com (ovpn-112-134.phx2.redhat.com [10.3.112.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A1F3B5D9C5;
-        Fri, 12 Jun 2020 23:15:39 +0000 (UTC)
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH 2/2] iommu/amd: Move Kconfig and Makefile bits down into amd directory
-Date:   Fri, 12 Jun 2020 16:11:00 -0700
-Message-Id: <20200612231100.293734-3-jsnitsel@redhat.com>
-In-Reply-To: <20200612231100.293734-1-jsnitsel@redhat.com>
-References: <20200612231100.293734-1-jsnitsel@redhat.com>
+        Fri, 12 Jun 2020 19:15:45 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9B3C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 16:15:43 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id c15so3764689uar.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 16:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oq8VMZuaXGbd2S6QZmKfGmJLPLEtlVINersNYu3Hmq0=;
+        b=MiFMCE9QLz1s7wRwKCXByIZ2xd4K1DO67RKgkjq+lAP7DTtPvpc/G2vBsgSkuDtKa4
+         FwuG6iEAswE2oH+ZdM9YAuSFSl8c5HLxdf8lFHa6MAa5hxg4xLBQc2iWcDe8EDJA5S5k
+         RQB+M2lLyrChdz5hHyuTmUQ1NGV/zdHBXAStQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oq8VMZuaXGbd2S6QZmKfGmJLPLEtlVINersNYu3Hmq0=;
+        b=MKnBFnK7Dqt1DC3DPECGuG/HLv5bGN781CBULdGMNRc1JtLKbZNoSQI21yai105rsU
+         jOdK7UuAG/8sLRsWiMwRDRD1/pmFmSL0tMqNVWyIL21O5QeuVE41vuPYq1EceLEiPo3v
+         0VGQ90c+Rz/5myArbMReSRSTmVu07xJ1NiPOdMDCG1A3dSfhinyRn5vOddb9OiHRhVc4
+         p5B52JXBW3dLA4nh/rgX3s1Zv3ic3nDZZbzbW0CCMqAbi5u9mGOzTBlIGut3e5FCNTv+
+         3LIoPkiduSMGTtSase5GWcx29QPsoarWy/LFJhNvFtVv+5KL0BFS22vf97+dItWLr8lB
+         hoYQ==
+X-Gm-Message-State: AOAM530fOHTN+HWBfVlnPfKFuG3+ar1gx87h1NtXKOkqfyKVQs2uuRQ0
+        RJ86qOnyrYT0iTPCk+pD5BIshGj6v9U=
+X-Google-Smtp-Source: ABdhPJyqJmMIZzJqowYZST7olNcYEw39ETXw46/M9PGtIaxkIiZS9tzgu7ii+RSrUz1AeuURKt0ygQ==
+X-Received: by 2002:a9f:37e1:: with SMTP id q88mr10960307uaq.125.1592003742625;
+        Fri, 12 Jun 2020 16:15:42 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id c7sm1061257uan.12.2020.06.12.16.15.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jun 2020 16:15:41 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id o2so6258831vsr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 16:15:41 -0700 (PDT)
+X-Received: by 2002:a67:e445:: with SMTP id n5mr13169309vsm.73.1592003741235;
+ Fri, 12 Jun 2020 16:15:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org>
+ <1591868882-16553-2-git-send-email-rbokka@codeaurora.org> <CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com>
+In-Reply-To: <CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 12 Jun 2020 16:15:29 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W4QqjOOfh_pJgg3P1PCEGOv8cubFKFKeYOBC0VVk2mZg@mail.gmail.com>
+Message-ID: <CAD=FV=W4QqjOOfh_pJgg3P1PCEGOv8cubFKFKeYOBC0VVk2mZg@mail.gmail.com>
+Subject: Re: [RFC v2 1/3] dt-bindings: nvmem: Add devicetree bindings for qfprom-efuse
+To:     Ravi Kumar Bokka <rbokka@codeaurora.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        dhavalp@codeaurora.org, mturney@codeaurora.org,
+        sparate@codeaurora.org, mkurumel@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move AMD Kconfig and Makefile bits down into the amd directory
-with the rest of the AMD specific files.
+Hi,
 
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
----
- drivers/iommu/Kconfig      | 45 +-------------------------------------
- drivers/iommu/Makefile     |  5 +----
- drivers/iommu/amd/Kconfig  | 44 +++++++++++++++++++++++++++++++++++++
- drivers/iommu/amd/Makefile |  4 ++++
- 4 files changed, 50 insertions(+), 48 deletions(-)
- create mode 100644 drivers/iommu/amd/Kconfig
- create mode 100644 drivers/iommu/amd/Makefile
+On Fri, Jun 12, 2020 at 2:59 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Thu, Jun 11, 2020 at 2:49 AM Ravi Kumar Bokka <rbokka@codeaurora.org> wrote:
+> >
+> > This patch adds dt-bindings document for qfprom-efuse controller.
+> >
+> > Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+> > ---
+> >  .../devicetree/bindings/nvmem/qfprom.yaml          | 52 ++++++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+>
+> Overall comment: I reviewed your v1 series and so I'm obviously
+> interested in your series.  Please CC me on future versions.
+>
+> I would also note that, since this is relevant to Qualcomm SoCs that
+> you probably should be CCing "linux-arm-msm@vger.kernel.org" on your
+> series.
+>
+>
+> >  create mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/nvmem/qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qfprom.yaml
+> > new file mode 100644
+> > index 0000000..7c8fc31
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/nvmem/qfprom.yaml
+> > @@ -0,0 +1,52 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/nvmem/qfprom.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies Inc, QFPROM Efuse bindings
+> > +
+> > +maintainers:
+> > +  - Ravi Kumar Bokka <rbokka@codeaurora.org>
+> > +
+> > +allOf:
+> > +  - $ref: "nvmem.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - qcom,qfprom
+>
+> As per discussion in patch #1, I believe SoC compatible should be here
+> too in case it is ever needed.  This is standard practice for dts
+> files for IP blocks embedded in an SoC.  AKA, this should be:
+>
+>     items:
+>       - enum:
+>           - qcom,apq8064-qfprom
+>           - qcom,apq8084-qfprom
+>           - qcom,msm8974-qfprom
+>           - qcom,msm8916-qfprom
+>           - qcom,msm8996-qfprom
+>           - qcom,msm8998-qfprom
+>           - qcom,qcs404-qfprom
+>           - qcom,sc7180-qfprom
+>           - qcom,sdm845-qfprom
+>       - const: qcom,qfprom
+>
+> NOTE: old SoCs won't have both of these and thus they will get flagged
+> with "dtbs_check", but I believe that's fine (Rob can correct me if
+> I'm wrong).  The code should still work OK if the SoC isn't there but
+> it would be good to fix old dts files to have the SoC specific string
+> too.
+>
+>
+> > +
+> > +  reg:
+> > +    maxItems: 3
+>
+> Please address feedback feedback on v1.  If you disagree with my
+> feedback it's OK to say so (I make no claims of being always right),
+> but silently ignoring my feedback and sending the next version doesn't
+> make me feel like it's a good use of my time to keep reviewing your
+> series.  Specifically I suggested that you actually add descriptions
+> rather than just putting "maxItems: 3".
+>
+> With all that has been discussed, I think the current best thing to
+> put there is:
+>
+>     # If the QFPROM is read-only OS image then only the corrected region
+>     # needs to be provided.  If the QFPROM is writable then all 3 regions
+>     # must be provided.
+>     oneOf:
+>       - items:
+>           - description: The start of the corrected region.
+>       - items:
+>           - description: The start of the raw region.
+>           - description: The start of the config region.
+>           - description: The start of the corrected region.
 
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index b12d4ec124f6..78a8be0053b3 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -132,50 +132,7 @@ config IOMMU_PGTABLES_L2
- 	def_bool y
- 	depends on MSM_IOMMU && MMU && SMP && CPU_DCACHE_DISABLE=n
- 
--# AMD IOMMU support
--config AMD_IOMMU
--	bool "AMD IOMMU support"
--	select SWIOTLB
--	select PCI_MSI
--	select PCI_ATS
--	select PCI_PRI
--	select PCI_PASID
--	select IOMMU_API
--	select IOMMU_IOVA
--	select IOMMU_DMA
--	depends on X86_64 && PCI && ACPI
--	---help---
--	  With this option you can enable support for AMD IOMMU hardware in
--	  your system. An IOMMU is a hardware component which provides
--	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
--	  can isolate the DMA memory of different devices and protect the
--	  system from misbehaving device drivers or hardware.
--
--	  You can find out if your system has an AMD IOMMU if you look into
--	  your BIOS for an option to enable it or if you have an IVRS ACPI
--	  table.
--
--config AMD_IOMMU_V2
--	tristate "AMD IOMMU Version 2 driver"
--	depends on AMD_IOMMU
--	select MMU_NOTIFIER
--	---help---
--	  This option enables support for the AMD IOMMUv2 features of the IOMMU
--	  hardware. Select this option if you want to use devices that support
--	  the PCI PRI and PASID interface.
--
--config AMD_IOMMU_DEBUGFS
--	bool "Enable AMD IOMMU internals in DebugFS"
--	depends on AMD_IOMMU && IOMMU_DEBUGFS
--	---help---
--	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
--
--	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
--	  Exposes AMD IOMMU device internals in DebugFS.
--
--	  This option is -NOT- intended for production environments, and should
--	  not generally be enabled.
--
-+source "drivers/iommu/amd/Kconfig"
- source "drivers/iommu/intel/Kconfig"
- 
- config IRQ_REMAP
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index 71dd2f382e78..f356bc12b1c7 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-y += intel/
-+obj-y += amd/ intel/
- obj-$(CONFIG_IOMMU_API) += iommu.o
- obj-$(CONFIG_IOMMU_API) += iommu-traces.o
- obj-$(CONFIG_IOMMU_API) += iommu-sysfs.o
-@@ -12,9 +12,6 @@ obj-$(CONFIG_IOASID) += ioasid.o
- obj-$(CONFIG_IOMMU_IOVA) += iova.o
- obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
- obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
--obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
--obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
--obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
- obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
- arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
- obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
-diff --git a/drivers/iommu/amd/Kconfig b/drivers/iommu/amd/Kconfig
-new file mode 100644
-index 000000000000..1f061d91e0b8
---- /dev/null
-+++ b/drivers/iommu/amd/Kconfig
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# AMD IOMMU support
-+config AMD_IOMMU
-+	bool "AMD IOMMU support"
-+	select SWIOTLB
-+	select PCI_MSI
-+	select PCI_ATS
-+	select PCI_PRI
-+	select PCI_PASID
-+	select IOMMU_API
-+	select IOMMU_IOVA
-+	select IOMMU_DMA
-+	depends on X86_64 && PCI && ACPI
-+	help
-+	  With this option you can enable support for AMD IOMMU hardware in
-+	  your system. An IOMMU is a hardware component which provides
-+	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
-+	  can isolate the DMA memory of different devices and protect the
-+	  system from misbehaving device drivers or hardware.
-+
-+	  You can find out if your system has an AMD IOMMU if you look into
-+	  your BIOS for an option to enable it or if you have an IVRS ACPI
-+	  table.
-+
-+config AMD_IOMMU_V2
-+	tristate "AMD IOMMU Version 2 driver"
-+	depends on AMD_IOMMU
-+	select MMU_NOTIFIER
-+	help
-+	  This option enables support for the AMD IOMMUv2 features of the IOMMU
-+	  hardware. Select this option if you want to use devices that support
-+	  the PCI PRI and PASID interface.
-+
-+config AMD_IOMMU_DEBUGFS
-+	bool "Enable AMD IOMMU internals in DebugFS"
-+	depends on AMD_IOMMU && IOMMU_DEBUGFS
-+	help
-+	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
-+
-+	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
-+	  Exposes AMD IOMMU device internals in DebugFS.
-+
-+	  This option is -NOT- intended for production environments, and should
-+	  not generally be enabled.
-diff --git a/drivers/iommu/amd/Makefile b/drivers/iommu/amd/Makefile
-new file mode 100644
-index 000000000000..552f68ddcefd
---- /dev/null
-+++ b/drivers/iommu/amd/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_AMD_IOMMU) += iommu.o init.o quirks.o
-+obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += debugfs.o
-+obj-$(CONFIG_AMD_IOMMU_V2) += iommu_v2.o
--- 
-2.27.0
+To address some of Srinivas's comments, I think you should actually
+add the 4th range in here too:
 
+- description: The start of the security control region.
+
+That allows you to read 0x6000 and get the major/minor/step properly.
+
+
+I will also note that as I've started reviewing the driver code it'll
+probably make everyone's life easiest if you keep the "corrected"
+region first, even if it's not numerically first.
+
+
+I've updated my FIXUP patch again.  I might notice more comments as I
+review the driver more, but we'll see...
+
+-Doug
