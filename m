@@ -2,51 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392091F7B64
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433751F7B73
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgFLQGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 12:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44410 "EHLO mail.kernel.org"
+        id S1726308AbgFLQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 12:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgFLQGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:06:24 -0400
+        id S1726053AbgFLQJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 12:09:25 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D30BB20801;
-        Fri, 12 Jun 2020 16:06:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABDFC20836;
+        Fri, 12 Jun 2020 16:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591977983;
-        bh=UjJtFUryNP2TfJoK7XZIrmSz3ZmZvBDsoJb0rLk8EY8=;
+        s=default; t=1591978165;
+        bh=fw3+y3jTQ/X9e2wxCd6+ulf0I5tMAzgBntQiTxh6tj0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COsDhrpNjPhRjQp1IP+GA2CNQOwVT+YkNkJkEbucvFLBWbEd+umPkJdCtPmg4IXIx
-         L6MTrc18FKrFHBlDN2melT7JEU8KOAKjBDTlAD3oOJOMBgq+SJmQVfliExmxaYNMY4
-         AFco7TTy/ZJDevo0PuVugBZirC6QlZ/UOdnuHDyE=
-Date:   Fri, 12 Jun 2020 17:06:20 +0100
+        b=vfM5E2k+jRvOGx5FUPL2TzrsdL03GrvntWrM9UGRM32rWx0PHS3pshPiudTDVkI5s
+         JD6RDgKyF/BmXsCdd24KcBopCMSBxZM7/zM2RFpr7d1SgTe4VL6sNmahb+2fAntQS3
+         qpj0aMNN0J+M91nYmruvkYk2w9Z6bE85ulhvmi2Q=
+Date:   Fri, 12 Jun 2020 17:09:22 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v2 0/6] Enable Greybus Audio codec driver
-Message-ID: <20200612160620.GK5396@sirena.org.uk>
-References: <cover.1591802243.git.vaibhav.sr@gmail.com>
- <20200610173711.GK5005@sirena.org.uk>
- <20200610182322.GC21465@gmail.com>
- <20200611082616.GA4671@sirena.org.uk>
- <20200612153722.GB26807@gmail.com>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        robh@kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] ASoC: tas2562: Update shutdown GPIO property
+Message-ID: <20200612160922.GL5396@sirena.org.uk>
+References: <20200612160603.2456-1-dmurphy@ti.com>
+ <20200612160603.2456-2-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8tUgZ4IE8L4vmMyh"
+        protocol="application/pgp-signature"; boundary="IuJpT0rwbUevm2bB"
 Content-Disposition: inline
-In-Reply-To: <20200612153722.GB26807@gmail.com>
+In-Reply-To: <20200612160603.2456-2-dmurphy@ti.com>
 X-Cookie: As seen on TV.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -55,40 +46,32 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---8tUgZ4IE8L4vmMyh
+--IuJpT0rwbUevm2bB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 12, 2020 at 09:07:24PM +0530, Vaibhav Agarwal wrote:
-> On Thu, Jun 11, 2020 at 09:26:16AM +0100, Mark Brown wrote:
+On Fri, Jun 12, 2020 at 11:06:03AM -0500, Dan Murphy wrote:
 
-> > > Kindly suggest me the preferred way to follow on this thread.=20
+> -	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shut-down-gpio",
+> +	tas2562->sdz_gpio = devm_gpiod_get_optional(dev, "shutdown",
+>  						      GPIOD_OUT_HIGH);
 
-> > This is effectively out of tree code, until someone submits it properly
-> > I'm not sure it's useful to submit incremental patches upstream.
+This also changes the name from shut-down to shutdown which will be
+incompatible (IIRC we do try -gpio as well as -gpios).
 
-> Thanks for the suggestion Mark. I'll create a separate patchset aligned=
-=20
-> to the ASoC tree in next ~2 weeks and share them separately.
-
-Great.  If there's controversial/complicated design bits to sort out it
-would probably be good to split them out so the simple stuff can go
-through more easily.
-
---8tUgZ4IE8L4vmMyh
+--IuJpT0rwbUevm2bB
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jp/sACgkQJNaLcl1U
-h9BjNwf/TxHtNpRoCQSQlm7mC4/R/p3AdvljC0eznPnwUtB6vCy/VN08DiwKL9eW
-9jCL9qejGDblZC/T3PRjBcTmRDNrxME5N8LD5/bQNClC8pYTlUurvzoXOrkc768s
-qxme6AYqrPgChIFm6IvfQF7Uj2LppW37d3t3F920rTkDW0LDBK23caFhLo5JNEdF
-gireupD5ofMp6iIZJDYL7GE0/aKk58gqBxBTVPVy6GmfZP0P76c7DFJmPj1IPg2g
-8gV7sdFA+Qaf5akbdUMYMt1YQpVZrCmeGacMSL9Qk+RL/1GTN6oa1P8+Srxuf3Qb
-XZbQqZcxA1kWUIAlw2gfeBn5FBtN5w==
-=Vm6h
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7jqLEACgkQJNaLcl1U
+h9CZ8wf/d5qODxuDpJv7I7DVUFHsWC+TEvljN5BSeNaWD8YPZp7AGUL7Ayfvc8jv
+LHN5Bjt52gLgOGS9Sg8n3bCgI6fh72PPzPJcpV7GeniZx+WWU7nUdN9yz1kouS4H
+NPPMG9qaWS2hRFtB7IWEH+DBDTCcNQ/piY8DICO4fzw17JcK1uDec0jk1dila3hx
+UozPf3Z/icwZHOvrityv25rWt0V6lStgMJTWntynX/TbCVUzgLgmEbhboo5OqQp8
+FdM6CJxkqelIG3SsswJyfGESVZLUpLMDfzwwLuGPvdCEzoKlv7VEX7LyEHFaBVID
+1QTPOijQpcapd3GyZ1ziauKed7H2MQ==
+=vLSK
 -----END PGP SIGNATURE-----
 
---8tUgZ4IE8L4vmMyh--
+--IuJpT0rwbUevm2bB--
