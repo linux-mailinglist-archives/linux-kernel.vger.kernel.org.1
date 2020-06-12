@@ -2,269 +2,554 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6BC1F7142
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FDD1F7148
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgFLARK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 20:17:10 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:53937 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726285AbgFLARK (ORCPT
+        id S1726391AbgFLAWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 20:22:07 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:59780 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgFLAWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:17:10 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 11 Jun 2020 17:17:05 -0700
-Received: from localhost (unknown [10.200.193.92])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 7A01A40CBD;
-        Thu, 11 Jun 2020 17:17:09 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 17:17:09 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Adrian Reber <areber@redhat.com>
-CC:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH] capabilities: Introduce CAP_RESTORE
-Message-ID: <20200612001709.GA25598@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Adrian Reber <areber@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>, Christine Flood <chf@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>, Arnd Bergmann <arnd@arndb.de>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>
-References: <20200522055350.806609-1-areber@redhat.com>
+        Thu, 11 Jun 2020 20:22:06 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05C0Lw85008286;
+        Thu, 11 Jun 2020 19:21:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1591921318;
+        bh=i0fM58bGqFjTpLXrxPhodYdHp1u0yDhWyAaa5N1STCE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RgXu17KZF2imFXvaNOp98F+l7s2vaUgVFO8TsHpWdB/u2PH7pytohEkqSPIY519uM
+         qdp5mOQjTRqYZj2dtSFpQPFs2F0ZL3CcRltvRpthNagLSHzgqM74NcU9BQ/Q7h+Uo0
+         YhmLEoXLoNgL0XQ3LU9ErsZzPJbnycEVsjY7AyjI=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05C0LwK7078852
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 11 Jun 2020 19:21:58 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 11
+ Jun 2020 19:21:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 11 Jun 2020 19:21:58 -0500
+Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05C0Lwcg051898;
+        Thu, 11 Jun 2020 19:21:58 -0500
+Subject: Re: [PATCH v7 4/5] remoteproc: ingenic: Added remoteproc driver
+To:     Paul Cercueil <paul@crapouillou.net>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>, <od@zcrc.me>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+References: <20200515104340.10473-1-paul@crapouillou.net>
+ <20200515104340.10473-4-paul@crapouillou.net>
+ <8cdcf5ef-1268-89f6-b229-ac711a80b790@ti.com>
+ <FR8SBQ.5WXNHNH8P2P7@crapouillou.net>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <fc1e14e7-4551-48c3-2820-f5889c50becb@ti.com>
+Date:   Thu, 11 Jun 2020 19:21:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200522055350.806609-1-areber@redhat.com>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+In-Reply-To: <FR8SBQ.5WXNHNH8P2P7@crapouillou.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 07:53:50AM +0200, Adrian Reber wrote:
-> This enables CRIU to checkpoint and restore a process as non-root.
-> 
-> Over the last years CRIU upstream has been asked a couple of time if it
-> is possible to checkpoint and restore a process as non-root. The answer
-> usually was: 'almost'.
-> 
-> The main blocker to restore a process was that selecting the PID of the
-> restored process, which is necessary for CRIU, is guarded by CAP_SYS_ADMIN.
-> 
-> In the last two years the questions about checkpoint/restore as non-root
-> have increased and especially in the last few months we have seen
-> multiple people inventing workarounds.
-> 
-> The use-cases so far and their workarounds:
-> 
->  * Checkpoint/Restore in an HPC environment in combination with
->    a resource manager distributing jobs. Users are always running
->    as non root, but there was the desire to provide a way to
->    checkpoint and restore long running jobs.
->    Workaround: setuid wrapper to start CRIU as root as non-root
->    https://github.com/FredHutch/slurm-examples/blob/master/checkpointer/lib/checkpointer/checkpointer-suid.c
->  * Another use case to checkpoint/restore processes as non-root
->    uses as workaround a non privileged process which cycles through
->    PIDs by calling fork() as fast as possible with a rate of
->    100,000 pids/s instead of writing to ns_last_pid
->    https://github.com/twosigma/set_ns_last_pid
->  * Fast Java startup using checkpoint/restore.
->    We have been in contact with JVM developers who are integrating
->    CRIU into a JVM to decrease the startup time.
->    Workaround so far: patch out CAP_SYS_ADMIN checks in the kernel
->  * Container migration as non root. There are people already
->    using CRIU to migrate containers as non-root. The solution
->    there is to run it in a user namespace. So if you are able
->    to carefully setup your environment with the namespaces
->    it is already possible to restore a container/process as non-root.
->    Unfortunately it is not always possible to setup an environment
->    in such a way and for easier access to non-root based container
->    migration this patch is also required.
-> 
-> There are probably a few more things guarded by CAP_SYS_ADMIN required
-> to run checkpoint/restore as non-root, but by applying this patch I can
-> already checkpoint and restore processes as non-root. As there are
-> already multiple workarounds I would prefer to do it correctly in the
-> kernel to avoid that CRIU users are starting to invent more workarounds.
-> 
-> I have used the following tests to verify that this change works as
-> expected by setting the new capability CAP_RESTORE on the two resulting
-> test binaries:
-> 
-> $ cat ns_last_pid.c
->  // http://efiop-notes.blogspot.com/2014/06/how-to-set-pid-using-nslastpid.html
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
->  #include <sys/file.h>
->  #include <sys/types.h>
->  #include <unistd.h>
-> 
-> int main(int argc, char *argv[])
-> {
-> 	pid_t pid, new_pid;
-> 	char buf[32];
-> 	int fd;
-> 
-> 	if (argc != 2)
-> 		return 1;
-> 
-> 	printf("Opening ns_last_pid...\n");
-> 	fd = open("/proc/sys/kernel/ns_last_pid", O_RDWR | O_CREAT, 0644);
-> 	if (fd < 0) {
-> 		perror("Cannot open ns_last_pid");
-> 		return 1;
-> 	}
-> 
-> 	printf("Locking ns_last_pid...\n");
-> 	if (flock(fd, LOCK_EX)) {
-> 		close(fd);
-> 		printf("Cannot lock ns_last_pid\n");
-> 		return 1;
-> 	}
-> 
-> 	pid = atoi(argv[1]);
-> 	snprintf(buf, sizeof(buf), "%d", pid - 1);
-> 	printf("Writing pid-1 to ns_last_pid...\n");
-> 	if (write(fd, buf, strlen(buf)) != strlen(buf)) {
-> 		printf("Cannot write to buf\n");
-> 		return 1;
-> 	}
-> 
-> 	printf("Forking...\n");
-> 	new_pid = fork();
-> 	if (new_pid == 0) {
-> 		printf("I am the child!\n");
-> 		exit(0);
-> 	} else if (new_pid == pid)
-> 		printf("I am the parent. My child got the pid %d!\n", new_pid);
-> 	else
-> 		printf("pid (%d) does not match expected pid (%d)\n", new_pid, pid);
-> 
-> 	printf("Cleaning up...\n");
-> 	if (flock(fd, LOCK_UN))
-> 		printf("Cannot unlock\n");
-> 	close(fd);
-> 	return 0;
-> }
-> $ id -u; /home/libcap/ns_last_pid 300000
-> 1001
-> Opening ns_last_pid...
-> Locking ns_last_pid...
-> Writing pid-1 to ns_last_pid...
-> Forking...
-> I am the parent. My child got the pid 300000!
-> I am the child!
-> Cleaning up...
-> 
-> For the clone3() based approach:
-> $ cat clone3_set_tid.c
->  #define _GNU_SOURCE
->  #include <linux/sched.h>
->  #include <stdint.h>
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <sys/syscall.h>
->  #include <unistd.h>
-> 
->  #define ptr_to_u64(ptr) ((__u64)((uintptr_t)(ptr)))
-> 
-> int main(int argc, char *argv[])
-> {
-> 	struct clone_args c_args = { };
-> 	pid_t pid, new_pid;
-> 
-> 	if (argc != 2)
-> 		return 1;
-> 
-> 	pid = atoi(argv[1]);
-> 	c_args.set_tid = ptr_to_u64(&pid);
-> 	c_args.set_tid_size = 1;
-> 
-> 	printf("Forking...\n");
-> 	new_pid = syscall(__NR_clone3, &c_args, sizeof(c_args));
+Hi Paul,
 
-(Note: I'm going to call the capability CAP_RESTORE but I think this
-applies regardless of whether the permissions stay with CAP_SYS_ADMIN..)
+On 6/11/20 5:21 PM, Paul Cercueil wrote:
+> Hi Suman,
+> 
+> Le jeu. 11 juin 2020 à 16:47, Suman Anna <s-anna@ti.com> a écrit :
+>> Hi Paul,
+>>
+>> On 5/15/20 5:43 AM, Paul Cercueil wrote:
+>>> This driver is used to boot, communicate with and load firmwares to the
+>>> MIPS co-processor found in the VPU hardware of the JZ47xx SoCs from
+>>> Ingenic.
+>>
+>> I have a few comments w.r.t pm_runtime usage in this driver.
+>>
+>>>
+>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>> Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> ---
+>>>
+>>> Notes:
+>>>      v2: Remove exception for always-mapped memories
+>>>      v3: - Use clk_bulk API
+>>>          - Move device-managed code to its own patch [3/4]
+>>>          - Move devicetree table right above ingenic_rproc_driver
+>>>          - Removed #ifdef CONFIG_OF around devicetree table
+>>>          - Removed .owner = THIS_MODULE in ingenic_rproc_driver
+>>>          - Removed useless platform_set_drvdata()
+>>>      v4: - Add fix reported by Julia
+>>>          - Change Kconfig symbol to INGENIC_VPU_RPROC
+>>>          - Add documentation to struct vpu
+>>>          - disable_irq_nosync() -> disable_irq()
+>>>      v5: No change
+>>>      v6: Instead of prepare/unprepare callbacks, use PM runtime 
+>>> callbacks
+>>>      v7: - Remove use of of_match_ptr()
+>>>          - Move Kconfig symbol so that it's in alphabetical order
+>>>          - Add missing doc for private structure field aux_base
+>>>          - Don't check for (len <= 0) in da_to_va()
+>>>          - Add missing \n in dev_info/dev_err messages
+>>>
+>>>   drivers/remoteproc/Kconfig         |   9 +
+>>>   drivers/remoteproc/Makefile        |   1 +
+>>>   drivers/remoteproc/ingenic_rproc.c | 280 +++++++++++++++++++++++++++++
+>>>   3 files changed, 290 insertions(+)
+>>>   create mode 100644 drivers/remoteproc/ingenic_rproc.c
+>>>
+>>> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+>>> index fbaed079b299..c4d1731295eb 100644
+>>> --- a/drivers/remoteproc/Kconfig
+>>> +++ b/drivers/remoteproc/Kconfig
+>>> @@ -23,6 +23,15 @@ config IMX_REMOTEPROC
+>>>           It's safe to say N here.
+>>>   +config INGENIC_VPU_RPROC
+>>> +    tristate "Ingenic JZ47xx VPU remoteproc support"
+>>> +    depends on MIPS || COMPILE_TEST
+>>> +    help
+>>> +      Say y or m here to support the VPU in the JZ47xx SoCs from 
+>>> Ingenic.
+>>> +
+>>> +      This can be either built-in or a loadable module.
+>>> +      If unsure say N.
+>>> +
+>>>   config MTK_SCP
+>>>       tristate "Mediatek SCP support"
+>>>       depends on ARCH_MEDIATEK
+>>> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+>>> index 0effd3825035..e8b886e511f0 100644
+>>> --- a/drivers/remoteproc/Makefile
+>>> +++ b/drivers/remoteproc/Makefile
+>>> @@ -10,6 +10,7 @@ remoteproc-y                += remoteproc_sysfs.o
+>>>   remoteproc-y                += remoteproc_virtio.o
+>>>   remoteproc-y                += remoteproc_elf_loader.o
+>>>   obj-$(CONFIG_IMX_REMOTEPROC)        += imx_rproc.o
+>>> +obj-$(CONFIG_INGENIC_VPU_RPROC)        += ingenic_rproc.o
+>>>   obj-$(CONFIG_MTK_SCP)            += mtk_scp.o mtk_scp_ipi.o
+>>>   obj-$(CONFIG_OMAP_REMOTEPROC)        += omap_remoteproc.o
+>>>   obj-$(CONFIG_WKUP_M3_RPROC)        += wkup_m3_rproc.o
+>>> diff --git a/drivers/remoteproc/ingenic_rproc.c 
+>>> b/drivers/remoteproc/ingenic_rproc.c
+>>> new file mode 100644
+>>> index 000000000000..189020d77b25
+>>> --- /dev/null
+>>> +++ b/drivers/remoteproc/ingenic_rproc.c
+>>> @@ -0,0 +1,280 @@
+>>> +// SPDX-License-Identifier: GPL-2.0+
+>>> +/*
+>>> + * Ingenic JZ47xx remoteproc driver
+>>> + * Copyright 2019, Paul Cercueil <paul@crapouillou.net>
+>>> + */
+>>> +
+>>> +#include <linux/bitops.h>
+>>> +#include <linux/clk.h>
+>>> +#include <linux/err.h>
+>>> +#include <linux/interrupt.h>
+>>> +#include <linux/io.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/platform_device.h>
+>>> +#include <linux/pm_runtime.h>
+>>> +#include <linux/remoteproc.h>
+>>> +
+>>> +#include "remoteproc_internal.h"
+>>> +
+>>> +#define REG_AUX_CTRL        0x0
+>>> +#define REG_AUX_MSG_ACK        0x10
+>>> +#define REG_AUX_MSG        0x14
+>>> +#define REG_CORE_MSG_ACK    0x18
+>>> +#define REG_CORE_MSG        0x1C
+>>> +
+>>> +#define AUX_CTRL_SLEEP        BIT(31)
+>>> +#define AUX_CTRL_MSG_IRQ_EN    BIT(3)
+>>> +#define AUX_CTRL_NMI_RESETS    BIT(2)
+>>> +#define AUX_CTRL_NMI        BIT(1)
+>>> +#define AUX_CTRL_SW_RESET    BIT(0)
+>>> +
+>>> +struct vpu_mem_map {
+>>> +    const char *name;
+>>> +    unsigned int da;
+>>> +};
+>>> +
+>>> +struct vpu_mem_info {
+>>> +    const struct vpu_mem_map *map;
+>>> +    unsigned long len;
+>>> +    void __iomem *base;
+>>> +};
+>>> +
+>>> +static const struct vpu_mem_map vpu_mem_map[] = {
+>>> +    { "tcsm0", 0x132b0000 },
+>>> +    { "tcsm1", 0xf4000000 },
+>>> +    { "sram",  0x132f0000 },
+>>> +};
+>>> +
+>>> +/**
+>>> + * struct vpu - Ingenic VPU remoteproc private structure
+>>> + * @irq: interrupt number
+>>> + * @clks: pointers to the VPU and AUX clocks
+>>> + * @aux_base: raw pointer to the AUX interface registers
+>>> + * @mem_info: array of struct vpu_mem_info, which contain the 
+>>> mapping info of
+>>> + *            each of the external memories
+>>> + * @dev: private pointer to the device
+>>> + */
+>>> +struct vpu {
+>>> +    int irq;
+>>> +    struct clk_bulk_data clks[2];
+>>> +    void __iomem *aux_base;
+>>> +    struct vpu_mem_info mem_info[ARRAY_SIZE(vpu_mem_map)];
+>>> +    struct device *dev;
+>>> +};
+>>> +
+>>> +static int ingenic_rproc_start(struct rproc *rproc)
+>>> +{
+>>> +    struct vpu *vpu = rproc->priv;
+>>> +    u32 ctrl;
+>>> +
+>>> +    enable_irq(vpu->irq);
+>>> +
+>>> +    /* Reset the AUX and enable message IRQ */
+>>> +    ctrl = AUX_CTRL_NMI_RESETS | AUX_CTRL_NMI | AUX_CTRL_MSG_IRQ_EN;
+>>> +    writel(ctrl, vpu->aux_base + REG_AUX_CTRL);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int ingenic_rproc_stop(struct rproc *rproc)
+>>> +{
+>>> +    struct vpu *vpu = rproc->priv;
+>>> +
+>>> +    disable_irq(vpu->irq);
+>>> +
+>>> +    /* Keep AUX in reset mode */
+>>> +    writel(AUX_CTRL_SW_RESET, vpu->aux_base + REG_AUX_CTRL);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static void ingenic_rproc_kick(struct rproc *rproc, int vqid)
+>>> +{
+>>> +    struct vpu *vpu = rproc->priv;
+>>> +
+>>> +    writel(vqid, vpu->aux_base + REG_CORE_MSG);
+>>> +}
+>>> +
+>>> +static void *ingenic_rproc_da_to_va(struct rproc *rproc, u64 da, 
+>>> size_t len)
+>>> +{
+>>> +    struct vpu *vpu = rproc->priv;
+>>> +    void __iomem *va = NULL;
+>>> +    unsigned int i;
+>>> +
+>>> +    for (i = 0; i < ARRAY_SIZE(vpu_mem_map); i++) {
+>>> +        const struct vpu_mem_info *info = &vpu->mem_info[i];
+>>> +        const struct vpu_mem_map *map = info->map;
+>>> +
+>>> +        if (da >= map->da && (da + len) < (map->da + info->len)) {
+>>> +            va = info->base + (da - map->da);
+>>> +            break;
+>>> +        }
+>>> +    }
+>>> +
+>>> +    return (__force void *)va;
+>>> +}
+>>> +
+>>> +static struct rproc_ops ingenic_rproc_ops = {
+>>> +    .start = ingenic_rproc_start,
+>>> +    .stop = ingenic_rproc_stop,
+>>> +    .kick = ingenic_rproc_kick,
+>>> +    .da_to_va = ingenic_rproc_da_to_va,
+>>> +};
+>>> +
+>>> +static irqreturn_t vpu_interrupt(int irq, void *data)
+>>> +{
+>>> +    struct rproc *rproc = data;
+>>> +    struct vpu *vpu = rproc->priv;
+>>> +    u32 vring;
+>>> +
+>>> +    vring = readl(vpu->aux_base + REG_AUX_MSG);
+>>> +
+>>> +    /* Ack the interrupt */
+>>> +    writel(0, vpu->aux_base + REG_AUX_MSG_ACK);
+>>> +
+>>> +    return rproc_vq_interrupt(rproc, vring);
+>>> +}
+>>> +
+>>> +static void ingenic_rproc_disable_clks(void *data)
+>>> +{
+>>> +    struct vpu *vpu = data;
+>>> +
+>>> +    pm_runtime_resume(vpu->dev);
+>>> +    pm_runtime_disable(vpu->dev);
+>>> +
+>>> +    clk_bulk_disable_unprepare(ARRAY_SIZE(vpu->clks), vpu->clks);
+>>> +}
+>>> +
+>>> +static int ingenic_rproc_probe(struct platform_device *pdev)
+>>> +{
+>>> +    struct device *dev = &pdev->dev;
+>>> +    struct resource *mem;
+>>> +    struct rproc *rproc;
+>>> +    struct vpu *vpu;
+>>> +    unsigned int i;
+>>> +    int ret;
+>>> +
+>>> +    rproc = devm_rproc_alloc(dev, "ingenic-vpu",
+>>> +                 &ingenic_rproc_ops, NULL, sizeof(*vpu));
+>>> +    if (!rproc)
+>>> +        return -ENOMEM;
+>>> +
+>>> +    vpu = rproc->priv;
+>>> +    vpu->dev = &pdev->dev;
+>>> +    platform_set_drvdata(pdev, vpu);
+>>> +
+>>> +    mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "aux");
+>>> +    vpu->aux_base = devm_ioremap_resource(dev, mem);
+>>> +    if (IS_ERR(vpu->aux_base)) {
+>>> +        dev_err(dev, "Failed to ioremap\n");
+>>> +        return PTR_ERR(vpu->aux_base);
+>>> +    }
+>>> +
+>>> +    for (i = 0; i < ARRAY_SIZE(vpu_mem_map); i++) {
+>>> +        mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>>> +                           vpu_mem_map[i].name);
+>>> +
+>>> +        vpu->mem_info[i].base = devm_ioremap_resource(dev, mem);
+>>> +        if (IS_ERR(vpu->mem_info[i].base)) {
+>>> +            ret = PTR_ERR(vpu->mem_info[i].base);
+>>> +            dev_err(dev, "Failed to ioremap\n");
+>>> +            return ret;
+>>> +        }
+>>> +
+>>> +        vpu->mem_info[i].len = resource_size(mem);
+>>> +        vpu->mem_info[i].map = &vpu_mem_map[i];
+>>> +    }
+>>> +
+>>> +    vpu->clks[0].id = "vpu";
+>>> +    vpu->clks[1].id = "aux";
+>>> +
+>>> +    ret = devm_clk_bulk_get(dev, ARRAY_SIZE(vpu->clks), vpu->clks);
+>>> +    if (ret) {
+>>> +        dev_err(dev, "Failed to get clocks\n");
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    vpu->irq = platform_get_irq(pdev, 0);
+>>> +    if (vpu->irq < 0)
+>>> +        return vpu->irq;
+>>> +
+>>> +    ret = devm_request_irq(dev, vpu->irq, vpu_interrupt, 0, "VPU", 
+>>> rproc);
+>>> +    if (ret < 0) {
+>>> +        dev_err(dev, "Failed to request IRQ\n");
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    disable_irq(vpu->irq);
+>>> +
+>>> +    /* The clocks must be enabled for the firmware to be loaded in 
+>>> TCSM */
+>>> +    ret = clk_bulk_prepare_enable(ARRAY_SIZE(vpu->clks), vpu->clks);
+>>> +    if (ret) {
+>>> +        dev_err(dev, "Unable to start clocks\n");
+>>> +        return ret;
+>>> +    }
+>>
+>> You are enabling the clocks directly here and also trying to manage 
+>> them through pm_runtime callbacks again.
+> 
+> Yes. The clocks need to be enabled in the probe.
 
-I haven't fully reviewed the discussion of the security consequences but
-my sense is this would require retaining CAP_RESTORE down the entire tree
-of processes being restored so each parent could call clone3() with the
-correct pid value for its child(ren).
+For the preferred non CONFIG_PM case now and lack of prepare/unprepare().
 
-Ideally you would drop CAP_RESTORE sooner -- preferrably only one
-process would need it. I think you could do that by changing what you pass
-down; instead of passing down a capability and a pid number, pass down a
-special "reservation" pidfd:
+> 
+>>> +
+>>> +    pm_runtime_irq_safe(dev);
+>>
+>> Nothing wrong with this, but this does take an additional reference 
+>> count on the parent device (a bus device for you??), and also implies 
+>> that your clk driver code can all run in atomic context so unless you 
+>> have a strong reason, it is safe to drop this.
+> 
+> The clock driver code can run in atomic context, it is guaranteed by the 
+> clk API.
 
-1. Have CAP_RESTORE enable opening a pidfd with the desired pid as a
-   reservation for the pid (i.e. can't use it to signal, wait, ...
-   perhaps these return -EBUSY, -EAGAIN or something...).
+OK.
 
-2. Only one process needs CAP_RESTORE -- it can drop CAP_RESTORE after
-   reserving all of the pids but before kicking off the clone3() calls
-   to recreate all of the tasks.
+> 
+>>
+>>> +    pm_runtime_set_active(dev);
+>>
+>> The get_sync below would have been sufficient if you had either 
+>> limited the clk API above to just clk_prepare, or you could have moved 
+>> the whole clk API above into your runtime resume callback.
+> 
+> You assume that pm_runtime_get() will enable the clocks, but that's only 
+> true if CONFIG_PM is set.
+> 
+> The reason the clocks are enabled in the probe, and 
+> pm_runtime_set_active() is called, is that it works whether or not 
+> CONFIG_PM is set.
 
-3. Pass the pidfd down the tree of restoring processes. Note how the
-   set of specific pids to be created is limited at this point --
-   the software cannot be tricked into recreating processes other pids
-   using a capability, CAP_RESTORE, it doesn't have. You might even set a
-   flag on the pidfd which closes the pidfd in the sender when it's passed
-   over a socket so that only the appropriate processes retain the pidfd.
+As I said, if the intention is to reflect the clocks active state in rpm 
+status, then pm_runtime_get_noresume() does the job for you instead of 
+get_sync(). pm_runtime_get_sync() typically does 3 things - increment 
+the usage count, invoke your callbacks (enable clocks for you), and sets 
+the status to active, with the last two steps optional depending on 
+usage count.
 
-4. The parent can then pass the *reserved* pidfd into clone3(). The
-   reserved pidfd seamlessly turns into a pidfd reference to the child if
-   clone3() succeeds. If it fails the eservation is still consumed -- a
-   given pidfd reserved for clone3() can only be passed to clone3() and
-   succeed once.
+> 
+>>> +    pm_runtime_enable(dev);
+>>> +    pm_runtime_get_sync(dev);
+>>
+>> If the intention was to increment the usage count with the above 
+>> sequence, pm_runtime_get_noresume() is better. But dropping all of the 
+>> above and just using get_sync would have been sufficient.
+>>
+>>> +    pm_runtime_use_autosuspend(dev);
+>>
+>> I don't see any setting of the autosuspend delay (default value is 0). 
+>> So, you might have as well just not used this at all, and just used 
+>> pm_runtime_put() below.
+> 
+> Autosuspend delay value can be set from userspace.
 
-Perhaps this scheme could concentrate the need for CAP_SYS_ADMIN
-to one process so maybe it would obviate the need for CAP_RESTORE.
-That said, perhaps there's something that prevents implementing such
-a pidfd or perhaps I have misunderstood what CRIU is doing and this
-pidfd idea isn't workable.
+Yes, but I don't see a specific purpose for it in your driver. Either 
+you have remoteproc running (and so clocks enabled always), or you don't 
+have a firmware loaded and want clocks disabled (not sure you would want 
+to waste power for certain of amount of time).
 
-Cheers,
-    -Matt Helsley
+> 
+>>> +
+>>> +    ret = devm_add_action_or_reset(dev, ingenic_rproc_disable_clks, 
+>>> vpu);
+>>> +    if (ret) {
+>>> +        dev_err(dev, "Unable to register action\n");
+>>> +        goto out_pm_put;
+>>> +    }
+>>> +
+>>> +    ret = devm_rproc_add(dev, rproc);
+>>> +    if (ret) {
+>>> +        dev_err(dev, "Failed to register remote processor\n");
+>>> +        goto out_pm_put;
+>>> +    }
+>>
+>> You are using auto-boot, so the firmware loading is an asynchronous 
+>> event and most probably you would run through below sequence first, 
+>> and end up disabling the clocks with an incorrect rpm status.
+> 
+> The driver can auto-load the firmware, but that does not mean it will. 
+> We actually don't do that, and load a task-specific firmware onto the 
+> remote processor on demand.
+
+Yeah OK, depends on what is preferred by default. If it is more standard 
+practise that the remoteproc is booted by userspace always, then I 
+suggest setting auto_boot as false. But nothing wrong with expecting to 
+boot by default with a starting firmware.
+
+> 
+>>> +
+>>> +out_pm_put:
+>>> +    pm_runtime_put_autosuspend(dev);
+>>
+>> And finally, with the remoteproc core rpm patch, this would all have 
+>> been unnecessary.
+>>
+>>> +
+>>> +    return ret;
+>>> +}
+>>> +
+>>> +static const struct of_device_id ingenic_rproc_of_matches[] = {
+>>> +    { .compatible = "ingenic,jz4770-vpu-rproc", },
+>>> +    {}
+>>> +};
+>>> +MODULE_DEVICE_TABLE(of, ingenic_rproc_of_matches);
+>>> +
+>>> +static int __maybe_unused ingenic_rproc_suspend(struct device *dev)
+>>> +{
+>>> +    struct vpu *vpu = dev_get_drvdata(dev);
+>>> +
+>>> +    clk_bulk_disable(ARRAY_SIZE(vpu->clks), vpu->clks);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int __maybe_unused ingenic_rproc_resume(struct device *dev)
+>>> +{
+>>> +    struct vpu *vpu = dev_get_drvdata(dev);
+>>> +
+>>> +    return clk_bulk_enable(ARRAY_SIZE(vpu->clks), vpu->clks);
+>>> +}
+>>> +
+>>> +static const struct dev_pm_ops __maybe_unused ingenic_rproc_pm = {
+>>> +    SET_RUNTIME_PM_OPS(ingenic_rproc_suspend, ingenic_rproc_resume, 
+>>> NULL)
+>>> +};
+>>> +
+>>> +static struct platform_driver ingenic_rproc_driver = {
+>>> +    .probe = ingenic_rproc_probe,
+>>> +    .driver = {
+>>> +        .name = "ingenic-vpu",
+>>> +#ifdef CONFIG_PM
+>>
+>> Not sure why you would want to maintain this conditional, because 
+>> runtime_pm is a core dependency now for your driver to work properly.
+> 
+> No, it is not - the driver works perfectly fine with CONFIG_PM being 
+> disabled, and having a hardcoded dependency on CONFIG_PM is not 
+> something we want.
+
+OK, so if IIUC, in general CONFIG_PM is not a typical usage for your 
+MIPS platforms. Your driver is the first non-ARM remoteproc driver :), 
+CONFIG_PM is almost a given on most ARM platforms.
+
+So, I fail to see how your clocks can stay disabled then when 
+CONFIG_PM=n if the remoteproc fails to load with the current code, which 
+was your primary argument for using prepare/unprepare (based on comments 
+on prior versions). It looks to me that your needs are indeed better 
+suited with the prepare/unprepare ops as in your initial series.
+
+And in the case of CONFIG_PM=y, you have three levels of code that 
+enables the clocks (the bare clk API, the pm_runtime_get in probe, and 
+the pm_runtime_get in the remoteproc core). Depending on the rpm status, 
+it may or may not invoke the callbacks.
+
+regards
+Suman
+
+> 
+> Cheers,
+> -Paul
+> 
+>> regards
+>> Suman
+>>
+>>> +        .pm = &ingenic_rproc_pm,
+>>> +#endif
+>>> +        .of_match_table = ingenic_rproc_of_matches,
+>>> +    },
+>>> +};
+>>> +module_platform_driver(ingenic_rproc_driver);
+>>> +
+>>> +MODULE_LICENSE("GPL");
+>>> +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
+>>> +MODULE_DESCRIPTION("Ingenic JZ47xx Remote Processor control driver");
+>>>
+>>
+> 
+> 
+
