@@ -2,212 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C36D1F7A74
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935101F7A56
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 17:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgFLPL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 11:11:57 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2304 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726286AbgFLPL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:11:56 -0400
-Received: from lhreml705-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 6750ADA06B09320AA0F5;
-        Fri, 12 Jun 2020 16:11:54 +0100 (IST)
-Received: from fraeml704-chm.china.huawei.com (10.206.15.53) by
- lhreml705-chm.china.huawei.com (10.201.108.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 12 Jun 2020 16:11:54 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 12 Jun 2020 17:11:53 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Fri, 12 Jun 2020 17:11:53 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Maurizio Drocco <maurizio.drocco@ibm.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
-CC:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Subject: RE: [PATCH] extend IMA boot_aggregate with kernel measurements
-Thread-Topic: [PATCH] extend IMA boot_aggregate with kernel measurements
-Thread-Index: AQHWQCo8nqt7HKCznkGnNWX+y9c+NajT/1SAgADtAgCAACbgMA==
-Date:   Fri, 12 Jun 2020 15:11:53 +0000
-Message-ID: <380af929b2d2440a9dc35ba0b374247d@huawei.com>
-References: <1591921795.11061.12.camel@linux.ibm.com>
- <20200612143812.1609-1-maurizio.drocco@ibm.com>
-In-Reply-To: <20200612143812.1609-1-maurizio.drocco@ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.96.108]
-Content-Type: multipart/mixed;
-        boundary="_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_"
+        id S1726310AbgFLPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 11:08:54 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:58039 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgFLPIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 11:08:53 -0400
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E67C8100012;
+        Fri, 12 Jun 2020 15:08:44 +0000 (UTC)
+Date:   Fri, 12 Jun 2020 17:12:09 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        hien.dang.eb@renesas.com, michael.klein@renesas.com,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com, geert@linux-m68k.org,
+        horms@verge.net.au, uli+renesas@fpond.eu,
+        VenkataRajesh.Kalakodima@in.bosch.com, airlied@linux.ie,
+        daniel@ffwll.ch, koji.matsuoka.xm@renesas.com, muroya@ksk.co.jp,
+        Harsha.ManjulaMallikarjun@in.bosch.com, ezequiel@collabora.com,
+        seanpaul@chromium.org, linux-renesas-soc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        michael.dege@renesas.com, gotthard.voellmeke@renesas.com,
+        efriedrich@de.adit-jv.com, mrodin@de.adit-jv.com,
+        ChaitanyaKumar.Borah@in.bosch.com,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: Re: [PATCH v5 0/8] drm: rcar-du: Add Color Management Module (CMM)
+Message-ID: <20200612151209.xdaqimvpq7ysvu2q@uno.localdomain>
+References: <20191015104621.62514-1-jacopo+renesas@jmondi.org>
+ <20200527071555.GA23912@lxhi-065.adit-jv.com>
+ <20200605132900.on527xcggg6f6pil@uno.localdomain>
+ <20200605134124.GA28734@lxhi-065.adit-jv.com>
+ <20200605135315.xlph44pl7kvmt23a@uno.localdomain>
+ <20200607024158.GD7339@pendragon.ideasonboard.com>
+ <20200608094432.GA27063@lxhi-065.adit-jv.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200608094432.GA27063@lxhi-065.adit-jv.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi Eugeniu
 
-> From: linux-integrity-owner@vger.kernel.org [mailto:linux-integrity-
-> owner@vger.kernel.org] On Behalf Of Maurizio Drocco
-> Sent: Friday, June 12, 2020 4:38 PM
-> IMA is not considering TPM registers 8-9 when calculating the boot
-> aggregate. When registers 8-9 are used to store measurements of the
-> kernel and its command line (e.g., grub2 bootloader with tpm module
-> enabled), IMA should include them in the boot aggregate.
->=20
-> Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
-> ---
->  security/integrity/ima/ima.h        |  2 +-
->  security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
->  2 files changed, 15 insertions(+), 2 deletions(-)
->=20
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index df93ac258e01..9d94080bdad8 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -30,7 +30,7 @@
->=20
->  enum ima_show_type { IMA_SHOW_BINARY,
-> IMA_SHOW_BINARY_NO_FIELD_LEN,
->  		     IMA_SHOW_BINARY_OLD_STRING_FMT,
-> IMA_SHOW_ASCII };
-> -enum tpm_pcrs { TPM_PCR0 =3D 0, TPM_PCR8 =3D 8 };
-> +enum tpm_pcrs { TPM_PCR0 =3D 0, TPM_PCR8 =3D 8, TPM_PCR10 =3D 10 };
->=20
->  /* digest size for IMA, fits SHA1 or MD5 */
->  #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
-> diff --git a/security/integrity/ima/ima_crypto.c
-> b/security/integrity/ima/ima_crypto.c
-> index 220b14920c37..64f5e3151e18 100644
-> --- a/security/integrity/ima/ima_crypto.c
-> +++ b/security/integrity/ima/ima_crypto.c
-> @@ -809,7 +809,7 @@ static void ima_pcrread(u32 idx, struct tpm_digest *d=
-)
->  static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
->  				       struct crypto_shash *tfm)
->  {
-> -	struct tpm_digest d =3D { .alg_id =3D alg_id, .digest =3D {0} };
-> +	struct tpm_digest d =3D { .alg_id =3D alg_id, .digest =3D {0} }, d0 =3D=
- d;
->  	int rc;
->  	u32 i;
->  	SHASH_DESC_ON_STACK(shash, tfm);
-> @@ -830,6 +830,19 @@ static int ima_calc_boot_aggregate_tfm(char
-> *digest, u16 alg_id,
->  		rc =3D crypto_shash_update(shash, d.digest,
->  					 crypto_shash_digestsize(tfm));
->  	}
-> +	/*
-> +	 * extend cumulative sha1 over tpm registers 8-9, which contain
+On Mon, Jun 08, 2020 at 11:44:32AM +0200, Eugeniu Rosca wrote:
+> Hello,
+>
+> Many thanks for your comments and involvement.
+>
+> On Sun, Jun 07, 2020 at 05:41:58AM +0300, Laurent Pinchart wrote:
+> > On Fri, Jun 05, 2020 at 03:53:15PM +0200, Jacopo Mondi wrote:
+> > > On Fri, Jun 05, 2020 at 03:41:24PM +0200, Eugeniu Rosca wrote:
+> > > > On Fri, Jun 05, 2020 at 03:29:00PM +0200, Jacopo Mondi wrote:
+> > > >> On Wed, May 27, 2020 at 09:15:55AM +0200, Eugeniu Rosca wrote:
+> > > >>> Could you kindly share the cross compilation steps for your kmsxx fork?
+> > > >>
+> > > >> I usually build it on the target :)
+> > > >
+> > > > Interesting approach. With ARM getting more and more potent, why not? :)
+> > >
+> > > For 'small' utilities like kmsxx it's doable
+> > >
+> > > >>> Just out of curiosity, have you ever tried to pull the display's HDMI
+> > > >>> cable while reading from CM2_LUT_TBL?
+> > > >>
+> > > >> Ahem, not really :) Did I get you right, you mean disconnecting the
+> > > >> HDMI cable from the board ?
+> > > >
+> > > > Right.
+> > >
+> > > So, no, I have not tried. Do you see any intersting failure with the
+> > > mainline version ?
+> >
+> > Jacopo, would you be able to give this a try ?
+>
+> FWIW, I seem to hit pre-existing issues in vanilla rcar-du,
+> while unplugging HDMI cable during a cyclic suspend-resume:
+>
+> HW: H3 ES2.0 Salvator-X
+> SW: renesas-drivers-2020-06-02-v5.7
+> .config: renesas_defconfig +CONFIG_PM_DEBUG +CONFIG_PM_ADVANCED_DEBUG
+> Use-case:
+>
+>   --------8<---------
+> $ cat s2ram.sh
+> modprobe i2c-dev
+> echo 9 > /proc/sys/kernel/printk
+> i2cset -f -y 7 0x30 0x20 0x0F
 
-Hi Maurizio
+According to
+https://elinux.org/R-Car/Boards/Salvator-X#Suspend-to-RAM
+this is not needed anymore
 
-with recent patches, boot_aggregate can be calculated from non-SHA1
-PCR banks. I would replace with:
+> echo 0 > /sys/module/suspend/parameters/pm_test_delay
+> echo core  > /sys/power/pm_test
+> echo deep > /sys/power/mem_sleep
+> echo 1 > /sys/power/pm_debug_messages
+> echo 0 > /sys/power/pm_print_times
+> echo mem > /sys/power/state
+>
+> $ while true; do sh s2ram.sh ; done
+> $ # unplug HDMI cable several times
 
-Extend cumulative digest over ...
+I tried unplugging an plugging the cable while the system was
+suspended and after resume but I was not able to reproduce anything.
 
-Given that with this patch boot_aggregate is calculated differently,
-shouldn't we call it boot_aggregate_v2 and enable it with a new
-option?
+Could you provide more precise instructions on how to reproduce this ?
+I.e. when to disconnect the cable to trigger the below error.
 
 Thanks
+  j
 
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> +	 * measurement for the kernel command line (reg. 8) and image
-> (reg. 9)
-> +	 * in a typical PCR allocation.
-> +	 */
-> +	for (i =3D TPM_PCR8; i < TPM_PCR10; i++) {
-> +		ima_pcrread(i, &d);
-> +		/* if not zero, accumulate with current aggregate */
-> +		if (memcmp(d.digest, d0.digest,
-> +			   crypto_shash_digestsize(tfm)) !=3D 0)
-> +			rc =3D crypto_shash_update(shash, d.digest,
-> +
-> crypto_shash_digestsize(tfm));
-> +	}
->  	if (!rc)
->  		crypto_shash_final(shash, digest);
->  	return rc;
+>
+> [   55.568051] PM: noirq resume of devices complete after 3.862 msecs
+> [   55.583253] PM: early resume of devices complete after 8.496 msecs
+> [   65.757023] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+> [   75.996123] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+> [   86.236112] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+> [   96.476111] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:80:HDMI-A-1] flip_done timed out
+> [  106.716109] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:45:plane-5] flip_done timed out
+> [  116.956111] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+> [  127.196112] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+> [  137.436116] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:80:HDMI-A-1] flip_done timed out
+> [  147.676111] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:45:plane-5] flip_done timed out
+> [  157.916110] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:74:crtc-1] flip_done timed out
+>   --------8<---------
+>
+> This looks to be unrelated to the CMM lockup I initially reported.
+>
+> JYI, graphics pipelines in production R-Car3 targets are significantly
+> more complex (involving binding/unbinding serializer ICs at runtime
+> during non-trivial shutdown/suspend/resume sequences), as opposed
+> to the relatively straightforward VGA/HDMI outputs present on the
+> reference targets. So, my hope is that Renesas community can take
+> HDMI hot plugging seriously and make it a regular test-case during
+> rcar-du patch review, since this is a precondition for the R-Car3
+> platform and products to succeed as a whole.
+>
+> BTW, if you happen to know an affordable programmable HDMI switcher
+> which can do the hot-plugging job in an automated test environment,
+> please let me know.
+>
+> >
+> > > >>> At least with the out-of-tree CMM implementation [*], this sends the
+> > > >>> R-Car3 reference targets into an unrecoverable freeze, with no lockup
+> > > >>> reported by the kernel (i.e. looks like an serious HW issue).
+> > > >>>
+> > > >>>> CMM functionalities are retained between suspend/resume cycles (tested with
+> > > >>>> suspend-to-idle) without requiring a re-programming of the LUT tables.
+> > > >>>
+> > > >>> Hmm. Is this backed up by any statement in the HW User's manual?
+> > > >>> This comes in contrast with the original Renesas CMM implementation [**]
+> > > >>> which does make use of suspend (where the freeze actually happens).
+> > > >>>
+> > > >>> Can we infer, based on your statement, that we could also get rid of
+> > > >>> the suspend callback in [**]?
+> > > >>
+> > > >> As Geert (thanks) explained what I've tested with is suspend-to-idle,
+> > > >> which retains the state of the LUT tables (and I assume other
+> > > >> not-yet-implemented CMM features, like CLU). I recall the out-of-tree
+> > > >> driver has suspend/resume routines but I never really tested that.
+> > > >
+> > > > I see. JFYI, there is a flaw in the suspend handling in the out-of-tree
+> > > > CMM patch [*], which renders the SoC unresponsive on HDMI hotplug. The
+> > > > fix is currently under review. Hopefully it will make its way to [*]
+> > > > in the nearest future. Just to keep in mind for the moment when CMM
+> > > > s2ram will become a mainline feature.
+> > >
+> > > Thanks, let's keep this in mind. Next week I'll run a few tests again
+> > > with s2ram and will get back to you.
+> >
+> > Note that the CMM driver is controlled by the DU driver. As the DU
+> > driver will reenable the display during resume, it will call
+> > rcar_du_cmm_setup() at resume time, which will reprogram the CMM. There
+> > should thus be no need for manual suspend/resume handling in the CMM as
+> > far as I can tell, but we need to ensure that the CMM is suspended
+> > before and resumed after the DU. I believe this could be implemented
+> > using device links.
+>
+> Does this apply to vanilla rcar-du only (where CMM support differs
+> from [*]) or would also be relevant for rcar.9.6 kernel?
+>
+> >
+> > > >>> [*] https://github.com/renesas-rcar/du_cmm
+> > > >>> [**] https://github.com/renesas-rcar/du_cmm/blob/c393ed49834bdbc/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-drm-rcar-du-Add-DU-CMM-support.patch#L1912
+>
 > --
-> 2.17.1
-
-
---_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_
-Content-Type: message/rfc822
-Content-Disposition: attachment;
-	creation-date="Fri, 12 Jun 2020 15:11:53 GMT";
-	modification-date="Fri, 12 Jun 2020 15:11:53 GMT"
-
-Received: from fraeml709-chm.china.huawei.com (10.206.15.37) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5
- via Mailbox Transport; Thu, 28 May 2020 09:33:39 +0200
-Received: from fraeml703-chm.china.huawei.com (10.206.15.52) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 28 May 2020 09:33:39 +0200
-Received: from fraeml703-chm.china.huawei.com (10.206.15.52) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 28 May 2020 09:33:38 +0200
-Received: from DGGEMS412-HUB.china.huawei.com (10.3.19.212) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256) id
- 15.1.1913.5 via Frontend Transport; Thu, 28 May 2020 09:33:38 +0200
-Received: from hulknmm (10.175.113.134) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 28 May
- 2020 15:33:32 +0800
-From: pmail_patchwork <patchwork@huawei.com>
-To: Roberto Sassu <roberto.sassu@huawei.com>
-CC: pmail_hulkcommits <hulkcommits@huawei.com>, pmail_hulkcommits
-	<hulkcommits@huawei.com>
-Subject: re: [PATCH 9/9] ima: Don't remove security.ima if file must not be
- appraised
-Thread-Topic: [PATCH 9/9] ima: Don't remove security.ima if file must not be
- appraised
-Thread-Index: AQHWNMJOo5mVCMbjDE6NnqkX1hFZvg==
-Date: Thu, 28 May 2020 08:03:43 +0000
-Message-ID: <20200528080343.54677.49365@hulknmm>
-References: <20200528065732.22351-4-roberto.sassu@huawei.com>
-In-Reply-To: <20200528065732.22351-4-roberto.sassu@huawei.com>
-Content-Language: en-US
-X-MS-Exchange-Organization-AuthMechanism: 06
-X-MS-Exchange-Organization-AuthSource: DGGEMS412-HUB.china.huawei.com
-X-MS-Has-Attach:
-X-MS-Exchange-Organization-Network-Message-Id: f8904490-833d-4cc6-2086-08d802d9700c
-X-MS-TNEF-Correlator:
-X-MS-Exchange-Organization-RecordReviewCfmType: 0
-x-ms-exchange-organization-originalserveripaddress: 10.3.19.212
-x-ms-exchange-organization-originalclientipaddress: 10.175.113.134
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0235E133B9F18A49A545EE45BB2C6001@huawei.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-
-VG90YWw6IDAgd2FybmluZ3MsIDAgZXJyb3JzLCAzIGl0ZW1zIGNoZWNrZWQNCg0KQWxsIDMgdGVz
-dCBpdGVtcyBTVUNDRVNTLg0KDQpMaW5rOiBodHRwOi8vcGF0Y2h3b3JrLmh1YXdlaS5jb20vcGF0
-Y2gvNTI4OTAvDQoNCi0tLQ0KSHVsayBSb2JvdA0K
-
---_002_380af929b2d2440a9dc35ba0b374247dhuaweicom_--
+> Best regards,
+> Eugeniu Rosca
