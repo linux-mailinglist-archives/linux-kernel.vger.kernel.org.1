@@ -2,132 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794381F7178
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 02:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4CD1F718A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 03:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgFLAtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 20:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgFLAtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:49:45 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F14C03E96F
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 17:49:44 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id k4so7234417oik.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 17:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zYO/56jAlSJmEKKEC3sDbINPjtiMSsfklDTiY6BNZzs=;
-        b=QwJo2BcgHjI7iLhRJeSZg3J1BZLiuq1MVSI9inNjtXpuiOdHMPL1H9FuCPXUGaAIBw
-         qx4c+vbw/HjgU6OiLoUk05Pk1goSzEZc6FsKsWvtjdYEhhsI9xyrSB+tuZu0pyIbhFGX
-         UmvNVX0/8+2ljEl4Uv0d+HLjeRH9gGiKb0U5KNKbHkj3JH7Q1RQHZt1kp9zlIGZmeJEg
-         d3/rhv83qDlNHu5de0AmSMfPMLSPsyMN6rhTAchyA5so30AJPkdbwQWuhVJw0SFNo6GR
-         p3DpwQxJjE8RMRrx1uCuxUTbNo7x6tCW6mM1AZ+QoqLNvBMR2AG8LjpG2MPb5mADivBE
-         T0Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zYO/56jAlSJmEKKEC3sDbINPjtiMSsfklDTiY6BNZzs=;
-        b=ktN9OjFXh7KkHVtmiyTpf4b2LwIrhtX7GEu4ZIcGC9o7N1LS26NJ1WEp38e+dk8MbC
-         LCFtWdXl4CCI+EdN2HyZMF9uHpvyHa8CvtTBtTfBTnWwJnKUk+0YxtdW3MbWYpFqmgYZ
-         5An8OWc65n0VMTCqvPBGwZVB/vaCQ8d/sCrDNv++5Zf6vYAzKpXtO+XyGzBnnKoGTxh4
-         BwSrtrOr+GI4zdQt3M4+H3IWh4VUYJKnvkSwUAedCE0uImgz1eZ+HzYn95tnOQLf2vI3
-         85uCGsiS3whAh2wGjBdGXdhW93+jtBDAkjq6ZrHGKSBcIMp+TpF12GVDWNF/wo1fNz+p
-         kHfA==
-X-Gm-Message-State: AOAM530476gfAUU5P39+em26MI/KF5IQVRk8E0G9Ce37dkqvizFHCpQp
-        lmFZJSV961Dwmdk9sBhsACAMlBv2WgKGxr+KtGyNOA==
-X-Google-Smtp-Source: ABdhPJzSRrQoexp66WEFwfTRVwH565Tou4tzj1+FW+C+utMOv2XLr+b0Pd1S88XOqeyBvZ29OMI0WqXRnUlsUcTyzoA=
-X-Received: by 2002:aca:5d0b:: with SMTP id r11mr454293oib.169.1591922983459;
- Thu, 11 Jun 2020 17:49:43 -0700 (PDT)
+        id S1726396AbgFLBBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 21:01:15 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42732 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726305AbgFLBBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 21:01:15 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E532F75579B3E817CE12;
+        Fri, 12 Jun 2020 09:01:11 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.235) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 12 Jun 2020
+ 09:01:04 +0800
+Subject: Re: [PATCH V2] bcache: fix potential deadlock problem in
+ btree_gc_coalesce
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        <linux-bcache@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Coly Li <colyli@suse.de>, Feilong Lin <linfeilong@huawei.com>,
+        Kent Overstreet <kmo@daterainc.com>, <mingfangsen@huawei.com>,
+        <renxudong1@huawei.com>, Wu Bo <wubo40@huawei.com>,
+        <yanxiaodan@huawei.com>
+References: <80c2a2c6-01b9-8280-34b4-ff6b9cfaf76a@web.de>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <ae980a3c-f41b-caf6-a384-516656b6fa50@huawei.com>
+Date:   Fri, 12 Jun 2020 09:01:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <s5himfxet1c.wl-tiwai@suse.de> <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
-In-Reply-To: <CANcMJZAG4QqJ2Cxt+1RLsa8Z4oR=2y8zyD_sqy3sm_8MXyhg2g@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 11 Jun 2020 17:49:29 -0700
-Message-ID: <CALAqxLWEfRJ_Jr0iDgmvqop5Etz5xve89Zy3OeUbnKUGtqjCqQ@mail.gmail.com>
-Subject: Re: [GIT PULL] sound fixes for 5.8-rc1
-To:     Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Vinod Koul <vinod.koul@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <80c2a2c6-01b9-8280-34b4-ff6b9cfaf76a@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.235]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 5:13 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Thu, Jun 11, 2020 at 6:39 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > sound fixes for 5.8-rc1
-> >
-> > Here are last-minute fixes gathered before merge window close;
-> > a few fixes are for the core while the rest majority are driver
-> > fixes.
-> >
-> > * PCM locking annotation fixes and the possible self-lock fix
-> > * ASoC DPCM regression fixes with multi-CPU DAI
->
-> Just as a heads up, we just recently got HDMI audio working on the
-> Dragonboard 845c (Vinod has patches he's sending out here in the next
-> few days), but they suddenly stopped working today with the following
-> error:
-> [   13.110725] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia1 mapping ok
-> [   13.119343] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia2 mapping ok
-> [   13.127969] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia3 mapping ok
-> [   13.135891] msm-snd-sdm845 soc@0:sound: Compress ASoC:
-> snd-soc-dummy-dai <-> MultiMedia4 mapping ok
-> [   13.145042] msm-snd-sdm845 soc@0:sound: CPU DAI QUAT_MI2S_RX for
-> rtd HDMI Playback does not support capture
-> [   13.154873] msm-snd-sdm845 soc@0:sound: ASoC: can't create pcm HDMI
-> Playback :-22
-> [   13.165634] snd-malloc: invalid device type 0
-> [   13.170057] snd-malloc: invalid device type 0
-> [   13.174888] msm-snd-sdm845 soc@0:sound: Sound card registration failed
-> [   13.181574] msm-snd-sdm845: probe of soc@0:sound failed with error -22
->
->  I've bisected it down to the following commit from this pull req:
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b73287f0b0745961b14e5ebcce92cc8ed24d4d52
->
-> Without this patch:
-> [   13.056906] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia1 mapping ok
-> [   13.075465] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia2 mapping ok
-> [   13.092949] msm-snd-sdm845 soc@0:sound: snd-soc-dummy-dai <->
-> MultiMedia3 mapping ok
-> [   13.109704] msm-snd-sdm845 soc@0:sound: Compress ASoC:
-> snd-soc-dummy-dai <-> MultiMedia4 mapping ok
-> [   13.125584] msm-snd-sdm845 soc@0:sound: i2s-hifi <-> QUAT_MI2S_RX mapping ok
-> [   13.125621] msm-snd-sdm845 soc@0:sound: multicodec <-> SLIMBUS_0_RX
-> mapping ok
-> [   13.141682] msm-snd-sdm845 soc@0:sound: wcd934x_tx1 <->
-> SLIMBUS_0_TX mapping ok
-> ...
->
-> I've not managed to dig in with much analysis yet (possibly something
-> off with the current patches we have), but wanted to raise the issue
-> in case others start to see it too.
+Sorry for late reply. I will improve the commit log as your suggestion in v3 patch.
+Thanks for your suggestion.
 
-I don't know the backgroun again, but would something like the
-following make sense?
-https://git.linaro.org/people/john.stultz/android-dev.git/commit/?h=dev/db845c-mainline-WIP&id=7e49b248db77b5ed29b2aa278268e77650c75482
+On 2020/4/27 2:16, Markus Elfring wrote:
+>> --
+>> V1->V2: rewrite commit log (suggested by Coly Li) and rename the patch
+> 
+> * The patch version description should be placed behind triple dashes.
+> 
+> * I would find a shorter version identification (without the arrow)
+>   also sufficient.
+> 
+> 
+>> Fixes: 2a285686c1 ("bcache: btree locking rework")>
+> 
+> Will a longer commit identifier be safer for the final change description?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=b2768df24ec400dd4f7fa79542f797e904812053#n183
+> 
+> Regards,
+> Markus
+> 
 
-It avoids failing completely if playback or capture isn't found.
-
-thanks
--john
