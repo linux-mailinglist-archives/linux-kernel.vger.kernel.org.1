@@ -2,141 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003C21F7278
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 05:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE161F729E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 05:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgFLDac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Jun 2020 23:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgFLDac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Jun 2020 23:30:32 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AF5220878
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 03:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591932631;
-        bh=LkU0aSGFes8SdfS/64Est12NefN8zfPhEnQa83oS7lk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QCBckqUf+QlzzWculQ/xI3jdcyylkJKJn4Fp55LrgpX39KOdF+ukDyMcQj9+qrw0z
-         dh9JMfWZl2SjIQh+DooIrQyF6bOYFr73y8H7BRbDS0FKvF0BlQq5GgRA+AGemsQW0s
-         4ioSm9pWEg7Ydcrwych4IgXePuM4sMCfvggWJO1M=
-Received: by mail-wm1-f48.google.com with SMTP id y20so6923475wmi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Jun 2020 20:30:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533TU6yJ3ll0FnxVhoAe7p7toqNR33nLgTx5pFkw0Vzy5eQN403U
-        iAufVcWW2umrzclsT62Xipy2Z9eCUPsECBwPZr2IDg==
-X-Google-Smtp-Source: ABdhPJzsX6f0tjw6qMwpnhb4setFA9eVXwUcrdWDzQL+Oe/A7dX6gpa/YF+7fLsJW7ydpKDV/WohRXRprUqgTb8xibw=
-X-Received: by 2002:a05:600c:22da:: with SMTP id 26mr11004447wmg.176.1591932629995;
- Thu, 11 Jun 2020 20:30:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYvF3cyrY+-iw_SZtpN-i2qA2BruHg4M=QYECU2-dNdsMw@mail.gmail.com>
- <CALCETrXqhwJzhsAoM72tskso5aDELgfGLnHdGYHiAFmgCPforQ@mail.gmail.com>
- <20200611192518.GA2483@worktop.programming.kicks-ass.net> <CALCETrXq2sVuT39+oB2CskQBP3nNk4ogx+cwv-Jc3vE-uZazYg@mail.gmail.com>
-In-Reply-To: <CALCETrXq2sVuT39+oB2CskQBP3nNk4ogx+cwv-Jc3vE-uZazYg@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 11 Jun 2020 20:30:18 -0700
-X-Gmail-Original-Message-ID: <CALCETrVQxFq2b5ydSk-w4W-7+6OMro0jyHQqtFoM2Tvn_=aLSQ@mail.gmail.com>
-Message-ID: <CALCETrVQxFq2b5ydSk-w4W-7+6OMro0jyHQqtFoM2Tvn_=aLSQ@mail.gmail.com>
-Subject: Re: Perf: WARNING: arch/x86/entry/common.c:624 idtentry_exit_cond_rcu+0x92/0xc0
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, cj.chengjian@huawei.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        lkft-triage@lists.linaro.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726527AbgFLDzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Jun 2020 23:55:08 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:55303 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgFLDzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Jun 2020 23:55:06 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200612035502epoutp02f89da52a1bb796a42730d5ad86f0c277~Xr6HYwLec2027820278epoutp02H
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 03:55:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200612035502epoutp02f89da52a1bb796a42730d5ad86f0c277~Xr6HYwLec2027820278epoutp02H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591934103;
+        bh=RQa8AFCM99yUGiDu4NxIgEUEIJgifsocm6dc35PWvOw=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=gdTBi4BO4hXGAT+3x94E/A5tEmwiMI2+ALwViXRWZ1vZDvV6xCPiEzt3ssNw1/zf1
+         v4JnVUD2anfRVXg16902PPDpom7oZKwb32P8RlNJo48I9JVqEQ0D3hV/nvplKYiEV3
+         IZ3zaG7NOzlqHapxruZu+DcZT81lfnQOeWrMaGqc=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200612035502epcas1p11585e2cec8f289714ecf22b3fa330541~Xr6G-_Jkz2660226602epcas1p1z;
+        Fri, 12 Jun 2020 03:55:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [RFC PATCH 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <0389f9cf-fea8-9990-7699-0e4322728e4a@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21591934102518.JavaMail.epsvc@epcpadp1>
+Date:   Fri, 12 Jun 2020 12:37:52 +0900
+X-CMS-MailID: 20200612033752epcms2p5e3532bd586a435bab2148e5b251d8bab
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882
+References: <0389f9cf-fea8-9990-7699-0e4322728e4a@acm.org>
+        <231786897.01591322101492.JavaMail.epsvc@epcpadp1>
+        <336371513.41591320902369.JavaMail.epsvc@epcpadp1>
+        <963815509.21591320301642.JavaMail.epsvc@epcpadp1>
+        <231786897.01591320001492.JavaMail.epsvc@epcpadp1>
+        <963815509.21591323002276.JavaMail.epsvc@epcpadp1>
+        <CGME20200605011604epcms2p8bec8ef6682583d7248dc7d9dc1bfc882@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 4:22 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Thu, Jun 11, 2020 at 12:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Jun 11, 2020 at 12:10:50PM -0700, Andy Lutomirski wrote:
-> > > On Thu, Jun 11, 2020 at 11:56 AM Naresh Kamboju
-> > > <naresh.kamboju@linaro.org> wrote:
-> > > >
-> > > > While running perf test and selftest x86 single_step_syscall_32 on
-> > > > i386 kernel linux
-> > > > next 5.7.0-next-20200610 kernel warning noticed.
-> > > >
-> > > > steps to reproduce:
-> > > > --------------------------
-> > > > perf test
-> > > > and
-> > > > cd /opt/kselftests/default-in-kernel/x86
-> > > > ./single_step_syscall_32
-> > > >
-> > > > perf warning log:
-> > > > ----------------------
-> > > > [   57.260865] ------------[ cut here ]------------
-> > > > [   57.266576] IRQs not disabled as expected
-> > > > [   57.270583] WARNING: CPU: 1 PID: 500 at
-> > > > /usr/src/kernel/arch/x86/entry/common.c:624
-> > > > idtentry_exit_cond_rcu+0x92/0xc0
-> > > > [   57.281092] Modules linked in: x86_pkg_temp_thermal fuse
-> > > > [   57.286406] CPU: 1 PID: 500 Comm: perf Not tainted 5.7.0-next-20200610 #1
-> > > > [   57.293190] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > > 2.2 05/23/2018
-> > > > [   57.300577] EIP: idtentry_exit_cond_rcu+0x92/0xc0
-> > > > [   57.305280] Code: 8b 89 d8 05 00 00 85 c9 74 ae 80 3d b1 64 2c d4
-> > > > 00 75 a5 68 94 2d fb d3 89 55 f8 89 45 fc c6 05 b1 64 2c d4 01 e8 8e
-> > > > f5 2b ff <0f> 0b 58 8b 55 f8 8b 45 fc eb 83 8d 76 00 e8 5b fd ff ff c9
-> > > > c3 89
-> > > > [   57.324017] EAX: 0000001d EBX: 0d00022a ECX: 00000027 EDX: f5b9e14c
-> > > > [   57.330274] ESI: f2a2ffb4 EDI: ffff0ff4 EBP: f2a2ff8c ESP: f2a2ff80
-> > > > [   57.336531] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010096
-> > > > [   57.343345] CR0: 80050033 CR2: 08700a58 CR3: 14ad7000 CR4: 003406d0
-> > > > [   57.349608] DR0: 080dfb80 DR1: 080dfc00 DR2: 08700a58 DR3: 00000000
-> > > > [   57.355866] DR6: fffe0ff0 DR7: 0d00062a
-> > > > [   57.359697] Call Trace:
-> > > > [   57.362143]  exc_debug+0x84/0x1b0
-> > > > [   57.365487]  ? exc_int3+0x1d0/0x1d0
-> > > > [   57.368981]  handle_exception+0x145/0x145
-> > > > [   57.372991] EIP: 0x80dfbcd
-> > > > [   57.375694] Code: Bad RIP value.
-> > > > [   57.378918] EAX: 00000000 EBX: 00000005 ECX: 00002400 EDX: 00000000
-> > > > [   57.385175] ESI: 00000003 EDI: 00000004 EBP: bfd59798 ESP: bfd59770
-> > > > [   57.391431] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000246
-> > > > [   57.398215] irq event stamp: 1896
-> > >
-> > > A regrettable property of the current entry code structure is that we
-> > > lose any real indication of the vector.  Presumably this is #DB, hence
-> > > exc_debug.  I don't know what perf has to do with it.
-> > >
-> > > I'll bang on this after lunch if no one beats me to it.
-> >
-> > Puzzling, CR3 seems to suggest this is !user_mode(), but either way #DB
-> > has either idtentry_enter_user() or nmi_enter().
-> >
->
-> I just got this splat on 32-bit while running my perf abuser here:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/luto/misc-tests.git/tree/perf_lots_of_nmi.c
->
-> [   21.874114] traps: PANIC: double fault, error_code: 0x0
+> > +static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+> > +					     struct ufshpb_subregion *srgn)
+> > +{
+> > +	struct ufshpb_req *map_req;
+> > +	struct request *req;
+> > +	struct bio *bio;
+> > +
+> > +	map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
+> > +	if (!map_req)
+> > +		return NULL;
+> > +
+> > +	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
+> > +			      REQ_OP_SCSI_IN, BLK_MQ_REQ_PREEMPT);
+> > +	if (IS_ERR(req))
+> > +		goto free_map_req;
+> > +
+> > +	bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
+> > +	if (!bio) {
+> > +		blk_put_request(req);
+> > +		goto free_map_req;
+> > +	}
+> > +
+> > +	map_req->hpb = hpb;
+> > +	map_req->req = req;
+> > +	map_req->bio = bio;
+> > +
+> > +	map_req->rgn_idx = srgn->rgn_idx;
+> > +	map_req->srgn_idx = srgn->srgn_idx;
+> > +	map_req->mctx = srgn->mctx;
+> > +	map_req->lun = hpb->lun;
+> > +
+> > +	return map_req;
+> > +free_map_req:
+> > +	kmem_cache_free(hpb->map_req_cache, map_req);
+> > +	return NULL;
+> > +}
 
-Two bugs here.
+> Will blk_get_request() fail if all tags have been allocated? Can that
+> cause a deadlock or infinite loop?
+If the worker fails to receive the tag, it stops and exits. The remained
+lists are processed again at the next work. Therefore, no deadlock or
+infinite loop occurs.
 
-1. We had an issue with WARN. Patch sent.
+> > +static inline void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
+> > +					   int srgn_idx, int srgn_mem_size)
+> > +{
+> > +	cdb[0] = UFSHPB_READ_BUFFER;
+> > +	cdb[1] = UFSHPB_READ_BUFFER_ID;
+> > +
+> > +	put_unaligned_be32(srgn_mem_size, &cdb[5]);
+> > +	/* cdb[5] = 0x00; */
+> > +	put_unaligned_be16(rgn_idx, &cdb[2]);
+> > +	put_unaligned_be16(srgn_idx, &cdb[4]);
+> > +
+> > +	cdb[9] = 0x00;
+> > +}
 
-2. idtentry.h has, for x86_32:
+> So the put_unaligned_be32(srgn_mem_size, &cdb[5]) comes first because
+> the put_unaligned_be16(srgn_idx, &cdb[4]) overwrites byte cdb[5]? That
+> is really ugly. Please use put_unaligned_be24() instead if that is what
+> you meant and keep the put_*() calls in increasing cdb offset order.
+OK, I will.
 
-# define DEFINE_IDTENTRY_IST  DEFINE_IDTENTRY
+> > +static int ufshpb_map_req_add_bio_page(struct ufshpb_lu *hpb,
+> > +				       struct request_queue *q, struct bio *bio,
+> > +				       struct ufshpb_map_ctx *mctx)
+> > +{
+> > +	int i, ret = 0;
+> > +
+> > +	for (i = 0; i < hpb->pages_per_srgn; i++) {
+> > +		ret = bio_add_pc_page(q, bio, mctx->m_page[i], PAGE_SIZE, 0);
+> > +		if (ret != PAGE_SIZE) {
+> > +			dev_notice(&hpb->hpb_lu_dev,
+> > +				   "bio_add_pc_page fail %d\n", ret);
+> > +			return -ENOMEM;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+	
+> Why bio_add_pc_page() instead of bio_add_page()?
+Since this map request is created under the block layer and it is a
+passthrough command, I think bio_add_pc_page is a more suitable API than
+bio_add_page. If bio_add_page is used in scsi LLD, the checking codes that
+examine the max segment size in the block layer is not performed.
 
-This is nonsense.  It's getting late over here and I'd rather focus on
-the more interesting RCU issue, so that's all from me today.
+> > +static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
+> > +				  struct ufshpb_req *map_req)
+> > +{
+> > +	struct request_queue *q;
+> > +	struct request *req;
+> > +	struct scsi_request *rq;
+> > +	int ret = 0;
+> > +
+> > +	q = hpb->sdev_ufs_lu->request_queue;
+> > +	ret = ufshpb_map_req_add_bio_page(hpb, q, map_req->bio,
+> > +					  map_req->mctx);
+> > +	if (ret) {
+> > +		dev_notice(&hpb->hpb_lu_dev,
+> > +			   "map_req_add_bio_page fail %d - %d\n",
+> > +			   map_req->rgn_idx, map_req->srgn_idx);
+> > +		return ret;
+> > +	}
+> > +
+> > +	req = map_req->req;
+> > +
+> > +	blk_rq_append_bio(req, &map_req->bio);
+> > +	req->rq_flags |= RQF_QUIET;
+> > +	req->timeout = MAP_REQ_TIMEOUT;
+> > +	req->end_io_data = (void *)map_req;
+> > +
+> > +	rq = scsi_req(req);
+> > +	ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
+> > +				map_req->srgn_idx, hpb->srgn_mem_size);
+> > +	rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
+> > +
+> > +	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_map_req_compl_fn);
+> > +
+> > +	atomic_inc(&hpb->stats.map_req_cnt);
+> > +	return 0;
+> > +}
 
---Andy
+> Why RQF_QUIET?
+I refered scsi execute function. I will delete the needless flag.
+
+> Why a custom timeout instead of the SCSI LUN timeout?
+There was no suitable timeout value to use. I've included sd.h, so I'll
+use sd_timeout.
+
+> Can this function be made asynchronous such that it does not have to be
+> executed on the context of a workqueue?
+If this code doesn't work in your workq, map related task is handled in
+interrupt context. Using workq, it avoids frequent active/inactive requests
+to UFS devices by batched manner.
+
+Thanks,
+
+Daejun.
+
+
