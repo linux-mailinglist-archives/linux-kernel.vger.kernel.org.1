@@ -2,271 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053411F7BA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C771F7BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 18:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgFLQbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 12:31:21 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48725 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgFLQbV (ORCPT
+        id S1726352AbgFLQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 12:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgFLQch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:31:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591979477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h+wFNh6g1LwXDIcDojVcNUqQDtORiQxjs31ZgD6xXJA=;
-        b=SjheiYK8lio0esGeKuAH+rZrhmiZKYnwzlOpDhUtq3cmMQpNup9wiWvz/rTiB/DKW3l9sh
-        WrPJ8ly2U/cQPT3sWPwdeCUXhZAukEAd1ifvXxHxKE9DbF7CC7QQ3QRtRDz57i4Kb9s6Bb
-        xLOEWdlYGJIT9M3Qaw77SPfhHtGU1Ug=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-outWB-s5OVqPgnDOmzv44A-1; Fri, 12 Jun 2020 12:31:14 -0400
-X-MC-Unique: outWB-s5OVqPgnDOmzv44A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0A14800053;
-        Fri, 12 Jun 2020 16:31:13 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D9D210013C1;
-        Fri, 12 Jun 2020 16:31:13 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] Second batch of KVM patches for Linux 5.8
-Date:   Fri, 12 Jun 2020 12:31:12 -0400
-Message-Id: <20200612163112.16001-1-pbonzini@redhat.com>
+        Fri, 12 Jun 2020 12:32:37 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3157C03E96F;
+        Fri, 12 Jun 2020 09:32:36 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c17so11750887lji.11;
+        Fri, 12 Jun 2020 09:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h9/hD+5cr+kQsdI9njfbrV+8m68DT/RHAyph11Pyn1Q=;
+        b=olJfsyXkiyvlLDR7lSo1KdmY4DZdXJE7J/mW0weHajgKJxOAjRApOVlkbPFmjSCtm0
+         Ufdb0JxuLgMClwlxM91aHd4i+w+wqXL7iq2fZkMOXyPJRbPlk8INeEUXpPy2v+stgdW9
+         vEJE8kVQvNQ0MKOfMWc3V01Unx/AJP6qy5g2+tQtJImaiipysuvGBR3Y3ILr+hOJ0jnq
+         zncaH18PUZRs1nhTob0OMYzc8C1PMXyVNoqHqNgvw3dnrm2iQFIb235Xa5DgMbYEnj6l
+         mRdzYTTduYp3yE8BfLDCm0gM4VrUXL97cT77nUkNiiYOFptO1rTOEGq0SyZDhLnO8tKp
+         me8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h9/hD+5cr+kQsdI9njfbrV+8m68DT/RHAyph11Pyn1Q=;
+        b=LylZ57TunUdlaxdmPR2BVyqzZk2jNIYzXShV1Ib7uQlyecA7QMae0+2a17haxMh6eo
+         sVpimSiqA0lgvzip+iclKdBdJdgUz7cELQ3xzCecAUKP53eXkfEVX9HZfKgIeCaP+u2W
+         0TWsDOLb81YLjgna3qMINkLo+cyRLvZiyiona2DqhUneXwVh4ZemDNvpFrG1ZCSfAWiF
+         Vl9AWgw38t6hZBea6RpIrmDJPPw2Y9ic3zzkC3fDxEf2C6RY9Pgfq5EwpANsnaJd/KUH
+         w4wHymbdykAMLEW/NKYwpaFyPRPzsApQb08j49wbqd1FztZI562L/BFEJHGuetAot0wT
+         EU1w==
+X-Gm-Message-State: AOAM530PsbEQnAS1tauU0jfMv6xuspE/5pdnT2Xi3fci2dn3jVyt2MUz
+        bOC5dd6ITRPzJOc0/irjYVNV/TFC
+X-Google-Smtp-Source: ABdhPJw9NmR9vxMcwTecHWidsvl8CKA5zjxXH1L93pZrVmPeuI/wK9rkSyMZEqFzOC4GurWwS0l0pA==
+X-Received: by 2002:a2e:b0d0:: with SMTP id g16mr7594005ljl.130.1591979554907;
+        Fri, 12 Jun 2020 09:32:34 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.googlemail.com with ESMTPSA id y21sm1793100ljy.74.2020.06.12.09.32.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jun 2020 09:32:34 -0700 (PDT)
+Subject: Re: [PATCH v10 0/2] Panel rotation patches
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Sean Paul <sean@poorly.run>,
+        "dbasehore ." <dbasehore@chromium.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20200306002112.255361-1-dbasehore@chromium.org>
+ <ecbfb5f8-615a-4a88-5dac-de17158125bf@gmail.com>
+ <CAGAzgsqpjZxh7PEL_Dy7HrFeFGm7+=F6cL3QG9KmK9CHvDWZ9g@mail.gmail.com>
+ <6dc9ef16-9671-6ce8-27e6-aa1f4c009ee2@gmail.com>
+ <CAGAzgsrNrq+S+-5KEFVnJn6S5DRn1fKkToD5=KR911T9AOAF-w@mail.gmail.com>
+ <736ad1d2-4a28-87e8-62f7-28a5582c9fcf@gmail.com>
+ <CAMavQKJtbha_o==X+MX6GmjfAMYvdLyubvCFg48Tbn1mdgo40w@mail.gmail.com>
+ <fa443308-7610-9060-68eb-e14e446dd4bf@gmail.com>
+Message-ID: <cbfbe9dd-3340-2f90-c505-66a57031e620@gmail.com>
+Date:   Fri, 12 Jun 2020 19:32:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <fa443308-7610-9060-68eb-e14e446dd4bf@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+18.05.2020 10:36, Dmitry Osipenko пишет:
+> 12.05.2020 23:59, Sean Paul пишет:
+>> On Thu, Apr 16, 2020 at 7:03 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>
+>>> 15.04.2020 00:32, dbasehore . пишет:
+>>>> On Tue, Apr 14, 2020 at 2:18 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>>>
+>>>>> 14.04.2020 22:32, dbasehore . пишет:
+>>>>>> Hi Dmitry, sorry for the late reply.
+>>>>>>
+>>>>>> On Sun, Mar 8, 2020 at 12:25 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>>>>>
+>>>>>>> 06.03.2020 03:21, Derek Basehore пишет:
+>>>>>>>> This adds the plumbing for reading panel rotation from the devicetree
+>>>>>>>> and sets up adding a panel property for the panel orientation on
+>>>>>>>> Mediatek SoCs when a rotation is present.
+>>>>>>>
+>>>>>>> Hello Derek and everyone,
+>>>>>>>
+>>>>>>> I'm looking at adding display rotation support to NVIDIA Tegra DRM
+>>>>>>> driver because some devices have display panel physically mounted
+>>>>>>> upside-down, and thus, display controller's scan-out needs to be rotated
+>>>>>>> by 180° in this case.
+>>>>>>>
+>>>>>>> Derek, yours panel-rotation patches add support for assigning panel's
+>>>>>>> orientation to the connector, but then only primary display plane
+>>>>>>> receives rotation value in [1], while rotation needs to be applied to
+>>>>>>> all available overlay/cursor planes and this should happen in other
+>>>>>>> places than [1] as well.
+>>>>>>
+>>>>>> This is intended. We don't correct the output in the kernel. We
+>>>>>> instead rely on notifying userspace that the panel is rotated, then we
+>>>>>> handle it there.
+>>>>>>
+>>>>>>>
+>>>>>>> [1] drm_client_modeset_commit_atomic()
+>>>>>>>
+>>>>>>> Please also note that in a case of the scan-out rotation, plane's
+>>>>>>> coordinates need to be changed in accordance to the display's rotation.
+>>>>>>>
+>>>>>>> I looked briefly through the DRM code and my understanding that the DRM
+>>>>>>> core currently doesn't support use-case where scan-out needs to rotated
+>>>>>>> based on a panel's orientation, correct? Is it the use-case you're
+>>>>>>> working on for the Mediatek driver?
+>>>>>>
+>>>>>> Yes, we rely on userspace to rotate the output. The major reason for
+>>>>>> this is because there may not be a "free" hardware rotation that can
+>>>>>> be applied to the overlay. Sean Paul and others also preferred that
+>>>>>> userspace control what is output to the screen instead of the kernel
+>>>>>> taking care of it. This code just adds the drm property to the panel.
+>>>>>>
+>>>>>
+>>>>> Could you please explain what that userspace is?
+>>>>
+>>>> This was added for Chrome OS, which uses its own graphics stack,
+>>>> Ozone, instead of Xorg.
+>>>>
+>>>
+>>> Thank you very much for the clarification.
+>>>
+>>> It's probably not a big problem for something monolithic and customized
+>>> like ChromeOS to issue a software update in order to take into account
+>>> all specifics of a particular device, but this doesn't work nicely for a
+>>> generic software, like a usual Linux distro.
+>>>
+>>>>> AFAIK, things like Xorg modesetting don't support that orientation property.
+>>>
+>>> In my case it's not only the display panel which is upside-down, but
+>>> also the touchscreen. Hence both display output and touchscreen input
+>>> need to be rotated at once, otherwise you'll end up with either display
+>>> or input being upside-down.
+>>>
+>>> The 180° rotation should be free on NVIDIA Tegra. There are no known
+>>> limitations for the planes and BSP kernel video driver handles the
+>>> plane's coordinates/framebuffer rotation within the driver.
+>>>
+>>> The kernel's input subsystem allows us to transparently (for userspace)
+>>> remap the touchscreen input (by specifying generic touchscreen
+>>> device-tree properties), while this is not the case for the DRM subsystem.
+>>>
+>>> @Thierry, @Sean, @Daniel, could you please help me to understand how a
+>>> coordinated display / input rotation could be implemented, making the
+>>> rotation transparent to the user (i.e. avoiding xorg.conf hacking and
+>>> etc)? It should be nice if display's output could be flipped within the
+>>> DRM driver, hiding this fact from userspace.
+>>
+>> I think the right thing to do is to fix userspace to respect this
+>> property, since that has the most communal benefit.
+> 
+> Hello Sean,
+> 
+> This will be ideal, but it's difficult to achieve in a loosely
+> controlled userspace environment.
+> 
+>> However(!!) if you don't want to do that, how about inspecting the
+>> info->panel_orientation value after drm_panel_attach in tegra driver
+>> and then adjusting rotation values in the driver. Of course, you
+>> wouldn't want to expose the panel orientation property since you don't
+>> want userspaces to be double-rotating on you, but it's optional so
+>> you'd be fine.
+> 
+> Thank you very much for the suggestion, I'll be trying it out soon.
+> 
+>>>
+>>> Will it be okay if we'll add a transparent-rotation support specifically
+>>> to the Tegra DRM driver? For example if device-tree contains
+>>> nvidia,display-flip-y property, then the Tegra DRM driver will take care
+>>> of rotating coordinates/framebuffer of the display planes.
+>>
+>> I don't think this is necessary, but it also wouldn't really be
+>> appropriate to put software attributes into devicetree anyways.
+> 
+> Yes, I'm also not feeling very excited about this variant.
+> 
 
-The following changes since commit 6929f71e46bdddbf1c4d67c2728648176c67c555:
+After some consideration, I decided that it will be better to start easy
+by supporting the minimum needed for the rotation property to work on
+Tegra, i.e. having userspace to take care of the rotation. It will be
+possible to change it later on if will be necessary.
 
-  atomisp: avoid warning about unused function (2020-06-03 21:22:46 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 49b3deaad3452217d62dbd78da8df24eb0c7e169:
-
-  Merge tag 'kvmarm-fixes-5.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2020-06-11 14:02:32 -0400)
-
-----------------------------------------------------------------
-MIPS:
-- Loongson port
-
-PPC:
-- Fixes
-
-ARM:
-- Fixes
-
-x86:
-- KVM_SET_USER_MEMORY_REGION optimizations
-- Fixes
-- Selftest fixes
-
-The guest side of the asynchronous page fault work has been delayed to 5.9
-in order to sync with Thomas's interrupt entry rework.
-
-----------------------------------------------------------------
-Anthony Yznaga (3):
-      KVM: x86: remove unnecessary rmap walk of read-only memslots
-      KVM: x86: avoid unnecessary rmap walks when creating/moving slots
-      KVM: x86: minor code refactor and comments fixup around dirty logging
-
-Babu Moger (1):
-      KVM: x86: Move MPK feature detection to common code
-
-Chen Zhou (1):
-      KVM: PPC: Book3S HV: Remove redundant NULL check
-
-Colin Ian King (1):
-      kvm: i8254: remove redundant assignment to pointer s
-
-Denis Efremov (1):
-      KVM: Use vmemdup_user()
-
-Eiichi Tsukata (1):
-      KVM: x86: Fix APIC page invalidation race
-
-Felipe Franciosi (1):
-      KVM: x86: respect singlestep when emulating instruction
-
-Huacai Chen (12):
-      KVM: MIPS: Increase KVM_MAX_VCPUS and KVM_USER_MEM_SLOTS to 16
-      KVM: MIPS: Add EVENTFD support which is needed by VHOST
-      KVM: MIPS: Use lddir/ldpte instructions to lookup gpa_mm.pgd
-      KVM: MIPS: Introduce and use cpu_guest_has_ldpte
-      KVM: MIPS: Use root tlb to control guest's CCA for Loongson-3
-      KVM: MIPS: Let indexed cacheops cause guest exit on Loongson-3
-      KVM: MIPS: Add more types of virtual interrupts
-      KVM: MIPS: Add Loongson-3 Virtual IPI interrupt support
-      KVM: MIPS: Add CPUCFG emulation for Loongson-3
-      KVM: MIPS: Add CONFIG6 and DIAG registers emulation
-      KVM: MIPS: Add more MMIO load/store instructions emulation
-      KVM: MIPS: Enable KVM support for Loongson-3
-
-James Morse (3):
-      KVM: arm64: Stop writing aarch32's CSSELR into ACTLR
-      KVM: arm64: Add emulation for 32bit guests accessing ACTLR2
-      KVM: arm64: Stop save/restoring ACTLR_EL1
-
-Laurent Dufour (2):
-      KVM: PPC: Book3S HV: Read ibm,secure-memory nodes
-      KVM: PPC: Book3S HV: Relax check on H_SVM_INIT_ABORT
-
-Marc Zyngier (9):
-      KVM: arm64: Flush the instruction cache if not unmapping the VM on reboot
-      KVM: arm64: Save the host's PtrAuth keys in non-preemptible context
-      KVM: arm64: Handle PtrAuth traps early
-      KVM: arm64: Stop sparse from moaning at __hyp_this_cpu_ptr
-      KVM: arm64: Remove host_cpu_context member from vcpu structure
-      KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
-      KVM: arm64: Synchronize sysreg state on injecting an AArch32 exception
-      KVM: arm64: Move hyp_symbol_addr() to kvm_asm.h
-      Merge branch 'kvm-arm64/ptrauth-fixes' into kvmarm-master/next
-
-Paolo Bonzini (7):
-      KVM: let kvm_destroy_vm_debugfs clean up vCPU debugfs directories
-      Merge tag 'kvm-ppc-next-5.8-1' of git://git.kernel.org/.../paulus/powerpc into HEAD
-      KVM: x86: emulate reserved nops from 0f/18 to 0f/1f
-      KVM: SVM: fix calls to is_intercept
-      Merge branch 'kvm-basic-exit-reason' into HEAD
-      KVM: x86: do not pass poisoned hva to __kvm_set_memory_region
-      Merge tag 'kvmarm-fixes-5.8-1' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
-
-Paul Mackerras (2):
-      KVM: PPC: Book3S HV: Remove user-triggerable WARN_ON
-      KVM: PPC: Book3S HV: Close race with page faults around memslot flushes
-
-Qian Cai (2):
-      KVM: PPC: Book3S HV: Ignore kmemleak false positives
-      KVM: PPC: Book3S: Fix some RCU-list locks
-
-Sean Christopherson (5):
-      KVM: VMX: Always treat MSR_IA32_PERF_CAPABILITIES as a valid PMU MSR
-      x86/kvm: Remove defunct KVM_DEBUG_FS Kconfig
-      KVM: selftests: Ignore KVM 5-level paging support for VM_MODE_PXXV48_4K
-      KVM: x86: Unexport x86_fpu_cache and make it static
-      KVM: nVMX: Consult only the "basic" exit reason when routing nested exit
-
-Tianjia Zhang (2):
-      KVM: PPC: Remove redundant kvm_run from vcpu_arch
-      KVM: PPC: Clean up redundant 'kvm_run' parameters
-
-Vitaly Kuznetsov (10):
-      KVM: selftests: Fix build with "make ARCH=x86_64"
-      KVM: VMX: Properly handle kvm_read/write_guest_virt*() result
-      Revert "KVM: x86: work around leak of uninitialized stack contents"
-      KVM: selftests: Add x86_64/debug_regs to .gitignore
-      KVM: selftests: fix vmx_preemption_timer_test build with GCC10
-      KVM: selftests: do not substitute SVM/VMX check with KVM_CAP_NESTED_STATE check
-      KVM: selftests: Don't probe KVM_CAP_HYPERV_ENLIGHTENED_VMCS when nested VMX is unsupported
-      KVM: async_pf: Cleanup kvm_setup_async_pf()
-      KVM: async_pf: Inject 'page ready' event only if 'page not present' was previously injected
-      KVM: selftests: fix sync_with_host() in smm_test
-
-Xiaoyao Li (1):
-      KVM: x86: Assign correct value to array.maxnent
-
-Xing Li (2):
-      KVM: MIPS: Define KVM_ENTRYHI_ASID to cpu_asid_mask(&boot_cpu_data)
-      KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
-
- arch/arm64/include/asm/kvm_asm.h                   |  33 +-
- arch/arm64/include/asm/kvm_emulate.h               |   6 -
- arch/arm64/include/asm/kvm_host.h                  |   9 +-
- arch/arm64/include/asm/kvm_mmu.h                   |  20 -
- arch/arm64/kvm/aarch32.c                           |  28 ++
- arch/arm64/kvm/arm.c                               |  25 +-
- arch/arm64/kvm/handle_exit.c                       |  32 +-
- arch/arm64/kvm/hyp/debug-sr.c                      |   4 +-
- arch/arm64/kvm/hyp/switch.c                        |  65 ++-
- arch/arm64/kvm/hyp/sysreg-sr.c                     |   8 +-
- arch/arm64/kvm/pmu.c                               |   8 +-
- arch/arm64/kvm/sys_regs.c                          |  25 +-
- arch/arm64/kvm/sys_regs_generic_v8.c               |  10 +
- arch/mips/Kconfig                                  |   1 +
- arch/mips/include/asm/cpu-features.h               |   3 +
- arch/mips/include/asm/kvm_host.h                   |  52 ++-
- arch/mips/include/asm/mipsregs.h                   |   4 +
- arch/mips/include/uapi/asm/inst.h                  |  11 +
- arch/mips/kernel/cpu-probe.c                       |   5 +-
- arch/mips/kvm/Kconfig                              |   1 +
- arch/mips/kvm/Makefile                             |   5 +-
- arch/mips/kvm/emulate.c                            | 503 ++++++++++++++++++++-
- arch/mips/kvm/entry.c                              |  19 +-
- arch/mips/kvm/interrupt.c                          |  93 +---
- arch/mips/kvm/interrupt.h                          |  14 +-
- arch/mips/kvm/loongson_ipi.c                       | 214 +++++++++
- arch/mips/kvm/mips.c                               |  47 +-
- arch/mips/kvm/tlb.c                                |  41 ++
- arch/mips/kvm/trap_emul.c                          |   3 +
- arch/mips/kvm/vz.c                                 | 237 +++++++---
- arch/powerpc/include/asm/kvm_book3s.h              |  16 +-
- arch/powerpc/include/asm/kvm_host.h                |   1 -
- arch/powerpc/include/asm/kvm_ppc.h                 |  27 +-
- arch/powerpc/kvm/book3s.c                          |   4 +-
- arch/powerpc/kvm/book3s.h                          |   2 +-
- arch/powerpc/kvm/book3s_64_mmu_hv.c                |  12 +-
- arch/powerpc/kvm/book3s_64_mmu_radix.c             |  36 +-
- arch/powerpc/kvm/book3s_64_vio.c                   |  18 +-
- arch/powerpc/kvm/book3s_emulate.c                  |  10 +-
- arch/powerpc/kvm/book3s_hv.c                       |  75 +--
- arch/powerpc/kvm/book3s_hv_nested.c                |  15 +-
- arch/powerpc/kvm/book3s_hv_uvmem.c                 |  14 +
- arch/powerpc/kvm/book3s_paired_singles.c           |  72 +--
- arch/powerpc/kvm/book3s_pr.c                       |  30 +-
- arch/powerpc/kvm/booke.c                           |  36 +-
- arch/powerpc/kvm/booke.h                           |   8 +-
- arch/powerpc/kvm/booke_emulate.c                   |   2 +-
- arch/powerpc/kvm/e500_emulate.c                    |  15 +-
- arch/powerpc/kvm/emulate.c                         |  10 +-
- arch/powerpc/kvm/emulate_loadstore.c               |  32 +-
- arch/powerpc/kvm/powerpc.c                         |  72 +--
- arch/powerpc/kvm/trace_hv.h                        |   6 +-
- arch/s390/include/asm/kvm_host.h                   |   2 +-
- arch/s390/kvm/kvm-s390.c                           |   4 +-
- arch/x86/Kconfig                                   |   8 -
- arch/x86/include/asm/kvm_host.h                    |   3 +-
- arch/x86/kernel/kvm.c                              |   1 -
- arch/x86/kvm/cpuid.c                               |  31 +-
- arch/x86/kvm/debugfs.c                             |  10 +-
- arch/x86/kvm/emulate.c                             |   8 +-
- arch/x86/kvm/i8254.c                               |   1 -
- arch/x86/kvm/svm/nested.c                          |   2 +-
- arch/x86/kvm/svm/svm.c                             |   4 +-
- arch/x86/kvm/vmx/nested.c                          |  82 ++--
- arch/x86/kvm/vmx/pmu_intel.c                       |   2 +-
- arch/x86/kvm/vmx/vmx.c                             |  38 +-
- arch/x86/kvm/vmx/vmx.h                             |   2 +
- arch/x86/kvm/x86.c                                 | 139 +++---
- include/linux/kvm_host.h                           |   8 +-
- tools/testing/selftests/kvm/.gitignore             |   1 +
- tools/testing/selftests/kvm/Makefile               |   4 +
- .../selftests/kvm/include/x86_64/svm_util.h        |   1 +
- tools/testing/selftests/kvm/include/x86_64/vmx.h   |   5 +-
- tools/testing/selftests/kvm/lib/kvm_util.c         |  11 +-
- tools/testing/selftests/kvm/lib/x86_64/svm.c       |  10 +-
- tools/testing/selftests/kvm/lib/x86_64/vmx.c       |   9 +-
- tools/testing/selftests/kvm/x86_64/evmcs_test.c    |   5 +-
- tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c  |   3 +-
- tools/testing/selftests/kvm/x86_64/smm_test.c      |  17 +-
- tools/testing/selftests/kvm/x86_64/state_test.c    |  13 +-
- .../kvm/x86_64/vmx_preemption_timer_test.c         |   4 +
- virt/kvm/async_pf.c                                |  21 +-
- virt/kvm/kvm_main.c                                |  53 ++-
- 83 files changed, 1801 insertions(+), 740 deletions(-)
- create mode 100644 arch/mips/kvm/loongson_ipi.c
-
+@dbasehore, I'll prepare Tegra DRM patchset around Monday and will
+include yours two patches that add DT reading helper and set the display
+info, since these patches haven't been applied yet.
