@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F29E1F7315
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 06:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDB61F7311
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 06:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgFLEhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 00:37:53 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33678 "EHLO mga12.intel.com"
+        id S1726519AbgFLEhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 00:37:43 -0400
+Received: from mga07.intel.com ([134.134.136.100]:65452 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgFLEhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725862AbgFLEhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Jun 2020 00:37:41 -0400
-IronPort-SDR: jFK5e23oUhKjNxfFTB0Q+Qho7vnunEznktCBQHa9SsOJHyXDBGahTxgEiB7XxC+P479YZuPgFz
- OTHhdI7TEYLQ==
+IronPort-SDR: 4DfNwFhLA1qW4HQRDgzzYToV0vd0bpoV6onI8hzv+aIuGBXm6fM+lP3jAg7iMCRk6WrOhVYhGX
+ LKjMSiaw4SUQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 21:37:41 -0700
-IronPort-SDR: JyA1krM+x4k7LFEI9WnVj3bQoGczl44N80RaRcpmSwv34qq3rtyhXNBwo0z9LYwadt7fVo808w
- 2V9R1H7/EWSQ==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2020 21:37:40 -0700
+IronPort-SDR: tmWgcBz5T5neyc4zyDXCoe2aKU0gifPCchazESvPmh7pxaR6KcvaWVSM8QJuxaeiVJK5HkTJUJ
+ EONhliFDQBpQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,501,1583222400"; 
-   d="scan'208";a="296831430"
+   d="scan'208";a="259792723"
 Received: from lkp-server01.sh.intel.com (HELO b6eec31c25be) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Jun 2020 21:37:39 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 11 Jun 2020 21:37:39 -0700
 Received: from kbuild by b6eec31c25be with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jjbRj-0000VG-44; Fri, 12 Jun 2020 04:37:39 +0000
-Date:   Fri, 12 Jun 2020 12:36:43 +0800
+        id 1jjbRi-0000V8-TT; Fri, 12 Jun 2020 04:37:38 +0000
+Date:   Fri, 12 Jun 2020 12:36:51 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/entry] BUILD SUCCESS
- f0178fc01fe46bab6a95415f5647d1a74efcad1b
-Message-ID: <5ee3065b.+Wp7lNpyhsXyIBVB%lkp@intel.com>
+Subject: [tip:locking/kcsan] BUILD SUCCESS
+ 1f44328ea24c9de368a3cfe5cc0e110b949afb2e
+Message-ID: <5ee30663.pnjVdhcvNLatfGUL%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,10 +43,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/entry
-branch HEAD: f0178fc01fe46bab6a95415f5647d1a74efcad1b  x86/entry: Unbreak __irqentry_text_start/end magic
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/kcsan
+branch HEAD: 1f44328ea24c9de368a3cfe5cc0e110b949afb2e  compiler_types.h, kasan: Use __SANITIZE_ADDRESS__ instead of CONFIG_KASAN to decide inlining
 
-elapsed time: 767m
+elapsed time: 628m
 
 configs tested: 96
 configs skipped: 1
@@ -63,11 +63,17 @@ arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
 c6x                        evmc6457_defconfig
+nds32                               defconfig
 alpha                            alldefconfig
 mips                     loongson1b_defconfig
-mips                       bmips_be_defconfig
-nds32                               defconfig
 alpha                               defconfig
+mips                       bmips_be_defconfig
+c6x                        evmc6678_defconfig
+powerpc                          g5_defconfig
+arc                            hsdk_defconfig
+arm                          tango4_defconfig
+mips                           ip32_defconfig
+sh                        edosk7705_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -112,12 +118,6 @@ powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
 powerpc                             defconfig
-i386                 randconfig-a006-20200611
-i386                 randconfig-a002-20200611
-i386                 randconfig-a001-20200611
-i386                 randconfig-a004-20200611
-i386                 randconfig-a005-20200611
-i386                 randconfig-a003-20200611
 i386                 randconfig-a015-20200612
 i386                 randconfig-a011-20200612
 i386                 randconfig-a014-20200612
@@ -132,16 +132,16 @@ s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
-sparc64                             defconfig
 sparc                            allyesconfig
 sparc                               defconfig
+sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                               allmodconfig
 um                                allnoconfig
-um                                  defconfig
 um                               allyesconfig
+um                                  defconfig
 x86_64                                   rhel
 x86_64                         rhel-7.2-clear
 x86_64                                    lkp
