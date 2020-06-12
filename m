@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366A01F7E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFE81F7E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 23:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgFLVcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 17:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S1726392AbgFLVdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 17:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgFLVcP (ORCPT
+        with ESMTP id S1726302AbgFLVdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 17:32:15 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CADC03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:32:13 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id g5so8488858otg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:32:13 -0700 (PDT)
+        Fri, 12 Jun 2020 17:33:01 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3846AC03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:33:01 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id x18so12675090lji.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hfr41w//Iq6L4D29Brj7mYe/GuqFaOrY8l4abvR0PaM=;
-        b=gxmrCvV5G1tix2wqvkHSkUTHm+oaINr1b8AyqOq6bo39chOaqPPPR81ikDfZtLP83n
-         OMthIbM/WujWSlAItMzXDr6C+faqOEqz6CEoMrH4kAWzykiX2XbMxjXba2/xqDbXdPfk
-         TloJErwLik7sc+O+HBoZQ0keJVlRhGW2NBXHU=
+        bh=pL7avKA2KDNOM9X/kgFl9MqbEPb7aiLKYA3rHavzFAQ=;
+        b=DUXfZ05dc4FLn033pP/DvBQEoDqo9l9I/qr+GeWTXdccy9NPuiJFBm8tJ6Ag/uVtPs
+         HfhkXSv/7Jz63j3e9CKigwf5GeXP332/vjJYhT7vhVEnuBNN/DA1L+yF7svDbU0axGyW
+         OJ7DBcOv91xpWm6tDakYfFrQRMOPXMXKekM4g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hfr41w//Iq6L4D29Brj7mYe/GuqFaOrY8l4abvR0PaM=;
-        b=b9LMS3sqQBbn4FMHd1oD0ty2jsKNFQGKFj5a6YRjToNJebVn/o7/Y1j2OD27aqeKCs
-         PnS7HjqweHpiJJRhq9Ps0npqoPiuQBoZQWWgvRvNc51fuuNAhhmfUbbkgtLxlK2lTJFw
-         mBhmfBKJGGoNR9/C1bsCqX1ojTXcZIOsicT1msnuuvFxXLC6IH+eKHv0jQQbr0Oy4Kml
-         wMXNLWpWSx+FSSziYqp1ES5YJY3YEZ9UAY/T2kREPpK7+awfdvM7l324bDNVHY1zFCVC
-         r7Lrm7aSB3kyIjLk2iDWoNLNtnHhZRRwTenYYIpNlqLinsNQRDN0yjHQ5RPTpm05XSQ/
-         OJvg==
-X-Gm-Message-State: AOAM5310W/rJKfRbWdQlMNvPheURctjrUpYy//mW3/J6Wr/I6GAf0bdN
-        4E4Ff1+/ElelITsDgveHYXI9gtEXTbjQFc1ydPZTbA==
-X-Google-Smtp-Source: ABdhPJzziaOSH6RgwPaiwCafdrgPRaEhFGRSWyD75B8TyzJ/qs0fH1xd7NTn3AznF5fTqNnjaKJc/2A5XybHfWfh/6M=
-X-Received: by 2002:a9d:186:: with SMTP id e6mr12528017ote.33.1591997532855;
- Fri, 12 Jun 2020 14:32:12 -0700 (PDT)
+        bh=pL7avKA2KDNOM9X/kgFl9MqbEPb7aiLKYA3rHavzFAQ=;
+        b=MCmhtCGMPRCCzyBbNk75jyeRjgQnXBt5ww/DmoMLd4ZXjCC44xwwHQ1N6Ma+u2XCJz
+         mD8w9AKAB+yFX0qzsRj11SkBIoyNf8BXv3Xr4xn6dqbCAVUGFN5H7oAXijzk8aOy0VGt
+         163Lbskvk671DNW6kRR1DlD+WA9QRm6B75woevf9YDgjN7orqnZwS4HenBtVXlnVHkb0
+         CPWcEPMq05Y3NR1gjAy56nPHhgY80BgSn7x6OgCFOq++LuI1IsxWEw53Je8i44fonDVi
+         uyZsuzsPFIyVKAOjYhCd3xKkCrMDu82PCDG0BkTg41PfNwaPwWoCTFUOkjYaO0Y0w2R2
+         goIg==
+X-Gm-Message-State: AOAM531ZD4qcjgbQwBWq8Sxy8ScBI2xOl42CZLfAkI5Ou4SAcgzf9aCc
+        5W83lNd90/nVeD4EQjEI8KvfSjA5onc=
+X-Google-Smtp-Source: ABdhPJxwBnYei72qmllEIfwOclMELi/M1OwZWfb0venFl0tHxYNqfuxfXSFG1w5Hj9uu1lleO4AMCg==
+X-Received: by 2002:a2e:9a09:: with SMTP id o9mr7558908lji.323.1591997579735;
+        Fri, 12 Jun 2020 14:32:59 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id o16sm2495412ljg.90.2020.06.12.14.32.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jun 2020 14:32:59 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id e4so12723175ljn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 14:32:59 -0700 (PDT)
+X-Received: by 2002:a2e:974e:: with SMTP id f14mr7467995ljj.102.1591997578744;
+ Fri, 12 Jun 2020 14:32:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <279f7f6606ea18e14d64517840bcada56deb0ce3.1583332765.git.vpillai@digitalocean.com>
- <20200612132127.GA90012@google.com>
-In-Reply-To: <20200612132127.GA90012@google.com>
-From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Date:   Fri, 12 Jun 2020 17:32:01 -0400
-Message-ID: <CANaguZDguzOCvNmO1u7CZQU2DSFW0+uPt7ZwL18w4bG=-_Xe3Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/13] sched: migration changes for core scheduling
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
+References: <1503686.1591113304@warthog.procyon.org.uk> <20200610111256.s47agmgy5gvj3zwz@ws.net.home>
+In-Reply-To: <20200610111256.s47agmgy5gvj3zwz@ws.net.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 12 Jun 2020 14:32:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whypJLi6T01HOZ5+UPe_rs+hft8wn6iOmQpZgbZzbAumA@mail.gmail.com>
+Message-ID: <CAHk-=whypJLi6T01HOZ5+UPe_rs+hft8wn6iOmQpZgbZzbAumA@mail.gmail.com>
+Subject: Re: [GIT PULL] General notification queue and key notifications
+To:     Karel Zak <kzak@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, Ian Kent <raven@themaw.net>,
+        andres@anarazel.de,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        keyrings@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 9:21 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> > +#ifdef CONFIG_SCHED_CORE
-> > +             if (available_idle_cpu(cpu) &&
-> > +                 sched_core_cookie_match(cpu_rq(cpu), p))
-> > +                     break;
-> > +#else
->
-> select_idle_cpu() is called only if no idle core could be found in the LLC by
-> select_idle_core().
->
-> So, would it be better here to just do the cookie equality check directly
-> instead of calling the sched_core_cookie_match() helper?  More so, because
-> select_idle_sibling() is a fastpath.
->
-Agree, this makes sense to me.
+[ Finally getting around to this since my normal pull queue is now empty ]
 
-> AFAIR, that's what v4 did:
+On Wed, Jun 10, 2020 at 4:13 AM Karel Zak <kzak@redhat.com> wrote:
 >
->                 if (available_idle_cpu(cpu))
-> #ifdef CONFIG_SCHED_CORE
->                         if (sched_core_enabled(cpu_rq(cpu)) &&
->                             (p->core_cookie == cpu_rq(cpu)->core->core_cookie))
->                                 break;
-> #else
->                         break;
-> #endif
->
-This patch was initially not in v4 and this is a merging of 4 patches
-suggested post-v4. During the initial round, code was like above. But since
-there looked like a code duplication in the different migration paths,
-it was consolidated into sched_core_cookie_match() and it caused this
-extra logic to this specific code path. As you mentioned, I also feel
-we do not need to check for core idleness in this path.
+> The notification stuff looks pretty promising, but I do not understand
+> why we need to use pipe for this purpose
 
-Thanks,
-Vineeth
+The original intent was never to use the "pipe()" system call itself,
+only use pipes as the actual transport mechanism (because I do not for
+a second believe in the crazy "use sockets" model that a lot of other
+people seem to blindly believe in).
+
+But using "pipe()" also allows for non-kernel notification queues (ie
+where the events come from a user space process). Then you'd not use
+O_NOTIFICATION_PIPE, but O_DIRECT (for a packetized pipe).
+
+> Is it because we need to create a new file descriptor from nothing?
+> Why O_NOTIFICATION_PIPE is better than introduce a new syscall
+> notifyfd()?
+
+We could eventually introduce a new system call.
+
+But I most definitely did *NOT* want to see anything like that for any
+first gen stuff.  Especially since it wasn't clear who was going to
+use it, and whether early trials would literally be done with that
+user-space emulation model of using a perfectly regular pipe (just
+with packetization).
+
+I'm not even convinced O_NOTIFICATION_PIPE is necessary, but at worst
+it will be a useful marker. I think the only real reason for it was to
+avoid any clashes with splice(), which has more complex use of the
+pipe buffers.
+
+I'm so far just reading this thread and the arguments for users, and I
+haven't yet looked at all the actual details in the pull request - but
+last time I had objections to things it wasn't the code, it was the
+lack of any use.
+
+             Linus
