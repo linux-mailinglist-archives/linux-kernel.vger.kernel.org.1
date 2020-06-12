@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485191F7E44
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 22:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4D41F7E14
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 22:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgFLU6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 16:58:47 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:37015 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgFLU6q (ORCPT
+        id S1726323AbgFLUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 16:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgFLUe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 16:58:46 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 49kCkV6DzMz1qskQ;
-        Fri, 12 Jun 2020 22:58:42 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 49kCkV4stTz1qqkg;
-        Fri, 12 Jun 2020 22:58:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id PkQqnMB5DaDJ; Fri, 12 Jun 2020 22:58:41 +0200 (CEST)
-X-Auth-Info: Twafrtj8Ua9iF2yDfSwwTTI7dYNAl95yld2H0He8dv8=
-Received: from [IPv6:::1] (unknown [195.140.253.167])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 12 Jun 2020 22:58:41 +0200 (CEST)
-Subject: Re: [PATCH v4 5/5] usb: xhci-pci: Add reset controller support
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>, mbrugger@suse.com,
-        u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        mark.kettenis@xs4all.nl
-References: <20200612164632.25648-1-nsaenzjulienne@suse.de>
- <20200612164632.25648-6-nsaenzjulienne@suse.de>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <7959ad10-4112-e880-14d9-9c24574c8026@denx.de>
-Date:   Fri, 12 Jun 2020 19:08:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Fri, 12 Jun 2020 16:34:29 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95747C03E96F;
+        Fri, 12 Jun 2020 13:34:29 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id h3so9960486ilh.13;
+        Fri, 12 Jun 2020 13:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i8mTmYznmJPhravJo3PSaU34NH8z9IvbBcuHBmZXOGo=;
+        b=nrHlq+bwoQ/ZjAWfHatx49FQEGaqg7lazcinxpFcX3WjpB54X107qOzpWp/rxY4Msn
+         B3/d11nyVrfydX5/qlIuCTm5EBbd5b8Wj6ZtvEMabQB+geJEwubPZ+JW70wPN2i1DSsZ
+         KDuQ+ofl9ntbeup8C35pmhKvk65+Vpie0I5p+XD3W7AcX8NecFbvxPvzz/rimQIZ0Dz5
+         8HcrhVTWZTZhw9Z+KTlUVfsjFdSfAD1VIgFkQ3vgPKX55PeokHBE2FBbMgzZUJpuUJdt
+         DqaN1g8oXiKYyJ5yYkDp+TyUIv9AmXzBNOWDqZjWwVjt/eZE5nfkZSI/6mR7qnqSZEas
+         NLyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i8mTmYznmJPhravJo3PSaU34NH8z9IvbBcuHBmZXOGo=;
+        b=qiFBATadYI52MWXSkAJJNzcPRrgMi5im9YvZSoBvf9kT8nqgDr+IRtb2Zka7D/Q2W0
+         qcHj1pChggeg4bA1bIzMB53ZBo5ZBZkCGdk6qs69Koj1SOwZKKyddYYXUuaQtZQkuUeb
+         iuEUsG2axUV3/2qns+abfiO5niDxDPEDTQlRY2JfqGTjTyHSnFRs8Do+a5A2Lh1jt92s
+         dftUHOvK74jsidj9Mr9xanEIPwKUkwf07G8xNKfGGc05THbgyFLrkZHZ1Iavibu7TMZk
+         84x28tw06bKHCNXAG6C4XRPakYPqp9BmQyblTxZDM+DndG7M4zTKffhZs7WoKUKGn50i
+         M+tg==
+X-Gm-Message-State: AOAM531U7exE0h1xybZ+t7DZz2OSWbB7Fh+NF4Hjlzv9vBCIDQQfcN4u
+        WAqRdxKhgoXgLA6PidSWr3K550acimYpLOlMd9CwJ7Kl
+X-Google-Smtp-Source: ABdhPJyu94HXBYyAjaK/MHC2Kx7C+sW3KiadWnWD74+pdT90gNCtnPjG2LNHcNGNwqWZkLiQsluBjg0xAuvxLvPGFtY=
+X-Received: by 2002:a92:c60b:: with SMTP id p11mr15397911ilm.137.1591994067592;
+ Fri, 12 Jun 2020 13:34:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200612164632.25648-6-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200612092603.GB3183@techsingularity.net> <CAOQ4uxikbJ19npQFWzGm6xnqXm0W8pV3NOWE0ZxS9p_G2A39Aw@mail.gmail.com>
+ <20200612131854.GD3183@techsingularity.net> <CAOQ4uxghy5zOT6i=shZfFHsXOgPrd7-4iPkJBDcsHU6bUSFUFg@mail.gmail.com>
+In-Reply-To: <CAOQ4uxghy5zOT6i=shZfFHsXOgPrd7-4iPkJBDcsHU6bUSFUFg@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 12 Jun 2020 23:34:16 +0300
+Message-ID: <CAOQ4uxhm+afWpnb4RFw8LkZ+ZJtnFxqR5HB8Uyj-c44CU9SSJg@mail.gmail.com>
+Subject: Re: [PATCH] fs: Do not check if there is a fsnotify watcher on pseudo inodes
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/12/20 6:46 PM, Nicolas Saenz Julienne wrote:
-> Some atypical users of xhci-pci might need to manually reset their xHCI
-> controller before starting the HCD setup. Check if a reset controller
-> device is available to the PCI bus and trigger a reset.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->  drivers/usb/host/xhci-pci.c | 38 +++++++++++++++++++++++++++++++++++--
->  1 file changed, 36 insertions(+), 2 deletions(-)
+> > > So maybe it would be better to list all users of alloc_file_pseudo()
+> > > and say that they all should be opted out of fsnotify, without mentioning
+> > > "internal mount"?
+> > >
+> >
+> > The users are DMA buffers, CXL, aio, anon inodes, hugetlbfs, anonymous
+> > pipes, shmem and sockets although not all of them necessary end up using
+> > a VFS operation that triggers fsnotify.  Either way, I don't think it
+> > makes sense (or even possible) to watch any of those with fanotify so
+> > setting the flag seems reasonable.
+> >
+>
+> I also think this seems reasonable, but the more accurate reason IMO
+> is found in the comment for d_alloc_pseudo():
+> "allocate a dentry (for lookup-less filesystems)..."
+>
+> > I updated the changelog and maybe this is clearer.
+>
+> I still find the use of "internal mount" terminology too vague.
+> "lookup-less filesystems" would have been more accurate,
 
-Can the XHCI core code do the reset management instead ? Then everyone
-benefits from it.
+Only it is not really accurate for shmfs anf hugetlbfs, which are
+not lookup-less, they just hand out un-lookable inodes.
 
-The rest of the series is nice, thanks.
+> because as you correctly point out, the user API to set a watch
+> requires that the marked object is looked up in the filesystem.
+>
+> There are also some kernel internal users that set watches
+> like audit and nfsd, but I think they are also only interested in
+> inodes that have a path at the time that the mark is setup.
+>
+
+FWIW I verified that watches can be set on anonymous pipes
+via /proc/XX/fd, so if we are going to apply this patch, I think it
+should be accompanied with a complimentary patch that forbids
+setting up a mark on these sort of inodes. If someone out there
+is doing this, at least they would get a loud message that something
+has changed instead of silently dropping fsnotify events.
+
+So now the question is how do we identify/classify "these sort of
+inodes"? If they are no common well defining characteristics, we
+may need to blacklist pipes sockets and anon inodes explicitly
+with S_NONOTIFY.
+
+Thanks,
+Amir.
