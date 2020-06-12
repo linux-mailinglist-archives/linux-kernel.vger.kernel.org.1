@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A8A1F7C1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FE21F7C26
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 19:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgFLRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 13:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgFLRGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:06:52 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E91C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:06:52 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id d6so4106829pjs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 10:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bVTxDzO4IZAFd863UtOldIkTlBTqxYr5OyZkbNt9Exo=;
-        b=A8Kp91uLI+tQnJ3jKC2jR+cD8mIyaVyhikfRs5WrP7Tf5fkSUzCnv3fpv+kDxW46D8
-         zByT6xorZdwpIhX3RK1H3dShiz7nBjBJHSaxYamI70PD3uOr04gMI8pZX3ZMRktzqAXk
-         T7mXdzqrUXZaHCkLNVFfsi4oNSiSBYSb9n5eo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bVTxDzO4IZAFd863UtOldIkTlBTqxYr5OyZkbNt9Exo=;
-        b=H0X0q9qkvqEASh8+SFuxoq5eNL4/nx4nG9vjcc+w+T3C4DISgBVVbCtqLjHwkP0dQM
-         LYLfXGpBTNF5pfU5ctl9ctbYEP605WJw/YMPSROLf+yulVBTItUwG9TtFou9gx6Gktlx
-         m1kMeAKhs6pDrTU0Lnsw7HT7PNnR9wVeREUZ7IqOX8MstTmMkResvN+qMwxPy8rAbsI+
-         HC+LGWBHcscL/ML/uIhfNvbh8j+7ybKrMjPpxvdz41uGZ5sUem6eIxqMLO4DzEkirocA
-         tnW8mCH0m+QqJ08tou23Ev8pdI1umeA+CHU/2+fERS3mpvK0gdOk7ASEy5i7hnlpPql4
-         xJsQ==
-X-Gm-Message-State: AOAM530srGGrOHqGMluDlBh+C9ketCGt+6KJJykJE+mx0Gd1kefPFw2M
-        LPF1X5eCFFvifqU23+bgRJlObKxVTZ9QQg==
-X-Google-Smtp-Source: ABdhPJzaM91KwTq0GfU+yJwlNVmGgCNWW+GjbS/BrKOKZX9qrL1SoPS2lXjidIaCtL8PwC5/+PsUyA==
-X-Received: by 2002:a17:902:b28a:: with SMTP id u10mr11985726plr.178.1591981611903;
-        Fri, 12 Jun 2020 10:06:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h35sm6107361pje.29.2020.06.12.10.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 10:06:51 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 10:06:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>, paul@paul-moore.com,
-        edumazet@google.com, paulmck@kernel.org, dhowells@redhat.com,
-        shakeelb@google.com, jamorris@linux.microsoft.com,
-        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
-        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] cred: Add WARN to detect wrong use of get/put_cred
-Message-ID: <202006121001.149B5D20C5@keescook>
-References: <1591957695-118312-1-git-send-email-nixiaoming@huawei.com>
- <20200612163345.GF2497@hirez.programming.kicks-ass.net>
+        id S1726352AbgFLRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 13:13:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50424 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726286AbgFLRNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:13:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A2947AED9;
+        Fri, 12 Jun 2020 17:13:46 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
+        lorenzo.pieralisi@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>, Eric Anholt <eric@anholt.net>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v3 0/9] Raspberry Pi 4 USB firmware initialization rework
+Date:   Fri, 12 Jun 2020 19:13:24 +0200
+Message-Id: <20200612171334.26385-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612163345.GF2497@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 06:33:45PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 12, 2020 at 06:28:15PM +0800, Xiaoming Ni wrote:
-> > Cred release and usage check code flow:
-> > 	1. put_cred()
-> > 		if (atomic_dec_and_test(&(cred)->usage))
-> > 			__put_cred(cred);
-> > 
-> > 	2. __put_cred()
-> > 		BUG_ON(atomic_read(&cred->usage) != 0);
-> > 		call_rcu(&cred->rcu, put_cred_rcu);
-> > 
-> > 	3. put_cred_rcu()
-> > 		if (atomic_read(&cred->usage) != 0)
-> > 			panic("CRED: put_cred_rcu() sees %p with usage %d\n",
-> > 			       cred, atomic_read(&cred->usage));
-> > 		kmem_cache_free(cred_jar, cred);
-> > 
-> > If panic is triggered on put_cred_rcu(), there are two possibilities
-> > 	1. Call get_cred() after __put_cred(), usage > 0
-> > 	2. Call put_cred() after __put_cred(), usage < 0
-> > Since put_cred_rcu is an asynchronous behavior, it is no longer the first
-> > scene when panic, there is no information about the murderer in the panic
-> > call stack...
-> > 
-> > So, add WARN() in get_cred()/put_cred(), and pray to catch the murderer
-> > at the first scene.
-> 
-> Why not not use refcount_t? It has all that goodness and more.
+On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
+loaded directly from an EEPROM or, if not present, by the SoC's
+co-processor, VideoCore. This series reworks how we handle this.
 
-I thought these had been applied already, I guess not:
-https://lore.kernel.org/lkml/20190306110549.7628-1-elena.reshetova@intel.com/
+The previous solution makes use of PCI quirks and exporting platform
+specific functions. Albeit functional it feels pretty shoehorned. This
+proposes an alternative way of handling the triggering of the xHCI chip
+initialization trough means of a reset controller.
 
-Can we try again?
+The benefits are pretty evident: less platform churn in core xHCI code,
+and no explicit device dependency management in pcie-brcmstb.
+
+Note that patch #1 depends on another series[1].
+
+The series is based on next-20200611
+
+v2: https://lkml.org/lkml/2020/6/9/875
+v1: https://lore.kernel.org/linux-usb/20200608192701.18355-1-nsaenzjulienne@suse.de/T/#t
+
+[1] https://lwn.net/ml/linux-kernel/cover.662a8d401787ef33780d91252a352de91dc4be10.1590594293.git-series.maxime@cerno.tech/
+
+---
+
+Changes since v2:
+ - Add reset to resume routine in xhci-pci
+ - Correct of refcount in pci-quirks
+ - Correct typos
+ - Use include file to define firmware reset IDs
+
+Changes since v1:
+ - Rework reset controller so it's less USB centric.
+ - Use correct reset controller API in xhci-pci
+ - Correct typos
+
+Nicolas Saenz Julienne (9):
+  dt-bindings: reset: Add a binding for the RPi Firmware reset
+    controller
+  reset: Add Raspberry Pi 4 firmware reset controller
+  ARM: dts: bcm2711: Add firmware usb reset node
+  ARM: dts: bcm2711: Add reset controller to xHCI node
+  usb: xhci-pci: Add support for reset controllers
+  Revert "USB: pci-quirks: Add Raspberry Pi 4 quirk"
+  usb: host: pci-quirks: Bypass xHCI quirks for Raspberry Pi 4
+  Revert "firmware: raspberrypi: Introduce vl805 init routine"
+  Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware when present"
+
+ .../arm/bcm/raspberrypi,bcm2835-firmware.yaml |  21 +++
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  14 ++
+ drivers/firmware/Kconfig                      |   3 +-
+ drivers/firmware/raspberrypi.c                |  61 ---------
+ drivers/pci/controller/pcie-brcmstb.c         |  17 ---
+ drivers/reset/Kconfig                         |  11 ++
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-raspberrypi.c             | 122 ++++++++++++++++++
+ drivers/usb/host/pci-quirks.c                 |  22 ++--
+ drivers/usb/host/xhci-pci.c                   |  10 ++
+ drivers/usb/host/xhci.h                       |   2 +
+ .../reset/raspberrypi,firmware-reset.h        |  13 ++
+ include/soc/bcm2835/raspberrypi-firmware.h    |   7 -
+ 13 files changed, 207 insertions(+), 97 deletions(-)
+ create mode 100644 drivers/reset/reset-raspberrypi.c
+ create mode 100644 include/dt-bindings/reset/raspberrypi,firmware-reset.h
 
 -- 
-Kees Cook
+2.26.2
+
