@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FCC1F7DC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 21:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5911F7DCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 21:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgFLTuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 15:50:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60316 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgFLTuP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 15:50:15 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B356C205DDAF;
-        Fri, 12 Jun 2020 12:50:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B356C205DDAF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1591991414;
-        bh=GdD9+kQ9aITh+TAeiBW5btAMPcCymvbqsDCBMG9pDJY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VnnOl8MDm+ruzYyoWNTT6EMXTeW1KeweCnFkTcpwagJQWqkhh3u2nYF34qqGdvPBo
-         aKpmwhEtVxIJ52SRseNK4B+wSrg34/L38VYKHNrJKNIGKH9mAEuhek8tb571EKHoaS
-         LUA0x4yXrn6jiMXz029ksb3O+OHqmzVjEI6yk2LE=
-Subject: Re: [PATCH 1/2] integrity: Add errno field in audit message
-To:     Mimi Zohar <zohar@linux.ibm.com>, sgrubb@redhat.com,
-        paul@paul-moore.com
-Cc:     rgb@redhat.com, linux-integrity@vger.kernel.org,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-References: <20200611000400.3771-1-nramas@linux.microsoft.com>
- <1591989920.11061.90.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <42482562-d74c-2678-069f-1d8ef4feffac@linux.microsoft.com>
-Date:   Fri, 12 Jun 2020 12:50:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <1591989920.11061.90.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726478AbgFLTu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 15:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgFLTu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 15:50:28 -0400
+Subject: Re: [GIT PULL] pwm: Changes for v5.8-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591991428;
+        bh=Yp31jMU1NFpVB+68rtJaUyYJqxUnKne9W4NwD7WmI5M=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=K2Lezml+thFrP23XOZV1jsRPPebE5c89EEQZqpKL1rgTOPPaPsSRwDV+ZZSH3MxuH
+         VKFkWF+/XwGPiBSx8LW2dOD4lBXFH2ttetnSWfR44/uLv0NlhYTJ41ct4vli/S7Y+Y
+         p+mY1ATnexsiQjtXeBvzzzXkcb5D3sjOXT+OZBw4=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200612135049.2341678-1-thierry.reding@gmail.com>
+References: <20200612135049.2341678-1-thierry.reding@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200612135049.2341678-1-thierry.reding@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git
+ tags/pwm/for-5.8-rc1
+X-PR-Tracked-Commit-Id: f5641d053d46a9a18fe13f2ecb4a7b4a66d9cdf7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9433a51ec1533e0620ff08d0318d215de73ceb77
+Message-Id: <159199142860.26414.13269648687571484564.pr-tracker-bot@kernel.org>
+Date:   Fri, 12 Jun 2020 19:50:28 +0000
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/12/20 12:25 PM, Mimi Zohar wrote:
+The pull request you sent on Fri, 12 Jun 2020 15:50:49 +0200:
 
-> The idea is a good idea, but you're assuming that "result" is always
-> errno.  That was probably true originally, but isn't now.  For
-> example, ima_appraise_measurement() calls xattr_verify(), which
-> compares the security.ima hash with the calculated file hash.  On
-> failure, it returns the result of memcmp().  Each and every code path
-> will need to be checked.
-> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.8-rc1
 
-Good catch Mimi.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9433a51ec1533e0620ff08d0318d215de73ceb77
 
-Instead of "errno" should we just use "result" and log the value given 
-in the result parameter?
+Thank you!
 
- From the audit field dictionary (link given below) "result" is already 
-a known field that is used to indicate the result of the audited operation.
-
-@Steve\Paul:
-Like "res" is "result" also expected to have only values "0" or "1", or 
-can it be any result code?
-
-https://github.com/linux-audit/audit-documentation/blob/master/specs/fields/field-dictionary.csv
-
-res 	alphanumeric 	result of the audited operation(success/fail) 	
-
-result 	alphanumeric 	result of the audited operation(success/fail)
-
-thanks,
-  -lakshmi
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
