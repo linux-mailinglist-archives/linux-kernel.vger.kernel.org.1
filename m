@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DF41F79E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6159D1F79DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 16:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgFLOiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 10:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S1726381AbgFLOhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 10:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgFLOiI (ORCPT
+        with ESMTP id S1726257AbgFLOhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 10:38:08 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FB1C03E96F
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 07:38:08 -0700 (PDT)
+        Fri, 12 Jun 2020 10:37:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AF4C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 07:37:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=l+xbgdcfE1SSxQ3zHr1yPabOzpbvtiXlQZDA6pZzvco=; b=zqy3GTt5a9A1vSfatyBluqE+A9
-        KwCTh3tKztu71v1FEAdM0LlpdjZGzbWfLAVAfegOajiHeE4YsSVHfbb+8yT1W6FqwcgW5YIR2A7zg
-        YR0rs88zUC6bpT7zYLTkgYDigj0jLmMj9WNJDzNOiyMugECUWEi639NP8Da6W307RILMUuWDycHyA
-        TOvCawCIFqKVT9mqPnmYXsj9jPVmhv1yqhI116qBiE+jGlaDy4ODRpxyh0mhnqLbuukAvV/SgOUqU
-        UMNC7IbDSY74mNE6EsADNHPEir4ZlppEgXosb1wwII35ukM9t1q6vTedaNYHvCnoXzY25swZSt9kG
-        bdfliU1w==;
+        bh=tr0PHMWQDKASoKKJIXhHrp4k0+3m9wdOXqJFrwxEy6w=; b=m7dUqlsLdWPj6NFEZfD5d1/Rd3
+        Tlll3lUpiZGZxF8hgawXhytv2+kQjDA5UPIBpi1ouXmIjmRMskY+qsg7uLX7j8LSLMi2XaMFy+gwG
+        a6bOoG7elz6CGMuRbRHrOhpgdJIJhrxTEsolDt34GmNXDBffN1A+ToB0GunvRz9GmQ3RpxhWNEyGX
+        vsmqM4CFADfKccySgpmN8mMoMTkiDMksXLxS7T43d3AynTGZSkj4Zih6wkqvFZEHTmWLBWYjMJQ9/
+        dtPxahH/y75c5A1AmXsXIrAFiyQGRKSRUBeFP0V2JnQ2QGgP/xXfO9dxwd7g7QMgGSCslwO9mEIkc
+        pUgPzoOw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jjkoI-0005Or-Lv; Fri, 12 Jun 2020 14:37:35 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jjkoI-0006uc-6M; Fri, 12 Jun 2020 14:37:34 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2E34300F28;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EC7CD301AC6;
         Fri, 12 Jun 2020 16:37:31 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id C5E352389EB9F; Fri, 12 Jun 2020 16:37:31 +0200 (CEST)
-Message-ID: <20200612143554.012293047@infradead.org>
+        id CBA7C2389EBA3; Fri, 12 Jun 2020 16:37:31 +0200 (CEST)
+Message-ID: <20200612143554.071314718@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 12 Jun 2020 16:30:36 +0200
+Date:   Fri, 12 Jun 2020 16:30:37 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Josh Poimboeuf <jpoimboe@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
         elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
         mhelsley@vmware.com, rostedt@goodmis.org, jthierry@redhat.com,
         mbenes@suse.cz, peterz@infradead.org
-Subject: [RFC][PATCH 2/3] objtool: Provide elf_write_{insn,reloc}()
+Subject: [RFC][PATCH 3/3] objtool: Fix noinstr vs KCOV
 References: <20200612143034.933422660@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,110 +53,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides infrastructure to rewrite instructions; this is
-immediately useful for helping out with KCOV-vs-noinstr, but will
-also come in handy for a bunch of variable sized jump-label patches
-that are still on ice.
+Since many compilers cannot disable KCOV with a function attribute,
+help it to NOP out any __sanitizer_cov_*() calls injected in noinstr
+code.
+
+This turns:
+
+12:   e8 00 00 00 00          callq  17 <lockdep_hardirqs_on+0x17>
+		13: R_X86_64_PLT32      __sanitizer_cov_trace_pc-0x4
+
+into:
+
+12:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+		13: R_X86_64_NONE      __sanitizer_cov_trace_pc-0x4
+
+Just like recordmcount does.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/elf.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- tools/objtool/elf.h |    7 ++++++-
- 2 files changed, 57 insertions(+), 2 deletions(-)
+ tools/objtool/arch.h                      |    2 ++
+ tools/objtool/arch/x86/decode.c           |   18 ++++++++++++++++++
+ tools/objtool/arch/x86/include/arch_elf.h |    6 ++++++
+ tools/objtool/check.c                     |   19 +++++++++++++++++++
+ 4 files changed, 45 insertions(+)
 
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -562,8 +562,9 @@ static int read_relocs(struct elf *elf)
- 					return -1;
- 			}
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -84,4 +84,6 @@ unsigned long arch_jump_destination(stru
  
--			reloc->sym = find_symbol_by_index(elf, symndx);
- 			reloc->sec = sec;
-+			reloc->idx = i;
-+			reloc->sym = find_symbol_by_index(elf, symndx);
- 			if (!reloc->sym) {
- 				WARN("can't find reloc entry symbol %d for %s",
- 				     symndx, sec->name);
-@@ -848,6 +849,55 @@ static int elf_rebuild_rela_section(stru
+ unsigned long arch_dest_reloc_offset(int addend);
  
- 	return 0;
++const char *arch_nop_insn(int len);
++
+ #endif /* _ARCH_H */
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -565,3 +565,21 @@ void arch_initial_func_cfi_state(struct
+ 	state->regs[16].base = CFI_CFA;
+ 	state->regs[16].offset = -8;
  }
 +
-+int elf_write_insn(struct elf *elf, struct section *sec,
-+		   unsigned long offset, unsigned int len,
-+		   const char *insn)
++const char *arch_nop_insn(int len)
 +{
-+	Elf_Data *data = sec->data;
++	static const char nops[5][5] = {
++		/* 1 */ { 0x90 },
++		/* 2 */ { 0x66, 0x90 },
++		/* 3 */ { 0x0f, 0x1f, 0x00 },
++		/* 4 */ { 0x0f, 0x1f, 0x40, 0x00 },
++		/* 5 */ { 0x0f, 0x1f, 0x44, 0x00, 0x00 },
++	};
 +
-+	if (data->d_type != ELF_T_BYTE || data->d_off) {
-+		WARN("write to unexpected data for section: %s", sec->name);
-+		return -1;
++	if (len < 1 || len > 5) {
++		WARN("invalid NOP size: %d\n", len);
++		return NULL;
 +	}
 +
-+	memcpy(data->d_buf + offset, insn, len);
-+	elf_flagdata(data, ELF_C_SET, ELF_F_DIRTY);
-+
-+	sec->changed = true;
-+	elf->changed = true;
-+
-+	return 0;
++	return nops[len-1];
 +}
+--- /dev/null
++++ b/tools/objtool/arch/x86/include/arch_elf.h
+@@ -0,0 +1,6 @@
++#ifndef _OBJTOOL_ARCH_ELF
++#define _OBJTOOL_ARCH_ELF
 +
-+int elf_write_reloc(struct elf *elf, struct reloc *reloc)
-+{
-+	struct section *sec = reloc->sec;
++#define R_NONE R_X86_64_NONE
 +
-+	if (sec->sh.sh_type == SHT_REL) {
-+		reloc->rel.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		reloc->rel.r_offset = reloc->offset;
++#endif /* _OBJTOOL_ARCH_ELF */
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -12,6 +12,7 @@
+ #include "check.h"
+ #include "special.h"
+ #include "warn.h"
++#include "arch_elf.h"
+ 
+ #include <linux/hashtable.h>
+ #include <linux/kernel.h>
+@@ -744,6 +745,24 @@ static int add_call_destinations(struct
+ 			insn->call_dest = reloc->sym;
+ 
+ 		/*
++		 * Many compilers cannot disable KCOV with a function attribute
++		 * so they need a little help, NOP out any KCOV calls from noinstr
++		 * text.
++		 */
++		if (insn->sec->noinstr &&
++		    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
++			if (reloc) {
++				reloc->type = R_NONE;
++				elf_write_reloc(file->elf, reloc);
++			}
 +
-+		if (!gelf_update_rel(sec->data, reloc->idx, &reloc->rel)) {
-+			WARN_ELF("gelf_update_rel");
-+			return -1;
++			elf_write_insn(file->elf, insn->sec,
++				       insn->offset, insn->len,
++				       arch_nop_insn(insn->len));
++			insn->type = INSN_NOP;
 +		}
-+	} else {
-+		reloc->rela.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
-+		reloc->rela.r_addend = reloc->addend;
-+		reloc->rela.r_offset = reloc->offset;
 +
-+		if (!gelf_update_rela(sec->data, reloc->idx, &reloc->rela)) {
-+			WARN_ELF("gelf_update_rela");
-+			return -1;
-+		}
-+	}
-+
-+	sec->changed = true;
-+	elf->changed = true;
-+
-+	return 0;
-+}
- 
- int elf_rebuild_reloc_section(struct section *sec)
- {
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -67,9 +67,10 @@ struct reloc {
- 	};
- 	struct section *sec;
- 	struct symbol *sym;
--	unsigned int type;
- 	unsigned long offset;
-+	unsigned int type;
- 	int addend;
-+	int idx;
- 	bool jump_table_start;
- };
- 
-@@ -122,6 +123,10 @@ struct elf *elf_open_read(const char *na
- struct section *elf_create_section(struct elf *elf, const char *name, size_t entsize, int nr);
- struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
- void elf_add_reloc(struct elf *elf, struct reloc *reloc);
-+int elf_write_insn(struct elf *elf, struct section *sec,
-+		   unsigned long offset, unsigned int len,
-+		   const char *insn);
-+int elf_write_reloc(struct elf *elf, struct reloc *reloc);
- int elf_write(struct elf *elf);
- void elf_close(struct elf *elf);
- 
++		/*
+ 		 * Whatever stack impact regular CALLs have, should be undone
+ 		 * by the RETURN of the called function.
+ 		 *
 
 
