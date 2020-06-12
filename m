@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1101F7817
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F071F781C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 14:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgFLMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 08:49:06 -0400
-Received: from www.zeus03.de ([194.117.254.33]:35496 "EHLO mail.zeus03.de"
+        id S1726275AbgFLMw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 08:52:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:35894 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgFLMtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 08:49:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=LHqHHlSRkMeun3OMl7GCaw/Jhst
-        3kMW958QRIBoAimc=; b=E6VGAcVjCTZfHOYZdDcB2jZtt66FmKKy1D0Tu0uJBFw
-        wgleUmX1Q8b02fh8arFowu7umeCaWSNAmtyxewMLwGNiY+0iC9IBxk8M96rVes6P
-        fElxd8Wx+mSFIs66+0bgNb1rUBxQEonMTM+bw6ORRChG80ccIZV2BJn+CD+qwO6A
-        =
-Received: (qmail 230824 invoked from network); 12 Jun 2020 14:49:03 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Jun 2020 14:49:03 +0200
-X-UD-Smtp-Session: l3s3148p1@IEB/gOKnIOEgAwDPXwbpAGeWwLnioHPK
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH] lib: update DEBUG_SHIRQ docs to match reality
-Date:   Fri, 12 Jun 2020 14:48:44 +0200
-Message-Id: <20200612124844.19422-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726085AbgFLMwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Jun 2020 08:52:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4360D6E;
+        Fri, 12 Jun 2020 05:52:54 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 258763F6CF;
+        Fri, 12 Jun 2020 05:52:53 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 13:52:50 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        hsinyi@chromium.org, joelaf@google.com, peterz@infradead.org,
+        drinkcat@chromium.org, gwendal@chromium.org, qperret@google.com,
+        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
+ cpu freq
+Message-ID: <20200612125250.7bwjfnxhurdf5bwj@e107158-lin.cambridge.arm.com>
+References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no extra interrupt when registering a shared interrupt handler
-since 2011. Update the Kconfig text to make it clear and to avoid wrong
-assumptions when debugging issues found by it.
+On 06/10/20 15:18, Douglas Anderson wrote:
+> The cros_ec_spi driver is realtime priority so that it doesn't get
+> preempted by other taks while it's talking to the EC but overall it
+> really doesn't need lots of compute power.  Unfortunately, by default,
+> the kernel assumes that all realtime tasks should cause the cpufreq to
+> jump to max and burn through power to get things done as quickly as
+> possible.  That's just not the correct behavior for cros_ec_spi.
+> 
+> Switch to manually overriding the default.
+> 
+> This won't help us if our work moves over to the SPI pump thread but
+> that's not the common code path.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> NOTE: This would cause a conflict if the patch
+> https://lore.kernel.org/r/20200422112831.870192415@infradead.org lands
+> first
+> 
+>  drivers/platform/chrome/cros_ec_spi.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+> index debea5c4c829..76d59d5e7efd 100644
+> --- a/drivers/platform/chrome/cros_ec_spi.c
+> +++ b/drivers/platform/chrome/cros_ec_spi.c
+> @@ -709,8 +709,11 @@ static void cros_ec_spi_high_pri_release(void *worker)
+>  static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
+>  					   struct cros_ec_spi *ec_spi)
+>  {
+> -	struct sched_param sched_priority = {
+> -		.sched_priority = MAX_RT_PRIO / 2,
+> +	struct sched_attr sched_attr = {
+> +		.sched_policy	= SCHED_FIFO,
+> +		.sched_priority	= MAX_RT_PRIO / 2,
+> +		.sched_flags	= SCHED_FLAG_UTIL_CLAMP_MIN,
+> +		.sched_util_min	= 0,
 
-Fixes: 6d83f94db95c ("genirq: Disable the SHIRQ_DEBUG call in request_threaded_irq for now")
-Link: https://lore.kernel.org/linux-i2c/859e8211-2c56-8dd5-d6fb-33e4358e4128@pengutronix.de/T/#mf24d7070d7e0c8f17b6be6ceb51df94b7d7613b3
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+Hmm I thought Peter already removed all users that change RT priority directly.
 
-I'd think this could go in via one of tglx' trees?
+https://lore.kernel.org/lkml/20200422112719.826676174@infradead.org/
 
- lib/Kconfig.debug | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+>  	};
+>  	int err;
+>  
+> @@ -728,8 +731,7 @@ static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
+>  	if (err)
+>  		return err;
+>  
+> -	err = sched_setscheduler_nocheck(ec_spi->high_pri_worker->task,
+> -					 SCHED_FIFO, &sched_priority);
+> +	err = sched_setattr_nocheck(ec_spi->high_pri_worker->task, &sched_attr);
+>  	if (err)
+>  		dev_err(dev, "Can't set cros_ec high pri priority: %d\n", err);
+>  	return err;
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ef675beccab1..50522d3a7770 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -845,10 +845,10 @@ config DEBUG_SHIRQ
- 	bool "Debug shared IRQ handlers"
- 	depends on DEBUG_KERNEL
- 	help
--	  Enable this to generate a spurious interrupt as soon as a shared
--	  interrupt handler is registered, and just before one is deregistered.
--	  Drivers ought to be able to handle interrupts coming in at those
--	  points; some don't and need to be caught.
-+	  Enable this to generate a spurious interrupt just before a shared
-+	  interrupt handler is deregistered (generating one when registering
-+	  is currently disabled). Drivers need to handle this correctly. Some
-+	  don't and need to be caught.
- 
- menu "Debug Oops, Lockups and Hangs"
- 
--- 
-2.20.1
+If I read the code correctly, if you fail here cros_ec_spi_probe() will fail
+too and the whole thing will not be loaded. If you compile without uclamp then
+sched_setattr_nocheck() will always fail with -EOPNOTSUPP.
 
+Why can't you manage the priority and boost value of such tasks via your init
+scripts instead?
+
+I have to admit I need to think about whether it makes sense to have a generic
+API that allows drivers to opt-out of the default boosting behavior for their
+RT tasks.
+
+Thanks
+
+--
+Qais Yousef
+
+> -- 
+> 2.27.0.290.gba653c62da-goog
+> 
