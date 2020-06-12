@@ -2,152 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7A31F761F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 11:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189F71F7624
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 11:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgFLJi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 05:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgFLJi1 (ORCPT
+        id S1726306AbgFLJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 05:41:03 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:38222 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725911AbgFLJlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 05:38:27 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B47C03E96F;
-        Fri, 12 Jun 2020 02:38:27 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id 9so8171047ilg.12;
-        Fri, 12 Jun 2020 02:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MaicPOH+dZ5Iktboa0xwfp898xC8kU9RpGqq/bUg94o=;
-        b=lmPADEL1QE7uLca5G0SgDmNgtt0R3H+Z37M2M2PMe82alYpfulRyapt7IqaKSWgiEe
-         Ehme3eJRiDO8J0MrCs/IroygkGwY6JQ7V8GEQpQg4iBlz7mPa+CildirAIyQL2Puk5I/
-         bs17JXmv6lnsQQtX0ijTf0PWPisa1BpyIUhaOcFu2kyxPwovmeB8elqmL7AbXEVAZlv7
-         mvXL6q3/fVeSEV4sHrTRJbbRgnux+5zwgUmf2cmA0LaJgRZ+AbtWoHF+WB+WrrRISAVN
-         u74Pk6/O1m/pgdPbrbul5+Xj3xzvOpwBGM0oor6gvZu+WIFWWXpEj1rE15e3ah6Qzfxn
-         8Zxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MaicPOH+dZ5Iktboa0xwfp898xC8kU9RpGqq/bUg94o=;
-        b=IpT28+CWq1uT/vWzloZtk75Wg9p5Fg0nb92Mw5kl92qUqDAvRg2kFOB+Mb38QYKNsL
-         iVaHm4nInomdWmtCMPb7G1Ipv9BuUkSuu/Gfbe3gVf/ZwVLsHwQfIB5aI6xOSkQKvyAo
-         Ba9iPEcnsHgFt7KCAXITucKzL5kSQO3M4jtoiTZjlYOjbd/15LC5x+j9CCJIkNkxrnnn
-         7UjaORZwCswWP+o1lNNXsRhv9Ygk7lBu4s2LNF8Rus6jZdbiSklvxEa9HRrwjMb+R7P0
-         RJQ56JB0ca7eoOSR4S/Xrxr55M8ob5Yd5w7Z4jqboq1Vh21Fv9Hh1+ucqi1ioYnB3M06
-         RJPg==
-X-Gm-Message-State: AOAM530KHdD2UhPDaB6sQt+AdVicILJ2+5cYJZKWM9n0df/il/QUIMZp
-        fgiHwVsfKaRCn3PxeERi0sWV2JPUjm0Tp0SPipnGKQ==
-X-Google-Smtp-Source: ABdhPJxfx/BGLWcuK0MV9QvPYJddv2c73grXn4F3GllNy7ffLPXnQM54+k7eLK6VxEBGFhB3V8/GZ0dctPwIVDphlMM=
-X-Received: by 2002:a92:c9ce:: with SMTP id k14mr12036308ilq.250.1591954706642;
- Fri, 12 Jun 2020 02:38:26 -0700 (PDT)
+        Fri, 12 Jun 2020 05:41:02 -0400
+Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id EE120C03B7;
+        Fri, 12 Jun 2020 09:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1591954861; bh=lyijdtCvncNAglhv/dDCL+KU99SnrMZgSj8Og0iQgT8=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=RU5o2DG3+MqLtVgKjM+9ZnRDVvLvyqN6IUswXNuSHRy/SacE+ML2G4dpoq92NdUzi
+         LWx9MsALZzUkwTrvOFG14yPEQbEOmX1b1j496w0MB63x4o/PtUyJz6XxaJ3L0pKykZ
+         NVRkI9hXtdUvV9rytKjGaYln1R7eG/b3zFVWyY04iepONM0HbPgCW7extk+4A+Lltz
+         zKXkx8svqoeOC3uqyeP0TbpdeusMho+sWJPvfyQjAA7fECjS9smqqtTXIGve36YrCg
+         NMk5IfBaydbwjLy5wG1+0uKzmLqos6lB9QNS4V9eIsTT9SRdkCied4kuA67aPzi5Tr
+         gHrnGMGyro63g==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id F04CAA0081;
+        Fri, 12 Jun 2020 09:40:59 +0000 (UTC)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 3E5A7400C5;
+        Fri, 12 Jun 2020 09:40:59 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=joabreu@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Rv1EXRnH";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KmGgztsWwyxyxnfxNSutcuZDZIk7GKGIJyMFIkpwW+FKIMKz/+yBV3JqvFo/ANaQEQULNduchmCeL7C42+5TJoCj27UQ6+IU48HYz42w/sKL9CAG5ITWqfeSbKg+cclaeYI38drmYW6tqDzvGNMBAr2A4tl2HrnHztdgGusULswyox/G7jI7tsrcx5A8Ww3TpOW9q8FJ1CtYNpstH6hh0mOsi+bO3nGw2Eovx1UpuPB8hRqgIVEamqVkJWcofgY8Gv0xRkbknbYNLuHfKKrcxR8iwVFRiZQfiFbxwaygMNpuGhKSPh0fjkKQAaMiCJlVdjSPb7wQNEbwsGRlLjjpNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lyijdtCvncNAglhv/dDCL+KU99SnrMZgSj8Og0iQgT8=;
+ b=PsvvQlM8BAfaEObSrPuzAmerHi8A15bMnF47wejd0mPMdKfXChGm9T2bOb6PGqxEcbGTs8cPGjePkeqy+yQfbKLQK+KzEhy9sdY89nq0gSwQV++5pMUF850aGqBbNvVOFS0iLmiBQartJpYuHR2lA+3icbesKP+i3FXOtOlYLpk5k2m5O/4RSC4lO+LuefiuA6frfiVorhIxB+nwDsf5zd24fpbmD2EOdt7lAadDXMcbGNFonS7fhGCHKhqGli5ZXdY14iAgfbrZqFhfDItZY0GHHjT1uuex915FYnQn3GaaC5+DJaXO9jDN48qwz/v8wZg1AzghJ4l3NAyvtNok5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lyijdtCvncNAglhv/dDCL+KU99SnrMZgSj8Og0iQgT8=;
+ b=Rv1EXRnHXUX2QjLKQ54g5FyWRWHGZX2szHuxItK6Y2TCSdkMCjSedPB9mKyjHQEsj4ORif37pt1oVcLTsy+4UsT4nBVeeHlmVtg6sxqyvgPEJn0+Ae0k7zDqVApM/E1x14hVRxuQjowkFPjptAjrVaVF43McCPYPocYRyYYmzZk=
+Received: from BN6PR12MB1779.namprd12.prod.outlook.com (2603:10b6:404:108::21)
+ by BN8PR12MB3204.namprd12.prod.outlook.com (2603:10b6:408:9d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.24; Fri, 12 Jun
+ 2020 09:40:57 +0000
+Received: from BN6PR12MB1779.namprd12.prod.outlook.com
+ ([fe80::f0ab:1cc3:95dc:caa4]) by BN6PR12MB1779.namprd12.prod.outlook.com
+ ([fe80::f0ab:1cc3:95dc:caa4%8]) with mapi id 15.20.3088.018; Fri, 12 Jun 2020
+ 09:40:56 +0000
+X-SNPS-Relay: synopsys.com
+From:   Jose Abreu <Jose.Abreu@synopsys.com>
+To:     Alim Akhtar <alim.akhtar@gmail.com>
+CC:     "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        Joao Lima <Joao.Lima@synopsys.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: RE: [EXT] [PATCH v2 1/5] scsi: ufs: Allow UFS 3.0 as a valid version
+Thread-Topic: [EXT] [PATCH v2 1/5] scsi: ufs: Allow UFS 3.0 as a valid version
+Thread-Index: AQHWGj6lcVDTF+IaKE20nlDb1NNdr6iIbYWAgAdCRuCAAGeoAIABQo2wgEAjFwCAA4lhoA==
+Date:   Fri, 12 Jun 2020 09:40:56 +0000
+Message-ID: <BN6PR12MB177957E93D2ED229C76A24B4D3810@BN6PR12MB1779.namprd12.prod.outlook.com>
+References: <cover.1587735561.git.Jose.Abreu@synopsys.com>
+ <c006813f8fc3052eef97d5216e4f31829d7cd10b.1587735561.git.Jose.Abreu@synopsys.com>
+ <SN6PR08MB5693C397D88D16EC43E85490DBD00@SN6PR08MB5693.namprd08.prod.outlook.com>
+ <BN8PR12MB3266D1F9B038EF821FA8D503D3AD0@BN8PR12MB3266.namprd12.prod.outlook.com>
+ <BN7PR08MB56847531D0EC603DD2C7B349DBAD0@BN7PR08MB5684.namprd08.prod.outlook.com>
+ <BN8PR12MB32664256580771FA9102EB14D3AA0@BN8PR12MB3266.namprd12.prod.outlook.com>
+ <CAGOxZ50qPoC0HPUdTiOzA+NhTo5FRZVk01uq40AaDNn4JkHi3Q@mail.gmail.com>
+In-Reply-To: <CAGOxZ50qPoC0HPUdTiOzA+NhTo5FRZVk01uq40AaDNn4JkHi3Q@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jYW05aFluSmxkVnhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
+ =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
+ =?utf-8?B?Y2JYTm5MV05sWm1NME16TmlMV0ZqT1RBdE1URmxZUzFpTmpSa0xXWTBaREV3?=
+ =?utf-8?B?T0dVMk5tRTBORnhoYldVdGRHVnpkRnhqWldaak5ETXpaQzFoWXprd0xURXha?=
+ =?utf-8?B?V0V0WWpZMFpDMW1OR1F4TURobE5qWmhORFJpYjJSNUxuUjRkQ0lnYzNvOUlq?=
+ =?utf-8?B?TXpPU0lnZEQwaU1UTXlNelkwTWpnME5UUTJNamcwTlRJMUlpQm9QU0lyYkRs?=
+ =?utf-8?B?TVlWTkRibWQzWWsxb2EwbEhXR0prWkdOaVRWQmlhalE5SWlCcFpEMGlJaUJp?=
+ =?utf-8?B?YkQwaU1DSWdZbTg5SWpFaUlHTnBQU0pqUVVGQlFVVlNTRlV4VWxOU1ZVWk9R?=
+ =?utf-8?B?MmRWUVVGQ1VVcEJRVVIwWlRGVFVtNVZSRmRCVTJKbFVXdHBTVzVWVUVaS2RE?=
+ =?utf-8?B?VkRVMGxwWkZFNFZVOUJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlNFRkJRVUZEYTBOQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UlVGQlVVRkNRVUZCUVc5YU4wTkRRVUZCUVVGQlFVRkJRVUZCUVVGQlFVbzBR?=
+ =?utf-8?B?VUZCUW0xQlIydEJZbWRDYUVGSE5FRlpkMEpzUVVZNFFXTkJRbk5CUjBWQllt?=
+ =?utf-8?B?ZENkVUZIYTBGaVowSnVRVVk0UVdSM1FtaEJTRkZCV2xGQ2VVRkhNRUZaVVVK?=
+ =?utf-8?B?NVFVZHpRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdk?=
+ =?utf-8?B?QlFVRkJRVUZ1WjBGQlFVZFpRV0ozUWpGQlJ6UkJXa0ZDZVVGSWEwRllkMEoz?=
+ =?utf-8?B?UVVkRlFXTm5RakJCUnpSQldsRkNlVUZJVFVGWWQwSnVRVWRaUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVTkJRVUZCUVVGRFpVRkJRVUZhWjBKMlFVaFZRV0puUW10QlNF?=
+ =?utf-8?B?bEJaVkZDWmtGSVFVRlpVVUo1UVVoUlFXSm5RbXhCU0VsQlkzZENaa0ZJVFVG?=
+ =?utf-8?B?WlVVSjBRVWhOUVdSUlFuVkJSMk5CV0hkQ2FrRkhPRUZpWjBKdFFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRa0ZCUVVGQlFVRkJRVUZKUVVGQlFVRkJTalJCUVVGQ2JVRkhPRUZr?=
+ =?utf-8?B?VVVKMVFVZFJRV05uUWpWQlJqaEJZMEZDYUVGSVNVRmtRVUoxUVVkVlFXTm5R?=
+ =?utf-8?B?bnBCUmpoQlkzZENhRUZITUVGamQwSXhRVWMwUVZwM1FtWkJTRWxCV2xGQ2Vr?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVGQlowRkJRVUZCUVc1blFV?=
+ =?utf-8?B?RkJSMWxCWW5kQ01VRkhORUZhUVVKNVFVaHJRVmgzUW5kQlIwVkJZMmRDTUVG?=
+ =?utf-8?B?SE5FRmFVVUo1UVVoTlFWaDNRbnBCUnpCQllWRkNha0ZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJRVUZCUVVGQlFVRkJRMEZC?=
+ =?utf-8?B?UVVGQlFVTmxRVUZCUVZwblFuWkJTRlZCWW1kQ2EwRklTVUZsVVVKbVFVaEJR?=
+ =?utf-8?B?VmxSUW5sQlNGRkJZbWRDYkVGSVNVRmpkMEptUVVoTlFXUkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZDUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVsQlFVRkJRVUZLTkVGQlFVSnRRVWM0UVdSUlFuVkJSMUZCWTJk?=
+ =?utf-8?B?Q05VRkdPRUZqUVVKb1FVaEpRV1JCUW5WQlIxVkJZMmRDZWtGR09FRmtRVUo2?=
+ =?utf-8?B?UVVjd1FWbDNRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlJVRkJRVUZCUVVGQlFVRm5RVUZCUVVGQmJtZEJRVUZIV1VGaWQwSXhR?=
+ =?utf-8?B?VWMwUVZwQlFubEJTR3RCV0hkQ2QwRkhSVUZqWjBJd1FVYzBRVnBSUW5sQlNF?=
+ =?utf-8?B?MUJXSGRDTVVGSE1FRlpkMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVkZCUVVGQlFVRkJRVUZEUVVGQlFVRkJRMlZCUVVG?=
+ =?utf-8?B?QlduZENNRUZJVFVGWWQwSjNRVWhKUVdKM1FtdEJTRlZCV1hkQ01FRkdPRUZr?=
+ =?utf-8?B?UVVKNVFVZEZRV0ZSUW5WQlIydEJZbWRDYmtGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVKQlFVRkJRVUZCUVVGQlNVRkJR?=
+ =?utf-8?B?VUZCUVVvMFFVRkJRbnBCUjBWQllrRkNiRUZJVFVGWWQwSm9RVWROUVZsM1Fu?=
+ =?utf-8?B?WkJTRlZCWW1kQ01FRkdPRUZqUVVKelFVZEZRV0puUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRV2RCUVVGQlFVRnVaMEZCUVVoTlFWbFJRbk5CUjFWQlkzZENaa0ZJ?=
+ =?utf-8?B?UlVGa1VVSjJRVWhSUVZwUlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCVVVGQlFVRkJRVUZCUVVOQlFVRkJRVUZEWlVGQlFVRmpkMEoxUVVoQlFX?=
+ =?utf-8?B?TjNRbVpCUjNkQllWRkNha0ZIVlVGaVowSjZRVWRWUVZoM1FqQkJSMVZCWTJk?=
+ =?utf-8?B?Q2RFRkdPRUZOVVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlNqUkJRVUZD?=
+ =?utf-8?B?ZWtGSE5FRmpRVUo2UVVZNFFXSkJRbkJCUjAxQldsRkNkVUZJVFVGYVVVSm1R?=
+ =?utf-8?B?VWhSUVZwUlFubEJSekJCV0hkQ2VrRklVVUZrVVVKclFVZFZRV0puUWpCQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVVZCUVVGQlFVRkJRVUZCWjBGQlFV?=
+ =?utf-8?B?RkJRVzVuUVVGQlNGbEJXbmRDWmtGSGMwRmFVVUkxUVVoalFXSjNRbmxCUjFG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGUlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlEwRkJRVUZCUVVFOUlpOCtQQzl0WlhSaFBnPT0=?=
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [82.155.99.6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9dbe4ff6-38d8-491d-daa8-08d80eb4b50e
+x-ms-traffictypediagnostic: BN8PR12MB3204:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN8PR12MB3204E7B5CA6B8FBC4FB42FC3D3810@BN8PR12MB3204.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2512;
+x-forefront-prvs: 0432A04947
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dlv639UWeMkBzH9IBVvXnCX9DD3UAuGRw8FplvEg+m94w7KCItnZyPJlv5KCQCp0ebzHRlUOJkL9KyvXpgpv8z0lKeFnz1mcm3L1C+GetvhkkxYZ2bAUrE/xvq8JhUxHGU4f4oVsFGnPkndTdC8i/HhrVbVgDe6+EctC/yYTwQ3V1g74Av/skKRNL7rpoxWchzzsuKkMx53FTHmzn1BqHxXyBdNjbOTFG8qK14aebwg05Adt7Pr+tkG8A/O7fIPoNl06eCoJgFLmijXTd0yKR70zpXd+pWS+BB51XFLJuZXpD3omFRnEW4eYO1Y9+fxyVbzOXLOXboLjdyPLQpdS1g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR12MB1779.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(39860400002)(396003)(376002)(366004)(346002)(6916009)(26005)(8676002)(316002)(55016002)(54906003)(9686003)(186003)(8936002)(86362001)(33656002)(2906002)(558084003)(71200400001)(52536014)(5660300002)(66946007)(76116006)(6506007)(66446008)(64756008)(66556008)(66476007)(7696005)(4326008)(478600001)(107886003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 6KlG0RxeNaP2fuiXDzC9bL+Ceb2ASmOTRU4zyxrO2nGrmSEEwNLQLUYCyca37sAwsMHhVU1G+Zw62lniynXsKFoyADZQpXURyEUaSF2JmAeleoMPD2Tz2wXxQVxRuKs4OpvCAF0pDR4s0bIl5xo62LtfWyNy9dz0n6jBojDxOk3fQiLuHR8HtmC4yft7gixeNjWRQC2WARA8Se3OkC0C1cQpc/WJdhDkWrJVZbdL1G3cyOJGy+bQfB4Z9ZsrQfI1KkmZjn4yjJsrwro2VsV0jA+Icy5fTh8iZZ5ECz2prN3HNyOs8sIVhknU2+J9UVnIC38xPVb1YmmIijSA9Z16Dp7ICOM+j5hRTYfbwOy80wgWnK29nu6xEKRjpzwFDA7/X101XNaK9V+fcohtV98AH3B1Y5mFGrlishDiipwYpB9aWZTFCX7wy9xlgFLVWut2/B3txs5Wc3Tg7bfaeHlGgITpQGGQhTSBMDV8QqNUVtA=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200608140557.GG3127@techsingularity.net> <CAOQ4uxhb1p5_rO9VjNb6assCczwQRx3xdAOXZ9S=mOA1g-0JVg@mail.gmail.com>
- <20200608160614.GH3127@techsingularity.net> <CAOQ4uxh=Z92ppBQbRJyQqC61k944_7qG1mYqZgGC2tU7YAH7Kw@mail.gmail.com>
- <20200608180130.GJ3127@techsingularity.net> <CAOQ4uxgcUHuqiXFPO5mX=rvDwP-DOoTZrXvpVNphwEMFYHtyCw@mail.gmail.com>
- <CAOQ4uxhbE46S65-icLhaJqT+jKqz-ZdX=Ypm9hAt9Paeb+huhQ@mail.gmail.com>
- <20200610125920.GM3127@techsingularity.net> <CAOQ4uxhcFO4=e-s7uStbEkZU==8kraD1=owZGu4SWx_iR72gTA@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhcFO4=e-s7uStbEkZU==8kraD1=owZGu4SWx_iR72gTA@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 12 Jun 2020 12:38:15 +0300
-Message-ID: <CAOQ4uxjTFCJa1y2Uq8NztXxkPRmvDvtUUt22QMwPkdd=eJdkyw@mail.gmail.com>
-Subject: Re: [PATCH] fsnotify: Rearrange fast path to minimise overhead when
- there is no watcher
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dbe4ff6-38d8-491d-daa8-08d80eb4b50e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2020 09:40:56.5018
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4hm1xVd2T4wuS+mygrrpjbe5PPPWqm68uANgdjufPXr9dP5/TrbuW/9wf8lyBvkbW/oSGtAmLamPxSrZiD6LWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3204
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 4:24 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Wed, Jun 10, 2020 at 3:59 PM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Mon, Jun 08, 2020 at 11:39:26PM +0300, Amir Goldstein wrote:
-> > > > Let me add your optimizations on top of my branch with the needed
-> > > > adaptations and send you a branch for testing.
-> > >
-> > > https://github.com/amir73il/linux/commits/fsnotify_name-for-mel
-> > >
-> >
-> > Sorry for the delay getting back. The machine was busy with other tests
-> > and it took a while to reach this on the queue. Fairly good news
-> >
-> > hackbench-process-pipes
-> >                               5.7.0                  5.7.0                  5.7.0                  5.7.0
-> >                             vanilla      fastfsnotify-v1r1          amir-20200608           amir-for-mel
-> > Amean     1       0.4837 (   0.00%)      0.4630 *   4.27%*      0.4967 *  -2.69%*      0.4680 (   3.24%)
-> > Amean     3       1.5447 (   0.00%)      1.4557 (   5.76%)      1.6587 *  -7.38%*      1.4807 (   4.14%)
-> > Amean     5       2.6037 (   0.00%)      2.4363 (   6.43%)      2.6400 (  -1.40%)      2.4900 (   4.37%)
-> > Amean     7       3.5987 (   0.00%)      3.4757 (   3.42%)      3.9040 *  -8.48%*      3.5130 (   2.38%)
-> > Amean     12      5.8267 (   0.00%)      5.6983 (   2.20%)      6.2593 (  -7.43%)      5.6967 (   2.23%)
-> > Amean     18      8.4400 (   0.00%)      8.1327 (   3.64%)      8.9940 (  -6.56%)      7.7240 *   8.48%*
-> > Amean     24     11.0187 (   0.00%)     10.0290 *   8.98%*     11.7247 *  -6.41%*      9.5793 *  13.06%*
-> > Amean     30     13.1013 (   0.00%)     12.8510 (   1.91%)     14.0290 *  -7.08%*     12.1630 (   7.16%)
-> > Amean     32     13.9190 (   0.00%)     13.2410 (   4.87%)     14.7140 *  -5.71%*     13.2457 *   4.84%*
-> >
-> > First two sets of results are vanilla kernel and just my patch respectively
-> > to have two baselines. amir-20200608 is the first git branch you pointed
-> > me to and amir-for-mel is this latest branch. Comparing the optimisation
-> > and your series, we get
-> >
-> > hackbench-process-pipes
-> >                               5.7.0                  5.7.0
-> >                   fastfsnotify-v1r1           amir-for-mel
-> > Amean     1       0.4630 (   0.00%)      0.4680 (  -1.08%)
-> > Amean     3       1.4557 (   0.00%)      1.4807 (  -1.72%)
-> > Amean     5       2.4363 (   0.00%)      2.4900 (  -2.20%)
-> > Amean     7       3.4757 (   0.00%)      3.5130 (  -1.07%)
-> > Amean     12      5.6983 (   0.00%)      5.6967 (   0.03%)
-> > Amean     18      8.1327 (   0.00%)      7.7240 (   5.03%)
-> > Amean     24     10.0290 (   0.00%)      9.5793 (   4.48%)
-> > Amean     30     12.8510 (   0.00%)     12.1630 (   5.35%)
-> > Amean     32     13.2410 (   0.00%)     13.2457 (  -0.04%)
-> >
-> > As you can see, your patches with the optimisation layered on top is
-> > comparable to just the optimisation on its own. It's not universally
-> > better but it would not look like a regression when comparing releases.
-> > The differences are mostly within the noise as there is some variability
-> > involved for this workload so I would not worry too much about it (caveats
-> > are other machines may be different as well as other workloads).
->
-> Excellent!
-> Thanks for verifying.
->
-> TBH, this result is not surprising, because despite all the changes from
-> fastfsnotify-v1r1 to amir-for-mel, the code that is executed when there
-> are no watches should be quite similar. Without any unexpected compiler
-> optimizations that may differ between our versions, fsnotify hooks called
-> for directories should execute the exact same code.
->
-> fsnotify hooks called for non-directories (your workload) should execute
-> almost the same code. I spotted one additional test for access to
-> d_inode and one additional test of:
-> dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED
-> in the entry to __fsnotify_parent().
->
-> > A minor
-> > issue is that this is probably a bisection hazard. If a series is merged
-> > and LKP points the finger somewhere in the middle of your series then
-> > I suggest you ask them to test the optimisation commit ID to see if the
-> > regression goes away.
-> >
->
-> No worries. I wasn't planning on submitted the altered patch.
-> I just wanted to let you test the final result.
-> I will apply your change before my series and make sure to keep
-> optimizations while my changes are applied on top of that.
->
-
-FYI, just posted your patch with a minor style change at the bottom
-of my prep patch series.
-
-Thanks,
-Amir.
+RnJvbTogQWxpbSBBa2h0YXIgPGFsaW0uYWtodGFyQGdtYWlsLmNvbT4NCkRhdGU6IEp1bi8xMC8y
+MDIwLCAwNDozOTo0OCAoVVRDKzAwOjAwKQ0KDQo+IEFyZSB5b3Ugc3RpbGwgb24gdGhpcz8NCg0K
+WWVzLCBhcG9sb2dpZXMgYnV0IEkgd2FzIGNhdWdodCBvbiBzb21lIG90aGVyIHRoaW5ncy4gSSds
+bCB0cnkgdG8gDQpyZS1zdWJtaXQgb25jZSBwb3NzaWJsZS4NCg0KLS0tDQpUaGFua3MsDQpKb3Nl
+IE1pZ3VlbCBBYnJldQ0K
