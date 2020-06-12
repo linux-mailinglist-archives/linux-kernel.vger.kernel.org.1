@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D685E1F78D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0571F78EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 15:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgFLNpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 09:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S1726450AbgFLNra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 09:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgFLNpz (ORCPT
+        with ESMTP id S1726257AbgFLNr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 09:45:55 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C852C03E96F;
-        Fri, 12 Jun 2020 06:45:54 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g7so7336946oti.13;
-        Fri, 12 Jun 2020 06:45:54 -0700 (PDT)
+        Fri, 12 Jun 2020 09:47:28 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995B7C03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:47:28 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y17so9783978wrn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 06:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tnWRCjyW1p7dTLnn3crfMwsFLtsc5KLsrHO4pffPzmQ=;
-        b=esCMfmLir71/oNBSQV4h3Ga/4HPb3WQxpX3k4ZzCUdanFkKEtOWRHtxg8+1Mi08Res
-         ROgBkyzIAXp9iVWJ17h7vEQqRAH4y1elxnTgHtWKmkhxokfTLl9rp9Rya5/M0xq7gcgR
-         t7Enp4adykZHOHH4Z58t3AEXjqmRGHFMmJHUPjcLH+6XedtKYtOJKt1QG+bPElhkA213
-         i1Fwvf+GZeChOPwcojkHzxF0o97GIbRyAUwEsVT4z7MudYAreKMTwNlFIccPf4e3xmmC
-         gZwGqVgXv21l2uRFLtTt0RbXAO9ZoPVjfCUOelQvB45Nefk6nCb0ctHkBs4iDDbhMFYq
-         VSXQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FRGSaoaZXAME28NoyxgD/FZqB6wuHhSggY6fzT6nWF4=;
+        b=qrSl08+LFjVLPVlqix58AoGdl8qP7msVljgP0k0oI8DW1wKfoNerfLHGE3b2+QdLw1
+         wSMJ5VoewY6Vral8iG8AACybnjl8MKml2VoKlXX7z3uMjxVModSVy0HFmmZ01KNRz+hN
+         up1RjPsufCbFlZn65HtBts1MLg8tTKOv3b+ZWjv1A2lotc6WygTiV22qX+3hZp5GW9UW
+         SDW0kuG3xy8dkOdOm1Q44i4FYiR8xa9JScurdYyVuA3a4/ahxQOlKvZUACBTEy+LBsw8
+         iRsTdB6vMOzb9iOT3cL5c418aWjFyvPfDWv/5/eIP3c3Xnvy2CDiwzT3iypZMENcbG8j
+         LZLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tnWRCjyW1p7dTLnn3crfMwsFLtsc5KLsrHO4pffPzmQ=;
-        b=fFM/X5og9j9Cp4vfx9gBa8M/YkvanlndSI/zmZSe9MUAlT3ilOj9ntsKb0u9H4H3Fu
-         i3xSiFIAqi1XWHc7PODEhwUVCPEuWADiyo2ekzxWkg0qEwPpVTnAvkTPeMNV00OPBQOy
-         6jkwOyoYul/ORLWsc49L//oKXF4x2vNUf8QbvrzUfsu68Y9ayKL3KftbfuNQdcueFatH
-         WoHzTqZYv3gtvi1Zr/46EEG1ICrfwLJ0qpjtD9k3/NMUua1W1jWlRBcJd4EEq/pt48xq
-         6R+/bknEQuzVmu/YgfrKVe9b2rPHvUid3pa4+Gybpt31P+DLR09IyQUnVd6h2MgU610p
-         RESQ==
-X-Gm-Message-State: AOAM5339SGYePv4BJJyioiuRr8D1CWaAFsOy2aeo2vNEou15Xv5/au8e
-        UQjPUMSTUjU0T81+lIVIlgJ2VkmLVuEUVtZEFaDLv7Wu+LY=
-X-Google-Smtp-Source: ABdhPJyZZnwfYxtAfnjbR7dGVncR++QcXgO4k7Xt9pQ1VivLYQ03E2vJ+ZC8E5NJpGrb7H6JVSpx86KPoQqDN/ysaO0=
-X-Received: by 2002:a9d:58c9:: with SMTP id s9mr11511066oth.233.1591969553714;
- Fri, 12 Jun 2020 06:45:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FRGSaoaZXAME28NoyxgD/FZqB6wuHhSggY6fzT6nWF4=;
+        b=Hm9Rr+rXi1IWBx7E8VXLbqd5PAwOkO27tNni3SZSElw74c6o4ugLB0ZasFcfnUbpgE
+         ZARq1CLKa7il9qxqtgbLVyPhgfYLbmp1LRt7IQtO+ZfkuABexiVIqLhWajC6K/RA6f/Q
+         dyXeDTxVqfB+GBL3ILmjR3JlfI9FJADgiJHKHXj5LLZRdlj57mWDyGUwVWYxX+AoT07t
+         PDxrtvUTCWAryQX/rX7aW1vwgrRe46MvGMZgaUz11hEIHelsQs0naeuVZliMVx6r/LvB
+         64vl396Klaqygfqy4p/RQLEbhEX/+bmHLfW4hWcRO1nLv+7qLtkNhcavnNRLtC6s+d3Y
+         nQCA==
+X-Gm-Message-State: AOAM530n7hyyCRnHfQetA2BDVf8eqKdqECyg4QLj8gU8+wmvHePOmTSB
+        90BwoKvDs3FqBG0SUVaf6zn06g==
+X-Google-Smtp-Source: ABdhPJxYZXjECba+nbE9tk2s6BTEOkK7Zvtj8zBoTmkEQculfoPOyyOWcljy/pVOGks04A4LAA3pkg==
+X-Received: by 2002:a5d:5489:: with SMTP id h9mr14678096wrv.125.1591969645858;
+        Fri, 12 Jun 2020 06:47:25 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id a16sm9881227wrx.8.2020.06.12.06.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 06:47:25 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 14:47:21 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
+ cpu freq
+Message-ID: <20200612134721.GA142550@google.com>
+References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
+ <20200611110301.GA132747@google.com>
+ <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
+ <20200612092454.GA94228@google.com>
+ <20200612123448.fcmzv3rdtsbawmpd@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-References: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
-In-Reply-To: <1591794711-5915-1-git-send-email-pmorel@linux.ibm.com>
-From:   Mauricio Tavares <raubvogel@gmail.com>
-Date:   Fri, 12 Jun 2020 09:45:42 -0400
-Message-ID: <CAHEKYV6edAHyrW-VQtW5ufZkqpXbfd1sU9N4BqOktezdffHTsg@mail.gmail.com>
-Subject: Re: [PATCH] s390: protvirt: virtio: Refuse device without IOMMU
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612123448.fcmzv3rdtsbawmpd@e107158-lin.cambridge.arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 12:32 PM Pierre Morel <pmorel@linux.ibm.com> wrote:
->
-> Protected Virtualisation protects the memory of the guest and
-> do not allow a the host to access all of its memory.
->
-> Let's refuse a VIRTIO device which does not use IOMMU
-> protected access.
->
-      Stupid questions:
+On Friday 12 Jun 2020 at 13:34:48 (+0100), Qais Yousef wrote:
+> > On Thursday 11 Jun 2020 at 10:48:40 (-0700), Doug Anderson wrote:
+> > > I'm not totally a fan, but I'm definitely not an expert in this area
+> > > (I've also only read the patch description and not the patch or the
+> > > whole thread).  I really don't want yet another value that I need to
+> > > tune from board to board.  Even worse, this tuning value isn't
+> > > board-specific but a combination of board and software specific.  By
+> > > this, I'd imagine a scenario where you're using a real-time task to
+> > > get audio decoding done within a certain latency.  I guess you'd tune
+> > > this value to make sure that you can get all your audio decoding done
+> > > in time but also not burn extra power.  Now, imagine that the OS
+> > > upgrades and the audio task suddenly has to decode more complex
+> > > streams.  You've got to go across all of your boards and re-tune every
+> > > one?  ...or, nobody thinks about it and older boards start getting
+> > > stuttery audio?  Perhaps the opposite happens and someone comes up
+> > > with a newer lower-cpu-intensive codec and you could save power.
+> > > Sounds like a bit of a nightmare.
+> 
+> Generally I would expect this global tunable to be part of a vendor's SoC BSP.
+> 
+> People tend to think of the flagship SoCs which are powerful, but if you
+> consider the low and medium end devices there's a massive spectrum over there
+> that this range is trying to cover.
+> 
+> I would expect older boards init script to be separate for newer boards init
+> script. The OS by default boosts all RT tasks unless a platform specific script
+> overrides that. So I can't see how an OS upgrade would affect older boards.
 
-1. Do all CPU families we care about (which are?) support IOMMU? Ex:
-would it recognize an ARM thingie with SMMU? [1]
-2. Would it make sense to have some kind of
-yes-I-know-the-consequences-but-I-need-to-have-a-virtio-device-without-iommu-in-this-guest
-flag?
+I think Doug meant that the device-specific values need re-tuning in
+case of major OS updates, which is indeed a pain. But yeah, I'm not sure
+if we have a better solution than that, though.
 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> ---
->  drivers/s390/virtio/virtio_ccw.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> index 5730572b52cd..06ffbc96587a 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -986,6 +986,11 @@ static void virtio_ccw_set_status(struct virtio_device *vdev, u8 status)
->         if (!ccw)
->                 return;
->
-> +       /* Protected Virtualisation guest needs IOMMU */
-> +       if (is_prot_virt_guest() &&
-> +           !__virtio_test_bit(vdev, VIRTIO_F_IOMMU_PLATFORM))
-> +                       status &= ~VIRTIO_CONFIG_S_FEATURES_OK;
-> +
->         /* Write the status to the host. */
->         vcdev->dma_area->status = status;
->         ccw->cmd_code = CCW_CMD_WRITE_STATUS;
-> --
-> 2.25.1
->
+> This knob still allows you to disable the max boosting and use the per-task
+> uclamp interface to boost only those tasks you care about. AFAIK this is
+> already done in a hacky way in android devices via special vendors provisions.
+> 
+> > > 
+> > > I'd rather have a boolean value: boost all RT threads to max vs. don't
+> > > boost all RT threads to max.  Someone that just wanted RT stuff to run
+> 
+> If that's what your use case requires, you can certainly treat it like
+> a boolean if you want.
 
-[1] https://developer.arm.com/architectures/system-architectures/system-components/system-mmu-support
++1
+
+> > > as fast as possible without any hassle on their system and didn't care
+> > > about power efficiency could turn this on.  Anyone who really cared
+> > > about power could turn this off and then could find a more targeted
+> > > way to boost things, hopefully in a way that doesn't require tuning.
+> > > One option would be to still boost the CPU to max but only for certain
+> > > tasks known to be really latency sensitive.  Another might be to
+> 
+> per-task uclamp interface allows you to do that. But SoC vendors/system
+> integrators need to decide that. I'm saying this with Android in mind
+> specifically. Linux based laptops that are tuned in similar way are rare. But
+> hopefully this will change at some point :)
+> 
+> > > somehow measure whether or not the task is making its deadlines and
+> > > boost the CPU frequency up if deadlines are not being met.  I'm sure
+> > > there are fancier ways.
+> 
+> You need to use SCHED_DEADLINE then :)
+
+Well, not quite :-)
+
+The frequency selection for DL is purely based on the userspace-provided
+parameters, from which we derive the bandwidth request. But we don't do
+things like 'raise the frequency if the actual runtime gets close to the
+WCET', or anything of the sort. All of that would have to be implemented
+in userspace ATM.
+
+Cheers,
+Quentin
