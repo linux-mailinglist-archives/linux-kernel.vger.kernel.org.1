@@ -2,1028 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A5C1F7594
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B489C1F757C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Jun 2020 10:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgFLI6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 04:58:44 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:44538 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgFLI6h (ORCPT
+        id S1726380AbgFLIuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 04:50:35 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:64628 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbgFLIue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 04:58:37 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05C8wVIG028274;
-        Fri, 12 Jun 2020 03:58:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1591952311;
-        bh=G7rrevejasvqnPqeBaUKBjRaSE71WS+o0Uh1FnVUcLo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=TNaezsRxnmDcmojeDiqsqWbF6kqr/9IELbWWeSwsFoctDn0dzlPoVRpY62QNbLktr
-         DbORYWXWIef5FJLB8EbP08/920sIkF0+y6q75sSdQdNGrPh2DXvRCmMOQ7WqeuA8dq
-         xqF8BnxmePTl2AEqfjpKdZlshbkl/xFv18zHH/x0=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05C8wVMB026657;
-        Fri, 12 Jun 2020 03:58:31 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Jun 2020 03:58:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Jun 2020 03:58:30 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05C8wMMM036678;
-        Fri, 12 Jun 2020 03:58:29 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/3] ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)
-Date:   Fri, 12 Jun 2020 11:59:09 +0300
-Message-ID: <20200612085909.15018-4-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200612085909.15018-1-peter.ujfalusi@ti.com>
-References: <20200612085909.15018-1-peter.ujfalusi@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 12 Jun 2020 04:50:34 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200612085029epoutp03a69585d66a6066266f935a52ea44dd32~Xv8E9tga62490524905epoutp03L
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 08:50:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200612085029epoutp03a69585d66a6066266f935a52ea44dd32~Xv8E9tga62490524905epoutp03L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591951830;
+        bh=wjBcconf/6hLgF1WnbdIfr/JTD+D08cX7OzDCjsEdYA=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=CznrQoVFyJnMj65PMw7ww2TISDGxaAP6ISBC86nhTsFzl3shrv5MKNEY0tP2QpTVd
+         Brf56efY/abWswiHn2m6EtPNtTNvLMFMfZrod687TzU/hqQTPoxOZD/SKBtqN1+Wtx
+         5CKHSljFtfpgnYnpUuAnvCT1XKgd/MsTUcFxs8AE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200612085028epcas1p351f34b13516d6045dd684c79f5a9b8bc~Xv8D-O_B62657826578epcas1p3M;
+        Fri, 12 Jun 2020 08:50:28 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 49jvZC6RKgzMqYl4; Fri, 12 Jun
+        2020 08:50:27 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        64.30.18978.3D143EE5; Fri, 12 Jun 2020 17:50:27 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200612085027epcas1p46383a7eda792eabbd1e74cd08fe988c9~Xv8CeKmsG0746507465epcas1p4u;
+        Fri, 12 Jun 2020 08:50:27 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200612085027epsmtrp15e687dc1b5374561b8850763e48d820d~Xv8CdY_yT1543715437epsmtrp1q;
+        Fri, 12 Jun 2020 08:50:27 +0000 (GMT)
+X-AuditID: b6c32a35-5edff70000004a22-dc-5ee341d32b32
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        01.BF.08382.3D143EE5; Fri, 12 Jun 2020 17:50:27 +0900 (KST)
+Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.229]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200612085027epsmtip1cbffd0d5afc029e5637f18668775473b~Xv8CRGAsm1749617496epsmtip1z;
+        Fri, 12 Jun 2020 08:50:27 +0000 (GMT)
+From:   Jaewon Kim <jaewon31.kim@samsung.com>
+To:     mgorman@techsingularity.net, minchan@kernel.org, mgorman@suse.de,
+        hannes@cmpxchg.org, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        jaewon31.kim@gmail.com, ytk.lee@samsung.com,
+        cmlaika.kim@samsung.com, Jaewon Kim <jaewon31.kim@samsung.com>
+Subject: [PATCH v2] page_alloc: consider highatomic reserve in wmartermark
+ fast
+Date:   Sat, 13 Jun 2020 11:51:02 +0900
+Message-Id: <20200613025102.12880-1-jaewon31.kim@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGKsWRmVeSWpSXmKPExsWy7bCmge5lx8dxBgvbjSzmrF/DZrFy3jk2
+        i9WbfC26N89ktOh9/4rJ4vKuOWwW99b8Z7WY/O4Zo8WOpfuYLJZ9fc9u8Xg9twO3x+E375k9
+        ds66y+6xaVUnm8emT5PYPU7M+M3i0bdlFaPH5tPVHlt/2Xl83iQXwBmVY5ORmpiSWqSQmpec
+        n5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdKqSQlliTilQKCCxuFhJ386m
+        KL+0JFUhI7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEn48WytcwFm7Ir1p5e
+        z9TAeDqqi5GTQ0LARKJz9wfGLkYuDiGBHYwSf9auYIJwPjFKrPiwih3C+cYoseNnCxtMy6TZ
+        r1ggEnsZJS5/3QlV9YNRYv6yxSwgVWwC2hLvF0xiBbFFBEolmuavA5vLLLAUqOPWDXaQhLBA
+        oMTZc83MIDaLgKrEqvnXwZp5BWwltu/5wgyxTl5i9YYDzCDNEgIv2SUWPDjBApFwkTj38R9U
+        kbDEq+Nb2CFsKYmX/W1Qdr3Env1/oWoaGCX+fxSAsI0l5rcsBIpzAF2kKbF+lz5EWFFi5++5
+        jCA2swCfxLuvPawgJRICvBIdbUIQJWoSLc++skLYMhJ//z2Dsj0k5l29zQRiCwnEShy/soVp
+        AqPsLIQFCxgZVzGKpRYU56anFhsWGCJH0yZGcALUMt3BOPHtB71DjEwcjIcYJTiYlUR4BcUf
+        xgnxpiRWVqUW5ccXleakFh9iNAWG10RmKdHkfGAKziuJNzQ1MjY2tjAxMzczNVYS5xWXuRAn
+        JJCeWJKanZpakFoE08fEwSnVwGR+emGVh2ZpudS957WrOxZ7fHjWImaX+qgn6kfCut9vp/uX
+        K/iq9yXcib3wmXHZBCtZ54L3Z24vsWzMLPvE7pN7arN73ibuJesmHyp+eSl+TdKJR4zR68Wb
+        /q3kvSDzqItHipOb4alUtfVB0S9HM8R8NYOEVd5/LJI7YRBX+e5KVEDEgS5995fXrQs/Hp/7
+        y/3u09h3b7z3Jy6pCqkwOelisLCldKcui+Lmumsiu73VnLTWxRyZYtwdYyxj2JGQznis4bdg
+        471pjj5n9Oa3SntVHnKY+nJVkFtQsvdR5Xc/pRo+Sd2XfLfhqs1JqbXLi1uXG69ozNsYO7OS
+        7dthWyV+OReNif2fhXKC9n6QUGIpzkg01GIuKk4EANWOAaoJBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMLMWRmVeSWpSXmKPExsWy7bCSnO5lx8dxBkvbeC3mrF/DZrFy3jk2
+        i9WbfC26N89ktOh9/4rJ4vKuOWwW99b8Z7WY/O4Zo8WOpfuYLJZ9fc9u8Xg9twO3x+E375k9
+        ds66y+6xaVUnm8emT5PYPU7M+M3i0bdlFaPH5tPVHlt/2Xl83iQXwBnFZZOSmpNZllqkb5fA
+        lfFi2Vrmgk3ZFWtPr2dqYDwd1cXIySEhYCIxafYrli5GLg4hgd2MEj2Pv7JAJGQk3px/CmRz
+        ANnCEocPF0PUfGOU+NCyhhmkhk1AW+L9gkmsILaIQLXE5nm32UCKmAVWM0o8/HAYrEhYwF9i
+        yZy5YENZBFQlVs2/DmbzCthKbN/zhRlimbzE6g0HmCcw8ixgZFjFKJlaUJybnltsWGCYl1qu
+        V5yYW1yal66XnJ+7iREcjlqaOxi3r/qgd4iRiYPxEKMEB7OSCK+g+MM4Id6UxMqq1KL8+KLS
+        nNTiQ4zSHCxK4rw3ChfGCQmkJ5akZqemFqQWwWSZODilGphKOSXTpojf6P198+I/mc/OR34l
+        CdmuXN017776JQP32D21X7e/KC4I8bkReo49kd961kO+iu2vjvj1mGvMP5T/jbn1WJv9vQQe
+        bZMMfU/HiDieDVmlc18f/6vxUlkl/nLJvIyOzWEPJ3LtkjzSGblqjZk+13yegysXb4zb5Oz0
+        qG1Fs/XbayyvmR/ILD8vpPKvPvBP5eeH1Tz3HAu+fbr1VuXcgy2R5nMtL1xyq3K8++bCiRn1
+        n1K7uorEJLbuC3TjM+fm+qkku3Z5dhCL6YV1yw/tOl+wddEx052tvJ3vWYUrA1d0rPe43M8h
+        mTbft2Uhl+7saVuLrI7FCN9vfnF0m8C1G/c5K3M5FrCKxVQosRRnJBpqMRcVJwIA2FFsZ7YC
+        AAA=
+X-CMS-MailID: 20200612085027epcas1p46383a7eda792eabbd1e74cd08fe988c9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200612085027epcas1p46383a7eda792eabbd1e74cd08fe988c9
+References: <CGME20200612085027epcas1p46383a7eda792eabbd1e74cd08fe988c9@epcas1p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The audio support on the board is using pcm3168a codec connected to McASP10
-serializers in parallel setup.
-The pcm3168a SCKI clock is coming via the j721e AUDIO_REFCLK2 pin.
-In order to support 48KHz and 44.1KHz family of sampling rates the parent clock
-for AUDIO_REFCLK2 needs to be changed between PLL4 (for 48KHz) and PLL15 (for
-44.1KHz). The same PLLs are used for McASP10's AUXCLK clock via different
-HSDIVIDER.
+zone_watermark_fast was introduced by commit 48ee5f3696f6 ("mm,
+page_alloc: shortcut watermark checks for order-0 pages"). The commit
+simply checks if free pages is bigger than watermark without additional
+calculation such like reducing watermark.
 
-Generic card can not be used for the board as we need to switch between
-clock paths for different sampling rate families and also need to change
-the slot_width between 16 and 24 bit audio.
+It considered free cma pages but it did not consider highatomic
+reserved. This may incur exhaustion of free pages except high order
+atomic free pages.
 
-The audio support on the Infotainment Expansion Board consists of McASP0
-connected to two pcm3168a codecs with dedicated set of serializers to each.
-The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
-It is extending the audio support on the CPB.
+Assume that reserved_highatomic pageblock is bigger than watermark min,
+and there are only few free pages except high order atomic free. Because
+zone_watermark_fast passes the allocation without considering high order
+atomic free, normal reclaimable allocation like GFP_HIGHUSER will
+consume all the free pages. Then finally order-0 atomic allocation may
+fail on allocation.
 
-Due to the fact that the same PLL4/15 is used by both domains (CPB/IVI)
-there are cross restriction on sampling rates.
+This means watermark min is not protected against non-atomic allocation.
+The order-0 atomic allocation with ALLOC_HARDER unwantedly can be
+failed. Additionally the __GFP_MEMALLOC allocation with
+ALLOC_NO_WATERMARKS also can be failed.
 
-The IVI side is represented as multicodec setup.
+To avoid the problem, zone_watermark_fast should consider highatomic
+reserve. If the actual size of high atomic free is counted accurately
+like cma free, we may use it. On this patch just use
+nr_reserved_highatomic. Additionally introduce
+__zone_watermark_unusable_free to factor out common parts between
+zone_watermark_fast and __zone_watermark_ok.
 
-PCMs available on a plain CPB (no IVI addon):
-hw:0,0 - cpb playback (8 channels)
-hw:0,1 - cpb capture (6 channels)
+This is trace log which shows GFP_HIGHUSER consumes free pages right
+before ALLOC_NO_WATERMARKS.
 
-When the IVI addon is present, additional two PCMs will be present:
-hw:0,2 - ivi multicodec playback (16 channels)
-hw:0,3 - ivi multicodec capture (12 channels)
+  <...>-22275 [006] ....   889.213383: mm_page_alloc: page=00000000d2be5665 pfn=970744 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213385: mm_page_alloc: page=000000004b2335c2 pfn=970745 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213387: mm_page_alloc: page=00000000017272e1 pfn=970278 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213389: mm_page_alloc: page=00000000c4be79fb pfn=970279 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213391: mm_page_alloc: page=00000000f8a51d4f pfn=970260 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213393: mm_page_alloc: page=000000006ba8f5ac pfn=970261 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213395: mm_page_alloc: page=00000000819f1cd3 pfn=970196 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+  <...>-22275 [006] ....   889.213396: mm_page_alloc: page=00000000f6b72a64 pfn=970197 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
+kswapd0-1207  [005] ...1   889.213398: mm_page_alloc: page= (null) pfn=0 order=0 migratetype=1 nr_free=3650 gfp_flags=GFP_NOWAIT|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_MOVABLE
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+This is an example of ALLOC_HARDER allocation failure.
+
+<4>[ 6207.637280]  [3:  Binder:9343_3:22875] Binder:9343_3: page allocation failure: order:0, mode:0x480020(GFP_ATOMIC), nodemask=(null)
+<4>[ 6207.637311]  [3:  Binder:9343_3:22875] Call trace:
+<4>[ 6207.637346]  [3:  Binder:9343_3:22875] [<ffffff8008f40f8c>] dump_stack+0xb8/0xf0
+<4>[ 6207.637356]  [3:  Binder:9343_3:22875] [<ffffff8008223320>] warn_alloc+0xd8/0x12c
+<4>[ 6207.637365]  [3:  Binder:9343_3:22875] [<ffffff80082245e4>] __alloc_pages_nodemask+0x120c/0x1250
+<4>[ 6207.637374]  [3:  Binder:9343_3:22875] [<ffffff800827f6e8>] new_slab+0x128/0x604
+<4>[ 6207.637381]  [3:  Binder:9343_3:22875] [<ffffff800827b0cc>] ___slab_alloc+0x508/0x670
+<4>[ 6207.637387]  [3:  Binder:9343_3:22875] [<ffffff800827ba00>] __kmalloc+0x2f8/0x310
+<4>[ 6207.637396]  [3:  Binder:9343_3:22875] [<ffffff80084ac3e0>] context_struct_to_string+0x104/0x1cc
+<4>[ 6207.637404]  [3:  Binder:9343_3:22875] [<ffffff80084ad8fc>] security_sid_to_context_core+0x74/0x144
+<4>[ 6207.637412]  [3:  Binder:9343_3:22875] [<ffffff80084ad880>] security_sid_to_context+0x10/0x18
+<4>[ 6207.637421]  [3:  Binder:9343_3:22875] [<ffffff800849bd80>] selinux_secid_to_secctx+0x20/0x28
+<4>[ 6207.637430]  [3:  Binder:9343_3:22875] [<ffffff800849109c>] security_secid_to_secctx+0x3c/0x70
+<4>[ 6207.637442]  [3:  Binder:9343_3:22875] [<ffffff8008bfe118>] binder_transaction+0xe68/0x454c
+<4>[ 6207.637569]  [3:  Binder:9343_3:22875] Mem-Info:
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875] active_anon:102061 inactive_anon:81551 isolated_anon:0
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875]  active_file:59102 inactive_file:68924 isolated_file:64
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875]  unevictable:611 dirty:63 writeback:0 unstable:0
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875]  slab_reclaimable:13324 slab_unreclaimable:44354
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875]  mapped:83015 shmem:4858 pagetables:26316 bounce:0
+<4>[ 6207.637595]  [3:  Binder:9343_3:22875]  free:2727 free_pcp:1035 free_cma:178
+<4>[ 6207.637616]  [3:  Binder:9343_3:22875] Node 0 active_anon:408244kB inactive_anon:326204kB active_file:236408kB inactive_file:275696kB unevictable:2444kB isolated(anon):0kB isolated(file):256kB mapped:332060kB dirty:252kB writeback:0kB shmem:19432kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
+<4>[ 6207.637627]  [3:  Binder:9343_3:22875] Normal free:10908kB min:6192kB low:44388kB high:47060kB active_anon:409160kB inactive_anon:325924kB active_file:235820kB inactive_file:276628kB unevictable:2444kB writepending:252kB present:3076096kB managed:2673676kB mlocked:2444kB kernel_stack:62512kB pagetables:105264kB bounce:0kB free_pcp:4140kB local_pcp:40kB free_cma:712kB
+<4>[ 6207.637632]  [3:  Binder:9343_3:22875] lowmem_reserve[]: 0 0
+<4>[ 6207.637637]  [3:  Binder:9343_3:22875] Normal: 505*4kB (H) 357*8kB (H) 201*16kB (H) 65*32kB (H) 1*64kB (H) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 10236kB
+<4>[ 6207.637655]  [3:  Binder:9343_3:22875] 138826 total pagecache pages
+<4>[ 6207.637663]  [3:  Binder:9343_3:22875] 5460 pages in swap cache
+<4>[ 6207.637668]  [3:  Binder:9343_3:22875] Swap cache stats: add 8273090, delete 8267506, find 1004381/4060142
+
+This is an example of ALLOC_NO_WATERMARKS allocation failure.
+
+<6>[  156.701551]  [4:        kswapd0: 1209] kswapd0 cpuset=/ mems_allowed=0
+<4>[  156.701563]  [4:        kswapd0: 1209] CPU: 4 PID: 1209 Comm: kswapd0 Tainted: G        W       4.14.113-18113966 #1
+<4>[  156.701572]  [4:        kswapd0: 1209] Call trace:
+<4>[  156.701605]  [4:        kswapd0: 1209] [<0000000000000000>] dump_stack+0x68/0x90
+<4>[  156.701612]  [4:        kswapd0: 1209] [<0000000000000000>] warn_alloc+0x104/0x198
+<4>[  156.701617]  [4:        kswapd0: 1209] [<0000000000000000>] __alloc_pages_nodemask+0xdc0/0xdf0
+<4>[  156.701623]  [4:        kswapd0: 1209] [<0000000000000000>] zs_malloc+0x148/0x3d0
+<4>[  156.701630]  [4:        kswapd0: 1209] [<0000000000000000>] zram_bvec_rw+0x250/0x568
+<4>[  156.701634]  [4:        kswapd0: 1209] [<0000000000000000>] zram_rw_page+0x8c/0xe0
+<4>[  156.701640]  [4:        kswapd0: 1209] [<0000000000000000>] bdev_write_page+0x70/0xbc
+<4>[  156.701645]  [4:        kswapd0: 1209] [<0000000000000000>] __swap_writepage+0x58/0x37c
+<4>[  156.701649]  [4:        kswapd0: 1209] [<0000000000000000>] swap_writepage+0x40/0x4c
+<4>[  156.701654]  [4:        kswapd0: 1209] [<0000000000000000>] shrink_page_list+0xc3c/0xf54
+<4>[  156.701659]  [4:        kswapd0: 1209] [<0000000000000000>] shrink_inactive_list+0x2b0/0x61c
+<4>[  156.701664]  [4:        kswapd0: 1209] [<0000000000000000>] shrink_node_memcg+0x23c/0x618
+<4>[  156.701668]  [4:        kswapd0: 1209] [<0000000000000000>] shrink_node+0x1c8/0x304
+<4>[  156.701673]  [4:        kswapd0: 1209] [<0000000000000000>] kswapd+0x680/0x7c4
+<4>[  156.701679]  [4:        kswapd0: 1209] [<0000000000000000>] kthread+0x110/0x120
+<4>[  156.701684]  [4:        kswapd0: 1209] [<0000000000000000>] ret_from_fork+0x10/0x18
+<4>[  156.701689]  [4:        kswapd0: 1209] Mem-Info:
+<4>[  156.701712]  [4:        kswapd0: 1209] active_anon:88690 inactive_anon:88630 isolated_anon:0
+<4>[  156.701712]  [4:        kswapd0: 1209]  active_file:99173 inactive_file:169305 isolated_file:32
+<4>[  156.701712]  [4:        kswapd0: 1209]  unevictable:48292 dirty:538 writeback:38 unstable:0
+<4>[  156.701712]  [4:        kswapd0: 1209]  slab_reclaimable:15131 slab_unreclaimable:47762
+<4>[  156.701712]  [4:        kswapd0: 1209]  mapped:274654 shmem:2824 pagetables:25088 bounce:0
+<4>[  156.701712]  [4:        kswapd0: 1209]  free:2489 free_pcp:444 free_cma:3
+<4>[  156.701728]  [4:        kswapd0: 1209] Node 0 active_anon:354760kB inactive_anon:354520kB active_file:396692kB inactive_file:677220kB unevictable:193168kB isolated(anon):0kB isolated(file):128kB mapped:1098616kB dirty:2152kB writeback:152kB shmem:11296kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
+<4>[  156.701738]  [4:        kswapd0: 1209] Normal free:9956kB min:7428kB low:93440kB high:97032kB active_anon:355176kB inactive_anon:354580kB active_file:396196kB inactive_file:677284kB unevictable:193168kB writepending:2304kB present:4081664kB managed:3593324kB mlocked:193168kB kernel_stack:55008kB pagetables:100352kB bounce:0kB free_pcp:1776kB local_pcp:656kB free_cma:12kB
+<4>[  156.701741]  [4:        kswapd0: 1209] lowmem_reserve[]: 0 0
+<4>[  156.701747]  [4:        kswapd0: 1209] Normal: 196*4kB (H) 141*8kB (H) 109*16kB (H) 63*32kB (H) 20*64kB (H) 8*128kB (H) 2*256kB (H) 1*512kB (H) 0*1024kB 0*2048kB 0*4096kB = 9000kB
+
+Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
+Suggested-by: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
 ---
- sound/soc/ti/Kconfig     |   8 +
- sound/soc/ti/Makefile    |   2 +
- sound/soc/ti/j721e-evm.c | 887 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 897 insertions(+)
- create mode 100644 sound/soc/ti/j721e-evm.c
+v2: factor out common part
+v1: consider highatomic reserve
+---
+ mm/page_alloc.c | 61 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-index c5408c129f34..53df545efe0a 100644
---- a/sound/soc/ti/Kconfig
-+++ b/sound/soc/ti/Kconfig
-@@ -219,5 +219,13 @@ config SND_SOC_DM365_VOICE_CODEC_MODULE
- 	  The is an internal symbol needed to ensure that the codec
- 	  and MFD driver can be built as loadable modules if necessary.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 48eb0f1410d4..c2177e056f19 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3487,6 +3487,29 @@ static noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
+ }
+ ALLOW_ERROR_INJECTION(should_fail_alloc_page, TRUE);
  
-+config SND_SOC_J721E_EVM
-+	tristate "SoC Audio support for j721e EVM"
-+	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
-+	select SND_SOC_PCM3168A_I2C
-+	select SND_SOC_DAVINCI_MCASP
-+	help
-+	  Say Y if you want to add support for SoC audio on j721e Common
-+	  Processor Board and Infotainment expansion board.
- endmenu
- 
-diff --git a/sound/soc/ti/Makefile b/sound/soc/ti/Makefile
-index ea48c6679cc7..a21e5b0061de 100644
---- a/sound/soc/ti/Makefile
-+++ b/sound/soc/ti/Makefile
-@@ -34,6 +34,7 @@ snd-soc-omap-abe-twl6040-objs := omap-abe-twl6040.o
- snd-soc-ams-delta-objs := ams-delta.o
- snd-soc-omap-hdmi-objs := omap-hdmi.o
- snd-soc-osk5912-objs := osk5912.o
-+snd-soc-j721e-evm-objs := j721e-evm.o
- 
- obj-$(CONFIG_SND_SOC_DAVINCI_EVM) += snd-soc-davinci-evm.o
- obj-$(CONFIG_SND_SOC_NOKIA_N810) += snd-soc-n810.o
-@@ -44,3 +45,4 @@ obj-$(CONFIG_SND_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
- obj-$(CONFIG_SND_SOC_OMAP_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_SOC_OMAP_HDMI) += snd-soc-omap-hdmi.o
- obj-$(CONFIG_SND_SOC_OMAP_OSK5912) += snd-soc-osk5912.o
-+obj-$(CONFIG_SND_SOC_J721E_EVM) += snd-soc-j721e-evm.o
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-new file mode 100644
-index 000000000000..096f045a1120
---- /dev/null
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -0,0 +1,887 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+ *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "davinci-mcasp.h"
-+
-+/*
-+ * Maximum number of configuration entries for prefixes:
-+ * CPB: 2 (mcasp10 + codec)
-+ * IVI: 3 (mcasp0 + 2x codec)
-+ */
-+#define J721E_CODEC_CONF_COUNT	5
-+
-+#define J721E_AUDIO_DOMAIN_CPB	0
-+#define J721E_AUDIO_DOMAIN_IVI	1
-+
-+#define J721E_CLK_PARENT_48000	0
-+#define J721E_CLK_PARENT_44100	1
-+
-+#define J721E_MAX_CLK_HSDIV	128
-+#define PCM1368A_MAX_SYSCLK	36864000
-+
-+#define J721E_DAI_FMT		(SND_SOC_DAIFMT_RIGHT_J | \
-+				 SND_SOC_DAIFMT_NB_NF |   \
-+				 SND_SOC_DAIFMT_CBS_CFS)
-+
-+enum j721e_board_type {
-+	J721E_BOARD_CPB = 1,
-+	J721E_BOARD_CPB_IVI,
-+};
-+
-+struct j721e_audio_match_data {
-+	enum j721e_board_type board_type;
-+	int num_links;
-+	unsigned int pll_rates[2];
-+};
-+
-+static unsigned int ratios_for_pcm3168a[] = {
-+	256,
-+	512,
-+	768,
-+};
-+
-+struct j721e_audio_clocks {
-+	struct clk *target;
-+	struct clk *parent[2];
-+};
-+
-+struct j721e_audio_domain {
-+	struct j721e_audio_clocks codec;
-+	struct j721e_audio_clocks mcasp;
-+	int parent_clk_id;
-+
-+	int active;
-+	unsigned int active_link;
-+	unsigned int rate;
-+};
-+
-+struct j721e_priv {
-+	struct device *dev;
-+	struct snd_soc_card card;
-+	struct snd_soc_dai_link *dai_links;
-+	struct snd_soc_codec_conf codec_conf[J721E_CODEC_CONF_COUNT];
-+	struct snd_interval rate_range;
-+	const struct j721e_audio_match_data *match_data;
-+	u32 pll_rates[2];
-+	unsigned int hsdiv_rates[2];
-+
-+	struct j721e_audio_domain audio_domains[2];
-+
-+	struct mutex mutex;
-+};
-+
-+static const struct snd_soc_dapm_widget j721e_cpb_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("CPB Stereo HP 1", NULL),
-+	SND_SOC_DAPM_HP("CPB Stereo HP 2", NULL),
-+	SND_SOC_DAPM_HP("CPB Stereo HP 3", NULL),
-+	SND_SOC_DAPM_LINE("CPB Line Out", NULL),
-+	SND_SOC_DAPM_MIC("CPB Stereo Mic 1", NULL),
-+	SND_SOC_DAPM_MIC("CPB Stereo Mic 2", NULL),
-+	SND_SOC_DAPM_LINE("CPB Line In", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route j721e_cpb_dapm_routes[] = {
-+	{"CPB Stereo HP 1", NULL, "codec-1 AOUT1L"},
-+	{"CPB Stereo HP 1", NULL, "codec-1 AOUT1R"},
-+	{"CPB Stereo HP 2", NULL, "codec-1 AOUT2L"},
-+	{"CPB Stereo HP 2", NULL, "codec-1 AOUT2R"},
-+	{"CPB Stereo HP 3", NULL, "codec-1 AOUT3L"},
-+	{"CPB Stereo HP 3", NULL, "codec-1 AOUT3R"},
-+	{"CPB Line Out", NULL, "codec-1 AOUT4L"},
-+	{"CPB Line Out", NULL, "codec-1 AOUT4R"},
-+
-+	{"codec-1 AIN1L", NULL, "CPB Stereo Mic 1"},
-+	{"codec-1 AIN1R", NULL, "CPB Stereo Mic 1"},
-+	{"codec-1 AIN2L", NULL, "CPB Stereo Mic 2"},
-+	{"codec-1 AIN2R", NULL, "CPB Stereo Mic 2"},
-+	{"codec-1 AIN3L", NULL, "CPB Line In"},
-+	{"codec-1 AIN3R", NULL, "CPB Line In"},
-+};
-+
-+static const struct snd_soc_dapm_widget j721e_ivi_codec_a_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("IVI A Line Out 1", NULL),
-+	SND_SOC_DAPM_LINE("IVI A Line Out 2", NULL),
-+	SND_SOC_DAPM_LINE("IVI A Line Out 3", NULL),
-+	SND_SOC_DAPM_LINE("IVI A Line Out 4", NULL),
-+	SND_SOC_DAPM_MIC("IVI A Stereo Mic 1", NULL),
-+	SND_SOC_DAPM_MIC("IVI A Stereo Mic 2", NULL),
-+	SND_SOC_DAPM_LINE("IVI A Line In", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route j721e_codec_a_dapm_routes[] = {
-+	{"IVI A Line Out 1", NULL, "codec-a AOUT1L"},
-+	{"IVI A Line Out 1", NULL, "codec-a AOUT1R"},
-+	{"IVI A Line Out 2", NULL, "codec-a AOUT2L"},
-+	{"IVI A Line Out 2", NULL, "codec-a AOUT2R"},
-+	{"IVI A Line Out 3", NULL, "codec-a AOUT3L"},
-+	{"IVI A Line Out 3", NULL, "codec-a AOUT3R"},
-+	{"IVI A Line Out 4", NULL, "codec-a AOUT4L"},
-+	{"IVI A Line Out 4", NULL, "codec-a AOUT4R"},
-+
-+	{"codec-a AIN1L", NULL, "IVI A Stereo Mic 1"},
-+	{"codec-a AIN1R", NULL, "IVI A Stereo Mic 1"},
-+	{"codec-a AIN2L", NULL, "IVI A Stereo Mic 2"},
-+	{"codec-a AIN2R", NULL, "IVI A Stereo Mic 2"},
-+	{"codec-a AIN3L", NULL, "IVI A Line In"},
-+	{"codec-a AIN3R", NULL, "IVI A Line In"},
-+};
-+
-+static const struct snd_soc_dapm_widget j721e_ivi_codec_b_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("IVI B Line Out 1", NULL),
-+	SND_SOC_DAPM_LINE("IVI B Line Out 2", NULL),
-+	SND_SOC_DAPM_LINE("IVI B Line Out 3", NULL),
-+	SND_SOC_DAPM_LINE("IVI B Line Out 4", NULL),
-+	SND_SOC_DAPM_MIC("IVI B Stereo Mic 1", NULL),
-+	SND_SOC_DAPM_MIC("IVI B Stereo Mic 2", NULL),
-+	SND_SOC_DAPM_LINE("IVI B Line In", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route j721e_codec_b_dapm_routes[] = {
-+	{"IVI B Line Out 1", NULL, "codec-b AOUT1L"},
-+	{"IVI B Line Out 1", NULL, "codec-b AOUT1R"},
-+	{"IVI B Line Out 2", NULL, "codec-b AOUT2L"},
-+	{"IVI B Line Out 2", NULL, "codec-b AOUT2R"},
-+	{"IVI B Line Out 3", NULL, "codec-b AOUT3L"},
-+	{"IVI B Line Out 3", NULL, "codec-b AOUT3R"},
-+	{"IVI B Line Out 4", NULL, "codec-b AOUT4L"},
-+	{"IVI B Line Out 4", NULL, "codec-b AOUT4R"},
-+
-+	{"codec-b AIN1L", NULL, "IVI B Stereo Mic 1"},
-+	{"codec-b AIN1R", NULL, "IVI B Stereo Mic 1"},
-+	{"codec-b AIN2L", NULL, "IVI B Stereo Mic 2"},
-+	{"codec-b AIN2R", NULL, "IVI B Stereo Mic 2"},
-+	{"codec-b AIN3L", NULL, "IVI B Line In"},
-+	{"codec-b AIN3R", NULL, "IVI B Line In"},
-+};
-+
-+static int j721e_configure_refclk(struct j721e_priv *priv,
-+				  unsigned int audio_domain, unsigned int rate)
++static inline long __zone_watermark_unusable_free(struct zone *z,
++				unsigned int order, unsigned int alloc_flags)
 +{
-+	struct j721e_audio_domain *domain = &priv->audio_domains[audio_domain];
-+	unsigned int scki;
-+	int ret = -EINVAL;
-+	int i, clk_id;
-+
-+	if (!(rate % 8000) && priv->pll_rates[J721E_CLK_PARENT_48000])
-+		clk_id = J721E_CLK_PARENT_48000;
-+	else if (!(rate % 11025) && priv->pll_rates[J721E_CLK_PARENT_44100])
-+		clk_id = J721E_CLK_PARENT_44100;
-+	else
-+		return ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(ratios_for_pcm3168a); i++) {
-+		scki = ratios_for_pcm3168a[i] * rate;
-+
-+		if (priv->pll_rates[clk_id] / scki <= J721E_MAX_CLK_HSDIV) {
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	if (ret) {
-+		dev_err(priv->dev, "No valid clock configuration for %u Hz\n",
-+			rate);
-+		return ret;
-+	}
-+
-+	if (priv->hsdiv_rates[domain->parent_clk_id] != scki) {
-+		dev_dbg(priv->dev,
-+			"%s configuration for %u Hz: %s, %dxFS (SCKI: %u Hz)\n",
-+			audio_domain == J721E_AUDIO_DOMAIN_CPB ? "CPB" : "IVI",
-+			rate,
-+			clk_id == J721E_CLK_PARENT_48000 ? "PLL4" : "PLL15",
-+			ratios_for_pcm3168a[i], scki);
-+
-+		if (domain->parent_clk_id != clk_id) {
-+			ret = clk_set_parent(domain->codec.target,
-+					     domain->codec.parent[clk_id]);
-+			if (ret)
-+				return ret;
-+
-+			ret = clk_set_parent(domain->mcasp.target,
-+					     domain->mcasp.parent[clk_id]);
-+			if (ret)
-+				return ret;
-+
-+			domain->parent_clk_id = clk_id;
-+		}
-+
-+		ret = clk_set_rate(domain->codec.target, scki);
-+		if (ret) {
-+			dev_err(priv->dev, "codec set rate failed for %u Hz\n",
-+				scki);
-+			return ret;
-+		}
-+
-+		ret = clk_set_rate(domain->mcasp.target, scki);
-+		if (!ret) {
-+			priv->hsdiv_rates[domain->parent_clk_id] = scki;
-+		} else {
-+			dev_err(priv->dev, "mcasp set rate failed for %u Hz\n",
-+				scki);
-+			return ret;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int j721e_rule_rate(struct snd_pcm_hw_params *params,
-+			   struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *t = rule->private;
-+
-+	return snd_interval_refine(hw_param_interval(params, rule->var), t);
-+}
-+
-+static int j721e_audio_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct j721e_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	unsigned int domain_id = rtd->dai_link->id;
-+	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai;
-+	unsigned int active_rate;
-+	int ret = 0;
-+	int i;
-+
-+	mutex_lock(&priv->mutex);
-+
-+	domain->active++;
-+
-+	if (priv->audio_domains[J721E_AUDIO_DOMAIN_CPB].rate)
-+		active_rate = priv->audio_domains[J721E_AUDIO_DOMAIN_CPB].rate;
-+	else
-+		active_rate = priv->audio_domains[J721E_AUDIO_DOMAIN_IVI].rate;
-+
-+	if (active_rate)
-+		ret = snd_pcm_hw_constraint_single(substream->runtime,
-+						   SNDRV_PCM_HW_PARAM_RATE,
-+						   active_rate);
-+	else
-+		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
-+					  SNDRV_PCM_HW_PARAM_RATE,
-+					  j721e_rule_rate, &priv->rate_range,
-+					  SNDRV_PCM_HW_PARAM_RATE, -1);
-+
-+	mutex_unlock(&priv->mutex);
-+
-+	if (ret)
-+		return ret;
-+
-+	/* Reset TDM slots to 32 */
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 32);
-+	if (ret && ret != -ENOTSUPP)
-+		return ret;
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2, 32);
-+		if (ret && ret != -ENOTSUPP)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct j721e_priv *priv = snd_soc_card_get_drvdata(card);
-+	unsigned int domain_id = rtd->dai_link->id;
-+	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai;
-+	unsigned int sysclk_rate;
-+	int slot_width = 32;
-+	int ret;
-+	int i;
-+
-+	mutex_lock(&priv->mutex);
-+
-+	if (domain->rate && domain->rate != params_rate(params)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (params_width(params) == 16)
-+		slot_width = 16;
-+
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, slot_width);
-+	if (ret && ret != -ENOTSUPP)
-+		goto out;
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2,
-+					       slot_width);
-+		if (ret && ret != -ENOTSUPP)
-+			return ret;
-+	}
-+
-+	ret = j721e_configure_refclk(priv, domain_id, params_rate(params));
-+	if (ret)
-+		goto out;
-+
-+	sysclk_rate = priv->hsdiv_rates[domain->parent_clk_id];
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_sysclk(codec_dai, 0, sysclk_rate,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret && ret != -ENOTSUPP) {
-+			dev_err(priv->dev,
-+				"codec set_sysclk failed for %u Hz\n",
-+				sysclk_rate);
-+			goto out;
-+		}
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, MCASP_CLK_HCLK_AUXCLK,
-+				     sysclk_rate, SND_SOC_CLOCK_IN);
-+
-+	if (ret && ret != -ENOTSUPP) {
-+		dev_err(priv->dev, "mcasp set_sysclk failed for %u Hz\n",
-+			sysclk_rate);
-+	} else {
-+		domain->rate = params_rate(params);
-+		ret = 0;
-+	}
-+
-+out:
-+	mutex_unlock(&priv->mutex);
-+	return ret;
-+}
-+
-+static void j721e_audio_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct j721e_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	unsigned int domain_id = rtd->dai_link->id;
-+	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-+
-+	mutex_lock(&priv->mutex);
-+
-+	domain->active--;
-+	if (!domain->active) {
-+		domain->rate = 0;
-+		domain->active_link = 0;
-+	}
-+
-+	mutex_unlock(&priv->mutex);
-+}
-+
-+static const struct snd_soc_ops j721e_audio_ops = {
-+	.startup = j721e_audio_startup,
-+	.hw_params = j721e_audio_hw_params,
-+	.shutdown = j721e_audio_shutdown,
-+};
-+
-+static int j721e_audio_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct j721e_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	unsigned int domain_id = rtd->dai_link->id;
-+	struct j721e_audio_domain *domain = &priv->audio_domains[domain_id];
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai;
-+	unsigned int sysclk_rate;
-+	int i, ret;
-+
-+	/* Set up initial clock configuration */
-+	ret = j721e_configure_refclk(priv, domain_id, 48000);
-+	if (ret)
-+		return ret;
-+
-+	sysclk_rate = priv->hsdiv_rates[domain->parent_clk_id];
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_sysclk(codec_dai, 0, sysclk_rate,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret && ret != -ENOTSUPP)
-+			return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, MCASP_CLK_HCLK_AUXCLK,
-+				     sysclk_rate, SND_SOC_CLOCK_IN);
-+	if (ret && ret != -ENOTSUPP)
-+		return ret;
-+
-+	/* Set initial tdm slots */
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 32);
-+	if (ret && ret != -ENOTSUPP)
-+		return ret;
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2, 32);
-+		if (ret && ret != -ENOTSUPP)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int j721e_audio_init_ivi(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
-+
-+	snd_soc_dapm_new_controls(dapm, j721e_ivi_codec_a_dapm_widgets,
-+				  ARRAY_SIZE(j721e_ivi_codec_a_dapm_widgets));
-+	snd_soc_dapm_add_routes(dapm, j721e_codec_a_dapm_routes,
-+				ARRAY_SIZE(j721e_codec_a_dapm_routes));
-+	snd_soc_dapm_new_controls(dapm, j721e_ivi_codec_b_dapm_widgets,
-+				  ARRAY_SIZE(j721e_ivi_codec_b_dapm_widgets));
-+	snd_soc_dapm_add_routes(dapm, j721e_codec_b_dapm_routes,
-+				ARRAY_SIZE(j721e_codec_b_dapm_routes));
-+
-+	return j721e_audio_init(rtd);
-+}
-+
-+static int j721e_get_clocks(struct device *dev,
-+			    struct j721e_audio_clocks *clocks, char *prefix)
-+{
-+	struct clk *parent;
-+	char *clk_name;
-+	int ret;
-+
-+	clocks->target = devm_clk_get(dev, prefix);
-+	if (IS_ERR(clocks->target)) {
-+		ret = PTR_ERR(clocks->target);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to acquire %s': %d\n",
-+				prefix, ret);
-+		return ret;
-+	}
-+
-+	clk_name = kasprintf(GFP_KERNEL, "%s-48000", prefix);
-+	if (clk_name) {
-+		parent = devm_clk_get(dev, clk_name);
-+		kfree(clk_name);
-+		if (IS_ERR(parent)) {
-+			ret = PTR_ERR(parent);
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dev, "failed to acquire %s': %d\n",
-+					prefix, ret);
-+			return ret;
-+		}
-+		clocks->parent[J721E_CLK_PARENT_48000] = parent;
-+	} else {
-+		return -ENOMEM;
-+	}
-+
-+	clk_name = kasprintf(GFP_KERNEL, "%s-44100", prefix);
-+	if (clk_name) {
-+		parent = devm_clk_get(dev, clk_name);
-+		kfree(clk_name);
-+		if (IS_ERR(parent)) {
-+			ret = PTR_ERR(parent);
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dev, "failed to acquire %s': %d\n",
-+					prefix, ret);
-+			return ret;
-+		}
-+		clocks->parent[J721E_CLK_PARENT_44100] = parent;
-+	} else {
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct j721e_audio_match_data j721e_cpb_data = {
-+	.board_type = J721E_BOARD_CPB,
-+	.num_links = 2, /* CPB pcm3168a */
-+	.pll_rates = {
-+		[J721E_CLK_PARENT_44100] = 1083801600, /* PLL15 */
-+		[J721E_CLK_PARENT_48000] = 1179648000, /* PLL4 */
-+	},
-+};
-+
-+static const struct j721e_audio_match_data j721e_cpb_ivi_data = {
-+	.board_type = J721E_BOARD_CPB_IVI,
-+	.num_links = 4, /* CPB pcm3168a + 2x pcm3168a on IVI */
-+	.pll_rates = {
-+		[J721E_CLK_PARENT_44100] = 1083801600, /* PLL15 */
-+		[J721E_CLK_PARENT_48000] = 1179648000, /* PLL4 */
-+	},
-+};
-+
-+static const struct of_device_id j721e_audio_of_match[] = {
-+	{
-+		.compatible = "ti,j721e-cpb-audio",
-+		.data = &j721e_cpb_data,
-+	}, {
-+		.compatible = "ti,j721e-cpb-ivi-audio",
-+		.data = &j721e_cpb_ivi_data,
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, j721e_audio_of_match);
-+
-+static int j721e_calculate_rate_range(struct j721e_priv *priv)
-+{
-+	const struct j721e_audio_match_data *match_data = priv->match_data;
-+	struct j721e_audio_clocks *domain_clocks;
-+	unsigned int min_rate, max_rate, pll_rate;
-+	struct clk *pll;
-+
-+	domain_clocks = &priv->audio_domains[J721E_AUDIO_DOMAIN_CPB].mcasp;
-+
-+	pll = clk_get_parent(domain_clocks->parent[J721E_CLK_PARENT_44100]);
-+	if (IS_ERR_OR_NULL(pll)) {
-+		priv->pll_rates[J721E_CLK_PARENT_44100] =
-+				match_data->pll_rates[J721E_CLK_PARENT_44100];
-+	} else {
-+		priv->pll_rates[J721E_CLK_PARENT_44100] = clk_get_rate(pll);
-+		clk_put(pll);
-+	}
-+
-+	pll = clk_get_parent(domain_clocks->parent[J721E_CLK_PARENT_48000]);
-+	if (IS_ERR_OR_NULL(pll)) {
-+		priv->pll_rates[J721E_CLK_PARENT_48000] =
-+				match_data->pll_rates[J721E_CLK_PARENT_48000];
-+	} else {
-+		priv->pll_rates[J721E_CLK_PARENT_48000] = clk_get_rate(pll);
-+		clk_put(pll);
-+	}
-+
-+	if (!priv->pll_rates[J721E_CLK_PARENT_44100] &&
-+	    !priv->pll_rates[J721E_CLK_PARENT_48000]) {
-+		dev_err(priv->dev, "At least one PLL is needed\n");
-+		return -EINVAL;
-+	}
-+
-+	if (priv->pll_rates[J721E_CLK_PARENT_44100])
-+		pll_rate = priv->pll_rates[J721E_CLK_PARENT_44100];
-+	else
-+		pll_rate = priv->pll_rates[J721E_CLK_PARENT_48000];
-+
-+	min_rate = pll_rate / J721E_MAX_CLK_HSDIV;
-+	min_rate /= ratios_for_pcm3168a[ARRAY_SIZE(ratios_for_pcm3168a) - 1];
-+
-+	if (priv->pll_rates[J721E_CLK_PARENT_48000])
-+		pll_rate = priv->pll_rates[J721E_CLK_PARENT_48000];
-+	else
-+		pll_rate = priv->pll_rates[J721E_CLK_PARENT_44100];
-+
-+	if (pll_rate > PCM1368A_MAX_SYSCLK)
-+		pll_rate = PCM1368A_MAX_SYSCLK;
-+
-+	max_rate = pll_rate / ratios_for_pcm3168a[0];
-+
-+	snd_interval_any(&priv->rate_range);
-+	priv->rate_range.min = min_rate;
-+	priv->rate_range.max = max_rate;
-+
-+	return 0;
-+}
-+
-+static int j721e_soc_probe_cpb(struct j721e_priv *priv, int *link_idx,
-+			       int *conf_idx)
-+{
-+	struct device_node *node = priv->dev->of_node;
-+	struct snd_soc_dai_link_component *compnent;
-+	struct device_node *dai_node, *codec_node;
-+	struct j721e_audio_domain *domain;
-+	int comp_count, comp_idx;
-+	int ret;
-+
-+	dai_node = of_parse_phandle(node, "ti,cpb-mcasp", 0);
-+	if (!dai_node) {
-+		dev_err(priv->dev, "CPB McASP node is not provided\n");
-+		return -EINVAL;
-+	}
-+
-+	codec_node = of_parse_phandle(node, "ti,cpb-codec", 0);
-+	if (!codec_node) {
-+		dev_err(priv->dev, "CPB codec node is not provided\n");
-+		return -EINVAL;
-+	}
-+
-+	domain = &priv->audio_domains[J721E_AUDIO_DOMAIN_CPB];
-+	ret = j721e_get_clocks(priv->dev, &domain->codec, "cpb-codec-scki");
-+	if (ret)
-+		return ret;
-+
-+	ret = j721e_get_clocks(priv->dev, &domain->mcasp, "cpb-mcasp-auxclk");
-+	if (ret)
-+		return ret;
++	const bool alloc_harder = (alloc_flags & (ALLOC_HARDER|ALLOC_OOM));
++	long unusable_free = (1 << order) - 1;
 +
 +	/*
-+	 * Common Processor Board, two links
-+	 * Link 1: McASP10 -> pcm3168a_1 DAC
-+	 * Link 2: McASP10 <- pcm3168a_1 ADC
++	 * If the caller does not have rights to ALLOC_HARDER then subtract
++	 * the high-atomic reserves. This will over-estimate the size of the
++	 * atomic reserve but it avoids a search.
 +	 */
-+	comp_count = 6;
-+	compnent = devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
-+				GFP_KERNEL);
-+	if (!compnent)
-+		return -ENOMEM;
++	if (likely(!alloc_harder))
++		unusable_free += z->nr_reserved_highatomic;
 +
-+	comp_idx = 0;
-+	priv->dai_links[*link_idx].cpus = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_cpus = 1;
-+	priv->dai_links[*link_idx].codecs = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_codecs = 1;
-+	priv->dai_links[*link_idx].platforms = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_platforms = 1;
++#ifdef CONFIG_CMA
++	/* If allocation can't use CMA areas don't use free CMA pages */
++	if (!(alloc_flags & ALLOC_CMA))
++		unusable_free += zone_page_state(z, NR_FREE_CMA_PAGES);
++#endif
 +
-+	priv->dai_links[*link_idx].name = "CPB PCM3168A Playback";
-+	priv->dai_links[*link_idx].stream_name = "CPB PCM3168A Analog";
-+	priv->dai_links[*link_idx].cpus->of_node = dai_node;
-+	priv->dai_links[*link_idx].platforms->of_node = dai_node;
-+	priv->dai_links[*link_idx].codecs->of_node = codec_node;
-+	priv->dai_links[*link_idx].codecs->dai_name = "pcm3168a-dac";
-+	priv->dai_links[*link_idx].playback_only = 1;
-+	priv->dai_links[*link_idx].id = J721E_AUDIO_DOMAIN_CPB;
-+	priv->dai_links[*link_idx].dai_fmt = J721E_DAI_FMT;
-+	priv->dai_links[*link_idx].init = j721e_audio_init;
-+	priv->dai_links[*link_idx].ops = &j721e_audio_ops;
-+	(*link_idx)++;
-+
-+	priv->dai_links[*link_idx].cpus = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_cpus = 1;
-+	priv->dai_links[*link_idx].codecs = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_codecs = 1;
-+	priv->dai_links[*link_idx].platforms = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_platforms = 1;
-+
-+	priv->dai_links[*link_idx].name = "CPB PCM3168A Capture";
-+	priv->dai_links[*link_idx].stream_name = "CPB PCM3168A Analog";
-+	priv->dai_links[*link_idx].cpus->of_node = dai_node;
-+	priv->dai_links[*link_idx].platforms->of_node = dai_node;
-+	priv->dai_links[*link_idx].codecs->of_node = codec_node;
-+	priv->dai_links[*link_idx].codecs->dai_name = "pcm3168a-adc";
-+	priv->dai_links[*link_idx].capture_only = 1;
-+	priv->dai_links[*link_idx].id = J721E_AUDIO_DOMAIN_CPB;
-+	priv->dai_links[*link_idx].dai_fmt = J721E_DAI_FMT;
-+	priv->dai_links[*link_idx].init = j721e_audio_init;
-+	priv->dai_links[*link_idx].ops = &j721e_audio_ops;
-+	(*link_idx)++;
-+
-+	priv->codec_conf[*conf_idx].dlc.of_node = codec_node;
-+	priv->codec_conf[*conf_idx].name_prefix = "codec-1";
-+	(*conf_idx)++;
-+	priv->codec_conf[*conf_idx].dlc.of_node = dai_node;
-+	priv->codec_conf[*conf_idx].name_prefix = "McASP10";
-+	(*conf_idx)++;
-+
-+	return 0;
++	return unusable_free;
 +}
 +
-+static int j721e_soc_probe_ivi(struct j721e_priv *priv, int *link_idx,
-+			       int *conf_idx)
-+{
-+	struct device_node *node = priv->dev->of_node;
-+	struct snd_soc_dai_link_component *compnent;
-+	struct device_node *dai_node, *codeca_node, *codecb_node;
-+	struct j721e_audio_domain *domain;
-+	int comp_count, comp_idx;
-+	int ret;
+ /*
+  * Return true if free base pages are above 'mark'. For high-order checks it
+  * will return true of the order-0 watermark is reached and there is at least
+@@ -3502,19 +3525,12 @@ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
+ 	const bool alloc_harder = (alloc_flags & (ALLOC_HARDER|ALLOC_OOM));
+ 
+ 	/* free_pages may go negative - that's OK */
+-	free_pages -= (1 << order) - 1;
++	free_pages -= __zone_watermark_unusable_free(z, order, alloc_flags);
+ 
+ 	if (alloc_flags & ALLOC_HIGH)
+ 		min -= min / 2;
+ 
+-	/*
+-	 * If the caller does not have rights to ALLOC_HARDER then subtract
+-	 * the high-atomic reserves. This will over-estimate the size of the
+-	 * atomic reserve but it avoids a search.
+-	 */
+-	if (likely(!alloc_harder)) {
+-		free_pages -= z->nr_reserved_highatomic;
+-	} else {
++	if (unlikely(alloc_harder)) {
+ 		/*
+ 		 * OOM victims can try even harder than normal ALLOC_HARDER
+ 		 * users on the grounds that it's definitely going to be in
+@@ -3527,13 +3543,6 @@ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
+ 			min -= min / 4;
+ 	}
+ 
+-
+-#ifdef CONFIG_CMA
+-	/* If allocation can't use CMA areas don't use free CMA pages */
+-	if (!(alloc_flags & ALLOC_CMA))
+-		free_pages -= zone_page_state(z, NR_FREE_CMA_PAGES);
+-#endif
+-
+ 	/*
+ 	 * Check watermarks for an order-0 allocation request. If these
+ 	 * are not met, then a high-order request also cannot go ahead
+@@ -3582,14 +3591,11 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
+ 				unsigned long mark, int highest_zoneidx,
+ 				unsigned int alloc_flags)
+ {
+-	long free_pages = zone_page_state(z, NR_FREE_PAGES);
+-	long cma_pages = 0;
++	long free_pages;
++	long unusable_free;
+ 
+-#ifdef CONFIG_CMA
+-	/* If allocation can't use CMA areas don't use free CMA pages */
+-	if (!(alloc_flags & ALLOC_CMA))
+-		cma_pages = zone_page_state(z, NR_FREE_CMA_PAGES);
+-#endif
++	free_pages = zone_page_state(z, NR_FREE_PAGES);
++	unusable_free =  __zone_watermark_unusable_free(z, order, alloc_flags);
+ 
+ 	/*
+ 	 * Fast check for order-0 only. If this fails then the reserves
+@@ -3598,9 +3604,12 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
+ 	 * the caller is !atomic then it'll uselessly search the free
+ 	 * list. That corner case is then slower but it is harmless.
+ 	 */
+-	if (!order && (free_pages - cma_pages) >
+-				mark + z->lowmem_reserve[highest_zoneidx])
+-		return true;
++	if (!order) {
++		long fast_free = free_pages - unusable_free;
 +
-+	if (priv->match_data->board_type != J721E_BOARD_CPB_IVI)
-+		return 0;
-+
-+	dai_node = of_parse_phandle(node, "ti,ivi-mcasp", 0);
-+	if (!dai_node) {
-+		dev_err(priv->dev, "IVI McASP node is not provided\n");
-+		return -EINVAL;
++		if (fast_free > mark + z->lowmem_reserve[highest_zoneidx])
++			return true;
 +	}
-+
-+	codeca_node = of_parse_phandle(node, "ti,ivi-codec-a", 0);
-+	if (!codeca_node) {
-+		dev_err(priv->dev, "IVI codec-a node is not provided\n");
-+		return -EINVAL;
-+	}
-+
-+	codecb_node = of_parse_phandle(node, "ti,ivi-codec-b", 0);
-+	if (!codecb_node) {
-+		dev_warn(priv->dev, "IVI codec-b node is not provided\n");
-+		return 0;
-+	}
-+
-+	domain = &priv->audio_domains[J721E_AUDIO_DOMAIN_IVI];
-+	ret = j721e_get_clocks(priv->dev, &domain->codec, "ivi-codec-scki");
-+	if (ret)
-+		return ret;
-+
-+	ret = j721e_get_clocks(priv->dev, &domain->mcasp, "ivi-mcasp-auxclk");
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * IVI extension, two links
-+	 * Link 1: McASP0 -> pcm3168a_a DAC
-+	 *		  \> pcm3168a_b DAC
-+	 * Link 2: McASP0 <- pcm3168a_a ADC
-+	 *		   \ pcm3168a_b ADC
-+	 */
-+	comp_count = 8;
-+	compnent = devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
-+				GFP_KERNEL);
-+	if (!compnent)
-+		return -ENOMEM;
-+
-+	comp_idx = 0;
-+	priv->dai_links[*link_idx].cpus = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_cpus = 1;
-+	priv->dai_links[*link_idx].platforms = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_platforms = 1;
-+	priv->dai_links[*link_idx].codecs = &compnent[comp_idx];
-+	priv->dai_links[*link_idx].num_codecs = 2;
-+	comp_idx += 2;
-+
-+	priv->dai_links[*link_idx].name = "IVI 2xPCM3168A Playback";
-+	priv->dai_links[*link_idx].stream_name = "IVI 2xPCM3168A Analog";
-+	priv->dai_links[*link_idx].cpus->of_node = dai_node;
-+	priv->dai_links[*link_idx].platforms->of_node = dai_node;
-+	priv->dai_links[*link_idx].codecs[0].of_node = codeca_node;
-+	priv->dai_links[*link_idx].codecs[0].dai_name = "pcm3168a-dac";
-+	priv->dai_links[*link_idx].codecs[1].of_node = codecb_node;
-+	priv->dai_links[*link_idx].codecs[1].dai_name = "pcm3168a-dac";
-+	priv->dai_links[*link_idx].playback_only = 1;
-+	priv->dai_links[*link_idx].id = J721E_AUDIO_DOMAIN_IVI;
-+	priv->dai_links[*link_idx].dai_fmt = J721E_DAI_FMT;
-+	priv->dai_links[*link_idx].init = j721e_audio_init_ivi;
-+	priv->dai_links[*link_idx].ops = &j721e_audio_ops;
-+	(*link_idx)++;
-+
-+	priv->dai_links[*link_idx].cpus = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_cpus = 1;
-+	priv->dai_links[*link_idx].platforms = &compnent[comp_idx++];
-+	priv->dai_links[*link_idx].num_platforms = 1;
-+	priv->dai_links[*link_idx].codecs = &compnent[comp_idx];
-+	priv->dai_links[*link_idx].num_codecs = 2;
-+
-+	priv->dai_links[*link_idx].name = "IVI 2xPCM3168A Capture";
-+	priv->dai_links[*link_idx].stream_name = "IVI 2xPCM3168A Analog";
-+	priv->dai_links[*link_idx].cpus->of_node = dai_node;
-+	priv->dai_links[*link_idx].platforms->of_node = dai_node;
-+	priv->dai_links[*link_idx].codecs[0].of_node = codeca_node;
-+	priv->dai_links[*link_idx].codecs[0].dai_name = "pcm3168a-adc";
-+	priv->dai_links[*link_idx].codecs[1].of_node = codecb_node;
-+	priv->dai_links[*link_idx].codecs[1].dai_name = "pcm3168a-adc";
-+	priv->dai_links[*link_idx].capture_only = 1;
-+	priv->dai_links[*link_idx].id = J721E_AUDIO_DOMAIN_IVI;
-+	priv->dai_links[*link_idx].dai_fmt = J721E_DAI_FMT;
-+	priv->dai_links[*link_idx].init = j721e_audio_init;
-+	priv->dai_links[*link_idx].ops = &j721e_audio_ops;
-+	(*link_idx)++;
-+
-+	priv->codec_conf[*conf_idx].dlc.of_node = codeca_node;
-+	priv->codec_conf[*conf_idx].name_prefix = "codec-a";
-+	(*conf_idx)++;
-+
-+	priv->codec_conf[*conf_idx].dlc.of_node = codecb_node;
-+	priv->codec_conf[*conf_idx].name_prefix = "codec-b";
-+	(*conf_idx)++;
-+
-+	priv->codec_conf[*conf_idx].dlc.of_node = dai_node;
-+	priv->codec_conf[*conf_idx].name_prefix = "McASP0";
-+	(*conf_idx)++;
-+
-+	return 0;
-+}
-+
-+static int j721e_soc_probe(struct platform_device *pdev)
-+{
-+	struct device_node *node = pdev->dev.of_node;
-+	struct snd_soc_card *card;
-+	const struct of_device_id *match;
-+	struct j721e_priv *priv;
-+	int link_cnt, conf_cnt, ret;
-+
-+	if (!node) {
-+		dev_err(&pdev->dev, "of node is missing.\n");
-+		return -ENODEV;
-+	}
-+
-+	match = of_match_node(j721e_audio_of_match, node);
-+	if (!match) {
-+		dev_err(&pdev->dev, "No compatible match found\n");
-+		return -ENODEV;
-+	}
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->match_data = match->data;
-+
-+	priv->dai_links = devm_kcalloc(&pdev->dev, priv->match_data->num_links,
-+				       sizeof(*priv->dai_links), GFP_KERNEL);
-+	if (!priv->dai_links)
-+		return -ENOMEM;
-+
-+	priv->audio_domains[J721E_AUDIO_DOMAIN_CPB].parent_clk_id = -1;
-+	priv->audio_domains[J721E_AUDIO_DOMAIN_IVI].parent_clk_id = -1;
-+	priv->dev = &pdev->dev;
-+	card = &priv->card;
-+	card->dev = &pdev->dev;
-+	card->owner = THIS_MODULE;
-+	card->dapm_widgets = j721e_cpb_dapm_widgets;
-+	card->num_dapm_widgets = ARRAY_SIZE(j721e_cpb_dapm_widgets);
-+	card->dapm_routes = j721e_cpb_dapm_routes;
-+	card->num_dapm_routes = ARRAY_SIZE(j721e_cpb_dapm_routes);
-+	card->fully_routed = 1;
-+
-+	if (snd_soc_of_parse_card_name(card, "model")) {
-+		dev_err(&pdev->dev, "Card name is not provided\n");
-+		return -ENODEV;
-+	}
-+
-+	link_cnt = 0;
-+	conf_cnt = 0;
-+	ret = j721e_soc_probe_cpb(priv, &link_cnt, &conf_cnt);
-+	if (ret)
-+		return ret;
-+
-+	ret = j721e_soc_probe_ivi(priv, &link_cnt, &conf_cnt);
-+	if (ret)
-+		return ret;
-+
-+	card->dai_link = priv->dai_links;
-+	card->num_links = link_cnt;
-+
-+	card->codec_conf = priv->codec_conf;
-+	card->num_configs = conf_cnt;
-+
-+	ret = j721e_calculate_rate_range(priv);
-+	if (ret)
-+		return ret;
-+
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	mutex_init(&priv->mutex);
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret)
-+		dev_err(&pdev->dev, "devm_snd_soc_register_card() failed: %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+static struct platform_driver j721e_soc_driver = {
-+	.driver = {
-+		.name = "j721e-audio",
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = of_match_ptr(j721e_audio_of_match),
-+	},
-+	.probe = j721e_soc_probe,
-+};
-+
-+module_platform_driver(j721e_soc_driver);
-+
-+MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
-+MODULE_DESCRIPTION("ASoC machine driver for j721e Common Processor Board");
-+MODULE_LICENSE("GPL v2");
+ 
+ 	return __zone_watermark_ok(z, order, mark, highest_zoneidx, alloc_flags,
+ 					free_pages);
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.17.1
 
