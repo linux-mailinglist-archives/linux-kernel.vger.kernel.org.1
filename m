@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86CC1F841D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DC81F8421
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgFMP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 11:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        id S1726722AbgFMP65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 11:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgFMP6g (ORCPT
+        with ESMTP id S1726583AbgFMP6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 11:58:36 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3502AC03E96F
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:36 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id k15so9764672otp.8
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:36 -0700 (PDT)
+        Sat, 13 Jun 2020 11:58:37 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981F6C08C5C1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:37 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c194so11733728oig.5
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xXTO5MprXvHIQWTapodiaHnYkq6yaPhQ4S0ZTvUxcYg=;
-        b=RTQYuBgJjnTJsylTr86adqp2KQWbaWgzpPLhYu6LDditSmUkYoFdaWIm9af2p31hCp
-         xJ0z5PH+YtsdqZYAiOFEzLem7TIDkhvB1bbO5N1ICU/72wDmfO7SOX+WPr/aRZKsaUrs
-         OhCii1LYazVcwWjIYKa2pC5DpAZkhpjnkFu/pXfDCVqhuwuU5Kdq5/4G1CYiJraVsjuM
-         i4HlPmC4IN+LtPrMiMDwvzRgHxPJmOmn3bIEja9f8DoWheMa0wR4eFs7PRMMYXOKaWcT
-         85vi6R+FqqveBJ5aVJPIDICucQBD6uoQNStv7JucAcoNbieLB7WYoL/Pa3F6infMWGZ8
-         Yvcg==
+        bh=gl7hLsW2EEIyewv4iaFzOiTfdffkChsOHbVzBW70XfA=;
+        b=Wy3dixhJ89xAKNIjKWVD+OtCnUJlAn3RBHZN6FaEQoefeCprrrwOmhffjl1eXRSz0j
+         PxuvMV70CxX6J5k7ZkHAkm9OHoEYZn+zs5TElTIJAfS9kM0PKA41Ay3DRuKwgEnUXdH4
+         D6IJeah6YLFs0rq1IEdTNIjvLt17jkuCz7d/QPEL2njkjsAyY6mWhnCAKlX5B+ukwZ1a
+         GS9yjQxjb/+OxIDXdkiQxV7qvvPdFmw7+xQNY2nCMN+0OWw0dFHl1o21j6c3SatUnyAl
+         80Ank5nuzYiVFlT8eqhnjD0M39Kl7UanOUE4g6d6RIH4Xx+GY4tvmXpPC0849dIg0gve
+         XP9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xXTO5MprXvHIQWTapodiaHnYkq6yaPhQ4S0ZTvUxcYg=;
-        b=SwqP4yoaQswE47FTmeI/8A9jIRivTdrIwZGVYOQZeoUmQIss5oU7N/FOUiD/GcUbpv
-         UxMyLZ4ljIUgaWr546R9hv/zU08nmrprNjWmnMxr5QXImmFo36u7VvpSTiJhuVsv0otX
-         0be/TyX2pOKGn7XnMPb2Hh4uar6c9wZBANoYYXr//zXDcuqi1bibSldf2g4tvM8O8WtW
-         ZbqJrBKu6YKfCZIRbZoL0ORXeCWN33q7EQDJTZJYVrDebm7yC6fziCUoxB9sxwg5E+cE
-         hvfsajeZVsXh1aX+HbOep/kXebGUnvFbffo7eOPK8kYCm/ahGrnNhQb/iwYi2wC2GBI9
-         2TyA==
-X-Gm-Message-State: AOAM533+8lCvig2JqMDsmxjorKxgDJak3nlnyqtwzRv+tSHX+VpG0ety
-        T7ayfnA0qpj4T4jLyUPBuaw=
-X-Google-Smtp-Source: ABdhPJyHuG2sduei/L1gKZmiMIlw7Ek2kUbXCwNsmsYFZkISi8jVUtdRqBx+j/94uGEOjY+YazoGuw==
-X-Received: by 2002:a9d:6e84:: with SMTP id a4mr14707807otr.112.1592063915569;
-        Sat, 13 Jun 2020 08:58:35 -0700 (PDT)
+        bh=gl7hLsW2EEIyewv4iaFzOiTfdffkChsOHbVzBW70XfA=;
+        b=Nqs1/NWZg1QcNHVudTmxCGROd5ikbyIOjzgNUCGTeq5bEI1BIo1BGFZIh43q16I8Hq
+         cJWglQpaYbQyzth6h49dBpkKxlY4pmT/wRvNhOkA97jR+9i14mwWb++ukSTfsfoEWvWF
+         05tjkBs1mVP/AbwCWopMyOaFzbLzoGi9OZnYc42QR9DRyynRpByetT3CkJfGPGumaoBC
+         2obZ8hKeh6Y68caVzGW9OLN7GEy/q60dmC/4b/kKbedAuhTvDY2+FNN45HG3x28Tl0jP
+         PJiTtk73ddHtle4ACIH3ohaJ7QRAq0l9VsJF+Ovm1bzxs5UZOhQDme5oxl2P+kAy1VZG
+         5tnA==
+X-Gm-Message-State: AOAM530sNrjy+hFHGpFW/00GZQeZJmEBYoK1yGp3+NO8jDZaF5LZNa57
+        rvYxf6gC1MWRw42OybY/Gns=
+X-Google-Smtp-Source: ABdhPJw1BonPv2EIVs8JMjp3GS/uzG6AO7n2GtFhzkIyeIRgymHKYVttJf4oNb0sMxGegKqWtpoB1Q==
+X-Received: by 2002:a05:6808:7c8:: with SMTP id f8mr3075221oij.51.1592063916855;
+        Sat, 13 Jun 2020 08:58:36 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.34
+        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 08:58:34 -0700 (PDT)
+        Sat, 13 Jun 2020 08:58:36 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 21/24] dyndbg: adapt header macros to pass print-class
-Date:   Sat, 13 Jun 2020 09:57:35 -0600
-Message-Id: <20200613155738.2249399-22-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v2 22/24] dyndbg: add print-class as trailing number to control output
+Date:   Sat, 13 Jun 2020 09:57:36 -0600
+Message-Id: <20200613155738.2249399-23-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200613155738.2249399-1-jim.cromie@gmail.com>
 References: <20200613155738.2249399-1-jim.cromie@gmail.com>
@@ -68,159 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-derive DEFINE_DYNAMIC_DEBUG_METADATA_CL
-from DEFINE_DYNAMIC_DEBUG_METADATA
-then redefine latter as former(0, ...)
+This change adds trailing 0 for all existing callsites, and N>0 for
+any uses of pr_debug_n().
 
-Also rework /(_?_?dynamic_.+)/ macros, adding _cl suffix & cl arg1
-and redefine them in terms of _cl version.
+subsequent patches add pr_debug_n(1) & pr_debug_n(2) to kset-example,
+demonstrating that the callsite descriptors are getting initialized
+properly by the *_cl adaptations done previously.
 
-in printk.h: add pr_debug_n, fix pr_debug use it with pr_cls=0
+bash-5.0# modprobe kset-example
+bash-5.0# grep -v '0$' control
+[  311.060809] dynamic_debug:ddebug_proc_open: called
+samples/kobject/kset-example.c:80 [kset_example]foo_attr_store =_ "called" 2
+samples/kobject/kset-example.c:59 [kset_example]foo_attr_show =_ "called" 1
 ---
- include/linux/dynamic_debug.h | 69 +++++++++++++++++++++++------------
- include/linux/printk.h        |  5 ++-
- 2 files changed, 50 insertions(+), 24 deletions(-)
+ lib/dynamic_debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index 7ac822d6be87..d7f3dd6fc78a 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -80,7 +80,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- 			 const struct ib_device *ibdev,
- 			 const char *fmt, ...);
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 0035218d7059..262a6a761219 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -919,7 +919,7 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
  
--#define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)		\
-+#define DEFINE_DYNAMIC_DEBUG_METADATA_CL(cl, name, fmt)		\
- 	static struct _ddebug  __aligned(8)			\
- 	__section(__dyndbg) name = {				\
- 		.modname = KBUILD_MODNAME,			\
-@@ -89,8 +89,11 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- 		.format = (fmt),				\
- 		.lineno = __LINE__,				\
- 		.flags = _DPRINTK_FLAGS_DEFAULT,		\
-+		.pr_class = cl,					\
- 		_DPRINTK_KEY_INIT				\
+ 	if (p == SEQ_START_TOKEN) {
+ 		seq_puts(m,
+-			 "# filename:lineno [module]function flags format\n");
++			 "# filename:lineno [module]function flags format prcls\n");
+ 		return 0;
  	}
-+#define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt) \
-+	DEFINE_DYNAMIC_DEBUG_METADATA_CL(0, name, fmt)
  
- #ifdef CONFIG_JUMP_LABEL
+@@ -928,7 +928,7 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 		   iter->table->mod_name, dp->function,
+ 		   ddebug_describe_flags(dp->flags, &flags));
+ 	seq_escape(m, dp->format, "\t\r\n\"");
+-	seq_puts(m, "\"\n");
++	seq_printf(m, "\" %d\n", dp->pr_class);
  
-@@ -121,17 +124,21 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- 
- #endif
- 
--#define __dynamic_func_call(id, fmt, func, ...) do {	\
--	DEFINE_DYNAMIC_DEBUG_METADATA(id, fmt);		\
--	if (DYNAMIC_DEBUG_BRANCH(id))			\
--		func(&id, ##__VA_ARGS__);		\
-+#define __dynamic_func_call_cl(cl, id, fmt, func, ...) do {	\
-+	DEFINE_DYNAMIC_DEBUG_METADATA_CL(cl, id, fmt);		\
-+	if (DYNAMIC_DEBUG_BRANCH(id))				\
-+		func(&id, ##__VA_ARGS__);			\
- } while (0)
-+#define __dynamic_func_call(id, fmt, func, ...)			\
-+	__dynamic_func_call_cl(0, id, fmt, func, ...)
- 
--#define __dynamic_func_call_no_desc(id, fmt, func, ...) do {	\
--	DEFINE_DYNAMIC_DEBUG_METADATA(id, fmt);			\
--	if (DYNAMIC_DEBUG_BRANCH(id))				\
--		func(__VA_ARGS__);				\
-+#define __dynamic_func_call_no_desc_cl(cl, id, fmt, func, ...) do {	\
-+	DEFINE_DYNAMIC_DEBUG_METADATA_CL(cl, id, fmt);			\
-+	if (DYNAMIC_DEBUG_BRANCH(id))					\
-+		func(__VA_ARGS__);					\
- } while (0)
-+#define __dynamic_func_call_no_desc(cl, id, fmt, func, ...)		\
-+	__dynamic_func_call_no_desc_cl(0, cl, id, fmt, func, ##__VA_ARGS__)
- 
- /*
-  * "Factory macro" for generating a call to func, guarded by a
-@@ -141,31 +148,44 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
-  * the varargs. Note that fmt is repeated in invocations of this
-  * macro.
-  */
--#define _dynamic_func_call(fmt, func, ...)				\
--	__dynamic_func_call(__UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
-+#define _dynamic_func_call_cl(cl, fmt, func, ...)		\
-+	__dynamic_func_call_cl(cl, __UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
-+#define _dynamic_func_call(fmt, func, ...)			\
-+	_dynamic_func_call_cl(0, fmt, func, ##__VA_ARGS__)
- /*
-  * A variant that does the same, except that the descriptor is not
-  * passed as the first argument to the function; it is only called
-  * with precisely the macro's varargs.
-  */
--#define _dynamic_func_call_no_desc(fmt, func, ...)	\
--	__dynamic_func_call_no_desc(__UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
-+#define _dynamic_func_call_no_desc_cl(cl, fmt, func, ...)	\
-+	__dynamic_func_call_no_desc_cl(cl, __UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
-+#define _dynamic_func_call_no_desc(fmt, func, ...)		\
-+	_dynamic_func_call_no_desc_cl(0, fmt, func, ##__VA_ARGS__)
- 
--#define dynamic_pr_debug(fmt, ...)				\
--	_dynamic_func_call(fmt,	__dynamic_pr_debug,		\
--			   pr_fmt(fmt), ##__VA_ARGS__)
-+#define dynamic_pr_debug_cl(cl, fmt, ...)			\
-+	_dynamic_func_call_cl(cl, fmt, __dynamic_pr_debug,	\
-+			      pr_fmt(fmt), ##__VA_ARGS__)
- 
--#define dynamic_dev_dbg(dev, fmt, ...)				\
--	_dynamic_func_call(fmt,__dynamic_dev_dbg, 		\
-+#define dynamic_dev_dbg_cl(cl, dev, fmt, ...)			\
-+	_dynamic_func_call_cl(cl, fmt, __dynamic_dev_dbg,	\
- 			   dev, fmt, ##__VA_ARGS__)
- 
--#define dynamic_netdev_dbg(dev, fmt, ...)			\
--	_dynamic_func_call(fmt, __dynamic_netdev_dbg,		\
-+#define dynamic_netdev_dbg_cl(cl, dev, fmt, ...)		\
-+	_dynamic_func_call_cl(cl, fmt, __dynamic_netdev_dbg,	\
- 			   dev, fmt, ##__VA_ARGS__)
- 
--#define dynamic_ibdev_dbg(dev, fmt, ...)			\
--	_dynamic_func_call(fmt, __dynamic_ibdev_dbg,		\
--			   dev, fmt, ##__VA_ARGS__)
-+#define dynamic_ibdev_dbg_cl(cl, dev, fmt, ...)			\
-+	_dynamic_func_call_cl(cl, fmt, __dynamic_ibdev_dbg,	\
-+			      dev, fmt, ##__VA_ARGS__)
-+
-+#define dynamic_pr_debug(...)					\
-+	dynamic_pr_debug_cl(0, ##__VA_ARGS__)
-+#define dynamic_dev_dbg(...)					\
-+	dynamic_dev_dbg_cl(0, ##__VA_ARGS__)
-+#define dynamic_netdev_dbg(...)					\
-+	dynamic_netdev_dbg_cl(0, ##__VA_ARGS__)
-+#define dynamic_ibdev_dbg(...)					\
-+	dynamic_ibdev_dbg_cl(0, ##__VA_ARGS__)
- 
- #define dynamic_hex_dump(prefix_str, prefix_type, rowsize,		\
- 			 groupsize, buf, len, ascii)			\
-@@ -202,6 +222,9 @@ static inline int ddebug_dyndbg_module_param_cb(char *param, char *val,
- 	return -EINVAL;
+ 	return 0;
  }
- 
-+#define dynamic_pr_debug_cl(cl, ...) dynamic_pr_debug(__VA_ARGS__)
-+#define dynamic_dev_dbg_cl(cl, ...)  dynamic_dev_dbg(__VA_ARGS__)
-+
- #define dynamic_pr_debug(fmt, ...)					\
- 	do { if (0) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__); } while (0)
- #define dynamic_dev_dbg(dev, fmt, ...)					\
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index fc8f03c54543..693d7c9235b7 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -416,7 +416,10 @@ extern int kptr_restrict;
-  * pr_fmt() internally).
-  */
- #define pr_debug(fmt, ...)			\
--	dynamic_pr_debug(fmt, ##__VA_ARGS__)
-+	dynamic_pr_debug_cl(0, fmt, ##__VA_ARGS__)
-+#define pr_debug_n(num, fmt, ...)				\
-+	dynamic_pr_debug_cl(num, fmt, ##__VA_ARGS__)
-+
- #elif defined(DEBUG)
- #define pr_debug(fmt, ...) \
- 	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 -- 
 2.26.2
 
