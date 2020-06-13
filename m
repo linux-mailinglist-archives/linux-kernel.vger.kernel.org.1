@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C051F8452
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 18:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1192E1F8458
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 18:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgFMQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 12:44:06 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58236 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgFMQoF (ORCPT
+        id S1726542AbgFMQrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 12:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbgFMQrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 12:44:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05DGi2xY095320;
-        Sat, 13 Jun 2020 11:44:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592066642;
-        bh=Kq9RmWG9zoUDdSoYUNDsFx1fgCZs2wx3Q+U+B2lGhGo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=rhe/LGv2Bs1MRQszFincmAPkufiOE3Ek3rDO0NbsWeZGJD5lqa09fQevdxTfwDUNi
-         hcxJv8FadFEvr62AZgn6Clm6xAKVXUj3SI1b0nacwgXtsW4mfBCDzZ/JCeUYkLzC0G
-         wX3jnVJ+OWLPsVC8VxU5gnmy9B58z6mP3pcI1sug=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05DGi1LZ037833
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 13 Jun 2020 11:44:02 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 13
- Jun 2020 11:44:01 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sat, 13 Jun 2020 11:44:01 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05DGi0jX074501;
-        Sat, 13 Jun 2020 11:44:01 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Dave Gerlach <d-gerlach@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid module node
-Date:   Sat, 13 Jun 2020 19:43:46 +0300
-Message-ID: <20200613164346.28852-3-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200613164346.28852-1-grygorii.strashko@ti.com>
-References: <20200613164346.28852-1-grygorii.strashko@ti.com>
+        Sat, 13 Jun 2020 12:47:53 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB794C08C5C1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 09:47:51 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w15so7146165lfe.11
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 09:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ncEwZ2YTb3mVdV4EuBbju4CI9gD1hCf0cAsyxu6rkFs=;
+        b=WxQOOQExCmoR+tWyWgfXfgTncQypYk9W5MJCAxdFj3dqLPSTkGWlfMMwGUljAXEl5R
+         DcdA9O4BYJiyYRfD230dt30F3t+DJyMR6NcHFmsBmpFKMj8GebV/5NgxzNY4KxeMK4CZ
+         y2p86lQyIBCmazacaBh+U1MDbQQBNmr34MoVg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ncEwZ2YTb3mVdV4EuBbju4CI9gD1hCf0cAsyxu6rkFs=;
+        b=SPV1FSmiPZTVm8Eajweq55Wh48vtXgibVPSlDjoKEtANBhISenXmL+FKsE5PMixlCb
+         IBOsRQtN/JUXsJ7aX6ii/J1VVqWwkgmhv/VIQWIvC4cMX1ATXVIj2PyMytD+tbgB07Nk
+         oDYeZZ/HIDSW786AEaWys8FHg4f4SNGRgDhHSkSRY4pA9wUNrvTTky/OQJ0+XPsHeth/
+         +9ktodqntx9vWUvYRldI6yg4GlUso/diYcRk4t0ityNSCdLWdIqDIWgdPiH702kBrs30
+         wo3R6RhRafdfuQUnJsx8mcEl6Qpt4J/3XuBWSf8ldXgLZ/OSEkTjiToDxYWaj875xgrI
+         IPVA==
+X-Gm-Message-State: AOAM531RAheVLkya2ZzbsDbd31OxUoBoB75TbYcYqaiBmHpJCbfbNZ2m
+        xYE+/c1b25ckTrOmikYEuPjysZGoDuo=
+X-Google-Smtp-Source: ABdhPJyKi3PALMqFUNhb/A0qpqPHDk20bnvhxSVzPHDInsVe7gm4hEdxB4ggrH7Imus4mCNxHHiqgg==
+X-Received: by 2002:a05:6512:2ed:: with SMTP id m13mr9517614lfq.43.1592066868283;
+        Sat, 13 Jun 2020 09:47:48 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id y1sm2718126ljc.88.2020.06.13.09.47.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jun 2020 09:47:47 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id 9so14497685ljc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 09:47:46 -0700 (PDT)
+X-Received: by 2002:a2e:b5d9:: with SMTP id g25mr10011919ljn.285.1592066866523;
+ Sat, 13 Jun 2020 09:47:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1503686.1591113304@warthog.procyon.org.uk> <20200610111256.s47agmgy5gvj3zwz@ws.net.home>
+ <CAHk-=whypJLi6T01HOZ5+UPe_rs+hft8wn6iOmQpZgbZzbAumA@mail.gmail.com> <3984625.1592053492@warthog.procyon.org.uk>
+In-Reply-To: <3984625.1592053492@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 13 Jun 2020 09:47:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh=9bYycJM5ginkkwymb3x-geMtiT5i2FvRS0zbKYR9LQ@mail.gmail.com>
+Message-ID: <CAHk-=wh=9bYycJM5ginkkwymb3x-geMtiT5i2FvRS0zbKYR9LQ@mail.gmail.com>
+Subject: Re: [GIT PULL] General notification queue and key notifications
+To:     David Howells <dhowells@redhat.com>
+Cc:     Karel Zak <kzak@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        dray@redhat.com, Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, Ian Kent <raven@themaw.net>,
+        andres@anarazel.de,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        keyrings@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT node for the Texas Instruments K3 Multicore J721E SoC platforms
-chipid module.
+On Sat, Jun 13, 2020 at 6:05 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Would you be willing at this point to consider pulling the mount notifications
+> and fsinfo() which helps support that?  I could whip up pull reqs for those
+> two pieces - or do you want to see more concrete patches that use it?
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+I'd want to see more concrete use cases, but I'd also like to see that
+this keyring thing gets used and doesn't find any show-stoppers when
+it does.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index dc31bd0434cb..e468cc1f8e4d 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -48,6 +48,11 @@
- 		};
- 	};
- 
-+	chipid@43000014 {
-+		compatible = "ti,am654-chipid";
-+		reg = <0x0 0x43000014 0x0 0x4>;
-+	};
-+
- 	wkup_pmx0: pinmux@4301c000 {
- 		compatible = "pinctrl-single";
- 		/* Proxy 0 addressing */
--- 
-2.17.1
+If we have multiple uses, and one of them notices some problem that
+requires any ABI changes, but the other one has already started using
+it, we'll have more problems.
 
+          Linus
