@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4C61F8305
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 12:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4821F8300
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 12:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgFMKsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 06:48:46 -0400
-Received: from unicorn.mansr.com ([81.2.72.234]:54318 "EHLO unicorn.mansr.com"
+        id S1726039AbgFMKqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 06:46:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:39719 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgFMKsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 06:48:45 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Jun 2020 06:48:45 EDT
-Received: by unicorn.mansr.com (Postfix, from userid 51770)
-        id D4C3D15360; Sat, 13 Jun 2020 11:41:46 +0100 (BST)
-From:   Mans Rullgard <mans@mansr.com>
-To:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: core: check returned size of emulated smbus block read
-Date:   Sat, 13 Jun 2020 11:41:09 +0100
-Message-Id: <20200613104109.2989-1-mans@mansr.com>
-X-Mailer: git-send-email 2.27.0
+        id S1725783AbgFMKqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Jun 2020 06:46:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49kZ5w30F3z9sRK;
+        Sat, 13 Jun 2020 20:46:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1592045205;
+        bh=C+TXIauZrJrUOan6WNfQuTL+WR9gkJUGFPXh/uGrLlw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=BFq6fOLlZD1bp+UeJIgWj7V6rrZOCFN5xO4KmX/K6nK5DHLGWYo6yc0/TXebp10pH
+         haRlfxxiGBjbjt1KyQBdZfXC5633q24KvmQv9W65PlYHeyzk7ZAFTH1ry4XdQ4fU+F
+         jJf0LneOpxTqNH1sz0J0P8UtapPt7oFpo/TvZ5w5xAOVDCnIcKYJAYGHAU1RzUdOAp
+         q9dPbdIO689+8ZuyCjTntkjTvjfg1P2YWXwr4LUu9Plz/f+oWYnn53s3Fn5+MnSbhf
+         mtaEIkof+H5iuZL1Fy2igpddeaV9ro/qD8ZRof0jB7vctPZjLfkWI8syL8jKC2+6O/
+         AIXbAhH7SrVtA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Michael Ellerman <patch-notifications@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v4 1/2] powerpc/uaccess: Implement unsafe_put_user() using 'asm goto'
+In-Reply-To: <CAKwvOdkKywb1KZ-SDwwuvQEmbsaAzJj9mEPqVG=qw1F5Ogv8rw@mail.gmail.com>
+References: <49YBKY13Szz9sT4@ozlabs.org> <20200611224355.71174-1-ndesaulniers@google.com> <20200611235256.GL31009@gate.crashing.org> <CAKwvOdkKywb1KZ-SDwwuvQEmbsaAzJj9mEPqVG=qw1F5Ogv8rw@mail.gmail.com>
+Date:   Sat, 13 Jun 2020 20:47:11 +1000
+Message-ID: <87366zfdjk.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the i2c bus driver ignores the I2C_M_RECV_LEN flag (as some of
-them do), it is possible for an I2C_SMBUS_BLOCK_DATA read issued
-on some random device to return an arbitrary value in the first
-byte (and nothing else).  When this happens, i2c_smbus_xfer_emulated()
-will happily write past the end of the supplied data buffer, thus
-causing Bad Things to happen.  To prevent this, check the size
-before copying the data block and return an error if it is too large.
+Nick Desaulniers <ndesaulniers@google.com> writes:
 
-Fixes: 209d27c3b167 ("i2c: Emulate SMBus block read over I2C")
-Signed-off-by: Mans Rullgard <mans@mansr.com>
----
- drivers/i2c/i2c-core-smbus.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> On Thu, Jun 11, 2020 at 4:53 PM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+>>
+>> On Thu, Jun 11, 2020 at 03:43:55PM -0700, Nick Desaulniers wrote:
+>> > Segher, Cristophe, I suspect Clang is missing support for the %L and %U
+>> > output templates [1].
+...
+>
+> IIUC the bug report correctly, it looks like LLVM is failing for the
+> __put_user_asm2_goto case for -m32.  A simple reproducer:
+> https://godbolt.org/z/jBBF9b
 
-diff --git a/drivers/i2c/i2c-core-smbus.c b/drivers/i2c/i2c-core-smbus.c
-index 3ac426a8ab5a..a719c26b98ac 100644
---- a/drivers/i2c/i2c-core-smbus.c
-+++ b/drivers/i2c/i2c-core-smbus.c
-@@ -495,6 +495,13 @@ static s32 i2c_smbus_xfer_emulated(struct i2c_adapter *adapter, u16 addr,
- 			break;
- 		case I2C_SMBUS_BLOCK_DATA:
- 		case I2C_SMBUS_BLOCK_PROC_CALL:
-+			if (msg[1].buf[0] > I2C_SMBUS_BLOCK_MAX) {
-+				dev_err(&adapter->dev,
-+					"Invalid block size returned: %d\n",
-+					msg[1].buf[0]);
-+				status = -EINVAL;
-+				goto cleanup;
-+			}
- 			for (i = 0; i < msg[1].buf[0] + 1; i++)
- 				data->block[i] = msg[1].buf[i];
- 			break;
--- 
-2.27.0
+If you add `-mregnames` you get register names:
 
+https://godbolt.org/z/MxLjhF
+
+foo:
+        stw %r3, 0(%r5)
+        stw %r4, 4(%r5)
+        blr
+
+
+cheers
