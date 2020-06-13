@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A291F8416
+	by mail.lfdr.de (Postfix) with ESMTP id E1CCB1F8417
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgFMP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 11:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S1726634AbgFMP60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 11:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgFMP6O (ORCPT
+        with ESMTP id S1726573AbgFMP6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 11:58:14 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B2DC03E96F;
-        Sat, 13 Jun 2020 08:58:13 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id b18so9739653oti.1;
-        Sat, 13 Jun 2020 08:58:13 -0700 (PDT)
+        Sat, 13 Jun 2020 11:58:15 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CF0C03E96F
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:14 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id b8so11768973oic.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hpQIJRk2qWyZDDehOJEtWSvlP1WLsO6Po+kjK7phh7o=;
-        b=stMH7ZQM1vDy/r5xMxYXERsQnYN3Nhk0ziLRmYDW6gWPu/dI3CRrL2SwUdjIYlmYYY
-         +e9MMPcWIi7FNIIwRLejLprkTqjQ9CtAq0udjoF+Y57WrDrNfuceq9iVOP8KgMMNQAnE
-         zNjR6AWJdKSLJbq+pN7qAJQsh4lO7zeOjsaz5hC8aWogThMZDZ+DgSTKUupwsuZDg7o/
-         IhxMXX76P4ew2PJWAaGn9sN6NCXPVfIBlrzXTz9z//eiufx8c6LUL/Tk8mouibYq5hVr
-         FDoQEuKNA9PxHWf3xAGBoPeZP+Lszdrop6k+2Mj2wmSQ8EeqZtxSSS2P3LZNodIXsyxH
-         Sl8w==
+        bh=mgB7qRhcim9hj4b+i7yJ6m+MlQ2rNYPgnUpllIUFGBg=;
+        b=HJUE1vpoW/6n1TE3qIq5KRr7aQzkq/F30JupsdL6NqUGqU9MajcuLlC1Xd3ZdbtsX4
+         WuzZqv5HgHZ2Uk2PCT0QaT5BeCrAshOOievq3l1tO1KC2O71Io9qSPbzBVoi/jdgPb50
+         mDVh4ktUY4DyYxsgkKJVY23waydPUloouy4ejADmWA952nauYJ1tMFBn/aM9uGEGwNzt
+         yyU82dk1N3CVc8qWw1cI1wXliaBvzGd7dWbgP/KTskEwseg6VOub7B2O4JZ6dxWrrQO2
+         vx7iVuCgnZR+NRfHR91bPHrl/0ryXfXEOwwWyBTBktKS6mZRnXHS31CVg6Bin19j80Td
+         K0VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hpQIJRk2qWyZDDehOJEtWSvlP1WLsO6Po+kjK7phh7o=;
-        b=FtxSWjV4MYJALNgK6zPYwFg89KzIIMDO7POavbziKkiu6NwaQ4FhJP9mUpqLQybFfr
-         +1ZDXdbcMr7T5mTIdsTjH9r4mBr8nSXJ3bs2ugLXZyuS7BjsY8pN7ldmnTjHtpcyhcdY
-         55aYORCCcswoSDO3rJNwKwsvtUV/ui/oRNec5nJ69JxNT5MZxGLjWnOkAv0c1tKyjA7/
-         HQqDbkYOfXe5mHoXLwfWuutGfSL76QAjj8VI1ubv0SkjTl+9j2MfKvrrZL5Fak2qXuSe
-         pmdDWxLPTveoE666dS1VtRdm84E07gZkJkXIpZvqrslpNPqb/bLK02cxHDLDjgbO5K+P
-         5vwA==
-X-Gm-Message-State: AOAM5308iFA0Wp+03uG7Y3dFoHnshuWyueMuTtPG+b/7KVAyYmNurgZA
-        47P69lr1eeTjMcJ5Mn5bKi/rStIA+is=
-X-Google-Smtp-Source: ABdhPJxiZ9RQM3asA+3HyN8dxfhGppTll8oax5X7kud3HIFAEKBxNuWsFHbu//ourRxlBif21hTn7w==
-X-Received: by 2002:a05:6830:1f4a:: with SMTP id u10mr825604oth.125.1592063893177;
-        Sat, 13 Jun 2020 08:58:13 -0700 (PDT)
+        bh=mgB7qRhcim9hj4b+i7yJ6m+MlQ2rNYPgnUpllIUFGBg=;
+        b=oj3s01hfxAPJAhCx8gLdySpaGaSty1jNX4hYOCXSiNBEaoLv3ksrv/i27JIa8OoxpS
+         9yOR7R7Yt/NClNWt9Qz290cI+DBnmumP0iskveNfzM3FeRSW0ewAx6unknRNeZ0y7YkX
+         tZj38DXUKuRAXyZq3L3vmLPYmSOIXZtWmcIui8gsxUM5vxCmJEu91Tk/+qcKqp/xkXaM
+         yBzOwLW2n7ZT/Dy2tQJS5iesNlaZkY7N35pKbVAS9QYWRWldWFQB29l9SKf1PBlPcfWk
+         90tewdlUejA+AOzO+mnKqxhhl2TwcCLFNJSDfkO6oJMd/mXmCu7/ybYSxZkpq581j2hM
+         FMLg==
+X-Gm-Message-State: AOAM531GKGp3ILHSafmh50ubamrD1sj5qRCChQS0izpr+DtkaiXvRrxq
+        3oN6YZAI48VuqQYEdP7jum51Ks/l+tY=
+X-Google-Smtp-Source: ABdhPJz9dWdSWwAhxB2dCBqo0mlL68cg/JzNFFsSAGWEicYjXRoMVaRW7x0WkA2/hZeMCM5TaM4+JQ==
+X-Received: by 2002:aca:5a05:: with SMTP id o5mr3025360oib.138.1592063894355;
+        Sat, 13 Jun 2020 08:58:14 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.11
+        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 08:58:12 -0700 (PDT)
+        Sat, 13 Jun 2020 08:58:13 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v2 11/24] dyndbg: accept 'file foo.c:func1' and 'file foo.c:10-100'
-Date:   Sat, 13 Jun 2020 09:57:25 -0600
-Message-Id: <20200613155738.2249399-12-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v2 12/24] dyndbg: refactor ddebug_read_flags out of ddebug_parse_flags
+Date:   Sat, 13 Jun 2020 09:57:26 -0600
+Message-Id: <20200613155738.2249399-13-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200613155738.2249399-1-jim.cromie@gmail.com>
 References: <20200613155738.2249399-1-jim.cromie@gmail.com>
@@ -70,100 +65,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Accept these additional query forms:
+Currently, ddebug_parse_flags accepts [+-=][pflmt_]+ as flag-spec
+strings.  If we allow [pflmt_]*[+-=][pflmt_]+ instead, the (new) 1st
+flagset can be used as a filter to select callsites, before applying
+changes in the 2nd flagset.  1st step is to split out the flags-reader
+so we can use it again.
 
-   echo "file $filestr +_" > control
+The point of this is to allow user to compose an arbitrary set of
+changes, by marking callsites with [fmlt] flags, and then to
+activate that composed set in a single query.
 
-       path/to/file.c:100	# as from control, column 1
-       path/to/file.c:1-100	# or any legal line-range
-       path/to/file.c:func_A	# as from an editor/browser
-       path/to/file.c:drm_\*	# wildcards still work
-       path/to/file.c:*_foo	# lead wildcard too
-
-1st 2 examples are treated as line-ranges, 3,4 are treated as func's
-
-Doc these changes, and sprinkle in a few extra wild-card examples and
-trailing # explanation texts.
+ #> echo '=_' > control			# clear all flags
+ #> echo 'module usb* +fmlt' > control	# build the marked set, repeat
+ #> echo 'fmlt+p' > control		# activate
 ---
- .../admin-guide/dynamic-debug-howto.rst       |  5 +++++
- lib/dynamic_debug.c                           | 20 ++++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
+ lib/dynamic_debug.c | 37 +++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 1423af580bed..6c04aea8f4cd 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -164,6 +164,7 @@ func
-     of each callsite.  Example::
- 
- 	func svc_tcp_accept
-+	func *recv*		# in rfcomm, bluetooth, ping, tcp
- 
- file
-     The given string is compared against either the src-root relative
-@@ -172,6 +173,9 @@ file
- 
- 	file svcsock.c
- 	file kernel/freezer.c	# ie column 1 of control file
-+	file drivers/usb/*	# all callsites under it
-+	file inode.c:start_*	# parse :tail as a func (above)
-+	file inode.c:1-100	# parse :tail as a line-range (above)
- 
- module
-     The given string is compared against the module name
-@@ -181,6 +185,7 @@ module
- 
- 	module sunrpc
- 	module nfsd
-+	module drm*	# both drm, drm_kms_helper
- 
- format
-     The given string is searched for in the dynamic debug format
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index f87a7bef4204..784c075c7db9 100644
+index 784c075c7db9..93c627e9c094 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -322,6 +322,8 @@ static int parse_linerange(struct ddebug_query *query, const char *first)
- 	} else {
- 		query->last_lineno = query->first_lineno;
- 	}
-+	vpr_info("parsed line %d-%d\n", query->first_lineno,
-+		 query->last_lineno);
+@@ -414,6 +414,26 @@ static int ddebug_parse_query(char *words[], int nwords,
  	return 0;
  }
  
-@@ -358,6 +360,7 @@ static int ddebug_parse_query(char *words[], int nwords,
- {
- 	unsigned int i;
- 	int rc = 0;
-+	char *fline;
- 
- 	/* check we have an even number of words */
- 	if (nwords % 2 != 0) {
-@@ -374,7 +377,22 @@ static int ddebug_parse_query(char *words[], int nwords,
- 		if (!strcmp(words[i], "func")) {
- 			rc = check_set(&query->function, words[i+1], "func");
- 		} else if (!strcmp(words[i], "file")) {
--			rc = check_set(&query->filename, words[i+1], "file");
-+			if (check_set(&query->filename, words[i+1], "file"))
-+				return -EINVAL;
++static int ddebug_read_flags(const char *str, unsigned int *flags)
++{
++	int i;
 +
-+			/* tail :$info is function or line-range */
-+			fline = strchr(query->filename, ':');
-+			if (!fline)
++	for (; *str ; ++str) {
++		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
++			if (*str == opt_array[i].opt_char) {
++				*flags |= opt_array[i].flag;
 +				break;
-+			*fline++ = '\0';
-+			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
-+				/* take as function name */
-+				if (check_set(&query->function, fline, "func"))
-+					return -EINVAL;
-+			} else {
-+				if (parse_linerange(query, fline))
-+					return -EINVAL;
 +			}
- 		} else if (!strcmp(words[i], "module")) {
- 			rc = check_set(&query->module, words[i+1], "module");
- 		} else if (!strcmp(words[i], "format")) {
++		}
++		if (i < 0) {
++			pr_err("unknown flag '%c' in \"%s\"\n", *str, str);
++			return -EINVAL;
++		}
++	}
++	vpr_info("flags=0x%x\n", *flags);
++	return 0;
++}
++
+ /*
+  * Parse `str' as a flags specification, format [-+=][p]+.
+  * Sets up *maskp and *flagsp to be used when changing the
+@@ -424,7 +444,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+ 			       unsigned int *maskp)
+ {
+ 	unsigned flags = 0;
+-	int op = '=', i;
++	int op;
+ 
+ 	switch (*str) {
+ 	case '+':
+@@ -438,19 +458,8 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+ 	}
+ 	vpr_info("op='%c'\n", op);
+ 
+-	for (; *str ; ++str) {
+-		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
+-			if (*str == opt_array[i].opt_char) {
+-				flags |= opt_array[i].flag;
+-				break;
+-			}
+-		}
+-		if (i < 0) {
+-			pr_err("unknown flag '%c' in \"%s\"\n", *str, str);
+-			return -EINVAL;
+-		}
+-	}
+-	vpr_info("flags=0x%x\n", flags);
++	if (ddebug_read_flags(str, &flags))
++		return -EINVAL;
+ 
+ 	/* calculate final *flagsp, *maskp according to mask and op */
+ 	switch (op) {
 -- 
 2.26.2
 
