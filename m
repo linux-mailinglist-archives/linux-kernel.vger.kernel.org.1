@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20B11F8047
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 03:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B91F8054
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 04:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgFMByb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Jun 2020 21:54:31 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:50268 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgFMBya (ORCPT
+        id S1726456AbgFMCTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Jun 2020 22:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgFMCTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Jun 2020 21:54:30 -0400
-Received: by mail-pj1-f67.google.com with SMTP id jz3so4377782pjb.0;
-        Fri, 12 Jun 2020 18:54:30 -0700 (PDT)
+        Fri, 12 Jun 2020 22:19:47 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D870C03E96F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 19:19:47 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id l10so6377462vsr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Jun 2020 19:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PoSyBWpYIo5Xcz7POYh0GUIlE3/sg6xh/54qcpWui50=;
+        b=nKR6k6zc2Y3THS7lmihX+WSQzgzy+fOJzO6VB/G88FHtI4LjjjkkGZoWjLDB+L2SyL
+         NU4l6heFs+K5zoKcX4vVbF/ID5aFrkFDfnyL6N/4oZNZ8R8mxLuuG611in/FTTmGxCJb
+         Y8qCZn0QIc7SPTJmOwIG9if1NtUiOdQbrbyC0C+pFsV4x66d3aj7/PPotRiH6NddKSpQ
+         560xCidfM3+vna8kLyC66RYoDeFDLdTxdBNb7NFqJX3F5DG9TzMqhMe7M7oSWF0cAkeJ
+         lE5hphTrjzrpT/DFF7M4YFDnEZQKDyh/BPomYLimQN0xOQyJJiOtyPBiYjs+n9ty9R2c
+         yAOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=cJNj9QFTvVM0faLsMSdHiMpBNUH3giOQjYxucAwEHAo=;
-        b=LbsGVHCmISj10vgz5piDI/OAmg6e/Xr2yzG+DrTDX26UGDBMjPX0A8GxyEoKbvkJQe
-         BvrriEul4I+EW0NJHGF2vZ/14dKg2elCD+00r9K1YkirVvzIRa1WEQgEjVZfcPthuFqV
-         LuaatP3ewI3DRKmCprKejgD4fd/hK4N1Ml3zK6VSjGbBBL+HbM6ArUyBQuioBZWqS6md
-         Pii3ec8ZDO18QOd4Nr3Bw7awnwEHmSZr58xOVSO30IEiNxWfzgAj8Eeb9ZK4DZ3Snsht
-         okfCrpYi450vYIn/ApiMcTEfUU/hBlOQpJiX26bHBQoBbx5U+Z937z5xfFyJqIzkRTAC
-         IuWA==
-X-Gm-Message-State: AOAM5312iQg2ULtRqk8SU4p/schkfQRDLTh0+z3e/bkJ51I+5iEa708l
-        aPCK6qfPntK1ueROTSTJsgzky3VRGnw=
-X-Google-Smtp-Source: ABdhPJz6hOXig8fEEgC/zk6xZwxjmo1eVByYgfO+4ggxWI+P3wPYibwIdkFqUD1hlONOUQTvoIXCNg==
-X-Received: by 2002:a17:90a:a406:: with SMTP id y6mr1715079pjp.216.1592013269384;
-        Fri, 12 Jun 2020 18:54:29 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id hv15sm6403577pjb.17.2020.06.12.18.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jun 2020 18:54:28 -0700 (PDT)
-Subject: Re: [PATCH v6 4/6] blktrace: annotate required lock on
- do_blk_trace_setup()
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
-        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org
-Cc:     mhocko@suse.com, yukuai3@huawei.com, martin.petersen@oracle.com,
-        jejb@linux.ibm.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20200608170127.20419-1-mcgrof@kernel.org>
- <20200608170127.20419-5-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <b26de074-9745-c625-8284-fe2c6f91e3ea@acm.org>
-Date:   Fri, 12 Jun 2020 18:54:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PoSyBWpYIo5Xcz7POYh0GUIlE3/sg6xh/54qcpWui50=;
+        b=VdL4iXHVRuUTHBzzuNmX/1iD2T8Xu2fEsLjKBEg0WCoqNHZkxyfSiZzQgpOMmuuMCt
+         i4Z168ZLjf9Amk9JZiX1gLrK1FfKsuL8s4c2u+fqRfCR645NZfbXBSkEwaBshSos6aps
+         u7j9Oo5vTCmM/vHDO8LSecOJPYChfRsz9/p7FbYc1aGoKiT2+kRP9exT/3G0EpTd6laq
+         Hc00+DpOtbPMRtuhJLWRjtGRDYbwV3HtNyaejkrh8tjCok7P+UpLyha/eLKHRH4Tbq4O
+         s/k3M+rn9gU6tfz/nocUNcrEFq9/Wf7xqwAdpbytuIY3FnlU0n+bf5azyJ/oixn55/I6
+         NX9Q==
+X-Gm-Message-State: AOAM531M3uWTepM43/PBUcwbUVZUsNWZqOy224n97hvRyJENX/qoBjI5
+        xHPUiYd++NjCG68YJHIH8cS5OYf8QnhjmERXxkqj5YLR
+X-Google-Smtp-Source: ABdhPJxs0CRYID6vseMalw4OdaoKGXGg19EdEmR4GyDOGvTTrzxumx4HYixgWfrRkpUcpvEXeF1zWJ3+em/fpT4uWoU=
+X-Received: by 2002:a67:f918:: with SMTP id t24mr12956461vsq.18.1592014782233;
+ Fri, 12 Jun 2020 19:19:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200608170127.20419-5-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200605162645.289174-1-jim.cromie@gmail.com> <8f106309-8d7b-5bfc-6f8b-7223a3a1c72c@akamai.com>
+In-Reply-To: <8f106309-8d7b-5bfc-6f8b-7223a3a1c72c@akamai.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 12 Jun 2020 20:19:16 -0600
+Message-ID: <CAJfuBxy0YZuPHRhEn4rG4poKv3te9vJRDpJY1AvtMzGH7O9gMw@mail.gmail.com>
+Subject: Re: [PATCH 00/16] dynamic_debug: cleanups, 2 features
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-08 10:01, Luis Chamberlain wrote:
-> Ensure it is clear which lock is required on do_blk_trace_setup().
+On Fri, Jun 12, 2020 at 3:31 PM Jason Baron <jbaron@akamai.com> wrote:
+>
+>
+>
+> On 6/5/20 12:26 PM, Jim Cromie wrote:
+> > Patchset starts with 7 "cleanups";
+> > - it changes section name from vague "__verbose" to "__dyndbg"
+> > - cleaner docs, drop obsolete comment & useless debug prints, refine
+> >   verbosity, fix a BUG_ON, ram reporting miscounts.
+> >
+> > It adds a few query parsing conveniences;
+> > accept combined file:line & file:func forms
+> >
+> >   file inode.c:100-200                # file & line-range
+> >   file inode.c:start_*                # file & function
+> >
+>
+> So I like the shortened notation there.
+>
+> > Then it expands flags:
+> >
+> > Adds 'u' user flag, allowing user to compose an arbitrary set of
+> > callsites by marking them with 'u', without altering current
+> > print-modifying flags.
+> >
+> > Adds 'PFMLTU' flags, which negate their lower-case counterparts.
+> >
+> > Extends flags-spec with filter-flags, which select callsites for
+> > modification based upon their current flags.  This lets user activate
+> > the set of callsites marked with 'u' in a batch.
+> >
+> >   echo 'u+p' > control
+> >
+>
+> I'm wondering if users are really going to use these and how much they
+> simplify things? Do you find them useful while debugging issues?
+>
+> Especially now that now that we are looking to let people define
+> groupings.
+>
+> Thanks,
+>
+> -Jason
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+so we have
+1- u flag - in modflags, allows marking of sets
+2- filterflags - constrain matching sites to those marked
+    plus any other subcondition you might want on your marked set
 
+3- negating flags
+
+in filters, they allow complete match to all the bits.
+dont want to touch callsites marked with Pt ?
+(marked with t, without printing)  now you can.
+
+filters let you use current flagstate to select subsets of " +p >control"
++negations gives complete selectivity on that flagstate
+
+in modflags theyre more convenience,
+but setting and clearing 2+ bits atomically
+lets you both use the u bit to enable printing
+(inc module name filename) and retire that use of u,
+or to change the logging output subtly (by dropping threads display,
+or module-name)
+
+I cant say its essential, but its so cheap (last patch) once negating
+flags are in place,
+which are needed for full selectivity filtering.
+
+thanks
+Jim
