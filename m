@@ -2,105 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64592044DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A120450E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731094AbgFVX7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        id S1731487AbgFWANV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728636AbgFVX7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:59:33 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1731000AbgFWANU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:13:20 -0400
+Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88F9620727;
-        Mon, 22 Jun 2020 23:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592870373;
-        bh=2OwgDfY9J2es0wq3aPDxl3nxMrgbdyAY0myLa2Sqmog=;
-        h=Date:From:To:Cc:Subject:From;
-        b=C3Dct/bBNvay6NeT7uLjs5uFJABFs0MoIj4gqLRcTlzmZFF7H0FtOomU716ywWOFR
-         yY0yUdHPNIU4hPoqCLRs3Oy1NN64l5h4CRVHPXe3U9fzoHm4YZL5cmu5xX2Fid1vgP
-         XEfz40gQzipHJX3AbrBHnefhg8Si7vsTa9zCLMDU=
-Date:   Mon, 22 Jun 2020 19:05:02 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] perf annotate: Use struct_size() helper
-Message-ID: <20200623000502.GA18040@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33D222083B;
+        Tue, 23 Jun 2020 00:13:20 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.9.227-rt146
+Date:   Sat, 13 Jun 2020 18:39:37 -0000
+Message-ID: <159207357760.1168821.4562957804515974520@theseus.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes. Also, remove unnecessary
-function disasm_line_size().
+Hello RT-list!
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+I'm pleased to announce the 4.9.227-rt146 stable release.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- tools/perf/util/annotate.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Note that v4.9-rt is in maintenance mode so no RT backports are included,
+this is strictly a merge of the upstream stable changes for v4.9.
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 76bfb4a9d94e..9330520c34a0 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -43,6 +43,7 @@
- #include <linux/string.h>
- #include <subcmd/parse-options.h>
- #include <subcmd/run-command.h>
-+#include <linux/overflow.h>
- 
- /* FIXME: For the HE_COLORSET */
- #include "ui/browser.h"
-@@ -775,7 +776,7 @@ static int annotated_source__alloc_histograms(struct annotated_source *src,
- 	if (size > (SIZE_MAX - sizeof(struct sym_hist)) / sizeof(struct sym_hist_entry))
- 		return -1;
- 
--	sizeof_sym_hist = (sizeof(struct sym_hist) + size * sizeof(struct sym_hist_entry));
-+	sizeof_sym_hist = struct_size(src->histograms, addr, size);
- 
- 	/* Check for overflow in zalloc argument */
- 	if (sizeof_sym_hist > SIZE_MAX / nr_hists)
-@@ -1167,13 +1168,6 @@ static void annotation_line__exit(struct annotation_line *al)
- 	zfree(&al->line);
- }
- 
--static size_t disasm_line_size(int nr)
--{
--	struct annotation_line *al;
--
--	return (sizeof(struct disasm_line) + (sizeof(al->data[0]) * nr));
--}
--
- /*
-  * Allocating the disasm annotation line data with
-  * following structure:
-@@ -1193,7 +1187,7 @@ static struct disasm_line *disasm_line__new(struct annotate_args *args)
- 	if (evsel__is_group_event(args->evsel))
- 		nr = args->evsel->core.nr_members;
- 
--	dl = zalloc(disasm_line_size(nr));
-+	dl = zalloc(struct_size(dl, al.data, nr));
- 	if (!dl)
- 		return NULL;
- 
--- 
-2.27.0
+You can get this release via the git tree at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.9-rt
+  Head SHA1: cce4159a4ff18dc8e2bd0c09611016fb3e5a4a8f
+
+Or to build 4.9.227-rt146 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.227.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.227-rt146.patch.xz
+
+
+You can also build from 4.9.226-rt145 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/incr/patch-4.9.226-rt145-rt146.patch.xz
+
+Enjoy!
+Clark
