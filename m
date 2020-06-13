@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C00F1F843F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 18:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28EB1F8446
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 18:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgFMQOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 12:14:07 -0400
-Received: from smtprelay0168.hostedemail.com ([216.40.44.168]:40384 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726335AbgFMQOG (ORCPT
+        id S1726517AbgFMQZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 12:25:31 -0400
+Received: from sonic314-19.consmr.mail.gq1.yahoo.com ([98.137.69.82]:40556
+        "EHLO sonic314-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726361AbgFMQZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 12:14:06 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 9D01E182CED34;
-        Sat, 13 Jun 2020 16:14:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3871:4321:5007:6119:7903:10004:10400:10848:11026:11232:11658:11914:12048:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: snake37_150538726de6
-X-Filterd-Recvd-Size: 1563
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 13 Jun 2020 16:14:04 +0000 (UTC)
-Message-ID: <030bb11d193d13a2d1c161a133bb7b88093a1fe9.camel@perches.com>
-Subject: Re: [PATCH v2 09/24] dyndbg: add maybe(str,"") macro to reduce code
-From:   Joe Perches <joe@perches.com>
-To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
-        linux-kernel@vger.kernel.org, akpm@linuxfoundation.org,
-        gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk
-Date:   Sat, 13 Jun 2020 09:14:02 -0700
-In-Reply-To: <20200613155738.2249399-10-jim.cromie@gmail.com>
-References: <20200613155738.2249399-1-jim.cromie@gmail.com>
-         <20200613155738.2249399-10-jim.cromie@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Sat, 13 Jun 2020 12:25:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1592065529; bh=pNotLi7DF8cvryO1AMRC3RkC85TH9IyZvCyVFgZyRKM=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject; b=Mln2l7Ad7YZepIuP6YgQ3/GaRew+KD5QROGR5a5f1XFth9K2KykxZgdQIY1kf2t4+mmO0mdg0wpyUDSQkUHxlMG9YJ/31WuTxrqwQEQ3O61VcU8eAyiaiS9hGu9tfVYhfSC/mr1dQqD37GqzAltjNjLFGx0ZAWzvPUhDZvI7YXj+ElFkyvkZ0kTR7b1PtItGT9H0De8P7lHXd733tijABsDPHtiTMpudKRea5oYq2kU6n+S7yi1hlIzL2zqHCgYD5FpFXvPMv6RBh1QXXhedgJOL4nrcyCA7sIXD5aqxZO9hgYudrG4pmeUMYEpDJ//NfXq6TANTaChrt4CqrbOVkg==
+X-YMail-OSG: 6xZy4LwVM1nd_259LUsfr7ESXnJPNKXe.ums2_AeYGD5E4s8Y7CFF3Mm0dlpGL6
+ SfAqUPtj.6O4h0KPuMkapZzV2YEEZqxdvlBbmQY5IgO.XLSktsOJju86dPFl_z6JZZv7nTsHNyEu
+ RtyIrU3KvpqBFgKZFq3Q3ld6C94J1qqBHxnQVnkJy_cpuCsjhQfiwGo69kFu2PqtghvhM.35Py0j
+ Hdc01wdIN7Anj55dhcDi9r328.qgTmoLYD1yY6T6Ma4rt87TvevKii_LsVxC7vV5awFpTy92V0qB
+ xA4uF.cuHwwpgKzs9NA5mciWh_nRniSE1wi8pAkLHCZL4LeQiWr1YCm5N8QYWtkPwAFoxtoa615E
+ 4uVIB88zfGooRG7gsxXvfmXz55uk.kcW0vgcrgYAv9Demk7HJwIv5c7IlfVolQ2Eg49onAYhU1rc
+ 9aMcycnwd.TZdfOwNPTyWyp5RHRAALlUkultoB1qogAN5kMZM8gZTFoqlCUnDEITnoFMkk72FHvk
+ kCTSXc4_PaujrVLtFpi8mBXAxMlrRgef..K.ZFt00T1SefVsfxov3kxZBL1sFGDL6a4_we3Deudj
+ 5VbrijJK7ZH7sv4ht7ev1TS92JHIGdJectp7cOQqeqhhwifMzwaK7ElQhJsn4KtJMUl2J3iw.6Mk
+ KeqKekJQyb8DGN9xtBhIVBSoz3N.qIiEcrZSU5nfK7c8pYbnZSP2kcwBMM2VUPYgCA3dze.NUAg_
+ o.5_l36UEEA5RhtgnbnCzsuIbD7puNHXQTvamL0vjtdWytu4n_Scaai0ALdgmy9FjLt.ogsj7eYd
+ oQuW6KYXbRlTuxQqs0Al7F8eqsBhcThd_b8AX3_7vfx7d9SW6OL4izC6ttqiE.SY4EJWhK_nxxB4
+ Rl4PPaE1DvxWjnZJHy5I92b51qYAcoh5W35.G6uSlhiDAxn_EB_a8rn3Q7QZl.K4iEd5TzLBqMN9
+ hTxJviNdfk67hahEZJxKQrixQh78FNrbXuqQm.yFhVR2Gvi1K2co2i4UoOvW_8tAZIHV_ddPrT86
+ VxAVfjXgdFCt4gOXgnIsa2Uq79udcnlITAN5aYyIPA0Xy7BGQ1tb8I8Vt9BLDLyWaKpOutUGadml
+ t01mTxfa2m9cTK9Vmqb2isYOEovslcfW3oYqChkMLoZfqE2hffuy7BJ88i0HQzjZTaJYXXhJjvOR
+ qWZ_GApsAXA.yxHEIBuVki9r7knDBi6EGDZHYbxhrX2b35c21Xx8uY9KvICO1ILr5EI7oiuq2Wy9
+ CWGRQy7vA9GphQHXzYy4Ybr2LapuHhOXAkrifNx.I8PWw5m1WW75SoFH8.B.A.4r3hQYSCN_EFsr
+ 8w._oJKurpcb4mLBsizZIrPlCb7RgW2.LgsbkcjQbbTl4ZL6VZlh3545_80VMBP6vIGqR86i6snW
+ ZNOzAQ0wwDqjtu690wQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.gq1.yahoo.com with HTTP; Sat, 13 Jun 2020 16:25:29 +0000
+Received: by smtp416.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 94fb7ac0c14fd50d6292d63c31f7e5c3;
+          Sat, 13 Jun 2020 16:25:26 +0000 (UTC)
+Date:   Sat, 13 Jun 2020 12:25:22 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: next-0519 on thinkpad x60: sound related? window manager crash
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, bp@alien8.de, hch@infradead.org,
+        Christoph Hellwig <hch@lst.de>, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        Pavel Machek <pavel@ucw.cz>, perex@perex.cz,
+        rientjes@google.com, tglx@linutronix.de, tiwai@suse.com,
+        x86@kernel.org
+References: <20200520111136.GA3802@amd>
+        <1591545088.74ii116nf2.none@localhost> <20200608061950.GA17476@lst.de>
+        <1591624340.z01ejtod28.none@localhost> <20200609114733.GA1621@lst.de>
+        <s5hr1uogtna.wl-tiwai@suse.de> <s5h8sgtede5.wl-tiwai@suse.de>
+In-Reply-To: <s5h8sgtede5.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-Id: <1592065395.r5zwoblr15.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.16119 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-06-13 at 09:57 -0600, Jim Cromie wrote:
-> reduce word count via macro, no actual object change.
-> 
-> OTOH, maybe() could be scrubbed if printk's default printing (iirc) of
-> "(null)" pointers is deemed appropriate for the log-msg.
-[]
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-[]
-> @@ -114,6 +114,7 @@ do {								\
->  #define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
->  #define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
->  
-> +#define maybe(str, empty)	( str ? str : empty )
+Excerpts from Takashi Iwai's message of June 11, 2020 1:11 pm:
+> Thanks, so something still missing in the mmap handling, I guess.
+>=20
+> I've worked on two different branches for potential fixes of your
+> problems.  Could you test topic/dma-fix and topic/dma-fix2 branches?
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+> Just pull one of them onto Linus' git HEAD.
+>=20
+> I guess we'll go with David's new patch, but still it's interesting
+> whether my changes do anything good actually.
+>=20
+>=20
+> Takashi
+>=20
 
-This macro is unnecessary.
+On torvalds 623f6dc593, topic/dma-fix causes sound to be output as=20
+alternating half-second bursts of noise and a few seconds of silence.=20
+topic/dma-fix2 appears to work properly.
 
-An even shorter very commonly used gcc extension would be
-
-	str ?: empty
-
-
+Thanks,
+Alex.
