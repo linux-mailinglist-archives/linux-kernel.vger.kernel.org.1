@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4571F85A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 00:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F111F1F85AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 00:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgFMWaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 18:30:18 -0400
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:35704 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbgFMWaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 18:30:16 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49ksjg2Mntz9vLGx
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 22:30:15 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pARkxv0GlEMB for <linux-kernel@vger.kernel.org>;
-        Sat, 13 Jun 2020 17:30:15 -0500 (CDT)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49ksjg0mmFz9vLHM
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 17:30:15 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 49ksjg0mmFz9vLHM
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 49ksjg0mmFz9vLHM
-Received: by mail-io1-f71.google.com with SMTP id x2so3283535iof.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 15:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=8hCA2ocDcAQFNTYWh+iYUMXDSO315n4C2muJzNBSj0Y=;
-        b=UTcTy5Ma0D3H+UNggPpPgtobBvnEipOK3UTIavkiBqbVnmTivWYf+Qid/kDhNQ1a3/
-         9iHBC+AhG4g9tSZZoRFeWc6lDotCffcCCFYZBMss4xnpW63moFTVBTg8BAV26pxXfTcd
-         tCYSdvxjJHQoqcWH8gfxEcfFnFBxgjClgVb7jjmBQy12GguFVkMcG4Wxd4No9xuwgHNm
-         Xx3hAje2Y5DAUqL+1kizKpQ5t5E6Zgr2ZyIlPgxO9Uk7eHERkuIc2AVhZ29T1U+WOXMt
-         X74lkRBJEr16CFildX3duiDZ5BpKOtibECBLMS43VuKFOLaWVWd6Lka8nCH/Yl9KphoZ
-         Hvrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8hCA2ocDcAQFNTYWh+iYUMXDSO315n4C2muJzNBSj0Y=;
-        b=lO+HO/2ej/hiIOqjD8WBetQUa3l7u90rpK48gDBVmmbwIpEXMfcwjM8nTS6WX9kJfu
-         AtI1i+e+OHNIANLxHZasLMohI4Nc28JjrBGHtYtRdGoXUtFPHyJUYa+q580s+uA4hH/S
-         Riq+4pAAmQ5bcQ+gGtN8movn04j5B4U0pd5zikFSR9QwDkl6E8kl6pIiTD+ZKApmF69V
-         tOeZkatDYCX+s95g/7WmLv8cComWnsIz/dbri2Q8+upJA+ps2Sb4yFL8on2d/pmk9YOr
-         u4pO7tbW59A7ZYOVrNgTV6hihrPnNgOnyzGYEJGn5hJUNNkIbhITbAKwte3zJ9+1505H
-         aSKg==
-X-Gm-Message-State: AOAM532eOYtEKpOckvqlGx7tBoLiJW3oORBoU98E1vSFLUWabmYuCkat
-        XdYTEzVCQaP2TMfLzv9PuT+o1U6BPvB7TVkJRzsxSgccXsD5K0LCBGmA4cnVgB4WzzOaeWPOfpT
-        slZ2pfkIITpEHSAoVGaILCtQvn/S1
-X-Received: by 2002:a92:40dc:: with SMTP id d89mr20424568ill.170.1592087414650;
-        Sat, 13 Jun 2020 15:30:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3aCzYvSn3AD2YCTZMEa/8FnqJZqsaL4OFcyPyR3T5Pf1RakQxKA/DqGRCemkZQY1BudpzSw==
-X-Received: by 2002:a92:40dc:: with SMTP id d89mr20424556ill.170.1592087414428;
-        Sat, 13 Jun 2020 15:30:14 -0700 (PDT)
-Received: from qiushi.cs.umn.edu ([2607:ea00:101:3c74:4874:45:bcb4:df60])
-        by smtp.gmail.com with ESMTPSA id c85sm5596290ilg.41.2020.06.13.15.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 15:30:13 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: rcar-vin: Fix a reference count leak.
-Date:   Sat, 13 Jun 2020 17:30:08 -0500
-Message-Id: <20200613223008.11720-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        id S1726796AbgFMWgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 18:36:17 -0400
+Received: from smtp.uniroma2.it ([160.80.6.16]:41795 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgFMWgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Jun 2020 18:36:16 -0400
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 05DMZxuG019259;
+        Sun, 14 Jun 2020 00:36:04 +0200
+Received: from lubuntu-18.04 (unknown [160.80.103.126])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 7B69212093E;
+        Sun, 14 Jun 2020 00:35:54 +0200 (CEST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1592087755; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MsxSNSWu5WD8jMh67/fRBqZEczfqOOR6ef+YVsRr9WY=;
+        b=VPAcboqRmMNleJACcpdM1QYqhnF4kvR/lSDmChodPo4fFw3MR0kWNgM7z1Bu/rOPJG8y7c
+        dUwiVb7ALY7aE+DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1592087755; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MsxSNSWu5WD8jMh67/fRBqZEczfqOOR6ef+YVsRr9WY=;
+        b=ean5dyqRTvryl0C/DnYRYjcPoqJodQHoy2hlrjz7bwF/ymZa3W9SVBQPG5LRTOQMNuInPe
+        lzD6eqH+JSh9rObufD3lr0mEwivDUupUzkKEkRBWkE+kuOB0uY6xSVM7ntgXAs6Ng4yQmi
+        QltbM95WeAnT2AHhK/yi3w1TtPSXY2I7HpkL1IVnWIjgBV12I9CUbfKDuJKf/RpqWLRa8o
+        7xl7MOxwyMxOFzUNKibFffD16Fa435/RgVT8x3aESR/k6EApD1k/2F19Z8Yf9EsylleYwB
+        bQXElNccPltGiCPtLVhOu91asE8hRSgPBi402xKqtIJhGc+t/vFjB+84Bp5B6w==
+Date:   Sun, 14 Jun 2020 00:35:54 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Donald Sharp <sharpd@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Dinesh Dutt <didutt@gmail.com>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels@gmail.com>
+Subject: Re: [RFC,net-next, 1/5] l3mdev: add infrastructure for table to VRF
+ mapping
+Message-Id: <20200614003554.4bfed8a61a5741bfd2660d30@uniroma2.it>
+In-Reply-To: <20200612105148.1b977dc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200612164937.5468-1-andrea.mayer@uniroma2.it>
+        <20200612164937.5468-2-andrea.mayer@uniroma2.it>
+        <20200612105148.1b977dc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+On Fri, 12 Jun 2020 10:51:48 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus call pm_runtime_put_noidle()
-if pm_runtime_get_sync() fails.
+> net/l3mdev/l3mdev.c:12:1: warning: symbol 'l3mdev_lock' was not declared. Should it be static?
+> 
+> Please make sure it doesn't add errors with W=1 C=1 :)
 
-Fixes: 90dedce9bc54 ("media: rcar-vin: add function to manipulate Gen3 chsel value")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
----
- drivers/media/platform/rcar-vin/rcar-dma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Jakub,
+thanks for your feedback.
 
-diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-index 1a30cd036371..95bc9e0e8792 100644
---- a/drivers/media/platform/rcar-vin/rcar-dma.c
-+++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-@@ -1392,8 +1392,10 @@ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(vin->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(vin->dev);
- 		return ret;
-+	}
- 
- 	/* Make register writes take effect immediately. */
- 	vnmc = rvin_read(vin, VNMC_REG);
--- 
-2.17.1
+sorry, I did not want to add more warnings! I will declare the l3mdev_lock
+static! I will be more careful while checking with W=1 and C=1 next time.
 
+Thanks,
+Andrea
