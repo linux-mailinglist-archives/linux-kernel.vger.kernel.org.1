@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50991F84DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 21:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1509B1F84E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 21:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgFMTTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 15:19:32 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:46790 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgFMTTc (ORCPT
+        id S1726600AbgFMTWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 15:22:10 -0400
+Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:35372 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726304AbgFMTWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 15:19:32 -0400
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id b5415c95c99b9eab; Sat, 13 Jun 2020 21:19:29 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: Re: [RFT][PATCH 0/3] ACPI: ACPICA / OSL: Avoid unmapping ACPI memory inside of the AML interpreter
-Date:   Sat, 13 Jun 2020 21:19:28 +0200
-Message-ID: <6131168.ASH3qCSnW2@kreacher>
-In-Reply-To: <318372766.6LKUBsbRXE@kreacher>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <318372766.6LKUBsbRXE@kreacher>
+        Sat, 13 Jun 2020 15:22:09 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 96E1E1F08;
+        Sat, 13 Jun 2020 19:22:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3351:3622:3866:3867:3868:3870:3871:3872:4184:4321:5007:10004:10400:10848:11658:11914:12048:12296:12297:12740:12760:12895:13069:13142:13230:13255:13311:13357:13439:14180:14659:14721:21060:21080:21212:21627:21740:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: rain66_2f09add26de7
+X-Filterd-Recvd-Size: 1517
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 13 Jun 2020 19:22:07 +0000 (UTC)
+Message-ID: <fa8b72be8316e6ed50371e24be1a7ad9c6be5127.camel@perches.com>
+Subject: Re: [PATCH v2 20/24] dyndbg: WIP towards debug-print-class based
+ callsite controls
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        linux-kernel@vger.kernel.org, akpm@linuxfoundation.org,
+        gregkh@linuxfoundation.org
+Cc:     linux@rasmusvillemoes.dk
+Date:   Sat, 13 Jun 2020 12:22:06 -0700
+In-Reply-To: <20200613155738.2249399-21-jim.cromie@gmail.com>
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+         <20200613155738.2249399-21-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, June 10, 2020 2:17:04 PM CEST Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> This series is to address the problem with RCU synchronization occurring,
-> possibly relatively often, inside of acpi_ex_system_memory_space_handler(),
-> when the namespace and interpreter mutexes are held.
-> 
-> The basic idea is to avoid the actual unmapping of memory in
-> acpi_ex_system_memory_space_handler() by making it take the advantage of the
-> reference counting of memory mappings utilized by the OSL layer in Linux.
-> 
-> The basic assumption in patch [1/3] is that if the special
-> ACPI_OS_MAP_MEMORY_FAST_PATH() macro is present, it can be used to increment
-> the reference counter of a known-existing memory mapping in the OS layer
-> which then is dropped by the subsequent acpi_os_unmap_memory() without
-> unmapping the address range at hand.  That can be utilized by
-> acpi_ex_system_memory_space_handler() to prevent the reference counters of
-> all mappings used by it from dropping down to 0 (which also prevents the
-> address ranges associated with them from being unmapped) so that they can
-> be unmapped later (specifically, at the operation region deactivation time).
-> 
-> Patch [2/3] defers the unmapping even further, until the namespace and
-> interpreter mutexes are released, to avoid invoking the RCU synchronization
-> under theses mutexes.
-> 
-> Finally, patch [3/3] changes the OS layer in Linux to provide the
-> ACPI_OS_MAP_MEMORY_FAST_PATH() macro.
-> 
-> Note that if this macro is not defined, the code works the way it used to.
-> 
-> The series is available from the git branch at
-> 
->  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
->  acpica-osl
-> 
-> for easier testing.
+On Sat, 2020-06-13 at 09:57 -0600, Jim Cromie wrote:
+> 3- pr_class:5 gives 32 print-classes
+>    we can map [1-9a-w] to select any pr_class with 1 char
+>    then "12", "af" work as noted.
+>    it is succinct, but arcane.
 
-Please disregard this patch series, it will be replaced by a new one which
-already is there in the acpica-osl branch above.
+arcane generally isn't useful.
 
-Thanks!
+>    but it does allow mnemonic choices of pr_class
+>    - l,m,h	low, mid, hi
+>    - l,r	left right
 
+I believe there to be no value in mnemonic input
+to debug_<class>
 
+I think 0x<hex_mask>, 0b<binary_bits>, 0<octal_bits>
+and <decimal> level is more than enough.
+
+And likely just 0x<hex> and <decimal> is enough.
 
