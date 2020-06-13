@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879641F840E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CC71F842C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgFMP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 11:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        id S1726794AbgFMP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 11:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgFMP6B (ORCPT
+        with ESMTP id S1726496AbgFMP6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 13 Jun 2020 11:58:01 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8718C08C5C1;
-        Sat, 13 Jun 2020 08:57:59 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id d67so11702120oig.6;
-        Sat, 13 Jun 2020 08:57:59 -0700 (PDT)
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC7DC03E96F
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:01 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id f2so2542567ooo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z3fkRWuLq6+3r3FRM5BKr4ZrcbUi86ZtMrjt9QL9MxE=;
-        b=f6JHOiis/ShOrmQ2Kgk7Im+vIkR7a6/pbjbIOKI0NRFK/FiSwa5vRnU5t+AfoUdwy1
-         H7QBxMNAwrdLP9FD/B1X51cgjbsWk20zhVURc37htRApbG/OpJkVP2EkM1gQR/iOSm1Z
-         YxXLUt7jwBFa0JZlG2J2IKRMH94r7wsEJJ8ShVC13ORty/nCuuOqmsxrQGoQyqstBOFX
-         xfdS/A2vakOcinpFgR4hwY3rZDxgkOcj4B13ju8uK5gYbOz8bwpFkfnMOdI2ux3htzc4
-         87GqYclQJVnf4R9wXi3MvbZHeEjNsU6DRrb9bSbJ0xBAYlz+Um378fqhk6W126xAWIiG
-         rMBQ==
+        bh=7LuUknDN6PlR7Taqo1rpiAxQDtU4FT1BBR3mE8leDF4=;
+        b=Zj6xzOA0oqxM88nnPyXjuB/7wtCHsIRcPDp1Nv1LqBinVeYmNo8n42XVMnHMIs/kZM
+         JxEBW1c+jwAf1j0A4k6jKEn3CF/1u1dIXBJNiB18RpnNTI5Sr66qDxqjfOnCMV+OHgKv
+         Rjfp1OsfWcpe6YE3fG4tq7WM295NtvjVcEl2GrAclLR7dT2URxxrH15Hc2imw5v+ial7
+         4bRM0fCw6LRNbbbNrUfXgLEDJ+IzOQ6icz3hSwH9ok+TmPHLexuouf3Hc/MU8RC1+n62
+         osIRDkQ2T9pr77lyWwRyIG17NS5o1w0Se1cuk0xaWavv5NLlRC6GAKN0lFtVDyLlfMmK
+         iMqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z3fkRWuLq6+3r3FRM5BKr4ZrcbUi86ZtMrjt9QL9MxE=;
-        b=PFIF4l+N4W8XjrBEltTa3dtxFPWBkRsZsU2N6NcXSnbWllq95Sq4E1iH9fHqT0IQuw
-         w9w3DoxN0q+25B/CIMd87s3jrnYHxvmDQWDiyM717ZdZIqQJNMO6NTsJAXwWTVA6t1sV
-         8ZkLKkaI9TEzKvKMZqFXW401ioSRhefryuCOzFxHJcKVQQ7H/d9Vt+NE1N27pbLeIOlI
-         9XJFvzbaF9oQYcGMi+lGIKqT9b9wnL+XItXSKemAdhHpC7j+BYV2v7wWl8Pmi7o9x0hR
-         EmWIJEIgKkCb2uBz4MmovCc+OfesMgpdIAz74OVpUVDY3MhrJ7sWRGhnS1Xs/xxze/wt
-         22mQ==
-X-Gm-Message-State: AOAM531cz05ZkOnGI6PUrVFbWT5dgua0EpfhRacq357TDI+mvfypq22Y
-        9zcgEQiFtDKQM2qJ9gyBujTVefnwKEQ=
-X-Google-Smtp-Source: ABdhPJzY53wnKlmp4zsI8uk/OAJYuSsQ+Qo7XUn74cWjjXL3GXsy+2JCwhI0OPz38k13v+MPZIinAQ==
-X-Received: by 2002:aca:5496:: with SMTP id i144mr3002917oib.111.1592063879263;
-        Sat, 13 Jun 2020 08:57:59 -0700 (PDT)
+        bh=7LuUknDN6PlR7Taqo1rpiAxQDtU4FT1BBR3mE8leDF4=;
+        b=jYEDCa4dKjGRC2zto3jxtnf45QuL+/xxbGBsdCflg/Ruo9u/0TkHPf7oeteRYBJ9z7
+         U/0as5zc3LIYcCnDW9xOBRsb4r8DaE7YjU4xUbvncvvW+NDHPLFBPYA/vd+Kqx1XMXs8
+         eqB/ZHWuf3hrZtchSnRZ0UTNKkaLUE4gjaHtd51Mf/LT30X0XfQ9D4sM5rWSi2wGywOS
+         /ZPMNH6rKhbEjnS2PzROly1snoSXGOW4C258UHVVkpZvoSeHHTSABA6bDWnVJogf51rr
+         tJiVt0JdacZcSPfcuZgFZpPow5Zf6O9rHS+Ji103/Lrxcg9o0OxSluru76hAV1YPrz7j
+         EwVQ==
+X-Gm-Message-State: AOAM532NCOKJGAOaywtoJW0mkG9tXzJh0c+XYKlM3d5LrOcgijc4qpvH
+        sZPLGxtLi7pJOd2HNqSVe5Q=
+X-Google-Smtp-Source: ABdhPJx/AUXTkwW5plyM4ziMDBGHCr1i3spROwHN7jUvMZMPT4frEksBPLVnlRIq5KsaaJTM0JqS8g==
+X-Received: by 2002:a4a:e496:: with SMTP id s22mr14976624oov.67.1592063880742;
+        Sat, 13 Jun 2020 08:58:00 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.57.58
+        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.57.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 08:57:58 -0700 (PDT)
+        Sat, 13 Jun 2020 08:58:00 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Petr Mladek <pmladek@suse.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v2 02/24] dyndbg-docs: initialization is done early, not arch
-Date:   Sat, 13 Jun 2020 09:57:16 -0600
-Message-Id: <20200613155738.2249399-3-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v2 03/24] dyndbg: drop obsolete comment on ddebug_proc_open
+Date:   Sat, 13 Jun 2020 09:57:17 -0600
+Message-Id: <20200613155738.2249399-4-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200613155738.2249399-1-jim.cromie@gmail.com>
 References: <20200613155738.2249399-1-jim.cromie@gmail.com>
@@ -69,27 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-since cf964976484 in 2012, initialization is done with early_initcall,
-update the Docs, which still say arch_initcall.
----
- Documentation/admin-guide/dynamic-debug-howto.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+commit 4bad78c55002 ("lib/dynamic_debug.c: use seq_open_private() instead of seq_open()")'
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 57108f64afc8..1423af580bed 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -250,8 +250,8 @@ the syntax described above, but must not exceed 1023 characters.  Your
- bootloader may impose lower limits.
+The commit was one of a tree-wide set which replaced open-coded
+boilerplate with a single tail-call.  It therefore obsoleted the
+comment about that boilerplate, clean that up now.
+---
+ lib/dynamic_debug.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 321437bbf87d..2989a590ce9a 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -853,13 +853,6 @@ static const struct seq_operations ddebug_proc_seqops = {
+ 	.stop = ddebug_proc_stop
+ };
  
- These ``dyndbg`` params are processed just after the ddebug tables are
--processed, as part of the arch_initcall.  Thus you can enable debug
--messages in all code run after this arch_initcall via this boot
-+processed, as part of the early_initcall.  Thus you can enable debug
-+messages in all code run after this early_initcall via this boot
- parameter.
- 
- On an x86 system for example ACPI enablement is a subsys_initcall and::
+-/*
+- * File_ops->open method for <debugfs>/dynamic_debug/control.  Does
+- * the seq_file setup dance, and also creates an iterator to walk the
+- * _ddebugs.  Note that we create a seq_file always, even for O_WRONLY
+- * files where it's not needed, as doing so simplifies the ->release
+- * method.
+- */
+ static int ddebug_proc_open(struct inode *inode, struct file *file)
+ {
+ 	vpr_info("called\n");
 -- 
 2.26.2
 
