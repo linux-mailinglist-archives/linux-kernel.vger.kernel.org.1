@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AC81F84E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 21:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D9A1F84E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 21:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgFMTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 15:24:34 -0400
-Received: from mta-p6.oit.umn.edu ([134.84.196.206]:57230 "EHLO
-        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgFMTYc (ORCPT
+        id S1726631AbgFMT0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 15:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgFMTZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 15:24:32 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49knbN16F4z9vJyy
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 19:24:32 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p6.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OM6-y1YVAYAq for <linux-kernel@vger.kernel.org>;
-        Sat, 13 Jun 2020 14:24:32 -0500 (CDT)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49knbM6Wmfz9vJyx
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 14:24:31 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49knbM6Wmfz9vJyx
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49knbM6Wmfz9vJyx
-Received: by mail-io1-f70.google.com with SMTP id d197so8540250iog.3
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 12:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=/QxHRbaXGeIVngJ41hbUByfwFxoFxOD2CW9N/HO02Lc=;
-        b=khPav+o8NHhf8XdxYX1IEKp44SQIDD1wBCQ/9IJ1h1N9Xxi5JbAjsvXIS8yL2KP8EY
-         i2FAt9HhbL6ShjvyetOaTehRdxVd31NnyrWbehv+wse/3JDSUnkhYFOKbyEsiyWBH6Ib
-         1JV7wgXFMvOWLxVez/VpkvgoBHjqvJ5l5ZfJOAd4QnilO4pj5CUn2j3NNrCBs0bTX3e/
-         p+ND8xxoRV1IU+BaJRevK3zl3KTfUjSNEX/AtUuunF4fXuePnVyr9J384MyRLARJHhRC
-         mK1qRzdSFisYX8aBFqJsynudL+srr5rIblEAcUlQsjWQm+qDyUNeIP1O+jO1UJbAFNV0
-         Dw5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/QxHRbaXGeIVngJ41hbUByfwFxoFxOD2CW9N/HO02Lc=;
-        b=B4cazxfS5mtNpmwUzjSju8htJdRE2lVZp9LVfJFmJOMI7vfCix6pjDUOEsR85E9PLR
-         poWLAyHCP0ga9OKie5Q0oyuasvz6AjssVslmI7ku5YA89sqwOBS/CzufXRcefKL+SXkE
-         iEckRU/PI8ZUA4MBOBId6RYBIF8C7SvB82Vb5DrmTQW/rqg8dTeuc6LtBS67W2kK4kkf
-         uUNGaeyXqeJyd0du5p5rbQjJMrvya5vM7CQGGsodOfhY7VBi6aUT/Hon4zFWvRAeqSYZ
-         4BK+L4nCjIqp9vdZ86DhULBQRtXX9Sy1XzIre6Hv57HjcFPERAcL5GZcKuiYAbeb8CDu
-         MRag==
-X-Gm-Message-State: AOAM532cw5RyDeINbdI607AJiWKaU1rpY+diZFUcON51j+O1rX8zbSx1
-        J1rAmt7Yx6VMqLJUZba4g6AMWPB9bn9JpkEwpbpssmlUNKnw7OPIPbjaaWxbYJcH8zcZO8mUCEc
-        4Sl61YSoi3qcz7v/wkM2yxYR5f2qt
-X-Received: by 2002:a02:770b:: with SMTP id g11mr14417081jac.69.1592076271488;
-        Sat, 13 Jun 2020 12:24:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwg/ppuR6OiRtAZoudDotM4ChWEshjcTUZS3FzJmclW3HxnZ1bLh1GiluZbmBpql7vTiOlECg==
-X-Received: by 2002:a02:770b:: with SMTP id g11mr14417059jac.69.1592076271255;
-        Sat, 13 Jun 2020 12:24:31 -0700 (PDT)
-Received: from qiushi.cs.umn.edu ([2607:ea00:101:3c74:4874:45:bcb4:df60])
-        by smtp.gmail.com with ESMTPSA id y2sm5074584ilg.69.2020.06.13.12.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 12:24:30 -0700 (PDT)
-From:   wu000273@umn.edu
-To:     kjlu@umn.edu
-Cc:     wu000273@umn.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: dmi: Fix reference count leaks.
-Date:   Sat, 13 Jun 2020 14:24:23 -0500
-Message-Id: <20200613192424.19884-1-wu000273@umn.edu>
-X-Mailer: git-send-email 2.17.1
+        Sat, 13 Jun 2020 15:25:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F3BC03E96F;
+        Sat, 13 Jun 2020 12:25:58 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id A2F4D2A10FC
+Subject: Re: [RFC 0/4] futex2: Add new futex interface
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fweimer@redhat.com>, malteskarupke@web.de,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, dvhart@infradead.org,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com
+References: <20200612185122.327860-1-andrealmeid@collabora.com>
+ <CAMe9rOqnBRzXv4xnhFvOgdVpDo0oRc1SYq38zcJWo9BPZseagg@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <c995708f-95e1-119b-c3ce-5fda27f24a4d@collabora.com>
+Date:   Sat, 13 Jun 2020 16:25:46 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAMe9rOqnBRzXv4xnhFvOgdVpDo0oRc1SYq38zcJWo9BPZseagg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+Hello H.J.,
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object.
-Callback function dmi_sysfs_entry_release() in kobject_put()
-can handle the pointer "entry" properly.
+On 6/12/20 4:35 PM, H.J. Lu wrote:
+> On Fri, Jun 12, 2020 at 11:53 AM André Almeida via Libc-alpha
+> <libc-alpha@sourceware.org> wrote:
+>> - Is expected to have a x32 ABI implementation as well? In the case of
+>>   wait and wake, we could use the same as x86_64 ABI. However, for the
+>>   waitv (aka wait on multiple futexes) we would need a proper x32 entry
+>>   since we are dealing with 32bit pointers.
+> 
+> x32 should be able to use the same i386 compat systcall entry.   Will it be
+> problem?
+> 
+Indeed, you are right. In the last iteration of this work, I had some
+problems dealing with x32 ABI, but this new interface doesn't have the
+same problem anymore. We can use the same sys_waitv_time64 interface for
+both i368 and x32.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
----
- drivers/firmware/dmi-sysfs.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+> 
+> H.J.
+> 
 
-diff --git a/drivers/firmware/dmi-sysfs.c b/drivers/firmware/dmi-sysfs.c
-index b6180023eba7..9889e5ed2064 100644
---- a/drivers/firmware/dmi-sysfs.c
-+++ b/drivers/firmware/dmi-sysfs.c
-@@ -457,8 +457,10 @@ static int dmi_system_event_log(struct dmi_sysfs_entry *entry)
- 				   &dmi_system_event_log_ktype,
- 				   &entry->kobj,
- 				   "system_event_log");
--	if (ret)
--		goto out_free;
-+	if (ret) {
-+		kobject_put(entry->child);
-+		return ret;
-+	}
- 
- 	ret = sysfs_create_bin_file(entry->child, &dmi_sel_raw_attr);
- 	if (ret)
-@@ -468,7 +470,6 @@ static int dmi_system_event_log(struct dmi_sysfs_entry *entry)
- 
- out_del:
- 	kobject_del(entry->child);
--out_free:
- 	kfree(entry->child);
- 	return ret;
- }
-@@ -603,7 +604,7 @@ static void __init dmi_sysfs_register_handle(const struct dmi_header *dh,
- 				    "%d-%d", dh->type, entry->instance);
- 
- 	if (*ret) {
--		kfree(entry);
-+		kobject_put(&entry->kobj);
- 		return;
- 	}
- 
--- 
-2.17.1
-
+Thanks,
+André
