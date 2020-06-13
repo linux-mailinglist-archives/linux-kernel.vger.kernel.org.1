@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0391F841C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026011F8422
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Jun 2020 17:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgFMP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 11:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
+        id S1726736AbgFMP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 11:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726583AbgFMP6a (ORCPT
+        with ESMTP id S1726645AbgFMP6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 11:58:30 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F869C03E96F;
-        Sat, 13 Jun 2020 08:58:30 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id b18so9740019oti.1;
-        Sat, 13 Jun 2020 08:58:30 -0700 (PDT)
+        Sat, 13 Jun 2020 11:58:33 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92EEC03E96F
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:32 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 69so9773423otv.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 08:58:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fxzelwdDz29Q+H/iQtV1kYP71GBSr15ktvkIuRajfug=;
-        b=W0woNcU1YHp+9kUoS8+uxvC82NYj26uFyyVl0/0Pm5H5ClLy+nXaOQ7dYBjqex2T6k
-         3586wIOzpkkyR+S5fzBmy4XsnfXJ6JjAx/sZheFZyp3No25Ri1NOE/Oz8SkTh6vFs/Wo
-         D4oweemBCkx1yDoMsXLcnQR4FCrNrsHqoV/yS8uDEcjztqIUvGaqzjiFofSx5cQuBPuP
-         65X9orl8Vb9vMLY7h85tDC7mhAXl8MlFlS5H+Fb5T/FywmLIAEqWs3KFqUZ0IcSmUCSg
-         Gs1NTCiY0tJuA8EFHusaWEQLj1nIj3B3bMwZPD2+iIVoZcxNCRPuZj0dZWzl1JZVcMmH
-         wcvg==
+        bh=j7rFce4RUuKR6hKelORJV5qMjdT0yjRFDtL43viE0JM=;
+        b=gqWyAZFfsrSMItTG3/932jSIwKALSa4vRA/xEQ+ZEhBcCY2hy1MYKZRZopnZ+Dbh+O
+         tFpcSeUsaS68wXQudYp+zd1QtrH3uiBCjzfSair6LM7VzadyHZqX4yaeAXPfG+uz3SWA
+         p6lxkx7UAWvM31Z6JAR/1nXzg7PAsIrpNW8jBvNhyb6t2Wayun3sx74JDhFXZsbppZqb
+         zBydI7yxQlb++upwfwSePgGeHPZf93hJkJVSJusxIsqC6pBciWrxEVAK2HwKvawdOF3a
+         aytXJ599BptETLwyFXRRz3d8mlhypFPKG5d2886gAPpIyeB51gSbvaNn39khfNv+t6GZ
+         WntQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fxzelwdDz29Q+H/iQtV1kYP71GBSr15ktvkIuRajfug=;
-        b=CGt4o5mv7YUpw8jP8w5pwTur+emZo6emuD/u2SDag7UtSZxnlc2EqSCM/z8EkQe095
-         EFEJTeyGwYm6ip0aZNP1T7KR64W7Z7EDOgXpNMfYZNV/WVH2ObPTY8h78AVoEzw2vQYO
-         bicuUVYeQfVTlSs48KtDZER6+iUSIBBWzIHuliTHUS/r7a1HRrhob5CFnTBCMxyb/6Q/
-         lVyLJCyUp2TsHS97tzcuJzuOQ3gleh0f8chYz+4NpRj76GGy+JkVstbZsNEua7Tc889v
-         u2tNbfl7cklLZ6BXchC12zsj8M8yjx20a8UQzopIc6AbaZa1XAX4raGQ0kaa2BoxsrBx
-         CsoQ==
-X-Gm-Message-State: AOAM533paWgyfhXaAR9tczlx+26u53vK3KsQJlBtdwxgy8QCNHat4exZ
-        4GRV536795rPf3CG5kjJQDk=
-X-Google-Smtp-Source: ABdhPJz8h6j47ENzqjl2vvxRLum9ifrzoIiSrinI0tYVACeQohe1A2pWXZgvjWnECv9vf8F6D+ZSCQ==
-X-Received: by 2002:a9d:6e96:: with SMTP id a22mr15165265otr.58.1592063909921;
-        Sat, 13 Jun 2020 08:58:29 -0700 (PDT)
+        bh=j7rFce4RUuKR6hKelORJV5qMjdT0yjRFDtL43viE0JM=;
+        b=bWWnNe9tzLidYz1S2NkSSnH3iq5OzubGzCBM279aVZmBfQCROAQVeL+i01Chx/y8NP
+         FzKcZuaid1c5QWatny1rBGPIYkGN0663Im48QyX6ZYI5mOjwp/EulOhfujR28Ox0GSS1
+         D3EF2885OKL0Bfc+CfyWJXhDmKki93kMgD1dBcbWCDfNb3ikUWQOYsw6+N9YWof7ZRkH
+         kNzFbb3SEGe6Q4FMSwFCOYcYTKqHvW5gXDtHBDiBK2fydp7g2Qjzpfs41YABvZMedInY
+         JNT4G3ZwnFPcPX8zp3lMugBWgGch1C1WaiXcAl8DUP7gqzdgJwQ1WVwXFM/siYc9XfU/
+         94cg==
+X-Gm-Message-State: AOAM532KA3COOOQPwwNrjkE+qlhwAArqg7DtYWj6r3y5qXma11BQ2ex+
+        XpX43+hgfAQenLkL6M85i4M=
+X-Google-Smtp-Source: ABdhPJzBU+w1K2gW9Aik2/nXwtbeKvYkkGfY0D2VXUWnRkJg5xy7SAWXEdzcMaY7yiguT21HDgM51w==
+X-Received: by 2002:a05:6830:1383:: with SMTP id d3mr14042153otq.353.1592063912090;
+        Sat, 13 Jun 2020 08:58:32 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::aaac])
-        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.27
+        by smtp.googlemail.com with ESMTPSA id 53sm2105565otv.22.2020.06.13.08.58.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 08:58:29 -0700 (PDT)
+        Sat, 13 Jun 2020 08:58:31 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v2 18/24] dyndbg: allow negating flag-chars in modflags
-Date:   Sat, 13 Jun 2020 09:57:32 -0600
-Message-Id: <20200613155738.2249399-19-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v2 19/24] dyndbg: accept query terms like module:foo and file=bar
+Date:   Sat, 13 Jun 2020 09:57:33 -0600
+Message-Id: <20200613155738.2249399-20-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200613155738.2249399-1-jim.cromie@gmail.com>
 References: <20200613155738.2249399-1-jim.cromie@gmail.com>
@@ -70,83 +65,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend flags modifications to allow [PFMLTU] negating flags.
-This allows control-queries like:
+Current code expects "keyword" "arg" as 2 space separated words.
+Change to also accept "keyword:arg" and "keyword=arg" forms as well,
+and drop !(nwords%2) requirement.
 
-  #> Q () { echo file inode.c $* > control } # to type less
-  #> Q -P	# same as +p
-  #> Q +U	# same as -u
-  #> Q u-P	# same as u+p
-
-This allows flags in a callsite to be simultaneously set and cleared,
-while still starting with the current flagstate (with +- ops).
-
-Using filter-flags with negating-flags, you can select exactly the
-flagstates you want, both required and prohibited.
-
-Then with negating-flags in modflags, you can set and clear every flag
-
-  #> Q umfLT-Pmf  # select sites with u,m,f only. enable print, turn off m,f leave u
-
-Its not an important feature, but it does fill out the logic.
-and the patch is tiny, and feels more symmetrical.
+Then in rest of function, use new keyword,arg variables instead of
+word[i],word[i+1]
 ---
- Documentation/admin-guide/dynamic-debug-howto.rst | 10 ++++++----
- lib/dynamic_debug.c                               |  6 ++++--
- 2 files changed, 10 insertions(+), 6 deletions(-)
+ lib/dynamic_debug.c | 49 +++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 45d3adf889ba..10e514237e83 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -257,9 +257,11 @@ only callsites with ``u`` and ``f`` cleared.
- 
- Flagsets cannot contain ``pP`` etc, a flag cannot be true and false.
- 
--modflags containing upper-case flags is reserved/undefined for now.
--inverted-flags are currently ignored, usage gets trickier if given
--``-pXy``, it should leave x set.
-+modflags may contain upper-case flags also, using these lets you
-+invert the flag setting implied by the OP; '-pU' means disable
-+printing, and mark that callsite with the user-flag to create a group,
-+for optional further manipulation.  Generally, '+p' and '-p' is your
-+main choice, and use of negating flags in modflags is rare.
- 
- Notes::
- 
-@@ -269,7 +271,7 @@ For ``print_hex_dump_debug()`` and ``print_hex_dump_bytes()``, only
- For display, the flags are preceded by ``=``
- (mnemonic: what the flags are currently equal to).
- 
--Note the regexp ``^[-+=][flmptu_]+$`` matches a flags specification.
-+Note the regexp ``/^[-+=][flmptu_]+$/i`` matches a flags specification.
- To clear all flags at once, use ``=_`` or ``-flmptu``.
- 
- 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index b02cde1cfc2f..d67fbbc5317f 100644
+index d67fbbc5317f..cb5c7480e026 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -486,15 +486,17 @@ static int ddebug_parse_flags(const char *str,
+@@ -375,22 +375,33 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 	unsigned int i;
+ 	int rc = 0;
+ 	char *fline;
+-
+-	/* check we have an even number of words */
+-	if (nwords % 2 != 0) {
+-		pr_err("expecting pairs of match-spec <value>\n");
+-		return -EINVAL;
+-	}
++	char *keyword, *arg;
  
- 	/* calculate final mods: flags, mask based upon op */
- 	switch (op) {
-+		unsigned int tmp;
- 	case '=':
- 		mods->mask = 0;
- 		break;
- 	case '+':
--		mods->mask = ~0U;
-+		mods->mask = ~mods->mask;
- 		break;
- 	case '-':
-+		tmp = mods->mask;
- 		mods->mask = ~mods->flags;
--		mods->flags = 0;
-+		mods->flags = tmp;
- 		break;
- 	}
+ 	if (modname)
+ 		/* support $modname.dyndbg=<multiple queries> */
+ 		query->module = modname;
  
+-	for (i = 0; i < nwords; i += 2) {
+-		if (!strcmp(words[i], "func")) {
+-			rc = check_set(&query->function, words[i+1], "func");
+-		} else if (!strcmp(words[i], "file")) {
+-			if (check_set(&query->filename, words[i+1], "file"))
++	for (i = 0; i < nwords; i++) {
++		/* accept keyword[:=]arg */
++		vpr_info("%d w:%s\n", i, words[i]);
++
++		keyword = words[i];
++		if ((arg = strpbrk(keyword, ":="))) {
++			*arg++ = '\0';
++		} else {
++			i++; /* next word is arg */
++			if (!(i < nwords)) {
++				pr_err("missing arg to keyword:%s\n", keyword);
++				return -EINVAL;
++			}
++			arg = words[i];
++		}
++		vpr_info("%d key:%s arg:%s\n", i, keyword, arg);
++
++		if (!strcmp(keyword, "func")) {
++			rc = check_set(&query->function, arg, "func");
++		} else if (!strcmp(keyword, "file")) {
++			if (check_set(&query->filename, arg, "file"))
+ 				return -EINVAL;
+ 
+ 			/* tail :$info is function or line-range */
+@@ -406,18 +417,18 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 				if (parse_linerange(query, fline))
+ 					return -EINVAL;
+ 			}
+-		} else if (!strcmp(words[i], "module")) {
+-			rc = check_set(&query->module, words[i+1], "module");
+-		} else if (!strcmp(words[i], "format")) {
+-			string_unescape_inplace(words[i+1], UNESCAPE_SPACE |
++		} else if (!strcmp(keyword, "module")) {
++			rc = check_set(&query->module, arg, "module");
++		} else if (!strcmp(keyword, "format")) {
++			string_unescape_inplace(arg, UNESCAPE_SPACE |
+ 							    UNESCAPE_OCTAL |
+ 							    UNESCAPE_SPECIAL);
+-			rc = check_set(&query->format, words[i+1], "format");
+-		} else if (!strcmp(words[i], "line")) {
+-			if (parse_linerange(query, words[i+1]))
++			rc = check_set(&query->format, arg, "format");
++		} else if (!strcmp(keyword, "line")) {
++			if (parse_linerange(query, arg))
+ 				return -EINVAL;
+ 		} else {
+-			pr_err("unknown keyword \"%s\"\n", words[i]);
++			pr_err("unknown keyword \"%s\"\n", keyword);
+ 			return -EINVAL;
+ 		}
+ 		if (rc)
 -- 
 2.26.2
 
