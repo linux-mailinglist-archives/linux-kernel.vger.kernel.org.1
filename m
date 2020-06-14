@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D86A1F8913
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DD71F8917
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgFNNwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 09:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727025AbgFNNwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 09:52:50 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45442206D7;
-        Sun, 14 Jun 2020 13:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592142770;
-        bh=ehbTMf8/rK3611e+NpluRQm97ZZRIaDtMlf8Jadcz6E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xPM/0R14PI7rdAA6awWuCpEgJQ4w/EF28RhcC4yAFvNE1+1Vmy/pQIuAo+jaaNOIx
-         j24uNPNXNTed4sq7Sifc8gxc37U7J52F1o3WhChjTxEca9fzcATXYDesa0sKRgyiXh
-         w7NwZ0ial1mJF0SHJvRY0bIT2vxltkNOCRmQGIXg=
-Date:   Sun, 14 Jun 2020 14:52:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        robh+dt@kernel.org, robh@kernel.org, mchehab+huawei@kernel.org,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        kbuild-all@lists.01.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/13] iio: imu: add Kconfig and Makefile for
- inv_icm42600 driver
-Message-ID: <20200614145245.3f459a72@archlinux>
-In-Reply-To: <202006090630.5zuVlCdS%lkp@intel.com>
-References: <20200608204250.3291-8-jmaneyrol@invensense.com>
-        <202006090630.5zuVlCdS%lkp@intel.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726868AbgFNN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 09:59:29 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43553 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgFNN72 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 09:59:28 -0400
+Received: by mail-oi1-f193.google.com with SMTP id j189so13424045oih.10;
+        Sun, 14 Jun 2020 06:59:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=233qwlac7lV7KoqxYlqhSajK4Yb8g+fjpSk+cJ2lV3c=;
+        b=bbesngi9tm9Nlv5RumNBfZ1BMetybLQYp/R5aJE8Cr0pDFcFmyVSdjqa+QajAmqxWg
+         MneElEC/3pvgr4RXVE+hXbBLxCvS+bipkS0J45+WeCuyXu2lZmkDxUdG1j5fzAYfRDOJ
+         vZ9K5r1CKVdup6g6UpxjJ2GDZv/P+8S6rSK0paGyDPpItBjFvis5GvqUBlsDeBcSsB4o
+         2K42bVvt4HyqXhwsUZjehu8JzpkgYPImOfdcYjjrh9JjxwOzPWmdIn90DucL6l42TIh8
+         LN4pVOO5kFSHpIrYQYsekLyXMZV3O6YULik5aHt6kuq1f/m4cDOMUVISqkN+GL9xy8aA
+         KzgQ==
+X-Gm-Message-State: AOAM532pPPngTG6q6EhHE5ZLj0Y7Q21we8KavuzIUZNECZmxahQNzNF/
+        gZLQwDV1UGhJU+iGBvCVy2Smlp6t5ll7jhRAuVdmvA==
+X-Google-Smtp-Source: ABdhPJyfwXKk52STygbubTR3u0kDWtRZp1jJJv1JlZQ0lV3IeF+8OLUXHMHQ/dyO/x5fIcXqcW3iePfjkqU3l23qxt4=
+X-Received: by 2002:aca:ad88:: with SMTP id w130mr6009881oie.103.1592143166177;
+ Sun, 14 Jun 2020 06:59:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200614090751.GA2878@kunai> <CAHp75Vc2RV1daOHMM1zAT2P_YpFzYq=_NVXnagq7qBCS9En04g@mail.gmail.com>
+ <CAHp75VdtJN4KbsWgP3G40P4giPGgPE6gdr0CDqOXQjp2wK+i+g@mail.gmail.com> <CAMuHMdUadYRNYdJ9JUX90Z1jvtHZmSS4gM+JKft4x-BK2Ry4zQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUadYRNYdJ9JUX90Z1jvtHZmSS4gM+JKft4x-BK2Ry4zQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Sun, 14 Jun 2020 15:59:15 +0200
+Message-ID: <CAJZ5v0i87NGcy9+kxubScdPDyByr8ypQWcGgBFn+V-wDd69BHQ@mail.gmail.com>
+Subject: Re: RFC: a failing pm_runtime_get increases the refcnt?
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 14, 2020 at 12:00 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Andy,
+>
+> On Sun, Jun 14, 2020 at 11:43 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sun, Jun 14, 2020 at 12:34 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Sun, Jun 14, 2020 at 12:10 PM Wolfram Sang <wsa@kernel.org> wrote:
+> > > > both in the I2C subsystem and also for Renesas drivers I maintain, I am
+> > > > starting to get boilerplate patches doing some pm_runtime_put_* variant
+> > > > because a failing pm_runtime_get is supposed to increase the ref
+> > > > counters? Really? This feels wrong and unintuitive to me.
+> > >
+> > > Yeah, that is a well known issue with PM (I even have for a long time
+> > > a coccinelle script, when I realized myself that there are a lot of
+> > > cases like this, but someone else discovered this recently, like
+> > > opening a can of worms).
+> > >
+> > > > I expect there
+> > > > has been a discussion around it but I couldn't find it.
+> > >
+> > > Rafael explained (again) recently this. I can't find it quickly, unfortunately.
+> >
+> > I _think_ this discussion, but may be it's simple another tentacle of
+> > the same octopus.
+> > https://patchwork.ozlabs.org/project/linux-tegra/patch/20200520095148.10995-1-dinghao.liu@zju.edu.cn/
+>
+> Thanks, hadn't read that one! (so I was still at -1 from
+> http://sweng.the-davies.net/Home/rustys-api-design-manifesto ;-)
+>
+> So "pm_runtime_put_noidle()" is the (definitive?) one to pair with a
+> pm_runtime_get_sync() failure?
 
-For anyone curious, this is an artefact of me failing to push the iio tree
-out last weekend which included a patch to make iio_device_get_drvdata
-take a const.
+If you bail out immediately on errors, then yes, it is.
 
-Sorry for the noise
+If you'd rather to something like
 
-Jonathan
+        ret = pm_runtime_get_sync(dev);
+        if (ret < 0)
+               goto fail;
 
-On Tue, 9 Jun 2020 07:03:53 +0800
-kernel test robot <lkp@intel.com> wrote:
+        ... code depending on PM ...
 
-> Hi Jean-Baptiste,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on iio/togreg]
-> [also build test WARNING on robh/for-next linus/master v5.7 next-20200608]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Jean-Baptiste-Maneyrol/iio-imu-new-inv_icm42600-driver/20200609-044917
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-> config: ia64-allmodconfig (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> drivers/iio/imu/inv_icm42600/inv_icm42600_core.c: In function 'inv_icm42600_get_mount_matrix':
-> >> drivers/iio/imu/inv_icm42600/inv_icm42600_core.c:91:63: warning: passing argument 1 of 'iio_device_get_drvdata' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]  
-> 91 |  const struct inv_icm42600_state *st = iio_device_get_drvdata(indio_dev);
-> |                                                               ^~~~~~~~~
-> In file included from drivers/iio/imu/inv_icm42600/inv_icm42600_core.c:15:
-> include/linux/iio/iio.h:672:60: note: expected 'struct iio_dev *' but argument is of type 'const struct iio_dev *'
-> 672 | static inline void *iio_device_get_drvdata(struct iio_dev *indio_dev)
-> |                                            ~~~~~~~~~~~~~~~~^~~~~~~~~
-> 
-> vim +91 drivers/iio/imu/inv_icm42600/inv_icm42600_core.c
-> 
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  86  
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  87  const struct iio_mount_matrix *
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  88  inv_icm42600_get_mount_matrix(const struct iio_dev *indio_dev,
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  89  			      const struct iio_chan_spec *chan)
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  90  {
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08 @91  	const struct inv_icm42600_state *st = iio_device_get_drvdata(indio_dev);
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  92  
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  93  	return &st->orientation;
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  94  }
-> 632e967c33fb32 Jean-Baptiste Maneyrol 2020-06-08  95  
-> 
-> :::::: The code at line 91 was first introduced by commit
-> :::::: 632e967c33fb32bb0a2a2f85a2a8d2e6d2b125f3 iio: imu: inv_icm42600: add core of new inv_icm42600 driver
-> 
-> :::::: TO: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-> :::::: CC: 0day robot <lkp@intel.com>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+fail:
+       pm_runtime_put_autosuspend(dev);
 
+then it will still work correctly.
+
+It actually doesn't matter which pm_runtime_put*() variant you call
+after a pm_runtime_get_sync() failure, but the _noidle() is the
+simplest one and it is sufficient.
+
+> > > > I wonder why we
+> > > > don't fix the code where the incremented refcount is expected for some
+> > > > reason.
+> > >
+> > > The main idea behind API that a lot of drivers do *not* check error
+> > > codes from runtime PM, so, we need to keep balance in case of
+> > >
+> > > pm_runtime_get(...);
+> > > ...
+> > > pm_runtime_put(...);
+>
+> I've always[*] considered a pm_runtime_get_sync() failure to be fatal
+> (or: cannot happen), and that there's nothing that can be done to
+> recover.  Hence I never checked the function's return value.
+> Was that wrong?
+
+No, it wasn't.  It is the right thing to do in the majority of cases.
+
+> [*] at least on Renesas SoCs with Clock and/or Power Domains.
+
+Cheers!
