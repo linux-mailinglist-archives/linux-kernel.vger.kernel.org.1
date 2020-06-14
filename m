@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6D81F8A4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08751F8A46
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgFNTEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 15:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        id S1727825AbgFNTEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 15:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727121AbgFNTEJ (ORCPT
+        with ESMTP id S1727769AbgFNTEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 15:04:09 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D4AC08C5C2;
-        Sun, 14 Jun 2020 12:04:08 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id o4so594707lfi.7;
-        Sun, 14 Jun 2020 12:04:08 -0700 (PDT)
+        Sun, 14 Jun 2020 15:04:10 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A89C08C5C5;
+        Sun, 14 Jun 2020 12:04:09 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id q19so16593340lji.2;
+        Sun, 14 Jun 2020 12:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ofH5y+DsAUKO47Nkj6CHgyEmv07V+x06WqiTKtmxkz8=;
-        b=tDyw/Z0NbyseYNFw0tmkDEmK0+rdlxT3B6Rx0ogIl0xtyfgXfz6h1CglbOficaxF7j
-         opyTD6xXyzEhidGf0dAsVGJxGEJLW+5tIFSWwFwYrEUtVp4RkJQwNVuVPpfTsfi/xGRg
-         lUvTrWWu5SISnnOknRogcrt75rMJBefk8sfOvpjnv1LtW5WIFo4NOx7jmgZESMgNxw0m
-         NRa2NWMragB95iD4zcf3Z2hYf4HA+Tph53CfFfyTJPB0ELrZ8dR4ekL6nrFaB6DJ0fd1
-         0HwkduwlYNPJdXHLlJHsa+VPG52wtU8H9fgC4wvWWAQQKdVLbiS8fWkw//BeawlVZBdF
-         OZUA==
+        bh=Ye8LBDqYIu3EMl0SpXZiBgFDVin4wanrCIFCoDUlTCY=;
+        b=lWA21eD5Zk5I44oSNWVi8lPf1+OiG9NoVYobu2YDCitzaIbXYxMWu6KCSGjP2CfwXR
+         Yyi98taZ/99CCIdTM04RG3JncNPOBcJThLWBsTq0ka+1tOFxHhAMERjhmS/ym4mCVRnD
+         mr/VlnBHemWMS/Y5rNS5LTd0gfrajlTAxoGA51gVt0h1pWbG3Ay6q8hbYhyMghmPrtBD
+         vAys9NzIkmhguLsQDydvcjIh5hakbQyNG5HWvpNNgUrvRPX6KRJ8IF3C8kl4TwtPAE27
+         FiQDOr7ZaOIcJ+Bz4n0pdU0SXYAiEHhlmXYEcur1VkD5AhG87InFCfqmOOX2X89wFf2/
+         kYhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ofH5y+DsAUKO47Nkj6CHgyEmv07V+x06WqiTKtmxkz8=;
-        b=Sfbj5AmgUsM8lhkPu/GXSR1yDM3OUu1iy7kCTnn4JIavHvXxHKpzmsZNk8xuz7Ux98
-         y62cvC0yOkB+1CE5YJ6DhOh+WosDUZ+znEe0UTd+VENpcUhY7CqWNac9yJkrMpCUzIuF
-         Owbpcm60OX7snfg9L0GFrPCi9mCcIqqwMVzfdekC53Zwee848OL4iJiPgViYiV0+t27V
-         uu7RrFuOaTNN/7vTLp8bbcA0clbuT4TQ5+CymWvFNJnRim+akuaGaG1yg+KnZzD5dy4j
-         xEAZGD2djGE7v1wVOgb5WBT1ObINxz+bE6vTn1sTQedFxIJCygJf6I5IM5z2HLFoncHI
-         qUYg==
-X-Gm-Message-State: AOAM5300aZrTLhRv7Bb8htUUhGTucdmbHRRFtvrqzQWEQ4aUS+HXCReX
-        1+XWcLQb9ppZlooIg4nvcpg=
-X-Google-Smtp-Source: ABdhPJwnG7yAfF3RYIYSWw/kDrX3Tt8hscqrxTuGTxm3j3w/fphxrbebeuo7y9inPvrpN1G6fHc9Ew==
-X-Received: by 2002:a19:7612:: with SMTP id c18mr11900032lff.7.1592161446900;
-        Sun, 14 Jun 2020 12:04:06 -0700 (PDT)
+        bh=Ye8LBDqYIu3EMl0SpXZiBgFDVin4wanrCIFCoDUlTCY=;
+        b=RlQnymM3iBElyXI/nCOxL1UrOPS3yfHjp+VL+Jsl561tTEEcMm43ZW9NP7o4BZjOHj
+         db9FhMLV2YF1/zWnH41qrjMPYhMRLy35p3GRaH83X2e0Ax764vflkoaS0HaR5B32pXxx
+         ukK1n4rKMm9QVm0b4E41rb9U2FMPOX25hf+REw0u/SAD+VuOOzhG2/K0hRA6X3aDNKIw
+         zdP8sjpU3zwsrIbKb75xJq76N4rP+hFpJbW22C1nQbIwUOzPO0sh5WZ7mSPbE9S5bvzt
+         cFmQzTgITQHSZ1mtkCove0vAu8uXKK67rOWGTpeveRzb1HkalUVJlgMDqRJtVdHdC3zO
+         wd/Q==
+X-Gm-Message-State: AOAM530ZbK7/xG6u8bMUx/PkgVfLUAjdGQPXO664Bz0HW69i/CXbhFVK
+        kFZN37P3lqM053LK0qK+dAw=
+X-Google-Smtp-Source: ABdhPJydq3O7wM9zT04En/+a1wqWXkBZL51pkj7tiQD3UNNMIhI879CJqKO/A2fgNVQHGp4WYUhJNw==
+X-Received: by 2002:a2e:8705:: with SMTP id m5mr10782304lji.269.1592161447898;
+        Sun, 14 Jun 2020 12:04:07 -0700 (PDT)
 Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id p15sm3410856ljn.53.2020.06.14.12.04.05
+        by smtp.gmail.com with ESMTPSA id p15sm3410856ljn.53.2020.06.14.12.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 12:04:06 -0700 (PDT)
+        Sun, 14 Jun 2020 12:04:07 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Sean Paul <sean@poorly.run>
 Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/6] drm/panel: lvds: Set up panel orientation
-Date:   Sun, 14 Jun 2020 22:03:45 +0300
-Message-Id: <20200614190348.12193-4-digetx@gmail.com>
+Subject: [PATCH v1 4/6] drm/tegra: plane: Rename bottom_up to reflect_y
+Date:   Sun, 14 Jun 2020 22:03:46 +0300
+Message-Id: <20200614190348.12193-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200614190348.12193-1-digetx@gmail.com>
 References: <20200614190348.12193-1-digetx@gmail.com>
@@ -70,39 +70,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel orientation needs to parsed from a device-tree and assigned to
-the panel's connector in order to make orientation property available to
-userspace. That's what this patch does for the generic LVDS panel.
+This makes the naming consistent with the DRM core.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/gpu/drm/panel/panel-lvds.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/tegra/dc.c    | 10 +++++-----
+ drivers/gpu/drm/tegra/dc.h    |  2 +-
+ drivers/gpu/drm/tegra/plane.c |  2 +-
+ drivers/gpu/drm/tegra/plane.h |  2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
-index 5ce3f4a2b7a1..9421246ac80f 100644
---- a/drivers/gpu/drm/panel/panel-lvds.c
-+++ b/drivers/gpu/drm/panel/panel-lvds.c
-@@ -99,6 +99,7 @@ static int panel_lvds_get_modes(struct drm_panel *panel,
- 	connector->display_info.bus_flags = lvds->data_mirror
- 					  ? DRM_BUS_FLAG_DATA_LSB_TO_MSB
- 					  : DRM_BUS_FLAG_DATA_MSB_TO_LSB;
-+	drm_connector_set_panel_orientation(connector, lvds->panel.orientation);
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index 83f31c6e891c..ed282f88e409 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -404,7 +404,7 @@ static void tegra_dc_setup_window(struct tegra_plane *plane,
+ 		tegra_plane_writel(plane, window->stride[0], DC_WIN_LINE_STRIDE);
+ 	}
  
- 	return 1;
- }
-@@ -223,6 +224,11 @@ static int panel_lvds_probe(struct platform_device *pdev)
- 	drm_panel_init(&lvds->panel, lvds->dev, &panel_lvds_funcs,
- 		       DRM_MODE_CONNECTOR_LVDS);
+-	if (window->bottom_up)
++	if (window->reflect_y)
+ 		v_offset += window->src.h - 1;
  
-+	ret = of_drm_get_panel_orientation(lvds->dev->of_node,
-+					   &lvds->panel.orientation);
-+	if (ret)
-+		return ret;
-+
- 	ret = drm_panel_of_backlight(&lvds->panel);
- 	if (ret)
- 		return ret;
+ 	tegra_plane_writel(plane, h_offset, DC_WINBUF_ADDR_H_OFFSET);
+@@ -470,7 +470,7 @@ static void tegra_dc_setup_window(struct tegra_plane *plane,
+ 		value |= COLOR_EXPAND;
+ 	}
+ 
+-	if (window->bottom_up)
++	if (window->reflect_y)
+ 		value |= V_DIRECTION;
+ 
+ 	if (tegra_plane_use_horizontal_filtering(plane, window)) {
+@@ -642,9 +642,9 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
+ 	rotation = drm_rotation_simplify(state->rotation, rotation);
+ 
+ 	if (rotation & DRM_MODE_REFLECT_Y)
+-		plane_state->bottom_up = true;
++		plane_state->reflect_y = true;
+ 	else
+-		plane_state->bottom_up = false;
++		plane_state->reflect_y = false;
+ 
+ 	/*
+ 	 * Tegra doesn't support different strides for U and V planes so we
+@@ -706,7 +706,7 @@ static void tegra_plane_atomic_update(struct drm_plane *plane,
+ 	window.dst.w = drm_rect_width(&plane->state->dst);
+ 	window.dst.h = drm_rect_height(&plane->state->dst);
+ 	window.bits_per_pixel = fb->format->cpp[0] * 8;
+-	window.bottom_up = tegra_fb_is_bottom_up(fb) || state->bottom_up;
++	window.reflect_y = tegra_fb_is_bottom_up(fb) || state->reflect_y;
+ 
+ 	/* copy from state */
+ 	window.zpos = plane->state->normalized_zpos;
+diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
+index 3d8ddccd758f..98e1b625168e 100644
+--- a/drivers/gpu/drm/tegra/dc.h
++++ b/drivers/gpu/drm/tegra/dc.h
+@@ -136,7 +136,7 @@ struct tegra_dc_window {
+ 	unsigned int stride[2];
+ 	unsigned long base[3];
+ 	unsigned int zpos;
+-	bool bottom_up;
++	bool reflect_y;
+ 
+ 	struct tegra_bo_tiling tiling;
+ 	u32 format;
+diff --git a/drivers/gpu/drm/tegra/plane.c b/drivers/gpu/drm/tegra/plane.c
+index 9ccfb56e9b01..e05ef6013a97 100644
+--- a/drivers/gpu/drm/tegra/plane.c
++++ b/drivers/gpu/drm/tegra/plane.c
+@@ -61,7 +61,7 @@ tegra_plane_atomic_duplicate_state(struct drm_plane *plane)
+ 	copy->tiling = state->tiling;
+ 	copy->format = state->format;
+ 	copy->swap = state->swap;
+-	copy->bottom_up = state->bottom_up;
++	copy->reflect_y = state->reflect_y;
+ 	copy->opaque = state->opaque;
+ 
+ 	for (i = 0; i < 2; i++)
+diff --git a/drivers/gpu/drm/tegra/plane.h b/drivers/gpu/drm/tegra/plane.h
+index a158a915109a..8047fc916d8c 100644
+--- a/drivers/gpu/drm/tegra/plane.h
++++ b/drivers/gpu/drm/tegra/plane.h
+@@ -46,7 +46,7 @@ struct tegra_plane_state {
+ 	u32 format;
+ 	u32 swap;
+ 
+-	bool bottom_up;
++	bool reflect_y;
+ 
+ 	/* used for legacy blending support only */
+ 	struct tegra_plane_legacy_blending_state blending[2];
 -- 
 2.26.0
 
