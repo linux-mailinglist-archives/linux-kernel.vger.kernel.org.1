@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8541F8904
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543A81F890E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgFNNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 09:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgFNNrX (ORCPT
+        id S1727837AbgFNNue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 09:50:34 -0400
+Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:37171 "EHLO
+        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgFNNud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 09:47:23 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6156CC05BD43
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 06:47:23 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 580AFF9;
-        Sun, 14 Jun 2020 15:47:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1592142437;
-        bh=78M8/Iqg3S3zq/AYzhpfmb4A0g++NPy6J82ruz/ctlk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AC10VTLShWRiPx1ZaBkblj33hHeMqBK2vUYAS/uOxQW9wkYL/5Dv7/ssN/BqJQu7c
-         6zK9jfCUqAHe3ByXr31lHTmFQPcf2SbvwrLn08Hc2fetelZJrZ8UsLIJ3W3/eozyqo
-         dEQ/mOKPq7ZIXAgBOZs33tKtudg/Pi0sWHhKSavo=
-Date:   Sun, 14 Jun 2020 16:46:55 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     kjlu@umn.edu, wu000273@umn.edu,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] drm/bridge: fix reference count leaks due to
- pm_runtime_get_sync()
-Message-ID: <20200614134655.GA5960@pendragon.ideasonboard.com>
-References: <20200614024005.125578-1-pakki001@umn.edu>
+        Sun, 14 Jun 2020 09:50:33 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.1.71])
+        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 3AF5262912E8;
+        Sun, 14 Jun 2020 15:50:28 +0200 (CEST)
+Received: from localhost (89.70.180.118) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Sun, 14 Jun
+ 2020 15:50:27 +0200
+Date:   Sun, 14 Jun 2020 15:48:12 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v5 0/4] Add support for SCD30 sensor
+Message-ID: <20200614134812.GA20800@arch>
+References: <20200607175812.95777-1-tomasz.duszynski@octakon.com>
+ <20200614141738.0645a954@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20200614024005.125578-1-pakki001@umn.edu>
+In-Reply-To: <20200614141738.0645a954@archlinux>
+X-Originating-IP: [89.70.180.118]
+X-ClientProxiedBy: DAG2EX2.emp2.local (172.16.2.12) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 3108609642860993618
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudeiiedgjedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnheptdehveethfffudetjeeftdekueehjeegjedvteffgfevkefffeegffeugeehgfejnecukfhppedtrddtrddtrddtpdekledrjedtrddukedtrdduudeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtohepphhmvggvrhifsehpmhgvvghrfidrnhgvth
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aditya,
+On Sun, Jun 14, 2020 at 02:17:38PM +0100, Jonathan Cameron wrote:
+> On Sun, 7 Jun 2020 19:58:08 +0200
+> Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
+>
+> > Following series adds support for Sensirion SCD30 sensor module capable of
+> > measuring carbon dioxide, temperature and relative humidity. CO2 measurements
+> > base on NDIR principle while temperature and relative humidity are measured by
+> > the on board SHT31. As for sensor communication, both I2C and serial interfaces
+> > are supported.
+>
+> Hi Tomasz,
+>
+> All looks good to me.
+>
+> I'll let it sit on the list a bit longer though to give time for anyone
+> else to review if they wish and ideally pick up a DT review if
+> Rob has time.  It isn't unheard of me to somehow loose a set down
+> the back of the sofa, so do poke me if I seem to to have lost this
+> in a few weeks time! (I'll try not to of course!)
+>
 
-(CC'ing Rafael)
+Okay thanks. Will keep an eye on the series.
 
-Thank you for the patch.
-
-On Sat, Jun 13, 2020 at 09:40:05PM -0500, Aditya Pakki wrote:
-> On calling pm_runtime_get_sync() the reference count of the device
-> is incremented. In case of failure, decrement the
-> reference count before returning the error.
-> 
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-
-I've seen lots of similar patches recently. Instead of mass-patching the
-drivers this way, shouldn't pm_runtime_get_sync() (and similar
-functions) decrease the refcount on their failure path ? That would
-require patching drivers that already handle this issue, but I believe
-that would cause less churn, and more importantly, avoid the issue once
-and for good for new code.
-
-> ---
->  drivers/gpu/drm/bridge/cdns-dsi.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
-> index 69c3892caee5..583cb8547106 100644
-> --- a/drivers/gpu/drm/bridge/cdns-dsi.c
-> +++ b/drivers/gpu/drm/bridge/cdns-dsi.c
-> @@ -788,8 +788,10 @@ static void cdns_dsi_bridge_enable(struct drm_bridge *bridge)
->  	u32 tmp, reg_wakeup, div;
->  	int nlanes;
->  
-> -	if (WARN_ON(pm_runtime_get_sync(dsi->base.dev) < 0))
-> +	if (WARN_ON(pm_runtime_get_sync(dsi->base.dev) < 0)) {
-> +		pm_runtime_put(dsi->base.dev);
->  		return;
-> +	}
->  
->  	mode = &bridge->encoder->crtc->state->adjusted_mode;
->  	nlanes = output->dev->lanes;
-> @@ -1028,8 +1030,10 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
->  	int ret, i, tx_len, rx_len;
->  
->  	ret = pm_runtime_get_sync(host->dev);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		pm_runtime_put(host->dev);
->  		return ret;
-> +	}
->  
->  	cdns_dsi_init_link(dsi);
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+> Thanks,
+>
+> Jonathan
+>
+> >
+> > v5:
+> > * set pressure calibration via output channel
+> > * use kstrtobool() to read value into _enabled attribute
+> > * drop explicit parent asignment as the default one is good enough
+> >   (seems 'iio: core: pass parent device as parameter during allocation'
+> >    series was accepted)
+> >
+> > v4:
+> > * improve formatting
+> > * improve error handling readability
+> > * fix message validity check on serial write
+> >
+> > v3:
+> > * simplify code by scaling temperature & humidity in _read_meas()
+> > * update realbits in scan types
+> > * s/adjecent/adjacent
+> > * drop IIO_CHAN_INFO_RAW from _write_raw_get_fmt because there's no raw
+> >   output channel
+> > * rework locking in _read_raw
+> > * fix endianess problem on BE machine
+> > * align timestamp properly before pushing to buffers
+> > * explain why interrupt gets disabled after registration
+> > * add trigger validation
+> > * drop SCALE for temperature and humidity channel as they are processed
+> > * register action which stops measuring after starting measurements
+> > * spit generic calibration attr into two doing specific things
+> > * add comment explaining why priv in struct scd30_state is for
+> > * rename node in binding example to co2-sensor
+> >
+> > v2:
+> > * move asm/byteorder.h towards the bottom of include list
+> > * make channel address names in enum more specific
+> > * add postfixes to defines and extra comments
+> > * drop unneeded i2c include from scd30 header
+> > * break generic command sending function into specialized options
+> > * expose automatic calibration and forced calibration via the same attr
+> > * use SAMP_FREQ to set frequency instead of meas_interval attr
+> > * use CALISCALE to set pressure compensation instead of pressure_comp attr
+> > * use CALIBBIAS to set temperature offset instead of temp_offset attr
+> > * fix order in MAINTAINERS
+> > * drop attribute allowing one to reset sensor
+> > * as we have dt probing drop board file based probing (i2c_device_id)
+> > * merge patches touching related files
+> > * use fwnode API to retrieve interrupt from dt
+> > * fix interrupt-parent spelling
+> > * change binding license
+> > * drop supply from required property
+> >
+> > Tomasz Duszynski (4):
+> >   iio: chemical: scd30: add core driver
+> >   iio: chemical: scd30: add I2C interface driver
+> >   iio: chemical: scd30: add serial interface driver
+> >   dt-bindings: iio: scd30: add device binding file
+> >
+> >  Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 +
+> >  .../iio/chemical/sensirion,scd30.yaml         |  68 ++
+> >  MAINTAINERS                                   |   9 +
+> >  drivers/iio/chemical/Kconfig                  |  33 +
+> >  drivers/iio/chemical/Makefile                 |   3 +
+> >  drivers/iio/chemical/scd30.h                  |  78 ++
+> >  drivers/iio/chemical/scd30_core.c             | 770 ++++++++++++++++++
+> >  drivers/iio/chemical/scd30_i2c.c              | 139 ++++
+> >  drivers/iio/chemical/scd30_serial.c           | 263 ++++++
+> >  9 files changed, 1397 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+> >  create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
+> >  create mode 100644 drivers/iio/chemical/scd30.h
+> >  create mode 100644 drivers/iio/chemical/scd30_core.c
+> >  create mode 100644 drivers/iio/chemical/scd30_i2c.c
+> >  create mode 100644 drivers/iio/chemical/scd30_serial.c
+> >
+> > --
+> > 2.27.0
+> >
+>
