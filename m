@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025881F8A74
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 22:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ACC1F8A81
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 22:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgFNUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 16:00:53 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34603 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726648AbgFNUAw (ORCPT
+        id S1727931AbgFNUB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 16:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727866AbgFNUBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 16:00:52 -0400
-Received: from [37.163.176.33] (port=58546 helo=[192.168.43.3])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jkYoB-0007H9-7c; Sun, 14 Jun 2020 22:00:48 +0200
-Subject: Re: [RFC 2/4] regulator: lp87565: dt: remove duplicated section
-To:     Rob Herring <robh@kernel.org>, Keerthy <j-keerthy@ti.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Axel Lin <axel.lin@ingics.com>
-References: <20200603200319.16184-1-luca@lucaceresoli.net>
- <20200603200319.16184-3-luca@lucaceresoli.net>
- <20200612221954.GA3919662@bogus>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <532c0ac1-b520-3443-1f8f-12fd87011076@lucaceresoli.net>
-Date:   Sun, 14 Jun 2020 22:00:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Sun, 14 Jun 2020 16:01:45 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38929C08C5C2;
+        Sun, 14 Jun 2020 13:01:43 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id o4so642316lfi.7;
+        Sun, 14 Jun 2020 13:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eyeaYzeQX7ccLjnwiymvagyxejIqtIT2ra5PuWujjzM=;
+        b=huWfunRd9o8izmq8clvCzaVTN/lEYRrSHD9pJ+wLb7vl0rdY72NAHw8wOmHniXhuDh
+         amsqUmwpLcz+GON705A2GfRQG1iYBH2Twv/RioQ//2fGjFEcWniI5CEWPrm0wPePm+VD
+         dcjgmUBX7+kWBXt+0B0zAFPNoFhyxJkGB8LSxiNjE8XH3m87IvGiaPQMJoMnSg0E1Eik
+         A6nuQRbxkKOZFzGwNG9N/oGcpb7NVwPPrCFD3T7jTzsIFPS8HRgPs/DchYNJwk1mHXaU
+         cJ3m203wFec2IkUbrtTQtg4L6SdvHRSBqwf5QHhr9Q/1ASpzM9T07wxc852GGu6kXbl6
+         H9aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eyeaYzeQX7ccLjnwiymvagyxejIqtIT2ra5PuWujjzM=;
+        b=c/EP2RcBKL0s6XnYut+0aE2ULWfLv/5MhQNXq/MDGiOJ9+oavN1EPOCzDt4lkELTOR
+         PJ9lr/R22B1Y5Rf5DrVr6ptkzCrhAm3JS5T9tL9mknWOqEP9bjVW2a7HpME1XZ8wDkLX
+         SdGe/p0NI4xzR3AxYVP9kD2mBKebo0DGlKB7urZGfseO+Aqqy5jn65Y2TYvF/Lu+D0hi
+         vWV9ypK9IlpD9CCG7xDlvPirufy+02OWsX8iI+uTCbE8ebcQMSJkbc8JDVoasAtplIlO
+         +p2KtwazDn/J2RHgxxAfgG1mW0lZ+PeT1em8xCzjGknPkC/l5XaUjcIdIKaOD49tiJ63
+         zo3w==
+X-Gm-Message-State: AOAM530prMVkX34TbeGDeINFxrF/7Kv8FTtYpaLHiPhrLlX3XwbxZqAl
+        7SvHamDAmIAInDJEEgF3x1M=
+X-Google-Smtp-Source: ABdhPJywA20RCBGKn37WbaaGhZeic/ZVAiBmfPA7Mnftr3GiywM/pb5B6AVXLylwpr+0Vq3t9EQiyw==
+X-Received: by 2002:a19:c3d5:: with SMTP id t204mr11970529lff.50.1592164901434;
+        Sun, 14 Jun 2020 13:01:41 -0700 (PDT)
+Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.gmail.com with ESMTPSA id 144sm1422105lfm.87.2020.06.14.13.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 13:01:40 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
+Date:   Sun, 14 Jun 2020 23:01:16 +0300
+Message-Id: <20200614200121.14147-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <20200612221954.GA3919662@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, Keerthy,
+Hello!
 
-On 13/06/20 00:19, Rob Herring wrote:
-> On Wed, Jun 03, 2020 at 10:03:17PM +0200, Luca Ceresoli wrote:
->> The "Required properties:" section is copied verbatim for each of the two
->> supported chips. In preparation to add a new chip variant make it a common
->> section and keep the two examples to differentiate between the two chips.
->>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->> ---
->>  .../devicetree/bindings/mfd/lp87565.txt       | 21 ++++---------------
->>  1 file changed, 4 insertions(+), 17 deletions(-)
-> 
-> If you want to clean this up, can you convert it to DT schema?
+This series adds 180° display plane rotation support to the NVIDIA Tegra
+DRM driver which is needed for devices that have display panel physically
+mounted upside-down, like Nexus 7 tablet device for example [1]. Since
+DRM panel rotation is a new thing for a userspace, currently only
+Opentegra Xorg driver handles the rotated display panel [2], but this
+is good enough for the start.
 
-Sure, no problem. My only question is who should I set in the
-"maintainers" property.
+Note that later on it should be possible to implement a transparent 180°
+display rotation for Tegra DRM driver which will remove the need to have
+a bleeding edge userspace that knows how to rotate display planes and I'm
+slowly working on it. For the starter we can go with the minimal rotation
+support, so it's not a blocker.
 
-Keerty, as the original author and TI employee, you surely know this
-chip series much better than I do. Would you like to be the maintainer
-for this binding document? Otherwise I can do it "best effort".
+This series is based on the work that was made by Derek Basehore for the
+Mediatek driver [3], his patch is included into this patchset. I added
+my tested-by tag to the Derek's patch.
 
-Regards,
+Please review and apply, thanks in advance!
+
+[1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154327.18589-3-digetx@gmail.com/
+[2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20a3959bbe5bc3a3b67e55977093fd5114ca
+[3] https://lkml.org/lkml/2020/3/5/1119
+
+Changelog:
+
+v2: - Dropped "drm/panel: Set display info in panel attach" patch, which
+      turned out to be obsolete now.
+
+    - Renamed the cover-latter, hopefully this will fix the bouncing emails.
+
+Derek Basehore (1):
+  drm/panel: Add helper for reading DT rotation
+
+Dmitry Osipenko (4):
+  drm/panel: lvds: Set up panel orientation
+  drm/tegra: plane: Rename bottom_up to reflect_y
+  drm/tegra: plane: Support horizontal reflection mode
+  drm/tegra: plane: Support 180° rotation
+
+ drivers/gpu/drm/drm_panel.c        | 43 ++++++++++++++++++++++++++++++
+ drivers/gpu/drm/panel/panel-lvds.c |  8 ++++++
+ drivers/gpu/drm/tegra/dc.c         | 43 ++++++++++++++++++++++++------
+ drivers/gpu/drm/tegra/dc.h         |  3 ++-
+ drivers/gpu/drm/tegra/plane.c      |  3 ++-
+ drivers/gpu/drm/tegra/plane.h      |  3 ++-
+ include/drm/drm_panel.h            |  9 +++++++
+ 7 files changed, 101 insertions(+), 11 deletions(-)
+
 -- 
-Luca
+2.26.0
+
