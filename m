@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E0C1F88DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E5A1F88E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 15:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgFNNGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 09:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgFNNGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 09:06:38 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E22C05BD43
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 06:06:38 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 10so6586848pfx.8
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 06:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tbNPHbcJdd9Zy5vpitc4It2x0QhJhg6ckwY09//qr6Y=;
-        b=onBIBYT4ViSU7ygp5zYYYBkpUleSF5iOdLkVHxQBdUzs6HwG5FPU2AJIL94jiO1/3q
-         e611vI3yaKJGxZt2s4y6snRpXKvWJq8OqYUJjwVNmgfG7HHqxMRpPNskzZb5sxAjWHjY
-         xnRzeKS3IREF5B9/QGpTyAwqFLQY/nYBHWJAnL9xC8VVruuUd86ny7YZy0CwYO06X5JA
-         S87sPGgfHf0Of2/wEO3Lf7D81x16zacDo1gKx/WP3icE0P4D0ZRLXudAyfnGbhm2eAFX
-         FoESIv6H9gYq4R8Kg1xRHUcUxg6EpkTgR8UX8haSscXC6Q7aRYqatXBg5s4wlT6QdIlv
-         AbXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tbNPHbcJdd9Zy5vpitc4It2x0QhJhg6ckwY09//qr6Y=;
-        b=QLnB8mKHCRFyB7jYz2fReiUJCi/xq62JBBs+Ljaxtc2I8cHr13AlYztdh/HiP7P+/C
-         q8K4ZKUOyHfN7c0GoQ96BsvTZbA5RZlBG50U6V836hzwuiYjTEp02GhKWFVnAgbYmfO1
-         pef3ROmdJfG9Yp/XY0JhyZwG75TzFSD6Agx6WGtvPaIPgpWckW6anHm0mDKkzOOCcoEa
-         u8JgHhaLWtOU0JMKyvbcuyfwJgdq44pFvBFTi+poXMNey9TxvbgoQh3GCIunTMfeBhdx
-         oiKpp/D2AGbabBIMzgv3Bn5rGSGu+1bdsMM11T/jPM91CC+VHCEqD6iRP7Z/QjZ6TptU
-         MO+w==
-X-Gm-Message-State: AOAM531FNUA6cyDPx9VsNLtp8KLlJjunlMSEkmvJQIQYj0h39qHFoQ5i
-        FT8h1y3wvXNskk4O2mH7muM=
-X-Google-Smtp-Source: ABdhPJzSwp75HDSJw1OL5kd4Rpdjmi7CLAzvE7VPRCs+dMV7al78Ke9fy4XDN78px0l2mL6bUhjXnw==
-X-Received: by 2002:a63:4861:: with SMTP id x33mr109880pgk.448.1592139997958;
-        Sun, 14 Jun 2020 06:06:37 -0700 (PDT)
-Received: from localhost ([49.207.199.244])
-        by smtp.gmail.com with ESMTPSA id y10sm9811760pgi.54.2020.06.14.06.06.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 14 Jun 2020 06:06:37 -0700 (PDT)
-Date:   Sun, 14 Jun 2020 18:36:35 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Nicolas Pitre <nico@fluxnic.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC 1/3] lib: copy_{from,to}_user using gup & kmap_atomic()
-Message-ID: <20200614130635.GA5037@afzalpc>
-References: <cover.1591885760.git.afzal.mohd.ma@gmail.com>
- <9e1de19f35e2d5e1d115c9ec3b7c3284b4a4e077.1591885760.git.afzal.mohd.ma@gmail.com>
- <CAK8P3a1XUJHC0kG_Qwh4D4AoxTgCL5ggHd=45yNSmzaYWLUWXw@mail.gmail.com>
- <20200612135538.GA13399@afzalpc>
- <CAK8P3a25ffh_2Y1xKDbkL2xU9nLpGbEq7j6xHdODEwUtavgdwA@mail.gmail.com>
- <20200613120432.GA5319@afzalpc>
- <20200613131552.GL1551@shell.armlinux.org.uk>
+        id S1727116AbgFNNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 09:15:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726925AbgFNNPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 09:15:51 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14CD2206D7;
+        Sun, 14 Jun 2020 13:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592140550;
+        bh=WbHgzaZ0tGmUeII0qMtwKp7soUXZ40jam2hrCr4ruBw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ah/bS4UrgBjVM4vR6aG4D0tFb3+RytJ8FJdYP5vvl4dS7QfHay41vHskJvD4rfONm
+         u/lsPGtl0L8GDET5GDfuCU1iEy7dhhm1mu08LwICCyAHZ0Cf40GJuYfVyCq9CQW4hS
+         0AFAWLHuHoQV3+SLRlZCPa7EWvwumapTu+vSS8aM=
+Date:   Sun, 14 Jun 2020 14:15:46 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, andy.shevchenko@gmail.com, pmeerw@pmeerw.net
+Subject: Re: [PATCH v5 1/4] iio: chemical: scd30: add core driver
+Message-ID: <20200614141546.7a1af2f5@archlinux>
+In-Reply-To: <202006090426.ENCJHJ1n%lkp@intel.com>
+References: <20200607175812.95777-2-tomasz.duszynski@octakon.com>
+        <202006090426.ENCJHJ1n%lkp@intel.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200613131552.GL1551@shell.armlinux.org.uk>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 9 Jun 2020 04:18:56 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-On Sat, Jun 13, 2020 at 02:15:52PM +0100, Russell King - ARM Linux admin wrote:
-> On Sat, Jun 13, 2020 at 05:34:32PM +0530, afzal mohammed wrote:
-
-> > i think C
-> > library cuts any size read, write to page size (if it exceeds) &
-> > invokes the system call.
-
-> You can't make that assumption about read(2).  stdio in the C library
-> may read a page size of data at a time, but programs are allowed to
-> call read(2) directly, and the C library will pass such a call straight
-> through to the kernel.  So, if userspace requests a 16k read via
-> read(2), then read(2) will be invoked covering 16k.
+> Hi Tomasz,
 > 
-> As an extreme case, for example:
+> I love your patch! Perhaps something to improve:
 > 
-> $ strace -e read dd if=/dev/zero of=/dev/null bs=1048576 count=1
-> read(0, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 1048576) = 1048576
+> [auto build test WARNING on iio/togreg]
+> [also build test WARNING on robh/for-next linux/master v5.7]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Tomasz-Duszynski/Add-support-for-SCD30-sensor/20200608-020304
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+> compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Okay. Yes, observed that dd is passing whatever is the 'bs' to
-Kernel and from the 'dd' sources (of busybox), it is invoking read
-system call directly passing 'bs', so it is the tmpfs read that is
-splitting it to page size as mentioned by Arnd.
+I'll tidy this up whilst applying assuming nothing else comes up.
+No comment on it's validity as a warning, but in my view it
+is always squashing warnings to keep the noise low for any
+more useful ones (as long as it's not too costly).
 
-Regards
-afzal
+Jonathan
+
+> 
+> 
+> cppcheck warnings: (new ones prefixed by >>)
+> 
+> >> drivers/iio/chemical/scd30_core.c:93:31: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]  
+>         sign = float32 & BIT(31) ? -1 : 1,
+>                                  ^
+> 
+> vim +93 drivers/iio/chemical/scd30_core.c
+> 
+>     87	
+>     88	/* simplified float to fixed point conversion with a scaling factor of 0.01 */
+>     89	static int scd30_float_to_fp(int float32)
+>     90	{
+>     91		int fraction, shift,
+>     92		    mantissa = float32 & GENMASK(22, 0),
+>   > 93		    sign = float32 & BIT(31) ? -1 : 1,  
+>     94		    exp = (float32 & ~BIT(31)) >> 23;
+>     95	
+>     96		/* special case 0 */
+>     97		if (!exp && !mantissa)
+>     98			return 0;
+>     99	
+>    100		exp -= 127;
+>    101		if (exp < 0) {
+>    102			exp = -exp;
+>    103			/* return values ranging from 1 to 99 */
+>    104			return sign * ((((BIT(23) + mantissa) * 100) >> 23) >> exp);
+>    105		}
+>    106	
+>    107		/* return values starting at 100 */
+>    108		shift = 23 - exp;
+>    109		float32 = BIT(exp) + (mantissa >> shift);
+>    110		fraction = mantissa & GENMASK(shift - 1, 0);
+>    111	
+>    112		return sign * (float32 * 100 + ((fraction * 100) >> shift));
+>    113	}
+>    114	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
