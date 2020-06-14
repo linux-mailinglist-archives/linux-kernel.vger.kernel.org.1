@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C6A1F8751
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 08:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEAF1F8759
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 09:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgFNG73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 02:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725265AbgFNG72 (ORCPT
+        id S1726791AbgFNHDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 03:03:42 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:35680 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725265AbgFNHDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 02:59:28 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329A3C03E96F
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 23:59:28 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id 9so12448700ilg.12
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 23:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=auNQFE3Ts/lVKnLWQnQdPedtvSl90z04f6oWD1caeAc=;
-        b=fr93qj4cO5q9jan80fW8xtu+/eibTNkcbWX449Tp/akm4f6PjZ8mDsVrgyjU/Empj9
-         942OISwA9bSU8EkzzJKKUspnzShkwbC3ctM6GNXC/vFp4d2IzrHolJnTRhAu9WY2U05n
-         46Jv9dB+ChM2nehsNXfLwJVmCtIzhdYw4BxQzSQu6tLvL98HMtl473sY4NqSYhMRk/vR
-         33/SsYcnpaEO+62gJXefyW3is8G1hvievGgWQbFfmVweFVzPgEfNF5jcMtbHXCvLTgQY
-         m8wQ9mxxeXAT5kpmSAeWFMG5+DkIeSjcsXmx1v5GRCcNneem1mZ2P21CEHhSnOaCbJuJ
-         dcrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=auNQFE3Ts/lVKnLWQnQdPedtvSl90z04f6oWD1caeAc=;
-        b=d3ON6qRnQSYCCkXEv0NXEfL6bfrIwXXZBhKfN2NHGiqlBgQaUgpNOF7D4iCxje79Wx
-         G8S9U+T5UDiQW2eoF0gge4YcN+ITm4TBENaOpLVmWWmVXYMXwWqCdcOX0Ui0E9Tr8fqY
-         XFOTNnKGymEWwH9kwg1V4ZVxZt2Hzx0HpqlM3VEU9hxcvGgZmlTkyvkmFwTDpboMgsx3
-         azHjqKpBmY6eKJd5V4+leo67xvDoECkwh4Vs5fh4pVHC7h3xKbbnuTd4fRjqJGlqmcDX
-         X/toFtOssfZg955y4braB4/dwifb+uTMjySOiuHssKywTAPgrGDQfFenk4HJlQ4Monmn
-         lwLg==
-X-Gm-Message-State: AOAM532DDx3tdCLjpKw3nUmexL1u60+EzrfeSa73STCEQ915Ttnn+nTi
-        K8m8C93UVZA5naEWPqc0/PE=
-X-Google-Smtp-Source: ABdhPJweiJFF+5LqULDJLR2TwZW0TiEJ6Awp1CZ6WxSBn7w2pKBXDZWYH9RovwOg6lM/3x/4Qtkltw==
-X-Received: by 2002:a92:cec3:: with SMTP id z3mr19504546ilq.183.1592117966166;
-        Sat, 13 Jun 2020 23:59:26 -0700 (PDT)
-Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
-        by smtp.googlemail.com with ESMTPSA id b29sm5843375ioc.32.2020.06.13.23.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 23:59:25 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
-        Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: [PATCH] drm/vc4: fix ref count leak in vc4_vec_encoder_enable
-Date:   Sun, 14 Jun 2020 01:59:18 -0500
-Message-Id: <20200614065918.18738-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 14 Jun 2020 03:03:41 -0400
+X-Greylist: delayed 1478 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Jun 2020 03:03:40 EDT
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1jkMI9-0000V4-Ik; Sun, 14 Jun 2020 06:38:53 +0000
+Received: from sleer.kot-begemot.co.uk ([192.168.3.72])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1jkMI7-0007NR-F6; Sun, 14 Jun 2020 07:38:53 +0100
+Subject: Re: [PATCH] Fix null pointer dereference in vector_user_bpf
+To:     Gaurav Singh <gaurav1086@gmail.com>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Alex Dewar <alex.dewar@gmx.co.uk>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@redhat.com>,
+        "open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <20200614012001.18468-1-gaurav1086@gmail.com>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <39158d22-9997-32ef-c599-7e6a98988a38@cambridgegreys.com>
+Date:   Sun, 14 Jun 2020 07:38:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200614012001.18468-1-gaurav1086@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in vc4_vec_encoder_enable, the call to pm_runtime_get_sync increments
-the counter even in case of failure, leading to incorrect
-ref count. In case of failure, decrement the ref count before returning.
+On 14/06/2020 02:19, Gaurav Singh wrote:
+> The bpf_prog is being checked for !NULL after uml_kmalloc
+> but later its used directly for example:
+> bpf_prog->filter = bpf and is also later returned upon
+> success. Fix this, do a NULL check and return right away.
+> 
+> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+> ---
+>   arch/um/drivers/vector_user.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> index c4a0f26b2824..0e6d6717bf73 100644
+> --- a/arch/um/drivers/vector_user.c
+> +++ b/arch/um/drivers/vector_user.c
+> @@ -789,10 +789,12 @@ void *uml_vector_user_bpf(char *filename)
+>   		return false;
+>   	}
+>   	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
+> -	if (bpf_prog != NULL) {
+> -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> -		bpf_prog->filter = NULL;
+> +	if (bpf_prog == NULL) {
+> +		printk(KERN_ERR "Failed to allocate bpf prog buffer");
+> +		return NULL;
+>   	}
+> +	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> +	bpf_prog->filter = NULL;
+>   	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
+>   	if (ffd < 0) {
+>   		printk(KERN_ERR "Error %d opening bpf file", -errno);
+> 
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/gpu/drm/vc4/vc4_vec.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_vec.c b/drivers/gpu/drm/vc4/vc4_vec.c
-index bd5b8eb58b18..706fdc7758f9 100644
---- a/drivers/gpu/drm/vc4/vc4_vec.c
-+++ b/drivers/gpu/drm/vc4/vc4_vec.c
-@@ -406,7 +406,7 @@ static void vc4_vec_encoder_enable(struct drm_encoder *encoder)
- 	ret = pm_runtime_get_sync(&vec->pdev->dev);
- 	if (ret < 0) {
- 		DRM_ERROR("Failed to retain power domain: %d\n", ret);
--		return;
-+		goto out;
- 	}
- 
- 	/*
-@@ -419,13 +419,13 @@ static void vc4_vec_encoder_enable(struct drm_encoder *encoder)
- 	ret = clk_set_rate(vec->clock, 108000000);
- 	if (ret) {
- 		DRM_ERROR("Failed to set clock rate: %d\n", ret);
--		return;
-+		goto out;
- 	}
- 
- 	ret = clk_prepare_enable(vec->clock);
- 	if (ret) {
- 		DRM_ERROR("Failed to turn on core clock: %d\n", ret);
--		return;
-+		goto out;
- 	}
- 
- 	/* Reset the different blocks */
-@@ -464,6 +464,8 @@ static void vc4_vec_encoder_enable(struct drm_encoder *encoder)
- 	VEC_WRITE(VEC_DAC_MISC,
- 		  VEC_DAC_MISC_VID_ACT | VEC_DAC_MISC_DAC_RST_N);
- 	VEC_WRITE(VEC_CFG, VEC_CFG_VEC_EN);
-+out:
-+	pm_runtime_put(&vec->pdev->dev);
- }
- 
- 
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 -- 
-2.17.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
