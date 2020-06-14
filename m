@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F731F8757
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 09:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19A81F875C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 09:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgFNHDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 03:03:09 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43139 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725265AbgFNHDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 03:03:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592118147;
-        bh=2er3+RlmK+N8EaDXDNpr+N0HNLmwX0D+VNkwX3n3REY=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=kbYt/rfnL/l5FRL6gNUSW95h7/vDo85/8QQHUMQP4hkC8k/8KbFHsTPQJ6Q2/qsjK
-         Tab9Zv1fO8C1hk+gquHHCH5hSR3VYvnLieroisknHxXAmHzBo+dBjFXAfeODveoxR3
-         5ce2TI8MLhXEniZagaWtQxnHCsB5J6HyL5Wnc53g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.73.70]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MulqN-1itdJZ31O7-00roji; Sun, 14 Jun 2020 09:02:26 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        Oscar Carter <oscar.carter@gmx.com>
-Subject: [PATCH] kernel/trace: Remove function callback casts
-Date:   Sun, 14 Jun 2020 09:01:54 +0200
-Message-Id: <20200614070154.6039-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oYe7EI4mSWdSCcnjUa0R5EjviCt5khEr175w1xniGgy/IdT92nf
- LOm5be6ZQpGHhNfovw09T+4rWArknGMpeqti3VnLKFsmFK+fJjl/xMni5HB+Ngo1PPocaI/
- N9Pj7P5ETxvnJbdM/uwVfXaxJga8vIbTH7muhHr489YFHWk5zL38FyMKquwnbY30V7/CLp4
- 2w3eIWXp+NAwmUlY7XxuA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:P+9wTh2Fjck=:ZeMsb69edwx/2Y0aTsH6Yu
- Rd9Dq+Lprn920jG2Y+mRXJnQpTBCg1BYpRNjpOu+kUNidX04Jj/uYk9iOgkY0EvkShUesky+Z
- 0eU6PjC3Qk4mcVG2SLaRM9XLtVMdYK6fCpeztbhHPp2+4aXyANfuscVQ3e2bmJCAqjeDKHFfr
- lvT44anXUQC9/PcoUPT7W8U87nmNI/Z5Zgh2oh9opqVrCVoL/6eqw5SCyZsz75tpbRwZ6K+qD
- eGV1iytVs0wpEwide5HUAnzrBVxvEUbnPBjt0+ccNXyunx5fhVABD11L13Ef3wnLJZkgX2G2D
- H/q9GU8RQ2HlbpJQkAx5UpINSJBYdD/VRK49CkkxfXvpGZ73wotrkgqdghnuG0fREdKiuYSpB
- J1G+4L1j4Dzpg4d7MPs6QrvRQbZFhtgegeUYGeTHkyZdLMVJZV0EhzerGOXX0mwcqew+DDE9E
- 4/svaNPMLjl8/JBylNgwLsrgJuYm5ZJ7yX5cIzHGJ9xAGA9rd2snZk77TXAfd2gtW+sLEF1R4
- L/it6TGEq/LcoVhvv4UzHxGaFXwgCVJdJ7omXMSZF1H0ImtLBMoi3VOQZ/+nQBpq1YZFw474d
- 1t9YLv7YgtK7A1iZRIaA4vw+/US6M0QpMuVjURyT6qsfZJkc1gvF5ydlbGfob9C7OVIu2LcjA
- AqGndEkDx9vQ1CkHtcwQlgaK2lk9g80HFKab02xRBbgzS5qlgzm4CT4m8we4fQnx8plUMR3ZX
- 95avX6h0RI5d8kBNUt5vXliWcpLSnOHbIqkVJUZzWU32W9eZeIuZkR8MyA/DV64z7jnOskksc
- 4oZSqUwrfk7U7wVu6aWHLzTpA94beZY937QAZpytpi8nnoaHZtasQhA7wiIZakNkYFWRWYSVA
- RxrwNJrKD60kynJ5HRLkFtZi7IZew/ZpPMP3kIcEFG5smCgp+WUVHytq1WyT9nw4uX4/SQNnW
- l4ShDkkrk3zBwrzy5VDxOptzbYcXARBReddNSGb4vJZpmtyY7SlSvQUX2l9JDX9S9qoOdnMSd
- cwI+KLEy04Rn92UC7anxUMDics0mdrlmiqsC17zphrZ45LIi9Lg/IB19wNXZp9SRFVdD/5QBO
- wXnzq03aZkul/tgd8iOwwr6Dmz0NQCxRJX2Ii+iF1XQNqwXmGesilQlkIKeHMhrv93X0OpNgS
- uy5uX8VwYLub8wxpiidb+ExllmAlYbkh348pBtR/sM5zOPiIb1iDFytGt9b2P7BclCJiE9XpA
- WXsqRECYKEmYgmV53
+        id S1726729AbgFNHFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 03:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725265AbgFNHFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 03:05:39 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183DFC03E96F
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:05:38 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id a13so12513241ilh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0XuYLXE5LXbZw3w+xu/hegikrINLkb1ZDvcbBdL0ayM=;
+        b=LpaxFuy0s9GL1das7axADmDQ6Y1YqWAaWu1hxP1r1ZBSYNJpSrMug1KhN4q+TZvseA
+         7EOd510jkNdZmnilgAEOcAOag30TLmRIMFyNaC28MKtS92uKCMwH5YPwr2KLKrxjA+KV
+         7AMPBAiqfyWrCSV6Bkz4HekY6xGvVh0HSkrQBo9EZWnJERzqcG+jZSstD067A3CneKFG
+         D5MDWKZ3HozR1wjSWVLubkRq0yUXkPqV5kTSttF4AGXhX/J7bG7muzBSe+ybPdh9gXwk
+         jd/B50nQz8rjRmndlA4BPTIDx7DC3v43BruUxo3d3LpAL3mlY+eCMx9nz5ID7yUGQlkw
+         a1GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0XuYLXE5LXbZw3w+xu/hegikrINLkb1ZDvcbBdL0ayM=;
+        b=TrbO0CT4aQXIUubq86U1Um+Cpmw+cVN0dtlBdFtyVTR4eRwvQGTxJY0U4HcPIWB/MS
+         BThsTu0YCipX3BhkcGU8vACNjMDfyM20bzfxUERT1h7sTn+9qd3I2rocMfTol2ZQ9uLh
+         EfUJMVDlXT2HOlFyuwJCp5XheNJbGYAIptSRc4TC282uOJYww+8BpqInfWFPaI2kqmQp
+         yMNOGmeyJszIwdYNwbzg+lIxop+2j62myXljNk9dgsVMXzw28enb27r6ZefbUuaWtYEI
+         G9YM4ddovfdT24BlsZAS3JlZ44/ioH/g/W/Ar3A25zVbny7tNZtS2j++6VoFqgUMt7nz
+         NVwQ==
+X-Gm-Message-State: AOAM532VrJ3lW8lwSWyu04UrRGnnv4f22Ra+qE0SCRaz9r7Totofctf7
+        4dO9KclQVmDW1931D76lvxQ=
+X-Google-Smtp-Source: ABdhPJy24po3ZTlu9/GPx5XVlvsADFJvpxCf44M5BuTfT1nO7/H8lWeq4lUmzcuJYTAkE5nprNwvcg==
+X-Received: by 2002:a92:2454:: with SMTP id k81mr20064215ilk.24.1592118338299;
+        Sun, 14 Jun 2020 00:05:38 -0700 (PDT)
+Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
+        by smtp.googlemail.com with ESMTPSA id c62sm6132702ill.62.2020.06.14.00.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 00:05:37 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu
+Subject: [PATCH] drm/amdgpu/display: fix ref count leak when pm_runtime_get_sync fails
+Date:   Sun, 14 Jun 2020 02:05:28 -0500
+Message-Id: <20200614070530.56366-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an effort to enable -Wcast-function-type in the top-level Makefile to
-support Control Flow Integrity builds, remove all the function callback
-casts.
+The call to pm_runtime_get_sync increments the counter even in case of
+failure, leading to incorrect ref count.
+In case of failure, decrement the ref count before returning.
 
-To do this, use the ftrace_ops_list_func function as a wrapper when the
-arch not supports ftrace ops instead of the use of a function cast.
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- kernel/trace/ftrace.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index c163c3531faf..ed1efc0e3a25 100644
-=2D-- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -119,13 +119,12 @@ struct ftrace_ops __rcu *ftrace_ops_list __read_most=
-ly =3D &ftrace_list_end;
- ftrace_func_t ftrace_trace_function __read_mostly =3D ftrace_stub;
- struct ftrace_ops global_ops;
-
--#if ARCH_SUPPORTS_FTRACE_OPS
- static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_i=
-p,
- 				 struct ftrace_ops *op, struct pt_regs *regs);
--#else
-+
-+#if !ARCH_SUPPORTS_FTRACE_OPS
- /* See comment below, where ftrace_ops_list_func is defined */
- static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip);
--#define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
- #endif
-
- static inline void ftrace_ops_init(struct ftrace_ops *ops)
-@@ -6860,6 +6859,12 @@ static void ftrace_ops_list_func(unsigned long ip, =
-unsigned long parent_ip,
- }
- NOKPROBE_SYMBOL(ftrace_ops_list_func);
- #else
-+static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_i=
-p,
-+				 struct ftrace_ops *op, struct pt_regs *regs)
-+{
-+	ftrace_ops_no_ops(ip, parent_ip);
-+}
-+
- static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip)
- {
- 	__ftrace_ops_list_func(ip, parent_ip, NULL, NULL);
-=2D-
-2.20.1
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+index f355d9a752d2..a1aec205435d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+@@ -716,8 +716,10 @@ amdgpu_connector_lvds_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (encoder) {
+@@ -854,8 +856,10 @@ amdgpu_connector_vga_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	encoder = amdgpu_connector_best_single_encoder(connector);
+@@ -977,8 +981,10 @@ amdgpu_connector_dvi_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
+@@ -1328,8 +1334,10 @@ amdgpu_connector_dp_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
+-- 
+2.17.1
 
