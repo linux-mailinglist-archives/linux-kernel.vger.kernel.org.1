@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F231B1F8A65
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6711F8A68
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgFNTge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 15:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgFNTgd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 15:36:33 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A4EC08C5C2;
-        Sun, 14 Jun 2020 12:36:31 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i27so16597864ljb.12;
-        Sun, 14 Jun 2020 12:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1oH7NEv4PmtGLNbJThmXxcB8UaLcSHXncndfYE40f7s=;
-        b=bkf5YXbqGdwW6lPc/1SSSWgymcELeJyDmOtK7/kYlJc/HWU2UIcK60fCWIwvN9PkGX
-         74iIUMnv/pCLXNK8YRnSObP4mmegyxoB8efjFVhVCmt7WVLqOzbrJHe5rhRCEMLOnOnn
-         bTxEE500hpm00IDWiEV2WbODS835j702vjOJKke0bwrlidMjYQTIW+RsFKOMqkfdOkAK
-         iuPtDGP9GM7W30IWtxUv9Bxo3JXXUcF5Ic3csiHpWKivQwE+EGjEDXekfQKB0zwMQDgA
-         bw+KmqYR5MpvdWfzS6+jBNyerfNWPCFdozk6p7wZE185FiksqVqG+ADprFDulpj0HPnx
-         XNsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1oH7NEv4PmtGLNbJThmXxcB8UaLcSHXncndfYE40f7s=;
-        b=Tb6JqEf/FchmhqJJ/e/ae2aoEl3ZXI/0P6Nt+n0EcaENC8MesGHkLytzcnysJN9/KX
-         5jqS6EY2hfG5YAr761OVB+ALZilAl3/wvzmCXrscjbSxcyOXDILAhuGp8TnGFxJGxXCb
-         2QMBGIboz+SpJCs+OZdesQ5NwHe5SNCQE0ffmz4f6yHybIxFkmuchKl2MKS2KbrvUGam
-         MRhEqy427fMzUfMFrsjI7qA/ziz2aBmiHKvXKULspjEslTSF4fSfLOVerTKWDVcWXvW8
-         ZVUtKNfHCJWHrcpnEVSA98OuDwTVLRTSuBLSRwXq0AG9SPTWamXQB63UfGY86zLQLspo
-         yW9A==
-X-Gm-Message-State: AOAM530oo9YWQqLUI8DBG2v4k4FwfBs09tCVXHEcoIHjRWB9JBJI4qUJ
-        kugG+kWSB+i6nxufg7qiy1UMV5p+
-X-Google-Smtp-Source: ABdhPJyl6Ol7cj6oCxj3XNEdTRqr/duhC5G7MTmnjBSgNWPgoRcc5u81BoYLmHaL3Z+LaswrxAaSsg==
-X-Received: by 2002:a2e:7e08:: with SMTP id z8mr10385946ljc.339.1592163389586;
-        Sun, 14 Jun 2020 12:36:29 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id s25sm3418494ljj.119.2020.06.14.12.36.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Jun 2020 12:36:28 -0700 (PDT)
-Subject: Re: [PATCH v1 2/6] drm/panel: Set display info in panel attach
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200614190348.12193-1-digetx@gmail.com>
- <20200614190348.12193-3-digetx@gmail.com>
-Message-ID: <81b3ed4b-5cf1-0b61-1457-b07e8d8a2de3@gmail.com>
-Date:   Sun, 14 Jun 2020 22:36:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727782AbgFNTl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 15:41:26 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:36134 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726648AbgFNTlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 15:41:25 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 1AA0E1B59A6;
+        Sun, 14 Jun 2020 19:41:18 +0000 (UTC)
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: Good idea to rename files in include/uapi/ ?
+Message-ID: <9feded75-4b45-2821-287b-af00ec5f910f@al2klimov.de>
+Date:   Sun, 14 Jun 2020 21:41:17 +0200
 MIME-Version: 1.0
-In-Reply-To: <20200614190348.12193-3-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++
+X-Spam-Level: **
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.06.2020 22:03, Dmitry Osipenko пишет:
-> From: Derek Basehore <dbasehore@chromium.org>
-> 
-> Devicetree systems can set panel orientation via a panel binding, but
-> there's no way, as is, to propagate this setting to the connector,
-> where the property need to be added.
-> To address this, this patch sets orientation, as well as other fixed
-> values for the panel, in the drm_panel_attach function. These values
-> are stored from probe in the drm_panel struct.
-> 
-> Signed-off-by: Derek Basehore <dbasehore@chromium.org>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
+Hello there!
 
-Ah, I just realized that this patch is obsolete now! I also got email
-bounces saying that some email servers didn't like the UTF symbol in
-name of the first email, so will make a v2 shortly.
+At the moment one can't checkout a clean working directory w/o any 
+changed files on a case-insensitive FS as the following file names have 
+lower-case duplicates:
+
+➜  linux git:(96144c58abe7) git ls-files |sort -f |uniq -id
+include/uapi/linux/netfilter/xt_CONNMARK.h
+include/uapi/linux/netfilter/xt_DSCP.h
+include/uapi/linux/netfilter/xt_MARK.h
+include/uapi/linux/netfilter/xt_RATEEST.h
+include/uapi/linux/netfilter/xt_TCPMSS.h
+include/uapi/linux/netfilter_ipv4/ipt_ECN.h
+include/uapi/linux/netfilter_ipv4/ipt_TTL.h
+include/uapi/linux/netfilter_ipv6/ip6t_HL.h
+net/netfilter/xt_DSCP.c
+net/netfilter/xt_HL.c
+net/netfilter/xt_RATEEST.c
+net/netfilter/xt_TCPMSS.c
+tools/memory-model/litmus-tests/Z6.0+pooncelock+poonceLock+pombonce.litmus
+➜  linux git:(96144c58abe7)
+
+Also even on a case-sensitive one VIm seems to have trouble with editing 
+both case-insensitively equal files at the same time.
+
+I was going to make a patch renaming the respective duplicates, but I'm 
+not sure:
+
+*Is it a good idea to rename files in include/uapi/ ?*
+
+Best,
+AK
