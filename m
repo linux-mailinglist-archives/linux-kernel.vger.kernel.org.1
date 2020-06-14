@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682FF1F8A49
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47011F8A4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgFNTES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 15:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S1727889AbgFNTEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 15:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgFNTEL (ORCPT
+        with ESMTP id S1727036AbgFNTEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 15:04:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E024C08C5C2;
-        Sun, 14 Jun 2020 12:04:11 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so16558642ljv.5;
-        Sun, 14 Jun 2020 12:04:11 -0700 (PDT)
+        Sun, 14 Jun 2020 15:04:43 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F6EC08C5C2;
+        Sun, 14 Jun 2020 12:04:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id g62so10990538qtd.5;
+        Sun, 14 Jun 2020 12:04:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1tlVNSxgPSIVY7njRp82EoP3y9oei5GEhi6LB4YQ4wY=;
-        b=ACmbn+5LXY4ZgSyB5eD2v8bAUH7BhdjMukZJxujxn21BKNuQCWiZ6pskW4u3Tm5yr0
-         tDiPjS6qceDlCgDUbJgscgg2oTd5+P+OKeH6aTet8up1loIk7GrZbca3gwLO6ZWhtC6k
-         9DBOA9ckjUqT0Hw5EeYNOvsiUYVNxxeWEPZ9ycUTi8JEGh9wjMhDi5c7Sz53SMGozPTz
-         7ObH4sMO3A2aHTAMMmPDsjHZZ/kqv8nbR5PqpesorGkwfOGlhTZchvKwB+EtvAGaMEm2
-         SNmyqRbk4oasOKl1C6l2Aefo6oBLjDcj19++pAZE3rLyK1NK1BN6ZOUpXqoF3Zvq7Z0e
-         s5sw==
+        h=from:to:subject:date:message-id;
+        bh=ZMcCnhw+cb0GssjRbz2Uvr23jd5CfAqDE459LKY1/1g=;
+        b=O4f0no9gkSjNwQeZuPS7lBS877ehntOkn4Y5ujlumfsbRYOyrEHldqHzVigXDiSSe5
+         HhxT6u2hr+AuZ0+KYXJ9gZg50GjPXIXjFPRu5PrrdzoE0TWBpM7BTmYhrol1vSEtyBB7
+         GXIiydsljflA1rCzKioD+ROrAaDY1N3lFj84zaVkfA+qS0H/qNUGeUaJTM/PCa6NMipj
+         Af9s+hXy1V0BGUk5UEUONvLJnC2fhKJl63LFthHX+yBHq9f6bWAY44vjiljDVLEl7fS2
+         mLnx0mKPuHa45xSY+Z/GBeTouuADZUoda6QuaueFNpJngGh9rtiqErlgbom3mCeNIAsR
+         XTrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1tlVNSxgPSIVY7njRp82EoP3y9oei5GEhi6LB4YQ4wY=;
-        b=nNfKASHXZem8VEr+sdrUVYV7zFcHNLgeQX9hcU8rtNzNe1ZCum3EB49MA33T3tyCiJ
-         giGHptgFX2AGszWQ6GbLUg/jNntgCR50igXlxrpGYtF27/I+iCQJuc0JUYpZNmGi9eRl
-         0192mMX1jQQNgtflQ7AbS6SjcgJ/Ikn51k4BvmBVhwiFjYfU/GmUkOPXC7Yv3jenHawt
-         OJUhU7hhj/ldrUqvdg7SwoXTJDQUEZtLyzOEIBDaZPEfhVwtyCtNU0TT3NVhUD3N9t4n
-         g+7E8sdhGdzl3RKJUOZSH+od5IJQP2OgRlXJLev+fp2NXZN0B8la8DT3jRoHyeFzAAyD
-         FzAA==
-X-Gm-Message-State: AOAM531xStREwjr+pKl0GFdUKbLy0APtkPq1sWxtYVzFfGh7SEN2+i+a
-        CWHBD0tw3T8QmPZBp17lUbM=
-X-Google-Smtp-Source: ABdhPJxQT3G2mCw18H746uY1ijS4rGlw8gNoDzHcB1Pz3EhK7VWgAyWf/terviKuL7YatcalbXOC6Q==
-X-Received: by 2002:a2e:6c12:: with SMTP id h18mr11938124ljc.62.1592161449972;
-        Sun, 14 Jun 2020 12:04:09 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id p15sm3410856ljn.53.2020.06.14.12.04.08
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=ZMcCnhw+cb0GssjRbz2Uvr23jd5CfAqDE459LKY1/1g=;
+        b=q1bDEQTCznZFpHNf5NFy3ybmlsL+dNOqHBci7T/XnXInTR0tSHTEytc1q0CP2ZMfkA
+         wVhsn19jV0jxAnpiEPel0JWgxLPkgrCD41UZmNbT/+25ewSg9ZjJc1JEMJlOxJfn2rrh
+         08b6lqd9ui7n0jcTBksshgNjV5rpQTPoAgsut/gqz1+R5fTPMsTrrmOvTvn7EVTglnOz
+         dLnz2ZUkshx1QAjpUrsTMkm00i3dHCxs4kiM/oYEQ4Kf/VfUrR1GvSpkcExbVl0vP18O
+         9LMqHFslauDWUmE5SQeljYLA0tQDFLE1t90lD/qYk/jIFOOw2xrPw3dleChNJEmWOibw
+         wX/Q==
+X-Gm-Message-State: AOAM532S0fOLUSOO2lGaeYxrkZvsBt2LgpQ92W31igdMU8+n0Vp03isv
+        z/jGT/uQc/kLsld8LRGomRQ=
+X-Google-Smtp-Source: ABdhPJzsFCo/ACyKhmF/+97h8AR6FsA+85GRPNjWIzqOnbnbnw/hF3IHAduxaMCZIKMEAVwtcT+aQQ==
+X-Received: by 2002:ac8:3551:: with SMTP id z17mr12429782qtb.139.1592161481533;
+        Sun, 14 Jun 2020 12:04:41 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:b556:165b:f409:9052])
+        by smtp.googlemail.com with ESMTPSA id i40sm10953911qte.67.2020.06.14.12.04.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 12:04:09 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 6/6] =?UTF-8?q?drm/tegra:=20plane:=20Support=20180?= =?UTF-8?q?=C2=B0=20rotation?=
-Date:   Sun, 14 Jun 2020 22:03:48 +0300
-Message-Id: <20200614190348.12193-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200614190348.12193-1-digetx@gmail.com>
-References: <20200614190348.12193-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Sun, 14 Jun 2020 12:04:40 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [bpf] xdp_redirect_cpu_user: Fix null pointer dereference
+Date:   Sun, 14 Jun 2020 15:04:33 -0400
+Message-Id: <20200614190434.31321-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combining horizontal and vertical reflections gives us 180 degrees of
-rotation.
+Memset() on the pointer right after malloc() can cause
+a null pointer dereference if it failed to allocate memory.
+Fix this by replacing malloc/memset with a single calloc().
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
- drivers/gpu/drm/tegra/dc.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ samples/bpf/xdp_redirect_cpu_user.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index f31bca27cde4..ddd9b88f8fce 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -608,6 +608,7 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
+diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+index f3468168982e..2ae7a9a1d950 100644
+--- a/samples/bpf/xdp_redirect_cpu_user.c
++++ b/samples/bpf/xdp_redirect_cpu_user.c
+@@ -207,11 +207,8 @@ static struct datarec *alloc_record_per_cpu(void)
  {
- 	struct tegra_plane_state *plane_state = to_tegra_plane_state(state);
- 	unsigned int rotation = DRM_MODE_ROTATE_0 |
-+				DRM_MODE_ROTATE_180 |
- 				DRM_MODE_REFLECT_X |
- 				DRM_MODE_REFLECT_Y;
- 	struct tegra_bo_tiling *tiling = &plane_state->tiling;
-@@ -659,6 +660,14 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
- 	else
- 		plane_state->reflect_y = false;
+ 	unsigned int nr_cpus = bpf_num_possible_cpus();
+ 	struct datarec *array;
+-	size_t size;
  
-+	if (tegra_fb_is_bottom_up(state->fb))
-+		plane_state->reflect_y = true;
-+
-+	if (rotation & DRM_MODE_ROTATE_180) {
-+		plane_state->reflect_x = !plane_state->reflect_x;
-+		plane_state->reflect_y = !plane_state->reflect_y;
-+	}
-+
- 	/*
- 	 * Tegra doesn't support different strides for U and V planes so we
- 	 * error out if the user tries to display a framebuffer with such a
-@@ -720,7 +729,7 @@ static void tegra_plane_atomic_update(struct drm_plane *plane,
- 	window.dst.h = drm_rect_height(&plane->state->dst);
- 	window.bits_per_pixel = fb->format->cpp[0] * 8;
- 	window.reflect_x = state->reflect_x;
--	window.reflect_y = tegra_fb_is_bottom_up(fb) || state->reflect_y;
-+	window.reflect_y = state->reflect_y;
+-	size = sizeof(struct datarec) * nr_cpus;
+-	array = malloc(size);
+-	memset(array, 0, size);
++	array = calloc(nr_cpus, sizeof(struct datarec));
+ 	if (!array) {
+ 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
+ 		exit(EXIT_FAIL_MEM);
+@@ -222,11 +219,9 @@ static struct datarec *alloc_record_per_cpu(void)
+ static struct stats_record *alloc_stats_record(void)
+ {
+ 	struct stats_record *rec;
+-	int i, size;
++	int i;
  
- 	/* copy from state */
- 	window.zpos = plane->state->normalized_zpos;
-@@ -806,6 +815,7 @@ static struct drm_plane *tegra_primary_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
-@@ -1094,6 +1104,7 @@ static struct drm_plane *tegra_dc_overlay_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
+-	size = sizeof(*rec) + n_cpus * sizeof(struct record);
+-	rec = malloc(size);
+-	memset(rec, 0, size);
++	rec = calloc(n_cpus + 1, sizeof(struct record));
+ 	if (!rec) {
+ 		fprintf(stderr, "Mem alloc error\n");
+ 		exit(EXIT_FAIL_MEM);
 -- 
-2.26.0
+2.17.1
 
