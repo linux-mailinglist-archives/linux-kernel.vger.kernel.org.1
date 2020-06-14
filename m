@@ -2,145 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84E51F8631
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 04:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1191F8635
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 04:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgFNCV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Jun 2020 22:21:27 -0400
-Received: from mta-p5.oit.umn.edu ([134.84.196.205]:44742 "EHLO
-        mta-p5.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgFNCV0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Jun 2020 22:21:26 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p5.oit.umn.edu (Postfix) with ESMTP id 49kyrP1L1sz9vHfJ
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 02:21:25 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p5.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p5.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Nj4t_id0TdDo for <linux-kernel@vger.kernel.org>;
-        Sat, 13 Jun 2020 21:21:25 -0500 (CDT)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p5.oit.umn.edu (Postfix) with ESMTPS id 49kyrN6nZFz9vHdV
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 21:21:24 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p5.oit.umn.edu 49kyrN6nZFz9vHdV
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 49kyrN6nZFz9vHdV
-Received: by mail-il1-f197.google.com with SMTP id n2so9475096ilq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 19:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1skhAYqgTNSWsq4lvqV5pXURB90mGpd6sDboa81hzn4=;
-        b=inDQYcmHcL3Cz+asrBz/w7/AH+tbLoHWzIu2j3/vBKxYRotaYrR5dtjBlReiW10muR
-         JgRA7bR5vnj1ZLaL/RZraj1F3mx2KnqSqFmaI0AN1pl7t3wXWBnHQtOwIfAiEqxfhDwV
-         HKUtr3/gv03Oz+PzAaaeW8sVCHIlPPzRLIpmlfBvilKpr1GJWbfuWfSLNFDpXlZKwGhc
-         AjwoKU9MfTAeNWiZ1q47UyU7QzPSNrEgTkJ73Byh6v5PoKL7iiSeU/4R35njyzj/5+uT
-         qCxwAwiiUTmGJIYYBX51YNcIcbOIgx4uvW6caEEPkoLiC+gnepFHBVifLyZ9PhjKnCD8
-         ZIvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1skhAYqgTNSWsq4lvqV5pXURB90mGpd6sDboa81hzn4=;
-        b=aUlppBqTdCv3UgNMu3Tnm/rTfztFK8jKpG5G68KlRVrd8b1rl0XYRtYbS014VphGE3
-         ox0QwLTuDjo0X9vSwjQFw7b74NbgEXp01iv4Us54ZXr4jVJdBqtGkuYVCZXHpQ2k/ixh
-         k8VzddSN7q6z2BSBnLNG7zCg0PlAHmIxqQoFGL4yxlMQp6Bz4f1RF/QnWVWLDU7b00Hg
-         QHKfpqYn7N6IcAXi9CE/1JTQNcf01DflFMXmihkmX39sEY5LRHCauPYP1vAKIuK8XkRD
-         M+WLD0tWYFuInZxSNiunJ5G3cS+pgKaLAiwTjko62jxQM8K5mJ+Wtkchp1Nm81Ff3ZQ3
-         xysQ==
-X-Gm-Message-State: AOAM530CRCBpyWi+ZGHSIi4Y2XnhM6NMkLqM9AJDKGlTjG1MhX4Ql8s0
-        oURZ3qMI5GHN/EQmsCHK+gxoPVU2fZ3OQTyVHIIZnt2C78JCFVad29tfutPaVA/Nfoz/OPAJqTc
-        KMndUDOCCkkJAFu3E3OeAt9OyoGbz
-X-Received: by 2002:a92:6a06:: with SMTP id f6mr19738336ilc.89.1592101284491;
-        Sat, 13 Jun 2020 19:21:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwE+vPbigALAessccDcAKFOmVWqMDFxxHN2H7lviB9iL6LRnhGo3tuBBjuUyQNOGb53QjP8Ew==
-X-Received: by 2002:a92:6a06:: with SMTP id f6mr19738330ilc.89.1592101284325;
-        Sat, 13 Jun 2020 19:21:24 -0700 (PDT)
-Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:49fa:9c47:e40b:9c40])
-        by smtp.gmail.com with ESMTPSA id l26sm5762514ild.59.2020.06.13.19.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 19:21:23 -0700 (PDT)
-From:   Aditya Pakki <pakki001@umn.edu>
-To:     pakki001@umn.edu
-Cc:     kjlu@umn.edu, wu000273@umn.edu,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: Fix reference count leaks caused by pm_runtime_get_sync
-Date:   Sat, 13 Jun 2020 21:21:22 -0500
-Message-Id: <20200614022122.124908-1-pakki001@umn.edu>
-X-Mailer: git-send-email 2.25.1
+        id S1726563AbgFNC3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Jun 2020 22:29:00 -0400
+Received: from m12-16.163.com ([220.181.12.16]:52391 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgFNC27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Jun 2020 22:28:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=R2b6w
+        Jp/Gu3jW9BF0+d6Dg/51CAAqjCiWDo1SliDiWA=; b=NRrOvDxTUB4AvIdiCo2Vw
+        WLW6zJBowDWDOya8eb6S6BLRqku4qH6P5hOc/IZ4POav5Z6eyUzpppDC5BOFs+bS
+        f7uRI0jtsvwe6ML8rAFmPxUy7ZQOALv7irQFO6FQj929RoN351ai1NZqItdKqzYM
+        6p3P56+zW5pCTeMZ/yxguU=
+Received: from localhost.localdomain (unknown [111.202.190.28])
+        by smtp12 (Coremail) with SMTP id EMCowADHshZdi+Ve7N19IA--.22765S2;
+        Sun, 14 Jun 2020 10:28:45 +0800 (CST)
+From:   zzuedu2000@163.com
+To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Markus.Elfring@web.de, songmuchun@bytedance.com,
+        buddy.zhang@aliyun.com, Wei Fenghai <zzuedu2000@163.com>
+Subject: [PATCH] cgroup: Refactor two assignments in css_task_iter_next_css_set()
+Date:   Sun, 14 Jun 2020 10:28:33 +0800
+Message-Id: <20200614022833.2641-1-zzuedu2000@163.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADHshZdi+Ve7N19IA--.22765S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gw4fAF1Dur4xKryUtw1rXrb_yoWxZwc_A3
+        4rXw1xKrySyw1qyrZ5Zws3Xa97Ka1rKrWv9r17KrW7AF1DJrs8JwnxKF1DJrsru3Z3Cr98
+        ur9akF95KF4DWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRE75rDUUUUU==
+X-Originating-IP: [111.202.190.28]
+X-CM-SenderInfo: p22xvvbxsqiii6rwjhhfrp/1tbivxdDQlWBqVkS5gABs4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+From: Wei Fenghai <zzuedu2000@163.com>
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Combine two assignments for the variable ‘l’ into one statement.
+
+Signed-off-by: Wei Fenghai <zzuedu2000@163.com>
 ---
- drivers/gpu/drm/radeon/radeon_display.c | 4 +++-
- drivers/gpu/drm/radeon/radeon_drv.c     | 4 +++-
- drivers/gpu/drm/radeon/radeon_kms.c     | 4 +++-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ kernel/cgroup/cgroup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index 35db79a168bf..df1a7eb73651 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -635,8 +635,10 @@ radeon_crtc_set_config(struct drm_mode_set *set,
- 	dev = set->crtc->dev;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1ea181a58465..c3e6db6e44d8 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4352,8 +4352,7 @@ static struct css_set *css_task_iter_next_css_set(struct css_task_iter *it)
+ 	}
  
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return ret;
-+	}
- 
- 	ret = drm_crtc_helper_set_config(set, ctx);
- 
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index bbb0883e8ce6..62b5069122cc 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -549,8 +549,10 @@ long radeon_drm_ioctl(struct file *filp,
- 	long ret;
- 	dev = file_priv->minor->dev;
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return ret;
-+	}
- 
- 	ret = drm_ioctl(filp, cmd, arg);
- 	
-diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-index c5d1dc9618a4..99ee60f8b604 100644
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -638,8 +638,10 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
- 	file_priv->driver_priv = NULL;
- 
- 	r = pm_runtime_get_sync(dev->dev);
--	if (r < 0)
-+	if (r < 0) {
-+		pm_runtime_put_autosuspend(dev->dev);
- 		return r;
-+	}
- 
- 	/* new gpu have virtual address space support */
- 	if (rdev->family >= CHIP_CAYMAN) {
+ 	/* find the next cset */
+-	l = it->cset_pos;
+-	l = l->next;
++	l = it->cset_pos->next;
+ 	if (l == it->cset_head) {
+ 		it->cset_pos = NULL;
+ 		return NULL;
 -- 
-2.25.1
+2.17.1
+
 
