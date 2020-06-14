@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D462C1F894A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 16:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3721F894B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 16:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgFNOeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 10:34:18 -0400
-Received: from mail-m965.mail.126.com ([123.126.96.5]:58134 "EHLO
-        mail-m965.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgFNOeR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 10:34:17 -0400
-X-Greylist: delayed 1838 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Jun 2020 10:34:15 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=lsbRBE5rJ6r7F+hR4L
-        UAghXlgSQa25BI4H503EvZ2m0=; b=bpU9clATCOiwWUDZ5kwlipVICcIKF1cblZ
-        Ye0xZZ2rjeeJmQDr8b4Iyyo9At44Op1ynKhPpr0ymA/XoT+ar/yanwGx2ARbjT9+
-        XjTeghWIecPKFiGzQd/VBduqCwxR9Oxjju4AqxqJ5BHRQxTXa0XbATv420kpN2F3
-        okFlBuX8I=
-Received: from zhixu-home.lan (unknown [114.249.235.144])
-        by smtp10 (Coremail) with SMTP id NuRpCgBnbyMaLuZeZ7olRw--.5682S2;
-        Sun, 14 Jun 2020 22:03:08 +0800 (CST)
-From:   Zhixu Zhao <zhixu001@126.com>
-To:     Rob Springer <rspringer@google.com>,
-        Todd Poynor <toddpoynor@google.com>,
-        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Zhixu Zhao <zhixu001@126.com>
-Subject: [PATCH] staging: gasket: core: Fix a coding style issue in gasket_core.c
-Date:   Sun, 14 Jun 2020 21:51:31 +0800
-Message-Id: <20200614135131.11282-1-zhixu001@126.com>
+        id S1726982AbgFNOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 10:37:45 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:39460 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbgFNOho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 10:37:44 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 43D731A1343;
+        Sun, 14 Jun 2020 16:37:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C5A361A023A;
+        Sun, 14 Jun 2020 16:37:39 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 31C3D402BF;
+        Sun, 14 Jun 2020 22:37:35 +0800 (SGT)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     shawnguo@kernel.org, ran.wang_1@nxp.com, robh+dt@kernel.org,
+        mark.rutland@arm.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
+Subject: [v2 1/4] arm64: dts: lx2160a: add ftm_alarm0 DT node
+Date:   Sun, 14 Jun 2020 22:32:03 +0800
+Message-Id: <20200614143206.24993-1-biwen.li@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: NuRpCgBnbyMaLuZeZ7olRw--.5682S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw1DAry5Jw48trWxuF15urg_yoWfAFcEkr
-        4Iy34xX3Z5Kas7GF15Gr9rGFy5twnrXrWvgFW2q3yUW3yqvF4UWrW8Ar1kuF4Dur47uFy8
-        C3yUCrn0qw1ayjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjwZ2PUUUUU==
-X-Originating-IP: [114.249.235.144]
-X-CM-SenderInfo: x2kl53qqqrqiyswou0bp/1tbiDxxDfFpEAyneeQAAs-
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a coding alignment issue found by checkpatch.pl.
+From: Biwen Li <biwen.li@nxp.com>
 
-Signed-off-by: Zhixu Zhao <zhixu001@126.com>
+The patch adds ftm_alarm0 DT node for Soc LX2160A
+FlexTimer1 module is used to wakeup the system in deep sleep
+
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
 ---
- drivers/staging/gasket/gasket_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Change in v2:
+	- use generic name
+	- use definition
 
-diff --git a/drivers/staging/gasket/gasket_core.c b/drivers/staging/gasket/gasket_core.c
-index 67325fbaf760..357063ad5c33 100644
---- a/drivers/staging/gasket/gasket_core.c
-+++ b/drivers/staging/gasket/gasket_core.c
-@@ -304,7 +304,7 @@ static int gasket_map_pci_bar(struct gasket_dev *gasket_dev, int bar_num)
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index abaeb58..d571b7d 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -16,6 +16,10 @@
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
  
- 	gasket_dev->bar_data[bar_num].virt_base =
- 		ioremap(gasket_dev->bar_data[bar_num].phys_base,
--				gasket_dev->bar_data[bar_num].length_bytes);
-+			gasket_dev->bar_data[bar_num].length_bytes);
- 	if (!gasket_dev->bar_data[bar_num].virt_base) {
- 		dev_err(gasket_dev->dev,
- 			"Cannot remap BAR %d memory region %p\n",
++	aliases {
++		rtc1 = &ftm_alarm0;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -888,6 +892,20 @@
+ 			timeout-sec = <30>;
+ 		};
+ 
++		rcpm: power-controller@1e34040 {
++			compatible = "fsl,lx2160a-rcpm", "fsl,qoriq-rcpm-2.1+";
++			reg = <0x0 0x1e34040 0x0 0x1c>;
++			#fsl,rcpm-wakeup-cells = <7>;
++			little-endian;
++		};
++
++		ftm_alarm0: timer@2800000 {
++			compatible = "fsl,lx2160a-ftm-alarm";
++			reg = <0x0 0x2800000 0x0 0x10000>;
++			fsl,rcpm-wakeup = <&rcpm 0x0 0x0 0x0 0x0 0x4000 0x0 0x0>;
++			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
++		};
++
+ 		usb0: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
 -- 
-2.17.1
+2.7.4
 
