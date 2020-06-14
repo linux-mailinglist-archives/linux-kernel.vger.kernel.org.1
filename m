@@ -2,98 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728761F872A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 07:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134D91F872B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 07:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgFNFyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 01:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgFNFyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 01:54:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057AFC03E96F
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 22:54:22 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o84so16657671ybg.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Jun 2020 22:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=otdX70bz2YIi8N5w4rKF0s6D9LcxXuBVYPPx+zpGPno=;
-        b=C8QrbHkBy6a8AJ+AlBLdblPvmdd6cdbCl6/dXQfGJBCYmaEhOfoq7YrkgeeRZzz/c8
-         RanA2Ail3Hwu8/xw12exkyofWZybBZI9IBEcc9OJM8x67lWkxsMYIEx/NsHtRfqCbe8j
-         mlZtT2r/ia2x+6XAFmXE4OGEZG+aghV4NauThpFTlUr3pOwOkA5aYdJtyLJLNKYC+eZq
-         EotCsfpaXiICE1er5NL/Uyl96va0v1l4hZK2lctTHA770c6f9Sywa08+FtagatAM42A+
-         /wsgK2ZdhfEOdP2F2EHF4JGGm+viPoI8fZtQsj1ACsBfRjLukp7J3xXZWau5ZQK6Mu5Y
-         TQFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=otdX70bz2YIi8N5w4rKF0s6D9LcxXuBVYPPx+zpGPno=;
-        b=T2kBIxc+elY90FYOZChXcAkfXy05pInkjLZlHCVxyIoYuxgsydm75VgR+rixUJgyRH
-         BP4NKFhX777r3C67oKJV8nZOzXzIPzxpsQpzbA/A0mkBkcVl00wk0LAXky6LPSuKUNpQ
-         9r6Xke4tAGO3ahw0sDDn4nCL3fVfEwvLRtatnneTIkntnE44yYcMjLwXcdBBCEvtLY+6
-         eddgPfQnIckT//iRJozF4CwoRkaCuGI9rNx1bFgCuHP4ZoFSi1Yp0do5zJu0HgSz/cJH
-         NH/pOqe8GYCp2x7I/iu0w0VPiGmSwwgYrv7tKJRUNuSUNb8E1U/6xFBHjN2v3udWlzex
-         LUBQ==
-X-Gm-Message-State: AOAM533HkwG3k7yT3Z3bJszllrGQqrval/WiQR2NSzhNbZOQuG4/JSks
-        9+TKTsBtG3OjvyAbNydfj4m5nLoOC1rr
-X-Google-Smtp-Source: ABdhPJyOLly4XuglNWi7b9HgglmYKgBk4jq2k9V8yBsUa6I6YUUAZG3V5TvZRcuw2m2Nk5Xg7lRSUPIuzeuD
-X-Received: by 2002:a5b:942:: with SMTP id x2mr27173587ybq.273.1592114060922;
- Sat, 13 Jun 2020 22:54:20 -0700 (PDT)
-Date:   Sat, 13 Jun 2020 22:54:18 -0700
-Message-Id: <20200614055418.33497-1-gthelen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH] powerpc/powernv/pci: add ifdef to avoid dead code
-From:   Greg Thelen <gthelen@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726672AbgFNFye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 01:54:34 -0400
+Received: from smtp.rcn.com ([69.168.97.78]:58503 "EHLO smtp.rcn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgFNFyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 01:54:33 -0400
+DKIM-Signature: v=1; a=rsa-sha1; d=rcn.com; s=20180516; c=relaxed/simple;
+        q=dns/txt; i=@rcn.com; t=1592114072;
+        h=From:Subject:Date:To:MIME-Version:Content-Type;
+        bh=5zcKKZJ7ExeAlcKliwmQZeyu72A=;
+        b=eaMCOjbYVrJJu4jh75TFqivqK7fjJadbm1hzi22Cig88Zi8vtT0DF5N8Mo9DxiGe
+        8YxIJtpm099gtZ22+OnNDyCAuiWAdtEH74BUaC3BIM5wxZB8Is8QPxYZiAEfniVQ
+        5kgV7Ekfct+jSRHQ+6wG9p9BxUEc41ZI0KTtH08hiyNJ6jIJD+vK9PB9/h9M4ZrG
+        qGQ5CGfw3SsrFnQVVTFN/MF5sSOuhbO5vX1rM4JDjq8OuH8zsvPr7//bRseKzrgZ
+        f3wAQjxoI/Bsd0jFv9qPdqQvOGRk4RGSSOl9OGxfp4tpEOL3zNrwoGCT5XLlFz0z
+        sRF/NpeHLfzXQBXkyRGj3Q==;
+X-User-Whitelist: YES
+X-Authed-Username: am9obmtyYXVzZUByY24uY29t
+Authentication-Results: smtp03.rcn.cmh.synacor.com smtp.mail=johnkrause@rcn.com; spf=softfail; sender-id=softfail
+Authentication-Results: smtp03.rcn.cmh.synacor.com header.from=johnkrause@rcn.com; sender-id=softfail
+Received: from [10.33.66.6] ([10.33.66.6:42053] helo=md02.rcn.cmh.synacor.com)
+        by smtp.rcn.com (envelope-from <johnkrause@rcn.com>)
+        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
+        id 59/60-51190-79BB5EE5; Sun, 14 Jun 2020 01:54:32 -0400
+Date:   Sun, 14 Jun 2020 01:54:31 -0400 (EDT)
+From:   depti mohan <johnkrause@rcn.com>
+Reply-To: depti mohan <a20192983@pucp.edu.pe>
+To:     rcnts@rcn.com
+Message-ID: <499535047.10139900.1592114071736.JavaMail.root@rcn.com>
+In-Reply-To: <2071411661.10137661.1592113156096.JavaMail.root@rcn.com>
+Subject: Re:
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [171.22.120.233]
+X-Mailer: Zimbra 7.2.7_GA_2942 (zclient/7.2.7_GA_2942)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dc3d8f85bb57 ("powerpc/powernv/pci: Re-work bus PE
-configuration") removed a couple pnv_ioda_setup_bus_dma() calls.  The
-only remaining calls are behind CONFIG_IOMMU_API.  Thus builds without
-CONFIG_IOMMU_API see:
-  arch/powerpc/platforms/powernv/pci-ioda.c:1888:13: error: 'pnv_ioda_setup_bus_dma' defined but not used
 
-Add CONFIG_IOMMU_API ifdef guard to avoid dead code.
 
-Fixes: dc3d8f85bb57 ("powerpc/powernv/pci: Re-work bus PE configuration")
-Signed-off-by: Greg Thelen <gthelen@google.com>
----
- arch/powerpc/platforms/powernv/pci-ioda.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/powerpc/platforms/powernv/pci-ioda.c b/arch/powerpc/platforms/powernv/pci-ioda.c
-index 73a63efcf855..f7762052b7c4 100644
---- a/arch/powerpc/platforms/powernv/pci-ioda.c
-+++ b/arch/powerpc/platforms/powernv/pci-ioda.c
-@@ -1885,6 +1885,7 @@ static bool pnv_pci_ioda_iommu_bypass_supported(struct pci_dev *pdev,
- 	return false;
- }
- 
-+#ifdef CONFIG_IOMMU_API
- static void pnv_ioda_setup_bus_dma(struct pnv_ioda_pe *pe, struct pci_bus *bus)
- {
- 	struct pci_dev *dev;
-@@ -1897,6 +1898,7 @@ static void pnv_ioda_setup_bus_dma(struct pnv_ioda_pe *pe, struct pci_bus *bus)
- 			pnv_ioda_setup_bus_dma(pe, dev->subordinate);
- 	}
- }
-+#endif
- 
- static inline __be64 __iomem *pnv_ioda_get_inval_reg(struct pnv_phb *phb,
- 						     bool real_mode)
--- 
-2.27.0.290.gba653c62da-goog
+    6/14/2020 Been sunday, does your firm function today sar
 
