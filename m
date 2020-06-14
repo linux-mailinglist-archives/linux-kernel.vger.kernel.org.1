@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA271F8A7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 22:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E311F8A82
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 22:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgFNUBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 16:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgFNUBs (ORCPT
+        id S1727940AbgFNUCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 16:02:02 -0400
+Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:39492 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726844AbgFNUB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 16:01:48 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C82C08C5C2;
-        Sun, 14 Jun 2020 13:01:48 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 9so16693623ljc.8;
-        Sun, 14 Jun 2020 13:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1tlVNSxgPSIVY7njRp82EoP3y9oei5GEhi6LB4YQ4wY=;
-        b=jQ4is4o3msNRctJPE8x/rXfdtxgqL+UaT5OUefWyjpSdGCCCRnJTJD8hwrAK+7dPak
-         ccLE732RqdOIO/h1BblHTlMoyhV6snAr+fWgyjo2ypIIksW1HO090SR7hNyA74nKJ6/5
-         am79uNqc5PvmxUBgiI7DxAt+1ki57FYP2g/LNw1/WiArCa6EES4f+ZwZaXqFbvM8WLiG
-         73o+tLz0aSqAxnAUFfKgQQYFmlipvKHJWrOFKIsFuhb+NW/FS6TCteBvhKhFvRplnG7N
-         QgdOsenUoIWC55wmJq6fPfYqWFpBf9CNRsDhakCSfMBa625Z6xw25OV8BPkh3+zeM+/v
-         kJog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1tlVNSxgPSIVY7njRp82EoP3y9oei5GEhi6LB4YQ4wY=;
-        b=kdCeuT4FXG885jHJTjJsJk+44THbdqQd6WzJxks9dQq9YH1aHbJvskzTxZidDIOb44
-         qxCYMICAlCfSodWTAcI+krdJs58H/EE3nfea+ddsl4nGGHO1mR/mpb1ivv/tpzN1UkDn
-         rA/fcPcZoty3dLJPlTiZsOfYQaB6uopNPpS29EAyjyqxiteuGAZD2zSBx6hQYrYoa3kf
-         T9dsSuYFeCMsukHQzYSvnhILHeeoV89RyZS/A1HmttgFLuV9A3zL9UILip0v0KYz1x2G
-         NyMGKt8OJEii2613oDbEyPqmPOqeBPHHi09WVlHHsUTYd4wIKw1cyo5IsMEhoRQ1mBm0
-         RPGA==
-X-Gm-Message-State: AOAM530VnuzE9EhR0vUwKxUeUxYIGk+Ts8u+1zz8eTRDgjdMY/vMVVOM
-        Z0bqHR1RlsmRcnQS5cOOrqY=
-X-Google-Smtp-Source: ABdhPJwkjAohrFdbnjXNIyKjz2EOPAHBkTIDfMEzdvwoiExIpOvjnhuRzO8/1I+pHiLBdhjK8q9qyw==
-X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr11737184ljo.121.1592164906663;
-        Sun, 14 Jun 2020 13:01:46 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id 144sm1422105lfm.87.2020.06.14.13.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 13:01:46 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] =?UTF-8?q?drm/tegra:=20plane:=20Support=20180?= =?UTF-8?q?=C2=B0=20rotation?=
-Date:   Sun, 14 Jun 2020 23:01:21 +0300
-Message-Id: <20200614200121.14147-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200614200121.14147-1-digetx@gmail.com>
-References: <20200614200121.14147-1-digetx@gmail.com>
+        Sun, 14 Jun 2020 16:01:56 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id ABA7C15C6;
+        Sun, 14 Jun 2020 20:01:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3866:3867:3870:3871:3872:4321:4385:4390:4395:4605:5007:7903:8568:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: light02_2e08cc026df0
+X-Filterd-Recvd-Size: 1857
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 14 Jun 2020 20:01:53 +0000 (UTC)
+Message-ID: <803557cc672ef0bcd9565c7d5d78e7053388f5d7.camel@perches.com>
+Subject: Re: [PATCH] coccinelle: api: add kzfree script
+From:   Joe Perches <joe@perches.com>
+To:     efremov@linux.com, Julia Lawall <Julia.Lawall@lip6.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Date:   Sun, 14 Jun 2020 13:01:51 -0700
+In-Reply-To: <345c783b-a8cf-9dd1-29c6-d32b9b29053f@linux.com>
+References: <20200604140805.111613-1-efremov@linux.com>
+         <e4981fd76a88e18376c4e634c235501b57d321e7.camel@perches.com>
+         <345c783b-a8cf-9dd1-29c6-d32b9b29053f@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combining horizontal and vertical reflections gives us 180 degrees of
-rotation.
+On Sun, 2020-06-14 at 22:42 +0300, Denis Efremov wrote:
+> On 6/4/20 7:27 PM, Joe Perches wrote:
+> > On Thu, 2020-06-04 at 17:08 +0300, Denis Efremov wrote:
+> > > Check for memset() with 0 followed by kfree().
+> > 
+> > Perhaps those uses should be memzero_explicit or kvfree_sensitive.
+> > 
+> Is it safe to suggest to use kzfree instead of memzero_explicit && kfree?
+> Or it would be better to use kvfree_sensitive in this case.
+> kzfree uses memset(0) with no barrier_data.
+> 
+> For example:
+> diff -u -p a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+[]
+> @@ -1081,8 +1081,7 @@ static int safexcel_hmac_init_pad(struct
+>                 }
+>  
+>                 /* Avoid leaking */
+> -               memzero_explicit(keydup, keylen);
+> -               kfree(keydup);
+> +               kzfree(keydup);
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/tegra/dc.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+It would be better to use kvfree_sensitive()
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index f31bca27cde4..ddd9b88f8fce 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -608,6 +608,7 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
- {
- 	struct tegra_plane_state *plane_state = to_tegra_plane_state(state);
- 	unsigned int rotation = DRM_MODE_ROTATE_0 |
-+				DRM_MODE_ROTATE_180 |
- 				DRM_MODE_REFLECT_X |
- 				DRM_MODE_REFLECT_Y;
- 	struct tegra_bo_tiling *tiling = &plane_state->tiling;
-@@ -659,6 +660,14 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
- 	else
- 		plane_state->reflect_y = false;
- 
-+	if (tegra_fb_is_bottom_up(state->fb))
-+		plane_state->reflect_y = true;
-+
-+	if (rotation & DRM_MODE_ROTATE_180) {
-+		plane_state->reflect_x = !plane_state->reflect_x;
-+		plane_state->reflect_y = !plane_state->reflect_y;
-+	}
-+
- 	/*
- 	 * Tegra doesn't support different strides for U and V planes so we
- 	 * error out if the user tries to display a framebuffer with such a
-@@ -720,7 +729,7 @@ static void tegra_plane_atomic_update(struct drm_plane *plane,
- 	window.dst.h = drm_rect_height(&plane->state->dst);
- 	window.bits_per_pixel = fb->format->cpp[0] * 8;
- 	window.reflect_x = state->reflect_x;
--	window.reflect_y = tegra_fb_is_bottom_up(fb) || state->reflect_y;
-+	window.reflect_y = state->reflect_y;
- 
- 	/* copy from state */
- 	window.zpos = plane->state->normalized_zpos;
-@@ -806,6 +815,7 @@ static struct drm_plane *tegra_primary_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
-@@ -1094,6 +1104,7 @@ static struct drm_plane *tegra_dc_overlay_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
--- 
-2.26.0
 
