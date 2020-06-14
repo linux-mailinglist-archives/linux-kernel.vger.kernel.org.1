@@ -2,106 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027A41F88C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 14:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC0F1F88CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 14:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgFNMjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 08:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        id S1727093AbgFNMm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 08:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgFNMjv (ORCPT
+        with ESMTP id S1725815AbgFNMm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 08:39:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D32C05BD43
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 05:39:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 64so6574492pfv.11
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 05:39:51 -0700 (PDT)
+        Sun, 14 Jun 2020 08:42:28 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BE7C05BD43;
+        Sun, 14 Jun 2020 05:42:26 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id jz3so5598969pjb.0;
+        Sun, 14 Jun 2020 05:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+068bSrQRTzwliNa3JuLLexz/LOjrev0rMh10PzRkI8=;
-        b=JPjtjnfY+gebb1zk2du4tey5HVKYeX+m/+ub8pbP6YeBTMpjROS969iZf3azxemzet
-         Z0FjJx1ePbqhmmFbiwcA8Si1ec1mjJfeLHORUEEiuROweMIpQsldZgRTejmdf7uRWdUc
-         BRkWHU/806uFqRxmmx1RVd3GVqQOR0GU/qJBvK6pqxdL9CdqnBffj2AsB3T+tRQcmv+7
-         f17bqV0jXeYfyhb7uLfFX/sVAXbJ+dDa+KnalDDqFwVgU1G+TrLdZ66XMJrtiDz4XmE0
-         PQADGnDM4ODrbtXAmRfPDATcAdcEMtqWJnRK5dqDqLIYWEDj1hgRy9zTLDzMkEPOEJQI
-         ZipQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AVycbdSIC92oMinsx/ttQrX35tvkIpw/xpSxCRvXai4=;
+        b=UE8KbyWRPhTnXkofLsXPmVCp3QB7wOYv7vSQAKjtCFlZMEgGtaCXto6Bygk7rJzUQb
+         POTOOU5bSEO1EWvJgKIHU51KUtGwbPwEdzbV9NEobxZE6AIkPn8vtsTdrP8agN/44BWp
+         BUhy933NXWDBOdKN550tgVB/dnyEwsliWvC/RipwZMDprRI308TPHPsmcHiRxYVgqhe2
+         p1ghAjtCyWsAEstqQ5lwphlsZExuyroApMHF1O725zsBeXI3Od/WED6GIS3fXGYm5D89
+         PlWuj9IxY3IQsRuhryPr/8sFUYpFVCP1FmTuzcUnsToNj8OXUm9ol9IXAFBSx3ab8ILG
+         bGsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+068bSrQRTzwliNa3JuLLexz/LOjrev0rMh10PzRkI8=;
-        b=ll0GyKMEm300z8L8PrYcZ7FlF7xjsYaIcvr3n0/BjHzvRtKgkJ0KPwP3KUl3Gfik+f
-         KT7H7rVYCE57yAgDfgVz9+2MdD0rQyCrv9dvDBnCKXBIEWqCdiPxQSwS/qA3ir67iVY6
-         L9uu0eVtdE8f4Yld/OJaPXBBNotZZb1+9YETqtQqdjNc3asvIzuLQlYc/7FM0TdFR/km
-         k6gElGNlf1ljBF/3zLCxUF5yhQheT0H/UIO0pALXqysli5KxJL+bZarhsh3Mag9MBMAT
-         YmJpKjrBrIzZR/XOtZvAfd0b1V2/tntIPF9kxsa4jMzIPDeUpvs+F0ubdFvTey8AuT4U
-         lSyQ==
-X-Gm-Message-State: AOAM531StlAwLLb69G55K0FOi5QT02fC+PfEpbPPZjldrolg27ipGt9i
-        MJB9xnHTIZXKLysi3t+uUJvFqA==
-X-Google-Smtp-Source: ABdhPJyNXpFiweAi3/sxwpQsIUi7tzjgedJvm+DRs6z/ncE6IJZUIZy9mc5J9v8um/KPxOLLeWhYQQ==
-X-Received: by 2002:a05:6a00:1510:: with SMTP id q16mr18443425pfu.164.1592138391321;
-        Sun, 14 Jun 2020 05:39:51 -0700 (PDT)
-Received: from Smcdef-MBP.lan ([103.136.221.68])
-        by smtp.gmail.com with ESMTPSA id hi19sm9776606pjb.49.2020.06.14.05.39.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Jun 2020 05:39:50 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 3/3] mm/slub: Fix release all resources used by a slab cache
-Date:   Sun, 14 Jun 2020 20:39:23 +0800
-Message-Id: <20200614123923.99189-4-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20200614123923.99189-1-songmuchun@bytedance.com>
-References: <20200614123923.99189-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AVycbdSIC92oMinsx/ttQrX35tvkIpw/xpSxCRvXai4=;
+        b=n6JdSgsf/d6IxiA29GUOccSX7iB3O1g/ch9DIDjo9l3xrvoaV2CDybU9Z2n8CLhKJN
+         DEUmcxje/6M8cWlCXBAYPBDZhrMuZOK5ELKbqj2XkoVTqOsx/IOEbqFUdPlfFysr+3UL
+         DSmvbRz/epM2aVb2KCCSPEbQsHLp8YymNezJUoKN8+/XSd/R0q3uuEB9fKAL9vfUkpFR
+         JhzKLFURHtfelRddoMJnvN2HEzSU3M4hmIFJmcvDzVub+x7WKlUI+mNQOzlS8DKIhCKP
+         CvjuVTNL8MiALlZ8R4mGBfi9nXyBAedBG7gTYq4z/ODaTUVLmYxApYahDdv58libw50R
+         F87g==
+X-Gm-Message-State: AOAM531KtTqi1y/x2FskLAxHdqbDYDrfylWkVZ8fUVgERkkuOeKz1P/D
+        kPiWclyoaURwiF3zOYdYeB2RiLmac6g9JfXhyJA=
+X-Google-Smtp-Source: ABdhPJwLu7V93VA9/SIlJB0fEtzGPFnR0p30cMfiZFMZ0zToSaDQBRqqX7PekXSoi4sqPtJbAjv/Ev8+n7rsbldtGIM=
+X-Received: by 2002:a17:90a:b30d:: with SMTP id d13mr7332787pjr.181.1592138544231;
+ Sun, 14 Jun 2020 05:42:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200614090751.GA2878@kunai> <CAHp75Vc2RV1daOHMM1zAT2P_YpFzYq=_NVXnagq7qBCS9En04g@mail.gmail.com>
+ <CAHp75VdtJN4KbsWgP3G40P4giPGgPE6gdr0CDqOXQjp2wK+i+g@mail.gmail.com> <CAMuHMdUadYRNYdJ9JUX90Z1jvtHZmSS4gM+JKft4x-BK2Ry4zQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUadYRNYdJ9JUX90Z1jvtHZmSS4gM+JKft4x-BK2Ry4zQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 14 Jun 2020 15:42:07 +0300
+Message-ID: <CAHp75VekhzjoGzKp2+fdsxhJOuUFanPz=LCC4JGWJwCqqPrfVw@mail.gmail.com>
+Subject: Re: RFC: a failing pm_runtime_get increases the refcnt?
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function of __kmem_cache_shutdown() is that release all resources
-used by the slab cache, while currently it stop release resources when
-the preceding node is not empty.
+On Sun, Jun 14, 2020 at 1:00 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Andy,
+>
+> On Sun, Jun 14, 2020 at 11:43 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sun, Jun 14, 2020 at 12:34 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Sun, Jun 14, 2020 at 12:10 PM Wolfram Sang <wsa@kernel.org> wrote:
+> > > > both in the I2C subsystem and also for Renesas drivers I maintain, I am
+> > > > starting to get boilerplate patches doing some pm_runtime_put_* variant
+> > > > because a failing pm_runtime_get is supposed to increase the ref
+> > > > counters? Really? This feels wrong and unintuitive to me.
+> > >
+> > > Yeah, that is a well known issue with PM (I even have for a long time
+> > > a coccinelle script, when I realized myself that there are a lot of
+> > > cases like this, but someone else discovered this recently, like
+> > > opening a can of worms).
+> > >
+> > > > I expect there
+> > > > has been a discussion around it but I couldn't find it.
+> > >
+> > > Rafael explained (again) recently this. I can't find it quickly, unfortunately.
+> >
+> > I _think_ this discussion, but may be it's simple another tentacle of
+> > the same octopus.
+> > https://patchwork.ozlabs.org/project/linux-tegra/patch/20200520095148.10995-1-dinghao.liu@zju.edu.cn/
+>
+> Thanks, hadn't read that one! (so I was still at -1 from
+> http://sweng.the-davies.net/Home/rustys-api-design-manifesto ;-)
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/slub.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+This one seems the starting point:
 
-diff --git a/mm/slub.c b/mm/slub.c
-index b73505df3de2..4e477ef0f2b9 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3839,6 +3839,7 @@ bool __kmem_cache_empty(struct kmem_cache *s)
-  */
- int __kmem_cache_shutdown(struct kmem_cache *s)
- {
-+	int ret = 0;
- 	int node;
- 	struct kmem_cache_node *n;
- 
-@@ -3846,11 +3847,11 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
- 	/* Attempt to free all objects */
- 	for_each_kmem_cache_node(s, node, n) {
- 		free_partial(s, n);
--		if (node_nr_slabs(n))
--			return 1;
-+		if (!ret && node_nr_slabs(n))
-+			ret = 1;
- 	}
- 	sysfs_slab_remove(s);
--	return 0;
-+	return ret;
- }
- 
- /********************************************************************
+https://lkml.org/lkml/2020/5/20/1100
+
+> So "pm_runtime_put_noidle()" is the (definitive?) one to pair with a
+> pm_runtime_get_sync() failure?
+
+Depends. If you are using autosuspend, then put_autosuspend() probably
+is the right one.
+
+> > > > I wonder why we
+> > > > don't fix the code where the incremented refcount is expected for some
+> > > > reason.
+> > >
+> > > The main idea behind API that a lot of drivers do *not* check error
+> > > codes from runtime PM, so, we need to keep balance in case of
+> > >
+> > > pm_runtime_get(...);
+> > > ...
+> > > pm_runtime_put(...);
+>
+> I've always[*] considered a pm_runtime_get_sync() failure to be fatal
+> (or: cannot happen), and that there's nothing that can be done to
+> recover.  Hence I never checked the function's return value.
+> Was that wrong?
+>
+> [*] at least on Renesas SoCs with Clock and/or Power Domains.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+
+
+
 -- 
-2.11.0
-
+With Best Regards,
+Andy Shevchenko
