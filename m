@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47011F8A4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217241F8A59
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 21:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgFNTEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 15:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S1727109AbgFNTMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 15:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgFNTEn (ORCPT
+        with ESMTP id S1726648AbgFNTMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 15:04:43 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F6EC08C5C2;
-        Sun, 14 Jun 2020 12:04:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id g62so10990538qtd.5;
-        Sun, 14 Jun 2020 12:04:42 -0700 (PDT)
+        Sun, 14 Jun 2020 15:12:54 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257CEC08C5C2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 12:12:53 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id w16so14575192ejj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 12:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=ZMcCnhw+cb0GssjRbz2Uvr23jd5CfAqDE459LKY1/1g=;
-        b=O4f0no9gkSjNwQeZuPS7lBS877ehntOkn4Y5ujlumfsbRYOyrEHldqHzVigXDiSSe5
-         HhxT6u2hr+AuZ0+KYXJ9gZg50GjPXIXjFPRu5PrrdzoE0TWBpM7BTmYhrol1vSEtyBB7
-         GXIiydsljflA1rCzKioD+ROrAaDY1N3lFj84zaVkfA+qS0H/qNUGeUaJTM/PCa6NMipj
-         Af9s+hXy1V0BGUk5UEUONvLJnC2fhKJl63LFthHX+yBHq9f6bWAY44vjiljDVLEl7fS2
-         mLnx0mKPuHa45xSY+Z/GBeTouuADZUoda6QuaueFNpJngGh9rtiqErlgbom3mCeNIAsR
-         XTrg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MrLddIkcot8tNQvLVw0AtZLgQi2l5giGkwxDkf5jFnc=;
+        b=Lsz5EOC7hGOW3kxIqpRHQK9XYomqtcYtwkxyKDnKHLrGTno3HnIozqjt8oQ0rd90aa
+         m3vQZ0CA2ghaSZPkK1dHC/xQnqR1ZxnqoFuTQr4c7fmX5nH0oymvG1jyRUNw+stxbpqO
+         2WmWDCtVGHJxYPR8xfXEcuAaBH6CsokuEgAEs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=ZMcCnhw+cb0GssjRbz2Uvr23jd5CfAqDE459LKY1/1g=;
-        b=q1bDEQTCznZFpHNf5NFy3ybmlsL+dNOqHBci7T/XnXInTR0tSHTEytc1q0CP2ZMfkA
-         wVhsn19jV0jxAnpiEPel0JWgxLPkgrCD41UZmNbT/+25ewSg9ZjJc1JEMJlOxJfn2rrh
-         08b6lqd9ui7n0jcTBksshgNjV5rpQTPoAgsut/gqz1+R5fTPMsTrrmOvTvn7EVTglnOz
-         dLnz2ZUkshx1QAjpUrsTMkm00i3dHCxs4kiM/oYEQ4Kf/VfUrR1GvSpkcExbVl0vP18O
-         9LMqHFslauDWUmE5SQeljYLA0tQDFLE1t90lD/qYk/jIFOOw2xrPw3dleChNJEmWOibw
-         wX/Q==
-X-Gm-Message-State: AOAM532S0fOLUSOO2lGaeYxrkZvsBt2LgpQ92W31igdMU8+n0Vp03isv
-        z/jGT/uQc/kLsld8LRGomRQ=
-X-Google-Smtp-Source: ABdhPJzsFCo/ACyKhmF/+97h8AR6FsA+85GRPNjWIzqOnbnbnw/hF3IHAduxaMCZIKMEAVwtcT+aQQ==
-X-Received: by 2002:ac8:3551:: with SMTP id z17mr12429782qtb.139.1592161481533;
-        Sun, 14 Jun 2020 12:04:41 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:b556:165b:f409:9052])
-        by smtp.googlemail.com with ESMTPSA id i40sm10953911qte.67.2020.06.14.12.04.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 12:04:40 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] [bpf] xdp_redirect_cpu_user: Fix null pointer dereference
-Date:   Sun, 14 Jun 2020 15:04:33 -0400
-Message-Id: <20200614190434.31321-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MrLddIkcot8tNQvLVw0AtZLgQi2l5giGkwxDkf5jFnc=;
+        b=tMcM8/6xjIhxU61k0avBzLT3WqFZjbo70uk1N+jHaaDLGBAcFUWW4VcbLoO5AfxdU+
+         4pKNI9KgiVqwvxxwwWmFpUYct/yf7wcs+QTndSGFyKtYlpOwCHSrP9Bcqyhb5ehAmZpt
+         jVDOURtzYOohbArfupFjqflJD9CfLjJGORGzXQ5yO89A31M2SQE9tUQUkBVxoSzZPCyr
+         ZRuJh/eIeIIf4EOhqJ/yxY39AdXb7KHQvR435Q7qY5jYSZkeJkFFBboNmLT2mlZWP1JC
+         R7vYkh89Z1U1JnRTe7M2gbnqifUfENQFp90wbZJzk/fOa6+TiIiVnLJ2xNYBH3SmNsum
+         CKEA==
+X-Gm-Message-State: AOAM531Mi9MmAbFSoC6e7owGcIgDaYknQyZY/e8FrDJj8em/jGkB8Onp
+        bWEuUsLTho15ek+nXVhX3dfpZUHIrHDXT6nUo07y/w==
+X-Google-Smtp-Source: ABdhPJxpSt8E/kV4o2MEhoil4h5Nijfxto783DKTZtexB+8uLOfIJGg0jA34qWrwtLfgvxi0lPizqI23J/L6G2zHstw=
+X-Received: by 2002:a17:906:7e50:: with SMTP id z16mr23294118ejr.277.1592161971719;
+ Sun, 14 Jun 2020 12:12:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJ-EccOy4qDpbfrP5=KH40LSOx1F4-ciY2=hFv_c+goUHLJ6PQ@mail.gmail.com>
+ <CAHk-=wiLXXR1+o4VAuw5MM3V1D8h6C6te3y8VMvW8iAJw6noJg@mail.gmail.com>
+ <CAJ-EccPGQ62yMK1Nmvie4qWzproSqb4POwAD4_0Nt62KLbGhqg@mail.gmail.com> <CAHk-=whZz_E+Bu1L6YTxtDQu_piBjUBoULW7vkKxNux54kwFAA@mail.gmail.com>
+In-Reply-To: <CAHk-=whZz_E+Bu1L6YTxtDQu_piBjUBoULW7vkKxNux54kwFAA@mail.gmail.com>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Sun, 14 Jun 2020 12:12:40 -0700
+Message-ID: <CAJ-EccP-MW3MZ3n=u-CoPD1nL73paLUSP3v5dQu+iiQLAtaZfQ@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID LSM changes for v5.8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memset() on the pointer right after malloc() can cause
-a null pointer dereference if it failed to allocate memory.
-Fix this by replacing malloc/memset with a single calloc().
+On Sun, Jun 14, 2020 at 11:39 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Jun 14, 2020 at 11:04 AM Micah Morton <mortonm@chromium.org> wrot=
+e:
+> >
+> > I amended the author on the lone commit in this pull request. For some
+> > reason I was thinking using the "From:" line in the commit body was
+> > how I should make things show up as Thomas as the author and me as the
+> > committer, but looks like that=E2=80=99s not true.
+>
+> That's how we do things in email, since you want a separate author for
+> the emailed patch than from the author of the email itself.
+>
+> But git itself very much has that difference between "author" and
+> "committer" internally, and all the usual email application tools will
+> take the separate "From:" line from the email, and make that be the
+> author in git.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- samples/bpf/xdp_redirect_cpu_user.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+Ah makes sense, thanks!
 
-diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-index f3468168982e..2ae7a9a1d950 100644
---- a/samples/bpf/xdp_redirect_cpu_user.c
-+++ b/samples/bpf/xdp_redirect_cpu_user.c
-@@ -207,11 +207,8 @@ static struct datarec *alloc_record_per_cpu(void)
- {
- 	unsigned int nr_cpus = bpf_num_possible_cpus();
- 	struct datarec *array;
--	size_t size;
- 
--	size = sizeof(struct datarec) * nr_cpus;
--	array = malloc(size);
--	memset(array, 0, size);
-+	array = calloc(nr_cpus, sizeof(struct datarec));
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
- 		exit(EXIT_FAIL_MEM);
-@@ -222,11 +219,9 @@ static struct datarec *alloc_record_per_cpu(void)
- static struct stats_record *alloc_stats_record(void)
- {
- 	struct stats_record *rec;
--	int i, size;
-+	int i;
- 
--	size = sizeof(*rec) + n_cpus * sizeof(struct record);
--	rec = malloc(size);
--	memset(rec, 0, size);
-+	rec = calloc(n_cpus + 1, sizeof(struct record));
- 	if (!rec) {
- 		fprintf(stderr, "Mem alloc error\n");
- 		exit(EXIT_FAIL_MEM);
--- 
-2.17.1
+>
+> (And then the sign-off chain is where we describe the whole path,
+> because git only has the concept of those two end-points: the original
+> author, and the final committer, but no concept of the path in between
+> the two, nor does it have the concept of the copyright and license
+> agreement implications of the sign-offs).
+>
+> > I also removed my own Signed-off-by line from the pull request body
+> > and included it in the commit instead of the Reviewed-by line.
+>
+> Good. You will get credit for the pull request in the merge commit
+> itself as a "Pull xyz from Micah Morton", so that path of history gets
+> encoded that way.
+>
+> But the sign-off chain is supposed to be there for each individual commit=
+.
+>
+> (I don't always notice those things, but afaik there is automation in
+> place in -next that should warn about commits with incomplete sign-off
+> chains. Did that not trigger for some reason in this case?).
 
+This change hasn't had any bake time in linux-next. I didn't deem it
+sufficiently risky or complex to warrant such integration testing.
+
+That said I'm a little fuzzy on where to draw the line for which kinds
+of changes really should be required to have bake time in -next. If
+you think this is one of those cases, we can hold off on this until we
+have some bake time for v5.9.
+
+Either way this is a good reminder for the v5.9 merge window when we
+plan to have more featureful changes going in for SafeSetID (although
+those will be completely internal to the LSM, so low chance of
+breaking anything outside the module).
+
+>
+>                   Linus
