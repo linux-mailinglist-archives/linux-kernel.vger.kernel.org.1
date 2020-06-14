@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080071F872D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 07:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334C51F8730
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 08:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgFNF4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 01:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgFNF4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 01:56:11 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B11C03E96F;
-        Sat, 13 Jun 2020 22:56:11 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id m81so14486600ioa.1;
-        Sat, 13 Jun 2020 22:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HWTtSELZk3B/c/eLDXpjAtutg42doyiLctGP7zQlm7s=;
-        b=c5ldnigWSGlAw/OZqVtWDPs1Vf/pl/8HaFmEyJl3Zntwky/chEpqbU5TlTIuCW/vV2
-         mkIagLfJ9rwOSQ90odu0i9e7YN8VnKnLXayD2LXCADQr6t8IiaNHLqnyvVgfEUUUWwM7
-         3+B9x2oabcOgsv3/TsZV80QjRfBuc8fo7wUohWPwNn/peIIQIbXQbr5aV/HRK4eY1yU8
-         gcD2OILCb4EikF8Yci6NP0fGk5uLPnLMw5cCmEGNDJqMQ+XQOt9q3wizw2FMFJlho+OI
-         M0XtdBafxNfdeY4riaD7YiKdhuCRk5yqn1OukBWHVRHSKBvSY/G5fg1yJnYwUxa1orEY
-         nIOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HWTtSELZk3B/c/eLDXpjAtutg42doyiLctGP7zQlm7s=;
-        b=eg0mabyfgIgB0CkMUvzP4SlmtTWUMw65WCIy/UJveTsSWPI4yf3eQUOiuEwbwspMtZ
-         V2caTXgC4LVJDzvy6Nh8Yjh6N5acThETmPQm8ZmR/NYG/nM4zWR3U7XimChZCJ+ASFpY
-         n+SCi3ahilc0b0I0upab+1OAVWL7PlHo9hLGj61kjgFUEWcUlFAjQRZP4o47OBvcqWsA
-         +eoCwEh9rE2hl4WaWjbF8sf4jm/ZvkPejEve1Q2kz0oZ6F1p9pJEscmY4F4mdefxo5w0
-         yYPr+WPnGIOQ5ZNNFdFUgGgT5aJks2Q3yzcZQCi4wopqvL/5N02Wo7jZTUF3CF2vXYBI
-         NeeA==
-X-Gm-Message-State: AOAM531+brKCznCm0Wv/9WQxQ305FVAqvL5ErZW4udEx6rEPTwUXaf9p
-        XBVP5NZNCGmozsWCSss77tsfmwRCT+8=
-X-Google-Smtp-Source: ABdhPJxWvi/DSAfSgti0vxnnlJfddI6wMYfAMBJSHra7Iqkd4mhrUYY2JDo8Shg3F7hv8yYy993w+w==
-X-Received: by 2002:a5e:c706:: with SMTP id f6mr21586067iop.186.1592114170290;
-        Sat, 13 Jun 2020 22:56:10 -0700 (PDT)
-Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
-        by smtp.googlemail.com with ESMTPSA id r17sm5916359ilc.33.2020.06.13.22.56.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 22:56:09 -0700 (PDT)
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu
-Subject: [PATCH] Input: bma150: fix ref count leak in bma150_open
-Date:   Sun, 14 Jun 2020 00:56:02 -0500
-Message-Id: <20200614055604.67969-1-navid.emamdoost@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726091AbgFNGEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 02:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725265AbgFNGEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 02:04:06 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DCFD2068E;
+        Sun, 14 Jun 2020 06:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592114646;
+        bh=gjtaa0VNN3qmgf1nzWIgFU7LxaP664Sux0mY1hwad9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g/WYkX3OKj70Bo1wYRWeIfvijunID8FYXL962nn9JUwQO4GcsVykMV6BRcTWuYLIK
+         +HFcuHsMMiCN7oYg9PwLIk9zuHUQkcO4zT4S8/4idvaK4Ger5FD6IfYInHbumF5P0e
+         bIHRVzAsduxwX+JAS8VsNwM1mFr/3W5fKSwbM0RY=
+Date:   Sun, 14 Jun 2020 08:04:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
+        akpm@linuxfoundation.org, linux@rasmusvillemoes.dk,
+        Jonathan Corbet <corbet@lwn.net>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 01/24] dyndbg-docs: eschew file /full/path query in
+ docs
+Message-ID: <20200614060401.GA2608744@kroah.com>
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+ <20200613155738.2249399-2-jim.cromie@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200613155738.2249399-2-jim.cromie@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in bma150_open, pm_runtime_get_sync is called which
-increments the counter even in case of failure, leading to incorrect
-ref count. In case of failure, decrement the ref count before returning.
+On Sat, Jun 13, 2020 at 09:57:15AM -0600, Jim Cromie wrote:
+> Regarding:
+> commit 2b6783191da7 ("dynamic_debug: add trim_prefix() to provide source-root relative paths")
+> commit a73619a845d5 ("kbuild: use -fmacro-prefix-map to make __FILE__ a relative path")
+> 
+> 2nd commit broke dynamic-debug's "file $fullpath" query form, but
+> nobody noticed because 1st commit had trimmed prefixes from
+> control-file output, so the click-copy-pasting of fullpaths into new
+> queries had ceased; that query form became unused.
+> 
+> Removing the function is cleanest, but it could be useful in
+> old-compiler corner cases, where __FILE__ still has /full/path,
+> and it safely does nothing otherwize.
+> 
+> So instead, quietly deprecate "file /full/path" query form, by
+> removing all /full/paths examples in the docs.  I skipped adding a
+> back-compat note.
+> ---
+>  .../admin-guide/dynamic-debug-howto.rst       | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
----
- drivers/input/misc/bma150.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/input/misc/bma150.c b/drivers/input/misc/bma150.c
-index a9d984da95f3..e2f1b05fcb2a 100644
---- a/drivers/input/misc/bma150.c
-+++ b/drivers/input/misc/bma150.c
-@@ -348,7 +348,7 @@ static int bma150_open(struct input_dev *input)
- 
- 	error = pm_runtime_get_sync(&bma150->client->dev);
- 	if (error < 0 && error != -ENOSYS)
--		return error;
-+		goto out;
- 
- 	/*
- 	 * See if runtime PM woke up the device. If runtime PM
-@@ -357,10 +357,13 @@ static int bma150_open(struct input_dev *input)
- 	if (bma150->mode != BMA150_MODE_NORMAL) {
- 		error = bma150_set_mode(bma150, BMA150_MODE_NORMAL);
- 		if (error)
--			return error;
-+			goto out;
- 	}
- 
- 	return 0;
-+out:
-+	pm_runtime_put(&bma150->client->dev);
-+	return error;
- }
- 
- static void bma150_close(struct input_dev *input)
--- 
-2.17.1
-
+None of your patches have a signed-off-by line so they can't be applied
+anywhere :(
