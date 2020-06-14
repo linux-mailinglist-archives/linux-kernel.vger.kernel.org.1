@@ -2,88 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8141F8950
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 16:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538B31F8957
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 16:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgFNOht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 10:37:49 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39502 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgFNOhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 10:37:47 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 079BA1A023A;
-        Sun, 14 Jun 2020 16:37:46 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8CC611A133B;
-        Sun, 14 Jun 2020 16:37:42 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E4C54402F3;
-        Sun, 14 Jun 2020 22:37:37 +0800 (SGT)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     shawnguo@kernel.org, ran.wang_1@nxp.com, robh+dt@kernel.org,
-        mark.rutland@arm.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
-Subject: [v2 4/4] arm: dts: ls1021a: add ftm_alarm0 DT node
-Date:   Sun, 14 Jun 2020 22:32:06 +0800
-Message-Id: <20200614143206.24993-4-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200614143206.24993-1-biwen.li@oss.nxp.com>
-References: <20200614143206.24993-1-biwen.li@oss.nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726931AbgFNOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 10:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726717AbgFNOkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 10:40:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBECC05BD43
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 07:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Mr+YAzLD99XJJr7FqlLfOzEn6BvtdNusuprn3XV2Rvc=; b=HJpq5dfLZkPD8vSjn03StGVsVx
+        +rpnzrhiNwX890IOUzCZ82hNyByeK0oDCBdAA9hae4vBl2glafmbmek7KcQc3qZ8Dm/OQciZR0D0/
+        cl3+Hs+sVrAOowB/hBm5OvIcYLDVqpokJI0NNF5DSwMWuJ017kvR3koz/Idi0gn4vBd8S379NSSNR
+        57QBvi50iFPXfE46ZcCcXn9wxc3LpAR6GNf/ClKpz9vdSlK2Y/5mxdP3yEX5hwaGouJ9iAN8FUnLp
+        CKD19pdTCmggZJwyuCsTG61YmDefAbFmLHj0v3HoxW5IlwgHBy5MIkq1G1bdyotsA+Bw9+kn0ADdc
+        ptE5SzXw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkTo0-0000Ep-PX; Sun, 14 Jun 2020 14:40:16 +0000
+Subject: Re: [Cocci] coccinelle issues
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>, cocci@systeme.lip6.fr
+References: <b14e6d1d-afa0-5c28-547a-9bb1a987f6fd@infradead.org>
+ <alpine.DEB.2.22.394.2006140932490.2849@hadrien>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dadeaa1d-1146-c4b1-e757-14e9791dac59@infradead.org>
+Date:   Sun, 14 Jun 2020 07:40:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.22.394.2006140932490.2849@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+On 6/14/20 12:39 AM, Julia Lawall wrote:
+> 
+> 
+> On Sat, 13 Jun 2020, Randy Dunlap wrote:
+> 
+>> Hi,
+>>
+>> OK, I've not used Coccinelle and now I am trying to use it.
+>> It seems that I am having a few issues.
+>> The primary one is when I run spatch (via 'make coccicheck' in
+>> the kernel source tree), it tells me:
+>>
+>> Python error: No module named coccilib.elems
+>>
+>> I do see "elems.py" in /usr/local/lib64/coccinelle/python/coccilib.
+>>
+>> I am using coccinelle-master downloaded from github on
+>> Friday June 12, 2020.
+>>
+>>
+>> I have also made the following notes while building/installing it.
+>>
+>>
+>> Note1: The latest coccinelle tarball is not actually available
+>> at the coccinelle home page although the kernel documentation says it is.
+> 
+> Yes, I'm aware of this problem.  We're not able to update the home page at
+> the moment.  This problem is being worked on.
+> 
+>>
+>> Note2: https://github.com/coccinelle/coccinelle/blob/master/install.txt
+>> says that 'spatch' is a script, but it seems to be a binary executable
+>> file.
+> 
+> Actually, it is a script, and the fact that you say it is a binary may be
+> the reason for your python problem.  Normally there is a script
+> (scripts/spatch) that make install puts in place that refers back to where
+> your Coccinelle is installed.
 
-The patch add ftm_alarm0 DT node
-	- add rcpm node
-	- add ftm_alarm0 node
-	- aliases ftm_alarm0 as rtc1
+Yes, I saw scripts/spatch, but that script is not what is installed in
+/usr/local/bin.
+(see more below)
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
----
-Change in v2:
-	- use generic name
+>> Note3: https://github.com/coccinelle/coccinelle/blob/master/install.txt
+>> probably should say to use 'sudo make install' instead of just
+>> 'make install', just like 'coccinelle.rst' file in the kernel tree says.
+> 
+> OK.  A lot of documentation for a lot of projects seems to omit the sudo,
+> but I have indeed never understood why.
+> 
+> Maybe try again with make distclean, ./autogen, ./configure, sudo make
+> install?
 
- arch/arm/boot/dts/ls1021a.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+OK, I did all of those.
 
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 760a68c..5af45ef 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -66,6 +66,7 @@
- 		serial4 = &lpuart4;
- 		serial5 = &lpuart5;
- 		sysclk = &sysclk;
-+		rtc1 = &ftm_alarm0;
- 	};
- 
- 	cpus {
-@@ -1002,5 +1003,19 @@
- 			big-endian;
- 		};
- 
-+		rcpm: power-controller@1ee2140 {
-+			compatible = "fsl,ls1021a-rcpm", "fsl,qoriq-rcpm-2.1+";
-+			reg = <0x0 0x1ee2140 0x0 0x8>;
-+			#fsl,rcpm-wakeup-cells = <2>;
-+		};
-+
-+		ftm_alarm0: timer0@29d0000 {
-+			compatible = "fsl,ls1021a-ftm-alarm";
-+			reg = <0x0 0x29d0000 0x0 0x10000>;
-+			reg-names = "ftm";
-+			fsl,rcpm-wakeup = <&rcpm 0x20000 0x0>;
-+			interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-+			big-endian;
-+		};
- 	};
- };
+Is this expected?
+
+$ ./autogen
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+cat: VERSION: No such file or directory
+
+
+spatch is installed in /usr/local/bin/spatch:
+
+$ ll /usr/local/bin/spatch
+-rwxr-xr-x 1 root root 15547736 Jun 14 07:32 /usr/local/bin/spatch*
+
+$ file /usr/local/bin/spatch
+/usr/local/bin/spatch: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, BuildID[sha1]=2b658c12a1a49deae24010b71d22d262988ce041, for GNU/Linux 3.2.0, with debug_info, not stripped
+
+
+I still get this runtime error:
+
+Python error: No module named coccilib.elems
+
 -- 
-2.7.4
+~Randy
 
