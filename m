@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63261F875F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 09:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659851F8764
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Jun 2020 09:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgFNHKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 03:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        id S1726833AbgFNHMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 03:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgFNHKf (ORCPT
+        with ESMTP id S1725265AbgFNHMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 03:10:35 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3177BC03E96F
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:10:34 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ga6so5430608pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:10:34 -0700 (PDT)
+        Sun, 14 Jun 2020 03:12:39 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790DBC03E96F
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:12:39 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c75so12470010ila.8
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 00:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ryP8cAu4wXnxt+VFYVN54rpFGELZrqJgme1cG9J5OqU=;
-        b=g8wTcgSEiMfnC3eceuFg8o2iLz2trcVbGEeT5fDXa+nd4+w3H8KMZ08t2JmyGvh6H4
-         Hk0GhdgsHbLVd9wSbqTqa43AcP0r3owR8zakL7PR1XpCriBPPKKipezk2LW4Jz2VIOW1
-         ui07vW5/tqW/yCqVJFOO4pM8MRePhCsFSJMMI5hVYsEbuy+jOc91F97aJFkQE2qVjWUs
-         qUNlZ+lPtmtQTurxPTCnOX7rE1b76M2eNAH70O3qltXCWU4L4HO9E9gHePYZpiQ/3VLY
-         qOzDN5numvZJHGIS4miCsRa3aPyFC67LO+u7g8xrNRkjLDzEsTpYiglDUw9ALwdfQ1lI
-         YBXA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=J0HX3Qy+oA7OgSkbAwCFUgm7xc4/mQq2g3sSxGqtxts=;
+        b=ng0Hs7X76WMv2RgLHK06guvTkOhbuJO1TZxkIDGvxw8Y8cfXgIV/12HWs0gFqNgvOe
+         UM/bVQxlvagvWjXIbdCgd0k8y/XX6chWyaZW1KeVUtw5AjHuhIWQ4KHUw3jXaX4omsA7
+         9HzANrDVVvngT3aa19831CroM1Oqm5DAjVrmsQUuCefQz5mv7gnPKn7ZKQW+NjsL2lQl
+         n69rfkYHJB+wiUECAcoooaS7GBQV/CImXYpLQKQ7uYEOxKRfFCoPCpaZ4pnQkZwBuR04
+         xbinJ2+pytEaA+KPFsIRiRHp+tyJYzZTedi4Kngguff8RDa/SnPIRw/e9/jM7E4RE0IY
+         uCGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ryP8cAu4wXnxt+VFYVN54rpFGELZrqJgme1cG9J5OqU=;
-        b=CUaR+ZNTVzCJOaF5pYr8FCpcp2/Vk9hK0Alh3FAtRrh5IosUi0SPgshsu5M3lLEmvs
-         VsChFPWqbCEN6iv03izjPKKCSRD65sYoZRjoc/aLtrWDCRffxdZ0qlAWtq4sHF0bHjnu
-         oJrhmN91Dm1g/zbnZvWyoZOuhtCazQq31nEDoYVSWp7AD7riSK6DwXLKTgdnSVjJBflI
-         ncDk6kEdS40XszFaRjsfrl86R01fumPIF50NLo9rXqDNn0vHxE33WrvbvJ7emnzVv89n
-         UxOUKoVFmKWyYiNGbhtRMXNhYSf1++LXXcumCNiNkKBgxmWDQ7jVOq+jgwTv5r9roKxq
-         2ylQ==
-X-Gm-Message-State: AOAM5334jnMKQEGVWrhkuY7l58rvhUyVxqimQR6dh1GoSOnG9nUAti2c
-        OHFPaUNFj1vOhlbEnmYbb6ds7A==
-X-Google-Smtp-Source: ABdhPJzNVoLlmCiafNPTUNImFxjozsh2/voaziymVaz7SWMkKprBhenAlqpLq+wsa5VwQmkrF+P2QA==
-X-Received: by 2002:a17:90a:32ee:: with SMTP id l101mr6855322pjb.213.1592118633549;
-        Sun, 14 Jun 2020 00:10:33 -0700 (PDT)
-Received: from Smcdef-MBP.lan ([103.136.221.72])
-        by smtp.gmail.com with ESMTPSA id q145sm10483669pfq.128.2020.06.14.00.10.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Jun 2020 00:10:33 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        bigeasy@linutronix.de, namit@vmware.com
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] smp: Fix a potential usage of stale nr_cpus
-Date:   Sun, 14 Jun 2020 15:10:20 +0800
-Message-Id: <20200614071020.86037-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=J0HX3Qy+oA7OgSkbAwCFUgm7xc4/mQq2g3sSxGqtxts=;
+        b=NpFzfFRl9xkZjBIJpgLHYixYssk3qRk+pYct/8y9ROohn/WBJ43+mB8N7w0JnxMjx/
+         xaqABLfb8O0fNztnNJ/fbo1yDOeJzrX4vo8rhXedCYbyA76gL0HbwwHa5h+4qv50ptaL
+         /PA6B8sXcnyixQdPMIShytLPKf54FxFeJsJlJHc84iZCtZefFOsjslxuWs/uvJ1PsGMP
+         RXkENnrdga8RqVWLx5nqvCK7whRfEKZ/qU5Tx/6jw2mFXitfKdBxsYmZxwbl2hYNGR1V
+         zH2RRyyT9xMo4BsZPNVV6nrtwjoCyf97x1FpXSWjBDEDXioQkl+cjpFctEq9oeMRwemu
+         r4fw==
+X-Gm-Message-State: AOAM532E6icu2UYVPDyFBzRiw4PoD691setPmiwkkf1XSwsvQyNf3Ts5
+        EmGwg+GR8Kj2c5rsvaig2/A=
+X-Google-Smtp-Source: ABdhPJyimyxSAUwofweWNgN5hEFbQ/O7Qx3jeTQjffr0wRqkezjV+1DdWhLCq+42269oMOzx82Uv1A==
+X-Received: by 2002:a92:4885:: with SMTP id j5mr19444436ilg.35.1592118758649;
+        Sun, 14 Jun 2020 00:12:38 -0700 (PDT)
+Received: from cs-u-kase.dtc.umn.edu (cs-u-kase.cs.umn.edu. [160.94.64.2])
+        by smtp.googlemail.com with ESMTPSA id t63sm6158788ill.54.2020.06.14.00.12.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 00:12:38 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Leo Liu <leo.liu@amd.com>, James Zhu <James.Zhu@amd.com>,
+        =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?= <marek.olsak@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: [PATCH] drm/amdgpu: fix ref count leak in amdgpu_driver_open_kms
+Date:   Sun, 14 Jun 2020 02:12:29 -0500
+Message-Id: <20200614071231.87723-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_option() maybe return 0, it means that the nr_cpus is
-not initialized. Then we will use the stale nr_cpus to initialize
-the nr_cpu_ids. So fix it.
+in amdgpu_driver_open_kms the call to pm_runtime_get_sync increments the
+counter even in case of failure, leading to incorrect
+ref count. In case of failure, decrement the ref count before returning.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- kernel/smp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 472c2b274c65..2a9a04acf123 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -634,8 +634,7 @@ static int __init nrcpus(char *str)
- {
- 	int nr_cpus;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+index d7e17e34fee1..bd40aa307462 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -991,7 +991,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
  
--	get_option(&str, &nr_cpus);
--	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
-+	if (get_option(&str, &nr_cpus) && nr_cpus > 0 && nr_cpus < nr_cpu_ids)
- 		nr_cpu_ids = nr_cpus;
+ 	r = pm_runtime_get_sync(dev->dev);
+ 	if (r < 0)
+-		return r;
++		goto pm_put;
  
- 	return 0;
+ 	fpriv = kzalloc(sizeof(*fpriv), GFP_KERNEL);
+ 	if (unlikely(!fpriv)) {
+@@ -1042,6 +1042,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
+ 
+ out_suspend:
+ 	pm_runtime_mark_last_busy(dev->dev);
++pm_put:
+ 	pm_runtime_put_autosuspend(dev->dev);
+ 
+ 	return r;
 -- 
-2.11.0
+2.17.1
 
