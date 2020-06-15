@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6AB1FA2E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1911FA301
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731677AbgFOVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 17:34:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
+        id S1726326AbgFOVmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 17:42:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731513AbgFOVe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 17:34:56 -0400
+        id S1725911AbgFOVmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 17:42:00 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1413207D3;
-        Mon, 15 Jun 2020 21:34:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFC2520714;
+        Mon, 15 Jun 2020 21:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592256896;
-        bh=BdYjNLEgTcpmwRJ0GEQnNtjrpeCQvu4Ztsdv4OuQUNc=;
+        s=default; t=1592257319;
+        bh=8Zbuy1b0z/Ednd8/WbrXrRkx2o1CKrlUkbyp6gQ/7Fo=;
         h=Date:From:To:Cc:Subject:From;
-        b=uxW7hxRX4HksUHvlNRvQrnjyZibTlQhWohtiL/A2cAee8xmUFMDP36Im1AQXIjvkb
-         0G6YikUjq4c9sR/jjLZn5jv+7DP7f2DxQS8VsQqCLQlvkY490G82YW5BLj1GYm37jW
-         6vdmEM7G4fICp75T0WO6kHQZGwmXHzPz1pJXS/mE=
-Date:   Mon, 15 Jun 2020 16:40:15 -0500
+        b=llznlCQ80AmMdNQCbgR0iYH5upWqniXPugvwHCNh/4x9NWv9AeA0RiGWrgYCGd+Hi
+         oNnvUxOnbMuZT8GGXixo2nvDB2rhthEFoS8hyrk7QR3QJmovfRMaqtzFfkSXk5NBXq
+         iKUJqDqk4SUL/FRJkDX1VYVr2WK6N5j9z25/14a4=
+Date:   Mon, 15 Jun 2020 16:47:18 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] media: test_drivers: vivid-core: Use array_size() helper
-Message-ID: <20200615214015.GA5258@embeddedor>
+Subject: [PATCH] scsi: megaraid_sas: Use array_size() helper
+Message-ID: <20200615214718.GA6970@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -40,8 +44,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tpg_alloc() and vmalloc() functions have no 2-factor argument form, so
-multiplication factors need to be wrapped in array_size().
+The get_order() function has no 2-factor argument form, so multiplication
+factors need to be wrapped in array_size().
 
 This issue was found with the help of Coccinelle and, audited and fixed
 manually.
@@ -49,31 +53,35 @@ manually.
 Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/media/test-drivers/vivid/vivid-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_fusion.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index 6c740e3e6999..7abaf858c4a3 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -1117,7 +1117,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
- 	ret = -ENOMEM;
- 	/* initialize the test pattern generator */
- 	tpg_init(&dev->tpg, 640, 360);
--	if (tpg_alloc(&dev->tpg, MAX_ZOOM * MAX_WIDTH))
-+	if (tpg_alloc(&dev->tpg, array_size(MAX_WIDTH, MAX_ZOOM)))
- 		goto free_dev;
- 	dev->scaled_line = vzalloc(array_size(MAX_WIDTH, MAX_ZOOM));
- 	if (!dev->scaled_line)
-@@ -1127,7 +1127,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
- 		goto free_dev;
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 319f241da4b6..6de44ed4cde7 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -5180,8 +5180,8 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
  
- 	/* load the edid */
--	dev->edid = vmalloc(256 * 128);
-+	dev->edid = vmalloc(array_size(256, 128));
- 	if (!dev->edid)
- 		goto free_dev;
+ 	fusion = instance->ctrl_context;
  
+-	fusion->log_to_span_pages = get_order(MAX_LOGICAL_DRIVES_EXT *
+-					      sizeof(LD_SPAN_INFO));
++	fusion->log_to_span_pages = get_order(array_size(MAX_LOGICAL_DRIVES_EXT,
++					      sizeof(LD_SPAN_INFO)));
+ 	fusion->log_to_span =
+ 		(PLD_SPAN_INFO)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+ 						fusion->log_to_span_pages);
+@@ -5196,8 +5196,8 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
+ 		}
+ 	}
+ 
+-	fusion->load_balance_info_pages = get_order(MAX_LOGICAL_DRIVES_EXT *
+-		sizeof(struct LD_LOAD_BALANCE_INFO));
++	fusion->load_balance_info_pages = get_order(array_size(MAX_LOGICAL_DRIVES_EXT,
++		sizeof(struct LD_LOAD_BALANCE_INFO)));
+ 	fusion->load_balance_info =
+ 		(struct LD_LOAD_BALANCE_INFO *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+ 		fusion->load_balance_info_pages);
 -- 
 2.27.0
 
