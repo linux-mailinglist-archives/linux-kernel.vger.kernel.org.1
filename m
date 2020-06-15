@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025331F9CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F871F9CD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbgFOQQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:16:40 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47524 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730431AbgFOQQg (ORCPT
+        id S1730954AbgFOQQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:16:32 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:65534 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730916AbgFOQQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:16:36 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FGE0Za008035;
+        Mon, 15 Jun 2020 12:16:30 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FGDuXt026506;
         Mon, 15 Jun 2020 18:15:50 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=D0CIlRMyCMY46WlQS0au/Wr7dLxhaIcJQjjTERBtZsA=;
- b=H/YRPpXrpfShfwEpgd4fagcpv3XeCkQF7P8ceUXb2bWLvpcdz/CHO+CRaTO84YwfQl3H
- cLaJ7AP1U/XZwMY+wEET6EWzTyhRb4AiHOygrUR3wPjcftcoIqPSbm3V3sW3FoTvekK6
- 14LUBMXumFG3kTYPF3lEHLlAXXZWs4/xI0YQ7Zjgrine+oL9Fbw4ATg9lJ1E43dEe3YT
- Q/SAz11SZg49fXbT2pe7MaNS2qLdM450+0iXok3e+1dGKB86pHaCXj0cgR6CKhhPugsP
- 94FufdAnCqmCRoMRfdD7BUfPdo9mOtUXyNEoNpGgbWRYpchx6hA7S1C4Kd9e1AeIDjL0 Xw== 
+ bh=EZEfL//m6GHcOtQjjtUzSvMdL8Qzo78tTmsoTsjvHoU=;
+ b=fw94aZ6MF5mQnfWCsVLLqxpcOYn05/wJFH+5+JhSWfC5aBFwF2vyTUT4mANk+EwDGrJX
+ rGzaTXQ4ZhdHWzglYs2utsJEuyKQkedJnfw9QAdVStK7t1tPMEGf3O7jnB1p31d3xBH7
+ z3IcYem3tkrwkDmEZVSjtTLwOE8RXbPOR/YKIah/c15B8Zses+IBwEhPzSXjoc+QDcqa
+ Kkv5ewOReyvvj6o+HLTd2z37E0cr1Kbmqd67oWlZ+4rzvPwyKUt4PH6SlAbgWLtrretA
+ C19HHUXFezPmHqs7iorLTT4SZwMOXZFRiHKucCRCu+o1h0TJYlVJSBzqx/wmkcDKPk4q cw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mnph2be2-1
+        by mx07-00178001.pphosted.com with ESMTP id 31mm91jkwn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Mon, 15 Jun 2020 18:15:50 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 86DA3100034;
-        Mon, 15 Jun 2020 18:15:49 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 34230100038;
+        Mon, 15 Jun 2020 18:15:50 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1C42F2C5AD8;
-        Mon, 15 Jun 2020 18:15:49 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 18:15:48
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 243B12C5AD8;
+        Mon, 15 Jun 2020 18:15:50 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 18:15:49
  +0200
 From:   Amelie Delaunay <amelie.delaunay@st.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -50,16 +50,16 @@ CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Amelie Delaunay <amelie.delaunay@st.com>,
         Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH 2/6] usb: typec: add typec_find_pwr_opmode
-Date:   Mon, 15 Jun 2020 18:15:08 +0200
-Message-ID: <20200615161512.19150-3-amelie.delaunay@st.com>
+Subject: [PATCH 3/6] dt-bindings: usb: Add DT bindings for STUSB160x Type-C controller
+Date:   Mon, 15 Jun 2020 18:15:09 +0200
+Message-ID: <20200615161512.19150-4-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200615161512.19150-1-amelie.delaunay@st.com>
 References: <20200615161512.19150-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE2.st.com
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
  (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-15_06:2020-06-15,2020-06-15 signatures=0
@@ -68,56 +68,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a function that converts power operation mode string into
-power operation mode value.
-
-It is useful to configure power operation mode through device tree
-property, as power capabilities may be linked to hardware design.
+Add binding documentation for the STMicroelectronics STUSB160x Type-C port
+controller.
 
 Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
- drivers/usb/typec/class.c | 15 +++++++++++++++
- include/linux/usb/typec.h |  1 +
- 2 files changed, 16 insertions(+)
+ .../devicetree/bindings/usb/st,stusb160x.yaml | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/st,stusb160x.yaml
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index c9234748537a..59e1837ef85e 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1448,6 +1448,21 @@ void typec_set_pwr_opmode(struct typec_port *port,
- }
- EXPORT_SYMBOL_GPL(typec_set_pwr_opmode);
- 
-+/**
-+ * typec_find_pwr_opmode - Get the typec power operation mode capability
-+ * @name: power operation mode string
-+ *
-+ * This routine is used to find the typec_pwr_opmode by its string @name.
-+ *
-+ * Returns typec_pwr_opmode if success, otherwise negative error code.
-+ */
-+int typec_find_pwr_opmode(const char *name)
-+{
-+	return match_string(typec_pwr_opmodes,
-+			    ARRAY_SIZE(typec_pwr_opmodes), name);
-+}
-+EXPORT_SYMBOL_GPL(typec_find_pwr_opmode);
+diff --git a/Documentation/devicetree/bindings/usb/st,stusb160x.yaml b/Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+new file mode 100644
+index 000000000000..12a996cd9405
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/usb/st,stusb160x.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
- /**
-  * typec_find_orientation - Convert orientation string to enum typec_orientation
-  * @name: Orientation string
-diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-index 5daa1c49761c..f7c63ee3d443 100644
---- a/include/linux/usb/typec.h
-+++ b/include/linux/usb/typec.h
-@@ -254,6 +254,7 @@ int typec_set_mode(struct typec_port *port, int mode);
- 
- void *typec_get_drvdata(struct typec_port *port);
- 
-+int typec_find_pwr_opmode(const char *name);
- int typec_find_orientation(const char *name);
- int typec_find_port_power_role(const char *name);
- int typec_find_power_role(const char *name);
++title: STMicroelectronics STUSB160x Type-C controller bindings
++
++maintainers:
++  - Amelie Delaunay <amelie.delaunay@st.com>
++
++properties:
++  compatible:
++    enum:
++      - st,stusb1600
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  vdd-supply:
++    description: main power supply (4.1V-22V)
++
++  vsys-supply:
++    description: low power supply (3.0V-5.5V)
++
++  vconn-supply:
++    description: power supply (2.7V-5.5V) used to supply VConn on CC pin in
++      source or dual power role
++
++  connector:
++    type: object
++
++    allOf:
++      - $ref: ../connector/usb-connector.yaml
++
++    properties:
++      compatible:
++        const: usb-c-connector
++
++      power-role: true
++
++      power-opmode: true
++
++    required:
++      - compatible
++
++required:
++  - compatible
++  - reg
++  - connector
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c4 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        typec: stusb1600@28 {
++            compatible = "st,stusb1600";
++            reg = <0x28>;
++            vdd-supply = <&vbus_drd>;
++            vsys-supply = <&vdd_usb>;
++            interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++            interrupt-parent = <&gpioi>;
++
++            typec_con: connector {
++                compatible = "usb-c-connector";
++                label = "USB-C";
++                power-role = "dual";
++                power-opmode = "default";
++                data-role = "dual";
++
++                port {
++                    typec_con_ep: endpoint {
++                        remote-endpoint = <&usbotg_hs_ep>;
++                    };
++                };
++            };
++        };
++    };
++...
 -- 
 2.17.1
 
