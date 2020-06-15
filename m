@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8101FA3DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBD61FA3D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgFOXHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgFOXHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:07:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF38FC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:07:46 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q19so21259328lji.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UaFpoo1mZCfjylbR/6JREQHN4U4G1dhmW8P2thsazM4=;
-        b=Zfb11Iec1W9nJFMqICoHN9YmFkiRiFka9EQK/ZDaTynmK1pMEcsbbaStN5AA3VCTv3
-         PvA8hwG2+A5Da5PtbQHHGzVzDGueijaQF/7Sq6RTUWQ9GBVoZvmksPNlXyjZAUYnnyTD
-         10dNrgQI5nnTnJ5XoeH0GWfStVyvWomSqqGxs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UaFpoo1mZCfjylbR/6JREQHN4U4G1dhmW8P2thsazM4=;
-        b=jUF5ydScbu/2HjVel7Ibr0Jm30a4vlqNINUIgatHfKZWfz906+gKiXw1IG37OZx8JK
-         yRZ2ZCC/voNnLfi+DNUQ76MDl4WWsqqvJmkZG2+9OCLK3V1Fd+3FrurVD5w3qOyFYXdJ
-         Vd8svcJ4SXNicGNeVqpZv7b8x7UrP4VhPYzQPomykxHe0Tgwpnl1Kh/11OWTox9a9+Gg
-         FVMbUtT+NOaJroHOFfA6QWnosCK51hq8DZK+tH0vScVfmGGqsUXdtQK63zDTzvvaVYzS
-         8DKRaVhOspe1FIIrL98bTH5ljfTw6ZYkbPPlnqvdlde+rEt8x9JqumPhu2mBkOSCxliJ
-         +htA==
-X-Gm-Message-State: AOAM530KBczhbHIzf0XWB5WsDCgki1GJFmWXexpXLONAaDIlGrWfb+XA
-        PgZJSpvaacjQtEl2o7sOZBaz9TOjzis=
-X-Google-Smtp-Source: ABdhPJxl5/jeGudpKy/ntkN0cNrtD4MF3xL8dTIQqi7aSKjL7L1tE81EQJU4HUAnY102CO7ZQbQ+Jw==
-X-Received: by 2002:a2e:88ce:: with SMTP id a14mr4892ljk.379.1592262464970;
-        Mon, 15 Jun 2020 16:07:44 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id z22sm4803035lfi.96.2020.06.15.16.07.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 16:07:44 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id n23so21201008ljh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:07:44 -0700 (PDT)
-X-Received: by 2002:a2e:8991:: with SMTP id c17mr2830lji.421.1592262463791;
- Mon, 15 Jun 2020 16:07:43 -0700 (PDT)
+        id S1726581AbgFOXCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:02:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725960AbgFOXCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:02:52 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 833EB206B7;
+        Mon, 15 Jun 2020 23:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592262171;
+        bh=2fY6x6btMBGUWDGltZvwP9IaFu4qoglTHiwDo9vpb/U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=g5cHDt68M/meaEKU1f97f0CLzvuXsjJiY9mlxth+B3JPAZBgVHwzM60WynMnhxZ9X
+         AYuNd6fYNYGF5keGR4oS9VQ2aWlHckv308xgCuU+IKhAjiO2KQP9EzWOW/kD590LMW
+         8iVHjeFZ3CiDbYdVhIinFkL1GvlQ2zpVMwpE3xJQ=
+Date:   Mon, 15 Jun 2020 18:08:11 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] staging: rts5208: Use array_size() helper in vmalloc()
+Message-ID: <20200615230811.GA18818@embeddedor>
 MIME-Version: 1.0
-References: <20200615203917.GA15876@embeddedor>
-In-Reply-To: <20200615203917.GA15876@embeddedor>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Jun 2020 16:07:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiSQV3nxTkQwO55qaLsW9CdkROFqwc1S6RX3PXe8ONPaQ@mail.gmail.com>
-Message-ID: <CAHk-=wiSQV3nxTkQwO55qaLsW9CdkROFqwc1S6RX3PXe8ONPaQ@mail.gmail.com>
-Subject: Re: [GIT PULL] flexible-array member conversion patches for 5.8-rc2
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 1:34 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> flexible-array member conversion patches for 5.8-rc2
+and memset()
 
-Gaah. I merged this, and even spent some time trying to make the merge
-message look better, and then when I started looking at the end
-result, I ended up unpulling it.
+The vmalloc() function has no 2-factor argument form, so multiplication
+factors need to be wrapped in array_size(). Also, while there, use
+array_size() in memset().
 
-It's all been recently rebased, which I might be willing to ignore for
-something like this, but all these one-liner patches then come with a
-boiler-plate commit message that is something like 50 lines long and
-is actively misleading as it talks about "this tree-wide patch" and
-just repeats the generic issues that were presented (better) in the
-merge message anyway.
+This issue was found with the help of Coccinelle and, audited and fixed
+manually.
 
-The individual commit messages literally add nothing specific to that
-commit AT ALL except for the very first line, which is also
-boiler-plate but at least mentions the subsystem.
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/staging/rts5208/ms.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-End result: when I do "git log" after having merged this, the result
-is basically two *thousand* lines of repeated noise.
+diff --git a/drivers/staging/rts5208/ms.c b/drivers/staging/rts5208/ms.c
+index d53dd138a356..9001570a8c94 100644
+--- a/drivers/staging/rts5208/ms.c
++++ b/drivers/staging/rts5208/ms.c
+@@ -2306,14 +2306,14 @@ static int ms_build_l2p_tbl(struct rtsx_chip *chip, int seg_no)
+ 		if (!segment->l2p_table)
+ 			goto BUILD_FAIL;
+ 	}
+-	memset((u8 *)(segment->l2p_table), 0xff, table_size * 2);
++	memset((u8 *)(segment->l2p_table), 0xff, array_size(table_size, 2));
+ 
+ 	if (!segment->free_table) {
+-		segment->free_table = vmalloc(MS_FREE_TABLE_CNT * 2);
++		segment->free_table = vmalloc(array_size(MS_FREE_TABLE_CNT, 2));
+ 		if (!segment->free_table)
+ 			goto BUILD_FAIL;
+ 	}
+-	memset((u8 *)(segment->free_table), 0xff, MS_FREE_TABLE_CNT * 2);
++	memset((u8 *)(segment->free_table), 0xff, array_size(MS_FREE_TABLE_CNT, 2));
+ 
+ 	start = (u16)seg_no << 9;
+ 	end = (u16)(seg_no + 1) << 9;
+-- 
+2.27.0
 
-Some repetition is fine. But 2000 lines of repeated boiler-plate makes
-me go "that's actively detrimental to any use of 'git log'" and I
-undid my pull.
-
-               Linus
