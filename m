@@ -2,195 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111241F93BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076FB1F93E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgFOJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgFOJlc (ORCPT
+        id S1729417AbgFOJuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:50:07 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:23314 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729027AbgFOJuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:41:32 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F23C061A0E;
-        Mon, 15 Jun 2020 02:41:32 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r9so13938946wmh.2;
-        Mon, 15 Jun 2020 02:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KX2ULwgHf9kOaWMhPVMslim8oE0KSCOv/pZ2klCyRGI=;
-        b=MADKiMUvO5q+6PpA7O/3H1wZ356C+bn7YJCQLTnaUNSoHutxT+2j5eIE9ZkXJ+DWxi
-         NPrNRkA7Qdfa8fRr1zoKHDZTaZQLLGM1Ttq8bcuqecfCz/x3VhjouNbfQd08q6QLw2PY
-         iNNqd0yr1mQvOJ0mN2hoblfClSj1xRs5n1jd9khVou1+7h9W2TT1NHEgxDTQgptOYJ53
-         i2iJmywNJC9aksGIjW+YdbRYdKSB7uUCgPElSqa+ITDHQ0gXm+tRkTSxHS0wtwWvJ5/S
-         dI2aUdQLDhB0Yj+9pWpcew4a9wV9L2cRkb/ti/IyjfoG6xrcZgOisuQsMrCj6nGtO+AN
-         y/0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KX2ULwgHf9kOaWMhPVMslim8oE0KSCOv/pZ2klCyRGI=;
-        b=ZK7y791GRTOhIMT+wCh4lsiMS5rxMuPOxbtidI9QY3mBQH35np0lNa7IyDsL0cF/Yk
-         uMHAfJH3v1y4RhtD7UAyEFKEV3jBj/71WPBADAnBmZm+I28ssjeTpeTCNBgaeyOm6CMH
-         u/lLcAIqNwVWqcG/UM6z4RFeargx6jbn1e2Z1zDJAAD2L2zZC/FgN+yWSH6kb10wyPuP
-         GmXaZtsEouMcAH4rrJyFWFZSFsDVOOEV2ioa3DiGvAIJ0zrO2mFOanybBlYMat0mlSt/
-         Hf27ZN//L3qqZCliFqG7Pm34TcxdLUf4u+3+v+nftLbGFfFH6/Fi1reTGcFblOVOVtjs
-         ZeAg==
-X-Gm-Message-State: AOAM532bw21YInEt97tRc+tbYQqhTgr1lacwxpyC1UPj2BMxvaRpZ8cV
-        6e0S98ucF0pJ/Qw19t4gTvg=
-X-Google-Smtp-Source: ABdhPJyVaVd7y3qPeu+QQyc6wGoty9uDZd9oVpwHAHUFCZmUiI3IHbcATQ+TsPgQKHhygmoNJ17xlA==
-X-Received: by 2002:a1c:6006:: with SMTP id u6mr12071103wmb.39.1592214090818;
-        Mon, 15 Jun 2020 02:41:30 -0700 (PDT)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id b8sm24305884wrs.36.2020.06.15.02.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 02:41:29 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 10:41:28 +0100
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, eric.auger@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, ashok.raj@intel.com,
-        jun.j.tian@intel.com, yi.y.sun@intel.com, jean-philippe@linaro.org,
-        peterx@redhat.com, hao.wu@intel.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/15] vfio: Document dual stage control
-Message-ID: <20200615094128.GB1491454@stefanha-x1.localdomain>
-References: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
- <1591877734-66527-15-git-send-email-yi.l.liu@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
-Content-Disposition: inline
-In-Reply-To: <1591877734-66527-15-git-send-email-yi.l.liu@intel.com>
+        Mon, 15 Jun 2020 05:50:06 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200615095003epoutp026865d55f6d06865efd4311f8786ab0d2~Yrr8UEzXk2308523085epoutp02f
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:50:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200615095003epoutp026865d55f6d06865efd4311f8786ab0d2~Yrr8UEzXk2308523085epoutp02f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592214604;
+        bh=2ivsfWpsjds0lXjl9MUgPX5dQ16pCU3H9lxwQHqhi5E=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=TWbCfBmuG+c6TP9/AZKUJp8N1R83NG6UVaKhFSj1H8c0fy1XZCSbaE6xD5bcq+5Zu
+         Ut+U1grXd0kEARy4hnXLwNrpxtSltZ79OrOt5w56cldBl2lAsk69RB+iC/zeGR4jQ5
+         56gWy2kTt7KZZBLsqLZQQf3UTDGkSGKQ166ZBUQU=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200615095003epcas1p2a75469652c674106dbd78aee3624bf58~Yrr7jwchH0374103741epcas1p20;
+        Mon, 15 Jun 2020 09:50:03 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH v2 5/5] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01592214002170.JavaMail.epsvc@epcpadp1>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21592214603155.JavaMail.epsvc@epcpadp1>
+Date:   Mon, 15 Jun 2020 18:41:43 +0900
+X-CMS-MailID: 20200615094143epcms2p4ea72d7ebeafc262795e46e90c5766d70
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <231786897.01592214002170.JavaMail.epsvc@epcpadp1>
+        <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
+        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p4>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch changes the read I/O to the HPB read I/O.
 
---MW5yreqqjyrRcusr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If the logical address of the read I/O belongs to active sub-region, the
+HPB driver modifies the read I/O command to HPB read. It modifies the upiu
+command of UFS instead of modifying the existing SCSI command.
 
-On Thu, Jun 11, 2020 at 05:15:33AM -0700, Liu Yi L wrote:
-> From: Eric Auger <eric.auger@redhat.com>
->=20
-> The VFIO API was enhanced to support nested stage control: a bunch of
-> new iotcls and usage guideline.
->=20
-> Let's document the process to follow to set up nested mode.
->=20
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> ---
-> v1 -> v2:
-> *) new in v2, compared with Eric's original version, pasid table bind
->    and fault reporting is removed as this series doesn't cover them.
->    Original version from Eric.
->    https://lkml.org/lkml/2020/3/20/700
->=20
->  Documentation/driver-api/vfio.rst | 64 +++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 64 insertions(+)
->=20
-> diff --git a/Documentation/driver-api/vfio.rst b/Documentation/driver-api=
-/vfio.rst
-> index f1a4d3c..06224bd 100644
-> --- a/Documentation/driver-api/vfio.rst
-> +++ b/Documentation/driver-api/vfio.rst
-> @@ -239,6 +239,70 @@ group and can access them as follows::
->  	/* Gratuitous device reset and go... */
->  	ioctl(device, VFIO_DEVICE_RESET);
-> =20
-> +IOMMU Dual Stage Control
-> +------------------------
-> +
-> +Some IOMMUs support 2 stages/levels of translation. Stage corresponds to
-> +the ARM terminology while level corresponds to Intel's VTD terminology.
-> +In the following text we use either without distinction.
-> +
-> +This is useful when the guest is exposed with a virtual IOMMU and some
-> +devices are assigned to the guest through VFIO. Then the guest OS can use
-> +stage 1 (GIOVA -> GPA or GVA->GPA), while the hypervisor uses stage 2 for
-> +VM isolation (GPA -> HPA).
-> +
-> +Under dual stage translation, the guest gets ownership of the stage 1 pa=
-ge
-> +tables and also owns stage 1 configuration structures. The hypervisor ow=
-ns
-> +the root configuration structure (for security reason), including stage 2
-> +configuration. This works as long configuration structures and page table
+In the HPB version 1.0, the maximum read I/O size that can be converted to
+HPB read is 4KB.
 
-s/as long configuration/as long as configuration/
+The dirty map of the active sub-region prevents an incorrect HPB read that
+has stale physical page number which is updated by previous write I/O.
 
-> +format are compatible between the virtual IOMMU and the physical IOMMU.
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 234 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 234 insertions(+)
 
-s/format/formats/
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 6229c6fcb5e1..848f51e9a1a1 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -25,6 +25,22 @@ static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
+ 		srgn->srgn_state == HPB_SRGN_VALID;
+ }
+ 
++static inline bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
++{
++	return req_op(cmd->request) == REQ_OP_READ;
++}
++
++static inline bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
++{
++	return op_is_write(req_op(cmd->request)) ||
++	       op_is_discard(req_op(cmd->request));
++}
++
++static inline bool ufshpb_is_support_chunk(int transfer_len)
++{
++	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
++}
++
+ static inline bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -116,6 +132,224 @@ static inline void ufshpb_lu_put(struct ufshpb_lu *hpb)
+ 	put_device(&hpb->hpb_lu_dev);
+ }
+ 
++static inline u32 ufshpb_get_lpn(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_pos(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static inline unsigned int ufshpb_get_len(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_sectors(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++			     int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int set_bit_len;
++	int bitmap_len = hpb->entries_per_srgn;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		set_bit_len = bitmap_len - srgn_offset;
++	else
++		set_bit_len = cnt;
++
++	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
++	    srgn->srgn_state == HPB_SRGN_VALID)
++		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= set_bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	WARN_ON(cnt < 0);
++}
++
++static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				   int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int bitmap_len = hpb->entries_per_srgn;
++	int bit_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (!ufshpb_is_valid_srgn(rgn, srgn))
++		return true;
++
++	/*
++	 * If the region state is active, mctx must be allocated.
++	 * In this case, check whether the region is evicted or
++	 * mctx allcation fail.
++	 */
++	WARN_ON(!srgn->mctx);
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		bit_len = bitmap_len - srgn_offset;
++	else
++		bit_len = cnt;
++
++	if (find_next_bit(srgn->mctx->ppn_dirty,
++			  bit_len, srgn_offset) >= srgn_offset)
++		return true;
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	return false;
++}
++
++static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
++			  struct ufshpb_map_ctx *mctx, int pos, int *error)
++{
++	u64 *ppn_table;
++	struct page *page;
++	int index, offset;
++
++	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
++	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
++
++	page = mctx->m_page[index];
++	if (unlikely(!page)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev,
++			"error. cannot find page in mctx\n");
++		return 0;
++	}
++
++	ppn_table = page_address(page);
++	if (unlikely(!ppn_table)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev, "error. cannot get ppn_table\n");
++		return 0;
++	}
++
++	return ppn_table[offset];
++}
++
++static inline void
++ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
++			int *srgn_idx, int *offset)
++{
++	int rgn_offset;
++
++	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
++	rgn_offset = lpn & hpb->entries_per_rgn_mask;
++	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
++	*offset = rgn_offset & hpb->entries_per_srgn_mask;
++}
++
++static void
++ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
++				  u32 lpn, u64 ppn,  unsigned int transfer_len)
++{
++	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
++
++	cdb[0] = UFSHPB_READ;
++
++	put_unaligned_be64(ppn, &cdb[6]);
++	cdb[14] = transfer_len;
++}
++
++/* routine : READ10 -> HPB_READ  */
++static void ufshpb_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	struct scsi_cmnd *cmd = lrbp->cmd;
++	u32 lpn;
++	u64 ppn;
++	unsigned long flags;
++	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
++	int err = 0;
++
++	hpb = ufshpb_get_hpb_data(cmd);
++	err = ufshpb_lu_get(hpb);
++	if (unlikely(err))
++		return;
++
++	WARN_ON(hpb->lun != cmd->device->lun);
++	if (!ufshpb_is_write_discard_cmd(cmd) &&
++	    !ufshpb_is_read_cmd(cmd))
++		goto put_hpb;
++
++	transfer_len = ufshpb_get_len(cmd);
++	if (unlikely(!transfer_len))
++		goto put_hpb;
++
++	lpn = ufshpb_get_lpn(cmd);
++	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	/* If command type is WRITE or DISCARD, set bitmap as drity */
++	if (ufshpb_is_write_discard_cmd(cmd)) {
++		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				 transfer_len);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	WARN_ON(!ufshpb_is_read_cmd(cmd));
++
++	if (!ufshpb_is_support_chunk(transfer_len))
++		goto put_hpb;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				   transfer_len)) {
++		atomic_inc(&hpb->stats.miss_cnt);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	if (unlikely(err)) {
++		/*
++		 * In this case, the region state is active,
++		 * but the ppn table is not allocated.
++		 * Make sure that ppn table must be allocated on
++		 * active state.
++		 */
++		WARN_ON(true);
++		dev_err(&hpb->hpb_lu_dev,
++			"ufshpb_get_ppn failed. err %d\n", err);
++		goto put_hpb;
++	}
++
++	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
++
++	atomic_inc(&hpb->stats.hit_cnt);
++put_hpb:
++	ufshpb_lu_put(hpb);
++}
++
+ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+ 					     struct ufshpb_subregion *srgn)
+ {
+-- 
+2.17.1
 
-> +
-> +Assuming the HW supports it, this nested mode is selected by choosing the
-> +VFIO_TYPE1_NESTING_IOMMU type through:
-> +
-> +    ioctl(container, VFIO_SET_IOMMU, VFIO_TYPE1_NESTING_IOMMU);
-> +
-> +This forces the hypervisor to use the stage 2, leaving stage 1 available
-> +for guest usage. The guest stage 1 format depends on IOMMU vendor, and
-> +it is the same with the nesting configuration method. User space should
-> +check the format and configuration method after setting nesting type by
-> +using:
-> +
-> +    ioctl(container->fd, VFIO_IOMMU_GET_INFO, &nesting_info);
-> +
-> +Details can be found in Documentation/userspace-api/iommu.rst. For Intel
-> +VT-d, each stage 1 page table is bound to host by:
-> +
-> +    nesting_op->flags =3D VFIO_IOMMU_NESTING_OP_BIND_PGTBL;
-> +    memcpy(&nesting_op->data, &bind_data, sizeof(bind_data));
-> +    ioctl(container->fd, VFIO_IOMMU_NESTING_OP, nesting_op);
-> +
-> +As mentioned above, guest OS may use stage 1 for GIOVA->GPA or GVA->GPA.
-> +GVA->GPA page tables are available when PASID (Process Address Space ID)
-> +is exposed to guest. e.g. guest with PASID-capable devices assigned. For
-> +such page table binding, the bind_data should include PASID info, which
-> +is allocated by guest itself or by host. This depends on hardware vendor
-> +e.g. Intel VT-d requires to allocate PASID from host. This requirement is
-> +available by VFIO_IOMMU_GET_INFO. User space could allocate PASID from
-> +host by:
-> +
-> +    req.flags =3D VFIO_IOMMU_ALLOC_PASID;
-> +    ioctl(container, VFIO_IOMMU_PASID_REQUEST, &req);
 
-It is not clear how the userspace application determines whether PASIDs
-must be allocated from the host via VFIO_IOMMU_PASID_REQUEST or if the
-guest itself can allocate PASIDs. The text mentions VFIO_IOMMU_GET_INFO
-but what exactly should the userspace application check?
-
---MW5yreqqjyrRcusr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7nQkgACgkQnKSrs4Gr
-c8jZ0gf/XFjQsLCysIADPfVm33C/7VK8W+efHOrirtgQ8Hq2FEuki7UjwGgs933f
-RRuvRaPuVCeVMuM9pEXT7uZyAVNS8uKoTVv0Z0gzQsRv/wNHKH6SrgW+n+o6Yhyo
-6z200NLZZ9HrIt7J5cCYEqLv56KVSam5UfaX1LJMBF1I9YFNF7mo4oE12RJ69sT4
-f3cjbmN3DmUpuB4AhVxYxn6/cdE5nFa3wkxqFE68yExNbNjcvUvZumLbEiQnEZYW
-c4BVsNb71Q76yXB340m6RN4fU5pcS91eK9XAiDdPGYHtdFGNbSGA6Iadj8vbz++c
-qlxF2QhlrFHPiXHRgrnzLKJcvmmZrA==
-=/aVG
------END PGP SIGNATURE-----
-
---MW5yreqqjyrRcusr--
