@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA9D1F9A5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A775C1F9A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgFOOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        id S1730642AbgFOOf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729962AbgFOOe6 (ORCPT
+        with ESMTP id S1728326AbgFOOf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:34:58 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972A7C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:34:58 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id a127so7883998pfa.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0fmpVHgGx4khjreuKTold8vL5cDN0j8b4e7HVpyhRN0=;
-        b=WC0+Uclub+ASTuwfAlokUI2c9x3YNPa+EttIB2ARu24xCucxisa+JdPUtqfVRPAweL
-         l1r0Bz8QA97tQB0SswvZAYJGw7GtGI5K35SN0B8dkeYzLcEwfw7bI6NR9BjQ2WEUyhIG
-         EYLPNLzznGZg9auQtb/sI0ARq6rG1jMSj96o6PnA2UgkWjYuy85HeKwGLGyUYem32TIx
-         m7mXZrsHAIbTG3+/o+flYK1dkLwsEN2dJY/frUPn8fbQl2lM1yymzYOxzpXhbXViN7Qg
-         evt+Y6Av2PBfmH5ri/9T4/Vd06YMpdmwbDmYj5xD4NtmKicPKthTTygxWEPhz/4c3BkL
-         S4iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0fmpVHgGx4khjreuKTold8vL5cDN0j8b4e7HVpyhRN0=;
-        b=LDgPe2esW+nhdGzj1rWPJ/93EOfa/i4+tGoSfYh5sfJRw6hOxF9c0JePFNpeGI9Dm6
-         ToRC1GYV+sAO3VJUR3/xzoRv0wozLHCYt+aHb7ZldiQSuNc8v84Vmlg/FBfqiThAm/Yn
-         J2rL/b5Fwwle9Y/ZxJG2cbAUK5IikX9QoS9G/ECa89f5Q388v/zh9/39XTFRSvueVJ7F
-         TGTWyUSnQXJQHVajSP+RPE6joV9hpel7gHUVp/NRv8aILJ4Mptj6dLkD/yr1bVUu97BF
-         UHmDjaF7NHre0cHlDk+MiCeE5OfqvFnq5pHuwyGwtcMnsvpjwgK2V1EwY/0hqh985OXS
-         F8Ag==
-X-Gm-Message-State: AOAM533qj8/CQt/dynJSpzXGLkI7CAbc/BETZKde774fQilTH4AXVIQk
-        WHmjbxZuwwUFVVw98h61lfsdhiCTvrImDA==
-X-Google-Smtp-Source: ABdhPJwACsBHHkrY5qNGKynezRmPxPaGv63Bn3SUAcJoXsEg5GeA8nKBqqacn9WdUXyThbDaSow0IA==
-X-Received: by 2002:a63:40a:: with SMTP id 10mr22101615pge.310.1592231697971;
-        Mon, 15 Jun 2020 07:34:57 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id gt22sm124472pjb.2.2020.06.15.07.34.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 07:34:57 -0700 (PDT)
-Subject: Re: [PATCH] blk-mq: Remove redundant 'return' statement
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ming.lei@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <a93d3ae2b37c01bc1d30b0eb229241b81405e6ad.1592212094.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1fc24b5e-984e-a779-942e-74e61b51f95c@kernel.dk>
-Date:   Mon, 15 Jun 2020 08:34:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 15 Jun 2020 10:35:56 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DABC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CNJqcR8O2MGARUu3ztkILAgDD+9fnJBIlgO1t0ryM7s=; b=dt0mlxnY4n62j+Mv9nWzG0NHIt
+        GW7jHe0cvEGK/PGx78zFjelxRFOSgYF5DPbekiklRes1pvymE1cukvtIujxjGquOjJYgNBVZfafIx
+        SZwLnDJJErabrmLdwmjEuwUKtM9N1snlkOJIoybprJuBLmDW282HTQ0e1xh2F5d4yLIyc12v+kzNO
+        Br3OxdwBD6qUwEuewPhVY8U/3pKyTbpE8t4G48RnSjrv0xoGAaqGOQR0cKJivsY2+8Xg7F9GwvShn
+        dYNt0KeTJSYaUyVgm/1pHhcYzxlFljQwsvsszM9L+1ysfiiL2QUtMYErSYTJAzzXVdn1D0a5GyBON
+        6olVAOfQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkqCr-0006Q2-GC; Mon, 15 Jun 2020 14:35:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E119C301A32;
+        Mon, 15 Jun 2020 16:35:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C7117203B8172; Mon, 15 Jun 2020 16:35:23 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 16:35:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip v3 1/2] kcov: Make runtime functions
+ noinstr-compatible
+Message-ID: <20200615143523.GE2554@hirez.programming.kicks-ass.net>
+References: <CACT4Y+Zwm47qs8yco0nNoD_hFzHccoGyPznLHkBjAeg9REZ3gA@mail.gmail.com>
+ <CANpmjNPNa2f=kAF6c199oYVJ0iSyirQRGxeOBLxa9PmakSXRbA@mail.gmail.com>
+ <CACT4Y+Z+FFHFGSgEJGkd+zCBgUOck_odOf9_=5YQLNJQVMGNdw@mail.gmail.com>
+ <20200608110108.GB2497@hirez.programming.kicks-ass.net>
+ <20200611215538.GE4496@worktop.programming.kicks-ass.net>
+ <CACT4Y+aKVKEp1yoBYSH0ebJxeqKj8TPR9MVtHC1Mh=jgX0ZvLw@mail.gmail.com>
+ <20200612114900.GA187027@google.com>
+ <CACT4Y+bBtCbEk2tg60gn5bgfBjARQFBgtqkQg8VnLLg5JwyL5g@mail.gmail.com>
+ <CANpmjNM+Tcn40MsfFKvKxNTtev-TXDsosN+z9ATL8hVJdK1yug@mail.gmail.com>
+ <20200615142949.GT2531@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <a93d3ae2b37c01bc1d30b0eb229241b81405e6ad.1592212094.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615142949.GT2531@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/20 3:12 AM, Baolin Wang wrote:
-> The blk_mq_all_tag_iter() is a void function, thus remove
-> the redundant 'return' statement in this function.
+On Mon, Jun 15, 2020 at 04:29:50PM +0200, Peter Zijlstra wrote:
+> Let me go look at your KCSAN thing now...
 
-Applied, thanks.
+vmlinux.o: warning: objtool: idtentry_enter_cond_rcu()+0x16: call to is_idle_task() leaves .noinstr.text section
 
--- 
-Jens Axboe
-
+---
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b62e6aaf28f03..a7abc18a7d0ad 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1663,7 +1663,7 @@ extern struct task_struct *idle_task(int cpu);
+  *
+  * Return: 1 if @p is an idle task. 0 otherwise.
+  */
+-static inline bool is_idle_task(const struct task_struct *p)
++static __always_inline bool is_idle_task(const struct task_struct *p)
+ {
+ 	return !!(p->flags & PF_IDLE);
+ }
