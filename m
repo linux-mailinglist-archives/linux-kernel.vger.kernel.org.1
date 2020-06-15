@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CD01F9829
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A8F1F982E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgFONTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S1730424AbgFONTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730303AbgFONTR (ORCPT
+        with ESMTP id S1729916AbgFONTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:19:17 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5E0C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:19:16 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so19163762ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:19:16 -0700 (PDT)
+        Mon, 15 Jun 2020 09:19:43 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E9AC061A0E;
+        Mon, 15 Jun 2020 06:19:41 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id c12so12459758qtq.11;
+        Mon, 15 Jun 2020 06:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d0+fVB8z8jdw1gSMk70thxDB2hpCm5vov8BerGkPNs4=;
-        b=zWvkYGGBLqm+uDBKq1QN8h5GKQ/ETBo/7AxNpXaC4Nb//BtPtgw+DB/QEHBtjD/h9M
-         pututTgMvRNXv+Kh3DhcDdxnAonmbMkx6RbS8G7Wkp9PTcVQYQHxhFJ9+uTByfw2DoXr
-         MmPAJL9Qfd8irfMqzJi55c0evcYyNIyzxVqoPBi8np315K7e4ZivkDb4NpqUCjytDw5D
-         aMg0dehJ2f1o4p7oD/g9AbPALMOj7p943ZMFR7I61I7j4rFyulhKQwm4m5UlAwOovlsD
-         +/6tmDLFBy2t45WZ5ukXjxUjiyuFlm1SpagSIP1u5vgu9+dyl4ZRRBaPSUbpusGhChQq
-         vHtg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Y3ar0NlCgHyRvUgHFVw4GwwVEYkMu69FrpNlEgYZaig=;
+        b=S/S2vKqaaiMkDzviRm/cegQn34GwLrWUJzwiHO0SG32LaLpY/rNXsqw3qrBJvWE8nz
+         vJ3yXdKMkbxGFOnXF0fJTJ3ng+YqmDPBZMVP+BTsB+Zp/2fLBUFulmvBSeR2p95aVSJr
+         lPiRIXtpA9L/nyr0fVE/shzaF0Tde6OSPgP2QV+vLGJR4bXoVXxPwRD4vx4aVhzvBaPi
+         bQML8PfmRN+AulAeCD43dyushoKncliEd7WaZG8x2g8gtsLZ5/sGnY5G27qsr8JuQVxc
+         uuj8QamlfZWw4WJO2jpbfL8RfbaR6EuvKjN3+WhhRHVkm2Nua00pgXNs3bQXjEt5AS2D
+         LgCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d0+fVB8z8jdw1gSMk70thxDB2hpCm5vov8BerGkPNs4=;
-        b=EhrRcA4YWVB+zN2Eu/CWi/oPHLMMuyJag5yExkd1+0k8gCvi2hzcaLoU+ozlG4C6Nt
-         gTSeeHndzDwdIaoPCWRSFtAiutGfNfcjHuwfc+vn56fgby/NlhpV65jpywSrOsYpk1r2
-         REc5XIZewfelh1nZlNLrhbHb4Kvwg7Bksw4WvRRM5b9+l3osdZJYhN6VEaRUozULoyuX
-         kTvxD9r8lTsUmT5JFjNMtPASdtvJJOt4LeAd1iAPT0igKaCgi9jzmLUkD2QMAbMlD2C8
-         afpvSRAjPPrw4+YcTsL/GEg9hrlHnEY8vDS5ua6Q2X3HGKFCTbISUJelKd4CEnEU9GA3
-         2Wyw==
-X-Gm-Message-State: AOAM533821l663hw/oSJEcOh5wyQ9foDST3trQi9iFxIhA3ag7VO2VQj
-        lsiCwVDU/wbVMtHnU8ODThWrlg==
-X-Google-Smtp-Source: ABdhPJzWFCWxAYzx+/wH9hK3PCY6B9IEdhgTdt/1LyTbYR0kQnQJ0LwMDx+enY0AQppT3qo+WTZE6A==
-X-Received: by 2002:a2e:98d7:: with SMTP id s23mr13427255ljj.2.1592227155000;
-        Mon, 15 Jun 2020 06:19:15 -0700 (PDT)
-Received: from jade.urgonet (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id y12sm3823532ljh.79.2020.06.15.06.19.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Y3ar0NlCgHyRvUgHFVw4GwwVEYkMu69FrpNlEgYZaig=;
+        b=C7yYLG4Ykl+2f5+Y8QlPsKHqaMUEWs9PuoiGv+as27jfFhxc7RR9TCYnEl2XR8T9Kh
+         FciXfhy4e7cI/7Sa41tXctZRu0hNkUdJrOd1u+MyTjuThX1UfAWTCO+kg2SiD3y9MPeu
+         qPdOXUxMzd6gW9EF/3D84DuvHB9WHw68a/P9yZi00LBQe8odQaBbOMhaGsjuYrXRu5F5
+         u5bSravj31uVmHaPhUpOpEVX3bAmrQwmCOACxeuYo5OqKLSTrg06isqhCYaNN1h/4qxl
+         3pz4/rfZHgIID9pe1ZOdOU1tvDq/5zDM75NTs8H3BwaRm+rnbYUzGc9s4dHImRgfJpPa
+         ukHA==
+X-Gm-Message-State: AOAM530WjD4z9CytIEFYSjBY1yHFeoE6WJNWF+hxYysKAtdUvBh/5V2m
+        Qlv43ScuPr7xk7qQdP6Gq6toE66o
+X-Google-Smtp-Source: ABdhPJyWlvPaYg5fM0exV17DKKfaRTgNRErTfbIaQDpsECFpyLk/C8vgs/087jTcN9C+sRmBlCN7vw==
+X-Received: by 2002:ac8:7c2:: with SMTP id m2mr15444087qth.282.1592227180849;
+        Mon, 15 Jun 2020 06:19:40 -0700 (PDT)
+Received: from aford-OptiPlex-7050.logicpd.com ([174.46.170.158])
+        by smtp.gmail.com with ESMTPSA id q24sm11520968qkj.103.2020.06.15.06.19.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 06:19:14 -0700 (PDT)
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH] MAINTAINERS: change tee mailing list
-Date:   Mon, 15 Jun 2020 15:19:10 +0200
-Message-Id: <20200615131910.2276515-1-jens.wiklander@linaro.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 15 Jun 2020 06:19:40 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        stable@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/panel-simple: fix connector type for LogicPD Type28 Display
+Date:   Mon, 15 Jun 2020 08:19:34 -0500
+Message-Id: <20200615131934.12440-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The old TEE mailing list tee-dev@lists.linaro.org is about to be
-retired. From now on please use op-tee@lists.trustedfirmware.org
-instead.
+The LogicPD Type28 display used by several Logic PD products has not
+worked since v5.5.
 
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
----
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The connector type for the LogicPD Type 28 display is missing and
+drm_panel_bridge_add() requires connector type to be set.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..772448e36203 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12691,13 +12691,13 @@ F:	arch/mips/boot/dts/ralink/omega2p.dts
+Signed-off-by: Adam Ford <aford173@gmail.com>
+CC: stable@vger.kernel.org #v5.5+
+
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index b6ecd1552132..334e9de5b2c8 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2495,6 +2495,7 @@ static const struct panel_desc logicpd_type_28 = {
+ 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+ 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE |
+ 		     DRM_BUS_FLAG_SYNC_DRIVE_NEGEDGE,
++	.connector_type = DRM_MODE_CONNECTOR_DPI,
+ };
  
- OP-TEE DRIVER
- M:	Jens Wiklander <jens.wiklander@linaro.org>
--L:	tee-dev@lists.linaro.org
-+L:	op-tee@lists.trustedfirmware.org
- S:	Maintained
- F:	drivers/tee/optee/
- 
- OP-TEE RANDOM NUMBER GENERATOR (RNG) DRIVER
- M:	Sumit Garg <sumit.garg@linaro.org>
--L:	tee-dev@lists.linaro.org
-+L:	op-tee@lists.trustedfirmware.org
- S:	Maintained
- F:	drivers/char/hw_random/optee-rng.c
- 
-@@ -16759,7 +16759,7 @@ F:	include/media/i2c/tw9910.h
- 
- TEE SUBSYSTEM
- M:	Jens Wiklander <jens.wiklander@linaro.org>
--L:	tee-dev@lists.linaro.org
-+L:	op-tee@lists.trustedfirmware.org
- S:	Maintained
- F:	Documentation/tee.txt
- F:	drivers/tee/
+ static const struct panel_desc mitsubishi_aa070mc01 = {
 -- 
-2.25.1
+2.17.1
 
