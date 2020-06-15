@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC51F987D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CF71F9882
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730475AbgFON2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:28:01 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:35821 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730417AbgFON17 (ORCPT
+        id S1730505AbgFON2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730471AbgFON2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:27:59 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 073B0638;
-        Mon, 15 Jun 2020 09:27:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 15 Jun 2020 09:27:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=DKyp3bFsT/wAPyu3/m37Y/nhGw3
-        zD9EptQY56CoWJTE=; b=rG0XjvrC1fzNFrjF2IhL/m09oPKa7ogCInrNWNOTxsb
-        dPDZpirSoqaXCvqUnO5bDKu0drnmYuWmr12sOunEd/K2GCloqPYQlI7GdfM+O2VH
-        YbxnC7QS8pKC3fQyl1zOMpmCeVKa4KlPab3D3DL4VzAOsOptDi09JWlhjhXm3tCT
-        WyQBCHJxGx/XuiJh6c4N3trrVtSk3sbYDdTNxauHUKMfKV1xnOtWt/D7HCoQ5CU1
-        QVYZHr+MZodWwAuSpWtUOPo7++Cx+Ej7Cl6/1cqHU2UEPfxxeo9QusqWydPQPKr7
-        2CJ9EnKQCiImvlyGW//4lmSFk+KytfVqGh/U+/cM4hQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=DKyp3b
-        FsT/wAPyu3/m37Y/nhGw3zD9EptQY56CoWJTE=; b=NfqNF0yO0vYDcKoOq6qXuP
-        beuy5fHmjeotjtV1sMrp5+G22J9Pg+hSukg1LB2UurqjbFlcFAY6byO0VAgl8rgB
-        plfkGejd8EB2+01GCYDFQgATwkV3mx2yWSsWCua7nuRPaFqVuxju0oKeqt4vYIQW
-        1hRKmIqkd5Nm3UJ0dt1Q8Fwq9LskAztXfNAU/Rrlrg5Uhc7ivDJYgYVOnAq4hryq
-        Cm9k5Mwq2/Hhr0Mm1ahjLg8ISD5mZBODuwkG2OtdOn87FqHNSW4qniTeYph8vokK
-        fhc3Ep4kObVJaCtvHzy4kZgYCIkmmNMTPjcWv9yAbTP2YtFb5I6FdPaelFPuCYKg
-        ==
-X-ME-Sender: <xms:XnfnXjLYoR4CZB8TPqheSe0cqAI-W2nUztIQXLTJYb4khslyfxXutQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeikedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:XnfnXnIVNGUb0mitHkJJFfNgk-Jwhb3KpvvROE6zIuv4WHyWWfhjRQ>
-    <xmx:XnfnXrvl6XpgkTJzpH4PN6S4rCwJfUjvEeWCXXF2SBwR2hkim0TqxQ>
-    <xmx:XnfnXsY-RLFvXh4MBMu8peFeTzGrtAGqqHoH-DeFtnCvykLqWaaIiA>
-    <xmx:XnfnXjDfKZ_Q4uHaTB_wMrLN4E0VBEawHiKgbsWp9x-plC2ca4nmdg>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BC65C3280066;
-        Mon, 15 Jun 2020 09:27:57 -0400 (EDT)
-Date:   Mon, 15 Jun 2020 15:27:44 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Fwd: [merged]
- usercopy-mark-dma-kmalloc-caches-as-usercopy-caches.patch removed from -mm
- tree
-Message-ID: <20200615132744.GA1108815@kroah.com>
-References: <20200602213744.63kb6HfFG%akpm@linux-foundation.org>
- <b589f80b-98ac-8323-fa0d-f91b681b5f09@de.ibm.com>
+        Mon, 15 Jun 2020 09:28:16 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE2FC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:28:16 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z9so19156233ljh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1qTnUqQNd2eH1CmJ60tGdoC5I8fF8RTcE8IuM27x0hw=;
+        b=GICjrX7IfQiuCFxkffqzRXau06xsxXfgbB3kyDFN9afGwqLxQMLGdxCpj4CwfaabKl
+         nWyfXSR72jHaX0EbuqaRk+FTbpwfm1RHOI49ovnT5OhJy07bf563ssQFDGyFHkSfzw/h
+         LplaCBaRb3Y+dnUZiyUnkPCsj+gqEpiJvydzSOWTa8QgRyI0y7TNrN03dTRJYKFQEQxY
+         3N8dwhTXYlMfYs61Vc+SL8ZeS3Css94BX82JfR57dOCcZGDR+CUZLY3Gt0HGB3Npnb0p
+         YMhpPJO6fVTrq7E52Oibr2jIQRRgjRwP+XZDo5L3ksmN8z3HGqGuenxCvKirRk86wG7l
+         kNbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1qTnUqQNd2eH1CmJ60tGdoC5I8fF8RTcE8IuM27x0hw=;
+        b=A1ZWwSSZRK1evuKE06b4cDSizZox+OIFG+ACFRgRpFC6NRcPdnK2S+53BphfuFkk2b
+         6F75sHu/axFlfevy/MdoVoXOeKs6sqcq9S/m2s1YOzumP5eFCx6snall2c7xz4d6iSg5
+         +o54zlBNlqztwmiyN75tG8XRjzwbWwhGMpjOCK5nwOVwzySSO41375lOKXb5F25N9idb
+         N+jvIOt/aDcA/hCp6xGM30f4A5H5PHqq14qwVL80xOCljAtNub3QeTSkvkB4M2REbOd+
+         YQH+u0CnLKipXFqmhxItT2cfiVdKSQZHHEi/mevmJBRHlhAEx+0GsoetHEi3uBvRchwr
+         wLVQ==
+X-Gm-Message-State: AOAM530dU+DCbRrgGLyTXlQ5BXVD4psf0GAFRiRUecXH4klCYWrkI7pc
+        Jxq2fl2Hp+Z+SLPrWIZ9cuzrOG3sPg8T+vFob8AB5A==
+X-Google-Smtp-Source: ABdhPJyzwtrBmaHh5jJPIMWZixxN/HO4IzcwDk0Gaw5mAQ54n1rWOZ4P1ZTP+oLaltZGi9YxUTUG1MmNV5PSVhmJpUc=
+X-Received: by 2002:a05:651c:106c:: with SMTP id y12mr7739172ljm.427.1592227694734;
+ Mon, 15 Jun 2020 06:28:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b589f80b-98ac-8323-fa0d-f91b681b5f09@de.ibm.com>
+References: <20200615131910.2276515-1-jens.wiklander@linaro.org>
+In-Reply-To: <20200615131910.2276515-1-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 15 Jun 2020 18:58:03 +0530
+Message-ID: <CAFA6WYM3fyvY-vj4xpDWwZo2F+2H0Fu9Z7vGvjvE=ZNGOn2AaA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: change tee mailing list
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 03:24:12PM +0200, Christian Borntraeger wrote:
-> stable team,
-> please consider 
-> 
-> commit 49f2d2419d60a103752e5fbaf158cf8d07c0d884
->     usercopy: mark dma-kmalloc caches as usercopy caches
-> for stable.
+On Mon, 15 Jun 2020 at 18:49, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> The old TEE mailing list tee-dev@lists.linaro.org is about to be
+> retired. From now on please use op-tee@lists.trustedfirmware.org
+> instead.
+>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
 
-Now queued up.
+Acked-by: Sumit Garg <sumit.garg@linaro.org>
 
-thanks,
-
-greg k-h
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 68f21d46614c..772448e36203 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12691,13 +12691,13 @@ F:    arch/mips/boot/dts/ralink/omega2p.dts
+>
+>  OP-TEE DRIVER
+>  M:     Jens Wiklander <jens.wiklander@linaro.org>
+> -L:     tee-dev@lists.linaro.org
+> +L:     op-tee@lists.trustedfirmware.org
+>  S:     Maintained
+>  F:     drivers/tee/optee/
+>
+>  OP-TEE RANDOM NUMBER GENERATOR (RNG) DRIVER
+>  M:     Sumit Garg <sumit.garg@linaro.org>
+> -L:     tee-dev@lists.linaro.org
+> +L:     op-tee@lists.trustedfirmware.org
+>  S:     Maintained
+>  F:     drivers/char/hw_random/optee-rng.c
+>
+> @@ -16759,7 +16759,7 @@ F:      include/media/i2c/tw9910.h
+>
+>  TEE SUBSYSTEM
+>  M:     Jens Wiklander <jens.wiklander@linaro.org>
+> -L:     tee-dev@lists.linaro.org
+> +L:     op-tee@lists.trustedfirmware.org
+>  S:     Maintained
+>  F:     Documentation/tee.txt
+>  F:     drivers/tee/
+> --
+> 2.25.1
+>
