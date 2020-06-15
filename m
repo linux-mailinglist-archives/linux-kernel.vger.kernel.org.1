@@ -2,85 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DCD1FA3C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519721FA3B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgFOWwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgFOWwK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:52:10 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80395C08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:52:09 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id h185so8522717pfg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RwrdlsWehKZKBVZQSVbm4FZ+bZkOFL8rSZ1Dubk+3s8=;
-        b=HwsPMF4pWt1ws4mKNcP2Ya9FrKgdDvltSNqUltzclLf1OG3MvSSLnw4ZQCBfOKNYnN
-         KmMIITLprB3TvVG/kcoSQ33WWH8p7wNK3O2389ax6ZVOqgzok6nRzUgvKaX8Gnwz18Rb
-         u6CKCGXkOYThg/3ZKrk61Qhq/Ofj0xgqHiO/s612k2akDYlerc+gRB3Mim0IopO8an+x
-         x8935Rn1HctWYYtZlmir8+LKvUh+JwJrAiFz+PIJxidVWgbzGduwzoXzHXYHQcr+Y09S
-         FTYQopH43e+3weONi0vnGiMtrc0rIjVOvNAJq2OWsGLLQRGOuiruuszBR0n70eBKnoPU
-         f0fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RwrdlsWehKZKBVZQSVbm4FZ+bZkOFL8rSZ1Dubk+3s8=;
-        b=NcsAcAO8B21GEEyOjv/TQqzbpEHVzmlpO4yk3nTz4rCP44JECr3tj64yOfS+9rV3To
-         ghqhL7aYNKq6Dp6z4H9TViVvxRcS1xh97ttf4P6Y/majMGduvi50j5IzKtH0bxkSo463
-         RRfwvvLx32hv4GIsBCqhBlWTZUWl8HkSgrM0jOB6oMV7Zu/PKcHAemLfkH6iEHa4eo+B
-         yorlNSB/ygtCOFChYeXG8dPtFYwTwWm8/fBzKxbTDV7QHCAvrU0v7N693SWBgWmvtL52
-         URNGwcnmPQBU2Xu5N3CFVHtMuqel6G3QlTC5mA4dIwwrjrC8x60t17Zu3YqcFG7iu5Iz
-         lJmA==
-X-Gm-Message-State: AOAM533yyj4arUwXVlkzRcbXuqd3Yp4kHNjJjOWjrmFVmRvCJyGutaES
-        S3WAby2MA9Zw5ne4Gg4xYFj7rpYcFGZW0A==
-X-Google-Smtp-Source: ABdhPJx0yc3wWLKwncX5fZpU4ROUljh6Czx52DiKh1T5kEl0Ddnty5eyDjZFWlRxaTDPUCkvX6/EpQ==
-X-Received: by 2002:a63:d951:: with SMTP id e17mr17827703pgj.318.1592261528999;
-        Mon, 15 Jun 2020 15:52:08 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id j13sm464942pje.25.2020.06.15.15.52.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 15:52:08 -0700 (PDT)
-Subject: Re: [PATCH] trace/events/block.h: drop kernel-doc for dropped
- function parameter
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>
-References: <d572a150-192a-bbce-4449-8de45bce1a9b@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <baaf65e6-dd38-473e-e00b-98a19cd9bfbe@kernel.dk>
-Date:   Mon, 15 Jun 2020 16:52:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726519AbgFOWtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725960AbgFOWtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 18:49:10 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BA3D2074D;
+        Mon, 15 Jun 2020 22:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592261349;
+        bh=xBGoroK2H8hqzN5/4X4Uahd06hiNRj+zCe3PMuFRh+M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EdqLMWVVkfWhaDiXk9TWcjR84sGAV5boxxGLbuFkH8aRPLjY+KXkNilVvsF5Jb6Do
+         qFdST2NcU9xr2MujM2LUeavJ825gXsq25ndV6yhw2UlpZyir2DucCuwN6TqDstLgcA
+         SjOlTrrpFKcVS3AJmItqTWbVRAIVLO0lMRb/OZOQ=
+Date:   Mon, 15 Jun 2020 17:54:28 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Satish Kharat <satishkh@cisco.com>,
+        Sesidhar Baddela <sebaddel@cisco.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] scsi: fnic: Replace vmalloc() + memset() with
+ vzalloc() and use array_size()
+Message-ID: <20200615225428.GA14959@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <d572a150-192a-bbce-4449-8de45bce1a9b@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/15/20 1:22 PM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix kernel-doc warning: the parameter was removed, so also remove
-> the kernel-doc notation for it.
-> 
-> ../include/trace/events/block.h:278: warning: Excess function parameter 'error' description in 'trace_block_bio_complete'
+Use vzalloc() instead of the vmalloc() and memset. Also, use array_size()
+instead of the open-coded version.
 
-Applied, thanks.
+This issue was found with the help of Coccinelle and, audited and fixed
+manually.
 
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/scsi/fnic/fnic_trace.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
+index 9d52d83161ed..be266d1611bb 100644
+--- a/drivers/scsi/fnic/fnic_trace.c
++++ b/drivers/scsi/fnic/fnic_trace.c
+@@ -488,7 +488,7 @@ int fnic_trace_buf_init(void)
+ 	}
+ 
+ 	fnic_trace_entries.page_offset =
+-		vmalloc(array_size(fnic_max_trace_entries,
++		vzalloc(array_size(fnic_max_trace_entries,
+ 				   sizeof(unsigned long)));
+ 	if (!fnic_trace_entries.page_offset) {
+ 		printk(KERN_ERR PFX "Failed to allocate memory for"
+@@ -500,8 +500,6 @@ int fnic_trace_buf_init(void)
+ 		err = -ENOMEM;
+ 		goto err_fnic_trace_buf_init;
+ 	}
+-	memset((void *)fnic_trace_entries.page_offset, 0,
+-		  (fnic_max_trace_entries * sizeof(unsigned long)));
+ 	fnic_trace_entries.wr_idx = fnic_trace_entries.rd_idx = 0;
+ 	fnic_buf_head = fnic_trace_buf_p;
+ 
+@@ -559,10 +557,10 @@ int fnic_fc_trace_init(void)
+ 	int err = 0;
+ 	int i;
+ 
+-	fc_trace_max_entries = (fnic_fc_trace_max_pages * PAGE_SIZE)/
++	fc_trace_max_entries = array_size(fnic_fc_trace_max_pages, PAGE_SIZE)/
+ 				FC_TRC_SIZE_BYTES;
+ 	fnic_fc_ctlr_trace_buf_p =
+-		(unsigned long)vmalloc(array_size(PAGE_SIZE,
++		(unsigned long)vzalloc(array_size(PAGE_SIZE,
+ 						  fnic_fc_trace_max_pages));
+ 	if (!fnic_fc_ctlr_trace_buf_p) {
+ 		pr_err("fnic: Failed to allocate memory for "
+@@ -571,12 +569,9 @@ int fnic_fc_trace_init(void)
+ 		goto err_fnic_fc_ctlr_trace_buf_init;
+ 	}
+ 
+-	memset((void *)fnic_fc_ctlr_trace_buf_p, 0,
+-			fnic_fc_trace_max_pages * PAGE_SIZE);
+-
+ 	/* Allocate memory for page offset */
+ 	fc_trace_entries.page_offset =
+-		vmalloc(array_size(fc_trace_max_entries,
++		vzalloc(array_size(fc_trace_max_entries,
+ 				   sizeof(unsigned long)));
+ 	if (!fc_trace_entries.page_offset) {
+ 		pr_err("fnic:Failed to allocate memory for page_offset\n");
+@@ -588,9 +583,6 @@ int fnic_fc_trace_init(void)
+ 		err = -ENOMEM;
+ 		goto err_fnic_fc_ctlr_trace_buf_init;
+ 	}
+-	memset((void *)fc_trace_entries.page_offset, 0,
+-	       (fc_trace_max_entries * sizeof(unsigned long)));
+-
+ 	fc_trace_entries.rd_idx = fc_trace_entries.wr_idx = 0;
+ 	fc_trace_buf_head = fnic_fc_ctlr_trace_buf_p;
+ 
 -- 
-Jens Axboe
+2.27.0
 
