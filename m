@@ -2,199 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1871F98E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1F51F98DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgFONeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730558AbgFONd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730560AbgFONd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 15 Jun 2020 09:33:28 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DC0C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:27 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id p20so17757317iop.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FEO6ZMRZMhytUnB/3kKw+6H6ed4rrtyosV/mkpSqtDg=;
-        b=UujOtmFHkrJ4Wz5fD7nsyCt9oFWmofoQEfArpljrCQ5l62sYWxbBdoU/sk3BLuLTqj
-         dTG9GWz9M3dO7c/1cqC/Jl13duq3VAELZb+vXrjVTxd/y9b8nVcOtYzZvuoBtR7zdNCx
-         0VhCgEeJtSIl9H0QWkpu+UYQQOqsm2oib1BjLC2UAqUkBwY1w27AahTzHo+p0o6pgJwI
-         udReEzsSGRV4UuZCrDebvahaKMiXTjp7cgJuQezwtRLZIJgRGlZEK0yWnDa6pyOc9udn
-         w4YV4Jnr1xnrIvwZnD+eDrdVFnZzROHIsd+Jp9yRJm4e75YtJavyzQtWr05IbGOo3TG4
-         KfFQ==
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60303 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730065AbgFONdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 09:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592227999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rW5iv07E6/hrUraCliFumYl+bzeZy7nOt0DSLH2NiHw=;
+        b=WYviMdqQ5pSKcUymcCZwcFnPBBDDxM8N7S2qDqxKWsLmg8BZrcjA2zm7V0UJ7IWQlAbMw1
+        IgLRhXJZywWBIG1Rchi272wNlbFeeAF3Cfn2/QPNRbpFyak1QTUna84NvYLWLygb6wsdkI
+        UuPGliWCafBuCEk0ZtJmGAFKeqW4P98=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-sS7K9garOXu5AYIN-tR-MQ-1; Mon, 15 Jun 2020 09:33:17 -0400
+X-MC-Unique: sS7K9garOXu5AYIN-tR-MQ-1
+Received: by mail-wr1-f72.google.com with SMTP id e7so7097830wrp.14
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FEO6ZMRZMhytUnB/3kKw+6H6ed4rrtyosV/mkpSqtDg=;
-        b=hLrDK326qIbhjkH9oHxBY4lWoj4XmsAwbj5eT7LL1cHEkQO62ADAo+kIkIefD33AGk
-         KTcKV1CSoq8j8I8oqQJkuc7yYujWMUHeXymClRlQJfbI0pdIbaAF6AziahkejjPD1lmz
-         wzxV/L2I0zNGryb2SEYAgoW6SlbCq5v6oXT9OmhwXy/VRkM+56Bh4WALMJzVPtpPfIbC
-         a+CI4JXXoM0SXh4XAvhM6wwzJyGrd12L8PA5V/UOGlCpJjnVViaml+l28vGsd3xsXaqX
-         Q40RTlWrqAKuMLTLA/JTzkllcB6fgaEzRpkNWWNsKuMqaSqCZW4kojmohdZT0Zg1l7oN
-         odnw==
-X-Gm-Message-State: AOAM532JY8BiTKdqbci4t6QyjzQ6nkAqjA2MEPdAafgGi+mC6Ad4WWiQ
-        bjkJ2YZM1lFZfiCuP3G5k2nlt5olgTq9skb0I0aIzjFFSkW8aw==
-X-Google-Smtp-Source: ABdhPJw56Zkkow3PhuxcwrXHY5xd13bZ/RAR2ZkJa4qiLDA32ubAJD0lYBCg3c8BFLedeuKUf7vI7NH2UCEyxJbgvWo=
-X-Received: by 2002:a02:a805:: with SMTP id f5mr22297740jaj.130.1592228006713;
- Mon, 15 Jun 2020 06:33:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rW5iv07E6/hrUraCliFumYl+bzeZy7nOt0DSLH2NiHw=;
+        b=eCKfQ+QYAeKjNTPBQA9F58m/6Hno9IbHOwDXXvtnzjlQLkur99HYbWP4fsB3kgnLwR
+         WYBoK9ha/ms4SIjGaQSLvfgVOnJGO0LHNVXMZDNqPllwqN02PKtp2EJQY7ZgF0T5aU34
+         96gYtzFUDn+csFBdnxt4vWkTZsPiLwOUHTK7/62wMIKNX7EYIJANibw9e+PNthYgTSvo
+         TpUIUEOYJ3IU0+vvH6S/8pv6c/dCgViAcowweowm7Rqquu+X9iYc15n0tsCXLqTKR/1x
+         NZ6ysF0lveANIgBAQfdJahIw0WGlu/usEGceKinGmWgxnmEJccodd2b2kq9x+4LXHv1e
+         7PUA==
+X-Gm-Message-State: AOAM533fC56xxQEyevxDt9jz4FhrK6RETyMPvKEOLP5zTknedhcrXfj/
+        6neawttGuxWshbEWWvC8G4I8F4kHFvdHTDk2rqL3j15dZcgURWoUyMTtkYqAwzoDkt1XEKq+dtO
+        l/CiIrSLbZ5p45sQcbl4RTJcw
+X-Received: by 2002:a1c:dd44:: with SMTP id u65mr14130849wmg.180.1592227995767;
+        Mon, 15 Jun 2020 06:33:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTmQVyxizijdU9DGs+rVmKRlfN8AQJjZJCbybP3u6h9bBk/MGo7QOVBdSHWtcmKkOZgBvGeQ==
+X-Received: by 2002:a1c:dd44:: with SMTP id u65mr14130816wmg.180.1592227995477;
+        Mon, 15 Jun 2020 06:33:15 -0700 (PDT)
+Received: from steredhat ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id b19sm53221wmj.0.2020.06.15.06.33.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 06:33:14 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 15:33:10 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <asarai@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        io-uring <io-uring@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
+Subject: Re: [RFC] io_uring: add restrictions to support untrusted
+ applications and guests
+Message-ID: <20200615133310.qwdmnctrir5zgube@steredhat>
+References: <20200609142406.upuwpfmgqjeji4lc@steredhat>
+ <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200614063858.85118-1-songmuchun@bytedance.com> <bca5f44c-5e30-17b1-09fc-6330d450433b@suse.cz>
-In-Reply-To: <bca5f44c-5e30-17b1-09fc-6330d450433b@suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Jun 2020 21:32:50 +0800
-Message-ID: <CAMZfGtUeUyi5Tg0hv3j=-scFGiZJB5hQs8v5nOfYQ7xXsB2nsQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/slab: Add a __GFP_ACCOUNT GFP flag
- check for slab allocation
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 9:08 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 6/14/20 8:38 AM, Muchun Song wrote:
-> > When a kmem_cache is initialized with SLAB_ACCOUNT slab flag, we must
-> > not call kmem_cache_alloc with __GFP_ACCOUNT GFP flag. In this case,
-> > we can be accounted to kmemcg twice. This is not correct. So we add a
->
-> Are you sure? How does that happen?
->
-> The only place I see these evaluated is this condition in slab_pre_alloc_hook():
->
->         if (memcg_kmem_enabled() &&
->             ((flags & __GFP_ACCOUNT) || (s->flags & SLAB_ACCOUNT)))
->                 return memcg_kmem_get_cache(s);
->
-> And it doesn't matter if one or both are set? Am I missing something?
->
-> > __GFP_ACCOUNT GFP flag check for slab allocation.
+On Mon, Jun 15, 2020 at 11:04:06AM +0200, Jann Horn wrote:
+> +Kees, Christian, Sargun, Aleksa, kernel-hardening for their opinions
+> on seccomp-related aspects
+> 
+> On Tue, Jun 9, 2020 at 4:24 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
+> > Hi Jens,
+> > Stefan and I have a proposal to share with io_uring community.
+> > Before implementing it we would like to discuss it to receive feedbacks and
+> > to see if it could be accepted:
 > >
-> > We also introduce a new helper named fixup_gfp_flags to do that check.
-> > We can reuse the fixup_gfp_flags for SLAB/SLUB.
+> > Adding restrictions to io_uring
+> > =====================================
+> > The io_uring API provides submission and completion queues for performing
+> > asynchronous I/O operations. The queues are located in memory that is
+> > accessible to both the host userspace application and the kernel, making it
+> > possible to monitor for activity through polling instead of system calls. This
+> > design offers good performance and this makes exposing io_uring to guests an
+> > attractive idea for improving I/O performance in virtualization.
+> [...]
+> > Restrictions
+> > ------------
+> > This document proposes io_uring API changes that safely allow untrusted
+> > applications or guests to use io_uring. io_uring's existing security model is
+> > that of kernel system call handler code. It is designed to reject invalid
+> > inputs from host userspace applications. Supporting guests as io_uring API
+> > clients adds a new trust domain with access to even fewer resources than host
+> > userspace applications.
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/slab.c | 10 +---------
-> >  mm/slab.h | 21 +++++++++++++++++++++
-> >  mm/slub.c | 10 +---------
-> >  3 files changed, 23 insertions(+), 18 deletions(-)
+> > Guests do not have direct access to host userspace application file descriptors
+> > or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
+> > as QEMU, grants access to a subset of its file descriptors and memory. The
+> > allowed file descriptors are typically the disk image files belonging to the
+> > guest. The memory is typically the virtual machine's RAM that the VMM has
+> > allocated on behalf of the guest.
 > >
-> > diff --git a/mm/slab.c b/mm/slab.c
-> > index 9350062ffc1a..6e0110bef2d6 100644
-> > --- a/mm/slab.c
-> > +++ b/mm/slab.c
-> > @@ -126,8 +126,6 @@
+> > The following extensions to the io_uring API allow the host application to
+> > grant access to some of its file descriptors.
 > >
-> >  #include <trace/events/kmem.h>
+> > These extensions are designed to be applicable to other use cases besides
+> > untrusted guests and are not virtualization-specific. For example, the
+> > restrictions can be used to allow only a subset of sqe operations available to
+> > an application similar to seccomp syscall whitelisting.
 > >
-> > -#include     "internal.h"
-> > -
-> >  #include     "slab.h"
+> > An address translation and memory restriction mechanism would also be
+> > necessary, but we can discuss this later.
 > >
-> >  /*
-> > @@ -2579,13 +2577,7 @@ static struct page *cache_grow_begin(struct kmem_cache *cachep,
-> >        * Be lazy and only check for valid flags here,  keeping it out of the
-> >        * critical path in kmem_cache_alloc().
-> >        */
-> > -     if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
-> > -             gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
-> > -             flags &= ~GFP_SLAB_BUG_MASK;
-> > -             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
-> > -                             invalid_mask, &invalid_mask, flags, &flags);
-> > -             dump_stack();
-> > -     }
-> > +     flags = fixup_gfp_flags(cachep, flags);
-> >       WARN_ON_ONCE(cachep->ctor && (flags & __GFP_ZERO));
-> >       local_flags = flags & (GFP_CONSTRAINT_MASK|GFP_RECLAIM_MASK);
-> >
-> > diff --git a/mm/slab.h b/mm/slab.h
-> > index 815e4e9a94cd..0b91f2a7b033 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -109,6 +109,7 @@ struct memcg_cache_params {
-> >  #include <linux/kmemleak.h>
-> >  #include <linux/random.h>
-> >  #include <linux/sched/mm.h>
-> > +#include "internal.h"
-> >
-> >  /*
-> >   * State of the slab allocator.
-> > @@ -627,6 +628,26 @@ struct kmem_cache_node {
-> >
-> >  };
-> >
-> > +static inline gfp_t fixup_gfp_flags(struct kmem_cache *s, gfp_t flags)
-> > +{
-> > +     gfp_t invalid_mask = 0;
-> > +
-> > +     if (unlikely(flags & GFP_SLAB_BUG_MASK))
-> > +             invalid_mask |= flags & GFP_SLAB_BUG_MASK;
-> > +
-> > +     if (unlikely(flags & __GFP_ACCOUNT && s->flags & SLAB_ACCOUNT))
-> > +             invalid_mask |= __GFP_ACCOUNT;
-> > +
-> > +     if (unlikely(invalid_mask)) {
-> > +             flags &= ~invalid_mask;
-> > +             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
-> > +                             invalid_mask, &invalid_mask, flags, &flags);
-> > +             dump_stack();
-> > +     }
-> > +
-> > +     return flags;
-> > +}
-> > +
-> >  static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-> >  {
-> >       return s->node[node];
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index b8f798b50d44..49b5cb7da318 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -37,8 +37,6 @@
-> >
-> >  #include <trace/events/kmem.h>
-> >
-> > -#include "internal.h"
-> > -
-> >  /*
-> >   * Lock order:
-> >   *   1. slab_mutex (Global Mutex)
-> > @@ -1745,13 +1743,7 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
-> >
-> >  static struct page *new_slab(struct kmem_cache *s, gfp_t flags, int node)
-> >  {
-> > -     if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
-> > -             gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
-> > -             flags &= ~GFP_SLAB_BUG_MASK;
-> > -             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
-> > -                             invalid_mask, &invalid_mask, flags, &flags);
-> > -             dump_stack();
-> > -     }
-> > +     flags = fixup_gfp_flags(s, flags);
-> >
-> >       return allocate_slab(s,
-> >               flags & (GFP_RECLAIM_MASK | GFP_CONSTRAINT_MASK), node);
-> >
->
+> > The IOURING_REGISTER_RESTRICTIONS opcode
+> > ----------------------------------------
+> > The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
+> > installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
+> > passed to untrusted code with the knowledge that only operations present in the
+> > whitelist can be executed.
+> 
+> This approach of first creating a normal io_uring instance and then
+> installing restrictions separately in a second syscall means that it
+> won't be possible to use seccomp to restrict newly created io_uring
+> instances; code that should be subject to seccomp restrictions and
+> uring restrictions would only be able to use preexisting io_uring
+> instances that have already been configured by trusted code.
+> 
+> So I think that from the seccomp perspective, it might be preferable
+> to set up these restrictions in the io_uring_setup() syscall. It might
+> also be a bit nicer from a code cleanliness perspective, since you
+> won't have to worry about concurrently changing restrictions.
+> 
 
-Yeah, you are right. I'm very sorry that I was not thoughtful before.
-Please ignore
-this patch. Thanks!
+Thank you for these details!
+
+It seems feasible to include the restrictions during io_uring_setup().
+
+The only doubt concerns the possibility of allowing the trusted code to
+do some operations, before passing queues to the untrusted code, for
+example registering file descriptors, buffers, eventfds, etc.
+
+To avoid this, I should include these operations in io_uring_setup(),
+adding some code that I wanted to avoid by reusing io_uring_register().
+
+If I add restrictions in io_uring_setup() and then add an operation to
+go into safe mode (e.g. a flag in io_uring_enter()), we would have the same
+problem, right?
+
+Just to be clear, I mean something like this:
+
+    /* params will include restrictions */
+    fd = io_uring_setup(entries, params);
+
+    /* trusted code */
+    io_uring_register_files(fd, ...);
+    io_uring_register_buffers(fd, ...);
+    io_uring_register_eventfd(fd, ...);
+
+    /* enable safe mode */
+    io_uring_enter(fd, ..., IORING_ENTER_ENABLE_RESTRICTIONS);
 
 
--- 
-Yours,
-Muchun
+Anyway, including a list of things to register in the 'params', passed
+to io_uring_setup(), should be feasible, if Jens agree :-)
+
+Thanks,
+Stefano
+
