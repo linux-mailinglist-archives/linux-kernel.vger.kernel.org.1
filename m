@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799911F9600
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346C01F960E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbgFOMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729868AbgFOMDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:03:51 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4B6A20707;
-        Mon, 15 Jun 2020 12:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592222631;
-        bh=XoBnvNL3IwkQfinlN0LrO1MNHrk5mCT79HFTYI53ohk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0wIy0VF1JN/2qnd7BSCw6Nk50NGZg/5E2YaZDEAVVbtQvQWZzkVFAq+17gq90X7k2
-         lQ2S1MuhzKk15zA072FNS8nVofGmED+3kyS419EOBYOfTsMGUNkSJABo+RzITXvFOE
-         knJ/AZB9eo3vBs9jTXzoLVRmtkbqggIj9JtpVj5c=
-Date:   Mon, 15 Jun 2020 14:03:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] venus: Make debug infrastructure more flexible
-Message-ID: <20200615120337.GA511582@kroah.com>
-References: <20200613223919.7038-1-stanimir.varbanov@linaro.org>
- <20200613223919.7038-3-stanimir.varbanov@linaro.org>
- <20200614063710.GB2611869@kroah.com>
- <c54a12a2-7f92-105c-a01c-8e85730f36bb@linaro.org>
+        id S1729787AbgFOMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:05:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12264 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728510AbgFOMFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:05:03 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FB5Lut027139;
+        Mon, 15 Jun 2020 08:04:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31mua645xr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Jun 2020 08:04:57 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05FBhtnf016311;
+        Mon, 15 Jun 2020 08:04:56 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31mua645wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Jun 2020 08:04:56 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05FC1aVK012672;
+        Mon, 15 Jun 2020 12:04:54 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 31mpe7ufwe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Jun 2020 12:04:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05FC4qoe56098948
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Jun 2020 12:04:52 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 187FC4C050;
+        Mon, 15 Jun 2020 12:04:52 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FAF94C052;
+        Mon, 15 Jun 2020 12:04:51 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.184.141])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 15 Jun 2020 12:04:51 +0000 (GMT)
+Date:   Mon, 15 Jun 2020 14:04:50 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Stefano Brivio <sbrivio@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] bitmap: Add test for bitmap_cut()
+Message-ID: <20200615120449.GA28317@oc3871087118.ibm.com>
+References: <cover.1592155364.git.sbrivio@redhat.com>
+ <5fc45e6bbd4fa837cd9577f8a0c1d639df90a4ce.1592155364.git.sbrivio@redhat.com>
+ <20200615094155.GQ2428291@smile.fi.intel.com>
+ <20200615094616.GS2428291@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c54a12a2-7f92-105c-a01c-8e85730f36bb@linaro.org>
+In-Reply-To: <20200615094616.GS2428291@smile.fi.intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1011 adultscore=0 mlxscore=0 suspectscore=0 phishscore=0
+ priorityscore=1501 cotscore=-2147483648 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006150089
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:55:29PM +0300, Stanimir Varbanov wrote:
-> Hi Greg,
-> 
-> On 6/14/20 9:37 AM, Greg KH wrote:
-> > On Sun, Jun 14, 2020 at 01:39:18AM +0300, Stanimir Varbanov wrote:
-> >>  	if (slot == -1) {
-> >> -		dev_dbg(inst->core->dev, "%s: no free slot\n", __func__);
-> >> +		VDBGH("no free slot for timestamp\n");
+On Mon, Jun 15, 2020 at 12:46:16PM +0300, Andy Shevchenko wrote:
+> On Mon, Jun 15, 2020 at 12:41:55PM +0300, Andy Shevchenko wrote:
+> > On Sun, Jun 14, 2020 at 07:40:54PM +0200, Stefano Brivio wrote:
+> > > Inspired by an original patch from Yury Norov: introduce a test for
+> > > bitmap_cut() that also makes sure functionality is as described for
+> > > partially overlapping src and dst.
 > > 
-> > Again, no, you just lost a lot of valuable information by changing to a
-> > different format (like driver, specific device, etc.).  Please don't do
-> > this, it just makes the information less than before.
+> > Taking into account recent fixes for BE 64-bit, do we have test cases for a such?
 > 
-> OK, one of the reasons to use pr_debug inside VDBGH macro is to avoid
-> having struct device *dev variable in every function with dev_dbg even
-> when the function doesn't use it.
+> It might be enough to have only these, but perhaps s390 guys can help?
+> 
+> Alexander, can you apply this patch (w/o the first one, which is suppose to
+> fix) and confirm that you have test case failure, followed by applying first
+> one and confirm a fix?
 
-But the function _is_ using it, as you are referring to the device that
-is being controlled by the driver.  That's the point, you are stripping
-off that very valuable information for no reason.
+This failure goes away when patch #1 is applied:
 
-Which means to me that you never really actually _NEED_ these debugging
-messages, as you have not used them to see if it provides you with
-something that can tell you something about something.
+test_bitmap: [lib/test_bitmap.c:666] bitmaps contents differ: expected "0-16,18-19,21,24,26-27,29", got "1,3-4,6,9,11-12,14,16,18-19,21,24,26-27,29"
 
-So, let me push harder, why do you even want this message at all?  What
-can it provide you now that the driver is up and working properly?
+Thus, I confirm.
 
-> Are you fine with s/pr_debug/dev_dbg in VDBGX macros?
+[...]
 
-I would be a bit happier yes, but the fact that you didn't use it means
-you aren't even looking at these messages, which implies that it isn't
-even needed.
-
-So, how about just stripping all of these debugging messages out
-entirely?  What do they provide that you don't already know?  Who would
-use them?
-
-thanks,
-
-greg k-h
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
