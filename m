@@ -2,46 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587A41F9B6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E8C1F9B6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730893AbgFOPFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:05:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
+        id S1730936AbgFOPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730877AbgFOPFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:05:38 -0400
+        id S1730836AbgFOPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 11:05:48 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4962520739;
-        Mon, 15 Jun 2020 15:05:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6350D2074D;
+        Mon, 15 Jun 2020 15:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592233537;
-        bh=iQxR19VvnbxFvIXIUb0hXUuSs206NScmeWUhnXmjM9M=;
+        s=default; t=1592233547;
+        bh=zPiwW2ddojRxptWmrxHVSWKri79W0j8jIOBtmNYk3g8=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=IHNPQmqX1tGZkLo5Ha6lNSoK2zKTaLBn3QCA8GwvAGOwBfH+xUM1xb0Krd0TuKkJV
-         PsVYgYjiPqcHDNVfD5OHLLMmEQ3qeAsWcj+DuLqLNCOH2mOfq26+g/uCK8rBxTLtKz
-         aAUKTiqPJg7c82OFgzYsPdXy3pvWHEkc5tOnv5xE=
-Date:   Mon, 15 Jun 2020 16:05:35 +0100
+        b=TKaRawTVR+cp+9/iub94hwHc0uK5Hl1JUkY07rJcNPdOQ7A5nU0Nxpr0m3/RiKV8v
+         mPYH2HEDBa60a1Fdy9uq2oExYyionykWuFwo1No0EBF51Tns0HrcEVBCa1A6w/d5b4
+         InecRH3V0m3grK3lmaq9wYVmA2UqJcwsTOsgM/uw=
+Date:   Mon, 15 Jun 2020 16:05:45 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        vkoul@kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-References: <20200612123711.29130-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] ASoc: q6afe: add support to get port direction
-Message-Id: <159223353044.8967.4267093488191293280.b4-ty@kernel.org>
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        sound-open-firmware@alsa-project.org,
+        Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <1591959048-15813-1-git-send-email-brent.lu@intel.com>
+References: <1591959048-15813-1-git-send-email-brent.lu@intel.com>
+Subject: Re: [PATCH v3] ASoC: SOF: Intel: hda: Clear RIRB status before reading WP
+Message-Id: <159223353043.8967.4528383001962229795.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Jun 2020 13:37:10 +0100, Srinivas Kandagatla wrote:
-> This patch adds support to q6afe_is_rx_port() to get direction
-> of DSP BE dai port, this is useful for setting dailink
-> directions correctly.
+On Fri, 12 Jun 2020 18:50:48 +0800, Brent Lu wrote:
+> Port commit 6d011d5057ff ("ALSA: hda: Clear RIRB status before reading
+> WP") from legacy HDA driver to fix the get response timeout issue.
+> Current SOF driver does not suffer from this issue because sync write
+> is enabled in hda_init. The issue will come back if the sync write is
+> disabled for some reason.
 
 Applied to
 
@@ -49,10 +60,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoc: q6afe: add support to get port direction
-      commit: 4a95737440d426e93441d49d11abf4c6526d4666
-[2/2] ASoC: qcom: common: set correct directions for dailinks
-      commit: a2120089251f1fe221305e88df99af16f940e236
+[1/1] ASoC: SOF: Intel: hda: Clear RIRB status before reading WP
+      commit: 40e2c465894e5b79b49f55d9574dbcda4ac0f08f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
