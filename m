@@ -2,203 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FF31F8DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA0B1F8DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgFOGit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:38:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48646 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728260AbgFOGit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:38:49 -0400
-Received: from zn.tnic (p200300ec2f063c003187a4190bac43a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:3c00:3187:a419:bac:43a1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EC21A1EC0322;
-        Mon, 15 Jun 2020 08:38:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592203128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rW+N6IIBRLGHKd6BrTbGzh9GW2GBhMaTgnuWpn9t/C8=;
-        b=GME8/4zMjhb/BEy3Z7DWNVkUpbzmpHmPxEB4rDmGWS+qYgkzGNHNrdqmmvGKdCc2GeDUvy
-        tOBK0rr+0B9fjo4KZnTfeEi0UQE5+gxXmd27KCCJJrym7UxH24nAEDourkg8PPRp7dgYbB
-        EZZA7gSBCdZERuwfFGQlva50xBmBPr8=
-Date:   Mon, 15 Jun 2020 08:38:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     x86-ml <x86@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH -v2.1] x86/msr: Filter MSR writes
-Message-ID: <20200615063837.GA14668@zn.tnic>
-References: <20200612105026.GA22660@zn.tnic>
- <20200613154844.GB584@zn.tnic>
+        id S1728397AbgFOGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 02:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgFOGl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:41:56 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBA2C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 23:41:56 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id z2so14252335ilq.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 23:41:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bK0Qp6h6dwfemWmyvHsC+Wip59HhIpavOmMER/ZWjbw=;
+        b=oNj8hWZtqPfHdMws2rjs6Zk9srH9hbdHfv4lMssnWJONTrkBSWKZ/qkpqhTrc0kG2X
+         KpMM55sKx6/MSq9CpAj3L6i1BnwfQnWPAWfbhvkzsIed7u+BuvCZDOA6Rk4o0aIo09rH
+         DO/OIb1SuKDxpoLs6tm8UFJ5vMWJCTCTYxys2qj8r/1Zf9s/9fDYAWLCCzsZdsludgj8
+         Wy7gr8hb9yBkBgEXVmAEu5FUDPaYeLzCAvguRIPcFpvViOK2gBD28JilN8FFa5EKJ2p8
+         VqTnw2KN+SWWaFZrNYDtKofXfUjNfZtMYsN2IMEI7vqPpJPNw133B+5Yez8b3PNDCLhE
+         4HTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bK0Qp6h6dwfemWmyvHsC+Wip59HhIpavOmMER/ZWjbw=;
+        b=bjp1jp81UG2T6SCuDuvKNDUscgrx3qcwzceOgnNBGJjLGrMGEgML5+EooGWupLsZXc
+         ZR8fvz0qcltpV5k/Q2vJRVsuAeEmoraqa+tnVRcTfB0cvvcsZTfsEiQgMOZX+GMoK4Me
+         VFahEVi9Io2LSEYsCxcGoA3bMdyh0EHRNkr0nx2QODZ8ivdICKFjrcrbKL91gn7cEOwQ
+         aCI6mBDzzrRXLvyA7GmfOHM2tgc6rvrmBQfVEeqFjxgj7dJGbMprfnlxQ+cy6ZnXQOdo
+         FvydpDUXbA6wvEG+c043zN/L4RcujXKlHS2YMIqXq9Q7n3rNHdDF/EiT01UVrBh6JniS
+         +aCA==
+X-Gm-Message-State: AOAM532kTf8/o9vx2iIcRJ0yl786pZjfrKQEtBBU9Y3XYqSF5hhhyNlH
+        YT6wdQu0aVfoafm9BPp1Xml6U0r7ZqbYnBtaTqmJsQ==
+X-Google-Smtp-Source: ABdhPJzlI9S3kYF9RYQ4+SUFFVK1+FFHn0zDGsj9Q8tKs+ZRaYfChlqYUW4i6u1gfiAX/mlgFULixFQDtsob/T5Ip8U=
+X-Received: by 2002:a92:d1d0:: with SMTP id u16mr24697660ilg.2.1592203315520;
+ Sun, 14 Jun 2020 23:41:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200613154844.GB584@zn.tnic>
+References: <20200614123923.99189-1-songmuchun@bytedance.com>
+ <20200614123923.99189-4-songmuchun@bytedance.com> <CAAmzW4N1DRBxsMAX2a_jxUW10vOwW1VsGj8ztuvvWT4NB3Ocnw@mail.gmail.com>
+In-Reply-To: <CAAmzW4N1DRBxsMAX2a_jxUW10vOwW1VsGj8ztuvvWT4NB3Ocnw@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Jun 2020 14:41:19 +0800
+Message-ID: <CAMZfGtUQ+0w=n9YSQjQc1uwJFJrvtfj=rcTnNYnewCPiHmDLEw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 3/3] mm/slub: Fix release all resources
+ used by a slab cache
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's an improved v2 with sparse warnings fixed:
+On Mon, Jun 15, 2020 at 2:23 PM Joonsoo Kim <js1304@gmail.com> wrote:
+>
+> 2020=EB=85=84 6=EC=9B=94 14=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 9:39,=
+ Muchun Song <songmuchun@bytedance.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+> >
+> > The function of __kmem_cache_shutdown() is that release all resources
+> > used by the slab cache, while currently it stop release resources when
+> > the preceding node is not empty.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/slub.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index b73505df3de2..4e477ef0f2b9 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -3839,6 +3839,7 @@ bool __kmem_cache_empty(struct kmem_cache *s)
+> >   */
+> >  int __kmem_cache_shutdown(struct kmem_cache *s)
+> >  {
+> > +       int ret =3D 0;
+> >         int node;
+> >         struct kmem_cache_node *n;
+> >
+> > @@ -3846,11 +3847,11 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
+> >         /* Attempt to free all objects */
+> >         for_each_kmem_cache_node(s, node, n) {
+> >                 free_partial(s, n);
+> > -               if (node_nr_slabs(n))
+> > -                       return 1;
+> > +               if (!ret && node_nr_slabs(n))
+> > +                       ret =3D 1;
+> >         }
+>
+> I don't think that this is an improvement.
+>
+> If the shutdown condition isn't met, we don't need to process further.
+> Just 'return 1' looks okay to me.
+>
+> And, with this change, sysfs_slab_remove() is called even if the
+> shutdown is failed.
+> It's better not to have side effects when failing.
 
----
-Disable writing to MSRs from userspace by default. Writes can still be
-allowed by supplying the allow_writes=1 module parameter and the kernel
-will be tainted so that it shows in oopses.
+If someone calls __kmem_cache_shutdown, he may want to release
+resources used by the slab cache as much as possible. If we continue,
+we may release more pages. From this point, is it an improvement?
 
-Having unfettered access to all MSRs on a system is and has always been
-a disaster waiting to happen. Think performance counter MSRs, MSRs with
-sticky or locked bits, MSRs making major system changes like loading
-microcode, MTRRs, PAT configuration, TSC counter, security mitigations
-MSRs, you name it.
-
-This also destroys all the kernel's caching of MSR values for
-performance, as the recent case with MSR_AMD64_LS_CFG showed.
-
-Another example is writing MSRs by mistake by simply typing the wrong
-MSR address. System freezes have been experienced that way.
-
-In general, poking at MSRs under the kernel's feet is a bad bad idea.
-
-So disable poking directly at the MSRs by default. If userspace still
-wants to do that, then proper interfaces should be defined which
-are under the kernel's control and accesses to those MSRs can be
-synchronized and sanitized properly.
-
-Changelog:
-- taint before WRMSR, all
-- make param 0600, Sean.
-- do not deny but log writes by default, Linus.
-
-[ Fix sparse warnings ]
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/msr.c | 69 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 1547be359d7f..576c43e39247 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -42,6 +42,14 @@
- static struct class *msr_class;
- static enum cpuhp_state cpuhp_msr_state;
- 
-+enum allow_write_msrs {
-+	MSR_WRITES_ON,
-+	MSR_WRITES_OFF,
-+	MSR_WRITES_DEFAULT,
-+};
-+
-+static enum allow_write_msrs allow_writes = MSR_WRITES_DEFAULT;
-+
- static ssize_t msr_read(struct file *file, char __user *buf,
- 			size_t count, loff_t *ppos)
- {
-@@ -70,6 +78,24 @@ static ssize_t msr_read(struct file *file, char __user *buf,
- 	return bytes ? bytes : err;
- }
- 
-+static int filter_write(u32 reg)
-+{
-+	switch (allow_writes) {
-+	case MSR_WRITES_ON:  return 0;		break;
-+	case MSR_WRITES_OFF: return -EPERM;	break;
-+	default: break;
-+	}
-+
-+	if (reg == MSR_IA32_ENERGY_PERF_BIAS)
-+		return 0;
-+
-+	pr_err_ratelimited("Write to unrecognized MSR 0x%x by %s\n"
-+			   "Please report to x86@kernel.org\n",
-+			   reg, current->comm);
-+
-+	return 0;
-+}
-+
- static ssize_t msr_write(struct file *file, const char __user *buf,
- 			 size_t count, loff_t *ppos)
- {
-@@ -84,6 +110,10 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
- 	if (err)
- 		return err;
- 
-+	err = filter_write(reg);
-+	if (err)
-+		return err;
-+
- 	if (count % 8)
- 		return -EINVAL;	/* Invalid chunk size */
- 
-@@ -92,9 +122,13 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
- 			err = -EFAULT;
- 			break;
- 		}
-+
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
- 		err = wrmsr_safe_on_cpu(cpu, reg, data[0], data[1]);
- 		if (err)
- 			break;
-+
- 		tmp += 2;
- 		bytes += 8;
- 	}
-@@ -242,6 +276,41 @@ static void __exit msr_exit(void)
- }
- module_exit(msr_exit)
- 
-+static int set_allow_writes(const char *val, const struct kernel_param *cp)
-+{
-+	/* val is NUL-terminated, see kernfs_fop_write() */
-+	char *s = strstrip((char *)val);
-+
-+	if (!strcmp(s, "on"))
-+		allow_writes = MSR_WRITES_ON;
-+	else if (!strcmp(s, "off"))
-+		allow_writes = MSR_WRITES_OFF;
-+	else
-+		allow_writes = MSR_WRITES_DEFAULT;
-+
-+	return 0;
-+}
-+
-+static int get_allow_writes(char *buf, const struct kernel_param *kp)
-+{
-+	const char *res;
-+
-+	switch (allow_writes) {
-+	case MSR_WRITES_ON:  res = "on"; break;
-+	case MSR_WRITES_OFF: res = "off"; break;
-+	default: res = "default"; break;
-+	}
-+
-+	return sprintf(buf, "%s\n", res);
-+}
-+
-+static const struct kernel_param_ops allow_writes_ops = {
-+	.set = set_allow_writes,
-+	.get = get_allow_writes
-+};
-+
-+module_param_cb(allow_writes, &allow_writes_ops, NULL, 0600);
-+
- MODULE_AUTHOR("H. Peter Anvin <hpa@zytor.com>");
- MODULE_DESCRIPTION("x86 generic MSR driver");
- MODULE_LICENSE("GPL");
--- 
-2.21.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Yours,
+Muchun
