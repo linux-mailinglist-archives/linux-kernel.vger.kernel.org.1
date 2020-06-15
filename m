@@ -2,178 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1F51F98DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E0A1F98DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgFONd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:33:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60303 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730065AbgFONdW (ORCPT
+        id S1730626AbgFONdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730333AbgFONdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:33:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592227999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rW5iv07E6/hrUraCliFumYl+bzeZy7nOt0DSLH2NiHw=;
-        b=WYviMdqQ5pSKcUymcCZwcFnPBBDDxM8N7S2qDqxKWsLmg8BZrcjA2zm7V0UJ7IWQlAbMw1
-        IgLRhXJZywWBIG1Rchi272wNlbFeeAF3Cfn2/QPNRbpFyak1QTUna84NvYLWLygb6wsdkI
-        UuPGliWCafBuCEk0ZtJmGAFKeqW4P98=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-sS7K9garOXu5AYIN-tR-MQ-1; Mon, 15 Jun 2020 09:33:17 -0400
-X-MC-Unique: sS7K9garOXu5AYIN-tR-MQ-1
-Received: by mail-wr1-f72.google.com with SMTP id e7so7097830wrp.14
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:17 -0700 (PDT)
+        Mon, 15 Jun 2020 09:33:50 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C16C061A0E;
+        Mon, 15 Jun 2020 06:33:50 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id g5so13094323otg.6;
+        Mon, 15 Jun 2020 06:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jqmttIKDv0CjLA+NO+HgmwFUY3hsIX4ea9REGpMDxTM=;
+        b=sMwR/d96SkC8pPPjhsxJCmWF490809kPW2Tgd0DAqdk0yhj0iosebr7yKJhVJ4jYo8
+         Pi7smhYVMepAT6rBbXSY3A3WCmyBcwCZGX6sr3pnP7looBEBq7gI3biTwrbRYLyZzgRn
+         ZPC/UqifZldp29cfHa/I2vlDc/U07ndI37ZMxsT5mCMgYDDUg1FPvlX2Oyi43fnI6eXz
+         dfDA6jzn27vDNnSRXoaBzvA0V4/EVPpipEKB/X3gsE5fnqmtTtAoHd0Lgi/UlG1+Jpak
+         VMpk5YmiHW8PgUI5coQBoAmTkF+5OozDvCYFf60zTnnhZxGuxos8p8+mBNU1lY3AEy7g
+         l99A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rW5iv07E6/hrUraCliFumYl+bzeZy7nOt0DSLH2NiHw=;
-        b=eCKfQ+QYAeKjNTPBQA9F58m/6Hno9IbHOwDXXvtnzjlQLkur99HYbWP4fsB3kgnLwR
-         WYBoK9ha/ms4SIjGaQSLvfgVOnJGO0LHNVXMZDNqPllwqN02PKtp2EJQY7ZgF0T5aU34
-         96gYtzFUDn+csFBdnxt4vWkTZsPiLwOUHTK7/62wMIKNX7EYIJANibw9e+PNthYgTSvo
-         TpUIUEOYJ3IU0+vvH6S/8pv6c/dCgViAcowweowm7Rqquu+X9iYc15n0tsCXLqTKR/1x
-         NZ6ysF0lveANIgBAQfdJahIw0WGlu/usEGceKinGmWgxnmEJccodd2b2kq9x+4LXHv1e
-         7PUA==
-X-Gm-Message-State: AOAM533fC56xxQEyevxDt9jz4FhrK6RETyMPvKEOLP5zTknedhcrXfj/
-        6neawttGuxWshbEWWvC8G4I8F4kHFvdHTDk2rqL3j15dZcgURWoUyMTtkYqAwzoDkt1XEKq+dtO
-        l/CiIrSLbZ5p45sQcbl4RTJcw
-X-Received: by 2002:a1c:dd44:: with SMTP id u65mr14130849wmg.180.1592227995767;
-        Mon, 15 Jun 2020 06:33:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTmQVyxizijdU9DGs+rVmKRlfN8AQJjZJCbybP3u6h9bBk/MGo7QOVBdSHWtcmKkOZgBvGeQ==
-X-Received: by 2002:a1c:dd44:: with SMTP id u65mr14130816wmg.180.1592227995477;
-        Mon, 15 Jun 2020 06:33:15 -0700 (PDT)
-Received: from steredhat ([5.180.207.22])
-        by smtp.gmail.com with ESMTPSA id b19sm53221wmj.0.2020.06.15.06.33.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 06:33:14 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 15:33:10 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <asarai@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        io-uring <io-uring@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: [RFC] io_uring: add restrictions to support untrusted
- applications and guests
-Message-ID: <20200615133310.qwdmnctrir5zgube@steredhat>
-References: <20200609142406.upuwpfmgqjeji4lc@steredhat>
- <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jqmttIKDv0CjLA+NO+HgmwFUY3hsIX4ea9REGpMDxTM=;
+        b=N6IAAo2BmTB87Ii6C2IPAXTrdCFGyJhhTHtyV8srkcjxY/XFLfWlb51N69LdBf9mUU
+         Bh/zanogLbYGipljKnd7m1f2nyDM680e7XKS9knrMRMGKeYoEj2t1iYnxu0UpJUHiBaz
+         HxRnvk+frYXxdK9DHNGk9s+6WqauXbNUqeJFGgxCyfHmaGM0Q2076T1z8rUGRW0MWMaf
+         au2hUbs4pvCvrl9+UQrcZBLTF/zVy9AY4g0KxttABX8IfSB00wNAvHxm+dkF7JAi0wDY
+         FmGJ9HpAcyfCYmVYA2C5PDg8MphkDfYS0PIz8lDtqb+FgINYsxJPynryYCLX4ZEM7HVj
+         Fh0A==
+X-Gm-Message-State: AOAM533v9jR3QsobmuWFkHX7Hp3nVYPI7e85Bf3vWCHWzkwRaqHOx8vb
+        jHsQI9j9qNk5dZxn1Xvx6a2BIDxnlw3sVONyoQI=
+X-Google-Smtp-Source: ABdhPJxXDP3gox9eDujaSteeOhmnftxfu9fMErF+5NLIINlVuLstQB9q2UdduCCvhxJnaxIbX9TEDRSUj0UCqYE1WV8=
+X-Received: by 2002:a05:6830:2003:: with SMTP id e3mr20375240otp.89.1592228029199;
+ Mon, 15 Jun 2020 06:33:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
+References: <20200613024130.3356-1-nramas@linux.microsoft.com> <20200613024130.3356-6-nramas@linux.microsoft.com>
+In-Reply-To: <20200613024130.3356-6-nramas@linux.microsoft.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 15 Jun 2020 09:33:38 -0400
+Message-ID: <CAEjxPJ7v5Lu-vzqg0ZVh8zJ9uZ=odN3jt_5+9d9x+RydsNWK0g@mail.gmail.com>
+Subject: Re: [PATCH 5/5] LSM: Define workqueue for measuring security module state
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Stephen Smalley <stephen.smalley@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 11:04:06AM +0200, Jann Horn wrote:
-> +Kees, Christian, Sargun, Aleksa, kernel-hardening for their opinions
-> on seccomp-related aspects
-> 
-> On Tue, Jun 9, 2020 at 4:24 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
-> > Hi Jens,
-> > Stefan and I have a proposal to share with io_uring community.
-> > Before implementing it we would like to discuss it to receive feedbacks and
-> > to see if it could be accepted:
-> >
-> > Adding restrictions to io_uring
-> > =====================================
-> > The io_uring API provides submission and completion queues for performing
-> > asynchronous I/O operations. The queues are located in memory that is
-> > accessible to both the host userspace application and the kernel, making it
-> > possible to monitor for activity through polling instead of system calls. This
-> > design offers good performance and this makes exposing io_uring to guests an
-> > attractive idea for improving I/O performance in virtualization.
-> [...]
-> > Restrictions
-> > ------------
-> > This document proposes io_uring API changes that safely allow untrusted
-> > applications or guests to use io_uring. io_uring's existing security model is
-> > that of kernel system call handler code. It is designed to reject invalid
-> > inputs from host userspace applications. Supporting guests as io_uring API
-> > clients adds a new trust domain with access to even fewer resources than host
-> > userspace applications.
-> >
-> > Guests do not have direct access to host userspace application file descriptors
-> > or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
-> > as QEMU, grants access to a subset of its file descriptors and memory. The
-> > allowed file descriptors are typically the disk image files belonging to the
-> > guest. The memory is typically the virtual machine's RAM that the VMM has
-> > allocated on behalf of the guest.
-> >
-> > The following extensions to the io_uring API allow the host application to
-> > grant access to some of its file descriptors.
-> >
-> > These extensions are designed to be applicable to other use cases besides
-> > untrusted guests and are not virtualization-specific. For example, the
-> > restrictions can be used to allow only a subset of sqe operations available to
-> > an application similar to seccomp syscall whitelisting.
-> >
-> > An address translation and memory restriction mechanism would also be
-> > necessary, but we can discuss this later.
-> >
-> > The IOURING_REGISTER_RESTRICTIONS opcode
-> > ----------------------------------------
-> > The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
-> > installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
-> > passed to untrusted code with the knowledge that only operations present in the
-> > whitelist can be executed.
-> 
-> This approach of first creating a normal io_uring instance and then
-> installing restrictions separately in a second syscall means that it
-> won't be possible to use seccomp to restrict newly created io_uring
-> instances; code that should be subject to seccomp restrictions and
-> uring restrictions would only be able to use preexisting io_uring
-> instances that have already been configured by trusted code.
-> 
-> So I think that from the seccomp perspective, it might be preferable
-> to set up these restrictions in the io_uring_setup() syscall. It might
-> also be a bit nicer from a code cleanliness perspective, since you
-> won't have to worry about concurrently changing restrictions.
-> 
+On Fri, Jun 12, 2020 at 10:42 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> The data maintained by the security modules could be tampered with by
+> malware. The LSM needs to periodically query the state of
+> the security modules and measure the data when the state is changed.
+>
+> Define a workqueue for handling this periodic query and measurement.
 
-Thank you for these details!
-
-It seems feasible to include the restrictions during io_uring_setup().
-
-The only doubt concerns the possibility of allowing the trusted code to
-do some operations, before passing queues to the untrusted code, for
-example registering file descriptors, buffers, eventfds, etc.
-
-To avoid this, I should include these operations in io_uring_setup(),
-adding some code that I wanted to avoid by reusing io_uring_register().
-
-If I add restrictions in io_uring_setup() and then add an operation to
-go into safe mode (e.g. a flag in io_uring_enter()), we would have the same
-problem, right?
-
-Just to be clear, I mean something like this:
-
-    /* params will include restrictions */
-    fd = io_uring_setup(entries, params);
-
-    /* trusted code */
-    io_uring_register_files(fd, ...);
-    io_uring_register_buffers(fd, ...);
-    io_uring_register_eventfd(fd, ...);
-
-    /* enable safe mode */
-    io_uring_enter(fd, ..., IORING_ENTER_ENABLE_RESTRICTIONS);
-
-
-Anyway, including a list of things to register in the 'params', passed
-to io_uring_setup(), should be feasible, if Jens agree :-)
-
-Thanks,
-Stefano
-
+Won't this make it difficult/impossible to predict the IMA PCR value?
+Unless I missed it, you are going to end up measuring every N minutes
+even if there was no change and therefore constantly be extending the
+PCR.  That will break attestation or sealing against the IMA PCR.
