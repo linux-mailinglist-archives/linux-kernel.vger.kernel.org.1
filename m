@@ -2,251 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB331F947B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C20B1F9485
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgFOKSz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 06:18:55 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:37549 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728852AbgFOKSw (ORCPT
+        id S1729362AbgFOKVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:21:17 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:44217 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729139AbgFOKVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:18:52 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B6BCCC000C;
-        Mon, 15 Jun 2020 10:18:44 +0000 (UTC)
-Date:   Mon, 15 Jun 2020 12:18:41 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?6LW15Luq5bOw?= <yifeng.zhao@rock-chips.com>
-Cc:     "Johan Jonker" <jbx6244@gmail.com>, richard <richard@nod.at>,
-        vigneshr <vigneshr@ti.com>, robh+dt <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SGVpa29TdMO8Ym5lcg==?= <heiko@sntech.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rockchip <linux-rockchip@lists.infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
- RK2928 and others
-Message-ID: <20200615121841.566b81f5@xps13>
-In-Reply-To: <2020061517300662418531@rock-chips.com>
-References: <20200609074020.23860-1-yifeng.zhao@rock-chips.com>
-        <20200609074020.23860-3-yifeng.zhao@rock-chips.com>
-        <7e4ce8b1-73c4-8b9a-5726-b121f53de8df@gmail.com>
-        <2020061517300662418531@rock-chips.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 15 Jun 2020 06:21:15 -0400
+Received: by mail-lj1-f169.google.com with SMTP id c17so18459145lji.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 03:21:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KaCS27d5Mrh3uWKULq1Vh+J0+BIEQ7fy6JbxwE4oROw=;
+        b=Nm6ELNlQsNDkvbz6E9Y1+WJilBXs2BhHOI2VfAqV0IBx8CrPlGNbSJdCWIbSsIdZJW
+         6k5imsKlfJTjMJWGy7GFhk9JGAs79X1cQ+meFVRvxGRURmg/bd6INFgRrf4scV5bWaao
+         0ss1KO8nhPHNHh7ld7vHumGIOVrd/t3ajvOr8CEeGOo7uzw0q2WyLhQQBqfsdMOc0Vhn
+         GnNycauOnPrfDYoM1dSCVFsD7OJmMe8dzLbxspp4XRCwp/zOhMAeqJyqBu9igr2V9mdf
+         1/35C22/QYZitT22hMxSa8m0lslVmE9d5KChYfTumvoVdjwLWoA1z3N5kP4I805DB+sZ
+         VpKA==
+X-Gm-Message-State: AOAM533eaC9HlbZus28+qBShlSSkSFlw7jwxm1bAwpV14NBDVZ2D+Gsw
+        eHfehyNjgeY/XIyF0hmqhPI=
+X-Google-Smtp-Source: ABdhPJyK9gauooFsvdM++fovyBVIzX0nMneGpVK9FWUdVfGSCd3cxXAa0xX0xEYt4eEZr2uKAcPtBg==
+X-Received: by 2002:a2e:8e22:: with SMTP id r2mr13549548ljk.240.1592216470211;
+        Mon, 15 Jun 2020 03:21:10 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id l16sm3717858lji.138.2020.06.15.03.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 03:21:09 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH] coccinelle: misc: add array_size_dup script to detect missed overlow checks
+Date:   Mon, 15 Jun 2020 13:20:45 +0300
+Message-Id: <20200615102045.4558-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi 赵仪峰,
+Detect an opencoded expression that is used before or after
+array_size()/array3_size()/struct_size() to compute the same size.
 
-赵仪峰 <yifeng.zhao@rock-chips.com> wrote on Mon, 15 Jun 2020 17:34:14
-+0800:
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ scripts/coccinelle/misc/array_size_dup.cocci | 347 +++++++++++++++++++
+ 1 file changed, 347 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/array_size_dup.cocci
 
-> Hi Johan,
-> 
-> Johan Jonker <jbx6244@gmail.com> wrote on Sat, 13 Jun 2020 15:31:52
-> +0200:
-> >Hi Yifeng, Miquel,
-> >
-> >Some more comments about swap();
-> >
-> >On 6/9/20 9:40 AM, Yifeng Zhao wrote:
-> >
-> >[..]
-> >  
-> >> +static int rk_nfc_ooblayout_free(struct mtd_info *mtd, int section,
-> >> +	struct mtd_oob_region *oob_region)
-> >> +{
-> >> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> >> +  
-> >  
-> >> +	if (section >= chip->ecc.steps)
-> >> +	return -ERANGE;  
-> >
-> >Given:
-> >
-> >NFC_SYS_DATA_SIZE = 4
-> >chip->ecc.steps = 8
-> >section [0..7]
-> >
-> >Total free OOB size advertised to the MTD framework is:
-> >
-> >ecc.steps * NFC_SYS_DATA_SIZE - 1 BBM
-> >8 * 4 - 1 = 31 bytes
-> >
-> >With link address in OOB byte [0..3] this become:
-> >31 - 4 = 27 bytes
-> >
-> >Does that give data lost?
-> >Should we limit the number of free OOB bytes by 4 more to be save?
-> >Is my calculation correct?
-> >See further questions about this below.
-> >  
-> >> +
-> >> +	if (!section) {
-> >> +	/* The first byte is bad block mask flag. */
-> >> +	oob_region->length = NFC_SYS_DATA_SIZE - 1;
-> >> +	oob_region->offset = 1;
-> >> +	} else {
-> >> +	oob_region->length = NFC_SYS_DATA_SIZE;
-> >> +	oob_region->offset = section * NFC_SYS_DATA_SIZE;
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int rk_nfc_ooblayout_ecc(struct mtd_info *mtd, int section,
-> >> +	struct mtd_oob_region *oob_region)
-> >> +{
-> >> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> >> +  
-> >  
-> >> +	if (section)
-> >> +	return -ERANGE;  
-> >
-> >With the formule above a section > 0 does not alow ECC.
-> >
-> >Just a question about the MTD inner working for Miquel:
-> >
-> >With ooblayout_free using 8 steps and this just 1 does it still generate
-> >the correct ECC? Does it calculate ECC over 1024B or over 8*1024B ?
-> >
-> >Should we move the text that explains the layout closer to these
-> >functions and add a little more text to explain why we choose this
-> >particular layout?
-> >
-> >/*
-> > * NFC Page Data Layout:
-> > *	1024 Bytes Data + 4Bytes sys data + 28Bytes~124Bytes ecc +
-> > *	1024 Bytes Data + 4Bytes sys data + 28Bytes~124Bytes ecc +
-> > *	......
-> > * NAND Page Data Layout:
-> > *	1024 * n Data + m Bytes oob
-> > * Original Bad Block Mask Location:
-> > *	First byte of oob(spare).
-> > * nand_chip->oob_poi data layout:
-> > *	4Bytes sys data + .... + 4Bytes sys data + ecc data.
-> > */
-> >
-> >We expect now ECC data after n steps * 4 OOB bytes,
-> >but are we still using it with HW ECC or only for raw?
-> >  
-> >> +
-> >> +	oob_region->offset = NFC_SYS_DATA_SIZE * chip->ecc.steps;
-> >> +	oob_region->length = mtd->oobsize - oob_region->offset;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static const struct mtd_ooblayout_ops rk_nfc_ooblayout_ops = {
-> >> +	.free = rk_nfc_ooblayout_free,
-> >> +	.ecc = rk_nfc_ooblayout_ecc,
-> >> +};  
-> >
-> >[..]
-> >  
-> >> +static int rk_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-> >> +	     const u8 *buf, int page, int raw)
-> >> +{
-> >> +	struct rk_nfc *nfc = nand_get_controller_data(chip);
-> >> +	struct rk_nfc_nand_chip *rk_nand = to_rk_nand(chip);
-> >> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> >> +	int oob_step = (ecc->bytes > 60) ? NFC_MAX_OOB_PER_STEP :
-> >> +	NFC_MIN_OOB_PER_STEP;
-> >> +	int pages_per_blk = mtd->erasesize / mtd->writesize;
-> >> +	int ret = 0, i, boot_rom_mode = 0;
-> >> +	dma_addr_t dma_data, dma_oob;
-> >> +	u32 reg;
-> >> +	u8 *oob;
-> >> +
-> >> +	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
-> >> +
-> >> +	if (!raw) {
-> >> +	memcpy(nfc->page_buf, buf, mtd->writesize);
-> >> +	memset(nfc->oob_buf, 0xff, oob_step * ecc->steps);
-> >> +
-> >> +	/*
-> >> +	* The first 8(some devices are 4 or 16) blocks in use by
-> >> +	* the boot ROM and the first 32 bits of oob need to link
-> >> +	* to the next page address in the same block.
-> >> +	* Config the ECC algorithm supported by the boot ROM.
-> >> +	*/
-> >> +	if (page < pages_per_blk * rk_nand->boot_blks &&
-> >> +	    chip->options & NAND_IS_BOOT_MEDIUM) {
-> >> +	boot_rom_mode = 1;
-> >> +	if (rk_nand->boot_ecc != ecc->strength)
-> >> +	rk_nfc_hw_ecc_setup(chip, ecc,
-> >> +	    rk_nand->boot_ecc);
-> >> +	}
-> >> +
-> >> +	/*
-> >> +	* Swap the first oob with the seventh oob and bad block
-> >> +	* mask is saved at the seventh oob.
-> >> +	*/
-> >> +	swap(chip->oob_poi[0], chip->oob_poi[7]);  
-> >
-> >Add more info on why this is swapped.
-> >
-> >LA[0..3] is a link address that the BBM shouldn't over write.
-> >For Yifeng: Is there an other reason?  
-> 
-> No other reason，this swap ops only for the link address.
-> 
-> >Before swap:
-> >
-> >BBM  OOB1 OOB2 OOB3, OOB4 OOB5 OOB6 OOB7, OOB8 ....
-> >
-> >After swap:
-> >
-> >OOB7 OOB1 OOB2 OOB3, OOB4 OOB5 OOB6 BBM , OOB8 ....
-> >
-> >If (!i && boot_rom_mode):
-> >
-> >LA0  LA1  LA2  LA3 , OOB4 OOB5 OOB6 BBM , OOB8 ....
-> >
-> >Read back after swap again:
-> >
-> >BBM  LA1  LA2  LA3 , OOB4 OOB5 OOB6 LA0 , OOB8 ....
-> >
-> >Question:
-> >Are data OOB7 OOB1 OOB2 OOB3 lost now?
-> >Is this correct?  
-> 
-> Yes, the data OOB7 OOB1 OOB2 OOB3 will lost in the blocks which used for the boot ROM.
-> 
-> >#################################################
-> >Proposal:
-> >Should we reduce the free OOB size by 4
-> >and shift everything 4 bytes to recover all bytes?
-> >Replace the first 4 bytes with 0XFF or LA[0..3].
-> >
-> >Normal:
-> >0xFF 0XFF 0XFF 0xFF, BBM  OOB1 OOB2 OOB3, OOB4
-> >
-> >If (!i && boot_rom_mode):
-> >LA0  LA1  LA2  LA3 , BBM  OOB1 OOB2 OOB3, OOB4
-> >
-> >Question for Miquel and Yifeng:
-> >Does this work? Could you test?  
-> 
-> I want to modify the drivers in next version:
-> The data swap ops only done for the blocks which used for the boot ROM，In this way,
-> the specially processed code will not affect the rest blocks.
-> For Miquel and Yifeng:
-> Is this OK？
+diff --git a/scripts/coccinelle/misc/array_size_dup.cocci b/scripts/coccinelle/misc/array_size_dup.cocci
+new file mode 100644
+index 000000000000..08919a938754
+--- /dev/null
++++ b/scripts/coccinelle/misc/array_size_dup.cocci
+@@ -0,0 +1,347 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Check for array_size(), array3_size(), struct_size() duplicates.
++/// Three types of patterns for these functions:
++///  1. An opencoded expression is used before array_size() to compute the same size
++///  2. An opencoded expression is used after array_size() to compute the same size
++///  3. Consecutive calls of array_size() with the same values
++/// From security point of view only first case is relevant. These functions
++/// perform arithmetic overflow check. Thus, if we use an opencoded expression
++/// before a call to the *_size() function we can miss an overflow.
++///
++// Confidence: High
++// Copyright: (C) 2020 Denis Efremov ISPRAS
++// Options: --no-includes --include-headers --no-loops
++
++virtual context
++virtual report
++virtual org
++
++@as@
++expression E1, E2;
++@@
++
++array_size(E1, E2)
++
++@as_next@
++expression subE1 <= as.E1;
++expression as.E1;
++expression subE2 <= as.E2;
++expression as.E2;
++expression E3;
++position p1, p2;
++@@
++
++* E1 * E2@p1
++  ... when != \(E1\|E2\|subE1\|subE2\)=E3
++      when != \(E1\|E2\|subE1\|subE2\)+=E3
++      when != \(E1\|E2\|subE1\|subE2\)-=E3
++      when != \(E1\|E2\|subE1\|subE2\)*=E3
++      when != \(&E1\|&E2\|&subE1\|&subE2\)
++* array_size(E1, E2)@p2
++
++@as_prev@
++expression subE1 <= as.E1;
++expression as.E1;
++expression subE2 <= as.E2;
++expression as.E2;
++expression E3;
++position p1, p2;
++@@
++
++* array_size(E1, E2)@p1
++  ... when != \(E1\|E2\|subE1\|subE2\)=E3
++      when != \(E1\|E2\|subE1\|subE2\)+=E3
++      when != \(E1\|E2\|subE1\|subE2\)-=E3
++      when != \(E1\|E2\|subE1\|subE2\)*=E3
++      when != \(&E1\|&E2\|&subE1\|&subE2\)
++* E1 * E2@p2
++
++@as_dup@
++expression subE1 <= as.E1;
++expression as.E1;
++expression subE2 <= as.E2;
++expression as.E2;
++expression E3;
++position p1, p2;
++@@
++
++* array_size(E1, E2)@p1
++  ... when != \(E1\|E2\|subE1\|subE2\)=E3
++      when != \(E1\|E2\|subE1\|subE2\)+=E3
++      when != \(E1\|E2\|subE1\|subE2\)-=E3
++      when != \(E1\|E2\|subE1\|subE2\)*=E3
++      when != \(&E1\|&E2\|&subE1\|&subE2\)
++* array_size(E1, E2)@p2
++
++@as3@
++expression E1, E2, E3;
++@@
++
++array3_size(E1, E2, E3)
++
++@as3_next@
++expression subE1 <= as3.E1;
++expression as3.E1;
++expression subE2 <= as3.E2;
++expression as3.E2;
++expression subE3 <= as3.E3;
++expression as3.E3;
++expression E4;
++position p1, p2;
++@@
++
++* E1 * E2 * E3@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* array3_size(E1, E2, E3)@p2
++
++@as3_prev@
++expression subE1 <= as3.E1;
++expression as3.E1;
++expression subE2 <= as3.E2;
++expression as3.E2;
++expression subE3 <= as3.E3;
++expression as3.E3;
++expression E4;
++position p1, p2;
++@@
++
++* array3_size(E1, E2, E3)@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* E1 * E2 * E3@p2
++
++@as3_dup@
++expression subE1 <= as3.E1;
++expression as3.E1;
++expression subE2 <= as3.E2;
++expression as3.E2;
++expression subE3 <= as3.E3;
++expression as3.E3;
++expression E4;
++position p1, p2;
++@@
++
++* array3_size(E1, E2, E3)@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* array3_size(E1, E2, E3)@p2
++
++@ss@
++expression E1, E2, E3;
++@@
++
++struct_size(E1, E2, E3)
++
++@ss_next@
++expression subE1 <= ss.E1;
++expression ss.E1;
++expression subE2 <= ss.E2;
++expression ss.E2;
++expression subE3 <= ss.E3;
++expression ss.E3;
++expression E4;
++position p1, p2;
++@@
++
++* E1 * E2 + E3@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* struct_size(E1, E2, E3)@p2
++
++@ss_prev@
++expression subE1 <= ss.E1;
++expression ss.E1;
++expression subE2 <= ss.E2;
++expression ss.E2;
++expression subE3 <= ss.E3;
++expression ss.E3;
++expression E4;
++position p1, p2;
++@@
++
++* struct_size(E1, E2, E3)@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* E1 * E2 + E3@p2
++
++@ss_dup@
++expression subE1 <= ss.E1;
++expression ss.E1;
++expression subE2 <= ss.E2;
++expression ss.E2;
++expression subE3 <= ss.E3;
++expression ss.E3;
++expression E4;
++position p1, p2;
++@@
++
++* struct_size(E1, E2, E3)@p1
++  ... when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)+=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)-=E4
++      when != \(E1\|E2\|E3\|subE1\|subE2\|subE3\)*=E4
++      when != \(&E1\|&E2\|&E3\|&subE1\|&subE2\|&subE3\)
++* struct_size(E1, E2, E3)@p2
++
++@script:python depends on report@
++p1 << as_next.p1;
++p2 << as_next.p2;
++@@
++
++msg = "WARNING: array_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.report.print_report(p1[0], msg)
++
++@script:python depends on org@
++p1 << as_next.p1;
++p2 << as_next.p2;
++@@
++
++msg = "WARNING: array_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.org.print_todo(p1[0], msg)
++
++@script:python depends on report@
++p1 << as_prev.p1;
++p2 << as_prev.p2;
++@@
++
++msg = "WARNING: array_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << as_prev.p1;
++p2 << as_prev.p2;
++@@
++
++msg = "WARNING: array_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
++
++@script:python depends on report@
++p1 << as_dup.p1;
++p2 << as_dup.p2;
++@@
++
++msg = "WARNING: same array_size (line %s)" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << as_dup.p1;
++p2 << as_dup.p2;
++@@
++
++msg = "WARNING: same array_size (line %s)" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
++
++
++@script:python depends on report@
++p1 << as3_next.p1;
++p2 << as3_next.p2;
++@@
++
++msg = "WARNING: array3_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.report.print_report(p1[0], msg)
++
++@script:python depends on org@
++p1 << as3_next.p1;
++p2 << as3_next.p2;
++@@
++
++msg = "WARNING: array3_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.org.print_todo(p1[0], msg)
++
++@script:python depends on report@
++p1 << as3_prev.p1;
++p2 << as3_prev.p2;
++@@
++
++msg = "WARNING: array3_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << as3_prev.p1;
++p2 << as3_prev.p2;
++@@
++
++msg = "WARNING: array3_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
++
++@script:python depends on report@
++p1 << as3_dup.p1;
++p2 << as3_dup.p2;
++@@
++
++msg = "WARNING: same array3_size (line %s)" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << as3_dup.p1;
++p2 << as3_dup.p2;
++@@
++
++msg = "WARNING: same array3_size (line %s)" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
++
++
++@script:python depends on report@
++p1 << ss_next.p1;
++p2 << ss_next.p2;
++@@
++
++msg = "WARNING: struct_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.report.print_report(p1[0], msg)
++
++@script:python depends on org@
++p1 << ss_next.p1;
++p2 << ss_next.p2;
++@@
++
++msg = "WARNING: struct_size is used down the code (line %s) to compute the same size" % (p2[0].line)
++coccilib.org.print_todo(p1[0], msg)
++
++@script:python depends on report@
++p1 << ss_prev.p1;
++p2 << ss_prev.p2;
++@@
++
++msg = "WARNING: struct_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << ss_prev.p1;
++p2 << ss_prev.p2;
++@@
++
++msg = "WARNING: struct_size is already used (line %s) to compute the same size" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
++
++@script:python depends on report@
++p1 << ss_dup.p1;
++p2 << ss_dup.p2;
++@@
++
++msg = "WARNING: same struct_size (line %s)" % (p1[0].line)
++coccilib.report.print_report(p2[0], msg)
++
++@script:python depends on org@
++p1 << ss_dup.p1;
++p2 << ss_dup.p2;
++@@
++
++msg = "WARNING: same struct_size (line %s)" % (p1[0].line)
++coccilib.org.print_todo(p2[0], msg)
+-- 
+2.26.2
 
-So I guess this linking property is only for the BootROM? I am not sure
-what is best but I guess keeping the same layout everywhere is better.
-Johan proposal would be good to try.
-
-Thanks,
-Miquèl
