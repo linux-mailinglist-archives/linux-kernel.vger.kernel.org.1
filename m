@@ -2,171 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0289E1FA377
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650BE1FA37A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgFOWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgFOWXf (ORCPT
+        id S1726675AbgFOWXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:23:50 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52487 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726662AbgFOWXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:23:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBE7C061A0E;
-        Mon, 15 Jun 2020 15:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IDCWp2EbugCC0kC6ljaZ+2IcWTJdtn0pH9LuXNHFyAs=; b=T42VgDeVirYG+yiCdji/2v4TAG
-        sjSo852STrpCiiwNW/FhG2DBXIYVF2PoKLCFQ5NA2EcSBKDOgVVCYtl1iE8j8F1v3lGI+spqYft6y
-        JVYy0MRIfGE9dxE8sUrKHTQweIMwoZSVAn1eNa1X/44uGAnJ6jIShkMCKgg1SvqquMWc0R7sVBTvO
-        b6+pkJza7AIYXtNEgfR8uyPyp+oVvLcDvQdeE7nSkx+PGn2WrXjWx7EtPsYmY+Ep4wS6JD7/i0nf6
-        bs4SVE+KQDKCY2AA16//E2Yb5kcHPBW5LkSV0ICGgNIK4tVwcNs48LrgNf6rs40+8GVZ92yIUsZZ8
-        MkJTzrlw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jkxVs-0003i5-Kc; Mon, 15 Jun 2020 22:23:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A21653060FD;
-        Tue, 16 Jun 2020 00:23:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 89C262BDC1508; Tue, 16 Jun 2020 00:23:30 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 00:23:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
-Subject: Re: [tip: x86/entry] x86/entry: Treat BUG/WARN as NMI-like entries
-Message-ID: <20200615222330.GI2514@hirez.programming.kicks-ass.net>
-References: <f8fe40e0088749734b4435b554f73eee53dcf7a8.1591932307.git.luto@kernel.org>
- <159199140855.16989.18012912492179715507.tip-bot2@tip-bot2>
- <20200615145018.GU2531@hirez.programming.kicks-ass.net>
- <CALCETrWhbg_61CTo9_T6s1NDFvOgUx7ebSzhXj7O_m8htePwKA@mail.gmail.com>
- <20200615194458.GL2531@hirez.programming.kicks-ass.net>
- <CALCETrUbwwoYTzyntr=bUjJU44iyt+S8bRS04OxmByP3aD4A9g@mail.gmail.com>
+        Mon, 15 Jun 2020 18:23:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592259824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZUPfRcXkYcNh8btCoccdJZ4/n8L7JuZDFt9dxhVoRY=;
+        b=NKLcD6NqxqXIPKJWbeZJAbqN0RZmTki3ORGohhX8jkSNiDiWDhTj2SDEuahcWZApBg8fyR
+        7Z+sKfrhwYJ9/3082pHc5Zc8BJzC+IL+LOqApS2EmtWbs/tOV97nyXGMeVdLpGpSoLbY+c
+        66gxW9LJJV50NyY3uRbt2Wt4De0czlA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-ackfh9KUMRKa6acvAk4UyQ-1; Mon, 15 Jun 2020 18:23:39 -0400
+X-MC-Unique: ackfh9KUMRKa6acvAk4UyQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E9FE803313;
+        Mon, 15 Jun 2020 22:23:38 +0000 (UTC)
+Received: from x2.localnet (ovpn-114-75.phx2.redhat.com [10.3.114.75])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E48F10002BC;
+        Mon, 15 Jun 2020 22:23:31 +0000 (UTC)
+From:   Steve Grubb <sgrubb@redhat.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, paul@paul-moore.com,
+        rgb@redhat.com, linux-integrity@vger.kernel.org,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] integrity: Add errno field in audit message
+Date:   Mon, 15 Jun 2020 18:23:31 -0400
+Message-ID: <8800031.dr63W5FlUW@x2>
+Organization: Red Hat
+In-Reply-To: <42482562-d74c-2678-069f-1d8ef4feffac@linux.microsoft.com>
+References: <20200611000400.3771-1-nramas@linux.microsoft.com> <1591989920.11061.90.camel@linux.ibm.com> <42482562-d74c-2678-069f-1d8ef4feffac@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUbwwoYTzyntr=bUjJU44iyt+S8bRS04OxmByP3aD4A9g@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 02:08:16PM -0700, Andy Lutomirski wrote:
-
-> > All !user exceptions really should be NMI-like. If you want to go
-> > overboard, I suppose you can look at IF and have them behave interrupt
-> > like when set, but why make things complicated.
+On Friday, June 12, 2020 3:50:14 PM EDT Lakshmi Ramasubramanian wrote:
+> On 6/12/20 12:25 PM, Mimi Zohar wrote:
+> > The idea is a good idea, but you're assuming that "result" is always
+> > errno.  That was probably true originally, but isn't now.  For
+> > example, ima_appraise_measurement() calls xattr_verify(), which
+> > compares the security.ima hash with the calculated file hash.  On
+> > failure, it returns the result of memcmp().  Each and every code path
+> > will need to be checked.
 > 
-> This entire rabbit hole opened because of #PF. So we at least need the
-> set of exceptions that are permitted to schedule if they came from
-> kernel mode to remain schedulable.
-
-What exception, other than #PF, actually needs to schedule from kernel?
-
-> Prior to the giant changes, all the non-IST *exceptions*, but not the
-> interrupts, were schedulable from kernel mode, assuming the original
-> context could schedule. Right now, interrupts can schedule, too, which
-> is nice if we ever want to fully clean up the Xen abomination. I
-> suppose we could make it so #PF opts in to special treatment again,
-> but we should decide that the result is simpler or otherwise better
-> before we do this.
+> Good catch Mimi.
 > 
-> One possible justification would be that the schedulable entry variant
-> is more complicated, and most kernel exceptions except the ones with
-> fixups are bad news, and we want the oopses to succeed. But page
-> faults are probably the most common source of oopses, so this is a bit
-> weak, and we really want page faults to work even from nasty contexts.
+> Instead of "errno" should we just use "result" and log the value given
+> in the result parameter?
 
-I think I'd prefer the argument of consistent failure.
+That would likely collide with another field of the same name which is the 
+operation's results. If it really is errno, the name is fine. It's generic 
+enough that it can be reused on other events if that mattered.
 
-Do we ever want #UD to schedule? If not, then why allow it to sometimes
-schedule and sometimes fail, better to always fail.
 
-#DB is still a giant trainwreck in this regard as well.
+>  From the audit field dictionary (link given below) "result" is already
+> a known field that is used to indicate the result of the audited operation.
+> 
+> @Steve\Paul:
+> Like "res" is "result" also expected to have only values "0" or "1", or
+> can it be any result code?
 
-Something like this...
+It should only be 0 or 1. Sometime in the past it may have been the words 
+success/fail. But we've been converting those as we find them.
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -216,10 +216,25 @@ static inline void handle_invalid_op(str
- 		      ILL_ILLOPN, error_get_trap_addr(regs));
- }
- 
--DEFINE_IDTENTRY_RAW(exc_invalid_op)
-+static void handle_invalid_op_kernel(struct pt_regs *regs)
-+{
-+	if (is_valid_bugaddr(regs->ip) &&
-+	    report_bug(regs->ip, regs) == BUG_TRAP_TYPE_WARN) {
-+		/* Skip the ud2. */
-+		regs->ip += LEN_UD2;
-+		return;
-+	}
-+
-+	handle_invalid_op(regs);
-+}
-+
-+static void handle_invalid_op_user(struct pt_regs *regs)
- {
--	bool rcu_exit;
-+	handle_invalid_op(regs);
-+}
- 
-+DEFINE_IDTENTRY_RAW(exc_invalid_op)
-+{
- 	/*
- 	 * Handle BUG/WARN like NMIs instead of like normal idtentries:
- 	 * if we bugged/warned in a bad RCU context, for example, the last
-@@ -227,38 +242,25 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
- 	 * infinitum.
- 	 */
- 	if (!user_mode(regs)) {
--		enum bug_trap_type type = BUG_TRAP_TYPE_NONE;
--
- 		nmi_enter();
- 		instrumentation_begin();
- 		trace_hardirqs_off_finish();
- 
--		if (is_valid_bugaddr(regs->ip))
--			type = report_bug(regs->ip, regs);
-+		handle_invalid_op_kernel(regs);
- 
- 		if (regs->flags & X86_EFLAGS_IF)
- 			trace_hardirqs_on_prepare();
- 		instrumentation_end();
- 		nmi_exit();
-+	} else {
-+		bool rcu_exit;
- 
--		if (type == BUG_TRAP_TYPE_WARN) {
--			/* Skip the ud2. */
--			regs->ip += LEN_UD2;
--			return;
--		}
--
--		/*
--		 * Else, if this was a BUG and report_bug returns or if this
--		 * was just a normal #UD, we want to continue onward and
--		 * crash.
--		 */
-+		rcu_exit = idtentry_enter_cond_rcu(regs);
-+		instrumentation_begin();
-+		handle_invalid_op_user(regs);
-+		instrumentation_end();
-+		idtentry_exit_cond_rcu(regs, rcu_exit);
- 	}
--
--	rcu_exit = idtentry_enter_cond_rcu(regs);
--	instrumentation_begin();
--	handle_invalid_op(regs);
--	instrumentation_end();
--	idtentry_exit_cond_rcu(regs, rcu_exit);
- }
- 
- DEFINE_IDTENTRY(exc_coproc_segment_overrun)
+-Steve
+
+> https://github.com/linux-audit/audit-documentation/blob/master/specs/fields
+> /field-dictionary.csv
+> 
+> res 	alphanumeric 	result of the audited operation(success/fail)
+> 
+> result 	alphanumeric 	result of the audited operation(success/fail)
+
+
+
+
