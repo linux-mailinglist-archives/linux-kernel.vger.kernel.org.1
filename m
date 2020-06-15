@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B420C1F9153
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4553F1F9157
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgFOI0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:26:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59045 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgFOI0k (ORCPT
+        id S1728995AbgFOI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:27:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:53786 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728526AbgFOI13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:26:40 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jkkRw-00013P-LO; Mon, 15 Jun 2020 08:26:36 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: MIPS: fix spelling mistake "Exteneded" -> "Extended"
-Date:   Mon, 15 Jun 2020 09:26:36 +0100
-Message-Id: <20200615082636.7004-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0.rc0
+        Mon, 15 Jun 2020 04:27:29 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-243-iJtaD7E4PGOFKa-5GEiBiQ-1; Mon, 15 Jun 2020 09:27:25 +0100
+X-MC-Unique: iJtaD7E4PGOFKa-5GEiBiQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 09:27:24 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 15 Jun 2020 09:27:24 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christian Brauner' <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>
+CC:     Sargun Dhillon <sargun@sargun.me>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Matt Denton <mpdenton@google.com>, Tejun Heo <tj@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: RE: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Thread-Topic: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Thread-Index: AQHWP+BcCi14oegu0U6J73sUpcDiU6jTfHDAgACI+YCAAKH2YIAAp2qKgAQNYhA=
+Date:   Mon, 15 Jun 2020 08:27:24 +0000
+Message-ID: <e54c39728d944de782394f4632bc7b1e@AcuMS.aculab.com>
+References: <202006092227.D2D0E1F8F@keescook>
+ <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006101953.899EFB53@keescook>
+ <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
+ <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
+ <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
+ <202006111634.8237E6A5C6@keescook>
+ <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
+ <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006120806.E770867EF@keescook>
+ <20200612182816.okwylihs6u6wkgxd@wittgenstein>
+In-Reply-To: <20200612182816.okwylihs6u6wkgxd@wittgenstein>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-There is a spelling mistake in a couple of kvm_err messages. Fix them.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/mips/kvm/emulate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index 5ae82d925197..d3d322f70fe0 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -1861,7 +1861,7 @@ enum emulation_result kvm_mips_emulate_store(union mips_instruction inst,
- 				  vcpu->arch.gprs[rt], *(u64 *)data);
- 			break;
- 		default:
--			kvm_err("Godson Exteneded GS-Store not yet supported (inst=0x%08x)\n",
-+			kvm_err("Godson Extended GS-Store not yet supported (inst=0x%08x)\n",
- 				inst.word);
- 			break;
- 		}
-@@ -2103,7 +2103,7 @@ enum emulation_result kvm_mips_emulate_load(union mips_instruction inst,
- 			vcpu->mmio_needed = 30;	/* signed */
- 			break;
- 		default:
--			kvm_err("Godson Exteneded GS-Load for float not yet supported (inst=0x%08x)\n",
-+			kvm_err("Godson Extended GS-Load for float not yet supported (inst=0x%08x)\n",
- 				inst.word);
- 			break;
- 		}
--- 
-2.27.0.rc0
+RnJvbTogQ2hyaXN0aWFuIEJyYXVuZXINCj4gU2VudDogMTIgSnVuZSAyMDIwIDE5OjI4DQouLi4N
+Cj4gPiA+IAlpZiAoc2l6ZSA8IDMyKQ0KPiA+ID4gCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiA+IAlp
+ZiAoc2l6ZSA+IFBBR0VfU0laRSkNCj4gPiA+IAkJcmV0dXJuIC1FMkJJRzsNCj4gPg0KPiA+IChU
+YW5nZXQ6IHdoYXQgd2FzIHRoZSByZWFzb24gZm9yIGNvcHlfc3RydWN0X2Zyb21fdXNlcigpIG5v
+dCBpbmNsdWRpbmcNCj4gPiB0aGUgbWluL21heCBjaGVjaz8gSSBoYXZlIGEgbWVtb3J5IG9mIEFs
+IG9iamVjdGluZyB0byBoYXZpbmcgYW4NCj4gPiAiaW50ZXJuYWwiIGxpbWl0PykNCj4gDQo+IEFs
+IGRpZG4ndCB3YW50IHRoZSBQQUdFX1NJWkUgbGltaXQgaW4gdGhlcmUgYmVjYXVzZSB0aGVyZSdz
+IG5vdGhpbmcNCj4gaW5oZXJlbnRseSB3cm9uZyB3aXRoIGNvcHlpbmcgaW5zYW5lIGFtb3VudHMg
+b2YgbWVtb3J5Lg0KDQpUaGUgcHJvYmxlbSBpcyByZWFsbHkgYWxsb3dpbmcgYSB1c2VyIHByb2Nl
+c3MgdG8gYWxsb2NhdGUNCnVuYm91bmRlZCBibG9ja3Mgb2YgbWVtb3J5LCBub3QgdGhlIGNvcHkg
+aXRzZWxmLg0KDQpUaGUgbGltaXQgZm9yIElPVygpIGV0YyBpcyAxNmsgLSBub3QgYSBwcm9ibGVt
+Lg0KSWYgYSAzMmJpdCBzaXplIGlzIHNldCB0byBqdXN0IHVuZGVyIDRHQiBzbyB5b3UgcmVhbGx5
+IHdhbnQNCnRvIGFsbG9jYXRlIDRHQiBvZiBtZW1vcnkgdGhlbiBmaW5kIHRoZSByZXF1ZXN0IGlz
+IGdhcmJhZ2UuDQpTZWVtcyBsaWtlIGEgbmljZSBEb1MgYXR0YWNrLg0KQSA2NGJpdCBzaXplIGNh
+biBiZSB3b3JzZS4NCg0KUG90ZW50aWFsbHkgdGhlIGxpbWl0IHNob3VsZCBiZSBpbiBtZW1kdXBf
+dXNlcigpIGl0c2VsZi4NCkFuZCBwb3NzaWJseSBhbiBleHRyYSBwYXJhbWV0ZXIgZ2l2aW5nIGEg
+cGVyLWNhbGwgbG93ZXI/IGxpbWl0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
