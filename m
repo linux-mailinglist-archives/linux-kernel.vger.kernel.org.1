@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E021FA35C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF1E1FA34F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgFOWRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:17:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41398 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726557AbgFOWQc (ORCPT
+        id S1726610AbgFOWQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:16:40 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36048 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726565AbgFOWQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:16:32 -0400
+        Mon, 15 Jun 2020 18:16:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592259391;
+        s=mimecast20190719; t=1592259393;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=29rQjHHfMz5TTodTKxetqtsoGSdJNiNA7+d/ohNymv4=;
-        b=eKkrtoN4Zj2wzsYIIAk4bLMurq0Dw/AuduZLBcZHhZzuU73EUnYE9kkk4pj7Ix35dZ03dc
-        qW90A991GXRarX4p+gaw+Nq6xD6kW7l/TtdtFHbMX0LHaFPUkQJKARief4Adpv21gxPjkb
-        ktpt1G0ZfJP/zA5Vm8EMgrQKjEDisB0=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-mjJlVfqzOlaXaGQ6QhFTnw-1; Mon, 15 Jun 2020 18:16:30 -0400
-X-MC-Unique: mjJlVfqzOlaXaGQ6QhFTnw-1
-Received: by mail-qk1-f197.google.com with SMTP id t18so15365639qke.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:16:29 -0700 (PDT)
+        bh=k8RD1B8wb1dTFuTqvcr6ZWbigMuslfX1X9yF8acF4FQ=;
+        b=QuJdK3yBcMMA4wn0+wAflpc9+yP4D8qw1sN9W4Gou0bsZ/8VhrWisTIQdjs3K1NBojqE/S
+        IocruoJoxbDyCZeqZ4mQYDIjePxiw60Sb94XAYu5G5ofjz55Jl3c/UXwhijPNeom1Rjjaj
+        s4pUMHQZPK1BW4511D7JrICSsUaBzMg=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-bWj3bF0wNLCaQLvrI6BuWw-1; Mon, 15 Jun 2020 18:16:31 -0400
+X-MC-Unique: bWj3bF0wNLCaQLvrI6BuWw-1
+Received: by mail-qt1-f200.google.com with SMTP id y5so15212963qtd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:16:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=29rQjHHfMz5TTodTKxetqtsoGSdJNiNA7+d/ohNymv4=;
-        b=OmuGrj5rTGf8Ecc2VxhtBT4zc/ajImvAAGQ5h65/PAe1jff8KpkjwzDNbi1VvVKqjG
-         dB673TUrwkx22tWf9SV+WnyKeG+T21kjvE/L7ppZziGU0iVIbhT9rp9xee9wemXIgLn2
-         xHBmqZyMkCVlKhwepkvecF9rvSVYa9x1fkXfsJwUqvBL0VXlONjb8tp+SGb/sms0eQsl
-         wX0u9jywC7eX0ZSpXdxYnhIJutD2qzvhwP3mPTG1T8FFZw1S4J32h35GCHIojR47mYJh
-         32zHxv7TJvwuJU5HJYX6snQGZ7pk03zknZrNwxk2DHrk1Qsq+qJ5+WpzjjtUWXryPNI7
-         xoVQ==
-X-Gm-Message-State: AOAM532W8bq8EPZRUF6i7mBQCiYpDygPK5Vf/seSKVkfo1rGt70O1u2T
-        PZTsgEkh953PWqHO5q9IOEBckFH1/330uKM7BTK+s8XE8unABr9lfhnBOzoKekSvosyNg45sePQ
-        Bw3epEmCLvMt3L3jiO3iwOKn1
-X-Received: by 2002:ad4:4851:: with SMTP id t17mr27470147qvy.160.1592259389072;
-        Mon, 15 Jun 2020 15:16:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxX1MqaPv7JHSCx9w4Ao2KOIVPGXfmmyP4DtsWYycMl8Wjz5YM0+uul3halOZlyfdhk/5f6mw==
-X-Received: by 2002:ad4:4851:: with SMTP id t17mr27470128qvy.160.1592259388816;
-        Mon, 15 Jun 2020 15:16:28 -0700 (PDT)
+        bh=k8RD1B8wb1dTFuTqvcr6ZWbigMuslfX1X9yF8acF4FQ=;
+        b=eU+MpCQBqRmqqUx1cXUkP73Gj2jXSiPWJcYN52fvmlO3t6b0JaDy78gQiK/etXN4ms
+         ESkLK04td86iGCjgPVQfhsYOff09NWYTk/6KMhyze+izn4OqcoUtCKJpDaAfvzjr8puY
+         qCf1d+4sHO3003duaawJlKgxVxCVApQReXIn0d1ddCGrZPjBnBnrSPcsixvUCvzWHcR0
+         R9WV88tdJ3FDDTfJ1jWMZSlULfFhJToexuWA36yVNlcSI36VIGponI3Mxjxxz9pkqD/F
+         w22R2o03u5ZlYArQ9zoWmq0ymCbEpJITrqN59cVj1+SXUY7+TEQ+O29Fj9MfotIAuWUP
+         4kcA==
+X-Gm-Message-State: AOAM533VNqHDwUxyzzn8qHMfn7A8H0n/yb9APAmH5RauikIC/wU/SyR/
+        Mk/vsMm7iZbZ+MDc3EYg0CE0Vt7yIhwSQlpqvAawk+E+cxS0JkgzuQRsSanM/bCt2JATx1bJw+/
+        7JQ7DWzNX51GyXdZ13xPh19Vd
+X-Received: by 2002:a37:ac14:: with SMTP id e20mr17758582qkm.20.1592259390904;
+        Mon, 15 Jun 2020 15:16:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxk1+i3mjIQwPhD2lbehxtygSZfiJxv5Zm8yfvOnzyKWTHYGgv5WurQfy7csXRutMmX+Ql/qw==
+X-Received: by 2002:a37:ac14:: with SMTP id e20mr17758556qkm.20.1592259390643;
+        Mon, 15 Jun 2020 15:16:30 -0700 (PDT)
 Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id w13sm12351509qkb.91.2020.06.15.15.16.27
+        by smtp.gmail.com with ESMTPSA id w13sm12351509qkb.91.2020.06.15.15.16.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 15:16:28 -0700 (PDT)
+        Mon, 15 Jun 2020 15:16:30 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Simek <monstr@monstr.eu>
-Subject: [PATCH 11/25] mm/microblaze: Use mm_fault_accounting()
-Date:   Mon, 15 Jun 2020 18:15:53 -0400
-Message-Id: <20200615221607.7764-12-peterx@redhat.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 12/25] mm/mips: Use mm_fault_accounting()
+Date:   Mon, 15 Jun 2020 18:15:54 -0400
+Message-Id: <20200615221607.7764-13-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
 References: <20200615221607.7764-1-peterx@redhat.com>
@@ -74,29 +75,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Use the new mm_fault_accounting() helper for page fault accounting.
 
 Avoid doing page fault accounting multiple times if the page fault is retried.
-Also, the perf events for page faults will be accounted too when the config has
-CONFIG_PERF_EVENTS defined.
+Since at it, move the accouting out of mmap_sem because not needed.
 
-CC: Michal Simek <monstr@monstr.eu>
+CC: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC: linux-mips@vger.kernel.org
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/microblaze/mm/fault.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/mips/mm/fault.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/arch/microblaze/mm/fault.c b/arch/microblaze/mm/fault.c
-index 3248141f8ed5..db0f3b71c3fe 100644
---- a/arch/microblaze/mm/fault.c
-+++ b/arch/microblaze/mm/fault.c
-@@ -90,7 +90,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
- 	struct mm_struct *mm = current->mm;
- 	int code = SEGV_MAPERR;
- 	int is_write = error_code & ESR_S;
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index f8d62cd83b36..0b937fb12614 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -43,7 +43,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	struct mm_struct *mm = tsk->mm;
+ 	const int field = sizeof(unsigned long) * 2;
+ 	int si_code;
 -	vm_fault_t fault;
 +	vm_fault_t fault, major = 0;
  	unsigned int flags = FAULT_FLAG_DEFAULT;
  
- 	regs->ear = address;
-@@ -216,6 +216,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	static DEFINE_RATELIMIT_STATE(ratelimit_state, 5 * HZ, 10);
+@@ -153,11 +153,11 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
  	 * the fault.
  	 */
  	fault = handle_mm_fault(vma, address, flags);
@@ -104,25 +105,35 @@ index 3248141f8ed5..db0f3b71c3fe 100644
  
  	if (fault_signal_pending(fault, regs))
  		return;
-@@ -231,10 +232,6 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
- 	}
  
+-	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM)
+ 			goto out_of_memory;
+@@ -168,15 +168,6 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 		BUG();
+ 	}
  	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (unlikely(fault & VM_FAULT_MAJOR))
--			current->maj_flt++;
--		else
--			current->min_flt++;
+-		if (fault & VM_FAULT_MAJOR) {
+-			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+-						  regs, address);
+-			tsk->maj_flt++;
+-		} else {
+-			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+-						  regs, address);
+-			tsk->min_flt++;
+-		}
  		if (fault & VM_FAULT_RETRY) {
  			flags |= FAULT_FLAG_TRIED;
  
-@@ -249,6 +246,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
+@@ -191,6 +182,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
  	}
  
  	up_read(&mm->mmap_sem);
-+	mm_fault_accounting(current, regs, address, major);
++	mm_fault_accounting(tsk, regs, address, major);
+ 	return;
  
- 	/*
- 	 * keep track of tlb+htab misses that are good addrs but
+ /*
 -- 
 2.26.2
 
