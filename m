@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953341F9A34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AD31F9A40
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730490AbgFOObd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:31:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55258 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729243AbgFOObc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:31:32 -0400
-X-UUID: 67dc2c9a0411459788ab164f56c38f6d-20200615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kr2jM3RF3TtcKfmiwQa78Z5GzGFPEkqB/QqVcBMG3TY=;
-        b=UFyGNRZGPWnOhHUMVcxkDzOBNOvjTOmWdC2yqHnkqjzo7aoy/Xwyt16jObOfYMqVIr6pdd6DLM5ET2X0QCZLYfA/rLVXAiuW6RsjkZUJXISYMcQMOUPnz1guSQ12yMK+X1Vf0HI1pytWpnG/mlHw+Q1johWc2lpKoy7pVjl4TR0=;
-X-UUID: 67dc2c9a0411459788ab164f56c38f6d-20200615
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 517540321; Mon, 15 Jun 2020 22:31:28 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 15 Jun 2020 22:31:22 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Jun 2020 22:31:22 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <cc.chou@mediatek.com>,
-        <chaotian.jing@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1 3/3] scsi: ufs-mediatek: Print host information for failed supsend and resume
-Date:   Mon, 15 Jun 2020 22:31:23 +0800
-Message-ID: <20200615143123.6627-4-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200615143123.6627-1-stanley.chu@mediatek.com>
-References: <20200615143123.6627-1-stanley.chu@mediatek.com>
+        id S1730587AbgFOOch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:32:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728304AbgFOOcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 10:32:36 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 608AB20739;
+        Mon, 15 Jun 2020 14:32:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592231555;
+        bh=oxFQsraJAlM4VsLwbEklHGK6FLGzuPOSbKJqHy/ovIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zz+DFcdzp2Qqpeb/LsXUG3XumXxI/N5Mxja/7jAL+He4QPO347KUFJLdimIo0MQlC
+         iOe/L5Y8LpyADDvWrYvzF61PEMRuar69mbBKPXppsOcs70ge5wrL7w0tRat3ntKNqc
+         amMVp7U5gCVzIX4eUs+/RfCh3F8o4XGm9H2d3v9Y=
+Date:   Mon, 15 Jun 2020 15:32:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     kdasu.kdev@gmail.com, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 4/5] spi: bcm-qspi: Make multiple data blocks
+ interrupt-driven
+Message-ID: <20200615143233.GW4447@sirena.org.uk>
+References: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
+ <20200615040557.2011-5-mark.tomlinson@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 8EC26055AF32B427709C81554C49B22046A151F1F85C4188A4CE82C53D9714202000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f4arffV+Mc+T1KhS"
+Content-Disposition: inline
+In-Reply-To: <20200615040557.2011-5-mark.tomlinson@alliedtelesis.co.nz>
+X-Cookie: Offer may end without notice.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UHJpbnQgaG9zdCBzdGF0ZSBhbmQgcmVnaXN0ZXIgZHVtcHMgd2hpbGUgc3VzcGVuZCBvciByZXN1
-bWUgZmxvdw0KaXMgZmFpbGVkLg0KDQpTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3Rhbmxl
-eS5jaHVAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsu
-YyB8IDE2ICsrKysrKysrKysrLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygr
-KSwgNSBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1l
-ZGlhdGVrLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQppbmRleCBkNTZjZThk
-OTdkNGUuLmIwZjYyNmY2ZjlmZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1l
-ZGlhdGVrLmMNCisrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCkBAIC00Njks
-MjIgKzQ2OSwyNSBAQCBzdGF0aWMgaW50IHVmc19tdGtfbGlua19zZXRfaHBtKHN0cnVjdCB1ZnNf
-aGJhICpoYmEpDQogDQogCWVyciA9IHVmc2hjZF9oYmFfZW5hYmxlKGhiYSk7DQogCWlmIChlcnIp
-DQotCQlyZXR1cm4gZXJyOw0KKwkJZ290byBvdXQ7DQogDQogCWVyciA9IHVmc19tdGtfdW5pcHJv
-X3NldF9wbShoYmEsIDApOw0KIAlpZiAoZXJyKQ0KLQkJcmV0dXJuIGVycjsNCisJCWdvdG8gb3V0
-Ow0KIA0KIAllcnIgPSB1ZnNoY2RfdWljX2hpYmVybjhfZXhpdChoYmEpOw0KIAlpZiAoIWVycikN
-CiAJCXVmc2hjZF9zZXRfbGlua19hY3RpdmUoaGJhKTsNCiAJZWxzZQ0KLQkJcmV0dXJuIGVycjsN
-CisJCWdvdG8gb3V0Ow0KIA0KIAllcnIgPSB1ZnNoY2RfbWFrZV9oYmFfb3BlcmF0aW9uYWwoaGJh
-KTsNCiAJaWYgKGVycikNCi0JCXJldHVybiBlcnI7DQotDQorCQlnb3RvIG91dDsNCitvdXQ6DQor
-CWlmIChlcnIpDQorCQl1ZnNoY2RfcHJpbnRfaW5mbyhoYmEsIFVGU19JTkZPX0hPU1RfU1RBVEUg
-fA0KKwkJCQkgIFVGU19JTkZPX0hPU1RfUkVHUyB8IFVGU19JTkZPX1BXUik7DQogCXJldHVybiAw
-Ow0KIH0NCiANCkBAIC00OTQsNiArNDk3LDkgQEAgc3RhdGljIGludCB1ZnNfbXRrX2xpbmtfc2V0
-X2xwbShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KIA0KIAllcnIgPSB1ZnNfbXRrX3VuaXByb19zZXRf
-cG0oaGJhLCAxKTsNCiAJaWYgKGVycikgew0KKwkJdWZzaGNkX3ByaW50X2luZm8oaGJhLCBVRlNf
-SU5GT19IT1NUX1NUQVRFIHwNCisJCQkJICBVRlNfSU5GT19IT1NUX1JFR1MgfCBVRlNfSU5GT19Q
-V1IpOw0KKw0KIAkJLyogUmVzdW1lIFVuaVBybyBzdGF0ZSBmb3IgZm9sbG93aW5nIGVycm9yIHJl
-Y292ZXJ5ICovDQogCQl1ZnNfbXRrX3VuaXByb19zZXRfcG0oaGJhLCAwKTsNCiAJCXJldHVybiBl
-cnI7DQotLSANCjIuMTguMA0K
 
+--f4arffV+Mc+T1KhS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 15, 2020 at 04:05:56PM +1200, Mark Tomlinson wrote:
+
+> When needing to send/receive data in small chunks, make this interrupt
+> driven rather than waiting for a completion event for each small section
+> of data.
+
+Again was this done for a reason and if so do we understand why doing
+this from interrupt context is safe - how long can the interrupts be
+when stuffing the FIFO from interrupt context?
+
+> @@ -731,12 +733,14 @@ static inline u16 read_rxram_slot_u16(struct bcm_qs=
+pi *qspi, int slot)
+>  		((bcm_qspi_read(qspi, MSPI, msb_offset) & 0xff) << 8);
+>  }
+> =20
+> -static void read_from_hw(struct bcm_qspi *qspi, int slots)
+> +static void read_from_hw(struct bcm_qspi *qspi)
+>  {
+
+Things might be clearer if this refactoring were split out into a
+separate patch.
+
+> @@ -960,24 +966,21 @@ static int bcm_qspi_transfer_one(struct spi_master =
+*master,
+>  				 struct spi_transfer *trans)
+>  {
+>  	struct bcm_qspi *qspi =3D spi_master_get_devdata(master);
+> -	int slots;
+> -	unsigned long timeo =3D msecs_to_jiffies(100);
+> +	unsigned long timeo =3D msecs_to_jiffies(1000);
+
+That's a randomly chosen value - if we're now doing the entire transfer
+then we should be trying to estimate the length of time the transfer
+will take, for a very large transfer on a slow bus it's possible that
+even a second won't be enough.
+
+> -		complete(&qspi->mspi_done);
+> +
+> +		read_from_hw(qspi);
+> +
+> +		if (qspi->trans_pos.trans) {
+> +			write_to_hw(qspi);
+> +		} else {
+> +			complete(&qspi->mspi_done);
+> +			spi_finalize_current_transfer(qspi->master);
+> +		}
+> +
+
+This is adding a spi_finalize_current_transfer() which we didn't have
+before, and still leaving us doing cleanup work in the driver in another
+thread.  This is confused, the driver should only need to finalize the
+transfer explicitly if it returned a timeout from transfer_one() but
+nothing's changed there.
+
+--f4arffV+Mc+T1KhS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nhoAACgkQJNaLcl1U
+h9BbTQf/S/rXBNb0g+HDHgihuanPriLK57T6YafzoPoTCnRC2N0NZow/KuAdCdY2
+eoCi4qBSJZqpyw0nkRk3R6IDDZkSIuqz8s9ISyHVLODrpPU1kxjj/51fVhvTKe8v
+9jwNktpZzSMZN/2HZt8+pso+qNngUmLtwoXJkiRJ3elklXzxrSWgJwugVAknQ/uQ
+b8vh6daQXIvFJ7X+pTJu77WwLCbrHAD5kkNSSTZ5teePPi6Ukeoqn56nj03uHR1d
+blo9vStJ/UoZeBhuzCHkjQTKTJUYk4CMLBeA7fLsdDEYjTiTqUPZpJoxZE85mwcS
+kw+PkAn8jCozIinMqp6GpA57lhIRdg==
+=Yyad
+-----END PGP SIGNATURE-----
+
+--f4arffV+Mc+T1KhS--
