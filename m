@@ -2,127 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6391F9464
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F001F945A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgFOKMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:12:48 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2308 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728368AbgFOKMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:12:47 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id D56DDB752A101E85160F;
-        Mon, 15 Jun 2020 11:12:45 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.26.179) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 15 Jun 2020 11:12:45 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
-        <bp@alien8.de>, <james.morse@arm.com>, <lenb@kernel.org>,
-        <tony.luck@intel.com>, <dan.carpenter@oracle.com>,
-        <zhangliguang@linux.alibaba.com>,
-        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
-        <jroedel@suse.de>
-CC:     <yangyicong@hisilicon.com>, <jonathan.cameron@huawei.com>,
-        <tanxiaofei@huawei.com>, <shiju.jose@huawei.com>
-Subject: [PATCH v9 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
-Date:   Mon, 15 Jun 2020 11:09:57 +0100
-Message-ID: <20200615100959.499-1-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.26.179]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
-X-CFilter-Loop: Reflected
+        id S1728781AbgFOKLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:11:47 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:15650 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728368AbgFOKLq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 06:11:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592215905; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=dLNkkb4smtmoselpWMZR4QCq3/ssl+2heJjtaJdJDAo=; b=Si2tOjY7C+CI/46hLMCD3a1ACi1UFjPn1GDu2o1Kr8HL/5mcu/my7BEWVEIWEYgvgVPKVhTf
+ 4PTL1JdRYCb4PYhcKO7dibj2XAQM7kLqP163o5u4vHdkykwbnMaR4OoqI0amHBcqqi4SYGMC
+ OSFgLJpqEBVs2lzPzPOQTaZB3ok=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ee7495a117610c7ffec2892 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Jun 2020 10:11:38
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 005E0C433C8; Mon, 15 Jun 2020 10:11:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E5B0BC433CA;
+        Mon, 15 Jun 2020 10:11:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E5B0BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Sahitya Tummala <stummala@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] f2fs: fix use-after-free when accessing bio->bi_crypt_context
+Date:   Mon, 15 Jun 2020 15:41:27 +0530
+Message-Id: <1592215887-2744-1-git-send-email-stummala@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presently the vendor drivers are unable to do the recovery for the
-vendor specific recoverable HW errors because APEI driver does not
-support reporting the error to the vendor drivers.
+There could be a potential race between these two paths below,
+leading to use-after-free when accessing  bio->bi_crypt_context.
 
-patch set
-1. add new interface to the APEI driver for reporting the 
-   vendor specific non-fatal HW errors to the drivers.
+f2fs_write_cache_pages
+->f2fs_do_write_data_page on page#1
+  ->f2fs_inplace_write_data
+    ->f2fs_merge_page_bio
+      ->add_bio_entry
+->f2fs_do_write_data_page on page#2
+  ->f2fs_inplace_write_data
+    ->f2fs_merge_page_bio
+      ->f2fs_crypt_mergeable_bio
+        ->fscrypt_mergeable_bio
+  				       f2fs_write_begin on page#1
+				       ->f2fs_wait_on_page_writeback
+				         ->f2fs_submit_merged_ipu_write
+					   ->__submit_bio
+					The bio gets completed, calling
+					bio_endio
+					->bio_uninit
+					  ->bio_crypt_free_ctx
+	  ->use-after-free issue
 
-2. add driver to handle HiSilicon hip PCIe controller's errors.
+Fix this by moving f2fs_crypt_mergeable_bio() check within
+add_ipu_page() so that it's done under bio_list_lock to prevent
+the above race.
 
-V9:
-1. Fixed 2 improvements suggested by the kbuild test robot. 
-1.1 Change ghes_gdata_pool_init() as static function.
-1.2. Removed using buffer to store the error data for
-     logging in the hisi_pcie_handle_error()
+Fixes: 15e76ad23e72 ("f2fs: add inline encryption support")
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+---
+v3:
+  - remove duplicate bio_add_page(), which was missed in v2 by mistake
 
-V8:
-1. Removed reporting the standard errors through the interface
-   because of the conflict with the recent patches in the
-   memory error handling path.
-2. Fix comments by Dan Carpenter.
-   
-V7:
-1. Add changes in the APEI driver suggested by Borislav Petkov, for
-   queuing up all the non-fatal HW errors to the work queue and
-   notify the registered kernel drivers from the bottom half using
-   blocking notifier, common interface for both standard and
-   vendor-spcific errors.
-2. Fix for further feedbacks in v5 HIP PCIe error handler driver
-   by Bjorn Helgaas.
+v2:
+  - simplify the logic as per Eric's suggestion to submit the bio in
+    add_ipu_page() itself instead of using f2fs_submit_merged_ipu_write()
 
-V6:
-1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+ fs/f2fs/data.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-V5:
-1. Fix comments from James Morse.
-1.1 Changed the notification method to use the atomic_notifier_chain.
-1.2 Add the error handled status for the user space.  
-
-V4:
-1. Fix for the following smatch warning in the PCIe error driver,
-   reported by kbuild test robot<lkp@intel.com>:
-   warn: should '((((1))) << (9 + i))' be a 64 bit type?
-   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
-	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
-
-V3:
-1. Fix the comments from Bjorn Helgaas.
-
-V2:
-1. Changes in the HiSilicon PCIe controller's error handling driver
-   for the comments from Bjorn Helgaas.
-   
-2. Changes in the APEI interface to support reporting the vendor error
-   for module with multiple devices, but use the same section type.
-   In the error handler will use socket id/sub module id etc to distinguish
-   the device.
-
-V1:  
-1. Fix comments from James Morse.
-
-2. add driver to handle HiSilicon hip08 PCIe controller's errors,
-   which is an application of the above interface.
-
-Shiju Jose (1):
-  ACPI / APEI: Add support to notify the vendor specific HW errors
-
-Yicong Yang (1):
-  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
-
- drivers/acpi/apei/ghes.c                 | 130 +++++++++-
- drivers/pci/controller/Kconfig           |   8 +
- drivers/pci/controller/Makefile          |   1 +
- drivers/pci/controller/pcie-hisi-error.c | 305 +++++++++++++++++++++++
- include/acpi/ghes.h                      |  28 +++
- 5 files changed, 471 insertions(+), 1 deletion(-)
- create mode 100644 drivers/pci/controller/pcie-hisi-error.c
-
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 0dfa8d3..ea543f6 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -762,9 +762,10 @@ static void del_bio_entry(struct bio_entry *be)
+ 	kmem_cache_free(bio_entry_slab, be);
+ }
+ 
+-static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
++static int add_ipu_page(struct f2fs_io_info *fio, struct bio **bio,
+ 							struct page *page)
+ {
++	struct f2fs_sb_info *sbi = fio->sbi;
+ 	enum temp_type temp;
+ 	bool found = false;
+ 	int ret = -EAGAIN;
+@@ -780,14 +781,18 @@ static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
+ 				continue;
+ 
+ 			found = true;
+-
+-			if (bio_add_page(*bio, page, PAGE_SIZE, 0) ==
+-							PAGE_SIZE) {
++			if (page_is_mergeable(sbi, *bio, *fio->last_block,
++						fio->new_blkaddr) &&
++			    f2fs_crypt_mergeable_bio(*bio,
++						    fio->page->mapping->host,
++						    fio->page->index, fio) &&
++			    bio_add_page(*bio, page, PAGE_SIZE, 0) ==
++					    PAGE_SIZE) {
+ 				ret = 0;
+ 				break;
+ 			}
+ 
+-			/* bio is full */
++			/* page can't be merged into bio; submit the bio */
+ 			del_bio_entry(be);
+ 			__submit_bio(sbi, *bio, DATA);
+ 			break;
+@@ -872,11 +877,6 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 	trace_f2fs_submit_page_bio(page, fio);
+ 	f2fs_trace_ios(fio, 0);
+ 
+-	if (bio && (!page_is_mergeable(fio->sbi, bio, *fio->last_block,
+-				       fio->new_blkaddr) ||
+-		    !f2fs_crypt_mergeable_bio(bio, fio->page->mapping->host,
+-					      fio->page->index, fio)))
+-		f2fs_submit_merged_ipu_write(fio->sbi, &bio, NULL);
+ alloc_new:
+ 	if (!bio) {
+ 		bio = __bio_alloc(fio, BIO_MAX_PAGES);
+@@ -886,7 +886,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 
+ 		add_bio_entry(fio->sbi, bio, page, fio->temp);
+ 	} else {
+-		if (add_ipu_page(fio->sbi, &bio, page))
++		if (add_ipu_page(fio, &bio, page))
+ 			goto alloc_new;
+ 	}
+ 
 -- 
-2.17.1
-
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
