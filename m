@@ -2,139 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA361F9785
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1007F1F9823
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbgFONAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:00:07 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36538 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730276AbgFONAC (ORCPT
+        id S1730257AbgFONS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730120AbgFONSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:00:02 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FCpwZ6001459;
-        Mon, 15 Jun 2020 14:59:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=32+lk+UyvnjPhzVzmGdEmn3lX2QHGEm15Hyud+sWxiQ=;
- b=P3gAewxVE16cpYqMAlt+qbU/B+qdtVxuqssi3+OxPvXREQlbNYfI+JPMRg4FmOfCqatT
- xsw+WwNLwCpezKaDHdX/CT/sW8RQ7TZ8xvnMUVvtJFpBkMnErW/JuvLsEMlDBZNmcGtw
- WDuR1RhoEu0oyIfe/mKYzXKyqFRznxBrIM5P0EWW2pZNooEOgLwq+hfwvAfS2mfZGpfz
- 8KDX2kRz7cmxNGtY5qrLTRFwl70D8S+RZuVt5bhSjviEknEVOBsNu1mZ3j3nE9ovTe1m
- WApaBWPRk/7UUfSTBxzdjU6PvBPV+VKDqqZwOcy9vcsae0mNJK+TsovnVmYeVtpCi3wy jA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mnph1h22-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 14:59:59 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 26B22100034;
-        Mon, 15 Jun 2020 14:59:59 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1A2812B3613;
-        Mon, 15 Jun 2020 14:59:59 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 14:59:58
- +0200
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <alexandre.torgue@st.com>
-Subject: [PATCH 2/2] pinctrl: stm32: add possibility to configure pins individually
-Date:   Mon, 15 Jun 2020 14:59:51 +0200
-Message-ID: <20200615125951.28008-3-alexandre.torgue@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615125951.28008-1-alexandre.torgue@st.com>
-References: <20200615125951.28008-1-alexandre.torgue@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
+        Mon, 15 Jun 2020 09:18:53 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F462C05BD1E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=lEanNV26xrwraWvKplWOGBh1gATz5JDvieSILpVYTO4=; b=kdkyl0usIQOy0V/GLii9UJ/JIK
+        6WpideMfyqVveM5YxlrflX6jBGkXnMioMfffdaRQEEjslIqOj4OLSpwLXF7V5AXgSKXm/T9whBpgm
+        RqffSSNNtnLzMz+E3fI1q8c4fVNaq0i6My8NVl3WtH/z5p2IUc9uBaW60wF6Yr9Z4/R2ZuvifPXC6
+        uqvUTwcBRxJkRu92xNDK4sowmVwfNPhDrqwsjQX118QWQ6LdJgdazHM0/cFVgm48Q/3DA+WAroUzi
+        ieZ8i7XErX6dRd8DK4VNy+e/dNj3tFz/4MZNoG7LEe1IZjV1xiVzlfO8r4Cwa9fH2+ggOzzDt7ER5
+        Sj9FFv/Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkp0F-0004P8-OK; Mon, 15 Jun 2020 13:18:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A69D13003E1;
+        Mon, 15 Jun 2020 15:18:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 9736E203B8070; Mon, 15 Jun 2020 15:18:16 +0200 (CEST)
+Message-ID: <20200615125654.678940605@infradead.org>
+User-Agent: quilt/0.66
+Date:   Mon, 15 Jun 2020 14:56:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        paulmck@kernel.org, frederic@kernel.org, peterz@infradead.org
+Subject: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the possibility to configure a single pin through the gpiolib (i.e:
-to set PULL_UP/PULL_DOWN config).
-Mutex behavior is slightly changed to avoid a deadlock when pin_config_set
-is called (in this case pctldev->mutex is already taken).
+Hi,
 
-Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+So Paul reported rcutorture hitting a NULL dereference, and patch #1 fixes it.
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 5d9839beaa07..b5cb7d9536dc 100644
---- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -302,6 +302,7 @@ static const struct gpio_chip stm32_gpio_template = {
- 	.direction_output	= stm32_gpio_direction_output,
- 	.to_irq			= stm32_gpio_to_irq,
- 	.get_direction		= stm32_gpio_get_direction,
-+	.set_config		= gpiochip_generic_config,
- };
- 
- static void stm32_gpio_irq_trigger(struct irq_data *d)
-@@ -1051,7 +1052,7 @@ static int stm32_pconf_parse_conf(struct pinctrl_dev *pctldev,
- 	struct stm32_gpio_bank *bank;
- 	int offset, ret = 0;
- 
--	range = pinctrl_find_gpio_range_from_pin(pctldev, pin);
-+	range = pinctrl_find_gpio_range_from_pin_nolock(pctldev, pin);
- 	if (!range) {
- 		dev_err(pctl->dev, "No gpio range defined.\n");
- 		return -EINVAL;
-@@ -1109,9 +1110,11 @@ static int stm32_pconf_group_set(struct pinctrl_dev *pctldev, unsigned group,
- 	int i, ret;
- 
- 	for (i = 0; i < num_configs; i++) {
-+		mutex_lock(&pctldev->mutex);
- 		ret = stm32_pconf_parse_conf(pctldev, g->pin,
- 			pinconf_to_config_param(configs[i]),
- 			pinconf_to_config_argument(configs[i]));
-+		mutex_unlock(&pctldev->mutex);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -1121,6 +1124,22 @@ static int stm32_pconf_group_set(struct pinctrl_dev *pctldev, unsigned group,
- 	return 0;
- }
- 
-+static int stm32_pconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			   unsigned long *configs, unsigned int num_configs)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < num_configs; i++) {
-+		ret = stm32_pconf_parse_conf(pctldev, pin,
-+				pinconf_to_config_param(configs[i]),
-+				pinconf_to_config_argument(configs[i]));
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static void stm32_pconf_dbg_show(struct pinctrl_dev *pctldev,
- 				 struct seq_file *s,
- 				 unsigned int pin)
-@@ -1186,10 +1205,10 @@ static void stm32_pconf_dbg_show(struct pinctrl_dev *pctldev,
- 	}
- }
- 
--
- static const struct pinconf_ops stm32_pconf_ops = {
- 	.pin_config_group_get	= stm32_pconf_group_get,
- 	.pin_config_group_set	= stm32_pconf_group_set,
-+	.pin_config_set		= stm32_pconf_set,
- 	.pin_config_dbg_show	= stm32_pconf_dbg_show,
- };
- 
--- 
-2.17.1
+Now, patch #1 is obviously correct, but I can't explain how exactly it leads to
+the observed NULL pointer dereference. The NULL pointer deref happens in
+find_matching_se()'s last while() loop when is_same_group() fails even though
+both parents are NULL.
+
+The only explanation I have for that is that we just did an activate_task()
+while: 'task_cpu(p) != cpu_of(rq)', because then 'p->se.cfs_rq' doesn't match.
+However, I can't see how the lack of #1 would lead to that. Never-the-less,
+patch #2 adds assertions to warn us of this case.
+
+Patch #3 is a trivial rename that ought to eradicate some confusion.
+
+The last 3 patches is what I ended up with for cleaning up the whole
+smp_call_function/irq_work/ttwu thing more.
 
