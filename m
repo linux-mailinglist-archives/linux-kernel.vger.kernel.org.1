@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4AF1F93ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758741F93F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgFOJvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728368AbgFOJvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:51:39 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 473972068E;
-        Mon, 15 Jun 2020 09:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592214698;
-        bh=VQSsnQX35sR5TfD+RN9LG5tzaQw22yankU/+xU93cY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NQlHIN8i1uqF1tHVpoAL5v8g7CDhJAeOmA5A4ZAFG/9WAYr0bA3PhhvfkIL4Y7/Ou
-         f9FQVRO5Ig4MDP3DfzPHGzWExA+gt3xKXnkuw3xtrvsmBqYDns3yZXwM6Ccwytdxom
-         9D7nTIyyyknQuA1HM6+iRJOwaNtrKorByKA5bYhg=
-Date:   Mon, 15 Jun 2020 10:51:34 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Achin Gupta <achin.gupta@arm.com>
-Cc:     Rob Herring <robh@kernel.org>, Sudeep Holla <Sudeep.Holla@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, nd <nd@arm.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: Add ARM PSA FF binding for
- non-secure VM partitions
-Message-ID: <20200615095133.GA2477@willie-the-truck>
-References: <20200601094512.50509-1-sudeep.holla@arm.com>
- <20200601094512.50509-2-sudeep.holla@arm.com>
- <20200609223551.GA1620273@bogus>
- <20200610074346.GB15939@willie-the-truck>
- <5B3F18A4-5DA4-411E-9E26-7D25DEE3D414@arm.com>
- <20200611171222.GB7725@willie-the-truck>
- <20200615091639.GD46361@C02TC1ARHF1T>
+        id S1729144AbgFOJzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:55:31 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2306 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726111AbgFOJza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:55:30 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 8056736B118F31A0D9D4;
+        Mon, 15 Jun 2020 10:55:28 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.26.179) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 15 Jun 2020 10:55:27 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <bp@alien8.de>, <james.morse@arm.com>, <lenb@kernel.org>,
+        <tony.luck@intel.com>, <dan.carpenter@oracle.com>,
+        <zhangliguang@linux.alibaba.com>,
+        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
+        <jroedel@suse.de>
+CC:     <yangyicong@hisilicon.com>, <jonathan.cameron@huawei.com>,
+        <tanxiaofei@huawei.com>
+Subject: [PATCH v9 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
+Date:   Mon, 15 Jun 2020 10:53:10 +0100
+Message-ID: <20200615095312.398-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200615091639.GD46361@C02TC1ARHF1T>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.26.179]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 10:16:39AM +0100, Achin Gupta wrote:
-> On Thu, Jun 11, 2020 at 06:12:23PM +0100, Will Deacon wrote:
-> > On Thu, Jun 11, 2020 at 03:46:35PM +0000, Achin Gupta wrote:
-> > > > On 10 Jun 2020, at 08:43, Will Deacon <will@kernel.org> wrote:
-> > > > On Tue, Jun 09, 2020 at 04:35:51PM -0600, Rob Herring wrote:
-> > > >> On Mon, Jun 01, 2020 at 10:45:10AM +0100, Sudeep Holla wrote:
-> > > >>> Add devicetree bindings for a Arm PSA FF-A compliant non-secure partition
-> > > >>> at virtual interface(VMs).
-> > > >>>
-> > > >>> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > >>> ---
-> > > >>> .../devicetree/bindings/arm/arm,psa-ffa.txt   | 47 +++++++++++++++++++
-> > > >>> 1 file changed, 47 insertions(+)
-> > > >>> create mode 100644 Documentation/devicetree/bindings/arm/arm,psa-ffa.txt
-> > > >>
-> > > >> I'm hoping this goes away if the firmware is discoverable, but if not DT
-> > > >> bindings are DT schema now.
-> > > >
-> > > > We'll need the binding for the kvm host side, because there are plenty
-> > > > of partition properties that are not discoverable (e.g. number of vCPUs).
-> > >
-> > > Just trying to understand the req. a bit better…
-> > >
-> > > The FF-A driver in the host can use FFA_PARTITION_INFO_GET to determine
-> > > the count of partitions and their vCPUs.
-> > >
-> > > Is this about a guest being able to find out how many vCPUs it has?
-> >
-> > This is about KVM finding out the information it needs in order to spawn
-> > non-secure partitions. I don't see how it can do that with
-> > FFA_PARTITION_INFO_GET -- who would respond?
-> 
-> Right! FFA_PARTITION_INFO_GET is meant to help the FF-A driver in the kernel to
-> determine partition properties. It assumes that EL2 SW has already read each
-> partition's manifest and will reply to this ABI.
-> 
-> IIUC, with protected KVM, this information will have to be a part of the
-> manifest that the KVM host consumes.
+Presently the vendor drivers are unable to do the recovery for the
+vendor specific recoverable HW errors because APEI driver does not
+support reporting the error to the vendor drivers.
 
-The host does not consume the manifest directly -- instead, the bootloader
-will use the manifest to populate these DT nodes. Again, these are *only*
-for non-secure virtual partitions which are to be managed by KVM.
+patch set
+1. add new interface to the APEI driver for reporting the 
+   vendor specific non-fatal HW errors to the drivers.
 
-> But then, can this be made discoverable (use a SMC for discovery) at all as Rob
-> had originally suggested. Firmware (Secure world) has no clue and the bootloader
-> is long gone.
+2. add driver to handle HiSilicon hip PCIe controller's errors.
 
-Make what discoverable?
+V9:
+1. Fixed 2 improvements suggested by the kbuild test robot. 
+1.1 Change ghes_gdata_pool_init() as static function.
+1.2. Removed using buffer to store the error data for
+     logging in the hisi_pcie_handle_error()
 
-> Separate topic, protected KVM does not get dibs on the manifest and it relies on
-> the KVM host to specify the address ranges for each partition? Does this not
-> mean that the KVM host can control the physical address space each partition
-> sees. This seems contrary to the isolation guarantees that protected KVM must
-> provide?
+V8:
+1. Removed reporting the standard errors through the interface
+   because of the conflict with the recent patches in the
+   memory error handling path.
+2. Fix comments by Dan Carpenter.
+   
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
 
-The host is trusted during early boot, and gives up this trust after
-initialising EL2 fully. So roughly speaking, we:
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
 
-	* Boot at EL2 and install a shim
-	* Drop down to EL2 and start the host kernel
-	* Before some initialisation (DT parsing, SMP bringup, etc)
-	* Init KVM by calling back up to EL2 to install the full hypervisor
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
 
-At that point, the EL1 host is no longer trusted and the last call
-effectively "locks it out" from EL2.
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
 
-> > But you're right that number of vCPUs was a bad example. We also need
-> > information such as the entry point.
-> 
-> Yes. From a spec perspective this should be specified in the partition manifest
-> unless the base address of the loaded image can be assummed to be the entry
-> point.
+V3:
+1. Fix the comments from Bjorn Helgaas.
 
-Right, but the format of the manifest isn't defined by the spec so I really
-don't think it's something that Linux should be dealing with directly.
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
 
-Will
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.
+
+Shiju Jose (1):
+  ACPI / APEI: Add support to notify the vendor specific HW errors
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 | 130 +++++++++-
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 305 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  28 +++
+ 5 files changed, 471 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+
+-- 
+2.17.1
+
+
