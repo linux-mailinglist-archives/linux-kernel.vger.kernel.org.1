@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6AA1F906E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1623E1F9066
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbgFOHty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:49:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40192 "EHLO mx2.suse.de"
+        id S1728967AbgFOHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:49:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40202 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728890AbgFOHtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:49:21 -0400
+        id S1728901AbgFOHtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 03:49:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4674CB0B8;
+        by mx2.suse.de (Postfix) with ESMTP id 6D19AB07D;
         Mon, 15 Jun 2020 07:49:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 34/38] vt_ioctl: move vt_reldisp out of vt_ioctl
-Date:   Mon, 15 Jun 2020 09:49:06 +0200
-Message-Id: <20200615074910.19267-34-jslaby@suse.cz>
+Subject: [PATCH 35/38] vt_ioctl: move vt_resizex out of vt_ioctl
+Date:   Mon, 15 Jun 2020 09:49:07 +0200
+Message-Id: <20200615074910.19267-35-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
@@ -36,116 +36,130 @@ It's too long to be inlined.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt_ioctl.c | 88 ++++++++++++++++++---------------------
- 1 file changed, 40 insertions(+), 48 deletions(-)
+ drivers/tty/vt/vt_ioctl.c | 100 +++++++++++++++++++++-----------------
+ 1 file changed, 55 insertions(+), 45 deletions(-)
 
 diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index e8bcfcdbedbb..cdb7f0370ca9 100644
+index cdb7f0370ca9..f671e94a94a9 100644
 --- a/drivers/tty/vt/vt_ioctl.c
 +++ b/drivers/tty/vt/vt_ioctl.c
-@@ -633,6 +633,42 @@ static int vt_io_ioctl(struct vc_data *vc, unsigned int cmd, void __user *up,
- 	return 0;
+@@ -746,6 +746,60 @@ static void vt_disallocate_all(void)
+ 	}
  }
  
-+static int vt_reldisp(struct vc_data *vc, unsigned int swtch)
++static int vt_resizex(struct vc_data *vc, struct vt_consize __user *cs)
 +{
-+	int newvt, ret;
++	struct vt_consize v;
++	int i;
 +
-+	if (vc->vt_mode.mode != VT_PROCESS)
++	if (copy_from_user(&v, cs, sizeof(struct vt_consize)))
++		return -EFAULT;
++
++	/* FIXME: Should check the copies properly */
++	if (!v.v_vlin)
++		v.v_vlin = vc->vc_scan_lines;
++
++	if (v.v_clin) {
++		int rows = v.v_vlin / v.v_clin;
++		if (v.v_rows != rows) {
++			if (v.v_rows) /* Parameters don't add up */
++				return -EINVAL;
++			v.v_rows = rows;
++		}
++	}
++
++	if (v.v_vcol && v.v_ccol) {
++		int cols = v.v_vcol / v.v_ccol;
++		if (v.v_cols != cols) {
++			if (v.v_cols)
++				return -EINVAL;
++			v.v_cols = cols;
++		}
++	}
++
++	if (v.v_clin > 32)
 +		return -EINVAL;
 +
-+	/* Switched-to response */
-+	if (vc->vt_newvt < 0) {
-+		 /* If it's just an ACK, ignore it */
-+		return swtch == VT_ACKACQ ? 0 : -EINVAL;
++	for (i = 0; i < MAX_NR_CONSOLES; i++) {
++		struct vc_data *vcp;
++
++		if (!vc_cons[i].d)
++			continue;
++		console_lock();
++		vcp = vc_cons[i].d;
++		if (vcp) {
++			if (v.v_vlin)
++				vcp->vc_scan_lines = v.v_vlin;
++			if (v.v_clin)
++				vcp->vc_font.height = v.v_clin;
++			vcp->vc_resize_user = 1;
++			vc_resize(vcp, v.v_cols, v.v_rows);
++		}
++		console_unlock();
 +	}
-+
-+	/* Switching-from response */
-+	if (swtch == 0) {
-+		/* Switch disallowed, so forget we were trying to do it. */
-+		vc->vt_newvt = -1;
-+		return 0;
-+	}
-+
-+	/* The current vt has been released, so complete the switch. */
-+	newvt = vc->vt_newvt;
-+	vc->vt_newvt = -1;
-+	ret = vc_allocate(newvt);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * When we actually do the console switch, make sure we are atomic with
-+	 * respect to other console switches..
-+	 */
-+	complete_change_console(vc_cons[newvt].d);
 +
 +	return 0;
 +}
 +
- static int vt_setactivate(struct vt_setactivate __user *sa)
- {
- 	struct vt_setactivate vsa;
-@@ -865,55 +901,11 @@ int vt_ioctl(struct tty_struct *tty,
+ /*
+  * We handle the console-specific ioctl's here.  We allow the
+  * capability to modify any console, not just the fg_console.
+@@ -947,54 +1001,10 @@ int vt_ioctl(struct tty_struct *tty,
+ 	}
+ 
+ 	case VT_RESIZEX:
+-	{
+-		struct vt_consize v;
+ 		if (!perm)
  			return -EPERM;
+-		if (copy_from_user(&v, up, sizeof(struct vt_consize)))
+-			return -EFAULT;
+-		/* FIXME: Should check the copies properly */
+-		if (!v.v_vlin)
+-			v.v_vlin = vc->vc_scan_lines;
+-		if (v.v_clin) {
+-			int rows = v.v_vlin/v.v_clin;
+-			if (v.v_rows != rows) {
+-				if (v.v_rows) /* Parameters don't add up */
+-					return -EINVAL;
+-				v.v_rows = rows;
+-			}
+-		}
+-		if (v.v_vcol && v.v_ccol) {
+-			int cols = v.v_vcol/v.v_ccol;
+-			if (v.v_cols != cols) {
+-				if (v.v_cols)
+-					return -EINVAL;
+-				v.v_cols = cols;
+-			}
+-		}
  
- 		console_lock();
--		if (vc->vt_mode.mode != VT_PROCESS) {
--			console_unlock();
+-		if (v.v_clin > 32)
 -			return -EINVAL;
--		}
--		/*
--		 * Switching-from response
--		 */
--		if (vc->vt_newvt >= 0) {
--			if (arg == 0)
--				/*
--				 * Switch disallowed, so forget we were trying
--				 * to do it.
--				 */
--				vc->vt_newvt = -1;
 -
--			else {
--				/*
--				 * The current vt has been released, so
--				 * complete the switch.
--				 */
--				int newvt;
--				newvt = vc->vt_newvt;
--				vc->vt_newvt = -1;
--				ret = vc_allocate(newvt);
--				if (ret) {
--					console_unlock();
--					return ret;
--				}
--				/*
--				 * When we actually do the console switch,
--				 * make sure we are atomic with respect to
--				 * other console switches..
--				 */
--				complete_change_console(vc_cons[newvt].d);
+-		for (i = 0; i < MAX_NR_CONSOLES; i++) {
+-			struct vc_data *vcp;
+-
+-			if (!vc_cons[i].d)
+-				continue;
+-			console_lock();
+-			vcp = vc_cons[i].d;
+-			if (vcp) {
+-				if (v.v_vlin)
+-					vcp->vc_scan_lines = v.v_vlin;
+-				if (v.v_clin)
+-					vcp->vc_font.height = v.v_clin;
+-				vcp->vc_resize_user = 1;
+-				vc_resize(vcp, v.v_cols, v.v_rows);
 -			}
--		} else {
--			/*
--			 * Switched-to response
--			 */
--			/*
--			 * If it's just an ACK, ignore it
--			 */
--			if (arg != VT_ACKACQ) {
--				console_unlock();
--				return -EINVAL;
--			}
+-			console_unlock();
 -		}
-+		ret = vt_reldisp(vc, arg);
- 		console_unlock();
 -		break;
-+
-+		return ret;
-+
+-	}
++		return vt_resizex(vc, up);
  
- 	 /*
- 	  * Disallocate memory associated to VT (but leave VT1)
+ 	case VT_LOCKSWITCH:
+ 		if (!capable(CAP_SYS_TTY_CONFIG))
 -- 
 2.27.0
 
