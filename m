@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954CF1FA404
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0BB1FA413
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgFOXTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:19:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35123 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726313AbgFOXTX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:19:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592263161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I1KNOxcQ0qqYSlRio7jZscN2pXxgFAfVqBfMLcPoOnc=;
-        b=Z5iVu6TRIUUyT0rFptMET+OM13Rm1a8beC+LleKAOpgEx9Mdw5qMyDsJjR0itKW7Kn9GkS
-        ZKxCodbr1TWpIulG5O0D7uSdugTH8V0Zo6Xk5xnQtV4HAyRm8d4BoUBv8JTuhk49VzC723
-        Uv+M5JVmlVTcI4parzdmGgocyB/9Lbk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-qCTOZNNVNtSASZjvEAUy3A-1; Mon, 15 Jun 2020 19:19:20 -0400
-X-MC-Unique: qCTOZNNVNtSASZjvEAUy3A-1
-Received: by mail-qv1-f70.google.com with SMTP id v1so14220534qvx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I1KNOxcQ0qqYSlRio7jZscN2pXxgFAfVqBfMLcPoOnc=;
-        b=pGhNPri7a4XgKAU6jusHrJahz6QbL444xjwAVPpb1VW+KKBoHuK+Ie0AxBMd2RsTnp
-         NcTnMBrS7Pk5Xjux13jTCS6oMnyf4QJ6xsUz6TWns0RNigG3Q2BZVOQdS3pVNXtbrgs5
-         EC0cvVZiHE6N+DMUHmnI9HMPUgFp7LUaOE5Db8zHJY7TVvlGjYwiYF4azwG0f+yRW/ct
-         uT0e68mASjkhJ9zqDk0H5Q5/AoY46rM1sqp8F09t4MHTUFCpYmdeCgCSRk0jZZT8btb0
-         5/oez/ImtZFREPDHviTX09xGe5E8gq5fc43o9EF1X6i7p/hhD/4yBnqem/uIWmMjhn9e
-         WJTA==
-X-Gm-Message-State: AOAM532VLyfXBCX1Mddi4/AOcX2ckoD2rGF61IsEshbokxQbSMbesgU+
-        aXeu+M6vmej7NU21kcoJy4MB3KXfayaQmDUGbjIth1N4Lrz2+5+X/sXJbh+eggSFikPM7cDxO2X
-        lk2YjIZCQiGv4OsuHZvZ1+ZUo
-X-Received: by 2002:a37:4753:: with SMTP id u80mr17430222qka.178.1592263159485;
-        Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIWF2yERjbTMsKnmdkICYDe+u35MHII6GwvHr//31ozLgOpPP0ktTYlVsaYcYaq8F5SQOSdQ==
-X-Received: by 2002:a37:4753:: with SMTP id u80mr17430204qka.178.1592263159179;
-        Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id s15sm14057084qtc.95.2020.06.15.16.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 16:19:18 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 19:19:17 -0400
-From:   Peter Xu <peterx@redhat.com>
+        id S1726737AbgFOXYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726313AbgFOXYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:24:55 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5837520739;
+        Mon, 15 Jun 2020 23:24:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592263494;
+        bh=A1WtQ1g1KpuIoeDmUFz8cD7kNho/1KEAJNFhI19+fW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c7R4ygtCRRIUtvMslXYWBKsSZ9NSbN1miUpQPSMxM0M3wcuQp1bO9uoUTK27hIWdo
+         Qe8XSY9e0va7dv61OjfOgMr6kwxf9AbQl+fkrq1wQkSEbpULQFSjiceEN0mAwY0b3G
+         ZYTeVmRNhfHvixz5I3h5bqzE245TYxm1y8QZRq8A=
+Date:   Mon, 15 Jun 2020 19:24:53 -0400
+From:   Sasha Levin <sashal@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 02/25] mm: Introduce mm_fault_accounting()
-Message-ID: <20200615231917.GA6307@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615221607.7764-3-peterx@redhat.com>
- <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH] scripts/decode_stacktrace: warn when modpath is needed
+ but is unset
+Message-ID: <20200615232453.GF1931@sasha-vm>
+References: <CAHk-=wgB6xs-gfihkMSngyAcRHaQ0oE3jVawVMzzAh4Xm0VsSQ@mail.gmail.com>
+ <20200615222427.60126-1-sashal@kernel.org>
+ <CAHk-=wid9pjXmafH_-F6TooC9j7nfqKweWbHKzENkk+YHTo=AQ@mail.gmail.com>
+ <CAHk-=wh2VeXjf0vPXSJzaV3zk6iNEfnumn6YDQF44OmEcGpoYw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wh2VeXjf0vPXSJzaV3zk6iNEfnumn6YDQF44OmEcGpoYw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 03:32:40PM -0700, Linus Torvalds wrote:
-> On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Provide this helper for doing memory page fault accounting across archs.  It
-> > can be defined unconditionally because perf_sw_event() is always defined, and
-> > perf_sw_event() will be a no-op if !CONFIG_PERF_EVENTS.
-> 
-> Well, the downside is that now it forces a separate I$ miss and all
-> those extra arguments because it's a out-of-line function and the
-> compiler won't see that they all go away.
-> 
-> Yeah, maybe some day maybe we'll have LTO and these kinds of things
-> will not matter. And maybe they already don't. But it seems kind of
-> sad to basically force non-optimal code generation from this series.
+On Mon, Jun 15, 2020 at 03:43:31PM -0700, Linus Torvalds wrote:
+>On Mon, Jun 15, 2020 at 3:37 PM Linus Torvalds
+><torvalds@linux-foundation.org> wrote:
+>>
+>> Well, that looks straightforward.
+>
+>Hmm. Decided to test it. It warns for every case: a bit excessive,
+>perhaps, but I guess it won't hurt.
+>
+>So Shuah's thing results in
+>
+>[    9.791367] Call Trace:
+>WARNING! Modules path isn't set, but is needed to parse this symbol
+>[    9.791377] ? snd_pcm_hw_params+0x3ca/0x440 snd_pcm
+>WARNING! Modules path isn't set, but is needed to parse this symbol
+>[    9.791383] snd_pcm_common_ioctl+0x173/0xf20 snd_pcm
+>WARNING! Modules path isn't set, but is needed to parse this symbol
+>[    9.791389] ? snd_ctl_ioctl+0x1c5/0x710 snd
+>WARNING! Modules path isn't set, but is needed to parse this symbol
+>[    9.791394] snd_pcm_ioctl+0x27/0x40 snd_pcm
+>
+>which looks a bit redundant, but maybe that just means people _really_ notice.
 
-I tried to make it static inline firstly in linux/mm.h, however it'll need to
-have linux/mm.h include linux/perf_event.h which seems to have created a loop
-dependency of headers.  I verified current code will at least generate inlined
-functions too for x86 (no mm_fault_accounting() in "objdump -t vmlinux") with
-gcc10.
-
-Another alternative is to make it a macro, it's just that I feel the function
-definition is a bit cleaner.  Any further suggestions welcomed too.
-
-> 
-> Why would you export the symbol, btw? Page fault handling is never a module.
-
-I followed handle_mm_fault() which is exported too, since potentially
-mm_fault_accounting() should always be called in the same context of
-handle_mm_fault().  Or do you prefer me to drop it?
-
-Thanks,
+I figured it's a good balance between warning only once (which can get
+lost in a longer trace) vs just exiting on error (as it prevents the
+user from ignoring this issue if he doesn't care or just doesn't have
+the modules).
 
 -- 
-Peter Xu
-
+Thanks,
+Sasha
