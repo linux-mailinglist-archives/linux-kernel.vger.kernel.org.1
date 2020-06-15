@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7681F99FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2050E1F99E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbgFOOUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:20:37 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:59686 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729733AbgFOOUh (ORCPT
+        id S1730406AbgFOORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730064AbgFOOQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:20:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=rocking@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U.foqgV_1592230772;
-Received: from localhost(mailfrom:rocking@linux.alibaba.com fp:SMTPD_---0U.foqgV_1592230772)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 15 Jun 2020 22:20:33 +0800
-From:   Peng Wang <rocking@linux.alibaba.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: Optimize dequeue_task_fair()
-Date:   Mon, 15 Jun 2020 22:16:16 +0800
-Message-Id: <6f2f195aea48bc50187dfb064aa530ba132be01b.1592230286.git.rocking@linux.alibaba.com>
-X-Mailer: git-send-email 2.9.5
+        Mon, 15 Jun 2020 10:16:59 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEFDC061A0E;
+        Mon, 15 Jun 2020 07:16:59 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jkpup-009O2v-Rs; Mon, 15 Jun 2020 14:16:48 +0000
+Date:   Mon, 15 Jun 2020 15:16:47 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Sagi Grimberg <sagi@lightbitslabs.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Subject: Re: [v3 PATCH] iov_iter: Move unnecessary inclusion of crypto/hash.h
+Message-ID: <20200615141647.GK23230@ZenIV.linux.org.uk>
+References: <20200611074332.GA12274@gondor.apana.org.au>
+ <20200611114911.GA17594@gondor.apana.org.au>
+ <20200612065737.GA17176@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612065737.GA17176@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While looking at enqueue_task_fair and dequeue_task_fair, it occurred
-to me that dequeue_task_fair can also be optimized as Vincent described
-in commit 7d148be69e3a ("sched/fair: Optimize enqueue_task_fair()").
+On Fri, Jun 12, 2020 at 04:57:37PM +1000, Herbert Xu wrote:
+> The header file linux/uio.h includes crypto/hash.h which pulls in
+> most of the Crypto API.  Since linux/uio.h is used throughout the
+> kernel this means that every tiny bit of change to the Crypto API
+> causes the entire kernel to get rebuilt.
+> 
+> This patch fixes this by moving it into lib/iov_iter.c instead
+> where it is actually used.
+> 
+> This patch also fixes the ifdef to use CRYPTO_HASH instead of just
+> CRYPTO which does not guarantee the existence of ahash.
+> 
+> Unfortunately a number of drivers were relying on linux/uio.h to
+> provide access to linux/slab.h.  This patch adds inclusions of
+> linux/slab.h as detected by build failures.
+> 
+> Also skbuff.h was relying on this to provide a declaration for
+> ahash_request.  This patch adds a forward declaration instead.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-dequeue_throttle label can ensure se not to be NULL, and se is
-always NULL when reaching root level.
-
-Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
----
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cbcb2f7..e6be952 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5614,10 +5614,10 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 
- 	}
- 
--dequeue_throttle:
--	if (!se)
--		sub_nr_running(rq, 1);
-+	/* At this point se is NULL and we are at root level*/
-+	sub_nr_running(rq, 1);
- 
-+dequeue_throttle:
- 	/* balance early to pull high priority tasks */
- 	if (unlikely(!was_sched_idle && sched_idle_rq(rq)))
- 		rq->next_balance = jiffies;
--- 
-2.9.5
-
+Applied; let it sit in -next for a while to get better build coverage...
