@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C163B1F9916
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5D91F9909
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730555AbgFONiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730167AbgFONiF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:38:05 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF7C061A0E;
-        Mon, 15 Jun 2020 06:38:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r7so17191581wro.1;
-        Mon, 15 Jun 2020 06:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6A2VRUPxBUIMLQR9yYCehptCwpY51GrOQNgUB87WIm4=;
-        b=gE6dp8cQ114eWfj2kjRIbj5tceBVc+ddyVxx54uO/6zDzDK9YjgMuf9mGISUMMmKDz
-         fu+5m0PpBabL8WYRkngmmCum6nrpGYSuxALrrtXiAVRdBOVvUnkNQn0NRD3CdEDIF3jS
-         w5jipOUxN2wV2Ko7q533g+QGFJ4g5/6tuS5otbH6QT8g7IAedCWqnWcDMHHv6dfJWIN0
-         wb+V5d4YYrJrPUrpaK49Ot8UHBa4rSSc9kKQKk9jO+0AzQUq+QfbwPIibJeF7m9iBhUu
-         lFb5vQdQTW0ApesBHtIhRTtTyDsDT/RDv4tHA8mEvYG7XXobi0v5i/iO4RFeH2n79NjT
-         1bZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6A2VRUPxBUIMLQR9yYCehptCwpY51GrOQNgUB87WIm4=;
-        b=tsbSD15l4EHzEDLie56OieG9D5x9cje1eDckSvfPcIRslYivniyWlRYUGzbeyOcerH
-         KPXjK9Z0FzbumJ9NOkg8/qfk0LuFbNq5cKDBjD87B7cAqGOTmKcIhtkbMjYbRm6iV+0k
-         Fq/tRhhQt4dHsQ+ol8VIxLswUTiedronhYl7SvLM/MuvZKa/SVLvzoCPpgtjlrSLVjx4
-         LagZaCYGTjsN0bagFSW45NGxtvyJ4PjzkC/+DfxbsWruEqkRY+6EtaDNlkm33BfOgxoZ
-         QFxChEYsK+xR+o+/hHh12T4MLDMRm7YETpkBJ3qR9HCEEKVAUmVauDUQVuIVfXYq0SxO
-         CLIw==
-X-Gm-Message-State: AOAM532aGa03LNJ9ISAhcDOA5RQiOlb7/Cv8XPiCDg2jeY1gb/HJs6n3
-        McY6OFo3qwrJcdO3IY52T/0JE7dv
-X-Google-Smtp-Source: ABdhPJwOPEjXrfC2UmSbyWXvtITfiYi+xA2OUdX1KJUrfG5SKbcABWv2Ir0Hu9wU13+Bgv8VyEhuiw==
-X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr30697121wrx.53.1592228283249;
-        Mon, 15 Jun 2020 06:38:03 -0700 (PDT)
-Received: from localhost.localdomain ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id u4sm22839520wmb.48.2020.06.15.06.38.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 06:38:02 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jiufei.xue@linux.alibaba.com
-Subject: [PATCH 1/1] io_uring: fix lazy work init
-Date:   Mon, 15 Jun 2020 16:36:30 +0300
-Message-Id: <a75c1537cc655cb766e8e2517e18f74e13d60f1b.1592228129.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
+        id S1730504AbgFONgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730109AbgFONgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 09:36:49 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25A9E207D3;
+        Mon, 15 Jun 2020 13:36:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592228208;
+        bh=Hs7nuZ6Ujtne3R8pyXXb7XHOf/MxT4zald4XbINg9kg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gukh6y5LOywbiptR4BP1qZMvMTmpFHvYXpm1nVZvZ9nV80CgKS9R0DTuQq3twmQrp
+         U81TWQ1d3ltRvFYFgLou3mfE6NzIwPBeuXEvuhmp3YivqKtbeeG+suvV19pr/yOZ3B
+         4c30at3Lxnycj3JIwevk+++E03O+4Cx6BKNdY2kQ=
+Date:   Mon, 15 Jun 2020 14:36:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH v2 1/3] spi: spi-fsl-dspi: Fix external abort on
+ interrupt in exit paths
+Message-ID: <20200615133646.GU4447@sirena.org.uk>
+References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
+ <e1f0326c-8ae8-ffb3-aace-10433b0c78a6@pengutronix.de>
+ <20200615123052.GO4447@sirena.org.uk>
+ <CA+h21hqC7hAenifvRqbwss=Sr+dAu3H9Dx=UF0TS0WVbkzTj2Q@mail.gmail.com>
+ <20200615131006.GR4447@sirena.org.uk>
+ <CA+h21hpusy=zx8AuUqk_4zShtst8QeNJxCPT4dMGh0jhm5uZng@mail.gmail.com>
+ <20200615132441.GS4447@sirena.org.uk>
+ <CA+h21hpymKP5JGWZBNQTq4bZwJ6QZ3erACWV86nEaGsevZ++BA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i483Pv/KqyjCUwB1"
+Content-Disposition: inline
+In-Reply-To: <CA+h21hpymKP5JGWZBNQTq4bZwJ6QZ3erACWV86nEaGsevZ++BA@mail.gmail.com>
+X-Cookie: Offer may end without notice.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't leave garbage in req.work before punting async on -EAGAIN
-in io_iopoll_queue().
 
-[  140.922099] general protection fault, probably for non-canonical
-     address 0xdead000000000100: 0000 [#1] PREEMPT SMP PTI
-...
-[  140.922105] RIP: 0010:io_worker_handle_work+0x1db/0x480
-...
-[  140.922114] Call Trace:
-[  140.922118]  ? __next_timer_interrupt+0xe0/0xe0
-[  140.922119]  io_wqe_worker+0x2a9/0x360
-[  140.922121]  ? _raw_spin_unlock_irqrestore+0x24/0x40
-[  140.922124]  kthread+0x12c/0x170
-[  140.922125]  ? io_worker_handle_work+0x480/0x480
-[  140.922126]  ? kthread_park+0x90/0x90
-[  140.922127]  ret_from_fork+0x22/0x30
+--i483Pv/KqyjCUwB1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 7cdaf587de7c ("io_uring: avoid whole io_wq_work copy for requests
-completed inline")
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, Jun 15, 2020 at 04:29:15PM +0300, Vladimir Oltean wrote:
+> On Mon, 15 Jun 2020 at 16:24, Mark Brown <broonie@kernel.org> wrote:
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 54addaba742d..410b2df16c71 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1105,6 +1105,7 @@ static inline void io_prep_async_work(struct io_kiocb *req,
- 			req->work.flags |= IO_WQ_WORK_UNBOUND;
- 	}
- 
-+	io_req_init_async(req);
- 	io_req_work_grab_env(req, def);
- 
- 	*link = io_prep_linked_timeout(req);
--- 
-2.24.0
+> > I see - this could be fixed by having the interrupt handler bounce the
+> > clock on, there's a little overhead from that but hopefully not too
+> > much.  That should also help with the remove case I guess so long as the
+> > clock is registered before the interrupt is requested?
 
+> Doesn't this mean that we risk leaving the clock enabled during suspend?
+
+If we suspend with the interrupt handler running but IIRC the suspend
+sequence will allow interrupt handlers to complete.
+
+> Is there any function in the SPI core that quiesces any pending
+> transactions, and then stops the controller? I would have expected
+> spi_controller_suspend to do that, but I'm not sure (it doesn't look
+> like it).
+
+spi_stop_queue() should do this (but will time out if the queue is too
+busy).  It doesn't stop new transactions being issued, I'm guessing
+because that'll most likely cause more problems than it solves but that
+code predates my involvement.
+
+--i483Pv/KqyjCUwB1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7neW0ACgkQJNaLcl1U
+h9Awewf/S60KrRHANcrt8yuP4f/0IVWXkNY5EEnxhSNYxYSGJpNXf0W4HNqSe1Yq
+4VO4Wb4cRXKId51u9uCltVuOosIyMMxtIGfT6qE+KS9yj/J7i0fwx/es5ULmYudk
+ncz1FbnZSCiK7vpBqsfwrzHeXBBTAOnnJplWozejxLXhec2fLPwhA0kU68AGyQFw
+QOaKoRUJSejGltsnaPCdmi7d+h4ET165V3NZyZ/WMfq36yq9oF4IHsTnIMydZaz4
+5svVPIKpqUobu/52IVDZ9Yn/SWkyWvLXKT6yVDKplLzCntW5SL8ihBWAMGS+zfgS
+rXihk1/dR5lRMfaFiEsMricY8Xaa8A==
+=bZvG
+-----END PGP SIGNATURE-----
+
+--i483Pv/KqyjCUwB1--
