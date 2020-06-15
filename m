@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565111F9408
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA41F93FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbgFOJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:56:02 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:15679 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbgFOJz6 (ORCPT
+        id S1729421AbgFOJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgFOJzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:55:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592214958; x=1623750958;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=692fkDEuh1BmOmtP0c+bSMMGsuxUEiPJurUSSpS4uUw=;
-  b=T0HTIX/IsF43+IXO3T2hh9t9SO2bvYXEwHHl70lgPjBfuwPv5G+WnAe1
-   ks4zqFwCOFRjWmYsY1pdCU8yoMwWHQx4lzNWVIkKplfa/KOnoaArEs6KO
-   m14K4xE07F3FZlmwqeMnVXXsduc9uOBzGeslWeUomUxiOXkUJqopWQ3s0
-   zLGT73xYJjOiJrpQXvFJZiCWiWRrArgnkZz7yEtBF5RXEySKep7d/dWPC
-   LFjb3F6+vKNSlCXALZchIf4o6Fmpz0jvhq0OjETLbOk/ljKE9UCVFWV/H
-   JGt2Wf4ROU0tKDYlLjRwDMof069dueDZ0jj8mN79wtACufCjwPAbUxS0D
-   w==;
-IronPort-SDR: rLYBr+VslBxEOPYBjxUKEiYArqrXdl9kzqgrpURDyTHV2dKN/ngSX3uyqdBTUkBqCkl/1lr0xw
- BrLv8RVagFWn3O4YnP872q1Mh8APTyh86pbT858yl0HVl+FTLRdCiyCxL6Dsbqa2XDa9ruKkGN
- gN3PUdg8PZPxdyuXLzock7a4rHmjYn7p7zAflOPDYIXnlpe/MXcM3RrJ27RF8G0E9EPJfYIFvU
- /3f9df31Sd7y4Hb2IMxza02O8Be5Cc/J2f0v8eNdcezxJZ3Ktx/VszckxGyYgIaCjBXyFzkb6J
- 2eo=
-X-IronPort-AV: E=Sophos;i="5.73,514,1583218800"; 
-   d="scan'208";a="76588062"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jun 2020 02:55:43 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 15 Jun 2020 02:55:40 -0700
-Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 15 Jun 2020 02:55:40 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <claudiu.beznea@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 3/3] Revert "ARM: at91/dt: sama5d2 Xplained: add pdmic node"
-Date:   Mon, 15 Jun 2020 12:55:25 +0300
-Message-ID: <20200615095525.43414-3-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200615095525.43414-1-codrin.ciubotariu@microchip.com>
-References: <20200615095525.43414-1-codrin.ciubotariu@microchip.com>
+        Mon, 15 Jun 2020 05:55:33 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067B7C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:55:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id mb16so16748747ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F2y9Crm4EpXrgojd+CYn/r/xzpbyjoctnZnKUBxxPGw=;
+        b=bH52eZn08gxvWDKX63J+WIukX0j2P3n7HyPqonmets/vbXsOXhi81yedn4gWFeKKgc
+         Nd97MdUX3wiXsdSQY3wQdUIPnAluBFWXhcBZ8BAQwlpAWUjchBVrXbGAlWp20KVUVUXY
+         R/uBSQemQsvtwxH9SOV1pTp2yySw61Y07GninWtBfjDu5VIqdDzmfqe2jAhgIzT2Bz1B
+         NRLp3I+nPXlIzSfhf1A1+gXtK0CLD4Q5Z4U/oY6RpQ2lyQkkt0yCU7eU1FiFl5kwZpMC
+         zfXaocuA8lqIJ+rdIQpyAevnwQQC3rmI1YX9RyC/i/QgJ/IyrqlSl9gZkH4Fx+RfDPXN
+         begA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F2y9Crm4EpXrgojd+CYn/r/xzpbyjoctnZnKUBxxPGw=;
+        b=S8hGE/Xx2J5hrrIE1BKuT74B0Dnqe8x04UZOtsJhg2wyZGpZLi6mVOIiMakw+Mi1IX
+         HqfqUcn13QAVWn8yeGgoNYtg1byi7hpqoJ4oW9U3SYtEzBFuBLV2SHCEMI40SeuRteht
+         xxmFTYfXv4PaTK8utVVHwJK2+B0zx2pkgiXszJs731S/XMoKLrqgICTiE3ysX3EMmqxb
+         5jiz97lr/AoTOqwPWQecQGCtZYnSmCSpZXi8eBsEB6Ay/xCyMuwhYDmLELzl7+OcO17r
+         KoC2JRiFzYXiiLP9KpJmp38S+5p2mG7qCtR23f/13g4hkb0tBmgjPa5y/DifAnjGLgO+
+         1rlg==
+X-Gm-Message-State: AOAM530O10ns2ZoU8M+IwpqjL+v3HdQTcbsREm/F2RrqRCvfgIiVNuac
+        dN2O6K/yA4La+P4KjGeT03xwF0UWvgutFw==
+X-Google-Smtp-Source: ABdhPJz6cNXf6sv5+78+bDzU/EfsCLMtxsclb4N1u2KcEBfpSY9J/kaEdBCn6renQCfjvKPO06pKAA==
+X-Received: by 2002:a17:906:d78a:: with SMTP id pj10mr25691244ejb.50.1592214931572;
+        Mon, 15 Jun 2020 02:55:31 -0700 (PDT)
+Received: from [192.168.1.3] (212-5-158-38.ip.btc-net.bg. [212.5.158.38])
+        by smtp.googlemail.com with ESMTPSA id lx26sm8665063ejb.112.2020.06.15.02.55.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 02:55:30 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] venus: Make debug infrastructure more flexible
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20200613223919.7038-1-stanimir.varbanov@linaro.org>
+ <20200613223919.7038-3-stanimir.varbanov@linaro.org>
+ <20200614063710.GB2611869@kroah.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <c54a12a2-7f92-105c-a01c-8e85730f36bb@linaro.org>
+Date:   Mon, 15 Jun 2020 12:55:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20200614063710.GB2611869@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no PDM microphones on SAMA5D2 Xplained, to exercize the
-PDMIC.
+Hi Greg,
 
-This reverts commit ca6349a8c51f2e3d6f2acdb36431e7d7328261f7.
+On 6/14/20 9:37 AM, Greg KH wrote:
+> On Sun, Jun 14, 2020 at 01:39:18AM +0300, Stanimir Varbanov wrote:
+>>  	if (slot == -1) {
+>> -		dev_dbg(inst->core->dev, "%s: no free slot\n", __func__);
+>> +		VDBGH("no free slot for timestamp\n");
+> 
+> Again, no, you just lost a lot of valuable information by changing to a
+> different format (like driver, specific device, etc.).  Please don't do
+> this, it just makes the information less than before.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d2_xplained.dts | 16 ----------------
- 1 file changed, 16 deletions(-)
+OK, one of the reasons to use pr_debug inside VDBGH macro is to avoid
+having struct device *dev variable in every function with dev_dbg even
+when the function doesn't use it.
 
-diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-index 54d96649da77..c0a255bda477 100644
---- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-@@ -109,16 +109,6 @@ timer1: timer@1 {
- 				};
- 			};
- 
--			pdmic@f8018000 {
--				pinctrl-names = "default";
--				pinctrl-0 = <&pinctrl_pdmic_default>;
--				atmel,model = "PDMIC @ sama5d2_xplained";
--				atmel,mic-min-freq = <1000000>;
--				atmel,mic-max-freq = <3246000>;
--				atmel,mic-offset = <0x0>;
--				status = "okay";
--			};
--
- 			uart1: serial@f8020000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&pinctrl_uart1_default>;
-@@ -533,12 +523,6 @@ pinctrl_macb0_phy_irq: macb0_phy_irq {
- 					bias-disable;
- 				};
- 
--				pinctrl_pdmic_default: pdmic_default {
--					pinmux = <PIN_PB26__PDMIC_DAT>,
--						<PIN_PB27__PDMIC_CLK>;
--					bias-disable;
--				};
--
- 				pinctrl_sdmmc0_default: sdmmc0_default {
- 					cmd_data {
- 						pinmux = <PIN_PA1__SDMMC0_CMD>,
+Are you fine with s/pr_debug/dev_dbg in VDBGX macros?
+
 -- 
-2.25.1
-
+regards,
+Stan
