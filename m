@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F0A1F9544
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 13:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DF61F9549
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 13:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgFOLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 07:25:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43662 "EHLO mx2.suse.de"
+        id S1729696AbgFOLZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 07:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729038AbgFOLZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 07:25:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6D267AECD;
-        Mon, 15 Jun 2020 11:25:13 +0000 (UTC)
-Subject: Re: [PATCH v2] page_alloc: consider highatomic reserve in wmartermark
- fast
-To:     Jaewon Kim <jaewon31.kim@gmail.com>
-Cc:     Jaewon Kim <jaewon31.kim@samsung.com>, mgorman@techsingularity.net,
-        minchan@kernel.org, mgorman@suse.de, hannes@cmpxchg.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ytk.lee@samsung.com,
-        cmlaika.kim@samsung.com
-References: <CGME20200612085027epcas1p46383a7eda792eabbd1e74cd08fe988c9@epcas1p4.samsung.com>
- <20200613025102.12880-1-jaewon31.kim@samsung.com>
- <dd899dd9-43cd-f1fd-15af-863706fa62dc@suse.cz>
- <CAJrd-UuTcEJqgvarWWLyKjbZ9B_saLgdLNKWt-gcjY4CgfMSUw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <62621a8b-5bdd-ed20-d816-5958ab07d44f@suse.cz>
-Date:   Mon, 15 Jun 2020 13:25:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728953AbgFOLZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 07:25:56 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C58E20663;
+        Mon, 15 Jun 2020 11:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592220355;
+        bh=hheBwTSFc6iwBWB8MsUTDTdzd+3OLaOnprLkDFHzJZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m8rK1weuyASMxJgo3gsh7sPxRrQAYD12kwRU1DXbJp57frQ+XcatZNTgVFVlxrzQI
+         HOg/s3WpJX7CJxde07iTNDrw+n3kKCCoA2P+oBdHx2M9cBJqLd2p4ITInuMOO2Twgz
+         poRfTxYiKMbsrXKoOOM3hCXA5vN9EbhrexQch/hA=
+Date:   Mon, 15 Jun 2020 16:55:49 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Robin Gong <yibin.gong@nxp.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "matthias.schiffer@ew.tq-group.com" 
+        <matthias.schiffer@ew.tq-group.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 RFC 1/2] spi: introduce fallback to pio
+Message-ID: <20200615112549.GL1393454@vkoul-mobl>
+References: <1591880310-1813-1-git-send-email-yibin.gong@nxp.com>
+ <1591880310-1813-2-git-send-email-yibin.gong@nxp.com>
+ <20200611134042.GG4671@sirena.org.uk>
+ <VE1PR04MB66383245FAD2AE33CFEA76F789810@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <20200612101357.GA5396@sirena.org.uk>
+ <VE1PR04MB66384013797FE6B01943F2A889810@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <20200612141611.GI5396@sirena.org.uk>
+ <VE1PR04MB6638B43E3AC83286946DABCD899F0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+ <20200615071931.GK1393454@vkoul-mobl>
+ <VE1PR04MB6638959679C644C76B4D3D3A899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJrd-UuTcEJqgvarWWLyKjbZ9B_saLgdLNKWt-gcjY4CgfMSUw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB6638959679C644C76B4D3D3A899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/13/20 6:16 AM, Jaewon Kim wrote:
-> 
-> 
-> 2020년 6월 12일 (금) 오후 11:34, Vlastimil Babka <vbabka@suse.cz
-> <mailto:vbabka@suse.cz>>님이 작성:
->>
->> On 6/13/20 4:51 AM, Jaewon Kim wrote:
->> > zone_watermark_fast was introduced by commit 48ee5f3696f6 ("mm,
->> > page_alloc: shortcut watermark checks for order-0 pages"). The commit
->> > simply checks if free pages is bigger than watermark without additional
->> > calculation such like reducing watermark.
->> >
->> > It considered free cma pages but it did not consider highatomic
->> > reserved. This may incur exhaustion of free pages except high order
->> > atomic free pages.
->> >
->> > Assume that reserved_highatomic pageblock is bigger than watermark min,
->> > and there are only few free pages except high order atomic free. Because
->> > zone_watermark_fast passes the allocation without considering high order
->> > atomic free, normal reclaimable allocation like GFP_HIGHUSER will
->> > consume all the free pages. Then finally order-0 atomic allocation may
->> > fail on allocation.
->>
->> I don't understand why order-0 atomic allocation will fail. Is it because of
->> watermark check, or finding no suitable pages?
->> - watermark check should be OK as atomic allocations can use reserves
->> - suitable pages should be OK, even if all free pages are in the highatomic
->> reserves, because rmqueue() contains:
->>
->> if (alloc_flags & ALLOC_HARDER)
->>         page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
->>
->> So what am I missing?
->>
-> Hello
-> The order-0 atomic allocation can be failed because of depletion of suitable
-> free page.
-> Watermark check passes order-0 atomic allocation but it will be failed at
-> finding a free page.
-> The  __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC) can be used
-> only for highorder.
+Hi Robin,
 
-Ah, that's what I missed, rmqueue() will divert all order-0 allocations to
-rmqueue_pcplist() so those will not reach the hunk above. Thanks.
+On 15-06-20, 08:59, Robin Gong wrote:
+> On 2020/06/15 15:20 Vinod Koul <vkoul@kernel.org> wrote:
 
->> > @@ -3598,9 +3604,12 @@ static inline bool zone_watermark_fast(struct zone
-> *z, unsigned int order,
->>         /*
->>          * Fast check for order-0 only. If this fails then the reserves
->>          * need to be calculated. There is a corner case where the check
->>          * passes but only the high-order atomic reserve are free. If
->> >        * the caller is !atomic then it'll uselessly search the free
->> >        * list. That corner case is then slower but it is harmless.
->> >        */
->>
->> The comment stops being true after this patch? It also suggests that Mel
->> anticipated this corner case, but that it should only cause a false positive
->> zone_watermark_fast() and then rmqueue() fails for !ALLOC_HARDER as it cannot
->> use MIGRATE_HIGHATOMIC blocks. It expects atomic order-0 still works. So what's
->> going on?
-> 
-> As Mel also agreed with me in v1 mail thread, this highatomic reserved should
-> be considered even in watermark fast.
-> 
-> The comment, I think, may need to be changed. Prior to this patch, non highatomic
-> allocation may do useless search, but it also can take ALL non highatomic free.
-> 
-> With this patch, non highatomic allocation will NOT do useless search. Rather,
+> > > Yes, but both assume spi controller driver could detect such dma
+> > > failure before dmaengine_prep_*(). Let's wait Vinod's comment for that
+> > > if dmaengine_slave_config could keep direction.
+> > 
+> > The direction is already in the prep_ call, so sending in dmaengine_slave_config
+> > is not required, pls pass it in the prep_ call
+> Hi Vinod,
+> 	Is there any way to let the device driver to know dma controller is ready
+> (in sdma case is sdma firmware loaded or not)before prep_call? Hence, spi core
+> could map dma buffer or not. Prep_call is too late for spi core since the buffers
+> have been already mapped. 
 
-Yes, that's what I meant.
+Can you use .device_alloc_chan_resources for that? This is where all
+the resource allocation for a channel should happen...
+
+> 	From my view, seems dmaengine_slave_config is the only one...Further,
+> sdma need direction in dmaengine_slave_config phase, because currently
+> what's the tx/rx script used on sdma channel is decided not only peripheral_type
+> but also direction. For example, spi tx dma is running ram script to workaround
+> ecspi ERR009165 while rx dma is running rom script, so only spi tx dma channel
+> depends on sdma firmware loaded(now that could be detect by ' load_address
+> < 0' in sdma_load_context() and prep_ call finally).
+>    I knew direction is deprecated in dmaengine_slave_config, but that's really
+> very useful for sdma to check if firmware loaded and spi core could get it earlier
+> before prep_call(fallback to PIO if dma is not ready).
+
+I think that is wrong expectation, dmaengine_slave_config should pass
+the slave_config to driver and nothing else. The relevant action should
+be taken in respective prep_ calls here, so that should be fixed as well
+
+-- 
+~Vinod
