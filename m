@@ -2,153 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F251F942F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6971F943E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgFOKCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S1729597AbgFOKDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729415AbgFOKCS (ORCPT
+        with ESMTP id S1728870AbgFOKDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:02:18 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A63BC061A0E;
-        Mon, 15 Jun 2020 03:02:18 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r15so14176483wmh.5;
-        Mon, 15 Jun 2020 03:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=08GcNeJgDJiHZoSCn55z5bT9ubYArPoNshimIgtmrxI=;
-        b=QO0pRvC2qVcMaJQ1lTSuk7HXw4jnlqpbEwCy2b7HVqADTf/GNIv4YdnBzNHVw3OIKF
-         MLsXLdpHZPMdBG6PfwTT0SFTybZXh835oquCUm3jZWE6QH0/QhDucD7SUl35TWO6e/rV
-         mmbDpBoam0NEmYWiatJfvtqstG0WOrOLAIH5oAcUkSU/pJWz7lFjNjSE6NaolLfr3pbG
-         87EkcDfgVc4XMUYzKZcUKGUSK3xEZ2eKA8JHRXDWTW65Imb84jXh5XDbArdXBC4p9Hao
-         i5lZNcj3+1DHaWTnpmE+rPhIg6sTXyGn2hnHJ5UgC+BicdM4b25DZUULNrvk6pERMvfR
-         UcbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=08GcNeJgDJiHZoSCn55z5bT9ubYArPoNshimIgtmrxI=;
-        b=mVOnwPNT6Bj339C5KQSGuLfWVFdYh+/gM/RdXV5Y1kFI6rtw6OLl6uPI5vt2cJ2F66
-         CiPQl7VLFBrgrpJo3+hrKbQ3t0ugxhDVPqiGU/+JjI3JgxUkHEGR+yDPnHhmnJnLXzX6
-         EBKA7J49PKsD431gTaunbefGpb7C6IWIjNTs1MckEPbhGrA/zfLYmMLqiiDHvfi37MNl
-         k1FTS4KI5QF9YHMJCLkxTxiAaSYqI9jEx24VETCr1A5FlIWQs9N4REqfUEEv67xivz9j
-         ITsglEFSDZ8eCpeWpdlrq70kQaxduA+SJcvuUY/wK5SxmHkjWg0LiFlsWATiHudsTPvM
-         wBfA==
-X-Gm-Message-State: AOAM531GltE4Z1wBo0EJJpkCw1PKOQzu75PjQx9/WmxDnf2Xwjh8rNIV
-        jwXx2Nj2Hx0i9spLoGs4Af0=
-X-Google-Smtp-Source: ABdhPJzWSdHeJZNPFXdicH+0DDwzdE3V7acyxzPD+oe7DXfRReDP+5v+LccZQloVMXDtKOAvZKdHbg==
-X-Received: by 2002:a1c:dc44:: with SMTP id t65mr13176902wmg.128.1592215337114;
-        Mon, 15 Jun 2020 03:02:17 -0700 (PDT)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id k17sm23995217wrl.54.2020.06.15.03.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 03:02:16 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 11:02:14 +0100
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, eric.auger@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, ashok.raj@intel.com,
-        jun.j.tian@intel.com, yi.y.sun@intel.com, jean-philippe@linaro.org,
-        peterx@redhat.com, hao.wu@intel.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/15] vfio: expose virtual Shared Virtual Addressing
- to VMs
-Message-ID: <20200615100214.GC1491454@stefanha-x1.localdomain>
-References: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
+        Mon, 15 Jun 2020 06:03:47 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0595C061A0E;
+        Mon, 15 Jun 2020 03:03:47 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jklxt-0006Uf-6S; Mon, 15 Jun 2020 12:03:41 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B40231C00ED;
+        Mon, 15 Jun 2020 12:03:40 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 10:03:40 -0000
+From:   "tip-bot2 for Herbert Xu" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/microcode] x86/microcode: Do not select FW_LOADER
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200610042911.GA20058@gondor.apana.org.au>
+References: <20200610042911.GA20058@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
-Content-Disposition: inline
-In-Reply-To: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
+Message-ID: <159221542045.16989.5680100825839047126.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/microcode branch of tip:
 
---E13BgyNx05feLLmH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     c8a59a4d8e3c9e609fa915e39c3628c6dd08aeea
+Gitweb:        https://git.kernel.org/tip/c8a59a4d8e3c9e609fa915e39c3628c6dd08aeea
+Author:        Herbert Xu <herbert@gondor.apana.org.au>
+AuthorDate:    Wed, 10 Jun 2020 21:05:13 +10:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 15 Jun 2020 11:59:19 +02:00
 
-On Thu, Jun 11, 2020 at 05:15:19AM -0700, Liu Yi L wrote:
-> Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
-> Intel platforms allows address space sharing between device DMA and
-> applications. SVA can reduce programming complexity and enhance security.
->=20
-> This VFIO series is intended to expose SVA usage to VMs. i.e. Sharing
-> guest application address space with passthru devices. This is called
-> vSVA in this series. The whole vSVA enabling requires QEMU/VFIO/IOMMU
-> changes. For IOMMU and QEMU changes, they are in separate series (listed
-> in the "Related series").
->=20
-> The high-level architecture for SVA virtualization is as below, the key
-> design of vSVA support is to utilize the dual-stage IOMMU translation (
-> also known as IOMMU nesting translation) capability in host IOMMU.
->=20
->=20
->     .-------------.  .---------------------------.
->     |   vIOMMU    |  | Guest process CR3, FL only|
->     |             |  '---------------------------'
->     .----------------/
->     | PASID Entry |--- PASID cache flush -
->     '-------------'                       |
->     |             |                       V
->     |             |                CR3 in GPA
->     '-------------'
-> Guest
-> ------| Shadow |--------------------------|--------
->       v        v                          v
-> Host
->     .-------------.  .----------------------.
->     |   pIOMMU    |  | Bind FL for GVA-GPA  |
->     |             |  '----------------------'
->     .----------------/  |
->     | PASID Entry |     V (Nested xlate)
->     '----------------\.------------------------------.
->     |             |   |SL for GPA-HPA, default domain|
->     |             |   '------------------------------'
->     '-------------'
-> Where:
->  - FL =3D First level/stage one page tables
->  - SL =3D Second level/stage two page tables
+x86/microcode: Do not select FW_LOADER
 
-Hi,
-Looks like an interesting feature!
+The x86 microcode support works just fine without FW_LOADER. In fact,
+these days most people load microcode early during boot so FW_LOADER
+never gets into the picture anyway.
 
-To check I understand this feature: can applications now pass virtual
-addresses to devices instead of translating to IOVAs?
+As almost everyone on x86 needs to enable MICROCODE, this by extension
+means that FW_LOADER is always built into the kernel even if nothing
+uses it. The FW_LOADER system is about two thousand lines long and
+contains user-space facing interfaces that could potentially provide an
+entry point into the kernel (or beyond).
 
-If yes, can guest applications restrict the vSVA address space so the
-device only has access to certain regions?
+Remove the unnecessary select of FW_LOADER by MICROCODE. People who need
+the FW_LOADER capability can still enable it.
 
-On one hand replacing IOVA translation with virtual addresses simplifies
-the application programming model, but does it give up isolation if the
-device can now access all application memory?
+ [ bp: Massage a bit. ]
 
-Thanks,
-Stefan
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200610042911.GA20058@gondor.apana.org.au
+---
+ arch/x86/Kconfig                     | 3 ---
+ arch/x86/kernel/cpu/microcode/core.c | 2 --
+ 2 files changed, 5 deletions(-)
 
---E13BgyNx05feLLmH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7nRyYACgkQnKSrs4Gr
-c8it8gf/TeJTtf8ILMVekJJKiE/LzXVWGX/dqeYBMEp9fhU6QYQIgieaQ9coR+zu
-2Rk66LdmgfNDct0Yd9JsUgcBzggYCE4EXUQq2gX5+43O6KkbMKPZq9XWG3c1lorL
-dcghm6bL66QtyXtTuirc4PLDyXHQXrSFE1XyCqb1LI4ZJ06ixoayWLvG1Y+OhaE6
-QsTzNbo5RhADYG+l5U40nTXoQu4sr/7oPK3fBT5BI8/iTGgVnb43tHBTLtxxMPXS
-h8S8N0eJpXdfudpdp7YMUu9crttpDcTvtWIRQm2gLVpF+t95Dh1RKtntiKPfNTzz
-dlmLpMC5acu6JEAimAswW5t7IYqzfQ==
-=zQiU
------END PGP SIGNATURE-----
-
---E13BgyNx05feLLmH--
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 6a0cc52..5c44eac 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1292,7 +1292,6 @@ config MICROCODE
+ 	bool "CPU microcode loading support"
+ 	default y
+ 	depends on CPU_SUP_AMD || CPU_SUP_INTEL
+-	select FW_LOADER
+ 	help
+ 	  If you say Y here, you will be able to update the microcode on
+ 	  Intel and AMD processors. The Intel support is for the IA32 family,
+@@ -1314,7 +1313,6 @@ config MICROCODE_INTEL
+ 	bool "Intel microcode loading support"
+ 	depends on MICROCODE
+ 	default MICROCODE
+-	select FW_LOADER
+ 	help
+ 	  This options enables microcode patch loading support for Intel
+ 	  processors.
+@@ -1326,7 +1324,6 @@ config MICROCODE_INTEL
+ config MICROCODE_AMD
+ 	bool "AMD microcode loading support"
+ 	depends on MICROCODE
+-	select FW_LOADER
+ 	help
+ 	  If you select this option, microcode patch loading support for AMD
+ 	  processors will be enabled.
+diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
+index baec68b..ec6f041 100644
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -145,7 +145,6 @@ extern struct builtin_fw __end_builtin_fw[];
+ 
+ bool get_builtin_firmware(struct cpio_data *cd, const char *name)
+ {
+-#ifdef CONFIG_FW_LOADER
+ 	struct builtin_fw *b_fw;
+ 
+ 	for (b_fw = __start_builtin_fw; b_fw != __end_builtin_fw; b_fw++) {
+@@ -155,7 +154,6 @@ bool get_builtin_firmware(struct cpio_data *cd, const char *name)
+ 			return true;
+ 		}
+ 	}
+-#endif
+ 	return false;
+ }
+ 
