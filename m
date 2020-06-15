@@ -2,90 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9239B1F9BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074761F9BBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730821AbgFOPQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730595AbgFOPQW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:16:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8586AC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:16:22 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jkqqP-0003Xw-0b; Mon, 15 Jun 2020 17:16:17 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jkqqN-0008T9-KO; Mon, 15 Jun 2020 17:16:15 +0200
-Date:   Mon, 15 Jun 2020 17:16:15 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pwm: iqs620a: Use 64-bit division
-Message-ID: <20200615151615.lbxajfkgzmdbmdva@taurus.defre.kleine-koenig.org>
-References: <20200615141606.2814208-1-thierry.reding@gmail.com>
- <20200615141606.2814208-3-thierry.reding@gmail.com>
+        id S1730111AbgFOPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:18:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49926 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728326AbgFOPSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 11:18:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7E1F6B019;
+        Mon, 15 Jun 2020 15:18:04 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 17:17:59 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
+        akpm@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v2 14/24] dyndbg: add filter parameter to
+ ddebug_parse_flags
+Message-ID: <20200615151759.GJ31238@alley>
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+ <20200613155738.2249399-15-jim.cromie@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pn5rhpjdzgafivym"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615141606.2814208-3-thierry.reding@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200613155738.2249399-15-jim.cromie@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat 2020-06-13 09:57:28, Jim Cromie wrote:
+> Add a new local *filter variable to ddebug_exec_query(), pass it into
+> ddebug_parse_flags(), which fills it, communicating optional filter
+> flags back to its caller.  Then caller passes same to ddebug_change()
+> to effect the changes.
+> 
+> Also, ddebug_change doesn't alter any of its arguments, including its 2
+> new ones; mods, filter.  Say so by adding const modifier to them.
 
---pn5rhpjdzgafivym
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What is the purpose of the filter variable, please?
 
-On Mon, Jun 15, 2020 at 04:16:06PM +0200, Thierry Reding wrote:
-> The PWM framework is going to change the PWM period and duty cycles to
-> be 64-bit unsigned integers. To avoid build errors on platforms that do
-> not natively support 64-bit division, use explicity 64-bit division.
->=20
-> Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+It is newer set. It is printed in ddebug_parse_flags().
+It is passed to ddebug_exec_query() but never used there.
 
-LGTM,
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pn5rhpjdzgafivym
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl7nkLsACgkQwfwUeK3K
-7AlWHwf/dICNt57s5UZBXtembW54DPqqvCVw0lr4GNUtJE7S2lUR33/emNrjb8kN
-WyDTQuDeHgYt7ELaXIuLEjTEu97kZyYOgl5bSQefsdfNMhnstvjPRELO3z80ZCoC
-WQfuBkAS2G+MjjkopJnTi+k5F7JqBPGP7Vx7fsuQ3AvfBXkqSTGKzJLOwdTPghFB
-yZ0XpNNN0J2qD5ZayA+kP5wd8faBSe5JLMOnIpmpAs0gNRF33vyE3hnunyV7QKpO
-7Av1YFLti+pj1Wyc6mWv0kRVrSKnivrYWuYJ35M4Tu77KEU16hpRjclrtdV3yXDK
-0vV88ZiTLuJHk9nrOcIHLITiKKIkLA==
-=U0uY
------END PGP SIGNATURE-----
-
---pn5rhpjdzgafivym--
+Best Regards,
+Petr
