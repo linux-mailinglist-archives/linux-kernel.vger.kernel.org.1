@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD8E1F8F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC271F8F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgFOHZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728318AbgFOHZL (ORCPT
+        id S1728703AbgFOHZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:25:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51544 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728521AbgFOHZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:25:11 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883DC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:25:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so15932434wrp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=riWUhes2igXDR1qy3tIwXdTKD/88c/mEkuTa2CTN1Fc=;
-        b=UsBnokNl/Yq0JY0JNS/habrt/+H73fsN8s1N8S5KGit+QOQUwDPt3UmYscMHwWsDNb
-         obuvppWJJZs85SdFEjXzA4q0RSR2i52ZDyD99PKLS+TCU8w6uWmY+xJZlqeYU8+tPmFH
-         2Flx4pCh4WYCCPRJ6tLoEs0txtyQvCAzJpTObafIoKwIy2Dc6fBqvNBfgc1D641Fq+Mo
-         14y0k7ohgjZUmDqGmZHMJYSdCKD7ITUZY6vq0SSUZV0rlOgj5IGckFUA+WYA0iruYDrc
-         NCMLjmbcrPC1Vvdeuj1E9j+QtuIQ2Z4kvd8aeu9L2I92+HY1LDS1GRK0LztD/zdaprKt
-         q54Q==
+        Mon, 15 Jun 2020 03:25:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592205937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XHwguCxo4c2cVMancqpzmFcNo1EaIuQKAA2ekR4KvOU=;
+        b=GQO48Y7H7OSovPkuta2dq3dwywWCrC8ONAWgnO27bRXRI4RgPL1xMIP/NFpUrfJ5KdgOJl
+        aB8txB4F/GnxkeibxyfTulA7sCmyq7mX1/NoRmKXFJyGcLFbwz64xiLiAYSYcXsX5q25ER
+        r5EBjun6FYdnezmz0P3VnQIIk2Wr1wk=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-PB54_YscNOuJ6zh8S2pVrw-1; Mon, 15 Jun 2020 03:25:34 -0400
+X-MC-Unique: PB54_YscNOuJ6zh8S2pVrw-1
+Received: by mail-pf1-f198.google.com with SMTP id m11so12513420pfh.22
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:25:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=riWUhes2igXDR1qy3tIwXdTKD/88c/mEkuTa2CTN1Fc=;
-        b=LKLio9SF3UTTufaWVg/mfZBSQoJGIDdlhJMZWx6Av/bQhHIJ1irDhS4AllClx6DPfb
-         pevhJC7ZJhK8ijR/eia2cj3aX6dei9X4Rg8jkM/Ql2D+wfYc7CFiFm7z2UqrrantumCY
-         Sk7+emLxkm3bb8nmD8nQClHU6QZilVoVUVxUOIdgrqCMMdcAmqHHENiVxXspnvMAv9lf
-         p7c5GrEfMDoo/ZEGquKrbJrav+QtgciQBalADc5vIisEyTG7Q51BqYrphHrV5Vhu5FnK
-         RbSAEoNbHI164KP6o9zcKU7EOANMEwtAomCH3g/UFgE1uM1TbYyKNVAK831pOVY/HyU2
-         xXGQ==
-X-Gm-Message-State: AOAM532D8TGYL+m4d4b8VrzCwNES9rxxxecvx6AQhcxtCT2HJXhAkGCF
-        z4iperoYIgLemp/U/GasrpJuLQ==
-X-Google-Smtp-Source: ABdhPJz0NWTTJnLBf/N86Ovvv7TmRNIqU7u+c4PneWxjJscFwsutPoI3C/HXFRCthAGa5V03GZ9fHQ==
-X-Received: by 2002:a5d:68cb:: with SMTP id p11mr26237625wrw.379.1592205909803;
-        Mon, 15 Jun 2020 00:25:09 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id j4sm22585124wma.7.2020.06.15.00.25.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XHwguCxo4c2cVMancqpzmFcNo1EaIuQKAA2ekR4KvOU=;
+        b=oBtD8mFLtCKQ1+DdK3hLs+u9oo7KjXeHbEocN+zEyYsUzuRASKYHIK3KOhJ9C6uIcZ
+         8qnRQ/zxyqQqtYY1cehaabTVqlHoU5SNh0RmYQeWMqpY90NYE0EAHLb/o7sJzWIWXtNc
+         GI3GDCiMKDJmzKkcCrln16b5gxu8phd6SN8/Aw4XV6haLgXFEnGuWava/FQBzetT5QV6
+         GFzErjG7Qa5xXWzue0/kl67pJuGsopVJXGRsPmCHNystM0oQnChcukgtnToAcVJ63HhP
+         8cnm2nYkewb6Fu+J9UzT/XPkm4qF/zDB/UVw0i/3o0nd8udoDZitRFFMK14wq+vkDeOI
+         4tkA==
+X-Gm-Message-State: AOAM533tWjv7oV/4VXW0bco5wxoh9dy6qpodJ1sIm63ELiw07fX/zv1+
+        TKbtvx7tl4o7aZiescyCe4t91pCDMVt/8E5woNf1Up4XAVS3Ejl9XLMvYd6cMziVMFJgKv2IB4D
+        3eDSdItHeCmSzQtqi8bqwzkEh
+X-Received: by 2002:a62:7ccb:: with SMTP id x194mr23171903pfc.318.1592205933331;
+        Mon, 15 Jun 2020 00:25:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYaTupNZjWJqlIUP4l94FShAOlauozvMBU4WlPvbNTKjhwYoirQ+2pYQeFVKE9wK3gIS1IOw==
+X-Received: by 2002:a62:7ccb:: with SMTP id x194mr23171888pfc.318.1592205933006;
+        Mon, 15 Jun 2020 00:25:33 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id mw5sm13015199pjb.27.2020.06.15.00.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 00:25:09 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] regmap: remove stray space
-Date:   Mon, 15 Jun 2020 09:25:07 +0200
-Message-Id: <20200615072507.11303-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
+        Mon, 15 Jun 2020 00:25:32 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 15:25:21 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     xiang@kernel.org, chao@kernel.org, gregkh@linuxfoundation.org,
+        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH] erofs: Eliminate usage of uninitialized_var() macro
+Message-ID: <20200615072521.GA25317@xiangao.remote.csb>
+References: <20200615040141.3627746-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615040141.3627746-1-yanaijie@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi Jason,
 
-There are two spaces between arguments in regmap_fields_update_bits_base()
-so remove one.
+On Mon, Jun 15, 2020 at 12:01:41PM +0800, Jason Yan wrote:
+> This is an effort to eliminate the uninitialized_var() macro[1].
+> 
+> The use of this macro is the wrong solution because it forces off ANY
+> analysis by the compiler for a given variable. It even masks "unused
+> variable" warnings.
+> 
+> Quoted from Linus[2]:
+> 
+> "It's a horrible thing to use, in that it adds extra cruft to the
+> source code, and then shuts up a compiler warning (even the _reliable_
+> warnings from gcc)."
+> 
+> The gcc option "-Wmaybe-uninitialized" has been disabled and this change
+> will not produce any warnnings even with "make W=1".
+> 
+> [1] https://github.com/KSPP/linux/issues/81
+> [2] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+> 
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Chao Yu <yuchao0@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
-Hi Mark,
+I'm fine with the patch since "-Wmaybe-uninitialized" has been disabled and
+I've also asked Kees for it in private previously.
 
-I noticed this while writing the previous patch, so I guess we can fix it.
+I still remembered that Kees sent out a treewide patch. Sorry about that
+I don't catch up it... But what is wrong with the original patchset?
 
-Bart
-
- drivers/base/regmap/regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index c472f624382d..b99c47ed48fe 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -2031,7 +2031,7 @@ EXPORT_SYMBOL_GPL(regmap_field_update_bits_base);
-  * A value of zero will be returned on success, a negative errno will
-  * be returned in error cases.
-  */
--int regmap_fields_update_bits_base(struct regmap_field *field,  unsigned int id,
-+int regmap_fields_update_bits_base(struct regmap_field *field, unsigned int id,
- 				   unsigned int mask, unsigned int val,
- 				   bool *change, bool async, bool force)
- {
--- 
-2.26.1
+Thanks,
+Gao Xiang
 
