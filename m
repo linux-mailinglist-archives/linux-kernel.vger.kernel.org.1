@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DA91FA198
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E091FA1A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731563AbgFOUbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730152AbgFOUbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:31:40 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 417C52074D;
-        Mon, 15 Jun 2020 20:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592253100;
-        bh=/ZFfJJfrCWJSkrEMjVco8MOwBGhWUOxHrsp3cHOk8cg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Zk57CcXwhqHZxyP3HNWSUxLb8mPrwhP6wlY3eNqakErw8OsJS9VgNCgbF7z/EVDv0
-         n5OldxnJQk5a4WfJR94GW0t1iv56jfXc3RwwEFB88CIZIhDbNLj2f8JUZfR1/lbhoo
-         rX0ZmDFvauSZfoo6Lauy8tEJzNAmhFL5t3gRn9QA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2B2CD35218F0; Mon, 15 Jun 2020 13:31:40 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 13:31:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: Re: [PATCH] kernel/rcu/tree.c: fix kernel-doc warnings
-Message-ID: <20200615203140.GN2723@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <6b6af324-1c81-5b8d-bfc1-e800e9792172@infradead.org>
+        id S1731621AbgFOUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731026AbgFOUcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 16:32:10 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BFCC061A0E;
+        Mon, 15 Jun 2020 13:32:10 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id d67so17120235oig.6;
+        Mon, 15 Jun 2020 13:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLVfcRpFW5Aj6KKAQq0GdGr+kv8j/Al0S7eZSYFMCko=;
+        b=Iv/YrP4AHCQnhLjL010QvvMb7F5ILf7ZlURh1XuurOztBybIWm7+vT4F1FCdp5YGJw
+         LoUvT3tFzO39ulQWYgPzAjV7ifE9IPTxG/VCBz5nFu0whlpYUX363uFx4dfT3kxWhY3R
+         bmvxY1qArH9Ds8G9cly1KSeQrbxujb3gPr1w97BO3N+OkwuwtiMcp1hTV5fLt+YVd6N7
+         NMRRkvVHUM20EJmfMQ8KopEgT6yu3nWKOO9pdnT3h9L8qoGGEBckbpmmPRyofPJzPNfq
+         f2KCVsnTVn0aPG21HaiTQbk3tDeK37oH9w03FxtpBWkfrOq14AmxHIGd3uwvZGAb+wI1
+         kH3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLVfcRpFW5Aj6KKAQq0GdGr+kv8j/Al0S7eZSYFMCko=;
+        b=N0GtXjpbkK4AHPXgUzAv9CytdlSRDhVg6K1s8oRyfRs+u7vG8NMOfBZSdTiwYepQC7
+         Y3N3PtXWew3pQsiSviZiH0xj6HEMnafaOluedBN7FMUMLwc0pm1XpqxUmvB4NW5LhJI3
+         3Zm2DBiJvhdEsaiGorOGOkFdXOFeOHF8Rj12wX4hDctmfPGT+b0izjv5ICJgRVh21ZKq
+         BsBy/JvszRM5s1XwG5bQ939yUPYMGND90GLgwGHFew3HbSp+QDiSkiSNJBjxIHe7eLAr
+         60Jj7UsuXOFgnbfyU9UiifHlz+W0vT7H3JJMi2+uoS1ECGfLAGOgQJE/y9Kc+7Ohnfzb
+         pn0A==
+X-Gm-Message-State: AOAM530JuzH2bGfhI+74PMgd78Axn6n6xD2HLLpRPQaVe3dxtjMRd9yO
+        87mp9YR8pKGkdtDy/IHCgitZuHcEZ7iPqJ4lYXU=
+X-Google-Smtp-Source: ABdhPJz6ExPhgMpFvKG9huRF6CgiiBVYhjKG3knTw0lTw9MHxqKR5uKJizKcQnMpxo+QKMaO+HwKyVnBA/rD/sJlHAU=
+X-Received: by 2002:aca:3283:: with SMTP id y125mr955658oiy.140.1592253130159;
+ Mon, 15 Jun 2020 13:32:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b6af324-1c81-5b8d-bfc1-e800e9792172@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200613024130.3356-1-nramas@linux.microsoft.com>
+ <20200613024130.3356-5-nramas@linux.microsoft.com> <CAEjxPJ49UaZc9pc-+VN8Cx8rcdrjD6NMoLOO_zqENezobmfwVA@mail.gmail.com>
+ <a9a20aa5-963e-5f49-9391-0673fdda378e@linux.microsoft.com>
+In-Reply-To: <a9a20aa5-963e-5f49-9391-0673fdda378e@linux.microsoft.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 15 Jun 2020 16:31:59 -0400
+Message-ID: <CAEjxPJ4nD-3cNQHp8wjdL=_k3opjyU+zc9xCPZkOjkTxDN6g9A@mail.gmail.com>
+Subject: Re: [PATCH 4/5] LSM: Define SELinux function to measure security state
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Stephen Smalley <stephen.smalley@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:28:05PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix kernel-doc warnings:
-> 
-> ../kernel/rcu/tree.c:959: warning: Excess function parameter 'irq' description in 'rcu_nmi_enter'
-> ../kernel/rcu/tree.c:3006: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
-> 
-> Fixes: cf7614e13c8f ("rcu: Refactor rcu_{nmi,irq}_{enter,exit}()")
-> Fixes: 9154244c1ab6 ("rcu/tree: Add a shrinker to prevent OOM due to kfree_rcu() batching")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Byungchul Park <byungchul.park@lge.com>
-> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
+On Mon, Jun 15, 2020 at 12:45 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> On 6/15/20 4:57 AM, Stephen Smalley wrote:
+> > I think I mentioned this on a previous version of these patches, but I
+> > would recommend including more than just the enabled and enforcing
+> > states in your measurement.  Other low-hanging fruit would be the
+> > other selinux_state booleans (checkreqprot, initialized,
+> > policycap[0..__POLICYDB_CAPABILITY_MAX]).  Going a bit further one
+> > could take a hash of the loaded policy by using security_read_policy()
+> > and then computing a hash using whatever hash ima prefers over the
+> > returned data,len pair.  You likely also need to think about how to
+> > allow future extensibility of the state in a backward-compatible
+> > manner, so that future additions do not immediately break systems
+> > relying on older measurements.
+> >
+>
+> Sure - I will address this one in the next update.
 
-Someone beat you to the second hunk, but the first hunk is queued
-and pushed, thank you!
-
-							Thanx, Paul
-
-> ---
-> Note: The first Fixes: commit ID might be incorrect.
-> 
->  kernel/rcu/tree.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> --- linux-next-20200615.orig/kernel/rcu/tree.c
-> +++ linux-next-20200615/kernel/rcu/tree.c
-> @@ -944,7 +944,6 @@ void __rcu_irq_enter_check_tick(void)
->  
->  /**
->   * rcu_nmi_enter - inform RCU of entry to NMI context
-> - * @irq: Is this call from rcu_irq_enter?
->   *
->   * If the CPU was idle from RCU's viewpoint, update rdp->dynticks and
->   * rdp->dynticks_nmi_nesting to let the RCU grace-period handling know
-> @@ -2986,6 +2985,7 @@ struct kfree_rcu_cpu_work {
->   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
->   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
->   * @initialized: The @lock and @rcu_work fields have been initialized
-> + * @count: Number of objects for which GP not started
->   *
->   * This is a per-CPU structure.  The reason that it is not included in
->   * the rcu_data structure is to permit this code to be extracted from
-> @@ -3001,7 +3001,6 @@ struct kfree_rcu_cpu {
->  	struct delayed_work monitor_work;
->  	bool monitor_todo;
->  	bool initialized;
-> -	// Number of objects for which GP not started
->  	int count;
->  };
->  
-> 
-> 
+Please add selinux list to the cc for future versions too.
