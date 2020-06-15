@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E541F97CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097E41F97D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgFONCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730098AbgFONC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:02:28 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8F89206B7;
-        Mon, 15 Jun 2020 13:02:24 +0000 (UTC)
-Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
- than zone sizes
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     akpm@linux-foundation.org, bhe@redhat.com, geert@linux-m68k.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, rppt@linux.ibm.com
-References: <20200412194859.12663-5-rppt@kernel.org>
- <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
- <20200615062234.GA7882@kernel.org>
- <24563231-ed19-6f4f-617e-4d6bfc7553e4@linux-m68k.org>
- <20200615082937.GB7882@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <5cae945c-1d15-9857-f7a5-defa884f7b3c@linux-m68k.org>
-Date:   Mon, 15 Jun 2020 23:02:21 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730462AbgFONC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730455AbgFONCz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 09:02:55 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02BBC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:02:54 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l17so14573250wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynetics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yG4TX0q4STnfakhZj1Jy6LqPd0TuAXoc/J2tzd+XYRw=;
+        b=vOlT6DrX6rx075X32KGHYvlAhGW2prqOHQiHu160Jm1Sx7TPbdK5EgFzjZY5ZDNTcz
+         nL3jeWVLcxZ33If0/DklPgn7giQIo7U+JsYbTWa7upUdP1mCURZ6tDHN1xXutpLEXZAz
+         gyaANYRm+OMChPplA5Q04hueaT4rUERoCh8lL/8e62inXpt8LZBzK4g9E3OgelBx35el
+         DOQ8fWw5gtMRlpzAnk8lELnN5+aD+xe3695jvPVuVUpjPJExJi7j+GIVVHdsNOpshKjb
+         Yo13cozv2dkpvDc7hvUiXdSwoOkSPOPNgGAcwJQgPe2s7YQTynkpqEt1C+eFEUQpSYEz
+         kL0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yG4TX0q4STnfakhZj1Jy6LqPd0TuAXoc/J2tzd+XYRw=;
+        b=Dg2QTL7l3i36i1P6hveLMnZmPvBtKNti54goD1xxCvzdPl5/cdysrjZi1KdeskbpcR
+         zCPMN1nWexT1MXEOSPjeXtND640L+5kCZ0p+PovdmFIurvSHro1CgiC9ZrqUgyWx4ITf
+         nAUKvXRpMT91Jfk9naHfJvTw95JzmdfplTV51/n2vn3OzWw4lGqZRfWLwcMHERP1ySvK
+         MSy1g0NEQLeWYw/gfeNy6wIA52BLo3GJ4pxgeEnQlTRMPlgX4gKInLqHMb1NFfKE17Ej
+         qnY9cj/y2k/sk+bxTeCf2VfE6aZwIMx4E49EXZr+X+NPPqA3wHPVuxng+fInDFbCznpl
+         AZTA==
+X-Gm-Message-State: AOAM530MuKkVIo5VbRpuv+6u0bF4WJ1pq6AsnoMU5qpZDeaXd9hbHqq+
+        mphHWWuqAFHSpbks1mhlnTGp7Q==
+X-Google-Smtp-Source: ABdhPJwmvwGWDdrqCPnEhR7CHzTB8RsOUHLalrL4KmPDN1e5zRjb2fQVCDq6msGiFBDRBvGkmaT+Zg==
+X-Received: by 2002:a1c:e057:: with SMTP id x84mr13695935wmg.160.1592226173500;
+        Mon, 15 Jun 2020 06:02:53 -0700 (PDT)
+Received: from localhost.lan (mob-37-176-61-186.net.vodafone.it. [37.176.61.186])
+        by smtp.gmail.com with ESMTPSA id s132sm23900345wmf.12.2020.06.15.06.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 06:02:53 -0700 (PDT)
+From:   Diego Rondini <diego.rondini@kynetics.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Diego Rondini <diego.rondini@kynetics.com>
+Subject: [PATCH v2 1/2] ARM: dts: orange-pi-zero-plus2: enable USB OTG port
+Date:   Mon, 15 Jun 2020 15:02:23 +0200
+Message-Id: <20200615130223.34464-1-diego.rondini@kynetics.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200615082937.GB7882@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Enable support for USB OTG port on Orange Pi Zero Plus 2 (both H3 and H5
+variants). As, according to the board schematics, the USB OTG port cannot
+provide power to external devices, we set dr_mode to peripheral.
 
-On 15/6/20 6:29 pm, Mike Rapoport wrote:
-> (reduced the spam list)
-> 
-> On Mon, Jun 15, 2020 at 05:17:28PM +1000, Greg Ungerer wrote:
->> On 15/6/20 4:22 pm, Mike Rapoport wrote:
->>> On Mon, Jun 15, 2020 at 01:53:42PM +1000, Greg Ungerer wrote:
->>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>> Currently, architectures that use free_area_init() to initialize memory map
->>>>> and node and zone structures need to calculate zone and hole sizes. We can
->>>>> use free_area_init_nodes() instead and let it detect the zone boundaries
->>>>> while the architectures will only have to supply the possible limits for
->>>>> the zones.
->>>>>
->>>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>>>
->>>> This is causing some new warnings for me on boot on at least one non-MMU m68k target:
->>>
->>> There were a couple of changes that cause this. The free_area_init()
->>> now relies on memblock data and architectural limits for zone sizes
->>> rather than on explisit pfns calculated by the arch code. I've update
->>> motorola variant and missed coldfire. Angelo sent a fix for mcfmmu.c
->>> [1] and I've updated it to include nommu as well
->>>
->>> [1] https://lore.kernel.org/linux-m68k/20200614225119.777702-1-angelo.dureghello@timesys.com
->>>
->>>>  From 55b8523df2a5c4565b132c0691990f0821040fec Mon Sep 17 00:00:00 2001
->>> From: Angelo Dureghello <angelo.dureghello@timesys.com>
->>> Date: Mon, 15 Jun 2020 00:51:19 +0200
->>> Subject: [PATCH] m68k: fix registration of memory regions with memblock
->>>
->>> Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
->>> introduced assumption that UMA systems have their memory at node 0 and
->>> updated most of them, but it forgot nommu and coldfire variants of m68k.
->>>
->>> The later change in free area initialization in commit fa3354e4ea39 ("mm:
->>> free_area_init: use maximal zone PFNs rather than zone sizes") exposed that
->>> and caused a lot of "BUG: Bad page state in process swapper" reports.
->>
->> Even with this patch applied I am still seeing the same messages.
-> 
-> Argh, it was to early in the morning...
-> Can you please try the one below?
-> 
-> It seems that coldfire didn't register all its physical memory with
-> memblock and the pfn list was damaged because of that.
-> 
-> 
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index e779b19e0193..f66f4b1d062e 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
->   	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
->   		 __bss_stop, memory_start, memory_start, memory_end);
->   
-> -	memblock_add(memory_start, memory_end - memory_start);
-> +	memblock_add(_rambase, memory_end - _rambase);
-> +	memblock_reserve(_rambase, memory_start - _rambase);
->   
->   	/* Keep a copy of command line */
->   	*cmdline_p = &command_line[0];
+Signed-off-by: Diego Rondini <diego.rondini@kynetics.com>
+---
+v2:
+- reordered nodes alphabetically
+---
+ .../boot/dts/sun8i-h3-orangepi-zero-plus2.dts | 23 +++++++++++++++++++
+ .../sun50i-h5-orangepi-zero-plus2.dts         | 23 +++++++++++++++++++
+ 2 files changed, 46 insertions(+)
 
-Yep, thats got it. Boots clean again with this one.
-
-Regards
-Greg
-
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dts
+index b8f46e2802fd3..cbe32b975c5fe 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-zero-plus2.dts
+@@ -88,6 +88,10 @@ &de {
+ 	status = "okay";
+ };
+ 
++&ehci0 {
++	status = "okay";
++};
++
+ &hdmi {
+ 	status = "okay";
+ };
+@@ -132,8 +136,27 @@ &mmc2 {
+ 	status = "okay";
+ };
+ 
++&ohci0 {
++	status = "okay";
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_pa_pins>;
+ 	status = "okay";
+ };
++
++&usb_otg {
++	/*
++	 * According to schematics CN1 MicroUSB port can be used to take
++	 * external 5V to power up the board VBUS. On the contrary CN1 MicroUSB
++	 * port cannot provide power externally even if the board is powered
++	 * via GPIO pins. It thus makes sense to force peripheral mode.
++	 */
++	dr_mode = "peripheral";
++	status = "okay";
++};
++
++&usbphy {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dts
+index c95a68541309c..e67733d133bb4 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-zero-plus2.dts
+@@ -48,6 +48,10 @@ &de {
+ 	status = "okay";
+ };
+ 
++&ehci0 {
++	status = "okay";
++};
++
+ &hdmi {
+ 	status = "okay";
+ };
+@@ -92,6 +96,10 @@ &mmc2 {
+ 	status = "okay";
+ };
+ 
++&ohci0 {
++	status = "okay";
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_pa_pins>;
+@@ -103,3 +111,18 @@ &uart1 {
+ 	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+ 	status = "okay";
+ };
++
++&usb_otg {
++	/*
++	 * According to schematics CN1 MicroUSB port can be used to take
++	 * external 5V to power up the board VBUS. On the contrary CN1 MicroUSB
++	 * port cannot provide power externally even if the board is powered
++	 * via GPIO pins. It thus makes sense to force peripheral mode.
++	 */
++	dr_mode = "peripheral";
++	status = "okay";
++};
++
++&usbphy {
++	status = "okay";
++};
+-- 
+2.26.2
 
