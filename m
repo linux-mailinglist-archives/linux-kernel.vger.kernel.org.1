@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8351F8F80
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17271F8F6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgFOH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728691AbgFOHZn (ORCPT
+        id S1728545AbgFOHYu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 03:24:50 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:50901 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728318AbgFOHYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:25:43 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A74C061A0E;
-        Mon, 15 Jun 2020 00:25:42 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id r9so13524587wmh.2;
-        Mon, 15 Jun 2020 00:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=nrh+VH9Rpne9AeXibjb2Get1XJmLZmC1Vowuq2L/jKw=;
-        b=mcRv+X7A/ZM6fqOx4VPVM1qDOj2FoAhG4CP07CLLRe0JCa7Nt0m7wOlSFBsHJt/9DH
-         mT5SgSJ4XK6hleonnKFLUtEJpzsPr4U0S1+YUPy2Mg+6l2CdOyIsZcARuHE7MBs4Q4MC
-         0qcCmPDkOZJQf6D6oKtLiWUCbStWJYcXSuq/ydD/gM4gy+RleyIky4GsvdNc2+PMFcI2
-         7rHAez/dEc/zar8KYpl5IzZWjJsKzmuafNjHL4Xuk7DRzwDXNZIK186htsu3AO9MS49o
-         c8YVW4zR2E3GL2p0CWu0w9XFMV5EAtXOJ1ecfA8YJG4EQ35UdJYKKsYrAiEpZu4PT72b
-         lHlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nrh+VH9Rpne9AeXibjb2Get1XJmLZmC1Vowuq2L/jKw=;
-        b=IL5ixvgLT1IEOZAC7ZvnFfev2L/oBIjykfwIaPBjn/iSLFFfJsQmnZJeWxdE4IW0Nx
-         7StUTyLyfOkyY+yruEYzMtCREhuPRb/9G9K0W9G5kl1LLTAx+Kf+V40Bq77aLYzMoAbC
-         QGR5HrTqNAth0/F8E/0/Fd0k0ONX/lO09Kb9CuDArhE0rG2oEQyGAsnqwJIhqbYTgqyB
-         c8qZAind2GSPEzIqL9KUx7BMz9NW/YjTmlZQf3zmsMaz1Ya38wxZ7ytuq4bNTacYRL65
-         SkGae/jBOONgTNTnqf0HnFoaFWEqADOaVjcmx1SlZus0Qtd97QWzkU9baqOYFLhKMqqh
-         U6eA==
-X-Gm-Message-State: AOAM531zke4/aGsvP73AGbYmIvYe+JNWYpZPoghOaLJ7Dj8xWcUwVwsT
-        FSXJhqxAOD2lpi+NyGAmwVk=
-X-Google-Smtp-Source: ABdhPJw69GmKDnkNOBDeGO8+BPsO+6KwCF1weSEWiW5UKWSop4ukcMUpDqt2J+kGKUsTqToel4vzig==
-X-Received: by 2002:a7b:c041:: with SMTP id u1mr12352924wmc.56.1592205941536;
-        Mon, 15 Jun 2020 00:25:41 -0700 (PDT)
-Received: from localhost.localdomain ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id b187sm21897402wmd.26.2020.06.15.00.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 00:25:41 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] io_uring: batch cancel in io_uring_cancel_files()
-Date:   Mon, 15 Jun 2020 10:24:05 +0300
-Message-Id: <893d62893aab92d7a2e01e26868230621d265220.1592205754.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1592205754.git.asml.silence@gmail.com>
-References: <cover.1592205754.git.asml.silence@gmail.com>
+        Mon, 15 Jun 2020 03:24:50 -0400
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 470A3200014;
+        Mon, 15 Jun 2020 07:24:44 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 09:24:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     kjlu@umn.edu, wu000273@umn.edu, Han Xu <han.xu@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: gpmi: fix reference count leak due to
+ pm_runtime_get_sync
+Message-ID: <20200615092443.1e76169d@xps13>
+In-Reply-To: <20200614034300.130385-1-pakki001@umn.edu>
+References: <20200614034300.130385-1-pakki001@umn.edu>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of waiting for each request one by one, first try to cancel all
-of them in a batched manner, and then go over inflight_list/etc to reap
-leftovers.
+Hi Aditya,
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Aditya Pakki <pakki001@umn.edu> wrote on Sat, 13 Jun 2020 22:43:00
+-0500:
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 8bde42775693..5b5cab6691d2 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7370,9 +7370,22 @@ static int io_uring_release(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static bool io_wq_files_match(struct io_wq_work *work, void *data)
-+{
-+	struct files_struct *files = data;
-+
-+	return work->files == files;
-+}
-+
- static void io_uring_cancel_files(struct io_ring_ctx *ctx,
- 				  struct files_struct *files)
- {
-+	if (list_empty_careful(&ctx->inflight_list))
-+		return;
-+
-+	/* cancel all at once, should be faster than doing it one by one*/
-+	io_wq_cancel_cb(ctx->io_wq, io_wq_files_match, files, true);
-+
- 	while (!list_empty_careful(&ctx->inflight_list)) {
- 		struct io_kiocb *cancel_req = NULL, *req;
- 		DEFINE_WAIT(wait);
--- 
-2.24.0
+> On calling pm_runtime_get_sync() the reference count of the device
+> is incremented. In case of failure, decrement the
+> reference count before returning the error.
+> 
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 
+Missing Fixes/Stable tags here I guess?
+
+> ---
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> index 061a8ddda275..657c0be5c038 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> @@ -149,8 +149,10 @@ static int gpmi_init(struct gpmi_nand_data *this)
+>  	int ret;
+>  
+>  	ret = pm_runtime_get_sync(this->dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_autosuspend(this->dev);
+>  		return ret;
+> +	}
+>  
+>  	ret = gpmi_reset_block(r->gpmi_regs, false);
+>  	if (ret)
+> @@ -2264,8 +2266,10 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+>  		this->transfers[i].direction = DMA_NONE;
+>  
+>  	ret = pm_runtime_get_sync(this->dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_autosuspend(this->dev);
+>  		return ret;
+> +	}
+>  
+>  	/*
+>  	 * This driver currently supports only one NAND chip. Plus, dies share
+
+Thanks,
+Miquèl
