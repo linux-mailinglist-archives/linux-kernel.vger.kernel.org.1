@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233A11F8CCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 06:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E4E1F8CD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 06:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgFOEBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 00:01:31 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5887 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725294AbgFOEBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 00:01:30 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 331B8FD817FCBAC1C319;
-        Mon, 15 Jun 2020 12:01:27 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 15 Jun 2020
- 12:01:20 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <axboe@kernel.dk>, <b.zolnierkie@samsung.com>,
-        <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kernel-hardening@lists.openwall.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] ata: Eliminate usage of uninitialized_var() macro
-Date:   Mon, 15 Jun 2020 12:02:36 +0800
-Message-ID: <20200615040236.3720734-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726913AbgFOEGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 00:06:01 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:50501 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgFOEGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 00:06:00 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 8EB1183645;
+        Mon, 15 Jun 2020 16:05:57 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1592193957;
+        bh=eMCW7PIbDxUJ0FcUqX8/FsSKB37ozxh4wKeCG+90NVQ=;
+        h=From:To:Cc:Subject:Date;
+        b=Rxksg5HcVDUZRw81MSbWdLSoo42G6oN2pjqpO6+f3H8Tog0G18hKedQcfboLaR7fO
+         48VuMk6dwL7A499XrXMYffefyMpzWkWPjT9cEHZOHRIsdu2/WmLRzGHh7UnIoW6Y/z
+         GjrXr58L9BPvS6cXNkvgHufzLZaE8w/scfNhUwqDkJ26wVsm/tekQtJrP34Zc7pf3H
+         pybOR0vw79/04L8D+6OgIm9OMpe2PV1dNsBFD/h6/OPN3nFeoJMVPecyYEt6fg4rK3
+         cp4+mi+cXFnQPcEsXHzZSn/bn7Y3+vj5D+D33f2IprSbzT/K1clFRQyQMvKaZTznIJ
+         hXI4/VJTMbd0w==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5ee6f3a50000>; Mon, 15 Jun 2020 16:05:57 +1200
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id 991EE13EDE4;
+        Mon, 15 Jun 2020 16:05:56 +1200 (NZST)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id 4A8513411CF; Mon, 15 Jun 2020 16:05:57 +1200 (NZST)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     broonie@kernel.org, kdasu.kdev@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH 0/5] Improvements to spi-bcm-qspi
+Date:   Mon, 15 Jun 2020 16:05:52 +1200
+Message-Id: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an effort to eliminate the uninitialized_var() macro[1].
+This series of patches came from a single large Broadcom patch that
+implements drivers for a number of their integrated switch chips. Mostly
+this is just splitting the qspi driver into smaller parts and doesn't
+include much original from me.
 
-The use of this macro is the wrong solution because it forces off ANY
-analysis by the compiler for a given variable. It even masks "unused
-variable" warnings.
+Mark Tomlinson (5):
+  spi: bcm-qspi: Add support for setting BSPI clock
+  spi: bcm-qspi: Improve debug reading SPI data
+  spi: bcm-qspi: Do not split transfers into small chunks
+  spi: bcm-qspi: Make multiple data blocks interrupt-driven
+  spi: bcm-qspi: Improve interrupt handling
 
-Quoted from Linus[2]:
+ drivers/spi/spi-bcm-qspi.c | 189 ++++++++++++++++++++++---------------
+ drivers/spi/spi-bcm-qspi.h |   5 +-
+ 2 files changed, 115 insertions(+), 79 deletions(-)
 
-"It's a horrible thing to use, in that it adds extra cruft to the
-source code, and then shuts up a compiler warning (even the _reliable_
-warnings from gcc)."
-
-The gcc option "-Wmaybe-uninitialized" has been disabled and this change
-will not produce any warnnings even with "make W=1".
-
-[1] https://github.com/KSPP/linux/issues/81
-[2] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
-
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/ata/libata-scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
-index 435781a16875..fcb00f2825fe 100644
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -93,7 +93,7 @@ static ssize_t ata_scsi_park_show(struct device *device,
- 	struct ata_link *link;
- 	struct ata_device *dev;
- 	unsigned long now;
--	unsigned int uninitialized_var(msecs);
-+	unsigned int msecs;
- 	int rc = 0;
- 
- 	ap = ata_shost_to_port(sdev->host);
--- 
-2.25.4
+--=20
+2.27.0
 
