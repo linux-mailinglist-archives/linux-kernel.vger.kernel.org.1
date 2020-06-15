@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8181F903B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B69F1F9049
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgFOHrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:47:17 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:48212 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgFOHrQ (ORCPT
+        id S1728722AbgFOHsX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 03:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgFOHsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:47:16 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05F7lBsP016324;
-        Mon, 15 Jun 2020 02:47:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592207231;
-        bh=Ef11p/NIErwu7Zja6hoZoc9WK3zg6NXxXuzepAV2x8A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Tk6mZtCdP83acUfOMQ/xepnJquIYfZv+DOtBInH3MkiGFLl+4J9WLm02ppSs76to8
-         Oan6/9fALxXd9fblPXWVekNBsmFrEeZpQLzsxnS8GYQIVzGA2m1TF0b6TSKKWZpu9u
-         MnQOpCRpMEm2kvIdwebuv7NJy2/A8Id8Zx/RIVhY=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05F7lBa5107325
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 15 Jun 2020 02:47:11 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 15
- Jun 2020 02:47:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 15 Jun 2020 02:47:10 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05F7l8eF119410;
-        Mon, 15 Jun 2020 02:47:09 -0500
-Subject: Re: [PATCH 0/2] arm64: dts: ti: k3: add platforms chipid module nodes
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Dave Gerlach <d-gerlach@ti.com>, <linux-kernel@vger.kernel.org>,
+        Mon, 15 Jun 2020 03:48:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A6FC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:48:22 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jkjqg-0006Gk-PF; Mon, 15 Jun 2020 09:48:06 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jkjqe-000242-Ti; Mon, 15 Jun 2020 09:48:04 +0200
+Message-ID: <c544bcb8ea20dadcea68e22d33c160a713c7fe02.camel@pengutronix.de>
+Subject: Re: [PATCH 14/29] dt: Fix broken references to renamed docs
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
         Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200613164346.28852-1-grygorii.strashko@ti.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <8b8f7f92-571d-4a44-4858-7d79676a6375@ti.com>
-Date:   Mon, 15 Jun 2020 10:47:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org
+Date:   Mon, 15 Jun 2020 09:48:04 +0200
+In-Reply-To: <6866c0d6d10ce36bb151c2d3752a20eb5122c532.1592203542.git.mchehab+huawei@kernel.org>
+References: <cover.1592203542.git.mchehab+huawei@kernel.org>
+         <6866c0d6d10ce36bb151c2d3752a20eb5122c532.1592203542.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20200613164346.28852-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Grygorii,
+On Mon, 2020-06-15 at 08:46 +0200, Mauro Carvalho Chehab wrote:
+> Some files got renamed. Those were all fixed automatically by
+> 
+> 	./scripts/documentation-file-ref-check --fix
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt   | 2 +-
+>  Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt | 4 ++--
+>  Documentation/devicetree/bindings/display/imx/ldb.txt         | 4 ++--
+>  Documentation/devicetree/bindings/spi/qcom,spi-geni-qcom.txt  | 2 +-
+>  MAINTAINERS                                                   | 4 ++--
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt b/Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt
+> index 715047444391..10b8459e49f8 100644
+> --- a/Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt
+> +++ b/Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt
+> @@ -47,7 +47,7 @@ Required properties:
+>  			  &lsio_mu1 1 2
+>  			  &lsio_mu1 1 3
+>  			  &lsio_mu1 3 3>;
+> -		See Documentation/devicetree/bindings/mailbox/fsl,mu.txt
+> +		See Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+>  		for detailed mailbox binding.
+>  
+>  Note: Each mu which supports general interrupt should have an alias correctly
+> diff --git a/Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt b/Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt
+> index 5bf77f6dd19d..5a99490c17b9 100644
+> --- a/Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt
+> +++ b/Documentation/devicetree/bindings/display/imx/fsl-imx-drm.txt
+> @@ -68,7 +68,7 @@ Required properties:
+>    datasheet
+>  - clocks : phandle to the PRE axi clock input, as described
+>    in Documentation/devicetree/bindings/clock/clock-bindings.txt and
+> -  Documentation/devicetree/bindings/clock/imx6q-clock.txt.
+> +  Documentation/devicetree/bindings/clock/imx6q-clock.yaml.
+>  - clock-names: should be "axi"
+>  - interrupts: should contain the PRE interrupt
+>  - fsl,iram: phandle pointing to the mmio-sram device node, that should be
+> @@ -94,7 +94,7 @@ Required properties:
+>    datasheet
+>  - clocks : phandles to the PRG ipg and axi clock inputs, as described
+>    in Documentation/devicetree/bindings/clock/clock-bindings.txt and
+> -  Documentation/devicetree/bindings/clock/imx6q-clock.txt.
+> +  Documentation/devicetree/bindings/clock/imx6q-clock.yaml.
+>  - clock-names: should be "ipg" and "axi"
+>  - fsl,pres: phandles to the PRE units attached to this PRG, with the fixed
+>    PRE as the first entry and the muxable PREs following.
+> diff --git a/Documentation/devicetree/bindings/display/imx/ldb.txt b/Documentation/devicetree/bindings/display/imx/ldb.txt
+> index 38c637fa39dd..8e6e7d797943 100644
+> --- a/Documentation/devicetree/bindings/display/imx/ldb.txt
+> +++ b/Documentation/devicetree/bindings/display/imx/ldb.txt
+> @@ -30,8 +30,8 @@ Required properties:
+>                  "di2_sel" - IPU2 DI0 mux
+>                  "di3_sel" - IPU2 DI1 mux
+>          The needed clock numbers for each are documented in
+> -        Documentation/devicetree/bindings/clock/imx5-clock.txt, and in
+> -        Documentation/devicetree/bindings/clock/imx6q-clock.txt.
+> +        Documentation/devicetree/bindings/clock/imx5-clock.yaml, and in
+> +        Documentation/devicetree/bindings/clock/imx6q-clock.yaml.
+>  
+>  Optional properties:
+>   - pinctrl-names : should be "default" on i.MX53, not used on i.MX6q
 
-On 13/06/2020 19.43, Grygorii Strashko wrote:
-> Hi Tero,
->=20
-> Hence k3 platforms chipid module driver was merged, there is follow up =
-series
-> to add corresponding DT chipid nodes.=20
->=20
-> [1] https://lkml.org/lkml/2020/5/29/979
->=20
-> Grygorii Strashko (2):
->   arm64: dts: ti: k3-am65-wakeup: add k3 platforms chipid module node
->   arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid module n=
-ode
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Can you also send a patch to enable the socinfo build?
-
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 8dd05b2a925c..1d3710e3626a 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -98,6 +98,7 @@ config ARCH_K3
- 	select TI_SCI_PROTOCOL
- 	select TI_SCI_INTR_IRQCHIP
- 	select TI_SCI_INTA_IRQCHIP
-+	select TI_K3_SOCINFO
- 	help
- 	  This enables support for Texas Instruments' K3 multicore SoC
- 	  architecture.
-
-With this added:
-Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
->=20
->  arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 5 +++++
->  arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 5 +++++
->  2 files changed, 10 insertions(+)
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+regards
+Philipp
