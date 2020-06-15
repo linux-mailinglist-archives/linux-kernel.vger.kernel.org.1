@@ -2,135 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969241F9C7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C90D1F9CAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgFOQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgFOQC4 (ORCPT
+        id S1730865AbgFOQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:10:55 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31704 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728585AbgFOQKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:02:56 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E5DC061A0E;
-        Mon, 15 Jun 2020 09:02:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l26so96162wme.3;
-        Mon, 15 Jun 2020 09:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yfcCKaucoA6v6PXTOyrVw4fPVNJuLtSZLZ0wP0tPQdc=;
-        b=nMaO84WgfekrZjOPPeI/Qs+fhmD3kK6QK8UbK8VI5oK2KG0/7nRjpO7OIHpN9lHE4x
-         /AhKOE+eVaKigf0qA+g/acWwm52keZ1gLIoLzMaPoFsNjdcdEQcx62pD6kFfcBt3Z4bw
-         NtFaI8s9dgxL3iWi7JFNpMQicBvZLF404PrqhGGwdyTduzmvGmL2O6r6j2vZf9Kh7cKy
-         oFsXTKv64RPbBzR70MJqnmJqpvt7j6N0kAsaQNbvdt98j1jId9nDmjmkZ/Y7E/6vdXm3
-         /8re1u0jhzb3ybokeDFuMj3l92003GsVqIdgoXsp+1x6+HlgEnPjczOVziajXKLOq6zN
-         AW/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yfcCKaucoA6v6PXTOyrVw4fPVNJuLtSZLZ0wP0tPQdc=;
-        b=tl+CVGYJ1bc65sY4WoZxU7590jBWLGpzYMdnR4jD0bv/qdmXz0Q7A2+gagpUVj6BGG
-         BJp3A1OaMJs13x8V/uqY0q9qYBNXhK4Z+riW7Fow9ejvvQ4sGVeLRBqzS2rpzYxRQY4V
-         zN7qEX5DTq9aQaHiFMSX+xgi51CF4KKM7Ny500i8MyLBkinRJh7ZqlSx/4T/DcCsXg75
-         JvilschDvLGT3bPIR6GwJpnLdNj9BzvvrqbAAs2jpB3JqtJilgSKLyzW8pPfWmDFoUxE
-         mkMZ87lTIl84t6xHwTJ0F8Ks6FeoFCGAB1NJlWTeCYPM7HO2i5D/ChjCHubbs3iHdf7c
-         0InQ==
-X-Gm-Message-State: AOAM533f/O0ri5L2UGJtTtluicauMYuBc7HBZrJUYU8Nt+yDFyysNNOA
-        hBfIrSVBLGmHROi/hlmVIveuFMMo
-X-Google-Smtp-Source: ABdhPJzCdEwG6IrGDXzZQRMuLrV2Nb8fggbZtUAsd8+PsEdrc959sKHVN8NW8U/fv5foole+SsGaTg==
-X-Received: by 2002:a7b:c204:: with SMTP id x4mr50748wmi.22.1592236973798;
-        Mon, 15 Jun 2020 09:02:53 -0700 (PDT)
-Received: from [192.168.43.243] ([5.100.193.151])
-        by smtp.gmail.com with ESMTPSA id w10sm25207741wrp.16.2020.06.15.09.02.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 09:02:53 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ebiederm@xmission.com
-References: <cover.1592206077.git.asml.silence@gmail.com>
- <9b90fd1d-c60d-523a-b6b5-6c960ae52cc6@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 0/2] don't use pid for request cancellation
-Message-ID: <d710004e-78be-67eb-283b-46949f34ecef@gmail.com>
-Date:   Mon, 15 Jun 2020 19:01:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Mon, 15 Jun 2020 12:10:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592237453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gO0KIzYd49wn9s7qVa6jSasKGeMas6UA1ZI/tcFRyJ0=;
+        b=dwu4BoZbKEeJlIN/Yse424GWqVHib3V0fXb07ayK0xKTmHf1mGfVCVZgrFw744tOOe/KGp
+        7nBzG1GDQyA5bbBKWhnc7a7WEl9d5cZvgwXHtaJvB6poM4dHYca1EUXmGu1utnDYXpcgAW
+        ZfeZJrl+j2SYCzfai16ImEcfwzoCrRw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-imWPGdcsOC62zydqkXShdg-1; Mon, 15 Jun 2020 12:10:16 -0400
+X-MC-Unique: imWPGdcsOC62zydqkXShdg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 457689D6DB4;
+        Mon, 15 Jun 2020 16:02:25 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-2.rdu2.redhat.com [10.10.115.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE1405C1C3;
+        Mon, 15 Jun 2020 16:02:24 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 4D5FA220628; Mon, 15 Jun 2020 12:02:24 -0400 (EDT)
+Date:   Mon, 15 Jun 2020 12:02:24 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: async_pf: change
+ kvm_setup_async_pf()/kvm_arch_setup_async_pf() return type to bool
+Message-ID: <20200615160224.GG351167@redhat.com>
+References: <20200615121334.91300-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <9b90fd1d-c60d-523a-b6b5-6c960ae52cc6@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615121334.91300-1-vkuznets@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2020 18:04, Jens Axboe wrote:
-> On 6/15/20 1:33 AM, Pavel Begunkov wrote:
->> Cancel requests of an extiting task based on ->task address. As
->> reported by Eric W. Biederman, using pid for this purpose is not
->> right.
->>
->> note: rebased on top of "cancel all" patches
+On Mon, Jun 15, 2020 at 02:13:34PM +0200, Vitaly Kuznetsov wrote:
+> Unlike normal 'int' functions returning '0' on success, kvm_setup_async_pf()/
+> kvm_arch_setup_async_pf() return '1' when a job to handle page fault
+> asynchronously was scheduled and '0' otherwise. To avoid the confusion
+> change return type to 'bool'.
 > 
-> Looks good, and I had the same thought of not grabbing a ref to the
-> task for the cancel case where we don't need to dereference it.
+> No functional change intended.
+> 
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-I'm afraid of ABA problem, but this particular case @current shouldn't
-go away until ->close is finished.
+Looks good to me. Nobody checks the error from kvm_arch_setup_async_pf().
+Callers only seem to care about success or failure at this point of time,
+and they fall back to synchorounous page fault upon failure. This 
+could be changed back once somebody needs specific error code.
 
-I was thinking about not get_task() it at all, but it would _at least_
-need a way to add a callback on exit of tasks using io_uring to
-cancel everything related there. Similarly to how it's done for
-work->files using ->close().
+Acked-by: Vivek Goyal <vgoyal@redhat.com>
 
--- 
-Pavel Begunkov
+Vivek
+
+> ---
+>  arch/s390/kvm/kvm-s390.c | 20 +++++++++-----------
+>  arch/x86/kvm/mmu/mmu.c   |  4 ++--
+>  include/linux/kvm_host.h |  4 ++--
+>  virt/kvm/async_pf.c      | 16 ++++++++++------
+>  4 files changed, 23 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index d47c19718615..7fd4fdb165fc 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -3954,33 +3954,31 @@ bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu)
+>  	return true;
+>  }
+>  
+> -static int kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu)
+> +static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu)
+>  {
+>  	hva_t hva;
+>  	struct kvm_arch_async_pf arch;
+> -	int rc;
+>  
+>  	if (vcpu->arch.pfault_token == KVM_S390_PFAULT_TOKEN_INVALID)
+> -		return 0;
+> +		return false;
+>  	if ((vcpu->arch.sie_block->gpsw.mask & vcpu->arch.pfault_select) !=
+>  	    vcpu->arch.pfault_compare)
+> -		return 0;
+> +		return false;
+>  	if (psw_extint_disabled(vcpu))
+> -		return 0;
+> +		return false;
+>  	if (kvm_s390_vcpu_has_irq(vcpu, 0))
+> -		return 0;
+> +		return false;
+>  	if (!(vcpu->arch.sie_block->gcr[0] & CR0_SERVICE_SIGNAL_SUBMASK))
+> -		return 0;
+> +		return false;
+>  	if (!vcpu->arch.gmap->pfault_enabled)
+> -		return 0;
+> +		return false;
+>  
+>  	hva = gfn_to_hva(vcpu->kvm, gpa_to_gfn(current->thread.gmap_addr));
+>  	hva += current->thread.gmap_addr & ~PAGE_MASK;
+>  	if (read_guest_real(vcpu, vcpu->arch.pfault_token, &arch.pfault_token, 8))
+> -		return 0;
+> +		return false;
+>  
+> -	rc = kvm_setup_async_pf(vcpu, current->thread.gmap_addr, hva, &arch);
+> -	return rc;
+> +	return kvm_setup_async_pf(vcpu, current->thread.gmap_addr, hva, &arch);
+>  }
+>  
+>  static int vcpu_pre_run(struct kvm_vcpu *vcpu)
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 979a7e1c263d..3dd0af7e7515 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4045,8 +4045,8 @@ static void shadow_page_table_clear_flood(struct kvm_vcpu *vcpu, gva_t addr)
+>  	walk_shadow_page_lockless_end(vcpu);
+>  }
+>  
+> -static int kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> -				   gfn_t gfn)
+> +static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> +				    gfn_t gfn)
+>  {
+>  	struct kvm_arch_async_pf arch;
+>  
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 62ec926c78a0..9edc6fc71a89 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -211,8 +211,8 @@ struct kvm_async_pf {
+>  
+>  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu);
+>  void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu);
+> -int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> -		       unsigned long hva, struct kvm_arch_async_pf *arch);
+> +bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> +			unsigned long hva, struct kvm_arch_async_pf *arch);
+>  int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
+>  #endif
+>  
+> diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
+> index 45799606bb3e..390f758d5a27 100644
+> --- a/virt/kvm/async_pf.c
+> +++ b/virt/kvm/async_pf.c
+> @@ -156,17 +156,21 @@ void kvm_check_async_pf_completion(struct kvm_vcpu *vcpu)
+>  	}
+>  }
+>  
+> -int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> -		       unsigned long hva, struct kvm_arch_async_pf *arch)
+> +/*
+> + * Try to schedule a job to handle page fault asynchronously. Returns 'true' on
+> + * success, 'false' on failure (page fault has to be handled synchronously).
+> + */
+> +bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> +			unsigned long hva, struct kvm_arch_async_pf *arch)
+>  {
+>  	struct kvm_async_pf *work;
+>  
+>  	if (vcpu->async_pf.queued >= ASYNC_PF_PER_VCPU)
+> -		return 0;
+> +		return false;
+>  
+>  	/* Arch specific code should not do async PF in this case */
+>  	if (unlikely(kvm_is_error_hva(hva)))
+> -		return 0;
+> +		return false;
+>  
+>  	/*
+>  	 * do alloc nowait since if we are going to sleep anyway we
+> @@ -174,7 +178,7 @@ int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	 */
+>  	work = kmem_cache_zalloc(async_pf_cache, GFP_NOWAIT | __GFP_NOWARN);
+>  	if (!work)
+> -		return 0;
+> +		return false;
+>  
+>  	work->wakeup_all = false;
+>  	work->vcpu = vcpu;
+> @@ -193,7 +197,7 @@ int kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  
+>  	schedule_work(&work->work);
+>  
+> -	return 1;
+> +	return true;
+>  }
+>  
+>  int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu)
+> -- 
+> 2.25.4
+> 
+
