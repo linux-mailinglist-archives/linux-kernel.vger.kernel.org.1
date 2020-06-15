@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2D71F8BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210151F8BE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgFOATa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 20:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S1728115AbgFOATU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 20:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbgFOATR (ORCPT
+        with ESMTP id S1727954AbgFOATS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 20:19:17 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67657C08C5C2;
-        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id gl26so15498545ejb.11;
-        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
+        Sun, 14 Jun 2020 20:19:18 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F35AC05BD43;
+        Sun, 14 Jun 2020 17:19:18 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id k11so15515971ejr.9;
+        Sun, 14 Jun 2020 17:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=79mtyeZRq2M0mbofzOHg0zNB78sTVjll89dsFzzw1/A=;
-        b=NHpYiO0pJV/aIO/FAwrExUQ0w2HuXfi6XgL9WspR+elldDdqxgXm2xWfHM8w6/vb6Q
-         7FJu91sbuk7hjeb0I3TzkkOJz+KUJ0GDpJvVngCm/D3UNV2DaKq6d+vAV6XSU0r5NmgM
-         7hYbFtX57qXclSH2Qs3KF/6BtS/RQ687VLqZ8yOnMpJ67YMPN78A/bXYzYOlaJ5SL5cP
-         KVsp5uyUC6wPgFf9kCAVQOHfZWq+lJXpfnd5yxUuTe/ULJKpvdVf446HbXeWYpQRRKMZ
-         aaxrjXBbjF58XPeweVCjESM6LDz8rKExO24nwH9H6uHP7PhyiS8gz1jjg9z2RPz9Bghx
-         goMw==
+        bh=sMTnpuFTK9jMtHgfDYfsLFnZ16e3Qp2YKWz6Fg/OOQQ=;
+        b=TMNNMnFOmmen27sobkCbO/xSOzIoROxVXssX4s+9qM9gKFKpBNvv4poHe354kO8kXM
+         x+NT1ijS7ZTZkGoMohxBwyFdzGESdLYqQ58GeUuuOR2pXScfC6b58wpDHY0H+2QZ814d
+         +u104JG+82FO24SGOu/jkVTmg2FMv0LHg4orVIE4qK971JwvT5QzI31rSa/JDj5AK/d5
+         USVTLKwKjIhxH7HUdYc9o8e4SbuTMhwy5J3rt10eSd8q6LhjSSyYYDfJ0wbld9QdvUvH
+         3/Z4s7gCKFlIWv82r6BxlZMGM9A+lXAexHsyxJet1K8NTtU8VoyNhGfWs7LnTRqG6cSl
+         BM8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=79mtyeZRq2M0mbofzOHg0zNB78sTVjll89dsFzzw1/A=;
-        b=Pn/C5h4dgNMGMX6EWR0fEpILSyEY/AYFOByfGK0xVcY3RknOG9k1XS2LsiAAx+CKLD
-         eFudfZtBlF25QO+SBClmzw246eFIZvkNnmmh0iWtGBINXTSahYGpR18T27mddoPxyPV9
-         dZnxYEi3KckbtJf1JmH5UmRCw1HE20FslezaeUlULFn6jMLuwYktj7GAy3jpH9Lb0b6s
-         m8odTbyIQ97uwzXTu92qL7Umb0emU+3T5UPIVo2EMZ0x9W2r5cGgl14+KFMTLVm37VHJ
-         m0tmrUO30+/huscrLU6WF+lnrUhj/k17BI6KzovcZmn7HUABvvbxId0JKKLFz6gUEKo9
-         zmWw==
-X-Gm-Message-State: AOAM53016Wl2w8+zST2M4qjQQx4ljAzlDK7cb3+T8tRgNapdLtpn0Bk2
-        7PBsM/0rmyBcpP4ebyuyAUg=
-X-Google-Smtp-Source: ABdhPJyWxRtGqOVWJHbPHm8CKtWRtRgzWemc3OYy+Bd9RL/zDPoXbrCJYveSipGIWh3fX1pGc90CQw==
-X-Received: by 2002:a17:906:5283:: with SMTP id c3mr21898256ejm.22.1592180356065;
-        Sun, 14 Jun 2020 17:19:16 -0700 (PDT)
+        bh=sMTnpuFTK9jMtHgfDYfsLFnZ16e3Qp2YKWz6Fg/OOQQ=;
+        b=ps8eBED30/ywDXubfwVkxr971piXOurDkZ2L6by6Qt417JnI4QqhDk6wWzeN4Jsxkz
+         OUw0tyY9yGwkVCjioyv0gro9BMX38iHaf1j+1hFFOT5oGt/92+Zg4GjQldS6wjdkA9yf
+         o+9tV+VC9Mq22SdANrq78bnggHy4yxGqFUhB/lzEbLNt5hXC0LTGxW2uj5QfDqOscf6x
+         QaPZz1CIhUimmlMDrihEOvEKDZB2io3jY4jAF/NgnIB/tr+JSsarUA1l0853yxSIFHU2
+         t9o34Q0ctvJeYlPh16jQLlqzrWXogMcvrGoDHpqg9EwukCL95ABYralyU/Ipm40+YnNT
+         5nIw==
+X-Gm-Message-State: AOAM531v7gHotoDAvm4v6WTHRp7YgSaiMxkOLLwf4wdQjWb//PB9qjmT
+        JPlxAhHJeL+U8HKlj2vwa7B2sCVU
+X-Google-Smtp-Source: ABdhPJynU7JATluvS5IkONOy2HvGg1e/Xs2GAOvxN6KxiJXIZWmcUHYO6vytc6SvZDhpg+KBsFxMHw==
+X-Received: by 2002:a17:906:4f87:: with SMTP id o7mr3547346eju.233.1592180357346;
+        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id m30sm7450666eda.16.2020.06.14.17.19.14
+        by smtp.gmail.com with ESMTPSA id m30sm7450666eda.16.2020.06.14.17.19.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 17:19:15 -0700 (PDT)
+        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] dt-bindings: arm: actions: Document RoseapplePi
-Date:   Mon, 15 Jun 2020 03:19:10 +0300
-Message-Id: <40f7d54f9502f0d33f2dcf18b02c6de0d55d2ecb.1592123160.git.cristian.ciocaltea@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 4/4] arm: dts: owl-s500: Add RoseapplePi
+Date:   Mon, 15 Jun 2020 03:19:11 +0300
+Message-Id: <2d12521d196e2c08a30aacd0ab20d93593f94707.1592123160.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
@@ -67,26 +67,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define compatible strings for RoseapplePi, a SBC manufactured
-in Taiwan, based on Actions Semi S500 reference design.
+Add a Device Tree for the RoseapplePi SBC.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/actions.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/Makefile                 |  1 +
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 47 ++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+ create mode 100644 arch/arm/boot/dts/owl-s500-roseapplepi.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
-index ace3fdaa8396..787cd1b4f26c 100644
---- a/Documentation/devicetree/bindings/arm/actions.yaml
-+++ b/Documentation/devicetree/bindings/arm/actions.yaml
-@@ -18,6 +18,7 @@ properties:
-           - enum:
-               - allo,sparky # Allo.com Sparky
-               - cubietech,cubieboard6 # Cubietech CubieBoard6
-+              - roseapplepi,roseapplepi # RoseapplePi.org RoseapplePi
-           - const: actions,s500
-       - items:
-           - enum:
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index e8dd99201397..d0712e7275da 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -856,6 +856,7 @@ dtb-$(CONFIG_ARCH_ORION5X) += \
+ dtb-$(CONFIG_ARCH_ACTIONS) += \
+ 	owl-s500-cubieboard6.dtb \
+ 	owl-s500-guitar-bb-rev-b.dtb \
++	owl-s500-roseapplepi.dtb \
+ 	owl-s500-sparky.dtb
+ dtb-$(CONFIG_ARCH_PRIMA2) += \
+ 	prima2-evb.dtb
+diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+new file mode 100644
+index 000000000000..c61fbaa3821e
+--- /dev/null
++++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Roseapple Pi
++ *
++ * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
++ */
++
++/dts-v1/;
++
++#include "owl-s500.dtsi"
++
++/ {
++	compatible = "roseapplepi,roseapplepi", "actions,s500";
++	model = "Roseapple Pi";
++
++	aliases {
++		serial2 = &uart2;
++	};
++
++	chosen {
++		stdout-path = "serial2:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x80000000>; /* 2GB */
++	};
++
++	uart2_clk: uart2-clk {
++		compatible = "fixed-clock";
++		clock-frequency = <921600>;
++		#clock-cells = <0>;
++	};
++};
++
++&twd_timer {
++	status = "okay";
++};
++
++&timer {
++	clocks = <&hosc>;
++};
++
++&uart2 {
++	status = "okay";
++	clocks = <&uart2_clk>;
++};
 -- 
 2.27.0
 
