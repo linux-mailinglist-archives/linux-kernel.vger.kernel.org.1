@@ -2,90 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121EE1FA370
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37B11FA372
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgFOWX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:23:27 -0400
-Received: from ozlabs.org ([203.11.71.1]:50137 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgFOWXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:23:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49m5Sm5fqRz9sR4;
-        Tue, 16 Jun 2020 08:23:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592259801;
-        bh=EFHHX4gSso4C1okvQV3vD2uZZPY/0g4jxOaIc3AwBvE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=p5g9OZ21x9+fIxEbcPa05l7FFWpVyBObXE8mvj1w8zCgWv8uhAFizCxUqPx5QKv1Y
-         zbmSSmEs4wjkiCfLNxkwaSLgYMITRjlDIJ/XIpKjKsHFaadmmzGLzJIdLm2jmjFV0u
-         UP2OT8tnAp+rptrdAniYb4L/AxSoSKI3oSNsswcqdUTP/Oj8GVezpPAb8Q+JKy4oOZ
-         e8GD8r2dbitO4/7TTs+D9G7XEDjVQn0ng/iLwbgbjcn4VC3VDme7yHOBv2VgtHbWvN
-         H7IaLG/lKswyhEJGvyA2ttIb3lyavlcpiwWejXH2RcGoteN25YdnL5rBj8YkFcAWnh
-         RBZfeQ78rguXg==
-Date:   Tue, 16 Jun 2020 08:23:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>
-Subject: linux-next: Fixes tag needs some work in the nand tree
-Message-ID: <20200616082312.76d03fe8@canb.auug.org.au>
+        id S1726551AbgFOWX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:23:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36365 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726314AbgFOWXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 18:23:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592259800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rD6jqofe19p826ewHi4IKOMv32t8zGceLQG6Qi0KA6A=;
+        b=D9Jiz/e4jY6C0Zv0VytEiZPchVSQA1Ws1hArjQI3wseoLnQYZHYojCwOBq/VVLpWp8dFTQ
+        PJo7W5xjtxLCucoOxTZK8XMSo+ScsVvBpTqzK+NRVed34bzJJs2JXq+ScaJFGd6cHTGSM7
+        qALBRz5qG2Z1BWj7OEF38FMOJIAqQX4=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-C6Jnvll-Mtmobh4ovnxseQ-1; Mon, 15 Jun 2020 18:23:18 -0400
+X-MC-Unique: C6Jnvll-Mtmobh4ovnxseQ-1
+Received: by mail-qt1-f198.google.com with SMTP id l19so15184536qtp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:23:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rD6jqofe19p826ewHi4IKOMv32t8zGceLQG6Qi0KA6A=;
+        b=ljbKTnldJC5OZ6pzoMosxBOjp6Me2/Pddp9XQH7+vGyYW2Yeil1k9bYkZtB5Q3F1PM
+         VzQ9yLWk4WZ64D/cv44G7EC1HxYOdXaV0w86HBANA+XCqP2WsN5Eh8ezGtITkfYAgNeC
+         +HRcC7GAk+2v+B5usNIhIit4c7z49PXU+oCblH4Om/acV+QO97fDl0n0R7TC2CBwrPD1
+         lvzxHxfFIhOyv3S8LSCsG0g26eK7Soh3bI2I7hs+hFn/6L1V7njVP2XJLEbzmmI1IIAl
+         DwdgywvfuBvfHvMUUh4VmsJTCeTc/v5ULrz7zOOjko9W/C6mLH6Dv8xHBGztKsnhfm2W
+         4Vqw==
+X-Gm-Message-State: AOAM533TFBwuVbgdc1bgt6zAe++kvTzDOipue0bvhmLLcKVw1JZtfgfx
+        pXAbNCkZZAyJmWcAWH8T1YEhsoa1aGXnMYCQzBqx9DZ9FwTelHVxOclAMLB0EXpDwmHCiGjymYS
+        fOFtVDU0iLAJBcj+eN92SjUU4
+X-Received: by 2002:ad4:4c0d:: with SMTP id bz13mr27999615qvb.164.1592259797818;
+        Mon, 15 Jun 2020 15:23:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxoYFbvQP7f745RiHe5XpfLpFaM5rWW6QJeCE9RJ1UwqB//J+ePvEAngR737a2w3RSMKlY7Gw==
+X-Received: by 2002:ad4:4c0d:: with SMTP id bz13mr27999595qvb.164.1592259797560;
+        Mon, 15 Jun 2020 15:23:17 -0700 (PDT)
+Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id k7sm12645910qth.10.2020.06.15.15.23.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 15:23:17 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org
+Subject: [PATCH 21/25] mm/sparc32: Use mm_fault_accounting()
+Date:   Mon, 15 Jun 2020 18:23:16 -0400
+Message-Id: <20200615222316.8551-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
+References: <20200615221607.7764-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/w6n4N.YcXZH5sXQXjs=GiyG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/w6n4N.YcXZH5sXQXjs=GiyG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Use the new mm_fault_accounting() helper for page fault accounting.
 
-Hi all,
+Avoid doing page fault accounting multiple times if the page fault is retried.
 
-In commit
+CC: David S. Miller <davem@davemloft.net>
+CC: sparclinux@vger.kernel.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/sparc/mm/fault_32.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-  350e8dab0868 ("mtd: rawnand: qcom: avoid write to unavailable register")
+diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
+index f6e0e601f857..299e6e241a1c 100644
+--- a/arch/sparc/mm/fault_32.c
++++ b/arch/sparc/mm/fault_32.c
+@@ -167,7 +167,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	unsigned long g2;
+ 	int from_user = !(regs->psr & PSR_PS);
+ 	int code;
+-	vm_fault_t fault;
++	vm_fault_t fault, major = 0;
+ 	unsigned int flags = FAULT_FLAG_DEFAULT;
+ 
+ 	if (text_fault)
+@@ -192,9 +192,6 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	 */
+ 	if (pagefault_disabled() || !mm)
+ 		goto no_context;
+-
+-	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+-
+ retry:
+ 	down_read(&mm->mmap_sem);
+ 
+@@ -236,6 +233,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	 * the fault.
+ 	 */
+ 	fault = handle_mm_fault(vma, address, flags);
++	major |= fault & VM_FAULT_MAJOR;
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+@@ -251,15 +249,6 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	}
+ 
+ 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+-		if (fault & VM_FAULT_MAJOR) {
+-			current->maj_flt++;
+-			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
+-				      1, regs, address);
+-		} else {
+-			current->min_flt++;
+-			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
+-				      1, regs, address);
+-		}
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+@@ -273,6 +262,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
++	mm_fault_accounting(current, regs, address, major);
+ 	return;
+ 
+ 	/*
+-- 
+2.26.2
 
-Fixes tag
-
-  Fixes: d49076a1347ea ("mtd: nand: qcom: Support for IPQ8074 QPIC NAND con=
-troller")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: dce84760b09f ("mtd: nand: qcom: Support for IPQ8074 QPIC NAND contro=
-ller")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/w6n4N.YcXZH5sXQXjs=GiyG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7n9NAACgkQAVBC80lX
-0GyU0Af9H/r/NzyiEkJgL9IVNS+qrM60yo5BIeqGCXtJyD4Re+ujxmq4qYOiV2Jl
-7mHxZ/aS2dH55DoHsMsuoJ+B/r8buO+c1TepYqrgZeEBu/ewz+SNngn3iP05A5eh
-AF8ujNNhMQLYcb8jG1zbxEEcype/kgNp8PS9siRcecPuHxrioZr0wHsA3N1114Kl
-G7MZDNRpYw2FDyvu4r5VrAmrAIjbeHrWAz8DiNXZkRoyJu3ecP15qXafY75+ALVF
-eUzg1nrucTUK2HTlfEuvdW2yAI0bTE5h5YGtmWNNhYicU2oPBQeZ95xTrAgubcP5
-KlUzQchf/TP8kyiFzY3nBd50f9QB+w==
-=veyG
------END PGP SIGNATURE-----
-
---Sig_/w6n4N.YcXZH5sXQXjs=GiyG--
