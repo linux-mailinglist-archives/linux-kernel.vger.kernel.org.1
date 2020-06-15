@@ -2,246 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A201F9664
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFEC1F9670
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgFOMRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:17:05 -0400
-Received: from mail-eopbgr760047.outbound.protection.outlook.com ([40.107.76.47]:5601
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729836AbgFOMRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:17:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AO1pMwKSyQHpWSTu9jpWY2LdE5xoYnJBoIcBpuIv0PyclGYPHHvNneqZ3V0Y1BjOoMrKi6OTR1TT0bOKrCfdwvs41d/VFGlt6T8Hb0b9mzQLTVNvTeTRPDJrRXvv4bl7JZa+Wxgm2Itzdacj33WCme+BvS1FbUNlPy+HNGaNrsRGZ2VmWSOCjO/RMo+Vh7dWefZkg/ByoMbLeXPFJ/rb7EsUHwMYus6u9NNd1G2h08Kb5Jfo7I+ACuhTojlTXdm234YwaJ+WfTM49XJIy7sUX3F6rjSIlruid9sKEv0wuwcHTSH7sv+UhJsung4j5RmfEyOlozhzdpNw+ECHs02oOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cMyxvV2FGeT9TepR4Hegun/+h4YMEw7pyq/mA4nY0+U=;
- b=XuaD2c18idH6OmrTHnw0YVsz/fa6zy9m558G0Q7oEV+xxpPj9d2WFDE4ieS8cd71vk4NyW+LV+/7nCdrR7vRJ2cCb22iMfUOjBWIrStjuB+MJPym8m0Bfpi4KKO7efTrAkMX0/aXAUoisvO/ojEWRdvHKS4fixmQt3hsd9EuKKuFYfhJTkrCs/+pySofqyHjaqfmwZ8lxuly7TGlfW7bRQxW/nrjU0AF88u8IiHvyU+nphPqg6pnTjtdHwRKg5Fv0DFpdC9MHOC/bBpnY2hK0ebVYBW+u+se8GGjvu8f9BmU/LpYmA9nZibccNMZp4ypkDlD5iUqsMDb7IRuRruv8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cMyxvV2FGeT9TepR4Hegun/+h4YMEw7pyq/mA4nY0+U=;
- b=VprH3CbKddnoL+7R+e4FhPWjKr+MTE2t/a92vqbGBHXZn1aNpG5MpxyaI1rgqBz8Opwpn+5eDXo6Lg01jyd8dlmBySd8vdCfLrkTYNqbVdfXZRRzsDuV4VOU8PDv9GQ5e3LEjVFi/jn+JQaVAjVgXOOhD/+IsFe5r1McPA19SjQ=
-Authentication-Results: 8bytes.org; dkim=none (message not signed)
- header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM6PR12MB4435.namprd12.prod.outlook.com (2603:10b6:5:2a6::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3088.18; Mon, 15 Jun 2020 12:17:01 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::c1bc:8ef9:9ba3:99bf]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::c1bc:8ef9:9ba3:99bf%10]) with mapi id 15.20.3088.029; Mon, 15 Jun
- 2020 12:17:01 +0000
-Subject: Re: [PATCH 2/2] iommu/amd: Move Kconfig and Makefile bits down into
- amd directory
-To:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     Joerg Roedel <joro@8bytes.org>
-References: <20200612231100.293734-1-jsnitsel@redhat.com>
- <20200612231100.293734-3-jsnitsel@redhat.com>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <357cfad9-75d5-f7cb-93e6-f85e6056c309@amd.com>
-Date:   Mon, 15 Jun 2020 19:16:50 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
-In-Reply-To: <20200612231100.293734-3-jsnitsel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: KU1PR03CA0001.apcprd03.prod.outlook.com
- (2603:1096:802:18::13) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        id S1729734AbgFOMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:25:33 -0400
+Received: from mout.web.de ([217.72.192.78]:40593 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbgFOMZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:25:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1592223922;
+        bh=SLW0K5XcsPn+JHgObFUtlXKUjuYrOty55OQmV6+9D5Q=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=iuH9H/eha4NUEPipKimZYJffJnmsaxACAOX7waSYRXeF4IQkw0Otm2KeANW03HBJO
+         O4xdDiAwaG+QB+FQWBIviMbCR3W5qKMm7GkgLN8Eyx3x+M3N1i/d4nsS4X9ZUdiSMR
+         E7f4XMWFNcv0VpJfMaFj6c9zV/y2aK9FZvh19Dxw=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.107.236]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Lheqz-1j73Z24AJF-00mpMI; Mon, 15
+ Jun 2020 14:25:22 +0200
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] coccinelle: misc: add array_size_dup script to detect
+ missed overflow checks
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Message-ID: <180ac25d-d4de-41c3-3159-835e10cfc809@web.de>
+Date:   Mon, 15 Jun 2020 14:25:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (165.204.80.7) by KU1PR03CA0001.apcprd03.prod.outlook.com (2603:1096:802:18::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.7 via Frontend Transport; Mon, 15 Jun 2020 12:16:59 +0000
-X-Originating-IP: [165.204.80.7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 78847aa5-3fd5-4b26-c467-08d8112601df
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4435:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB44357BA1B6074014D9CEC1F3F39C0@DM6PR12MB4435.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-Forefront-PRVS: 04359FAD81
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TTpeVAuHUVggxIFu65i1abImw42wPJeV8Ryh3qRaVGN83Com1bKl541w2DvpFlRpw/ynOjsCTJw8bzdjjBPXO202orRlVPB7O6CVWF3FkokGMx2mjW/Bs8CQrhKTtd7NTsigW8J+uB+yXnGQZKdiNT+7SvUs4ArNLqpug8lqGJ5cGGseMMwqT3CH3jdci3UGBVEthrGjr42CUdZEYkfViIJnghvBOXT9wwHP8xfHuvc6c2xu6c8tehYfPreYGrtCarrVlteQpaOKBQkV/AKhsPydhn8ASYmiJ5w9hwsCWsBGn+TEOR2jszfSoJ1+SnxtlbBXpIxlvcXs8wH/rMOTZs7RurzL0Dc4yAqfnfz4xfmXTP7iQPQZQCJWpqImAqpnb9cQV7lZpwqkXkZIf+bVnYpyYkc45OHWGTjxh65ptTTn5yUwtrgrp8iguDNNUCfz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(8676002)(83380400001)(5660300002)(6666004)(478600001)(8936002)(4326008)(2906002)(6506007)(53546011)(316002)(36756003)(66476007)(26005)(66946007)(66556008)(31686004)(86362001)(956004)(52116002)(6512007)(31696002)(44832011)(6486002)(2616005)(16526019)(186003)(141333003)(181643002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: lsh2IaLyut6kJaO596EU6GtmO0/0SpugbdN2p9KOHNzKSmU/fHMM5VHM4waRkdHDKeMeXczICW5w4CqkbMbztrWxBjtSFqCfM0M6fSopWiaYK2NJMH9l1MTnWuqAn01Dw+OkdLeWN4wCCvBNjiRRB6ladizkoG+qI8sYRqDH2Ae7YtMDE2vtSS2DmJddcvp2h0inWRbItCaATNBYejh8exOnNooTsO9j2ZfZYiIMBQCVSW2z2/opJcHhPJsWBxCSPLgqMtkUDBDTL5YTvTwUzjsU9aZudPa8xe7ellaxJaWiS3II64rtmoc/GisFX6yHhGFXQ7IF6dIAtkmea1mLDQe9d6XoW8gOJHFr8uU/oaX4FvDfTh+y/WgKP/OoE424/Ymgw3QIlWeZUx5pRd/JXhuRq0dsYARWKr/qhPKT8M4ThDfivTn7c5GVYEe1Qii2G3tfnixhuc1rLlKmyGXPYz8FKt+kV8qocsZbmmmSEy4=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78847aa5-3fd5-4b26-c467-08d8112601df
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2020 12:17:01.4564
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zbgyCUmG7Y2qnmHXF6AoXicry1OUTIUcAfKtW8vyp6+2Ts9A1b7uWNQg/j4q4Q4jJOvJ1Rp1GZLZxKqyFk9CQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4435
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/BotToIf8alCFZpo2hh7sAs8CshL3zewrYhKP1h9i3Odtnohtdx
+ L9TFmGNueB0Aim3B2aAJObBT1Rvic6mCoZ4ItL4ixyi09x7nNGorf3fenUnlQMMyXQGrm+P
+ TBYSDzaXQlIc67ao5L1j3oG1Oe21FF5x/UrwRqbvuUbKJM6YhvuKpoQ8+STFey64bpKxqZ/
+ uc6ec6qMbg9aNsX9sNwUw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1V8/DnCbQQ0=:6bkKfe3Y4d1bQvDnkIxZZ4
+ 6b1BHheK/6V6K2ZEn+YgdwztQIR01j94uuZBT54xIu0sK4tBI1XxMfKL5cBsAHs2FsYfqd/S5
+ gR6GVjvFPvr0EEgodhZS/w36IvWmhBRdaJB2NGUEx72N1L5/fUYoX4+fEOUUWq78ezfj3pM23
+ pM06ipHmu40EL3ezKnd3zc+F/kxInleF9fUa45098yBCq7LXf8N80N7Qftm54Us51laMWa1id
+ cKE7biQEH12MdBQDLzQW8UW6ZWVI+m5oTsaPfye626gCDQEjM5x541u6CM7+oTA61B4spir6r
+ ArwvzgFofRomJjY56MnKGCLWKggIs9iWh52byBqfuFb0RWdLAhuxL5kG0OWvN7PGxyGlMbcmP
+ GYo0NsKlg4BNAfHy3SJknmq4lgQ53vgi9VB1wpEzz6guMUnQz1xHB4cqKhOwpg13DmS1oTieV
+ /NPC1c1hmEc0TAWCJdX811nLuB8LJ8P32J+rf+RxeBhbimmZ6ubzcYkZ04Iznj/zEsvLWOZ0r
+ +H1tpOCLOL45DrmmsifE30/pMPJYxuqMyQY/yLDJdu26At0Gy3h/ycoD3EZhUaDJxSaxT2KmS
+ uI/Jy8uMYGQNtgv9XoQUXeh+9Ua4D2PzAmZXsW73Yq9iRESLx6nhN4MLCuvHvzzhC9kSHgjkP
+ /129p5Lc4whkbFgmwyjKnEm9mGx6/Cwy58cLF65p3XB+uQAoWm272TGtsQeWS/EHQZu5cY+H4
+ gm0VIVjhvsQdmQmUqyItqNFhTLEuXa6Odvo3ohPk03E3oJdYontRMY8DQHA1uRQeprxa1Qq2T
+ BPWOuu1SnD0yWT2chQ5xPafl0/QfdbHkrjT45Mq0TPohrir1T1vYSPQyeZAvbs5UjjgBk+kbg
+ pvHfC3M+akU/Q6/IGjeS+hDuabILlbwbUN3kTFz8BZLHXrNVLZ0+pIYl9gRo6mihTN/jD7MnP
+ 27W+vM9uzyj16yqAzMRKweh/E8rcZO2dmqSNwXFuT8P2AxFIR9pGTbmE3jJz44Q1OMLCEeL+M
+ 4V9A5QA8QOsn1nM/mlGooBkYvOSkZWRYSjyIrdebmUBf6oQRk0c9aq1KxnsCie2CRgDGaFJml
+ +VsA4cHcOJZKph+gE4/MEPThxbl8uqP0qm/fnful5kKu0Hkk4/He2pYIBQvogrwaF5y4KfVPE
+ JnRxIH3hH+UNSCeEgMR55DiSk6nF58ewZQvkBePgjAijnWCnbKWAOGaAz3wV8SVL09sZQ3HSr
+ 2NN1UHvK36SNYpNDZ
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+I suggest to avoid a typo in the previous patch subject.
 
-Thanks,
-Suravee
 
-On 6/13/20 6:11 AM, Jerry Snitselaar wrote:
-> Move AMD Kconfig and Makefile bits down into the amd directory
-> with the rest of the AMD specific files.
-> 
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
-> ---
->   drivers/iommu/Kconfig      | 45 +-------------------------------------
->   drivers/iommu/Makefile     |  5 +----
->   drivers/iommu/amd/Kconfig  | 44 +++++++++++++++++++++++++++++++++++++
->   drivers/iommu/amd/Makefile |  4 ++++
->   4 files changed, 50 insertions(+), 48 deletions(-)
->   create mode 100644 drivers/iommu/amd/Kconfig
->   create mode 100644 drivers/iommu/amd/Makefile
-> 
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index b12d4ec124f6..78a8be0053b3 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -132,50 +132,7 @@ config IOMMU_PGTABLES_L2
->   	def_bool y
->   	depends on MSM_IOMMU && MMU && SMP && CPU_DCACHE_DISABLE=n
->   
-> -# AMD IOMMU support
-> -config AMD_IOMMU
-> -	bool "AMD IOMMU support"
-> -	select SWIOTLB
-> -	select PCI_MSI
-> -	select PCI_ATS
-> -	select PCI_PRI
-> -	select PCI_PASID
-> -	select IOMMU_API
-> -	select IOMMU_IOVA
-> -	select IOMMU_DMA
-> -	depends on X86_64 && PCI && ACPI
-> -	---help---
-> -	  With this option you can enable support for AMD IOMMU hardware in
-> -	  your system. An IOMMU is a hardware component which provides
-> -	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
-> -	  can isolate the DMA memory of different devices and protect the
-> -	  system from misbehaving device drivers or hardware.
-> -
-> -	  You can find out if your system has an AMD IOMMU if you look into
-> -	  your BIOS for an option to enable it or if you have an IVRS ACPI
-> -	  table.
-> -
-> -config AMD_IOMMU_V2
-> -	tristate "AMD IOMMU Version 2 driver"
-> -	depends on AMD_IOMMU
-> -	select MMU_NOTIFIER
-> -	---help---
-> -	  This option enables support for the AMD IOMMUv2 features of the IOMMU
-> -	  hardware. Select this option if you want to use devices that support
-> -	  the PCI PRI and PASID interface.
-> -
-> -config AMD_IOMMU_DEBUGFS
-> -	bool "Enable AMD IOMMU internals in DebugFS"
-> -	depends on AMD_IOMMU && IOMMU_DEBUGFS
-> -	---help---
-> -	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
-> -
-> -	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
-> -	  Exposes AMD IOMMU device internals in DebugFS.
-> -
-> -	  This option is -NOT- intended for production environments, and should
-> -	  not generally be enabled.
-> -
-> +source "drivers/iommu/amd/Kconfig"
->   source "drivers/iommu/intel/Kconfig"
->   
->   config IRQ_REMAP
-> diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-> index 71dd2f382e78..f356bc12b1c7 100644
-> --- a/drivers/iommu/Makefile
-> +++ b/drivers/iommu/Makefile
-> @@ -1,5 +1,5 @@
->   # SPDX-License-Identifier: GPL-2.0
-> -obj-y += intel/
-> +obj-y += amd/ intel/
->   obj-$(CONFIG_IOMMU_API) += iommu.o
->   obj-$(CONFIG_IOMMU_API) += iommu-traces.o
->   obj-$(CONFIG_IOMMU_API) += iommu-sysfs.o
-> @@ -12,9 +12,6 @@ obj-$(CONFIG_IOASID) += ioasid.o
->   obj-$(CONFIG_IOMMU_IOVA) += iova.o
->   obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
->   obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
-> -obj-$(CONFIG_AMD_IOMMU) += amd/iommu.o amd/init.o amd/quirks.o
-> -obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += amd/debugfs.o
-> -obj-$(CONFIG_AMD_IOMMU_V2) += amd/iommu_v2.o
->   obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
->   arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-qcom.o
->   obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
-> diff --git a/drivers/iommu/amd/Kconfig b/drivers/iommu/amd/Kconfig
-> new file mode 100644
-> index 000000000000..1f061d91e0b8
-> --- /dev/null
-> +++ b/drivers/iommu/amd/Kconfig
-> @@ -0,0 +1,44 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +# AMD IOMMU support
-> +config AMD_IOMMU
-> +	bool "AMD IOMMU support"
-> +	select SWIOTLB
-> +	select PCI_MSI
-> +	select PCI_ATS
-> +	select PCI_PRI
-> +	select PCI_PASID
-> +	select IOMMU_API
-> +	select IOMMU_IOVA
-> +	select IOMMU_DMA
-> +	depends on X86_64 && PCI && ACPI
-> +	help
-> +	  With this option you can enable support for AMD IOMMU hardware in
-> +	  your system. An IOMMU is a hardware component which provides
-> +	  remapping of DMA memory accesses from devices. With an AMD IOMMU you
-> +	  can isolate the DMA memory of different devices and protect the
-> +	  system from misbehaving device drivers or hardware.
-> +
-> +	  You can find out if your system has an AMD IOMMU if you look into
-> +	  your BIOS for an option to enable it or if you have an IVRS ACPI
-> +	  table.
-> +
-> +config AMD_IOMMU_V2
-> +	tristate "AMD IOMMU Version 2 driver"
-> +	depends on AMD_IOMMU
-> +	select MMU_NOTIFIER
-> +	help
-> +	  This option enables support for the AMD IOMMUv2 features of the IOMMU
-> +	  hardware. Select this option if you want to use devices that support
-> +	  the PCI PRI and PASID interface.
-> +
-> +config AMD_IOMMU_DEBUGFS
-> +	bool "Enable AMD IOMMU internals in DebugFS"
-> +	depends on AMD_IOMMU && IOMMU_DEBUGFS
-> +	help
-> +	  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!  !!!WARNING!!!
-> +
-> +	  DO NOT ENABLE THIS OPTION UNLESS YOU REALLY, -REALLY- KNOW WHAT YOU ARE DOING!!!
-> +	  Exposes AMD IOMMU device internals in DebugFS.
-> +
-> +	  This option is -NOT- intended for production environments, and should
-> +	  not generally be enabled.
-> diff --git a/drivers/iommu/amd/Makefile b/drivers/iommu/amd/Makefile
-> new file mode 100644
-> index 000000000000..552f68ddcefd
-> --- /dev/null
-> +++ b/drivers/iommu/amd/Makefile
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_AMD_IOMMU) += iommu.o init.o quirks.o
-> +obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += debugfs.o
-> +obj-$(CONFIG_AMD_IOMMU_V2) += iommu_v2.o
-> 
+=E2=80=A6
+> +virtual context
+> +virtual report
+> +virtual org
+
++virtual context, report, org
+
+Is such a SmPL code variant more succinct?
+
+
+=E2=80=A6
+> +@as_next@
+> +expression subE1 <=3D as.E1;
+> +expression as.E1;
+=E2=80=A6
+
+I propose to reduce the repetition of this SmPL key word.
+
+
+=E2=80=A6
+> +  ... when !=3D \(E1\|E2\|subE1\|subE2\)=3DE3
+> +      when !=3D \(E1\|E2\|subE1\|subE2\)+=3DE3
+=E2=80=A6
+
+Can it make sense to express a constraint for a metavariable of
+the type =E2=80=9Cassignment operator=E2=80=9D?
+
+
+> +      when !=3D \(&E1\|&E2\|&subE1\|&subE2\)
+
+How do you think about to use the following code exclusion specification?
+
++      when !=3D & \(E1 \| E2 \| subE1 \| subE2\)
+
+
+=E2=80=A6
+> +msg =3D "WARNING: same struct_size (line %s)" % (p1[0].line)
+> +coccilib.org.print_todo(p2[0], msg)
+
+I suggest once more to pass the desired message object directly as a funct=
+ion argument
+(without using an extra Python variable).
+
+Regards,
+Markus
