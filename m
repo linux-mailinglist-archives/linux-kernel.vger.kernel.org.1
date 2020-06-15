@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82B51F909B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909C31F90B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgFOHvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:51:24 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50738 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729161AbgFOHvN (ORCPT
+        id S1728935AbgFOHw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728368AbgFOHw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:51:13 -0400
-Received: by mail-wm1-f66.google.com with SMTP id l17so13600236wmj.0;
-        Mon, 15 Jun 2020 00:51:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+HRGqyB5oqaA4VgjPNyb3KQ62e/coD1Hg4szCBEPxow=;
-        b=gdU7elIPsixG+TZ3GyDUXDJEKLlaxdrRI7ecDQHi2DFVixXRPo4RAHAMJcddNNmrqy
-         6JKkfCn1IljII49Ab2/IGcgbokDo2F6LrcioozF0C41TG5Fz9xNCo7SiOjqKHVuFan3b
-         kg1no+JvNFXE0BC3C6sXuK/sQrXNfNfLRmU4p/sURlpmshIpXe+/2XuTZD54ZUHLoU+E
-         LsCb8BTw1ES0oPcjMeX+iMH12Ai6S0r5RXd7sNif1i0soGbKukSdeacb6n6RmTuBK9ml
-         GfgE+zR9DP771DIRvpdEzecoJjlKAXi2527oOE5y7tUvzw27qxioEWWJVu46ZySUlT6P
-         URkw==
-X-Gm-Message-State: AOAM533P90UD7SlDvsSHL6NZqxV5DYlgYuMqKNgy0S6k+z4JEnd7GZfJ
-        DNxA8RhuRMJA1aHrXMMVXiHcZsi8
-X-Google-Smtp-Source: ABdhPJybYmPkJSlRnaMOuMktCVCC4yXe4QTkEyvxsVBtStC2ueb6/Stxp+dCP3g7zIfQ3UXBa1NUSQ==
-X-Received: by 2002:a1c:a74d:: with SMTP id q74mr11611364wme.177.1592207471716;
-        Mon, 15 Jun 2020 00:51:11 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id g3sm25678681wrb.46.2020.06.15.00.51.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jun 2020 00:51:11 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 09:51:09 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] spi: spi-fsl-dspi: Fix external abort on interrupt
- in exit paths
-Message-ID: <20200615075109.GA22427@kozik-lap>
-References: <1592132154-20175-1-git-send-email-krzk@kernel.org>
- <CA+h21hpsmG+xUjWgaNcSojxeWYm4bcbMsn6_hmZrJ0A3zfVEag@mail.gmail.com>
- <20200615071540.GB20941@kozik-lap>
+        Mon, 15 Jun 2020 03:52:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC114C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IFIgfCZKxYBKxbJqOaOomXVh77FtYCcmEiPni2KP6UA=; b=PJLM8Zj6g6NZ+vPpv2mFDxYEVR
+        ZjwG4jOU060O8kA/hZ3nBzvV0Ys1Ob067i4BJAzLXk0kJFvnTPk9HZv2N4bq1zlOx6kt6I0wYqNYD
+        WxXEU7shn6V1Hnnc7bMPriYIGQJxK6my2wENuYqexpKzud2otelfOGiVZI8ThFKaGsZx3wAkFAehx
+        xyuZg+PiJgIGmBooQprqIC07vu+0si6nXsW+gBniM0mtgDy0EY4XX2SW3mvm3WDBh0Zyo6E43wWXf
+        h7zkeOgMVO5U0sw55sa+N7+9CXGuXOBfv7vXirugectMtOB6P+FPq3eo1CWbJiozbXhA4ITyj/cH5
+        ElEiN+6w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkjua-0001C1-5z; Mon, 15 Jun 2020 07:52:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2710307458;
+        Mon, 15 Jun 2020 09:52:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF23021059BE4; Mon, 15 Jun 2020 09:52:02 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 09:52:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v2 00/12] x86: tag application address space for devices
+Message-ID: <20200615075202.GI2497@hirez.programming.kicks-ass.net>
+References: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615071540.GB20941@kozik-lap>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 09:15:40AM +0200, Krzysztof Kozlowski wrote:
-> On Sun, Jun 14, 2020 at 06:48:04PM +0300, Vladimir Oltean wrote:
-> > On Sun, 14 Jun 2020 at 13:57, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> > > If interrupt comes late, during probe error path or device remove (could
-> > > be triggered with CONFIG_DEBUG_SHIRQ), the interrupt handler
-> > > dspi_interrupt() will access registers with the clock being disabled.  This
-> > > leads to external abort on non-linefetch on Toradex Colibri VF50 module
-> > > (with Vybrid VF5xx):
-> > >
-> > >     $ echo 4002d000.spi > /sys/devices/platform/soc/40000000.bus/4002d000.spi/driver/unbind
-> > >
-> > >     Unhandled fault: external abort on non-linefetch (0x1008) at 0x8887f02c
-> > >     Internal error: : 1008 [#1] ARM
-> > >     CPU: 0 PID: 136 Comm: sh Not tainted 5.7.0-next-20200610-00009-g5c913fa0f9c5-dirty #74
-> > >     Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
-> > >       (regmap_mmio_read32le) from [<8061885c>] (regmap_mmio_read+0x48/0x68)
-> > >       (regmap_mmio_read) from [<8060e3b8>] (_regmap_bus_reg_read+0x24/0x28)
-> > >       (_regmap_bus_reg_read) from [<80611c50>] (_regmap_read+0x70/0x1c0)
-> > >       (_regmap_read) from [<80611dec>] (regmap_read+0x4c/0x6c)
-> > >       (regmap_read) from [<80678ca0>] (dspi_interrupt+0x3c/0xa8)
-> > >       (dspi_interrupt) from [<8017acec>] (free_irq+0x26c/0x3cc)
-> > >       (free_irq) from [<8017dcec>] (devm_irq_release+0x1c/0x20)
-> > >       (devm_irq_release) from [<805f98ec>] (release_nodes+0x1e4/0x298)
-> > >       (release_nodes) from [<805f9ac8>] (devres_release_all+0x40/0x60)
-> > >       (devres_release_all) from [<805f5134>] (device_release_driver_internal+0x108/0x1ac)
-> > >       (device_release_driver_internal) from [<805f521c>] (device_driver_detach+0x20/0x24)
-> > >
-> > > The resource-managed framework should not be used for interrupt handling,
-> > > because the resource will be released too late - after disabling clocks.
-> > > The interrupt handler is not prepared for such case.
-> > >
-> > > Fixes: 349ad66c0ab0 ("spi:Add Freescale DSPI driver for Vybrid VF610 platform")
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > ---
-> > 
-> > I don't buy this argument that "the resource-managed framework should
-> > not be used for interrupt handling". What is it there for, then?
-> 
-> It was created long time ago for memory allocations and since then
-> people ported to all other possibilities and used in drivers.  Just
-> because you can do something, does not necessarily mean that you
-> should...
-> 
-> > Could you just call disable_irq before clk_disable_unprepare instead
-> > of this massive rework?
-> 
-> This massive rework is 9 insertions and 4 deletions, indeed I made
-> impressive, huge commit with significant impact. disable_irq() could work
-> as well so if this is preferred, no problem from my side.
+On Fri, Jun 12, 2020 at 05:41:21PM -0700, Fenghua Yu wrote:
 
-disable_irq() should fix real world case but won't fix DEBUG_SHIRQ.
-I'll rework it as well but then we go to bigger change again.
+> This series only provides simple and basic support for ENQCMD and the MSR:
+> 1. Clean up type definitions (patch 1-3). These patches can be in a
+>    separate series.
+>    - Define "pasid" as "unsigned int" consistently (patch 1 and 2).
+>    - Define "flags" as "unsigned int"
+> 2. Explain different various technical terms used in the series (patch 4).
+> 3. Enumerate support for ENQCMD in the processor (patch 5).
+> 4. Handle FPU PASID state and the MSR during context switch (patches 6-7).
+> 5. Define "pasid" in mm_struct (patch 8).
+> 5. Clear PASID state for new mm and forked and cloned thread (patch 9-10).
+> 6. Allocate and free PASID for a process (patch 11).
+> 7. Fix up the PASID MSR in #GP handler when one thread in a process
+>    executes ENQCMD for the first time (patches 12).
 
-Best regards,
-Krzysztof
-
+If this is per mm, should not switch_mm() update the MSR ? I'm not
+seeing that, nor do I see it explained why not.
