@@ -2,236 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF2E1F9E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75511F9E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731121AbgFORZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S1729956AbgFOR2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 13:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730852AbgFORZ4 (ORCPT
+        with ESMTP id S1728585AbgFOR2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:25:56 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BF5C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:25:56 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id e9so7861542pgo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X5U2nwVApxhHDTMk1l7E/NpbgEKCEjmDjLlaescVVIc=;
-        b=lpoPGa06iKLPUWZt1VgDZQ/Nry9Jqo8K5dpidp28rbymaV+taoqY9dLwpPi7jvhOKb
-         dXHKTJXdjcJ/7QeOtu8+IbMr487rKz1cNVNe5jddDmCrEdkEWgA7F8LzwTUsKWaD29yu
-         n1dIK8rUIyc7A8GCxyjXjZ4VOsw4jliLKU78E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X5U2nwVApxhHDTMk1l7E/NpbgEKCEjmDjLlaescVVIc=;
-        b=EPC+lDjaV/RV4bh45uoJHoOc6b7ekcVWV4IForB/8DKHHW54duzZW3me+bAHto9o2V
-         xSl364DQ+b/+MDbm/nMxn1abunkYMgNU0Z8IZV8AJBvLrasIRfXC9C8vZuq8+Kom9UtB
-         dlfdWoo8BUHGO+tcgAofKbbcdEIIB4RisrOzBVaAEneGSIYjZ2SPbxa+QrdAv6+5Lm6p
-         6G8g7xwX75RTz+0tzDJzyhNzNsKnVgDg/axu3fzX8MX4LijriIYWTzut43ke4q+CqYu6
-         g9rFlPzpEDVwiVjrfQYyLeKr/Sy/dGeIeRKgMM5e0k3mXHHK0iEnLMIUFe87sV3x3qpF
-         Ucig==
-X-Gm-Message-State: AOAM532hLYj9hAMZP3y4wWTXIfCbLd+nA26i2xjheIGI2UaztCYszLZ1
-        vOBFJbX2Njb5O9MQRTi/PUD9JA==
-X-Google-Smtp-Source: ABdhPJzoAzxB8eO5LX/l+bG/6K/K/eD3XTuKN0PhlI001wuCHJ8FQ0AfRMZNeVIWlCvAUp7las1JrA==
-X-Received: by 2002:a63:648:: with SMTP id 69mr22637399pgg.109.1592241955565;
-        Mon, 15 Jun 2020 10:25:55 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id p14sm122143pjf.32.2020.06.15.10.25.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 10:25:54 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 10:25:53 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
-        georgi.djakov@linaro.org, saravanak@google.com, nm@ti.com,
-        bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org,
-        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
-        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org
-Subject: Re: [PATCH v6 4/5] cpufreq: qcom: Update the bandwidth levels on
- frequency change
-Message-ID: <20200615172553.GU4525@google.com>
-References: <20200605213332.609-1-sibis@codeaurora.org>
- <20200605213332.609-5-sibis@codeaurora.org>
+        Mon, 15 Jun 2020 13:28:01 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C08C061A0E;
+        Mon, 15 Jun 2020 10:28:00 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jksto-000084-2S; Mon, 15 Jun 2020 19:27:56 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 82B661C00ED;
+        Mon, 15 Jun 2020 19:27:55 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 17:27:55 -0000
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/msr: Lift AMD family 0x15 power-specific MSRs
+Cc:     Borislav Petkov <bp@suse.de>, Guenter Roeck <linux@roeck-us.net>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200605213332.609-5-sibis@codeaurora.org>
+Message-ID: <159224207528.16989.13598767169279100668.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sibi,
+The following commit has been merged into the x86/cleanups branch of tip:
 
-On Sat, Jun 06, 2020 at 03:03:31AM +0530, Sibi Sankar wrote:
-> Add support to parse optional OPP table attached to the cpu node when
-> the OPP bandwidth values are populated. This allows for scaling of
-> DDR/L3 bandwidth levels with frequency change.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
-> 
-> v6:
->  * Add global flag to distinguish between voltage update and opp add.
->    Use the same flag before trying to scale ddr/l3 bw [Viresh]
->  * Use dev_pm_opp_find_freq_ceil to grab all opps [Viresh] 
->  * Move dev_pm_opp_of_find_icc_paths into probe [Viresh]
-> 
-> v5:
->  * Use dev_pm_opp_adjust_voltage instead [Viresh]
->  * Misc cleanup
-> 
-> v4:
->  * Split fast switch disable into another patch [Lukasz]
-> 
->  drivers/cpufreq/qcom-cpufreq-hw.c | 82 ++++++++++++++++++++++++++++++-
->  1 file changed, 80 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index fc92a8842e252..8fa6ab6e0e4b6 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -6,6 +6,7 @@
->  #include <linux/bitfield.h>
->  #include <linux/cpufreq.h>
->  #include <linux/init.h>
-> +#include <linux/interconnect.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> @@ -30,6 +31,48 @@
->  
->  static unsigned long cpu_hw_rate, xo_rate;
->  static struct platform_device *global_pdev;
-> +static bool icc_scaling_enabled;
+Commit-ID:     d9124642495d0d91f2a09db933c0485f1abe6611
+Gitweb:        https://git.kernel.org/tip/d9124642495d0d91f2a09db933c0485f1abe6611
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Mon, 08 Jun 2020 16:19:49 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 15 Jun 2020 18:01:26 +02:00
 
-It seem you rely on 'icc_scaling_enabled' to be initialized to 'false'.
-This works during the first initialization, but not if the 'device' is
-unbound/rebound. In theory things shouldn't be different in a succesive
-initialization, however for robustness the variable should be explicitly
-set to 'false' somewhere in the code path (_probe(), _read_lut(), ...).
+x86/msr: Lift AMD family 0x15 power-specific MSRs
 
-> +static int qcom_cpufreq_set_bw(struct cpufreq_policy *policy,
-> +			       unsigned long freq_khz)
-> +{
-> +	unsigned long freq_hz = freq_khz * 1000;
-> +	struct dev_pm_opp *opp;
-> +	struct device *dev;
-> +	int ret;
-> +
-> +	dev = get_cpu_device(policy->cpu);
-> +	if (!dev)
-> +		return -ENODEV;
-> +
-> +	opp = dev_pm_opp_find_freq_exact(dev, freq_hz, true);
-> +	if (IS_ERR(opp))
-> +		return PTR_ERR(opp);
-> +
-> +	ret = dev_pm_opp_set_bw(dev, opp);
-> +	dev_pm_opp_put(opp);
-> +	return ret;
-> +}
-> +
-> +static int qcom_cpufreq_update_opp(struct device *cpu_dev,
-> +				   unsigned long freq_khz,
-> +				   unsigned long volt)
-> +{
-> +	unsigned long freq_hz = freq_khz * 1000;
-> +	int ret;
-> +
-> +	/* Skip voltage update if the opp table is not available */
-> +	if (!icc_scaling_enabled)
-> +		return dev_pm_opp_add(cpu_dev, freq_hz, volt);
-> +
-> +	ret = dev_pm_opp_adjust_voltage(cpu_dev, freq_hz, volt, volt, volt);
-> +	if (ret) {
-> +		dev_err(cpu_dev, "Voltage update failed freq=%ld\n", freq_khz);
-> +		return ret;
-> +	}
-> +
-> +	return dev_pm_opp_enable(cpu_dev, freq_hz);
-> +}
->  
->  static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
->  					unsigned int index)
-> @@ -39,6 +82,9 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
->  
->  	writel_relaxed(index, perf_state_reg);
->  
-> +	if (icc_scaling_enabled)
-> +		qcom_cpufreq_set_bw(policy, freq);
-> +
->  	arch_set_freq_scale(policy->related_cpus, freq,
->  			    policy->cpuinfo.max_freq);
->  	return 0;
-> @@ -89,11 +135,31 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  	u32 data, src, lval, i, core_count, prev_freq = 0, freq;
->  	u32 volt;
->  	struct cpufreq_frequency_table	*table;
-> +	struct dev_pm_opp *opp;
-> +	unsigned long rate;
-> +	int ret;
->  
->  	table = kcalloc(LUT_MAX_ENTRIES + 1, sizeof(*table), GFP_KERNEL);
->  	if (!table)
->  		return -ENOMEM;
->  
-> +	ret = dev_pm_opp_of_add_table(cpu_dev);
-> +	if (!ret) {
-> +		/* Disable all opps and cross-validate against LUT */
+... into the global msr-index.h header because they're used in multiple
+compilation units. Sort the MSR list a bit. Update the msr-index.h copy
+in tools.
 
-nit: IIUC the cross-validation doesn't happen in this branch, so the
-comment is a bit misleading. Maybe change it to "Disable all opps to
-cross-validate against the LUT {below,later}".
+No functional changes.
 
-> +		icc_scaling_enabled = true;
-> +		for (rate = 0; ; rate++) {
-> +			opp = dev_pm_opp_find_freq_ceil(cpu_dev, &rate);
-> +			if (IS_ERR(opp))
-> +				break;
-> +
-> +			dev_pm_opp_put(opp);
-> +			dev_pm_opp_disable(cpu_dev, rate);
-> +		}
-> +	} else if (ret != -ENODEV) {
-> +		dev_err(cpu_dev, "Invalid opp table in device tree\n");
-> +		return ret;
-> +	}
-> +
->  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
->  		data = readl_relaxed(base + REG_FREQ_LUT +
->  				      i * LUT_ROW_SIZE);
-> @@ -112,7 +178,7 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  
->  		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
->  			table[i].frequency = freq;
-> -			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
-> +			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/x86/events/amd/power.c            | 4 ----
+ arch/x86/include/asm/msr-index.h       | 5 ++++-
+ drivers/hwmon/fam15h_power.c           | 4 ----
+ tools/arch/x86/include/asm/msr-index.h | 5 ++++-
+ 4 files changed, 8 insertions(+), 10 deletions(-)
 
-This is the cross-validation mentioned above, right? Shouldn't it include
-a check of the return value?
-
->  			dev_dbg(cpu_dev, "index=%d freq=%d, core_count %d\n", i,
->  				freq, core_count);
->  		} else if (core_count == LUT_TURBO_IND) {
-> @@ -133,7 +199,8 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  			if (prev->frequency == CPUFREQ_ENTRY_INVALID) {
->  				prev->frequency = prev_freq;
->  				prev->flags = CPUFREQ_BOOST_FREQ;
-> -				dev_pm_opp_add(cpu_dev,	prev_freq * 1000, volt);
-> +				qcom_cpufreq_update_opp(cpu_dev, prev_freq,
-> +							volt);
-
-ditto
-
-nit: with the updated max line length it isn't necessary anymore to break
-this into multiple lines (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/checkpatch.pl?h=v5.8-rc1#n54),
-though the coding style still has the old limit.
+diff --git a/arch/x86/events/amd/power.c b/arch/x86/events/amd/power.c
+index 43b09e9..16a2369 100644
+--- a/arch/x86/events/amd/power.c
++++ b/arch/x86/events/amd/power.c
+@@ -13,10 +13,6 @@
+ #include <asm/cpu_device_id.h>
+ #include "../perf_event.h"
+ 
+-#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
+-#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
+-#define MSR_F15H_PTSC			0xc0010280
+-
+ /* Event code: LSB 8 bits, passed in attr->config any other bit is reserved. */
+ #define AMD_POWER_EVENT_MASK		0xFFULL
+ 
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index e8370e6..eb95372 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -418,15 +418,18 @@
+ #define MSR_AMD64_PATCH_LEVEL		0x0000008b
+ #define MSR_AMD64_TSC_RATIO		0xc0000104
+ #define MSR_AMD64_NB_CFG		0xc001001f
+-#define MSR_AMD64_CPUID_FN_1		0xc0011004
+ #define MSR_AMD64_PATCH_LOADER		0xc0010020
+ #define MSR_AMD_PERF_CTL		0xc0010062
+ #define MSR_AMD_PERF_STATUS		0xc0010063
+ #define MSR_AMD_PSTATE_DEF_BASE		0xc0010064
++#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
++#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
+ #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
+ #define MSR_AMD64_OSVW_STATUS		0xc0010141
++#define MSR_F15H_PTSC			0xc0010280
+ #define MSR_AMD_PPIN_CTL		0xc00102f0
+ #define MSR_AMD_PPIN			0xc00102f1
++#define MSR_AMD64_CPUID_FN_1		0xc0011004
+ #define MSR_AMD64_LS_CFG		0xc0011020
+ #define MSR_AMD64_DC_CFG		0xc0011022
+ #define MSR_AMD64_BU_CFG2		0xc001102a
+diff --git a/drivers/hwmon/fam15h_power.c b/drivers/hwmon/fam15h_power.c
+index 267eac0..29f5fed 100644
+--- a/drivers/hwmon/fam15h_power.c
++++ b/drivers/hwmon/fam15h_power.c
+@@ -41,10 +41,6 @@ MODULE_LICENSE("GPL");
+ /* set maximum interval as 1 second */
+ #define MAX_INTERVAL			1000
+ 
+-#define MSR_F15H_CU_PWR_ACCUMULATOR	0xc001007a
+-#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR	0xc001007b
+-#define MSR_F15H_PTSC			0xc0010280
+-
+ #define PCI_DEVICE_ID_AMD_15H_M70H_NB_F4 0x15b4
+ 
+ struct fam15h_power_data {
+diff --git a/tools/arch/x86/include/asm/msr-index.h b/tools/arch/x86/include/asm/msr-index.h
+index ef452b8..7dfd45b 100644
+--- a/tools/arch/x86/include/asm/msr-index.h
++++ b/tools/arch/x86/include/asm/msr-index.h
+@@ -414,15 +414,18 @@
+ #define MSR_AMD64_PATCH_LEVEL		0x0000008b
+ #define MSR_AMD64_TSC_RATIO		0xc0000104
+ #define MSR_AMD64_NB_CFG		0xc001001f
+-#define MSR_AMD64_CPUID_FN_1		0xc0011004
+ #define MSR_AMD64_PATCH_LOADER		0xc0010020
+ #define MSR_AMD_PERF_CTL		0xc0010062
+ #define MSR_AMD_PERF_STATUS		0xc0010063
+ #define MSR_AMD_PSTATE_DEF_BASE		0xc0010064
++#define MSR_F15H_CU_PWR_ACCUMULATOR     0xc001007a
++#define MSR_F15H_CU_MAX_PWR_ACCUMULATOR 0xc001007b
+ #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
+ #define MSR_AMD64_OSVW_STATUS		0xc0010141
++#define MSR_F15H_PTSC			0xc0010280
+ #define MSR_AMD_PPIN_CTL		0xc00102f0
+ #define MSR_AMD_PPIN			0xc00102f1
++#define MSR_AMD64_CPUID_FN_1		0xc0011004
+ #define MSR_AMD64_LS_CFG		0xc0011020
+ #define MSR_AMD64_DC_CFG		0xc0011022
+ #define MSR_AMD64_BU_CFG2		0xc001102a
