@@ -2,500 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743ED1F98C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1871F98E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730602AbgFONdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:33:42 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:62259 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730586AbgFONdd (ORCPT
+        id S1730643AbgFONeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730558AbgFONd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:33:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592228012; x=1623764012;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rRTIXOzrYA0AtMeoJg5RqciWe1e7/mnpkRYykpgr3sA=;
-  b=yyIHAQ1C28Ys7ujDrpEbxWMCU073o53ykWnr9UDhxts2+cvkO0e+4S50
-   KgHxeoetgOfl+nqtDMPZrKwe/9/Z54qpaPIkYsxJ4NA80ay191fk3FGAW
-   Yxx4pbx0iG0TxmcupujoFg5zGdN+hH9Cz94yXuODbG/0OeCm/tbIQuop6
-   iXJxitprD7hpYklpQbWA5zp1LpadXtXgupJFMpgkxA8VB1c26a338r968
-   BP+skCS42D4u/cAKau9jQWknhWfHBRSSUjmqcKu0Wfy7n/NvhRQaCirQG
-   imiY3NPIg8sRQ3R5dqhQvoYIzeULmFGCHA/VE2GPKehhFA+XzmaWt7xNQ
-   w==;
-IronPort-SDR: 5ofjhwF7QOHeq5AcCXwJ+TCUOP6Bt3/KzVZaXS2RqLWGFgxXxu3bnMWA7BEvIaFLyg3OI1Ou9h
- i7b6ZK1wZSveaP9j6QTOp71W32s4P7z/ihAr4gd5uPBycPOOcXwapyFCW8jhag58e+l7tyBMHx
- 4RuAUA8J/QCH3am5KHoZbPPuUX2gjDWwtq0Lr7ngschjtg7quruj8UiVWD+5D12iyh1pHTrCJ8
- WuS1vRm0M+bEBdrPnkvECVGuUDhw+Pbud7FXADyoQOAOD7d7l5mfNTpiROppoQXC39yofNwhQ9
- Ppg=
-X-IronPort-AV: E=Sophos;i="5.73,514,1583218800"; 
-   d="scan'208";a="83619533"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jun 2020 06:33:32 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 15 Jun 2020 06:33:28 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 15 Jun 2020 06:33:28 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Olof Johansson <olof@lixom.net>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v3 10/10] arm64: dts: sparx5: Add i2c devices, i2c muxes
-Date:   Mon, 15 Jun 2020 15:32:42 +0200
-Message-ID: <20200615133242.24911-11-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200615133242.24911-1-lars.povlsen@microchip.com>
-References: <20200615133242.24911-1-lars.povlsen@microchip.com>
+        Mon, 15 Jun 2020 09:33:28 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DC0C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:27 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p20so17757317iop.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FEO6ZMRZMhytUnB/3kKw+6H6ed4rrtyosV/mkpSqtDg=;
+        b=UujOtmFHkrJ4Wz5fD7nsyCt9oFWmofoQEfArpljrCQ5l62sYWxbBdoU/sk3BLuLTqj
+         dTG9GWz9M3dO7c/1cqC/Jl13duq3VAELZb+vXrjVTxd/y9b8nVcOtYzZvuoBtR7zdNCx
+         0VhCgEeJtSIl9H0QWkpu+UYQQOqsm2oib1BjLC2UAqUkBwY1w27AahTzHo+p0o6pgJwI
+         udReEzsSGRV4UuZCrDebvahaKMiXTjp7cgJuQezwtRLZIJgRGlZEK0yWnDa6pyOc9udn
+         w4YV4Jnr1xnrIvwZnD+eDrdVFnZzROHIsd+Jp9yRJm4e75YtJavyzQtWr05IbGOo3TG4
+         KfFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FEO6ZMRZMhytUnB/3kKw+6H6ed4rrtyosV/mkpSqtDg=;
+        b=hLrDK326qIbhjkH9oHxBY4lWoj4XmsAwbj5eT7LL1cHEkQO62ADAo+kIkIefD33AGk
+         KTcKV1CSoq8j8I8oqQJkuc7yYujWMUHeXymClRlQJfbI0pdIbaAF6AziahkejjPD1lmz
+         wzxV/L2I0zNGryb2SEYAgoW6SlbCq5v6oXT9OmhwXy/VRkM+56Bh4WALMJzVPtpPfIbC
+         a+CI4JXXoM0SXh4XAvhM6wwzJyGrd12L8PA5V/UOGlCpJjnVViaml+l28vGsd3xsXaqX
+         Q40RTlWrqAKuMLTLA/JTzkllcB6fgaEzRpkNWWNsKuMqaSqCZW4kojmohdZT0Zg1l7oN
+         odnw==
+X-Gm-Message-State: AOAM532JY8BiTKdqbci4t6QyjzQ6nkAqjA2MEPdAafgGi+mC6Ad4WWiQ
+        bjkJ2YZM1lFZfiCuP3G5k2nlt5olgTq9skb0I0aIzjFFSkW8aw==
+X-Google-Smtp-Source: ABdhPJw56Zkkow3PhuxcwrXHY5xd13bZ/RAR2ZkJa4qiLDA32ubAJD0lYBCg3c8BFLedeuKUf7vI7NH2UCEyxJbgvWo=
+X-Received: by 2002:a02:a805:: with SMTP id f5mr22297740jaj.130.1592228006713;
+ Mon, 15 Jun 2020 06:33:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200614063858.85118-1-songmuchun@bytedance.com> <bca5f44c-5e30-17b1-09fc-6330d450433b@suse.cz>
+In-Reply-To: <bca5f44c-5e30-17b1-09fc-6330d450433b@suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Jun 2020 21:32:50 +0800
+Message-ID: <CAMZfGtUeUyi5Tg0hv3j=-scFGiZJB5hQs8v5nOfYQ7xXsB2nsQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/slab: Add a __GFP_ACCOUNT GFP flag
+ check for slab allocation
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds i2c devices and muxes to the Sparx5 reference boards.
+On Mon, Jun 15, 2020 at 9:08 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 6/14/20 8:38 AM, Muchun Song wrote:
+> > When a kmem_cache is initialized with SLAB_ACCOUNT slab flag, we must
+> > not call kmem_cache_alloc with __GFP_ACCOUNT GFP flag. In this case,
+> > we can be accounted to kmemcg twice. This is not correct. So we add a
+>
+> Are you sure? How does that happen?
+>
+> The only place I see these evaluated is this condition in slab_pre_alloc_hook():
+>
+>         if (memcg_kmem_enabled() &&
+>             ((flags & __GFP_ACCOUNT) || (s->flags & SLAB_ACCOUNT)))
+>                 return memcg_kmem_get_cache(s);
+>
+> And it doesn't matter if one or both are set? Am I missing something?
+>
+> > __GFP_ACCOUNT GFP flag check for slab allocation.
+> >
+> > We also introduce a new helper named fixup_gfp_flags to do that check.
+> > We can reuse the fixup_gfp_flags for SLAB/SLUB.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/slab.c | 10 +---------
+> >  mm/slab.h | 21 +++++++++++++++++++++
+> >  mm/slub.c | 10 +---------
+> >  3 files changed, 23 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/mm/slab.c b/mm/slab.c
+> > index 9350062ffc1a..6e0110bef2d6 100644
+> > --- a/mm/slab.c
+> > +++ b/mm/slab.c
+> > @@ -126,8 +126,6 @@
+> >
+> >  #include <trace/events/kmem.h>
+> >
+> > -#include     "internal.h"
+> > -
+> >  #include     "slab.h"
+> >
+> >  /*
+> > @@ -2579,13 +2577,7 @@ static struct page *cache_grow_begin(struct kmem_cache *cachep,
+> >        * Be lazy and only check for valid flags here,  keeping it out of the
+> >        * critical path in kmem_cache_alloc().
+> >        */
+> > -     if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
+> > -             gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+> > -             flags &= ~GFP_SLAB_BUG_MASK;
+> > -             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> > -                             invalid_mask, &invalid_mask, flags, &flags);
+> > -             dump_stack();
+> > -     }
+> > +     flags = fixup_gfp_flags(cachep, flags);
+> >       WARN_ON_ONCE(cachep->ctor && (flags & __GFP_ZERO));
+> >       local_flags = flags & (GFP_CONSTRAINT_MASK|GFP_RECLAIM_MASK);
+> >
+> > diff --git a/mm/slab.h b/mm/slab.h
+> > index 815e4e9a94cd..0b91f2a7b033 100644
+> > --- a/mm/slab.h
+> > +++ b/mm/slab.h
+> > @@ -109,6 +109,7 @@ struct memcg_cache_params {
+> >  #include <linux/kmemleak.h>
+> >  #include <linux/random.h>
+> >  #include <linux/sched/mm.h>
+> > +#include "internal.h"
+> >
+> >  /*
+> >   * State of the slab allocator.
+> > @@ -627,6 +628,26 @@ struct kmem_cache_node {
+> >
+> >  };
+> >
+> > +static inline gfp_t fixup_gfp_flags(struct kmem_cache *s, gfp_t flags)
+> > +{
+> > +     gfp_t invalid_mask = 0;
+> > +
+> > +     if (unlikely(flags & GFP_SLAB_BUG_MASK))
+> > +             invalid_mask |= flags & GFP_SLAB_BUG_MASK;
+> > +
+> > +     if (unlikely(flags & __GFP_ACCOUNT && s->flags & SLAB_ACCOUNT))
+> > +             invalid_mask |= __GFP_ACCOUNT;
+> > +
+> > +     if (unlikely(invalid_mask)) {
+> > +             flags &= ~invalid_mask;
+> > +             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> > +                             invalid_mask, &invalid_mask, flags, &flags);
+> > +             dump_stack();
+> > +     }
+> > +
+> > +     return flags;
+> > +}
+> > +
+> >  static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
+> >  {
+> >       return s->node[node];
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index b8f798b50d44..49b5cb7da318 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -37,8 +37,6 @@
+> >
+> >  #include <trace/events/kmem.h>
+> >
+> > -#include "internal.h"
+> > -
+> >  /*
+> >   * Lock order:
+> >   *   1. slab_mutex (Global Mutex)
+> > @@ -1745,13 +1743,7 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+> >
+> >  static struct page *new_slab(struct kmem_cache *s, gfp_t flags, int node)
+> >  {
+> > -     if (unlikely(flags & GFP_SLAB_BUG_MASK)) {
+> > -             gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+> > -             flags &= ~GFP_SLAB_BUG_MASK;
+> > -             pr_warn("Unexpected gfp: %#x (%pGg). Fixing up to gfp: %#x (%pGg). Fix your code!\n",
+> > -                             invalid_mask, &invalid_mask, flags, &flags);
+> > -             dump_stack();
+> > -     }
+> > +     flags = fixup_gfp_flags(s, flags);
+> >
+> >       return allocate_slab(s,
+> >               flags & (GFP_RECLAIM_MASK | GFP_CONSTRAINT_MASK), node);
+> >
+>
 
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     |  38 +++
- .../boot/dts/microchip/sparx5_pcb125.dts      |   4 +
- .../dts/microchip/sparx5_pcb134_board.dtsi    | 237 ++++++++++++++++++
- .../dts/microchip/sparx5_pcb135_board.dtsi    |  77 ++++++
- .../boot/dts/microchip/sparx5_pcb_common.dtsi |   4 +
- 5 files changed, 360 insertions(+)
+Yeah, you are right. I'm very sorry that I was not thoughtful before.
+Please ignore
+this patch. Thanks!
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 161846caf9c94..cf712e80615da 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -170,6 +170,44 @@ uart2_pins: uart2-pins {
- 				pins = "GPIO_26", "GPIO_27";
- 				function = "uart2";
- 			};
-+
-+			i2c_pins: i2c-pins {
-+				pins = "GPIO_14", "GPIO_15";
-+				function = "twi";
-+			};
-+
-+			i2c2_pins: i2c2-pins {
-+				pins = "GPIO_28", "GPIO_29";
-+				function = "twi2";
-+			};
-+		};
-+
-+		i2c0: i2c@600101000 {
-+			compatible = "snps,designware-i2c";
-+			status = "disabled";
-+			pinctrl-0 = <&i2c_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x6 0x00101000 0x100>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-+			i2c-sda-hold-time-ns = <300>;
-+			clock-frequency = <100000>;
-+			clocks = <&ahb_clk>;
-+		};
-+
-+		i2c1: i2c@600103000 {
-+			compatible = "snps,designware-i2c";
-+			status = "disabled";
-+			pinctrl-0 = <&i2c2_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x6 0x00103000 0x100>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-+			i2c-sda-hold-time-ns = <300>;
-+			clock-frequency = <100000>;
-+			clocks = <&ahb_clk>;
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index d7f985f7ee020..91ee5b6cfc37a 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -15,3 +15,7 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&i2c1 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-index 9b2aec400101b..18a535a043686 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-@@ -7,9 +7,246 @@
- #include "sparx5_pcb_common.dtsi"
- 
- /{
-+	aliases {
-+	    i2c0   = &i2c0;
-+	    i2c100 = &i2c100;
-+	    i2c101 = &i2c101;
-+	    i2c102 = &i2c102;
-+	    i2c103 = &i2c103;
-+	    i2c104 = &i2c104;
-+	    i2c105 = &i2c105;
-+	    i2c106 = &i2c106;
-+	    i2c107 = &i2c107;
-+	    i2c108 = &i2c108;
-+	    i2c109 = &i2c109;
-+	    i2c110 = &i2c110;
-+	    i2c111 = &i2c111;
-+	    i2c112 = &i2c112;
-+	    i2c113 = &i2c113;
-+	    i2c114 = &i2c114;
-+	    i2c115 = &i2c115;
-+	    i2c116 = &i2c116;
-+	    i2c117 = &i2c117;
-+	    i2c118 = &i2c118;
-+	    i2c119 = &i2c119;
-+	};
-+
- 	gpio-restart {
- 		compatible = "gpio-restart";
- 		gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
- 		priority = <200>;
- 	};
- };
-+
-+&gpio {
-+	i2cmux_pins_i: i2cmux-pins-i {
-+	       pins = "GPIO_16", "GPIO_17", "GPIO_18", "GPIO_19",
-+		      "GPIO_20", "GPIO_22", "GPIO_36", "GPIO_35",
-+		      "GPIO_50", "GPIO_51", "GPIO_56", "GPIO_57";
-+		function = "twi_scl_m";
-+		output-low;
-+	};
-+	i2cmux_0: i2cmux-0 {
-+		pins = "GPIO_16";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_1: i2cmux-1 {
-+		pins = "GPIO_17";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_2: i2cmux-2 {
-+		pins = "GPIO_18";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_3: i2cmux-3 {
-+		pins = "GPIO_19";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_4: i2cmux-4 {
-+		pins = "GPIO_20";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_5: i2cmux-5 {
-+		pins = "GPIO_22";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_6: i2cmux-6 {
-+		pins = "GPIO_36";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_7: i2cmux-7 {
-+		pins = "GPIO_35";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_8: i2cmux-8 {
-+		pins = "GPIO_50";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_9: i2cmux-9 {
-+		pins = "GPIO_51";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_10: i2cmux-10 {
-+		pins = "GPIO_56";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_11: i2cmux-11 {
-+		pins = "GPIO_57";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+};
-+
-+&axi {
-+	i2c0_imux: i2c0-imux@0 {
-+		compatible = "i2c-mux-pinctrl";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		i2c-parent = <&i2c0>;
-+	};
-+	i2c0_emux: i2c0-emux@0 {
-+		compatible = "i2c-mux-gpio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		i2c-parent = <&i2c0>;
-+	};
-+};
-+
-+&i2c0_imux {
-+	pinctrl-names =
-+		"i2c100", "i2c101", "i2c102", "i2c103",
-+		"i2c104", "i2c105", "i2c106", "i2c107",
-+		"i2c108", "i2c109", "i2c110", "i2c111", "idle";
-+	pinctrl-0 = <&i2cmux_0>;
-+	pinctrl-1 = <&i2cmux_1>;
-+	pinctrl-2 = <&i2cmux_2>;
-+	pinctrl-3 = <&i2cmux_3>;
-+	pinctrl-4 = <&i2cmux_4>;
-+	pinctrl-5 = <&i2cmux_5>;
-+	pinctrl-6 = <&i2cmux_6>;
-+	pinctrl-7 = <&i2cmux_7>;
-+	pinctrl-8 = <&i2cmux_8>;
-+	pinctrl-9 = <&i2cmux_9>;
-+	pinctrl-10 = <&i2cmux_10>;
-+	pinctrl-11 = <&i2cmux_11>;
-+	pinctrl-12 = <&i2cmux_pins_i>;
-+	i2c100: i2c_sfp1 {
-+		reg = <0x0>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c101: i2c_sfp2 {
-+		reg = <0x1>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c102: i2c_sfp3 {
-+		reg = <0x2>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c103: i2c_sfp4 {
-+		reg = <0x3>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c104: i2c_sfp5 {
-+		reg = <0x4>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c105: i2c_sfp6 {
-+		reg = <0x5>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c106: i2c_sfp7 {
-+		reg = <0x6>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c107: i2c_sfp8 {
-+		reg = <0x7>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c108: i2c_sfp9 {
-+		reg = <0x8>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c109: i2c_sfp10 {
-+		reg = <0x9>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c110: i2c_sfp11 {
-+		reg = <0xa>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c111: i2c_sfp12 {
-+		reg = <0xb>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+};
-+
-+&i2c0_emux {
-+	mux-gpios = <&gpio 55 GPIO_ACTIVE_HIGH
-+		     &gpio 60 GPIO_ACTIVE_HIGH
-+		     &gpio 61 GPIO_ACTIVE_HIGH
-+		     &gpio 54 GPIO_ACTIVE_HIGH>;
-+	idle-state = <0x8>;
-+	i2c112: i2c_sfp13 {
-+		reg = <0x0>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c113: i2c_sfp14 {
-+		reg = <0x1>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c114: i2c_sfp15 {
-+		reg = <0x2>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c115: i2c_sfp16 {
-+		reg = <0x3>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c116: i2c_sfp17 {
-+		reg = <0x4>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c117: i2c_sfp18 {
-+		reg = <0x5>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c118: i2c_sfp19 {
-+		reg = <0x6>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c119: i2c_sfp20 {
-+		reg = <0x7>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-index 9b2aec400101b..d71f11a10b3d2 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
-@@ -7,9 +7,86 @@
- #include "sparx5_pcb_common.dtsi"
- 
- /{
-+	aliases {
-+	    i2c0   = &i2c0;
-+	    i2c152 = &i2c152;
-+	    i2c153 = &i2c153;
-+	    i2c154 = &i2c154;
-+	    i2c155 = &i2c155;
-+	};
-+
- 	gpio-restart {
- 		compatible = "gpio-restart";
- 		gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
- 		priority = <200>;
- 	};
- };
-+
-+&gpio {
-+	i2cmux_pins_i: i2cmux-pins-i {
-+	       pins = "GPIO_35", "GPIO_36",
-+		      "GPIO_50", "GPIO_51";
-+		function = "twi_scl_m";
-+		output-low;
-+	};
-+	i2cmux_s29: i2cmux-0 {
-+		pins = "GPIO_35";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_s30: i2cmux-1 {
-+		pins = "GPIO_36";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_s31: i2cmux-2 {
-+		pins = "GPIO_50";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+	i2cmux_s32: i2cmux-3 {
-+		pins = "GPIO_51";
-+		function = "twi_scl_m";
-+		output-high;
-+	};
-+};
-+
-+&axi {
-+	i2c0_imux: i2c0-imux@0 {
-+		compatible = "i2c-mux-pinctrl";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		i2c-parent = <&i2c0>;
-+	};
-+};
-+
-+&i2c0_imux {
-+	pinctrl-names =
-+		"i2c152", "i2c153", "i2c154", "i2c155",
-+		"idle";
-+	pinctrl-0 = <&i2cmux_s29>;
-+	pinctrl-1 = <&i2cmux_s30>;
-+	pinctrl-2 = <&i2cmux_s31>;
-+	pinctrl-3 = <&i2cmux_s32>;
-+	pinctrl-4 = <&i2cmux_pins_i>;
-+	i2c152: i2c_sfp1 {
-+		reg = <0x0>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c153: i2c_sfp2 {
-+		reg = <0x1>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c154: i2c_sfp3 {
-+		reg = <0x2>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+	i2c155: i2c_sfp4 {
-+		reg = <0x3>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb_common.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb_common.dtsi
-index 1f99d0db1284f..9d1a082de3e29 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb_common.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb_common.dtsi
-@@ -13,3 +13,7 @@ &uart0 {
- &uart1 {
- 	status = "okay";
- };
-+
-+&i2c0 {
-+	status = "okay";
-+};
+
 -- 
-2.27.0
-
+Yours,
+Muchun
