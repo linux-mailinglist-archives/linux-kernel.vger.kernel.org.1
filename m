@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826831F908D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82B51F909B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgFOHvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729129AbgFOHux (ORCPT
+        id S1729197AbgFOHvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:51:24 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50738 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729161AbgFOHvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:50:53 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D9C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:50:53 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id p20so16735545iop.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rst6EJ64kU6WWCXs2TxPcGzwZ7aK4wuG8DOHEM83sBQ=;
-        b=T/af5lYCXK01UJwFupPnNH1kgwBEwNXYCFeXOSRoYvtP4Ks0xRfBvxrhJQtCfgus3u
-         YmaSFUUkfJliKMaf/bpGANLh/TamWzfuGNgxKp0AqpoIMH17ePWI4ocRfp9e62IrqAyb
-         3/HCIXM/fjc6Bi42KzRYb9AVoggk/PPzp4zDXh6vsy/M1SnL1F+0QXs60X28naC2p4sU
-         n2BEh7Vatnb02z9J5koI/ECFpWHZHM2+0pkta0uuZ2dgYNgbDdjfsH97Uq3No3b2lj1t
-         5h8h7QRwfonGqeyOS8/r3i83vx+kHrUhdX8fifmi8r1x57/wQqBQkTioG/stuH8ue87G
-         Y6oQ==
+        Mon, 15 Jun 2020 03:51:13 -0400
+Received: by mail-wm1-f66.google.com with SMTP id l17so13600236wmj.0;
+        Mon, 15 Jun 2020 00:51:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rst6EJ64kU6WWCXs2TxPcGzwZ7aK4wuG8DOHEM83sBQ=;
-        b=f2i4H2xLv3j4SpSvbl5Pti+z/WiOwhb4oG45sn9BX+vVr7D6FjP+ijRbxc6B41jMG+
-         PTtqbSiig5f6ewel5GIs7OW+cTFkHEi5kPlLakNBLtSDAy7GVP/rQy0frx0H7Y0mYMa/
-         aCtFAekjCnwdnE5syif+uMXrIyB5MLt66jbZ/T//E3aYh9+kd4aedibyZOgHrNhgenut
-         JcRDMoJNrJztMBFMcWl7/N2MW9BX0roXtaY4hHjpEZAdHLJ0fup7NadnvUmyWmZ4ONZg
-         9u/geWtsLJYCJTi/sN6vkbbhhHG8B01ylHjUdhdTHRebjBRM8l5Z5lN5AnGKTI/ng22T
-         VJKw==
-X-Gm-Message-State: AOAM531U0i73Squq7M2Y/0s5X/JppsxYOO/MosTaZiC0iyYmlFo//fWf
-        MZwS5Bsz3YZAnkVREM4VvbcOKHW1JCaSVrICwWZGCQ==
-X-Google-Smtp-Source: ABdhPJzI5BYPzBe4OBGTcgTWBbMKV9OFMgaY9GUo1gVRr78tJ5tz8uA7MBds+fzzZsB/O5LoOkAKdk8yvnXTTBgwyuA=
-X-Received: by 2002:a02:cccd:: with SMTP id k13mr20666457jaq.53.1592207452602;
- Mon, 15 Jun 2020 00:50:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+HRGqyB5oqaA4VgjPNyb3KQ62e/coD1Hg4szCBEPxow=;
+        b=gdU7elIPsixG+TZ3GyDUXDJEKLlaxdrRI7ecDQHi2DFVixXRPo4RAHAMJcddNNmrqy
+         6JKkfCn1IljII49Ab2/IGcgbokDo2F6LrcioozF0C41TG5Fz9xNCo7SiOjqKHVuFan3b
+         kg1no+JvNFXE0BC3C6sXuK/sQrXNfNfLRmU4p/sURlpmshIpXe+/2XuTZD54ZUHLoU+E
+         LsCb8BTw1ES0oPcjMeX+iMH12Ai6S0r5RXd7sNif1i0soGbKukSdeacb6n6RmTuBK9ml
+         GfgE+zR9DP771DIRvpdEzecoJjlKAXi2527oOE5y7tUvzw27qxioEWWJVu46ZySUlT6P
+         URkw==
+X-Gm-Message-State: AOAM533P90UD7SlDvsSHL6NZqxV5DYlgYuMqKNgy0S6k+z4JEnd7GZfJ
+        DNxA8RhuRMJA1aHrXMMVXiHcZsi8
+X-Google-Smtp-Source: ABdhPJybYmPkJSlRnaMOuMktCVCC4yXe4QTkEyvxsVBtStC2ueb6/Stxp+dCP3g7zIfQ3UXBa1NUSQ==
+X-Received: by 2002:a1c:a74d:: with SMTP id q74mr11611364wme.177.1592207471716;
+        Mon, 15 Jun 2020 00:51:11 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id g3sm25678681wrb.46.2020.06.15.00.51.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 15 Jun 2020 00:51:11 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 09:51:09 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] spi: spi-fsl-dspi: Fix external abort on interrupt
+ in exit paths
+Message-ID: <20200615075109.GA22427@kozik-lap>
+References: <1592132154-20175-1-git-send-email-krzk@kernel.org>
+ <CA+h21hpsmG+xUjWgaNcSojxeWYm4bcbMsn6_hmZrJ0A3zfVEag@mail.gmail.com>
+ <20200615071540.GB20941@kozik-lap>
 MIME-Version: 1.0
-References: <20200614123923.99189-1-songmuchun@bytedance.com>
- <20200614123923.99189-4-songmuchun@bytedance.com> <CAAmzW4N1DRBxsMAX2a_jxUW10vOwW1VsGj8ztuvvWT4NB3Ocnw@mail.gmail.com>
- <CAMZfGtUQ+0w=n9YSQjQc1uwJFJrvtfj=rcTnNYnewCPiHmDLEw@mail.gmail.com> <CAAmzW4N=Rq5qc60DA9-ombrzOxaKEnKUFXM6_DJfq=5bCRdO=g@mail.gmail.com>
-In-Reply-To: <CAAmzW4N=Rq5qc60DA9-ombrzOxaKEnKUFXM6_DJfq=5bCRdO=g@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Jun 2020 15:50:16 +0800
-Message-ID: <CAMZfGtVBtRK=rA2CGGnOuTvHyXffVm7vE7m37MAMSbW8fkzjfg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/3] mm/slub: Fix release all resources
- used by a slab cache
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200615071540.GB20941@kozik-lap>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 3:25 PM Joonsoo Kim <js1304@gmail.com> wrote:
->
-> 2020=EB=85=84 6=EC=9B=94 15=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 3:41,=
- Muchun Song <songmuchun@bytedance.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
-> >
-> > On Mon, Jun 15, 2020 at 2:23 PM Joonsoo Kim <js1304@gmail.com> wrote:
+On Mon, Jun 15, 2020 at 09:15:40AM +0200, Krzysztof Kozlowski wrote:
+> On Sun, Jun 14, 2020 at 06:48:04PM +0300, Vladimir Oltean wrote:
+> > On Sun, 14 Jun 2020 at 13:57, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 > > >
-> > > 2020=EB=85=84 6=EC=9B=94 14=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 9=
-:39, Muchun Song <songmuchun@bytedance.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=
-=84=B1:
-> > > >
-> > > > The function of __kmem_cache_shutdown() is that release all resourc=
-es
-> > > > used by the slab cache, while currently it stop release resources w=
-hen
-> > > > the preceding node is not empty.
-> > > >
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > ---
-> > > >  mm/slub.c | 7 ++++---
-> > > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/mm/slub.c b/mm/slub.c
-> > > > index b73505df3de2..4e477ef0f2b9 100644
-> > > > --- a/mm/slub.c
-> > > > +++ b/mm/slub.c
-> > > > @@ -3839,6 +3839,7 @@ bool __kmem_cache_empty(struct kmem_cache *s)
-> > > >   */
-> > > >  int __kmem_cache_shutdown(struct kmem_cache *s)
-> > > >  {
-> > > > +       int ret =3D 0;
-> > > >         int node;
-> > > >         struct kmem_cache_node *n;
-> > > >
-> > > > @@ -3846,11 +3847,11 @@ int __kmem_cache_shutdown(struct kmem_cache=
- *s)
-> > > >         /* Attempt to free all objects */
-> > > >         for_each_kmem_cache_node(s, node, n) {
-> > > >                 free_partial(s, n);
-> > > > -               if (node_nr_slabs(n))
-> > > > -                       return 1;
-> > > > +               if (!ret && node_nr_slabs(n))
-> > > > +                       ret =3D 1;
-> > > >         }
+> > > If interrupt comes late, during probe error path or device remove (could
+> > > be triggered with CONFIG_DEBUG_SHIRQ), the interrupt handler
+> > > dspi_interrupt() will access registers with the clock being disabled.  This
+> > > leads to external abort on non-linefetch on Toradex Colibri VF50 module
+> > > (with Vybrid VF5xx):
 > > >
-> > > I don't think that this is an improvement.
+> > >     $ echo 4002d000.spi > /sys/devices/platform/soc/40000000.bus/4002d000.spi/driver/unbind
 > > >
-> > > If the shutdown condition isn't met, we don't need to process further=
-.
-> > > Just 'return 1' looks okay to me.
+> > >     Unhandled fault: external abort on non-linefetch (0x1008) at 0x8887f02c
+> > >     Internal error: : 1008 [#1] ARM
+> > >     CPU: 0 PID: 136 Comm: sh Not tainted 5.7.0-next-20200610-00009-g5c913fa0f9c5-dirty #74
+> > >     Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
+> > >       (regmap_mmio_read32le) from [<8061885c>] (regmap_mmio_read+0x48/0x68)
+> > >       (regmap_mmio_read) from [<8060e3b8>] (_regmap_bus_reg_read+0x24/0x28)
+> > >       (_regmap_bus_reg_read) from [<80611c50>] (_regmap_read+0x70/0x1c0)
+> > >       (_regmap_read) from [<80611dec>] (regmap_read+0x4c/0x6c)
+> > >       (regmap_read) from [<80678ca0>] (dspi_interrupt+0x3c/0xa8)
+> > >       (dspi_interrupt) from [<8017acec>] (free_irq+0x26c/0x3cc)
+> > >       (free_irq) from [<8017dcec>] (devm_irq_release+0x1c/0x20)
+> > >       (devm_irq_release) from [<805f98ec>] (release_nodes+0x1e4/0x298)
+> > >       (release_nodes) from [<805f9ac8>] (devres_release_all+0x40/0x60)
+> > >       (devres_release_all) from [<805f5134>] (device_release_driver_internal+0x108/0x1ac)
+> > >       (device_release_driver_internal) from [<805f521c>] (device_driver_detach+0x20/0x24)
 > > >
-> > > And, with this change, sysfs_slab_remove() is called even if the
-> > > shutdown is failed.
-> > > It's better not to have side effects when failing.
-> >
-> > If someone calls __kmem_cache_shutdown, he may want to release
-> > resources used by the slab cache as much as possible. If we continue,
-> > we may release more pages. From this point, is it an improvement?
->
-> My opinion is not strong but I still think that it's not useful enough
-> to complicate
-> the code.
->
-> If shutdown is failed, it implies there are some bugs and someone should =
-fix it.
+> > > The resource-managed framework should not be used for interrupt handling,
+> > > because the resource will be released too late - after disabling clocks.
+> > > The interrupt handler is not prepared for such case.
+> > >
+> > > Fixes: 349ad66c0ab0 ("spi:Add Freescale DSPI driver for Vybrid VF610 platform")
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > >
+> > > ---
+> > 
+> > I don't buy this argument that "the resource-managed framework should
+> > not be used for interrupt handling". What is it there for, then?
+> 
+> It was created long time ago for memory allocations and since then
+> people ported to all other possibilities and used in drivers.  Just
+> because you can do something, does not necessarily mean that you
+> should...
+> 
+> > Could you just call disable_irq before clk_disable_unprepare instead
+> > of this massive rework?
+> 
+> This massive rework is 9 insertions and 4 deletions, indeed I made
+> impressive, huge commit with significant impact. disable_irq() could work
+> as well so if this is preferred, no problem from my side.
 
-Yeah, I agree with you.
+disable_irq() should fix real world case but won't fix DEBUG_SHIRQ.
+I'll rework it as well but then we go to bigger change again.
 
-> Releasing more resources would mitigate the resource problem but doesn't
-> change the situation that someone should fix it soon.
->
-> Anyway, I don't object more if you don't agree with my opinion. In that c=
-ase,
-> please fix not to call sysfs_slab_remove() when ret is 1.
->
+Best regards,
+Krzysztof
 
-Yeah, we should call sysfs_slab_remove only when ret is zero. Thanks very
-much.
-
---=20
-Yours,
-Muchun
