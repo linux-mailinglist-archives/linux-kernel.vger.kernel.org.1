@@ -2,131 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3F41F93A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1BD1F93D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgFOJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:37:46 -0400
-Received: from mail.windriver.com ([147.11.1.11]:54996 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728815AbgFOJhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:37:46 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 05F9bTtc012340
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Mon, 15 Jun 2020 02:37:30 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 15 Jun 2020 02:37:09 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <balbi@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] usb: gadget: function: printer: Add gadget dev interface status judgment
-Date:   Mon, 15 Jun 2020 17:46:08 +0800
-Message-ID: <20200615094608.26179-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+        id S1729343AbgFOJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:46:20 -0400
+Received: from mga07.intel.com ([134.134.136.100]:22419 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729280AbgFOJqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:46:17 -0400
+IronPort-SDR: gLT94mxs0xf/kNnHbM6fx+B4sO+rVREzUq/QHMbh/uP+OdzlLqtwUuo1ZmidUpuKBilgbDrhDK
+ nJGF1AwJ4NDQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 02:46:16 -0700
+IronPort-SDR: XgcFG50rtij0zNyxTx2eR7e6aWzEN6HIam4/YmBQuH3xC3wQR3oGQthNEmbEaSIJFXuzH0JtCC
+ SxQFfD/j7Lmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
+   d="scan'208";a="316860786"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Jun 2020 02:46:14 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jklh2-00DXSL-Uk; Mon, 15 Jun 2020 12:46:16 +0300
+Date:   Mon, 15 Jun 2020 12:46:16 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stefano Brivio <sbrivio@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] bitmap: Add test for bitmap_cut()
+Message-ID: <20200615094616.GS2428291@smile.fi.intel.com>
+References: <cover.1592155364.git.sbrivio@redhat.com>
+ <5fc45e6bbd4fa837cd9577f8a0c1d639df90a4ce.1592155364.git.sbrivio@redhat.com>
+ <20200615094155.GQ2428291@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615094155.GQ2428291@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On Mon, Jun 15, 2020 at 12:41:55PM +0300, Andy Shevchenko wrote:
+> On Sun, Jun 14, 2020 at 07:40:54PM +0200, Stefano Brivio wrote:
+> > Inspired by an original patch from Yury Norov: introduce a test for
+> > bitmap_cut() that also makes sure functionality is as described for
+> > partially overlapping src and dst.
+> 
+> Taking into account recent fixes for BE 64-bit, do we have test cases for a such?
 
-After the interface of gadget printer device was disabled,
-We should not continue operate the device.
+It might be enough to have only these, but perhaps s390 guys can help?
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- drivers/usb/gadget/function/f_printer.c | 36 +++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+Alexander, can you apply this patch (w/o the first one, which is suppose to
+fix) and confirm that you have test case failure, followed by applying first
+one and confirm a fix?
 
-diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
-index 9c7ed2539ff7..2b45a61e4213 100644
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -338,6 +338,11 @@ printer_open(struct inode *inode, struct file *fd)
- 
- 	spin_lock_irqsave(&dev->lock, flags);
- 
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		return -ENODEV;
-+	}
-+
- 	if (!dev->printer_cdev_open) {
- 		dev->printer_cdev_open = 1;
- 		fd->private_data = dev;
-@@ -430,6 +435,12 @@ printer_read(struct file *fd, char __user *buf, size_t len, loff_t *ptr)
- 	mutex_lock(&dev->lock_printer_io);
- 	spin_lock_irqsave(&dev->lock, flags);
- 
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		mutex_unlock(&dev->lock_printer_io);
-+		return -ENODEV;
-+	}
-+
- 	/* We will use this flag later to check if a printer reset happened
- 	 * after we turn interrupts back on.
- 	 */
-@@ -561,6 +572,12 @@ printer_write(struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
- 	mutex_lock(&dev->lock_printer_io);
- 	spin_lock_irqsave(&dev->lock, flags);
- 
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		mutex_unlock(&dev->lock_printer_io);
-+		return -ENODEV;
-+	}
-+
- 	/* Check if a printer reset happens while we have interrupts on */
- 	dev->reset_printer = 0;
- 
-@@ -667,6 +684,13 @@ printer_fsync(struct file *fd, loff_t start, loff_t end, int datasync)
- 
- 	inode_lock(inode);
- 	spin_lock_irqsave(&dev->lock, flags);
-+
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		inode_unlock(inode);
-+		return -ENODEV;
-+	}
-+
- 	tx_list_empty = (likely(list_empty(&dev->tx_reqs)));
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 
-@@ -689,6 +713,13 @@ printer_poll(struct file *fd, poll_table *wait)
- 
- 	mutex_lock(&dev->lock_printer_io);
- 	spin_lock_irqsave(&dev->lock, flags);
-+
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		mutex_unlock(&dev->lock_printer_io);
-+		return EPOLLERR | EPOLLHUP;
-+	}
-+
- 	setup_rx_reqs(dev);
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 	mutex_unlock(&dev->lock_printer_io);
-@@ -722,6 +753,11 @@ printer_ioctl(struct file *fd, unsigned int code, unsigned long arg)
- 
- 	spin_lock_irqsave(&dev->lock, flags);
- 
-+	if (dev->interface < 0) {
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		return -ENODEV;
-+	}
-+
- 	switch (code) {
- 	case GADGET_GET_PRINTER_STATUS:
- 		status = (int)dev->printer_status;
+> > Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+> > ---
+> > v2:
+> >   - use expect_eq_bitmap() instead of open coding result check (Andy
+> >     Shevchenko)
+> >   - don't use uncommon Co-authored-by: tag (Andy Shevchenko), drop
+> >     it altogether as Yury asked me to go ahead with this and I haven't
+> >     heard back in a while. Patch is now rather different anyway
+> >   - avoid stack overflow, buffer needs to be five unsigned longs and
+> >     not four as 'in' is shifted by one, spotted by kernel test robot
+> >     with CONFIG_STACKPROTECTOR_STRONG
+> > 
+> >  lib/test_bitmap.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 58 insertions(+)
+> > 
+> > diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+> > index 6b13150667f5..df903c53952b 100644
+> > --- a/lib/test_bitmap.c
+> > +++ b/lib/test_bitmap.c
+> > @@ -610,6 +610,63 @@ static void __init test_for_each_set_clump8(void)
+> >  		expect_eq_clump8(start, CLUMP_EXP_NUMBITS, clump_exp, &clump);
+> >  }
+> >  
+> > +struct test_bitmap_cut {
+> > +	unsigned int first;
+> > +	unsigned int cut;
+> > +	unsigned int nbits;
+> > +	unsigned long in[4];
+> > +	unsigned long expected[4];
+> > +};
+> > +
+> > +static struct test_bitmap_cut test_cut[] = {
+> > +	{  0,  0,  8, { 0x0000000aUL, }, { 0x0000000aUL, }, },
+> > +	{  0,  0, 32, { 0xdadadeadUL, }, { 0xdadadeadUL, }, },
+> > +	{  0,  3,  8, { 0x000000aaUL, }, { 0x00000015UL, }, },
+> > +	{  3,  3,  8, { 0x000000aaUL, }, { 0x00000012UL, }, },
+> > +	{  0,  1, 32, { 0xa5a5a5a5UL, }, { 0x52d2d2d2UL, }, },
+> > +	{  0,  8, 32, { 0xdeadc0deUL, }, { 0x00deadc0UL, }, },
+> > +	{  1,  1, 32, { 0x5a5a5a5aUL, }, { 0x2d2d2d2cUL, }, },
+> > +	{  0, 15, 32, { 0xa5a5a5a5UL, }, { 0x00014b4bUL, }, },
+> > +	{  0, 16, 32, { 0xa5a5a5a5UL, }, { 0x0000a5a5UL, }, },
+> > +	{ 15, 15, 32, { 0xa5a5a5a5UL, }, { 0x000125a5UL, }, },
+> > +	{ 15, 16, 32, { 0xa5a5a5a5UL, }, { 0x0000a5a5UL, }, },
+> > +	{ 16, 15, 32, { 0xa5a5a5a5UL, }, { 0x0001a5a5UL, }, },
+> > +
+> > +	{ BITS_PER_LONG, BITS_PER_LONG, BITS_PER_LONG,
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +	},
+> > +	{ 1, BITS_PER_LONG - 1, BITS_PER_LONG,
+> > +		{ 0xa5a5a5a5UL, 0xa5a5a5a5UL, },
+> > +		{ 0x00000001UL, 0x00000001UL, },
+> > +	},
+> > +
+> > +	{ 0, BITS_PER_LONG * 2, BITS_PER_LONG * 2 + 1,
+> > +		{ 0xa5a5a5a5UL, 0x00000001UL, 0x00000001UL, 0x00000001UL },
+> > +		{ 0x00000001UL, },
+> > +	},
+> > +	{ 16, BITS_PER_LONG * 2 + 1, BITS_PER_LONG * 2 + 1 + 16,
+> > +		{ 0x0000ffffUL, 0x5a5a5a5aUL, 0x5a5a5a5aUL, 0x5a5a5a5aUL },
+> > +		{ 0x2d2dffffUL, },
+> > +	},
+> > +};
+> > +
+> > +static void __init test_bitmap_cut(void)
+> > +{
+> > +	unsigned long b[5], *in = &b[1], *out = &b[0];	/* Partial overlap */
+> > +	int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(test_cut); i++) {
+> > +		struct test_bitmap_cut *t = &test_cut[i];
+> > +
+> > +		memcpy(in, t->in, sizeof(t->in));
+> > +
+> > +		bitmap_cut(out, in, t->first, t->cut, t->nbits);
+> > +
+> > +		expect_eq_bitmap(t->expected, out, t->nbits);
+> > +	}
+> > +}
+> > +
+> >  static void __init selftest(void)
+> >  {
+> >  	test_zero_clear();
+> > @@ -623,6 +680,7 @@ static void __init selftest(void)
+> >  	test_bitmap_parselist_user();
+> >  	test_mem_optimisations();
+> >  	test_for_each_set_clump8();
+> > +	test_bitmap_cut();
+> >  }
+> >  
+> >  KSTM_MODULE_LOADERS(test_bitmap);
+> > -- 
+> > 2.27.0
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+
 -- 
-2.24.1
+With Best Regards,
+Andy Shevchenko
+
 
