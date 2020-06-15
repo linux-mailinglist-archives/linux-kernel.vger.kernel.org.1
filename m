@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047661F8F56
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1B41F8F5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgFOHWY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 03:22:24 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:49875 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgFOHWY (ORCPT
+        id S1728587AbgFOHWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:22:49 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35754 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728539AbgFOHWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:22:24 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 49AE41C000B;
-        Mon, 15 Jun 2020 07:22:22 +0000 (UTC)
-Date:   Mon, 15 Jun 2020 09:22:21 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Kamal Dasu <kdasu.kdev@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch] mtd: set master partition panic write flag
-Message-ID: <20200615092221.7f269810@xps13>
-In-Reply-To: <CB182F6C-EB9E-4E90-BF6E-115C925FCFFE@gmail.com>
-References: <20200504235403.13504-1-kdasu.kdev@gmail.com>
-        <CB182F6C-EB9E-4E90-BF6E-115C925FCFFE@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 15 Jun 2020 03:22:46 -0400
+X-UUID: 9ac8135d0b454283a9699f8891fa5f2f-20200615
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=KsPHsP0hYhfA7edmMoOs0ziWrUu4La3/8ekhuF/RrAI=;
+        b=HTg6bLLhj1mM1icr2cokZE8n6tUa/5PACZhwfvKJbhqmGIuQ4MjVA1h6lF49SBKeTSRttbM40hHLymr4eJYozETOSE9gVoZWQzkDMlzR9XtVsMP6IFf609JWU6haGNthcGak+yBnOl8e5iHWYyGo2GRS3vzvvTWggj6oABOF0Ss=;
+X-UUID: 9ac8135d0b454283a9699f8891fa5f2f-20200615
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1313003693; Mon, 15 Jun 2020 15:22:37 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 15 Jun 2020 15:22:34 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 15 Jun 2020 15:22:36 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
+CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <cc.chou@mediatek.com>,
+        <chaotian.jing@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v3 0/2] scsi: ufs: Add trace event for UIC commands and cleanup UIC struct
+Date:   Mon, 15 Jun 2020 15:22:33 +0800
+Message-ID: <20200615072235.23042-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kamal,
+SGksDQpUaGlzIHNlcmllcyBhZGRzIHRyYWNlIGV2ZW50IGZvciBVSUMgY29tbWFuZHMgYW5kIGRv
+IGEgc21hbGwgY2xlYW51cCBpbiBzdHJ1Y3QgdWljX2NvbW1hbmQuDQoNCnYyIC0+IHYzOg0KICAt
+IFJlZmFjdG9yICJjb21wbGV0ZSIgZXZlbnQgaG9va3MgaW4gdWZzaGNkX3VpY19jbWRfY29tcGwo
+KSAoQXZyaSBBbHRtYW4pDQoNCnYxIC0+IHYyOg0KICAtIFJlbmFtZSAidWljX3NlbmQiIHRvICJz
+ZW5kIiBhbmQgInVpY19jb21wbGV0ZSIgdG8gImNvbXBsZXRlIg0KICAtIE1vdmUgInNlbmQiIHRy
+YWNlIGJlZm9yZSBVSUMgY29tbWFuZCBpcyBzZW50IG90aGVyd2lzZSAic2VuZCIgdHJhY2UgbWF5
+IGxvZyBpbmNvcnJlY3QgYXJndW1lbnRzDQogIC0gTW92ZSAiY29tcGxldGUiIHRyYWNlIHRvIFVJ
+QyBpbnRlcnJ1cHQgaGFuZGxlciB0byBtYWtlIGxvZ2dpbmcgdGltZSBwcmVjaXNlDQoNClN0YW5s
+ZXkgQ2h1ICgyKToNCiAgc2NzaTogdWZzOiBSZW1vdmUgdW51c2VkIGZpZWxkIGluIHN0cnVjdCB1
+aWNfY29tbWFuZA0KICBzY3NpOiB1ZnM6IEFkZCB0cmFjZSBldmVudCBmb3IgVUlDIGNvbW1hbmRz
+DQoNCiBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jICB8IDI2ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrDQogZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaCAgfCAgNCAtLS0tDQogaW5jbHVkZS90
+cmFjZS9ldmVudHMvdWZzLmggfCAzMSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQog
+MyBmaWxlcyBjaGFuZ2VkLCA1NyBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KDQotLSAN
+CjIuMTguMA0K
 
-Kamal Dasu <kdasu.kdev@gmail.com> wrote on Sat, 13 Jun 2020 02:49:31
--0400:
-
-> Can you please accept this if there are no objections.
-> 
-> Kamal
-> 
-> > On May 4, 2020, at 7:54 PM, Kamal Dasu <kdasu.kdev@gmail.com> wrote:
-> > 
-> > ﻿Check and set master panic write flag so that low level drivers
-> > can use it to take required action to ensure oops data gets written
-> > to assigned mtdoops device partition.
-> > 
-> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> > ---
-> > drivers/mtd/mtdcore.c | 4 ++--
-> > 1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 2916674208b3..7e37ed2f38ea 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -1235,8 +1235,8 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
-> >        return -EROFS;
-> >    if (!len)
-> >        return 0;
-> > -    if (!mtd->oops_panic_write)
-> > -        mtd->oops_panic_write = true;
-> > +    if (!master->oops_panic_write)
-> > +        master->oops_panic_write = true;
-> > 
-> >    return master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
-> >                    retlen, buf);
-> > -- 
-> > 2.17.1
-> >   
-
-I thing we missed it. However, shouldn't we have a Cc:/Fixes: pair of
-tags here? We could send it as part of a fixes PR then.
-
-Thanks,
-Miquèl
