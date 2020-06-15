@@ -2,168 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA041F9607
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77271F960F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgFOMEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:04:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13144 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729807AbgFOMEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:04:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592222639; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=0oEnZf+dbIRFYY1AXQ+STVkTXjmn+D3bQjmyAN94nSo=; b=iPb5oaWsRgSkCASd7Utrq8NvG3NwsLKQr1lu3FQXT6Lk73ylIojD57ERIA0h9/aGZe8Nk3Zz
- XI8zRHbTH6UGPiWKPKNQme/K2Comp5bm4Q5GtUwH3t7hi+hXr5DvDImlBkI5D1mSnIPWrzNP
- JxHMPEXaoi4n23ne9MxVnTW6Efo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5ee76397c76a4e7a2a064722 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Jun 2020 12:03:35
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BFA20C43387; Mon, 15 Jun 2020 12:03:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1BE08C433CB;
-        Mon, 15 Jun 2020 12:03:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1BE08C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org, robdclark@gmail.com,
-        robdclark@chromium.org, stanimir.varbanov@linaro.org
-Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-Subject: [PATCH v6 6/6] spi: spi-qcom-qspi: Use OPP API to set clk/perf state
-Date:   Mon, 15 Jun 2020 17:32:44 +0530
-Message-Id: <1592222564-13556-7-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
-References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
+        id S1729808AbgFOMFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:05:53 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36666 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728510AbgFOMFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:05:53 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05FBuhUj185278;
+        Mon, 15 Jun 2020 12:05:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=1ZyfpjNW70O/reszk5u6HkvTyC7DS0UPZqomeyJuQ8E=;
+ b=c88CDHOEdp4q5gpgtUJ8XS5PjNzV9xNwM1feZaL2UGm5DCNhARFHYxa3YwFHMfJbbeOt
+ nkVSWIysGkdzeqwWub0LCOjjR0WG7KiIEQamrKSW7rHgDiJTuH9710h6jWyIbM7DPwDp
+ F6UtyugpPQCuu0C6aQ/8NqjXF+ejhtA3jRxhZHd1SLBIk9CmZp6I61f2QTyRt7ghyxw6
+ CF6bgMCRq3T8C/laEoXdyroxOb5Sn9Kesi0HL33QaM+dZjHoHMuE22sv2tED+TOT9gef
+ XJu5Djbpnd4sI0WgQigMGtmu6SJ1qB3i3Z2xS4AScxKzh9KaYOCQP21ykKARUesU1f8e cQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31p6e7rn6k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 15 Jun 2020 12:05:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05FBxGj5153699;
+        Mon, 15 Jun 2020 12:03:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 31p6darng0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Jun 2020 12:03:42 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05FC3eWw012453;
+        Mon, 15 Jun 2020 12:03:40 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 15 Jun 2020 05:03:39 -0700
+Date:   Mon, 15 Jun 2020 15:03:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Joe Perches <joe@perches.com>, Julia Lawall <Julia.Lawall@lip6.fr>,
+        cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coccinelle: api: add kzfree script
+Message-ID: <20200615120332.GJ4282@kadam>
+References: <20200604140805.111613-1-efremov@linux.com>
+ <e4981fd76a88e18376c4e634c235501b57d321e7.camel@perches.com>
+ <345c783b-a8cf-9dd1-29c6-d32b9b29053f@linux.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <345c783b-a8cf-9dd1-29c6-d32b9b29053f@linux.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9652 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006150097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9652 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 malwarescore=0 suspectscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0
+ cotscore=-2147483648 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006150097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QSPI needs to vote on a performance state of a power domain depending on
-the clock rate. Add support for it by specifying the perf state/clock rate
-as an OPP table in device tree.
+On Sun, Jun 14, 2020 at 10:42:54PM +0300, Denis Efremov wrote:
+> On 6/4/20 7:27 PM, Joe Perches wrote:
+> > On Thu, 2020-06-04 at 17:08 +0300, Denis Efremov wrote:
+> >> Check for memset() with 0 followed by kfree().
+> > 
+> > Perhaps those uses should be memzero_explicit or kvfree_sensitive.
+> > 
+> 
+> Is it safe to suggest to use kzfree instead of memzero_explicit && kfree?
+> Or it would be better to use kvfree_sensitive in this case.
+> 
+> kzfree uses memset(0) with no barrier_data.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Acked-by: Mark Brown <broonie@kernel.org>
-Cc: Alok Chauhan <alokc@codeaurora.org>
-Cc: Akash Asthana <akashast@codeaurora.org>
-Cc: linux-spi@vger.kernel.org
----
-No functional change in v6, rebased over 5.8-rc1
+Yeah.  That seems buggy.  It should have a barrier.  Also I thought I
+saw somewhere that Linus doesn't like the name and so that's why we have
+the _sensitive() name?
 
- drivers/spi/spi-qcom-qspi.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
-index 3c4f83b..ef51982 100644
---- a/drivers/spi/spi-qcom-qspi.c
-+++ b/drivers/spi/spi-qcom-qspi.c
-@@ -8,6 +8,7 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/pm_runtime.h>
-+#include <linux/pm_opp.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- 
-@@ -139,6 +140,8 @@ struct qcom_qspi {
- 	struct device *dev;
- 	struct clk_bulk_data *clks;
- 	struct qspi_xfer xfer;
-+	struct opp_table *opp_table;
-+	bool has_opp_table;
- 	/* Lock to protect xfer and IRQ accessed registers */
- 	spinlock_t lock;
- };
-@@ -235,7 +238,7 @@ static int qcom_qspi_transfer_one(struct spi_master *master,
- 		speed_hz = xfer->speed_hz;
- 
- 	/* In regular operation (SBL_EN=1) core must be 4x transfer clock */
--	ret = clk_set_rate(ctrl->clks[QSPI_CLK_CORE].clk, speed_hz * 4);
-+	ret = dev_pm_opp_set_rate(ctrl->dev, speed_hz * 4);
- 	if (ret) {
- 		dev_err(ctrl->dev, "Failed to set core clk %d\n", ret);
- 		return ret;
-@@ -481,6 +484,20 @@ static int qcom_qspi_probe(struct platform_device *pdev)
- 	master->handle_err = qcom_qspi_handle_err;
- 	master->auto_runtime_pm = true;
- 
-+	ctrl->opp_table = dev_pm_opp_set_clkname(&pdev->dev, "core");
-+	if (IS_ERR(ctrl->opp_table)) {
-+		ret = PTR_ERR(ctrl->opp_table);
-+		goto exit_probe_master_put;
-+	}
-+	/* OPP table is optional */
-+	ret = dev_pm_opp_of_add_table(&pdev->dev);
-+	if (!ret) {
-+		ctrl->has_opp_table = true;
-+	} else if (ret != -ENODEV) {
-+		dev_err(&pdev->dev, "invalid OPP table in device tree\n");
-+		goto exit_probe_master_put;
-+	}
-+
- 	pm_runtime_enable(dev);
- 
- 	ret = spi_register_master(master);
-@@ -488,6 +505,9 @@ static int qcom_qspi_probe(struct platform_device *pdev)
- 		return 0;
- 
- 	pm_runtime_disable(dev);
-+	if (ctrl->has_opp_table)
-+		dev_pm_opp_of_remove_table(&pdev->dev);
-+	dev_pm_opp_put_clkname(ctrl->opp_table);
- 
- exit_probe_master_put:
- 	spi_master_put(master);
-@@ -498,11 +518,15 @@ static int qcom_qspi_probe(struct platform_device *pdev)
- static int qcom_qspi_remove(struct platform_device *pdev)
- {
- 	struct spi_master *master = platform_get_drvdata(pdev);
-+	struct qcom_qspi *ctrl = spi_master_get_devdata(master);
- 
- 	/* Unregister _before_ disabling pm_runtime() so we stop transfers */
- 	spi_unregister_master(master);
- 
- 	pm_runtime_disable(&pdev->dev);
-+	if (ctrl->has_opp_table)
-+		dev_pm_opp_of_remove_table(&pdev->dev);
-+	dev_pm_opp_put_clkname(ctrl->opp_table);
- 
- 	return 0;
- }
-@@ -512,6 +536,8 @@ static int __maybe_unused qcom_qspi_runtime_suspend(struct device *dev)
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct qcom_qspi *ctrl = spi_master_get_devdata(master);
- 
-+	/* Drop the performance state vote */
-+	dev_pm_opp_set_rate(dev, 0);
- 	clk_bulk_disable_unprepare(QSPI_NUM_CLKS, ctrl->clks);
- 
- 	return 0;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+regards,
+dan carpenter
 
