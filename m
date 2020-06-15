@@ -2,152 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3E01FA355
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091B31FA363
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgFOWQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:16:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24894 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726397AbgFOWQu (ORCPT
+        id S1726488AbgFOWTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgFOWTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:16:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592259409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=36ZF/biwj/VA+UsNPBUNfyG0Dq51HOZlNRabEgtvraE=;
-        b=IIKWOR94zCvAQBp1+TE1r7l4nR+bvXnfucIl0CPRw41DRNzN+PgFPEVOjWa4+0RnDmY9EQ
-        v9kchydzbtdNm9sI1wrn0AMjm/vwDZiyMTiF4V4CzaG35FedLjTdIxp2phV7+L1FvgO1fr
-        M82yEVcdjs15SoTSwJaZsBlrB8aO4RE=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-aNGpdwOrM5WYHemcRXhAhA-1; Mon, 15 Jun 2020 18:16:42 -0400
-X-MC-Unique: aNGpdwOrM5WYHemcRXhAhA-1
-Received: by mail-qt1-f197.google.com with SMTP id k23so15219069qtb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:16:42 -0700 (PDT)
+        Mon, 15 Jun 2020 18:19:06 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D5CC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:19:05 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id m25so10325283vsp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r9T7k1DpPFTY/gAD5b6MEb9oHnKklfAWLgEYHIDgzf0=;
+        b=ARSthNo3qKbcMSHrOKeeWC4s+yNkZz9S1UbIt1WGKeODX5s69r5L5uSsoRuhcRobJN
+         Xj/Xqk+norC+HRQUaNtFFSzzpLlDGWLoiCGIG8belx4tZTOHTmOWO3KyhG55PsCyo78l
+         BOc8VvFbjNWSv0dAxz6W1DZo3IWtoKJj8pmBC1bQ13laz7a2BhtLrt0NuIgsKWVvKVI4
+         PuMFjEszl5teVPOZypEKgh60EpvkWUDFZrHyghbXOgFpxCgNwlFe3x/0p38CxgBadiC/
+         Xn+4v2ouT8LgYI2JX5xP2KovVOoZVW7YpVcOuO4bjCBRaGBKQ9tPGG2pf02zrtM5A62i
+         Y2mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=36ZF/biwj/VA+UsNPBUNfyG0Dq51HOZlNRabEgtvraE=;
-        b=UsTOrf+5EzZHKj/aw2H0VzYKkBpeGGSh667oglh2AtXgk4WaODE1WLpN2m1jD+lK7Y
-         p+w1xoPHPpKXHYM+5eXFGl2ud/CbYXdtFgQaoxbgPAKFkKsjiJ4S8YVNL8Br9r8PJSqM
-         S8DWiFXa0x1nctWYAyMz5q3CVxWMEFA1wtL9NixQritD7TtQyVibzpcO2s1KbhL02RHp
-         dM8Wlt193VOuV0JSlovF+RqO5OPmFF4R12M6x5S99Om34fuvhXkDJ10zQmSnqZ5C2B2P
-         CwxKyhIYX8xfDPgxqrig8TJVNyaT+h0rc0GruhP5jLXJJ++PFCYP8d0p27bjQc6jMPNr
-         v+uA==
-X-Gm-Message-State: AOAM533NpT9mjsVcon+JTLrZkX338HskIub2ceFwlJm+mDHULuoCGoCX
-        0p64U8MXp3puV6BWZjNerLudrnJJ8DV/Ezb75qv3p2lMQG6esn2PTmqrQWg0iL1V/V3hAqfrtmV
-        RaY3lyps03jGsn1glNXKQGkMm
-X-Received: by 2002:a37:a0d0:: with SMTP id j199mr16970953qke.300.1592259400690;
-        Mon, 15 Jun 2020 15:16:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9KGEANrrpBThsrhroFN+hSsX9BivaeMbkhMP7hiObGEAGG+ZmPX4mroIaSO0uiyEEJzhS4Q==
-X-Received: by 2002:a37:a0d0:: with SMTP id j199mr16970930qke.300.1592259400461;
-        Mon, 15 Jun 2020 15:16:40 -0700 (PDT)
-Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id w13sm12351509qkb.91.2020.06.15.15.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 15:16:39 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH 18/25] mm/riscv: Use mm_fault_accounting()
-Date:   Mon, 15 Jun 2020 18:16:00 -0400
-Message-Id: <20200615221607.7764-19-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
-References: <20200615221607.7764-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r9T7k1DpPFTY/gAD5b6MEb9oHnKklfAWLgEYHIDgzf0=;
+        b=ufKJ4WEnWixGn3A2GRMEFTl5HGoH2Mnjud2Ft4UMMxtMjxl/O6r9PYuhUXalKCyz1H
+         eiagwkB41IH0aIlXiLDfaelRTXx9y+dJANUhuwVBE5P+sCKe3e9M2eHsqMXvo+rkOcuG
+         Up8LKURXo3fr+9QARYD/Jl6BhAtEntXnoJAgU9FtN8QqS9eWwbNyVAe4zXqcYQe30YTB
+         c9L6GG6B5hmewtqgiqF0unegVYoKk+bBMRRviWuM+yDhOqI6NahNhAJoatkj1cdnjylU
+         sJwRsAnIepEYkLCOUZ+oVJYo9TeDXlZ1W/hMMed2GrU1Zg0aiDDQ9XZqLwK5+yn4uyDU
+         CGQQ==
+X-Gm-Message-State: AOAM533Q8L3FR5F3jrV/rm3pMOACo8OdbVfrRylqWRzEwnBBX169XheX
+        ODxOFSLQCf5eqxsMem+zThvPSctp6upBsWaoUiY=
+X-Google-Smtp-Source: ABdhPJxc//Rmt+6lw+UJCTnqtvocCC/v7PiZuZB0+sopLg9uyknCBc0IboBTC1S2jba9JDzayMa0+Yx33OFN66c17YE=
+X-Received: by 2002:a67:3211:: with SMTP id y17mr22659348vsy.56.1592259544861;
+ Mon, 15 Jun 2020 15:19:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+ <20200613155738.2249399-24-jim.cromie@gmail.com> <20200614060501.GB2608744@kroah.com>
+In-Reply-To: <20200614060501.GB2608744@kroah.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 15 Jun 2020 16:18:38 -0600
+Message-ID: <CAJfuBxyAYU+cE+JpE+T6+k0YhqG3pyk2ShPruX4A9yCTeKX3Jg@mail.gmail.com>
+Subject: Re: [PATCH v2 23/24] kset-example: add pr_debug()s for easy
+ visibility of its operation
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new mm_fault_accounting() helper for page fault accounting.
+On Sun, Jun 14, 2020 at 12:05 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Jun 13, 2020 at 09:57:37AM -0600, Jim Cromie wrote:
+> > put pr_debug()s into most functions, to easily see code operate when
+> > module is loaded and used.
+> >
+> >   #> dmesg -w &
+> >   #> modprobe kset-example dyndbg=+pfml
+> >   #> cat /sys/kernel/kset-example/*/*
+> > ---
 
-Avoid doing page fault accounting multiple times if the page fault is retried.
+> >  static int __init example_init(void)
+> >  {
+> > +     pr_debug("called");
+>
+> Why???  If you want to do something like this, use ftrace, that is what
+> it is for.
+>
+> thanks,
+>
+> greg k-h
 
-CC: Paul Walmsley <paul.walmsley@sifive.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>
-CC: Albert Ou <aou@eecs.berkeley.edu>
-CC: linux-riscv@lists.infradead.org
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/riscv/mm/fault.c | 21 +++------------------
- 1 file changed, 3 insertions(+), 18 deletions(-)
 
-diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-index be84e32adc4c..9262338614d1 100644
---- a/arch/riscv/mm/fault.c
-+++ b/arch/riscv/mm/fault.c
-@@ -30,7 +30,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 	struct vm_area_struct *vma;
- 	struct mm_struct *mm;
- 	unsigned long addr, cause;
--	unsigned int flags = FAULT_FLAG_DEFAULT;
-+	unsigned int flags = FAULT_FLAG_DEFAULT, major = 0;
- 	int code = SEGV_MAPERR;
- 	vm_fault_t fault;
- 
-@@ -65,9 +65,6 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
--
--	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
--
- retry:
- 	down_read(&mm->mmap_sem);
- 	vma = find_vma(mm, addr);
-@@ -111,6 +108,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 	 * the fault.
- 	 */
- 	fault = handle_mm_fault(vma, addr, flags);
-+	major |= fault & VM_FAULT_MAJOR;
- 
- 	/*
- 	 * If we need to retry but a fatal signal is pending, handle the
-@@ -128,21 +126,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 		BUG();
- 	}
- 
--	/*
--	 * Major/minor page fault accounting is only done on the
--	 * initial attempt. If we go through a retry, it is extremely
--	 * likely that the page will be found in page cache at that point.
--	 */
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR) {
--			tsk->maj_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
--				      1, regs, addr);
--		} else {
--			tsk->min_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
--				      1, regs, addr);
--		}
- 		if (fault & VM_FAULT_RETRY) {
- 			flags |= FAULT_FLAG_TRIED;
- 
-@@ -156,6 +140,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 	}
- 
- 	up_read(&mm->mmap_sem);
-+	mm_fault_accounting(tsk, regs, addr, major);
- 	return;
- 
- 	/*
--- 
-2.26.2
-
+mostly I needed an easy place to try out pr_debug_n  in the next patch.
+if that next patch seems like a good anti-pattern for pr_debug_n use/misuse,
+then I could combine the 2, and add a 'dont do this, use ftrace' comment too.
+or not, of course.
