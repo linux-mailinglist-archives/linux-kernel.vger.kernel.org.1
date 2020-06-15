@@ -2,110 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4931F9BC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEB21F9BB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbgFOPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730147AbgFOPSV (ORCPT
+        id S1730887AbgFOPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:16:40 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34471 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730197AbgFOPQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:18:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE6AC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:18:21 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jkqsL-0003hz-4F; Mon, 15 Jun 2020 17:18:17 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jkqsK-0008TP-HY; Mon, 15 Jun 2020 17:18:16 +0200
-Date:   Mon, 15 Jun 2020 17:18:16 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] video: ssd1307fb: Print PWM period using 64-bit
- format specifier
-Message-ID: <20200615151816.wrhqwffvw3h436ar@taurus.defre.kleine-koenig.org>
-References: <20200615141606.2814208-1-thierry.reding@gmail.com>
- <20200615141606.2814208-2-thierry.reding@gmail.com>
+        Mon, 15 Jun 2020 11:16:39 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id B1D2EFF811;
+        Mon, 15 Jun 2020 15:16:32 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 17:19:56 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v10 1/4] dt-bindings: media: i2c: Add bindings for Maxim
+ Integrated MAX9286
+Message-ID: <20200615151956.fsiczqldkle5aevb@uno.localdomain>
+References: <20200612144713.502006-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200612144713.502006-2-kieran.bingham+renesas@ideasonboard.com>
+ <20200612221003.GA3901624@bogus>
+ <20200613123207.6ey6y5spfa5ajk4h@uno.localdomain>
+ <CAL_Jsq+o6Hwz6vN2mgYGnZF4wX5nFoaXRMweQr8euep-9OmBiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="deic5xssjaudhrig"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200615141606.2814208-2-thierry.reding@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_Jsq+o6Hwz6vN2mgYGnZF4wX5nFoaXRMweQr8euep-9OmBiA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---deic5xssjaudhrig
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 15, 2020 at 09:02:28AM -0600, Rob Herring wrote:
+> On Sat, Jun 13, 2020 at 6:28 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
+> >
+> > Hi Rob,
+> >
+> > On Fri, Jun 12, 2020 at 04:10:03PM -0600, Rob Herring wrote:
+> > > On Fri, 12 Jun 2020 15:47:10 +0100, Kieran Bingham wrote:
+> > > > From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> > > >
+> > > > The MAX9286 deserializes video data received on up to 4 Gigabit
+> > > > Multimedia Serial Links (GMSL) and outputs them on a CSI-2 port using up
+> > > > to 4 data lanes.
+> > > >
+> > > > Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > > > Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> > > > Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > >
+> > > > ---
+> > > >
+> > > > v7:
+> > > >  - Collect Rob's RB tag
+> > > >  - Remove redundant maxItems from remote-endpoints
+> > > >  - Fix SPDX licence tag
+> > > >
+> > > > v10:
+> > > > [Jacopo]
+> > > >  - Fix dt-validation
+> > > >  - Fix dt-binding examples with 2 reg entries
+> > > >
+> > > > [Kieran]
+> > > >  - Correctly match the hex camera node reg
+> > > >  - Add (required) GPIO controller support
+> > > >
+> > > >  .../bindings/media/i2c/maxim,max9286.yaml     | 366 ++++++++++++++++++
+> > > >  1 file changed, 366 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > > >
+> > >
+> > >
+> > > My bot found errors running 'make dt_binding_check' on your patch:
+> > >
+> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/maxim,max9286.example.dt.yaml: example-0: i2c@e66d8000:reg:0: [0, 3865935872, 0, 64] is too long
+> > >
+> > >
+> > > See https://patchwork.ozlabs.org/patch/1308280
+> > >
+> > > If you already ran 'make dt_binding_check' and didn't see the above
+> > > error(s), then make sure dt-schema is up to date:
+> > >
+> > > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> > >
+> >
+> > I have updated my dt-schema installation to the latest github master
+> > -------------------------------------------------------------------------------
+> > Successfully installed dtschema-2020.6.dev8+g4d2d86c
+> >
+> > https://github.com/devicetree-org/dt-schema/commit/4d2d86c5cd65cd3944ce0aaa400866bc36727bea
+> >
+> > $ /usr/bin/dt-validate -V
+> > 2020.6.dev8+g4d2d86c
+> > -------------------------------------------------------------------------------
+> >
+> > But I still cannot reproduce the error.
+> >
+> > However, I see this commit in your next branch
+> > https://github.com/devicetree-org/dt-schema/commit/b72500282cfd2eba6f9df4d7553f696544b40ee6
+> > "schemas: Add a schema to check 'reg' sizes "
+> >
+> > Which sounds very likely related to the above reported error.
+> > Was this intentional ?
+>
+> Yes, I can't add the new checks to master until all the in tree schema
+> are fixed yet I want to check submissions with pending checks, so I
+> created the 'next' branch.
 
-Hello,
+I see, makes sense. Can I just suggest to add a few words about this
+new branch in the automated reply ? Otherwise the ones who are not aware
+of this (like I was) will keep wondering why they don't see the error your
+bot reported even if they have updated their dt-schema version to the
+latest available master.
 
-On Mon, Jun 15, 2020 at 04:16:05PM +0200, Thierry Reding wrote:
-> The PWM core will soon change the duty cycle and period of PWMs to 64
-> bits to allow for a broader range of values. Use a 64-bit format
-> specifier to avoid a warning when that change is made.
->=20
-> Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-> ---
->  drivers/video/fbdev/ssd1307fb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/video/fbdev/ssd1307fb.c b/drivers/video/fbdev/ssd130=
-7fb.c
-> index 8e06ba912d60..09425ec317ba 100644
-> --- a/drivers/video/fbdev/ssd1307fb.c
-> +++ b/drivers/video/fbdev/ssd1307fb.c
-> @@ -312,7 +312,7 @@ static int ssd1307fb_init(struct ssd1307fb_par *par)
->  		/* Enable the PWM */
->  		pwm_enable(par->pwm);
-> =20
-> -		dev_dbg(&par->client->dev, "Using PWM%d with a %dns period.\n",
-> +		dev_dbg(&par->client->dev, "Using PWM%d with a %lluns period.\n",
->  			par->pwm->pwm, pwm_get_period(par->pwm));
+>
+> > I'm not sure how I should handle this. The error reports the i2c node
+> > parents should have both address-cells and size-cells properties set
+> > to 2, but in the example there is not i2c node parent at all :)
+> > Should I add a parent node for the i2c in the example snippet ?
+>
+> The examples have default sizes of 1 cell. If you need something
+> different, the example has to define a parent node to specify it. In
+> your case, I'd just change 'reg' to use 1 cell each.
+>
 
-I wonder a bit about the driver accessing par->pwm->pwm, but that's
-orthogonal to this patch.
+Thanks, will fix.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---deic5xssjaudhrig
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl7nkTUACgkQwfwUeK3K
-7AmU3Qf/Rsruxiv5Xc2fp4ZdL87Rvbku+2jHQyQqS/qEgxFaucX6fBOJX3zMIXeL
-Q+CHvMMgGG6CI9Sz3/lxHWAO5cXxltczQ/QmUgw+kww8oY7ELz2zHTBkcEzf7367
-n05218CG9XvT2M+gKffAs65I72gXuENMQoisIWvsqiD9RJjEMobzaKrwCYimH1nT
-fnpiYHAnHGoKkb/wmP4THIHy7lQ63y9/P3OTQszVcCgOzCvBbvrlN/wonz7D/VKw
-HKotGZVc+et+uZ1W14xpw89HONC3Px58WG1Jv6w+hWs23QdETY9Ot7HAZct5/l2s
-qE3gQjMjajnEny8IsF/oG9dNZczgrg==
-=XuMV
------END PGP SIGNATURE-----
-
---deic5xssjaudhrig--
+> Rob
