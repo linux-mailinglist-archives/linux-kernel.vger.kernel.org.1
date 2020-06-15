@@ -2,165 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB5F1F9F0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD671F9F22
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731276AbgFOSH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 14:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729862AbgFOSHy (ORCPT
+        id S1731340AbgFOSJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 14:09:46 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:55738 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728585AbgFOSJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 14:07:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F958C061A0E;
-        Mon, 15 Jun 2020 11:07:54 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id n24so20268630lji.10;
-        Mon, 15 Jun 2020 11:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NNImWCHhqtVojGsejk+J9a5xVKeWHP7W32GZw/jq2rU=;
-        b=PhMfsiax1F0GGmU/3UlPcnuAdoANLNF0BEfPxiOqIPK1akEnQxyIgigJivXEqMaXo0
-         a1qHBTdoHDqU628wXUXrX4pF/ySYe7Tb+Mb7PBD+JGteidbWgcKR/lHS+w4eEv0Y/XHC
-         X51dcTQjHHT1n1QYZ0YIJX057l07QPNIcqygM+gVP7pkeEnpm5xfzRUYoqFj2TWlEBtt
-         Lkm5ShpF/pfwZzxQX4q0xlQCySYBNxPtvyShbRykK97+sbUavl0hGJ4zu9smWN8LwYwU
-         KOm48VEI/Kreye82qxJtoEujLnviMUqzNNePJFWILkD2y8xUE3aGutF5D1n3XlEJXjrV
-         4R3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NNImWCHhqtVojGsejk+J9a5xVKeWHP7W32GZw/jq2rU=;
-        b=nyMrYUtyIkF7iS5LCzLg3LEwyNF9BS9vxt7iKh5yPZbOWkfpctAaPiCYodIbJw3FQY
-         JUP8hko6xhOTUFScFKrEiU0XwQ1W5axh2WjFr4PbMLN5xFtmQgB0gryW2xC1gJcK5mCx
-         1rQ2vHcMGjOvVvUexUUHGeU/HDp6INIaNwhRC52GPjftvG5etDCzLXxSnep4HSHf4bal
-         DzGYviLMFyctx0xytsxJmOtnZp2QR/jkKLkWQ2PsVmoXOVolhNbfKuoxfxDoHtcR1c1K
-         7bkuazTo7Cv/1T6ukKhqLyDFKyL+Z5b7exZwje8679ZuDx7x8LqJkZgjnRPB7vDbGzvL
-         k0dA==
-X-Gm-Message-State: AOAM530pPylwNpzzPwcsvBx8vZuMS0oGuP5GCO1338G4eZE91Aw8iPbD
-        no5G1bzp59c8NejzGeFHRAg=
-X-Google-Smtp-Source: ABdhPJxamRu1no/0/HxGYEY1/YGWpSzM/ErZw9qvr5rjj+WTz8FcixUS/8+BKmChF630FnamwPhT3A==
-X-Received: by 2002:a2e:81d4:: with SMTP id s20mr13376914ljg.184.1592244472721;
-        Mon, 15 Jun 2020 11:07:52 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id o16sm4678233ljg.90.2020.06.15.11.07.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 11:07:51 -0700 (PDT)
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v2_5/5=5d_drm/tegra=3a_plane=3a_Support_18?=
- =?UTF-8?Q?0=c2=b0_rotation?=
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20200614200121.14147-1-digetx@gmail.com>
- <20200614200121.14147-6-digetx@gmail.com> <20200615165758.GR6112@intel.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a22285cb-21d9-bb0e-3b6b-3b1876ebbb59@gmail.com>
-Date:   Mon, 15 Jun 2020 21:07:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 15 Jun 2020 14:09:42 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05FI7hca026496;
+        Mon, 15 Jun 2020 18:08:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=EdV85x/l0ZQB7qs/RGol05XelTO/TGwy+i5Nwcf8gRM=;
+ b=ksIm2T40o14OrDnPOVl41oLfXflESyB3DKHmSrY07W8hiE/Z7QLC5o1aUTaHPRbSwzbu
+ 9c0NwLH9cAIIrEop8mGTFh8G1XGbz9PddITo/iGjFqouwLRZRmyMPkuv312Tprpn0qqE
+ vsgCBz56dXPpSbVxKCQXClzuApbPztWVszZo40Z9/pDvMf5EwgQrvvf51uoX9UnrZp3o
+ w/4xkBk0XXZDlc2YcrCzTOExgRGYIv3Y4giKzpy8SzyD0DJs8FkiFKoy2usbln1dH7C7
+ /e2gagyqK7O847BIeVNSzHbKNPgl/68telPWwh1LacJqZVCnTiRrQlKn7a2GbDXIJ48j 0Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31p6s22cke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 15 Jun 2020 18:08:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05FHwvkZ051587;
+        Mon, 15 Jun 2020 18:08:30 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31p6de1e1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Jun 2020 18:08:30 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05FI8G7g031730;
+        Mon, 15 Jun 2020 18:08:17 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 15 Jun 2020 11:08:15 -0700
+Date:   Mon, 15 Jun 2020 21:07:53 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        samba-technical@lists.samba.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-sctp@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, x86@kernel.org,
+        kasan-dev@googlegroups.com, cocci@systeme.lip6.fr,
+        linux-wpan@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, wireguard@lists.zx2c4.com,
+        linux-ppp@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
+Message-ID: <20200615180753.GJ4151@kadam>
+References: <20200413211550.8307-1-longman@redhat.com>
+ <20200413211550.8307-2-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200615165758.GR6112@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9653 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 adultscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=930 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006150134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9653 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1011 mlxscore=0 mlxlogscore=944 priorityscore=1501 phishscore=0
+ malwarescore=0 suspectscore=2 spamscore=0 cotscore=-2147483648 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006150135
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.06.2020 19:57, Ville Syrjälä пишет:
-> On Sun, Jun 14, 2020 at 11:01:21PM +0300, Dmitry Osipenko wrote:
->> Combining horizontal and vertical reflections gives us 180 degrees of
->> rotation.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/gpu/drm/tegra/dc.c | 13 ++++++++++++-
->>  1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
->> index f31bca27cde4..ddd9b88f8fce 100644
->> --- a/drivers/gpu/drm/tegra/dc.c
->> +++ b/drivers/gpu/drm/tegra/dc.c
->> @@ -608,6 +608,7 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
->>  {
->>  	struct tegra_plane_state *plane_state = to_tegra_plane_state(state);
->>  	unsigned int rotation = DRM_MODE_ROTATE_0 |
->> +				DRM_MODE_ROTATE_180 |
-> 
-> Leave this out ...
-> 
->>  				DRM_MODE_REFLECT_X |
->>  				DRM_MODE_REFLECT_Y;
->>  	struct tegra_bo_tiling *tiling = &plane_state->tiling;
->> @@ -659,6 +660,14 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
->>  	else
->>  		plane_state->reflect_y = false;
->>  
->> +	if (tegra_fb_is_bottom_up(state->fb))
->> +		plane_state->reflect_y = true;
->> +
->> +	if (rotation & DRM_MODE_ROTATE_180) {
->> +		plane_state->reflect_x = !plane_state->reflect_x;
->> +		plane_state->reflect_y = !plane_state->reflect_y;
->> +	}
-> 
-> ... and drm_rotation_simplify() will do this for you.
+On Mon, Apr 13, 2020 at 05:15:49PM -0400, Waiman Long wrote:
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 23c7500eea7d..c08bc7eb20bd 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1707,17 +1707,17 @@ void *krealloc(const void *p, size_t new_size, gfp_t flags)
+>  EXPORT_SYMBOL(krealloc);
+>  
+>  /**
+> - * kzfree - like kfree but zero memory
+> + * kfree_sensitive - Clear sensitive information in memory before freeing
+>   * @p: object to free memory of
+>   *
+>   * The memory of the object @p points to is zeroed before freed.
+> - * If @p is %NULL, kzfree() does nothing.
+> + * If @p is %NULL, kfree_sensitive() does nothing.
+>   *
+>   * Note: this function zeroes the whole allocated buffer which can be a good
+>   * deal bigger than the requested buffer size passed to kmalloc(). So be
+>   * careful when using this function in performance sensitive code.
+>   */
+> -void kzfree(const void *p)
+> +void kfree_sensitive(const void *p)
+>  {
+>  	size_t ks;
+>  	void *mem = (void *)p;
+> @@ -1725,10 +1725,10 @@ void kzfree(const void *p)
+>  	if (unlikely(ZERO_OR_NULL_PTR(mem)))
+>  		return;
+>  	ks = ksize(mem);
+> -	memset(mem, 0, ks);
+> +	memzero_explicit(mem, ks);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+This is an unrelated bug fix.  It really needs to be pulled into a
+separate patch by itself and back ported to stable kernels.
 
-Hello Ville,
+>  	kfree(mem);
+>  }
+> -EXPORT_SYMBOL(kzfree);
+> +EXPORT_SYMBOL(kfree_sensitive);
+>  
+>  /**
+>   * ksize - get the actual amount of memory allocated for a given object
 
-Indeed, thank you for the suggestion!
-
-> Though the bottim_up() thing will need a slightly different tweak I
-> guess.
-> 
-> I'd write this as somehting like:
-> rotation = state->rotation;
-> if (bottom_up())
-> 	rotation ^= DRM_MODE_REFLECT_Y;
-> rotation = drm_rotation_simplify(rotation,
-> 				 DRM_MODE_ROTATE_0 |
-> 				 DRM_MODE_REFLECT_X |
-> 				 DRM_MODE_REFLECT_Y;
-> 
-> Also note my use of XOR for the bottom_up() handling. I suspect
-> the current code is already broken if you combine bottom_up()
-> and REFLECT_Y since it just uses an OR instead of an XOR. That's
-> assuming my hucnh what bottom_up() is supposed to do is correct.
-
-The bottom_up() is a legacy way of specifying reflect_y flag of the
-modern DRM's rotation property. It's was used by older userspace before
-Tegra DRM driver got support for the rotation property and we keep it
-today in order to maintain backwards compatibility with older userspace.
-Although, maybe it's about time to retire it since I don't think that
-such old userspace exists anymore.
-
-The legacy bottom_up() duplicates the modern reflect_y flag, so these
-are not mutually exclusive. Combining with yours suggestion above, we
-can write it in this way:
-
-  /*
-   * Older userspace used custom BO flag in order to specify
-   * the Y reflection, while modern userspace uses the generic
-   * DRM rotation property in order to achieve the same result.
-   * The legacy BO flag amends the modern rotation property
-   * when both are set.
-   */
-  if (tegra_fb_is_bottom_up(state->fb))
-    rotation = drm_rotation_simplify(state->rotation |
-                                     DRM_MODE_REFLECT_Y,
-                                     rotation);
-  else
-    rotation = drm_rotation_simplify(state->rotation,
-                                     rotation);
-
-Thank you very much for taking a look at this patch! I'll prepare v3 in
-accordance to yours comments.
+regards,
+dan carpenter
