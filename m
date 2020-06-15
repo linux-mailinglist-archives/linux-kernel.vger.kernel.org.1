@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0681F9E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0AD1F9E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbgFORZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:25:53 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:49803 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729807AbgFORZw (ORCPT
+        id S1731161AbgFOR0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 13:26:02 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42802 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729682AbgFORZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:25:52 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id C7668BAAB2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:25:50 +0100 (IST)
-Received: (qmail 13298 invoked from network); 15 Jun 2020 17:25:50 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jun 2020 17:25:47 -0000
-Date:   Mon, 15 Jun 2020 18:25:45 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] fs: Do not check if there is a fsnotify watcher on
- pseudo inodes
-Message-ID: <20200615172545.GG3183@techsingularity.net>
-References: <20200615121358.GF3183@techsingularity.net>
- <CAOQ4uxi0fqKFZ9=U-+DQ78233hR9TXEU44xRih4q=M556ynphA@mail.gmail.com>
+        Mon, 15 Jun 2020 13:25:56 -0400
+Received: by mail-io1-f68.google.com with SMTP id x189so9699243iof.9;
+        Mon, 15 Jun 2020 10:25:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dS/bdtyItiFAm48ZgF1YTbFmFfDKJ+FCEj9MlB0IAp4=;
+        b=Mh0Ka0/cKEgpKLlxOSeYVWIMR6LVkaGR3s77d98ifHYMG3k2Eax8NY1OM9nctyhEJw
+         CgSnNMTtUwWe38pErH3E2fvU21HrLYHmPwn8edEJV6En26Ev/txmMvg+NvN3lNiyAyiv
+         DqZprbJCizSTxTJ/B7zMIXgyr3F9TY1BKVeLRpDCkycUbAODGkMURseBQSZO48sPBh5Z
+         ZGcQmzla5KMbNLuwFpZKDIfC/+1XhyaUiRLDZglovWDCRMkRDT4hJ/uvdAf+0eDaZZey
+         M63luWtJq55bdYxTBLfg3T2UhHNNd7s/g5+wco2O7Buy6TOMnDuHUC6MhCc4j4qNc1Xe
+         MrYQ==
+X-Gm-Message-State: AOAM533Y0eTeIdSCEqOd5Uub/6Oc86tBfF18dJDXqmcJAMrs0h6Kpf5b
+        +bZO5tJ5lkYBtAKyawWsHQ==
+X-Google-Smtp-Source: ABdhPJypddMh0DtNo4yEvMLEEWMso2FJiLJSg0Shc51QJu95Vb3Bgqf+obC4mOb9N+9IlXsrnh6G0Q==
+X-Received: by 2002:a02:6c8f:: with SMTP id w137mr23100744jab.38.1592241955783;
+        Mon, 15 Jun 2020 10:25:55 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id 2sm8612606ila.0.2020.06.15.10.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 10:25:55 -0700 (PDT)
+Received: (nullmailer pid 1992268 invoked by uid 1000);
+        Mon, 15 Jun 2020 17:25:52 -0000
+Date:   Mon, 15 Jun 2020 11:25:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Martin Sperl <kernel@martin.sperl.org>
+Subject: Re: [PATCH 3/3] spi: bcm2835: Enable shared interrupt support
+Message-ID: <20200615172552.GA1978070@bogus>
+References: <20200604034655.15930-1-f.fainelli@gmail.com>
+ <20200604034655.15930-4-f.fainelli@gmail.com>
+ <20200604041732.7ijkvad2yadtgjid@wunner.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxi0fqKFZ9=U-+DQ78233hR9TXEU44xRih4q=M556ynphA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200604041732.7ijkvad2yadtgjid@wunner.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 07:26:38PM +0300, Amir Goldstein wrote:
-> On Mon, Jun 15, 2020 at 3:14 PM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > Changelog since v1
-> > o Updated changelog
+On Thu, Jun 04, 2020 at 06:17:32AM +0200, Lukas Wunner wrote:
+> On Wed, Jun 03, 2020 at 08:46:55PM -0700, Florian Fainelli wrote:
+> > +static const struct of_device_id bcm2835_spi_match[] = {
+> > +	{ .compatible = "brcm,bcm2835-spi", .data = &bcm2835_spi_interrupt },
+> > +	{ .compatible = "brcm,bcm2711-spi", .data = &bcm2835_spi_sh_interrupt },
+> > +	{ .compatible = "brcm,bcm7211-spi", .data = &bcm2835_spi_sh_interrupt },
+> > +	{}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, bcm2835_spi_match);
 > 
-> Slipped to commit message
+> Maybe I'm missing something but I think you either have to reverse the
+> order of the entries in this array or change patch [2/3] to drop
+> "brcm,bcm2835-spi" from the compatible string:
 > 
+> __of_match_node() iterates over the entries in the array above and
+> calls __of_device_is_compatible() for each of them, which returns
+> success if the entry matches any of the device's compatible string.
 
-It's habit, it's the layout I generally use for mm even though others
-prefer having it below ---. I wasn't sure of fsnotify's preferred format
-for tracking major differences between versions.
+The order here doesn't matter. I'm pretty sure we fixed this years ago 
+to always match to the most specific compatible.
 
-> >
-> > The kernel uses internal mounts created by kern_mount() and populated
-> > with files with no lookup path by alloc_file_pseudo for a variety of
-> > reasons. An example of such a mount is for anonymous pipes. For pipes,
-> > every vfs_write regardless of filesystem, fsnotify_modify() is called to
-> > notify of any changes which incurs a small amount of overhead in fsnotify
-> > even when there are no watchers. It can also trigger for reads and readv
-> > and writev, it was simply vfs_write() that was noticed first.
-> >
-> > A patch is pending that reduces, but does not eliminte, the overhead of
-> 
-> typo: eliminte
-> 
-
-Yes.
-
-> > fsnotify but for files that cannot be looked up via a path, even that
-> > small overhead is unnecessary. The user API for fanotify is based on
-> > the pathname and a dirfd and proc entries appear to be the only visible
-> > representation of the files. Proc does not have the same pathname as the
-> > internal entry and the proc inode is not the same as the internal inode
-> > so even if fanotify is used on a file under /proc/XX/fd, no useful events
-> > are notified.
-> >
-> 
-> Note that fanotify is not the only uapi to add marks, but this is fine by me
-> I suppose if Jan wants to he can make small corrections on commit.
-> 
-
-True but I didn't think inotify was materially different as it also takes
-a path. Is that wrong or are there others that matter and can attach to
-a file that cannot be looked up via a path?
-
-> > The difference is small but in some cases it's outside the noise so
-> > while marginal, there is still some small benefit to ignoring fsnotify
-> > for files allocated via alloc_file_pseudo in some cases.
-> >
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> 
-
-Thanks!
-
--- 
-Mel Gorman
-SUSE Labs
+Rob
