@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA711F8EBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94331F8E97
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgFOGwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S1728881AbgFOGui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 02:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728534AbgFOGud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:50:33 -0400
+        id S1728586AbgFOGue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:50:34 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BC72207FF;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2513620836;
         Mon, 15 Jun 2020 06:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592203832;
-        bh=BN8tLBhosTWibTCfTcTG9jzA1a0bcH2eMdvfyU2490I=;
+        bh=X53zD6kwaqfzgxBePBBcrX0yh3IsKueHcHG8OkNcZo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nWazblAnDlABzTS8UHZ9A3+TU5/NQVYOpgULY5kO7adGZYeItpITUTISqEweNVNgN
-         Nux18tJIYqOKACRVW1MQ4pIvMd2Ox+KFx0x0wuEKwjwhR7FSb6qyPeu2aW9rSEyBaG
-         pZv4v+WDVwgyE5dPtVb2WZh+1zbhA09ePslz9zUs=
+        b=eALfoGgejnGCuaeTMlXK0sIrL86zokTNRIYPTNXpHEUamyPYYHoHDhCbYRiBXnM6S
+         66hNAt82v/3MkGL5ygIrbx3vBF1wzHHoZdpivKZxIntHeHZhZZhzaKyFZlRAyZUa9n
+         FzW8T2NG3EJOZWswXhFtswOOVOouW4VxEmkCJNks=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jkiww-009o63-6y; Mon, 15 Jun 2020 08:50:30 +0200
+        id 1jkiww-009o68-90; Mon, 15 Jun 2020 08:50:30 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 09/22] docs: misc-devices/pci-endpoint-test.txt: convert to ReST
-Date:   Mon, 15 Jun 2020 08:50:14 +0200
-Message-Id: <d4def59b3e3042208ed44558ddfd96c8753fb88c.1592203650.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 10/22] docs: misc-devices/c2port.txt: convert to ReST format
+Date:   Mon, 15 Jun 2020 08:50:15 +0200
+Message-Id: <b3b2f3f58a9a33f9e8526d4fa36bee305ea4da38.1592203650.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592203650.git.mchehab+huawei@kernel.org>
 References: <cover.1592203650.git.mchehab+huawei@kernel.org>
@@ -43,141 +43,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Use titles markups;
-- Adjust identation;
-- use literal markup;
-- Use the proper notation for footnotes.
+- Use copyright symbol;
+- use title markups;
+- adjust indentation;
+- mark literal blocks as such.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
+ .../misc-devices/{c2port.txt => c2port.rst}   | 58 ++++++++++---------
  Documentation/misc-devices/index.rst          |  1 +
- .../misc-devices/pci-endpoint-test.rst        | 56 +++++++++++++++++++
- .../misc-devices/pci-endpoint-test.txt        | 41 --------------
- 3 files changed, 57 insertions(+), 41 deletions(-)
- create mode 100644 Documentation/misc-devices/pci-endpoint-test.rst
- delete mode 100644 Documentation/misc-devices/pci-endpoint-test.txt
+ 2 files changed, 32 insertions(+), 27 deletions(-)
+ rename Documentation/misc-devices/{c2port.txt => c2port.rst} (59%)
 
+diff --git a/Documentation/misc-devices/c2port.txt b/Documentation/misc-devices/c2port.rst
+similarity index 59%
+rename from Documentation/misc-devices/c2port.txt
+rename to Documentation/misc-devices/c2port.rst
+index 31351b1a5a1f..3cf3c571bead 100644
+--- a/Documentation/misc-devices/c2port.txt
++++ b/Documentation/misc-devices/c2port.rst
+@@ -1,7 +1,11 @@
+-			C2 port support
+-			---------------
++.. SPDX-License-Identifier: GPL-2.0
++.. include:: <isonum.txt>
+ 
+-(C) Copyright 2007 Rodolfo Giometti <giometti@enneenne.com>
++===============
++C2 port support
++===============
++
++|copy| Copyright 2007 Rodolfo Giometti <giometti@enneenne.com>
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+@@ -32,10 +36,10 @@ The C2 Interface main references are at (https://www.silabs.com)
+ Silicon Laboratories site], see:
+ 
+ - AN127: FLASH Programming via the C2 Interface at
+-https://www.silabs.com/Support Documents/TechnicalDocs/an127.pdf 
++  https://www.silabs.com/Support Documents/TechnicalDocs/an127.pdf
+ 
+ - C2 Specification at
+-https://www.silabs.com/pages/DownloadDoc.aspx?FILEURL=Support%20Documents/TechnicalDocs/an127.pdf&src=SearchResults
++  https://www.silabs.com/pages/DownloadDoc.aspx?FILEURL=Support%20Documents/TechnicalDocs/an127.pdf&src=SearchResults
+ 
+ however it implements a two wire serial communication protocol (bit
+ banging) designed to enable in-system programming, debugging, and
+@@ -47,44 +51,44 @@ Using the driver
+ ----------------
+ 
+ Once the driver is loaded you can use sysfs support to get C2port's
+-info or read/write in-system flash.
++info or read/write in-system flash::
+ 
+-# ls /sys/class/c2port/c2port0/
+-access            flash_block_size  flash_erase       rev_id
+-dev_id            flash_blocks_num  flash_size        subsystem/
+-flash_access      flash_data        reset             uevent
++  # ls /sys/class/c2port/c2port0/
++  access            flash_block_size  flash_erase       rev_id
++  dev_id            flash_blocks_num  flash_size        subsystem/
++  flash_access      flash_data        reset             uevent
+ 
+ Initially the C2port access is disabled since you hardware may have
+ such lines multiplexed with other devices so, to get access to the
+-C2port, you need the command:
++C2port, you need the command::
+ 
+-# echo 1 > /sys/class/c2port/c2port0/access
++  # echo 1 > /sys/class/c2port/c2port0/access
+ 
+ after that you should read the device ID and revision ID of the
+-connected micro controller:
++connected micro controller::
+ 
+-# cat /sys/class/c2port/c2port0/dev_id
+-8
+-# cat /sys/class/c2port/c2port0/rev_id
+-1
++  # cat /sys/class/c2port/c2port0/dev_id
++  8
++  # cat /sys/class/c2port/c2port0/rev_id
++  1
+ 
+ However, for security reasons, the in-system flash access in not
+-enabled yet, to do so you need the command:
++enabled yet, to do so you need the command::
+ 
+-# echo 1 > /sys/class/c2port/c2port0/flash_access
++  # echo 1 > /sys/class/c2port/c2port0/flash_access
+ 
+-After that you can read the whole flash:
++After that you can read the whole flash::
+ 
+-# cat /sys/class/c2port/c2port0/flash_data > image
++  # cat /sys/class/c2port/c2port0/flash_data > image
+ 
+-erase it:
++erase it::
+ 
+-# echo 1 > /sys/class/c2port/c2port0/flash_erase
++  # echo 1 > /sys/class/c2port/c2port0/flash_erase
+ 
+-and write it:
++and write it::
+ 
+-# cat image > /sys/class/c2port/c2port0/flash_data
++  # cat image > /sys/class/c2port/c2port0/flash_data
+ 
+-after writing you have to reset the device to execute the new code:
++after writing you have to reset the device to execute the new code::
+ 
+-# echo 1 > /sys/class/c2port/c2port0/reset
++  # echo 1 > /sys/class/c2port/c2port0/reset
 diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index d05626dd0fbb..d2e87f791821 100644
+index d2e87f791821..27e268805067 100644
 --- a/Documentation/misc-devices/index.rst
 +++ b/Documentation/misc-devices/index.rst
-@@ -22,6 +22,7 @@ fit into other categories.
-    lis3lv02d
-    max6875
-    mic/index
-+   pci-endpoint-test
-    spear-pcie-gadget
-    uacce
-    xilinx_sdfec
-diff --git a/Documentation/misc-devices/pci-endpoint-test.rst b/Documentation/misc-devices/pci-endpoint-test.rst
-new file mode 100644
-index 000000000000..26e5d9ba146b
---- /dev/null
-+++ b/Documentation/misc-devices/pci-endpoint-test.rst
-@@ -0,0 +1,56 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================================
-+Driver for PCI Endpoint Test Function
-+=====================================
-+
-+This driver should be used as a host side driver if the root complex is
-+connected to a configurable PCI endpoint running ``pci_epf_test`` function
-+driver configured according to [1]_.
-+
-+The "pci_endpoint_test" driver can be used to perform the following tests.
-+
-+The PCI driver for the test device performs the following tests:
-+
-+	#) verifying addresses programmed in BAR
-+	#) raise legacy IRQ
-+	#) raise MSI IRQ
-+	#) raise MSI-X IRQ
-+	#) read data
-+	#) write data
-+	#) copy data
-+
-+This misc driver creates /dev/pci-endpoint-test.<num> for every
-+``pci_epf_test`` function connected to the root complex and "ioctls"
-+should be used to perform the above tests.
-+
-+ioctl
-+-----
-+
-+ PCITEST_BAR:
-+	      Tests the BAR. The number of the BAR to be tested
-+	      should be passed as argument.
-+ PCITEST_LEGACY_IRQ:
-+	      Tests legacy IRQ
-+ PCITEST_MSI:
-+	      Tests message signalled interrupts. The MSI number
-+	      to be tested should be passed as argument.
-+ PCITEST_MSIX:
-+	      Tests message signalled interrupts. The MSI-X number
-+	      to be tested should be passed as argument.
-+ PCITEST_SET_IRQTYPE:
-+	      Changes driver IRQ type configuration. The IRQ type
-+	      should be passed as argument (0: Legacy, 1:MSI, 2:MSI-X).
-+ PCITEST_GET_IRQTYPE:
-+	      Gets driver IRQ type configuration.
-+ PCITEST_WRITE:
-+	      Perform write tests. The size of the buffer should be passed
-+	      as argument.
-+ PCITEST_READ:
-+	      Perform read tests. The size of the buffer should be passed
-+	      as argument.
-+ PCITEST_COPY:
-+	      Perform read tests. The size of the buffer should be passed
-+	      as argument.
-+
-+.. [1] Documentation/PCI/endpoint/function/binding/pci-test.txt
-diff --git a/Documentation/misc-devices/pci-endpoint-test.txt b/Documentation/misc-devices/pci-endpoint-test.txt
-deleted file mode 100644
-index 58ccca4416b1..000000000000
---- a/Documentation/misc-devices/pci-endpoint-test.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Driver for PCI Endpoint Test Function
--
--This driver should be used as a host side driver if the root complex is
--connected to a configurable PCI endpoint running *pci_epf_test* function
--driver configured according to [1].
--
--The "pci_endpoint_test" driver can be used to perform the following tests.
--
--The PCI driver for the test device performs the following tests
--	*) verifying addresses programmed in BAR
--	*) raise legacy IRQ
--	*) raise MSI IRQ
--	*) raise MSI-X IRQ
--	*) read data
--	*) write data
--	*) copy data
--
--This misc driver creates /dev/pci-endpoint-test.<num> for every
--*pci_epf_test* function connected to the root complex and "ioctls"
--should be used to perform the above tests.
--
--ioctl
-------
-- PCITEST_BAR: Tests the BAR. The number of the BAR to be tested
--	      should be passed as argument.
-- PCITEST_LEGACY_IRQ: Tests legacy IRQ
-- PCITEST_MSI: Tests message signalled interrupts. The MSI number
--	      to be tested should be passed as argument.
-- PCITEST_MSIX: Tests message signalled interrupts. The MSI-X number
--	      to be tested should be passed as argument.
-- PCITEST_SET_IRQTYPE: Changes driver IRQ type configuration. The IRQ type
--	      should be passed as argument (0: Legacy, 1:MSI, 2:MSI-X).
-- PCITEST_GET_IRQTYPE: Gets driver IRQ type configuration.
-- PCITEST_WRITE: Perform write tests. The size of the buffer should be passed
--		as argument.
-- PCITEST_READ: Perform read tests. The size of the buffer should be passed
--	       as argument.
-- PCITEST_COPY: Perform read tests. The size of the buffer should be passed
--	       as argument.
--
--[1] -> Documentation/PCI/endpoint/function/binding/pci-test.txt
+@@ -16,6 +16,7 @@ fit into other categories.
+ 
+    ad525x_dpot
+    eeprom
++   c2port
+    ibmvmc
+    ics932s401
+    isl29003
 -- 
 2.26.2
 
