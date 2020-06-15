@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D731F95A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 13:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF601F95AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 13:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgFOLwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 07:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729660AbgFOLwe (ORCPT
+        id S1729759AbgFOLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 07:54:04 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10120
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729691AbgFOLyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 07:52:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074A9C061A0E;
-        Mon, 15 Jun 2020 04:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YnvyX0I5otDowmfgXTPmGop1JAv0+IfTt+WsS0B/4C8=; b=js9BStWAXx3urINYI75BkgItmQ
-        LJW1F8iGAlCkBySvVdTbhU5Siw3MOzyz+BMFTrgOYR42/boDw+sYugHTVbFFLjlxZNHxgIeA5YnLN
-        +etqRTMztWhRuF0XthxQflby46wQMHZngt7filNCVbFZAZZTx3nbWJaRJmeYjxUXMElkxPp9tjyLd
-        iSw7CD5mkyuk8ngH6BFxyBZs43i1dYC5mRT643hz0jRp7KvXRclVDALRfou8lYSwVi2ayhkISvKle
-        jqbaYpwLycOAgQvoMiQOlq4vc+sKpfyyHgcKp4FGrzh8NPX9nx/BdgLpR1H8w+dNMTrVsTPrRyy5n
-        kq0XmTJQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jknfD-0001aX-J6; Mon, 15 Jun 2020 11:52:31 +0000
-Date:   Mon, 15 Jun 2020 04:52:31 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Subject: Re: [PATCH 17/29] docs: hugetlbpage.rst: fix some warnings
-Message-ID: <20200615115231.GR8681@bombadil.infradead.org>
-References: <cover.1592203542.git.mchehab+huawei@kernel.org>
- <59f1aeae4839528046fd46408081fd70d53e15a6.1592203542.git.mchehab+huawei@kernel.org>
+        Mon, 15 Jun 2020 07:54:04 -0400
+X-IronPort-AV: E=Sophos;i="5.73,514,1583190000"; 
+   d="scan'208";a="351626852"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 13:53:55 +0200
+Date:   Mon, 15 Jun 2020 13:53:54 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+Subject: [PATCH] ipc: fix call_kern.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2006151258170.23306@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59f1aeae4839528046fd46408081fd70d53e15a6.1592203542.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 08:46:56AM +0200, Mauro Carvalho Chehab wrote:
-> @@ -100,38 +100,49 @@ with a huge page size selection parameter "hugepagesz=<size>".  <size> must
->  be specified in bytes with optional scale suffix [kKmMgG].  The default huge
->  page size may be selected with the "default_hugepagesz=<size>" boot parameter.
->  
-> -Hugetlb boot command line parameter semantics
-> +Hugetlb
-> +	boot command line parameter semantics
+From: kernel test robot <lkp@intel.com>
 
-That's not right.  This is a single sentence, not something being defined.
+This function is called from ipc_addid with a spin lock held so change
+GFP_KERNEL to GFP_ATOMIC.
 
+Generated by: scripts/coccinelle/locks/call_kern.cocci
+
+Fixes: dc996261c060 ("ipc: convert ipcs_idr to XArray")
+CC: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   842221d073a88c9cd1aa01777c4b69020c28e7a4
+commit: dc996261c060f06e1f20f580e203b81a4ddfe301 [16130/16374] ipc: convert ipcs_idr to XArray
+:::::: branch date: 17 hours ago
+:::::: commit date: 3 days ago
+
+Please take the patch only if it's a positive warning. Thanks!
+
+ util.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -241,7 +241,7 @@ static inline int ipc_id_alloc(struct ip
+ 					xas.xa_index;
+ 			xas_store(&xas, new);
+ 			xas_clear_mark(&xas, XA_FREE_MARK);
+-		} while (__xas_nomem(&xas, GFP_KERNEL));
++		} while (__xas_nomem(&xas, GFP_ATOMIC));
+
+ 		xas_unlock(&xas);
+ 		err = xas_error(&xas);
+@@ -250,7 +250,7 @@ static inline int ipc_id_alloc(struct ip
+ 		new->id = get_restore_id(ids);
+ 		new->seq = ipcid_to_seqx(new->id);
+ 		idx = ipcid_to_idx(new->id);
+-		err = xa_insert(&ids->ipcs, idx, new, GFP_KERNEL);
++		err = xa_insert(&ids->ipcs, idx, new, GFP_ATOMIC);
+ 		if (err == -EBUSY)
+ 			err = -ENOSPC;
+ 		set_restore_id(ids, -1);
