@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDEC1F905A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA9C1F90A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgFOHtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:49:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39998 "EHLO mx2.suse.de"
+        id S1729211AbgFOHvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:51:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39996 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgFOHtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728814AbgFOHtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Jun 2020 03:49:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 821CEAFF9;
+        by mx2.suse.de (Postfix) with ESMTP id AF005B001;
         Mon, 15 Jun 2020 07:49:16 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 08/38] vt: use tty_insert_flip_string in respond_string
-Date:   Mon, 15 Jun 2020 09:48:40 +0200
-Message-Id: <20200615074910.19267-8-jslaby@suse.cz>
+Subject: [PATCH 09/38] vt: get rid of VT10.ID macros
+Date:   Mon, 15 Jun 2020 09:48:41 +0200
+Message-Id: <20200615074910.19267-9-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
@@ -32,78 +32,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the length of a string to respond_string and use
-tty_insert_flip_string instead of a loop with tty_insert_flip_char. This
-simplifies the processing on the tty side.
+VT100ID is unused, but defined twice. Kill it.
 
-The added strlens are optimized during constant folding and propagation
-and the result are proper constants in assembly.
+VT102ID is used only in respond_ID. Define there a variable with proper
+type and use that instead. Then drop both defines of VT102ID too.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ drivers/tty/vt/vt.c     | 11 ++++-------
+ include/linux/console.h |  6 ------
+ 2 files changed, 4 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 3adb7f409524..49c9d1e4067c 100644
+index 49c9d1e4067c..8d9e532f050a 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -1809,40 +1809,43 @@ static void csi_m(struct vc_data *vc)
- 	update_attr(vc);
- }
+@@ -1397,12 +1397,6 @@ enum { EPecma = 0, EPdec, EPeq, EPgt, EPlt};
+ #define kbdapplic	VC_APPLIC
+ #define lnm		VC_CRLF
  
--static void respond_string(const char *p, struct tty_port *port)
-+static void respond_string(const char *p, size_t len, struct tty_port *port)
- {
--	while (*p) {
--		tty_insert_flip_char(port, *p, 0);
--		p++;
--	}
-+	tty_insert_flip_string(port, p, len);
- 	tty_schedule_flip(port);
- }
+-/*
+- * this is what the terminal answers to a ESC-Z or csi0c query.
+- */
+-#define VT100ID "\033[?1;2c"
+-#define VT102ID "\033[?6c"
+-
+ const unsigned char color_table[] = { 0, 4, 2, 6, 1, 5, 3, 7,
+ 				       8,12,10,14, 9,13,11,15 };
  
- static void cursor_report(struct vc_data *vc, struct tty_struct *tty)
- {
- 	char buf[40];
-+	int len;
- 
--	sprintf(buf, "\033[%d;%dR", vc->state.y + (vc->vc_decom ? vc->vc_top + 1 : 1), vc->state.x + 1);
--	respond_string(buf, tty->port);
-+	len = sprintf(buf, "\033[%d;%dR", vc->state.y +
-+			(vc->vc_decom ? vc->vc_top + 1 : 1),
-+			vc->state.x + 1);
-+	respond_string(buf, len, tty->port);
- }
- 
- static inline void status_report(struct tty_struct *tty)
- {
--	respond_string("\033[0n", tty->port);	/* Terminal ok */
-+	static const char teminal_ok[] = "\033[0n";
-+
-+	respond_string(teminal_ok, strlen(teminal_ok), tty->port);
- }
+@@ -1835,7 +1829,10 @@ static inline void status_report(struct tty_struct *tty)
  
  static inline void respond_ID(struct tty_struct *tty)
  {
--	respond_string(VT102ID, tty->port);
-+	respond_string(VT102ID, strlen(VT102ID), tty->port);
+-	respond_string(VT102ID, strlen(VT102ID), tty->port);
++	/* terminal answer to an ESC-Z or csi0c query. */
++	static const char vt102_id[] = "\033[?6c";
++
++	respond_string(vt102_id, strlen(vt102_id), tty->port);
  }
  
  void mouse_report(struct tty_struct *tty, int butt, int mrx, int mry)
- {
- 	char buf[8];
-+	int len;
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 964b67912b04..0670d3491e0e 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -24,12 +24,6 @@ struct module;
+ struct tty_struct;
+ struct notifier_block;
  
--	sprintf(buf, "\033[M%c%c%c", (char)(' ' + butt), (char)('!' + mrx),
--		(char)('!' + mry));
--	respond_string(buf, tty->port);
-+	len = sprintf(buf, "\033[M%c%c%c", (char)(' ' + butt),
-+			(char)('!' + mrx), (char)('!' + mry));
-+	respond_string(buf, len, tty->port);
- }
- 
- /* invoked via ioctl(TIOCLINUX) and through set_selection_user */
+-/*
+- * this is what the terminal answers to a ESC-Z or csi0c query.
+- */
+-#define VT100ID "\033[?1;2c"
+-#define VT102ID "\033[?6c"
+-
+ enum con_scroll {
+ 	SM_UP,
+ 	SM_DOWN,
 -- 
 2.27.0
 
