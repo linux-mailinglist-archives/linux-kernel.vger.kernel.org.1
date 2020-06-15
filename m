@@ -2,53 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF201FA1A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD831FA17E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731638AbgFOUdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:33:19 -0400
-Received: from ip-78-45-52-129.net.upcbroadband.cz ([78.45.52.129]:32944 "EHLO
-        ixit.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbgFOUdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:33:18 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jun 2020 16:33:18 EDT
-Received: from [192.168.1.102] (227.146.230.94.awnet.cz [94.230.146.227])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id A62E3250E5;
-        Mon, 15 Jun 2020 22:23:59 +0200 (CEST)
-Date:   Mon, 15 Jun 2020 22:23:53 +0200
-From:   David Heidelberg <david@ixit.cz>
-Reply-To: 20181129133119.29387-1-linus.walleij@linaro.org
-Subject: [PATCH] irq: Request and release resources for chained IRQs
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Message-Id: <TZHZBQ.SOVDZ4DJB30O1@ixit.cz>
-X-Mailer: geary/3.36.2
+        id S1731437AbgFOUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:31:19 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37060 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728346AbgFOUbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 16:31:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 48A632A2CF6
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        laurent.pinchart@ideasonboard.com,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [RESEND PATCH v4 0/7] Convert mtk-dsi to drm_bridge API and get EDID for ps8640 bridge
+Date:   Mon, 15 Jun 2020 22:31:01 +0200
+Message-Id: <20200615203108.786083-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+(This resend is to fix some trivial conflicts due the merge window)
 
-is there chance to get this patch included or could be this issue 
-solved with different approach?
+The PS8640 dsi-to-eDP bridge driver is using the panel bridge API,
+however, not all the components in the chain have been ported to the
+drm_bridge API. Actually, when a panel is attached the default panel's mode
+is used, but in some cases we can't get display up if mode getting from
+eDP control EDID is not chosen.
 
-Actually this patch solve issue on two APQ8064 devices:
- * Nexus 7 2013
-Tested-by: David Heidelberg <david@ixit.cz>
- * Nexus 4
-Tested-by: Iskren Chernev
-Best regards
-David Heidelberg
+This series address that problem, first implements the .get_edid()
+callback in the PS8640 driver (which is not used until the conversion is
+done) and then, converts the Mediatek DSI driver to use the drm_bridge
+API.
 
+As far as I know, we're the only users of the mediatek dsi driver in
+mainline, so should be safe to switch to the new chain of drm_bridge API
+unconditionally.
+
+The patches has been tested on a Acer Chromebook R13 (Elm) running a
+Chrome OS userspace and checking that the valid EDID mode reported by
+the bridge is selected.
+
+Changes in v4:
+- Remove double call to drm_encoder_init(). (Chun-Kuang Hu)
+- Cleanup the encoder in mtk_dsi_unbind(). (Chun-Kuang Hu)
+
+Changes in v3:
+- Replace s/bridge/next bridge/ for comment. (Laurent Pinchart)
+- Add the bridge.type. (Laurent Pinchart)
+- Use next_bridge field to store the panel bridge. (Laurent Pinchart)
+- Add the bridge.type field. (Laurent Pinchart)
+- This patch requires https://lkml.org/lkml/2020/4/16/2080 to work
+  properly.
+- Move the bridge.type line to the patch that adds drm_bridge support. (Laurent Pinchart)
+
+Changes in v2:
+- Do not set connector_type for panel here. (Sam Ravnborg)
+
+Enric Balletbo i Serra (7):
+  drm/bridge: ps8640: Get the EDID from eDP control
+  drm/bridge_connector: Set default status connected for eDP connectors
+  drm/mediatek: mtk_dsi: Rename bridge to next_bridge
+  drm/mediatek: mtk_dsi: Convert to bridge driver
+  drm/mediatek: mtk_dsi: Use simple encoder
+  drm/mediatek: mtk_dsi: Use the drm_panel_bridge API
+  drm/mediatek: mtk_dsi: Create connector for bridges
+
+ drivers/gpu/drm/bridge/parade-ps8640.c |  12 ++
+ drivers/gpu/drm/drm_bridge_connector.c |   1 +
+ drivers/gpu/drm/mediatek/mtk_dsi.c     | 269 ++++++++-----------------
+ 3 files changed, 97 insertions(+), 185 deletions(-)
+
+-- 
+2.27.0
 
