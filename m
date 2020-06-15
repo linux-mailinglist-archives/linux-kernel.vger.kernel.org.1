@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256091F909E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DCA1F9099
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgFOHvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:51:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39986 "EHLO mx2.suse.de"
+        id S1729182AbgFOHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:51:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40052 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728823AbgFOHtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:49:16 -0400
+        id S1728837AbgFOHtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 03:49:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D8288B019;
-        Mon, 15 Jun 2020 07:49:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1A950B01C;
+        Mon, 15 Jun 2020 07:49:17 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 10/38] vt: move vc_translate to vt.c and rename it
-Date:   Mon, 15 Jun 2020 09:48:42 +0200
-Message-Id: <20200615074910.19267-10-jslaby@suse.cz>
+Subject: [PATCH 11/38] vt: use modern types in do_con_write
+Date:   Mon, 15 Jun 2020 09:48:43 +0200
+Message-Id: <20200615074910.19267-11-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
@@ -32,72 +32,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vc_translate is used only in vt.c, so move the definition from a header
-there. Also, it used to be a macro, so be modern and make a static
-inline from it. This makes the code actually readable.
+Use bools for rescan and inverse. And true/false accordingly.
 
-And as a preparation for next patches, rename it to vc_translate_ascii.
-vc_translate will be a wrapper for both unicode and this one.
+Use u8 for width instead of uint8_t.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt.c     | 14 +++++++++++++-
- include/linux/vt_kern.h |  3 ---
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ drivers/tty/vt/vt.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 8d9e532f050a..b86639351dd2 100644
+index b86639351dd2..a9e4924fa675 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -2560,6 +2560,18 @@ static void con_flush(struct vc_data *vc, unsigned long draw_from,
- 	*draw_x = -1;
- }
+@@ -2581,10 +2581,10 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 	struct vc_data *vc;
+ 	unsigned char vc_attr;
+ 	struct vt_notifier_param param;
+-	uint8_t rescan;
+-	uint8_t inverse;
+-	uint8_t width;
+ 	u16 himask, charmask;
++	u8 width;
++	bool rescan;
++	bool inverse;
  
-+static inline int vc_translate_ascii(const struct vc_data *vc, int c)
-+{
-+	if (IS_ENABLED(CONFIG_CONSOLE_TRANSLATIONS)) {
-+		if (vc->vc_toggle_meta)
-+			c |= 0x80;
-+
-+		return vc->vc_translate[c];
-+	}
-+
-+	return c;
-+}
-+
- /* acquires console_lock */
- static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int count)
- {
-@@ -2687,7 +2699,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
- 			c = 0xfffd;
- 		    tc = c;
- 		} else {	/* no utf or alternate charset mode */
--		    tc = vc_translate(vc, c);
-+			tc = vc_translate_ascii(vc, c);
- 		}
+ 	if (in_interrupt())
+ 		return count;
+@@ -2620,8 +2620,8 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 		buf++;
+ 		n++;
+ 		count--;
+-		rescan = 0;
+-		inverse = 0;
++		rescan = false;
++		inverse = false;
+ 		width = 1;
  
- 		param.c = tc;
-diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
-index abf5bccf906a..349e39c3ab60 100644
---- a/include/linux/vt_kern.h
-+++ b/include/linux/vt_kern.h
-@@ -74,8 +74,6 @@ int con_set_default_unimap(struct vc_data *vc);
- void con_free_unimap(struct vc_data *vc);
- int con_copy_unimap(struct vc_data *dst_vc, struct vc_data *src_vc);
+ 		/* Do no translation at all in control states */
+@@ -2660,7 +2660,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 			/* Single ASCII byte or first byte of a sequence received */
+ 			if (vc->vc_utf_count) {
+ 			    /* Continuation byte expected */
+-			    rescan = 1;
++			    rescan = true;
+ 			    vc->vc_utf_count = 0;
+ 			    c = 0xfffd;
+ 			} else if (c > 0x7f) {
+@@ -2746,7 +2746,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 				    /* Display U+FFFD. If it's not found, display an inverse question mark. */
+ 				    tc = conv_uni_to_pc(vc, 0xfffd);
+ 				    if (tc < 0) {
+-					inverse = 1;
++					inverse = true;
+ 					tc = conv_uni_to_pc(vc, '?');
+ 					if (tc < 0) tc = '?';
+ 				    }
+@@ -2807,8 +2807,8 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 				con_flush(vc, draw_from, draw_to, &draw_x);
  
--#define vc_translate(vc, c) ((vc)->vc_translate[(c) |			\
--					((vc)->vc_toggle_meta ? 0x80 : 0)])
- #else
- static inline int con_set_trans_old(unsigned char __user *table)
- {
-@@ -124,7 +122,6 @@ int con_copy_unimap(struct vc_data *dst_vc, struct vc_data *src_vc)
- 	return 0;
- }
- 
--#define vc_translate(vc, c) (c)
- #endif
- 
- /* vt.c */
+ 			if (rescan) {
+-				rescan = 0;
+-				inverse = 0;
++				rescan = false;
++				inverse = false;
+ 				width = 1;
+ 				c = orig;
+ 				goto rescan_last_byte;
 -- 
 2.27.0
 
