@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185531F9813
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C6B1F981B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbgFONPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:15:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:47626 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbgFONPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:15:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6C2031B;
-        Mon, 15 Jun 2020 06:15:38 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.79.186])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2D45C3F6CF;
-        Mon, 15 Jun 2020 06:15:34 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        ziy@nvidia.com, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
+        id S1730323AbgFONRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:17:13 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27768 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729977AbgFONRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 09:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592227032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4Vkr71sMpCKYfAqOH3x/hoo6l2InpZflnB1ZSR/dAQ=;
+        b=BICrE1Q/ZokH4IRkV7RZQH24oJRrDXNR06WsG2p4hQNJSobg5Z/NBK70ryEJW9X4I9bIF7
+        LIHJKEpNi6M4yFCc8ChlsfZ6GfB+ENYosQO/Ln56qmMRf18GbIVM5ENbLK03gfH6lt24wy
+        fbNSqYmrQRFsyJ9d6zdK9y43Ynpo6Zo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-180-HmND-qegOramLBGTlAtNyg-1; Mon, 15 Jun 2020 09:17:08 -0400
+X-MC-Unique: HmND-qegOramLBGTlAtNyg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBCB688FCE6;
+        Mon, 15 Jun 2020 13:16:25 +0000 (UTC)
+Received: from localhost (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DC07D7CAA5;
+        Mon, 15 Jun 2020 13:16:23 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 15:16:20 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         linux-kernel@vger.kernel.org
-Subject: [RFC V2 2/2] arm64/mm: Enable THP migration
-Date:   Mon, 15 Jun 2020 18:45:18 +0530
-Message-Id: <1592226918-26378-3-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592226918-26378-1-git-send-email-anshuman.khandual@arm.com>
-References: <1592226918-26378-1-git-send-email-anshuman.khandual@arm.com>
+Subject: Re: [PATCH 2/2] bitmap: Add test for bitmap_cut()
+Message-ID: <20200615151620.1ed53079@redhat.com>
+In-Reply-To: <20200615114353.GY2428291@smile.fi.intel.com>
+References: <cover.1592155364.git.sbrivio@redhat.com>
+        <5fc45e6bbd4fa837cd9577f8a0c1d639df90a4ce.1592155364.git.sbrivio@redhat.com>
+        <20200615094155.GQ2428291@smile.fi.intel.com>
+        <20200615094616.GS2428291@smile.fi.intel.com>
+        <20200615130825.60283f1b@redhat.com>
+        <20200615114353.GY2428291@smile.fi.intel.com>
+Organization: Red Hat
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain page migration situations, a THP page can be migrated without
-being split into it's constituent subpages. This saves time required to
-split a THP and put it back together when required. But it also saves an
-wider address range translation covered by a single TLB entry, reducing
-future page fault costs.
+On Mon, 15 Jun 2020 14:43:53 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-A previous patch changed platform THP helpers per generic memory semantics,
-clearing the path for THP migration support. This adds two more THP helpers
-required to create PMD migration swap entries. Now just enable HP migration
-via ARCH_ENABLE_THP_MIGRATION.
+> On Mon, Jun 15, 2020 at 01:08:25PM +0200, Stefano Brivio wrote:
+> >   
+> > [...]
+> >   
+> > By the way, tests for 'parse', 'parse_user' and 'parselist' report
+> > issues:  
+> 
+> I believe this [1] will fix it.
+> 
+> [1]: 81c4f4d924d5 ("lib: fix bitmap_parse() on 64-bit big endian archs")
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Suzuki Poulose <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/arm64/Kconfig               |  4 ++++
- arch/arm64/include/asm/pgtable.h | 10 ++++++++++
- 2 files changed, 14 insertions(+)
+Yes, thanks, that works for me too.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 31380da53689..01d432dc813e 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1874,6 +1874,10 @@ config ARCH_ENABLE_HUGEPAGE_MIGRATION
- 	def_bool y
- 	depends on HUGETLB_PAGE && MIGRATION
- 
-+config ARCH_ENABLE_THP_MIGRATION
-+	def_bool y
-+	depends on TRANSPARENT_HUGEPAGE
-+
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 560be593a8dc..892c30129cd2 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -907,6 +907,16 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(swp)	((pte_t) { (swp).val })
- 
-+#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-+#define __pmd_to_swp_entry(pmd)		((swp_entry_t) { pmd_val(pmd) })
-+
-+/*
-+ * pmd_present() must return false for a swap PMD entry.
-+ * Just explicitly clear PMD_TABLE_BIT while converting.
-+ */
-+#define __swp_entry_to_pmd(swp)		__pmd((swp).val & ~PMD_TABLE_BIT)
-+#endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
-+
- /*
-  * Ensure that there are not more swap files than can be encoded in the kernel
-  * PTEs.
 -- 
-2.20.1
+Stefano
 
