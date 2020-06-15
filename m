@@ -2,108 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD721F8D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1DB1F8DA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbgFOGRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:17:46 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50470 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728224AbgFOGRp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:17:45 -0400
-X-UUID: 736ae04e7d144c80a912027f8a13581b-20200615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=8E6iUgy1G5r0W+amwcAzOmYy/2hIRJmEje9glVMcWAE=;
-        b=b/X8KeEoJ94QKzFOYASCMzMn/nguGtHkwdi9D7frlPbA/VSjC8rvGQuQflitKCFsvC8qLQltFeQWJwzHhHFMm2Iwka/GPAMP1dr1OflTS3hLmTGwSt08KHMJmX4sa9l4bV3B5PZH9d8Zi0fo/BWyJhPqS2NsYwfNz+87voD7qIo=;
-X-UUID: 736ae04e7d144c80a912027f8a13581b-20200615
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1518178391; Mon, 15 Jun 2020 14:17:39 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 15 Jun 2020 14:17:38 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Jun 2020 14:17:36 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, Jim Lin <jilin@nvidia.com>,
-        Siqi Lin <siqilin@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>
-Subject: [PATCH v2] usb: replace hardcode maximum usb string length by definition
-Date:   Mon, 15 Jun 2020 14:17:35 +0800
-Message-ID: <1592201855-8218-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1591939967-29943-1-git-send-email-macpaul.lin@mediatek.com>
-References: <1591939967-29943-1-git-send-email-macpaul.lin@mediatek.com>
+        id S1728378AbgFOGS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 02:18:27 -0400
+Received: from cmta19.telus.net ([209.171.16.92]:42025 "EHLO cmta19.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgFOGS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:18:27 -0400
+Received: from dougxps ([173.180.45.4])
+        by cmsmtp with SMTP
+        id kiRkjsNrPFblkkiRljwT67; Mon, 15 Jun 2020 00:18:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1592201902; bh=zQNMuPsT4ll3hJNXvuLTaoTVr+UglTzfCusuV7uVOtg=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=rWstHuc4y3Ll7953LhvHxQUGpnq/MVtm9fE0768bWFtTY6zufmJ6yipsvwdJAaYrT
+         IgBeUrOj9ZLEcJPEJNADz3BsTOVTtpdjMmA8rBOhVQ36H6t/t0TERC3Te3+AtGfgkD
+         c0jcPcOAAqA4pqjzBZfCQwba3yycFc26s9XHUMAhOXfs0D4JuIYzPFtKJoGfbwqio7
+         4tPNCXO1GCF32a0Shst6p+BR8m8HzvBncRvDNbcb4lGJnrFi9vspjY7Nr3fF42Ea4b
+         7I7DMj0j7zbkEf8XlD0uiEWvLmOOkMicM8JEoE7C7HMF8t0+td6nIfAyOx5tnVNEAA
+         pFq8KOZKB5K8A==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.3 cv=BNTNU2YG c=1 sm=1 tr=0
+ a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=QyXUC8HyAAAA:8
+ a=gu6fZOg2AAAA:8 a=kYCofrKXt4MtsqnNrjUA:9 a=CjuIK1q_8ugA:10 a=-FEs8UIgK8oA:10
+ a=NWVoK91CQyQA:10 a=2RSlZUUhi9gRBrsHwhhZ:22
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Len Brown'" <len.brown@intel.com>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Peter Zijlstra'" <peterz@infradead.org>,
+        "'Giovanni Gherdovich'" <ggherdovich@suse.cz>,
+        "'Francisco Jerez'" <francisco.jerez.plata@intel.com>
+References: <3169564.ZRsPWhXyMD@kreacher>
+In-Reply-To: <3169564.ZRsPWhXyMD@kreacher>
+Subject: RE: [RFC/RFT][PATCH] cpufreq: intel_pstate: Work in passive mode with HWP enabled
+Date:   Sun, 14 Jun 2020 23:18:16 -0700
+Message-ID: <002801d642dc$c5225c10$4f671430$@net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: ADBF890E55533CA3D08784747C3C1882B436106C825BCC1A9AAF43AD4F3E88222000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Thread-Index: AdYvk3X5bnwqpX6hRwi7ciAthJfS0AR9+G4g
+Content-Language: en-ca
+X-CMAE-Envelope: MS4wfARU7e+z96JZosIKQHWrD1iLi45BoxdoG1MOAfXLxuHU6kbdsVkrwpUCxYTMUaVJK5hsiRoxeR8QTkEF7IxyYC9gS4tftUQXe6HwRT1eSYwrLvYGL5cc
+ r/hPUHLRyByrgIHY0m/UQHd7hu9ocqLSt3Rt94yk/zQSf71u3hd2QRgAk2cGeMZvZUh7gS86JS6UIDIyKJtg7OBpXX6Xsbfk714mcvYFOLP6p6jVEkkfHDQM
+ wy8PhjfGvrDyPLHWkJiT5/iPLqTKTEfvAk+oWibP1RFlY0HpUUN9pcWU24+I6N80/CuUfaGE7YdvMs39kmGosf9y3gU1Fu1WMG+K8z4BWdHw0RuHQpAJOP01
+ 5w2dps6Ht5rRjuH3GMs0V6RX0V2jr0lCM8fjegbVX34fvO4Kof//Q3VcdRY71RF3dMx1YaWO
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UmVwbGFjZSBoYXJkY29kZSBtYXhpbXVtIHVzYiBzdHJpbmcgbGVuZ3RoICgxMjYgYnl0ZXMpIGJ5
-IGRlZmluaXRpb24NCiJNQVhfVVNCX1NUUklOR19MRU4iLg0KDQpTaWduZWQtb2ZmLWJ5OiBNYWNw
-YXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0KLS0tDQpDaGFuZ2VzIGZvciB2MjoN
-CiAgLSBBZGQgZGVmaW5pdGlvbiAiTUFYX1VTQl9TVFJJTkdfTEVOIiBpbiBjaDkuaCBpbnN0ZWFk
-IG9mIGluIHVzYi5oLg0KICAgIFRoYW5rcyBmb3IgQWxhbidzIHN1Z2dlc3Rpb24uDQoNCiBkcml2
-ZXJzL3VzYi9nYWRnZXQvY29tcG9zaXRlLmMgfCAgICA0ICsrLS0NCiBkcml2ZXJzL3VzYi9nYWRn
-ZXQvY29uZmlnZnMuYyAgfCAgICAyICstDQogZHJpdmVycy91c2IvZ2FkZ2V0L3VzYnN0cmluZy5j
-IHwgICAgNCArKy0tDQogaW5jbHVkZS91YXBpL2xpbnV4L3VzYi9jaDkuaCAgIHwgICAgMyArKysN
-CiA0IGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCg0KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYyBiL2RyaXZlcnMvdXNiL2dh
-ZGdldC9jb21wb3NpdGUuYw0KaW5kZXggY2I0OTUwYy4uZDBkZTAxNiAxMDA2NDQNCi0tLSBhL2Ry
-aXZlcnMvdXNiL2dhZGdldC9jb21wb3NpdGUuYw0KKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2Nv
-bXBvc2l0ZS5jDQpAQCAtMTA0MSw3ICsxMDQxLDcgQEAgc3RhdGljIHZvaWQgY29sbGVjdF9sYW5n
-cyhzdHJ1Y3QgdXNiX2dhZGdldF9zdHJpbmdzICoqc3AsIF9fbGUxNiAqYnVmKQ0KIAl3aGlsZSAo
-KnNwKSB7DQogCQlzID0gKnNwOw0KIAkJbGFuZ3VhZ2UgPSBjcHVfdG9fbGUxNihzLT5sYW5ndWFn
-ZSk7DQotCQlmb3IgKHRtcCA9IGJ1ZjsgKnRtcCAmJiB0bXAgPCAmYnVmWzEyNl07IHRtcCsrKSB7
-DQorCQlmb3IgKHRtcCA9IGJ1ZjsgKnRtcCAmJiB0bXAgPCAmYnVmW01BWF9VU0JfU1RSSU5HX0xF
-Tl07IHRtcCsrKSB7DQogCQkJaWYgKCp0bXAgPT0gbGFuZ3VhZ2UpDQogCQkJCWdvdG8gcmVwZWF0
-Ow0KIAkJfQ0KQEAgLTExMTYsNyArMTExNiw3IEBAIHN0YXRpYyBpbnQgZ2V0X3N0cmluZyhzdHJ1
-Y3QgdXNiX2NvbXBvc2l0ZV9kZXYgKmNkZXYsDQogCQkJY29sbGVjdF9sYW5ncyhzcCwgcy0+d0Rh
-dGEpOw0KIAkJfQ0KIA0KLQkJZm9yIChsZW4gPSAwOyBsZW4gPD0gMTI2ICYmIHMtPndEYXRhW2xl
-bl07IGxlbisrKQ0KKwkJZm9yIChsZW4gPSAwOyBsZW4gPD0gTUFYX1VTQl9TVFJJTkdfTEVOICYm
-IHMtPndEYXRhW2xlbl07IGxlbisrKQ0KIAkJCWNvbnRpbnVlOw0KIAkJaWYgKCFsZW4pDQogCQkJ
-cmV0dXJuIC1FSU5WQUw7DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2NvbmZpZ2Zz
-LmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KaW5kZXggMzJiNjM3ZS4uNzBkZDRi
-YSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC9jb25maWdmcy5jDQorKysgYi9kcml2
-ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KQEAgLTExNSw3ICsxMTUsNyBAQCBzdGF0aWMgaW50
-IHVzYl9zdHJpbmdfY29weShjb25zdCBjaGFyICpzLCBjaGFyICoqc19jb3B5KQ0KIAljaGFyICpz
-dHI7DQogCWNoYXIgKmNvcHkgPSAqc19jb3B5Ow0KIAlyZXQgPSBzdHJsZW4ocyk7DQotCWlmIChy
-ZXQgPiAxMjYpDQorCWlmIChyZXQgPiBNQVhfVVNCX1NUUklOR19MRU4pDQogCQlyZXR1cm4gLUVP
-VkVSRkxPVzsNCiANCiAJc3RyID0ga3N0cmR1cChzLCBHRlBfS0VSTkVMKTsNCmRpZmYgLS1naXQg
-YS9kcml2ZXJzL3VzYi9nYWRnZXQvdXNic3RyaW5nLmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdXNi
-c3RyaW5nLmMNCmluZGV4IDdjMjRkMWMuLjhhOGQ2NDcgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Vz
-Yi9nYWRnZXQvdXNic3RyaW5nLmMNCisrKyBiL2RyaXZlcnMvdXNiL2dhZGdldC91c2JzdHJpbmcu
-Yw0KQEAgLTU1LDkgKzU1LDkgQEANCiAJCXJldHVybiAtRUlOVkFMOw0KIA0KIAkvKiBzdHJpbmcg
-ZGVzY3JpcHRvcnMgaGF2ZSBsZW5ndGgsIHRhZywgdGhlbiBVVEYxNi1MRSB0ZXh0ICovDQotCWxl
-biA9IG1pbigoc2l6ZV90KSAxMjYsIHN0cmxlbiAocy0+cykpOw0KKwlsZW4gPSBtaW4oKHNpemVf
-dClNQVhfVVNCX1NUUklOR19MRU4sIHN0cmxlbihzLT5zKSk7DQogCWxlbiA9IHV0ZjhzX3RvX3V0
-ZjE2cyhzLT5zLCBsZW4sIFVURjE2X0xJVFRMRV9FTkRJQU4sDQotCQkJKHdjaGFyX3QgKikgJmJ1
-ZlsyXSwgMTI2KTsNCisJCQkod2NoYXJfdCAqKSAmYnVmWzJdLCBNQVhfVVNCX1NUUklOR19MRU4p
-Ow0KIAlpZiAobGVuIDwgMCkNCiAJCXJldHVybiAtRUlOVkFMOw0KIAlidWYgWzBdID0gKGxlbiAr
-IDEpICogMjsNCmRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbGludXgvdXNiL2NoOS5oIGIvaW5j
-bHVkZS91YXBpL2xpbnV4L3VzYi9jaDkuaA0KaW5kZXggMmI2MjNmMy4uY2MwMmQwNSAxMDA2NDQN
-Ci0tLSBhL2luY2x1ZGUvdWFwaS9saW51eC91c2IvY2g5LmgNCisrKyBiL2luY2x1ZGUvdWFwaS9s
-aW51eC91c2IvY2g5LmgNCkBAIC0zNjQsNiArMzY0LDkgQEAgc3RydWN0IHVzYl9jb25maWdfZGVz
-Y3JpcHRvciB7DQogDQogLyotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKi8NCiANCisvKiBVU0IgU3RyaW5nIGRl
-c2NyaXB0b3JzIGNhbiBjb250YWluIGF0IG1vc3QgMTI2IGNoYXJhY3RlcnMuICovDQorI2RlZmlu
-ZSBNQVhfVVNCX1NUUklOR19MRU4JMTI2DQorDQogLyogVVNCX0RUX1NUUklORzogU3RyaW5nIGRl
-c2NyaXB0b3IgKi8NCiBzdHJ1Y3QgdXNiX3N0cmluZ19kZXNjcmlwdG9yIHsNCiAJX191OCAgYkxl
-bmd0aDsNCi0tIA0KMS43LjkuNQ0K
+On 2020.05.21 10:16 Rafael J. Wysocki wrote:
+> 
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Allow intel_pstate to work in the passive mode with HWP enabled and
+> make it translate the target frequency supplied by the cpufreq
+> governor in use into an EPP value to be written to the HWP request
+> MSR (high frequencies are mapped to low EPP values that mean more
+> performance-oriented HWP operation) as a hint for the HWP algorithm
+> in the processor, so as to prevent it and the CPU scheduler from
+> working against each other at least when the schedutil governor is
+> in use.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> This is a prototype not intended for production use (based on linux-next).
+> 
+> Please test it if you can (on HWP systems, of course) and let me know the
+> results.
+> 
+> The INTEL_CPUFREQ_TRANSITION_DELAY_HWP value has been guessed and it very well
+> may turn out to be either too high or too low for the general use, which is one
+> reason why getting as much testing coverage as possible is key here.
+> 
+> If you can play with different INTEL_CPUFREQ_TRANSITION_DELAY_HWP values,
+> please do so and let me know the conclusions.
+> 
+> Cheers,
+> Rafael
+
+To anyone trying this patch:
+
+You will need to monitor EPP (Energy Performance Preference) carefully.
+It changes as a function of passive/active, and if you booted active
+or passive or no-hwp and changed later.
+
+Originally, I was not specifically monitoring EPP, or paths taken since boot
+towards driver, intel_pstate or intel_cpufreq, and governor, and will now have
+to set aside test results.
+
+@Rafael: I am still having problems with my test computer and HWP. However, I can
+observe the energy saving potential of this "passive-yet-active HWP mode".
+
+At this point, I am actually trying to make my newer test computer
+simply behave and do what it is told with respect to CPU frequency scaling,
+because even acpi-cpufreq misbehaves for performance governor under
+some conditions [1].
+
+[1] https://marc.info/?l=linux-pm&m=159155067328641&w=2
+
+To my way of thinking:
+
+1.) it is imperative that we be able to decouple the governor servo
+from the processor servo. At a minimum this is needed for system testing,
+debugging and reference baselines. At a maximum users could, perhaps, decide
+for themselves. Myself, I would prefer "passive" to mean "do what you
+have been told", and that is now what I am testing.
+
+2.) I have always thought, indeed relied on, performance mode as being
+more than a hint. For my older i7-2600K it never disobeyed orders, except
+for the most minuscule of workloads.
+This newer i5-9600K seems to have a mind of its own which I would like
+to be able to turn off, yet still be able to use intel_pstate trace
+with schedutil.
+
+Recall last week I said
+
+> moving forward the typical CPU frequency scaling
+> configuration for my test system will be:
+>
+> driver: intel-cpufreq, forced at boot.
+> governor: schedutil
+> hwp: forced off at boot.
+
+The problem is that baseline references are still needed
+and performance mode is unreliable. Maybe other stuff also,
+I simply don't know at this point.
+
+Example of EPP changing (no need to read on) (from fresh boot):
+
+Current EPP:
+
+root@s18:/home/doug# rdmsr --bitfield 31:24 -u -a 0x774
+128
+128
+128
+128
+128
+128
+root@s18:/home/doug# grep . /sys/devices/system/cpu/cpu3/cpufreq/*
+/sys/devices/system/cpu/cpu3/cpufreq/affected_cpus:3
+/sys/devices/system/cpu/cpu3/cpufreq/base_frequency:3700000
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_max_freq:4600000
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_min_freq:800000
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_transition_latency:0
+/sys/devices/system/cpu/cpu3/cpufreq/energy_performance_available_preferences:default performance balance_performance balance_power
+power
+/sys/devices/system/cpu/cpu3/cpufreq/energy_performance_preference:balance_performance
+/sys/devices/system/cpu/cpu3/cpufreq/related_cpus:3
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_available_governors:performance powersave
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq:800102
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver:intel_pstate
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_governor:powersave
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq:4600000
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq:800000
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_setspeed:<unsupported>
+
+Now, switch to passive mode:
+
+echo passive > /sys/devices/system/cpu/intel_pstate/status
+
+And observe EPP:
+
+root@s18:/home/doug# rdmsr --bitfield 31:24 -u -a 0x774
+255
+255
+255
+255
+255
+255
+root@s18:/home/doug# grep . /sys/devices/system/cpu/cpu3/cpufreq/*
+/sys/devices/system/cpu/cpu3/cpufreq/affected_cpus:3
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_max_freq:4600000
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_min_freq:800000
+/sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_transition_latency:20000
+/sys/devices/system/cpu/cpu3/cpufreq/related_cpus:3
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_available_governors:conservative ondemand userspace powersave performance schedutil
+
+Hey, where did the ability to adjust the energy_performance_preference setting go?
+
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq:3400313
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_governor:performance
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq:4600000
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq:800000
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_setspeed:<unsupported>
+
+Kernel is 5.7 +plus this patch:
+
+root@s18:/home/doug# uname -a
+Linux s18 5.7.0-hwp10 #786 SMP PREEMPT Tue Jun 9 20:15:18 PDT 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+223e5c33f927 (HEAD -> k57-doug-hwp) cpufreq: intel_pstate: Accept passive mode with HWP enabled
+5d890a14763d cpufreq: intel_pstate: Use passive mode by default without HWP
+3d77e6a8804a (tag: v5.7) Linux 5.7
+
+The below is on top of this patch, and is how I am attempting to move forward:
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 4ab8bc1476c9..6c28ec49b192 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2331,33 +2331,32 @@ static void intel_cpufreq_update_hwp_request(struct cpudata *cpu, u32 min_perf)
+        value |= HWP_MIN_PERF(min_perf);
+
+        /*
+-        * The entire MSR needs to be updated in order to update the HWP min
+-        * field in it, so opportunistically update the max too if needed.
++        * the max also...
+         */
+        value &= ~HWP_MAX_PERF(~0L);
+-       value |= HWP_MAX_PERF(cpu->max_perf_ratio);
++       value |= HWP_MAX_PERF(min_perf);
+
+        if (value != prev)
+                wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
+ }
+
+ /**
+- * intel_cpufreq_adjust_hwp - Adjust the HWP reuqest register.
++ * intel_cpufreq_adjust_hwp - Adjust the HWP request register.
+  * @cpu: Target CPU.
+  * @target_pstate: P-state corresponding to the target frequency.
+  *
+- * Set the HWP minimum performance limit to 75% of @target_pstate taking the
++ * Set the HWP minimum performance limit to @target_pstate taking the
+  * global min and max policy limits into account.
+  *
+- * The purpose of this is to avoid situations in which the kernel and the HWP
+- * algorithm work against each other by giving a hint about the expectations of
+- * the former to the latter.
++ * The purpose of this is to force the slave (passive) servo to do what
++ * it has been told, not what ever it wants.
++ * This NOT a hint. EPP (responsiveness) is managed from elsewhere.
+  */
+ static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate)
+ {
+        u32 min_perf;
+
+-       min_perf = max_t(u32, (3 * target_pstate) / 4, cpu->min_perf_ratio);
++       min_perf = max_t(u32, target_pstate, cpu->min_perf_ratio);
+        min_perf = min_t(u32, min_perf, cpu->max_perf_ratio);
+        if (min_perf != cpu->pstate.current_pstate) {
+                cpu->pstate.current_pstate = min_perf;
+
+... Doug
+
+... [deleted] ...
+
 
