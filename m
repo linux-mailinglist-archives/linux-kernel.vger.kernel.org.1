@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C081F9D20
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919571F9D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730953AbgFOQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:21:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53326 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730569AbgFOQVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:21:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0317CAE61;
-        Mon, 15 Jun 2020 16:21:34 +0000 (UTC)
-Message-ID: <53b387b2754ef837b9fb2b02e2032d49553d7d88.camel@suse.de>
-Subject: Re: [PATCH v4 2/3] clk: bcm: Add BCM2711 DVP driver
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Date:   Mon, 15 Jun 2020 18:21:29 +0200
-In-Reply-To: <bb60d97fc76b61c2eabef5a02ebd664c0f57ede0.1591867332.git-series.maxime@cerno.tech>
-References: <cover.4c4625a8e076f3163b800b3d8986b282ee98d908.1591867332.git-series.maxime@cerno.tech>
-         <bb60d97fc76b61c2eabef5a02ebd664c0f57ede0.1591867332.git-series.maxime@cerno.tech>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-lv0HnO+bl/4v3cTYOsCP"
-User-Agent: Evolution 3.36.3 
+        id S1731056AbgFOQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731041AbgFOQWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:22:32 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC44C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:22:31 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id x1so18081194ejd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/vrNNxvqzd1+6WcN18UWNnrm3SzmXd8+xL+vm2U41hs=;
+        b=Zo5ehkbMWUQUNb9n3tIc5zV9ibuTmwKK3biPsJDwDAFXGbT+pEyjb5SZPDnyHTAj62
+         5OlXN3u5Q1MlWMVccYeP/p46e2nsmyVmGIyJUq85kS/I3ylT7lFNXt8QTXkbVt/tM72H
+         lfXAm2MWFyvoXvuiq5tn7ggY15XVP9TVWDYgk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/vrNNxvqzd1+6WcN18UWNnrm3SzmXd8+xL+vm2U41hs=;
+        b=hMRnXSkAZas3F98UflmUtXAcWtFL8s/MZ/7k+JoPqHCIE2HwyJ5qiUTCsSPcuS5WB2
+         XfNh2E70SnGCOMVjX+3KmMaflernpmRYPfc2gLSkygbo8RSGF2/Olp60Bo1jWox0n31L
+         453qkv2Fzv9AoaxJ+B38pP+4P9r79pyUTAsL/Iudrw1PSHpF+T3CdZR3mLcM4IbODGmQ
+         mhuAuB4QKBgbshzEOqKP1s98OvV4Ti0uhyfSO1INDrM7RsoxblpLUdxMw5Pim50pEkez
+         j5DTixNSmpRXr45OdfjM9Rv+Z0V5gvRQpvsiMzW9Sohy1UIfw2JHYaqlRTsnQwUNxZeh
+         vcjA==
+X-Gm-Message-State: AOAM532Af5iGT6XRFFjIXNTZL+22palUNPxB2dQQD7U8vkmtOHhd9CdC
+        q4lRfpa2CYBpMR4LrRCFjguhJ0SN1T0gd5s83//TDw==
+X-Google-Smtp-Source: ABdhPJx+bT/qo9gxqE/zoNAe1/BkPFy8sVFIY15o/zABl1r/0Kd+6QCAu4UjRjIvp6LUm6j//qBO9qKM9BgOO+88yFw=
+X-Received: by 2002:a17:906:5595:: with SMTP id y21mr27317038ejp.61.1592238149992;
+ Mon, 15 Jun 2020 09:22:29 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAJ-EccOy4qDpbfrP5=KH40LSOx1F4-ciY2=hFv_c+goUHLJ6PQ@mail.gmail.com>
+ <CAHk-=wiLXXR1+o4VAuw5MM3V1D8h6C6te3y8VMvW8iAJw6noJg@mail.gmail.com>
+ <CAJ-EccPGQ62yMK1Nmvie4qWzproSqb4POwAD4_0Nt62KLbGhqg@mail.gmail.com> <alpine.LRH.2.21.2006151517230.9003@namei.org>
+In-Reply-To: <alpine.LRH.2.21.2006151517230.9003@namei.org>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Mon, 15 Jun 2020 09:22:19 -0700
+Message-ID: <CAJ-EccO+4s8Dd=wj75ckfp4ZLhppt7uCgg2chf4SvTOxzqbgPw@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID LSM changes for v5.8
+To:     James Morris <jmorris@namei.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        John Johansen <john.johansen@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 14, 2020 at 10:21 PM James Morris <jmorris@namei.org> wrote:
+>
+> On Sun, 14 Jun 2020, Micah Morton wrote:
+>
+> > This patch was sent to the security mailing list and there were no objections.
+>
+> Standard practice for new or modified LSM hooks is that they are reviewed
+> and acked by maintainers of major LSMs (SELinux, AppArmor, and Smack, at
+> least).
+>
+> "No objections" should be considered "not reviewed".
+>
+> Can you add your tree to linux-next?
+> https://www.kernel.org/doc/man-pages/linux-next.html
 
---=-lv0HnO+bl/4v3cTYOsCP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sure, I can do that. I should just send an email to Stephen Rothwell
+asking him to include the -next branch from my tree?
 
-On Thu, 2020-06-11 at 11:23 +0200, Maxime Ripard wrote:
-> The HDMI block has a block that controls clocks and reset signals to the
-> HDMI0 and HDMI1 controllers.
->=20
-> Let's expose that through a clock driver implementing a clock and reset
-> provider.
->=20
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
-
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-
-Regards,
-Nicolas
-
-
---=-lv0HnO+bl/4v3cTYOsCP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7noAkACgkQlfZmHno8
-x/5p6Af8ChXihgt4rnC/MbdwQfP/MnNvS5Lzj0o0OUcJ6MedH4wdRT9EbkG2mIbA
-3l7g+YJKn+TrPvGberRpV3/j6YnnjFZeLwC6GTkIKjwo8mkNmjH4U5nu7WSzimm6
-lq87Lwo+Rg76vL6FGjJ0nLQ3W2ebJGMqTInr5JSR0WLePQgLjGkEyCwNvtPNTDiw
-wcG5GmimQtjgCNqxoyaMn5yHuBKlB5Izbo+1R4AegSiyf0nailXAO5lqFC/LD695
-7aAdy2dLjqnktBq1/yBr0eUE6WIH39YfM/Lul5hHFMBWjag7XsDyzIzPWFaG2TU+
-J7V/jydOsVs/cx3/RdcSYgzdZsxMlw==
-=gQcw
------END PGP SIGNATURE-----
-
---=-lv0HnO+bl/4v3cTYOsCP--
-
+>
+> --
+> James Morris
+> <jmorris@namei.org>
+>
