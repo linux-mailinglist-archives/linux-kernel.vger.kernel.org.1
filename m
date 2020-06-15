@@ -2,160 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEB21F9BB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802AA1F9BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgFOPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:16:40 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34471 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730197AbgFOPQj (ORCPT
+        id S1730434AbgFOPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730313AbgFOPVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:16:39 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id B1D2EFF811;
-        Mon, 15 Jun 2020 15:16:32 +0000 (UTC)
-Date:   Mon, 15 Jun 2020 17:19:56 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v10 1/4] dt-bindings: media: i2c: Add bindings for Maxim
- Integrated MAX9286
-Message-ID: <20200615151956.fsiczqldkle5aevb@uno.localdomain>
-References: <20200612144713.502006-1-kieran.bingham+renesas@ideasonboard.com>
- <20200612144713.502006-2-kieran.bingham+renesas@ideasonboard.com>
- <20200612221003.GA3901624@bogus>
- <20200613123207.6ey6y5spfa5ajk4h@uno.localdomain>
- <CAL_Jsq+o6Hwz6vN2mgYGnZF4wX5nFoaXRMweQr8euep-9OmBiA@mail.gmail.com>
+        Mon, 15 Jun 2020 11:21:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A272C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Udue+LwwMS7xIun8pCno4Qdzcnv4kfX0ri/1a/g6c/k=; b=H52QNX2jaSfrKP3H7353XNxUQl
+        JbEKHp5vhJk+xhPAnq6tsFUNwk1pSZFn/F6enslamIL/ygi3NZkbTzOt4YZinaVC2u+KsYXuLMq/4
+        jZNur1SlSu9sIbEctHrRVHooj+3eGOpEVqRRopw9dELDrHW6dAO3LIKRFWW2nRZTkTeJ/1aNQEnZa
+        UdmNHi0iBKHH2CknmTdxoKKvj+AXJbxRiBtGlhrKSdwTqXqsGqHLkjgonIU6g8Lr8Q7yV2FcwnY1d
+        oPYuGu5ulSJouIixOcDbpFbmcEzrVcdbN5UYN0dQP1dtJ4MUfYd7sy5UDai1Bv020RLCekRVe1mo6
+        rhQpYvQQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkquv-00053R-UE; Mon, 15 Jun 2020 15:20:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EC123003E1;
+        Mon, 15 Jun 2020 17:20:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3535C203C3762; Mon, 15 Jun 2020 17:20:56 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 17:20:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip v3 1/2] kcov: Make runtime functions
+ noinstr-compatible
+Message-ID: <20200615152056.GF2554@hirez.programming.kicks-ass.net>
+References: <CACT4Y+Z+FFHFGSgEJGkd+zCBgUOck_odOf9_=5YQLNJQVMGNdw@mail.gmail.com>
+ <20200608110108.GB2497@hirez.programming.kicks-ass.net>
+ <20200611215538.GE4496@worktop.programming.kicks-ass.net>
+ <CACT4Y+aKVKEp1yoBYSH0ebJxeqKj8TPR9MVtHC1Mh=jgX0ZvLw@mail.gmail.com>
+ <20200612114900.GA187027@google.com>
+ <CACT4Y+bBtCbEk2tg60gn5bgfBjARQFBgtqkQg8VnLLg5JwyL5g@mail.gmail.com>
+ <CANpmjNM+Tcn40MsfFKvKxNTtev-TXDsosN+z9ATL8hVJdK1yug@mail.gmail.com>
+ <20200615142949.GT2531@hirez.programming.kicks-ass.net>
+ <20200615145336.GA220132@google.com>
+ <20200615150327.GW2531@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_Jsq+o6Hwz6vN2mgYGnZF4wX5nFoaXRMweQr8euep-9OmBiA@mail.gmail.com>
+In-Reply-To: <20200615150327.GW2531@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Mon, Jun 15, 2020 at 05:03:27PM +0200, Peter Zijlstra wrote:
 
-On Mon, Jun 15, 2020 at 09:02:28AM -0600, Rob Herring wrote:
-> On Sat, Jun 13, 2020 at 6:28 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Fri, Jun 12, 2020 at 04:10:03PM -0600, Rob Herring wrote:
-> > > On Fri, 12 Jun 2020 15:47:10 +0100, Kieran Bingham wrote:
-> > > > From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > > >
-> > > > The MAX9286 deserializes video data received on up to 4 Gigabit
-> > > > Multimedia Serial Links (GMSL) and outputs them on a CSI-2 port using up
-> > > > to 4 data lanes.
-> > > >
-> > > > Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > > > Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> > > > Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > >
-> > > > ---
-> > > >
-> > > > v7:
-> > > >  - Collect Rob's RB tag
-> > > >  - Remove redundant maxItems from remote-endpoints
-> > > >  - Fix SPDX licence tag
-> > > >
-> > > > v10:
-> > > > [Jacopo]
-> > > >  - Fix dt-validation
-> > > >  - Fix dt-binding examples with 2 reg entries
-> > > >
-> > > > [Kieran]
-> > > >  - Correctly match the hex camera node reg
-> > > >  - Add (required) GPIO controller support
-> > > >
-> > > >  .../bindings/media/i2c/maxim,max9286.yaml     | 366 ++++++++++++++++++
-> > > >  1 file changed, 366 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > >
-> > >
-> > >
-> > > My bot found errors running 'make dt_binding_check' on your patch:
-> > >
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/maxim,max9286.example.dt.yaml: example-0: i2c@e66d8000:reg:0: [0, 3865935872, 0, 64] is too long
-> > >
-> > >
-> > > See https://patchwork.ozlabs.org/patch/1308280
-> > >
-> > > If you already ran 'make dt_binding_check' and didn't see the above
-> > > error(s), then make sure dt-schema is up to date:
-> > >
-> > > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> > >
-> >
-> > I have updated my dt-schema installation to the latest github master
-> > -------------------------------------------------------------------------------
-> > Successfully installed dtschema-2020.6.dev8+g4d2d86c
-> >
-> > https://github.com/devicetree-org/dt-schema/commit/4d2d86c5cd65cd3944ce0aaa400866bc36727bea
-> >
-> > $ /usr/bin/dt-validate -V
-> > 2020.6.dev8+g4d2d86c
-> > -------------------------------------------------------------------------------
-> >
-> > But I still cannot reproduce the error.
-> >
-> > However, I see this commit in your next branch
-> > https://github.com/devicetree-org/dt-schema/commit/b72500282cfd2eba6f9df4d7553f696544b40ee6
-> > "schemas: Add a schema to check 'reg' sizes "
-> >
-> > Which sounds very likely related to the above reported error.
-> > Was this intentional ?
->
-> Yes, I can't add the new checks to master until all the in tree schema
-> are fixed yet I want to check submissions with pending checks, so I
-> created the 'next' branch.
+> Yes, I think so. x86_64 needs lib/memcpy_64.S in .noinstr.text then. For
+> i386 it's an __always_inline inline-asm thing.
 
-I see, makes sense. Can I just suggest to add a few words about this
-new branch in the automated reply ? Otherwise the ones who are not aware
-of this (like I was) will keep wondering why they don't see the error your
-bot reported even if they have updated their dt-schema version to the
-latest available master.
+Bah, I tried writing it without memcpy, but clang inserts memcpy anyway
+:/
 
->
-> > I'm not sure how I should handle this. The error reports the i2c node
-> > parents should have both address-cells and size-cells properties set
-> > to 2, but in the example there is not i2c node parent at all :)
-> > Should I add a parent node for the i2c in the example snippet ?
->
-> The examples have default sizes of 1 cell. If you need something
-> different, the example has to define a parent node to specify it. In
-> your case, I'd just change 'reg' to use 1 cell each.
->
-
-Thanks, will fix.
-
-
-> Rob
+---
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index af75109485c26..d74fd6313a4ed 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -686,17 +686,17 @@ struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
+ 	 * just below the IRET frame) and we want to pretend that the
+ 	 * exception came from the IRET target.
+ 	 */
+-	struct bad_iret_stack tmp, *new_stack =
++	struct bad_iret_stack tmp = *s, *new_stack =
+ 		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
++	unsigned long *p = (unsigned long *)s->regs.sp;
+ 
+-	/* Copy the IRET target to the temporary storage. */
+-	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
++	tmp.regs.ip	= p[0];
++	tmp.regs.cs	= p[1];
++	tmp.regs.flags	= p[2];
++	tmp.regs.sp	= p[3];
++	tmp.regs.ss	= p[4];
+ 
+-	/* Copy the remainder of the stack from the current stack. */
+-	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
+-
+-	/* Update the entry stack */
+-	memcpy(new_stack, &tmp, sizeof(tmp));
++	*new_stack = tmp;
+ 
+ 	BUG_ON(!user_mode(&new_stack->regs));
+ 	return new_stack;
