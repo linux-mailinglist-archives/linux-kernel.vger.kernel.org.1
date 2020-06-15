@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF8D1FA486
+	by mail.lfdr.de (Postfix) with ESMTP id DD2281FA487
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgFOXlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
+        id S1727042AbgFOXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOXlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:41:07 -0400
+        id S1725960AbgFOXlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:41:11 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32D46207D3;
-        Mon, 15 Jun 2020 23:41:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2377D208D5;
+        Mon, 15 Jun 2020 23:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592264466;
-        bh=VGXtEY8OWog6D6i8nmaD+Vkxjr9FAlJzj627N7V72ho=;
+        s=default; t=1592264471;
+        bh=jPCWYHNI6TyLaxa7nvZ24dvreUVjXc00ndoYeTCoSEk=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=0C7R+7R6WYfZpj/CC+40vi2c1BVl80ZVTCpEkr5F014UhV9fJaZtqlDtRJy8BIpG3
-         n3J31NT78wT6u0CoP2GFhzkyMGnE81Zaw5m/RMkzZte3/NGsLs6bZb+OvXLpS4RN+G
-         +MHCYiznSbag9R+dbK+qSNFBCC6BTPP8ewD4Azyk=
-Date:   Tue, 16 Jun 2020 00:41:04 +0100
+        b=0AA8NmYD8wjeUBWNtTyoPErztaLoVWDLd33Y8IvYlEw5yTNCGfsz+u7pvMYGKzsYq
+         NQFZIIFdh8T8nOjVkmrLk7Dxs5rpYwhHLB9SdKYxIEV+XAXcal1f60qcypKuiXD3kV
+         9SgLmw+csIxWnuZmk4NW38mvRcjTF2GpZP2Na2jo=
+Date:   Tue, 16 Jun 2020 00:41:09 +0100
 From:   Mark Brown <broonie@kernel.org>
 To:     Bartosz Golaszewski <brgl@bgdev.pl>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20200615072313.11106-1-brgl@bgdev.pl>
-References: <20200615072313.11106-1-brgl@bgdev.pl>
-Subject: Re: [PATCH] regmap: convert all regmap_update_bits() and co. macros to static inlines
-Message-Id: <159226446456.27625.1211990966951084710.b4-ty@kernel.org>
+In-Reply-To: <20200615072507.11303-1-brgl@bgdev.pl>
+References: <20200615072507.11303-1-brgl@bgdev.pl>
+Subject: Re: [PATCH] regmap: remove stray space
+Message-Id: <159226446455.27625.17639277925722975250.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 09:23:13 +0200, Bartosz Golaszewski wrote:
-> There's no reason to have these as macros. Let's convert them all to
-> static inlines for better readability and stronger typing.
+On Mon, 15 Jun 2020 09:25:07 +0200, Bartosz Golaszewski wrote:
+> There are two spaces between arguments in regmap_fields_update_bits_base()
+> so remove one.
 
 Applied to
 
@@ -47,8 +47,8 @@ Applied to
 
 Thanks!
 
-[1/1] regmap: convert all regmap_update_bits() and co. macros to static inlines
-      commit: 4b9e7edb5afc4e3c27d6623f5008bf53ae96cf1a
+[1/1] regmap: remove stray space
+      commit: 9fb9b7715e5e08b58e70b9fcaf1f3072fbf99a22
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
