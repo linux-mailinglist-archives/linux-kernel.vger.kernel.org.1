@@ -2,237 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F421F9D24
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A8D1F9D09
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731031AbgFOQVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:21:43 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:50354 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730476AbgFOQVm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:21:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592238101; x=1623774101;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=4r5hU/OjiOgfN9yyLSRNo4FMrTTlc/nf8dBTtqw+4/s=;
-  b=LX3FdGQSrz4FZGeAAN4Y/3lg+l5mg/P4gRV5snWOLchKUMC2J9L13mpU
-   ODwDfK3/bGszx653Pj3aRCX+0nwoqQnLx0U57GLf4oi/nG2NhEmhKdiW7
-   I+Nf1+jAOpWLYC0HoWpEtBx7ib4hKaDBlu0wywwmMiZOkpzKxGPFZ28xH
-   Y=;
-IronPort-SDR: C6qtz/Nctr4MxU8hoYP6EOuLm8oQd/FagZTA8ORDzNP/xU33wXsTUM5KrYi6ZQzSECgg1YCtjz
- Z8K0Be2/ud0A==
-X-IronPort-AV: E=Sophos;i="5.73,515,1583193600"; 
-   d="scan'208";a="52392901"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 15 Jun 2020 16:21:34 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id D8C3CA252E;
-        Mon, 15 Jun 2020 16:21:31 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 16:21:31 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.145) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 16:21:14 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <david@redhat.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v16 05/14] mm/damon: Allow dynamic monitoring target regions update
+        id S1730946AbgFOQTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:19:32 -0400
+Received: from mout.gmx.net ([212.227.15.18]:57969 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729637AbgFOQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:19:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592237959;
+        bh=pT77xwIyg5fdLwWqVyEl7LfKJAAWp7HtQdcGpD4ikuc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
+        b=DmL6DsoicACVVLfxurlPPEtO8vK3gkrBkvmX5YPQuLOLwygVgp1i2K4LiAjTuw8ZH
+         cx86iGqAWroh63eKU9DlPzY695dijHsj7exC+Gv4RKV5RzIyaipNIsSqKoMx3dyKuf
+         8Zz7r3bsVa3KJhRSSeNiL39BTADhDUh7dXAWN5bg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from strobe-jhalfs ([188.109.165.61]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQ5vW-1jXihL2Ovo-00M2z2; Mon, 15
+ Jun 2020 18:19:19 +0200
+From:   Stephen Berman <stephen.berman@gmx.net>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+References: <87tuzjcovq.fsf@gmx.net>
+        <20200610102514.4vdzu5u7d6vnpicn@linutronix.de>
+        <87imfyh6yx.fsf@gmx.net> <87wo4dligz.fsf@gmx.net>
+        <20200612110122.jossn5zrktcvpbpm@linutronix.de>
+        <87tuzdrgm5.fsf@gmx.net>
+        <20200614171005.3zy673p6bpwoqnmq@linutronix.de>
+        <874krcsquv.fsf@gmx.net>
+        <20200615145130.bcdidqkp6w23xb6c@linutronix.de>
+        <87tuzcqqul.fsf@gmx.net>
+        <20200615155846.nd5n32qggusakxl7@linutronix.de>
 Date:   Mon, 15 Jun 2020 18:19:18 +0200
-Message-ID: <20200615161927.12637-6-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615161927.12637-1-sjpark@amazon.com>
-References: <20200615161927.12637-1-sjpark@amazon.com>
+In-Reply-To: <20200615155846.nd5n32qggusakxl7@linutronix.de> (Sebastian
+        Andrzej Siewior's message of "Mon, 15 Jun 2020 17:58:46 +0200")
+Message-ID: <87pna0qp2x.fsf@gmx.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.145]
-X-ClientProxiedBy: EX13D23UWA004.ant.amazon.com (10.43.160.72) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:B6nN4qd35ZcpNV/+g4XvNSLfvahGBT1BOzOpMPdf9LQsSWO99HX
+ 4oUAVkqdjRIfx8RiDDMhfPQREolVALZz53Bj/L5uu6Ni+nK5zBmd8X/f0Hy6YZK/sDtKfr8
+ GF53V056/HklbpdUkHZfUNcKld7+Q/aZU4bo/ULXwNLbluUG6WWFVIcXHcfxRhZ/8PbFrWZ
+ wfN6SewVMMdwwkKGJp1vw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:y+soa4AeU/w=:C353QW0PCdUx0j024JugMW
+ jbkEChrZaAlM4UNcLuY2kfXvwgwqc/YwWVe8LDO1JR0S5DSH/iflGg5BaSiUpZMfZhXk5GYND
+ AvuW8FzyCnDoNErYLqmxdZp8EpTWaatcTO2glgF2XoLGxJxgfy4AYgRmwEgRU40OWQj8TdBi7
+ DPyZplAj5ejYNTmnhsA3zZ7SqyTu+P25TXDlqqRcjmqSwIE+Uw9h+HX56TbBc1w6nt9/VJyu4
+ PiGM+IZduvwCbgapSqveFuZjPFoJwTwvbQ7t79j5d/3xGAZ/7YxekFvxM9X/otY/9NX9cxIA1
+ QkR4tkumo3ZG0vhnNuwZZhZYHzaIvu4S6JVzQ2H1odX9iemy+j29nsWXX336xTsp5DYz7pDbt
+ 6Qos9Rt5oICAxAYUYrW11uFPs5V1v4P3s+46LmWIEtHjHgAa+NEbwkcOLLrB3aHHmfLzTwgei
+ FihqkXOFkQ6H5j5pa1Kx/Ew0VH19/QHtKQlfOjKbSGt+sbsA//fp8Le3D44Ge+XXaRoNw7OoI
+ G6ZoUdn7mruLrEXHLoTNCApTg4pkDScKxJJXwUwWvUreKTGsjVrBocDESI8EI/FUBvKWA2OBX
+ CdvPlgsmVLOQslu+0f94NhuH+VAakxx307c2Wp7XbsTSLrxR/0B4w+MaupzdO2YdAMobsLi2B
+ PWVwXkatO6l04SvUbo6nRph9ZW3k2tR5tOJFHD2tgS7Z78eoq63lW1o+Fo1nrgBtJXibq3HpG
+ uvPsTeSuWDS9Z56UDCWrB6Wyr2vYQXJMR23r1oNr/FBL+pt/7DnVi6+2YDCzywAeZyoSqBPR+
+ hKTXNaSZICYuC6astaFsMJdLu4me5ujuzn6JHGeOd3nccatvfiGSZZUbPWi/giIGzaH1NaTxN
+ f4yftTt3oeamDAtwYYgZR6YtShnJw53eqbstPrgU9dXBmlfeRdqXkTETLBaGCiJvNRMso/FgI
+ CLQo4MmndNyf4k71NkwgLEB/MSiU844lRXtvYlMxXex+S3FsDy6RaECKNzS5m1jYNtGfxCwmD
+ ieNzMrP59o2yLVTBWOclFOgGch9jzww+61We+opGdQYxWmnclhiUCoInPiPPWAxCj41rbjmpN
+ 1T4jA9bnIDEYHWgZGfdg5ighRBDEOdfceJpBuAozPXqG0vDv8oFGMeKga8LDzOzjC2plkeryU
+ PUwp8t5B1X0medU/9oz61lPoQPsXjRlfJuKu4Q9c6H67b0Px40zIoMNXRWwjqnP/sdss+MuR1
+ lVjUTBADjqIeF5z+Z
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Mon, 15 Jun 2020 17:58:46 +0200 Sebastian Andrzej Siewior <bigeasy@linut=
+ronix.de> wrote:
 
-The monitoring target regions can be dynamically changed.  For example,
-virtual memory mapping could be dynamically updated and physical memory
-could be hot-plugged.
+> On 2020-06-15 17:41:06 [+0200], Stephen Berman wrote:
+>> > If you do this "t" then there should be a lot of output on your consol=
+e.
+>> > If you do this from an xterm then you can see the output after typing
+>> > "dmesg". The output should appear also in your system log.
+>>=20
+>> Ah, ok, I do see it in the log, it looks basically the same as the call
+>> trace I posted upthread.  I wonder why there was no such output in the
+>> console, could there be some setting that suppresses it even though
+>> /proc/sys/kernel/sysrq has `1'?
+>
+> You have ignore_loglevel soo everything should appear on your console.
+> The is true for your tty / ctrl+alt+f1 but your xterm shell.
 
-To handle such cases, this commit adds a monitoring attribute, ``regions
-update interval`` and a callback ``init_target_regions`` in the
-monitoring context.  If the two fields are properly set, DAMON will call
-the ``init_target_regions()`` callback for every ``regions update
-interval``.  In the callback, users can check current memory mapping or
-hotplugged physical memory sections and appropriately update the
-monitoring target regions of the context.
+Yet that appears not to be the case here, or I'm still doing something
+wrong =F0=9F=A4=B7
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- include/linux/damon.h | 20 +++++++++++++++-----
- mm/damon.c            | 23 +++++++++++++++++++++--
- 2 files changed, 36 insertions(+), 7 deletions(-)
+>> There were in fact 99 "Start .* acpi_ev_notify_dispatch" messages and 98
+>> "End .* acpi_ev_notify_dispatch" messages.  Here's the last of them
+>> before I rebooted:
+[...]=20
+>> acpi_os_execute_deferred_notify(851) Start ffff8d7aa8758a80
+>> acpi_ev_notify_dispatch+0x0/0x55(ffff8d7aa84e70a0)
+>> Jun 15 08:58:26 strobe-jhalfs kernel: [ 194.339017] acpi_os_execute(1109)
+>> Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa99a6730 <ffff8d7aabb384=
+c0>
+>> Jun 15 08:58:27 strobe-jhalfs kernel: [ 195.363005] acpi_os_execute(1109)
+>> Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa99a6780 <ffff8d7aabb385=
+00>
+>> Jun 15 08:58:27 strobe-jhalfs kernel: [ 195.367978]
+>> acpi_os_execute_deferred_notify(853) End ffff8d7aa8758a80
+[...]=20
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 9588bc162c3a..aa14d4e910e5 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -64,13 +64,16 @@ struct damon_task {
-  *
-  * @sample_interval:		The time between access samplings.
-  * @aggr_interval:		The time between monitor results aggregations.
-+ * @regions_update_interval:	The time between monitor regions updates.
-  * @min_nr_regions:		The number of initial monitoring regions.
-  * @max_nr_regions:		The maximum number of monitoring regions.
-  *
-  * For each @sample_interval, DAMON checks whether each region is accessed or
-  * not.  It aggregates and keeps the access information (number of accesses to
-- * each region) for @aggr_interval time.  All time intervals are in
-- * micro-seconds.
-+ * each region) for @aggr_interval time.  DAMON also checks whether the target
-+ * memory regions need update (e.g., by ``mmap()`` calls from the application,
-+ * in case of virtual memory monitoring) and applies the changes for each
-+ * @regions_update_interval.  All time intervals are in micro-seconds.
-  *
-  * @kdamond:		Kernel thread who does the monitoring.
-  * @kdamond_stop:	Notifies whether kdamond should stop.
-@@ -88,6 +91,7 @@ struct damon_task {
-  * @tasks_list:		Head of monitoring target tasks (&damon_task) list.
-  *
-  * @init_target_regions:	Constructs initial monitoring target regions.
-+ * @update_target_regions:	Updates monitoring target regions.
-  * @prepare_access_checks:	Prepares next access check of target regions.
-  * @check_accesses:		Checks the access of target regions.
-  * @sample_cb:			Called for each sampling interval.
-@@ -96,11 +100,14 @@ struct damon_task {
-  * DAMON can be extended for various address spaces by users.  For this, users
-  * can register the target address space dependent low level functions for
-  * their usecases via the callback pointers of the context.  The monitoring
-- * thread calls @init_target_regions before starting the monitoring, and
-+ * thread calls @init_target_regions before starting the monitoring,
-+ * @update_target_regions for each @regions_update_interval, and
-  * @prepare_access_checks and @check_accesses for each @sample_interval.
-  *
-  * @init_target_regions should construct proper monitoring target regions and
-  * link those to the DAMON context struct.
-+ * @update_target_regions should update the monitoring target regions for
-+ * current status.
-  * @prepare_access_checks should manipulate the monitoring regions to be
-  * prepare for the next access check.
-  * @check_accesses should check the accesses to each region that made after the
-@@ -115,10 +122,12 @@ struct damon_task {
- struct damon_ctx {
- 	unsigned long sample_interval;
- 	unsigned long aggr_interval;
-+	unsigned long regions_update_interval;
- 	unsigned long min_nr_regions;
- 	unsigned long max_nr_regions;
- 
- 	struct timespec64 last_aggregation;
-+	struct timespec64 last_regions_update;
- 
- 	struct task_struct *kdamond;
- 	bool kdamond_stop;
-@@ -128,6 +137,7 @@ struct damon_ctx {
- 
- 	/* callbacks */
- 	void (*init_target_regions)(struct damon_ctx *context);
-+	void (*update_target_regions)(struct damon_ctx *context);
- 	void (*prepare_access_checks)(struct damon_ctx *context);
- 	unsigned int (*check_accesses)(struct damon_ctx *context);
- 	void (*sample_cb)(struct damon_ctx *context);
-@@ -135,8 +145,8 @@ struct damon_ctx {
- };
- 
- int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids);
--int damon_set_attrs(struct damon_ctx *ctx,
--		unsigned long sample_int, unsigned long aggr_int,
-+int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-+		unsigned long aggr_int, unsigned long regions_update_int,
- 		unsigned long min_nr_reg, unsigned long max_nr_reg);
- int damon_start(struct damon_ctx *ctx);
- int damon_stop(struct damon_ctx *ctx);
-diff --git a/mm/damon.c b/mm/damon.c
-index 5cf39b3ad222..a19ec17a35cb 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -385,6 +385,17 @@ static void kdamond_split_regions(struct damon_ctx *ctx)
- 	last_nr_regions = nr_regions;
- }
- 
-+/*
-+ * Check whether it is time to check and apply the target monitoring regions
-+ *
-+ * Returns true if it is.
-+ */
-+static bool kdamond_need_update_regions(struct damon_ctx *ctx)
-+{
-+	return damon_check_reset_time_interval(&ctx->last_regions_update,
-+			ctx->regions_update_interval);
-+}
-+
- /*
-  * Check whether current monitoring should be stopped
-  *
-@@ -455,6 +466,12 @@ static int kdamond_fn(void *data)
- 			kdamond_reset_aggregated(ctx);
- 			kdamond_split_regions(ctx);
- 		}
-+
-+		if (kdamond_need_update_regions(ctx)) {
-+			if (ctx->update_target_regions)
-+				ctx->update_target_regions(ctx);
-+			sz_limit = damon_region_sz_limit(ctx);
-+		}
- 	}
- 	damon_for_each_task(t, ctx) {
- 		damon_for_each_region_safe(r, next, t)
-@@ -562,6 +579,7 @@ int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids)
-  * damon_set_attrs() - Set attributes for the monitoring.
-  * @ctx:		monitoring context
-  * @sample_int:		time interval between samplings
-+ * @regions_update_int:	time interval between target regions update
-  * @aggr_int:		time interval between aggregations
-  * @min_nr_reg:		minimal number of regions
-  * @max_nr_reg:		maximum number of regions
-@@ -571,8 +589,8 @@ int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids)
-  *
-  * Return: 0 on success, negative error code otherwise.
-  */
--int damon_set_attrs(struct damon_ctx *ctx,
--		    unsigned long sample_int, unsigned long aggr_int,
-+int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-+		    unsigned long aggr_int, unsigned long regions_update_int,
- 		    unsigned long min_nr_reg, unsigned long max_nr_reg)
- {
- 	if (min_nr_reg < 3) {
-@@ -588,6 +606,7 @@ int damon_set_attrs(struct damon_ctx *ctx,
- 
- 	ctx->sample_interval = sample_int;
- 	ctx->aggr_interval = aggr_int;
-+	ctx->regions_update_interval = regions_update_int;
- 	ctx->min_nr_regions = min_nr_reg;
- 	ctx->max_nr_regions = max_nr_reg;
- 
--- 
-2.17.1
+> Okay. So there is "Adding" of four events/work items in total, each
+> almost every second.
+> Processing of one work-item took two seconds, the other one took a
+> second. These events are "old" so I don't see the "adding" line for the
+> Start/End.
+> You could look in the log for ffff8d7aa8758a80 to seen when it was
+> enqueued but it feels like ACPI enqueues more events then it is capable
+> of processing.
 
+It's there, 196 lines above the Start ffff8d7aa8758a80 line:
+
+Jun 15 08:56:58 strobe-jhalfs kernel: [  106.275356] acpi_os_execute(1109) =
+Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa84e70a0 <ffff8d7aa8758a80>
+
+Steve Berman
