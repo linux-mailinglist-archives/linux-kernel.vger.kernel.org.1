@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C187D1F9B75
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF821F9B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730958AbgFOPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:06:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50696 "EHLO mail.kernel.org"
+        id S1730966AbgFOPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:06:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730944AbgFOPGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:06:04 -0400
+        id S1730948AbgFOPGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 11:06:10 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FF3D20739;
-        Mon, 15 Jun 2020 15:06:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A42842074D;
+        Mon, 15 Jun 2020 15:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592233563;
-        bh=85Zg12hlmggDcUFEqz7YM5wD8QE+kZiRdBC1+V1npKk=;
+        s=default; t=1592233570;
+        bh=32mGLgYeAMGgaRSoAeCwO7730ZOfLL8siowtJXDcS3w=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=satWScQ7ePBhlvSbocIRPa4lENFNw4S6aaCSWReDRbwUH2Pb3tuyYeE002clooAJ2
-         c9yPWQe4XqkNoDpepmr8xJGSdm8nLc92dVENKiZv5fdfcCFUNdmkU+4pZlqPdpRqHa
-         7t1/xNIwP5WCEd7Iyws0g0RdA6X8Bh4FK9vvYha0=
-Date:   Mon, 15 Jun 2020 16:06:01 +0100
+        b=sttW7DnBrwnqtFEHHwphmaaAObmg1hFSHnVXukWkqkYIppRzfCG23XTgQNWn2qrBu
+         m8mPGPROszsdjoDpJhZuHRMASh80QdxppZvbh5LX9c6hGTWeCchFjXzPveYv7/0ibm
+         QCexx4NsZcw9VUCRFUE7Y4KQn5P0RIAEkh0AKSqo=
+Date:   Mon, 15 Jun 2020 16:06:07 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>, lgirdwood@gmail.com,
-        Christophe.Meynard@ign.fr, Anson.Huang@nxp.com
-Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com
-In-Reply-To: <1592171648-8752-1-git-send-email-yibin.gong@nxp.com>
-References: <1592171648-8752-1-git-send-email-yibin.gong@nxp.com>
-Subject: Re: [PATCH v1] regualtor: pfuze100: correct sw1a/sw2 on pfuze3000
-Message-Id: <159223356166.9065.14796356122373184238.b4-ty@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Qing Zhang <zhangqing@loongson.cn>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+In-Reply-To: <20200613073755.15906-1-geert+renesas@glider.be>
+References: <20200613073755.15906-1-geert+renesas@glider.be>
+Subject: Re: [PATCH] spi: uapi: spidev: Use TABs for alignment
+Message-Id: <159223356731.9113.3752587156978383062.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 05:54:08 +0800, Robin Gong wrote:
-> PFUZE100_SWB_REG is not proper for sw1a/sw2, because enable_mask/enable_reg
-> is not correct. On PFUZE3000, sw1a/sw2 should be the same as sw1a/sw2 on
-> pfuze100 except that voltages are not linear, so add new PFUZE3000_SW_REG
-> and pfuze3000_sw_regulator_ops which like the non-linear PFUZE100_SW_REG
-> and pfuze100_sw_regulator_ops.
+On Sat, 13 Jun 2020 09:37:54 +0200, Geert Uytterhoeven wrote:
+> The UAPI <linux/spi/spidev.h> uses TABs for alignment.
+> Convert the recently introduced spaces to TABs to restore consistency.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regualtor: pfuze100: correct sw1a/sw2 on pfuze3000
-      commit: 6f1cf5257acc6e6242ddf2f52bc7912aed77b79f
+[1/1] spi: uapi: spidev: Use TABs for alignment
+      commit: 27784a256c2a453d891c0aaff84c3ac3f2e8a5a0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
