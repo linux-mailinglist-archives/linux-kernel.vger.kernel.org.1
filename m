@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3571F9F60
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650D61F9F63
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731259AbgFOSbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 14:31:53 -0400
-Received: from mga03.intel.com ([134.134.136.65]:61123 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgFOSbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 14:31:53 -0400
-IronPort-SDR: 6wWtUj3M5wNE3U2gipg4n+tYsDF7jvaGfelmgmtWBZrfUmWnIAKxlZrNguqHZmdbFbm71hQYjk
- 75csbxwBY8Sg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 11:31:52 -0700
-IronPort-SDR: joXV1sSu0sZFkD4oHAh3xnZighPwZFPsGZZaZQQdIrQ7QFvt2lXqOLaudtJdb7kYgg95ZSUvsl
- 4aJyYOd12xKQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
-   d="scan'208";a="308824121"
-Received: from orsmsx101.amr.corp.intel.com ([10.22.225.128])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Jun 2020 11:31:51 -0700
-Received: from orsmsx163.amr.corp.intel.com (10.22.240.88) by
- ORSMSX101.amr.corp.intel.com (10.22.225.128) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 15 Jun 2020 11:31:51 -0700
-Received: from orsmsx115.amr.corp.intel.com ([169.254.4.56]) by
- ORSMSX163.amr.corp.intel.com ([169.254.9.139]) with mapi id 14.03.0439.000;
- Mon, 15 Jun 2020 11:31:51 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        "Park, Kyung Min" <kyung.min.park@intel.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Neri, Ricardo" <ricardo.neri@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: RE: [RFC PATCH 1/3] Documentation/x86: Add documentation for
- /proc/cpuinfo feature flags
-Thread-Topic: [RFC PATCH 1/3] Documentation/x86: Add documentation for
- /proc/cpuinfo feature flags
-Thread-Index: AQHWP2TFcCB7etr3HkSrzMhI8DNK7KjaeHOA//+OLkA=
-Date:   Mon, 15 Jun 2020 18:31:50 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F66C552@ORSMSX115.amr.corp.intel.com>
-References: <20200610200701.16757-1-kyung.min.park@intel.com>
- <20200610200701.16757-2-kyung.min.park@intel.com>
- <20200615181527.GM14668@zn.tnic>
-In-Reply-To: <20200615181527.GM14668@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731336AbgFOScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 14:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729354AbgFOScZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 14:32:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAF6C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 11:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kaLeQNKpwo/3pmt93qdeNrph7VCKxinWeBQB+muxlqU=; b=kZsZQvXl1NJZtySSQyofXqG2gJ
+        LGW3VjHm9TuX25UqvO3KZKb2oOIY9GxryxwgyWiyhctAhFfedcv/u0AMokGAfuDcuQv/YwEGvsQmY
+        8hielzOiarmpwSn/5Z/0ZHjthHpnyNcIvvdozZPWoKwXF1+6ZCXlGxvI5cc6bKSJLMgkeQfJy9onI
+        UNvacJvt2GszmscxRPRxdOJ3tSlgyXdm46wtChlF5IIN4RMh0tlBKzaD0+BDmhBAEVFIMAXXXwcY2
+        cISoF7L3RZDb4UNipJqrTeB82lsBma2Gf1fHVAikvl9tjy6NvvycYEJ6lHhJjlERcYaO3c4E8tvMX
+        H2PwgC9A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkttx-000598-1L; Mon, 15 Jun 2020 18:32:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C7A7430604B;
+        Mon, 15 Jun 2020 20:32:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B5E05203DCA15; Mon, 15 Jun 2020 20:32:04 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 20:32:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v2 12/12] x86/traps: Fix up invalid PASID
+Message-ID: <20200615183204.GE2531@hirez.programming.kicks-ass.net>
+References: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
+ <1592008893-9388-13-git-send-email-fenghua.yu@intel.com>
+ <20200615075649.GK2497@hirez.programming.kicks-ass.net>
+ <20200615154854.GB13792@romley-ivt3.sc.intel.com>
+ <20200615160357.GA2531@hirez.programming.kicks-ass.net>
+ <20200615181921.GA33928@otc-nc-03>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615181921.GA33928@otc-nc-03>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJbiBnZW5lcmFsLCB0aGlzIHNob3VsZCBzYXkgc29tZXRoaW5nIGFsb25nIHRoZSBsaW5lcyB0
-aGF0IC9wcm9jL2NwdWluZm8NCj4gc2hvd3MgZmVhdHVyZXMgd2hpY2ggdGhlIGtlcm5lbCBzdXBw
-b3J0cy4NCj4NCj4gIkZvciBhIGZ1bGwgbGlzdCBvZiBDUFVJRCBmbGFncyB3aGljaCB0aGUgQ1BV
-IHN1cHBvcnRzLCB1c2UNCj4gdG9vbHMvYXJjaC94ODYvdG9vbHMvY3B1aWQvY3B1aWQiDQo+DQo+
-IDotKQ0KDQpEYXZlIEhhbnNlbiBoYWQgc3VnZ2VzdGVkIChvZmZsaW5lKSB0aGF0IHdlIGFkZCBh
-IGNwdWlkIHRvb2wgdG8gdGhlIGtlcm5lbCBzb3VyY2VzLg0KDQpJIHRoaW5rIHRoYXQncyBhIGxv
-dCBvZiAoZHVwbGljYXRlZCkgd29yayBmb3Igc29tZW9uZSB0byBtYWludGFpbi4gIFRoZSB2ZXJz
-aW9uIG9mIHRoaXMNCnRvb2wgYXQgaHR0cDovL3d3dy5ldGFsbGVuLmNvbS9jcHVpZC5odG1sIGlz
-IGNsb3NlIHRvIDEwSyBsaW5lcyBvZiBjb2RlLg0KDQotVG9ueQ0K
+On Mon, Jun 15, 2020 at 11:19:21AM -0700, Raj, Ashok wrote:
+> On Mon, Jun 15, 2020 at 06:03:57PM +0200, Peter Zijlstra wrote:
+> > 
+> > I don't get why you need a rdmsr here, or why not having one would
+> > require a TIF flag. Is that because this MSR is XSAVE/XRSTOR managed?
+> > 
+> > > > > +	 */
+> > > > > +	rdmsrl(MSR_IA32_PASID, pasid_msr);
+> > > > > +	if (pasid_msr & MSR_IA32_PASID_VALID)
+> > > > > +		return false;
+> > > > > +
+> > > > > +	/* Fix up the MSR if the MSR doesn't have a valid PASID. */
+> > > > > +	wrmsrl(MSR_IA32_PASID, pasid | MSR_IA32_PASID_VALID);
+> > 
+> > How much more expensive is the wrmsr over the rdmsr? Can't we just
+> > unconditionally write the current PASID and call it a day?
+> 
+> The reason to check the rdmsr() is because we are using a hueristic taking
+> GP faults. If we already setup the MSR, but we get it a second time it
+> means the reason is something other than PASID_MSR not being set.
+> 
+> Ideally we should use the TIF_ to track this would be cheaper, but we were
+> told those bits aren't easy to give out. 
+
+Why do you need a TIF flag? Why not any other random flag in current?
