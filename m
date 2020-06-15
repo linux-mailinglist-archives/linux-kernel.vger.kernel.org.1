@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202401FA293
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECCD1FA2B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbgFOVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 17:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726207AbgFOVNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 17:13:37 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A86A2078E;
-        Mon, 15 Jun 2020 21:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592255617;
-        bh=9hmhNMnytDn/12vZ0JJhYVVPOEacvK3Su5cLBW/296g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=zwkav/Taf2V3vmB29SJyATCj765103/cMPGXfIToXae2+m2mXInGF22eQvWXPRdHH
-         xtdIDonAq3ni7NC9c5GdTbeoFyhamfX56YCA2yac1hu/pYVkBVGN5qqT2yS6JhLNIi
-         IwvUH1xZfl6IrCPI8OliPOn2ZUXy9gNcD935czzo=
-Date:   Mon, 15 Jun 2020 16:18:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Derek Chickles <dchickles@marvell.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] liquidio: Replace vmalloc_node + memset with vzalloc_node
- and use array_size
-Message-ID: <20200615211855.GA32663@embeddedor>
+        id S1731590AbgFOVYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 17:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgFOVYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 17:24:09 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688A1C061A0E;
+        Mon, 15 Jun 2020 14:24:09 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id k13so10219135vsm.13;
+        Mon, 15 Jun 2020 14:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mdu8X+Q7CqBtC/GLB2icKvUv+XOLxvfh0ORFA3IvD2U=;
+        b=dhc1djqDcafE5BR0hNJ7YzYzE0xG3+kRVdlEAA7+5Vdy6rvya4U5eD/OBiqQr6yaIb
+         Q69HGbizyWmvOvLLVsjD7Re3mYqiTearF3vcfrmfW60mkafC8zGPiSFbm2j6QCwgecoN
+         Yv523l9WIBb4DlH+/LOsuq0CY06PDtpr21EjhWj5dsNZdlRozNlfoHGBRGrVpWQyUL7R
+         tGoVsWDsKy0v2+7PElbivcnBSfUw4hU4DSQKHdxlJyOxv3oUhzhEOlfK7hUi/iMit4wd
+         xbGhOI9Smc6JZeuoo9kFji/zIJRxSUMMPRGv8JbpHvDmSSEC4LgngYJozCG1cWXR5DXp
+         p4bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mdu8X+Q7CqBtC/GLB2icKvUv+XOLxvfh0ORFA3IvD2U=;
+        b=JZnAgmRcTYbK0Oyh3BkIKbA57bHPPyLf+D0871IL8WQtyo4Ld+PCryczP+YcXn7ptk
+         zyCbSzKw3xf+bfAvw/QzJyex1qinjaLTwAqUck/8R3FgKWzMiZylhYvdaWi8wVTBJgjK
+         Z/KesZbaSfglk4QNlZExei2Jgjr23U5UclQ5shHFQBwBF0y+cjqIuulpsFFj215AEs65
+         KCdFm4EA3NLOe10w+SC1kPFKSFIZqIlnH9y1xaLfym6XFNFUg4RUJFupW8DRZX2fhDA5
+         Zjg0/6/dmOEWARaqTubgW2AV4IV5sjVXDbSoJw2tnFRk9qvpuxi719eilk1xuMC6Yo8p
+         OuiA==
+X-Gm-Message-State: AOAM531AZFrMIgaSE9xrCphg604NrExTNsB5GWja3kYNI2/AxMO4A3nl
+        X8/wSLhDxc2mKSMUvXXJoUq0wkY6wcgurpPphVI=
+X-Google-Smtp-Source: ABdhPJzXrIs+SUF0pylq1xp8/iremWFjDjUX4s9YS4mC3ANMJzk0FVhHmuVLovqwSKQhHNbapA9FF6FCdnfIK5ySESo=
+X-Received: by 2002:a67:b149:: with SMTP id z9mr20148246vsl.85.1592256248206;
+ Mon, 15 Jun 2020 14:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200610120131.3069-1-matthias.schiffer@ew.tq-group.com>
+ <20200610120131.3069-4-matthias.schiffer@ew.tq-group.com> <20200610145954.GA135509@ravnborg.org>
+ <44d3b82a11fc292f0aa3f60a8ccebd4e8ce5d3e8.camel@ew.tq-group.com>
+In-Reply-To: <44d3b82a11fc292f0aa3f60a8ccebd4e8ce5d3e8.camel@ew.tq-group.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 15 Jun 2020 22:20:27 +0100
+Message-ID: <CACvgo50UoeCQ7ta0VPCWbskKL+s=C1ADyEz8P9bEtgebYcTZ0Q@mail.gmail.com>
+Subject: Re: (EXT) Re: [PATCH 3/4] drm/panel: simple: add CDTech
+ S070PWS19HP-FC21 and S070SWV29HG-DC44
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vzalloc/vzalloc_node instead of the vmalloc/vzalloc_node and memset.
+Hi Matthias,
 
-Also, notice that vzalloc_node() function has no 2-factor argument form
-to calculate the size for the allocation, so multiplication factors need
-to be wrapped in array_size().
+On Thu, 11 Jun 2020 at 08:54, Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
+> On Wed, 2020-06-10 at 16:59 +0200, Sam Ravnborg wrote:
+> > On Wed, Jun 10, 2020 at 02:01:30PM +0200, Matthias Schiffer wrote:
 
-This issue was found with the help of Coccinelle and, audited and fixed
-manually.
+> > > +   .vrefresh = 60,
+> >
+> > .vrefresh is no longer present, please drop.
+>
+> I based my patches on the branch drm-next of
+> https://cgit.freedesktop.org/drm/drm, should I have used a different
+> branch?
+>
+Small tip for the future:
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/cavium/liquidio/request_manager.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+The best way to find the correct tree is to check with the MAINTAINERS
+file or via ./scripts/get_maintainer --scm ...
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/request_manager.c b/drivers/net/ethernet/cavium/liquidio/request_manager.c
-index 6dd65f9b347c..8e59c2825533 100644
---- a/drivers/net/ethernet/cavium/liquidio/request_manager.c
-+++ b/drivers/net/ethernet/cavium/liquidio/request_manager.c
-@@ -95,12 +95,10 @@ int octeon_init_instr_queue(struct octeon_device *oct,
- 	/* Initialize a list to holds requests that have been posted to Octeon
- 	 * but has yet to be fetched by octeon
- 	 */
--	iq->request_list = vmalloc_node((sizeof(*iq->request_list) * num_descs),
--					       numa_node);
-+	iq->request_list = vzalloc_node(array_size(num_descs, sizeof(*iq->request_list)),
-+					numa_node);
- 	if (!iq->request_list)
--		iq->request_list =
--			vmalloc(array_size(num_descs,
--					   sizeof(*iq->request_list)));
-+		iq->request_list = vzalloc(array_size(num_descs, sizeof(*iq->request_list)));
- 	if (!iq->request_list) {
- 		lio_dma_free(oct, q_size, iq->base_addr, iq->base_addr_dma);
- 		dev_err(&oct->pci_dev->dev, "Alloc failed for IQ[%d] nr free list\n",
-@@ -108,8 +106,6 @@ int octeon_init_instr_queue(struct octeon_device *oct,
- 		return 1;
- 	}
- 
--	memset(iq->request_list, 0, sizeof(*iq->request_list) * num_descs);
--
- 	dev_dbg(&oct->pci_dev->dev, "IQ[%d]: base: %p basedma: %pad count: %d\n",
- 		iq_no, iq->base_addr, &iq->base_addr_dma, iq->max_count);
- 
--- 
-2.27.0
-
+-Emil
