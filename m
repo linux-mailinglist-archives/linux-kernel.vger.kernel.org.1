@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEBE1F99FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1931F9A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730451AbgFOOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:20:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729733AbgFOOUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:20:13 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3316D2074D;
-        Mon, 15 Jun 2020 14:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592230813;
-        bh=HUOCydLumSxottDevVSLTHdpEfx02efaglSNcqOyA1g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rxrDTinJAYv67vU3pv3GEGSXu0O0GeIxA/gLRFYKN9K8aTIslE5/sL+ikA+jvg1ux
-         GnFsxHtvt1ZUS1ALBJBPVMd6UNCJBBmR4R/dLq/DUHREEr13PyFULm4FJB9p2lS2eU
-         gHEFHYUDOR64bxN0dtNHR5XTrtcOZnQoKHnz9imo=
-Received: by mail-ot1-f54.google.com with SMTP id g5so13219472otg.6;
-        Mon, 15 Jun 2020 07:20:13 -0700 (PDT)
-X-Gm-Message-State: AOAM530Iug82uYHhdbXmsUFZXm3CNMhfXfowu6B8uEYvLrIw86LXWvTJ
-        vlserVx5eBv3yrT3M1/QBwdjy/q4oMs9p6jfYYk=
-X-Google-Smtp-Source: ABdhPJy+z0D9ri9ngrVRxC0r0rgXl8LVweQQsGIwSrtgoyTVkc/8FuWCV9DKYpp5RO1CEDgKCleL16FZzI+PH3YLDeI=
-X-Received: by 2002:a9d:42e:: with SMTP id 43mr21620560otc.108.1592230812567;
- Mon, 15 Jun 2020 07:20:12 -0700 (PDT)
+        id S1730328AbgFOOXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729733AbgFOOXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 10:23:41 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19887C061A0E;
+        Mon, 15 Jun 2020 07:23:41 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id mb16so17659210ejb.4;
+        Mon, 15 Jun 2020 07:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H9r0/sULFGsJQ0VS718x6ZAIaeQpzmxSr4ry5tlo8dA=;
+        b=iTGuFP6o46kqSb7OX7uzryGWmBxBXqSo1GjexOIOIdYAkPEkR6ag3kHRccJgj51job
+         IneqsherdA5JHsGp9gCUnITzRDzNGpHHUreaVA/swlF0+Z97dVzqwtpCZoLSPT21Ex+B
+         oWOA3pkQ48zu3NtCgeg+0KkRHjQJYQtb7OqLkQwds3xGr5pGQNI20mRCIruFkZGFtHyg
+         jJ77Ug1sfREkx0oD6ykfBDtCAIIIksvI16gYrJd0A+AZ022JH5wj6l+riUyZQTC6h+1b
+         aS25R0XwLX8ltDveG25Y5DTzfdyxB8qo7hgE1p/5YjszAmaI7fDcewFKnXXKhfjTs8Hw
+         k3bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H9r0/sULFGsJQ0VS718x6ZAIaeQpzmxSr4ry5tlo8dA=;
+        b=ZQG0CnDlsf7Bkw9No2ZQT2MNUfzu+WvyYqxErP/4APq6eR+ziyiJOwhuhwy3OOPC5Z
+         Tzyh5VP630t5sGAae2JWweEEMGjzCW/qWT5cppPF2RurKA7qp0m+Fvv7KteIi9lmP4E2
+         DU6vYlOQrxOvXSRRbEmZ7MkpS2+Vb2elWzH451+yfG8WGVrtMDLR+qiLOP/w4u9Ibrau
+         RD1lcCer7UsCt/niTKT3uW1rms9jvvb9e9AKniCsPPNiRR4jCZ+nybG6pDHsD2YnEDE/
+         0WOOjZJJk+xigzNJdT8SQIr9ih+foVdK92ouBwRbJ21WAlzC209dj7liHxYMMZ573D2M
+         uHcg==
+X-Gm-Message-State: AOAM532mnKr4H5YAQsA3vGa2e92Dlynsk6oXTxWUnCY5ECZSF02ARErZ
+        K3w7UL9hjv1HKo9BNUfNtfoQp6VvZqD597hDVaQ=
+X-Google-Smtp-Source: ABdhPJzYgleQ7Vn71c+CU11+ki0tmdv62jr2mfK0iQcj82yKU7B8iZmt/xGz58Y/kQv8GDe9O5ngIdCHH2iTvTZVjC8=
+X-Received: by 2002:a17:906:198d:: with SMTP id g13mr13150059ejd.281.1592231019420;
+ Mon, 15 Jun 2020 07:23:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200604022031.164207-1-masahiroy@kernel.org> <20200604022031.164207-2-masahiroy@kernel.org>
- <CAMj1kXEHDFnhgsz4w+6DuwPxcSZ5P8o0rMzQ504Nt4i31MXwJQ@mail.gmail.com>
- <CAMj1kXFhULbche0kbGr+mHofOYBU2WT8i7Bgx-qgz6Cp6AE8ow@mail.gmail.com> <CAK7LNARcq2O5redrnBnLuRXGs7HxyRxn_VSs2oRtDwOLkxLMdA@mail.gmail.com>
-In-Reply-To: <CAK7LNARcq2O5redrnBnLuRXGs7HxyRxn_VSs2oRtDwOLkxLMdA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 15 Jun 2020 16:20:01 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGg-w6N7jyG0pBJmeRctAhG2wWGoU=ryWj+Qi2UH-_m9Q@mail.gmail.com>
-Message-ID: <CAMj1kXGg-w6N7jyG0pBJmeRctAhG2wWGoU=ryWj+Qi2UH-_m9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] efi/libstub: refactor Makefile to not use lib-y syntax
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
+ <e1f0326c-8ae8-ffb3-aace-10433b0c78a6@pengutronix.de> <20200615123052.GO4447@sirena.org.uk>
+ <CA+h21hqC7hAenifvRqbwss=Sr+dAu3H9Dx=UF0TS0WVbkzTj2Q@mail.gmail.com>
+ <20200615131006.GR4447@sirena.org.uk> <CA+h21hpusy=zx8AuUqk_4zShtst8QeNJxCPT4dMGh0jhm5uZng@mail.gmail.com>
+ <20200615134119.GB3321@kozik-lap>
+In-Reply-To: <20200615134119.GB3321@kozik-lap>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Mon, 15 Jun 2020 17:23:28 +0300
+Message-ID: <CA+h21hp29i=AdZB_fBQ4mwAh=3Oovopwz3ruzzJqiKpRpZYzhg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] spi: spi-fsl-dspi: Fix external abort on interrupt
+ in exit paths
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 at 16:15, Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Mon, 15 Jun 2020 at 16:41, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> On Mon, Jun 15, 2020 at 7:41 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> On Mon, Jun 15, 2020 at 04:12:28PM +0300, Vladimir Oltean wrote:
+> > On Mon, 15 Jun 2020 at 16:10, Mark Brown <broonie@kernel.org> wrote:
 > >
-> > On Mon, 15 Jun 2020 at 12:26, Ard Biesheuvel <ardb@kernel.org> wrote:
 > > >
-> > > On Thu, 4 Jun 2020 at 04:20, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > >
-> > > > Documentation/kbuild/makefiles.rst says:
-> > > >
-> > > >   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
-> > > >
-> > > > This is because lib-y is inteded to be hooked to KBUILD_VMLINUX_LIBS,
-> > > > which is passed down to scripts/link-vmlinux.sh.
-> > > >
-> > > > Besides, lib-y is not so interesting because objects from lib-y are
-> > > > mostly linked in normal usecases. For example, lib-y only saves 364
-> > > > bytes for x86_64_defconfig. You can see the details in commit
-> > > > 7273ad2b08f8 ("kbuild: link lib-y objects to vmlinux forcibly when
-> > > > CONFIG_MODULES=y").
-> > > >
-> > > > I think we should consider to deprecate lib-y syntax at some point
-> > > > because we should aim for better solution like dead code elimination
-> > > > or LTO.
-> > > >
-> > > > Other than lib/ and arch/*/lib, this Makefile is the only user of
-> > > > lib-y. Replace lib-y with a custom rule.
-> > > >
-> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > >
-> > > Series queued in efi/urgent.
-> > >
+> > > It's a bit unusual to need to actually free the IRQ over suspend -
+> > > what's driving that requirement here?
 > >
-> > Actually, I am seeing this now
-> >
-> > /home/ard/linux/scripts/Makefile.build:421: warning: overriding recipe
-> > for target 'drivers/firmware/efi/libstub/lib.a'
-> > /home/ard/linux/drivers/firmware/efi/libstub/Makefile:131: warning:
-> > ignoring old recipe for target 'drivers/firmware/efi/libstub/lib.a'
+> > clk_disable_unprepare(dspi->clk); is driving the requirement - same as
+> > in dspi_remove case, the module will fault when its registers are
+> > accessed without a clock.
 >
+> In few cases when I have shared interrupt in different drivers, they
+> were just disabling it during suspend. Why it has to be freed?
 >
->
-> Sorry, please drop this patch for now.
->
-> (Actually, it was working when I submitted it,
-> but is broken after e578edc72276280b8fae57f6bf79cb443ceee7a2)
+> Best regards,
+> Krzysztof
 >
 
-OK.
+Not saying it _has_ to be freed, just to be prevented from running
+concurrently with us disabling the clock.
+But if we can get away in dspi_suspend with just disable_irq, can't we
+also get away in dspi_remove with just devm_free_irq?
+
+-Vladimir
