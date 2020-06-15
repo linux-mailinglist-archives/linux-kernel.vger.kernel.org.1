@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2C01F9D4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DAB1F9D0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbgFOQY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:24:27 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:35865 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731124AbgFOQYW (ORCPT
+        id S1730930AbgFOQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:20:05 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:35164 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729637AbgFOQUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592238262; x=1623774262;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=pVcOoTXfEhP95n40P2tq5dup7mBPSiPPU6Yt3e8a7DQ=;
-  b=Ap+HdZYuGDCa8nWt1n6cxbZJG8kciuty/KY1jI1EYJ0mSDTD0OfaJXx/
-   ZSAHkLgWakkeMPSH1dbjwjB9BNRGa5Y1PI9mtlmsEeasv4QQpyWPlB+bD
-   OYk0xnJ+TOYPfUXBIbclRth5MufWyvai70xE+X3PcRfzhzrD66Ph/gISz
-   g=;
-IronPort-SDR: 3hDTmnzwCZPAYQUHi85adbekMiB/bg1lJboafI3x6Kgr9m3nE9LbkY5sezQHlTN2mijKEuhTXD
- Cb+LGcAuZDIw==
-X-IronPort-AV: E=Sophos;i="5.73,515,1583193600"; 
-   d="scan'208";a="36386016"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 15 Jun 2020 16:24:18 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 11D981A1667;
-        Mon, 15 Jun 2020 16:24:16 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 16:24:15 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.145) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 16:23:56 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <david@redhat.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v16 14/14] MAINTAINERS: Update for DAMON
-Date:   Mon, 15 Jun 2020 18:19:27 +0200
-Message-ID: <20200615161927.12637-15-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615161927.12637-1-sjpark@amazon.com>
-References: <20200615161927.12637-1-sjpark@amazon.com>
+        Mon, 15 Jun 2020 12:20:03 -0400
+Received: by mail-il1-f195.google.com with SMTP id l6so15896349ilo.2;
+        Mon, 15 Jun 2020 09:20:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uvbped+Dn13FUPq8GHew9vUB2jQNtfi2nsvSR22TQ8s=;
+        b=O8WwzAdrGJSmRW4kO6ymUFm+5981B07F21evWCILK+R0Zc8iicKlKf5lSshUOtfKu2
+         a0SQW3edpRj3hfWnxb2ujFk/P77byVq9AR6NOiO8furkCUXA57kFVAyAuFsaXIr9sGNN
+         Hltfj4xW+5rs9z+bw0irA9KC79soHQs8bzz1tlsQ3yEzMnI304bj3XKDiZZ0EaktOIFj
+         eKM6yW05BL7H8zyYOGmna9/H5aQ4UZqbaCMdoTCd6OuGKM3DKlEEzluZzkkuiHU3XC2Q
+         +4UIHDBW4Ft8pmCgoj9Ehd34xfuZVKootVwU9vs5xz0LaC2UXZTnv4z5wnch2z9oQVf1
+         MKhQ==
+X-Gm-Message-State: AOAM532f58MD3dEmqFEkpMudDhMA7DTEIcL6GkwDKeIqfW5YejhPdG34
+        UTuD7miZToOrMZwjdPQCzQ==
+X-Google-Smtp-Source: ABdhPJyWS/sstoBhKxILy/hcjEoOyepMM2wljkSKlbRqyuvaRgoPm9BvD7ypFBgSLyiSfGmJvM3WIg==
+X-Received: by 2002:a92:dc89:: with SMTP id c9mr27936223iln.238.1592238002603;
+        Mon, 15 Jun 2020 09:20:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id i10sm8149137ilp.28.2020.06.15.09.20.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 09:20:02 -0700 (PDT)
+Received: (nullmailer pid 1884267 invoked by uid 1000);
+        Mon, 15 Jun 2020 16:20:00 -0000
+Date:   Mon, 15 Jun 2020 10:20:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     Linux-imx@nxp.com, festevam@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        aisheng.dong@nxp.com, linux-clk@vger.kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org,
+        mturquette@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de, robh+dt@kernel.org
+Subject: Re: [PATCH V2] dt-bindings: clock: Convert imx7ulp clock to
+ json-schema
+Message-ID: <20200615162000.GA1884157@bogus>
+References: <1591234387-15059-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.145]
-X-ClientProxiedBy: EX13D23UWA004.ant.amazon.com (10.43.160.72) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591234387-15059-1-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Thu, 04 Jun 2020 09:33:07 +0800, Anson Huang wrote:
+> Convert the i.MX7ULP clock binding to DT schema format using json-schema,
+> the original binding doc is actually for two clock modules(SCG and PCC),
+> so split it to two binding docs, and the MPLL(mipi PLL) is NOT supposed
+> to be in clock module, so remove it from binding doc as well.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> Changes since V1:
+> 	- add "additionalProperties: false".
+> ---
+>  .../devicetree/bindings/clock/imx7ulp-clock.txt    | 103 ------------------
+>  .../bindings/clock/imx7ulp-pcc-clock.yaml          | 121 +++++++++++++++++++++
+>  .../bindings/clock/imx7ulp-scg-clock.yaml          |  99 +++++++++++++++++
+>  3 files changed, 220 insertions(+), 103 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/imx7ulp-clock.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
+>  create mode 100644 Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
+> 
 
-This commit updates MAINTAINERS file for DAMON related files.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 50659d76976b..2396a9098715 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4686,6 +4686,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/damon/*
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon-test.h
-+F:	mm/damon.c
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
--- 
-2.17.1
-
+Applied, thanks!
