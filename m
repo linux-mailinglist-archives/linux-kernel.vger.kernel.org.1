@@ -2,177 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE2F1F9021
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E187A1F902A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgFOHlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        id S1728678AbgFOHmO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 03:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728641AbgFOHlh (ORCPT
+        with ESMTP id S1728369AbgFOHmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:41:37 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A223C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:41:25 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c14so14808392qka.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2KL7qPoxB+SXypXx6JSxpmJJJ1hbOJrXzQ0d7/jA8mo=;
-        b=Tn06U7UvLq2rd/h92eFhD/jpOodVbzmscii0VlCpophDsGbW2F9qiBbYiarhF0DuLa
-         Men7TemgKDmNqe98NHojSpahmlg5XqMdLqpsICALkSfBICZKEFC7SGgRhXZQeD0vy/AA
-         jvfeHaNboLvCQMALl8h+/MJi6P3poJNhJWW2X/pkoK6iRql03qs5UzKZqIp59/GEeXcw
-         ACUyJ23vOsg5X8bzLNlPYfTC2ENUsC2sBqvXRyusXenHbVyoED44qDgaYg9tt9BaS2cV
-         me9vdnnvkRNMULOgd9fwgSWCMVBKTO33qRcoJneG/pfepO/P6uOppge/vVYOybMxCTiy
-         wo6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2KL7qPoxB+SXypXx6JSxpmJJJ1hbOJrXzQ0d7/jA8mo=;
-        b=lHJybmKBxYUO+zDTT64DBpGJYDtdNsqu5t85ZROr9+CaRqbKltEoceXzoNBPKh0dBv
-         oh1lSNuvvl9VFxTsYLbdbF8UjVUGFGe3oH7MpO38FzWT6bP7p5xf+OjPeTaIi5XBzmEt
-         g8JIivMThVEw6Rs0aToACIBVfL0fbgdeSO3spsQEQgiiiVUD/CYUzK7BxKBgaogxceee
-         GuLDZ0JXnSC9m8+FpIVT2QJ9grbunVu1mJOIwUAMGbdqkxJ0sfaFJ/Nm9jdvskFr8/u6
-         UkIgFRteGjcjAeceoXqnOb3Dms/Gy5RNkVht7fg/5ZOxgyGQ5i1cg3gE6X2ao2BUcmuD
-         irpA==
-X-Gm-Message-State: AOAM5317DvycxdNRCzgB3ugzNm7YU2f3c+WDWQxLohJRPMzMV0z4tcux
-        46cWAGon8Z73D9tpRwJpEaeZbIM3OWmAsZXhKN9X6Q==
-X-Google-Smtp-Source: ABdhPJwAD+b73mpH1Fzo+cMzffJhtAQj6QcKhYtrbj56harDUaL3yMtSbCai9zQflFKVVKRdpALQgM/PwWs8WOScLp8=
-X-Received: by 2002:a05:620a:786:: with SMTP id 6mr12222644qka.407.1592206875597;
- Mon, 15 Jun 2020 00:41:15 -0700 (PDT)
+        Mon, 15 Jun 2020 03:42:13 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEADC061A0E;
+        Mon, 15 Jun 2020 00:42:13 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jkjkv-0003IX-2c; Mon, 15 Jun 2020 09:42:09 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id A70B41C00ED;
+        Mon, 15 Jun 2020 09:42:08 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 07:42:08 -0000
+From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Fix memory bandwidth counter width for AMD
+Cc:     Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <159129975546.62538.5656031125604254041.stgit@naples-babu.amd.com>
+References: <159129975546.62538.5656031125604254041.stgit@naples-babu.amd.com>
 MIME-Version: 1.0
-References: <20200612143034.933422660@infradead.org> <20200612143554.071314718@infradead.org>
-In-Reply-To: <20200612143554.071314718@infradead.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 15 Jun 2020 09:41:04 +0200
-Message-ID: <CACT4Y+Zj4=4C4rg6Y_EgQRjxS8_BcApxNeQRQVXewAsgQqQj8Q@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/3] objtool: Fix noinstr vs KCOV
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, mhelsley@vmware.com,
-        Steven Rostedt <rostedt@goodmis.org>, jthierry@redhat.com,
-        mbenes@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159220692843.16989.9350605607122935266.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 4:37 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Since many compilers cannot disable KCOV with a function attribute,
-> help it to NOP out any __sanitizer_cov_*() calls injected in noinstr
-> code.
->
-> This turns:
->
-> 12:   e8 00 00 00 00          callq  17 <lockdep_hardirqs_on+0x17>
->                 13: R_X86_64_PLT32      __sanitizer_cov_trace_pc-0x4
->
-> into:
->
-> 12:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
->                 13: R_X86_64_NONE      __sanitizer_cov_trace_pc-0x4
->
-> Just like recordmcount does.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Commit-ID:     2c18bd525c47f882f033b0a813ecd09c93e1ecdf
+Gitweb:        https://git.kernel.org/tip/2c18bd525c47f882f033b0a813ecd09c93e1ecdf
+Author:        Babu Moger <babu.moger@amd.com>
+AuthorDate:    Thu, 04 Jun 2020 14:45:16 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 15 Jun 2020 09:35:38 +02:00
 
-Thanks!
+x86/resctrl: Fix memory bandwidth counter width for AMD
 
-> ---
->  tools/objtool/arch.h                      |    2 ++
->  tools/objtool/arch/x86/decode.c           |   18 ++++++++++++++++++
->  tools/objtool/arch/x86/include/arch_elf.h |    6 ++++++
->  tools/objtool/check.c                     |   19 +++++++++++++++++++
->  4 files changed, 45 insertions(+)
->
-> --- a/tools/objtool/arch.h
-> +++ b/tools/objtool/arch.h
-> @@ -84,4 +84,6 @@ unsigned long arch_jump_destination(stru
->
->  unsigned long arch_dest_reloc_offset(int addend);
->
-> +const char *arch_nop_insn(int len);
-> +
->  #endif /* _ARCH_H */
-> --- a/tools/objtool/arch/x86/decode.c
-> +++ b/tools/objtool/arch/x86/decode.c
-> @@ -565,3 +565,21 @@ void arch_initial_func_cfi_state(struct
->         state->regs[16].base = CFI_CFA;
->         state->regs[16].offset = -8;
->  }
-> +
-> +const char *arch_nop_insn(int len)
-> +{
-> +       static const char nops[5][5] = {
-> +               /* 1 */ { 0x90 },
-> +               /* 2 */ { 0x66, 0x90 },
-> +               /* 3 */ { 0x0f, 0x1f, 0x00 },
-> +               /* 4 */ { 0x0f, 0x1f, 0x40, 0x00 },
-> +               /* 5 */ { 0x0f, 0x1f, 0x44, 0x00, 0x00 },
-> +       };
-> +
-> +       if (len < 1 || len > 5) {
-> +               WARN("invalid NOP size: %d\n", len);
-> +               return NULL;
-> +       }
-> +
-> +       return nops[len-1];
-> +}
-> --- /dev/null
-> +++ b/tools/objtool/arch/x86/include/arch_elf.h
-> @@ -0,0 +1,6 @@
-> +#ifndef _OBJTOOL_ARCH_ELF
-> +#define _OBJTOOL_ARCH_ELF
-> +
-> +#define R_NONE R_X86_64_NONE
-> +
-> +#endif /* _OBJTOOL_ARCH_ELF */
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -12,6 +12,7 @@
->  #include "check.h"
->  #include "special.h"
->  #include "warn.h"
-> +#include "arch_elf.h"
->
->  #include <linux/hashtable.h>
->  #include <linux/kernel.h>
-> @@ -744,6 +745,24 @@ static int add_call_destinations(struct
->                         insn->call_dest = reloc->sym;
->
->                 /*
-> +                * Many compilers cannot disable KCOV with a function attribute
-> +                * so they need a little help, NOP out any KCOV calls from noinstr
-> +                * text.
-> +                */
-> +               if (insn->sec->noinstr &&
-> +                   !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
-> +                       if (reloc) {
-> +                               reloc->type = R_NONE;
-> +                               elf_write_reloc(file->elf, reloc);
-> +                       }
-> +
-> +                       elf_write_insn(file->elf, insn->sec,
-> +                                      insn->offset, insn->len,
-> +                                      arch_nop_insn(insn->len));
-> +                       insn->type = INSN_NOP;
-> +               }
-> +
-> +               /*
->                  * Whatever stack impact regular CALLs have, should be undone
->                  * by the RETURN of the called function.
->                  *
->
->
+Memory bandwidth is calculated reading the monitoring counter
+at two intervals and calculating the delta. It is the software’s
+responsibility to read the count often enough to avoid having
+the count roll over _twice_ between reads.
+
+The current code hardcodes the bandwidth monitoring counter's width
+to 24 bits for AMD. This is due to default base counter width which
+is 24. Currently, AMD does not implement the CPUID 0xF.[ECX=1]:EAX
+to adjust the counter width. But, the AMD hardware supports much
+wider bandwidth counter with the default width of 44 bits.
+
+Kernel reads these monitoring counters every 1 second and adjusts the
+counter value for overflow. With 24 bits and scale value of 64 for AMD,
+it can only measure up to 1GB/s without overflowing. For the rates
+above 1GB/s this will fail to measure the bandwidth.
+
+Fix the issue setting the default width to 44 bits by adjusting the
+offset.
+
+AMD future products will implement CPUID 0xF.[ECX=1]:EAX.
+
+ [ bp: Let the line stick out and drop {}-brackets around a single
+   statement. ]
+
+Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/159129975546.62538.5656031125604254041.stgit@naples-babu.amd.com
+---
+ arch/x86/kernel/cpu/resctrl/core.c     | 8 ++++----
+ arch/x86/kernel/cpu/resctrl/internal.h | 1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 12f967c..6a9df71 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -981,10 +981,10 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
+ 
+ 		c->x86_cache_max_rmid  = ecx;
+ 		c->x86_cache_occ_scale = ebx;
+-		if (c->x86_vendor == X86_VENDOR_INTEL)
+-			c->x86_cache_mbm_width_offset = eax & 0xff;
+-		else
+-			c->x86_cache_mbm_width_offset = -1;
++		c->x86_cache_mbm_width_offset = eax & 0xff;
++
++		if (c->x86_vendor == X86_VENDOR_AMD && !c->x86_cache_mbm_width_offset)
++			c->x86_cache_mbm_width_offset = MBM_CNTR_WIDTH_OFFSET_AMD;
+ 	}
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index f20a47d..5ffa322 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -37,6 +37,7 @@
+ #define MBA_IS_LINEAR			0x4
+ #define MBA_MAX_MBPS			U32_MAX
+ #define MAX_MBA_BW_AMD			0x800
++#define MBM_CNTR_WIDTH_OFFSET_AMD	20
+ 
+ #define RMID_VAL_ERROR			BIT_ULL(63)
+ #define RMID_VAL_UNAVAIL		BIT_ULL(62)
