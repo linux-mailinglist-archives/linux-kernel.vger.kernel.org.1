@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270191FA287
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1BB1FA295
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731702AbgFOVIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 17:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36822 "EHLO mail.kernel.org"
+        id S1731551AbgFOVNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 17:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731451AbgFOVIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 17:08:30 -0400
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726207AbgFOVNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 17:13:40 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29D9B207E8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 21:08:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592255309;
-        bh=2uwrT3LndWuOmVFs7KNYrM0gYbf8YHkseGi77l6m1nA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SwFe1XrVngm7lGTXR+6vv1E0vGwbBXS2LrKN04vBZe4ChL/Yx1XYcx2YDv3NuRWks
-         oaPgW46sENCNptuQZZ8gwtNI8mhdOtgfZ1nQV1IRIcBr7CP64JYvLCqDD9JZmDlnZz
-         i7E35/oiM6/+l5NE0Wqpha2y0YkEvubz/8CmSjhQ=
-Received: by mail-wm1-f49.google.com with SMTP id c71so907031wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 14:08:29 -0700 (PDT)
-X-Gm-Message-State: AOAM533dEyCO+FgLzfmLWE6z7yfq7jCfzBbPQetuy1KAtBS3nZRLFfed
-        jtomaYE/qKTx6M6XAIp1OvWF3Z6asEbA9NFrAjgb4w==
-X-Google-Smtp-Source: ABdhPJyxEn4ZEFRrBcIP2yFeRdfXbYA/EdvnZ/NhZpeD3cwBJrDDqngPIQlMSjRWfaptXiQXlOJ2wY53olUTtd7wH3U=
-X-Received: by 2002:a05:600c:22da:: with SMTP id 26mr1175441wmg.176.1592255307605;
- Mon, 15 Jun 2020 14:08:27 -0700 (PDT)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19B2B207DD;
+        Mon, 15 Jun 2020 21:13:39 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 17:13:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: Re: [PATCH] tracing/probe: fix memleak in fetch_op_data operations
+Message-ID: <20200615171337.6525cefa@oasis.local.home>
+In-Reply-To: <20200615143034.GA1734@cosmos>
+References: <20200615143034.GA1734@cosmos>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <f8fe40e0088749734b4435b554f73eee53dcf7a8.1591932307.git.luto@kernel.org>
- <159199140855.16989.18012912492179715507.tip-bot2@tip-bot2>
- <20200615145018.GU2531@hirez.programming.kicks-ass.net> <CALCETrWhbg_61CTo9_T6s1NDFvOgUx7ebSzhXj7O_m8htePwKA@mail.gmail.com>
- <20200615194458.GL2531@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200615194458.GL2531@hirez.programming.kicks-ass.net>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 15 Jun 2020 14:08:16 -0700
-X-Gmail-Original-Message-ID: <CALCETrUbwwoYTzyntr=bUjJU44iyt+S8bRS04OxmByP3aD4A9g@mail.gmail.com>
-Message-ID: <CALCETrUbwwoYTzyntr=bUjJU44iyt+S8bRS04OxmByP3aD4A9g@mail.gmail.com>
-Subject: Re: [tip: x86/entry] x86/entry: Treat BUG/WARN as NMI-like entries
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jun 15, 2020, at 12:45 PM, Peter Zijlstra <peterz@infradead.org> wrote=
-:
->
-> =EF=BB=BFOn Mon, Jun 15, 2020 at 10:06:20AM -0700, Andy Lutomirski wrote:
->>> On Mon, Jun 15, 2020 at 7:50 AM Peter Zijlstra <peterz@infradead.org> w=
-rote:
->>
->> Hmm.  IMO you're making two changes here, and this is fiddly enough
->> that it might be worth separating them for bisection purposes.
->
-> Sure, can do.
->
->>> ---
->>>
->>> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
->>> index af75109485c26..a47e74923c4c8 100644
->>> --- a/arch/x86/kernel/traps.c
->>> +++ b/arch/x86/kernel/traps.c
->>> @@ -218,21 +218,22 @@ static inline void handle_invalid_op(struct pt_re=
-gs *regs)
->>>
->>> DEFINE_IDTENTRY_RAW(exc_invalid_op)
->>> {
->>> -       bool rcu_exit;
->>> -
->>>        /*
->>>         * Handle BUG/WARN like NMIs instead of like normal idtentries:
->>>         * if we bugged/warned in a bad RCU context, for example, the la=
-st
->>>         * thing we want is to BUG/WARN again in the idtentry code, ad
->>>         * infinitum.
->>>         */
->>> -       if (!user_mode(regs) && is_valid_bugaddr(regs->ip)) {
->>> -               enum bug_trap_type type;
->>> +       if (!user_mode(regs)) {
->>> +               enum bug_trap_type type =3D BUG_TRAP_TYPE_NONE;
->>>
->>>                nmi_enter();
->>>                instrumentation_begin();
->>>                trace_hardirqs_off_finish();
->>> -               type =3D report_bug(regs->ip, regs);
->>> +
->>> +               if (is_valid_bugaddr(regs->ip))
->>> +                       type =3D report_bug(regs->ip, regs);
->>> +
->>
->> Sigh, this is indeed necessary.
->
-> :-)
->
->>>                if (regs->flags & X86_EFLAGS_IF)
->>>                        trace_hardirqs_on_prepare();
->>>                instrumentation_end();
->>> @@ -249,13 +250,16 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
->>>                 * was just a normal #UD, we want to continue onward and
->>>                 * crash.
->>>                 */
->>> -       }
->>> +               handle_invalid_op(regs);
->>
->> But this is really a separate change.  This makes handle_invalid_op()
->> be NMI-like even for non-BUG/WARN kernel #UD entries.  One might argue
->> that this doesn't matter, and that's probably right, but I think it
->> should be its own change with its own justification.  With just my
->> patch, I intentionally call handle_invalid_op() via the normal
->> idtentry_enter_cond_rcu() path.
->
-> All !user exceptions really should be NMI-like. If you want to go
-> overboard, I suppose you can look at IF and have them behave interrupt
-> like when set, but why make things complicated.
 
-This entire rabbit hole opened because of #PF. So we at least need the
-set of exceptions that are permitted to schedule if they came from
-kernel mode to remain schedulable.
+Masami or Srikar would you like to look at this patch.
 
-Prior to the giant changes, all the non-IST *exceptions*, but not the
-interrupts, were schedulable from kernel mode, assuming the original
-context could schedule. Right now, interrupts can schedule, too, which
-is nice if we ever want to fully clean up the Xen abomination. I
-suppose we could make it so #PF opts in to special treatment again,
-but we should decide that the result is simpler or otherwise better
-before we do this.
+And wondering why you were not on the Cc to this patch in the first
+place, please take a look at the patch I want to add at the bottom ;-)
 
-One possible justification would be that the schedulable entry variant
-is more complicated, and most kernel exceptions except the ones with
-fixups are bad news, and we want the oopses to succeed. But page
-faults are probably the most common source of oopses, so this is a bit
-weak, and we really want page faults to work even from nasty contexts.
 
->
-> Anyway, let me to smaller and proper patches for this.
+On Mon, 15 Jun 2020 20:00:38 +0530
+Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com> wrote:
+
+> kmemleak report:
+>     [<57dcc2ca>] __kmalloc_track_caller+0x139/0x2b0
+>     [<f1c45d0f>] kstrndup+0x37/0x80
+>     [<f9761eb0>] parse_probe_arg.isra.7+0x3cc/0x630
+>     [<055bf2ba>] traceprobe_parse_probe_arg+0x2f5/0x810
+>     [<655a7766>] trace_kprobe_create+0x2ca/0x950
+>     [<4fc6a02a>] create_or_delete_trace_kprobe+0xf/0x30
+>     [<6d1c8a52>] trace_run_command+0x67/0x80
+>     [<be812cc0>] trace_parse_run_command+0xa7/0x140
+>     [<aecfe401>] probes_write+0x10/0x20
+>     [<2027641c>] __vfs_write+0x30/0x1e0
+>     [<6a4aeee1>] vfs_write+0x96/0x1b0
+>     [<3517fb7d>] ksys_write+0x53/0xc0
+>     [<dad91db7>] __ia32_sys_write+0x15/0x20
+>     [<da347f64>] do_syscall_32_irqs_on+0x3d/0x260
+>     [<fd0b7e7d>] do_fast_syscall_32+0x39/0xb0
+>     [<ea5ae810>] entry_SYSENTER_32+0xaf/0x102
+> 
+> Post parse_probe_arg(), the FETCH_OP_DATA operation type is overwritten
+> to FETCH_OP_ST_STRING, as a result memory is never freed since
+> traceprobe_free_probe_arg() iterates only over SYMBOL and DATA op types
+> 
+> Setup fetch string operation correctly after fetch_op_data operation.
+> 
+> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+> ---
+>  kernel/trace/trace_probe.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index b8a928e..d2867cc 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -639,8 +639,8 @@ static int traceprobe_parse_probe_arg_body(char *arg, ssize_t *size,
+>  			ret = -EINVAL;
+>  			goto fail;
+>  		}
+> -		if ((code->op == FETCH_OP_IMM || code->op == FETCH_OP_COMM) ||
+> -		     parg->count) {
+> +		if ((code->op == FETCH_OP_IMM || code->op == FETCH_OP_COMM ||
+> +		     code->op == FETCH_OP_DATA) || parg->count) {
+>  			/*
+>  			 * IMM, DATA and COMM is pointing actual address, those
+>  			 * must be kept, and if parg->count != 0, this is an
+
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 47873f2e6696..116e5cc7ef95 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9229,6 +9229,8 @@ F:	Documentation/kprobes.txt
+ F:	include/linux/kprobes.h
+ F:	include/asm-generic/kprobes.h
+ F:	kernel/kprobes.c
++F:	kernel/trace/trace_kprobe.c
++F:	kernel/trace/trace_probe.c
+ 
+ KS0108 LCD CONTROLLER DRIVER
+ M:	Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+@@ -16996,6 +16998,16 @@ F:	drivers/mtd/ubi/
+ F:	include/linux/mtd/ubi.h
+ F:	include/uapi/mtd/ubi-user.h
+ 
++UPROBES
++M:	Srikar Dronamraju <srikar@linux.vnet.ibm.com>
++S:	Maintained
++F:	Documentation/trace/uprobetracer.rst
++F:	Documentation/features/debug/uprobes
++F:	include/linux/uprobes.h
++F:	kernel/events/uprobes.c
++F:	kernel/trace/trace_uprobe.c
++F:	kernel/trace/trace_probe.c
++
+ USB "USBNET" DRIVER FRAMEWORK
+ M:	Oliver Neukum <oneukum@suse.com>
+ L:	netdev@vger.kernel.org
+
+
+-- Steve
