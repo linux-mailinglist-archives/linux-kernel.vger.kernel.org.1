@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762201F98E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6361F98FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730648AbgFONeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S1730684AbgFONer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730638AbgFONeH (ORCPT
+        with ESMTP id S1730213AbgFONek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:34:07 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29051C061A0E;
-        Mon, 15 Jun 2020 06:34:07 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id f7so17468338ejq.6;
-        Mon, 15 Jun 2020 06:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D2V1qAE11MNlrSXseMOlYDGmQZmq5VRcnjVpJmM7yzg=;
-        b=GbIldhCdOCVrXEk+ONIEUVLgT0UsbDx8tLCIdwL2uVK0L8Ezi/vkURRR4WlfbiCfht
-         x/F/qgWd21c9PhWl6xCe99JQ1RZw1/+2cxirrPJC9s7GybkalRLGVnHdkRSzOmNjCA1H
-         /S1J7Qda5Y4rgJPjIGX2uum2NncaCTNtYaNmAjyKN4/w38uVr1F928XE8iRGv6cwzU22
-         XXtrdgDqU9/rUGwnrmfy9sUjc66dfTbOEuh891oRPkDExQUNYjKl3Vj9IZCBBZsHDxi6
-         8bSSEDrtNV704lENX5H5ZRAi8a1Z3ny7cUBzhsD/vhjZk4InSqYrSdrtbIvJeLezThfb
-         3NHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D2V1qAE11MNlrSXseMOlYDGmQZmq5VRcnjVpJmM7yzg=;
-        b=MQ9CP2FGBeVn8g5eyobuRrbU3aT1Vm4AJ3CTLjrzpG0DGwWJkONUR0xjq0ILIKMLeg
-         G84QA+VHAy2nxfqopg8+1GXYeR/Lju42AScfJ0LLfloF3kCQglyO78PtCv7/l0wfcUaq
-         SLuDilA+um+a1u0BpI67eMwT25LWiQ1R0XrzVRMCZDnQ7WKYKzDCxsda/Y4Fk91bd5RB
-         PIsWaFcxyO6Xo1SUd3d7y250MBcWbA5J38TyZBU1JE7tbod5X7kGXZBuMq6+dHCxfeAk
-         3kt3BdBw+KyjdNMVbSVbYUAL5DlVHVUvyrrVebdmxtpbUKGRcS2QVDNlBwWzLoezjhTN
-         Cqzw==
-X-Gm-Message-State: AOAM532N1migWf/LQ/CWOC57cyh5DQqQsC7UK6BSZvHu8t6e8A+O37lC
-        KOcFcpsVBJUGVxkqUJVTx/qqtuze8Rhai6DXZFg=
-X-Google-Smtp-Source: ABdhPJzeJ2Yrey1vBEGdZaJnJxSnmLJHNM8zVVXUFYwnfHr2tIRNLk8hVbekn0NLieVUa+bUfXOM0ywx4KZAvQxQROw=
-X-Received: by 2002:a17:906:198d:: with SMTP id g13mr12938685ejd.281.1592228045820;
- Mon, 15 Jun 2020 06:34:05 -0700 (PDT)
+        Mon, 15 Jun 2020 09:34:40 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C95C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=27u+aslpGbbxT2/ao8LzkoAS94gMgtGGpixmRkO16yw=; b=GXZh6+9ppaEZPvsgVPReJkP861
+        N2AoVKj7lQsfyO3QFcYsq5FFIIKI5ME6bm+OLfj8ebaleQ89yX7wTLy4PWCJH/fVuZcjj5nMqoJLO
+        3B92qb6xhSlelPwMssdoZ7loUMyct0lO8yq5DHIYR2H91+/pfmhrpfyJwUoBArqnmigpJ04pqWMY9
+        q7FDdDXJMfgx/3amEidcTJOhk4Jao8VT05Wax01QPrfMX3WsCCOIhW+jsozdYC9xb18+xkUQe83Up
+        4jcaMGoi8Cp0+pK+HbYQIWOxOmYFzRf7twCOZTQDc9Iikmi1kkHCPEIr5M4c4vuYyAq8Q8q9X2bA9
+        +r2B+kzw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkpFb-0004qF-8H; Mon, 15 Jun 2020 13:34:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECDF73060FD;
+        Mon, 15 Jun 2020 15:34:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF9652392E715; Mon, 15 Jun 2020 15:34:09 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 15:34:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        paulmck@kernel.org, frederic@kernel.org
+Subject: Re: [PATCH 1/6] sched: Fix ttwu_queue_cond()
+Message-ID: <20200615133409.GS2531@hirez.programming.kicks-ass.net>
+References: <20200615125654.678940605@infradead.org>
+ <20200615131143.130326165@infradead.org>
 MIME-Version: 1.0
-References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
- <e1f0326c-8ae8-ffb3-aace-10433b0c78a6@pengutronix.de> <20200615123052.GO4447@sirena.org.uk>
- <CA+h21hqC7hAenifvRqbwss=Sr+dAu3H9Dx=UF0TS0WVbkzTj2Q@mail.gmail.com>
- <20200615131012.GB2634@kozik-lap> <CA+h21hoCUC-UqHKLOsMhiEZdyTctUwNC6pqijpD9X96ZZq4M7w@mail.gmail.com>
- <20200615132842.GA3321@kozik-lap>
-In-Reply-To: <20200615132842.GA3321@kozik-lap>
-From:   Vladimir Oltean <olteanv@gmail.com>
-Date:   Mon, 15 Jun 2020 16:33:54 +0300
-Message-ID: <CA+h21hpagCDVbjzh_==B_m2HiVrZv1MsvEcY=fPmqSequ6jvJA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] spi: spi-fsl-dspi: Fix external abort on interrupt
- in exit paths
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615131143.130326165@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 at 16:28, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Jun 15, 2020 at 04:14:06PM +0300, Vladimir Oltean wrote:
-> > On Mon, 15 Jun 2020 at 16:10, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> >
-> > >
-> > > It is a slightly different bug which so this patch should have a follow
-> > > up.
-> > >
-> > > Best regards,
-> > > Krzysztof
-> > >
-> >
-> > Why is it a different bug? It's the same bug.
->
-> One bug is using devm-interface for shared interrupts and second is not
-> caring about suspend/resume.
->
-> Best regards,
-> Krzysztof
->
+On Mon, Jun 15, 2020 at 02:56:55PM +0200, Peter Zijlstra wrote:
+> Where the condition:
+> 
+>   !cpus_share_cache(smp_processor_id(), cpu)
+> 
+> already implies 'cpu != smp_processor_id()', because a CPU always
+> shares cache with itself, the secondary condition added in commit:
+> 
+>   2ebb17717550 ("sched/core: Offload wakee task activation if it the wakee is descheduling")
+> 
+> voids that implication, resulting in attempting to do local wake-ups
+> through the queue mechanism.
+> 
+> Fixes: 2ebb17717550 ("sched/core: Offload wakee task activation if it the wakee is descheduling")
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/sched/core.c |   13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2356,11 +2356,22 @@ bool cpus_share_cache(int this_cpu, int
+>  
+>  static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+>  {
+> +	int this_cpu = smp_processor_id();
+> +
+> +	/*
+> +	 * Only ever queue for remote wakeups. The on_cpu case can only ever
+> +	 * happen remotely, and for the normal case it makes no sense to
 
-The problem is that you don't have a way to stop servicing a shared
-interrupt safely and on demand, before clk_disable_unprepare.
-So it's exactly the same problem on suspend and on remove.
-Avoiding to think about the suspend problem now means that you'll end
-up having an overall worse solution.
+The 'funny' thing here is, that this must be false for this patch to
+make any difference.. I just cannot see how.
+
+Also, if this is false, and p->on_cpu == 1 and p->cpu == this_cpu, then
+p _should_ be current, in which case we should never get here either,
+due to the 'p == current' special case in try_to_wake_up().
+
+The only other option is that 'p == next', but then we'd be doing
+wakeups from the middle of __schedule() and seems 'unlikely' too, esp.
+so since none of the actual stack-traces we have shows that.
+
+So colour me terribly confused.
+
+> +	 * involve IPIs here, and would be broken, as many architectures cannot
+> +	 * trivially IPI self in any case.
+> +	 */
+> +	if (cpu == this_cpu)
+> +		return false;
