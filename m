@@ -2,95 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4521F9E78
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC311F9E88
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731242AbgFORar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729124AbgFORaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:30:46 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5E67207DA;
-        Mon, 15 Jun 2020 17:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592242246;
-        bh=zjfjIr28wp7lz1LzhG/6HN/tE1zYdIy5YMG1lFm5t3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kbiOeSJ5hsV6hDsh+iuN2Phq6hYAF5UJ44P9QG4f+TFAQCtZ64BlSAiZYOQpulXiK
-         67EgWWNfvy/lMMgh8iWjub0lDsZ+oJADxAMCsvwN6/9PXWGWHMOCffBDH1fAQ2ccWu
-         cq3OE58P8henl7vX0sG5AOeHjm9kUWZlb5TbeQWU=
-Date:   Mon, 15 Jun 2020 18:30:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, lukas@wunner.de,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: Re: [PATCH v2] spi: bcm2835: Enable shared interrupt support
-Message-ID: <20200615173043.GB4447@sirena.org.uk>
-References: <142d48ae-2725-1368-3e11-658449662371@arm.com>
- <20200605132037.GF5413@sirena.org.uk>
- <2e371a32-fb52-03a2-82e4-5733d9f139cc@arm.com>
- <06342e88-e130-ad7a-9f97-94f09156f868@arm.com>
- <d3fe8b56-83ef-8ef0-bb05-11c7cb2419f8@gmail.com>
- <a6f158e3-af51-01d9-331c-4bc8b6847abb@arm.com>
- <20200608112840.GC4593@sirena.org.uk>
- <bb9dbf11-9e33-df60-f5ae-f7fdfe8458b4@gmail.com>
- <20200615170031.GA4447@sirena.org.uk>
- <692bc94e-d574-e07a-d834-c0d569e87bba@gmail.com>
+        id S1731271AbgFORcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 13:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728585AbgFORcU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:32:20 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2995C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:32:20 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id m7so7073225plt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=2ZLZlJpE9ABSNjpL4mZQFk3Irx9pVKzEY6qghcd2NoA=;
+        b=MS7xahuAXPifVMceikYAexMoBHjLCLpZjeeouIlKBwiHQU2ForT5LrpT8bdlC+hiLM
+         nfqrqMm0qxuFBOQWGWLd6rjKWFcznPu41dwIAd59oyAAJzcVv4K9fAfXm8F2rZDc6FR6
+         wqXJMcTzwuWLkc4BdkPdOvBxqYI1jxphDUpEIhVUhW5oh9PkI6OIplFam40MOaajTX7+
+         pibStgBiwqHp2+od5g3I8EdaL5bipPngqcQDNxcA1Ago9jVmaDc0oP+KPVmDbneSz2dn
+         NQh2ScecSde9JIZsUoOCkGl118dyauBVUcJFrBIOloPHFsr9UhcIXpm38az2hNCkHL3i
+         xA0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=2ZLZlJpE9ABSNjpL4mZQFk3Irx9pVKzEY6qghcd2NoA=;
+        b=N8sM8Jfgs7CHMW2KhOPZafmUmbfQeGp7AcB8iDPgpNGiA28jPiCfX2Z8Mqt81D/U3u
+         wmjIbCYgpXNE0bGd511r2mh508sJQouc6cSyMy6nhrBmll55LuZujpo6q3dIrBp9hKw3
+         DAumeonIullz4tMDdp0sjre1VMsJt3sRWD6TL3D0/6Wzg4LmizZULLqOSepmA+fmijt7
+         9LkuEsG2O43vnwC2usTT0aIJIyLm3DoqdkiKW5NXOdl42/d5Eb4NVbqYU8fnkLtnWGVY
+         B60lowi4Asol7abCnLktrK9JTEsINzsTerQ4uPseXW7zs2XnVcQmiE8Qx9CIqXu3abjM
+         /CMA==
+X-Gm-Message-State: AOAM532hWNZNmEJ4HNpZ0WWhZKR1X13H6wyT7rWjDuk5jCO5AZScWoHA
+        44miXpTHDW2l9bU9QSl4Xt4w1FfYLkmM0g==
+X-Google-Smtp-Source: ABdhPJxtfelaSLMp5jrGRan+wah8+XoWy+zmHLH8CZTl0rpzifd6eN00fbg0sQSkH7062uAAtsgb3w==
+X-Received: by 2002:a17:902:c404:: with SMTP id k4mr8373426plk.99.1592242340305;
+        Mon, 15 Jun 2020 10:32:20 -0700 (PDT)
+Received: from kaaira-HP-Pavilion-Notebook ([2401:4900:4175:6d71:950c:f8ee:90bc:902a])
+        by smtp.gmail.com with ESMTPSA id s1sm139323pjp.14.2020.06.15.10.32.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 15 Jun 2020 10:32:19 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 23:01:54 +0530
+From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
+To:     Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        hverkuil@xs4all.nl
+Subject: [PATCH v3] media: tpg: Add function to return colors' order of test
+ image
+Message-ID: <20200615173153.GA2404@kaaira-HP-Pavilion-Notebook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t8N2qprAjL+0GVly"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <692bc94e-d574-e07a-d834-c0d569e87bba@gmail.com>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently there is no method to know the correct order of the colors for
+a test image generated by tpg. Write a function that returns a string of
+colors' order given a tpg. It returns a NULL pointer in case of test
+patterns which do not have a well defined colors' order. Hence add a
+NULL check for text in tpg_gen_text().
 
---t8N2qprAjL+0GVly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+---
 
-On Mon, Jun 15, 2020 at 10:04:46AM -0700, Florian Fainelli wrote:
+Changes since v2:
+	- Create a 'define' to prevent repetition of the common color
+	  sequence string.
+	- Use 'fallthrough' on case statement to prevent repetition of
+	  code.
 
-> OK, how about I send you an increment patch (would a fixup be okay?)
-> that adds __always_inline since we know from this thread that some
-> compilers may mis-optimize the function inlining?
+Changes since v1:
+	- Returned NULL for patterns whose color order cannot be
+          defined. (Reported-by: kernel test robot <lkp@intel.com>)
+        - Made separate switch cases for separate test patterns
+         (Reported-by: kernel test robot <lkp@intel.com>)
 
-That's fine for me.
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 32 +++++++++++++++++--
+ include/media/tpg/v4l2-tpg.h                  |  1 +
+ 2 files changed, 31 insertions(+), 2 deletions(-)
 
---t8N2qprAjL+0GVly
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+index 50f1e0b28b25..c96204cef155 100644
+--- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
++++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+@@ -1959,12 +1959,14 @@ void tpg_gen_text(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
+ 	unsigned step = V4L2_FIELD_HAS_T_OR_B(tpg->field) ? 2 : 1;
+ 	unsigned div = step;
+ 	unsigned first = 0;
+-	unsigned len = strlen(text);
++	unsigned len;
+ 	unsigned p;
+ 
+-	if (font8x16 == NULL || basep == NULL)
++	if (font8x16 == NULL || basep == NULL || text == NULL)
+ 		return;
+ 
++	len = strlen(text);
++
+ 	/* Checks if it is possible to show string */
+ 	if (y + 16 >= tpg->compose.height || x + 8 >= tpg->compose.width)
+ 		return;
+@@ -2006,6 +2008,32 @@ void tpg_gen_text(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
+ }
+ EXPORT_SYMBOL_GPL(tpg_gen_text);
+ 
++char *tpg_g_color_order(const struct tpg_data *tpg)
++{
++	#define COLORBAR(order) #order "white, yellow, cyan, green, magenta, red, blue, black"
++
++	switch (tpg->pattern) {
++	case TPG_PAT_75_COLORBAR:
++	case TPG_PAT_100_COLORBAR:
++	case TPG_PAT_CSC_COLORBAR:
++		return COLORBAR("Left to right:");
++	case TPG_PAT_100_HCOLORBAR:
++		return COLORBAR("Top to bottom:");
++	case TPG_PAT_BLACK:
++		return "Black";
++	case TPG_PAT_WHITE:
++		return "White";
++	case TPG_PAT_RED:
++		return "Red";
++	case TPG_PAT_GREEN:
++		return "Green";
++	case TPG_PAT_BLUE:
++		return "Blue";
++	default:
++		return NULL;
++	}
++}
++
+ void tpg_update_mv_step(struct tpg_data *tpg)
+ {
+ 	int factor = tpg->mv_hor_mode > TPG_MOVE_NONE ? -1 : 1;
+diff --git a/include/media/tpg/v4l2-tpg.h b/include/media/tpg/v4l2-tpg.h
+index eb191e85d363..4f79cac87b85 100644
+--- a/include/media/tpg/v4l2-tpg.h
++++ b/include/media/tpg/v4l2-tpg.h
+@@ -252,6 +252,7 @@ void tpg_fillbuffer(struct tpg_data *tpg, v4l2_std_id std,
+ bool tpg_s_fourcc(struct tpg_data *tpg, u32 fourcc);
+ void tpg_s_crop_compose(struct tpg_data *tpg, const struct v4l2_rect *crop,
+ 		const struct v4l2_rect *compose);
++char *tpg_g_color_order(const struct tpg_data *tpg);
+ 
+ static inline void tpg_s_pattern(struct tpg_data *tpg, enum tpg_pattern pattern)
+ {
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nsEIACgkQJNaLcl1U
-h9DSkAf+I43C4D+5MeXey+DqEhoeIq/jqtEbSPUS6Liq/5dDiTCy2KeFvsYZ5v46
-Cvvn7ou6wPLdnXrPMiMdEl38cJzJfNAv7d3ydsMBlvAGRo6+3noBPoAU9k/gWDAd
-ZE9v3hNFw65ZI4XUK0+SsSOrXGIW9405DEUkKvstmqE8VHyvlSwtAyztcjBJubAj
-M14yKL96sow3/AUJ06Tay2iZK6k6n8VgDTy+/3AmXhX9hrw3jrE2VWYJCan9lhkZ
-64cvvmhjLHeuSa3XVtVk/+qE59QwOk9fkdIOcIgWsjL21/udkyHSNJsaWLdk5dy1
-1TdbguW5djIMdY6+QrNrDDQKtVU27A==
-=gAli
------END PGP SIGNATURE-----
-
---t8N2qprAjL+0GVly--
