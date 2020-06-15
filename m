@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580571F9CBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6F21F9CD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730638AbgFOQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:15:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729949AbgFOQPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:15:02 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.184])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84F3E207D3;
-        Mon, 15 Jun 2020 16:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592237701;
-        bh=2OzWW0KXF4A9UjQP3e9+t9jykTQ0Zh4+TAU3P3m8zrQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LysOJVpZ/jH47HxHVGsTHzYAyzfoUijj3o/O+igK4L5suZOs6M6dfnB1JkHIUQeEf
-         ASc+0NvKfAPWCR7kuQDJG6pPH7ekugKitBKcsIjSc8IptWF14XysAorpLHCfGjOJcX
-         nfsg8XpP0Gkx32hUOWCZirHKsH6q6rCwHPLSr+rA=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH] rtc: max77686: Do not allow interrupt to fire before system resume
-Date:   Mon, 15 Jun 2020 18:14:55 +0200
-Message-Id: <20200615161455.4420-1-krzk@kernel.org>
+        id S1730931AbgFOQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:16:30 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:1598 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730909AbgFOQQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:16:28 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FGErYJ010869;
+        Mon, 15 Jun 2020 18:15:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=bZLdngu1T79B9CrirZEYQHkjEj22wNJY7PUv6kBJrmQ=;
+ b=NQIobxBr+rX5VTLmyc7vPLHNgD3LW8Pb5hHYFgsZU9bIOm3wJ7mtTY7nG0ADsWidmAZz
+ cyOykLhl35Y6R+kzqh3uioxLQTDj3bGvUOMZ+6jh06Wt+RUzCbGUbqCJrhjzveVq8n6H
+ ln5d6knEOJXKn1CyMttgX0LcEL9XA1KvlDJHAWQR7KYk6NJGkNlMEZM7tG3OHz1cGTop
+ bfiYMS+XddAzUl3+NpFXQ7mPsxSePA/ESi3vKt3xhl/yebjNJZlhVX+OKycYVnnzScjY
+ jFJ20LrnH9eHZINBGRZStfoWxBpq+0ZN7CaZm1c4eRUXZ7Qh+JjGxyPKSLwHUmrQrqos 7A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31mmjvthhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Jun 2020 18:15:48 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 241B410002A;
+        Mon, 15 Jun 2020 18:15:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 02B062C5AD8;
+        Mon, 15 Jun 2020 18:15:47 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 18:15:46
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Subject: [PATCH 0/6] Add STUSB160x Type-C port controller support
+Date:   Mon, 15 Jun 2020 18:15:06 +0200
+Message-ID: <20200615161512.19150-1-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-15_06:2020-06-15,2020-06-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtc-max77686 device shares the main interrupt line with parent MFD
-device (max77686 driver).  During the system suspend, the parent MFD
-device disables this IRQ to prevent an early event happening before
-resuming I2C bus controller.
+This series adds support for STMicroelectronics STUSB160x Type-C port
+controllers [1].
+STUSB160x driver requires to get power operation mode via device tree,
+that's why this series also adds the optional DT property power-opmode
+for usb-c-connector to select the power operation mode capability and
+a function to convert the power operation mode string into power
+operation mode value.
+This driver has been tested on stm32mp157c-dk2 [2], which has a Type-C
+connector managed by STUSB1600, and connected to USB OTG controller. 
 
-The same should be done by rtc-max77686 driver because otherwise the
-interrupt handler max77686_rtc_alarm_irq() will be called before its
-resume function (max77686_rtc_resume()).  Such issue is not fatal but
-disabling shared IRQ by all users ensures correct behavior.
+[1] https://www.st.com/en/interfaces-and-transceivers/usb-type-c-and-power-delivery-controllers.html
+[2] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Amelie Delaunay (6):
+  dt-bindings: connector: add power-opmode optional property to
+    usb-connector
+  usb: typec: add typec_find_pwr_opmode
+  dt-bindings: usb: Add DT bindings for STUSB160x Type-C controller
+  usb: typec: add support for STUSB160x Type-C controller family
+  ARM: dts: stm32: add STUSB1600 Type-C using I2C4 on stm32mp15xx-dkx
+  ARM: multi_v7_defconfig: enable STUSB160X Type-C port controller
+    support
 
----
+ .../bindings/connector/usb-connector.yaml     |  11 +
+ .../devicetree/bindings/usb/st,stusb160x.yaml |  85 ++
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi      |   7 +
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi        |  38 +
+ arch/arm/configs/multi_v7_defconfig           |   2 +
+ drivers/usb/typec/Kconfig                     |  12 +
+ drivers/usb/typec/Makefile                    |   1 +
+ drivers/usb/typec/class.c                     |  15 +
+ drivers/usb/typec/stusb160x.c                 | 875 ++++++++++++++++++
+ include/linux/usb/typec.h                     |   1 +
+ 10 files changed, 1047 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+ create mode 100644 drivers/usb/typec/stusb160x.c
 
-If this looks ok, I guess all maxim RTC drivers should be updated?
----
- drivers/rtc/rtc-max77686.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-index 03ebcf1c0f3d..645de5af707b 100644
---- a/drivers/rtc/rtc-max77686.c
-+++ b/drivers/rtc/rtc-max77686.c
-@@ -805,17 +805,33 @@ static int max77686_rtc_remove(struct platform_device *pdev)
- #ifdef CONFIG_PM_SLEEP
- static int max77686_rtc_suspend(struct device *dev)
- {
-+	struct max77686_rtc_info *info = dev_get_drvdata(dev);
-+	int ret = 0;
-+
- 	if (device_may_wakeup(dev)) {
- 		struct max77686_rtc_info *info = dev_get_drvdata(dev);
- 
--		return enable_irq_wake(info->virq);
-+		ret = enable_irq_wake(info->virq);
- 	}
- 
--	return 0;
-+	/*
-+	 * Main IRQ (not virtual) must be disabled during suspend because if it
-+	 * happens while suspended it will be handled before resuming I2C.
-+	 *
-+	 * Since Main IRQ is shared, all its users should disable it to be sure
-+	 * it won't fire while one of them is still suspended.
-+	 */
-+	disable_irq(info->rtc_irq);
-+
-+	return ret;
- }
- 
- static int max77686_rtc_resume(struct device *dev)
- {
-+	struct max77686_rtc_info *info = dev_get_drvdata(dev);
-+
-+	enable_irq(info->rtc_irq);
-+
- 	if (device_may_wakeup(dev)) {
- 		struct max77686_rtc_info *info = dev_get_drvdata(dev);
- 
 -- 
 2.17.1
 
