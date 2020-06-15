@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EC31F97D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B621F97D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbgFONCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:02:47 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42122 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730098AbgFONCm (ORCPT
+        id S1730472AbgFONDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730464AbgFONC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:02:42 -0400
-Received: by mail-lj1-f195.google.com with SMTP id y11so19087488ljm.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:02:40 -0700 (PDT)
+        Mon, 15 Jun 2020 09:02:59 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2E0C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:02:58 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id c71so14541140wmd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 06:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7NuIO3P9BiKiClf+gIYNheUV8PABe5hNFRgi4pHcvCY=;
+        b=1QMmwVtPmdoBBPgNf0gtk/PbGnQ8GRNykH9T9prLxXaICZfxcxbDJLKF4TJVHHZTp9
+         5l8ZjVHowMmcyZjUIxmwPAdp/WB1/7vrLTAP9fY/OEdh+Zn7x0uWci5hnnclpWB2FmjH
+         +jdMom/24wMjxZsOvGyg3vrkT9rAv9IdVmCoIR6RzJ1ycwFPzklE8WfG510xGuipCHXo
+         8riIWQTsL7jUCOTtjilQQLHAwJLwI3YHHD4KMMYELnM2NzrMxJ8L5mkFiF4835+EjeBl
+         FMrZppNeuGGMj6APtCDbAngPn/i+j1Vd8ReGKuUmVCXqLxFfZCz6dG+g2Ms5eTWX/UpR
+         mkgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/9kSSTxyPh85kVvOo6maTc8rLC2WWVwxqEzTRiJwKx0=;
-        b=PoFceHT/f9sNkVkc0UL4UWU82b9WcwNGKvajyCHV5fhPMcQ9AuxVU3auF6WR5QhEVs
-         DwsbuFgiGXkgPZfgnMNyyh3722wXPBecoRejz9zYOHqtSK1NyatbZiZTsVcWa67Uc3w9
-         fIuD9hP4wZaVzUaVsrpJqXKBYiHyLc4sFMI0/dTchhC1vId4+5IgRj7VLBoh+yUHukg0
-         eee1rKhNQe0ma16FNOXWBsBPTrS3MLoY+gJOBeJ9xn8TjYpOOXmmarq4ASJuIE/pl6su
-         YxKg/fyn6uyu+SHu9tW+c9YeU3enN4w4q2gBaKqsg8H5w83pWI7/13ytVE1EVAeXQy7a
-         JOCA==
-X-Gm-Message-State: AOAM533ApKr19Z43gZLZ8D2NQrLReOXj/4heguBDdrFuzIQhmkAQ1aLR
-        +i/Rvwag3L92TKxMkUrHlnY=
-X-Google-Smtp-Source: ABdhPJyK1JHuTlXvPOFk8NgbU1HL0MIpvqofgxnk8qHo3E7yCHzViANb2kLHco5d6KxHNPWsXWVcfA==
-X-Received: by 2002:a2e:8043:: with SMTP id p3mr11906174ljg.217.1592226159211;
-        Mon, 15 Jun 2020 06:02:39 -0700 (PDT)
-Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.googlemail.com with ESMTPSA id f19sm4548072lfk.24.2020.06.15.06.02.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7NuIO3P9BiKiClf+gIYNheUV8PABe5hNFRgi4pHcvCY=;
+        b=Zd3J4+leERgBNsMaTWsStrIcIynMiX10nVa3+1tkiOTJzdFVFU1WzgsJ+qfUoexKmN
+         /1/UEytBJitHigozkhYNs4IRKEQZjZ1dmXFhxZwVI5wpU3jqToqAqPS9dymySykk2zI4
+         HoYTCLFRtMr6hkV99T3nKSw5VEQ+dlNpfxVj21tWKmISJIhC7DmMOxg3lqZIsmd4ZJV8
+         CaZeg3KAwHqlImKGuDSmmG4UZavVl+I4+P2AoTV+0ftEa9SczRstYyHdFAQ+Wzl5rQGO
+         jIwD2heyw9dBNIcVGkL6EAQ5B0Iifua68+tQM8Bn37MFgA4Ve+2r4YRNpSTvQTcXtPd/
+         bZnA==
+X-Gm-Message-State: AOAM532T+NuCJcw2GbHoTICDnOA7tA6e4ymcvJ5tG18VkZCLIEjkHJ9j
+        Ys1gDS8V86VklOgj3bNoaOJPOw==
+X-Google-Smtp-Source: ABdhPJwyEWtQ2T5pTNZIqREl1GxsviMtbRfUnZ+RP8ElBpEjq8N46tHrWNtvxP6SWL614Jk0oFIcXQ==
+X-Received: by 2002:a1c:9c49:: with SMTP id f70mr12684511wme.74.1592226176022;
+        Mon, 15 Jun 2020 06:02:56 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id v19sm22443569wml.26.2020.06.15.06.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 06:02:38 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <Julia.Lawall@lip6.fr>
-Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org,
-        cocci@systeme.lip6.fr
-Subject: [PATCH] coccinelle: api: add device_attr_show script
-Date:   Mon, 15 Jun 2020 16:02:42 +0300
-Message-Id: <20200615130242.11825-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 15 Jun 2020 06:02:55 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 15:02:53 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2 13/14] crypto: sun8i-ce: Add support for the PRNG
+Message-ID: <20200615130253.GA8958@Red>
+References: <1587736934-22801-1-git-send-email-clabbe@baylibre.com>
+ <2397344.pSczEbEFGg@tauon.chronox.de>
+ <20200427084137.GA8787@Red>
+ <5634597.9v007L4FOH@tauon.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5634597.9v007L4FOH@tauon.chronox.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the documentation[1] show() methods of device attributes
-should return the number of bytes printed into the buffer. This is
-the return value of scnprintf(). show() must not use snprintf()
-when formatting the value to be returned to user space. snprintf()
-returns the length the resulting string would be, assuming it all
-fit into the destination array[2]. scnprintf() return the length of
-the string actually created in buf. If one can guarantee that an
-overflow will never happen sprintf() can be used otherwise scnprintf().
+On Mon, Apr 27, 2020 at 11:23:15AM +0200, Stephan Mueller wrote:
+> Am Montag, 27. April 2020, 10:41:37 CEST schrieb LABBE Corentin:
+> 
+> Hi Corentin,
+> 
+> > > Shouldn't they all be kzfree?
+> > 
+> > Yes
+> > Probably it miss also a memzero_explicit, I think that seeds/data are
+> > sensitive
+> 
+> kzfree uses memset_secure since very recently. So, kzfree should be all you 
+> need.
+> 
+> 
 
-[1] Documentation/filesystems/sysfs.txt
-[2] "snprintf() confusion" https://lwn.net/Articles/69419/
+Hello
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- scripts/coccinelle/api/device_attr_show.cocci | 55 +++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 scripts/coccinelle/api/device_attr_show.cocci
+I still dont see any memset_secure in kzfree (mm/slab_common.c).
+Does I miss something ?
 
-diff --git a/scripts/coccinelle/api/device_attr_show.cocci b/scripts/coccinelle/api/device_attr_show.cocci
-new file mode 100644
-index 000000000000..d8ec4bb8ac41
---- /dev/null
-+++ b/scripts/coccinelle/api/device_attr_show.cocci
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// From Documentation/filesystems/sysfs.txt:
-+///  show() must not use snprintf() when formatting the value to be
-+///  returned to user space. If you can guarantee that an overflow
-+///  will never happen you can use sprintf() otherwise you must use
-+///  scnprintf().
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+
-+virtual report
-+virtual org
-+virtual context
-+virtual patch
-+
-+@r depends on !patch@
-+identifier show, dev, attr, buf;
-+position p;
-+@@
-+
-+ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	<...
-+*	return snprintf@p(...);
-+	...>
-+}
-+
-+@rp depends on patch@
-+identifier show, dev, attr, buf;
-+@@
-+
-+ssize_t show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	<...
-+	return
-+-		snprintf
-++		scnprintf
-+			(...);
-+	...>
-+}
-+
-+@script: python depends on report@
-+p << r.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING: use scnprintf or sprintf")
-+
-+@script: python depends on org@
-+p << r.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING: use scnprintf or sprintf")
--- 
-2.26.2
-
+Regards
