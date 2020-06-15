@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1461F8E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA851F8E47
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgFOGtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59954 "EHLO mail.kernel.org"
+        id S1728664AbgFOGsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 02:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728454AbgFOGrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:47:13 -0400
+        id S1728474AbgFOGrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:47:14 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BF52208B3;
+        by mail.kernel.org (Postfix) with ESMTPSA id 297E020A8B;
         Mon, 15 Jun 2020 06:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592203632;
-        bh=sTFjDVFNxvaxYL1XIBkVBYNkDxJgnmCW7W2tRtvvhLM=;
+        bh=1mCMCeSx1C7ExZesYEscLhEm/6vQrRpxVziGsEx4NTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ICoImG8MfZOxFPF4J9t5PiRfFS02yMYiYen8UYtYGTH/6L+bBsLSvJ57bf3MBjHVp
-         Sqw/BUN+7pWxD2uMhLQg+R5NO9c/+0XeHuc0baGjOvfeaofkbPrlNjvLyIhxC7eOBT
-         f993jZxvSg8IZTHnBu0AQJOhbhZBhrRpWf3wfRjM=
+        b=DLUTwUxk/Eo9A4PaLcGJ/JhdGyDZV2qcTIhNgYtRrHYzitjLpOiKp0kKfRv5ubaq7
+         miDl+PQW4fLsYr49ptm7DOuibctDzEzO0ezyu+CT/2zjZvUGRaPrz3yN0sYKhe36jG
+         GZvhJI0qYkyn62L0M/MuvMpP2A4KaJBrcd86zb+w=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jkith-009nn5-To; Mon, 15 Jun 2020 08:47:09 +0200
+        id 1jkith-009nnA-Ut; Mon, 15 Jun 2020 08:47:09 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Will Deacon <will@kernel.org>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 16/29] selftests/vm/keys: fix a broken reference at protection_keys.c
-Date:   Mon, 15 Jun 2020 08:46:55 +0200
-Message-Id: <8f0e19f790d5ac3beeea2b77f14f3afe538f7708.1592203542.git.mchehab+huawei@kernel.org>
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: [PATCH 17/29] docs: hugetlbpage.rst: fix some warnings
+Date:   Mon, 15 Jun 2020 08:46:56 +0200
+Message-Id: <59f1aeae4839528046fd46408081fd70d53e15a6.1592203542.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592203542.git.mchehab+huawei@kernel.org>
 References: <cover.1592203542.git.mchehab+huawei@kernel.org>
@@ -50,39 +48,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 1eecbcdca2bd ("docs: move protection-keys.rst to the core-api book")
-from Jun 7, 2019 converted protection-keys.txt file to ReST.
+Some new command line parameters were added at hugetlbpage.rst.
+Adjust them in order to properly parse that part of the file,
+avoiding those warnings:
 
-A recent change at protection_keys.c partially reverted such
-changeset, causing it to point to a non-existing file:
+    Documentation/admin-guide/mm/hugetlbpage.rst:105: WARNING: Unexpected indentation.
+    Documentation/admin-guide/mm/hugetlbpage.rst:108: WARNING: Unexpected indentation.
+    Documentation/admin-guide/mm/hugetlbpage.rst:109: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/admin-guide/mm/hugetlbpage.rst:112: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/admin-guide/mm/hugetlbpage.rst:120: WARNING: Unexpected indentation.
+    Documentation/admin-guide/mm/hugetlbpage.rst:121: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/admin-guide/mm/hugetlbpage.rst:132: WARNING: Unexpected indentation.
+    Documentation/admin-guide/mm/hugetlbpage.rst:135: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-	- * Tests x86 Memory Protection Keys (see Documentation/core-api/protection-keys.rst)
-	+ * Tests Memory Protection Keys (see Documentation/vm/protection-keys.txt)
-
-It sounds to me that the changeset that introduced such change
-4645e3563673 ("selftests/vm/pkeys: rename all references to pkru to a generic name")
-could also have other side effects, as it sounds that it was not
-generated against uptream code, but, instead, against a version
-older than Jun 7, 2019.
-
-Fixes: 4645e3563673 ("selftests/vm/pkeys: rename all references to pkru to a generic name")
+Fixes: cd9fa28b5351 ("hugetlbfs: clean up command line processing")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/testing/selftests/vm/protection_keys.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/mm/hugetlbpage.rst | 25 ++++++++++++++------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/protection_keys.c b/tools/testing/selftests/vm/protection_keys.c
-index fc19addcb5c8..fdbb602ecf32 100644
---- a/tools/testing/selftests/vm/protection_keys.c
-+++ b/tools/testing/selftests/vm/protection_keys.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Tests Memory Protection Keys (see Documentation/vm/protection-keys.txt)
-+ * Tests Memory Protection Keys (see Documentation/core-api/protection-keys.rst)
-  *
-  * There are examples in here of:
-  *  * how to set protection keys on memory
+diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+index 5026e58826e2..729f810a58ac 100644
+--- a/Documentation/admin-guide/mm/hugetlbpage.rst
++++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+@@ -100,38 +100,49 @@ with a huge page size selection parameter "hugepagesz=<size>".  <size> must
+ be specified in bytes with optional scale suffix [kKmMgG].  The default huge
+ page size may be selected with the "default_hugepagesz=<size>" boot parameter.
+ 
+-Hugetlb boot command line parameter semantics
+-hugepagesz - Specify a huge page size.  Used in conjunction with hugepages
++Hugetlb
++	boot command line parameter semantics
++hugepagesz
++	Specify a huge page size.  Used in conjunction with hugepages
+ 	parameter to preallocate a number of huge pages of the specified
+ 	size.  Hence, hugepagesz and hugepages are typically specified in
+-	pairs such as:
++	pairs such as::
++
+ 		hugepagesz=2M hugepages=512
++
+ 	hugepagesz can only be specified once on the command line for a
+ 	specific huge page size.  Valid huge page sizes are architecture
+ 	dependent.
+-hugepages - Specify the number of huge pages to preallocate.  This typically
++hugepages
++	Specify the number of huge pages to preallocate.  This typically
+ 	follows a valid hugepagesz or default_hugepagesz parameter.  However,
+ 	if hugepages is the first or only hugetlb command line parameter it
+ 	implicitly specifies the number of huge pages of default size to
+ 	allocate.  If the number of huge pages of default size is implicitly
+ 	specified, it can not be overwritten by a hugepagesz,hugepages
+ 	parameter pair for the default size.
+-	For example, on an architecture with 2M default huge page size:
++
++	For example, on an architecture with 2M default huge page size::
++
+ 		hugepages=256 hugepagesz=2M hugepages=512
++
+ 	will result in 256 2M huge pages being allocated and a warning message
+ 	indicating that the hugepages=512 parameter is ignored.  If a hugepages
+ 	parameter is preceded by an invalid hugepagesz parameter, it will
+ 	be ignored.
+-default_hugepagesz - Specify the default huge page size.  This parameter can
++default_hugepagesz
++	pecify the default huge page size.  This parameter can
+ 	only be specified once on the command line.  default_hugepagesz can
+ 	optionally be followed by the hugepages parameter to preallocate a
+ 	specific number of huge pages of default size.  The number of default
+ 	sized huge pages to preallocate can also be implicitly specified as
+ 	mentioned in the hugepages section above.  Therefore, on an
+-	architecture with 2M default huge page size:
++	architecture with 2M default huge page size::
++
+ 		hugepages=256
+ 		default_hugepagesz=2M hugepages=256
+ 		hugepages=256 default_hugepagesz=2M
++
+ 	will all result in 256 2M huge pages being allocated.  Valid default
+ 	huge page size is architecture dependent.
+ 
 -- 
 2.26.2
 
