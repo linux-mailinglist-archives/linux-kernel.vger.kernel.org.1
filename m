@@ -2,122 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0201F8C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 04:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391AD1F8C52
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 04:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgFOCnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 22:43:55 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47288 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727971AbgFOCny (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 22:43:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592189033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CDf2ubutxAR6PnZDzVX0vkP0DzBLtkr2OZNFYDY7Wa0=;
-        b=EcArHfigCkC3lWILCvUQln660S4+IqDUHkf6euu6PImrfuJkXRB6flUOs88dQk/uleu7L3
-        lR4CZncVSlF/nSt54FFDaxYCH08O+/peVqIqGCSS/RZz4j8Qj19H8xxPwJn59FyO68nMrr
-        oDS7Y6TD38nG//IT3DtJBXg7N8QiauQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-zrMBqGQyM0aTkj5DQlI_rw-1; Sun, 14 Jun 2020 22:43:51 -0400
-X-MC-Unique: zrMBqGQyM0aTkj5DQlI_rw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D412108BD1A;
-        Mon, 15 Jun 2020 02:43:50 +0000 (UTC)
-Received: from [10.72.13.232] (ovpn-13-232.pek2.redhat.com [10.72.13.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 602001A91F;
-        Mon, 15 Jun 2020 02:43:44 +0000 (UTC)
-Subject: Re: [PATCH RFC v6 02/11] vhost: use batched get_vq_desc version
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        eperezma@redhat.com
-References: <20200608125238.728563-1-mst@redhat.com>
- <20200608125238.728563-3-mst@redhat.com>
- <81904cc5-b662-028d-3b4a-bdfdbd2deb8c@redhat.com>
- <20200610070259-mutt-send-email-mst@kernel.org>
- <76b14132-407a-48bf-c4d5-9d0b2c700bb0@redhat.com>
- <20200611050416-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <be533349-817c-925b-43e4-899185d3fb1a@redhat.com>
-Date:   Mon, 15 Jun 2020 10:43:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200611050416-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1728099AbgFOCsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 22:48:38 -0400
+Received: from mail-eopbgr40054.outbound.protection.outlook.com ([40.107.4.54]:62528
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728028AbgFOCsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 22:48:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FWvN1hbnICaMKMI22LfJl02T4Ei10K+zxHBdO1MupNNCaRgZsm61/TUT+CIYT0JnkWZgpHcoOl9BBFvwAQqmtIlNQnZ5vkjrqy6bUQyFXlHFDfFUZbBwNRBn/j4WBYpKWaN8LgViGruBmleN7vroYHh5tlG0oBmZVV43v1mwjxyOblJm2QIZQpN6sd4N1/gpMpXPIEkbvp5+xPegV7zpdYbU47AaaXeHcWA1G3uhdQbxfAJ/Ar7P5z8cejZE+JNV3qqDs0w9UKNwyteTgw7H8ONlD/4Rj+GJjI0WiK0zUOKijwl3vqcRR8jJK6DmrQ2+H3rHLHIa1uzmfsm2dtOnPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FjWBxzCzef2PLnNvF36EMNRusNQqfMQqbXp6ZOmzrkA=;
+ b=MIWerlq0AjX2xiFRr0JiJsUPq71XHnEHtmxGwoZtrO1vqB/9FXsbMXBc+h4E85CWUoQVRdVh8pb62jT1MB5tsGsWlV/AX70+UvxNIL/fiqUmoETn0D3WbiVrQdrhU2/iFHzjzfYzmt7xv45upZbib/x8sxHGS5LxPSOgHd3vhxt3V/SyJk2Te6iZyDHz26Q0b7YdsplmB+4EW39YfZSwRVY0qDKkLqHQ31MPh8ze3ZOm0z5bLhv4PlKQiEdQdnqgUcr9qZJgiaEafnj+YiYFm5JX0KOgvbPE43Akmj3mhdVzzwYRfSvugGWEAJsBxFcuglp1pfBn5YPtf5qOog3CIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FjWBxzCzef2PLnNvF36EMNRusNQqfMQqbXp6ZOmzrkA=;
+ b=kdU21r5xaMoTRKfBckiIYTvNhIWgUTWQdOvRqDVcTglFK8Ut3rkMmSIE00TxUKXQZxT67wZDLMRAvC33IordBKdWmw7M8cLKdZtsxGv0Qmh1NxOggaZ9CX90VetHaGm8T9tGMcG2hRXslipo6nEomFK3dko9722Gy5Ft0dZuCK0=
+Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
+ (2603:10a6:209:12::18) by AM6PR0402MB3846.eurprd04.prod.outlook.com
+ (2603:10a6:209:18::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.20; Mon, 15 Jun
+ 2020 02:48:34 +0000
+Received: from AM6PR0402MB3607.eurprd04.prod.outlook.com
+ ([fe80::35f8:f020:9b47:9aa1]) by AM6PR0402MB3607.eurprd04.prod.outlook.com
+ ([fe80::35f8:f020:9b47:9aa1%7]) with mapi id 15.20.3088.028; Mon, 15 Jun 2020
+ 02:48:34 +0000
+From:   Andy Duan <fugang.duan@nxp.com>
+To:     "wu000273@umn.edu" <wu000273@umn.edu>,
+        "kjlu@umn.edu" <kjlu@umn.edu>
+CC:     Aisheng Dong <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>, Wolfram Sang <wsa@kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] [PATCH] i2c: busses: Fix a reference count leak.
+Thread-Topic: [EXT] [PATCH] i2c: busses: Fix a reference count leak.
+Thread-Index: AQHWQc+52GnSsJfEJEa/K47t5grMhqjY+ylA
+Date:   Mon, 15 Jun 2020 02:48:33 +0000
+Message-ID: <AM6PR0402MB36071B3C8859FA8F694FB706FF9C0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+References: <20200613221213.6679-1-wu000273@umn.edu>
+In-Reply-To: <20200613221213.6679-1-wu000273@umn.edu>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: umn.edu; dkim=none (message not signed)
+ header.d=none;umn.edu; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 561f26df-7afd-45c3-9d54-08d810d6987d
+x-ms-traffictypediagnostic: AM6PR0402MB3846:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR0402MB3846B9BCFD8899CCA4AEC616FF9C0@AM6PR0402MB3846.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:298;
+x-forefront-prvs: 04359FAD81
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 03PgDYci00kBYI2Q7oy7a1QzqIsQ2ZTZlsfPj1YiqEXcpzMtVIOhj+zOaZREVrCQnhPnb58dO9RGVua5LvzSmRv/588BgmFqP8HVfcCDdII4mBq9Eu6zaAwLgrL2bpGboGbMRf9gi3Sph4RBqAbEwy+jbC+BiqPGhCzCcmoWtkDIACI35NDIEGBfbMm0ejuOKpl+/MpBmj5TSu/6JAPYdCFwGoQnyKYj6RLk4Sah5ZS55LRomdgcLABfvzhMasY1/9p49V+/V2y9o1HgGvjnB+cou2x+Rk3E2144nynYPjyBiVGAeQZU2GKaBMWCrj1z
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3607.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(7696005)(52536014)(55016002)(9686003)(6506007)(83380400001)(86362001)(7416002)(26005)(8676002)(5660300002)(76116006)(8936002)(66446008)(66556008)(66476007)(186003)(66946007)(64756008)(316002)(4326008)(2906002)(33656002)(54906003)(71200400001)(110136005)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: w3ikn4oVBT1M7HPfC+dfcFenhQrPG4vjmf9O3neHExDBJ/JtwvBJiedIfE/VNH6kywZ51GLSu5y/OiEB+DShek7YJcbUGBVAosZGyUlAIdy+IP7ivwmBt6zyobideuwVbapAWmL6wNG5TZjQLQdskCgCxVkp+5OcuDLxXaA3rdNsTLsDY6aSDE/zQ5XdudRn3uafTatcWPihMpSUTylFuG97fxZP5U33cWexIwwfcvBuOt8R86hjIkNuRmufwHYvTATmc0U5/+fYHQmQUasNGqSQyBi7vnQRRokZaUfRvk3MjjxASR9NBXbNImC79aigUmNZe6/UzZo36O+BQ1DTF5rIh0TC4wy3WCa57UpnCGwCR+Nr2fQCOwDuzFJfvGTNaVLrGogmY9QVQmIFQmVJAw/Nmt+vQSLZzIWdFwvlIpphKJFNRnSUWKMDU6MC6z/1zUq+Xv+Z/5eT/lkOtk9rNqdzBxrxeGfPbChxfv6ymPU=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 561f26df-7afd-45c3-9d54-08d810d6987d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2020 02:48:33.8952
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wqaiwy8eAv8iAF8nnBxe33N1oJU5g3S6sKeC0JXp6gecklI62loIXEgjubklECL9oZbOLMcaostoISmvE0NcEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3846
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: wu000273@umn.edu <wu000273@umn.edu> Sent: Sunday, June 14, 2020 6:12 =
+AM
+> From: Qiushi Wu <wu000273@umn.edu>
+>=20
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code. Thus call pm_runtime_put_noidle() if
+> pm_runtime_get_sync() fails.
+>=20
+> Fixes: 13d6eb20fc79 ("i2c: imx-lpi2c: add runtime pm support")
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 
-On 2020/6/11 下午5:06, Michael S. Tsirkin wrote:
-> On Thu, Jun 11, 2020 at 11:02:57AM +0800, Jason Wang wrote:
->> On 2020/6/10 下午7:05, Michael S. Tsirkin wrote:
->>>>> +EXPORT_SYMBOL_GPL(vhost_get_vq_desc);
->>>>>     /* Reverse the effect of vhost_get_vq_desc. Useful for error handling. */
->>>>>     void vhost_discard_vq_desc(struct vhost_virtqueue *vq, int n)
->>>>>     {
->>>>> +	unfetch_descs(vq);
->>>>>     	vq->last_avail_idx -= n;
->>>> So unfetch_descs() has decreased last_avail_idx.
->>>> Can we fix this by letting unfetch_descs() return the number and then we can
->>>> do:
->>>>
->>>> int d = unfetch_descs(vq);
->>>> vq->last_avail_idx -= (n > d) ? n - d: 0;
->>>>
->>>> Thanks
->>> That's intentional I think - we need both.
->>
->> Yes, but:
->>
->>
->>> Unfetch_descs drops the descriptors in the cache that were
->>> *not returned to caller*  through get_vq_desc.
->>>
->>> vhost_discard_vq_desc drops the ones that were returned through get_vq_desc.
->>>
->>> Did I miss anything?
->> We could count some descriptors twice, consider the case e.g we only cache
->> on descriptor:
->>
->> fetch_descs()
->>      fetch_buf()
->>          last_avail_idx++;
->>
->> Then we want do discard it:
->> vhost_discard_avail_buf(1)
->>      unfetch_descs()
->>          last_avail_idx--;
->>      last_avail_idx -= 1;
->>
->> Thanks
->
-> I don't think that happens. vhost_discard_avail_buf(1) is only called
-> after get vhost_get_avail_buf. vhost_get_avail_buf increments
-> first_desc.  unfetch_descs only counts from first_desc to ndescs.
->
-> If I'm wrong, could you show values of first_desc and ndescs in this
-> scenario?
-
-
-You're right, fetch_descriptor could not be called directly from the 
-device code.
-
-Thanks
-
-
->
+Again, which case can trigger the issue ?
+> ---
+>  drivers/i2c/busses/i2c-imx-lpi2c.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c
+> b/drivers/i2c/busses/i2c-imx-lpi2c.c
+> index 9db6ccded5e9..85b9c1fc7681 100644
+> --- a/drivers/i2c/busses/i2c-imx-lpi2c.c
+> +++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+> @@ -260,8 +260,10 @@ static int lpi2c_imx_master_enable(struct
+> lpi2c_imx_struct *lpi2c_imx)
+>         int ret;
+>=20
+>         ret =3D pm_runtime_get_sync(lpi2c_imx->adapter.dev.parent);
+> -       if (ret < 0)
+> +       if (ret < 0) {
+> +               pm_runtime_put_noidle(lpi2c_imx->adapter.dev.parent);
+>                 return ret;
+> +       }
+>=20
+>         temp =3D MCR_RST;
+>         writel(temp, lpi2c_imx->base + LPI2C_MCR);
+> --
+> 2.17.1
 
