@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519721FA3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206971FA3CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgFOWtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59588 "EHLO mail.kernel.org"
+        id S1726527AbgFOW6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:58:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOWtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:49:10 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1725960AbgFOW6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 18:58:11 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BA3D2074D;
-        Mon, 15 Jun 2020 22:49:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D889206B7;
+        Mon, 15 Jun 2020 22:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592261349;
-        bh=xBGoroK2H8hqzN5/4X4Uahd06hiNRj+zCe3PMuFRh+M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EdqLMWVVkfWhaDiXk9TWcjR84sGAV5boxxGLbuFkH8aRPLjY+KXkNilVvsF5Jb6Do
-         qFdST2NcU9xr2MujM2LUeavJ825gXsq25ndV6yhw2UlpZyir2DucCuwN6TqDstLgcA
-         SjOlTrrpFKcVS3AJmItqTWbVRAIVLO0lMRb/OZOQ=
-Date:   Mon, 15 Jun 2020 17:54:28 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] scsi: fnic: Replace vmalloc() + memset() with
- vzalloc() and use array_size()
-Message-ID: <20200615225428.GA14959@embeddedor>
+        s=default; t=1592261890;
+        bh=3RZxhMnl4EirW5H1xWg330yp9hvzqyIsffDCw/WB4YE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fg3pyw4IELe9u4nyPspGTlYUn/jR2Bkgyz0cO7TLnrjJj+fpU9Wd2xQFWXLMGiA7y
+         khsVF2WAEFgyzNuGc/19pTNoamwxSW+3FFKz6TXHXlQ4ja39Nbn5FtbhiV+bWa/Z3A
+         UK6Wx9tpd9b07Of64C8zH0nVB8eWRVFW6jsVCmcI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 33F3035218F0; Mon, 15 Jun 2020 15:58:10 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 15:58:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, frederic@kernel.org
+Subject: Re: [PATCH 1/6] sched: Fix ttwu_queue_cond()
+Message-ID: <20200615225810.GA8492@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200615125654.678940605@infradead.org>
+ <20200615131143.130326165@infradead.org>
+ <20200615133409.GS2531@hirez.programming.kicks-ass.net>
+ <20200615164541.GH2723@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200615164541.GH2723@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vzalloc() instead of the vmalloc() and memset. Also, use array_size()
-instead of the open-coded version.
+On Mon, Jun 15, 2020 at 09:45:41AM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 15, 2020 at 03:34:09PM +0200, Peter Zijlstra wrote:
+> > On Mon, Jun 15, 2020 at 02:56:55PM +0200, Peter Zijlstra wrote:
+> > > Where the condition:
+> > > 
+> > >   !cpus_share_cache(smp_processor_id(), cpu)
+> > > 
+> > > already implies 'cpu != smp_processor_id()', because a CPU always
+> > > shares cache with itself, the secondary condition added in commit:
+> > > 
+> > >   2ebb17717550 ("sched/core: Offload wakee task activation if it the wakee is descheduling")
+> > > 
+> > > voids that implication, resulting in attempting to do local wake-ups
+> > > through the queue mechanism.
+> > > 
+> > > Fixes: 2ebb17717550 ("sched/core: Offload wakee task activation if it the wakee is descheduling")
+> > > Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  kernel/sched/core.c |   13 ++++++++++++-
+> > >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > > 
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -2356,11 +2356,22 @@ bool cpus_share_cache(int this_cpu, int
+> > >  
+> > >  static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+> > >  {
+> > > +	int this_cpu = smp_processor_id();
+> > > +
+> > > +	/*
+> > > +	 * Only ever queue for remote wakeups. The on_cpu case can only ever
+> > > +	 * happen remotely, and for the normal case it makes no sense to
+> > 
+> > The 'funny' thing here is, that this must be false for this patch to
+> > make any difference.. I just cannot see how.
+> > 
+> > Also, if this is false, and p->on_cpu == 1 and p->cpu == this_cpu, then
+> > p _should_ be current, in which case we should never get here either,
+> > due to the 'p == current' special case in try_to_wake_up().
+> > 
+> > The only other option is that 'p == next', but then we'd be doing
+> > wakeups from the middle of __schedule() and seems 'unlikely' too, esp.
+> > so since none of the actual stack-traces we have shows that.
+> > 
+> > So colour me terribly confused.
+> 
+> I am rerunning with your patch 2 on the last bisection point that
+> resulted in scheduler NULL dereferences despite having your patch.
+> Hopefully some illumination will result...
 
-This issue was found with the help of Coccinelle and, audited and fixed
-manually.
+No, Mr. Murphy is out in force.  I saw only the NULL pointer
+dereferences without any WARN()s.  :-/
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/scsi/fnic/fnic_trace.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+						Thanx, Paul
 
-diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
-index 9d52d83161ed..be266d1611bb 100644
---- a/drivers/scsi/fnic/fnic_trace.c
-+++ b/drivers/scsi/fnic/fnic_trace.c
-@@ -488,7 +488,7 @@ int fnic_trace_buf_init(void)
- 	}
- 
- 	fnic_trace_entries.page_offset =
--		vmalloc(array_size(fnic_max_trace_entries,
-+		vzalloc(array_size(fnic_max_trace_entries,
- 				   sizeof(unsigned long)));
- 	if (!fnic_trace_entries.page_offset) {
- 		printk(KERN_ERR PFX "Failed to allocate memory for"
-@@ -500,8 +500,6 @@ int fnic_trace_buf_init(void)
- 		err = -ENOMEM;
- 		goto err_fnic_trace_buf_init;
- 	}
--	memset((void *)fnic_trace_entries.page_offset, 0,
--		  (fnic_max_trace_entries * sizeof(unsigned long)));
- 	fnic_trace_entries.wr_idx = fnic_trace_entries.rd_idx = 0;
- 	fnic_buf_head = fnic_trace_buf_p;
- 
-@@ -559,10 +557,10 @@ int fnic_fc_trace_init(void)
- 	int err = 0;
- 	int i;
- 
--	fc_trace_max_entries = (fnic_fc_trace_max_pages * PAGE_SIZE)/
-+	fc_trace_max_entries = array_size(fnic_fc_trace_max_pages, PAGE_SIZE)/
- 				FC_TRC_SIZE_BYTES;
- 	fnic_fc_ctlr_trace_buf_p =
--		(unsigned long)vmalloc(array_size(PAGE_SIZE,
-+		(unsigned long)vzalloc(array_size(PAGE_SIZE,
- 						  fnic_fc_trace_max_pages));
- 	if (!fnic_fc_ctlr_trace_buf_p) {
- 		pr_err("fnic: Failed to allocate memory for "
-@@ -571,12 +569,9 @@ int fnic_fc_trace_init(void)
- 		goto err_fnic_fc_ctlr_trace_buf_init;
- 	}
- 
--	memset((void *)fnic_fc_ctlr_trace_buf_p, 0,
--			fnic_fc_trace_max_pages * PAGE_SIZE);
--
- 	/* Allocate memory for page offset */
- 	fc_trace_entries.page_offset =
--		vmalloc(array_size(fc_trace_max_entries,
-+		vzalloc(array_size(fc_trace_max_entries,
- 				   sizeof(unsigned long)));
- 	if (!fc_trace_entries.page_offset) {
- 		pr_err("fnic:Failed to allocate memory for page_offset\n");
-@@ -588,9 +583,6 @@ int fnic_fc_trace_init(void)
- 		err = -ENOMEM;
- 		goto err_fnic_fc_ctlr_trace_buf_init;
- 	}
--	memset((void *)fc_trace_entries.page_offset, 0,
--	       (fc_trace_max_entries * sizeof(unsigned long)));
--
- 	fc_trace_entries.rd_idx = fc_trace_entries.wr_idx = 0;
- 	fc_trace_buf_head = fnic_fc_ctlr_trace_buf_p;
- 
--- 
-2.27.0
-
+> > > +	 * involve IPIs here, and would be broken, as many architectures cannot
+> > > +	 * trivially IPI self in any case.
+> > > +	 */
+> > > +	if (cpu == this_cpu)
+> > > +		return false;
