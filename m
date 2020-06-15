@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E7A1F9DEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53751F9DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgFOQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728513AbgFOQ5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:57:19 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184E3C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:57:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id c21so9991027lfb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eIkal8pUfONI4oNrGMEW7FJGnsyPgxFx6nFiYlCav8Q=;
-        b=BOdfnS1nQ1loTAy3XfZG4v2ypfE6UrK/J+Zd6u9ARxAU0HozZqAjdnCtxoLxulSvq0
-         7PoDNtEz3pdUYnk9jHe+VKu0KTcBji19fekNHUB4EqiWzTIqAhfzI/qVn548WkWINsOo
-         G2cfvtd1eBk/jMWvfGGb0/G2cdASiBLrgA7w0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eIkal8pUfONI4oNrGMEW7FJGnsyPgxFx6nFiYlCav8Q=;
-        b=RE0HNpa6nZ3V3kPM2UIR9IjDl/ohVC5omfDujUNjUMCMBKcqDdpKfykfs1vgISPjR4
-         8toW1tZP9uUh5EEYaf798NdboOc7Csght2o+jh3FGQDC5FjiN/xWY8TuReIh8sENOawl
-         RaNOcTP4hAo969Oe6zCaMn37yZixIWHBUeTPGumybb3hQ3u3+ZkYsKKoemi1DGbsUgQp
-         xth1JyDwEu+JxROavCXmzQh9Vt1+RSLJm44oApXGgkuDqG6SstlGD4Jpmp+foLkBKaYt
-         8zi6I9ZVQRn/aDOyU8PzxbUkjVni/0k7WHBydbUwukADmGGfHtGClVJC5NcP1g5LSlfV
-         u9Yg==
-X-Gm-Message-State: AOAM5317IqZ6uIFeyDlH1rEnIDNvITXWg7IsV0yTZXPxqd9Hnoa9fKEz
-        Yj7srlPfuEzqxM/JqndyUmYTaPHpgoY=
-X-Google-Smtp-Source: ABdhPJylb5VcstnMRUP1PcbbgmrtFh2WMHdSw4D3BHWujgrpcqSTG+i6ak9I6yQlhOiL6bYRn2CQvg==
-X-Received: by 2002:ac2:521a:: with SMTP id a26mr1104095lfl.192.1592240237158;
-        Mon, 15 Jun 2020 09:57:17 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id o201sm222992lff.8.2020.06.15.09.57.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 09:57:16 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id 9so20095346ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:57:16 -0700 (PDT)
-X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr12503482ljn.70.1592240235665;
- Mon, 15 Jun 2020 09:57:15 -0700 (PDT)
+        id S1731131AbgFOQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:58:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51516 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729647AbgFOQ6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:58:35 -0400
+IronPort-SDR: /YfPx/yEKW2V5MUJcTC12yaqNgvMjrOEUSsNs1Lk1Q4iCtk+UAFg9hS9poJ923XSB4He5GDMB5
+ 1/0laOtJKqSA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 09:58:34 -0700
+IronPort-SDR: 7MvvpkDXECoxDtSIqCCutobgh7uUPicxbLQD5/1qPBGdypi6duM5fpiWJmcvbiYitVGVb3e/Mh
+ qm4yhvUp+A5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
+   d="scan'208";a="261155586"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by fmsmga007.fm.intel.com with SMTP; 15 Jun 2020 09:58:28 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 15 Jun 2020 19:57:58 +0300
+Date:   Mon, 15 Jun 2020 19:57:58 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 5/5] =?iso-8859-1?Q?drm=2Fte?=
+ =?iso-8859-1?Q?gra=3A_plane=3A_Support_180=B0?= rotation
+Message-ID: <20200615165758.GR6112@intel.com>
+References: <20200614200121.14147-1-digetx@gmail.com>
+ <20200614200121.14147-6-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20200615121257.798894-1-hch@lst.de> <20200615121257.798894-11-hch@lst.de>
- <CAHk-=wiBJjjV4NuKr_z2Q3vWEXSoGtAmkH=jZ0SkBJ=wZh4=hw@mail.gmail.com>
-In-Reply-To: <CAHk-=wiBJjjV4NuKr_z2Q3vWEXSoGtAmkH=jZ0SkBJ=wZh4=hw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Jun 2020 09:56:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiVjH4C+PzyHfsR0+GzFUf_2XX5H_tQoHGqp+pMGuec7Q@mail.gmail.com>
-Message-ID: <CAHk-=wiVjH4C+PzyHfsR0+GzFUf_2XX5H_tQoHGqp+pMGuec7Q@mail.gmail.com>
-Subject: Re: [PATCH 10/13] integrity/ima: switch to using __kernel_read
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200614200121.14147-6-digetx@gmail.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 9:46 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> It worries me that you're making these kinds of transformations where
-> the comments imply it's a no-op, but the actual code doesn't agree.
+On Sun, Jun 14, 2020 at 11:01:21PM +0300, Dmitry Osipenko wrote:
+> Combining horizontal and vertical reflections gives us 180 degrees of
+> rotation.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpu/drm/tegra/dc.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+> index f31bca27cde4..ddd9b88f8fce 100644
+> --- a/drivers/gpu/drm/tegra/dc.c
+> +++ b/drivers/gpu/drm/tegra/dc.c
+> @@ -608,6 +608,7 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
+>  {
+>  	struct tegra_plane_state *plane_state = to_tegra_plane_state(state);
+>  	unsigned int rotation = DRM_MODE_ROTATE_0 |
+> +				DRM_MODE_ROTATE_180 |
 
-Note that it's not that I think the FMODE_READ check is necessarily
-_needed_. It's more the discrepancy between the commit message and the
-code change that I don't like.
+Leave this out ...
 
-The commit message implies that __kernel_read() has _more_ checks than
-the checks done by integrity_kernel_read(). But it looks like they
-aren't so much "more" as they are just "different".
+>  				DRM_MODE_REFLECT_X |
+>  				DRM_MODE_REFLECT_Y;
+>  	struct tegra_bo_tiling *tiling = &plane_state->tiling;
+> @@ -659,6 +660,14 @@ static int tegra_plane_atomic_check(struct drm_plane *plane,
+>  	else
+>  		plane_state->reflect_y = false;
+>  
+> +	if (tegra_fb_is_bottom_up(state->fb))
+> +		plane_state->reflect_y = true;
+> +
+> +	if (rotation & DRM_MODE_ROTATE_180) {
+> +		plane_state->reflect_x = !plane_state->reflect_x;
+> +		plane_state->reflect_y = !plane_state->reflect_y;
+> +	}
 
-                Linus
+... and drm_rotation_simplify() will do this for you.
+
+Though the bottim_up() thing will need a slightly different tweak I
+guess.
+
+I'd write this as somehting like:
+rotation = state->rotation;
+if (bottom_up())
+	rotation ^= DRM_MODE_REFLECT_Y;
+rotation = drm_rotation_simplify(rotation,
+				 DRM_MODE_ROTATE_0 |
+				 DRM_MODE_REFLECT_X |
+				 DRM_MODE_REFLECT_Y;
+
+Also note my use of XOR for the bottom_up() handling. I suspect
+the current code is already broken if you combine bottom_up()
+and REFLECT_Y since it just uses an OR instead of an XOR. That's
+assuming my hucnh what bottom_up() is supposed to do is correct.
+
+
+> +
+>  	/*
+>  	 * Tegra doesn't support different strides for U and V planes so we
+>  	 * error out if the user tries to display a framebuffer with such a
+> @@ -720,7 +729,7 @@ static void tegra_plane_atomic_update(struct drm_plane *plane,
+>  	window.dst.h = drm_rect_height(&plane->state->dst);
+>  	window.bits_per_pixel = fb->format->cpp[0] * 8;
+>  	window.reflect_x = state->reflect_x;
+> -	window.reflect_y = tegra_fb_is_bottom_up(fb) || state->reflect_y;
+> +	window.reflect_y = state->reflect_y;
+>  
+>  	/* copy from state */
+>  	window.zpos = plane->state->normalized_zpos;
+> @@ -806,6 +815,7 @@ static struct drm_plane *tegra_primary_plane_create(struct drm_device *drm,
+>  	err = drm_plane_create_rotation_property(&plane->base,
+>  						 DRM_MODE_ROTATE_0,
+>  						 DRM_MODE_ROTATE_0 |
+> +						 DRM_MODE_ROTATE_180 |
+>  						 DRM_MODE_REFLECT_X |
+>  						 DRM_MODE_REFLECT_Y);
+>  	if (err < 0)
+> @@ -1094,6 +1104,7 @@ static struct drm_plane *tegra_dc_overlay_plane_create(struct drm_device *drm,
+>  	err = drm_plane_create_rotation_property(&plane->base,
+>  						 DRM_MODE_ROTATE_0,
+>  						 DRM_MODE_ROTATE_0 |
+> +						 DRM_MODE_ROTATE_180 |
+>  						 DRM_MODE_REFLECT_X |
+>  						 DRM_MODE_REFLECT_Y);
+>  	if (err < 0)
+> -- 
+> 2.26.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Ville Syrjälä
+Intel
