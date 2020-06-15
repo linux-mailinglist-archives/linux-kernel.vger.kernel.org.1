@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AABD1FA182
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3325C1FA1A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731516AbgFOUba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:31:30 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37200 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731490AbgFOUb1 (ORCPT
+        id S1731604AbgFOUcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:32:01 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53732 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728346AbgFOUbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:31:27 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 3673F2A2CF6
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        laurent.pinchart@ideasonboard.com, Sam Ravnborg <sam@ravnborg.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [RESEND PATCH v4 7/7] drm/mediatek: mtk_dsi: Create connector for bridges
-Date:   Mon, 15 Jun 2020 22:31:08 +0200
-Message-Id: <20200615203108.786083-8-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200615203108.786083-1-enric.balletbo@collabora.com>
-References: <20200615203108.786083-1-enric.balletbo@collabora.com>
+        Mon, 15 Jun 2020 16:31:23 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05FKVIrP098992;
+        Mon, 15 Jun 2020 15:31:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592253078;
+        bh=O7jkcz4ZeSjHhyhXjefbDQx00ANrTeDJE4DwrKvT2cQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=v1P4IOimcJS9ym8uO9nJDeATWPXCLwcEB5NkKzWWrjIJHv8KfPM7TvsgKhQQGasKO
+         aZjDtjf7S9zuRjIqrfDcsTKqTY2d5X6OQHUZ96dm4s7UCFXydzs1krFE1Sfqwq6r03
+         2m5X30U/4NfmeqZa49YRk4soAzXIsHyJK74VHaBc=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05FKVIt5068327;
+        Mon, 15 Jun 2020 15:31:18 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 15
+ Jun 2020 15:31:18 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 15 Jun 2020 15:31:18 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05FKVIfr021151;
+        Mon, 15 Jun 2020 15:31:18 -0500
+Subject: Re: [RESEND PATCH v27 00/15] Multicolor Framework v27
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <jacek.anaszewski@gmail.com>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200615201522.19677-1-dmurphy@ti.com>
+ <20200615202731.GA18028@duo.ucw.cz>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <55a4f116-30fd-b1b1-3ba3-188e1833c4e4@ti.com>
+Date:   Mon, 15 Jun 2020 15:31:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200615202731.GA18028@duo.ucw.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the drm_bridge_connector helper to create a connector for pipelines
-that use drm_bridge. This allows splitting connector operations across
-multiple bridges when necessary, instead of having the last bridge in
-the chain creating the connector and handling all connector operations
-internally.
+Pavel
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
----
+On 6/15/20 3:27 PM, Pavel Machek wrote:
+> Hi!
+>
+>> This is the multi color LED framework.   This framework presents clustered
+>> colored LEDs into an array and allows the user space to adjust the brightness
+>> of the cluster using a single file write.  The individual colored LEDs
+>> intensities are controlled via a single file that is an array of
+>> LEDs
+> Please don't do this. Pinging whoever you think is blocking the merge
+> is okay, but resending big series just because people are busy over
+> the merge window is not cool.
 
-Changes in v4: None
-Changes in v3:
-- Move the bridge.type line to the patch that adds drm_bridge support. (Laurent Pinchart)
+Actually that is not the case.  I missed adding Rob H to the series so I 
+resent the patches to add Rob in.
 
-Changes in v2: None
+There was no intent to resend because I thought it was blocked.
 
- drivers/gpu/drm/mediatek/mtk_dsi.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+I know we are in a merge window and thoroughly understand that ppl are busy.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 4f3bd095c1eee..471fcafdf3488 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -17,6 +17,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
-@@ -183,6 +184,7 @@ struct mtk_dsi {
- 	struct drm_encoder encoder;
- 	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
-+	struct drm_connector *connector;
- 	struct phy *phy;
- 
- 	void __iomem *regs;
-@@ -977,10 +979,19 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
- 	 */
- 	dsi->encoder.possible_crtcs = 1;
- 
--	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
-+	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 	if (ret)
- 		goto err_cleanup_encoder;
- 
-+	dsi->connector = drm_bridge_connector_init(drm, &dsi->encoder);
-+	if (IS_ERR(dsi->connector)) {
-+		DRM_ERROR("Unable to create bridge connector\n");
-+		ret = PTR_ERR(dsi->connector);
-+		goto err_cleanup_encoder;
-+	}
-+	drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
-+
- 	return 0;
- 
- err_cleanup_encoder:
--- 
-2.27.0
+If I thought it was blocked I would have just bumped the first patch.
 
+Dan
+
+
+> Thanks,
+>
+> 								Pavel
