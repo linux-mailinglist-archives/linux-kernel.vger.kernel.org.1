@@ -2,56 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBA11F8C04
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 03:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BE21F8C0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 03:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbgFOBLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 21:11:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33612 "EHLO huawei.com"
+        id S1728064AbgFOBTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 21:19:05 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42246 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728039AbgFOBLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 21:11:35 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 08F5E6F1C9214CAB1357;
-        Mon, 15 Jun 2020 09:11:32 +0800 (CST)
-Received: from [10.166.213.22] (10.166.213.22) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 15 Jun
- 2020 09:11:28 +0800
-Subject: Re: [PATCH] cgroup: Refactor two assignments in
- css_task_iter_next_css_set()
-To:     <zzuedu2000@163.com>, <James.Bottomley@HansenPartnership.com>
-CC:     <tj@kernel.org>, <hannes@cmpxchg.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Markus.Elfring@web.de>,
-        <songmuchun@bytedance.com>, <buddy.zhang@aliyun.com>
-References: <1592158208.5303.27.camel@HansenPartnership.com>
- <20200614232224.1804-1-zzuedu2000@163.com>
-From:   Zefan Li <lizefan@huawei.com>
-Message-ID: <4d6a3864-b4b4-9b32-1349-c40b11e28a8f@huawei.com>
-Date:   Mon, 15 Jun 2020 09:11:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727969AbgFOBTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 21:19:05 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 334B27D8576459A523DB;
+        Mon, 15 Jun 2020 09:19:03 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 15 Jun 2020
+ 09:19:01 +0800
+Subject: Re: [PATCH] powerpc/fsl_booke/32: fix build with
+ CONFIG_RANDOMIZE_BASE
+To:     Arseny Solokha <asolokha@kb.kras.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        <linuxppc-dev@lists.ozlabs.org>
+CC:     Scott Wood <oss@buserror.net>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20200613162801.1946619-1-asolokha@kb.kras.ru>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <48e8cd6c-9128-e8f0-6fd6-0f93b84629ca@huawei.com>
+Date:   Mon, 15 Jun 2020 09:19:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200614232224.1804-1-zzuedu2000@163.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.213.22]
+In-Reply-To: <20200613162801.1946619-1-asolokha@kb.kras.ru>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/6/15 7:22, zzuedu2000@163.com wrote:
-> On Sun, 2020-06-14 at 18:10 +0800, James.Bottomley@xxxxxxx wrote:
+
+ÔÚ 2020/6/14 0:28, Arseny Solokha Ð´µÀ:
+> Building the current 5.8 kernel for a e500 machine with
+> CONFIG_RANDOMIZE_BASE set yields the following failure:
 > 
->> it's arguable that having two statements instead of one makes the code
->> marginally more readable.
+>    arch/powerpc/mm/nohash/kaslr_booke.c: In function 'kaslr_early_init':
+>    arch/powerpc/mm/nohash/kaslr_booke.c:387:2: error: implicit declaration
+> of function 'flush_icache_range'; did you mean 'flush_tlb_range'?
+> [-Werror=implicit-function-declaration]
 > 
-> Above the function there is a similar line of code:
-> l = it->tcset_pos->next;
-> One line of code makes the code style consistent and more readable
+> Indeed, including asm/cacheflush.h into kaslr_booke.c fixes the build.
+> 
+> The issue dates back to the introduction of that file and probably went
+> unnoticed because there's no in-tree defconfig with CONFIG_RANDOMIZE_BASE
+> set.
+> 
+> Fixes: 2b0e86cc5de6 ("powerpc/fsl_booke/32: implement KASLR infrastructure")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Arseny Solokha <asolokha@kb.kras.ru>
+> ---
+>   arch/powerpc/mm/nohash/kaslr_booke.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
 
-It would be much better if you are fixing a bug or developing a new feature
-and while at it you do this cleanup conveniently, but this patch alone has
-little value. 
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
+
