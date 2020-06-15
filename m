@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871631F92E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82631F92B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729530AbgFOJK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:10:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39491 "EHLO mga18.intel.com"
+        id S1729100AbgFOJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:07:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:54813 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729088AbgFOJKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:10:24 -0400
-IronPort-SDR: z3aYpQjqL8kHzVhgKN1MREXbwmVfqreqe4/K6hlmHPjq56XIM8+HVRR4uu4ZBP+GPMAJuHokDM
- 2GumB7lj0m7w==
+        id S1728411AbgFOJHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:07:46 -0400
+IronPort-SDR: DqDXRaSy9TM5j+FECYVfSNRlImqIkoXj0/4QYHlxKKyCdN42qSFvUX7yIJek06p8iaaJT5as9A
+ 3b6LDjNIs9cQ==
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 01:57:50 -0700
-IronPort-SDR: 9YtY9L5ISCZ2uqjjCo8P3P1zDl58XZIk2EAEx/vyzZx8CkvzG3HFyDRvd+PciaIjE6vKlPNnuy
- 8t6p8oO7sNkg==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 01:59:10 -0700
+IronPort-SDR: rj1cLnupRZ9htwx9oVOHof9ymVC87Tha2x0TzEcIsuTFYUS60rcfN/sDDY89Bf95dKVi/7v1bR
+ JJDbHckRNi8g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
-   d="yaml'?scan'208";a="272683760"
+   d="xz'?scan'208";a="276490081"
 Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.3])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jun 2020 01:57:47 -0700
-Date:   Mon, 15 Jun 2020 16:57:17 +0800
+  by orsmga006.jf.intel.com with ESMTP; 15 Jun 2020 01:59:06 -0700
+Date:   Mon, 15 Jun 2020 16:58:36 +0800
 From:   kernel test robot <rong.a.chen@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: [rcu] 276c410448: will-it-scale.per_thread_ops -12.3% regression
-Message-ID: <20200615085717.GQ12456@shao2-debian>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Serge Hallyn <serge@hallyn.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ltp@lists.linux.it
+Subject: 303cc571d1: ltp.setns01.fail
+Message-ID: <20200615085836.GR12456@shao2-debian>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="l/2UL691n69jcg3q"
+Content-Type: multipart/mixed; boundary="f4OB/AjbUHPcIx8p"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -42,31 +47,32 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---l/2UL691n69jcg3q
+--f4OB/AjbUHPcIx8p
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 
 Greeting,
 
-FYI, we noticed a -12.3% regression of will-it-scale.per_thread_ops due to commit:
+FYI, we noticed the following commit (built with gcc-9):
 
-
-commit: 276c410448dbca357a2bc3539acfe04862e5f172 ("rcu-tasks: Split ->trc_reader_need_end")
+commit: 303cc571d107b3641d6487061b748e70ffe15ce4 (" iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCXrvAwgAKCRCRxhvAZXjc")
 https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-in testcase: will-it-scale
-on test machine: 288 threads Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz with 80G memory
+in testcase: ltp
 with following parameters:
 
-	nr_task: 100%
-	mode: thread
-	test: page_fault3
-	cpufreq_governor: performance
-	ucode: 0x11
+	disk: 1HDD
+	fs: btrfs
+	test: syscalls_part5
 
-test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
-test-url: https://github.com/antonblanchard/will-it-scale
+test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+test-url: http://linux-test-project.github.io/
+
+
+on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+
 
 
 
@@ -74,963 +80,114 @@ If you fix the issue, kindly add following tag
 Reported-by: kernel test robot <rong.a.chen@intel.com>
 
 
-Details are as below:
--------------------------------------------------------------------------------------------------->
+
+
+<<<test_start>>>
+tag=setns01 stime=1592200758
+cmdline="setns01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+setns01     0  TINFO  :  ns_name=ipc, ns_fds[0]=7, ns_types[0]=0x8000000
+setns01     0  TINFO  :  ns_name=mnt, ns_fds[1]=8, ns_types[1]=0x20000
+setns01     0  TINFO  :  ns_name=net, ns_fds[2]=9, ns_types[2]=0x40000000
+setns01     0  TINFO  :  ns_name=pid, ns_fds[3]=10, ns_types[3]=0x20000000
+setns01     0  TINFO  :  ns_name=uts, ns_fds[4]=11, ns_types[4]=0x4000000
+setns01     0  TINFO  :  setns(-1, 0x8000000)
+setns01     1  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000)
+setns01     2  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x40000000)
+setns01     3  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x20000000)
+setns01     4  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(-1, 0x4000000)
+setns01     5  TPASS  :  invalid fd exp_errno=9
+setns01     0  TINFO  :  setns(12, 0x8000000)
+setns01     6  TFAIL  :  setns01.c:176: regular file fd exp_errno=22: errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x20000)
+setns01     7  TFAIL  :  setns01.c:176: regular file fd exp_errno=22: errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x40000000)
+setns01     8  TFAIL  :  setns01.c:176: regular file fd exp_errno=22: errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x20000000)
+setns01     9  TFAIL  :  setns01.c:176: regular file fd exp_errno=22: errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x4000000)
+setns01    10  TFAIL  :  setns01.c:176: regular file fd exp_errno=22: errno=EBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(7, 0xffffffff)
+setns01    11  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(8, 0xffffffff)
+setns01    12  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(9, 0xffffffff)
+setns01    13  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(10, 0xffffffff)
+setns01    14  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(11, 0xffffffff)
+setns01    15  TPASS  :  invalid ns_type exp_errno=22
+setns01     0  TINFO  :  setns(7, 0x20000)
+setns01    16  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(8, 0x40000000)
+setns01    17  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(9, 0x20000000)
+setns01    18  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(10, 0x4000000)
+setns01    19  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(11, 0x8000000)
+setns01    20  TPASS  :  mismatch ns_type/fd exp_errno=22
+setns01     0  TINFO  :  setns(7, 0x8000000)
+setns01    21  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(8, 0x20000)
+setns01    22  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(9, 0x40000000)
+setns01    23  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(10, 0x20000000)
+setns01    24  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+setns01     0  TINFO  :  setns(11, 0x4000000)
+setns01    25  TPASS  :  without CAP_SYS_ADMIN exp_errno=1
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+
+LTP Version: 20200515-23-gec1b91c46
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20200515-23-gec1b91c46
+       ###############################################################
+
+
 
 
 To reproduce:
 
+        # build kernel
+	cd linux
+	cp config-5.7.0-rc4-00002-g303cc571d107b .config
+	make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage modules
+	make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 INSTALL_MOD_PATH=<mod-install-dir> modules_install
+	cd <mod-install-dir>
+	find lib/ | cpio -o -H newc --quiet | gzip > modules.cgz
+
+
         git clone https://github.com/intel/lkp-tests.git
         cd lkp-tests
-        bin/lkp install job.yaml  # job file is attached in this email
-        bin/lkp run     job.yaml
+        bin/lkp qemu -k <bzImage> -m modules.cgz job-script # job-script is attached in this email
 
-=========================================================================================
-compiler/cpufreq_governor/kconfig/mode/nr_task/rootfs/tbox_group/test/testcase/ucode:
-  gcc-9/performance/x86_64-rhel-7.6/thread/100%/debian-x86_64-20191114.cgz/lkp-knm01/page_fault3/will-it-scale/0x11
-
-commit: 
-  b0afa0f056 ("rcu-tasks: Provide boot parameter to delay IPIs until late in grace period")
-  276c410448 ("rcu-tasks: Split ->trc_reader_need_end")
-
-b0afa0f056676ffe 276c410448dbca357a2bc3539ac 
----------------- --------------------------- 
-       fail:runs  %reproduction    fail:runs
-           |             |             |    
-          2:4          -50%            :4     dmesg.WARNING:at#for_ip_interrupt_entry/0x
-           :4           28%           1:4     perf-profile.calltrace.cycles-pp.error_entry
-          0:4            0%           0:4     perf-profile.children.cycles-pp.error_exit
-          1:4            7%           2:4     perf-profile.children.cycles-pp.error_entry
-          0:4            4%           1:4     perf-profile.self.cycles-pp.error_entry
-         %stddev     %change         %stddev
-             \          |                \  
-      1414           -12.3%       1241 ±  2%  will-it-scale.per_thread_ops
-    463.32            +1.7%     470.99        will-it-scale.time.elapsed_time
-    463.32            +1.7%     470.99        will-it-scale.time.elapsed_time.max
-    407566           -12.3%     357573 ±  2%  will-it-scale.workload
-     48.51            -1.5%      47.77        boot-time.boot
- 7.203e+10           +20.0%   8.64e+10 ±  2%  cpuidle.C1.time
- 2.162e+08 ±  2%     +27.7%  2.761e+08 ±  2%  cpuidle.C1.usage
-     60.50           +12.2       72.74 ±  2%  mpstat.cpu.all.idle%
-     39.17           -12.2       26.97 ±  6%  mpstat.cpu.all.sys%
-      2334 ± 12%     +18.8%       2772 ±  5%  slabinfo.khugepaged_mm_slot.active_objs
-      2334 ± 12%     +18.8%       2772 ±  5%  slabinfo.khugepaged_mm_slot.num_objs
-     60.25           +20.3%      72.50 ±  2%  vmstat.cpu.id
-     92.75 ±  3%     -21.6%      72.75 ±  5%  vmstat.procs.r
-    223709           +41.8%     317250 ±  3%  vmstat.system.cs
-    641687 ±  3%      +8.0%     693245 ±  2%  proc-vmstat.nr_inactive_anon
-    641688 ±  3%      +8.0%     693245 ±  2%  proc-vmstat.nr_zone_inactive_anon
-    166782            -3.7%     160632        proc-vmstat.numa_hint_faults
-    166782            -3.7%     160632        proc-vmstat.numa_hint_faults_local
-    984.25           -14.2%     844.75 ±  2%  proc-vmstat.numa_huge_pte_updates
-    710979           -11.2%     631134        proc-vmstat.numa_pte_updates
- 1.967e+08           -10.9%  1.752e+08        proc-vmstat.pgfault
-     58.18            +3.4%      60.17        perf-stat.i.MPKI
- 1.173e+09           +10.5%  1.296e+09        perf-stat.i.branch-instructions
-      6.74            -0.1        6.68        perf-stat.i.branch-miss-rate%
-  72495831           +10.7%   80219684        perf-stat.i.branch-misses
-     14.68            -0.6       14.06        perf-stat.i.cache-miss-rate%
-  43014696           +10.5%   47551690        perf-stat.i.cache-misses
- 2.936e+08           +15.6%  3.393e+08        perf-stat.i.cache-references
-    227441           +42.0%     323034 ±  3%  perf-stat.i.context-switches
-     37.22           -29.0%      26.44 ±  5%  perf-stat.i.cpi
- 1.828e+11           -22.3%  1.421e+11 ±  3%  perf-stat.i.cpu-cycles
-    513.71           +13.6%     583.63        perf-stat.i.cpu-migrations
-      4303           -27.8%       3107 ±  5%  perf-stat.i.cycles-between-cache-misses
-      1.78            -0.0        1.74        perf-stat.i.iTLB-load-miss-rate%
-  90757979            +9.1%   98982336        perf-stat.i.iTLB-load-misses
- 5.518e+09           +10.1%  6.076e+09        perf-stat.i.iTLB-loads
- 5.501e+09           +10.3%  6.065e+09        perf-stat.i.instructions
-     59.50            +2.4%      60.91        perf-stat.i.instructions-per-iTLB-miss
-      0.03           +48.9%       0.05 ±  3%  perf-stat.i.ipc
-      0.61           -22.2%       0.47 ±  3%  perf-stat.i.metric.GHz
-      0.85 ±  2%      +6.3%       0.90 ±  3%  perf-stat.i.metric.K/sec
-     23.19           +10.3%      25.58        perf-stat.i.metric.M/sec
-    398027           -13.3%     345187 ±  2%  perf-stat.i.minor-faults
-    398027           -13.3%     345187 ±  2%  perf-stat.i.page-faults
-     51.63            +4.7%      54.06        perf-stat.overall.MPKI
-     14.82            -0.6       14.26        perf-stat.overall.cache-miss-rate%
-     32.82           -28.9%      23.34 ±  4%  perf-stat.overall.cpi
-      4290           -29.4%       3029 ±  5%  perf-stat.overall.cycles-between-cache-misses
-      0.03           +40.9%       0.04 ±  4%  perf-stat.overall.ipc
-   6447068           +28.0%    8254132 ±  3%  perf-stat.overall.path-length
- 1.214e+09           +10.5%  1.341e+09        perf-stat.ps.branch-instructions
-  72454767           +10.7%   80188768        perf-stat.ps.branch-misses
-  43379426           +11.2%   48228470        perf-stat.ps.cache-misses
- 2.927e+08           +15.5%  3.382e+08 ±  2%  perf-stat.ps.cache-references
-    223136           +42.0%     316818 ±  3%  perf-stat.ps.context-switches
- 1.861e+11           -21.6%  1.459e+11 ±  3%  perf-stat.ps.cpu-cycles
-    498.80           +14.0%     568.54        perf-stat.ps.cpu-migrations
-  90216145            +8.9%   98279965        perf-stat.ps.iTLB-load-misses
- 5.688e+09           +10.2%  6.267e+09        perf-stat.ps.iTLB-loads
-  5.67e+09           +10.3%  6.256e+09        perf-stat.ps.instructions
-    404137           -13.0%     351604 ±  2%  perf-stat.ps.minor-faults
-    404137           -13.0%     351604 ±  2%  perf-stat.ps.page-faults
- 2.627e+12           +12.2%  2.949e+12        perf-stat.total.instructions
-     84210           -25.9%      62375 ±  5%  sched_debug.cfs_rq:/.exec_clock.avg
-     91870 ±  3%     -23.3%      70486 ±  5%  sched_debug.cfs_rq:/.exec_clock.max
-     79683           -23.1%      61285 ±  6%  sched_debug.cfs_rq:/.exec_clock.min
-      2299 ±  7%     +36.5%       3139 ± 12%  sched_debug.cfs_rq:/.load.avg
-    216559           +81.8%     393746 ± 14%  sched_debug.cfs_rq:/.load.max
-     16561 ±  3%     +64.0%      27165 ± 14%  sched_debug.cfs_rq:/.load.stddev
-      2.32 ± 11%     -19.6%       1.87 ± 14%  sched_debug.cfs_rq:/.load_avg.avg
-  18373664 ±  3%     -19.7%   14762699 ±  8%  sched_debug.cfs_rq:/.min_vruntime.avg
-  18652687 ±  3%     -19.9%   14948853 ±  8%  sched_debug.cfs_rq:/.min_vruntime.max
-  17259651 ±  3%     -20.6%   13706324 ±  9%  sched_debug.cfs_rq:/.min_vruntime.min
-      0.09 ±  4%     -30.2%       0.06 ±  8%  sched_debug.cfs_rq:/.nr_running.avg
-      0.27 ±  2%     -14.3%       0.24 ±  5%  sched_debug.cfs_rq:/.nr_running.stddev
-     18.07 ±  2%     -31.0%      12.47 ±  5%  sched_debug.cfs_rq:/.nr_spread_over.avg
-      1.97 ± 34%     -49.2%       1.00 ± 57%  sched_debug.cfs_rq:/.nr_spread_over.min
-    258.66 ±  6%     -38.4%     159.22 ±  5%  sched_debug.cfs_rq:/.runnable_avg.avg
-    231.14           -13.6%     199.77 ±  7%  sched_debug.cfs_rq:/.runnable_avg.stddev
-    302282 ± 40%     -44.4%     168177 ± 29%  sched_debug.cfs_rq:/.spread0.avg
-    568464 ± 36%     -39.3%     344858 ± 16%  sched_debug.cfs_rq:/.spread0.max
-    252.26 ±  6%     -38.7%     154.72 ±  5%  sched_debug.cfs_rq:/.util_avg.avg
-    217.63           -15.4%     184.13 ±  6%  sched_debug.cfs_rq:/.util_avg.stddev
-     18.44 ± 12%     -50.3%       9.17 ±  9%  sched_debug.cfs_rq:/.util_est_enqueued.avg
-    575.84 ± 17%     -22.2%     447.81 ± 16%  sched_debug.cfs_rq:/.util_est_enqueued.max
-     67.91 ±  9%     -35.4%      43.85 ±  9%  sched_debug.cfs_rq:/.util_est_enqueued.stddev
-    417156 ±  7%     -15.2%     353896 ±  5%  sched_debug.cpu.avg_idle.stddev
-    273.72 ±  3%     -11.3%     242.79 ±  4%  sched_debug.cpu.clock.stddev
-    273.72 ±  3%     -11.3%     242.79 ±  4%  sched_debug.cpu.clock_task.stddev
-    426.78 ±  3%     -27.6%     309.10 ± 12%  sched_debug.cpu.curr->pid.avg
-      1282 ±  2%     -12.4%       1123 ±  6%  sched_debug.cpu.curr->pid.stddev
-    351857 ±  3%     -16.4%     294246 ±  4%  sched_debug.cpu.max_idle_balance_cost.stddev
-      0.00           -11.8%       0.00 ±  3%  sched_debug.cpu.next_balance.stddev
-      0.09 ±  3%     -32.0%       0.06 ± 12%  sched_debug.cpu.nr_running.avg
-      0.28           -14.6%       0.24 ±  7%  sched_debug.cpu.nr_running.stddev
-    163725           +37.4%     225040 ±  4%  sched_debug.cpu.nr_switches.avg
-    174783           +35.4%     236604 ±  4%  sched_debug.cpu.nr_switches.max
-    151538           +36.4%     206743 ±  4%  sched_debug.cpu.nr_switches.min
-      2143 ±  4%     +28.5%       2753 ±  4%  sched_debug.cpu.nr_switches.stddev
-    160974           +38.1%     222280 ±  4%  sched_debug.cpu.sched_count.avg
-    170145           +36.7%     232581 ±  4%  sched_debug.cpu.sched_count.max
-    148944           +37.6%     204888 ±  4%  sched_debug.cpu.sched_count.min
-      1847 ±  8%     +38.7%       2563 ±  6%  sched_debug.cpu.sched_count.stddev
-     80136           +38.3%     110820 ±  4%  sched_debug.cpu.sched_goidle.avg
-     84559           +36.9%     115782 ±  4%  sched_debug.cpu.sched_goidle.max
-     74091           +37.8%     102072 ±  4%  sched_debug.cpu.sched_goidle.min
-    891.35 ±  6%     +41.4%       1260 ±  6%  sched_debug.cpu.sched_goidle.stddev
-     80346           +38.2%     111003 ±  4%  sched_debug.cpu.ttwu_count.avg
-    114308 ±  2%     +42.7%     163080 ±  6%  sched_debug.cpu.ttwu_count.max
-     62759 ±  3%     +38.4%      86881 ±  2%  sched_debug.cpu.ttwu_count.min
-      8223 ±  7%     +53.5%      12623 ± 13%  sched_debug.cpu.ttwu_count.stddev
-      2.35 ± 10%      -0.7        1.65 ± 14%  perf-profile.calltrace.cycles-pp.irq_exit.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter
-      0.94 ± 15%      -0.5        0.44 ± 58%  perf-profile.calltrace.cycles-pp._raw_spin_lock_irq.rwsem_down_read_slowpath.do_user_addr_fault.page_fault
-      0.90 ± 15%      -0.5        0.42 ± 58%  perf-profile.calltrace.cycles-pp.native_queued_spin_lock_slowpath._raw_spin_lock_irq.rwsem_down_read_slowpath.do_user_addr_fault.page_fault
-      1.38 ±  4%      -0.4        0.94 ± 12%  perf-profile.calltrace.cycles-pp.__softirqentry_text_start.irq_exit.smp_apic_timer_interrupt.apic_timer_interrupt.cpuidle_enter_state
-      0.81 ±  4%      +0.1        0.91 ±  4%  perf-profile.calltrace.cycles-pp.file_update_time.fault_dirty_shared_page.do_fault.__handle_mm_fault.handle_mm_fault
-      1.35 ±  6%      +0.2        1.51 ±  3%  perf-profile.calltrace.cycles-pp.find_get_entry.find_lock_entry.shmem_getpage_gfp.shmem_fault.__do_fault
-      1.16 ±  7%      +0.2        1.33 ±  5%  perf-profile.calltrace.cycles-pp.unlock_page.fault_dirty_shared_page.do_fault.__handle_mm_fault.handle_mm_fault
-      1.29 ±  8%      +0.2        1.46 ±  7%  perf-profile.calltrace.cycles-pp._raw_spin_lock.alloc_set_pte.finish_fault.do_fault.__handle_mm_fault
-      1.76 ±  7%      +0.3        2.04 ±  5%  perf-profile.calltrace.cycles-pp.page_add_file_rmap.alloc_set_pte.finish_fault.do_fault.__handle_mm_fault
-      2.13 ±  5%      +0.3        2.41 ±  4%  perf-profile.calltrace.cycles-pp.fault_dirty_shared_page.do_fault.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      2.46 ±  8%      +0.4        2.81 ±  7%  perf-profile.calltrace.cycles-pp.up_read.do_user_addr_fault.page_fault
-      2.86 ±  6%      +0.4        3.21 ±  4%  perf-profile.calltrace.cycles-pp.find_lock_entry.shmem_getpage_gfp.shmem_fault.__do_fault.do_fault
-      3.12 ±  6%      +0.4        3.52 ±  4%  perf-profile.calltrace.cycles-pp.shmem_getpage_gfp.shmem_fault.__do_fault.do_fault.__handle_mm_fault
-      3.27 ±  6%      +0.4        3.67 ±  4%  perf-profile.calltrace.cycles-pp.shmem_fault.__do_fault.do_fault.__handle_mm_fault.handle_mm_fault
-      3.33 ±  6%      +0.4        3.75 ±  4%  perf-profile.calltrace.cycles-pp.__do_fault.do_fault.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      0.13 ±173%      +0.4        0.55 ±  8%  perf-profile.calltrace.cycles-pp.swapgs_restore_regs_and_return_to_usermode
-      3.39 ±  7%      +0.5        3.89 ±  5%  perf-profile.calltrace.cycles-pp.alloc_set_pte.finish_fault.do_fault.__handle_mm_fault.handle_mm_fault
-      3.44 ±  7%      +0.5        3.94 ±  5%  perf-profile.calltrace.cycles-pp.finish_fault.do_fault.__handle_mm_fault.handle_mm_fault.do_user_addr_fault
-      8.99 ±  6%      +1.2       10.20 ±  4%  perf-profile.calltrace.cycles-pp.do_fault.__handle_mm_fault.handle_mm_fault.do_user_addr_fault.page_fault
-     12.23 ±  6%      +1.6       13.84 ±  5%  perf-profile.calltrace.cycles-pp.__handle_mm_fault.handle_mm_fault.do_user_addr_fault.page_fault
-     12.68 ±  6%      +1.7       14.38 ±  5%  perf-profile.calltrace.cycles-pp.handle_mm_fault.do_user_addr_fault.page_fault
-     45.14 ±  9%      +6.1       51.25 ±  6%  perf-profile.calltrace.cycles-pp.down_read_trylock.do_user_addr_fault.page_fault
-     66.96 ±  7%      +7.4       74.37 ±  4%  perf-profile.calltrace.cycles-pp.do_user_addr_fault.page_fault
-     69.19 ±  7%      +7.7       76.89 ±  4%  perf-profile.calltrace.cycles-pp.page_fault
-     17.74 ±  8%      -3.3       14.46 ± 20%  perf-profile.children.cycles-pp.apic_timer_interrupt
-     17.02 ±  8%      -3.1       13.89 ± 20%  perf-profile.children.cycles-pp.smp_apic_timer_interrupt
-      2.97 ±  8%      -0.7        2.25 ± 12%  perf-profile.children.cycles-pp.irq_exit
-      1.88 ± 11%      -0.5        1.41 ± 11%  perf-profile.children.cycles-pp.__softirqentry_text_start
-      1.02 ± 14%      -0.4        0.59 ± 15%  perf-profile.children.cycles-pp.native_queued_spin_lock_slowpath
-      1.75 ± 12%      -0.4        1.35 ± 14%  perf-profile.children.cycles-pp._raw_spin_lock_irq
-      0.92 ± 12%      -0.2        0.68 ± 17%  perf-profile.children.cycles-pp.ktime_get
-      0.32 ± 20%      -0.2        0.13 ± 30%  perf-profile.children.cycles-pp.munmap
-      0.32 ± 22%      -0.2        0.14 ± 27%  perf-profile.children.cycles-pp.__x64_sys_munmap
-      0.32 ± 22%      -0.2        0.14 ± 28%  perf-profile.children.cycles-pp.__vm_munmap
-      0.29 ± 21%      -0.2        0.13 ± 23%  perf-profile.children.cycles-pp.__do_munmap
-      0.28 ± 21%      -0.2        0.12 ± 25%  perf-profile.children.cycles-pp.unmap_region
-      0.28 ± 22%      -0.2        0.13 ± 23%  perf-profile.children.cycles-pp.unmap_vmas
-      0.28 ± 21%      -0.2        0.13 ± 23%  perf-profile.children.cycles-pp.unmap_page_range
-      0.48 ±  6%      -0.1        0.34 ± 15%  perf-profile.children.cycles-pp.rebalance_domains
-      0.56 ± 12%      -0.1        0.43 ± 16%  perf-profile.children.cycles-pp._raw_spin_unlock_irqrestore
-      0.44 ± 11%      -0.1        0.33 ± 25%  perf-profile.children.cycles-pp.clockevents_program_event
-      0.31 ± 14%      -0.1        0.21 ± 16%  perf-profile.children.cycles-pp.run_rebalance_domains
-      0.34 ±  9%      -0.1        0.25 ± 16%  perf-profile.children.cycles-pp.__hrtimer_next_event_base
-      0.28 ± 14%      -0.1        0.21 ± 22%  perf-profile.children.cycles-pp.rcu_dynticks_eqs_exit
-      0.12 ± 21%      -0.1        0.04 ± 59%  perf-profile.children.cycles-pp.smp_call_function_many_cond
-      0.12 ± 21%      -0.1        0.04 ± 59%  perf-profile.children.cycles-pp.on_each_cpu_cond_mask
-      0.12 ± 21%      -0.1        0.05 ± 60%  perf-profile.children.cycles-pp.flush_tlb_mm_range
-      0.19 ± 16%      -0.1        0.12 ± 25%  perf-profile.children.cycles-pp.irq_work_tick
-      0.31 ± 10%      -0.1        0.24 ± 21%  perf-profile.children.cycles-pp.ktime_get_update_offsets_now
-      0.17 ± 13%      -0.0        0.12 ± 15%  perf-profile.children.cycles-pp.rcu_idle_exit
-      0.12 ± 12%      -0.0        0.08 ± 30%  perf-profile.children.cycles-pp.tick_nohz_irq_exit
-      0.14 ±  8%      -0.0        0.10 ± 12%  perf-profile.children.cycles-pp.raise_softirq
-      0.09 ±  7%      +0.0        0.11 ±  4%  perf-profile.children.cycles-pp._cond_resched
-      0.06            +0.0        0.08 ± 11%  perf-profile.children.cycles-pp.lock_page_memcg
-      0.15 ±  7%      +0.0        0.17 ±  2%  perf-profile.children.cycles-pp.__mod_memcg_state
-      0.07            +0.0        0.09 ±  4%  perf-profile.children.cycles-pp.perf_swevent_event
-      0.18 ±  7%      +0.0        0.21 ±  4%  perf-profile.children.cycles-pp.current_time
-      0.23 ±  3%      +0.0        0.26 ±  4%  perf-profile.children.cycles-pp.xas_load
-      0.14 ±  9%      +0.0        0.18 ±  8%  perf-profile.children.cycles-pp.__count_memcg_events
-      0.46 ±  5%      +0.1        0.51 ±  4%  perf-profile.children.cycles-pp.__mod_lruvec_state
-      0.42 ±  5%      +0.1        0.48 ±  7%  perf-profile.children.cycles-pp.__mark_inode_dirty
-      0.55 ±  5%      +0.1        0.61 ±  3%  perf-profile.children.cycles-pp.___perf_sw_event
-      0.47 ±  4%      +0.1        0.55 ±  8%  perf-profile.children.cycles-pp.swapgs_restore_regs_and_return_to_usermode
-      0.42 ±  9%      +0.1        0.50 ±  8%  perf-profile.children.cycles-pp.__might_sleep
-      0.81 ±  5%      +0.1        0.92 ±  4%  perf-profile.children.cycles-pp.file_update_time
-      1.36 ±  6%      +0.2        1.52 ±  3%  perf-profile.children.cycles-pp.find_get_entry
-      1.17 ±  7%      +0.2        1.34 ±  5%  perf-profile.children.cycles-pp.unlock_page
-      1.77 ±  7%      +0.3        2.05 ±  5%  perf-profile.children.cycles-pp.page_add_file_rmap
-      2.14 ±  5%      +0.3        2.42 ±  4%  perf-profile.children.cycles-pp.fault_dirty_shared_page
-      2.51 ±  8%      +0.4        2.86 ±  7%  perf-profile.children.cycles-pp.up_read
-      2.90 ±  6%      +0.4        3.26 ±  4%  perf-profile.children.cycles-pp.find_lock_entry
-      3.12 ±  6%      +0.4        3.52 ±  4%  perf-profile.children.cycles-pp.shmem_getpage_gfp
-      3.27 ±  6%      +0.4        3.68 ±  4%  perf-profile.children.cycles-pp.shmem_fault
-      3.33 ±  6%      +0.4        3.75 ±  3%  perf-profile.children.cycles-pp.__do_fault
-      3.45 ±  7%      +0.5        3.95 ±  5%  perf-profile.children.cycles-pp.finish_fault
-      3.42 ±  7%      +0.5        3.92 ±  5%  perf-profile.children.cycles-pp.alloc_set_pte
-      9.02 ±  6%      +1.2       10.23 ±  4%  perf-profile.children.cycles-pp.do_fault
-     12.26 ±  6%      +1.6       13.88 ±  5%  perf-profile.children.cycles-pp.__handle_mm_fault
-     12.72 ±  6%      +1.7       14.43 ±  5%  perf-profile.children.cycles-pp.handle_mm_fault
-     45.27 ±  9%      +6.1       51.39 ±  6%  perf-profile.children.cycles-pp.down_read_trylock
-     67.33 ±  7%      +7.5       74.81 ±  4%  perf-profile.children.cycles-pp.do_user_addr_fault
-     69.24 ±  7%      +7.7       76.95 ±  4%  perf-profile.children.cycles-pp.page_fault
-      1.02 ± 14%      -0.4        0.59 ± 15%  perf-profile.self.cycles-pp.native_queued_spin_lock_slowpath
-      0.74 ± 13%      -0.2        0.55 ± 18%  perf-profile.self.cycles-pp.ktime_get
-      0.28 ± 10%      -0.1        0.21 ± 17%  perf-profile.self.cycles-pp.__hrtimer_next_event_base
-      0.28 ± 13%      -0.1        0.20 ± 21%  perf-profile.self.cycles-pp.rcu_dynticks_eqs_exit
-      0.19 ± 16%      -0.1        0.12 ± 25%  perf-profile.self.cycles-pp.irq_work_tick
-      0.26 ±  7%      -0.1        0.21 ± 12%  perf-profile.self.cycles-pp.__softirqentry_text_start
-      0.20 ± 15%      -0.0        0.16 ± 11%  perf-profile.self.cycles-pp.__run_timers
-      0.14 ±  7%      -0.0        0.10 ± 12%  perf-profile.self.cycles-pp.raise_softirq
-      0.13 ±  9%      -0.0        0.10 ± 15%  perf-profile.self.cycles-pp.tick_sched_timer
-      0.07 ± 10%      -0.0        0.04 ± 58%  perf-profile.self.cycles-pp.clockevents_program_event
-      0.09 ±  5%      -0.0        0.07 ± 17%  perf-profile.self.cycles-pp.apic_timer_interrupt
-      0.05 ±  8%      +0.0        0.07 ± 12%  perf-profile.self.cycles-pp.lock_page_memcg
-      0.11 ±  4%      +0.0        0.12 ±  3%  perf-profile.self.cycles-pp.file_update_time
-      0.10 ±  7%      +0.0        0.12 ±  7%  perf-profile.self.cycles-pp.___might_sleep
-      0.06 ±  6%      +0.0        0.08 ±  5%  perf-profile.self.cycles-pp.perf_swevent_event
-      0.18 ±  8%      +0.0        0.20 ±  6%  perf-profile.self.cycles-pp.__mod_lruvec_state
-      0.13 ±  9%      +0.0        0.15 ±  3%  perf-profile.self.cycles-pp.__mod_memcg_state
-      0.24 ±  6%      +0.0        0.27 ±  6%  perf-profile.self.cycles-pp.handle_mm_fault
-      0.41 ±  4%      +0.0        0.44 ±  3%  perf-profile.self.cycles-pp.___perf_sw_event
-      0.14 ±  9%      +0.0        0.17 ±  6%  perf-profile.self.cycles-pp.__count_memcg_events
-      0.21 ±  6%      +0.0        0.25 ±  4%  perf-profile.self.cycles-pp.shmem_getpage_gfp
-      0.23 ± 10%      +0.1        0.29 ± 13%  perf-profile.self.cycles-pp.swapgs_restore_regs_and_return_to_usermode
-      1.02 ±  6%      +0.1        1.13 ±  6%  perf-profile.self.cycles-pp.find_get_entry
-      0.86 ±  4%      +0.1        1.00 ±  6%  perf-profile.self.cycles-pp.do_user_addr_fault
-      1.10 ±  6%      +0.2        1.26 ±  7%  perf-profile.self.cycles-pp.unlock_page
-      1.26 ±  7%      +0.2        1.44 ±  8%  perf-profile.self.cycles-pp.find_lock_entry
-      1.20 ±  6%      +0.2        1.38 ±  8%  perf-profile.self.cycles-pp.page_add_file_rmap
-      2.35 ±  7%      +0.3        2.69 ±  8%  perf-profile.self.cycles-pp.up_read
-      2.97 ±  6%      +0.4        3.35 ±  8%  perf-profile.self.cycles-pp.__handle_mm_fault
-     42.09 ±  8%      +5.7       47.79 ±  8%  perf-profile.self.cycles-pp.down_read_trylock
-    406.00 ± 37%   +1859.5%       7955 ±151%  interrupts.32:IR-PCI-MSI.2097155-edge.eth0-TxRx-2
-   3009113            -4.3%    2880393 ±  2%  interrupts.CAL:Function_call_interrupts
-      1445 ± 50%     +93.0%       2788 ±  9%  interrupts.CPU0.NMI:Non-maskable_interrupts
-      1445 ± 50%     +93.0%       2788 ±  9%  interrupts.CPU0.PMI:Performance_monitoring_interrupts
-    939.50 ± 16%     +23.2%       1157 ±  5%  interrupts.CPU100.RES:Rescheduling_interrupts
-      1223 ± 11%     +43.3%       1753 ± 23%  interrupts.CPU103.NMI:Non-maskable_interrupts
-      1223 ± 11%     +43.3%       1753 ± 23%  interrupts.CPU103.PMI:Performance_monitoring_interrupts
-      1163 ±  6%     +24.5%       1448 ±  6%  interrupts.CPU104.RES:Rescheduling_interrupts
-      1062 ± 15%     +40.5%       1493 ±  5%  interrupts.CPU105.RES:Rescheduling_interrupts
-      1490 ± 28%     +70.1%       2536 ± 20%  interrupts.CPU106.NMI:Non-maskable_interrupts
-      1490 ± 28%     +70.1%       2536 ± 20%  interrupts.CPU106.PMI:Performance_monitoring_interrupts
-      1186 ±  3%     +26.4%       1499 ± 11%  interrupts.CPU106.RES:Rescheduling_interrupts
-      1186 ±  5%     +36.5%       1618 ±  9%  interrupts.CPU107.RES:Rescheduling_interrupts
-      1484 ± 29%     +98.1%       2941 ±  9%  interrupts.CPU108.NMI:Non-maskable_interrupts
-      1484 ± 29%     +98.1%       2941 ±  9%  interrupts.CPU108.PMI:Performance_monitoring_interrupts
-      1087 ± 11%     +35.2%       1470 ± 11%  interrupts.CPU108.RES:Rescheduling_interrupts
-    905.00 ± 14%     +26.9%       1148 ±  8%  interrupts.CPU109.RES:Rescheduling_interrupts
-      1534 ± 35%     +91.6%       2939 ±  9%  interrupts.CPU110.NMI:Non-maskable_interrupts
-      1534 ± 35%     +91.6%       2939 ±  9%  interrupts.CPU110.PMI:Performance_monitoring_interrupts
-      1222 ± 11%     +54.3%       1885 ± 44%  interrupts.CPU111.NMI:Non-maskable_interrupts
-      1222 ± 11%     +54.3%       1885 ± 44%  interrupts.CPU111.PMI:Performance_monitoring_interrupts
-      1066           +27.7%       1360 ±  5%  interrupts.CPU111.RES:Rescheduling_interrupts
-      1214 ± 12%     +51.1%       1833 ± 35%  interrupts.CPU112.NMI:Non-maskable_interrupts
-      1214 ± 12%     +51.1%       1833 ± 35%  interrupts.CPU112.PMI:Performance_monitoring_interrupts
-      1206 ± 12%     +30.8%       1577 ±  9%  interrupts.CPU116.RES:Rescheduling_interrupts
-      1102 ± 10%     +46.7%       1616 ± 11%  interrupts.CPU117.RES:Rescheduling_interrupts
-      1211 ±  3%     +35.2%       1638 ± 15%  interrupts.CPU118.RES:Rescheduling_interrupts
-      1217 ± 11%    +115.4%       2623 ± 29%  interrupts.CPU119.NMI:Non-maskable_interrupts
-      1217 ± 11%    +115.4%       2623 ± 29%  interrupts.CPU119.PMI:Performance_monitoring_interrupts
-    406.00 ± 37%   +1859.5%       7955 ±151%  interrupts.CPU12.32:IR-PCI-MSI.2097155-edge.eth0-TxRx-2
-      1125 ± 12%     +27.3%       1432 ± 10%  interrupts.CPU12.NMI:Non-maskable_interrupts
-      1125 ± 12%     +27.3%       1432 ± 10%  interrupts.CPU12.PMI:Performance_monitoring_interrupts
-      1173 ± 12%     +55.5%       1823 ± 35%  interrupts.CPU120.NMI:Non-maskable_interrupts
-      1173 ± 12%     +55.5%       1823 ± 35%  interrupts.CPU120.PMI:Performance_monitoring_interrupts
-      1112 ±  5%     +40.2%       1559 ±  6%  interrupts.CPU121.RES:Rescheduling_interrupts
-      1227 ± 11%     +50.5%       1846 ± 34%  interrupts.CPU122.NMI:Non-maskable_interrupts
-      1227 ± 11%     +50.5%       1846 ± 34%  interrupts.CPU122.PMI:Performance_monitoring_interrupts
-      1036 ± 11%     +36.6%       1416 ±  4%  interrupts.CPU122.RES:Rescheduling_interrupts
-      1164 ± 22%     +40.8%       1639 ± 16%  interrupts.CPU123.RES:Rescheduling_interrupts
-      1419 ± 13%     +20.7%       1712 ±  9%  interrupts.CPU124.RES:Rescheduling_interrupts
-      1209 ± 11%     +21.5%       1469 ±  9%  interrupts.CPU126.NMI:Non-maskable_interrupts
-      1209 ± 11%     +21.5%       1469 ±  9%  interrupts.CPU126.PMI:Performance_monitoring_interrupts
-      1266 ± 16%     +34.9%       1708 ± 13%  interrupts.CPU126.RES:Rescheduling_interrupts
-      1207 ± 24%     +36.5%       1648 ± 11%  interrupts.CPU127.RES:Rescheduling_interrupts
-      1298 ± 12%     +30.8%       1698        interrupts.CPU128.RES:Rescheduling_interrupts
-      1354 ±  7%     +33.5%       1808 ±  9%  interrupts.CPU129.RES:Rescheduling_interrupts
-      1046 ±  7%     +42.3%       1488 ± 17%  interrupts.CPU130.RES:Rescheduling_interrupts
-      1068 ±  6%     +45.9%       1558 ± 13%  interrupts.CPU131.RES:Rescheduling_interrupts
-      1200 ±  2%     +41.7%       1701 ± 14%  interrupts.CPU132.RES:Rescheduling_interrupts
-      1191 ± 11%     +85.4%       2208 ± 39%  interrupts.CPU133.NMI:Non-maskable_interrupts
-      1191 ± 11%     +85.4%       2208 ± 39%  interrupts.CPU133.PMI:Performance_monitoring_interrupts
-      1327 ±  9%     +13.8%       1510 ±  4%  interrupts.CPU134.RES:Rescheduling_interrupts
-      1203 ± 12%     +52.8%       1837 ± 34%  interrupts.CPU136.NMI:Non-maskable_interrupts
-      1203 ± 12%     +52.8%       1837 ± 34%  interrupts.CPU136.PMI:Performance_monitoring_interrupts
-    976.75 ±  8%     +19.0%       1162 ±  8%  interrupts.CPU136.RES:Rescheduling_interrupts
-      1438 ± 34%     +75.9%       2530 ± 27%  interrupts.CPU137.NMI:Non-maskable_interrupts
-      1438 ± 34%     +75.9%       2530 ± 27%  interrupts.CPU137.PMI:Performance_monitoring_interrupts
-    950.75 ±  5%     +33.1%       1265 ± 14%  interrupts.CPU139.RES:Rescheduling_interrupts
-      1054 ±  6%     +26.9%       1338 ±  8%  interrupts.CPU140.RES:Rescheduling_interrupts
-     10703 ±  3%      -8.0%       9849 ±  4%  interrupts.CPU140.TLB:TLB_shootdowns
-      1509 ± 29%     +71.5%       2589 ± 27%  interrupts.CPU141.NMI:Non-maskable_interrupts
-      1509 ± 29%     +71.5%       2589 ± 27%  interrupts.CPU141.PMI:Performance_monitoring_interrupts
-      1334 ±  7%     +14.9%       1533 ±  8%  interrupts.CPU141.RES:Rescheduling_interrupts
-      1505 ± 36%     +71.7%       2585 ± 27%  interrupts.CPU142.NMI:Non-maskable_interrupts
-      1505 ± 36%     +71.7%       2585 ± 27%  interrupts.CPU142.PMI:Performance_monitoring_interrupts
-      1206 ±  7%     +32.3%       1596 ± 13%  interrupts.CPU142.RES:Rescheduling_interrupts
-      1218 ± 11%     +55.0%       1888 ± 44%  interrupts.CPU143.NMI:Non-maskable_interrupts
-      1218 ± 11%     +55.0%       1888 ± 44%  interrupts.CPU143.PMI:Performance_monitoring_interrupts
-      1883 ±  5%     +37.7%       2594 ± 12%  interrupts.CPU143.RES:Rescheduling_interrupts
-      1211 ± 11%     +51.1%       1831 ± 35%  interrupts.CPU144.NMI:Non-maskable_interrupts
-      1211 ± 11%     +51.1%       1831 ± 35%  interrupts.CPU144.PMI:Performance_monitoring_interrupts
-      1266 ± 15%     +43.3%       1815 ±  7%  interrupts.CPU144.RES:Rescheduling_interrupts
-      1226 ± 11%    +109.7%       2572 ± 27%  interrupts.CPU145.NMI:Non-maskable_interrupts
-      1226 ± 11%    +109.7%       2572 ± 27%  interrupts.CPU145.PMI:Performance_monitoring_interrupts
-      1370 ± 27%     +54.3%       2114 ± 35%  interrupts.CPU15.NMI:Non-maskable_interrupts
-      1370 ± 27%     +54.3%       2114 ± 35%  interrupts.CPU15.PMI:Performance_monitoring_interrupts
-    685.25 ±  6%     +33.2%     913.00 ±  9%  interrupts.CPU15.RES:Rescheduling_interrupts
-      1197 ± 11%     +84.2%       2206 ± 39%  interrupts.CPU150.NMI:Non-maskable_interrupts
-      1197 ± 11%     +84.2%       2206 ± 39%  interrupts.CPU150.PMI:Performance_monitoring_interrupts
-      1097 ±  9%     +33.0%       1459 ± 13%  interrupts.CPU152.RES:Rescheduling_interrupts
-      1263 ±  7%     +31.8%       1665 ±  8%  interrupts.CPU154.RES:Rescheduling_interrupts
-      1215 ± 12%     +49.4%       1815 ± 33%  interrupts.CPU155.NMI:Non-maskable_interrupts
-      1215 ± 12%     +49.4%       1815 ± 33%  interrupts.CPU155.PMI:Performance_monitoring_interrupts
-      1222 ±  5%     +29.1%       1578 ±  9%  interrupts.CPU155.RES:Rescheduling_interrupts
-      1065 ±  9%     +30.1%       1386 ± 13%  interrupts.CPU156.RES:Rescheduling_interrupts
-      1017 ± 13%     +23.8%       1259 ±  7%  interrupts.CPU157.RES:Rescheduling_interrupts
-      1055 ± 11%     +28.5%       1356 ± 11%  interrupts.CPU158.RES:Rescheduling_interrupts
-      1016 ±  9%     +39.7%       1420 ± 13%  interrupts.CPU159.RES:Rescheduling_interrupts
-      1084 ±  2%     +24.3%       1347 ± 13%  interrupts.CPU161.RES:Rescheduling_interrupts
-    918.75 ± 13%     +20.4%       1106 ± 11%  interrupts.CPU162.RES:Rescheduling_interrupts
-     10725            -8.9%       9774 ±  2%  interrupts.CPU162.TLB:TLB_shootdowns
-    959.75 ±  9%     +24.8%       1197 ± 11%  interrupts.CPU163.RES:Rescheduling_interrupts
-      1177 ±  8%     +36.8%       1610 ± 15%  interrupts.CPU167.RES:Rescheduling_interrupts
-      1211 ± 12%     +84.4%       2233 ± 39%  interrupts.CPU168.NMI:Non-maskable_interrupts
-      1211 ± 12%     +84.4%       2233 ± 39%  interrupts.CPU168.PMI:Performance_monitoring_interrupts
-      1220 ± 12%     +22.2%       1491 ±  8%  interrupts.CPU169.RES:Rescheduling_interrupts
-    711.00 ±  6%     +33.3%     948.00 ± 13%  interrupts.CPU17.RES:Rescheduling_interrupts
-      1254 ±  8%     +32.6%       1663 ± 18%  interrupts.CPU170.RES:Rescheduling_interrupts
-      1149 ± 10%     +46.0%       1677 ± 11%  interrupts.CPU171.RES:Rescheduling_interrupts
-      1578 ± 49%     +41.6%       2234 ± 40%  interrupts.CPU173.NMI:Non-maskable_interrupts
-      1578 ± 49%     +41.6%       2234 ± 40%  interrupts.CPU173.PMI:Performance_monitoring_interrupts
-      1242 ±  9%     +17.3%       1456 ±  9%  interrupts.CPU174.NMI:Non-maskable_interrupts
-      1242 ±  9%     +17.3%       1456 ±  9%  interrupts.CPU174.PMI:Performance_monitoring_interrupts
-      1008 ±  7%     +26.7%       1278        interrupts.CPU176.RES:Rescheduling_interrupts
-      1015 ±  4%     +33.9%       1360 ±  8%  interrupts.CPU177.RES:Rescheduling_interrupts
-    929.50 ± 13%     +27.4%       1183 ±  6%  interrupts.CPU178.RES:Rescheduling_interrupts
-      1051 ±  8%     +20.7%       1268        interrupts.CPU179.RES:Rescheduling_interrupts
-      1149 ± 13%     +87.3%       2153 ± 34%  interrupts.CPU18.NMI:Non-maskable_interrupts
-      1149 ± 13%     +87.3%       2153 ± 34%  interrupts.CPU18.PMI:Performance_monitoring_interrupts
-    832.75 ±  4%     +23.5%       1028        interrupts.CPU18.RES:Rescheduling_interrupts
-      1215 ± 11%     +21.9%       1481 ±  9%  interrupts.CPU180.NMI:Non-maskable_interrupts
-      1215 ± 11%     +21.9%       1481 ±  9%  interrupts.CPU180.PMI:Performance_monitoring_interrupts
-      1050 ± 15%     +39.3%       1463 ±  6%  interrupts.CPU181.RES:Rescheduling_interrupts
-      1093 ±  5%     +28.7%       1407 ± 11%  interrupts.CPU182.RES:Rescheduling_interrupts
-      1082 ±  5%     +27.6%       1381 ±  3%  interrupts.CPU183.RES:Rescheduling_interrupts
-    990.50 ± 10%     +28.1%       1269 ±  8%  interrupts.CPU184.RES:Rescheduling_interrupts
-    964.00 ± 13%     +28.2%       1235 ±  8%  interrupts.CPU186.RES:Rescheduling_interrupts
-      1498 ± 29%     +68.5%       2524 ± 19%  interrupts.CPU187.NMI:Non-maskable_interrupts
-      1498 ± 29%     +68.5%       2524 ± 19%  interrupts.CPU187.PMI:Performance_monitoring_interrupts
-      1084 ± 11%     +35.9%       1473 ±  9%  interrupts.CPU188.RES:Rescheduling_interrupts
-      1537 ± 34%     +68.0%       2582 ± 26%  interrupts.CPU190.NMI:Non-maskable_interrupts
-      1537 ± 34%     +68.0%       2582 ± 26%  interrupts.CPU190.PMI:Performance_monitoring_interrupts
-      1247 ±  2%     +32.7%       1655 ±  5%  interrupts.CPU190.RES:Rescheduling_interrupts
-      1292 ± 11%     +26.0%       1628 ±  6%  interrupts.CPU191.RES:Rescheduling_interrupts
-      1223 ± 13%     +50.2%       1837 ± 33%  interrupts.CPU192.NMI:Non-maskable_interrupts
-      1223 ± 13%     +50.2%       1837 ± 33%  interrupts.CPU192.PMI:Performance_monitoring_interrupts
-      1263 ±  8%     +30.8%       1651 ±  8%  interrupts.CPU193.RES:Rescheduling_interrupts
-      1369 ±  8%     +25.9%       1724 ± 13%  interrupts.CPU196.RES:Rescheduling_interrupts
-      1127 ±  9%     +27.5%       1437 ±  6%  interrupts.CPU197.RES:Rescheduling_interrupts
-      1134 ± 10%     +25.8%       1427 ± 19%  interrupts.CPU198.RES:Rescheduling_interrupts
-      1205 ± 12%     +47.0%       1772 ± 24%  interrupts.CPU199.NMI:Non-maskable_interrupts
-      1205 ± 12%     +47.0%       1772 ± 24%  interrupts.CPU199.PMI:Performance_monitoring_interrupts
-      1160 ± 12%    +117.2%       2520 ± 25%  interrupts.CPU2.NMI:Non-maskable_interrupts
-      1160 ± 12%    +117.2%       2520 ± 25%  interrupts.CPU2.PMI:Performance_monitoring_interrupts
-      1408 ± 27%     +77.7%       2502 ± 27%  interrupts.CPU20.NMI:Non-maskable_interrupts
-      1408 ± 27%     +77.7%       2502 ± 27%  interrupts.CPU20.PMI:Performance_monitoring_interrupts
-      1077 ± 13%     +28.2%       1381 ±  9%  interrupts.CPU202.RES:Rescheduling_interrupts
-      1512 ± 36%     +41.9%       2147 ± 26%  interrupts.CPU203.NMI:Non-maskable_interrupts
-      1512 ± 36%     +41.9%       2147 ± 26%  interrupts.CPU203.PMI:Performance_monitoring_interrupts
-      1052 ±  5%     +35.0%       1420 ± 20%  interrupts.CPU203.RES:Rescheduling_interrupts
-      1001 ±  3%     +41.0%       1411 ± 19%  interrupts.CPU204.RES:Rescheduling_interrupts
-      1140 ±  4%     +31.4%       1498 ±  7%  interrupts.CPU206.RES:Rescheduling_interrupts
-      1288 ±  5%     +27.6%       1643 ±  3%  interrupts.CPU208.RES:Rescheduling_interrupts
-      1131 ± 13%     +60.9%       1821 ± 44%  interrupts.CPU21.NMI:Non-maskable_interrupts
-      1131 ± 13%     +60.9%       1821 ± 44%  interrupts.CPU21.PMI:Performance_monitoring_interrupts
-      1126 ±  2%     +29.1%       1454 ± 13%  interrupts.CPU210.RES:Rescheduling_interrupts
-     10556 ±  3%      -8.9%       9618 ±  2%  interrupts.CPU210.TLB:TLB_shootdowns
-      1042 ± 12%     +42.8%       1489 ±  9%  interrupts.CPU211.RES:Rescheduling_interrupts
-      1156 ± 10%     +18.5%       1371 ±  9%  interrupts.CPU212.RES:Rescheduling_interrupts
-      1336 ±  4%     +13.8%       1520 ±  5%  interrupts.CPU213.RES:Rescheduling_interrupts
-      1201 ±  5%     +23.0%       1477 ±  8%  interrupts.CPU214.RES:Rescheduling_interrupts
-      1622 ±  6%     +36.7%       2219 ± 17%  interrupts.CPU215.RES:Rescheduling_interrupts
-      1178 ± 16%     +30.5%       1538 ±  6%  interrupts.CPU216.RES:Rescheduling_interrupts
-      1006 ± 13%     +48.5%       1494 ±  7%  interrupts.CPU217.RES:Rescheduling_interrupts
-      1603 ± 48%     +40.3%       2248 ± 38%  interrupts.CPU218.NMI:Non-maskable_interrupts
-      1603 ± 48%     +40.3%       2248 ± 38%  interrupts.CPU218.PMI:Performance_monitoring_interrupts
-      1235 ±  9%     +36.4%       1684 ±  6%  interrupts.CPU218.RES:Rescheduling_interrupts
-      1219 ± 13%     +29.3%       1576 ±  8%  interrupts.CPU219.RES:Rescheduling_interrupts
-      1153 ± 12%    +145.2%       2828 ± 10%  interrupts.CPU22.NMI:Non-maskable_interrupts
-      1153 ± 12%    +145.2%       2828 ± 10%  interrupts.CPU22.PMI:Performance_monitoring_interrupts
-    849.50 ±  4%     +25.5%       1066 ±  6%  interrupts.CPU22.RES:Rescheduling_interrupts
-      1209 ± 12%     +84.1%       2226 ± 40%  interrupts.CPU220.NMI:Non-maskable_interrupts
-      1209 ± 12%     +84.1%       2226 ± 40%  interrupts.CPU220.PMI:Performance_monitoring_interrupts
-      1037 ± 10%     +14.3%       1186 ±  3%  interrupts.CPU220.RES:Rescheduling_interrupts
-      1092 ±  8%     +31.8%       1440 ± 14%  interrupts.CPU221.RES:Rescheduling_interrupts
-      1112 ± 13%     +28.8%       1433 ±  9%  interrupts.CPU222.RES:Rescheduling_interrupts
-      1220 ±  9%     +32.8%       1620 ±  7%  interrupts.CPU223.RES:Rescheduling_interrupts
-      1515 ± 34%     +42.5%       2159 ± 28%  interrupts.CPU226.NMI:Non-maskable_interrupts
-      1515 ± 34%     +42.5%       2159 ± 28%  interrupts.CPU226.PMI:Performance_monitoring_interrupts
-      1083 ±  8%     +33.0%       1441 ± 13%  interrupts.CPU226.RES:Rescheduling_interrupts
-    956.50 ± 11%     +23.7%       1183 ±  8%  interrupts.CPU227.RES:Rescheduling_interrupts
-      1180 ±  3%     +38.2%       1631 ± 18%  interrupts.CPU228.RES:Rescheduling_interrupts
-      1223 ± 11%     +20.1%       1468 ±  9%  interrupts.CPU229.NMI:Non-maskable_interrupts
-      1223 ± 11%     +20.1%       1468 ±  9%  interrupts.CPU229.PMI:Performance_monitoring_interrupts
-      1149 ± 12%     +58.3%       1819 ± 44%  interrupts.CPU23.NMI:Non-maskable_interrupts
-      1149 ± 12%     +58.3%       1819 ± 44%  interrupts.CPU23.PMI:Performance_monitoring_interrupts
-    726.75 ±  4%     +32.6%     963.50 ±  6%  interrupts.CPU23.RES:Rescheduling_interrupts
-      1013 ±  7%     +35.2%       1370 ± 14%  interrupts.CPU230.RES:Rescheduling_interrupts
-      1004 ±  5%     +29.5%       1300 ±  8%  interrupts.CPU231.RES:Rescheduling_interrupts
-      1213 ± 13%    +141.5%       2929 ±  9%  interrupts.CPU233.NMI:Non-maskable_interrupts
-      1213 ± 13%    +141.5%       2929 ±  9%  interrupts.CPU233.PMI:Performance_monitoring_interrupts
-      1013 ±  9%     +22.5%       1241 ±  8%  interrupts.CPU233.RES:Rescheduling_interrupts
-      1177 ± 13%     +80.2%       2121 ± 29%  interrupts.CPU234.NMI:Non-maskable_interrupts
-      1177 ± 13%     +80.2%       2121 ± 29%  interrupts.CPU234.PMI:Performance_monitoring_interrupts
-      1515 ± 35%     +68.0%       2545 ± 26%  interrupts.CPU237.NMI:Non-maskable_interrupts
-      1515 ± 35%     +68.0%       2545 ± 26%  interrupts.CPU237.PMI:Performance_monitoring_interrupts
-      1770 ± 29%     +64.4%       2910 ± 10%  interrupts.CPU238.NMI:Non-maskable_interrupts
-      1770 ± 29%     +64.4%       2910 ± 10%  interrupts.CPU238.PMI:Performance_monitoring_interrupts
-      1000 ± 10%     +23.4%       1233 ±  3%  interrupts.CPU238.RES:Rescheduling_interrupts
-      1178 ±  6%     +23.5%       1456 ±  8%  interrupts.CPU239.RES:Rescheduling_interrupts
-      1151 ± 14%    +115.7%       2483 ± 27%  interrupts.CPU24.NMI:Non-maskable_interrupts
-      1151 ± 14%    +115.7%       2483 ± 27%  interrupts.CPU24.PMI:Performance_monitoring_interrupts
-    823.00 ±  9%     +51.7%       1248 ± 19%  interrupts.CPU24.RES:Rescheduling_interrupts
-      1217 ± 15%     +22.9%       1496 ±  8%  interrupts.CPU240.RES:Rescheduling_interrupts
-      1014 ±  4%     +54.4%       1565 ± 20%  interrupts.CPU242.RES:Rescheduling_interrupts
-     10616 ±  3%      -8.3%       9731        interrupts.CPU242.TLB:TLB_shootdowns
-      1043 ± 11%     +36.3%       1422 ± 16%  interrupts.CPU243.RES:Rescheduling_interrupts
-      1215 ± 11%     +83.3%       2227 ± 40%  interrupts.CPU247.NMI:Non-maskable_interrupts
-      1215 ± 11%     +83.3%       2227 ± 40%  interrupts.CPU247.PMI:Performance_monitoring_interrupts
-      1499 ± 34%     +68.8%       2531 ± 20%  interrupts.CPU248.NMI:Non-maskable_interrupts
-      1499 ± 34%     +68.8%       2531 ± 20%  interrupts.CPU248.PMI:Performance_monitoring_interrupts
-      1034 ±  5%     +28.3%       1327 ± 15%  interrupts.CPU248.RES:Rescheduling_interrupts
-      1103 ± 14%     +25.1%       1380 ±  8%  interrupts.CPU249.RES:Rescheduling_interrupts
-      1143 ± 13%     +49.8%       1712 ± 24%  interrupts.CPU25.NMI:Non-maskable_interrupts
-      1143 ± 13%     +49.8%       1712 ± 24%  interrupts.CPU25.PMI:Performance_monitoring_interrupts
-    749.50 ±  9%     +24.9%     936.25 ±  4%  interrupts.CPU25.RES:Rescheduling_interrupts
-     10842 ±  2%      -8.8%       9885 ±  2%  interrupts.CPU25.TLB:TLB_shootdowns
-      1099 ±  5%     +18.0%       1297 ±  3%  interrupts.CPU251.RES:Rescheduling_interrupts
-    993.25 ± 11%     +23.1%       1223 ±  5%  interrupts.CPU252.RES:Rescheduling_interrupts
-      1017 ± 12%     +34.7%       1369 ± 11%  interrupts.CPU253.RES:Rescheduling_interrupts
-      1532 ± 49%     +44.3%       2211 ± 39%  interrupts.CPU254.NMI:Non-maskable_interrupts
-      1532 ± 49%     +44.3%       2211 ± 39%  interrupts.CPU254.PMI:Performance_monitoring_interrupts
-    979.50 ± 10%     +29.8%       1271 ± 10%  interrupts.CPU254.RES:Rescheduling_interrupts
-    928.50 ±  8%     +43.7%       1334 ± 17%  interrupts.CPU256.RES:Rescheduling_interrupts
-      1049 ± 12%     +23.9%       1300 ±  8%  interrupts.CPU257.RES:Rescheduling_interrupts
-      1183 ±  4%     +12.5%       1331 ± 10%  interrupts.CPU258.RES:Rescheduling_interrupts
-    796.50 ±  6%     +38.3%       1101 ± 23%  interrupts.CPU26.RES:Rescheduling_interrupts
-      1087 ±  8%     +28.4%       1396 ±  6%  interrupts.CPU260.RES:Rescheduling_interrupts
-      1081 ± 11%     +40.3%       1517 ±  6%  interrupts.CPU261.RES:Rescheduling_interrupts
-      1553 ± 48%     +43.8%       2233 ± 39%  interrupts.CPU262.NMI:Non-maskable_interrupts
-      1553 ± 48%     +43.8%       2233 ± 39%  interrupts.CPU262.PMI:Performance_monitoring_interrupts
-      1270 ± 13%     +29.0%       1638 ± 10%  interrupts.CPU262.RES:Rescheduling_interrupts
-      1170 ± 13%     +57.6%       1844 ± 44%  interrupts.CPU264.NMI:Non-maskable_interrupts
-      1170 ± 13%     +57.6%       1844 ± 44%  interrupts.CPU264.PMI:Performance_monitoring_interrupts
-    899.00 ± 10%     +38.8%       1247 ± 14%  interrupts.CPU264.RES:Rescheduling_interrupts
-    912.25 ± 11%     +18.3%       1079 ±  7%  interrupts.CPU267.RES:Rescheduling_interrupts
-    703.25 ±  9%     +48.5%       1044 ± 21%  interrupts.CPU27.RES:Rescheduling_interrupts
-      1198 ± 12%     +82.4%       2185 ± 40%  interrupts.CPU273.NMI:Non-maskable_interrupts
-      1198 ± 12%     +82.4%       2185 ± 40%  interrupts.CPU273.PMI:Performance_monitoring_interrupts
-    847.50 ± 10%     +44.9%       1228 ± 18%  interrupts.CPU273.RES:Rescheduling_interrupts
-    900.50 ± 19%     +34.2%       1208 ± 17%  interrupts.CPU274.RES:Rescheduling_interrupts
-      1175 ± 13%     +82.5%       2145 ± 36%  interrupts.CPU275.NMI:Non-maskable_interrupts
-      1175 ± 13%     +82.5%       2145 ± 36%  interrupts.CPU275.PMI:Performance_monitoring_interrupts
-    800.50 ±  8%     +35.5%       1084 ± 14%  interrupts.CPU275.RES:Rescheduling_interrupts
-    803.00 ±  7%     +55.0%       1244 ± 20%  interrupts.CPU276.RES:Rescheduling_interrupts
-    888.50 ± 11%     +40.6%       1249 ±  9%  interrupts.CPU277.RES:Rescheduling_interrupts
-     10916           -10.1%       9813 ±  2%  interrupts.CPU277.TLB:TLB_shootdowns
-      1035 ±  2%     +23.6%       1280 ±  5%  interrupts.CPU278.RES:Rescheduling_interrupts
-    926.75 ±  8%     +37.3%       1272 ± 16%  interrupts.CPU279.RES:Rescheduling_interrupts
-    753.25 ± 21%     +42.8%       1076 ±  8%  interrupts.CPU282.RES:Rescheduling_interrupts
-      1183 ± 12%     +55.6%       1841 ± 44%  interrupts.CPU283.NMI:Non-maskable_interrupts
-      1183 ± 12%     +55.6%       1841 ± 44%  interrupts.CPU283.PMI:Performance_monitoring_interrupts
-      1187 ± 11%    +112.7%       2525 ± 27%  interrupts.CPU284.NMI:Non-maskable_interrupts
-      1187 ± 11%    +112.7%       2525 ± 27%  interrupts.CPU284.PMI:Performance_monitoring_interrupts
-      2063 ± 28%     +38.7%       2863 ±  9%  interrupts.CPU285.NMI:Non-maskable_interrupts
-      2063 ± 28%     +38.7%       2863 ±  9%  interrupts.CPU285.PMI:Performance_monitoring_interrupts
-    854.25 ±  3%     +27.0%       1084 ±  5%  interrupts.CPU286.RES:Rescheduling_interrupts
-    729.50 ± 11%     +33.3%     972.75 ±  5%  interrupts.CPU287.RES:Rescheduling_interrupts
-      1473 ± 50%     +72.6%       2542 ± 30%  interrupts.CPU29.NMI:Non-maskable_interrupts
-      1473 ± 50%     +72.6%       2542 ± 30%  interrupts.CPU29.PMI:Performance_monitoring_interrupts
-      1133 ± 13%     +92.6%       2183 ± 39%  interrupts.CPU3.NMI:Non-maskable_interrupts
-      1133 ± 13%     +92.6%       2183 ± 39%  interrupts.CPU3.PMI:Performance_monitoring_interrupts
-    853.00 ±  5%     +19.3%       1017 ±  4%  interrupts.CPU3.RES:Rescheduling_interrupts
-    865.00 ±  5%     +27.6%       1103 ±  9%  interrupts.CPU30.RES:Rescheduling_interrupts
-    750.50 ± 10%     +20.9%     907.25 ± 12%  interrupts.CPU31.RES:Rescheduling_interrupts
-      1140 ± 13%     +93.0%       2201 ± 40%  interrupts.CPU32.NMI:Non-maskable_interrupts
-      1140 ± 13%     +93.0%       2201 ± 40%  interrupts.CPU32.PMI:Performance_monitoring_interrupts
-    800.50 ± 10%     +17.9%     944.00 ±  4%  interrupts.CPU32.RES:Rescheduling_interrupts
-    836.50 ±  5%     +18.9%     994.50 ±  4%  interrupts.CPU34.RES:Rescheduling_interrupts
-    797.00 ±  4%     +21.9%     971.75 ±  6%  interrupts.CPU35.RES:Rescheduling_interrupts
-    754.00 ±  4%     +21.2%     914.00 ±  5%  interrupts.CPU36.RES:Rescheduling_interrupts
-    616.25 ±  8%     +44.8%     892.25 ± 15%  interrupts.CPU37.RES:Rescheduling_interrupts
-    791.25 ±  6%     +32.6%       1049 ± 16%  interrupts.CPU38.RES:Rescheduling_interrupts
-    686.75 ±  5%     +34.9%     926.50 ± 14%  interrupts.CPU39.RES:Rescheduling_interrupts
-    878.50 ±  6%     +31.6%       1156 ± 16%  interrupts.CPU4.RES:Rescheduling_interrupts
-      1180 ± 12%     +85.2%       2185 ± 34%  interrupts.CPU42.NMI:Non-maskable_interrupts
-      1180 ± 12%     +85.2%       2185 ± 34%  interrupts.CPU42.PMI:Performance_monitoring_interrupts
-    980.75 ± 11%     +39.5%       1367 ± 14%  interrupts.CPU45.RES:Rescheduling_interrupts
-      1103 ± 14%     +22.1%       1347 ±  6%  interrupts.CPU46.RES:Rescheduling_interrupts
-    925.00 ± 26%     +42.2%       1315 ± 10%  interrupts.CPU47.RES:Rescheduling_interrupts
-    960.25 ± 15%     +41.2%       1356 ± 12%  interrupts.CPU48.RES:Rescheduling_interrupts
-    921.75 ±  8%     +23.2%       1135 ± 11%  interrupts.CPU49.RES:Rescheduling_interrupts
-      1067 ± 15%     +25.3%       1337 ± 10%  interrupts.CPU50.RES:Rescheduling_interrupts
-      1076 ±  7%     +49.1%       1605 ± 17%  interrupts.CPU56.RES:Rescheduling_interrupts
-     10449 ±  2%      -7.7%       9646 ±  3%  interrupts.CPU56.TLB:TLB_shootdowns
-    913.75 ± 13%     +40.9%       1287 ± 13%  interrupts.CPU58.RES:Rescheduling_interrupts
-    767.50 ±  8%     +54.1%       1182 ± 14%  interrupts.CPU59.RES:Rescheduling_interrupts
-      1374 ± 27%     +79.9%       2473 ± 26%  interrupts.CPU6.NMI:Non-maskable_interrupts
-      1374 ± 27%     +79.9%       2473 ± 26%  interrupts.CPU6.PMI:Performance_monitoring_interrupts
-    825.00 ± 11%     +38.8%       1145 ± 18%  interrupts.CPU6.RES:Rescheduling_interrupts
-      1016 ± 21%     +32.2%       1343 ± 12%  interrupts.CPU60.RES:Rescheduling_interrupts
-    802.50 ± 12%     +52.6%       1225 ± 16%  interrupts.CPU61.RES:Rescheduling_interrupts
-    895.50 ±  8%     +21.4%       1087 ±  2%  interrupts.CPU62.RES:Rescheduling_interrupts
-    973.25 ± 22%     +41.4%       1376 ±  6%  interrupts.CPU66.RES:Rescheduling_interrupts
-    854.75 ± 10%     +33.8%       1143 ± 13%  interrupts.CPU67.RES:Rescheduling_interrupts
-    771.25 ± 12%     +40.2%       1081 ± 13%  interrupts.CPU69.RES:Rescheduling_interrupts
-    621.50 ±  7%     +45.4%     903.50 ± 12%  interrupts.CPU7.RES:Rescheduling_interrupts
-      1169 ±  7%     +24.5%       1455 ±  5%  interrupts.CPU70.RES:Rescheduling_interrupts
-     10547 ±  2%      -8.5%       9654        interrupts.CPU70.TLB:TLB_shootdowns
-      1574 ± 12%     +34.4%       2115 ± 11%  interrupts.CPU71.RES:Rescheduling_interrupts
-      1456 ± 29%     +49.9%       2183 ± 35%  interrupts.CPU72.NMI:Non-maskable_interrupts
-      1456 ± 29%     +49.9%       2183 ± 35%  interrupts.CPU72.PMI:Performance_monitoring_interrupts
-      1183 ± 12%     +25.6%       1485 ±  8%  interrupts.CPU72.RES:Rescheduling_interrupts
-      1514 ± 33%     +41.4%       2142 ± 27%  interrupts.CPU73.NMI:Non-maskable_interrupts
-      1514 ± 33%     +41.4%       2142 ± 27%  interrupts.CPU73.PMI:Performance_monitoring_interrupts
-    986.75 ± 21%     +56.7%       1546 ± 14%  interrupts.CPU73.RES:Rescheduling_interrupts
-      1001 ±  4%     +35.5%       1356 ±  7%  interrupts.CPU76.RES:Rescheduling_interrupts
-      1004 ± 10%     +22.4%       1229 ± 11%  interrupts.CPU77.RES:Rescheduling_interrupts
-    897.25 ±  9%     +34.5%       1206 ± 19%  interrupts.CPU78.RES:Rescheduling_interrupts
-    785.75 ± 11%     +25.6%     987.00 ±  4%  interrupts.CPU8.RES:Rescheduling_interrupts
-    943.75 ±  9%     +29.1%       1218 ± 12%  interrupts.CPU81.RES:Rescheduling_interrupts
-    991.75 ±  2%     +37.9%       1367 ± 17%  interrupts.CPU82.RES:Rescheduling_interrupts
-      1177 ± 12%     +58.9%       1870 ± 44%  interrupts.CPU83.NMI:Non-maskable_interrupts
-      1177 ± 12%     +58.9%       1870 ± 44%  interrupts.CPU83.PMI:Performance_monitoring_interrupts
-      1170 ± 15%     +17.1%       1370 ±  6%  interrupts.CPU83.RES:Rescheduling_interrupts
-      1499 ± 30%     +45.9%       2188 ± 34%  interrupts.CPU86.NMI:Non-maskable_interrupts
-      1499 ± 30%     +45.9%       2188 ± 34%  interrupts.CPU86.PMI:Performance_monitoring_interrupts
-      1193 ± 10%    +109.8%       2502 ± 20%  interrupts.CPU87.NMI:Non-maskable_interrupts
-      1193 ± 10%    +109.8%       2502 ± 20%  interrupts.CPU87.PMI:Performance_monitoring_interrupts
-      1145 ± 14%     +31.2%       1502 ±  7%  interrupts.CPU87.RES:Rescheduling_interrupts
-      1177 ±  6%     +21.1%       1426 ±  8%  interrupts.CPU88.RES:Rescheduling_interrupts
-      1140 ± 14%     +91.1%       2179 ± 40%  interrupts.CPU9.NMI:Non-maskable_interrupts
-      1140 ± 14%     +91.1%       2179 ± 40%  interrupts.CPU9.PMI:Performance_monitoring_interrupts
-    676.75 ± 10%     +41.2%     955.25 ± 11%  interrupts.CPU9.RES:Rescheduling_interrupts
-      1195 ± 11%     +56.7%       1872 ± 43%  interrupts.CPU90.NMI:Non-maskable_interrupts
-      1195 ± 11%     +56.7%       1872 ± 43%  interrupts.CPU90.PMI:Performance_monitoring_interrupts
-      2083 ± 27%     +40.0%       2917 ± 10%  interrupts.CPU95.NMI:Non-maskable_interrupts
-      2083 ± 27%     +40.0%       2917 ± 10%  interrupts.CPU95.PMI:Performance_monitoring_interrupts
-      1110 ±  6%     +14.4%       1270 ± 11%  interrupts.CPU95.RES:Rescheduling_interrupts
-      1110 ±  6%     +41.0%       1566 ± 18%  interrupts.CPU98.RES:Rescheduling_interrupts
-    984.75 ±  9%     +58.2%       1557 ± 19%  interrupts.CPU99.RES:Rescheduling_interrupts
-    310787 ±  6%     +23.6%     384165 ±  4%  interrupts.RES:Rescheduling_interrupts
-     33134 ±  2%     +14.7%      38003 ±  6%  softirqs.CPU0.SCHED
-     27079 ±  2%     +17.4%      31779 ±  3%  softirqs.CPU1.SCHED
-    162495            +8.8%     176829 ±  4%  softirqs.CPU1.TIMER
-     26465           +19.2%      31556 ±  3%  softirqs.CPU10.SCHED
-     25261 ±  3%     +16.4%      29411 ±  3%  softirqs.CPU100.SCHED
-     25450           +18.5%      30153 ±  4%  softirqs.CPU101.SCHED
-     25169 ±  2%     +19.3%      30020 ±  3%  softirqs.CPU102.SCHED
-     24805 ±  3%     +20.5%      29893 ±  3%  softirqs.CPU103.SCHED
-     25132 ±  3%     +18.9%      29875 ±  3%  softirqs.CPU104.SCHED
-    177301 ±  2%     +11.3%     197274 ±  4%  softirqs.CPU104.TIMER
-     24869 ±  3%     +18.8%      29537 ±  2%  softirqs.CPU105.SCHED
-     25032 ±  2%     +17.7%      29462 ±  3%  softirqs.CPU106.SCHED
-     24317           +22.3%      29729 ±  3%  softirqs.CPU107.SCHED
-     25241 ±  3%     +18.5%      29917 ±  2%  softirqs.CPU108.SCHED
-     25571 ±  2%     +17.6%      30075 ±  3%  softirqs.CPU109.SCHED
-     25910           +17.9%      30551 ±  3%  softirqs.CPU11.SCHED
-     24927 ±  2%     +18.5%      29538 ±  4%  softirqs.CPU110.SCHED
-     25019 ±  2%     +19.2%      29833 ±  4%  softirqs.CPU111.SCHED
-     25067 ±  2%     +18.7%      29743 ±  4%  softirqs.CPU112.SCHED
-     25105 ±  2%     +19.1%      29892 ±  2%  softirqs.CPU113.SCHED
-     25603 ±  2%     +16.2%      29753 ±  4%  softirqs.CPU114.SCHED
-     25517 ±  2%     +17.9%      30096 ±  3%  softirqs.CPU115.SCHED
-    176346 ±  5%     +11.4%     196390 ±  4%  softirqs.CPU115.TIMER
-     24988 ±  2%     +17.3%      29299 ±  4%  softirqs.CPU116.SCHED
-     24362           +22.1%      29748 ±  2%  softirqs.CPU117.SCHED
-     25420 ±  2%     +18.4%      30101 ±  3%  softirqs.CPU118.SCHED
-     25202           +17.2%      29531 ±  3%  softirqs.CPU119.SCHED
-    246.00 ± 32%   +5886.8%      14727 ±166%  softirqs.CPU12.NET_RX
-     25808 ±  2%     +19.6%      30866 ±  4%  softirqs.CPU12.SCHED
-    161592 ±  4%     +26.1%     203759 ± 17%  softirqs.CPU12.TIMER
-     25550           +16.3%      29721 ±  3%  softirqs.CPU120.SCHED
-    172644 ±  4%     +13.1%     195269 ±  4%  softirqs.CPU120.TIMER
-     24062 ±  5%     +24.3%      29898 ±  3%  softirqs.CPU121.SCHED
-    173612 ±  4%     +12.4%     195124 ±  3%  softirqs.CPU121.TIMER
-     24774 ±  3%     +20.1%      29742 ±  2%  softirqs.CPU122.SCHED
-     25233 ±  2%     +18.4%      29878 ±  2%  softirqs.CPU123.SCHED
-     25038 ±  2%     +18.0%      29548 ±  4%  softirqs.CPU124.SCHED
-     24756           +19.1%      29485 ±  3%  softirqs.CPU125.SCHED
-     25079           +19.2%      29903 ±  3%  softirqs.CPU126.SCHED
-     25110           +17.9%      29598 ±  3%  softirqs.CPU127.SCHED
-     24869 ±  3%     +19.6%      29754 ±  3%  softirqs.CPU128.SCHED
-     25255 ±  2%     +17.6%      29710 ±  3%  softirqs.CPU129.SCHED
-     26257           +22.8%      32254 ±  3%  softirqs.CPU13.SCHED
-     25274 ±  2%     +19.3%      30153 ±  2%  softirqs.CPU130.SCHED
-     25219 ±  2%     +15.4%      29103 ±  2%  softirqs.CPU131.SCHED
-     25034 ±  2%     +19.3%      29869 ±  2%  softirqs.CPU132.SCHED
-     25448           +17.1%      29792        softirqs.CPU133.SCHED
-     25064           +17.5%      29450 ±  4%  softirqs.CPU134.SCHED
-     25561 ±  2%     +16.4%      29742 ±  4%  softirqs.CPU135.SCHED
-     25620           +17.3%      30041 ±  3%  softirqs.CPU136.SCHED
-    174761 ±  6%     +11.1%     194097 ±  7%  softirqs.CPU136.TIMER
-     26235 ±  2%     +14.8%      30124 ±  2%  softirqs.CPU137.SCHED
-    169540 ±  4%     +13.3%     192089 ±  3%  softirqs.CPU137.TIMER
-     25194           +18.3%      29808 ±  3%  softirqs.CPU138.SCHED
-     25038 ±  4%     +19.7%      29982 ±  4%  softirqs.CPU139.SCHED
-     26136 ±  2%     +20.5%      31494 ±  2%  softirqs.CPU14.SCHED
-     25185           +20.2%      30269 ±  3%  softirqs.CPU140.SCHED
-     25032           +20.2%      30098 ±  2%  softirqs.CPU141.SCHED
-     25247 ±  2%     +16.9%      29514        softirqs.CPU142.SCHED
-     24775           +12.9%      27962 ±  6%  softirqs.CPU143.SCHED
-     25196           +19.1%      30016 ±  3%  softirqs.CPU144.SCHED
-     24907 ±  2%     +18.4%      29495 ±  3%  softirqs.CPU145.SCHED
-     25254           +16.3%      29359 ±  4%  softirqs.CPU146.SCHED
-     25123           +19.8%      30089 ±  3%  softirqs.CPU147.SCHED
-     25311 ±  6%     +17.6%      29757 ±  5%  softirqs.CPU148.SCHED
-     25020 ±  2%     +20.4%      30121 ±  2%  softirqs.CPU149.SCHED
-     26013           +19.5%      31094 ±  2%  softirqs.CPU15.SCHED
-     25040           +19.1%      29828 ±  4%  softirqs.CPU150.SCHED
-     25358           +20.1%      30458 ±  2%  softirqs.CPU151.SCHED
-    175966 ±  6%     +11.6%     196369 ±  4%  softirqs.CPU151.TIMER
-     24847 ±  2%     +20.7%      30003 ±  2%  softirqs.CPU152.SCHED
-     24860 ±  4%     +19.9%      29811 ±  3%  softirqs.CPU153.SCHED
-     25102 ±  3%     +18.0%      29611 ±  3%  softirqs.CPU154.SCHED
-     24819           +20.0%      29792 ±  3%  softirqs.CPU155.SCHED
-     25414 ±  2%     +17.3%      29808        softirqs.CPU156.SCHED
-    176417 ±  5%     +15.6%     203967 ±  5%  softirqs.CPU156.TIMER
-     25556           +16.1%      29663 ±  4%  softirqs.CPU157.SCHED
-     25241 ±  2%     +19.9%      30256 ±  3%  softirqs.CPU158.SCHED
-     25462           +17.9%      30017 ±  2%  softirqs.CPU159.SCHED
-     25909           +18.5%      30694 ±  3%  softirqs.CPU16.SCHED
-     25139           +18.1%      29684 ±  4%  softirqs.CPU160.SCHED
-     25431           +17.2%      29812 ±  4%  softirqs.CPU161.SCHED
-     25712           +18.6%      30483 ±  5%  softirqs.CPU162.SCHED
-    172304 ±  4%     +13.1%     194925 ±  4%  softirqs.CPU162.TIMER
-     25736           +16.7%      30040 ±  3%  softirqs.CPU163.SCHED
-    169697 ±  6%     +16.0%     196768 ±  7%  softirqs.CPU163.TIMER
-     25196 ±  2%     +17.4%      29591 ±  2%  softirqs.CPU164.SCHED
-     24976           +19.1%      29753 ±  2%  softirqs.CPU165.SCHED
-     25153 ±  2%     +18.0%      29682 ±  2%  softirqs.CPU166.SCHED
-     24977           +19.7%      29886 ±  2%  softirqs.CPU167.SCHED
-     24784 ±  3%     +18.9%      29457 ±  3%  softirqs.CPU168.SCHED
-     25266 ±  2%     +17.1%      29596 ±  4%  softirqs.CPU169.SCHED
-     25886 ±  2%     +19.3%      30876 ±  3%  softirqs.CPU17.SCHED
-     24920           +17.6%      29295 ±  3%  softirqs.CPU170.SCHED
-     24993           +18.7%      29660 ±  3%  softirqs.CPU171.SCHED
-     25422           +17.1%      29763 ±  2%  softirqs.CPU172.SCHED
-     25491 ±  2%     +17.7%      29994 ±  3%  softirqs.CPU173.SCHED
-     25264 ±  2%     +16.8%      29518 ±  6%  softirqs.CPU174.SCHED
-     25266 ±  2%     +17.9%      29791 ±  2%  softirqs.CPU175.SCHED
-     25231 ±  2%     +17.9%      29754 ±  3%  softirqs.CPU176.SCHED
-    183212 ±  2%     +10.0%     201572 ±  2%  softirqs.CPU176.TIMER
-     25273 ±  2%     +18.3%      29899 ±  3%  softirqs.CPU177.SCHED
-     25155           +19.8%      30145 ±  2%  softirqs.CPU178.SCHED
-     25499 ±  2%     +16.0%      29576 ±  5%  softirqs.CPU179.SCHED
-     26339           +16.3%      30634 ±  2%  softirqs.CPU18.SCHED
-     24757 ±  4%     +19.2%      29500 ±  2%  softirqs.CPU180.SCHED
-     25192 ±  3%     +14.7%      28898 ±  5%  softirqs.CPU181.SCHED
-     25166 ±  2%     +19.2%      29999 ±  2%  softirqs.CPU182.SCHED
-     25259 ±  2%     +18.4%      29910 ±  4%  softirqs.CPU183.SCHED
-     25247 ±  2%     +16.9%      29519 ±  4%  softirqs.CPU184.SCHED
-     25415 ±  2%     +16.9%      29715 ±  2%  softirqs.CPU185.SCHED
-    180421 ±  5%     +11.4%     200946 ±  3%  softirqs.CPU185.TIMER
-     24973 ±  3%     +16.3%      29053        softirqs.CPU186.SCHED
-     25525 ±  2%     +16.1%      29625 ±  2%  softirqs.CPU187.SCHED
-     25461           +18.2%      30088 ±  2%  softirqs.CPU188.SCHED
-     24833           +20.5%      29936 ±  2%  softirqs.CPU189.SCHED
-     25894           +17.1%      30332 ±  4%  softirqs.CPU19.SCHED
-    162878 ±  4%     +18.0%     192168 ± 14%  softirqs.CPU19.TIMER
-     25062           +18.4%      29663 ±  2%  softirqs.CPU190.SCHED
-     24867           +18.3%      29425 ±  3%  softirqs.CPU191.SCHED
-     24926           +18.8%      29620 ±  2%  softirqs.CPU192.SCHED
-    183126 ±  5%     +11.9%     204971 ±  2%  softirqs.CPU192.TIMER
-     24864 ±  2%     +16.2%      28893 ±  4%  softirqs.CPU193.SCHED
-     25242           +17.7%      29702 ±  2%  softirqs.CPU194.SCHED
-     25230 ±  2%     +17.4%      29626 ±  3%  softirqs.CPU195.SCHED
-     24981 ±  2%     +18.8%      29680 ±  2%  softirqs.CPU196.SCHED
-     25020           +17.3%      29348 ±  6%  softirqs.CPU197.SCHED
-     25272           +18.5%      29942 ±  3%  softirqs.CPU198.SCHED
-     25221 ±  2%     +18.8%      29968 ±  3%  softirqs.CPU199.SCHED
-    182100 ±  4%      +8.3%     197211 ±  3%  softirqs.CPU199.TIMER
-     26451           +18.1%      31251 ±  3%  softirqs.CPU2.SCHED
-     26194           +18.4%      31019 ±  2%  softirqs.CPU20.SCHED
-     25645 ±  2%     +17.6%      30168 ±  3%  softirqs.CPU200.SCHED
-     25337           +20.0%      30393 ±  3%  softirqs.CPU201.SCHED
-     25160           +19.0%      29945 ±  2%  softirqs.CPU202.SCHED
-     25322 ±  2%     +18.3%      29944 ±  3%  softirqs.CPU203.SCHED
-     25076           +20.2%      30130 ±  3%  softirqs.CPU204.SCHED
-     25542           +19.2%      30455 ±  2%  softirqs.CPU205.SCHED
-     25245 ±  2%     +16.7%      29455 ±  2%  softirqs.CPU206.SCHED
-     25317 ±  2%     +17.5%      29743 ±  3%  softirqs.CPU207.SCHED
-     25283 ±  2%     +18.5%      29958 ±  4%  softirqs.CPU208.SCHED
-     25533           +12.9%      28839 ±  6%  softirqs.CPU209.SCHED
-    176766 ±  3%     +13.1%     199978 ±  2%  softirqs.CPU209.TIMER
-     26093           +18.6%      30954 ±  3%  softirqs.CPU21.SCHED
-     25426 ±  2%     +17.8%      29963 ±  3%  softirqs.CPU210.SCHED
-     25363 ±  2%     +17.5%      29794        softirqs.CPU211.SCHED
-     25056 ±  2%     +18.3%      29644 ±  5%  softirqs.CPU212.SCHED
-     24915 ±  2%     +18.8%      29602 ±  3%  softirqs.CPU213.SCHED
-     25269 ±  2%     +19.9%      30296 ±  2%  softirqs.CPU214.SCHED
-     24759 ±  2%     +16.4%      28808 ±  5%  softirqs.CPU215.SCHED
-     25090           +19.8%      30061 ±  2%  softirqs.CPU216.SCHED
-     24887 ±  2%     +17.2%      29156        softirqs.CPU217.SCHED
-     25021           +17.2%      29336 ±  4%  softirqs.CPU218.SCHED
-     25320 ±  2%     +17.7%      29806 ±  2%  softirqs.CPU219.SCHED
-     25672 ±  2%     +20.9%      31048        softirqs.CPU22.SCHED
-     25182 ±  2%     +18.8%      29919 ±  3%  softirqs.CPU220.SCHED
-     25152 ±  2%     +20.3%      30248 ±  4%  softirqs.CPU221.SCHED
-     24777           +19.1%      29504 ±  5%  softirqs.CPU222.SCHED
-     25122 ±  3%     +19.6%      30041 ±  2%  softirqs.CPU223.SCHED
-     25079 ±  2%     +19.4%      29954 ±  2%  softirqs.CPU224.SCHED
-     25236 ±  2%     +18.8%      29969 ±  2%  softirqs.CPU225.SCHED
-     25105 ±  3%     +19.0%      29876 ±  2%  softirqs.CPU226.SCHED
-     25609           +15.6%      29613 ±  4%  softirqs.CPU227.SCHED
-    180136 ±  8%     +11.0%     200040 ±  5%  softirqs.CPU227.TIMER
-     25435           +15.9%      29476 ±  2%  softirqs.CPU228.SCHED
-    175813 ±  3%     +16.7%     205108 ±  5%  softirqs.CPU228.TIMER
-     25142 ±  2%     +14.1%      28699 ±  5%  softirqs.CPU229.SCHED
-     25831           +19.2%      30787 ±  2%  softirqs.CPU23.SCHED
-     25460 ±  2%     +18.8%      30242 ±  3%  softirqs.CPU230.SCHED
-     25200 ±  3%     +20.1%      30259 ±  2%  softirqs.CPU231.SCHED
-    168374 ±  3%      +8.7%     183098 ±  3%  softirqs.CPU231.TIMER
-     25379 ±  2%     +17.1%      29711 ±  2%  softirqs.CPU232.SCHED
-     25524 ±  2%     +18.5%      30246 ±  3%  softirqs.CPU233.SCHED
-     25686 ±  2%     +17.5%      30170 ±  3%  softirqs.CPU234.SCHED
-    170330 ±  4%     +11.3%     189542 ±  5%  softirqs.CPU234.TIMER
-     25635 ±  2%     +14.7%      29410 ±  4%  softirqs.CPU235.SCHED
-    176292 ±  7%     +15.9%     204389 ±  6%  softirqs.CPU235.TIMER
-     25549 ±  2%     +16.3%      29718 ±  2%  softirqs.CPU236.SCHED
-    178538 ±  4%      +9.2%     194880 ±  4%  softirqs.CPU236.TIMER
-     25386 ±  2%     +18.4%      30055 ±  2%  softirqs.CPU237.SCHED
-     25191 ±  2%     +17.9%      29707        softirqs.CPU238.SCHED
-     25186 ±  3%     +20.3%      30293        softirqs.CPU239.SCHED
-     25877           +19.0%      30799 ±  3%  softirqs.CPU24.SCHED
-     25506           +17.5%      29967 ±  3%  softirqs.CPU240.SCHED
-     24964 ±  2%     +21.1%      30222 ±  3%  softirqs.CPU241.SCHED
-     25258           +17.7%      29719 ±  2%  softirqs.CPU242.SCHED
-     25162           +18.2%      29740 ±  4%  softirqs.CPU243.SCHED
-     25808           +17.3%      30285 ±  3%  softirqs.CPU244.SCHED
-     25679           +17.4%      30150 ±  3%  softirqs.CPU245.SCHED
-    175664 ±  3%      +8.3%     190327 ±  4%  softirqs.CPU245.TIMER
-     25134 ±  2%     +19.7%      30079 ±  4%  softirqs.CPU246.SCHED
-     24942           +19.9%      29913 ±  3%  softirqs.CPU247.SCHED
-     25395 ±  2%     +17.8%      29906 ±  2%  softirqs.CPU248.SCHED
-    180993 ±  3%     +10.8%     200584 ±  4%  softirqs.CPU248.TIMER
-     25491 ±  2%     +18.0%      30075 ±  4%  softirqs.CPU249.SCHED
-     26099           +17.2%      30595 ±  3%  softirqs.CPU25.SCHED
-     25332           +18.7%      30060 ±  2%  softirqs.CPU250.SCHED
-     25471 ±  2%     +17.4%      29892 ±  3%  softirqs.CPU251.SCHED
-    180242 ±  4%      +9.8%     197819 ±  4%  softirqs.CPU251.TIMER
-     25406 ±  2%     +16.9%      29694 ±  3%  softirqs.CPU252.SCHED
-     25317 ±  3%     +18.2%      29922 ±  3%  softirqs.CPU253.SCHED
-     25103 ±  4%     +19.9%      30106 ±  3%  softirqs.CPU254.SCHED
-     25231 ±  2%     +19.8%      30227 ±  3%  softirqs.CPU255.SCHED
-     25509 ±  2%     +18.2%      30161 ±  3%  softirqs.CPU256.SCHED
-     25559 ±  3%     +16.9%      29888 ±  3%  softirqs.CPU257.SCHED
-     25277 ±  2%     +16.8%      29523 ±  2%  softirqs.CPU258.SCHED
-     24695 ±  5%     +20.4%      29721 ±  2%  softirqs.CPU259.SCHED
-    182550 ±  5%     +10.5%     201781 ±  3%  softirqs.CPU259.TIMER
-     25905           +19.5%      30970 ±  2%  softirqs.CPU26.SCHED
-    164306 ±  3%      +7.6%     176738 ±  5%  softirqs.CPU26.TIMER
-     24829 ±  2%     +20.8%      29990 ±  2%  softirqs.CPU260.SCHED
-     25156           +19.1%      29971 ±  2%  softirqs.CPU261.SCHED
-     25098 ±  3%     +17.6%      29515 ±  4%  softirqs.CPU262.SCHED
-    180807 ±  5%      +9.4%     197856 ±  3%  softirqs.CPU262.TIMER
-     25053 ±  2%     +18.2%      29613 ±  2%  softirqs.CPU263.SCHED
-     25505           +18.9%      30336 ±  3%  softirqs.CPU264.SCHED
-    169958 ±  5%     +11.8%     189979 ±  4%  softirqs.CPU264.TIMER
-     25011 ±  3%     +18.5%      29640 ±  4%  softirqs.CPU265.SCHED
-    169719 ±  4%     +22.2%     207453 ±  8%  softirqs.CPU265.TIMER
-     25489 ±  2%     +18.6%      30231 ±  3%  softirqs.CPU266.SCHED
-     25727           +18.8%      30554 ±  2%  softirqs.CPU267.SCHED
-     25423           +18.1%      30020 ±  2%  softirqs.CPU268.SCHED
-     25451 ±  2%     +19.0%      30292 ±  4%  softirqs.CPU269.SCHED
-     26042           +18.5%      30852 ±  3%  softirqs.CPU27.SCHED
-    163812 ±  3%      +8.6%     177825 ±  5%  softirqs.CPU27.TIMER
-     25649 ±  2%     +18.3%      30337 ±  3%  softirqs.CPU270.SCHED
-     25318           +19.3%      30212 ±  3%  softirqs.CPU271.SCHED
-     25592 ±  2%     +19.6%      30603 ±  3%  softirqs.CPU272.SCHED
-     25440 ±  2%     +20.0%      30520 ±  3%  softirqs.CPU273.SCHED
-     26007           +18.2%      30741 ±  2%  softirqs.CPU274.SCHED
-     25661           +18.7%      30454 ±  3%  softirqs.CPU275.SCHED
-     25227           +21.0%      30536 ±  2%  softirqs.CPU276.SCHED
-     25923           +17.9%      30560 ±  3%  softirqs.CPU277.SCHED
-     25973           +14.6%      29757 ±  5%  softirqs.CPU278.SCHED
-     25905 ±  2%     +16.2%      30089 ±  3%  softirqs.CPU279.SCHED
-     26091           +18.3%      30875 ±  3%  softirqs.CPU28.SCHED
-     25736 ±  2%     +17.4%      30217 ±  4%  softirqs.CPU280.SCHED
-     25964           +13.5%      29482 ±  6%  softirqs.CPU281.SCHED
-    170413 ±  4%     +11.8%     190550 ±  4%  softirqs.CPU281.TIMER
-     25669           +18.8%      30484 ±  3%  softirqs.CPU282.SCHED
-     25462 ±  2%     +18.6%      30208        softirqs.CPU283.SCHED
-    174059 ±  6%     +10.6%     192446 ±  5%  softirqs.CPU283.TIMER
-     25578           +18.4%      30287 ±  3%  softirqs.CPU284.SCHED
-     25703           +19.1%      30617 ±  3%  softirqs.CPU285.SCHED
-     25775 ±  2%     +16.0%      29891 ±  2%  softirqs.CPU286.SCHED
-     25175 ±  2%     +16.0%      29204 ±  4%  softirqs.CPU287.SCHED
-     26076           +17.7%      30684 ±  3%  softirqs.CPU29.SCHED
-     26116           +18.8%      31032 ±  2%  softirqs.CPU3.SCHED
-     26043           +18.2%      30789 ±  3%  softirqs.CPU30.SCHED
-     25884           +18.5%      30681 ±  2%  softirqs.CPU31.SCHED
-    167289 ±  2%      +6.3%     177832 ±  6%  softirqs.CPU31.TIMER
-     26095           +17.1%      30563 ±  3%  softirqs.CPU32.SCHED
-    161186 ±  2%     +10.6%     178192 ±  4%  softirqs.CPU32.TIMER
-     26124           +18.2%      30887 ±  3%  softirqs.CPU33.SCHED
-     25966           +18.0%      30651 ±  2%  softirqs.CPU34.SCHED
-    167402 ±  4%      +6.6%     178425 ±  4%  softirqs.CPU34.TIMER
-     25944           +18.0%      30622 ±  3%  softirqs.CPU35.SCHED
-     26167           +17.9%      30861 ±  2%  softirqs.CPU36.SCHED
-     25900           +20.7%      31271 ±  3%  softirqs.CPU37.SCHED
-     25475 ±  3%     +21.1%      30843 ±  3%  softirqs.CPU38.SCHED
-     25642 ±  2%     +19.4%      30627 ±  3%  softirqs.CPU39.SCHED
-     25494 ±  2%     +20.7%      30774 ±  2%  softirqs.CPU4.SCHED
-     25610           +18.1%      30236 ±  4%  softirqs.CPU40.SCHED
-     26064 ±  3%     +17.2%      30546 ±  3%  softirqs.CPU41.SCHED
-     25739 ±  2%     +15.2%      29643 ±  4%  softirqs.CPU42.SCHED
-     25730 ±  2%     +18.5%      30493 ±  3%  softirqs.CPU43.SCHED
-    175037 ±  6%     +10.6%     193664 ±  4%  softirqs.CPU43.TIMER
-     25729           +18.4%      30470 ±  3%  softirqs.CPU44.SCHED
-     25114 ±  2%     +21.3%      30475 ±  2%  softirqs.CPU45.SCHED
-     25415 ±  3%     +20.1%      30511 ±  2%  softirqs.CPU46.SCHED
-     25558           +17.4%      29994        softirqs.CPU47.SCHED
-     25624           +16.7%      29897 ±  4%  softirqs.CPU48.SCHED
-    167429 ±  5%     +13.0%     189268 ±  5%  softirqs.CPU48.TIMER
-     25871           +17.3%      30344 ±  3%  softirqs.CPU49.SCHED
-    167694 ±  3%     +12.5%     188683 ±  4%  softirqs.CPU49.TIMER
-     25681           +20.0%      30819 ±  3%  softirqs.CPU5.SCHED
-     25661           +17.8%      30220        softirqs.CPU50.SCHED
-     25857           +17.6%      30408 ±  3%  softirqs.CPU51.SCHED
-     25943           +17.7%      30544 ±  3%  softirqs.CPU52.SCHED
-     25398 ±  2%     +19.6%      30387 ±  3%  softirqs.CPU53.SCHED
-     25599 ±  2%     +18.9%      30428 ±  3%  softirqs.CPU54.SCHED
-     25454 ±  2%     +20.5%      30663 ±  3%  softirqs.CPU55.SCHED
-     25603 ±  2%     +18.6%      30374 ±  3%  softirqs.CPU56.SCHED
-     25665           +18.7%      30453 ±  3%  softirqs.CPU57.SCHED
-     25853           +18.9%      30740 ±  2%  softirqs.CPU58.SCHED
-     25916           +17.5%      30454 ±  3%  softirqs.CPU59.SCHED
-     26202           +16.7%      30570 ±  3%  softirqs.CPU6.SCHED
-     25549 ±  2%     +20.5%      30778 ±  2%  softirqs.CPU60.SCHED
-     25854           +18.5%      30626 ±  2%  softirqs.CPU61.SCHED
-     25516 ±  2%     +17.1%      29871 ±  4%  softirqs.CPU62.SCHED
-     25833           +17.2%      30284 ±  3%  softirqs.CPU63.SCHED
-     25510 ±  3%     +19.2%      30420 ±  3%  softirqs.CPU64.SCHED
-     26177           +16.5%      30487 ±  3%  softirqs.CPU65.SCHED
-    166747 ±  3%     +11.5%     185900 ±  3%  softirqs.CPU65.TIMER
-     25637 ±  2%     +19.0%      30503 ±  3%  softirqs.CPU66.SCHED
-     25644 ±  2%     +15.4%      29588        softirqs.CPU67.SCHED
-     25796           +18.6%      30585 ±  3%  softirqs.CPU68.SCHED
-     25503           +20.2%      30654 ±  3%  softirqs.CPU69.SCHED
-     25912           +16.4%      30171 ±  4%  softirqs.CPU7.SCHED
-     25994 ±  6%     +16.2%      30203        softirqs.CPU70.SCHED
-     25255           +17.9%      29766 ±  3%  softirqs.CPU71.SCHED
-     25057           +19.1%      29854 ±  3%  softirqs.CPU72.SCHED
-     24925 ±  2%     +18.7%      29588 ±  2%  softirqs.CPU73.SCHED
-     25774           +16.1%      29929 ±  3%  softirqs.CPU74.SCHED
-    177035 ±  2%      +7.9%     190942 ±  4%  softirqs.CPU74.TIMER
-     25433           +19.2%      30327 ±  3%  softirqs.CPU75.SCHED
-     25274 ±  2%     +15.5%      29184 ±  3%  softirqs.CPU76.SCHED
-     25297           +17.7%      29765 ±  4%  softirqs.CPU77.SCHED
-     25557 ±  2%     +18.2%      30203 ±  3%  softirqs.CPU78.SCHED
-     25604 ±  2%     +17.3%      30034 ±  3%  softirqs.CPU79.SCHED
-    175758 ±  6%      +9.8%     193033 ±  3%  softirqs.CPU79.TIMER
-     26086           +18.4%      30878 ±  2%  softirqs.CPU8.SCHED
-     25297           +18.6%      30013 ±  3%  softirqs.CPU80.SCHED
-     25450           +17.8%      29987 ±  2%  softirqs.CPU81.SCHED
-     25125 ±  3%     +17.0%      29404 ±  3%  softirqs.CPU82.SCHED
-     24840 ±  2%     +18.7%      29490 ±  6%  softirqs.CPU83.SCHED
-     25920           +14.9%      29770 ±  2%  softirqs.CPU84.SCHED
-    168708 ±  5%     +18.4%     199703 ±  7%  softirqs.CPU84.TIMER
-     24980 ±  3%     +19.5%      29850 ±  3%  softirqs.CPU85.SCHED
-     25338           +18.6%      30042 ±  2%  softirqs.CPU86.SCHED
-     25404 ±  2%     +18.6%      30142 ±  2%  softirqs.CPU87.SCHED
-    177099 ±  3%      +9.0%     193072        softirqs.CPU87.TIMER
-     24855 ±  2%     +20.7%      30000 ±  3%  softirqs.CPU88.SCHED
-     25532 ±  2%     +17.2%      29916 ±  3%  softirqs.CPU89.SCHED
-     26321 ±  2%     +14.7%      30186 ±  4%  softirqs.CPU9.SCHED
-     25622 ±  2%     +17.4%      30077 ±  3%  softirqs.CPU90.SCHED
-    177491 ±  4%     +10.9%     196822 ±  4%  softirqs.CPU90.TIMER
-     25638 ±  2%     +14.0%      29228 ±  5%  softirqs.CPU91.SCHED
-    175040 ±  5%     +16.7%     204221 ±  6%  softirqs.CPU91.TIMER
-     25387 ±  2%     +18.0%      29968 ±  2%  softirqs.CPU92.SCHED
-     25316 ±  2%     +19.5%      30262 ±  2%  softirqs.CPU93.SCHED
-     25125 ±  2%     +19.6%      30051        softirqs.CPU94.SCHED
-     25303 ±  2%     +18.1%      29875 ±  2%  softirqs.CPU95.SCHED
-     25481           +18.3%      30133 ±  3%  softirqs.CPU96.SCHED
-     25533           +18.1%      30146 ±  3%  softirqs.CPU97.SCHED
-     24892 ±  3%     +20.4%      29982 ±  3%  softirqs.CPU98.SCHED
-     24611           +20.3%      29607 ±  3%  softirqs.CPU99.SCHED
-   7325587           +18.2%    8660780 ±  3%  softirqs.SCHED
-
-
-                                                                                
-                           will-it-scale.per_thread_ops                         
-                                                                                
-  1500 +--------------------------------------------------------------------+   
-  1450 |+. +.  .+  +++. +.  .+++. +.  .++. +                                |   
-       |  +  ++        +  ++     +  ++    + +   .++.+                       |   
-  1400 |-+                                   : +     +                      |   
-  1350 |-+                                   : :                     OO     |   
-  1300 |-+                                    +                    O        |   
-  1250 |-+                                       OO            O OO     OO O|   
-       |               O  OO O O OO OO O                                    |   
-  1200 |-+              O     O                      OO OO OO O             |   
-  1150 |-+                                    O                             |   
-  1100 |-+                              O O    O    O                       |   
-  1050 |O+O      O O O                      O                               |   
-       |     O  O   O                      O                                |   
-  1000 |-+ O  O                                                             |   
-   950 +--------------------------------------------------------------------+   
-                                                                                
-                                                                                
-[*] bisect-good sample
-[O] bisect-bad  sample
-
-
-
-Disclaimer:
-Results have been estimated based on internal Intel analysis and are provided
-for informational purposes only. Any difference in system hardware or software
-design or configuration may affect actual performance.
 
 
 Thanks,
 Rong Chen
 
 
---l/2UL691n69jcg3q
+--f4OB/AjbUHPcIx8p
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="config-5.7.0-rc2-00031-g276c410448dbc"
+Content-Disposition: attachment; filename="config-5.7.0-rc4-00002-g303cc571d107b"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.7.0-rc2 Kernel Configuration
+# Linux/x86_64 5.7.0-rc4 Kernel Configuration
 #
 
 #
@@ -1156,10 +313,7 @@ CONFIG_TREE_RCU=y
 # CONFIG_RCU_EXPERT is not set
 CONFIG_SRCU=y
 CONFIG_TREE_SRCU=y
-CONFIG_TASKS_RCU_GENERIC=y
 CONFIG_TASKS_RCU=y
-CONFIG_TASKS_RUDE_RCU=y
-CONFIG_TASKS_TRACE_RCU=y
 CONFIG_RCU_STALL_COMMON=y
 CONFIG_RCU_NEED_SEGCBLIST=y
 CONFIG_RCU_NOCB_CPU=y
@@ -7218,19 +6372,18 @@ CONFIG_VIRTIO=y
 CONFIG_VIRTIO_MENU=y
 CONFIG_VIRTIO_PCI=y
 CONFIG_VIRTIO_PCI_LEGACY=y
-# CONFIG_VIRTIO_VDPA is not set
 # CONFIG_VIRTIO_PMEM is not set
 CONFIG_VIRTIO_BALLOON=y
 CONFIG_VIRTIO_INPUT=m
 # CONFIG_VIRTIO_MMIO is not set
-# CONFIG_VDPA_MENU is not set
+# CONFIG_VDPA is not set
 CONFIG_VHOST_IOTLB=m
+CONFIG_VHOST_DPN=y
 CONFIG_VHOST=m
 CONFIG_VHOST_MENU=y
 CONFIG_VHOST_NET=m
 # CONFIG_VHOST_SCSI is not set
 CONFIG_VHOST_VSOCK=m
-# CONFIG_VHOST_VDPA is not set
 # CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
 
 #
@@ -9253,7 +8406,7 @@ CONFIG_LIST_KUNIT_TEST=m
 # end of Kernel Testing and Coverage
 # end of Kernel hacking
 
---l/2UL691n69jcg3q
+--f4OB/AjbUHPcIx8p
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=job-script
 
@@ -9261,61 +8414,72 @@ Content-Disposition: attachment; filename=job-script
 
 export_top_env()
 {
-	export suite='will-it-scale'
-	export testcase='will-it-scale'
-	export category='benchmark'
-	export nr_task=288
-	export job_origin='/lkp-src/allot/cyclic:p1:linux-devel:devel-hourly/lkp-knm01/will-it-scale-100.yaml'
+	export suite='ltp'
+	export testcase='ltp'
+	export category='functional'
+	export need_modules=true
+	export need_memory='3G'
+	export job_origin='/lkp-src/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part1.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='lkp-knm01'
-	export tbox_group='lkp-knm01'
+	export testbox='vm-snb-40'
+	export tbox_group='vm-snb'
 	export kconfig='x86_64-rhel-7.6'
-	export submit_id='5ee6eff3bfb3cd6cd9dea6cb'
-	export job_file='/lkp/jobs/scheduled/lkp-knm01/will-it-scale-performance-thread-100%-page_fault3-ucode=0x11-debian-x86_64-20191114.cgz-276c410448dbca357a2bc3539acfe04862e5f172-20200615-27865-1ttoxex-3.yaml'
-	export id='45be63e79b55f0e184b9cc7a2e06b2ed324d53d4'
+	export nr_vm=64
+	export submit_id='5ee70dae9937ab6475d7a808'
+	export job_file='/lkp/jobs/scheduled/vm-snb-40/ltp-1HDD-btrfs-syscalls_part5-debian-x86_64-20191114.cgz-303cc571d107b3641d6487061b748e70ffe15ce4-20200615-25717-1umk8vc-2.yaml'
+	export id='2f00df4c6160bf1da53dbd4c87149dd8045003ec'
 	export queuer_version='/lkp-src'
-	export model='Knights Mill'
-	export nr_node=1
-	export nr_cpu=288
-	export memory='80G'
-	export hdd_partitions=
-	export swap_partitions='LABEL=SWAP'
-	export rootfs_partition='/dev/disk/by-id/ata-WDC_WD30EZRX-00SPEB0_WD-WCC4E4EK5J23-part1'
-	export brand='Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz'
-	export commit='276c410448dbca357a2bc3539acfe04862e5f172'
-	export need_kconfig_hw='CONFIG_IGB=y
-CONFIG_SATA_AHCI'
-	export ucode='0x11'
-	export enqueue_time='2020-06-15 11:50:11 +0800'
-	export _id='5ee6f002bfb3cd6cd9dea6cc'
-	export _rt='/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172'
+	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
+	export nr_cpu=2
+	export memory='16G'
+	export hdd_partitions='/dev/vda /dev/vdb /dev/vdc /dev/vdd /dev/vde /dev/vdf'
+	export swap_partitions='/dev/vdg'
+	export need_kconfig='CONFIG_BLK_DEV_SD
+CONFIG_SCSI
+CONFIG_BLOCK=y
+CONFIG_SATA_AHCI
+CONFIG_SATA_AHCI_PLATFORM
+CONFIG_ATA
+CONFIG_PCI=y
+CONFIG_BLK_DEV_LOOP
+CONFIG_CAN=m
+CONFIG_CAN_RAW=m
+CONFIG_CAN_VCAN=m
+CONFIG_IPV6_VTI=m
+CONFIG_MINIX_FS=m
+CONFIG_KVM_GUEST=y
+CONFIG_BTRFS_FS'
+	export commit='303cc571d107b3641d6487061b748e70ffe15ce4'
+	export ssh_base_port=23032
+	export enqueue_time='2020-06-15 13:57:02 +0800'
+	export _id='5ee70dae9937ab6475d7a808'
+	export _rt='/result/ltp/1HDD-btrfs-syscalls_part5/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4'
 	export user='lkp'
 	export compiler='gcc-9'
 	export head_commit='2b46a015d120451a2a713b90a56491194e7b6756'
 	export base_commit='3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162'
 	export branch='linux-devel/devel-hourly-2020061415'
 	export rootfs='debian-x86_64-20191114.cgz'
-	export result_root='/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/3'
-	export scheduler_version='/lkp/lkp/.src-20200615-085804'
+	export result_root='/result/ltp/1HDD-btrfs-syscalls_part5/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/3'
+	export scheduler_version='/lkp/lkp/.src-20200615-125508'
 	export LKP_SERVER='inn'
 	export arch='x86_64'
-	export max_uptime=1500
+	export max_uptime=3600
 	export initrd='/osimage/debian/debian-x86_64-20191114.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/lkp-knm01/will-it-scale-performance-thread-100%-page_fault3-ucode=0x11-debian-x86_64-20191114.cgz-276c410448dbca357a2bc3539acfe04862e5f172-20200615-27865-1ttoxex-3.yaml
+job=/lkp/jobs/scheduled/vm-snb-40/ltp-1HDD-btrfs-syscalls_part5-debian-x86_64-20191114.cgz-303cc571d107b3641d6487061b748e70ffe15ce4-20200615-25717-1umk8vc-2.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-7.6
 branch=linux-devel/devel-hourly-2020061415
-commit=276c410448dbca357a2bc3539acfe04862e5f172
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/vmlinuz-5.7.0-rc2-00031-g276c410448dbc
-max_uptime=1500
-RESULT_ROOT=/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/3
+commit=303cc571d107b3641d6487061b748e70ffe15ce4
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/vmlinuz-5.7.0-rc4-00002-g303cc571d107b
+max_uptime=3600
+RESULT_ROOT=/result/ltp/1HDD-btrfs-syscalls_part5/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/3
 LKP_SERVER=inn
-nokaslr
 selinux=0
 debug
 apic=debug
@@ -9337,23 +8501,18 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/modules.cgz'
-	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/will-it-scale_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/will-it-scale-x86_64-0f26364-1_20200528.cgz,/osimage/deps/debian-x86_64-20180403.cgz/mpstat_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vmstat_2020-01-07.cgz,/osimage/deps/debian-x86_64-20180403.cgz/perf_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/perf-x86_64-76ccd234269b-1_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/sar-x86_64-e011d97-1_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz'
-	export ucode_initrd='/osimage/ucode/intel-ucode-20191114.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/modules.cgz'
+	export bm_initrd='/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/fs_2020-01-02.cgz,/osimage/deps/debian-x86_64-20180403.cgz/ltp_20200528.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/ltp-x86_64-14c1f76-1_20200528.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
-	export last_kernel='5.7.0-16565-g2b46a015d1204'
 	export repeat_to=4
-	export bad_samples='1308
-1348
-1336'
 	export schedule_notify_address=
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/vmlinuz-5.7.0-rc2-00031-g276c410448dbc'
-	export dequeue_time='2020-06-15 12:18:07 +0800'
-	export job_initrd='/lkp/jobs/scheduled/lkp-knm01/will-it-scale-performance-thread-100%-page_fault3-ucode=0x11-debian-x86_64-20191114.cgz-276c410448dbca357a2bc3539acfe04862e5f172-20200615-27865-1ttoxex-3.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/vmlinuz-5.7.0-rc4-00002-g303cc571d107b'
+	export dequeue_time='2020-06-15 13:57:09 +0800'
+	export job_initrd='/lkp/jobs/scheduled/vm-snb-40/ltp-1HDD-btrfs-syscalls_part5-debian-x86_64-20191114.cgz-303cc571d107b3641d6487061b748e70ffe15ce4-20200615-25717-1umk8vc-2.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -9369,37 +8528,17 @@ run_job()
 
 	export_top_env
 
-	run_setup $LKP_SRC/setup/cpufreq_governor 'performance'
+	run_setup nr_hdd=1 $LKP_SRC/setup/disk
+
+	run_setup fs='btrfs' $LKP_SRC/setup/fs
 
 	run_monitor $LKP_SRC/monitors/wrapper kmsg
-	run_monitor $LKP_SRC/monitors/no-stdout/wrapper boot-time
-	run_monitor $LKP_SRC/monitors/wrapper iostat
 	run_monitor $LKP_SRC/monitors/wrapper heartbeat
-	run_monitor $LKP_SRC/monitors/wrapper vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-numastat
-	run_monitor $LKP_SRC/monitors/wrapper numa-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-meminfo
-	run_monitor $LKP_SRC/monitors/wrapper proc-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper proc-stat
 	run_monitor $LKP_SRC/monitors/wrapper meminfo
-	run_monitor $LKP_SRC/monitors/wrapper slabinfo
-	run_monitor $LKP_SRC/monitors/wrapper interrupts
-	run_monitor $LKP_SRC/monitors/wrapper lock_stat
-	run_monitor $LKP_SRC/monitors/wrapper latency_stats
-	run_monitor $LKP_SRC/monitors/wrapper softirqs
-	run_monitor $LKP_SRC/monitors/one-shot/wrapper bdi_dev_mapping
-	run_monitor $LKP_SRC/monitors/wrapper diskstats
-	run_monitor $LKP_SRC/monitors/wrapper nfsstat
-	run_monitor $LKP_SRC/monitors/wrapper cpuidle
-	run_monitor $LKP_SRC/monitors/wrapper cpufreq-stats
-	run_monitor $LKP_SRC/monitors/wrapper sched_debug
-	run_monitor $LKP_SRC/monitors/wrapper perf-stat
-	run_monitor $LKP_SRC/monitors/wrapper mpstat
-	run_monitor $LKP_SRC/monitors/no-stdout/wrapper perf-profile
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test mode='thread' test='page_fault3' $LKP_SRC/tests/wrapper will-it-scale
+	run_test test='syscalls_part5' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -9407,30 +8546,11 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	$LKP_SRC/stats/wrapper will-it-scale
+	$LKP_SRC/stats/wrapper ltp
 	$LKP_SRC/stats/wrapper kmsg
-	$LKP_SRC/stats/wrapper boot-time
-	$LKP_SRC/stats/wrapper iostat
-	$LKP_SRC/stats/wrapper vmstat
-	$LKP_SRC/stats/wrapper numa-numastat
-	$LKP_SRC/stats/wrapper numa-vmstat
-	$LKP_SRC/stats/wrapper numa-meminfo
-	$LKP_SRC/stats/wrapper proc-vmstat
 	$LKP_SRC/stats/wrapper meminfo
-	$LKP_SRC/stats/wrapper slabinfo
-	$LKP_SRC/stats/wrapper interrupts
-	$LKP_SRC/stats/wrapper lock_stat
-	$LKP_SRC/stats/wrapper latency_stats
-	$LKP_SRC/stats/wrapper softirqs
-	$LKP_SRC/stats/wrapper diskstats
-	$LKP_SRC/stats/wrapper nfsstat
-	$LKP_SRC/stats/wrapper cpuidle
-	$LKP_SRC/stats/wrapper sched_debug
-	$LKP_SRC/stats/wrapper perf-stat
-	$LKP_SRC/stats/wrapper mpstat
-	$LKP_SRC/stats/wrapper perf-profile
 
-	$LKP_SRC/stats/wrapper time will-it-scale.time
+	$LKP_SRC/stats/wrapper time ltp.time
 	$LKP_SRC/stats/wrapper dmesg
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper last_state
@@ -9440,168 +8560,7877 @@ extract_stats()
 
 "$@"
 
---l/2UL691n69jcg3q
+--f4OB/AjbUHPcIx8p
+Content-Type: application/x-xz
+Content-Disposition: attachment; filename="dmesg.xz"
+Content-Transfer-Encoding: base64
+
+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
+AgAAAAAEWVo=
+
+--f4OB/AjbUHPcIx8p
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="job.yaml"
+Content-Disposition: attachment; filename=ltp
+Content-Transfer-Encoding: quoted-printable
 
----
-suite: will-it-scale
-testcase: will-it-scale
-category: benchmark
-nr_task: 100%
-will-it-scale:
-  mode: thread
-  test: page_fault3
-job_origin: "/lkp-src/allot/cyclic:p1:linux-devel:devel-hourly/lkp-knm01/will-it-scale-100.yaml"
-queue_cmdline_keys:
-- branch
-- commit
-- queue_at_least_once
-queue: bisect
-testbox: lkp-knm01
-tbox_group: lkp-knm01
-kconfig: x86_64-rhel-7.6
-submit_id: 5ee6d3e1bfb3cd6bfafe2436
-job_file: "/lkp/jobs/scheduled/lkp-knm01/will-it-scale-performance-thread-100%-page_fault3-ucode=0x11-debian-x86_64-20191114.cgz-276c410448dbca357a2bc3539acfe04862e5f172-20200615-27642-280u80-0.yaml"
-id: a6845ec1234e82af5d8c344c787c7b9564abc87b
-queuer_version: "/lkp-src"
-model: Knights Mill
-nr_node: 1
-nr_cpu: 288
-memory: 80G
-hdd_partitions: 
-swap_partitions: LABEL=SWAP
-rootfs_partition: "/dev/disk/by-id/ata-WDC_WD30EZRX-00SPEB0_WD-WCC4E4EK5J23-part1"
-brand: Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz
-kmsg: 
-boot-time: 
-iostat: 
-heartbeat: 
-vmstat: 
-numa-numastat: 
-numa-vmstat: 
-numa-meminfo: 
-proc-vmstat: 
-proc-stat: 
-meminfo: 
-slabinfo: 
-interrupts: 
-lock_stat: 
-latency_stats: 
-softirqs: 
-bdi_dev_mapping: 
-diskstats: 
-nfsstat: 
-cpuidle: 
-cpufreq-stats: 
-sched_debug: 
-perf-stat: 
-mpstat: 
-perf-profile: 
-cpufreq_governor: performance
-commit: 276c410448dbca357a2bc3539acfe04862e5f172
-need_kconfig_hw:
-- CONFIG_IGB=y
-- CONFIG_SATA_AHCI
-ucode: '0x11'
-enqueue_time: 2020-06-15 09:50:25.975852034 +08:00
-_id: 5ee6d3e1bfb3cd6bfafe2436
-_rt: "/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172"
-user: lkp
-compiler: gcc-9
-head_commit: 2b46a015d120451a2a713b90a56491194e7b6756
-base_commit: 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162
-branch: linux-devel/devel-hourly-2020061415
-rootfs: debian-x86_64-20191114.cgz
-result_root: "/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/0"
-scheduler_version: "/lkp/lkp/.src-20200615-085804"
-LKP_SERVER: inn
-arch: x86_64
-max_uptime: 1500
-initrd: "/osimage/debian/debian-x86_64-20191114.cgz"
-bootloader_append:
-- root=/dev/ram0
-- user=lkp
-- job=/lkp/jobs/scheduled/lkp-knm01/will-it-scale-performance-thread-100%-page_fault3-ucode=0x11-debian-x86_64-20191114.cgz-276c410448dbca357a2bc3539acfe04862e5f172-20200615-27642-280u80-0.yaml
-- ARCH=x86_64
-- kconfig=x86_64-rhel-7.6
-- branch=linux-devel/devel-hourly-2020061415
-- commit=276c410448dbca357a2bc3539acfe04862e5f172
-- BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/vmlinuz-5.7.0-rc2-00031-g276c410448dbc
-- max_uptime=1500
-- RESULT_ROOT=/result/will-it-scale/performance-thread-100%-page_fault3-ucode=0x11/lkp-knm01/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/0
-- LKP_SERVER=inn
-- nokaslr
-- selinux=0
-- debug
-- apic=debug
-- sysrq_always_enabled
-- rcupdate.rcu_cpu_stall_timeout=100
-- net.ifnames=0
-- printk.devkmsg=on
-- panic=-1
-- softlockup_panic=1
-- nmi_watchdog=panic
-- oops=panic
-- load_ramdisk=2
-- prompt_ramdisk=0
-- drbd.minor_count=8
-- systemd.log_level=err
-- ignore_loglevel
-- console=tty0
-- earlyprintk=ttyS0,115200
-- console=ttyS0,115200
-- vga=normal
-- rw
-modules_initrd: "/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/modules.cgz"
-bm_initrd: "/osimage/deps/debian-x86_64-20180403.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-20180403.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/will-it-scale_2020-01-07.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/will-it-scale-x86_64-0f26364-1_20200528.cgz,/osimage/deps/debian-x86_64-20180403.cgz/mpstat_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/vmstat_2020-01-07.cgz,/osimage/deps/debian-x86_64-20180403.cgz/perf_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/perf-x86_64-76ccd234269b-1_20200325.cgz,/osimage/pkg/debian-x86_64-20180403.cgz/sar-x86_64-e011d97-1_2020-01-03.cgz,/osimage/deps/debian-x86_64-20180403.cgz/hw_2020-01-02.cgz"
-ucode_initrd: "/osimage/ucode/intel-ucode-20191114.cgz"
-lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
-site: inn
-LKP_CGI_PORT: 80
-LKP_CIFS_PORT: 139
-oom-killer: 
-watchdog: 
-last_kernel: 5.7.0-16565-g2b46a015d1204
-repeat_to: 2
-bad_samples:
-- 1308
-- 1348
-- 1336
+2020-06-15 13:58:22 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2020-06-15 13:58:22 ./runltp -f syscalls_part5 -d /fs/vda/tmpdir
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
 
-#! queue options
-schedule_notify_address: 
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
 
-#! user overrides
-queue_at_least_once: 0
+/etc/os-release
+PRETTY_NAME=3D"Debian GNU/Linux 9 (stretch)"
+NAME=3D"Debian GNU/Linux"
+VERSION_ID=3D"9"
+VERSION=3D"9 (stretch)"
+ID=3Ddebian
+HOME_URL=3D"https://www.debian.org/"
+SUPPORT_URL=3D"https://www.debian.org/support"
+BUG_REPORT_URL=3D"https://bugs.debian.org/"
 
-#! schedule options
-kernel: "/pkg/linux/x86_64-rhel-7.6/gcc-9/276c410448dbca357a2bc3539acfe04862e5f172/vmlinuz-5.7.0-rc2-00031-g276c410448dbc"
-dequeue_time: 2020-06-15 10:17:43.274345480 +08:00
+uname:
+Linux vm-snb-40 5.7.0-rc4-00002-g303cc571d107b #1 SMP Mon Jun 15 12:48:45 C=
+ST 2020 x86_64 GNU/Linux
 
-#! /lkp/lkp/.src-20200615-085804/include/site/inn
+/proc/cmdline
+ip=3D::::vm-snb-40::dhcp root=3D/dev/ram0 user=3Dlkp job=3D/lkp/jobs/schedu=
+led/vm-snb-40/ltp-1HDD-btrfs-syscalls_part5-debian-x86_64-20191114.cgz-303c=
+c571d107b3641d6487061b748e70ffe15ce4-20200615-25717-1umk8vc-2.yaml ARCH=3Dx=
+86_64 kconfig=3Dx86_64-rhel-7.6 branch=3Dlinux-devel/devel-hourly-202006141=
+5 commit=3D303cc571d107b3641d6487061b748e70ffe15ce4 BOOT_IMAGE=3D/pkg/linux=
+/x86_64-rhel-7.6/gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/vmlinuz-5.7=
+=2E0-rc4-00002-g303cc571d107b max_uptime=3D3600 RESULT_ROOT=3D/result/ltp/1=
+HDD-btrfs-syscalls_part5/vm-snb/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/=
+gcc-9/303cc571d107b3641d6487061b748e70ffe15ce4/3 LKP_SERVER=3Dinn selinux=
+=3D0 debug apic=3Ddebug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=
+=3D100 net.ifnames=3D0 printk.devkmsg=3Don panic=3D-1 softlockup_panic=3D1 =
+nmi_watchdog=3Dpanic oops=3Dpanic load_ramdisk=3D2 prompt_ramdisk=3D0 drbd.=
+minor_count=3D8 systemd.log_level=3Derr ignore_loglevel console=3Dtty0 earl=
+yprintk=3DttyS0,115200 console=3DttyS0,115200 vga=3Dnormal rw rcuperf.shutd=
+own=3D0 watchdog_thresh=3D60
 
-#! runtime status
-job_state: finished
-loadavg: 116.16 189.59 107.00 1/1852 15433
-start_time: '1592187574'
-end_time: '1592188046'
-version: "/lkp/lkp/.src-20200615-085840:7e2a4cf6:92520768d"
+Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+Clang                =20
+Gnu make               4.1
+util-linux             2.29.2
+mount                  linux 2.29.2 (libmount 2.29.2: selinux, btrfs, asser=
+t, debug)
+modutils               23
+e2fsprogs              1.43.4
+Linux C Library        > libc.2.24
+Dynamic linker (ldd)   2.24
+Procps                 3.3.12
+Net-tools              2.10-alpha
+iproute2               iproute2-ss161212
+iputils                iputils-s20161105
+ethtool                4.8
+Kbd                    119:
+Sh-utils               8.26
+Modules Loaded         btrfs blake2b_generic xor zstd_decompress zstd_compr=
+ess raid6_pq libcrc32c dm_mod sr_mod cdrom sg ata_generic pata_acpi intel_r=
+apl_msr ppdev bochs_drm drm_vram_helper drm_ttm_helper ttm drm_kms_helper s=
+yscopyarea sysfillrect sysimgblt fb_sys_fops ata_piix drm snd_pcm snd_timer=
+ libata intel_rapl_common snd crc32c_intel soundcore pcspkr joydev serio_ra=
+w i2c_piix4 parport_pc parport floppy ip_tables
 
---l/2UL691n69jcg3q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=reproduce
+free reports:
+              total        used        free      shared  buff/cache   avail=
+able
+Mem:        8149076      261064     5501012       11720     2387000     539=
+0588
+Swap:             0           0           0
+
+cpuinfo:
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    1
+Socket(s):             2
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 42
+Model name:            Intel Xeon E312xx (Sandy Bridge)
+Stepping:              1
+CPU MHz:               2393.998
+BogoMIPS:              4787.99
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              4096K
+L3 cache:              16384K
+NUMA node0 CPU(s):     0,1
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=
+ mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm constant=
+_tsc rep_good nopl xtopology cpuid tsc_known_freq pni ssse3 cx16 sse4_1 sse=
+4_2 x2apic popcnt tsc_deadline_timer hypervisor lahf_lm cpuid_fault pti arat
+
+AppArmor enabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2283     -n 2283 -=
+p -f /fs/vda/tmpdir/ltp-8m1CUIia2b/alltests -l /lkp/benchmarks/ltp/results/=
+LTP_RUN_ON-2020_06_15-13h_58m_23s.log  -C /lkp/benchmarks/ltp/output/LTP_RU=
+N_ON-2020_06_15-13h_58m_23s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON=
+-2020_06_15-13h_58m_23s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2020_06_15-13h_58m_23s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_15-13h_5=
+8m_23s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2020_06_15-13h_58=
+m_23s.tconf
+Running tests.......
+<<<test_start>>>
+tag=3Dsemctl03 stime=3D1592200705
+cmdline=3D"semctl03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semctl03    1  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+semctl03    2  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+semctl03    3  TPASS  :  expected failure - errno =3D 14 : Bad address
+semctl03    4  TPASS  :  expected failure - errno =3D 14 : Bad address
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemctl04 stime=3D1592200705
+cmdline=3D"semctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semctl04    1  TPASS  :  expected failure - errno =3D 1 : Operation not per=
+mitted
+semctl04    2  TPASS  :  expected failure - errno =3D 1 : Operation not per=
+mitted
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemctl05 stime=3D1592200705
+cmdline=3D"semctl05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semctl05    1  TPASS  :  expected failure - errno =3D 34 : Numerical result=
+ out of range
+semctl05    2  TPASS  :  expected failure - errno =3D 34 : Numerical result=
+ out of range
+semctl05    3  TPASS  :  expected failure - errno =3D 34 : Numerical result=
+ out of range
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemctl06 stime=3D1592200705
+cmdline=3D"semctl06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semctl06    1  TPASS  :  semctl06 ran successfully!
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemctl07 stime=3D1592200705
+cmdline=3D"semctl07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semctl07    1  TPASS  :  semctl07 ran successfully!
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemget01 stime=3D1592200705
+cmdline=3D"semget01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semget01    1  TPASS  :  basic semaphore values are okay
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemget02 stime=3D1592200705
+cmdline=3D"semget02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semget02    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+semget02    2  TPASS  :  expected failure - errno =3D 17 : File exists
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemget03 stime=3D1592200705
+cmdline=3D"semget03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semget03    1  TPASS  :  expected failure - errno =3D 2 : No such file or d=
+irectory
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemget05 stime=3D1592200705
+cmdline=3D"semget05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semget05    1  TPASS  :  expected failure - errno =3D 28 : No space left on=
+ device
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D7
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemget06 stime=3D1592200705
+cmdline=3D"semget06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semget06    1  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+semget06    2  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemop01 stime=3D1592200705
+cmdline=3D"semop01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semop01     1  TPASS  :  semaphore values are correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemop02 stime=3D1592200705
+cmdline=3D"semop02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semop02     1  TPASS  :  semop failed as expected: TEST_ERRNO=3DE2BIG(7): A=
+rgument list too long
+semop02     2  TPASS  :  semop failed as expected: TEST_ERRNO=3DEACCES(13):=
+ Permission denied
+semop02     3  TPASS  :  semop failed as expected: TEST_ERRNO=3DEFAULT(14):=
+ Bad address
+semop02     4  TPASS  :  semop failed as expected: TEST_ERRNO=3DEINVAL(22):=
+ Invalid argument
+semop02     5  TPASS  :  semop failed as expected: TEST_ERRNO=3DEINVAL(22):=
+ Invalid argument
+semop02     6  TPASS  :  semop failed as expected: TEST_ERRNO=3DERANGE(34):=
+ Numerical result out of range
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemop03 stime=3D1592200705
+cmdline=3D"semop03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semop03     1  TPASS  :  expected failure - errno =3D 27 : File too large
+semop03     2  TPASS  :  expected failure - errno =3D 27 : File too large
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemop04 stime=3D1592200705
+cmdline=3D"semop04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semop04     1  TPASS  :  expected failure - errno =3D 11 : Resource tempora=
+rily unavailable
+semop04     2  TPASS  :  expected failure - errno =3D 11 : Resource tempora=
+rily unavailable
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemop05 stime=3D1592200705
+cmdline=3D"semop05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+semop05     1  TPASS  :  expected failure - errno =3D 43 : Identifier remov=
+ed
+semop05     1  TPASS  :  expected failure - errno =3D 43 : Identifier remov=
+ed
+semop05     1  TPASS  :  expected failure - errno =3D 4 : Interrupted syste=
+m call
+semop05     1  TPASS  :  expected failure - errno =3D 4 : Interrupted syste=
+m call
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsend01 stime=3D1592200705
+cmdline=3D"send01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+send01      1  TPASS  :  bad file descriptor successful
+send01      2  TPASS  :  invalid socket successful
+send01      3  TPASS  :  invalid send buffer successful
+send01      4  TPASS  :  UDP message too big successful
+send01      5  TPASS  :  local endpoint shutdown successful
+send01      6  TPASS  :  invalid flags set successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile02 stime=3D1592200705
+cmdline=3D"sendfile02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile02    1  TPASS  :  functionality of sendfile() is correct
+sendfile02    2  TPASS  :  functionality of sendfile() is correct
+sendfile02    3  TPASS  :  functionality of sendfile() is correct
+sendfile02    4  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile02_64 stime=3D1592200705
+cmdline=3D"sendfile02_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile02_64    1  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    2  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    3  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    4  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile03 stime=3D1592200705
+cmdline=3D"sendfile03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile03    1  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03    2  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03    3  TPASS  :  sendfile() returned 9 : Bad file descriptor
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile03_64 stime=3D1592200705
+cmdline=3D"sendfile03_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile03_64    1  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03_64    2  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03_64    3  TPASS  :  sendfile() returned 9 : Bad file descriptor
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile04 stime=3D1592200705
+cmdline=3D"sendfile04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile04    1  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    2  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    3  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    4  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    5  TPASS  :  sendfile() returned 14 : Bad address
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile04_64 stime=3D1592200705
+cmdline=3D"sendfile04_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile04_64    1  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    2  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    3  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    4  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    5  TPASS  :  sendfile() returned 14 : Bad address
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile05 stime=3D1592200705
+cmdline=3D"sendfile05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile05    1  TPASS  :  sendfile() returned 22 : Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile05_64 stime=3D1592200705
+cmdline=3D"sendfile05_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile05_64    1  TPASS  :  sendfile() returned 22 : Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile06 stime=3D1592200705
+cmdline=3D"sendfile06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile06    1  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile06_64 stime=3D1592200705
+cmdline=3D"sendfile06_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile06_64    1  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile07 stime=3D1592200705
+cmdline=3D"sendfile07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile07    1  TPASS  :  sendfile() returned 11 : Resource temporarily un=
+available
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile07_64 stime=3D1592200705
+cmdline=3D"sendfile07_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile07_64    1  TPASS  :  sendfile() returned 11 : Resource temporarily=
+ unavailable
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile08 stime=3D1592200705
+cmdline=3D"sendfile08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile08    1  TPASS  :  sendfile(2) copies data correctly
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile08_64 stime=3D1592200705
+cmdline=3D"sendfile08_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile08_64    1  TPASS  :  sendfile(2) copies data correctly
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile09 stime=3D1592200705
+cmdline=3D"sendfile09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile09    1  TPASS  :  Test sendfile(2) with offset at 0
+sendfile09    2  TPASS  :  Test sendfile(2) with offset at 3GB
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D22 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D1845
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile09_64 stime=3D1592200727
+cmdline=3D"sendfile09_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendfile09_64    1  TPASS  :  Test sendfile(2) with offset at 0
+sendfile09_64    2  TPASS  :  Test sendfile(2) with offset at 3GB
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D10 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D574
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendmsg01 stime=3D1592200737
+cmdline=3D"sendmsg01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendmsg01    1  TPASS  :  bad file descriptor successful
+sendmsg01    2  TPASS  :  invalid socket successful
+sendmsg01    3  TPASS  :  invalid send buffer successful
+sendmsg01    4  TPASS  :  connected TCP successful
+sendmsg01    5  TPASS  :  not connected TCP successful
+sendmsg01    6  TPASS  :  invalid to buffer length successful
+sendmsg01    7  TPASS  :  invalid to buffer successful
+sendmsg01    8  TPASS  :  UDP message too big successful
+sendmsg01    9  TPASS  :  local endpoint shutdown successful
+sendmsg01   10  TPASS  :  invalid iovec pointer successful
+sendmsg01   11  TPASS  :  invalid msghdr pointer successful
+sendmsg01   12  TPASS  :  rights passing successful
+sendmsg01   13  TPASS  :  invalid flags set successful
+sendmsg01   14  TPASS  :  invalid cmsg length successful
+sendmsg01   15  TPASS  :  invalid cmsg pointer successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendmsg02 stime=3D1592200737
+cmdline=3D"sendmsg02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendmsg02    1  TPASS  :  finished after 15 seconds
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D15 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D361 cstime=3D2391
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendmsg03 stime=3D1592200752
+cmdline=3D"sendmsg03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+=2E./../../../include/tst_fuzzy_sync.h:507: INFO: Minimum sampling period e=
+nded
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1024, delay_bias=
+ =3D 0
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D   196ns, avg_dev =3D    17ns, dev_ratio =3D 0.09 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D  4977ns, avg_dev =3D   481ns, dev_ratio =3D 0.10 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D  1377ns, avg_dev =3D    95ns, dev_ratio =3D 0.07 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D  3796ns, avg_dev =3D   389ns, dev_ratio =3D 0.10 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D  1598  , avg_dev =3D   161  , dev_ratio =3D 0.10 }
+=2E./../../../include/tst_fuzzy_sync.h:519: INFO: Reached deviation ratios =
+< 0.10, introducing randomness
+=2E./../../../include/tst_fuzzy_sync.h:522: INFO: Delay range is [-531, 183=
+3]
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1053, delay_bias=
+ =3D 0
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D   184ns, avg_dev =3D    15ns, dev_ratio =3D 0.08 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D  4329ns, avg_dev =3D    36ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D  1254ns, avg_dev =3D     6ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D  3260ns, avg_dev =3D    25ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D  1381  , avg_dev =3D    11  , dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:643: INFO: Exceeded execution loops,=
+ requesting exit
+sendmsg03.c:102: PASS: Nothing bad happened, probably
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D5 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D655 cstime=3D118
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendmmsg01 stime=3D1592200757
+cmdline=3D"sendmmsg01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: INFO: Test is using guarded buffers
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sendmmsg_var.h:50: INFO: Testing direct sendmmsg and recvmmsg syscalls
+sendmmsg01.c:60: PASS: First message received successfully
+sendmmsg01.c:65: PASS: Second message received successfully
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sendmmsg_var.h:53: INFO: Testing libc sendmmsg and recvmmsg syscalls
+sendmmsg01.c:60: PASS: First message received successfully
+sendmmsg01.c:65: PASS: Second message received successfully
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendto01 stime=3D1592200757
+cmdline=3D"sendto01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sendto01    1  TPASS  :  bad file descriptor successful
+sendto01    2  TPASS  :  invalid socket successful
+sendto01    3  TPASS  :  invalid send buffer successful
+sendto01    4  TPASS  :  connected TCP successful
+sendto01    5  TPASS  :  not connected TCP successful
+sendto01    6  TPASS  :  invalid to buffer length successful
+sendto01    7  TPASS  :  invalid to buffer successful
+sendto01    8  TPASS  :  UDP message too big successful
+sendto01    9  TPASS  :  local endpoint shutdown successful
+sendto01   10  TPASS  :  invalid flags set successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendto02 stime=3D1592200757
+cmdline=3D"sendto02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sendto02.c:68: PASS: sendto(fd, NULL, ...) failed expectedly: EFAULT (14)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_mempolicy01 stime=3D1592200757
+cmdline=3D"set_mempolicy01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy01.c:38: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_mempolicy02 stime=3D1592200757
+cmdline=3D"set_mempolicy02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy02.c:39: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_mempolicy03 stime=3D1592200757
+cmdline=3D"set_mempolicy03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1308: INFO: Testing on ext2
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ext3
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ext4
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on xfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on btrfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on vfat
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on exfat
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ntfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  8
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D2 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_mempolicy04 stime=3D1592200758
+cmdline=3D"set_mempolicy04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1308: INFO: Testing on ext2
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ext3
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ext4
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on xfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on btrfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on vfat
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on exfat
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1308: INFO: Testing on ntfs
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  8
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_robust_list01 stime=3D1592200758
+cmdline=3D"set_robust_list01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+set_robust_list01    1  TPASS  :  set_robust_list: retval =3D -1 (expected =
+-1), errno =3D 22 (expected 22)
+set_robust_list01    2  TPASS  :  set_robust_list: retval =3D 0 (expected 0=
+), errno =3D 0 (expected 0)
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_thread_area01 stime=3D1592200758
+cmdline=3D"set_thread_area01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+set_thread_area_01    1  TCONF  :  set_thread_area01.c:77: syscall(205) tes=
+ts[i].syscall not supported on your arch
+set_thread_area_01    2  TCONF  :  set_thread_area01.c:77: Remaining cases =
+not appropriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dset_tid_address01 stime=3D1592200758
+cmdline=3D"set_tid_address01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+set_tid_address01    1  TPASS  :  set_tid_address call succeeded:  as expec=
+ted 2835
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetdomainname01 stime=3D1592200758
+cmdline=3D"setdomainname01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:36: INFO: Testing libc setdomainname()
+setdomainname01.c:26: PASS: setdomainname() succeed
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:39: INFO: Testing __NR_setdomainname syscall
+setdomainname01.c:26: PASS: setdomainname() succeed
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetdomainname02 stime=3D1592200758
+cmdline=3D"setdomainname02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:36: INFO: Testing libc setdomainname()
+setdomainname02.c:32: INFO: testing len =3D=3D -1
+setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+setdomainname02.c:32: INFO: testing len > allowed maximum
+setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+setdomainname02.c:32: INFO: testing name =3D=3D NULL
+setdomainname02.c:44: PASS: expected failure: EFAULT (14)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:39: INFO: Testing __NR_setdomainname syscall
+setdomainname02.c:32: INFO: testing len =3D=3D -1
+setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+setdomainname02.c:32: INFO: testing len > allowed maximum
+setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+setdomainname02.c:32: INFO: testing name =3D=3D NULL
+setdomainname02.c:44: PASS: expected failure: EFAULT (14)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetdomainname03 stime=3D1592200758
+cmdline=3D"setdomainname03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:36: INFO: Testing libc setdomainname()
+setdomainname03.c:32: PASS: expected failure: EPERM (1)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:39: INFO: Testing __NR_setdomainname syscall
+setdomainname03.c:32: PASS: expected failure: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid01 stime=3D1592200758
+cmdline=3D"setfsgid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid01    1  TPASS  :  setfsgid() returned expected value : 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid01_16 stime=3D1592200758
+cmdline=3D"setfsgid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: 16-bit version of setfsgid() is not su=
+pported on your platform
+setfsgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid02 stime=3D1592200758
+cmdline=3D"setfsgid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid02    1  TPASS  :  setfsgid() returned expected value : 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid02_16 stime=3D1592200758
+cmdline=3D"setfsgid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: 16-bit version of setfsgid() is not su=
+pported on your platform
+setfsgid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid03 stime=3D1592200758
+cmdline=3D"setfsgid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid03    1  TPASS  :  setfsgid() returned expected value : 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsgid03_16 stime=3D1592200758
+cmdline=3D"setfsgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsgid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: 16-bit version of setfsgid() is not su=
+pported on your platform
+setfsgid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsgid/../utils/compat_16.h:122: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid01 stime=3D1592200758
+cmdline=3D"setfsuid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid01    1  TPASS  :  setfsuid() returned expected value : 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid01_16 stime=3D1592200758
+cmdline=3D"setfsuid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: 16-bit version of setfsuid() is not su=
+pported on your platform
+setfsuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid02 stime=3D1592200758
+cmdline=3D"setfsuid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid02    1  TPASS  :  setfsuid() returned expected value : 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid02_16 stime=3D1592200758
+cmdline=3D"setfsuid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: 16-bit version of setfsuid() is not su=
+pported on your platform
+setfsuid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid03 stime=3D1592200758
+cmdline=3D"setfsuid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid03    1  TPASS  :  setfsuid() returned expected value : 65534
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid03_16 stime=3D1592200758
+cmdline=3D"setfsuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: 16-bit version of setfsuid() is not su=
+pported on your platform
+setfsuid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid04 stime=3D1592200758
+cmdline=3D"setfsuid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+open failed with EACCESS as expected
+open failed with EACCESS as expected
+open call succeeded
+open call succeeded
+setfsuid04    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid04_16 stime=3D1592200758
+cmdline=3D"setfsuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: 16-bit version of setfsuid() is not su=
+pported on your platform
+setfsuid04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: Remaining cases not appropriate for co=
+nfiguration
+setfsuid04_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid01 stime=3D1592200758
+cmdline=3D"setgid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid01    1  TPASS  :  setgid(0) returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid01_16 stime=3D1592200758
+cmdline=3D"setgid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: 16-bit version of setgid() is not supported=
+ on your platform
+setgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: Remaining cases not appropriate for configu=
+ration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid02 stime=3D1592200758
+cmdline=3D"setgid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid02    1  TPASS  :  setgid returned EPERM
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid02_16 stime=3D1592200758
+cmdline=3D"setgid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: 16-bit version of setgid() is not supported=
+ on your platform
+setgid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: Remaining cases not appropriate for configu=
+ration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid03 stime=3D1592200758
+cmdline=3D"setgid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid03    1  TPASS  :  functionality of getgid() is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid03_16 stime=3D1592200758
+cmdline=3D"setgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: 16-bit version of setgid() is not supported=
+ on your platform
+setgid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+setgid/../utils/compat_16.h:97: Remaining cases not appropriate for configu=
+ration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetegid01 stime=3D1592200758
+cmdline=3D"setegid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setegid01    0  TINFO  :  getresgid reports rgid 0, egid 0, sgid 0
+setegid01    0  TINFO  :  calling setegid(nobody_gid 65534)
+setegid01    0  TINFO  :  getresgid reports rgid 0, egid 65534, sgid 0
+setegid01    1  TPASS  :  setegid() passed functional test
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetegid02 stime=3D1592200758
+cmdline=3D"setegid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setegid02    1  TPASS  :  setegid failed as expected: TEST_ERRNO=3DEPERM(1)=
+: Operation not permitted
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsgetmask01 stime=3D1592200758
+cmdline=3D"sgetmask01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sgetmask01    1  TCONF  :  sgetmask01.c:128: syscall(-1) __NR_ssetmask not =
+supported on your arch
+sgetmask01    2  TCONF  :  sgetmask01.c:128: Remaining cases not appropriat=
+e for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups01 stime=3D1592200758
+cmdline=3D"setgroups01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups01    1  TPASS  :  setgroups(65536, list) returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups01_16 stime=3D1592200758
+cmdline=3D"setgroups01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:82: 16-bit version of getgroups() is not =
+supported on your platform
+setgroups01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:82: Remaining cases not appropriate for c=
+onfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups02 stime=3D1592200758
+cmdline=3D"setgroups02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups02    1  TPASS  :  Functionality of setgroups(1, groups_list) succ=
+essful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups02_16 stime=3D1592200758
+cmdline=3D"setgroups02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: 16-bit version of setgroups() is not =
+supported on your platform
+setgroups02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: Remaining cases not appropriate for c=
+onfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups03 stime=3D1592200758
+cmdline=3D"setgroups03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups03    1  TPASS  :  setgroups(65537) fails, Size is > sysconf(_SC_N=
+GROUPS_MAX), errno=3D22
+setgroups03    2  TPASS  :  setgroups(65536) fails, Permission denied, not =
+super-user, errno=3D1
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups03_16 stime=3D1592200758
+cmdline=3D"setgroups03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: 16-bit version of setgroups() is not =
+supported on your platform
+setgroups03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: Remaining cases not appropriate for c=
+onfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups04 stime=3D1592200758
+cmdline=3D"setgroups04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups04    1  TPASS  :  setgroups() fails with expected error EFAULT er=
+rno:14
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgroups04_16 stime=3D1592200758
+cmdline=3D"setgroups04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setgroups04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: 16-bit version of setgroups() is not =
+supported on your platform
+setgroups04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setgroups/../utils/compat_16.h:77: Remaining cases not appropriate for c=
+onfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsethostname01 stime=3D1592200758
+cmdline=3D"sethostname01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:36: INFO: Testing libc sethostname()
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname01.c:26: PASS: sethostname() succeed
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:39: INFO: Testing __NR_sethostname syscall
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname01.c:26: PASS: sethostname() succeed
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsethostname02 stime=3D1592200758
+cmdline=3D"sethostname02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:36: INFO: Testing libc sethostname()
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing len =3D=3D -1
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing len > allowed maximum
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing name =3D=3D NULL
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EFAULT (14)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:39: INFO: Testing __NR_sethostname syscall
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing len =3D=3D -1
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing len > allowed maximum
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EINVAL (22)
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:32: INFO: testing name =3D=3D NULL
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname02.c:44: PASS: expected failure: EFAULT (14)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsethostname03 stime=3D1592200758
+cmdline=3D"sethostname03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:36: INFO: Testing libc sethostname()
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname03.c:32: PASS: expected failure: EPERM (1)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname.h:39: INFO: Testing __NR_sethostname syscall
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/sethostname/../setdomainname=
+/setdomainname03.c:32: PASS: expected failure: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetitimer01 stime=3D1592200758
+cmdline=3D"setitimer01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setitimer01    1  TPASS  :  functionality is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetitimer02 stime=3D1592200758
+cmdline=3D"setitimer02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setitimer02    1  TPASS  :  expected failure - errno =3D 14 - Bad address
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetitimer03 stime=3D1592200758
+cmdline=3D"setitimer03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setitimer03    1  TPASS  :  expected failure - errno =3D 22 - Invalid argum=
+ent
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetns01 stime=3D1592200758
+cmdline=3D"setns01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setns01     0  TINFO  :  ns_name=3Dipc, ns_fds[0]=3D7, ns_types[0]=3D0x8000=
+000
+setns01     0  TINFO  :  ns_name=3Dmnt, ns_fds[1]=3D8, ns_types[1]=3D0x20000
+setns01     0  TINFO  :  ns_name=3Dnet, ns_fds[2]=3D9, ns_types[2]=3D0x4000=
+0000
+setns01     0  TINFO  :  ns_name=3Dpid, ns_fds[3]=3D10, ns_types[3]=3D0x200=
+00000
+setns01     0  TINFO  :  ns_name=3Duts, ns_fds[4]=3D11, ns_types[4]=3D0x400=
+0000
+setns01     0  TINFO  :  setns(-1, 0x8000000)
+setns01     1  TPASS  :  invalid fd exp_errno=3D9
+setns01     0  TINFO  :  setns(-1, 0x20000)
+setns01     2  TPASS  :  invalid fd exp_errno=3D9
+setns01     0  TINFO  :  setns(-1, 0x40000000)
+setns01     3  TPASS  :  invalid fd exp_errno=3D9
+setns01     0  TINFO  :  setns(-1, 0x20000000)
+setns01     4  TPASS  :  invalid fd exp_errno=3D9
+setns01     0  TINFO  :  setns(-1, 0x4000000)
+setns01     5  TPASS  :  invalid fd exp_errno=3D9
+setns01     0  TINFO  :  setns(12, 0x8000000)
+setns01     6  TFAIL  :  setns01.c:176: regular file fd exp_errno=3D22: err=
+no=3DEBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x20000)
+setns01     7  TFAIL  :  setns01.c:176: regular file fd exp_errno=3D22: err=
+no=3DEBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x40000000)
+setns01     8  TFAIL  :  setns01.c:176: regular file fd exp_errno=3D22: err=
+no=3DEBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x20000000)
+setns01     9  TFAIL  :  setns01.c:176: regular file fd exp_errno=3D22: err=
+no=3DEBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(12, 0x4000000)
+setns01    10  TFAIL  :  setns01.c:176: regular file fd exp_errno=3D22: err=
+no=3DEBADF(9): Bad file descriptor
+setns01     0  TINFO  :  setns(7, 0xffffffff)
+setns01    11  TPASS  :  invalid ns_type exp_errno=3D22
+setns01     0  TINFO  :  setns(8, 0xffffffff)
+setns01    12  TPASS  :  invalid ns_type exp_errno=3D22
+setns01     0  TINFO  :  setns(9, 0xffffffff)
+setns01    13  TPASS  :  invalid ns_type exp_errno=3D22
+setns01     0  TINFO  :  setns(10, 0xffffffff)
+setns01    14  TPASS  :  invalid ns_type exp_errno=3D22
+setns01     0  TINFO  :  setns(11, 0xffffffff)
+setns01    15  TPASS  :  invalid ns_type exp_errno=3D22
+setns01     0  TINFO  :  setns(7, 0x20000)
+setns01    16  TPASS  :  mismatch ns_type/fd exp_errno=3D22
+setns01     0  TINFO  :  setns(8, 0x40000000)
+setns01    17  TPASS  :  mismatch ns_type/fd exp_errno=3D22
+setns01     0  TINFO  :  setns(9, 0x20000000)
+setns01    18  TPASS  :  mismatch ns_type/fd exp_errno=3D22
+setns01     0  TINFO  :  setns(10, 0x4000000)
+setns01    19  TPASS  :  mismatch ns_type/fd exp_errno=3D22
+setns01     0  TINFO  :  setns(11, 0x8000000)
+setns01    20  TPASS  :  mismatch ns_type/fd exp_errno=3D22
+setns01     0  TINFO  :  setns(7, 0x8000000)
+setns01    21  TPASS  :  without CAP_SYS_ADMIN exp_errno=3D1
+setns01     0  TINFO  :  setns(8, 0x20000)
+setns01    22  TPASS  :  without CAP_SYS_ADMIN exp_errno=3D1
+setns01     0  TINFO  :  setns(9, 0x40000000)
+setns01    23  TPASS  :  without CAP_SYS_ADMIN exp_errno=3D1
+setns01     0  TINFO  :  setns(10, 0x20000000)
+setns01    24  TPASS  :  without CAP_SYS_ADMIN exp_errno=3D1
+setns01     0  TINFO  :  setns(11, 0x4000000)
+setns01    25  TPASS  :  without CAP_SYS_ADMIN exp_errno=3D1
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetns02 stime=3D1592200758
+cmdline=3D"setns02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setns02     0  TINFO  :  test_newuts
+setns02     0  TINFO  :  creating child with clone_flag=3D0x4000000, ns_fla=
+g=3D0x4000000
+setns02     1  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  creating child with clone_flag=3D0x4000000, ns_fla=
+g=3D0x0
+setns02     2  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  test_newipc
+setns02     0  TINFO  :  creating child with clone_flag=3D0x8000000, ns_fla=
+g=3D0x8000000
+setns02     3  TPASS  :  child finished succesfully
+setns02     0  TINFO  :  creating child with clone_flag=3D0x8000000, ns_fla=
+g=3D0x0
+setns02     4  TPASS  :  child finished succesfully
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpgid01 stime=3D1592200758
+cmdline=3D"setpgid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setpgid01    1  TPASS  :  test setpgid(2897, 2897) success
+setpgid01    2  TPASS  :  test setpgid(0, 0) success
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpgid02 stime=3D1592200758
+cmdline=3D"setpgid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setpgid02    1  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+setpgid02    2  TPASS  :  expected failure - errno =3D 3 : No such process
+setpgid02    3  TPASS  :  expected failure - errno =3D 1 : Operation not pe=
+rmitted
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpgid03 stime=3D1592200758
+cmdline=3D"setpgid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setpgid03    1  TPASS  :  setpgid failed with EPERM
+setpgid03    2  TPASS  :  setpgid failed with EACCES
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpgrp01 stime=3D1592200758
+cmdline=3D"setpgrp01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setpgrp01    1  TPASS  :  setpgrp -  Call the setpgrp system call returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpgrp02 stime=3D1592200758
+cmdline=3D"setpgrp02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setpgrp02    1  TPASS  :  functionality is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpriority01 stime=3D1592200758
+cmdline=3D"setpriority01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setpriority01.c:75: PASS: setpriority(PRIO_PROCESS(0), 2914, -20..19) succe=
+eded
+setpriority01.c:75: PASS: setpriority(PRIO_PGRP(1), 2915, -20..19) succeeded
+setpriority01.c:75: PASS: setpriority(PRIO_USER(2), 1091, -20..19) succeeded
+userdel: ltp_setpriority01 mail spool (/var/mail/ltp_setpriority01) not fou=
+nd
+userdel: ltp_setpriority01 home directory (/home/ltp_setpriority01) not fou=
+nd
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetpriority02 stime=3D1592200758
+cmdline=3D"setpriority02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setpriority02.c:82: PASS: setpriority(-1, 0, -2) fails as expected: EINVAL =
+(22)
+setpriority02.c:82: PASS: setpriority(0, -1, -2) fails as expected: ESRCH (=
+3)
+setpriority02.c:82: PASS: setpriority(1, -1, -2) fails as expected: ESRCH (=
+3)
+setpriority02.c:82: PASS: setpriority(2, -1, -2) fails as expected: ESRCH (=
+3)
+setpriority02.c:82: PASS: setpriority(0, 0, -2) as unprivileged user fails =
+as expected: EACCES (13)
+setpriority02.c:82: PASS: setpriority(1, 0, -2) as unprivileged user fails =
+as expected: EACCES (13)
+setpriority02.c:82: PASS: setpriority(0, 1, -2) as unprivileged user fails =
+as expected: EPERM (1)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid01 stime=3D1592200758
+cmdline=3D"setregid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid01.c:49: PASS: Dont change either real or effective gid
+setregid01.c:49: PASS: Change effective to effective gid
+setregid01.c:49: PASS: Change real to real gid
+setregid01.c:49: PASS: Change effective to real gid
+setregid01.c:49: PASS: Try to change real to current real
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid01_16 stime=3D1592200758
+cmdline=3D"setregid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setregid/../utils/compat_tst=
+_16.h:128: CONF: 16-bit version of setregid() is not supported on your plat=
+form
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid02 stime=3D1592200758
+cmdline=3D"setregid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid02.c:98: PASS: setregid(-1, 0) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+setregid02.c:98: PASS: setregid(-1, 2) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+setregid02.c:98: PASS: setregid(0, -1) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+setregid02.c:98: PASS: setregid(2, -1) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+setregid02.c:98: PASS: setregid(0, 2) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+setregid02.c:98: PASS: setregid(2, 0) failed as expected: EPERM (1)
+setregid02.c:84: PASS: real or effective gid wasn't modified as expected
+
+Summary:
+passed   12
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid02_16 stime=3D1592200758
+cmdline=3D"setregid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setregid/../utils/compat_tst=
+_16.h:128: CONF: 16-bit version of setregid() is not supported on your plat=
+form
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid03 stime=3D1592200758
+cmdline=3D"setregid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid03.c:61: INFO: getgrnam(nobody) failed - try fallback nogroup
+setregid03.c:95: PASS: setregid(1, 2) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(-1, 1) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(-1, 2) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(2, -1) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(-1, -1) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(-1, 2) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(2, -1) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:95: PASS: setregid(2, 2) succeeded as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:105: PASS: setregid(1, -1) failed as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:105: PASS: setregid(-1, 1) failed as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+setregid03.c:105: PASS: setregid(1, 1) failed as expected
+setregid03.c:121: PASS: real or effective gid was modified as expected
+
+Summary:
+passed   22
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid03_16 stime=3D1592200758
+cmdline=3D"setregid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid03.c:61: INFO: getgrnam(nobody) failed - try fallback nogroup
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setregid/../utils/compat_tst=
+_16.h:128: CONF: 16-bit version of setregid() is not supported on your plat=
+form
+tst_test.c:374: CONF: Reported by child (2940)
+
+Summary:
+passed   0
+failed   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid04 stime=3D1592200758
+cmdline=3D"setregid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid04.c:84: INFO: getgrnam(nobody) failed - try fallback nogroup
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+setregid04.c:61: PASS: real or effective gid was modified as expected
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid04_16 stime=3D1592200758
+cmdline=3D"setregid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setregid04.c:84: INFO: getgrnam(nobody) failed - try fallback nogroup
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setregid/../utils/compat_tst=
+_16.h:128: CONF: 16-bit version of setregid() is not supported on your plat=
+form
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid01 stime=3D1592200758
+cmdline=3D"setresgid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid01    1  TPASS  :  Test for setresgid(-1, -1, -1) successful
+setresgid01    2  TPASS  :  Test for setresgid(-1, -1, nobody) successful
+setresgid01    3  TPASS  :  Test for setresgid(-1, nobody, -1) successful
+setresgid01    4  TPASS  :  Test for setresgid(nobody, -1, -1) successful
+setresgid01    5  TPASS  :  Test for setresgid(root, root, root) successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid01_16 stime=3D1592200758
+cmdline=3D"setresgid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: 16-bit version of setresgid() is not=
+ supported on your platform
+setresgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid02 stime=3D1592200758
+cmdline=3D"setresgid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid02    1  TPASS  :  Test for setresgid(-1, -1, -1) successful
+setresgid02    2  TPASS  :  Test for setresgid(-1, -1, bin) successful
+setresgid02    3  TPASS  :  Test for setresgid(-1, bin, -1) successful
+setresgid02    4  TPASS  :  Test for setresgid(bin, -1, -1) successful
+setresgid02    5  TPASS  :  Test for setresgid(root, root, root) successful
+setresgid02    6  TPASS  :  Test for setresgid(root, nobody, nobody) succes=
+sful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid02_16 stime=3D1592200758
+cmdline=3D"setresgid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: 16-bit version of setresgid() is not=
+ supported on your platform
+setresgid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid03 stime=3D1592200758
+cmdline=3D"setresgid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid03    1  TPASS  :  setresgid() failed as expected for unprivileged=
+ user : errno 1
+setresgid03    2  TPASS  :  setresgid() failed as expected for unprivileged=
+ user : errno 1
+setresgid03    3  TPASS  :  setresgid() failed as expected for unprivileged=
+ user : errno 1
+setresgid03    4  TPASS  :  setresgid() failed as expected for unprivileged=
+ user : errno 1
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid03_16 stime=3D1592200758
+cmdline=3D"setresgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: 16-bit version of setresgid() is not=
+ supported on your platform
+setresgid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid04 stime=3D1592200758
+cmdline=3D"setresgid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid04    1  TPASS  :  setresgid succeeded as expected
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid04_16 stime=3D1592200758
+cmdline=3D"setresgid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresgid04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: 16-bit version of setresgid() is not=
+ supported on your platform
+setresgid04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresgid/../utils/compat_16.h:146: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid01 stime=3D1592200758
+cmdline=3D"setresuid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid01    1  TPASS  :  real uid =3D 0, effective uid =3D 0, and saved =
+uid =3D 0 as expected
+setresuid01    2  TPASS  :  real uid =3D 0, effective uid =3D 0, and saved =
+uid =3D 65534 as expected
+setresuid01    3  TPASS  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 65534 as expected
+setresuid01    4  TPASS  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 0 as expected
+setresuid01    5  TPASS  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 2 as expected
+setresuid01    6  TPASS  :  real uid =3D 0, effective uid =3D 0, and saved =
+uid =3D 2 as expected
+setresuid01    7  TPASS  :  real uid =3D 65534, effective uid =3D 0, and sa=
+ved uid =3D 2 as expected
+setresuid01    8  TPASS  :  real uid =3D 65534, effective uid =3D 0, and sa=
+ved uid =3D 2 as expected
+setresuid01    9  TPASS  :  real uid =3D 0, effective uid =3D 0, and saved =
+uid =3D 0 as expected
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid01_16 stime=3D1592200758
+cmdline=3D"setresuid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not=
+ supported on your platform
+setresuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid02 stime=3D1592200758
+cmdline=3D"setresuid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid02    1  TPASS  :  setresuid(-1, -1, 2) succeeded as expected.
+setresuid02    0  TINFO  :  real uid =3D 65534, effective uid =3D 2, and sa=
+ved uid =3D 2 as expected
+setresuid02    2  TPASS  :  setresuid(-1, 65534, -1) succeeded as expected.
+setresuid02    0  TINFO  :  real uid =3D 65534, effective uid =3D 65534, an=
+d saved uid =3D 2 as expected
+setresuid02    3  TPASS  :  setresuid(2, -1, -1) succeeded as expected.
+setresuid02    0  TINFO  :  real uid =3D 2, effective uid =3D 65534, and sa=
+ved uid =3D 2 as expected
+setresuid02    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid02_16 stime=3D1592200758
+cmdline=3D"setresuid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not=
+ supported on your platform
+setresuid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for =
+configuration
+setresuid02_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid03 stime=3D1592200758
+cmdline=3D"setresuid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid03    1  TPASS  :  setresuid(65534, -1, -1) failed as expected.
+setresuid03    0  TINFO  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 2 as expected
+setresuid03    2  TPASS  :  setresuid(-1, -1, 65534) failed as expected.
+setresuid03    0  TINFO  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 2 as expected
+setresuid03    3  TPASS  :  setresuid(-1, 65534, -1) failed as expected.
+setresuid03    0  TINFO  :  real uid =3D 0, effective uid =3D 2, and saved =
+uid =3D 2 as expected
+setresuid03    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid03_16 stime=3D1592200758
+cmdline=3D"setresuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not=
+ supported on your platform
+setresuid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for =
+configuration
+setresuid03_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid04 stime=3D1592200758
+cmdline=3D"setresuid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+open failed with EACCES as expected
+open failed with EACCES as expected
+open call succeeded
+setresuid04    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid04_16 stime=3D1592200758
+cmdline=3D"setresuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not=
+ supported on your platform
+setresuid04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for =
+configuration
+setresuid04_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid05 stime=3D1592200758
+cmdline=3D"setresuid05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid05    1  TPASS  :  setresuid succeeded as expected
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid05_16 stime=3D1592200758
+cmdline=3D"setresuid05_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setresuid05_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: 16-bit version of setresuid() is not=
+ supported on your platform
+setresuid05_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/setresuid/../utils/compat_16.h:136: Remaining cases not appropriate for =
+configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid01 stime=3D1592200758
+cmdline=3D"setreuid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid01    1  TPASS  :  setreuid -  Don't change either real or effectiv=
+e uid returned 0
+setreuid01    2  TPASS  :  setreuid -  change effective to effective uid re=
+turned 0
+setreuid01    3  TPASS  :  setreuid -  change real to real uid returned 0
+setreuid01    4  TPASS  :  setreuid -  change effective to real uid returne=
+d 0
+setreuid01    5  TPASS  :  setreuid -  try to change real to current real r=
+eturned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid01_16 stime=3D1592200758
+cmdline=3D"setreuid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid02 stime=3D1592200758
+cmdline=3D"setreuid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid02    1  TPASS  :  real or effective uid was modified as expected
+setreuid02    2  TPASS  :  real or effective uid was modified as expected
+setreuid02    3  TPASS  :  real or effective uid was modified as expected
+setreuid02    4  TPASS  :  real or effective uid was modified as expected
+setreuid02    5  TPASS  :  real or effective uid was modified as expected
+setreuid02    6  TPASS  :  real or effective uid was modified as expected
+setreuid02    7  TPASS  :  real or effective uid was modified as expected
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid02_16 stime=3D1592200758
+cmdline=3D"setreuid02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid03 stime=3D1592200758
+cmdline=3D"setreuid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid03    1  TPASS  :  setreuid(65534, 65534) succeeded as expected.
+setreuid03    2  TPASS  :  setreuid(-1, 65534) succeeded as expected.
+setreuid03    3  TPASS  :  setreuid(65534, -1) succeeded as expected.
+setreuid03    4  TPASS  :  setreuid(-1, -1) succeeded as expected.
+setreuid03    5  TPASS  :  setreuid(-1, 0) succeeded as expected.
+setreuid03    6  TPASS  :  setreuid(0, -1) succeeded as expected.
+setreuid03    7  TPASS  :  setreuid(0, 0) succeeded as expected.
+setreuid03    8  TPASS  :  setreuid(0, 65534) succeeded as expected.
+setreuid03    9  TPASS  :  setreuid(0, 2) succeeded as expected.
+setreuid03   10  TPASS  :  setreuid(2, 0) succeeded as expected.
+setreuid03   11  TPASS  :  setreuid(2, -1) succeeded as expected.
+setreuid03   12  TPASS  :  setreuid(2, 2) succeeded as expected.
+setreuid03   13  TPASS  :  setreuid(2, 65534) succeeded as expected.
+setreuid03   14  TPASS  :  setreuid(65534, 2) succeeded as expected.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid03_16 stime=3D1592200758
+cmdline=3D"setreuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid04 stime=3D1592200758
+cmdline=3D"setreuid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid04    1  TPASS  :  setreuid(-1, -1) succeeded as expected.
+setreuid04    2  TPASS  :  setreuid(65534, 65534) succeeded as expected.
+setreuid04    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid04_16 stime=3D1592200758
+cmdline=3D"setreuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+setreuid04_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid05 stime=3D1592200758
+cmdline=3D"setreuid05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid05    1  TPASS  :  setreuid(65534, 0) succeeded as expected.
+setreuid05    2  TPASS  :  setreuid(-1, 65534) succeeded as expected.
+setreuid05    3  TPASS  :  setreuid(-1, 0) succeeded as expected.
+setreuid05    4  TPASS  :  setreuid(1, -1) succeeded as expected.
+setreuid05    5  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05    6  TPASS  :  setreuid(-1, 0) succeeded as expected.
+setreuid05    7  TPASS  :  setreuid(-1, 65534) succeeded as expected.
+setreuid05    8  TPASS  :  setreuid(-1, 1) succeeded as expected.
+setreuid05    9  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05   10  TPASS  :  setreuid(2, 1) succeeded as expected.
+setreuid05   11  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05   12  TPASS  :  setreuid(-1, 1) succeeded as expected.
+setreuid05   13  TPASS  :  setreuid(1, -1) succeeded as expected.
+setreuid05   14  TPASS  :  setreuid(-1, 2) succeeded as expected.
+setreuid05    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid05_16 stime=3D1592200758
+cmdline=3D"setreuid05_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid05_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid05_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+setreuid05_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid06 stime=3D1592200758
+cmdline=3D"setreuid06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid06    1  TPASS  :  setreuid set errno to EPERM as expected
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid06_16 stime=3D1592200758
+cmdline=3D"setreuid06_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid06_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid06_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid07 stime=3D1592200758
+cmdline=3D"setreuid07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+open failed with EACCES as expected
+open failed with EACCES as expected
+open call succeeded
+setreuid07    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid07_16 stime=3D1592200758
+cmdline=3D"setreuid07_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setreuid07_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: 16-bit version of setreuid() is not su=
+pported on your platform
+setreuid07_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setreuid/../utils/compat_16.h:127: Remaining cases not appropriate for co=
+nfiguration
+setreuid07_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit01 stime=3D1592200758
+cmdline=3D"setrlimit01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setrlimit01    1  TPASS  :  RLIMIT_NOFILE functionality is correct
+setrlimit01    2  TPASS  :  RLIMIT_FSIZE test PASSED
+setrlimit01    3  TPASS  :  RLIMIT_NPROC functionality is correct
+setrlimit01    4  TPASS  :  RLIMIT_CORE functionality is correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit02 stime=3D1592200758
+cmdline=3D"setrlimit02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setrlimit02.c:44: PASS: setrlimit() failed as expected: EINVAL (22)
+setrlimit02.c:44: PASS: setrlimit() failed as expected: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit03 stime=3D1592200758
+cmdline=3D"setrlimit03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setrlimit03.c:55: PASS: setrlimit() failed as expected: EPERM (1)
+setrlimit03.c:55: PASS: setrlimit() failed as expected: EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit04 stime=3D1592200758
+cmdline=3D"setrlimit04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setrlimit04.c:42: PASS: child process completed OK
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit05 stime=3D1592200758
+cmdline=3D"setrlimit05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setrlimit05.c:38: PASS: setrlimit() failed as expected: EFAULT (14)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetrlimit06 stime=3D1592200758
+cmdline=3D"setrlimit06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setrlimit06.c:86: PASS: Got SIGXCPU then SIGKILL after reaching both limit
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D199 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsid01 stime=3D1592200760
+cmdline=3D"setsid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setsid01    1  TPASS  :  setsid SUCCESS to set errno to EPERM
+setsid01    1  TPASS  :  all misc tests passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt01 stime=3D1592200761
+cmdline=3D"setsockopt01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setsockopt01    1  TPASS  :  bad file descriptor successful
+setsockopt01    2  TPASS  :  bad file descriptor successful
+setsockopt01    3  TPASS  :  invalid option buffer successful
+setsockopt01    4  TPASS  :  invalid optlen successful
+setsockopt01    5  TPASS  :  invalid level successful
+setsockopt01    6  TPASS  :  invalid option name (UDP) successful
+setsockopt01    7  TPASS  :  invalid option name (IP) successful
+setsockopt01    8  TPASS  :  invalid option name (TCP) successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt02 stime=3D1592200761
+cmdline=3D"setsockopt02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setsockopt02.c:69: PASS: Can create ring buffer with good settinegs
+setsockopt02.c:78: PASS: Refused bad tp_sizeof_priv value: EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt03 stime=3D1592200761
+cmdline=3D"setsockopt03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_kernel.c:79: INFO: uname.machine=3Dx86_64 kernel is 64bit
+setsockopt03.c:86: CONF: The vulnerability was only present in 32-bit compa=
+t mode
+setsockopt03.c:109: PASS: We didn't cause a crash, setsockopt returned -1: =
+EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt04 stime=3D1592200761
+cmdline=3D"setsockopt04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setsockopt04.c:39: INFO: Try to set send buffer size to: 4294967040
+setsockopt04.c:40: INFO: Send buffer size was set to: 4608
+setsockopt04.c:45: PASS: Was unable to set negative send buffer size!
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt05 stime=3D1592200761
+cmdline=3D"setsockopt05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setsockopt05.c:81: PASS: Nothing bad happened, probably
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt06 stime=3D1592200761
+cmdline=3D"setsockopt06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+=2E./../../../include/tst_fuzzy_sync.h:507: INFO: Minimum sampling period e=
+nded
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1024, delay_bias=
+ =3D -10230
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D 29463ns, avg_dev =3D   839ns, dev_ratio =3D 0.03 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D 3964981ns, avg_dev =3D 32728ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D 3985056ns, avg_dev =3D 32837ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D  9388ns, avg_dev =3D  1467ns, dev_ratio =3D 0.16 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D  3773  , avg_dev =3D   548  , dev_ratio =3D 0.15 }
+=2E./../../../include/tst_fuzzy_sync.h:519: INFO: Reached deviation ratios =
+< 0.10, introducing randomness
+=2E./../../../include/tst_fuzzy_sync.h:522: INFO: Delay range is [-1669156,=
+ 1681840]
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1082, delay_bias=
+ =3D -10230
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D 28390ns, avg_dev =3D    40ns, dev_ratio =3D 0.00 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D 3997930ns, avg_dev =3D 67825ns, dev_ratio =3D 0.02 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D 4016528ns, avg_dev =3D 67960ns, dev_ratio =3D 0.02 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D  9792ns, avg_dev =3D   905ns, dev_ratio =3D 0.09 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D  4094  , avg_dev =3D   380  , dev_ratio =3D 0.09 }
+=2E./../../../include/tst_fuzzy_sync.h:637: INFO: Exceeded execution time, =
+requesting exit
+setsockopt06.c:110: PASS: Nothing bad happened, probably
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D271 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D27000 cstime=3D70
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt07 stime=3D1592201032
+cmdline=3D"setsockopt07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+=2E./../../../include/tst_fuzzy_sync.h:643: INFO: Exceeded execution loops,=
+ requesting exit
+setsockopt07.c:120: PASS: Cannot reproduce bug
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D451 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsettimeofday01 stime=3D1592201040
+cmdline=3D"settimeofday01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+settimeofday01.c:54: PASS: settimeofday() pass
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsettimeofday02 stime=3D1592201040
+cmdline=3D"settimeofday02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tst_capability.c:29: INFO: Dropping CAP_SYS_TIME(25)
+settimeofday02.c:33: INFO: tv.tv_sec is negative
+settimeofday02.c:44: PASS: Received expected errno: EINVAL (22)
+settimeofday02.c:33: INFO: tv.tv_usec is outside the range [0..999,999]
+settimeofday02.c:44: PASS: Received expected errno: EINVAL (22)
+settimeofday02.c:33: INFO: calling process without CAP_SYS_TIME capability
+settimeofday02.c:44: PASS: Received expected errno: EPERM (1)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid01 stime=3D1592201040
+cmdline=3D"setuid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setuid01.c:30: PASS: setuid(0) successfully
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid01_16 stime=3D1592201040
+cmdline=3D"setuid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setuid/../utils/compat_tst_1=
+6.h:84: CONF: 16-bit version of setuid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid03 stime=3D1592201040
+cmdline=3D"setuid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setuid03.c:29: PASS: setuid() returned errno EPERM
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid03_16 stime=3D1592201040
+cmdline=3D"setuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setuid/../utils/compat_tst_1=
+6.h:84: CONF: 16-bit version of setuid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid04 stime=3D1592201040
+cmdline=3D"setuid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setuid04.c:49: PASS: open() returned errno EACCES
+setuid04.c:49: PASS: open() returned errno EACCES
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetuid04_16 stime=3D1592201040
+cmdline=3D"setuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setuid/../utils/compat_tst_1=
+6.h:84: CONF: 16-bit version of setuid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetxattr01 stime=3D1592201040
+cmdline=3D"setxattr01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1308: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+tst_test.c:1308: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+tst_test.c:1308: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+tst_test.c:1308: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=3D=
+''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+tst_test.c:1308: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+tst_test.c:1308: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:147: CONF: setxattr(2) not supported
+tst_test.c:1308: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts=3D'' extra opts=
+=3D''
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:147: CONF: setxattr(2) not supported
+tst_test.c:1308: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opts=
+=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr01.c:183: PASS: setxattr(2) failed: EINVAL (22)
+setxattr01.c:183: PASS: setxattr(2) failed: ENODATA (61)
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: E2BIG (7)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: EEXIST (17)
+setxattr01.c:161: PASS: setxattr(2) passed
+setxattr01.c:183: PASS: setxattr(2) failed: ERANGE (34)
+setxattr01.c:183: PASS: setxattr(2) failed: EFAULT (14)
+
+Summary:
+passed   56
+failed   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D12 cstime=3D393
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetxattr02 stime=3D1592201048
+cmdline=3D"setxattr02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr02.c:154: PASS: setxattr(2) on testfile passed
+setxattr02.c:154: PASS: setxattr(2) on testdir passed
+setxattr02.c:179: PASS: setxattr(2) on symlink failed: EEXIST (17)
+setxattr02.c:179: PASS: setxattr(2) on fifo failed: EPERM (1)
+setxattr02.c:179: PASS: setxattr(2) on chr failed: EPERM (1)
+setxattr02.c:179: PASS: setxattr(2) on blk failed: EPERM (1)
+setxattr02.c:179: PASS: setxattr(2) on sock failed: EPERM (1)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetxattr03 stime=3D1592201048
+cmdline=3D"setxattr03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+setxattr03.c:98: PASS: Set attr to immutable file: EPERM (1)
+setxattr03.c:98: PASS: Set attr to append-only file: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmat01 stime=3D1592201048
+cmdline=3D"shmat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+shmat01.c:124: PASS: shmat() succeeded to attach NULL address
+shmat01.c:124: PASS: shmat() succeeded to attach aligned address
+shmat01.c:124: PASS: shmat() succeeded to attach unaligned address with SHM=
+_RND
+tst_coredump.c:32: INFO: Avoid dumping corefile for process(pid=3D4132)
+shmat01.c:124: PASS: shmat() succeeded to attach aligned address with SHM_R=
+EADONLY, and got SIGSEGV on write
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmat02 stime=3D1592201048
+cmdline=3D"shmat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+shmat02.c:56: PASS: shmat() failed as expected: EINVAL (22)
+shmat02.c:56: PASS: shmat() failed as expected: EINVAL (22)
+shmat02.c:56: PASS: shmat() failed as expected: EACCES (13)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmat03 stime=3D1592201048
+cmdline=3D"shmat03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+shmat03.c:65: INFO: Attempting to attach shared memory to null page
+shmat03.c:74: PASS: shmat returned EINVAL
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl01 stime=3D1592201048
+cmdline=3D"shmctl01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmctl01    1  TPASS  :  pid, size, # of attaches and mode are correct - pa=
+ss #1
+shmctl01    2  TPASS  :  pid, size, # of attaches and mode are correct - pa=
+ss #2
+shmctl01    3  TPASS  :  new mode and change time are correct
+shmctl01    4  TPASS  :  get correct shared memory limits
+shmctl01    5  TPASS  :  get correct shared memory id for index: 7
+shmctl01    6  TPASS  :  SHM_LOCK is set
+shmctl01    7  TPASS  :  SHM_LOCK is cleared
+shmctl01    8  TPASS  :  shared memory appears to be removed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl02 stime=3D1592201049
+cmdline=3D"shmctl02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmctl02    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+shmctl02    2  TPASS  :  expected failure - errno =3D 14 : Bad address
+shmctl02    3  TPASS  :  expected failure - errno =3D 14 : Bad address
+shmctl02    4  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+shmctl02    5  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+shmctl02    6  TCONF  :  shmctl02.c:138: shmctl() did not fail for non-root=
+ user.This may be okay for your distribution.
+shmctl02    7  TCONF  :  shmctl02.c:138: shmctl() did not fail for non-root=
+ user.This may be okay for your distribution.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl03 stime=3D1592201049
+cmdline=3D"shmctl03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmctl03    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+shmctl03    2  TPASS  :  expected failure - errno =3D 1 : Operation not per=
+mitted
+shmctl03    3  TPASS  :  expected failure - errno =3D 1 : Operation not per=
+mitted
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl04 stime=3D1592201049
+cmdline=3D"shmctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmctl04    1  TPASS  :  SHM_INFO call succeeded
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl05 stime=3D1592201049
+cmdline=3D"shmctl05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 00m 20s
+=2E./../../../../include/tst_fuzzy_sync.h:507: INFO: Minimum sampling perio=
+d ended
+=2E./../../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1024, delay_b=
+ias =3D 0
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { a=
+vg =3D   232ns, avg_dev =3D    35ns, dev_ratio =3D 0.15 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { a=
+vg =3D 11509ns, avg_dev =3D  1389ns, dev_ratio =3D 0.12 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { a=
+vg =3D  6535ns, avg_dev =3D  1272ns, dev_ratio =3D 0.19 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { a=
+vg =3D  5206ns, avg_dev =3D   337ns, dev_ratio =3D 0.06 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { a=
+vg =3D  2047  , avg_dev =3D   140  , dev_ratio =3D 0.07 }
+=2E./../../../../include/tst_fuzzy_sync.h:519: INFO: Reached deviation rati=
+os < 0.10, introducing randomness
+=2E./../../../../include/tst_fuzzy_sync.h:522: INFO: Delay range is [-1968,=
+ 3861]
+=2E./../../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1134, delay_b=
+ias =3D 0
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { a=
+vg =3D   297ns, avg_dev =3D    27ns, dev_ratio =3D 0.09 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { a=
+vg =3D  9755ns, avg_dev =3D   434ns, dev_ratio =3D 0.04 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { a=
+vg =3D  4972ns, avg_dev =3D   314ns, dev_ratio =3D 0.06 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { a=
+vg =3D  5080ns, avg_dev =3D   236ns, dev_ratio =3D 0.05 }
+=2E./../../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { a=
+vg =3D  2011  , avg_dev =3D   105  , dev_ratio =3D 0.05 }
+=2E./../../../../include/tst_fuzzy_sync.h:637: INFO: Exceeded execution tim=
+e, requesting exit
+shmctl05.c:85: PASS: didn't crash
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D11 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D997 cstime=3D989
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmdt01 stime=3D1592201060
+cmdline=3D"shmdt01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmdt01     1  TPASS  :  shared memory detached correctly
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmdt02 stime=3D1592201060
+cmdline=3D"shmdt02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmdt02     1  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmget01 stime=3D1592201060
+cmdline=3D"shmget01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmget01    1  TPASS  :  size, pid & mode are correct
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmget02 stime=3D1592201060
+cmdline=3D"shmget02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmget02    1  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+shmget02    2  TPASS  :  expected failure - errno =3D 22 : Invalid argument
+shmget02    3  TPASS  :  expected failure - errno =3D 17 : File exists
+shmget02    4  TPASS  :  expected failure - errno =3D 2 : No such file or d=
+irectory
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmget03 stime=3D1592201060
+cmdline=3D"shmget03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmget03    1  TPASS  :  expected failure - errno =3D 28 : No space left on=
+ device
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmget04 stime=3D1592201060
+cmdline=3D"shmget04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmget04    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmget05 stime=3D1592201060
+cmdline=3D"shmget05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+shmget05    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigaction01 stime=3D1592201060
+cmdline=3D"sigaction01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigaction01    1  TPASS  :  SA_RESETHAND did not cause SA_SIGINFO to be cle=
+ared
+sigaction01    2  TPASS  :  SA_RESETHAND was masked when handler executed
+sigaction01    3  TPASS  :  sig has been masked because sa_mask originally =
+contained sig
+sigaction01    4  TPASS  :  siginfo pointer non NULL
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigaction02 stime=3D1592201060
+cmdline=3D"sigaction02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigaction02    1  TPASS  :  call failed with expected EINVAL error
+sigaction02    2  TPASS  :  call failed with expected EINVAL error
+sigaction02    3  TPASS  :  call failed with expected EINVAL error
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigaltstack01 stime=3D1592201060
+cmdline=3D"sigaltstack01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigaltstack01    1  TPASS  :  Functionality of sigaltstack() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigaltstack02 stime=3D1592201060
+cmdline=3D"sigaltstack02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigaltstack02    1  TPASS  :  stgaltstack() fails, Invalid Flag value, errn=
+o:22
+sigaltstack02    2  TPASS  :  stgaltstack() fails, alternate stack is < MIN=
+SIGSTKSZ, errno:12
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsighold02 stime=3D1592201060
+cmdline=3D"sighold02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sighold02    1  TPASS  :  All signals were hold
+sighold02    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal01 stime=3D1592201060
+cmdline=3D"signal01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal01    1  TPASS  :  signal(SIGKILL, 0x1(SIG_IGN)) failed with EINVAL
+signal01    0  TINFO  :  Child process returned TPASS
+signal01    1  TPASS  :  signal(SIGKILL, (nil)(SIG_DFL)) failed with EINVAL
+signal01    0  TINFO  :  Child process returned TPASS
+signal01    1  TPASS  :  signal(SIGKILL, 0x55628cd90f50(catchsig())) failed=
+ with EINVAL
+signal01    0  TINFO  :  Child process returned TPASS
+signal01    1  TPASS  :  Child killed with SIGKILL
+signal01    2  TPASS  :  Child killed with SIGKILL
+signal01    3  TPASS  :  Child killed with SIGKILL
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal02 stime=3D1592201060
+cmdline=3D"signal02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal02    1  TPASS  :  expected failure - errno =3D 22 - Invalid argument
+signal02    2  TPASS  :  expected failure - errno =3D 22 - Invalid argument
+signal02    3  TPASS  :  expected failure - errno =3D 22 - Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal03 stime=3D1592201060
+cmdline=3D"signal03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal03    1  TPASS  :  signal03 call succeeded
+signal03    2  TPASS  :  signal03 call succeeded
+signal03    3  TPASS  :  signal03 call succeeded
+signal03    4  TPASS  :  signal03 call succeeded
+signal03    5  TPASS  :  signal03 call succeeded
+signal03    6  TPASS  :  signal03 call succeeded
+signal03    7  TPASS  :  signal03 call succeeded
+signal03    8  TPASS  :  signal03 call succeeded
+signal03    9  TPASS  :  signal03 call succeeded
+signal03   10  TPASS  :  signal03 call succeeded
+signal03   11  TPASS  :  signal03 call succeeded
+signal03   12  TPASS  :  signal03 call succeeded
+signal03   13  TPASS  :  signal03 call succeeded
+signal03   14  TPASS  :  signal03 call succeeded
+signal03   15  TPASS  :  signal03 call succeeded
+signal03   16  TPASS  :  signal03 call succeeded
+signal03   17  TPASS  :  signal03 call succeeded
+signal03   18  TPASS  :  signal03 call succeeded
+signal03   19  TPASS  :  signal03 call succeeded
+signal03   20  TPASS  :  signal03 call succeeded
+signal03   21  TPASS  :  signal03 call succeeded
+signal03   22  TPASS  :  signal03 call succeeded
+signal03   23  TPASS  :  signal03 call succeeded
+signal03   24  TPASS  :  signal03 call succeeded
+signal03   25  TPASS  :  signal03 call succeeded
+signal03   26  TPASS  :  signal03 call succeeded
+signal03   27  TPASS  :  signal03 call succeeded
+signal03   28  TPASS  :  signal03 call succeeded
+signal03   29  TPASS  :  signal03 call succeeded
+signal03   30  TPASS  :  signal03 call succeeded
+signal03   31  TPASS  :  signal03 call succeeded
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal04 stime=3D1592201060
+cmdline=3D"signal04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal04    1  TPASS  :  signal04 call succeeded received (nil).
+signal04    2  TPASS  :  signal04 call succeeded received (nil).
+signal04    3  TPASS  :  signal04 call succeeded received (nil).
+signal04    4  TPASS  :  signal04 call succeeded received (nil).
+signal04    5  TPASS  :  signal04 call succeeded received (nil).
+signal04    6  TPASS  :  signal04 call succeeded received (nil).
+signal04    7  TPASS  :  signal04 call succeeded received (nil).
+signal04    8  TPASS  :  signal04 call succeeded received (nil).
+signal04    9  TPASS  :  signal04 call succeeded received (nil).
+signal04   10  TPASS  :  signal04 call succeeded received (nil).
+signal04   11  TPASS  :  signal04 call succeeded received (nil).
+signal04   12  TPASS  :  signal04 call succeeded received (nil).
+signal04   13  TPASS  :  signal04 call succeeded received (nil).
+signal04   14  TPASS  :  signal04 call succeeded received (nil).
+signal04   15  TPASS  :  signal04 call succeeded received (nil).
+signal04   16  TPASS  :  signal04 call succeeded received (nil).
+signal04   17  TPASS  :  signal04 call succeeded received (nil).
+signal04   18  TPASS  :  signal04 call succeeded received (nil).
+signal04   19  TPASS  :  signal04 call succeeded received (nil).
+signal04   20  TPASS  :  signal04 call succeeded received (nil).
+signal04   21  TPASS  :  signal04 call succeeded received (nil).
+signal04   22  TPASS  :  signal04 call succeeded received (nil).
+signal04   23  TPASS  :  signal04 call succeeded received (nil).
+signal04   24  TPASS  :  signal04 call succeeded received (nil).
+signal04   25  TPASS  :  signal04 call succeeded received (nil).
+signal04   26  TPASS  :  signal04 call succeeded received (nil).
+signal04   27  TPASS  :  signal04 call succeeded received (nil).
+signal04   28  TPASS  :  signal04 call succeeded received (nil).
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal05 stime=3D1592201060
+cmdline=3D"signal05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal05    1  TPASS  :  signal05 call succeeded
+signal05    2  TPASS  :  signal05 call succeeded
+signal05    3  TPASS  :  signal05 call succeeded
+signal05    4  TPASS  :  signal05 call succeeded
+signal05    5  TPASS  :  signal05 call succeeded
+signal05    6  TPASS  :  signal05 call succeeded
+signal05    7  TPASS  :  signal05 call succeeded
+signal05    8  TPASS  :  signal05 call succeeded
+signal05    9  TPASS  :  signal05 call succeeded
+signal05   10  TPASS  :  signal05 call succeeded
+signal05   11  TPASS  :  signal05 call succeeded
+signal05   12  TPASS  :  signal05 call succeeded
+signal05   13  TPASS  :  signal05 call succeeded
+signal05   14  TPASS  :  signal05 call succeeded
+signal05   15  TPASS  :  signal05 call succeeded
+signal05   16  TPASS  :  signal05 call succeeded
+signal05   17  TPASS  :  signal05 call succeeded
+signal05   18  TPASS  :  signal05 call succeeded
+signal05   19  TPASS  :  signal05 call succeeded
+signal05   20  TPASS  :  signal05 call succeeded
+signal05   21  TPASS  :  signal05 call succeeded
+signal05   22  TPASS  :  signal05 call succeeded
+signal05   23  TPASS  :  signal05 call succeeded
+signal05   24  TPASS  :  signal05 call succeeded
+signal05   25  TPASS  :  signal05 call succeeded
+signal05   26  TPASS  :  signal05 call succeeded
+signal05   27  TPASS  :  signal05 call succeeded
+signal05   28  TPASS  :  signal05 call succeeded
+signal05   29  TPASS  :  signal05 call succeeded
+signal05   30  TPASS  :  signal05 call succeeded
+signal05   31  TPASS  :  signal05 call succeeded
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal06 stime=3D1592201060
+cmdline=3D"signal06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signal06    0  TINFO  :  loop =3D 30000
+signal06    1  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop =3D 30000
+signal06    2  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop =3D 30000
+signal06    3  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop =3D 30000
+signal06    4  TPASS  :  signal06 call succeeded
+signal06    0  TINFO  :  loop =3D 30000
+signal06    5  TPASS  :  signal06 call succeeded
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D17 cstime=3D110
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignalfd01 stime=3D1592201061
+cmdline=3D"signalfd01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signalfd01    1  TPASS  :  signalfd is created successfully
+signalfd01    2  TPASS  :  signalfd is successfully reassigned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignalfd4_01 stime=3D1592201062
+cmdline=3D"signalfd4_01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signalfd4_01    1  TPASS  :  signalfd4(SFD_CLOEXEC) Passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignalfd4_02 stime=3D1592201062
+cmdline=3D"signalfd4_02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+signalfd4_02    1  TPASS  :  signalfd4(SFD_NONBLOCK) PASSED
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigpending02 stime=3D1592201062
+cmdline=3D"sigpending02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sigpending02.c:25: INFO: Testing libc sigpending()
+sigpending02.c:118: PASS: basic sigpending test successful
+sigpending02.c:148: PASS: expected failure: EFAULT (14)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sigpending02.c:28: INFO: Testing __NR_sigpending syscall
+sigpending02.c:47: CONF: syscall(-1) __NR_sigpending not supported
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sigpending02.c:31: INFO: Testing __NR_rt_sigpending syscall
+sigpending02.c:118: PASS: basic sigpending test successful
+sigpending02.c:148: PASS: expected failure: EFAULT (14)
+
+Summary:
+passed   4
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigprocmask01 stime=3D1592201062
+cmdline=3D"sigprocmask01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigprocmask01    1  TPASS  :  Functionality of sigprocmask() Successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigrelse01 stime=3D1592201062
+cmdline=3D"sigrelse01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigrelse01    1  TPASS  :  sigrelse() released all 55 signals under test.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigsuspend01 stime=3D1592201062
+cmdline=3D"sigsuspend01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigsuspend01    1  TPASS  :  Functionality of sigsuspend() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D5 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigtimedwait01 stime=3D1592201067
+cmdline=3D"sigtimedwait01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    1  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    2  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    3  TPASS  :  Test passed
+sigtimedwait01    3  TPASS  :  sigwaitinfo restored the original mask
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    4  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    5  TPASS  :  Test passed
+sigtimedwait01    5  TPASS  :  sigwaitinfo restored the original mask
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    6  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    7  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 10
+sigtimedwait01    8  TPASS  :  Test passed
+sigtimedwait01    0  TINFO  :  0x5613c1327330, 0
+sigtimedwait01    9  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigwait01 stime=3D1592201068
+cmdline=3D"sigwait01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigwait01    0  TINFO  :  0x561437ee6fc0, 10
+sigwait01    1  TPASS  :  Test passed
+sigwait01    0  TINFO  :  0x561437ee6fc0, 10
+sigwait01    2  TPASS  :  Test passed
+sigwait01    2  TPASS  :  sigwaitinfo restored the original mask
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigwaitinfo01 stime=3D1592201068
+cmdline=3D"sigwaitinfo01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    1  TPASS  :  Test passed
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    2  TPASS  :  Test passed
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    3  TPASS  :  Test passed
+sigwaitinfo01    3  TPASS  :  sigwaitinfo restored the original mask
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    4  TPASS  :  Test passed
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    5  TPASS  :  Test passed
+sigwaitinfo01    5  TPASS  :  sigwaitinfo restored the original mask
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    6  TPASS  :  Test passed
+sigwaitinfo01    0  TINFO  :  0x55a782e282e0, 10
+sigwaitinfo01    7  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocket01 stime=3D1592201068
+cmdline=3D"socket01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socket01.c:66: PASS: invalid domain successful
+socket01.c:66: PASS: invalid type successful
+socket01.c:66: PASS: UNIX domain dgram successful
+socket01.c:66: PASS: raw open as non-root successful
+socket01.c:66: PASS: UDP socket successful
+socket01.c:66: PASS: UDP stream successful
+socket01.c:66: PASS: TCP dgram successful
+socket01.c:66: PASS: TCP socket successful
+socket01.c:66: PASS: ICMP stream successful
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocket02 stime=3D1592201068
+cmdline=3D"socket02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socket02.c:58: PASS: socket() passed to set no close-on-exec flag
+socket02.c:58: PASS: socket() passed to set close-on-exec flag
+socket02.c:58: PASS: socket() passed to set no non-blocking flag
+socket02.c:58: PASS: socket() passed to set non-blocking flag
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketcall01 stime=3D1592201068
+cmdline=3D"socketcall01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socketcall01.c:35: CONF: syscall(-1) __NR_socketcall not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketcall02 stime=3D1592201068
+cmdline=3D"socketcall02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socketcall02.c:36: INFO: invalid call(<1)
+socketcall02.c:38: CONF: syscall(-1) __NR_socketcall not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketcall03 stime=3D1592201068
+cmdline=3D"socketcall03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socketcall03.c:32: CONF: syscall(-1) __NR_socketcall not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketpair01 stime=3D1592201068
+cmdline=3D"socketpair01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socketpair01.c:70: PASS: invalid domain successful
+socketpair01.c:70: PASS: invalid type successful
+socketpair01.c:70: PASS: UNIX domain dgram successful
+socketpair01.c:70: PASS: raw open as non-root successful
+socketpair01.c:70: PASS: bad aligned pointer successful
+socketpair01.c:70: PASS: bad unaligned pointer successful
+socketpair01.c:70: PASS: UDP socket successful
+socketpair01.c:70: PASS: TCP dgram successful
+socketpair01.c:70: PASS: TCP socket successful
+socketpair01.c:70: PASS: ICMP stream successful
+
+Summary:
+passed   10
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketpair02 stime=3D1592201068
+cmdline=3D"socketpair02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+socketpair02.c:66: PASS: socketpair() passed to set no close-on-exec flag
+socketpair02.c:66: PASS: socketpair() passed to set close-on-exec flag
+socketpair02.c:66: PASS: socketpair() passed to set no non-blocking flag
+socketpair02.c:66: PASS: socketpair() passed to set non-blocking flag
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsockioctl01 stime=3D1592201068
+cmdline=3D"sockioctl01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sockioctl01    1  TPASS  :  bad file descriptor successful
+sockioctl01    2  TPASS  :  not a socket successful
+sockioctl01    3  TPASS  :  invalid option buffer successful
+sockioctl01    4  TPASS  :  ATMARK on UDP successful
+sockioctl01    5  TPASS  :  SIOCGIFCONF successful
+sockioctl01    6  TPASS  :  SIOCGIFFLAGS successful
+sockioctl01    7  TPASS  :  SIOCGIFFLAGS with invalid ifr successful
+sockioctl01    8  TPASS  :  SIOCSIFFLAGS with invalid ifr successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsplice01 stime=3D1592201068
+cmdline=3D"splice01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+splice01.c:48: PASS: Written data has been read back correctly
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsplice02 stime=3D1592201068
+cmdline=3D"seq 1 20000 | splice02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+splice02.c:30: PASS: splice() system call Passed
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsplice03 stime=3D1592201069
+cmdline=3D"splice03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+splice03.c:99: PASS: splice() failed as expected: EBADF (9)
+splice03.c:99: PASS: splice() failed as expected: EBADF (9)
+splice03.c:99: PASS: splice() failed as expected: EBADF (9)
+splice03.c:99: PASS: splice() failed as expected: EINVAL (22)
+splice03.c:99: PASS: splice() failed as expected: EINVAL (22)
+splice03.c:99: PASS: splice() failed as expected: ESPIPE (29)
+splice03.c:99: PASS: splice() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsplice04 stime=3D1592201069
+cmdline=3D"splice04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+splice04.c:38: INFO: splice size =3D 65536
+splice04.c:74: PASS: splice(2) from pipe to pipe run pass.
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsplice05 stime=3D1592201069
+cmdline=3D"splice05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+splice05.c:48: INFO: splice size =3D 65536
+splice05.c:99: PASS: splice(2): pipe <-> socket run pass.
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtee01 stime=3D1592201069
+cmdline=3D"tee01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tee01.c:45: PASS: Written data has been read back correctly
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtee02 stime=3D1592201069
+cmdline=3D"tee02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+tee02.c:72: PASS: tee() failed as expected: EINVAL (22)
+tee02.c:72: PASS: tee() failed as expected: EINVAL (22)
+tee02.c:72: PASS: tee() failed as expected: EINVAL (22)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dssetmask01 stime=3D1592201069
+cmdline=3D"ssetmask01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+ssetmask01    1  TCONF  :  ssetmask01.c:115: syscall(-1) __NR_ssetmask not =
+supported on your arch
+ssetmask01    2  TCONF  :  ssetmask01.c:115: Remaining cases not appropriat=
+e for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat01 stime=3D1592201069
+cmdline=3D"stat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat01.c:75: PASS: stat(test_fileread)
+stat01.c:75: PASS: stat(test_filenoread)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat01_64 stime=3D1592201069
+cmdline=3D"stat01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat01.c:75: PASS: stat(test_fileread)
+stat01.c:75: PASS: stat(test_filenoread)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat02 stime=3D1592201069
+cmdline=3D"stat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat02.c:67: PASS: File size reported as expected
+stat02.c:67: PASS: File size reported as expected
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat02_64 stime=3D1592201069
+cmdline=3D"stat02_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat02.c:67: PASS: File size reported as expected
+stat02.c:67: PASS: File size reported as expected
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat03 stime=3D1592201069
+cmdline=3D"stat03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat03.c:55: PASS: stat() failed as expected: EACCES (13)
+stat03.c:55: PASS: stat() failed as expected: EFAULT (14)
+stat03.c:55: PASS: stat() failed as expected: ENAMETOOLONG (36)
+stat03.c:55: PASS: stat() failed as expected: ENOENT (2)
+stat03.c:55: PASS: stat() failed as expected: ENOTDIR (20)
+stat03.c:55: PASS: stat() failed as expected: ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat03_64 stime=3D1592201069
+cmdline=3D"stat03_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stat03.c:55: PASS: stat() failed as expected: EACCES (13)
+stat03.c:55: PASS: stat() failed as expected: EFAULT (14)
+stat03.c:55: PASS: stat() failed as expected: ENAMETOOLONG (36)
+stat03.c:55: PASS: stat() failed as expected: ENOENT (2)
+stat03.c:55: PASS: stat() failed as expected: ENOTDIR (20)
+stat03.c:55: PASS: stat() failed as expected: ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat04 stime=3D1592201069
+cmdline=3D"symlink01 -T stat04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+stat04      1  TPASS  :  Getting stat info about object file through symbol=
+ic link file is ok
+stat04      2  TPASS  :  Stat(2) error when accessing non-existent object t=
+hrough symbolic link is caught
+stat04      3  TPASS  :  Nested symbolic link access condition caught.  ELO=
+OP is returned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat04_64 stime=3D1592201069
+cmdline=3D"symlink01 -T stat04_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+stat04_64    1  TPASS  :  Getting stat info about object file through symbo=
+lic link file is ok
+stat04_64    2  TPASS  :  Stat(2) error when accessing non-existent object =
+through symbolic link is caught
+stat04_64    3  TPASS  :  Nested symbolic link access condition caught.  EL=
+OOP is returned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs01 stime=3D1592201069
+cmdline=3D"statfs01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs01    1  TPASS  :  statfs(tfile_4343, ..) returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs01_64 stime=3D1592201069
+cmdline=3D"statfs01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs01    1  TPASS  :  statfs(tfile_4344, ..) returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs02 stime=3D1592201069
+cmdline=3D"statfs02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs02    1  TPASS  :  expected failure: TEST_ERRNO=3DENOTDIR(20): Not a =
+directory
+statfs02    2  TPASS  :  expected failure: TEST_ERRNO=3DENOENT(2): No such =
+file or directory
+statfs02    3  TPASS  :  expected failure: TEST_ERRNO=3DENAMETOOLONG(36): F=
+ile name too long
+statfs02    4  TPASS  :  expected failure: TEST_ERRNO=3DEFAULT(14): Bad add=
+ress
+statfs02    5  TPASS  :  expected failure: TEST_ERRNO=3DEFAULT(14): Bad add=
+ress
+statfs02    6  TPASS  :  expected failure: TEST_ERRNO=3DELOOP(40): Too many=
+ levels of symbolic links
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs02_64 stime=3D1592201069
+cmdline=3D"statfs02_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs02    1  TPASS  :  expected failure: TEST_ERRNO=3DENOTDIR(20): Not a =
+directory
+statfs02    2  TPASS  :  expected failure: TEST_ERRNO=3DENOENT(2): No such =
+file or directory
+statfs02    3  TPASS  :  expected failure: TEST_ERRNO=3DENAMETOOLONG(36): F=
+ile name too long
+statfs02    4  TPASS  :  expected failure: TEST_ERRNO=3DEFAULT(14): Bad add=
+ress
+statfs02    5  TPASS  :  expected failure: TEST_ERRNO=3DEFAULT(14): Bad add=
+ress
+statfs02    6  TPASS  :  expected failure: TEST_ERRNO=3DELOOP(40): Too many=
+ levels of symbolic links
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs03 stime=3D1592201069
+cmdline=3D"statfs03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs03    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs03_64 stime=3D1592201069
+cmdline=3D"statfs03_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statfs03    1  TPASS  :  expected failure - errno =3D 13 : Permission denied
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatvfs01 stime=3D1592201069
+cmdline=3D"statvfs01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statvfs01    1  TPASS  :  statvfs(/, ...) passed
+statvfs01    0  TINFO  :  This call is similar to statfs
+statvfs01    0  TINFO  :  Extracting info about the '/' file system
+statvfs01    0  TINFO  :  file system block size =3D 4096 bytes
+statvfs01    0  TINFO  :  file system fragment size =3D 4096 bytes
+statvfs01    0  TINFO  :  file system free blocks =3D 0
+statvfs01    0  TINFO  :  file system total inodes =3D 0
+statvfs01    0  TINFO  :  file system free inodes =3D 0
+statvfs01    0  TINFO  :  file system id =3D 0
+statvfs01    0  TINFO  :  file system max filename length =3D 255
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatvfs02 stime=3D1592201069
+cmdline=3D"statvfs02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+statvfs02    1  TPASS  :  statvfs() failed as expected: TEST_ERRNO=3DEFAULT=
+(14): Bad address
+statvfs02    2  TPASS  :  statvfs() failed as expected: TEST_ERRNO=3DELOOP(=
+40): Too many levels of symbolic links
+statvfs02    3  TPASS  :  statvfs() failed as expected: TEST_ERRNO=3DENAMET=
+OOLONG(36): File name too long
+statvfs02    4  TPASS  :  statvfs() failed as expected: TEST_ERRNO=3DENOENT=
+(2): No such file or directory
+statvfs02    5  TPASS  :  statvfs() failed as expected: TEST_ERRNO=3DENOTDI=
+R(20): Not a directory
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstime01 stime=3D1592201069
+cmdline=3D"stime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:45: INFO: Testing libc stime()
+stime01.c:46: INFO: pt.tv_sec: 1592201099
+stime01.c:47: PASS: system time was set to 1592201099
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:48: INFO: Testing SYS_stime syscall
+stime_var.h:27: CONF: syscall(-1) __NR_stime not supported
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:51: INFO: Testing SYS_settimeofday syscall
+stime01.c:46: INFO: pt.tv_sec: 1592201129
+stime01.c:47: PASS: system time was set to 1592201129
+
+Summary:
+passed   2
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstime02 stime=3D1592201069
+cmdline=3D"stime02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:45: INFO: Testing libc stime()
+stime02.c:37: PASS: stime(2) fails, Caller not root: EPERM (1)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:48: INFO: Testing SYS_stime syscall
+stime_var.h:27: CONF: syscall(-1) __NR_stime not supported
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+stime_var.h:51: INFO: Testing SYS_settimeofday syscall
+stime02.c:37: PASS: stime(2) fails, Caller not root: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstring01 stime=3D1592201069
+cmdline=3D"string01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+string01    1  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapoff01 stime=3D1592201069
+cmdline=3D"swapoff01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_ioctl.c:26: INFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+swapoff01    1  TCONF  :  ../swapon/libswapon.c:78: Swapfile on BTRFS not i=
+mplemented
+swapoff01    2  TCONF  :  ../swapon/libswapon.c:78: Remaining cases not app=
+ropriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapoff02 stime=3D1592201069
+cmdline=3D"swapoff02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_ioctl.c:26: INFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+swapoff02    1  TCONF  :  ../swapon/libswapon.c:78: Swapfile on BTRFS not i=
+mplemented
+swapoff02    2  TCONF  :  ../swapon/libswapon.c:78: Remaining cases not app=
+ropriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapon01 stime=3D1592201069
+cmdline=3D"swapon01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_ioctl.c:26: INFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+swapon01    1  TCONF  :  ../swapon/libswapon.c:78: Swapfile on BTRFS not im=
+plemented
+swapon01    2  TCONF  :  ../swapon/libswapon.c:78: Remaining cases not appr=
+opriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapon02 stime=3D1592201069
+cmdline=3D"swapon02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_ioctl.c:26: INFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+swapon02    1  TCONF  :  ../swapon/libswapon.c:78: Swapfile on BTRFS not im=
+plemented
+swapon02    2  TCONF  :  ../swapon/libswapon.c:78: Remaining cases not appr=
+opriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapon03 stime=3D1592201069
+cmdline=3D"swapon03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_ioctl.c:26: INFO: FIBMAP ioctl is NOT supported: EINVAL (22)
+swapon03    1  TCONF  :  ../swapon/libswapon.c:78: Swapfile on BTRFS not im=
+plemented
+swapon03    2  TCONF  :  ../swapon/libswapon.c:78: Remaining cases not appr=
+opriate for configuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswitch01 stime=3D1592201069
+cmdline=3D"endian_switch01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:871: CONF: This system does not support running of switch() sysc=
+all
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlink01 stime=3D1592201069
+cmdline=3D"symlink01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+symlink01    1  TPASS  :  Creation of symbolic link file to no object file =
+is ok
+symlink01    2  TPASS  :  Creation of symbolic link file to no object file =
+is ok
+symlink01    3  TPASS  :  Creation of symbolic link file and object file vi=
+a symbolic link is ok
+symlink01    4  TPASS  :  Creating an existing symbolic link file error is =
+caught
+symlink01    5  TPASS  :  Creating a symbolic link which exceeds maximum pa=
+thname error is caught
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlink02 stime=3D1592201069
+cmdline=3D"symlink02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlink03 stime=3D1592201069
+cmdline=3D"symlink03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+symlink03    1  TPASS  :  symlink() Fails, No Search permissions to process=
+, errno=3D13
+symlink03    2  TPASS  :  symlink() Fails, Specified symlink already exists=
+, errno=3D17
+symlink03    3  TPASS  :  symlink() Fails, Invalid address, errno=3D14
+symlink03    4  TPASS  :  symlink() Fails, Symlink path too long, errno=3D36
+symlink03    5  TPASS  :  symlink() Fails, Symlink Pathname is empty, errno=
+=3D2
+symlink03    6  TPASS  :  symlink() Fails, Symlink Path contains regular fi=
+le, errno=3D20
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlink04 stime=3D1592201069
+cmdline=3D"symlink04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+symlink04    1  TPASS  :  symlink(testfile, slink_file) functionality succe=
+ssful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlink05 stime=3D1592201069
+cmdline=3D"symlink05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+symlink05    1  TPASS  :  symlink(testfile, slink_file) functionality succe=
+ssful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsymlinkat01 stime=3D1592201069
+cmdline=3D"symlinkat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+symlinkat01    1  TPASS  :  Test passed
+symlinkat01    2  TPASS  :  Test passed
+symlinkat01    3  TPASS  :  Test passed
+symlinkat01    4  TPASS  :  Test passed
+symlinkat01    5  TPASS  :  symlinkat() returned the expected  errno 20: No=
+t a directory
+symlinkat01    6  TPASS  :  Test passed
+symlinkat01    7  TPASS  :  symlinkat() returned the expected  errno 9: Bad=
+ file descriptor
+symlinkat01    8  TPASS  :  Test passed
+symlinkat01    9  TPASS  :  symlinkat() returned the expected  errno 2: No =
+such file or directory
+symlinkat01   10  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync01 stime=3D1592201069
+cmdline=3D"sync01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sync01      1  TPASS  :  sync() returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync02 stime=3D1592201069
+cmdline=3D"sync02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sync02      1  TPASS  :  Functionality of sync() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync03 stime=3D1592201069
+cmdline=3D"sync03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1308: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=3D=
+''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts=3D'' extra opts=
+=3D''
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+tst_test.c:1308: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opts=
+=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync03.c:50: PASS: Test file synced to device
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D12 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D19 cstime=3D461
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyncfs01 stime=3D1592201081
+cmdline=3D"syncfs01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1308: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=3D=
+''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts=3D'' extra opts=
+=3D''
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+tst_test.c:1308: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opts=
+=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:754: INFO: Trying FUSE...
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syncfs01.c:51: PASS: Test filesystem synced to device
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D11 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D16 cstime=3D485
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync_file_range01 stime=3D1592201092
+cmdline=3D"sync_file_range01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sync_file_range01    1  TPASS  :  got expected error: TEST_ERRNO=3DEBADF(9)=
+: Bad file descriptor
+sync_file_range01    2  TPASS  :  got expected error: TEST_ERRNO=3DESPIPE(2=
+9): Illegal seek
+sync_file_range01    3  TPASS  :  got expected error: TEST_ERRNO=3DEINVAL(2=
+2): Invalid argument
+sync_file_range01    4  TPASS  :  got expected error: TEST_ERRNO=3DEINVAL(2=
+2): Invalid argument
+sync_file_range01    5  TPASS  :  got expected error: TEST_ERRNO=3DEINVAL(2=
+2): Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync_file_range02 stime=3D1592201092
+cmdline=3D"sync_file_range02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:262: INFO: Using test device LTP_DEV=3D'/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:88: INFO: Skipping FUSE as requested by the test
+tst_supported_fs_types.c:88: INFO: Skipping FUSE as requested by the test
+tst_test.c:1308: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1308: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1308: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opts=
+=3D''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1308: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=3D=
+''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1308: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1308: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts=3D'' extra opts=
+=3D''
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sync_file_range02.c:111: INFO: Pre-filling file
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+
+Summary:
+passed   18
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D11 cstime=3D167
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyscall01 stime=3D1592201098
+cmdline=3D"syscall01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+syscall01.c:28: PASS: getpid() =3D=3D syscall(SYS_getpid)
+syscall01.c:43: PASS: getuid() =3D=3D syscall(SYS_getuid)
+syscall01.c:58: PASS: getgid() =3D=3D syscall(SYS_getgid)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysconf01 stime=3D1592201098
+cmdline=3D"sysconf01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysconf01    1  TPASS  :  _SC_CLK_TCK =3D 100
+sysconf01    2  TPASS  :  _SC_ARG_MAX =3D 2097152
+sysconf01    3  TPASS  :  _SC_CHILD_MAX =3D 28196
+sysconf01    4  TPASS  :  _SC_OPEN_MAX =3D 1024
+sysconf01    5  TPASS  :  _SC_JOB_CONTROL =3D 1
+sysconf01    6  TPASS  :  _SC_SAVED_IDS =3D 1
+sysconf01    7  TPASS  :  _SC_VERSION =3D 200809
+sysconf01    8  TPASS  :  _SC_PASS_MAX =3D 8192
+sysconf01    9  TPASS  :  _SC_LOGIN_NAME_MAX =3D 256
+sysconf01   10  TPASS  :  _SC_XOPEN_VERSION =3D 700
+sysconf01   11  TPASS  :  _SC_TZNAME_MAX =3D 6
+sysconf01   12  TPASS  :  _SC_STREAM_MAX =3D 16
+sysconf01   13  TPASS  :  _SC_XOPEN_CRYPT =3D 1
+sysconf01   14  TPASS  :  _SC_XOPEN_ENH_I18N =3D 1
+sysconf01   15  TPASS  :  _SC_XOPEN_SHM =3D 1
+sysconf01   16  TPASS  :  _SC_XOPEN_XCU_VERSION =3D 4
+sysconf01   17  TPASS  :  _SC_ATEXIT_MAX =3D 2147483647
+sysconf01   18  TPASS  :  _SC_2_C_BIND =3D 200809
+sysconf01   19  TPASS  :  _SC_2_C_DEV =3D 200809
+sysconf01   20  TPASS  :  _SC_2_C_VERSION =3D 200809
+sysconf01   21  TPASS  :  _SC_2_CHAR_TERM =3D 200809
+sysconf01   22  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_2_FORT_DEV
+sysconf01   23  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_2_FORT_RUN
+sysconf01   24  TPASS  :  _SC_2_LOCALEDEF =3D 200809
+sysconf01   25  TPASS  :  _SC_2_SW_DEV =3D 200809
+sysconf01   26  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_2_UPE
+sysconf01   27  TPASS  :  _SC_2_VERSION =3D 200809
+sysconf01   28  TPASS  :  _SC_BC_BASE_MAX =3D 99
+sysconf01   29  TPASS  :  _SC_BC_DIM_MAX =3D 2048
+sysconf01   30  TPASS  :  _SC_BC_SCALE_MAX =3D 99
+sysconf01   31  TPASS  :  _SC_BC_STRING_MAX =3D 1000
+sysconf01   32  TPASS  :  _SC_COLL_WEIGHTS_MAX =3D 255
+sysconf01   33  TPASS  :  _SC_EXPR_NEST_MAX =3D 32
+sysconf01   34  TPASS  :  _SC_LINE_MAX =3D 2048
+sysconf01   35  TPASS  :  _SC_RE_DUP_MAX =3D 32767
+sysconf01   36  TPASS  :  _SC_XOPEN_UNIX =3D 1
+sysconf01   37  TPASS  :  _SC_PAGESIZE =3D 4096
+sysconf01   38  TPASS  :  _SC_PHYS_PAGES =3D 2037269
+sysconf01   39  TPASS  :  _SC_AVPHYS_PAGES =3D 1291961
+sysconf01   40  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_AIO_MAX
+sysconf01   41  TPASS  :  _SC_AIO_PRIO_DELTA_MAX =3D 20
+sysconf01   42  TPASS  :  _SC_SEMAPHORES =3D 200809
+sysconf01   43  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_SEM_NSEMS_MAX
+sysconf01   44  TPASS  :  _SC_SEM_VALUE_MAX =3D 2147483647
+sysconf01   45  TPASS  :  _SC_MEMORY_PROTECTION =3D 200809
+sysconf01   46  TPASS  :  _SC_FSYNC =3D 200809
+sysconf01   47  TPASS  :  _SC_MEMORY_PROTECTION =3D 200809
+sysconf01   48  TPASS  :  _SC_TIMERS =3D 200809
+sysconf01   49  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_TIMER_MAX
+sysconf01   50  TPASS  :  _SC_MAPPED_FILES =3D 200809
+sysconf01   51  TPASS  :  _SC_THREAD_PRIORITY_SCHEDULING =3D 200809
+sysconf01   52  TPASS  :  _SC_XOPEN_LEGACY =3D 1
+sysconf01   53  TPASS  :  _SC_MEMLOCK =3D 200809
+sysconf01   54  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_XBS5_ILP32_OFF32
+sysconf01   55  TCONF  :  sysconf01.c:66: Not supported sysconf resource: _=
+SC_XBS5_ILP32_OFFBIG
+sysconf01   56  TPASS  :  The invalid sysconf key was trapped appropriately
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysctl01 stime=3D1592201098
+cmdline=3D"sysctl01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sysctl01.c:53: CONF: syscall(156) __NR__sysctl not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysctl03 stime=3D1592201098
+cmdline=3D"sysctl03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sysctl03.c:76: INFO: this test's results are based on potentially undocumen=
+ted behavior in the kernel. read the NOTE in the source file for more detai=
+ls
+sysctl03.c:55: CONF: syscall(156) __NR__sysctl not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysctl04 stime=3D1592201098
+cmdline=3D"sysctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysctl03.c:55: CONF: syscall(156) __NR__sysctl not supported
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sysctl04.c:52: CONF: syscall(156) __NR__sysctl not supported
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs01 stime=3D1592201098
+cmdline=3D"sysfs01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs01     1  TPASS  :  sysfs(2) Passed for option 1
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs02 stime=3D1592201098
+cmdline=3D"sysfs02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs02     1  TPASS  :  sysfs(2) Passed for option 2
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs03 stime=3D1592201098
+cmdline=3D"sysfs03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs03     1  TPASS  :  sysfs(2) Passed for option 3
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs04 stime=3D1592201098
+cmdline=3D"sysfs04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs04     1  TPASS  :  sysfs(2) expected failure; Got errno - EINVAL : In=
+valid option
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs05 stime=3D1592201098
+cmdline=3D"sysfs05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs05     1  TPASS  :  sysfs(2) expected failure; Got errno - EINVAL : In=
+valid option
+sysfs05     1  TPASS  :  sysfs(2) expected failure; Got errno - EINVAL  : I=
+nvalid filesystem name
+sysfs05     1  TPASS  :  sysfs(2) expected failure; Got errno - EFAULT  : A=
+ddress is out of your address space
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs06 stime=3D1592201098
+cmdline=3D"sysfs06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysfs06     1  TPASS  :  sysfs(2) expected failure; Got errno - EINVAL : In=
+valid option
+sysfs06     1  TPASS  :  sysfs(2) expected failure; Got errno - EINVAL : fs=
+_index is out of bounds
+sysfs06     1  TPASS  :  sysfs(2) expected failure; Got errno - EFAULT : bu=
+f is outside your accessible address space
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysinfo01 stime=3D1592201098
+cmdline=3D"sysinfo01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysinfo01    1  TPASS  :  Test to check the return code PASSED
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysinfo02 stime=3D1592201098
+cmdline=3D"sysinfo02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sysinfo02    1  TPASS  :  Test to check the error code 14 PASSED
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysinfo03 stime=3D1592201098
+cmdline=3D"sysinfo03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+sysinfo03.c:60: PASS: Correct sysinfo uptime offset 10
+sysinfo03.c:66: PASS: /proc/uptime is consistent with sysinfo
+sysinfo03.c:60: PASS: Correct sysinfo uptime offset -10
+sysinfo03.c:66: PASS: /proc/uptime is consistent with sysinfo
+sysinfo03.c:60: PASS: Correct sysinfo uptime offset 3600
+sysinfo03.c:66: PASS: /proc/uptime is consistent with sysinfo
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog01 stime=3D1592201098
+cmdline=3D"syslog01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog01    0  TINFO  :  Send messages to syslogd at some level=20
+syslog01    0  TINFO  :  and facility and grep for those messages.
+syslog01    0  TINFO  :  testing whether messages are logged into log file
+syslog01    0  TINFO  :  restarting syslog daemon
+syslog01    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D7 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D2 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog02 stime=3D1592201105
+cmdline=3D"syslog02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog02    0  TINFO  :  Test if messages of all levels are logged.
+syslog02    0  TINFO  :  For each level, a separate configuration file is
+syslog02    0  TINFO  :  created and that will be used as syslog.conf file.
+syslog02    0  TINFO  :  testing whether messages are logged into log file
+syslog02    0  TINFO  :  Doing level: emerg...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    1  TPASS  :  ***** Level emerg passed *****
+syslog02    0  TINFO  :  Doing level: alert...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    2  TPASS  :  ***** Level alert passed *****
+syslog02    0  TINFO  :  Doing level: crit...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    3  TPASS  :  ***** Level crit passed *****
+syslog02    0  TINFO  :  Doing level: err...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    4  TPASS  :  ***** Level err passed *****
+syslog02    0  TINFO  :  Doing level: warning...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    5  TPASS  :  ***** Level warning passed *****
+syslog02    0  TINFO  :  Doing level: notice...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    6  TPASS  :  ***** Level notice passed *****
+syslog02    0  TINFO  :  Doing level: info...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    7  TPASS  :  ***** Level info passed *****
+syslog02    0  TINFO  :  Doing level: debug...
+syslog02    0  TINFO  :  restarting syslog daemon
+syslog02    8  TPASS  :  ***** Level debug passed *****
+syslog02    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D37 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D9 cstime=3D16
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog03 stime=3D1592201142
+cmdline=3D"syslog03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog03    0  TINFO  :  Do openlog(), log the messages and see whether
+syslog03    0  TINFO  :  ident string is prepended to the message.
+syslog03    0  TINFO  :  restarting syslog daemon
+syslog03    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D7 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D2 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog04 stime=3D1592201149
+cmdline=3D"syslog04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog04    0  TINFO  :  case4: Test the logging option: LOG_PID
+syslog04    0  TINFO  :  Do openlog() with LOG_PID option and see whether p=
+id
+syslog04    0  TINFO  :  is logged with message.
+syslog04    0  TINFO  :  Testing the log option: LOG_PID...
+syslog04    0  TINFO  :  restarting syslog daemon
+syslog04    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D7 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog05 stime=3D1592201156
+cmdline=3D"syslog05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog05    0  TINFO  :   case5: Test the logging option: LOG_CONS
+syslog05    0  TINFO  :   o Do openlog() with LOG_CONS option.
+syslog05    0  TINFO  :   o Disable /dev/syslog by moving it to a temporary=
+ file name.
+syslog05    0  TINFO  :   o Send the syslog message.
+syslog05    0  TINFO  :   o Check whether this is written to the console i.=
+e to
+syslog05    0  TINFO  :     the file /usr/adm/ktlog/<this year>/<this month=
+>/<to_day>
+syslog05    0  TINFO  :  syslog: Testing the log option: LOG_CONS...
+syslog05    0  TINFO  :  restarting syslog daemon
+syslog05    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D27 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D4 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog06 stime=3D1592201183
+cmdline=3D"syslog06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog06    0  TINFO  :   Test the logging option: LOG_NDELAY
+syslog06    0  TINFO  :   o Do openlog() without LOG_NDELAY option.
+syslog06    0  TINFO  :   o open a file and check the returned file descrip=
+tor
+syslog06    0  TINFO  :     It should be 3.
+syslog06    0  TINFO  :   o Now do openlog() with LOG_NDELAY option.
+syslog06    0  TINFO  :   o open a file and check the returned file descrip=
+tor.
+syslog06    0  TINFO  :     It should be greater than 3.
+syslog06    0  TINFO  :  syslog: Testing the log option: LOG_NDELAY...
+syslog06    0  TINFO  :  restarting syslog daemon
+syslog06    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D4 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog07 stime=3D1592201187
+cmdline=3D"syslog07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog07    0  TINFO  :  testing syslog priorities ...
+syslog07    0  TINFO  :   o Send syslog messages at all levels and see whet=
+her
+syslog07    0  TINFO  :     All level messages are logged.
+syslog07    0  TINFO  :  restarting syslog daemon
+syslog07    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D6 cstime=3D9
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog08 stime=3D1592201193
+cmdline=3D"syslog08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog08    0  TINFO  :   Test all the facilities at a particular level.
+syslog08    0  TINFO  :   Facilities available are: LOG_KERN, LOG_USER, LOG=
+_MAIL
+syslog08    0  TINFO  :   LOG_DAEMON, LOG_AUTH, LOG_LPR.
+syslog08    0  TINFO  :   Don't know how to send kernel messages from syslo=
+g()
+syslog08    0  TINFO  :   o Create seperate entries in config file for each=
+ facility.
+syslog08    0  TINFO  :   o Send the message and grep for the entry in log =
+file.
+syslog08    0  TINFO  :  testing all the facilities
+syslog08    0  TINFO  :  Doing facility: user...
+syslog08    0  TINFO  :  restarting syslog daemon
+syslog08    1  TPASS  :   Facility user passed
+syslog08    0  TINFO  :  Doing facility: mail...
+syslog08    0  TINFO  :  restarting syslog daemon
+syslog08    1  TPASS  :   Facility mail passed
+syslog08    0  TINFO  :  Doing facility: daemon...
+syslog08    0  TINFO  :  restarting syslog daemon
+syslog08    1  TPASS  :   Facility daemon passed
+syslog08    0  TINFO  :  Doing facility: auth...
+syslog08    0  TINFO  :  restarting syslog daemon
+syslog08    1  TPASS  :   Facility auth passed
+syslog08    0  TINFO  :  Doing facility: lpr...
+syslog08    0  TINFO  :  restarting syslog daemon
+syslog08    1  TPASS  :   Facility lpr passed
+syslog08    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D23 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D7 cstime=3D17
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog09 stime=3D1592201216
+cmdline=3D"syslog09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog09    0  TINFO  :   Test setlogmask() with LOG_UPTO macro.
+syslog09    0  TINFO  :   o Use setlogmask() with LOG_UPTO macro to set som=
+e priority
+syslog09    0  TINFO  :     level.
+syslog09    0  TINFO  :   o Send message which is lower priority than the o=
+ne
+syslog09    0  TINFO  :     set above, which should not be logged
+syslog09    0  TINFO  :  syslog: Testing setlogmask() with LOG_UPTO macro
+syslog09    0  TINFO  :  restarting syslog daemon
+syslog09    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D7 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog10 stime=3D1592201223
+cmdline=3D"syslog10"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog10    0  TINFO  :   Test setlogmask() with LOG_MASK macro.
+syslog10    0  TINFO  :   o Use setlogmask() with LOG_MASK macro to set an
+syslog10    0  TINFO  :     individual priority level.
+syslog10    0  TINFO  :   o Send the message of above prority and expect it=
+ to be
+syslog10    0  TINFO  :     logged.
+syslog10    0  TINFO  :   o Send message which is at other priority level to
+syslog10    0  TINFO  :     the one set above, which should not be logged.
+syslog10    0  TINFO  :  syslog: Testing setlogmask() with LOG_MASK macro...
+syslog10    0  TINFO  :  restarting syslog daemon
+syslog10    0  TINFO  :  restarting syslog daemon
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D4 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog11 stime=3D1592201229
+cmdline=3D"syslog11"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog11    1  TPASS  :  syslog() successful for type 0/Close the log
+syslog11    2  TPASS  :  syslog() successful for type 1/Open the log
+syslog11    3  TPASS  :  syslog() successful for type 2/Read from the log
+syslog11    4  TPASS  :  syslog() successful for type 3/Read ring buffer
+syslog11    5  TPASS  :  syslog() successful for type 3/Read ring buffer fo=
+r non-root user
+syslog11    6  TPASS  :  syslog() successful for type 8/Set log level to 1
+syslog11    7  TPASS  :  syslog() successful for type 8/Set log level to 7(=
+default)
+syslog11    8  TPASS  :  syslog() successful for type 6/Disable printk's to=
+ console
+syslog11    9  TPASS  :  syslog() successful for type 7/Enable printk's to =
+console
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsyslog12 stime=3D1592201229
+cmdline=3D"syslog12"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+syslog12    1  TPASS  :  syslog() failed as expected for invalid type/comma=
+nd : errno 22
+syslog12    2  TPASS  :  syslog() failed as expected for NULL buffer argume=
+nt : errno 22
+syslog12    3  TPASS  :  syslog() failed as expected for negative length ar=
+gument : errno 22
+syslog12    4  TPASS  :  syslog() failed as expected for non-root user : er=
+rno 1
+syslog12    5  TPASS  :  syslog() failed as expected for console level less=
+ than 0 : errno 22
+syslog12    6  TPASS  :  syslog() failed as expected for console level grea=
+ter than 8 : errno 22
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtime01 stime=3D1592201229
+cmdline=3D"time01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+time01      1  TPASS  :  time(0) returned 1592201229
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtime02 stime=3D1592201229
+cmdline=3D"time02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+time02      1  TPASS  :  time() returned value 1592201229, stored value 159=
+2201229 are same
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimes01 stime=3D1592201229
+cmdline=3D"times01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+times01     1  TPASS  :  times(&mytimes) returned 429524566
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimes03 stime=3D1592201229
+cmdline=3D"times03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+times03.c:89: PASS: buf1.tms_utime <=3D 5
+times03.c:94: PASS: buf1.tms_stime <=3D 5
+times03.c:105: PASS: buf2.tms_utime =3D 127
+times03.c:112: PASS: buf1.tms_utime (0) < buf2.tms_utime (127)
+times03.c:118: PASS: buf2.tms_stime =3D 145
+times03.c:125: PASS: buf1.tms_stime (0) < buf2.tms_stime (145)
+times03.c:131: PASS: buf2.tms_cutime =3D 0
+times03.c:136: PASS: buf2.tms_cstime =3D 0
+times03.c:156: PASS: buf2.tms_utime (127) <=3D buf3.tms_utime (127)
+times03.c:164: PASS: buf2.tms_stime (145) <=3D buf3.tms_stime (145)
+times03.c:170: PASS: buf3.tms_cutime =3D 178
+times03.c:175: PASS: buf3.tms_cstime =3D 204
+
+Summary:
+passed   12
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D306 cstime=3D350
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd01 stime=3D1592201237
+cmdline=3D"timerfd01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timerfd01.c:87: INFO: testing CLOCK MONOTONIC
+timerfd01.c:91: INFO: relative timer (100 ms)
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:95: INFO: absolute timer (100 ms)
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:100: INFO: sequential timer (50 ms)
+timerfd01.c:112: PASS: Timer read back value is relative
+timerfd01.c:75: PASS: got 3 tick(s)
+timerfd01.c:118: INFO: testing with O_NONBLOCK
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:130: PASS: read failed with: EAGAIN/EWOULDBLOCK (11)
+timerfd01.c:87: INFO: testing CLOCK REALTIME
+timerfd01.c:91: INFO: relative timer (100 ms)
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:95: INFO: absolute timer (100 ms)
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:100: INFO: sequential timer (50 ms)
+timerfd01.c:112: PASS: Timer read back value is relative
+timerfd01.c:75: PASS: got 3 tick(s)
+timerfd01.c:118: INFO: testing with O_NONBLOCK
+timerfd01.c:75: PASS: got 1 tick(s)
+timerfd01.c:130: PASS: read failed with: EAGAIN/EWOULDBLOCK (11)
+
+Summary:
+passed   12
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd02 stime=3D1592201237
+cmdline=3D"timerfd02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timerfd02    1  TPASS  :  timerfd_create(TFD_CLOEXEC) Passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd03 stime=3D1592201237
+cmdline=3D"timerfd03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timerfd03    1  TPASS  :  timerfd_create(TFD_NONBLOCK) PASSED
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd04 stime=3D1592201237
+cmdline=3D"timerfd04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timerfd04.c:87: PASS: timerfd CLOCK_MONOTONIC slept correctly 41687
+timerfd04.c:87: PASS: timerfd CLOCK_BOOTTIME slept correctly 40335
+timerfd04.c:87: PASS: timerfd CLOCK_MONOTONIC slept correctly 40620
+timerfd04.c:87: PASS: timerfd CLOCK_BOOTTIME slept correctly 40360
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd_create01 stime=3D1592201238
+cmdline=3D"timerfd_create01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timerfd_create01    1  TPASS  :  timerfd_create() failed as expected: TEST_=
+ERRNO=3DEINVAL(22): Invalid argument
+timerfd_create01    2  TPASS  :  timerfd_create() failed as expected: TEST_=
+ERRNO=3DEINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd_gettime01 stime=3D1592201238
+cmdline=3D"timerfd_gettime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timerfd_gettime01    1  TPASS  :  timerfd_gettime() failed as expected: TES=
+T_ERRNO=3DEBADF(9): Bad file descriptor
+timerfd_gettime01    2  TPASS  :  timerfd_gettime() failed as expected: TES=
+T_ERRNO=3DEFAULT(14): Bad address
+timerfd_gettime01    3  TPASS  :  timerfd_gettime() failed as expected: TES=
+T_ERRNO=3DEINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd_settime01 stime=3D1592201238
+cmdline=3D"timerfd_settime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timerfd_settime01    1  TPASS  :  timerfd_settime() failed as expected: TES=
+T_ERRNO=3DEBADF(9): Bad file descriptor
+timerfd_settime01    2  TPASS  :  timerfd_settime() failed as expected: TES=
+T_ERRNO=3DEFAULT(14): Bad address
+timerfd_settime01    3  TPASS  :  timerfd_settime() failed as expected: TES=
+T_ERRNO=3DEINVAL(22): Invalid argument
+timerfd_settime01    4  TPASS  :  timerfd_settime() failed as expected: TES=
+T_ERRNO=3DEINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimerfd_settime02 stime=3D1592201238
+cmdline=3D"timerfd_settime02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+=2E./../../../include/tst_fuzzy_sync.h:507: INFO: Minimum sampling period e=
+nded
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1024, delay_bias=
+ =3D 0
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D   212ns, avg_dev =3D    30ns, dev_ratio =3D 0.14 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D  1699ns, avg_dev =3D    39ns, dev_ratio =3D 0.02 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D  1737ns, avg_dev =3D    24ns, dev_ratio =3D 0.01 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D   174ns, avg_dev =3D    54ns, dev_ratio =3D 0.31 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D    72  , avg_dev =3D    21  , dev_ratio =3D 0.29 }
+=2E./../../../include/tst_fuzzy_sync.h:519: INFO: Reached deviation ratios =
+< 0.10, introducing randomness
+=2E./../../../include/tst_fuzzy_sync.h:522: INFO: Delay range is [-819, 767]
+=2E./../../../include/tst_fuzzy_sync.h:331: INFO: loop =3D 1039, delay_bias=
+ =3D 0
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: start_a - start_b: { avg =
+=3D   247ns, avg_dev =3D    19ns, dev_ratio =3D 0.07 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - start_a  : { avg =
+=3D  1730ns, avg_dev =3D    37ns, dev_ratio =3D 0.02 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_b - start_b  : { avg =
+=3D  1848ns, avg_dev =3D    33ns, dev_ratio =3D 0.02 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: end_a - end_b    : { avg =
+=3D   130ns, avg_dev =3D    12ns, dev_ratio =3D 0.09 }
+=2E./../../../include/tst_fuzzy_sync.h:320: INFO: spins            : { avg =
+=3D    58  , avg_dev =3D     6  , dev_ratio =3D 0.10 }
+=2E./../../../include/tst_fuzzy_sync.h:643: INFO: Exceeded execution loops,=
+ requesting exit
+timerfd_settime02.c:89: PASS: Nothing bad happened, probably
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D22 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3017 cstime=3D1062
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_create01 stime=3D1592201260
+cmdline=3D"timer_create01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_create01.c:51: INFO: Testing notification type: SIGEV_NONE
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_MONOTONIC
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_PROCESS_CPU=
+TIME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_THREAD_CPUT=
+IME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_TAI
+timer_create01.c:51: INFO: Testing notification type: SIGEV_SIGNAL
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_MONOTONIC
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_PROCESS_CPU=
+TIME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_THREAD_CPUT=
+IME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_TAI
+timer_create01.c:51: INFO: Testing notification type: SIGEV_THREAD
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_MONOTONIC
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_PROCESS_CPU=
+TIME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_THREAD_CPUT=
+IME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_TAI
+timer_create01.c:51: INFO: Testing notification type: SIGEV_THREAD_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_MONOTONIC
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_PROCESS_CPU=
+TIME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_THREAD_CPUT=
+IME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_TAI
+timer_create01.c:51: INFO: Testing notification type: NULL
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_MONOTONIC
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_PROCESS_CPU=
+TIME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_THREAD_CPUT=
+IME_ID
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_BOOTTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_REALTIME_AL=
+ARM
+timer_create01.c:96: PASS: Timer successfully created for CLOCK_TAI
+
+Summary:
+passed   40
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_create02 stime=3D1592201260
+cmdline=3D"timer_create02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_create02.c:73: PASS: invalid sigevent struct failed as expected: EFAU=
+LT (14)
+timer_create02.c:73: PASS: invalid timer ID failed as expected: EFAULT (14)
+timer_create02.c:73: PASS: invalid clock failed as expected: EINVAL (22)
+timer_create02.c:73: PASS: wrong sigev_notify failed as expected: EINVAL (2=
+2)
+timer_create02.c:73: PASS: wrong sigev_signo failed as expected: EINVAL (22)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_create03 stime=3D1592201260
+cmdline=3D"timer_create03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_create03.c:47: PASS: timer_create() failed as expected: EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_delete01 stime=3D1592201260
+cmdline=3D"timer_delete01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_delete01.c:39: INFO: Testing CLOCK_REALTIME
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_MONOTONIC
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_PROCESS_CPUTIME_ID
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_THREAD_CPUTIME_ID
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_BOOTTIME
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_BOOTTIME_ALARM
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_REALTIME_ALARM
+timer_delete01.c:57: PASS: Timer deleted successfully!
+timer_delete01.c:39: INFO: Testing CLOCK_TAI
+timer_delete01.c:57: PASS: Timer deleted successfully!
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_delete02 stime=3D1592201260
+cmdline=3D"timer_delete02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_delete02.c:30: PASS: Failed as expected: EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_getoverrun01 stime=3D1592201260
+cmdline=3D"timer_getoverrun01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timer_getoverrun01    1  TPASS  :  timer_getoverrun(CLOCK_REALTIME) Passed
+timer_getoverrun01    2  TPASS  :  timer_gettime(-1) Failed: EINVAL
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_gettime01 stime=3D1592201260
+cmdline=3D"timer_gettime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timer_gettime01    1  TPASS  :  timer_gettime(CLOCK_REALTIME) Passed
+timer_gettime01    2  TPASS  :  timer_gettime(-1) Failed: EINVAL
+timer_gettime01    3  TPASS  :  timer_gettime(NULL) Failed: EFAULT
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_settime01 stime=3D1592201260
+cmdline=3D"timer_settime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_settime01.c:53: INFO: Testing for general initialization:
+timer_settime01.c:102: PASS: CLOCK_REALTIME was successful
+timer_settime01.c:102: PASS: CLOCK_MONOTONIC was successful
+timer_settime01.c:102: PASS: CLOCK_PROCESS_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_THREAD_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_REALTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_TAI was successful
+timer_settime01.c:53: INFO: Testing for setting old_value:
+timer_settime01.c:102: PASS: CLOCK_REALTIME was successful
+timer_settime01.c:102: PASS: CLOCK_MONOTONIC was successful
+timer_settime01.c:102: PASS: CLOCK_PROCESS_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_THREAD_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_REALTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_TAI was successful
+timer_settime01.c:53: INFO: Testing for using periodic timer:
+timer_settime01.c:102: PASS: CLOCK_REALTIME was successful
+timer_settime01.c:102: PASS: CLOCK_MONOTONIC was successful
+timer_settime01.c:102: PASS: CLOCK_PROCESS_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_THREAD_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_REALTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_TAI was successful
+timer_settime01.c:53: INFO: Testing for using absolute time:
+timer_settime01.c:102: PASS: CLOCK_REALTIME was successful
+timer_settime01.c:102: PASS: CLOCK_MONOTONIC was successful
+timer_settime01.c:102: PASS: CLOCK_PROCESS_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_THREAD_CPUTIME_ID was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME was successful
+timer_settime01.c:102: PASS: CLOCK_BOOTTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_REALTIME_ALARM was successful
+timer_settime01.c:102: PASS: CLOCK_TAI was successful
+
+Summary:
+passed   32
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_settime02 stime=3D1592201260
+cmdline=3D"timer_settime02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+timer_settime02.c:65: INFO: Testing for setting new_set pointer to NULL:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+INVAL (22)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EI=
+NVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EINVAL (22)
+timer_settime02.c:65: INFO: Testing for setting tv_nsec to a negative value:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+INVAL (22)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EI=
+NVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EINVAL (22)
+timer_settime02.c:65: INFO: Testing for setting tv_nsec value too high:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+INVAL (22)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EI=
+NVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EINVAL (22)
+timer_settime02.c:65: INFO: Testing for passing pointer to invalid timer_id:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+INVAL (22)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EI=
+NVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EINVAL (22)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EINVA=
+L (22)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EINVAL (22)
+timer_settime02.c:65: INFO: Testing for passing invalid address for new_val=
+ue:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+FAULT (14)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EF=
+AULT (14)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EFAUL=
+T (14)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EFAUL=
+T (14)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EFAULT (14)
+timer_settime02.c:65: INFO: Testing for passing invalid address for old_val=
+ue:
+timer_settime02.c:108: PASS: CLOCK_REALTIME failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_MONOTONIC failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_PROCESS_CPUTIME_ID failed as expected: E=
+FAULT (14)
+timer_settime02.c:108: PASS: CLOCK_THREAD_CPUTIME_ID failed as expected: EF=
+AULT (14)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME failed as expected: EFAULT (14)
+timer_settime02.c:108: PASS: CLOCK_BOOTTIME_ALARM failed as expected: EFAUL=
+T (14)
+timer_settime02.c:108: PASS: CLOCK_REALTIME_ALARM failed as expected: EFAUL=
+T (14)
+timer_settime02.c:108: PASS: CLOCK_TAI failed as expected: EFAULT (14)
+
+Summary:
+passed   48
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtkill01 stime=3D1592201260
+cmdline=3D"tkill01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tkill01     1  TPASS  :  tkill call succeeded
+tkill01     2  TPASS  :  tkill call succeeded
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtkill02 stime=3D1592201260
+cmdline=3D"tkill02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tkill02     1  TPASS  :  tkill(-1, SIGUSR1) failed as expected: TEST_ERRNO=
+=3DEINVAL(22): Invalid argument
+tkill02     2  TPASS  :  tkill(32768, SIGUSR1) failed as expected: TEST_ERR=
+NO=3DESRCH(3): No such process
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtruncate01 stime=3D1592201260
+cmdline=3D"truncate01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+truncate01    1  TPASS  :  Functionality of truncate(testfile, 256) success=
+ful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtruncate01_64 stime=3D1592201260
+cmdline=3D"truncate01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+truncate01_64    1  TPASS  :  Functionality of truncate(testfile, 256) succ=
+essful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtruncate02 stime=3D1592201260
+cmdline=3D"truncate02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+truncate02    1  TPASS  :  Functionality of truncate(2) on testfile success=
+ful
+incrementing stop
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20200515-23-gec1b91c46
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20200515-23-gec1b91c46
+       ###############################################################
 
 
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
-do
-	online_file="$cpu_dir"/online
-	[ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
-
-	file="$cpu_dir"/cpufreq/scaling_governor
-	[ -f "$file" ] && echo "performance" > "$file"
-done
-
- "/lkp/benchmarks/python3/bin/python3" "./runtest.py" "page_fault3" "295" "thread" "288"
-
---l/2UL691n69jcg3q--
+--f4OB/AjbUHPcIx8p--
