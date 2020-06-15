@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196B61F9115
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B9A1F9111
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbgFOIMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:12:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55830 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgFOIMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:12:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 33E34AA7C;
-        Mon, 15 Jun 2020 08:12:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CCD021E1289; Mon, 15 Jun 2020 10:12:02 +0200 (CEST)
-Date:   Mon, 15 Jun 2020 10:12:02 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fs: Do not check if there is a fsnotify watcher on
- pseudo inodes
-Message-ID: <20200615081202.GE9449@quack2.suse.cz>
-References: <20200612092603.GB3183@techsingularity.net>
- <CAOQ4uxikbJ19npQFWzGm6xnqXm0W8pV3NOWE0ZxS9p_G2A39Aw@mail.gmail.com>
- <20200612131854.GD3183@techsingularity.net>
- <CAOQ4uxghy5zOT6i=shZfFHsXOgPrd7-4iPkJBDcsHU6bUSFUFg@mail.gmail.com>
- <CAOQ4uxhm+afWpnb4RFw8LkZ+ZJtnFxqR5HB8Uyj-c44CU9SSJg@mail.gmail.com>
+        id S1728828AbgFOIJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:09:10 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36890 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728162AbgFOIJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:09:10 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7E5ED7E1BDB3F9E58F43;
+        Mon, 15 Jun 2020 16:09:03 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 15 Jun 2020 16:08:56 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <lduncan@suse.com>, <cleech@redhat.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <open-iscsi@googlegroups.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] scsi: iscsi: Do not put host in iscsi_set_flashnode_param()
+Date:   Mon, 15 Jun 2020 16:12:26 +0800
+Message-ID: <20200615081226.183068-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhm+afWpnb4RFw8LkZ+ZJtnFxqR5HB8Uyj-c44CU9SSJg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12-06-20 23:34:16, Amir Goldstein wrote:
-> > > > So maybe it would be better to list all users of alloc_file_pseudo()
-> > > > and say that they all should be opted out of fsnotify, without mentioning
-> > > > "internal mount"?
-> > > >
-> > >
-> > > The users are DMA buffers, CXL, aio, anon inodes, hugetlbfs, anonymous
-> > > pipes, shmem and sockets although not all of them necessary end up using
-> > > a VFS operation that triggers fsnotify.  Either way, I don't think it
-> > > makes sense (or even possible) to watch any of those with fanotify so
-> > > setting the flag seems reasonable.
-> > >
-> >
-> > I also think this seems reasonable, but the more accurate reason IMO
-> > is found in the comment for d_alloc_pseudo():
-> > "allocate a dentry (for lookup-less filesystems)..."
-> >
-> > > I updated the changelog and maybe this is clearer.
-> >
-> > I still find the use of "internal mount" terminology too vague.
-> > "lookup-less filesystems" would have been more accurate,
-> 
-> Only it is not really accurate for shmfs anf hugetlbfs, which are
-> not lookup-less, they just hand out un-lookable inodes.
+If scsi_host_lookup() failes we will jump to put_host, which may
+cause panic. Jump to exit_set_fnode to fix it.
 
-OK, but I still think we are safe setting FMODE_NONOTIFY in
-alloc_file_pseudo() and that covers all the cases we care about. Or did I
-misunderstand something in the discussion? I can see e.g.
-__shmem_file_setup() uses alloc_file_pseudo() but again that seems to be
-used only for inodes without a path and the comment before d_alloc_pseudo()
-pretty clearly states this should be the case.
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/scsi/scsi_transport_iscsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So is the dispute here really only about how to call files using
-d_alloc_pseudo()?
-
-> > because as you correctly point out, the user API to set a watch
-> > requires that the marked object is looked up in the filesystem.
-> >
-> > There are also some kernel internal users that set watches
-> > like audit and nfsd, but I think they are also only interested in
-> > inodes that have a path at the time that the mark is setup.
-> >
-> 
-> FWIW I verified that watches can be set on anonymous pipes
-> via /proc/XX/fd, so if we are going to apply this patch, I think it
-> should be accompanied with a complimentary patch that forbids
-> setting up a mark on these sort of inodes. If someone out there
-> is doing this, at least they would get a loud message that something
-> has changed instead of silently dropping fsnotify events.
-> 
-> So now the question is how do we identify/classify "these sort of
-> inodes"? If they are no common well defining characteristics, we
-> may need to blacklist pipes sockets and anon inodes explicitly
-> with S_NONOTIFY.
-
-We already do have FS_DISALLOW_NOTIFY_PERM in file_system_type->fs_flags so
-adding FS_DISALLOW_NOTIFY would be natural if there is a need for this.
-
-I don't think using fsnotify on pipe inodes is sane in any way. You'd
-possibly only get the MODIFY or ACCESS events and even those would not be
-quite reliable because with pipes stuff like splicing etc. is much more
-common and that currently completely bypasses fsnotify subsystem. So
-overall I'm fine with completely ignoring fsnotify on such inodes.
-
-								Honza
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index f4cc08e..c5e99f9 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -3291,7 +3291,7 @@ static int iscsi_set_flashnode_param(struct iscsi_transport *transport,
+ 		pr_err("%s could not find host no %u\n",
+ 		       __func__, ev->u.set_flashnode.host_no);
+ 		err = -ENODEV;
+-		goto put_host;
++		goto exit_set_fnode;
+ 	}
+ 
+ 	idx = ev->u.set_flashnode.flashnode_idx;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
