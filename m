@@ -2,239 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454921F96DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39341F96E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbgFOMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:45:03 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:41828 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729243AbgFOMpC (ORCPT
+        id S1730015AbgFOMpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729989AbgFOMpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:45:02 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FChqHm015449;
-        Mon, 15 Jun 2020 14:44:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=OeFeiQXSPoFz1zGDNRLnx/pg+w7M3JAqmjkNz+4d8C0=;
- b=hRp6vYCuTFSCYfa3cTf3Gg9rzRHJX8mWUpwsApmZlwiQ5uM915KS9jKUtZWK7R7MZT7Y
- saynVOqKkDnogwO5JhHsC+CgMpirImKgGFH2aDd2JIMAR0CWhPgFfRZxcZhgLqKZRrWA
- 1YNQNfqEP05rsNgC6WDgBwuklLdm5znfuEY5EVr496WIuhQie3HAKthhH6QiV61FRe2I
- YAK7CY9T+fN3n6LFir3foro/A62oD65IHf6C/gK8uIDCowP0HK9xgk8udeJlJRYyp4vv
- 0P6b+Pdp8T0p0fUwUqRwsc2L+F4Mnz10E+52r68+MeGIgMY/7MSqi4b8uRSiE9Y5PJKh 3g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mm91hqeg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 14:44:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 388EB10002A;
-        Mon, 15 Jun 2020 14:44:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2A8EA2B45D9;
-        Mon, 15 Jun 2020 14:44:57 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 14:44:56
- +0200
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <alexandre.torgue@st.com>
-Subject: [PATCH] pinctrl: stm32: use the hwspin_lock_timeout_in_atomic() API
-Date:   Mon, 15 Jun 2020 14:44:56 +0200
-Message-ID: <20200615124456.27328-1-alexandre.torgue@st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Jun 2020 08:45:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ACFC05BD1E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 05:45:11 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o8so5061180wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 05:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5WfldrA7Ybz/CNtCQsbY2j9hmaVRS/lefK2C8B4/ydo=;
+        b=R5VktszuPwRyfKbFUb+M5pY4vbiXCrk4+CjaMUdUvbr7PL1EAycwk6hGg4WlqYqmSY
+         i46OfPU4CdegDGwNZ89JPs5mBGxAqhTNbEV7Eqxql4wv+MFbyHcmJURiBnibI5m9o+Mz
+         95M+LPZV7RdAvnGdDKofnOZsLb4NljOrjzxghwOXeVYOwW1P3B2O7lly8VxrGBEin/5M
+         634k7g8/GeaLN9NVEhvjgSLc/+Rv/LlOHfmPtwECdnW8JBSagOi3A4sT3GVVXvf0dhaf
+         8WyQqLaEYjxztW7LztMm4qjwAeRjtZoyLIeaw6Fi4uh8tljKNIEpNLRIzQDaD7qBNE/j
+         E3bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5WfldrA7Ybz/CNtCQsbY2j9hmaVRS/lefK2C8B4/ydo=;
+        b=mEOl77+234hjga+5gfbFr9FzxLLH+CYZm76pA0ljKFSnWZoSoqTlx1Bxd02VbGr/ag
+         zTd2TwBc6tVRKr9KmzKbMUNYUiXeQJ62HOdj2nU/Xj82roSC18R1Ke7iD21J+bWEtXuU
+         gDrn6GnuXcMVcqhfvBl7W+2yDvvYbpu8sJZgREldoc52DLIXX4hbu9hFJG1IQr8jAiUW
+         qFYaKDzz7u3JB3fyd6aBI36Wu+2g6o+O0lVkjFnRWdd/Ca+9WoFc0nEsHKmpxWCWxJDg
+         0gsYbntY9lTpgqFoGYMBNavlToGwKrDihv3A5Af1TaL6sJDLCeeS796vnANhrBYPS3gl
+         uw2g==
+X-Gm-Message-State: AOAM530NdLSkk9qQnpJptij5fXSh59Ya2jf3iaf/yB84tBkJdJbR2EjB
+        KfAI1EElBBhi7VTWhglGK41xyDhebReJPQ==
+X-Google-Smtp-Source: ABdhPJyOUgN6W95sji6BAD0z9Le4kY3qbFFlPrhTK7NksEopHHTFOHCgqndp2ELuG3T5LFhG8TYLWQ==
+X-Received: by 2002:a1c:188:: with SMTP id 130mr13072660wmb.93.1592225109747;
+        Mon, 15 Jun 2020 05:45:09 -0700 (PDT)
+Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
+        by smtp.gmail.com with ESMTPSA id c16sm24705585wrx.4.2020.06.15.05.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 05:45:09 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 14:45:06 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] ARM: dts: am5729: beaglebone-ai: fix rgmii phy-mode
+Message-ID: <20200615124506.GA3833448@x1>
+References: <20200611220951.GA3355634@x1>
+ <10637da2-8751-3c6f-cf1e-f0a53cca292d@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10637da2-8751-3c6f-cf1e-f0a53cca292d@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Dessenne <fabien.dessenne@st.com>
+On Mon, Jun 15, 2020 at 12:34:57PM +0300, Grygorii Strashko wrote:
+> 
+> 
+> On 12/06/2020 01:09, Drew Fustini wrote:
+> > Since commit cd28d1d6e52e ("net: phy: at803x: Disable phy delay for
+> > RGMII mode") the networking is broken on the BeagleBone AI which has
+> > the AR8035 PHY for Gigabit Ethernet [0].  The fix is to switch from
+> > phy-mode = "rgmii" to phy-mode = "rgmii-rxid".
+> > 
+> > Note: Grygorii Strashko made a similar phy-mode fix in 820f8a870f65 for
+> > other AM5729 boards.
+> 
+> commit ref is incorrect
 
-Use the hwspin_lock_timeout_in_atomic() API which is the most appropriated
-here. Indeed:
-- hwspin_lock_() is called after spin_lock_irqsave()
-- the hwspin_lock_timeout() API relies on jiffies count which won't work
-  if IRQs are disabled which is the case here.
+Do you mean commit ref 820f8a870f65 ? 
+("ARM: dts: am57xx: fix networking on boards with ksz9031 phy")
 
-Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+I thought it made sense to point to that commit as you seemed to be
+fixing a very similar issue, just for a different phy.
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index a657cd829ce6..1f7fff84aa9d 100644
---- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -64,7 +64,7 @@
- #define gpio_range_to_bank(chip) \
- 		container_of(chip, struct stm32_gpio_bank, range)
- 
--#define HWSPINLOCK_TIMEOUT	5 /* msec */
-+#define HWSPNLCK_TIMEOUT	1000 /* usec */
- 
- static const char * const stm32_gpio_functions[] = {
- 	"gpio", "af0", "af1",
-@@ -420,12 +420,14 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
- 	 * to avoid overriding.
- 	 */
- 	spin_lock_irqsave(&pctl->irqmux_lock, flags);
--	if (pctl->hwlock)
--		ret = hwspin_lock_timeout(pctl->hwlock, HWSPINLOCK_TIMEOUT);
- 
--	if (ret) {
--		dev_err(pctl->dev, "Can't get hwspinlock\n");
--		goto unlock;
-+	if (pctl->hwlock) {
-+		ret = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-+						    HWSPNLCK_TIMEOUT);
-+		if (ret) {
-+			dev_err(pctl->dev, "Can't get hwspinlock\n");
-+			goto unlock;
-+		}
- 	}
- 
- 	if (pctl->irqmux_map & BIT(irq_data->hwirq)) {
-@@ -433,7 +435,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
- 			irq_data->hwirq);
- 		ret = -EBUSY;
- 		if (pctl->hwlock)
--			hwspin_unlock(pctl->hwlock);
-+			hwspin_unlock_in_atomic(pctl->hwlock);
- 		goto unlock;
- 	} else {
- 		pctl->irqmux_map |= BIT(irq_data->hwirq);
-@@ -442,7 +444,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
- 	regmap_field_write(pctl->irqmux[irq_data->hwirq], bank->bank_ioport_nr);
- 
- 	if (pctl->hwlock)
--		hwspin_unlock(pctl->hwlock);
-+		hwspin_unlock_in_atomic(pctl->hwlock);
- 
- unlock:
- 	spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
-@@ -750,12 +752,13 @@ static int stm32_pmx_set_mode(struct stm32_gpio_bank *bank,
- 	clk_enable(bank->clk);
- 	spin_lock_irqsave(&bank->lock, flags);
- 
--	if (pctl->hwlock)
--		err = hwspin_lock_timeout(pctl->hwlock, HWSPINLOCK_TIMEOUT);
--
--	if (err) {
--		dev_err(pctl->dev, "Can't get hwspinlock\n");
--		goto unlock;
-+	if (pctl->hwlock) {
-+		err = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-+						    HWSPNLCK_TIMEOUT);
-+		if (err) {
-+			dev_err(pctl->dev, "Can't get hwspinlock\n");
-+			goto unlock;
-+		}
- 	}
- 
- 	val = readl_relaxed(bank->base + alt_offset);
-@@ -769,7 +772,7 @@ static int stm32_pmx_set_mode(struct stm32_gpio_bank *bank,
- 	writel_relaxed(val, bank->base + STM32_GPIO_MODER);
- 
- 	if (pctl->hwlock)
--		hwspin_unlock(pctl->hwlock);
-+		hwspin_unlock_in_atomic(pctl->hwlock);
- 
- 	stm32_gpio_backup_mode(bank, pin, mode, alt);
- 
-@@ -869,12 +872,13 @@ static int stm32_pconf_set_driving(struct stm32_gpio_bank *bank,
- 	clk_enable(bank->clk);
- 	spin_lock_irqsave(&bank->lock, flags);
- 
--	if (pctl->hwlock)
--		err = hwspin_lock_timeout(pctl->hwlock, HWSPINLOCK_TIMEOUT);
--
--	if (err) {
--		dev_err(pctl->dev, "Can't get hwspinlock\n");
--		goto unlock;
-+	if (pctl->hwlock) {
-+		err = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-+						    HWSPNLCK_TIMEOUT);
-+		if (err) {
-+			dev_err(pctl->dev, "Can't get hwspinlock\n");
-+			goto unlock;
-+		}
- 	}
- 
- 	val = readl_relaxed(bank->base + STM32_GPIO_TYPER);
-@@ -883,7 +887,7 @@ static int stm32_pconf_set_driving(struct stm32_gpio_bank *bank,
- 	writel_relaxed(val, bank->base + STM32_GPIO_TYPER);
- 
- 	if (pctl->hwlock)
--		hwspin_unlock(pctl->hwlock);
-+		hwspin_unlock_in_atomic(pctl->hwlock);
- 
- 	stm32_gpio_backup_driving(bank, offset, drive);
- 
-@@ -923,12 +927,13 @@ static int stm32_pconf_set_speed(struct stm32_gpio_bank *bank,
- 	clk_enable(bank->clk);
- 	spin_lock_irqsave(&bank->lock, flags);
- 
--	if (pctl->hwlock)
--		err = hwspin_lock_timeout(pctl->hwlock, HWSPINLOCK_TIMEOUT);
--
--	if (err) {
--		dev_err(pctl->dev, "Can't get hwspinlock\n");
--		goto unlock;
-+	if (pctl->hwlock) {
-+		err = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-+						    HWSPNLCK_TIMEOUT);
-+		if (err) {
-+			dev_err(pctl->dev, "Can't get hwspinlock\n");
-+			goto unlock;
-+		}
- 	}
- 
- 	val = readl_relaxed(bank->base + STM32_GPIO_SPEEDR);
-@@ -937,7 +942,7 @@ static int stm32_pconf_set_speed(struct stm32_gpio_bank *bank,
- 	writel_relaxed(val, bank->base + STM32_GPIO_SPEEDR);
- 
- 	if (pctl->hwlock)
--		hwspin_unlock(pctl->hwlock);
-+		hwspin_unlock_in_atomic(pctl->hwlock);
- 
- 	stm32_gpio_backup_speed(bank, offset, speed);
- 
-@@ -977,12 +982,13 @@ static int stm32_pconf_set_bias(struct stm32_gpio_bank *bank,
- 	clk_enable(bank->clk);
- 	spin_lock_irqsave(&bank->lock, flags);
- 
--	if (pctl->hwlock)
--		err = hwspin_lock_timeout(pctl->hwlock, HWSPINLOCK_TIMEOUT);
--
--	if (err) {
--		dev_err(pctl->dev, "Can't get hwspinlock\n");
--		goto unlock;
-+	if (pctl->hwlock) {
-+		err = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-+						    HWSPNLCK_TIMEOUT);
-+		if (err) {
-+			dev_err(pctl->dev, "Can't get hwspinlock\n");
-+			goto unlock;
-+		}
- 	}
- 
- 	val = readl_relaxed(bank->base + STM32_GPIO_PUPDR);
-@@ -991,7 +997,7 @@ static int stm32_pconf_set_bias(struct stm32_gpio_bank *bank,
- 	writel_relaxed(val, bank->base + STM32_GPIO_PUPDR);
- 
- 	if (pctl->hwlock)
--		hwspin_unlock(pctl->hwlock);
-+		hwspin_unlock_in_atomic(pctl->hwlock);
- 
- 	stm32_gpio_backup_bias(bank, offset, bias);
- 
--- 
-2.17.1
+Or did you mean commit ref cd28d1d6e52e ?
+("net: phy: at803x: Disable phy delay for RGMII mode")
 
+I believe this is the commit that made it necessary to change the
+phy-mode property for the AR8035 PHY.
+
+> > 
+> > [0] https://github.com/beagleboard/beaglebone-ai/blob/master/BeagleBone-AI_sch.pdf
+> > 
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+> > Fixes: cd28d1d6e52e ("net: phy: at803x: Disable phy delay for RGMII mode")
+> 
+> Pls change fixed tag to
+> 520557d4854b ARM: dts: am5729: beaglebone-ai: adding device tree
+> as this board DTB was merged only in 5.8.
+
+Ok, will do.
+
+> 
+> > Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > ---
+> >   arch/arm/boot/dts/am5729-beagleboneai.dts | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/boot/dts/am5729-beagleboneai.dts b/arch/arm/boot/dts/am5729-beagleboneai.dts
+> > index 9877d7709d41..4c51c6b05e64 100644
+> > --- a/arch/arm/boot/dts/am5729-beagleboneai.dts
+> > +++ b/arch/arm/boot/dts/am5729-beagleboneai.dts
+> > @@ -505,7 +505,7 @@ &mac {
+> >   &cpsw_emac0 {
+> >   	phy-handle = <&phy0>;
+> > -	phy-mode = "rgmii";
+> > +	phy-mode = "rgmii-rxid";
+> >   };
+> >   &ocp {
+> > 
+> 
+> Thanks, pls fix above and you can add my
+> Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> 
+> -- 
+> Best regards,
+> grygorii
+
+Thanks for taking the time to review.
+
+-Drew
