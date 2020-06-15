@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E161A1FA1AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9254D1FA1B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731467AbgFOUgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:36:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
+        id S1731499AbgFOUhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:37:13 -0400
+Received: from mout.gmx.net ([212.227.17.21]:47263 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbgFOUgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:36:11 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2420E2074D;
-        Mon, 15 Jun 2020 20:36:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592253371;
-        bh=I69UtMEb9hSxBtRqEXCmiR68nJKs/Zsp2r5qsnWd/io=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ln324mEu4wMdAeE5Yr+D9tFmx9A74Tlp8XogEvQGRZru60SdYrKkO+xVIhbI8lzRj
-         Qd9rsgX85WPHlJlBQTsH4aOithnVgJ7lexNQeOx04CIaYpEJvmrExiBOAdpJ79quaG
-         8xhM1ac84ZGrv7wElI4xpIp9Trrwc+3WW9Ewq5VM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0689535218F0; Mon, 15 Jun 2020 13:36:11 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 13:36:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 10/29] rcu: fix some kernel-doc warnings
-Message-ID: <20200615203610.GO2723@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <cover.1592203542.git.mchehab+huawei@kernel.org>
- <442c913556cba30f2f411e54efedcb97508f01a9.1592203542.git.mchehab+huawei@kernel.org>
+        id S1728346AbgFOUhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 16:37:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592253414;
+        bh=zUpiwtW/mBNBtxbltW5xvU1MTiYL1U9/ERiK0001imA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=GdGGw/quUe6yfg/W5GYqcIxjvnkXQaFir6A7/8cJiN8er/b9UtRZN1pCXXIxNffGS
+         aoGYMz3ydxt3dChe7mPS11xZ2eIeljQztW8SVG9SLOsLgxh6uRTXE0eULfVfyInvRv
+         RiRyue5RZd8C0CQbRyHKHWLQaFnbHUR2kXSKHSOs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([109.41.128.22]) by mail.gmx.com
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MEFvp-1janMR0FG9-00AIkz; Mon, 15 Jun 2020 22:36:54 +0200
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] doc: x86/speculation: length of underlines
+Date:   Mon, 15 Jun 2020 22:36:45 +0200
+Message-Id: <20200615203645.11545-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <442c913556cba30f2f411e54efedcb97508f01a9.1592203542.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:O6vYLX022T0AXtIILO/LNdmaVEguVvZ5BOhMSLHHx0qeA9+Ixfr
+ jzUoJajJIbMCw9Br1FdM6KLyltoYBG99uamUaeut7YN5i7j0nWngXCTpQ1wsDwu+lg2oCKp
+ 9Ygg+Bax0R0YG1VKUSVjIrLMFsl1HX9m3x9NBN27pO708RMNzh9eQgLnWQaFa4t/g0JK7YE
+ bOs0mrt2lwvFQt9xuHCtw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I0Hprvszq2o=:B1jk4eY+Fl4Od1hksOGDKc
+ IuR+eILWV0ifZr09qLj5+0DQpoDHzKEhVX9Sj6w8D9MvPRESHhYwetNHQAGdEHKVmC2LapAry
+ JF4baaM++ysFjba1sPXUBfC+lGNh/EsKcMnw+OVou/h3Rm1OdgjQDI46JMSStnp0NCfMkABV7
+ X8MvDwzjZcn2JtWak4svcE4FJnrczw4BRhZm75cQ0tY87fz9XyqWhDE5cFU31MQ2L1WRT+NOw
+ FR9ag8/IbnGNRiXB716Gp+SL42LAF8k4qmYN02ulitJd7oYERKCRT5+OhHr8LNTM7Fgiyr9lH
+ swwxIdnm99vG2IyOFiVcELRGVXgPp0X5RTul07TTjCUg+5oeRTVqtFh4ZyXdWUKHo/wtI5pD0
+ YdN3Tktdz3MdJH7mTxecmKwwGvTbZnT1zruEJahz2jZzA/TvgGWSWFb6/d5PyKWqbT80PF01u
+ SD5DPuIHtLkDREBPHawM811XaH6IgCL6WszPCvL7WgHFObNSHF25vz3knGCy9eUek68T4QLRW
+ bt7XxMAltcXZ+5Pc8aPiepE6Nys8sSV/EvTxOyY3bBPuTqj+9zeLR/EouDV/Q1SEDzLj9XM70
+ 0pF3eZSV03QRYxWIUSFRtoTPtTM09oS5BjZqDPZfECjH59/tUhfqeTnVgTOV2aPW2g15cFXpl
+ EVi+iduBCJOXQ1ToQWbdIU32sAzzjLH2P5vmecYJ5sNHbqwsVfkM+ypIR5Pcbd8rgpS7CP/t2
+ AlAyCcKUY4d3UOaWPAvm+75LxlqXiG+prqGcsuZ8Srf8+EKmgZrLF5ri3eBDEjSZVEPB0ZA86
+ ajRuYV256I2q+lXeSiClhRcX0rYhjKGyBg0+oPTPOb0SrCb7/hjnTZMx1yTBoT5aeQKqMbl7A
+ 3dRqbkSSDpEWgVDYx4Dt1P3nZ04L8buGIAhL0m4RzvZfdzVqXtWWvp2Dl0ugYvJ0LI+XfvKL8
+ sM4w0MVL900XdW+CsJoQSgBpiESG+ANSYoc4R0SO5UJ85Qtn85+INVHYhiNEHyLZuHDXh7AtD
+ FD3zkItmBfZFsdkkdUb9iUvd399EjCVsdkYUroQktNWy4YnbCkOfCGgK6DFi4y8DCJwCS2bZ5
+ ZKhuIYx2Y9RUSu6/tbUXk3Y5z42ShuGzAyTl8PawUF7VASU2uIG7BU49rNG/SGVe1DiOnViTC
+ MrKLT8Q9goMgMwTz8lJu3N7cGKPQLH/C14ndpUjTd6sIwXth+dCGixJiq4cHEkwjFANtI1+A7
+ 7jZA+z4G+r0b1k7GU
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 08:46:49AM +0200, Mauro Carvalho Chehab wrote:
-> There are some kernel-doc warnings:
-> 
-> 	./kernel/rcu/tree.c:2915: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
-> 	./include/linux/rculist.h:517: warning: bad line:                           [@right ][node2 ... ]
-> 	./include/linux/rculist.h:2: WARNING: Unexpected indentation.
-> 
-> Move the comment for "count" to the kernel-doc markup and add
-> a missing "*" on one kernel-doc continuation line.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The lengths of underlines must match the titles to avoid build warnings.
 
-Queued and pushed, thank you!
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ .../hw-vuln/special-register-buffer-data-sampling.rst       | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-							Thanx, Paul
+diff --git a/Documentation/admin-guide/hw-vuln/special-register-buffer-dat=
+a-sampling.rst b/Documentation/admin-guide/hw-vuln/special-register-buffer=
+-data-sampling.rst
+index 47b1b3afac99..3b1ce68d2456 100644
+=2D-- a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sam=
+pling.rst
++++ b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampl=
+ing.rst
+@@ -14,7 +14,7 @@ to the core through the special register mechanism that =
+is susceptible
+ to MDS attacks.
 
-> ---
->  include/linux/rculist.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> index df587d181844..7eed65b5f713 100644
-> --- a/include/linux/rculist.h
-> +++ b/include/linux/rculist.h
-> @@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
->   * @right: The hlist head on the right
->   *
->   * The lists start out as [@left  ][node1 ... ] and
-> -                          [@right ][node2 ... ]
-> + *                        [@right ][node2 ... ]
->   * The lists end up as    [@left  ][node2 ... ]
->   *                        [@right ][node1 ... ]
->   */
-> -- 
-> 2.26.2
-> 
+ Affected processors
+=2D--------------------
++-------------------
+ Core models (desktop, mobile, Xeon-E3) that implement RDRAND and/or RDSEE=
+D may
+ be affected.
+
+@@ -59,7 +59,7 @@ executed on another core or sibling thread using MDS tec=
+hniques.
+
+
+ Mitigation mechanism
+=2D-------------------
++--------------------
+ Intel will release microcode updates that modify the RDRAND, RDSEED, and
+ EGETKEY instructions to overwrite secret special register data in the sha=
+red
+ staging buffer before the secret data can be accessed by another logical
+@@ -118,7 +118,7 @@ with the option "srbds=3D".  The option for this is:
+   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+
+ SRBDS System Information
+=2D-----------------------
++------------------------
+ The Linux kernel provides vulnerability status information through sysfs.=
+  For
+ SRBDS this can be accessed by the following sysfs file:
+ /sys/devices/system/cpu/vulnerabilities/srbds
+=2D-
+2.27.0
+
