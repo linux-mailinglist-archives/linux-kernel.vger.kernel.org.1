@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7C01F8C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 03:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8141F8C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 03:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgFOBgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 21:36:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:34554 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727946AbgFOBgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 21:36:46 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E072FC3246322CC7ADBA;
-        Mon, 15 Jun 2020 09:36:40 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 15 Jun 2020 09:36:33 +0800
-From:   Chen Wandun <chenwandun@huawei.com>
-To:     <acme@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>,
-        <Markus.Elfring@web.de>, <cj.chengjian@huawei.com>,
-        <chenwandun@huawei.com>
-Subject: [PATCH next v3 2/2] perf tools: fix potential memleak in perf events parser
-Date:   Mon, 15 Jun 2020 09:36:14 +0800
-Message-ID: <20200615013614.8646-3-chenwandun@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615013614.8646-1-chenwandun@huawei.com>
-References: <20200615013614.8646-1-chenwandun@huawei.com>
+        id S1728126AbgFOBks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 21:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727946AbgFOBkr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Jun 2020 21:40:47 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42837C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 18:40:47 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id i1so13776507ils.11
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Jun 2020 18:40:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e0R0VcS82iMwtgZz8mDW0AfEhPJWl21echQTG38Nq4A=;
+        b=btQDyFItD/dzzYytZaJICxNL2j4kX8r/ybSZ7LZH7D6Cg9pfqseumhhy5dGaFcDKwL
+         vC5ek3gz1NJPgcJAaQgroSmJdxB3FIdFdHp1UTleNI+UsMXDmg5lOJArN9D2dI5/k5lK
+         NPxZSjIs2qtsY8gITxf566WCJUj/gOAxhywCjNJqLVsR5HvXdMYtShnylghafmW/DH8g
+         6UkEz3gi0F8Sg4/4rKMJcYreUhrU7cv5U2t1IsRzfNC2G8/lYNJFF6Q7DXWMECv19n1n
+         sJnHSC7c6r5dgNfiGCwRq4NHLtJhh8eqKjR6XwzgmeBy0k9+IoFvT3+um2XnDrB+iPtM
+         pn4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e0R0VcS82iMwtgZz8mDW0AfEhPJWl21echQTG38Nq4A=;
+        b=d9oV0i00+F662Y+p88n1bET+po7DLuzc0UQCh0iG6pysaIC8ln6Ier7tpWTa3jK0bE
+         VvPzNadednkUQIR8yI6SUK6UPMxuLCi+7D2kZ+A73bPYgz1U3TSIpBNyYMOOWN2NubwR
+         7jQH8zgdUJ+HHBtGKz2CBrsadqplesqf0kirTzdctme91OUKAW8+5BfEExlpVGdopoc9
+         kxHycvTVn2pgK82OsdWS26SySuKtykFv829znDJRjq3xv+4ib+t0UKo1/eRvZ9ODG/Du
+         IRfVeuvcuTptn+pisbVbRY1vp+8ZWpJi5vx1Owrp+rDcOzqFgFaba/W2H43aAAcftXG0
+         a+OQ==
+X-Gm-Message-State: AOAM532LgN62t/tCaEusuthEiPoMvomKAPuy9TXdEMG4uDRc1ObXUa86
+        MHc1LLNO7mTWDor47EwhPIwqyEjeU/QcHFj3SI0=
+X-Google-Smtp-Source: ABdhPJyC5GjuCF51Z5GQ47Ise61BeRl68fQIj7IKVEa+S3q0RWKKAaQA5yK+8ufNhfFhpRmFIhI8YFVd1X+yYTrqHPM=
+X-Received: by 2002:a92:da03:: with SMTP id z3mr24836292ilm.258.1592185246142;
+ Sun, 14 Jun 2020 18:40:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+References: <37af499e-2b8b-7e78-ed4b-0aaf711fcb38@csgroup.eu> <20200614233235.121432-1-gthelen@google.com>
+In-Reply-To: <20200614233235.121432-1-gthelen@google.com>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Mon, 15 Jun 2020 11:40:35 +1000
+Message-ID: <CAOSf1CHjrFb3J6t0HQXQVVM-PEgAcaCADA8mcwYVi4mpq+f3Yw@mail.gmail.com>
+Subject: Re: [PATCH v2] powerpc/powernv/pci: use ifdef to avoid dead code
+To:     Greg Thelen <gthelen@google.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix potential memory leak. Function new_term may return error, so
-it is need to free memory when the return value is negative.
-What's more, add jump targets so that a configuration object and
-a duplicated string are released after a call of the function
-"strdup" or "new_term" failed.
+On Mon, Jun 15, 2020 at 9:33 AM Greg Thelen <gthelen@google.com> wrote:
+>
+> Commit dc3d8f85bb57 ("powerpc/powernv/pci: Re-work bus PE
+> configuration") removed a couple pnv_ioda_setup_bus_dma() calls.  The
+> only remaining calls are behind CONFIG_IOMMU_API.  Thus builds without
+> CONFIG_IOMMU_API see:
+>   arch/powerpc/platforms/powernv/pci-ioda.c:1888:13: error: 'pnv_ioda_setup_bus_dma' defined but not used
+>
+> Move pnv_ioda_setup_bus_dma() under CONFIG_IOMMU_API to avoid dead code.
 
-Fixes: b6645a723595 ("perf parse: Ensure config and str in terms are unique")
+Doh! Thanks for the fix.
 
-Signed-off-by: Chen Wandun <chenwandun@huawei.com>
----
- tools/perf/util/parse-events.c | 47 ++++++++++++++++++++++++++--------
- 1 file changed, 37 insertions(+), 10 deletions(-)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 6f4dc8a92817..a9f32032af08 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2947,6 +2947,7 @@ int parse_events_term__sym_hw(struct parse_events_term **term,
- 		.type_term = PARSE_EVENTS__TERM_TYPE_USER,
- 		.config    = config,
- 	};
-+	int ret;
- 
- 	if (!temp.config) {
- 		temp.config = strdup("event");
-@@ -2958,12 +2959,23 @@ int parse_events_term__sym_hw(struct parse_events_term **term,
- 
- 	str = strdup(sym->symbol);
- 	if (!str) {
--		if (!config)
--			free(temp.config);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto free_config;
- 	}
- 
--	return new_term(term, &temp, str, 0);
-+	ret = new_term(term, &temp, str, 0);
-+	if (ret)
-+		goto free_str;
-+
-+	return 0;
-+
-+free_str:
-+	free(str);
-+free_config:
-+	if (!config)
-+		free(temp.config);
-+
-+	return ret;
- }
- 
- int parse_events_term__clone(struct parse_events_term **new,
-@@ -2977,23 +2989,38 @@ int parse_events_term__clone(struct parse_events_term **new,
- 		.err_term  = term->err_term,
- 		.err_val   = term->err_val,
- 	};
-+	int ret;
- 
- 	if (term->config) {
- 		temp.config = strdup(term->config);
- 		if (!temp.config)
- 			return -ENOMEM;
- 	}
--	if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
--		return new_term(new, &temp, NULL, term->val.num);
-+	if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM) {
-+		ret = new_term(new, &temp, NULL, term->val.num);
-+		if (ret)
-+			goto free_config;
-+	}
- 
- 	str = strdup(term->val.str);
- 	if (!str) {
--		if (term->config)
--			free(temp.config);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto free_config;
- 	}
- 
--	return new_term(new, &temp, str, 0);
-+	ret = new_term(new, &temp, str, 0);
-+	if (ret)
-+		goto free_str;
-+
-+	return 0;
-+
-+free_str:
-+	free(str);
-+free_config:
-+	if (term->config)
-+		free(temp.config);
-+
-+	return ret;
- }
- 
- void parse_events_term__delete(struct parse_events_term *term)
--- 
-2.17.1
-
+Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
