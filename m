@@ -2,165 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2BB1FA0C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E701FA0C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgFOTqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 15:46:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:24689 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728773AbgFOTqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:46:34 -0400
-IronPort-SDR: dsmiuiL4pL+9kysDhC38HZvMJ77uJOiNsVN0VX7a9j1XM4U+Jg9QXxLiBLxRqw39oYsoQ05fxU
- rYWkfOoXa9BQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 12:46:33 -0700
-IronPort-SDR: wa6JlrKMkizW5PeZYr2CH8Zu2YUsEh6Apy2qsRNtmm3kv1Lg1eUemFpYsGKuT1S9MHjGKzm5QC
- vKW+OWYxPqyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
-   d="scan'208";a="449521348"
-Received: from lkp-server02.sh.intel.com (HELO ec7aa6149bd9) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 15 Jun 2020 12:46:32 -0700
-Received: from kbuild by ec7aa6149bd9 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jkv3v-0000B3-Sm; Mon, 15 Jun 2020 19:46:31 +0000
-Date:   Tue, 16 Jun 2020 03:45:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 5d7f7d1d5e01c22894dee7c9c9266500478dca99
-Message-ID: <5ee7cfef.u0GcCIuGRvOXzxrp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730355AbgFOTvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 15:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728771AbgFOTvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 15:51:09 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC62C061A0E;
+        Mon, 15 Jun 2020 12:51:08 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id m23so4250157vko.2;
+        Mon, 15 Jun 2020 12:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p8frMyV6iWiTG20peVSog6g/PzG1tE3Z1KTFpjyMuOE=;
+        b=aBNl8F1yV0Kt0lNqG18J3Q1wOXi25U9Rf2Ac41hQ9KporKHlmJEJjztkldcrgpYn6n
+         X/MA0yAXN7zo/sBLmNp6WdtkZTl3x/Ri+rxuTPqRMQ4NSMtfoRnwNDuIm9D/f9Ox7cyT
+         KdYxGbl3FNmh7WvCWTd/4XTNT2SQTFLynAOaIQNeuoteTVOiwVo7tmEsv6shA92CdnLK
+         nt/gcC6LJvHmAqj9Vyo3fHeWdSMQ+Y5jlLLV62WBTjdf2dIzdu9aj/EeDFBt3xzVlz+c
+         ULgDtI03KR1fvyw4cB/1VLkoG68wC233nQqDshoS1W1sRlNnPTm7GTA3qpKDPJGaMDmr
+         Y3dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p8frMyV6iWiTG20peVSog6g/PzG1tE3Z1KTFpjyMuOE=;
+        b=UNwaOOPrkwzt/HAb3E4y23ozGesQXdtAXj+3Oifc4kp1myIor6HfSFMzpFuLV88JnN
+         qUFhF0toO3YDbui8WJ/DhoWluuGyO5N2r0yyULyUOSwZjyubWfCT+KeT+vbTjuMCYB42
+         10S0fmKE09fW+0cAdo15LBwMDB0gLYgvc5yFQ9C++iVbViK4ZzugvwBdd7q2p0YmaiYN
+         0uRucUHE2PHqT7YMMXjpkED1TTMCAHmTZZ/qvymy3VZa3znmtg8CGgkAQ9nG8zjVJ25p
+         1e9I1YfzIzaw6+NwZwfEE1bDmW5rOHTo+fKYZsHfGfkIe0Vnj1JyvVd+bR1dJ+0FiAZO
+         IIaQ==
+X-Gm-Message-State: AOAM531cC/Jo9CTB//GvT9y1mjDkgyn19gE3EbdhLHd9/R1JnnCOiVrX
+        kYvV5wdWJasSlnZz6cQBG5UDNXhujv3np7tld+8=
+X-Google-Smtp-Source: ABdhPJyflqHmNb9Z0V42wEN6xfs763BQyMhIycGYtZa9uUpcgTaLfUGjC4tdKIp9+rR3PVA4ZKs7VkJbkG4YEgVhK0E=
+X-Received: by 2002:a1f:ee81:: with SMTP id m123mr19632262vkh.51.1592250667624;
+ Mon, 15 Jun 2020 12:51:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200611091139.8525-1-joro@8bytes.org>
+In-Reply-To: <20200611091139.8525-1-joro@8bytes.org>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 15 Jun 2020 20:47:27 +0100
+Message-ID: <CACvgo526Kn5qSpmV_azf70UCYNaFbyo7LgXGQykzyQV7v=6ahg@mail.gmail.com>
+Subject: Re: [PATCH] alpha: Fix build around srm_sysrq_reboot_op
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-alpha@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
-branch HEAD: 5d7f7d1d5e01c22894dee7c9c9266500478dca99  x86/mce/inject: Fix a wrong assignment of i_mce.status
+Hi all,
 
-elapsed time: 483m
+On Thu, 11 Jun 2020 at 10:11, Joerg Roedel <joro@8bytes.org> wrote:
+>
+> From: Joerg Roedel <jroedel@suse.de>
+>
+> The patch introducing the struct was probably never compile tested,
+> because it sets a handler with a wrong function signature. Wrap the
+> handler into a functions with the correct signature to fix the build.
+>
+> Fixes: 0f1c9688a194 ("tty/sysrq: alpha: export and use __sysrq_get_key_op()")
+> Cc: Emil Velikov <emil.l.velikov@gmail.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 
-configs tested: 106
-configs skipped: 74
+Just coming back from 10 offline days and retracing my testing ...
+Seems that I've copied the wrong .config.
+So a follow-up `make arch/alpha/kernel/setup.o' did not build
+anything... yet the command was _successful_.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This is something that should be fixed IMHO - doing the same for
+drivers/ (for example drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.o)
+results in an obvious audible error.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                         axm55xx_defconfig
-mips                         bigsur_defconfig
-mips                      bmips_stb_defconfig
-c6x                              allyesconfig
-sh                            migor_defconfig
-sh                   secureedge5410_defconfig
-mips                       capcella_defconfig
-sparc64                          alldefconfig
-arm                         s3c2410_defconfig
-arc                          axs103_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200615
-i386                 randconfig-a002-20200615
-i386                 randconfig-a001-20200615
-i386                 randconfig-a004-20200615
-i386                 randconfig-a005-20200615
-i386                 randconfig-a003-20200615
-x86_64               randconfig-a015-20200615
-x86_64               randconfig-a011-20200615
-x86_64               randconfig-a016-20200615
-x86_64               randconfig-a012-20200615
-x86_64               randconfig-a014-20200615
-x86_64               randconfig-a013-20200615
-i386                 randconfig-a015-20200615
-i386                 randconfig-a011-20200615
-i386                 randconfig-a014-20200615
-i386                 randconfig-a013-20200615
-i386                 randconfig-a016-20200615
-i386                 randconfig-a012-20200615
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
+That said, apologies for the issue. I'll be more thorough and
+carefully audit the build logs for future patches.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-Emil
