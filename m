@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346C01F960E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49471F9613
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729787AbgFOMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:05:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12264 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728510AbgFOMFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:05:03 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FB5Lut027139;
-        Mon, 15 Jun 2020 08:04:57 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31mua645xr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 08:04:57 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05FBhtnf016311;
-        Mon, 15 Jun 2020 08:04:56 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31mua645wp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 08:04:56 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05FC1aVK012672;
-        Mon, 15 Jun 2020 12:04:54 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 31mpe7ufwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 12:04:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05FC4qoe56098948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Jun 2020 12:04:52 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 187FC4C050;
-        Mon, 15 Jun 2020 12:04:52 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FAF94C052;
-        Mon, 15 Jun 2020 12:04:51 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.184.141])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 15 Jun 2020 12:04:51 +0000 (GMT)
-Date:   Mon, 15 Jun 2020 14:04:50 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Stefano Brivio <sbrivio@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] bitmap: Add test for bitmap_cut()
-Message-ID: <20200615120449.GA28317@oc3871087118.ibm.com>
-References: <cover.1592155364.git.sbrivio@redhat.com>
- <5fc45e6bbd4fa837cd9577f8a0c1d639df90a4ce.1592155364.git.sbrivio@redhat.com>
- <20200615094155.GQ2428291@smile.fi.intel.com>
- <20200615094616.GS2428291@smile.fi.intel.com>
+        id S1729729AbgFOMIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:08:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbgFOMIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:08:47 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 394C620679;
+        Mon, 15 Jun 2020 12:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592222926;
+        bh=dU1EhMnpItukH4io18hbBJjTZLSLgWizO2yYemyffVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vC9qjqL+NsM2GJ5hW7HNWuJw/I3uA3VmvCFi7PtC9/dbuRkOJrXOsvUELw9P9CogK
+         JqbqO3cIi+nxmPX1T5hD/RxHxPSQricyoGREQeTiYfdUSCdhfgj9TNjuFl2Hco/7mT
+         euVTTpGz3sN34v4wvY4EodSc5z8N/QEJuL/im7Zg=
+Date:   Mon, 15 Jun 2020 13:08:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfram Sang <wsa@kernel.org>, kernel@pengutronix.de
+Subject: Re: [PATCH v2 3/3] genirq: Do not test disabled IRQs with DEBUG_SHIRQ
+Message-ID: <20200615120844.GL4447@sirena.org.uk>
+References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
+ <1592208439-17594-3-git-send-email-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rVkomL2febZOZtGQ"
 Content-Disposition: inline
-In-Reply-To: <20200615094616.GS2428291@smile.fi.intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- clxscore=1011 adultscore=0 mlxscore=0 suspectscore=0 phishscore=0
- priorityscore=1501 cotscore=-2147483648 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006150089
+In-Reply-To: <1592208439-17594-3-git-send-email-krzk@kernel.org>
+X-Cookie: Offer may end without notice.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:46:16PM +0300, Andy Shevchenko wrote:
-> On Mon, Jun 15, 2020 at 12:41:55PM +0300, Andy Shevchenko wrote:
-> > On Sun, Jun 14, 2020 at 07:40:54PM +0200, Stefano Brivio wrote:
-> > > Inspired by an original patch from Yury Norov: introduce a test for
-> > > bitmap_cut() that also makes sure functionality is as described for
-> > > partially overlapping src and dst.
-> > 
-> > Taking into account recent fixes for BE 64-bit, do we have test cases for a such?
-> 
-> It might be enough to have only these, but perhaps s390 guys can help?
-> 
-> Alexander, can you apply this patch (w/o the first one, which is suppose to
-> fix) and confirm that you have test case failure, followed by applying first
-> one and confirm a fix?
 
-This failure goes away when patch #1 is applied:
+--rVkomL2febZOZtGQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-test_bitmap: [lib/test_bitmap.c:666] bitmaps contents differ: expected "0-16,18-19,21,24,26-27,29", got "1,3-4,6,9,11-12,14,16,18-19,21,24,26-27,29"
+On Mon, Jun 15, 2020 at 10:07:19AM +0200, Krzysztof Kozlowski wrote:
+> Testing events during freeing of disabled shared interrupts
+> (CONFIG_DEBUG_SHIRQ) leads to false positives.  The driver disabled
+> interrupts on purpose to be sure that they will not fire during device
+> removal.
 
-Thus, I confirm.
+Surely the whole issue with shared IRQs that's being tested for here is
+that when the interrupt is shared some other device connected to the
+same interrupt line may trigger an interrupt regardless of what's going
+on with this device?
 
-[...]
+--rVkomL2febZOZtGQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nZMsACgkQJNaLcl1U
+h9CfnAgAgHtIT8NH7R+6WXILJMorpHWb0ggJOOsJrBr0ox3JSbcmbjKcHgH6VOnf
+LgqLy8c8Gi9eG8dHh1pEcd6TobFq0GYuQfQBAtBWFgs1EccGmWHo+6+qdNshETPc
+tTWe+pihBd8v1IAcVwz1e5gLDJvDYIUju+KykSgo+76Dh8rNEofRHl4hqURW3GIP
+fvNx/UO17tCJLr9JQbvzdk6L+PSYxlu1HmKK7YLmrePgrxbXHmYxJNQRxIY2HAhC
+WkKbCkxShVrHWocZUrWbBC/IDulNBYl83uYKhX2QtoZ6iL8DTcGsMkvQSWNMb8UB
+9IFqCcP80fnmQnafcV3sZ93RH7zM2g==
+=N/CA
+-----END PGP SIGNATURE-----
+
+--rVkomL2febZOZtGQ--
