@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C081F9902
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C163B1F9916
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730601AbgFONfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
+        id S1730555AbgFONiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730299AbgFONfx (ORCPT
+        with ESMTP id S1730167AbgFONiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:35:53 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6633DC061A0E;
-        Mon, 15 Jun 2020 06:35:52 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q11so17181780wrp.3;
-        Mon, 15 Jun 2020 06:35:52 -0700 (PDT)
+        Mon, 15 Jun 2020 09:38:05 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF7C061A0E;
+        Mon, 15 Jun 2020 06:38:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r7so17191581wro.1;
+        Mon, 15 Jun 2020 06:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7MDMIhrPCOKcrAndBvYfcPybYXdRjufTM858g2lxGDI=;
-        b=PtKA38IlXmGkHf4e76zkzGjseXBXiyB0que/eRK62p/+VjCpZqUzwnuRxTpam3e12h
-         aCCWe7JRQ7ZwVdAFdEdLeX0YZyEMoegG+0enO3VIbkjPKdRS5M00SChY9NSZ2gHnvWLz
-         rc2KzPKeD5z/LuvE2TLs5aztcc1Lp0toLUu4BQnqgCNu8NUVSPKjQxhgOMXmtZYZwik2
-         wFxcwL0fCXQmRPN6J6+h1yAt8flScEGgfk8+TKCdj0sUFBIXTclUE0TrRsH2oA3bTOnE
-         8nT+xmgSt+YZkHnO+kEolx+gPnivmu6MigKO7ZyGpy0ixv1ME85k9v/Jv5SLd2cFZxeJ
-         x/Dg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6A2VRUPxBUIMLQR9yYCehptCwpY51GrOQNgUB87WIm4=;
+        b=gE6dp8cQ114eWfj2kjRIbj5tceBVc+ddyVxx54uO/6zDzDK9YjgMuf9mGISUMMmKDz
+         fu+5m0PpBabL8WYRkngmmCum6nrpGYSuxALrrtXiAVRdBOVvUnkNQn0NRD3CdEDIF3jS
+         w5jipOUxN2wV2Ko7q533g+QGFJ4g5/6tuS5otbH6QT8g7IAedCWqnWcDMHHv6dfJWIN0
+         wb+V5d4YYrJrPUrpaK49Ot8UHBa4rSSc9kKQKk9jO+0AzQUq+QfbwPIibJeF7m9iBhUu
+         lFb5vQdQTW0ApesBHtIhRTtTyDsDT/RDv4tHA8mEvYG7XXobi0v5i/iO4RFeH2n79NjT
+         1bZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7MDMIhrPCOKcrAndBvYfcPybYXdRjufTM858g2lxGDI=;
-        b=cHXU0izO/2LyeOP+0I7pVGUGoYarB+Kp7H59/O+PJ5Y59vGOuWoEqkN4FaVtEzw8c3
-         +syAz4qnZ8H4E+wJniytygz3Y150gzGJUpPAVb8POOOsCsYf4SLd/NCz9vU7OZADzaNM
-         NnOtjzHGqBwz2UB290XQ5VInaeS3r+hZRzTbLMF04sE4Jwmx+gXyIShTXnBvcRZ6+Af/
-         lEpKfPlo2WiTX95rvpLX32d7Jrqka8FtpiC6vgPhZQJLPx+C1jwaAJ5iwdcXQdv7+8uR
-         zdP1zyx7cN41VG0Bw1n4Vrxwl05TmjK5XHdJtYlSYyw9e/PIWufNK1R60LNWqrgyzpth
-         +e+w==
-X-Gm-Message-State: AOAM5335TYGoomlXcj/v9lShesoU0F2tlNIdeeEJXUHUAEpzt/8iOAou
-        Wd2ophigE9TdjX5LoWsT5dA=
-X-Google-Smtp-Source: ABdhPJw/0kS/YFup5n7E9GygoPpuywlZOlbQnFyenieDAVdig7XWxW3ZXDv/2q/g85j7CNxtlQJ3yg==
-X-Received: by 2002:a5d:5001:: with SMTP id e1mr31141470wrt.56.1592228151178;
-        Mon, 15 Jun 2020 06:35:51 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:b10e:413b:41dc:307c:ea47:9556])
-        by smtp.googlemail.com with ESMTPSA id u3sm23247094wmg.38.2020.06.15.06.35.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jun 2020 06:35:50 -0700 (PDT)
-Message-ID: <078bb71ddc9cda4454d213333afa4b6a905b8b09.camel@gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] scsi: ufs: L2P map management for HPB read
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Mon, 15 Jun 2020 15:35:47 +0200
-In-Reply-To: <231786897.01592214002170.JavaMail.epsvc@epcpadp1>
-References: <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
-         <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-         <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
-         <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
-         <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p7>
-         <231786897.01592214002170.JavaMail.epsvc@epcpadp1>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6A2VRUPxBUIMLQR9yYCehptCwpY51GrOQNgUB87WIm4=;
+        b=tsbSD15l4EHzEDLie56OieG9D5x9cje1eDckSvfPcIRslYivniyWlRYUGzbeyOcerH
+         KPXjK9Z0FzbumJ9NOkg8/qfk0LuFbNq5cKDBjD87B7cAqGOTmKcIhtkbMjYbRm6iV+0k
+         Fq/tRhhQt4dHsQ+ol8VIxLswUTiedronhYl7SvLM/MuvZKa/SVLvzoCPpgtjlrSLVjx4
+         LagZaCYGTjsN0bagFSW45NGxtvyJ4PjzkC/+DfxbsWruEqkRY+6EtaDNlkm33BfOgxoZ
+         QFxChEYsK+xR+o+/hHh12T4MLDMRm7YETpkBJ3qR9HCEEKVAUmVauDUQVuIVfXYq0SxO
+         CLIw==
+X-Gm-Message-State: AOAM532aGa03LNJ9ISAhcDOA5RQiOlb7/Cv8XPiCDg2jeY1gb/HJs6n3
+        McY6OFo3qwrJcdO3IY52T/0JE7dv
+X-Google-Smtp-Source: ABdhPJwOPEjXrfC2UmSbyWXvtITfiYi+xA2OUdX1KJUrfG5SKbcABWv2Ir0Hu9wU13+Bgv8VyEhuiw==
+X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr30697121wrx.53.1592228283249;
+        Mon, 15 Jun 2020 06:38:03 -0700 (PDT)
+Received: from localhost.localdomain ([5.100.193.151])
+        by smtp.gmail.com with ESMTPSA id u4sm22839520wmb.48.2020.06.15.06.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 06:38:02 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jiufei.xue@linux.alibaba.com
+Subject: [PATCH 1/1] io_uring: fix lazy work init
+Date:   Mon, 15 Jun 2020 16:36:30 +0300
+Message-Id: <a75c1537cc655cb766e8e2517e18f74e13d60f1b.1592228129.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daejun
+Don't leave garbage in req.work before punting async on -EAGAIN
+in io_iopoll_queue().
 
+[  140.922099] general protection fault, probably for non-canonical
+     address 0xdead000000000100: 0000 [#1] PREEMPT SMP PTI
+...
+[  140.922105] RIP: 0010:io_worker_handle_work+0x1db/0x480
+...
+[  140.922114] Call Trace:
+[  140.922118]  ? __next_timer_interrupt+0xe0/0xe0
+[  140.922119]  io_wqe_worker+0x2a9/0x360
+[  140.922121]  ? _raw_spin_unlock_irqrestore+0x24/0x40
+[  140.922124]  kthread+0x12c/0x170
+[  140.922125]  ? io_worker_handle_work+0x480/0x480
+[  140.922126]  ? kthread_park+0x90/0x90
+[  140.922127]  ret_from_fork+0x22/0x30
 
-On Mon, 2020-06-15 at 18:30 +0900, Daejun Park wrote:
-> +static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
-> +                                 struct ufshpb_req *map_req)
-> +{
-> +       struct request_queue *q;
-> +       struct request *req;
-> +       struct scsi_request *rq;
-> +       int ret = 0;
-> +
-> +       q = hpb->sdev_ufs_lu->request_queue;
-> +       ret = ufshpb_map_req_add_bio_page(hpb, q, map_req->bio,
-> +                                         map_req->mctx);
-> +       if (ret) {
-> +               dev_notice(&hpb->hpb_lu_dev,
-> +                          "map_req_add_bio_page fail %d - %d\n",
-> +                          map_req->rgn_idx, map_req->srgn_idx);
-> +               return ret;
-> +       }
-> +
-> +       req = map_req->req;
-> +
-> +       blk_rq_append_bio(req, &map_req->bio);
-> +
-> +       req->timeout = 0;
-> +       req->end_io_data = (void *)map_req;
-> +
-> +       rq = scsi_req(req);
-> +       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
-> +                               map_req->srgn_idx, hpb-
-> >srgn_mem_size);
-> +       rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
-> +
-> +       blk_execute_rq_nowait(q, NULL, req, 1,
-> ufshpb_map_req_compl_fn);
+Fixes: 7cdaf587de7c ("io_uring: avoid whole io_wq_work copy for requests
+completed inline")
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ fs/io_uring.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-HPB map_req is now being en-queued in sdev->request_queue.
-This is ok for the HPB v1.0. Have you ever been thinking about
-changing this way to directly issue HPB requests to UFS?
-
-Actually, there are two reasons for this way:
-
-1. Latency of loading mapping entries is lower comparing to your curret
-approach.
-2. Also, it is preparing for the HPB v2.0.  After all HPB 1.0 only
-supports 4KB read, this is useless, I am looking for the HPB v2.0.
-
-
-Thanks,
-Bean
-
-
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 54addaba742d..410b2df16c71 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1105,6 +1105,7 @@ static inline void io_prep_async_work(struct io_kiocb *req,
+ 			req->work.flags |= IO_WQ_WORK_UNBOUND;
+ 	}
+ 
++	io_req_init_async(req);
+ 	io_req_work_grab_env(req, def);
+ 
+ 	*link = io_prep_linked_timeout(req);
+-- 
+2.24.0
 
