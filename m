@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D4F1F91E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD121F91DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgFOImZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:42:25 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53291 "EHLO
+        id S1729340AbgFOImR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:42:17 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40009 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729276AbgFOIl4 (ORCPT
+        by vger.kernel.org with ESMTP id S1729280AbgFOIl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:41:56 -0400
+        Mon, 15 Jun 2020 04:41:58 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id ADAA358014B;
-        Mon, 15 Jun 2020 04:41:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 15 Jun 2020 04:41:55 -0400
+        by mailnew.nyi.internal (Postfix) with ESMTP id 484F558014F;
+        Mon, 15 Jun 2020 04:41:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 15 Jun 2020 04:41:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=Gu5pGox+Bnj5v
-        k3taw7Hr0yvcuDhLrvmOZ5vLp2mebY=; b=Ppi0/zd5PWBPJKcgH6ycqINbw+qmG
-        bEvIxaVAD7MOKb6XGTW4TNx0L9Bgtae79OZCqI4UT+2KG7RL2xfDciYaJJ8QFWsh
-        R2EaX3VoZSX9l/3IGmabACwkkUvwtCpoAq4D/2xA+1s/X5GUPvVYlQCyc4DAzDI2
-        PEezGgaLkjrDv5NvyF8SDU1EgTHqm+xqDqhPxlodyPSnJzEG4ErVW7y9TEJXyxgv
-        Mq4qvztoe+4CLfU6vDLPn1fPfddgbrv492wTZo4AMgSNkPSTE0D6ptjMl7fUePCW
-        nOVLjO+OZUTHNdJHtfiPF0NGbpuzOAFqumcuXP8K/rO35B7T2soolxU5w==
+        :mime-version:content-transfer-encoding; s=fm3; bh=DQpPTJYxXtp+r
+        dATG2C/JzFH6pA6g3j8lECnpVhYo0g=; b=b4FeK6IbtHqEoEb6fFPildyK5VRq5
+        GtHuaolO/QH6+RZsyovSKT7E7Jhffse8oMelUDeO8enFSfhH6KFsgqowjXpmHnXq
+        YawVh39y6mbNlauo+hisQTS3b//83NjN6fuqUoyIrUTDDy9YqbHrwoMfEoA1hVq4
+        mPouJOtDgG/84eGz9zlxxQlM7cdk3fhad0lSruGUZdhBBcves4u/dbZOEH4zoLw/
+        +vULqoLWwXj5baOkh+yivJzqxAogEevpemnCAfzZeJZLHJbYeVKdxYDGt8bEoTfr
+        92H5tPZExJh8hv3ilernL05QGnr2XwJKsHcJfskm5D3ZqNVdKXIPR8Kuw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Gu5pGox+Bnj5vk3taw7Hr0yvcuDhLrvmOZ5vLp2mebY=; b=B5PfD++u
-        y77Rwk4zCnMR+YllGvYQttV0x4DU8QTJdiW2hzwfgCwha6RAZGiincOOnA3Jp5Do
-        kqZUHaDvFfOFF8WKlpVdQZ+RRjxfOoxoT8mXmRgLd/Ui3Wo0ue2GCU9Y82rGGa3T
-        Bl2LFmEgepb3IiSduyYeX1wmzbqC6iVAYzSGm9Mj5DjAi7C/vJ9irHXa2/i7ZBWd
-        CrB3qEPoaCtiIUmIn4T6r22erU+bYBuHrpP5KdBFRw7HjU+u8o7g7OCxvMbTqcXN
-        og/C36Ze1dmylIkI98vx7j4gP4XfvLfvEpCNBtbOUatE/SElivJmflicq9SMFsR1
-        JXVDxVXpUkIVtg==
-X-ME-Sender: <xms:UzTnXktxeOwXqzxXM-aWrg6uQj4kOqCcHdkR8tpqzD4KJS5bz2wo0g>
+        fm3; bh=DQpPTJYxXtp+rdATG2C/JzFH6pA6g3j8lECnpVhYo0g=; b=rk/dbtVf
+        QHFeUN1u45113xhLXEeF5VIqK2HxXePO+lm/HBJnUyYnWWWFcejz8fx2MiqtcMYJ
+        aRxOTKmJ6D8QNwCYXsKmH58R8YrHVjjzt+QBC0c0QjRjse9vEOGJ0KGM8WbcCYfI
+        VnATZyWh+KG5VRiad0JIpS6Muq8fe3xbMjsoZq/PLXKni3LolOoPR/10UQcWe9sB
+        ohc8v6+qmJ1Xn+kAftOlt6knWoRBKeL4c4VSqbTNNFnl6Yf36QmmRdqYO7LP/kfY
+        x6K9Nde6ZE1q1yVvPJ0TuoXyWCaCbp5BKb4SpdM45O1Wh7eg23VMS9GogTWtRaQm
+        pAir3l8JSqsQqQ==
+X-ME-Sender: <xms:VTTnXvOsyFUyq9ftS0mXb4k_GEeQl0DR_XtvYicZfPv1UXFKUH3sYA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeikedgtdeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
     htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudekne
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvddune
     curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:UzTnXhe7K6jOAdPoNBH3HBf8qzjI61FJLiAqd2rUK7vHeMf2dBBD8A>
-    <xmx:UzTnXvyqSUf2TKBsEF7IXwq74SrS9hqbN5S7vXZa0Do09lyA6De0kQ>
-    <xmx:UzTnXnOhL_eeWA8YObMjpSp871uTM9YSx9dO422axVhJZ38d9jcaXg>
-    <xmx:UzTnXvYEjIeYudyrX03-doSChXmXY21SHIC1JocMqD3RTZV_o42ghQ>
+X-ME-Proxy: <xmx:VTTnXp8RzkMIrCJDjKdi7geKZfGrXzr-wn3gN0JIGLsafEkVeGfkuw>
+    <xmx:VTTnXuSyhhrepg789uZTllxAV9fRAlcI01rUHCgGe-LRaHmhOrPxmg>
+    <xmx:VTTnXjtvJjfz0HToGQaShVfDto4_BFWWEgNAgHbUphDU25BMQqEO7A>
+    <xmx:VTTnXr7UcfGOO1i5QfaHojGBTRxYk_nDcxFpW6cOxRAgWZuToJmjuw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3E8823280064;
-        Mon, 15 Jun 2020 04:41:55 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id D571B30618B7;
+        Mon, 15 Jun 2020 04:41:56 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Cc:     linux-rpi-kernel@lists.infradead.org,
@@ -65,9 +65,9 @@ Cc:     linux-rpi-kernel@lists.infradead.org,
         Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH v5 22/27] clk: bcm: rpi: Give firmware clocks a name
-Date:   Mon, 15 Jun 2020 10:41:02 +0200
-Message-Id: <a52a5f5768cd33716cdd35237c6613f26ad75013.1592210452.git-series.maxime@cerno.tech>
+Subject: [PATCH v5 23/27] Revert "clk: bcm2835: remove pllb"
+Date:   Mon, 15 Jun 2020 10:41:03 +0200
+Message-Id: <5d26a4c58248f5be7760a7f2f720a1310baea5dd.1592210452.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
 References: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
@@ -78,55 +78,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've registered the firmware clocks using their ID as name, but it's much
-more convenient to register them using their proper name. Since the
-firmware doesn't provide it, we have to duplicate it.
+This reverts commit 2256d89333bd17b8b56b42734a7e1046d52f7fc3. Since we
+will be expanding the firmware clock driver, we'll need to remove the
+quirks to deal with the PLLB. However, we still want to expose the clock
+tree properly, so having that clock in the MMIO driver will allow that.
 
 Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/bcm/clk-raspberrypi.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/clk/bcm/clk-bcm2835.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/bcm/clk-raspberrypi.c b/drivers/clk/bcm/clk-raspberrypi.c
-index 11a62bde5203..adc0bb56008a 100644
---- a/drivers/clk/bcm/clk-raspberrypi.c
-+++ b/drivers/clk/bcm/clk-raspberrypi.c
-@@ -36,6 +36,23 @@ enum rpi_firmware_clk_id {
- 	RPI_FIRMWARE_NUM_CLK_ID,
- };
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 6bb7efa12037..32f5c13be9d1 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -1684,10 +1684,32 @@ static const struct bcm2835_clk_desc clk_desc_array[] = {
+ 		.fixed_divider = 1,
+ 		.flags = CLK_SET_RATE_PARENT),
  
-+static char *rpi_firmware_clk_names[] = {
-+	[RPI_FIRMWARE_EMMC_CLK_ID]	= "emmc",
-+	[RPI_FIRMWARE_UART_CLK_ID]	= "uart",
-+	[RPI_FIRMWARE_ARM_CLK_ID]	= "arm",
-+	[RPI_FIRMWARE_CORE_CLK_ID]	= "core",
-+	[RPI_FIRMWARE_V3D_CLK_ID]	= "v3d",
-+	[RPI_FIRMWARE_H264_CLK_ID]	= "h264",
-+	[RPI_FIRMWARE_ISP_CLK_ID]	= "isp",
-+	[RPI_FIRMWARE_SDRAM_CLK_ID]	= "sdram",
-+	[RPI_FIRMWARE_PIXEL_CLK_ID]	= "pixel",
-+	[RPI_FIRMWARE_PWM_CLK_ID]	= "pwm",
-+	[RPI_FIRMWARE_HEVC_CLK_ID]	= "hevc",
-+	[RPI_FIRMWARE_EMMC2_CLK_ID]	= "emmc2",
-+	[RPI_FIRMWARE_M2MC_CLK_ID]	= "m2mc",
-+	[RPI_FIRMWARE_PIXEL_BVB_CLK_ID]	= "pixel-bvb",
-+};
+-	/*
+-	 * PLLB is used for the ARM's clock. Controlled by firmware, see
+-	 * clk-raspberrypi.c.
+-	 */
++	/* PLLB is used for the ARM's clock. */
++	[BCM2835_PLLB]		= REGISTER_PLL(
++		SOC_ALL,
++		.name = "pllb",
++		.cm_ctrl_reg = CM_PLLB,
++		.a2w_ctrl_reg = A2W_PLLB_CTRL,
++		.frac_reg = A2W_PLLB_FRAC,
++		.ana_reg_base = A2W_PLLB_ANA0,
++		.reference_enable_mask = A2W_XOSC_CTRL_PLLB_ENABLE,
++		.lock_mask = CM_LOCK_FLOCKB,
 +
- #define RPI_FIRMWARE_STATE_ENABLE_BIT	BIT(0)
- #define RPI_FIRMWARE_STATE_WAIT_BIT	BIT(1)
++		.ana = &bcm2835_ana_default,
++
++		.min_rate = 600000000u,
++		.max_rate = 3000000000u,
++		.max_fb_rate = BCM2835_MAX_FB_RATE),
++	[BCM2835_PLLB_ARM]	= REGISTER_PLL_DIV(
++		SOC_ALL,
++		.name = "pllb_arm",
++		.source_pll = "pllb",
++		.cm_reg = CM_PLLB,
++		.a2w_reg = A2W_PLLB_ARM,
++		.load_mask = CM_PLLB_LOADARM,
++		.hold_mask = CM_PLLB_HOLDARM,
++		.fixed_divider = 1,
++		.flags = CLK_SET_RATE_PARENT),
  
-@@ -343,7 +360,9 @@ static struct clk_hw *raspberrypi_clk_register(struct raspberrypi_clk *rpi,
- 	data->rpi = rpi;
- 	data->id = id;
- 
--	init.name = devm_kasprintf(rpi->dev, GFP_KERNEL, "fw-clk-%u", id);
-+	init.name = devm_kasprintf(rpi->dev, GFP_KERNEL,
-+				   "fw-clk-%s",
-+				   rpi_firmware_clk_names[id]);
- 	init.ops = &raspberrypi_firmware_clk_ops;
- 	init.flags = CLK_GET_RATE_NOCACHE;
- 
+ 	/*
+ 	 * PLLC is the core PLL, used to drive the core VPU clock.
 -- 
 git-series 0.9.1
