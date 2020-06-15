@@ -2,174 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3948C1F93D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3F41F93A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgFOJqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:46:14 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:7406 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728626AbgFOJqO (ORCPT
+        id S1729285AbgFOJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:37:46 -0400
+Received: from mail.windriver.com ([147.11.1.11]:54996 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728815AbgFOJhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:46:14 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05F9YmAg015035;
-        Mon, 15 Jun 2020 11:45:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=HzRMy6iVCZcLIfFdNcJlFmRB2z9fKYZjPMelH03qdYY=;
- b=nOlzI78SZ3BXZsTxqFqoExmXdRONkXi5UKuqpvBc92FLtDOUT9oj+HyLeFTjarNKmxwH
- yO/6GjTPHN7RMfwgh0/kv5U1rUzXgEF2o3ZEJ68+kTo7R+HkRAqEGRAGvOT/p44c7azE
- 8ZGDzljkTLZb8dokG1oa27eTNcQCzjEL9LCX9FjHPQMYBhPa0PdxQkYXyvYgzkUrVGI4
- CXDJPCMmEMMQsah697bvJDTc1OsChq0OhJn4cAf/iMsje5syLv6nRGy8cd1SdFTBhA1Y
- Vl6vgqwoLU1Aw8xGzNpiRgQn1uVKdFOCKIZIODsOkx94i2/l8/9eUFykiSzy6m3273J7 tw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mmjvrwjd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 11:45:38 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B0C710002A;
-        Mon, 15 Jun 2020 11:45:38 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E456E2C298D;
-        Mon, 15 Jun 2020 11:45:37 +0200 (CEST)
-Received: from lmecxl0912.tpe.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun
- 2020 11:45:36 +0200
-Subject: Re: [PATCH v6 2/9] ARM: dts: stm32: Add pin map for ltdc & spi5 on
- stm32f429-disco board
-To:     <dillon.minfei@gmail.com>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
-        <thierry.reding@gmail.com>, <sam@ravnborg.org>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <andy.shevchenko@gmail.com>, <noralf@tronnes.org>,
-        <linus.walleij@linaro.org>, <broonie@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-clk@vger.kernel.org>,
-        <dillonhua@gmail.com>
-References: <1590564453-24499-1-git-send-email-dillon.minfei@gmail.com>
- <1590564453-24499-3-git-send-email-dillon.minfei@gmail.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <2273a168-7b14-9e28-5904-b9d2c2e2d9d3@st.com>
-Date:   Mon, 15 Jun 2020 11:45:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 15 Jun 2020 05:37:46 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 05F9bTtc012340
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 15 Jun 2020 02:37:30 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 15 Jun 2020 02:37:09 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <balbi@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: gadget: function: printer: Add gadget dev interface status judgment
+Date:   Mon, 15 Jun 2020 17:46:08 +0800
+Message-ID: <20200615094608.26179-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <1590564453-24499-3-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_01:2020-06-15,2020-06-15 signatures=0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+From: Zqiang <qiang.zhang@windriver.com>
 
-On 5/27/20 9:27 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> This patch adds the pin configuration for ltdc and spi5 controller
-> on stm32f429-disco board.
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->   arch/arm/boot/dts/stm32f4-pinctrl.dtsi | 67 ++++++++++++++++++++++++++++++++++
->   1 file changed, 67 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> index 392fa143ce07..0eb107f968cd 100644
-> --- a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> @@ -316,6 +316,73 @@
->   				};
->   			};
->   
-> +			ltdc_pins_f429_disco: ltdc-1 {
+After the interface of gadget printer device was disabled,
+We should not continue operate the device.
 
-Sorry I missed this issue during review. I changed ltdc_pins_f429_disco 
-by ltdc_pins_b when I applied your patch.
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ drivers/usb/gadget/function/f_printer.c | 36 +++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
+diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
+index 9c7ed2539ff7..2b45a61e4213 100644
+--- a/drivers/usb/gadget/function/f_printer.c
++++ b/drivers/usb/gadget/function/f_printer.c
+@@ -338,6 +338,11 @@ printer_open(struct inode *inode, struct file *fd)
+ 
+ 	spin_lock_irqsave(&dev->lock, flags);
+ 
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		return -ENODEV;
++	}
++
+ 	if (!dev->printer_cdev_open) {
+ 		dev->printer_cdev_open = 1;
+ 		fd->private_data = dev;
+@@ -430,6 +435,12 @@ printer_read(struct file *fd, char __user *buf, size_t len, loff_t *ptr)
+ 	mutex_lock(&dev->lock_printer_io);
+ 	spin_lock_irqsave(&dev->lock, flags);
+ 
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		mutex_unlock(&dev->lock_printer_io);
++		return -ENODEV;
++	}
++
+ 	/* We will use this flag later to check if a printer reset happened
+ 	 * after we turn interrupts back on.
+ 	 */
+@@ -561,6 +572,12 @@ printer_write(struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
+ 	mutex_lock(&dev->lock_printer_io);
+ 	spin_lock_irqsave(&dev->lock, flags);
+ 
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		mutex_unlock(&dev->lock_printer_io);
++		return -ENODEV;
++	}
++
+ 	/* Check if a printer reset happens while we have interrupts on */
+ 	dev->reset_printer = 0;
+ 
+@@ -667,6 +684,13 @@ printer_fsync(struct file *fd, loff_t start, loff_t end, int datasync)
+ 
+ 	inode_lock(inode);
+ 	spin_lock_irqsave(&dev->lock, flags);
++
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		inode_unlock(inode);
++		return -ENODEV;
++	}
++
+ 	tx_list_empty = (likely(list_empty(&dev->tx_reqs)));
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 
+@@ -689,6 +713,13 @@ printer_poll(struct file *fd, poll_table *wait)
+ 
+ 	mutex_lock(&dev->lock_printer_io);
+ 	spin_lock_irqsave(&dev->lock, flags);
++
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		mutex_unlock(&dev->lock_printer_io);
++		return EPOLLERR | EPOLLHUP;
++	}
++
+ 	setup_rx_reqs(dev);
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 	mutex_unlock(&dev->lock_printer_io);
+@@ -722,6 +753,11 @@ printer_ioctl(struct file *fd, unsigned int code, unsigned long arg)
+ 
+ 	spin_lock_irqsave(&dev->lock, flags);
+ 
++	if (dev->interface < 0) {
++		spin_unlock_irqrestore(&dev->lock, flags);
++		return -ENODEV;
++	}
++
+ 	switch (code) {
+ 	case GADGET_GET_PRINTER_STATUS:
+ 		status = (int)dev->printer_status;
+-- 
+2.24.1
 
-Regards
-alex
-
-> +				pins {
-> +					pinmux = <STM32_PINMUX('C', 6,  AF14)>,
-> +						/* LCD_HSYNC */
-> +						 <STM32_PINMUX('A', 4,  AF14)>,
-> +						 /* LCD_VSYNC */
-> +						 <STM32_PINMUX('G', 7,  AF14)>,
-> +						 /* LCD_CLK */
-> +						 <STM32_PINMUX('C', 10, AF14)>,
-> +						 /* LCD_R2 */
-> +						 <STM32_PINMUX('B', 0,  AF9)>,
-> +						 /* LCD_R3 */
-> +						 <STM32_PINMUX('A', 11, AF14)>,
-> +						 /* LCD_R4 */
-> +						 <STM32_PINMUX('A', 12, AF14)>,
-> +						 /* LCD_R5 */
-> +						 <STM32_PINMUX('B', 1,  AF9)>,
-> +						 /* LCD_R6*/
-> +						 <STM32_PINMUX('G', 6,  AF14)>,
-> +						 /* LCD_R7 */
-> +						 <STM32_PINMUX('A', 6,  AF14)>,
-> +						 /* LCD_G2 */
-> +						 <STM32_PINMUX('G', 10, AF9)>,
-> +						 /* LCD_G3 */
-> +						 <STM32_PINMUX('B', 10, AF14)>,
-> +						 /* LCD_G4 */
-> +						 <STM32_PINMUX('D', 6,  AF14)>,
-> +						 /* LCD_B2 */
-> +						 <STM32_PINMUX('G', 11, AF14)>,
-> +						 /* LCD_B3*/
-> +						 <STM32_PINMUX('B', 11, AF14)>,
-> +						 /* LCD_G5 */
-> +						 <STM32_PINMUX('C', 7,  AF14)>,
-> +						 /* LCD_G6 */
-> +						 <STM32_PINMUX('D', 3,  AF14)>,
-> +						 /* LCD_G7 */
-> +						 <STM32_PINMUX('G', 12, AF9)>,
-> +						 /* LCD_B4 */
-> +						 <STM32_PINMUX('A', 3,  AF14)>,
-> +						 /* LCD_B5 */
-> +						 <STM32_PINMUX('B', 8,  AF14)>,
-> +						 /* LCD_B6 */
-> +						 <STM32_PINMUX('B', 9,  AF14)>,
-> +						 /* LCD_B7 */
-> +						 <STM32_PINMUX('F', 10, AF14)>;
-> +						 /* LCD_DE */
-> +					slew-rate = <2>;
-> +				};
-> +			};
-> +
-> +			spi5_pins: spi5-0 {
-> +				pins1 {
-> +					pinmux = <STM32_PINMUX('F', 7, AF5)>,
-> +						/* SPI5_CLK */
-> +						 <STM32_PINMUX('F', 9, AF5)>;
-> +						/* SPI5_MOSI */
-> +					bias-disable;
-> +					drive-push-pull;
-> +					slew-rate = <0>;
-> +				};
-> +				pins2 {
-> +					pinmux = <STM32_PINMUX('F', 8, AF5)>;
-> +						/* SPI5_MISO */
-> +					bias-disable;
-> +				};
-> +			};
-> +
->   			dcmi_pins: dcmi-0 {
->   				pins {
->   					pinmux = <STM32_PINMUX('A', 4, AF13)>, /* DCMI_HSYNC */
-> 
