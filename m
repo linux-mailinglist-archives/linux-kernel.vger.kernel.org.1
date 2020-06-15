@@ -2,143 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22071F9176
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7AC1F9193
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgFOIal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:30:41 -0400
-Received: from mout.web.de ([212.227.15.14]:43235 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728180AbgFOIak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:30:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1592209820;
-        bh=gJSDf66UIv9lJIjZ6iwA+toPmjiCWe0MzdTiede4Dcw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CCoxy4lx6KUxnprFGaV79M+IeDrpq/2+tStPTpYaEjSp2/1jwlsIRXq/81gXgwDaf
-         N1iCx3M0p4cSce3d8ziw5lgSGl1fST3A43tmwIUEV/GewhcjUKp6C2Nq3YuY/KLKlg
-         gsHVek6NFWQ52q4T9yxHVLePMGhWM6FhwUe8dTzo=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.107.236]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MLgTT-1jjvQd1Ev5-000phK; Mon, 15
- Jun 2020 10:30:20 +0200
-Subject: Re: [PATCH v3 0/2] Fixing memory leaks in perf events parser
-To:     Chen Wandun <chenwandun@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20200615013614.8646-1-chenwandun@huawei.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <1ee927e5-2bb6-a72c-8705-95bc6cacf719@web.de>
-Date:   Mon, 15 Jun 2020 10:30:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729091AbgFOIdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:33:31 -0400
+Received: from mx06.melco.co.jp ([192.218.140.146]:46243 "EHLO
+        mx06.melco.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728603AbgFOIda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:33:30 -0400
+Received: from mr06.melco.co.jp (mr06 [133.141.98.164])
+        by mx06.melco.co.jp (Postfix) with ESMTP id 5EA363A3F3D;
+        Mon, 15 Jun 2020 17:33:27 +0900 (JST)
+Received: from mr06.melco.co.jp (unknown [127.0.0.1])
+        by mr06.imss (Postfix) with ESMTP id 49ll3C2NXwzRjbV;
+        Mon, 15 Jun 2020 17:33:27 +0900 (JST)
+Received: from mf03_second.melco.co.jp (unknown [192.168.20.183])
+        by mr06.melco.co.jp (Postfix) with ESMTP id 49ll3C24R0zRkDl;
+        Mon, 15 Jun 2020 17:33:27 +0900 (JST)
+Received: from mf03.melco.co.jp (unknown [133.141.98.183])
+        by mf03_second.melco.co.jp (Postfix) with ESMTP id 49ll3C25pwzRjgB;
+        Mon, 15 Jun 2020 17:33:27 +0900 (JST)
+Received: from APC01-PU1-obe.outbound.protection.outlook.com (unknown [104.47.126.52])
+        by mf03.melco.co.jp (Postfix) with ESMTP id 49ll3C0rCvzRjnV;
+        Mon, 15 Jun 2020 17:33:27 +0900 (JST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MZzz5mBytjdvkbYqkvL4J5cc2IFpm2cgKzvlDfWb7XV5d7A0Qnn6iayrOoY0D9HVqT5ja765KVSWvK+YTK+Su1+hCIAO4TL18OnTVknOkcnMbcpuPtRJsXITFCfEGFsOoGg6rMtm59CuGIGtEkKSb4iq2q2qaCiz/GjpAEqGQVPYgrZJODiyiKvr4OeZ7yUyWkq7mlGx4/6PK5TMfAow9JQ/lN+08haDy9YQbDsZXogKzRnid4uvv+JiFRSiLnnpOG5zOAy7tNbkpBaxtsUv+1HRQf0r+MmpBnWf8D8Z+f1ZQGddtmKTHZ8AGffb9VIlCtuC78zoMs06rb2RSAR+AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KHWiASz8bYcV/M5FHYJ+bTH52Vyn5277leLoh+60InA=;
+ b=aEXqhhucfcrZJxCuB/qARa/6C2PmAnaS8z3z2u0QUJSj9CDxQT6tOZ6GapDDPpKVtJnQnV4SGL3j8GP5IPQx/8VS68HGC/6nJooi+XpoP/IwTYGsbGHa6rvauL6xRnzfUtnWqRTfcT7Hd6AOJmOmwJbZMich6aXVog3hxBKTlfsuiHCpTQaOjrLcQeiyAWHdijTBeHiifgWAyEGhUqZT5GgQNw5cPrFSmAWklpLusVZOjGWsYdnAltOr852ZJeD2gYnhBPTob17MvGLGlN4i0yAXDzN+I9CaZY6KoQQUGpoXgjt4NubybobHDRTuFbZ25NftQMDK2mHXjIO+nQ0JUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
+ header.from=dc.mitsubishielectric.co.jp; dkim=pass
+ header.d=dc.mitsubishielectric.co.jp; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mitsubishielectricgroup.onmicrosoft.com;
+ s=selector2-mitsubishielectricgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KHWiASz8bYcV/M5FHYJ+bTH52Vyn5277leLoh+60InA=;
+ b=fX7zwI0wVVbI4YCcvJvV7C4BvS7qGRNb1TYlaAnvhsyfZJQu1sOcbBrGYk/Ew6BCsXzwmPb4OlZOOZMm9uojBgJO/may44Zg+dWsnEyUPLlYkcnydM4m5YgpzSNbg3NWH2GTNYsCZhdr/JRw11FvMT2mVyF5Qp+tgPbozoohvJs=
+Received: from TY2PR01MB2875.jpnprd01.prod.outlook.com (2603:1096:404:6b::11)
+ by TY2PR01MB4185.jpnprd01.prod.outlook.com (2603:1096:404:d6::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Mon, 15 Jun
+ 2020 08:33:26 +0000
+Received: from TY2PR01MB2875.jpnprd01.prod.outlook.com
+ ([fe80::51e1:c5ae:8ef8:4b76]) by TY2PR01MB2875.jpnprd01.prod.outlook.com
+ ([fe80::51e1:c5ae:8ef8:4b76%7]) with mapi id 15.20.3088.028; Mon, 15 Jun 2020
+ 08:33:26 +0000
+From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
+        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
+To:     "'sj1557.seo@samsung.com'" <sj1557.seo@samsung.com>
+CC:     "Mori.Takahiro@ab.MitsubishiElectric.co.jp" 
+        <Mori.Takahiro@ab.MitsubishiElectric.co.jp>,
+        "Motai.Hirotaka@aj.MitsubishiElectric.co.jp" 
+        <Motai.Hirotaka@aj.MitsubishiElectric.co.jp>,
+        'Namjae Jeon' <namjae.jeon@samsung.com>,
+        "'linux-fsdevel@vger.kernel.org'" <linux-fsdevel@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] exfat: remove EXFAT_SB_DIRTY flag
+Thread-Topic: [PATCH] exfat: remove EXFAT_SB_DIRTY flag
+Thread-Index: AQHWQsEORi2TuyTfckCQBmL5eJ6kQajZJKZw
+Date:   Mon, 15 Jun 2020 08:31:22 +0000
+Deferred-Delivery: Mon, 15 Jun 2020 08:33:00 +0000
+Message-ID: <TY2PR01MB28755044132E6FCF00F68FFF909C0@TY2PR01MB2875.jpnprd01.prod.outlook.com>
+References: <CGME20200612012902epcas1p4194d6fa3b3f7c46a8becb9bb6ce23d56@epcas1p4.samsung.com>
+        <20200612012834.13503-1-kohada.t2@gmail.com>
+        <219a01d64094$5418d7a0$fc4a86e0$@samsung.com>
+        <b29d254b-212a-bfcb-ab7c-456f481b85c8@gmail.com>
+ <237301d642c1$09b77e30$1d267a90$@samsung.com>
+In-Reply-To: <237301d642c1$09b77e30$1d267a90$@samsung.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-melpop: 1
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none
+ header.from=dc.MitsubishiElectric.co.jp;
+x-originating-ip: [121.80.0.163]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 30a39eca-27db-4758-8d54-08d81106c61f
+x-ms-traffictypediagnostic: TY2PR01MB4185:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB418596706A239F2B96CACFAA909C0@TY2PR01MB4185.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1091;
+x-forefront-prvs: 04359FAD81
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UDjnUwu23ZuAfR7Mih2i8zYB3rC9LbTCWjKPSsOgEJFr7uFxltMpdPCMZdbB1RU2pitGy6uz4Ayz80WNkgHdtOKJ2nxD4AVkDssxghpRyYkLq7WAc6/kIx3s9EyjqqoaRUsskFLDH4UAzxxpxqGNaCFl+Jew763Nk+O9qass90PDlTRQIfnkn9TnuOgGcFz3pgcI7p99wxfiFPYG71NQ+SEOrXJ80JtCgWPs7qlynKHvAVua9PPLhH232bthmQBCJHuaQf5udXNxB1LRwWgp0zVzBhKkJFR/S1wAmZ2sOa7uJM42icud++9L+2c/ixGj5J8zVyGIMp8ruhwVlDI1fVSjtFi6qaBGCth+I7BEURDIdf7WTuuCxcA6oyMg+lFYWYhMbIK+/Rua7Ava/1uReQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB2875.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(8676002)(478600001)(7696005)(6916009)(54906003)(186003)(86362001)(83380400001)(26005)(6506007)(53546011)(5660300002)(71200400001)(76116006)(64756008)(66556008)(66476007)(66946007)(66446008)(8936002)(33656002)(6666004)(2906002)(55016002)(4326008)(9686003)(52536014)(316002)(14143004)(491001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +NO1E4As8z3HOQEvgeLsnGqzWIEio9tOncbHqVjjMF92Jritq6e8+3oNYC7rnV1AJ1UiCUxWLdF++sCj7mSNOBu0i2xRIXVa608QtKpXaRhZaf6+LaLGmzYHRRtqOPMHZJURrbeN4e+X7irnY/Bdtjkm+9kAP+zi6GlJtz1L5+eeQvap2CSMuGysDq1tST6mCavR5kE613P8x1akVNtmq9jEq4KoERZQbhZJGFBj32Q3QFKkJrE28sMEH2snHxEBDceCPLLGHJLnkAdLu1QmlGBrQz3VuoBAMVtev44QMO3qYKCZhRb05RRaRhBY90c0PDiOq1Ugo+uaz/dKd742Ty3726/rMEfFsRuVNFm69az8sDdFDtGYBxuPji4zS584LvS8C8B16wKxIkkYimRBR9VP+hR33HUYS2al8MlA6UMYTZOKOVLl4jUzEsfNKlx7U+WS2RbQTg3GLZarkiKyvIsDutphg3GEKsi/TVgWX1I=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20200615013614.8646-1-chenwandun@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yocFRMxAiW6vS6YQh4Ww8kFFOmXce7o6fqR3Itxi1Cly/DNGLND
- Z3CfA17YsMfwOsfB6pxPMwEZDGyedgnk3xwQUdobhinBS0z1HOTrgsAK5QRVwS7yJSNd6xz
- MGOmXeKu6ule/OEwxKeWxU+ElpvdyIY1QUNagQ3Jr+j39U+5DKTPS/jD6hyUE05tkHrDUna
- m6La2D6aANETmgjzzV0GA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7K9w0tX4hls=:FtCh15c2IyQSe17BdT68B1
- Orcc7GVq9Q1CtqJUO94r1qBFzGI+PqSf0AhVqoFhxxmv3s8lZhRpyLasFds154Tox5/WRHvxr
- m38jB6AkUjp71L9SkDbq+dZINChjBuEiDCPmKzKuB2bhdeOHkgZL/zEBmBsGwPz2+hMpQ+sUG
- h6VDLqsx19OgKS4df3NECYRnkb8+HCFUW3J4YgP1XcuqftIej6Dp4Q9iKdLnEC26Rwyw7yRWa
- L/fJ05l3BHmpFNkPgsUjnaaMjrc47sQiRjF3xq3YbS9Lkpfgsts8SWX6JSWRKoejUf42vMXZk
- bAmKzj7g1mikkqXaBAy/fdUdDVN+8OVfVnuqZSWEmW2rmyKEzdKhm0IHdaZVtb18Wi4sk9vlj
- sLJPgxCj6nZQpuycwRLZM1G49NsQ4C9H/2CT8S3MxrEj3crHIOWg6gH/bOXYNpcUwGM2hlbum
- xUtni7T3wBkIK8oaW2r+jgy06z+s9Dzd9ouIFUsC/UGV1EdtaYK+hslFNSOiIdIkdKzWM6jP+
- PKL5muLo898TaDrYbRq1ScFhRAT6TgG0LBCJgdqs9GFqtOQAGZlwg8vi5CZvOYM6wxhwKBpOu
- YfddZnivK4m1mgVBgVewaoBhSCCAO9gGS/iSq/vDz8NdcIJcsVI5Bg7XQWjaCVPdEj1/JuD+s
- ymrxdDSjyD2SagjZWJ5xRXfRocv3HrQVsCUJYkwN12g/z4EvQglQMX/ygKVkewexvrSGvyOor
- YGY5gRRxC4cx5GUni5azyomufc/qeNiBargzyGV4yMKLYAQZmCrPp3sFKnHA1Z+QIsi6snM32
- iz/W7MBw/6yHs2+Bmw/NvnycyLVP2NDqwiNH9om6vy4ExnG8NPCH+p5aqKygN8rqp9RrdKfHu
- UqX1IxtSBO+IOkYGDCRzAIAUNHI/50kAU/v8bdmTHvk4uwTwS0nUA+VzGBkQPOMzDdcF+yFqS
- AvbXLKmX7OqVO9G+ZOCctE+SfHE5yHcF1t8eOkseoGvZdxnWtCFfrO9UAbUW85Q/9JR3YaiaV
- BOSlqZy5CNH6fx6Xm815ScIM81K3pdtcllU1inj5kpL4HyQsqn6kfS9Qe56KTivcL+pvOhWiL
- S1zkQvAfWxzNAeXVIUigp1r/xLRTcpw9FgekSfWf6Ei/npgf4KgvSBYVewfd37/vKrb+kMCxT
- E9FUYsi2WI+mjYdpqAd5RCun1LH6Wdaw+Rez3VCNTwhyR0uL9XxWtCABPvW49YR8JxzC08uH3
- Kf6DvQejCapQ4KY4A
+X-OriginatorOrg: dc.MitsubishiElectric.co.jp
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30a39eca-27db-4758-8d54-08d81106c61f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2020 08:33:26.3078
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vKsbiEOrq0lgSn5hs96n8InkRkaHwpX/zchXka7pnk9dHbDDVvrO0l+kCfG3DfNjnm64e69UEiTZBrSbWiQsyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4185
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> fix some memleaks in parse_events_term__sym_hw and parse_events_term__cl=
-one.
-
-Can it be more appropriate to refer to the term =E2=80=9Cmemory leak=E2=80=
-=9D in consistent ways?
-
-
-> v1 =3D=3D> v2
-> 1. split into two patches
-
-Corresponding development consequences can become more interesting.
-
-
-> v2 =3D=3D> v3
-> add more commit log.
->
-> Chen Wandun (1):
->   perf tools: fix potential memleak in perf events parser
->
-> Cheng Jian (1):
->   perf tools: fix potential memleak in perf events parser
->
->  tools/perf/util/parse-events.c | 51 ++++++++++++++++++++++++++++------
-
-Are there any chances to make the change distinction a bit easier
-by adjusting such commit subjects?
-
-Regards,
-Markus
+PiA+IE9uIDIwMjAvMDYvMTIgMTc6MzQsIFN1bmdqb25nIFNlbyB3cm90ZToNCj4gPiA+PiByZW1v
+dmUgRVhGQVRfU0JfRElSVFkgZmxhZyBhbmQgcmVsYXRlZCBjb2Rlcy4NCj4gPiA+Pg0KPiA+ID4+
+IFRoaXMgZmxhZyBpcyBzZXQvcmVzZXQgaW4gZXhmYXRfcHV0X3N1cGVyKCkvZXhmYXRfc3luY19m
+cygpIHRvDQo+ID4gPj4gYXZvaWQgc3luY19ibG9ja2RldigpLg0KPiA+ID4+IEhvd2V2ZXIgLi4u
+DQo+ID4gPj4gLSBleGZhdF9wdXRfc3VwZXIoKToNCj4gPiA+PiBCZWZvcmUgY2FsbGluZyB0aGlz
+LCB0aGUgVkZTIGhhcyBhbHJlYWR5IGNhbGxlZCBzeW5jX2ZpbGVzeXN0ZW0oKSwNCj4gPiA+PiBz
+byBzeW5jIGlzIG5ldmVyIHBlcmZvcm1lZCBoZXJlLg0KPiA+ID4+IC0gZXhmYXRfc3luY19mcygp
+Og0KPiA+ID4+IEFmdGVyIGNhbGxpbmcgdGhpcywgdGhlIFZGUyBjYWxscyBzeW5jX2Jsb2NrZGV2
+KCksIHNvLCBpdCBpcw0KPiA+ID4+IG1lYW5pbmdsZXNzIHRvIGNoZWNrIEVYRkFUX1NCX0RJUlRZ
+IG9yIHRvIGJ5cGFzcyBzeW5jX2Jsb2NrZGV2KCkgaGVyZS4NCj4gPiA+PiBOb3Qgb25seSB0aGF0
+LCBidXQgaW4gc29tZSBjYXNlcyBjYW4ndCBjbGVhciBWT0xfRElSVFkuDQo+ID4gPj4gZXg6DQo+
+ID4gPj4gVk9MX0RJUlRZIGlzIHNldCB3aGVuIHJtZGlyIHN0YXJ0cywgYnV0IHdoZW4gbm9uLWVt
+cHR5LWRpciBpcw0KPiA+ID4+IGRldGVjdGVkLCByZXR1cm4gZXJyb3Igd2l0aG91dCBzZXR0aW5n
+IEVYRkFUX1NCX0RJUlRZLg0KPiA+ID4+IElmIHBlcmZvcm1lICdzeW5jJyBpbiB0aGlzIHN0YXRl
+LCBWT0xfRElSVFkgd2lsbCBub3QgYmUgY2xlYXJlZC4NCj4gPiA+Pg0KPiA+ID4+IFJlbW92ZSB0
+aGUgRVhGQVRfU0JfRElSVFkgY2hlY2sgdG8gZW5zdXJlIHN5bmNocm9uaXphdGlvbi4NCj4gPiA+
+PiBBbmQsIHJlbW92ZSB0aGUgY29kZSByZWxhdGVkIHRvIHRoZSBmbGFnLg0KPiA+ID4+DQo+ID4g
+Pj4gU2lnbmVkLW9mZi1ieTogVGV0c3VoaXJvIEtvaGFkYSA8a29oYWRhLnQyQGdtYWlsLmNvbT4N
+Cj4gPiA+PiAtLS0NCj4gPiA+PiAgIGZzL2V4ZmF0L2JhbGxvYy5jICAgfCAgNCArKy0tDQo+ID4g
+Pj4gICBmcy9leGZhdC9kaXIuYyAgICAgIHwgMTYgKysrKysrKystLS0tLS0tLQ0KPiA+ID4+ICAg
+ZnMvZXhmYXQvZXhmYXRfZnMuaCB8ICA1ICstLS0tDQo+ID4gPj4gICBmcy9leGZhdC9mYXRlbnQu
+YyAgIHwgIDcgKystLS0tLQ0KPiA+ID4+ICAgZnMvZXhmYXQvbWlzYy5jICAgICB8ICAzICstLQ0K
+PiA+ID4+ICAgZnMvZXhmYXQvbmFtZWkuYyAgICB8IDEyICsrKysrKy0tLS0tLQ0KPiA+ID4+ICAg
+ZnMvZXhmYXQvc3VwZXIuYyAgICB8IDExICsrKy0tLS0tLS0tDQo+ID4gPj4gICA3IGZpbGVzIGNo
+YW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDM1IGRlbGV0aW9ucygtKQ0KPiA+ID4+DQo+ID4gPiBb
+c25pcF0NCj4gPiA+Pg0KPiA+ID4+IEBAIC02MiwxMSArNTksOSBAQCBzdGF0aWMgaW50IGV4ZmF0
+X3N5bmNfZnMoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwNCj4gPiA+PiBpbnQNCj4gPiA+PiB3YWl0
+KQ0KPiA+ID4+DQo+ID4gPj4gICAJLyogSWYgdGhlcmUgYXJlIHNvbWUgZGlydHkgYnVmZmVycyBp
+biB0aGUgYmRldiBpbm9kZSAqLw0KPiA+ID4+ICAgCW11dGV4X2xvY2soJnNiaS0+c19sb2NrKTsN
+Cj4gPiA+PiAtCWlmICh0ZXN0X2FuZF9jbGVhcl9iaXQoRVhGQVRfU0JfRElSVFksICZzYmktPnNf
+c3RhdGUpKSB7DQo+ID4gPj4gLQkJc3luY19ibG9ja2RldihzYi0+c19iZGV2KTsNCj4gPiA+PiAt
+CQlpZiAoZXhmYXRfc2V0X3ZvbF9mbGFncyhzYiwgVk9MX0NMRUFOKSkNCj4gPiA+PiAtCQkJZXJy
+ID0gLUVJTzsNCj4gPiA+PiAtCX0NCj4gPiA+DQo+ID4gPiBJIGxvb2tlZCB0aHJvdWdoIG1vc3Qg
+Y29kZXMgcmVsYXRlZCB0byBFWEZBVF9TQl9ESVJUWSBhbmQgVk9MX0RJUlRZLg0KPiA+ID4gQW5k
+IHlvdXIgYXBwcm9hY2ggbG9va3MgZ29vZCBiZWNhdXNlIGFsbCBvZiB0aGVtIHNlZW0gdG8gYmUN
+Cj4gPiA+IHByb3RlY3RlZCBieSBzX2xvY2suDQo+ID4gPg0KPiA+ID4gQlRXLCBhcyB5b3Uga25v
+dywgc3luY19maWxlc3lzdGVtKCkgY2FsbHMgc3luY19mcygpIHdpdGggJ25vd2FpdCcNCj4gPiA+
+IGZpcnN0LCBhbmQgdGhlbiBjYWxscyBpdCBhZ2FpbiB3aXRoICd3YWl0JyB0d2ljZS4gTm8gbmVl
+ZCB0byBzeW5jDQo+ID4gPiB3aXRoDQo+ID4gbG9jayB0d2ljZS4NCj4gPiA+IElmIHNvLCBpc24n
+dCBpdCBva2F5IHRvIGRvIG5vdGhpbmcgd2hlbiB3YWl0IGlzIDA/DQo+ID4NCj4gPiBJIGFsc28g
+dGhpbmsgIOKAmGRvIG5vdGhpbmcgd2hlbiB3YWl0IGlzIDDigJkgYXMgeW91IHNheSwgYnV0IEkn
+bSBzdGlsbA0KPiA+IG5vdCBzdXJlLg0KPiA+DQo+ID4gU29tZSBvdGhlciBGaWxlc3lzdGVtcyBk
+byBub3RoaW5nIHdpdGggbm93YWl0IGFuZCBqdXN0IHJldHVybi4NCj4gPiBIb3dldmVyLCBhIGZl
+dyBGaWxlc3lzdGVtcyBhbHdheXMgcGVyZm9ybSBzeW5jLg0KPiA+DQo+ID4gc3luY19ibG9ja2Rl
+digpIHdhaXRzIGZvciBjb21wbGV0aW9uLCBzbyBpdCBtYXkgYmUgaW5hcHByb3ByaWF0ZSB0bw0K
+PiA+IGNhbGwgd2l0aCAgbm93YWl0LiAoQnV0IGl0IHdhcyBjYWxsZWQgaW4gdGhlIG9yaWdpbmFs
+IGNvZGUpDQo+ID4NCj4gPiBJJ20gc3RpbGwgbm90IHN1cmUsIHNvIEkgZXhjbHVkZWQgaXQgaW4g
+dGhpcyBwYXRjaC4NCj4gPiBJcyBpdCBva2F5IHRvIGluY2x1ZGUgaXQ/DQo+ID4NCj4gDQo+IFll
+cywgSSB0aGluayBzby4gc3luY19maWxlc3lzdGVtKCkgd2lsbCBjYWxsIF9fc3luY19ibG9ja2Rl
+digpIHdpdGhvdXQgJ3dhaXQnIGZpcnN0Lg0KPiBTbywgaXQncyBlbm91Z2ggdG8gY2FsbCBzeW5j
+X2Jsb2NrZGV2KCkgd2l0aCBzX2xvY2sganVzdCBvbmUgdGltZS4NCg0KT0suDQpJIHdpbGwgcmVw
+b3N0IHYyLXBhdGNoIHdpdGggdGhlICd3YWl0JyBjaGVjayBhZGRlZC4NClRoYW5rcyBmb3IgeW91
+ciBjb21tZW50Lg0KDQoNCj4gPiA+PiArCXN5bmNfYmxvY2tkZXYoc2ItPnNfYmRldik7DQo+ID4g
+Pj4gKwlpZiAoZXhmYXRfc2V0X3ZvbF9mbGFncyhzYiwgVk9MX0NMRUFOKSkNCj4gPiA+PiArCQll
+cnIgPSAtRUlPOw0KPiA+ID4+ICAgCW11dGV4X3VubG9jaygmc2JpLT5zX2xvY2spOw0KPiA+ID4+
+ICAgCXJldHVybiBlcnI7DQo+ID4gPj4gICB9DQo+ID4gPj4gLS0NCj4gPiA+PiAyLjI1LjENCg0K
+QlINCi0tLQ0KS29oYWRhIFRldHN1aGlybyA8S29oYWRhLlRldHN1aGlyb0BkYy5NaXRzdWJpc2hp
+RWxlY3RyaWMuY28uanA+DQo=
