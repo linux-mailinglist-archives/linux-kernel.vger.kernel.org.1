@@ -2,127 +2,602 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A8D1F9D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749321F9D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730946AbgFOQTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:19:32 -0400
-Received: from mout.gmx.net ([212.227.15.18]:57969 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729637AbgFOQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:19:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592237959;
-        bh=pT77xwIyg5fdLwWqVyEl7LfKJAAWp7HtQdcGpD4ikuc=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
-        b=DmL6DsoicACVVLfxurlPPEtO8vK3gkrBkvmX5YPQuLOLwygVgp1i2K4LiAjTuw8ZH
-         cx86iGqAWroh63eKU9DlPzY695dijHsj7exC+Gv4RKV5RzIyaipNIsSqKoMx3dyKuf
-         8Zz7r3bsVa3KJhRSSeNiL39BTADhDUh7dXAWN5bg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from strobe-jhalfs ([188.109.165.61]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQ5vW-1jXihL2Ovo-00M2z2; Mon, 15
- Jun 2020 18:19:19 +0200
-From:   Stephen Berman <stephen.berman@gmx.net>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-References: <87tuzjcovq.fsf@gmx.net>
-        <20200610102514.4vdzu5u7d6vnpicn@linutronix.de>
-        <87imfyh6yx.fsf@gmx.net> <87wo4dligz.fsf@gmx.net>
-        <20200612110122.jossn5zrktcvpbpm@linutronix.de>
-        <87tuzdrgm5.fsf@gmx.net>
-        <20200614171005.3zy673p6bpwoqnmq@linutronix.de>
-        <874krcsquv.fsf@gmx.net>
-        <20200615145130.bcdidqkp6w23xb6c@linutronix.de>
-        <87tuzcqqul.fsf@gmx.net>
-        <20200615155846.nd5n32qggusakxl7@linutronix.de>
-Date:   Mon, 15 Jun 2020 18:19:18 +0200
-In-Reply-To: <20200615155846.nd5n32qggusakxl7@linutronix.de> (Sebastian
-        Andrzej Siewior's message of "Mon, 15 Jun 2020 17:58:46 +0200")
-Message-ID: <87pna0qp2x.fsf@gmx.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        id S1731034AbgFOQWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:22:02 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:56450 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727785AbgFOQWB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:22:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1592238120; x=1623774120;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=ifr4gQV+yhFpihIiljeh6ImBelEF4KoxGNjHtpmralY=;
+  b=B8+gwxps+ugB8L8OOyFsB06vbbxlcvvQTcHzsCMJ1qYleAAPmyppKkFw
+   hq7fbAvSMVxkUJdgPEYg+IKpIu7wO9M5/WbNnuRDTWXRDvcdX55dFBjQf
+   8tKlQjC9iaIWN2VVI4iD9VTBCZR7crOO2HNHxvRk/kAPy4271vrUTFC9J
+   M=;
+IronPort-SDR: A5GTeliEg3Ej4QZoE9QHjWn/x420Ty0YEmyV3bZssfMEIeDQINMlCrFnRgiFwoqfiv3SDywJor
+ 7idm6Sk2GcbQ==
+X-IronPort-AV: E=Sophos;i="5.73,515,1583193600"; 
+   d="scan'208";a="44141831"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 15 Jun 2020 16:21:52 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id DAF75A24E7;
+        Mon, 15 Jun 2020 16:21:49 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 15 Jun 2020 16:21:49 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.145) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 15 Jun 2020 16:21:32 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v16 06/14] mm/damon: Implement callbacks for the virtual memory address spaces
+Date:   Mon, 15 Jun 2020 18:19:19 +0200
+Message-ID: <20200615161927.12637-7-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200615161927.12637-1-sjpark@amazon.com>
+References: <20200615161927.12637-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B6nN4qd35ZcpNV/+g4XvNSLfvahGBT1BOzOpMPdf9LQsSWO99HX
- 4oUAVkqdjRIfx8RiDDMhfPQREolVALZz53Bj/L5uu6Ni+nK5zBmd8X/f0Hy6YZK/sDtKfr8
- GF53V056/HklbpdUkHZfUNcKld7+Q/aZU4bo/ULXwNLbluUG6WWFVIcXHcfxRhZ/8PbFrWZ
- wfN6SewVMMdwwkKGJp1vw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:y+soa4AeU/w=:C353QW0PCdUx0j024JugMW
- jbkEChrZaAlM4UNcLuY2kfXvwgwqc/YwWVe8LDO1JR0S5DSH/iflGg5BaSiUpZMfZhXk5GYND
- AvuW8FzyCnDoNErYLqmxdZp8EpTWaatcTO2glgF2XoLGxJxgfy4AYgRmwEgRU40OWQj8TdBi7
- DPyZplAj5ejYNTmnhsA3zZ7SqyTu+P25TXDlqqRcjmqSwIE+Uw9h+HX56TbBc1w6nt9/VJyu4
- PiGM+IZduvwCbgapSqveFuZjPFoJwTwvbQ7t79j5d/3xGAZ/7YxekFvxM9X/otY/9NX9cxIA1
- QkR4tkumo3ZG0vhnNuwZZhZYHzaIvu4S6JVzQ2H1odX9iemy+j29nsWXX336xTsp5DYz7pDbt
- 6Qos9Rt5oICAxAYUYrW11uFPs5V1v4P3s+46LmWIEtHjHgAa+NEbwkcOLLrB3aHHmfLzTwgei
- FihqkXOFkQ6H5j5pa1Kx/Ew0VH19/QHtKQlfOjKbSGt+sbsA//fp8Le3D44Ge+XXaRoNw7OoI
- G6ZoUdn7mruLrEXHLoTNCApTg4pkDScKxJJXwUwWvUreKTGsjVrBocDESI8EI/FUBvKWA2OBX
- CdvPlgsmVLOQslu+0f94NhuH+VAakxx307c2Wp7XbsTSLrxR/0B4w+MaupzdO2YdAMobsLi2B
- PWVwXkatO6l04SvUbo6nRph9ZW3k2tR5tOJFHD2tgS7Z78eoq63lW1o+Fo1nrgBtJXibq3HpG
- uvPsTeSuWDS9Z56UDCWrB6Wyr2vYQXJMR23r1oNr/FBL+pt/7DnVi6+2YDCzywAeZyoSqBPR+
- hKTXNaSZICYuC6astaFsMJdLu4me5ujuzn6JHGeOd3nccatvfiGSZZUbPWi/giIGzaH1NaTxN
- f4yftTt3oeamDAtwYYgZR6YtShnJw53eqbstPrgU9dXBmlfeRdqXkTETLBaGCiJvNRMso/FgI
- CLQo4MmndNyf4k71NkwgLEB/MSiU844lRXtvYlMxXex+S3FsDy6RaECKNzS5m1jYNtGfxCwmD
- ieNzMrP59o2yLVTBWOclFOgGch9jzww+61We+opGdQYxWmnclhiUCoInPiPPWAxCj41rbjmpN
- 1T4jA9bnIDEYHWgZGfdg5ighRBDEOdfceJpBuAozPXqG0vDv8oFGMeKga8LDzOzjC2plkeryU
- PUwp8t5B1X0medU/9oz61lPoQPsXjRlfJuKu4Q9c6H67b0Px40zIoMNXRWwjqnP/sdss+MuR1
- lVjUTBADjqIeF5z+Z
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.145]
+X-ClientProxiedBy: EX13D23UWA004.ant.amazon.com (10.43.160.72) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 17:58:46 +0200 Sebastian Andrzej Siewior <bigeasy@linut=
-ronix.de> wrote:
+From: SeongJae Park <sjpark@amazon.de>
 
-> On 2020-06-15 17:41:06 [+0200], Stephen Berman wrote:
->> > If you do this "t" then there should be a lot of output on your consol=
-e.
->> > If you do this from an xterm then you can see the output after typing
->> > "dmesg". The output should appear also in your system log.
->>=20
->> Ah, ok, I do see it in the log, it looks basically the same as the call
->> trace I posted upthread.  I wonder why there was no such output in the
->> console, could there be some setting that suppresses it even though
->> /proc/sys/kernel/sysrq has `1'?
->
-> You have ignore_loglevel soo everything should appear on your console.
-> The is true for your tty / ctrl+alt+f1 but your xterm shell.
+This commit implements the four essential callbacks of DAMON,
+'->init_target_regions', '->update_target_regions',
+'->prepare_access_checks', and '->check_accesses' for virtual memory
+address spaces.  Those internally use PTE Accessed bit.  Using these
+callbacks, users can easily monitor the virtual address space data
+accesses of specific processes.  Nonetheless, these are just reference
+implementations.  Users can implement and use their own callbacks for
+their special use case, if required.
 
-Yet that appears not to be the case here, or I'm still doing something
-wrong =F0=9F=A4=B7
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ include/linux/damon.h |   6 +
+ mm/damon.c            | 474 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 480 insertions(+)
 
->> There were in fact 99 "Start .* acpi_ev_notify_dispatch" messages and 98
->> "End .* acpi_ev_notify_dispatch" messages.  Here's the last of them
->> before I rebooted:
-[...]=20
->> acpi_os_execute_deferred_notify(851) Start ffff8d7aa8758a80
->> acpi_ev_notify_dispatch+0x0/0x55(ffff8d7aa84e70a0)
->> Jun 15 08:58:26 strobe-jhalfs kernel: [ 194.339017] acpi_os_execute(1109)
->> Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa99a6730 <ffff8d7aabb384=
-c0>
->> Jun 15 08:58:27 strobe-jhalfs kernel: [ 195.363005] acpi_os_execute(1109)
->> Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa99a6780 <ffff8d7aabb385=
-00>
->> Jun 15 08:58:27 strobe-jhalfs kernel: [ 195.367978]
->> acpi_os_execute_deferred_notify(853) End ffff8d7aa8758a80
-[...]=20
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index aa14d4e910e5..aad30c500964 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -144,6 +144,12 @@ struct damon_ctx {
+ 	void (*aggregate_cb)(struct damon_ctx *context);
+ };
+ 
++/* Reference callback implementations for virtual memory */
++void kdamond_init_vm_regions(struct damon_ctx *ctx);
++void kdamond_update_vm_regions(struct damon_ctx *ctx);
++void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx);
++unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx);
++
+ int damon_set_pids(struct damon_ctx *ctx, int *pids, ssize_t nr_pids);
+ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+ 		unsigned long aggr_int, unsigned long regions_update_int,
+diff --git a/mm/damon.c b/mm/damon.c
+index a19ec17a35cb..973244a531b1 100644
+--- a/mm/damon.c
++++ b/mm/damon.c
+@@ -9,6 +9,9 @@
+  * This file is constructed in below parts.
+  *
+  * - Functions and macros for DAMON data structures
++ * - Functions for the initial monitoring target regions construction
++ * - Functions for the dynamic monitoring target regions update
++ * - Functions for the access checking of the regions
+  * - Functions for DAMON core logics and features
+  * - Functions for the DAMON programming interface
+  * - Functions for the module loading/unloading
+@@ -196,6 +199,477 @@ static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
+ 	return sz;
+ }
+ 
++/*
++ * Get the mm_struct of the given task
++ *
++ * Caller _must_ put the mm_struct after use, unless it is NULL.
++ *
++ * Returns the mm_struct of the task on success, NULL on failure
++ */
++static struct mm_struct *damon_get_mm(struct damon_task *t)
++{
++	struct task_struct *task;
++	struct mm_struct *mm;
++
++	task = damon_get_task_struct(t);
++	if (!task)
++		return NULL;
++
++	mm = get_task_mm(task);
++	put_task_struct(task);
++	return mm;
++}
++
++/*
++ * Functions for the initial monitoring target regions construction
++ */
++
++/*
++ * Size-evenly split a region into 'nr_pieces' small regions
++ *
++ * Returns 0 on success, or negative error code otherwise.
++ */
++static int damon_split_region_evenly(struct damon_ctx *ctx,
++		struct damon_region *r, unsigned int nr_pieces)
++{
++	unsigned long sz_orig, sz_piece, orig_end;
++	struct damon_region *n = NULL, *next;
++	unsigned long start;
++
++	if (!r || !nr_pieces)
++		return -EINVAL;
++
++	orig_end = r->ar.end;
++	sz_orig = r->ar.end - r->ar.start;
++	sz_piece = ALIGN_DOWN(sz_orig / nr_pieces, MIN_REGION);
++
++	if (!sz_piece)
++		return -EINVAL;
++
++	r->ar.end = r->ar.start + sz_piece;
++	next = damon_next_region(r);
++	for (start = r->ar.end; start + sz_piece <= orig_end;
++			start += sz_piece) {
++		n = damon_new_region(ctx, start, start + sz_piece);
++		if (!n)
++			return -ENOMEM;
++		damon_insert_region(n, r, next);
++		r = n;
++	}
++	/* complement last region for possible rounding error */
++	if (n)
++		n->ar.end = orig_end;
++
++	return 0;
++}
++
++static unsigned long sz_range(struct damon_addr_range *r)
++{
++	return r->end - r->start;
++}
++
++static void swap_ranges(struct damon_addr_range *r1,
++			struct damon_addr_range *r2)
++{
++	struct damon_addr_range tmp;
++
++	tmp = *r1;
++	*r1 = *r2;
++	*r2 = tmp;
++}
++
++/*
++ * Find three regions separated by two biggest unmapped regions
++ *
++ * vma		the head vma of the target address space
++ * regions	an array of three address ranges that results will be saved
++ *
++ * This function receives an address space and finds three regions in it which
++ * separated by the two biggest unmapped regions in the space.  Please refer to
++ * below comments of 'damon_init_vm_regions_of()' function to know why this is
++ * necessary.
++ *
++ * Returns 0 if success, or negative error code otherwise.
++ */
++static int damon_three_regions_in_vmas(struct vm_area_struct *vma,
++		struct damon_addr_range regions[3])
++{
++	struct damon_addr_range gap = {0}, first_gap = {0}, second_gap = {0};
++	struct vm_area_struct *last_vma = NULL;
++	unsigned long start = 0;
++	struct rb_root rbroot;
++
++	/* Find two biggest gaps so that first_gap > second_gap > others */
++	for (; vma; vma = vma->vm_next) {
++		if (!last_vma) {
++			start = vma->vm_start;
++			goto next;
++		}
++
++		if (vma->rb_subtree_gap <= sz_range(&second_gap)) {
++			rbroot.rb_node = &vma->vm_rb;
++			vma = rb_entry(rb_last(&rbroot),
++					struct vm_area_struct, vm_rb);
++			goto next;
++		}
++
++		gap.start = last_vma->vm_end;
++		gap.end = vma->vm_start;
++		if (sz_range(&gap) > sz_range(&second_gap)) {
++			swap_ranges(&gap, &second_gap);
++			if (sz_range(&second_gap) > sz_range(&first_gap))
++				swap_ranges(&second_gap, &first_gap);
++		}
++next:
++		last_vma = vma;
++	}
++
++	if (!sz_range(&second_gap) || !sz_range(&first_gap))
++		return -EINVAL;
++
++	/* Sort the two biggest gaps by address */
++	if (first_gap.start > second_gap.start)
++		swap_ranges(&first_gap, &second_gap);
++
++	/* Store the result */
++	regions[0].start = ALIGN(start, MIN_REGION);
++	regions[0].end = ALIGN(first_gap.start, MIN_REGION);
++	regions[1].start = ALIGN(first_gap.end, MIN_REGION);
++	regions[1].end = ALIGN(second_gap.start, MIN_REGION);
++	regions[2].start = ALIGN(second_gap.end, MIN_REGION);
++	regions[2].end = ALIGN(last_vma->vm_end, MIN_REGION);
++
++	return 0;
++}
++
++/*
++ * Get the three regions in the given task
++ *
++ * Returns 0 on success, negative error code otherwise.
++ */
++static int damon_three_regions_of(struct damon_task *t,
++				struct damon_addr_range regions[3])
++{
++	struct mm_struct *mm;
++	int rc;
++
++	mm = damon_get_mm(t);
++	if (!mm)
++		return -EINVAL;
++
++	down_read(&mm->mmap_sem);
++	rc = damon_three_regions_in_vmas(mm->mmap, regions);
++	up_read(&mm->mmap_sem);
++
++	mmput(mm);
++	return rc;
++}
++
++/*
++ * Initialize the monitoring target regions for the given task
++ *
++ * t	the given target task
++ *
++ * Because only a number of small portions of the entire address space
++ * is actually mapped to the memory and accessed, monitoring the unmapped
++ * regions is wasteful.  That said, because we can deal with small noises,
++ * tracking every mapping is not strictly required but could even incur a high
++ * overhead if the mapping frequently changes or the number of mappings is
++ * high.  The adaptive regions adjustment mechanism will further help to deal
++ * with the noise by simply identifying the unmapped areas as a region that
++ * has no access.  Moreover, applying the real mappings that would have many
++ * unmapped areas inside will make the adaptive mechanism quite complex.  That
++ * said, too huge unmapped areas inside the monitoring target should be removed
++ * to not take the time for the adaptive mechanism.
++ *
++ * For the reason, we convert the complex mappings to three distinct regions
++ * that cover every mapped area of the address space.  Also the two gaps
++ * between the three regions are the two biggest unmapped areas in the given
++ * address space.  In detail, this function first identifies the start and the
++ * end of the mappings and the two biggest unmapped areas of the address space.
++ * Then, it constructs the three regions as below:
++ *
++ *     [mappings[0]->start, big_two_unmapped_areas[0]->start)
++ *     [big_two_unmapped_areas[0]->end, big_two_unmapped_areas[1]->start)
++ *     [big_two_unmapped_areas[1]->end, mappings[nr_mappings - 1]->end)
++ *
++ * As usual memory map of processes is as below, the gap between the heap and
++ * the uppermost mmap()-ed region, and the gap between the lowermost mmap()-ed
++ * region and the stack will be two biggest unmapped regions.  Because these
++ * gaps are exceptionally huge areas in usual address space, excluding these
++ * two biggest unmapped regions will be sufficient to make a trade-off.
++ *
++ *   <heap>
++ *   <BIG UNMAPPED REGION 1>
++ *   <uppermost mmap()-ed region>
++ *   (other mmap()-ed regions and small unmapped regions)
++ *   <lowermost mmap()-ed region>
++ *   <BIG UNMAPPED REGION 2>
++ *   <stack>
++ */
++static void damon_init_vm_regions_of(struct damon_ctx *c, struct damon_task *t)
++{
++	struct damon_region *r;
++	struct damon_addr_range regions[3];
++	unsigned long sz = 0, nr_pieces;
++	int i;
++
++	if (damon_three_regions_of(t, regions)) {
++		pr_err("Failed to get three regions of task %d\n", t->pid);
++		return;
++	}
++
++	for (i = 0; i < 3; i++)
++		sz += regions[i].end - regions[i].start;
++	if (c->min_nr_regions)
++		sz /= c->min_nr_regions;
++	if (sz < MIN_REGION)
++		sz = MIN_REGION;
++
++	/* Set the initial three regions of the task */
++	for (i = 0; i < 3; i++) {
++		r = damon_new_region(c, regions[i].start, regions[i].end);
++		if (!r) {
++			pr_err("%d'th init region creation failed\n", i);
++			return;
++		}
++		damon_add_region(r, t);
++
++		nr_pieces = (regions[i].end - regions[i].start) / sz;
++		damon_split_region_evenly(c, r, nr_pieces);
++	}
++}
++
++/* Initialize '->regions_list' of every task */
++void kdamond_init_vm_regions(struct damon_ctx *ctx)
++{
++	struct damon_task *t;
++
++	damon_for_each_task(t, ctx) {
++		/* the user may set the target regions as they want */
++		if (!nr_damon_regions(t))
++			damon_init_vm_regions_of(ctx, t);
++	}
++}
++
++/*
++ * Functions for the dynamic monitoring target regions update
++ */
++
++/*
++ * Check whether a region is intersecting an address range
++ *
++ * Returns true if it is.
++ */
++static bool damon_intersect(struct damon_region *r, struct damon_addr_range *re)
++{
++	return !(r->ar.end <= re->start || re->end <= r->ar.start);
++}
++
++/*
++ * Update damon regions for the three big regions of the given task
++ *
++ * t		the given task
++ * bregions	the three big regions of the task
++ */
++static void damon_apply_three_regions(struct damon_ctx *ctx,
++		struct damon_task *t, struct damon_addr_range bregions[3])
++{
++	struct damon_region *r, *next;
++	unsigned int i = 0;
++
++	/* Remove regions which are not in the three big regions now */
++	damon_for_each_region_safe(r, next, t) {
++		for (i = 0; i < 3; i++) {
++			if (damon_intersect(r, &bregions[i]))
++				break;
++		}
++		if (i == 3)
++			damon_destroy_region(r);
++	}
++
++	/* Adjust intersecting regions to fit with the three big regions */
++	for (i = 0; i < 3; i++) {
++		struct damon_region *first = NULL, *last;
++		struct damon_region *newr;
++		struct damon_addr_range *br;
++
++		br = &bregions[i];
++		/* Get the first and last regions which intersects with br */
++		damon_for_each_region(r, t) {
++			if (damon_intersect(r, br)) {
++				if (!first)
++					first = r;
++				last = r;
++			}
++			if (r->ar.start >= br->end)
++				break;
++		}
++		if (!first) {
++			/* no damon_region intersects with this big region */
++			newr = damon_new_region(ctx,
++					ALIGN_DOWN(br->start, MIN_REGION),
++					ALIGN(br->end, MIN_REGION));
++			if (!newr)
++				continue;
++			damon_insert_region(newr, damon_prev_region(r), r);
++		} else {
++			first->ar.start = ALIGN_DOWN(br->start, MIN_REGION);
++			last->ar.end = ALIGN(br->end, MIN_REGION);
++		}
++	}
++}
++
++/*
++ * Update regions for current memory mappings
++ */
++void kdamond_update_vm_regions(struct damon_ctx *ctx)
++{
++	struct damon_addr_range three_regions[3];
++	struct damon_task *t;
++
++	damon_for_each_task(t, ctx) {
++		if (damon_three_regions_of(t, three_regions))
++			continue;
++		damon_apply_three_regions(ctx, t, three_regions);
++	}
++}
++
++/*
++ * Functions for the access checking of the regions
++ */
++
++static void damon_mkold(struct mm_struct *mm, unsigned long addr)
++{
++	pte_t *pte = NULL;
++	pmd_t *pmd = NULL;
++	spinlock_t *ptl;
++
++	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++		return;
++
++	if (pte) {
++		if (pte_young(*pte)) {
++			clear_page_idle(pte_page(*pte));
++			set_page_young(pte_page(*pte));
++		}
++		*pte = pte_mkold(*pte);
++		pte_unmap_unlock(pte, ptl);
++		return;
++	}
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	if (pmd_young(*pmd)) {
++		clear_page_idle(pmd_page(*pmd));
++		set_page_young(pmd_page(*pmd));
++	}
++	*pmd = pmd_mkold(*pmd);
++	spin_unlock(ptl);
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++}
++
++static void damon_prepare_vm_access_check(struct damon_ctx *ctx,
++			struct mm_struct *mm, struct damon_region *r)
++{
++	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
++
++	damon_mkold(mm, r->sampling_addr);
++}
++
++void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx)
++{
++	struct damon_task *t;
++	struct mm_struct *mm;
++	struct damon_region *r;
++
++	damon_for_each_task(t, ctx) {
++		mm = damon_get_mm(t);
++		if (!mm)
++			continue;
++		damon_for_each_region(r, t)
++			damon_prepare_vm_access_check(ctx, mm, r);
++		mmput(mm);
++	}
++}
++
++static bool damon_young(struct mm_struct *mm, unsigned long addr,
++			unsigned long *page_sz)
++{
++	pte_t *pte = NULL;
++	pmd_t *pmd = NULL;
++	spinlock_t *ptl;
++	bool young = false;
++
++	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++		return false;
++
++	*page_sz = PAGE_SIZE;
++	if (pte) {
++		young = pte_young(*pte);
++		pte_unmap_unlock(pte, ptl);
++		return young;
++	}
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	young = pmd_young(*pmd);
++	spin_unlock(ptl);
++	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
++#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
++
++	return young;
++}
++
++/*
++ * Check whether the region was accessed after the last preparation
++ *
++ * mm	'mm_struct' for the given virtual address space
++ * r	the region to be checked
++ */
++static void damon_check_vm_access(struct damon_ctx *ctx,
++			       struct mm_struct *mm, struct damon_region *r)
++{
++	static struct mm_struct *last_mm;
++	static unsigned long last_addr;
++	static unsigned long last_page_sz = PAGE_SIZE;
++	static bool last_accessed;
++
++	/* If the region is in the last checked page, reuse the result */
++	if (mm == last_mm && (ALIGN_DOWN(last_addr, last_page_sz) ==
++				ALIGN_DOWN(r->sampling_addr, last_page_sz))) {
++		if (last_accessed)
++			r->nr_accesses++;
++		return;
++	}
++
++	last_accessed = damon_young(mm, r->sampling_addr, &last_page_sz);
++	if (last_accessed)
++		r->nr_accesses++;
++
++	last_mm = mm;
++	last_addr = r->sampling_addr;
++}
++
++unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx)
++{
++	struct damon_task *t;
++	struct mm_struct *mm;
++	struct damon_region *r;
++	unsigned int max_nr_accesses = 0;
++
++	damon_for_each_task(t, ctx) {
++		mm = damon_get_mm(t);
++		if (!mm)
++			continue;
++		damon_for_each_region(r, t) {
++			damon_check_vm_access(ctx, mm, r);
++			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
++		}
++		mmput(mm);
++	}
++
++	return max_nr_accesses;
++}
++
+ /*
+  * Functions for DAMON core logics and features
+  */
+-- 
+2.17.1
 
-> Okay. So there is "Adding" of four events/work items in total, each
-> almost every second.
-> Processing of one work-item took two seconds, the other one took a
-> second. These events are "old" so I don't see the "adding" line for the
-> Start/End.
-> You could look in the log for ffff8d7aa8758a80 to seen when it was
-> enqueued but it feels like ACPI enqueues more events then it is capable
-> of processing.
-
-It's there, 196 lines above the Start ffff8d7aa8758a80 line:
-
-Jun 15 08:56:58 strobe-jhalfs kernel: [  106.275356] acpi_os_execute(1109) =
-Adding acpi_ev_notify_dispatch+0x0/0x55 ffff8d7aa84e70a0 <ffff8d7aa8758a80>
-
-Steve Berman
