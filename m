@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB181F9095
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEC41F908A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgFOHvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:51:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39998 "EHLO mx2.suse.de"
+        id S1729121AbgFOHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:50:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40070 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728833AbgFOHtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:49:17 -0400
+        id S1728846AbgFOHtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 03:49:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 06BA1AFD4;
+        by mx2.suse.de (Postfix) with ESMTP id 3CAB4B02E;
         Mon, 15 Jun 2020 07:49:18 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 16/38] vc: move translation out of do_con_write
-Date:   Mon, 15 Jun 2020 09:48:48 +0200
-Message-Id: <20200615074910.19267-16-jslaby@suse.cz>
+Subject: [PATCH 17/38] vc: introduce struct vc_draw_region
+Date:   Mon, 15 Jun 2020 09:48:49 +0200
+Message-Id: <20200615074910.19267-17-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
@@ -32,58 +32,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we reordered the code and the label, we can eliminate the
-translation into a separate function. We call it vc_translate here.
+For passing of draw area among functions. This makes next patches
+simpler.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ drivers/tty/vt/vt.c | 44 +++++++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 93ad7e004900..0f61dc360067 100644
+index 0f61dc360067..0c663054ab79 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -2658,6 +2658,19 @@ static int vc_translate_unicode(struct vc_data *vc, int c, bool *rescan)
- 	return -1;
+@@ -2549,15 +2549,20 @@ static int is_double_width(uint32_t ucs)
+ 			sizeof(struct interval), ucs_cmp) != NULL;
  }
  
-+static int vc_translate(struct vc_data *vc, int *c, bool *rescan)
-+{
-+	/* Do no translation at all in control states */
-+	if (vc->vc_state != ESnormal)
-+		return *c;
+-static void con_flush(struct vc_data *vc, unsigned long draw_from,
+-		unsigned long draw_to, int *draw_x)
++struct vc_draw_region {
++	unsigned long from, to;
++	int x;
++};
 +
-+	if (vc->vc_utf && !vc->vc_disp_ctrl)
-+		return *c = vc_translate_unicode(vc, *c, rescan);
-+
-+	/* no utf or alternate charset mode */
-+	return vc_translate_ascii(vc, *c);
-+}
-+
- static inline unsigned char vc_invert_attr(const struct vc_data *vc)
++static void con_flush(struct vc_data *vc, struct vc_draw_region *draw)
  {
- 	if (!vc->vc_can_do_color)
-@@ -2726,16 +2739,9 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
- 		inverse = false;
- 		width = 1;
+-	if (*draw_x < 0)
++	if (draw->x < 0)
+ 		return;
  
--		/* Do no translation at all in control states */
--		if (vc->vc_state != ESnormal) {
--			tc = c;
--		} else if (vc->vc_utf && !vc->vc_disp_ctrl) {
--			tc = c = vc_translate_unicode(vc, c, &rescan);
--			if (tc == -1)
--				continue;
--		} else {	/* no utf or alternate charset mode */
--			tc = vc_translate_ascii(vc, c);
--		}
-+		tc = vc_translate(vc, &c, &rescan);
-+		if (tc == -1)
-+			continue;
+-	vc->vc_sw->con_putcs(vc, (u16 *)draw_from,
+-			(u16 *)draw_to - (u16 *)draw_from, vc->state.y, *draw_x);
+-	*draw_x = -1;
++	vc->vc_sw->con_putcs(vc, (u16 *)draw->from,
++			(u16 *)draw->to - (u16 *)draw->from, vc->state.y,
++			draw->x);
++	draw->x = -1;
+ }
  
- 		param.c = tc;
- 		if (atomic_notifier_call_chain(&vt_notifier_list, VT_PREWRITE,
+ static inline int vc_translate_ascii(const struct vc_data *vc, int c)
+@@ -2689,9 +2694,11 @@ static inline unsigned char vc_invert_attr(const struct vc_data *vc)
+ /* acquires console_lock */
+ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int count)
+ {
+-	int c, next_c, tc, ok, n = 0, draw_x = -1;
++	struct vc_draw_region draw = {
++		.x = -1,
++	};
++	int c, next_c, tc, ok, n = 0;
+ 	unsigned int currcons;
+-	unsigned long draw_from = 0, draw_to = 0;
+ 	struct vc_data *vc;
+ 	unsigned char vc_attr;
+ 	struct vt_notifier_param param;
+@@ -2798,14 +2805,13 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 				vc_attr = vc->vc_attr;
+ 			} else {
+ 				vc_attr = vc_invert_attr(vc);
+-				con_flush(vc, draw_from, draw_to, &draw_x);
++				con_flush(vc, &draw);
+ 			}
+ 
+ 			next_c = c;
+ 			while (1) {
+ 				if (vc->vc_need_wrap || vc->vc_decim)
+-					con_flush(vc, draw_from, draw_to,
+-							&draw_x);
++					con_flush(vc, &draw);
+ 				if (vc->vc_need_wrap) {
+ 					cr(vc);
+ 					lf(vc);
+@@ -2817,16 +2823,16 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 					     ((vc_attr << 8) & ~himask) + ((tc & 0x100) ? himask : 0) + (tc & 0xff) :
+ 					     (vc_attr << 8) + tc,
+ 					   (u16 *) vc->vc_pos);
+-				if (con_should_update(vc) && draw_x < 0) {
+-					draw_x = vc->state.x;
+-					draw_from = vc->vc_pos;
++				if (con_should_update(vc) && draw.x < 0) {
++					draw.x = vc->state.x;
++					draw.from = vc->vc_pos;
+ 				}
+ 				if (vc->state.x == vc->vc_cols - 1) {
+ 					vc->vc_need_wrap = vc->vc_decawm;
+-					draw_to = vc->vc_pos + 2;
++					draw.to = vc->vc_pos + 2;
+ 				} else {
+ 					vc->state.x++;
+-					draw_to = (vc->vc_pos += 2);
++					draw.to = (vc->vc_pos += 2);
+ 				}
+ 
+ 				if (!--width) break;
+@@ -2838,17 +2844,17 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 			notify_write(vc, c);
+ 
+ 			if (inverse)
+-				con_flush(vc, draw_from, draw_to, &draw_x);
++				con_flush(vc, &draw);
+ 
+ 			if (rescan)
+ 				goto rescan_last_byte;
+ 
+ 			continue;
+ 		}
+-		con_flush(vc, draw_from, draw_to, &draw_x);
++		con_flush(vc, &draw);
+ 		do_con_trol(tty, vc, orig);
+ 	}
+-	con_flush(vc, draw_from, draw_to, &draw_x);
++	con_flush(vc, &draw);
+ 	vc_uniscr_debug_check(vc);
+ 	console_conditional_schedule();
+ 	notify_update(vc);
 -- 
 2.27.0
 
