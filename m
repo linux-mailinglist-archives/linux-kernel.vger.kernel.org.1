@@ -2,174 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0AE1F9493
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A40A1F9498
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729153AbgFOK07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:26:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728885AbgFOK05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:26:57 -0400
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 362A620738;
-        Mon, 15 Jun 2020 10:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592216816;
-        bh=hyUqHVvXrvWswYdtXPunHqjbBKKNx9PKUnYIGDXg85Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dxZlvUL6DUxfzWe0YuM1i6dHK8Oh0IgZFJCsi2GQ4Ssj6mW4ylhE3CcvG9c4O4R28
-         G7iat2uLRwcFzd3HB+Ox/FcVDIe2VJvc17Z9iQ4j7MkZz3PGWUN77FQXRSUodFFKRq
-         rprI0FQQjr9e7YBnjXkN1Tt7qpKk7PwYAqY1jt8g=
-Received: by mail-oi1-f172.google.com with SMTP id a3so15439700oid.4;
-        Mon, 15 Jun 2020 03:26:56 -0700 (PDT)
-X-Gm-Message-State: AOAM5306J15G22zR/p+/mD2cmadymmvD1jb2myyLzQHrW0q/Tg+/uteB
-        EbfRo9BAhLnbKBweNRKV6me0CPInSxVg+JI6OAM=
-X-Google-Smtp-Source: ABdhPJwFl0io0Eq+GPpq4WFiP9Xu+DdILz72bZT1brO1yijkO5duX1PIP3h6EN4mfEuni4hlMgQnqxUejHextMUFkNo=
-X-Received: by 2002:aca:ba03:: with SMTP id k3mr1896542oif.33.1592216815522;
- Mon, 15 Jun 2020 03:26:55 -0700 (PDT)
+        id S1729384AbgFOK2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728369AbgFOK2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 06:28:19 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01326C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 03:28:00 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id b13so5483106uav.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 03:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rU9JUkj2VKBxOM/smu29U/AAlMTJdm//1yIZ5VQj9EA=;
+        b=F2Y3gF3uRYirDOAb5XX55RRvXWHeHzIeuhSD+GjOYTHODp3C4K9//0udlcm4sa2Uzj
+         nomsh1D+3VZBczj8gcHfQ0rkA9m1bQnOlN83aoFGLmOlo9SJHCQCOE/PQBfU5Fg4E9e3
+         hH3yqx9L7qcseMnwiMHp2uqmzaYTr/il44xyntpqvS9s66dsB6DRtpbfSyfG6LwHaWlq
+         X/NaRksGyLOSEoZjSen9/eXHn6xn6Z55GSR/u1fOGHs8hXz2N4pM9DyoP5MdxMSm+J91
+         BbajoHlcXh6fYkjRb8XHrNRYZsc2H0LHxa/heDa6wojUim/qRAhsdnqXhKg6i0OtjhTM
+         zoIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rU9JUkj2VKBxOM/smu29U/AAlMTJdm//1yIZ5VQj9EA=;
+        b=Fi1ge8pnJodQTYvmoX1G3bJZTRbtvE8enidd2unKoqpp7zCbuH8Bkj1XGldLg/Rxw3
+         +tONdHWALw3rCAR8aLX7AS8goA/q6J3eW0VLsCLE3hciHTbxBsBqb6oEpgc2X2GZm1xo
+         xHAt3YnRP6Dd60NDxv1JgknHi3tC89W92HsIBL4tL/y3jUBzfGQgeZ6JzCMG+ktFmCwy
+         ciA6KOfcNj77C16gA3wUb/V9cMfrrlbmWC7mi4X8xeNCCpOJ9OWSphTpSNbf+Y7SpTr1
+         /Yz2UVninfa+chmYyJEoZCYnubUNSlgWZyRaWuGpw/vIOT80qTK2YmLE5tfIRhEfUmE3
+         Ynlw==
+X-Gm-Message-State: AOAM531R/LyyL0J6OtcH2lUwYj90/GLF7mIxuGfI6kyF7Cju34fmrthu
+        R4E6ZHTvhj815+8gipXxg4Z75/ToZ3scMRkK26fYpA==
+X-Google-Smtp-Source: ABdhPJwqruSZ2YdClo42lU1i0GNev9Ttn+TX/3lFS69tG19RZd2QloosVZ8WiPcvWCvHPan+PJ4ijIRijoHbG1CVJbs=
+X-Received: by 2002:ab0:6086:: with SMTP id i6mr17903493ual.129.1592216879850;
+ Mon, 15 Jun 2020 03:27:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200604022031.164207-1-masahiroy@kernel.org> <20200604022031.164207-2-masahiroy@kernel.org>
-In-Reply-To: <20200604022031.164207-2-masahiroy@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 15 Jun 2020 12:26:43 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEHDFnhgsz4w+6DuwPxcSZ5P8o0rMzQ504Nt4i31MXwJQ@mail.gmail.com>
-Message-ID: <CAMj1kXEHDFnhgsz4w+6DuwPxcSZ5P8o0rMzQ504Nt4i31MXwJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] efi/libstub: refactor Makefile to not use lib-y syntax
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200528190610.179984-1-saravanak@google.com> <20200528190610.179984-3-saravanak@google.com>
+ <20200529130012.GJ4610@sirena.org.uk> <CAGETcx9Y8VoPCjrVFdDwU=+m3_0OTZQgj9b5eSHSTgSqeCZrUQ@mail.gmail.com>
+ <20200601172323.GE45647@sirena.org.uk> <CAGETcx-T=NstJDV2S8gKmqpOv1r2-fTRs1pwOtSQ6rJumhVGBg@mail.gmail.com>
+ <20200609105115.GA4583@sirena.org.uk>
+In-Reply-To: <20200609105115.GA4583@sirena.org.uk>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 15 Jun 2020 12:27:23 +0200
+Message-ID: <CAPDyKFohcYjSvBjjB01mg7bOFCJA8XukgRPsZJm48X44sFzeYA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] regulator: Add support for sync_state() callbacks
+To:     Mark Brown <broonie@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Jun 2020 at 04:20, Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Tue, 9 Jun 2020 at 12:51, Mark Brown <broonie@kernel.org> wrote:
 >
-> Documentation/kbuild/makefiles.rst says:
+> On Mon, Jun 08, 2020 at 08:16:44PM -0700, Saravana Kannan wrote:
+> > On Mon, Jun 1, 2020 at 10:23 AM Mark Brown <broonie@kernel.org> wrote:
 >
->   Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
+> > > This is I think the first time anyone has suggested that this is likely
+> > > to be an issue - the previous concerns have all been about screens
+> > > glitching.
 >
-> This is because lib-y is inteded to be hooked to KBUILD_VMLINUX_LIBS,
-> which is passed down to scripts/link-vmlinux.sh.
+> > Looks like we got at least one concrete example now in [1].
 >
-> Besides, lib-y is not so interesting because objects from lib-y are
-> mostly linked in normal usecases. For example, lib-y only saves 364
-> bytes for x86_64_defconfig. You can see the details in commit
-> 7273ad2b08f8 ("kbuild: link lib-y objects to vmlinux forcibly when
-> CONFIG_MODULES=y").
+> That's the Exynos VDD_INT/CPU issue.  I'm not clear that this is
+> entirely covered TBH, AIUI it needs a coupler all the time so it's not
+> just a case of waiting for the consumers.
 >
-> I think we should consider to deprecate lib-y syntax at some point
-> because we should aim for better solution like dead code elimination
-> or LTO.
+> Please include human readable descriptions of things like commits and
+> issues being discussed in e-mail in your mails, this makes them much
+> easier for humans to read especially when they have no internet access.
+> I do frequently catch up on my mail on flights or while otherwise
+> travelling so this is even more pressing for me than just being about
+> making things a bit easier to read.
 >
-> Other than lib/ and arch/*/lib, this Makefile is the only user of
-> lib-y. Replace lib-y with a custom rule.
+> > But it doesn't really ignore consumer requests though. In response to
+> > all your comments above, I haven't done a good job of explaining the
+> > issues and the solution. I'll try to redo that part again when I send
+> > v3 and hopefully I can do better.
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Yes, I think a lot of this is about clarity of explanation.
+>
+> > > My concern is that introducing extra delays is likely to make things
+> > > more fragile and complex.  As far as I can see this is just making
+> > > things even worse by adding spurious dependencies and delaying things
+> > > further.
+>
+> > I wouldn't call it delaying any requests. This is just an additional
+> > constraint like any other consumer. This definitely makes things more
+> > stable in cases where all the devices probe and even in cases where
+> > some of those devices might never probe (example I gave in [2]).
+>
+> Since your current implementation restricts things until essentially the
+> entire system is running this is going to affect consumers that don't
+> share their regulator.  Part of the reason I am so against that idea is
+> that when it is very important that a driver be able to change the
+> voltage and have that actually take effect usually the hardware will be
+> built such that that regulator isn't shared so shareability issues don't
+> apply, we have regulator_get_exclusive() for such situations though
+> it's wound up not as widely used as it could be for a bunch of reasons.
+> Things like MMC where we have to conform to a hardware spec that
+> includes lowering as well as raising voltages will have issues with
+> this.
+>
 
-Series queued in efi/urgent.
+eMMC is not only about voltage levels, but also about enable/disable
+of the regulator(s).
 
-Thanks
+More precisely, one needs to follow the steps specified in the eMMC
+spec, when disabling the regulator(s).
 
-> ---
->
-> Changes in v2:
->   - Add more description
->
->  drivers/firmware/efi/libstub/Makefile | 49 +++++++++++++++------------
->  1 file changed, 27 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> index cce4a7436052..7d81dc45cadf 100644
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -44,7 +44,7 @@ OBJECT_FILES_NON_STANDARD     := y
->  # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
->  KCOV_INSTRUMENT                        := n
->
-> -lib-y                          := efi-stub-helper.o gop.o secureboot.o tpm.o \
-> +stub-obj-y                     := efi-stub-helper.o gop.o secureboot.o tpm.o \
->                                    file.o mem.o random.o randomalloc.o pci.o \
->                                    skip_spaces.o lib-cmdline.o lib-ctype.o \
->                                    alignedmem.o relocate.o vsprintf.o
-> @@ -55,15 +55,19 @@ efi-deps-y := fdt_rw.c fdt_ro.c fdt_wip.c fdt.c fdt_empty_tree.c fdt_sw.c
->  $(obj)/lib-%.o: $(srctree)/lib/%.c FORCE
->         $(call if_changed_rule,cc_o_c)
->
-> -lib-$(CONFIG_EFI_GENERIC_STUB) += efi-stub.o fdt.o string.o \
-> +stub-obj-$(CONFIG_EFI_GENERIC_STUB)    += efi-stub.o fdt.o string.o \
->                                    $(patsubst %.c,lib-%.o,$(efi-deps-y))
->
-> -lib-$(CONFIG_ARM)              += arm32-stub.o
-> -lib-$(CONFIG_ARM64)            += arm64-stub.o
-> -lib-$(CONFIG_X86)              += x86-stub.o
-> +stub-obj-$(CONFIG_ARM)         += arm32-stub.o
-> +stub-obj-$(CONFIG_ARM64)       += arm64-stub.o
-> +stub-obj-$(CONFIG_X86)         += x86-stub.o
->  CFLAGS_arm32-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
->  CFLAGS_arm64-stub.o            := -DTEXT_OFFSET=$(TEXT_OFFSET)
->
-> +targets                                += $(stub-obj-y)
-> +stub-obj-y                     := $(patsubst %.o,%.stub.o, $(stub-obj-y))
-> +targets                                += $(stub-obj-y)
-> +
->  #
->  # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
->  # .bss section, so the .bss section of the EFI stub needs to be included in the
-> @@ -83,23 +87,6 @@ STUBCOPY_FLAGS-$(CONFIG_ARM) += --rename-section .data=.data.efistub \
->                                    --rename-section .bss=.bss.efistub,load,alloc
->  STUBCOPY_RELOC-$(CONFIG_ARM)   := R_ARM_ABS
->
-> -#
-> -# arm64 puts the stub in the kernel proper, which will unnecessarily retain all
-> -# code indefinitely unless it is annotated as __init/__initdata/__initconst etc.
-> -# So let's apply the __init annotations at the section level, by prefixing
-> -# the section names directly. This will ensure that even all the inline string
-> -# literals are covered.
-> -# The fact that the stub and the kernel proper are essentially the same binary
-> -# also means that we need to be extra careful to make sure that the stub does
-> -# not rely on any absolute symbol references, considering that the virtual
-> -# kernel mapping that the linker uses is not active yet when the stub is
-> -# executing. So build all C dependencies of the EFI stub into libstub, and do
-> -# a verification pass to see if any absolute relocations exist in any of the
-> -# object files.
-> -#
-> -extra-y                                := $(lib-y)
-> -lib-y                          := $(patsubst %.o,%.stub.o,$(lib-y))
-> -
->  STUBCOPY_FLAGS-$(CONFIG_ARM64) += --prefix-alloc-sections=.init \
->                                    --prefix-symbols=__efistub_
->  STUBCOPY_RELOC-$(CONFIG_ARM64) := R_AARCH64_ABS
-> @@ -121,3 +108,21 @@ quiet_cmd_stubcopy = STUBCPY $@
->                 /bin/false;                                             \
->         fi;                                                             \
->         $(OBJCOPY) $(STUBCOPY_FLAGS-y) $< $@
-> +
-> +# arm64 puts the stub in the kernel proper, which will unnecessarily retain all
-> +# code indefinitely unless it is annotated as __init/__initdata/__initconst etc.
-> +# So let's apply the __init annotations at the section level, by prefixing
-> +# the section names directly. This will ensure that even all the inline string
-> +# literals are covered.
-> +# The fact that the stub and the kernel proper are essentially the same binary
-> +# also means that we need to be extra careful to make sure that the stub does
-> +# not rely on any absolute symbol references, considering that the virtual
-> +# kernel mapping that the linker uses is not active yet when the stub is
-> +# executing. So build all C dependencies of the EFI stub into libstub, and do
-> +# a verification pass to see if any absolute relocations exist in any of the
-> +# object files.
-> +#
-> +extra-y += lib.a
-> +
-> +$(obj)/lib.a: $(addprefix $(obj)/, $(stub-obj-y)) FORCE
-> +       $(call if_changed,ar)
-> --
-> 2.25.1
->
+In other words, the mmc host driver needs to be probed (consumer of
+the regulator), before the regulator(s) can be disabled.
+
+Kind regards
+Uffe
