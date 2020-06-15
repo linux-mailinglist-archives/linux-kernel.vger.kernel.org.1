@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54471F8BDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513DA1F8BE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728077AbgFOASt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 20:18:49 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:37671 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727954AbgFOASs (ORCPT
+        id S1728096AbgFOATS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 20:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728071AbgFOATR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Jun 2020 20:18:48 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200615001845epoutp011ad732912691647ee1cc96c281131ab8~Yj5IAQMvG0970309703epoutp01q
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:18:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200615001845epoutp011ad732912691647ee1cc96c281131ab8~Yj5IAQMvG0970309703epoutp01q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592180325;
-        bh=V6/8DezWH8PzYjBA5puOibvXVjWNyGR5RWHz/aMlgVg=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=fLVmanDIXzvbg6vdX01N2KDCqygi51UOSIxFRcSyaPhBdSyWOvGgCZ1zRyHVZPWVx
-         /MvuurAgQ080g75UjQSZ11TDqdFEuDkhQP6i8ssuU8/KtMsUI0FbOOdaNLhkto9ySp
-         648lIwH/BddoqpTsT0uIQv8KFLhCy0+TY18JCY+U=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200615001845epcas1p157e0e1390fb1ce353f7f1e3f88f2b2b1~Yj5HoCEqW2119221192epcas1p1i;
-        Mon, 15 Jun 2020 00:18:45 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 49lX4M0RrczMqYkr; Mon, 15 Jun
-        2020 00:18:43 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A9.8D.29173.26EB6EE5; Mon, 15 Jun 2020 09:18:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200615001842epcas1p261adde276bcab86b90a73e0a1e58a0c9~Yj5FSRzcO0252602526epcas1p2K;
-        Mon, 15 Jun 2020 00:18:42 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200615001842epsmtrp1455dddd390f33f20cc4f551eb4947939~Yj5FNl_vq0743407434epsmtrp1O;
-        Mon, 15 Jun 2020 00:18:42 +0000 (GMT)
-X-AuditID: b6c32a37-9cdff700000071f5-d1-5ee6be62299a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        29.E0.08382.26EB6EE5; Mon, 15 Jun 2020 09:18:42 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200615001842epsmtip2bfd10b61dc137cb2c491c470a28335e6~Yj5FGFFm80266502665epsmtip2S;
-        Mon, 15 Jun 2020 00:18:42 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Hyunchul Lee'" <hyc.lee@gmail.com>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>
-In-Reply-To: <20200612094250.9347-2-hyc.lee@gmail.com>
-Subject: RE: [PATCH 2/2] exfat: allow to change some mount options for
- remount
-Date:   Mon, 15 Jun 2020 09:18:42 +0900
-Message-ID: <001501d642aa$8699aca0$93cd05e0$@samsung.com>
+        Sun, 14 Jun 2020 20:19:17 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9773C05BD43;
+        Sun, 14 Jun 2020 17:19:14 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dr13so15511713ejc.3;
+        Sun, 14 Jun 2020 17:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0r9iOjFzMyP9orIqp35ZxhdsurjuUHNXHC7X6YpTCNA=;
+        b=OLHaE0oujambTdR5fUzLPNY+xGy8cNztQ/QRj/xWiARpec8TI8NPIj2rIS7zGYwGMF
+         Oezm8ZEVwxNcqba0U+4OU7heUgeZy8Vu1XIDNutk1izjR/4CVscHdL4+2JNNV/MfTP8w
+         CIpEGnlRwWOur8eWrqfPR62Ydhn7+dkHlWo969GgTgKSRIeg+BGeYymkx9g9ZxGqR+Zi
+         bUnJeUtX47s4gbJ4l3YXhXyHaAzleNLnEpEkCnWKHmHkOl4oMSFx/4hSRHDa+Zy+l2ES
+         TM6/1Sxa+qCD5vPRkUTo92kTXavnQL+ASKdtnRjmSViwirY6SjqpMet4Vuax9xZK1VDX
+         pyPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0r9iOjFzMyP9orIqp35ZxhdsurjuUHNXHC7X6YpTCNA=;
+        b=MwRVq27hTu2f9gSBVU+R6v2+CJZmgE1Hb7P+3aY6HHvThUL4SiKl0htearTIC0eJA/
+         CuqHRb+IKGoBUH4ncO5iXH2IYauVdCo0T4QYuDo4DokMeoMRsCZLeIGsHyjiAvFec7/U
+         YpAk+L0iMnABG93YefsCLAoUY3yvDOR5kzr7ARTjhAxLZEq6gouo8xs0TLaGoJLP6b2f
+         NFjwDL11ectgBnILPlrL6P8XYEWmtQOOJpPsNH6iDB2XAbH/AnaOOq/nLqjVgf6kzeYl
+         BpnK3EQz1UQucxmFkcnblyn7/pcmJ2qyaeE5wo9HUDjC7L1zeKJn0cq2Q2KPaMZS0FSw
+         8Ndw==
+X-Gm-Message-State: AOAM532XX/AIt/gW8dgUcFiBAqwWrcNzQe6w6wm0ds+okPmyAY+cW4qi
+        R9yygwz2x47tusRtr3adOiw4v+Ga
+X-Google-Smtp-Source: ABdhPJwy1wndRX/MiUX8uHnTMYW88GE9JUTflT6oiLn8v0zhffnmY+Pw4D1NF/fpJGJ38rgOSoppdg==
+X-Received: by 2002:a17:906:b817:: with SMTP id dv23mr22846154ejb.185.1592180353497;
+        Sun, 14 Jun 2020 17:19:13 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.129.96])
+        by smtp.gmail.com with ESMTPSA id m30sm7450666eda.16.2020.06.14.17.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 17:19:13 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] arm: dts: owl-s500: Fix incorrect PPI interrupt specifiers
+Date:   Mon, 15 Jun 2020 03:19:08 +0300
+Message-Id: <41463413d6b756e9d24f8807cf95ddd98591b990.1592123160.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
+References: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLoIJeKvN4MET9VoLaZYw+wi+h82gKmMzPjAhLrcmemj0pOMA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmrm7yvmdxBvNjLa7df89usWfvSRaL
-        y7vmsFls+XeE1YHFY+esu+wefVtWMXp83iQXwByVY5ORmpiSWqSQmpecn5KZl26r5B0c7xxv
-        amZgqGtoaWGupJCXmJtqq+TiE6DrlpkDtExJoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquU
-        WpCSU2BoUKBXnJhbXJqXrpecn2tlaGBgZApUmZCTcfHSGpaCtaIVD1rfMTYwHhHsYuTkkBAw
-        kfg/cxVzFyMXh5DADkaJ1UemsIEkhAQ+MUq8P+YLkfjGKPG86wcjTMefBX/YIBJ7GSUWfz3P
-        BOG8BHJ+b2MCqWIT0JX492c/2CgRAQ2JfycfgcWZBQok1u49wwpicwqYSZzfsBtsqrBAgMT2
-        pQvB4iwCqhKHj0xnB7F5BSwldvXuZ4KwBSVOznzCAjFHXmL72znMEBcpSPx8uowVYpeTxK+p
-        M1ghakQkZne2gf0mIfCVXWLKux6oBheJG7eWMEHYwhKvjm9hh7ClJF72twHZHEB2tcTH/VDl
-        HYwSL77bQtjGEjfXb2AFKWEW0JRYv0sfIqwosfP3XEaItXwS7772sEJM4ZXoaBOCKFGV6Lt0
-        GGqptERX+wf2CYxKs5A8NgvJY7OQPDALYdkCRpZVjGKpBcW56anFhgXGyHG9iRGcDrXMdzBO
-        e/tB7xAjEwfjIUYJDmYlEd7utCdxQrwpiZVVqUX58UWlOanFhxhNgUE9kVlKNDkfmJDzSuIN
-        TY2MjY0tTMzMzUyNlcR5fa0uxAkJpCeWpGanphakFsH0MXFwSjUwCZrn1VYFlS38r87PJJ8e
-        yO436bXFlYysuMTsC2xihYnJk+vPKpa5rCiYnrPCUKjgSWPaTa5/iSu235HWSsnoyfzQ8ll3
-        n+HH1w9+WtQ8jTB4vpN7945Z6lv36k1/wKOwcx3r9vo7O+yFeT67mjM/4loyNUqxWK90l3CQ
-        f9XaWMu1Z+3W2klJlc29e09M4EhuZcrLUqkVWiVtyxtTfOYZXpSPZPkguaDxY/2rkrMWe47d
-        cpu+JfZy4k+z3ZYBRdumPT558s1yY+VbOyz2N8ecld2+5ELrKf8n8264Lzshxbrcef0bCyvG
-        c72n3rv8OBphLfFtzp5bRUzdKiLcQQZbgt7fvOTrdE3k5sOEyrk3lFiKMxINtZiLihMBDKxE
-        zRAEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSvG7SvmdxBh/Pylhcu/+e3WLP3pMs
-        Fpd3zWGz2PLvCKsDi8fOWXfZPfq2rGL0+LxJLoA5issmJTUnsyy1SN8ugSvj4qU1LAVrRSse
-        tL5jbGA8ItjFyMkhIWAi8WfBH7YuRi4OIYHdjBJXV29ghUhISxw7cYa5i5EDyBaWOHy4GKLm
-        OaPEtIU7GUFq2AR0Jf792c8GYosIaEj8O/mICcRmFiiSuN97nh2iYSOjxMV329lBEpwCZhLn
-        N+wGaxYW8JOYdnUCWAOLgKrE4SPTwWp4BSwldvXuZ4KwBSVOznzCAnIEs4CeRNtGRoj58hLb
-        385hhrhTQeLn02WsEDc4SfyaOoMVokZEYnZnG/MERuFZSCbNQpg0C8mkWUg6FjCyrGKUTC0o
-        zk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4MLc0djNtXfdA7xMjEwXiIUYKDWUmEtzvtSZwQ
-        b0piZVVqUX58UWlOavEhRmkOFiVx3huFC+OEBNITS1KzU1MLUotgskwcnFINTG61s74kTNx1
-        dd2RQgsbjy9f5/Bm97kGmy/Y1SYSFVGseKM71Sxsr/DUop9Jxh9TMuTfd86fMtVA1FXz/4q7
-        GTFW7v9Wf8h6WBZqulqN9cb/jW46zZfY2WYUyPjcnJD46ULA/F3eswVbpB9yxfB3z7tfOKXj
-        HL9JdIbtn2NSapluUebz17E8bhZ65c/Y9PTsno9X+WNbufo0eHJvMD6bYNAjeE7Id6nIVpX5
-        NTKvZNcG3nAv04pbO3Pl5Q0Zcs/tXxueivGbPv+cx1Wpa84h3OtDPexdppi4xf/7OG/S8epp
-        u0QTgs7FzzxsVbqLY5WQddwnRtOOp+45jVHhHAlSBQ6T50UfzxTb/YKtyzJKiaU4I9FQi7mo
-        OBEA3iyFQvsCAAA=
-X-CMS-MailID: 20200615001842epcas1p261adde276bcab86b90a73e0a1e58a0c9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200612094318epcas1p30139d60fdcfc3672fede8977c536a5a8
-References: <20200612094250.9347-1-hyc.lee@gmail.com>
-        <CGME20200612094318epcas1p30139d60fdcfc3672fede8977c536a5a8@epcas1p3.samsung.com>
-        <20200612094250.9347-2-hyc.lee@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Allow to change permission masks, allow_utime, errors. But ignore other options.
-> 
-> Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
-> ---
->  fs/exfat/super.c | 40 +++++++++++++++++++++++++++++-----------
->  1 file changed, 29 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/exfat/super.c b/fs/exfat/super.c index 61c6cf240c19..3c1d47289ba2 100644
-> --- a/fs/exfat/super.c
-> +++ b/fs/exfat/super.c
-> @@ -696,9 +696,13 @@ static void exfat_free(struct fs_context *fc)  static int
-> exfat_reconfigure(struct fs_context *fc)  {
->  	struct super_block *sb = fc->root->d_sb;
-> +	struct exfat_sb_info *sbi = EXFAT_SB(sb);
-> +	struct exfat_mount_options *new_opts;
->  	int ret;
->  	bool new_rdonly;
-> 
-> +	new_opts = &((struct exfat_sb_info *)fc->s_fs_info)->options;
-> +
->  	new_rdonly = fc->sb_flags & SB_RDONLY;
->  	if (new_rdonly != sb_rdonly(sb)) {
->  		if (new_rdonly) {
-> @@ -708,6 +712,12 @@ static int exfat_reconfigure(struct fs_context *fc)
->  				return ret;
->  		}
->  	}
-> +
-> +	/* allow to change these options but ignore others */
-> +	sbi->options.fs_fmask = new_opts->fs_fmask;
-> +	sbi->options.fs_dmask = new_opts->fs_dmask;
-> +	sbi->options.allow_utime = new_opts->allow_utime;
-> +	sbi->options.errors = new_opts->errors;
-Is there any reason why you allow a few options on remount ?
->  	return 0;
->  }
-> 
-> @@ -726,17 +736,25 @@ static int exfat_init_fs_context(struct fs_context *fc)
->  	if (!sbi)
->  		return -ENOMEM;
-> 
-> -	mutex_init(&sbi->s_lock);
-> -	ratelimit_state_init(&sbi->ratelimit, DEFAULT_RATELIMIT_INTERVAL,
-> -			DEFAULT_RATELIMIT_BURST);
-> -
-> -	sbi->options.fs_uid = current_uid();
-> -	sbi->options.fs_gid = current_gid();
-> -	sbi->options.fs_fmask = current->fs->umask;
-> -	sbi->options.fs_dmask = current->fs->umask;
-> -	sbi->options.allow_utime = -1;
-> -	sbi->options.iocharset = exfat_default_iocharset;
-> -	sbi->options.errors = EXFAT_ERRORS_RO;
-> +	if (fc->root) {
-> +		/* reconfiguration */
-> +		memcpy(&sbi->options, &EXFAT_SB(fc->root->d_sb)->options,
-> +			sizeof(struct exfat_mount_options));
-> +		sbi->options.iocharset = exfat_default_iocharset;
-> +	} else {
-> +		mutex_init(&sbi->s_lock);
-> +		ratelimit_state_init(&sbi->ratelimit,
-> +				DEFAULT_RATELIMIT_INTERVAL,
-> +				DEFAULT_RATELIMIT_BURST);
-> +
-> +		sbi->options.fs_uid = current_uid();
-> +		sbi->options.fs_gid = current_gid();
-> +		sbi->options.fs_fmask = current->fs->umask;
-> +		sbi->options.fs_dmask = current->fs->umask;
-> +		sbi->options.allow_utime = -1;
-> +		sbi->options.iocharset = exfat_default_iocharset;
-> +		sbi->options.errors = EXFAT_ERRORS_RO;
-> +	}
-> 
->  	fc->s_fs_info = sbi;
->  	fc->ops = &exfat_context_ops;
-> --
-> 2.17.1
+The PPI interrupts for cortex-a9 were incorrectly specified, fix them.
 
+Fixes: fdfe7f4f9d85 ("ARM: dts: Add Actions Semi S500 and LeMaker Guitar")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+ arch/arm/boot/dts/owl-s500.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
+index 5ceb6cc4451d..1dbe4e8b38ac 100644
+--- a/arch/arm/boot/dts/owl-s500.dtsi
++++ b/arch/arm/boot/dts/owl-s500.dtsi
+@@ -84,21 +84,21 @@ scu: scu@b0020000 {
+ 		global_timer: timer@b0020200 {
+ 			compatible = "arm,cortex-a9-global-timer";
+ 			reg = <0xb0020200 0x100>;
+-			interrupts = <GIC_PPI 0 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
+ 		twd_timer: timer@b0020600 {
+ 			compatible = "arm,cortex-a9-twd-timer";
+ 			reg = <0xb0020600 0x20>;
+-			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
+ 		twd_wdt: wdt@b0020620 {
+ 			compatible = "arm,cortex-a9-twd-wdt";
+ 			reg = <0xb0020620 0xe0>;
+-			interrupts = <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.27.0
 
