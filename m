@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3CB1F8BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2D71F8BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 02:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgFOATS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Jun 2020 20:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        id S1728124AbgFOATa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Jun 2020 20:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgFOATR (ORCPT
+        with ESMTP id S1728079AbgFOATR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Jun 2020 20:19:17 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE006C03E97C;
-        Sun, 14 Jun 2020 17:19:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id w16so14992771ejj.5;
-        Sun, 14 Jun 2020 17:19:15 -0700 (PDT)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67657C08C5C2;
+        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id gl26so15498545ejb.11;
+        Sun, 14 Jun 2020 17:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MvzWh7ntbR4YRbqL0fe9yC8lYGPLWjK+zEaU00Ka2r8=;
-        b=Dsx35gnZaujqVzCZYcBcsEMwZg6EZ+YwfF4LxfsNM7x7XjIirvjzuJeF4rXun60Wea
-         nJCkJECJCW/wID032A4zW1QJDWJwoht6JTeOS566f1MYjOYgH1a9PhcUzgUhxZ12Ij72
-         Qo2uRuNE6WmN9jvXoBw/1qTMbSwIQk2ycoyDJ6EGSTQu4N4mu3mpn9AfF/sQFqSLLlXi
-         91ufNKlQm/WLOUB3pU1l8HCOOCCurnuNcxKqcm3kKh2FXNC+qajm0o3UlttL4PmFGGVe
-         wVv8lG65IXTMAXIqicPB/2ww3ztT4ExYEQhBRTnpKfBiDi8sU/9j6hIY3VIGZpduunUc
-         fPbQ==
+        bh=79mtyeZRq2M0mbofzOHg0zNB78sTVjll89dsFzzw1/A=;
+        b=NHpYiO0pJV/aIO/FAwrExUQ0w2HuXfi6XgL9WspR+elldDdqxgXm2xWfHM8w6/vb6Q
+         7FJu91sbuk7hjeb0I3TzkkOJz+KUJ0GDpJvVngCm/D3UNV2DaKq6d+vAV6XSU0r5NmgM
+         7hYbFtX57qXclSH2Qs3KF/6BtS/RQ687VLqZ8yOnMpJ67YMPN78A/bXYzYOlaJ5SL5cP
+         KVsp5uyUC6wPgFf9kCAVQOHfZWq+lJXpfnd5yxUuTe/ULJKpvdVf446HbXeWYpQRRKMZ
+         aaxrjXBbjF58XPeweVCjESM6LDz8rKExO24nwH9H6uHP7PhyiS8gz1jjg9z2RPz9Bghx
+         goMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MvzWh7ntbR4YRbqL0fe9yC8lYGPLWjK+zEaU00Ka2r8=;
-        b=auGO3r+ObU8BytAcNBUMZmMLoVxLNIbzgPXxKSuxpczFv88qyR2oIKRS1EtJvLCqS3
-         XvQC99S0BY/+u2H3vcdaHWE8ha9pgS/GQGNAVhdT4eJLb1JRgyyVQ1fufVOkDPJuD/aH
-         veujmbJTPzxbFuw/5MYaB+8NxK3eAreLbPIKjn9CSODAz1E5dBgYepp6jXV0eAnh/HUi
-         E8hGvv8cWYgSSasFwRdq1XqXvEnyy7EetcI9GUKMMreyB8+9n+bJr2zBVnpaxnLrOy4N
-         rTiQuZ+2cO4yqAwvcIR+E+mIOcfxUVH75/XYaJAtPbfwD8jBM2JICNM7gNO39w9aWbD2
-         0yzA==
-X-Gm-Message-State: AOAM530iq7+NI4zjkTiTmeH0U4d5rEPK5geS21EW2bd5RCx8SEwKyHTi
-        /eA8c1LjVRykdLyMdLOrurk=
-X-Google-Smtp-Source: ABdhPJx5007V+Ypg/0tr5muHgQdWqqtP0DrVPuv+f2ljVFZFffy3YiMODLTWU4xmt3Zw4+ZrpzFUtw==
-X-Received: by 2002:a17:906:11ca:: with SMTP id o10mr17214791eja.334.1592180354581;
-        Sun, 14 Jun 2020 17:19:14 -0700 (PDT)
+        bh=79mtyeZRq2M0mbofzOHg0zNB78sTVjll89dsFzzw1/A=;
+        b=Pn/C5h4dgNMGMX6EWR0fEpILSyEY/AYFOByfGK0xVcY3RknOG9k1XS2LsiAAx+CKLD
+         eFudfZtBlF25QO+SBClmzw246eFIZvkNnmmh0iWtGBINXTSahYGpR18T27mddoPxyPV9
+         dZnxYEi3KckbtJf1JmH5UmRCw1HE20FslezaeUlULFn6jMLuwYktj7GAy3jpH9Lb0b6s
+         m8odTbyIQ97uwzXTu92qL7Umb0emU+3T5UPIVo2EMZ0x9W2r5cGgl14+KFMTLVm37VHJ
+         m0tmrUO30+/huscrLU6WF+lnrUhj/k17BI6KzovcZmn7HUABvvbxId0JKKLFz6gUEKo9
+         zmWw==
+X-Gm-Message-State: AOAM53016Wl2w8+zST2M4qjQQx4ljAzlDK7cb3+T8tRgNapdLtpn0Bk2
+        7PBsM/0rmyBcpP4ebyuyAUg=
+X-Google-Smtp-Source: ABdhPJyWxRtGqOVWJHbPHm8CKtWRtRgzWemc3OYy+Bd9RL/zDPoXbrCJYveSipGIWh3fX1pGc90CQw==
+X-Received: by 2002:a17:906:5283:: with SMTP id c3mr21898256ejm.22.1592180356065;
+        Sun, 14 Jun 2020 17:19:16 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id m30sm7450666eda.16.2020.06.14.17.19.13
+        by smtp.gmail.com with ESMTPSA id m30sm7450666eda.16.2020.06.14.17.19.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 17:19:14 -0700 (PDT)
+        Sun, 14 Jun 2020 17:19:15 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] dt-bindings: Add vendor prefix for RoseapplePi.org
-Date:   Mon, 15 Jun 2020 03:19:09 +0300
-Message-Id: <b34021779d95a4185a15118e2f13be90f5c4286f.1592123160.git.cristian.ciocaltea@gmail.com>
+To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] dt-bindings: arm: actions: Document RoseapplePi
+Date:   Mon, 15 Jun 2020 03:19:10 +0300
+Message-Id: <40f7d54f9502f0d33f2dcf18b02c6de0d55d2ecb.1592123160.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592123160.git.cristian.ciocaltea@gmail.com>
@@ -64,27 +67,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree vendor prefix for RoseapplePi.org Foundation.
-Website: http://roseapplepi.org/
+Define compatible strings for RoseapplePi, a SBC manufactured
+in Taiwan, based on Actions Semi S500 reference design.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/actions.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index d3891386d671..e58dbe719fcd 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -864,6 +864,8 @@ patternProperties:
-     description: Ronbo Electronics
-   "^roofull,.*":
-     description: Shenzhen Roofull Technology Co, Ltd
-+  "^roseapplepi,.*":
-+    description: RoseapplePi.org
-   "^samsung,.*":
-     description: Samsung Semiconductor
-   "^samtec,.*":
+diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
+index ace3fdaa8396..787cd1b4f26c 100644
+--- a/Documentation/devicetree/bindings/arm/actions.yaml
++++ b/Documentation/devicetree/bindings/arm/actions.yaml
+@@ -18,6 +18,7 @@ properties:
+           - enum:
+               - allo,sparky # Allo.com Sparky
+               - cubietech,cubieboard6 # Cubietech CubieBoard6
++              - roseapplepi,roseapplepi # RoseapplePi.org RoseapplePi
+           - const: actions,s500
+       - items:
+           - enum:
 -- 
 2.27.0
 
