@@ -2,129 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6BB1F95D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A9E1F95D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgFOMBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:01:11 -0400
-Received: from mail-eopbgr80054.outbound.protection.outlook.com ([40.107.8.54]:18182
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729787AbgFOMBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:01:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m7bxfFQ6mJOqEtFJcZTPFYgRxK1bpK7aIh8pWHx1TCbKE8vOo4MrWWoP9kXhjGOp9CUq5xV1UMEcJxltw8R7IxFEb8oFRWx0D0puw8MqxQ03KLPQl6WQv4qIFCfMCicxhIA39wB6RQk472bwgCrve7J5PL5DtBVIhNOfkVy9T4yuJuIKniw/rHP+5M9w2VIp9miytNC2auDvzPvJCGahMZz/xN65fyGGybGfNMGfWmZQ8hTUvkHr9RiSe8Tt3UafETapLqcN/Y/tWIx2xLPRjJffoOA5Bt9QMVIu2c4EXc7qnQFFUSAe5y7F1o8hJZA7GU90EBeoQUkBekSsnF2OhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F3Yf5utQw3QcyZtnfxkbrJv1MWgqFnzFMVoguWS9B6I=;
- b=YqgyRc75zbnpRTdbD3qeTBjtiIwdOoAOQkUWZ/Nc1PPvh9/un3JHD6OV3FjPopv45efUbFmQUQ6/FOXIPPFMm2LMHq64HfnVFmu0Mxs3vbhLDSVCYg+LrXeBaDiia9+74+6mMRNDYzGjKTiHW+CNL1YPqiPDkWEUu52uHQdkI2eudw3vsL+v2JW+UetQwLpAgwb3POZRcdnSXeEjeH9zhtsPTRX8dUPUSQhPDG8joN2UkB4lHGSuhaXcqDG01cKkW0m+sUUfw/rHVPJePaJhhYZ4vp/vCoMJ8AWb8Jo5XGATRkev6PdVIbWSpjH8rGlXP0OdjuApFvMD+naNFN5h5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 193.240.239.45) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
- header.from=diasemi.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F3Yf5utQw3QcyZtnfxkbrJv1MWgqFnzFMVoguWS9B6I=;
- b=HgSEGdz0E5NZK3N1SGEc8vBtTxOX1Z1XHKKtfg53guQCNnYrdNgx/Rcy7gM4bqComW+69mugZqM+UnMmTVA15Pyj7XNHSLJQpDhmiEAABfMISB3D8U8OpQNg8VPBC1dbd1QHPSwlNKE420HgRa6Dm+YZe3rTLpROh/+Y7bVENZA=
-Received: from AM6PR0202CA0066.eurprd02.prod.outlook.com
- (2603:10a6:20b:3a::43) by AM0PR10MB2385.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:da::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.26; Mon, 15 Jun
- 2020 12:01:00 +0000
-Received: from HE1EUR02FT005.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:3a:cafe::9e) by AM6PR0202CA0066.outlook.office365.com
- (2603:10a6:20b:3a::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18 via Frontend
- Transport; Mon, 15 Jun 2020 12:01:00 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 193.240.239.45) smtp.mailfrom=diasemi.com; linuxfoundation.org; dkim=none
- (message not signed) header.d=none;linuxfoundation.org; dmarc=fail
- action=none header.from=diasemi.com;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- diasemi.com discourages use of 193.240.239.45 as permitted sender)
-Received: from mailrelay1.diasemi.com (193.240.239.45) by
- HE1EUR02FT005.mail.protection.outlook.com (10.152.10.99) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3088.22 via Frontend Transport; Mon, 15 Jun 2020 12:01:00 +0000
-Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
- NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Mon, 15 Jun 2020 14:00:57 +0200
-Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
- 8C77C13F671; Mon, 15 Jun 2020 21:00:56 +0900 (KST)
-Message-ID: <cover.1592221223.git.Roy.Im@diasemi.com>
-From:   Roy Im <roy.im.opensource@diasemi.com>
-Date:   Mon, 15 Jun 2020 20:40:23 +0900
-Subject: [RESEND PATCH V13 0/3]  da7280: haptic driver submission
-To:     "David S. Miller" <davem@davemloft.net>,
-        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     Support Opensource <support.opensource@diasemi.com>,
-        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+        id S1729781AbgFOMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:00:56 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4527 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728510AbgFOMA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:00:56 -0400
+IronPort-SDR: Qr38OtK4M26sUY6SS3kscwbcowEk4NMAX1hJX/8kzhqfAu+0Zz90K7m1HZ8wfpIVfMMOiEUW1g
+ 03tvGy43c/VQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 05:00:55 -0700
+IronPort-SDR: eYLi5bV9Ncyhml927KcHlApGl4DBc1d8oJYSKsCOkxPAifk3KYl+Q5Hr88CbKJJVuPaiusdqo4
+ B4fkKqG2vZkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
+   d="scan'208";a="316887372"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Jun 2020 05:00:51 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jknnJ-00DZ39-KG; Mon, 15 Jun 2020 15:00:53 +0300
+Date:   Mon, 15 Jun 2020 15:00:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rjw@rjwysocki.net, bp@alien8.de,
+        james.morse@arm.com, lenb@kernel.org, tony.luck@intel.com,
+        dan.carpenter@oracle.com, zhangliguang@linux.alibaba.com,
+        wangkefeng.wang@huawei.com, jroedel@suse.de,
+        yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+        tanxiaofei@huawei.com
+Subject: Re: [PATCH v9 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe
+ controller errors
+Message-ID: <20200615120053.GZ2428291@smile.fi.intel.com>
+References: <20200615101552.802-3-shiju.jose@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(396003)(39850400004)(46966005)(478600001)(7416002)(186003)(26005)(4744005)(70206006)(70586007)(36756003)(2906002)(5660300002)(6666004)(42186006)(6266002)(4326008)(82740400003)(33310700002)(82310400002)(8936002)(356005)(110136005)(86362001)(2616005)(336012)(8676002)(36906005)(316002)(81166007)(426003)(54906003)(47076004)(83380400001)(921003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73616045-8eb1-461f-48fe-08d81123c564
-X-MS-TrafficTypeDiagnostic: AM0PR10MB2385:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB238547CC1A0B557942651741A29C0@AM0PR10MB2385.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 04359FAD81
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: em725tbdaFM4KyEJ8UaVsDASnhGJBReiAvn0s0nE8Yg0jiv59LUo4zlyOIygO0x7bTdG1sBsL9e/A5oN8TcQ7HxB9nJju5qbY1FcDCiTdvJE4Vv2KBkNuRKfkXDMAZGPMcwp6RyQcmzpzT+zALKxWTBki/ZSJjYxqPMYHxWtghTfNOytMNRLt5Aag3iVNyGZfmRacDOTaxa1fSY4VjwxRo06p858CEfW5mqFFEW6Fy3iExSwFRifGnAu/7ax9aVnyx4m2b6E6R7ec3vJdqEwDfYJAq5b/CavnKzUT7+rm7iybYqpq6qGchQYdcMwVfSHJYmL6NEgicW4n6Iae9ArBJQECZtM23G9iiXDxyU+tJs3UP5RTS4yr4B+3+xlY0ow58Uxb4CRsTQCmqQXLnfBg0PyqYA9UpBfB47B3Zldm6hkB9zuQilbXTEm4y1ETlAi
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2020 12:01:00.3247
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73616045-8eb1-461f-48fe-08d81123c564
-X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2385
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615101552.802-3-shiju.jose@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for the Dialog DA7280 Haptic driver IC.
+On Mon, Jun 15, 2020 at 11:15:52AM +0100, Shiju Jose wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> The HiSilicon HIP PCIe controller is capable of handling errors
+> on root port and perform port reset separately at each root port.
+> 
+> Add error handling driver for HIP PCIe controller to log
+> and report recoverable errors. Perform root port reset and restore
+> link status after the recovery.
+> 
+> Following are some of the PCIe controller's recoverable errors
+> 1. completion transmission timeout error.
+> 2. CRS retry counter over the threshold error.
+> 3. ECC 2 bit errors
+> 4. AXI bresponse/rresponse errors etc.
+> 
+> The driver placed in the drivers/pci/controller/ because the
+> HIP PCIe controller does not use DWC ip.
 
-In this patch set the following is provided:
+...
 
-[PATCH V13 1/3] MAINTAINERS file update for DA7280
-[PATCH V13 2/3] DA7280 DT Binding
-[PATCH V13 3/3] DA7280 Driver
+> +#include <linux/acpi.h>
+> +#include <acpi/ghes.h>
 
-This patch applies against linux-mainline and v5.7
+bits.h ?
 
-Thank you,
-Roy Im, Dialog Semiconductor Ltd.
+> +#include <linux/delay.h>
+> +#include <linux/pci.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/kfifo.h>
+> +#include <linux/spinlock.h>
 
-Roy Im (3):
-  MAINTAINERS: da7280 updates to the Dialog Semiconductor search terms
-  dt-bindings: input: Add document bindings for DA7280
-  Input: new da7280 haptic driver
+...
 
- .../devicetree/bindings/input/dlg,da7280.txt       |  109 ++
- MAINTAINERS                                        |    2 +
- drivers/input/misc/Kconfig                         |   13 +
- drivers/input/misc/Makefile                        |    1 +
- drivers/input/misc/da7280.c                        | 1898 ++++++++++++++++++++
- 5 files changed, 2023 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
- create mode 100644 drivers/input/misc/da7280.c
+> +static guid_t hisi_pcie_sec_type = GUID_INIT(0xB2889FC9, 0xE7D7, 0x4F9D,
+> +			0xA8, 0x67, 0xAF, 0x42, 0xE9, 0x8B, 0xE7, 0x72);
+
+Can we have it in more common pattern, i.e.
+
+static guid_t hisi_pcie_sec_type =
+	GUID_INIT(0xB2889FC9, 0xE7D7, 0x4F9D,
+		  0xA8, 0x67, 0xAF, 0x42, 0xE9, 0x8B, 0xE7, 0x72);
+?
+
+...
+
+> +#define HISI_PCIE_CORE_PORT_ID(v)        (((v) % 8) << 1)
+
+% -> & ?
+
+...
+
+> +struct hisi_pcie_error_private {
+> +	struct notifier_block	nb;
+> +	struct platform_device	*pdev;
+
+Do you really need platform device? Isn't struct device * enough?
+
+> +};
+
+...
+
+> +static char *hisi_pcie_sub_module_name(u8 id)
+> +{
+> +	switch (id) {
+> +	case HISI_PCIE_SUB_MODULE_ID_AP: return "AP Layer";
+> +	case HISI_PCIE_SUB_MODULE_ID_TL: return "TL Layer";
+> +	case HISI_PCIE_SUB_MODULE_ID_MAC: return "MAC Layer";
+> +	case HISI_PCIE_SUB_MODULE_ID_DL: return "DL Layer";
+> +	case HISI_PCIE_SUB_MODULE_ID_SDI: return "SDI Layer";
+> +	}
+
+match_string() ?
+
+> +	return "unknown";
+
+> +}
+> +
+> +static char *hisi_pcie_error_severity(u8 err_sev)
+> +{
+> +	switch (err_sev) {
+> +	case HISI_ERR_SEV_RECOVERABLE: return "recoverable";
+> +	case HISI_ERR_SEV_FATAL: return "fatal";
+> +	case HISI_ERR_SEV_CORRECTED: return "corrected";
+> +	case HISI_ERR_SEV_NONE: return "none";
+> +	}
+
+Ditto?
+
+> +	return "unknown";
+> +}
+
+...
+
+> +	pdev = pci_get_domain_bus_and_slot(domain, busnr, devfn);
+> +	if (!pdev) {
+
+> +		dev_info(device, "Fail to get root port %04x:%02x:%02x.%d device\n",
+> +			 domain, busnr, PCI_SLOT(devfn), PCI_FUNC(devfn));
+
+pci_info() ?
+
+> +		return -ENODEV;
+> +	}
+
+...
+
+> +	/*
+> +	 * The initialization time of subordinate devices after
+> +	 * hot reset is no more than 1s, which is required by
+> +	 * the PCI spec v5.0 sec 6.6.1. The time will shorten
+> +	 * if Readiness Notifications mechanisms are used. But
+> +	 * wait 1s here to adapt any conditions.
+> +	 */
+> +	ssleep(1UL);
+
+It's a huge time out... Can we reduce it somehow?
+
+...
+
+> +	for (i = 0; i < HISI_PCIE_ERR_MISC_REGS; i++) {
+> +		if (edata->val_bits &
+> +				BIT_ULL(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+
+for_each_set_bit() ?
+
+> +			dev_info(dev,
+> +				 "ERR_MISC_%d = 0x%x\n", i, edata->err_misc[i]);
+> +	}
+
+> +
+> +	/* Recovery for the PCIe controller errors */
+> +	if (edata->err_severity == HISI_ERR_SEV_RECOVERABLE) {
+
+Perhaps negative conditional?
+
+> +		/* try reset PCI port for the error recovery */
+> +		rc = hisi_pcie_port_do_recovery(pdev, edata->socket_id,
+> +			HISI_PCIE_PORT_ID(edata->core_id, edata->port_id));
+> +		if (rc) {
+> +			dev_info(dev, "fail to do hisi pcie port reset\n");
+
+> +			return;
+
+redundant.
+
+> +		}
+> +	}
+
+...
+
+> +	const struct hisi_pcie_error_data *error_data =
+> +				acpi_hest_get_payload(gdata);
+
+One line is better to read.
+
+> +	struct platform_device *pdev = priv->pdev;
+
+> +	hisi_pcie_handle_error(pdev, error_data);
+
+And how exactly _platform_ device pointer is being used?
+
+...
+
+
+> +		dev_err(&pdev->dev, "%s : ghes_register_event_notifier fail\n",
+> +			__func__);
+
+Make error message more descriptive that __func__ will not be needed.
+
+...
+
+> +	kfree(priv);
+
+Double free?
+
+...
+
+> +static const struct acpi_device_id hisi_pcie_acpi_match[] = {
+> +	{ "HISI0361", 0 },
+
+', 0' part is not necessary to have.
+
+> +	{ }
+> +};
 
 -- 
-end-of-patch for RESEND PATCH V13
+With Best Regards,
+Andy Shevchenko
+
 
