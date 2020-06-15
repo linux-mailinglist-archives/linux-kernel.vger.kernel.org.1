@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE45D1F91D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60AC1F91DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgFOImE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:42:04 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33485 "EHLO
+        id S1729332AbgFOImQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:42:16 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56163 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729287AbgFOImA (ORCPT
+        by vger.kernel.org with ESMTP id S1729292AbgFOImB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:42:00 -0400
+        Mon, 15 Jun 2020 04:42:01 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D75EF58014B;
-        Mon, 15 Jun 2020 04:41:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 15 Jun 2020 04:41:58 -0400
+        by mailnew.nyi.internal (Postfix) with ESMTP id 69BAE580151;
+        Mon, 15 Jun 2020 04:42:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 15 Jun 2020 04:42:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=5Q64h3nd5fpXR
-        ewbNUIi82j+4VyFATnX0AmrGckBfgA=; b=nphvUawdr9fQk8Eoidf4kh/P0MIM+
-        ay72WSUni6+nAFO94+uqON8E2w+3hOqEocvaetWdk/mu0HfiIkyE/pDS20IAruHa
-        6hHt7A0bBTYPdCATqEaMEtsTYN3r5IiiqTutO03l8DKFcoXK4nDIpOfeaVQ737HN
-        Vo/PB9odX0D5GgLBdBdrLowo+QL6BGDYh3uT7FF/mEYGXip9CK1+FSOysnKZHwRi
-        5JUTdKu3m31OZhdTdubNtolNe7p5qy9n+dxImIf/pGVVAyUEqLyJ80gvU9n8o9nv
-        L7QmI8aF1fXBMg6ge0l79Uc62ynfVwIpn/sTmPzub5e3tisDXMEyiGGVw==
+        :mime-version:content-transfer-encoding; s=fm3; bh=gnlr+Pk8xA6Pc
+        FY6qSNBIheVgCOOISk87u1kUFkHHzk=; b=IhM8tywD/G8Ae84RkeS2W9SEeLtKc
+        s2ICt03/3ZfQBpWO7kvpH/ujR+1NP3Q98haqYzijb6x3qavqoEMJueK2ACAgNrOP
+        tKdH4eTHghh9fO9KNRTIXZ0vlodmTF90MB1hJ/Jdteurz77AId0yS4Jfa2boT9RI
+        7Gs10GCSqoe6YBQv9/8y5xNVRrWs16snDn05P80QnVmjHs2xK9cLFL+uPnWSmWzr
+        FaquJyX0fU6KwTj6V5h1NX6Sg2AHGhWbrzbD6tGTPa4dJa4IwtqSKE73/U8gt+B+
+        OX1RFLQdJ8Qu1VbNam/wYk8lmJ1rTJxifQHOfxzIjQLnQSVZPyMuQ9rVQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=5Q64h3nd5fpXRewbNUIi82j+4VyFATnX0AmrGckBfgA=; b=e4+Xotui
-        /LAdlLtyPh4/EExIiOcb7u+iyNum7h3q1TGc8B1o9JU/GczPM/cxwhdJ6Qp70iYX
-        1v5XYjMcl78cYxYLg3Gf1ZSTcuV+BmoqgtGasXwKpbd9qbNzIZPbpikIeFfamKtZ
-        9Sg1SuUmsgzgquXXh6IJDwfdbewrQ3aUfS1WjYrJEDUMm4MKFMs2JqITVajoE76a
-        hT5C5Fl7XXRNundbu5S0ygrOo/F6G/Xy893YyQUeK/x1tehcoV7t2WmSHOGpNFtI
-        QgJDx51KcuIK8skYXEJbsyoWTyom5F59LnWtd2WbnzXKMoOd+oteBaqvIpvkpZLG
-        viXO5FUCLHzR4Q==
-X-ME-Sender: <xms:VjTnXlugfohHkjZltC4WHkjNyFeaSSzCE8R7Zxk8wHwXVJ0kYheu1Q>
+        fm3; bh=gnlr+Pk8xA6PcFY6qSNBIheVgCOOISk87u1kUFkHHzk=; b=HlRKy6y6
+        i0lkCFlWFYcHkX/w/Ho7g52rf0OdH1A4HH1vFcnT5VNWmhkAiaw4uQKjiQYWblgD
+        izx1J1c+aWpsi3HZR15ZvTSrzH/7jraJhf+VHCABlYNCxKwB+ah2hka3mA5VwQsf
+        +Uy7L5T6alJOP1p8yyz9ixXKXGYnHSznUldWS80r9TXDGUwmDq1erkkShzc16ZFB
+        rbAkiIEziEpZGOi1RmAFlSWoQObF9LEjpu78QsprDSjGn8bpKslp0V0CDPMccrme
+        6zXXmUlwA3bvQMZ1/GOT8dY/C56lZXxhk1SyfHc/vrPgBvqZQxX+qrlNov94njDl
+        0D+QjEGcPrfiJw==
+X-ME-Sender: <xms:WDTnXuc5BNLREWvz0qmjJpM6f6Dixh7a1JI7K8kLkW0YhSnEE7SuSg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeikedgtdeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -46,13 +46,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeikedgtdeiucetufdoteggod
     htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
     hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepvddune
     curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:VjTnXuck1uc4dvkhZRVQvzYuDd5uWGngH3oiRDakWpTC9r-ydaD6SQ>
-    <xmx:VjTnXoyYqWnm-eX1RL70GN0_7jbOy1O3AY7BQ3d9nJkJT6WIu7FerA>
-    <xmx:VjTnXsMnN6qN48iddDVUIV9Zm1V7I-ekCZrYyK8aeFtfDGHhAZJyUQ>
-    <xmx:VjTnXka_wecngaQYHKq8ArXktGiM-3M1ExLG_4c3A23Bxah_A94vwA>
+X-ME-Proxy: <xmx:WDTnXoNNvDJTLwWBVjhDXOjy2LXbwqmaBwe6JTmDnZN_SxDCwlVvfA>
+    <xmx:WDTnXvgK9c0UF5R1yiw1GoR-a4_YYpwtrGVCENclRuj5l5Y9MPYIQw>
+    <xmx:WDTnXr_ns0rBl70qwiweV2ro0Cwa9zMaRTUMGDybXJRPQstLF8QiLw>
+    <xmx:WDTnXkJ2Hh_iPKRGeEG9zpk4gVgY-nh4RQaIR1Jcz9HslxyyljcnrQ>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6D5D73280064;
-        Mon, 15 Jun 2020 04:41:58 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 06A883061DC5;
+        Mon, 15 Jun 2020 04:41:59 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Cc:     linux-rpi-kernel@lists.infradead.org,
@@ -65,9 +65,9 @@ Cc:     linux-rpi-kernel@lists.infradead.org,
         Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH v5 24/27] ARM: dts: bcm2711: Add firmware clocks node
-Date:   Mon, 15 Jun 2020 10:41:04 +0200
-Message-Id: <9a6f113140b3115150bfb18ecb248a48d58562cf.1592210452.git-series.maxime@cerno.tech>
+Subject: [PATCH v5 25/27] clk: bcm2835: Allow custom CCF flags for the PLLs
+Date:   Mon, 15 Jun 2020 10:41:05 +0200
+Message-Id: <ae8bd505d8851f6646e244cd76b6b289346973c8.1592210452.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
 References: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
@@ -78,30 +78,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a clock driver for the clocks exposed by the firmware,
-let's add the device tree nodes for it.
+While some clock types allow for each clock to specify its own custom
+flags, the PLLs can't. We will need this for the PLLB, so let's add it.
 
+Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/clk/bcm/clk-bcm2835.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-index c7f1d97e69bb..222d7825e1ab 100644
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -69,6 +69,11 @@
- };
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 32f5c13be9d1..b50f00f109bf 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -421,6 +421,7 @@ struct bcm2835_pll_data {
+ 	u32 reference_enable_mask;
+ 	/* Bit in CM_LOCK to indicate when the PLL has locked. */
+ 	u32 lock_mask;
++	u32 flags;
  
- &firmware {
-+	firmware_clocks: clocks {
-+		compatible = "raspberrypi,firmware-clocks";
-+		#clock-cells = <1>;
-+	};
-+
- 	expgpio: gpio {
- 		compatible = "raspberrypi,firmware-gpio";
- 		gpio-controller;
+ 	const struct bcm2835_pll_ana_bits *ana;
+ 
+@@ -1310,7 +1311,7 @@ static struct clk_hw *bcm2835_register_pll(struct bcm2835_cprman *cprman,
+ 	init.num_parents = 1;
+ 	init.name = pll_data->name;
+ 	init.ops = &bcm2835_pll_clk_ops;
+-	init.flags = CLK_IGNORE_UNUSED;
++	init.flags = pll_data->flags | CLK_IGNORE_UNUSED;
+ 
+ 	pll = kzalloc(sizeof(*pll), GFP_KERNEL);
+ 	if (!pll)
 -- 
 git-series 0.9.1
