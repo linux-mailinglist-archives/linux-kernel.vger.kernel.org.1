@@ -2,227 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2051F9DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A941F9DD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730853AbgFOQsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:48:37 -0400
-Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:47374
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730135AbgFOQsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:48:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/XII8QcwjX2ZlQ/t/6zDZoPb+Foy1EiQBkIIF6r14xA=;
- b=icsSOJgWIEWLupJFgnLyKilLNax3OdLpU1p5auD39TlCyw21vAxzriys7ZctqphQWFFIU3pszcyOHN+r7KvleJmVe5CnZdwhbjqQyec4VIsbgLeqLTpRu1wegcEWVfFTOYZJTc+9433ZzRvcSIWrcMtqV65FPmPT9aZKHkfkkjY=
-Received: from AM5PR0502CA0001.eurprd05.prod.outlook.com
- (2603:10a6:203:91::11) by HE1PR0801MB1673.eurprd08.prod.outlook.com
- (2603:10a6:3:86::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Mon, 15 Jun
- 2020 16:48:31 +0000
-Received: from VE1EUR03FT055.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:203:91:cafe::b7) by AM5PR0502CA0001.outlook.office365.com
- (2603:10a6:203:91::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18 via Frontend
- Transport; Mon, 15 Jun 2020 16:48:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=bestguesspass
- action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- VE1EUR03FT055.mail.protection.outlook.com (10.152.19.158) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3088.18 via Frontend Transport; Mon, 15 Jun 2020 16:48:30 +0000
-Received: ("Tessian outbound 299e58e1e4d2:v59"); Mon, 15 Jun 2020 16:48:30 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: e940e49eeb63e485
-X-CR-MTA-TID: 64aa7808
-Received: from 62014d520eec.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id A11F0873-122C-4234-A956-4402A4DF4A7A.1;
-        Mon, 15 Jun 2020 16:48:24 +0000
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 62014d520eec.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Mon, 15 Jun 2020 16:48:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g+M3vjmSh3JGbQdjvwnA8/4XzNlAHQTzM3pfonHc3Cuxa2KdHaHaR7BK6mybuKWWeiOC7hVDd+24Pw2b3w+fXyIy6h189pu00ELdJmOMiEEKFGM0dk7iUKDzy/VP4Nv02Jzohnt1XgU9FiStufH/+fZ0QcMHRbmwiLuyfZJEdNgyAQSyrOY2fhIamapWFb0w27B4r9xm082/C+VyGHUnBmQ39rHWLBRatixs49oeuwQVwtUuBEYc5FYgPYr9R7bey1Jd3nz4De4p4zWi/nL1//63era+QGjB3K5MNDMervKYvxUDAldp66/7g2/c5uMhA0++D0TewAB/hrkYzsrQNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/XII8QcwjX2ZlQ/t/6zDZoPb+Foy1EiQBkIIF6r14xA=;
- b=WHBJM6wnWtygWivSbE4C+iBwD52LS+cvZpilg2gaLDBR655lPXBxBYfp+FO1evnoL5fJ2nm5A1v/B8sjnDUduZPq7Ty84i4kH+qzp7NQNcDksqam1SlOOh/18t+4Fz3Jl7ms83qgp/5L9OiAQsk0PPt3pEdLU6HTT7vVVTCiVcvgZer0I1DHETVm/Ak9TYb0I0Ivw2G6BJgjT/ghM41GnNEJMC1ZKBkkKiRcSJgCpS/ZtjwEmE5KGVHFNOpjeDZV6HuWFqRXyJ0jGz7UFqfXhT/XUbLHfOTBX54FRBRW+onV0aRV8tFrzCZQDmSAssQz+ilK7bmvvTuiaL7V+xCH7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/XII8QcwjX2ZlQ/t/6zDZoPb+Foy1EiQBkIIF6r14xA=;
- b=icsSOJgWIEWLupJFgnLyKilLNax3OdLpU1p5auD39TlCyw21vAxzriys7ZctqphQWFFIU3pszcyOHN+r7KvleJmVe5CnZdwhbjqQyec4VIsbgLeqLTpRu1wegcEWVfFTOYZJTc+9433ZzRvcSIWrcMtqV65FPmPT9aZKHkfkkjY=
-Authentication-Results-Original: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=arm.com;
-Received: from DB6PR0801MB1861.eurprd08.prod.outlook.com (2603:10a6:4:73::21)
- by DB6PR0801MB2006.eurprd08.prod.outlook.com (2603:10a6:4:79::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.19; Mon, 15 Jun
- 2020 16:48:23 +0000
-Received: from DB6PR0801MB1861.eurprd08.prod.outlook.com
- ([fe80::ac31:e5b9:8aa0:4a33]) by DB6PR0801MB1861.eurprd08.prod.outlook.com
- ([fe80::ac31:e5b9:8aa0:4a33%8]) with mapi id 15.20.3088.029; Mon, 15 Jun 2020
- 16:48:23 +0000
-Date:   Mon, 15 Jun 2020 17:48:14 +0100
-From:   Achin Gupta <achin.gupta@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Sudeep Holla <Sudeep.Holla@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, nd <nd@arm.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: Add ARM PSA FF binding for
- non-secure VM partitions
-Message-ID: <20200615164814.GG46361@C02TC1ARHF1T>
-References: <20200601094512.50509-1-sudeep.holla@arm.com>
- <20200601094512.50509-2-sudeep.holla@arm.com>
- <20200609223551.GA1620273@bogus>
- <20200610074346.GB15939@willie-the-truck>
- <5B3F18A4-5DA4-411E-9E26-7D25DEE3D414@arm.com>
- <20200611171222.GB7725@willie-the-truck>
- <20200615091639.GD46361@C02TC1ARHF1T>
- <20200615095133.GA2477@willie-the-truck>
- <20200615114220.GE46361@C02TC1ARHF1T>
- <20200615115549.GB2694@willie-the-truck>
+        id S1731033AbgFOQt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730135AbgFOQtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:49:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E08C061A0E;
+        Mon, 15 Jun 2020 09:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n620I7g8s0ql3gucyNnlL3uEs5vKKJIkLLIGCJ4euQw=; b=eNhf/BhIvn8pYbemVSAiSjA/JZ
+        iXqySeDGZfIbwf9fT/SY5bBfu7OQRFSYkfS9e4Y0FVCz63AoyHTz+N3CBl5y0NFrsJuccGd8k0Dgy
+        o/Sx3cdSQmjqJVX0JsUcJdQiXsWr7ZucHORRgvzK9dOP/uBpS6DzNmBoR1CzYMO9NC7B8ohmbdsr4
+        n8AvZacMhjTtha924isarfSKWwp+WtWtqo32fj4Imsvrh/sC8aakdJOd64DxWZp7rV1v41pLT+xh7
+        O2ST0Dv0/RHo7KSvxM3ZsxpAfRBp0xOEP54o+Akj7V2GjZfY/+1hog9WluhcM/oQQ9AtMgWWfSdi1
+        KvBi239g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jksIA-0008NW-6G; Mon, 15 Jun 2020 16:49:02 +0000
+Date:   Mon, 15 Jun 2020 09:49:02 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+a9fb1457d720a55d6dc5@syzkaller.appspotmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, allison@lohutok.net,
+        areber@redhat.com, aubrey.li@linux.intel.com,
+        Andrei Vagin <avagin@gmail.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        Christian Brauner <christian@brauner.io>, cyphar@cyphar.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, guro@fb.com,
+        Jeff Layton <jlayton@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>, linmiaohe@huawei.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Ingo Molnar <mingo@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, sargun@sargun.me,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: possible deadlock in send_sigio
+Message-ID: <20200615164902.GV8681@bombadil.infradead.org>
+References: <000000000000760d0705a270ad0c@google.com>
+ <69818a6c-7025-8950-da4b-7fdc065d90d6@redhat.com>
+ <CACT4Y+brpePBoR7EUwPiSvGAgo6bhvpKvLTiCaCfRSadzn6yRw@mail.gmail.com>
+ <88c172af-46df-116e-6f22-b77f98803dcb@redhat.com>
+ <20200611142214.GI2531@hirez.programming.kicks-ass.net>
+ <b405aca6-a3b2-cf11-a482-2b4af1e548bd@redhat.com>
+ <20200611235526.GC94665@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <20200612070101.GA879624@tardis>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615115549.GB2694@willie-the-truck>
-X-ClientProxiedBy: LO2P265CA0380.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a3::32) To DB6PR0801MB1861.eurprd08.prod.outlook.com
- (2603:10a6:4:73::21)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from C02TC1ARHF1T (217.140.99.251) by LO2P265CA0380.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a3::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.19 via Frontend Transport; Mon, 15 Jun 2020 16:48:22 +0000
-X-Originating-IP: [217.140.99.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 496ea29e-090d-4a37-698e-08d8114bef30
-X-MS-TrafficTypeDiagnostic: DB6PR0801MB2006:|HE1PR0801MB1673:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0801MB16732CDE8137C4C668D50BBEFF9C0@HE1PR0801MB1673.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;OLM:9508;
-X-Forefront-PRVS: 04359FAD81
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: MY2/v3GjNX/MjUuOGFJ28Srm6QXkKosJjExPIw5ICSpOh22UDU47JkViNCYwCPX1ztEK5KzoQ49LVc/F5fMYtrlTwSo3nrE8lNfFnIf0Qz+Pt94QwTbnB3HTdtENKmHW+psVDNOuoVNTp+jI0PndpH6a589AMnXX78lBTM2Jr89i8eGy8D+kwne36rHDQA2/8j92XZtYvEfMLlPG/6c4qILO0tF14o37+NxTssXiM3XvXt9dCqXYWEz1CTxzLzgLcEzMO3mHCXr2CY+XxCmLhxTtVAKqQ9AEP9gj/UbtYVfVekfB5kfEW2CP38yeAvd24II9BzS9npq+7UBw928Zbw==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0801MB1861.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(366004)(86362001)(186003)(478600001)(1076003)(16526019)(2906002)(26005)(6496006)(6916009)(52116002)(4326008)(5660300002)(55016002)(33716001)(9686003)(316002)(33656002)(66946007)(66476007)(66556008)(956004)(6666004)(8936002)(83380400001)(54906003)(8676002)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: wykljrHBU1kO+A8BgAQYsLNMyl7CpYvylLOXjgB18t3X2860uCLXYg3t+hjYUoR9950GhtIUc17gna3KI5jGMBwB1WW08tVAd1wbyrp00M7Pse4AUN6Us+vNL1V7F2YoG2PtPplCd4rHuTB+6ifKM/NXzL8G9ZFyBNfwS5qUsiGiesKwntWnfpsCYZk0Eb6cun8JVURfO8PnXhpoBL4RaHqbtmZcP90+fyqchKI8cpRmeNbdskc9or+Wb54J/r8tiNBUvzs1bRu73KqCT/v+DlZT141LAGKmT+JJQhUrz1LwOptbeblHAecNr0WMJZQC+XkTpDHydzLYfgfmIQblyNk2w+ib4cGO8Rmewvz/XZuPtBy1PyZUkwCN+rL3gZbbfnjbf+xTrEmLclKCDCtJSKRz/f8zR07cVfhfyFTHWsMZVlSErCFJ+1k7uUwULKbJGUMmdpLOZGKsM7tsgdOn81yGVbwJVtXQ5746GB9SLoqOTFcBbWSUvKds+YkNhwDC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0801MB2006
-Original-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT055.eop-EUR03.prod.protection.outlook.com
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966005)(5660300002)(6496006)(1076003)(336012)(6862004)(4326008)(450100002)(956004)(6666004)(70206006)(44832011)(70586007)(82310400002)(356005)(2906002)(86362001)(16526019)(33656002)(82740400003)(81166007)(47076004)(36906005)(316002)(55016002)(83380400001)(54906003)(186003)(9686003)(33716001)(26005)(8676002)(478600001)(8936002);DIR:OUT;SFP:1101;
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 9762414e-9c30-4f16-9efc-08d8114bea85
-X-Forefront-PRVS: 04359FAD81
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PqY8TZQEg1DBgwZjQPlnx5Z6KoLQWl4PUfE88voKU+i9suXH1mHfhvT/JPyD4plsB1dOAlJq7l0EwWy+zYgOout092jfo5AIG79ZHgiR3aJMza/Ic80Mon9dNDS85eeaWR8gLLFpNgVjJupDDcZXmvndzywZMzNgVt9ho7IADmTtMNYS7l81eVvWjpeoOP24LnAITQ9G4zWxlIfN6nU0I+nifApzNcix404x7h5MJn3iOeF50mCFAqtQsSfaKwYJj9DcMQCv4SM609J1y2VQASRs6lnhGgCJtExg1Oyzj5JVhl0s/ia3cM0plgv+e4E0YyXVBnn37Ll2Kp3ZZJ+RnD/6QwnufefR947CyyM83wxaUY3v4pJosgp3F7JqY23VVLZ9kaP+dZzMUEJXDYr6KA==
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2020 16:48:30.4602
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 496ea29e-090d-4a37-698e-08d8114bef30
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0801MB1673
+In-Reply-To: <20200612070101.GA879624@tardis>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:55:49PM +0100, Will Deacon wrote:
-> On Mon, Jun 15, 2020 at 12:42:20PM +0100, Achin Gupta wrote:
-> > On Mon, Jun 15, 2020 at 10:51:34AM +0100, Will Deacon wrote:
-> > > On Mon, Jun 15, 2020 at 10:16:39AM +0100, Achin Gupta wrote:
-> > > > Right! FFA_PARTITION_INFO_GET is meant to help the FF-A driver in the kernel to
-> > > > determine partition properties. It assumes that EL2 SW has already read each
-> > > > partition's manifest and will reply to this ABI.
-> > > >
-> > > > IIUC, with protected KVM, this information will have to be a part of the
-> > > > manifest that the KVM host consumes.
-> > >
-> > > The host does not consume the manifest directly -- instead, the bootloader
-> > > will use the manifest to populate these DT nodes. Again, these are *only*
-> > > for non-secure virtual partitions which are to be managed by KVM.
-> >
-> > Yes. Understand and agree. Manifest is an overloaded term. I was using it to
-> > describe the DT nodes that the host will consume.
->
-> Hmm, I think that conflates two things though because only the partitions
-> managed by KVM will have DT nodes.
+On Fri, Jun 12, 2020 at 03:01:01PM +0800, Boqun Feng wrote:
+> On the archs using QUEUED_RWLOCKS, read_lock() is not always a recursive
+> read lock, actually it's only recursive if in_interrupt() is true. So
+> change the annotation accordingly to catch more deadlocks.
 
-Sure. I am realising the need to maintain the distinction :o)
+[...]
 
->
-> > > > Separate topic, protected KVM does not get dibs on the manifest and it relies on
-> > > > the KVM host to specify the address ranges for each partition? Does this not
-> > > > mean that the KVM host can control the physical address space each partition
-> > > > sees. This seems contrary to the isolation guarantees that protected KVM must
-> > > > provide?
-> > >
-> > > The host is trusted during early boot, and gives up this trust after
-> > > initialising EL2 fully. So roughly speaking, we:
-> > >
-> > > 	* Boot at EL2 and install a shim
-> > > 	* Drop down to EL2 and start the host kernel
-> > > 	* Before some initialisation (DT parsing, SMP bringup, etc)
-> > > 	* Init KVM by calling back up to EL2 to install the full hypervisor
-> > >
-> > > At that point, the EL1 host is no longer trusted and the last call
-> > > effectively "locks it out" from EL2.
-> >
-> > Ok. Protected KVM (PKVM) must create S2 tables when asked to setup a partition
-> > by the Host. My main concern is if PKVM must trust the Host to provide the
-> > correct physical address space ranges for a partition?
->
-> Yes, but that all happens as part of KVM initialisation: the host parses
-> the DT nodes and memory reservations, and then passes this information
-> up to EL2.
+> +#ifdef CONFIG_LOCKDEP
+> +/*
+> + * read_lock() is recursive if:
+> + * 1. We force lockdep think this way in selftests or
+> + * 2. The implementation is not queued read/write lock or
+> + * 3. The locker is at an in_interrupt() context.
+> + */
+> +static inline bool read_lock_is_recursive(void)
+> +{
+> +	return force_read_lock_recursive ||
+> +	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
+> +	       in_interrupt();
+> +}
 
-Ok. Good to know this.
+I'm a bit uncomfortable with having the _lockdep_ definition of whether
+a read lock is recursive depend on what the _implementation_ is.
+The locking semantics should be the same, no matter which architecture
+you're running on.  If we rely on read locks being recursive in common
+code then we have a locking bug on architectures which don't use queued
+rwlocks.
 
->
-> > I guess your point is this is not a problem since PKVM can lock the Host out of
-> > those address ranges in any case?
->
-> It has to do this, regardless of how they are probed. Once KVM has
-> initialised, the host will have a stage-2 which limits it to the memory that
-> it is allowed to access.
-
-Agree.
-
->
-> > It is a bit counter intuitive that the Host gets to see and potentially
-> > manipulate information that was verified and extracted by the bootloader from
-> > the partition's manifest. This hapens before PKVM sees the same
-> > information. Can't put my finger on what could go wrong though. Depends upon the
-> > threat model too!
->
-> I think you're trying too hard to separate the host from the EL2 code during
-> early boot. Don't forget -- this is all part of the same binary payload that
-> is loaded and initially run at EL2. Having the host take care of early boot
-> /significantly/ reduces the amount of code at EL2, which has a very
-> clear security benefit.
-
-Fair point!
-
-cheers,
-Achin
-
->
-> Will
+I don't know whether we should just tell the people who aren't using
+queued rwlocks that they have a new requirement or whether we should
+say that read locks are never recursive, but having this inconsistency
+is not a good idea!
