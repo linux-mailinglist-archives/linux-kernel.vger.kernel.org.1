@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AA41F93FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1ED1F940E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgFOJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
+        id S1729582AbgFOJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgFOJzd (ORCPT
+        with ESMTP id S1728369AbgFOJ47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:55:33 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067B7C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:55:32 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id mb16so16748747ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:55:32 -0700 (PDT)
+        Mon, 15 Jun 2020 05:56:59 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8E6C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:56:58 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q25so14181597wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F2y9Crm4EpXrgojd+CYn/r/xzpbyjoctnZnKUBxxPGw=;
-        b=bH52eZn08gxvWDKX63J+WIukX0j2P3n7HyPqonmets/vbXsOXhi81yedn4gWFeKKgc
-         Nd97MdUX3wiXsdSQY3wQdUIPnAluBFWXhcBZ8BAQwlpAWUjchBVrXbGAlWp20KVUVUXY
-         R/uBSQemQsvtwxH9SOV1pTp2yySw61Y07GninWtBfjDu5VIqdDzmfqe2jAhgIzT2Bz1B
-         NRLp3I+nPXlIzSfhf1A1+gXtK0CLD4Q5Z4U/oY6RpQ2lyQkkt0yCU7eU1FiFl5kwZpMC
-         zfXaocuA8lqIJ+rdIQpyAevnwQQC3rmI1YX9RyC/i/QgJ/IyrqlSl9gZkH4Fx+RfDPXN
-         begA==
+        bh=jsEUyoBTDZqiVYB9PCZ1vVhMpPe0f/z8iobsEEaUCw4=;
+        b=hee7HZ6p8is7oxi8Go4xvjyiDZzsY/Q+zce2fLd0aZKNQ4xq9xxZXaeTFvZyTHGx0u
+         We48FXH41ePPSmjgZtYxZYcJb0Uoa/nkYeRcJwhhzBMu/ML0l51V3qHJrUedtxhKHlys
+         107STx4b3Qbby2dqKQ7s734eMiKgDM8Z8rj5YjQBw6JEQtdpwkUCBsRq+MpToxj2hGS5
+         ZRBBucPpuY/Kf7Qps9hGJoxtK4BqnKR6bebmikQszNyf5LMJtRI3AW5e8Yeov2as/M87
+         m01CbnP9fo+lblePdhg+zIrzirypT1fqvxlRcTLiNoxzFTl4p/OkfyAZSC7k7NmGFEKI
+         jR0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=F2y9Crm4EpXrgojd+CYn/r/xzpbyjoctnZnKUBxxPGw=;
-        b=S8hGE/Xx2J5hrrIE1BKuT74B0Dnqe8x04UZOtsJhg2wyZGpZLi6mVOIiMakw+Mi1IX
-         HqfqUcn13QAVWn8yeGgoNYtg1byi7hpqoJ4oW9U3SYtEzBFuBLV2SHCEMI40SeuRteht
-         xxmFTYfXv4PaTK8utVVHwJK2+B0zx2pkgiXszJs731S/XMoKLrqgICTiE3ysX3EMmqxb
-         5jiz97lr/AoTOqwPWQecQGCtZYnSmCSpZXi8eBsEB6Ay/xCyMuwhYDmLELzl7+OcO17r
-         KoC2JRiFzYXiiLP9KpJmp38S+5p2mG7qCtR23f/13g4hkb0tBmgjPa5y/DifAnjGLgO+
-         1rlg==
-X-Gm-Message-State: AOAM530O10ns2ZoU8M+IwpqjL+v3HdQTcbsREm/F2RrqRCvfgIiVNuac
-        dN2O6K/yA4La+P4KjGeT03xwF0UWvgutFw==
-X-Google-Smtp-Source: ABdhPJz6cNXf6sv5+78+bDzU/EfsCLMtxsclb4N1u2KcEBfpSY9J/kaEdBCn6renQCfjvKPO06pKAA==
-X-Received: by 2002:a17:906:d78a:: with SMTP id pj10mr25691244ejb.50.1592214931572;
-        Mon, 15 Jun 2020 02:55:31 -0700 (PDT)
-Received: from [192.168.1.3] (212-5-158-38.ip.btc-net.bg. [212.5.158.38])
-        by smtp.googlemail.com with ESMTPSA id lx26sm8665063ejb.112.2020.06.15.02.55.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 02:55:30 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] venus: Make debug infrastructure more flexible
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200613223919.7038-1-stanimir.varbanov@linaro.org>
- <20200613223919.7038-3-stanimir.varbanov@linaro.org>
- <20200614063710.GB2611869@kroah.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <c54a12a2-7f92-105c-a01c-8e85730f36bb@linaro.org>
-Date:   Mon, 15 Jun 2020 12:55:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        bh=jsEUyoBTDZqiVYB9PCZ1vVhMpPe0f/z8iobsEEaUCw4=;
+        b=bbRso443lbz+sKIX3Os5ubyrqYA51k5pWVftEeEQhXJNvYs8alZ3CVp3qo9jUmPPUa
+         X1PJ0UY1cldpgiDd7jRQfU92nWJ+l2K8fXcn78LjBly+tdH1Mo+g4Kb/VSkeTPVUk288
+         mAsscvTlg7UTwBeggdaju4ul8EuonixY63Ae7809N/9F6+ahk6B0yFJ82a32UUr3ib8W
+         vbYUHbK1S416B4sPbRRMhb9JPJ4NESrXyeI52jtEFBKG5+Aku5IfQlWvBrw4tMvvc9G3
+         UBPZ7Z+CtC9I5e6XfOWjx+dhhdm6dk+aAmlFTAxoL6NYIE3HCRFaqSl1Hx+2Qy/b50ti
+         Z+0g==
+X-Gm-Message-State: AOAM531j1es6B+sVfCUPdp0+sU+NzIimIm7hCrpYaKTkvkTlXmLQZYEg
+        VVf3un5YyPxH8aeqEQN1y2J/vg==
+X-Google-Smtp-Source: ABdhPJxZKKismQou/hvN0RyW10M0LOdtR9H7U0D3onGtbD82lRgrB1A+y0Judglrp+oKwjLU5BgKcw==
+X-Received: by 2002:a1c:4c12:: with SMTP id z18mr12843943wmf.155.1592215017188;
+        Mon, 15 Jun 2020 02:56:57 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id t7sm22347837wrq.41.2020.06.15.02.56.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Jun 2020 02:56:56 -0700 (PDT)
+Subject: Re: [RFC v2 2/3] drivers: nvmem: Add QTI qfprom-efuse support
+To:     Ravi Kumar Bokka <rbokka@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        dhavalp@codeaurora.org, mturney@codeaurora.org,
+        sparate@codeaurora.org, c_rbokka@codeaurora.org,
+        mkurumel@codeaurora.org
+References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org>
+ <1591868882-16553-3-git-send-email-rbokka@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <39ad93ee-236d-0e5e-571a-28ef91173309@linaro.org>
+Date:   Mon, 15 Jun 2020 10:56:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200614063710.GB2611869@kroah.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1591868882-16553-3-git-send-email-rbokka@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,24 +74,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On 6/14/20 9:37 AM, Greg KH wrote:
-> On Sun, Jun 14, 2020 at 01:39:18AM +0300, Stanimir Varbanov wrote:
->>  	if (slot == -1) {
->> -		dev_dbg(inst->core->dev, "%s: no free slot\n", __func__);
->> +		VDBGH("no free slot for timestamp\n");
-> 
-> Again, no, you just lost a lot of valuable information by changing to a
-> different format (like driver, specific device, etc.).  Please don't do
-> this, it just makes the information less than before.
+I think Doug already covered most of the comments and his fixes seems be 
+in right direction.
 
-OK, one of the reasons to use pr_debug inside VDBGH macro is to avoid
-having struct device *dev variable in every function with dev_dbg even
-when the function doesn't use it.
+On 11/06/2020 10:48, Ravi Kumar Bokka wrote:
+> +	qfpraw = platform_get_resource_byname(pdev, IORESOURCE_MEM, "raw");
+> +
+> +	priv->qfpraw = devm_ioremap_resource(dev, qfpraw);
+> +	if (IS_ERR(priv->qfpraw)) {
 
-Are you fine with s/pr_debug/dev_dbg in VDBGX macros?
+General comment for up-streaming is that your patch should not break 
+whats in mainline, Your patch is totally ignoring!! Please be mindful 
+while doing changes to drivers which are used by other platforms.
 
--- 
-regards,
-Stan
+--srini
+> +		ret = PTR_ERR(priv->qfpraw);
+> +		goto err;
+> +	}
+> +
+> +	qfpconf = platform_get_resource_byname(pdev, IORESOURCE_MEM, "conf");
+> +
+> +	priv->qfpconf = devm_ioremap_resource(dev, qfpconf);
+> +	if (IS_ERR(priv->qfpconf)) {
+> +		ret = PTR_ERR(priv->qfpconf);
+> +		goto err;
+> +	}
+> +
+> +	qfpcorrected = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> +						    "corrected");
+> +
+> +	priv->qfpcorrected = devm_ioremap_resource(dev, qfpcorrected);
+> +	if (IS_ERR(priv->qfpcorrected)) {
+> +		ret = PTR_ERR(priv->qfpcorrected);
+> +		goto err;
+> +	}
