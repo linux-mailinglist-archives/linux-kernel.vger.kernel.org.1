@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A411F914F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156AD1F90E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgFOI03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:26:29 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:19322 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgFOI02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:26:28 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49lkv53h6Nz9v03C;
-        Mon, 15 Jun 2020 10:26:25 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id b_rTsqgA_kcz; Mon, 15 Jun 2020 10:26:25 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49lkv23ynTz9v1fZ;
-        Mon, 15 Jun 2020 10:26:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 81B3D8B786;
-        Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id lsX-bHFjEBuH; Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 44F098B791;
-        Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1B25265B0A; Mon, 15 Jun 2020 07:48:25 +0000 (UTC)
-Message-Id: <ca8c9f8249f523b1fab873e67b81b11989d46553.1592207216.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when page size is
- 256k
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Albert Herranz <albert_herranz@yahoo.es>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 15 Jun 2020 07:48:25 +0000 (UTC)
+        id S1728669AbgFOIDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728162AbgFOIDM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:03:12 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9702CC061A0E;
+        Mon, 15 Jun 2020 01:03:12 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id x13so16038657wrv.4;
+        Mon, 15 Jun 2020 01:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vDP7eI93BA6O8vNpenJlTbc7LwUcGedkrTzHRTDYCp0=;
+        b=R0He0pmvK3ON8oQZm76JHE8+ZBhJuGefP3ORNCcxg7vw1Cc/Tgq6pglgsYxeCHt4km
+         nCi7LtwAtxz06fouLKCayAojFytnvkIP/GGKF0FMAKcjz8nB99ImspWqyvM8f7mV4Jdt
+         wzX/m8qGoAFHXCtLfPyu1wYcsE0+NqIP3ehRgaVb3t4gTEm2yf8fBjJPfVdnEXTRBFwo
+         JODnCdBocXtxsMi05fcJl5jRkeCpHhODvaFsVD58GU4DBULfnExVvSkqj9akRFxKmYmj
+         +jqw4z0U96PVZ5MsR9RlG2fBce9aNwe92Eiyh3Y5lgdusl4ve2mB4L8FOJTCpkwtVdV6
+         MmXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vDP7eI93BA6O8vNpenJlTbc7LwUcGedkrTzHRTDYCp0=;
+        b=VmuulnSwy8cXu1i08PFQXxJxg8tfgMNhQEjVRKtajt4wzjjZvgmiEgERKq0bLoripM
+         cvd77IRZk5m3STxz+n2fUUQqoXV7n4CmhLkDw3hi+vK1WAxY2Y1Y9XmAPY3s9/bCKgNG
+         zd+3JUJjI3S1xrC+dssidkkyo1EN9QkUV7QxI8HfzfHQoVzqrKHo9uCP1Jq98l2YcfYJ
+         xEkWpovPTsG8FmZXaxxfwdPer93vOgrIj7TfRgsansMbFw9pnjuCyMV3h4trO9HNU2q0
+         IpSD+q+SHPceM1i844rBXN4a0whiNIW10/NMZ9cvly9ghbboV9F0GFQz+tfUDfCJNmzQ
+         vTIg==
+X-Gm-Message-State: AOAM532kbqg1ITGtdhYpbAqPgN1939+EVy0RI+7aT8CMH22roNjCoSqS
+        cCZnoUJDyYyE9a86oiyEsNg=
+X-Google-Smtp-Source: ABdhPJwFV/dnQvP+WYtbJ6DuX19B+uGzQznL4K8oB2ZPk+rsIlgW7MOxwp/PkedE2uCq2eCOa7q5sw==
+X-Received: by 2002:adf:97cb:: with SMTP id t11mr27410732wrb.314.1592208191230;
+        Mon, 15 Jun 2020 01:03:11 -0700 (PDT)
+Received: from skynet.lan (168.red-88-20-188.staticip.rima-tde.net. [88.20.188.168])
+        by smtp.gmail.com with ESMTPSA id d9sm23107054wre.28.2020.06.15.01.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 01:03:10 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     broonie@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH 0/4] spi: bcm63xx: add BMIPS support
+Date:   Mon, 15 Jun 2020 10:03:05 +0200
+Message-Id: <20200615080309.2897694-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FIX_EARLY_DEBUG_BASE reserves a 128k area for debuging.
+BCM63xx SPI and HSSPI controller are present on several BMIPS SoCs (BCM6318,
+BCM6328, BCM6358, BCM6362, BCM6368 and BCM63268).
 
-When page size is 256k, the calculation results in a 0 number of
-pages, leading to the following failure:
+Álvaro Fernández Rojas (4):
+  spi: bcm63xx-spi: add reset support
+  spi: bcm63xx-spi: allow building for BMIPS
+  spi: bcm63xx-hsspi: add reset support
+  spi: bcm63xx-hsspi: allow building for BMIPS
 
-  CC      arch/powerpc/kernel/asm-offsets.s
-In file included from ./arch/powerpc/include/asm/nohash/32/pgtable.h:77:0,
-                 from ./arch/powerpc/include/asm/nohash/pgtable.h:8,
-                 from ./arch/powerpc/include/asm/pgtable.h:20,
-                 from ./include/linux/pgtable.h:6,
-                 from ./arch/powerpc/include/asm/kup.h:42,
-                 from ./arch/powerpc/include/asm/uaccess.h:9,
-                 from ./include/linux/uaccess.h:11,
-                 from ./include/linux/crypto.h:21,
-                 from ./include/crypto/hash.h:11,
-                 from ./include/linux/uio.h:10,
-                 from ./include/linux/socket.h:8,
-                 from ./include/linux/compat.h:15,
-                 from arch/powerpc/kernel/asm-offsets.c:14:
-./arch/powerpc/include/asm/fixmap.h:75:2: error: overflow in enumeration values
-  __end_of_permanent_fixed_addresses,
-  ^
-make[2]: *** [arch/powerpc/kernel/asm-offsets.s] Error 1
+ drivers/spi/Kconfig             |  4 ++--
+ drivers/spi/spi-bcm63xx-hsspi.c | 17 +++++++++++++++++
+ drivers/spi/spi-bcm63xx.c       | 17 +++++++++++++++++
+ 3 files changed, 36 insertions(+), 2 deletions(-)
 
-Ensure the debug area is at least one page.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: b8e8efaa8639 ("powerpc: reserve fixmap entries for early debug")
-Cc: stable@vger.kernel.org
-Cc: Albert Herranz <albert_herranz@yahoo.es>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/fixmap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/fixmap.h b/arch/powerpc/include/asm/fixmap.h
-index 29188810ba30..925cf89cbf4b 100644
---- a/arch/powerpc/include/asm/fixmap.h
-+++ b/arch/powerpc/include/asm/fixmap.h
-@@ -52,7 +52,7 @@ enum fixed_addresses {
- 	FIX_HOLE,
- 	/* reserve the top 128K for early debugging purposes */
- 	FIX_EARLY_DEBUG_TOP = FIX_HOLE,
--	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+((128*1024)/PAGE_SIZE)-1,
-+	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128, PAGE_SIZE)/PAGE_SIZE)-1,
- #ifdef CONFIG_HIGHMEM
- 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
- 	FIX_KMAP_END = FIX_KMAP_BEGIN+(KM_TYPE_NR*NR_CPUS)-1,
 -- 
-2.25.0
+2.27.0
 
