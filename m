@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9BE1F9B1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F871F9B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730856AbgFOO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:57:18 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40081 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730652AbgFOO5R (ORCPT
+        id S1730870AbgFOO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730701AbgFOO50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:57:17 -0400
-Received: by mail-wm1-f66.google.com with SMTP id r15so15150729wmh.5;
-        Mon, 15 Jun 2020 07:57:15 -0700 (PDT)
+        Mon, 15 Jun 2020 10:57:26 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E33C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:57:26 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l17so15950116qki.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=08f0E4d1bwVGcK92LZLgsimdGdtdg5Nb5qVsheDv8nM=;
+        b=n5s0/8gxWICXkiIRyxsPMOCPRZJrLxXd4xZAL/CxAaJdn6OJHMv5ok3hbyF39WBwID
+         Rgx4dhjj2T8iwG1zh5nMhNczVyUNWi3b0yoPtk3BXo6bYTg60Tdtl95IQcA0isMjNrzH
+         bswHZN2ZrAyBQE2IacANevmn4h2KU9dYxKk8qGUlfmZcLRuk2ZK3Rwt309WQeZKw7f1p
+         p8iDuj5QM8QGdiV062HLEk6tSHaF5qDPTwYCVq3g3vKuWfXAqKVPhWo72PEY/QfUSIWu
+         MWvb1tCEcGg5IuP9v+zzp/QzXsbJdx3xGBbNCyGSFghyCtg1QSr/tB3myQIE00ReaG1B
+         SPKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mHcrbBO+Fo3bCvnKiSJoGOEsXEa+5QUFU82tEXS61oo=;
-        b=ogcYxfeBxA3qwa97mzrPW4jopWKMl64hXm7wg3STD1q+94yNg/pyj0DXYNIJfvSOQT
-         azvYNagX3x48ssnmy+HICSeQ2mkqKvnCs2zl9PU5Yj78VmJW6Lqy2vhHl0nmbcZV/649
-         w8vkmTP+K5H+jRoSaw5eRCWd3CT8Lr0zstF1/8VNEiXajHcuHSAKjpIoNnVhBOQE510m
-         LKUUEKVpyNKoZAV3ZMq8TRtpgEdtHwSN8H80hyALfXvVZs5VnK/IZas882+H30MCsHU7
-         U4uu/U/K3UKJNxMKH5oY4DoC+3XrOvRdimldFlX+9CVqmDw34Jwn7h55Ij8Yj1SlOps2
-         m2Uw==
-X-Gm-Message-State: AOAM533t3mN9LVm+kKdihYnfkL7IFG8kPLbsu+IVn0cwfVWqLUDdeQlx
-        KY1FV+M9ItiPOfq0Nv5DCjE=
-X-Google-Smtp-Source: ABdhPJxeN+YKTx2rDQYMG6z/DLFGaJz5APWUznLyEEfgFrNUKvASgGOX1PuuNkKdoJhfxX4g/JUpFA==
-X-Received: by 2002:a1c:7903:: with SMTP id l3mr13169484wme.50.1592233034481;
-        Mon, 15 Jun 2020 07:57:14 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id s8sm24402667wrm.96.2020.06.15.07.57.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jun 2020 07:57:13 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 16:57:11 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+         :mime-version:content-disposition:in-reply-to;
+        bh=08f0E4d1bwVGcK92LZLgsimdGdtdg5Nb5qVsheDv8nM=;
+        b=lf+7Ji64IHufZhkV37ypgEw84mBRo5nkLBOKhkYdcCWp4O8u9Ul4dny6ytwEXn+xsV
+         tv9Zse4t7nnJhAMCDL4IA61tJsQ60c05PgztdC5Em0PoxyWwoM4dtDvg2qP6mroKHiz9
+         0i7LRvqijrzIW6FXHZ+58J6gbuYA9fcK6l6+OCRoDcyfUDw+B3YiryHkoR6ywDPCQ8F3
+         sIIh0oXSj3nmT7lrap4Y2OPgSZd8kRMCJJexAv+VR2JzNGdlXqJRbgFhUQPY4M2XRfQt
+         6Ksi7SvjOub9SGugzl55dGkccPXbqceotjtYbSEvw0LKEAwXd89Q3tRZ61rnIq2k3M5e
+         WF2g==
+X-Gm-Message-State: AOAM530ZdhGbMSbYd33B86SsdIFW2ht9/jC/DADvDtNy+YZxX7SszMpx
+        qFftldYraVM79XUL0aPs+JKGKA==
+X-Google-Smtp-Source: ABdhPJxpOsry1yNx7TCREH06ffr7AfMA7W0HDZ5XSNfs6PHbV7y78O6dcMIEw2EDUQIlx14femYuPg==
+X-Received: by 2002:a37:4656:: with SMTP id t83mr15544636qka.126.1592233045781;
+        Mon, 15 Jun 2020 07:57:25 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id e53sm12573062qtk.50.2020.06.15.07.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 07:57:25 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 10:57:18 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v2 1/3] spi: spi-fsl-dspi: Fix external abort on
- interrupt in exit paths
-Message-ID: <20200615145711.GA24927@kozik-lap>
-References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
- <e1f0326c-8ae8-ffb3-aace-10433b0c78a6@pengutronix.de>
- <20200615123052.GO4447@sirena.org.uk>
- <CA+h21hqC7hAenifvRqbwss=Sr+dAu3H9Dx=UF0TS0WVbkzTj2Q@mail.gmail.com>
- <20200615131006.GR4447@sirena.org.uk>
- <CA+h21hpusy=zx8AuUqk_4zShtst8QeNJxCPT4dMGh0jhm5uZng@mail.gmail.com>
- <20200615134119.GB3321@kozik-lap>
- <CA+h21hp29i=AdZB_fBQ4mwAh=3Oovopwz3ruzzJqiKpRpZYzhg@mail.gmail.com>
+        the arch/x86 maintainers <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH 0/8] x86/entry: KCSAN/KASAN/UBSAN vs noinstr
+Message-ID: <20200615145718.GA1091@lca.pw>
+References: <20200604102241.466509982@infradead.org>
+ <CANpmjNPEXdGV-ZRYrVieJJsA01QATH+1vUixirocwKGDMsuEWQ@mail.gmail.com>
+ <CANpmjNP2ayM6Oehw08yFM4+5xTjXWcCT7P3u7FL=cCMxFJNkXw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+h21hp29i=AdZB_fBQ4mwAh=3Oovopwz3ruzzJqiKpRpZYzhg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CANpmjNP2ayM6Oehw08yFM4+5xTjXWcCT7P3u7FL=cCMxFJNkXw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 05:23:28PM +0300, Vladimir Oltean wrote:
-> On Mon, 15 Jun 2020 at 16:41, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Mon, Jun 15, 2020 at 12:07:34PM +0200, 'Marco Elver' via kasan-dev wrote:
+> On Thu, 4 Jun 2020 at 13:01, Marco Elver <elver@google.com> wrote:
 > >
-> > On Mon, Jun 15, 2020 at 04:12:28PM +0300, Vladimir Oltean wrote:
-> > > On Mon, 15 Jun 2020 at 16:10, Mark Brown <broonie@kernel.org> wrote:
+> > On Thu, 4 Jun 2020 at 12:25, Peter Zijlstra <peterz@infradead.org> wrote:
 > > >
-> > > >
-> > > > It's a bit unusual to need to actually free the IRQ over suspend -
-> > > > what's driving that requirement here?
+> > > Hai,
 > > >
-> > > clk_disable_unprepare(dspi->clk); is driving the requirement - same as
-> > > in dspi_remove case, the module will fault when its registers are
-> > > accessed without a clock.
+> > > Here's the remaining few patches to make KCSAN/KASAN and UBSAN work with noinstr.
 > >
-> > In few cases when I have shared interrupt in different drivers, they
-> > were just disabling it during suspend. Why it has to be freed?
+> > Thanks for assembling the series!
 > >
-> > Best regards,
-> > Krzysztof
+> > For where it's missing (1,2,3 and last one):
 > >
+> > Acked-by: Marco Elver <elver@google.com>
 > 
-> Not saying it _has_ to be freed, just to be prevented from running
-> concurrently with us disabling the clock.
-> But if we can get away in dspi_suspend with just disable_irq, can't we
-> also get away in dspi_remove with just devm_free_irq?
+> Where was this series supposed to go? I can't find it on any tree yet.
+> 
+> How urgent is this? Boot-test seems fine without this, but likely
+> doesn't hit the corner cases. Syzbot will likely find them, and if we
+> noticeably end up breaking various sanitizers without this, I'd
+> consider this urgent.
 
-One reason why they have to be different could be following scenario:
-1. Device could be unbound any time and disabling IRQ in remove() would
-   effectively disable the IRQ also for other devices using this shared
-   line. First disable_irq() really disables it, the latter just
-   increases the counter.
-2. However during system suspend, it is expected that all drivers in
-   their suspend (and later resume) callbacks will do the same - disable
-   the shared IRQ line. And finally the system disables interrupts
-   globally so the line will be balanced.
+Today's linux-next had a lot of those with this .config,
 
-Freeing IRQ solves the case #1 without causing any imbalance between
-enables/disables or requests/frees.  Disabling IRQ solves the #2, also
-without any imbalance.
+https://raw.githubusercontent.com/cailca/linux-mm/master/x86.config
 
-Best regards,
-Krzysztof
+Wondering if this patchset will cure them all?
 
-
-
+vmlinux.o: warning: objtool: exc_invalid_op()+0x337: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_double_fault()+0x217: call to __asan_report_store4_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_int3()+0x376: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: sync_regs()+0xcd: call to __asan_report_store_n_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: fixup_bad_iret()+0x13a: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_debug()+0x280: call to __asan_report_load4_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: default_do_nmi()+0x233: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_nmi()+0x67: call to __kasan_check_read() leaves .noinstr.text section
+vmlinux.o: warning: objtool: poke_int3_handler()+0x3d1: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: mce_check_crashing_cpu()+0x60: call to __kasan_check_read() leaves .noinstr.text section
+vmlinux.o: warning: objtool: mce_setup()+0x1c: call to memset() leaves .noinstr.text section
+vmlinux.o: warning: objtool: do_machine_check()+0xd3: call to mce_rdmsrl() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_machine_check()+0x2a1: call to __asan_report_store4_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: exc_page_fault()+0xc4e: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_on()+0x3a9: call to __asan_report_store8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_off()+0x24a: call to __asan_report_store8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: match_held_lock()+0x4df: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lock_is_held_type()+0x230: call to __asan_report_store4_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: debug_lockdep_rcu_enabled()+0xcd: call to __asan_report_load4_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x1c: call to __kasan_check_write() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0x20: call to __kasan_check_write() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_eqs_exit.constprop.72()+0x24d: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_eqs_enter.constprop.73()+0x250: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_nmi_exit()+0x1f2: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_irq_exit()+0xd1: call to __ubsan_handle_load_invalid_value() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_nmi_enter()+0x184: call to __asan_report_load8_noabort() leaves .noinstr.text section
+vmlinux.o: warning: objtool: rcu_irq_enter()+0xd1: call to __ubsan_handle_load_invalid_value() leaves .noinstr.text section
+vmlinux.o: warning: objtool: __rcu_is_watching()+0x20: call to __kasan_check_read() leaves .noinstr.text section
+vmlinux.o: warning: objtool: debug_locks_off()+0x19: call to __kasan_check_write() leaves .noinstr.text section
