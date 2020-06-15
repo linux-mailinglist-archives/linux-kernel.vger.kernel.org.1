@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAE51FA3E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2C41FA3FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgFOXKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38550 "EHLO mail.kernel.org"
+        id S1726706AbgFOXQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:16:21 -0400
+Received: from mga06.intel.com ([134.134.136.31]:63198 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOXKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:10:23 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D51EC2068E;
-        Mon, 15 Jun 2020 23:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592262623;
-        bh=7RV+LZohdXGjxU20nhjS42pqNFlJCzFWcJTRRTFiDDc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CEs4aLG5bPIwZbrsvC2dSFTmKvPInHk5eson9VqbhFdXVH0XydZjGHGGolJ1XST+g
-         mlNkDLx5IU3HQg59/H7h47facnlBhyRq+gX3NcxcZ6UcYuXoBExfajLH22hE+PRHfu
-         BpG1T8V0uj1NWRhG3TsLNA7PQU73D1kX15FUM8YM=
-Date:   Mon, 15 Jun 2020 18:15:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] fbcon: Use array3_size() helper in scr_memcpyw()
-Message-ID: <20200615231542.GA20470@embeddedor>
+        id S1726665AbgFOXQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:16:20 -0400
+IronPort-SDR: DVz5hht7e1vI0ac277T7KZNH7J1cTQ4CnOcClXZHcXjQ773AHXmnQcZ21btyQRI5bVsyS6nUdO
+ OCTH52hQxobw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 16:16:19 -0700
+IronPort-SDR: T6ZjbELIrapPoUUC8t/yjki9aqCic7a2OCwmjZ4mzrjLS+BziTN1GdCLNAuNKeyY7ttZANoaUg
+ /GtVSFW3HOXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,516,1583222400"; 
+   d="scan'208";a="290863836"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by orsmga002.jf.intel.com with ESMTP; 15 Jun 2020 16:16:19 -0700
+Date:   Mon, 15 Jun 2020 16:16:18 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v2 04/12] docs: x86: Add documentation for SVA (Shared
+ Virtual Addressing)
+Message-ID: <20200615231618.GF13792@romley-ivt3.sc.intel.com>
+References: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
+ <1592008893-9388-5-git-send-email-fenghua.yu@intel.com>
+ <9d1bd13c-0e0d-bead-f9a8-9422996a33f8@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <9d1bd13c-0e0d-bead-f9a8-9422996a33f8@linux.intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use array3_size() helper instead of the open-coded version in scr_memcpyw()
-and scr_memsetw(). These sorts of multiplication factors need to be wrapped
-in array3_size().
+Hi, Baolu,
 
-This issue was found with the help of Coccinelle and, audited and fixed
-manually.
+On Sat, Jun 13, 2020 at 08:17:40PM +0800, Lu Baolu wrote:
+> Hi Fenghua,
+> 
+> On 2020/6/13 8:41, Fenghua Yu wrote:
+> >+implement implement fairness or ensure forward progress can be made.
+> 
+> Repeated "implement".
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/video/fbdev/core/fbcon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Will fix this.
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 9d28a8e3328f..6af2734f2a7b 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -639,7 +639,7 @@ static void fbcon_prepare_logo(struct vc_data *vc, struct fb_info *info,
- 			       GFP_KERNEL);
- 		if (save) {
- 			int i = cols < new_cols ? cols : new_cols;
--			scr_memsetw(save, erase, logo_lines * new_cols * 2);
-+			scr_memsetw(save, erase, array3_size(logo_lines, new_cols, 2));
- 			r = q - step;
- 			for (cnt = 0; cnt < logo_lines; cnt++, r += i)
- 				scr_memcpyw(save + cnt * new_cols, r, 2 * i);
-@@ -676,7 +676,7 @@ static void fbcon_prepare_logo(struct vc_data *vc, struct fb_info *info,
- 		q = (unsigned short *) (vc->vc_origin +
- 					vc->vc_size_row *
- 					rows);
--		scr_memcpyw(q, save, logo_lines * new_cols * 2);
-+		scr_memcpyw(q, save, array3_size(logo_lines, new_cols, 2));
- 		vc->vc_y += logo_lines;
- 		vc->vc_pos += logo_lines * vc->vc_size_row;
- 		kfree(save);
--- 
-2.27.0
+> >+For example, the Intel Data Streaming Accelerator (DSA) uses
+> >+intel_svm_bind_mm(), which will do the following.
+> 
+> The Intel SVM APIs have been deprecated. Drivers should use
+> iommu_sva_bind_device() instead. Please also update other places in
+> this document.
+
+Will fix this.
+
+Thanks.
+
+-Fenghua
 
