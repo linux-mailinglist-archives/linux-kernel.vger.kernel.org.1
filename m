@@ -2,78 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5491FA17A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF201FA1A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731428AbgFOUaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgFOUaS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:30:18 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF18EC061A0E;
-        Mon, 15 Jun 2020 13:30:18 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0D07A120ED49A;
-        Mon, 15 Jun 2020 13:30:17 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 13:30:17 -0700 (PDT)
-Message-Id: <20200615.133017.143361546049495568.davem@davemloft.net>
-To:     wanghai38@huawei.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        liuhangbin@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] mld: fix memory leak in ipv6_mc_destroy_dev()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200611075750.18545-1-wanghai38@huawei.com>
-References: <20200611075750.18545-1-wanghai38@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 15 Jun 2020 13:30:18 -0700 (PDT)
+        id S1731638AbgFOUdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:33:19 -0400
+Received: from ip-78-45-52-129.net.upcbroadband.cz ([78.45.52.129]:32944 "EHLO
+        ixit.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728346AbgFOUdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 16:33:18 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jun 2020 16:33:18 EDT
+Received: from [192.168.1.102] (227.146.230.94.awnet.cz [94.230.146.227])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id A62E3250E5;
+        Mon, 15 Jun 2020 22:23:59 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 22:23:53 +0200
+From:   David Heidelberg <david@ixit.cz>
+Reply-To: 20181129133119.29387-1-linus.walleij@linaro.org
+Subject: [PATCH] irq: Request and release resources for chained IRQs
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Message-Id: <TZHZBQ.SOVDZ4DJB30O1@ixit.cz>
+X-Mailer: geary/3.36.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
-Date: Thu, 11 Jun 2020 15:57:50 +0800
+Hello,
 
-> Commit a84d01647989 ("mld: fix memory leak in mld_del_delrec()") fixed
-> the memory leak of MLD, but missing the ipv6_mc_destroy_dev() path, in
-> which mca_sources are leaked after ma_put().
-> 
-> Using ip6_mc_clear_src() to take care of the missing free.
-> 
-> BUG: memory leak
-> unreferenced object 0xffff8881113d3180 (size 64):
->   comm "syz-executor071", pid 389, jiffies 4294887985 (age 17.943s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 ff 02 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<000000002cbc483c>] kmalloc include/linux/slab.h:555 [inline]
->     [<000000002cbc483c>] kzalloc include/linux/slab.h:669 [inline]
->     [<000000002cbc483c>] ip6_mc_add1_src net/ipv6/mcast.c:2237 [inline]
->     [<000000002cbc483c>] ip6_mc_add_src+0x7f5/0xbb0 net/ipv6/mcast.c:2357
->     [<0000000058b8b1ff>] ip6_mc_source+0xe0c/0x1530 net/ipv6/mcast.c:449
->     [<000000000bfc4fb5>] do_ipv6_setsockopt.isra.12+0x1b2c/0x3b30 net/ipv6/ipv6_sockglue.c:754
->     [<00000000e4e7a722>] ipv6_setsockopt+0xda/0x150 net/ipv6/ipv6_sockglue.c:950
->     [<0000000029260d9a>] rawv6_setsockopt+0x45/0x100 net/ipv6/raw.c:1081
->     [<000000005c1b46f9>] __sys_setsockopt+0x131/0x210 net/socket.c:2132
->     [<000000008491f7db>] __do_sys_setsockopt net/socket.c:2148 [inline]
->     [<000000008491f7db>] __se_sys_setsockopt net/socket.c:2145 [inline]
->     [<000000008491f7db>] __x64_sys_setsockopt+0xba/0x150 net/socket.c:2145
->     [<00000000c7bc11c5>] do_syscall_64+0xa1/0x530 arch/x86/entry/common.c:295
->     [<000000005fb7a3f3>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> 
-> Fixes: 1666d49e1d41 ("mld: do not remove mld souce list info when set link down")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+is there chance to get this patch included or could be this issue 
+solved with different approach?
 
-Applied and queued up for -stable, thank you.
+Actually this patch solve issue on two APQ8064 devices:
+ * Nexus 7 2013
+Tested-by: David Heidelberg <david@ixit.cz>
+ * Nexus 4
+Tested-by: Iskren Chernev
+Best regards
+David Heidelberg
+
+
