@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112261F9CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8378E1F9CF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730830AbgFOQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:16:04 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:34750 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729949AbgFOQQD (ORCPT
+        id S1731013AbgFOQR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727785AbgFOQR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:16:03 -0400
-Received: by mail-il1-f196.google.com with SMTP id x18so15870455ilp.1;
-        Mon, 15 Jun 2020 09:16:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LceDJi3HuuWFN2rUgpbq9GLOkPnvp0H8zJIFHXcribA=;
-        b=R8rWbmQQ1Ld2NioytF8AOE6s+UHsz3atLKm5HT9H5Fua52uJILAcgnM0R7v6gOgJ/7
-         Gi1tK+bikXadGd4FQld/WRA8ugGq5y8JERAr3p9mlXT+M7kj8xmdd5mjQi+B1pF4Z90p
-         nEgHFOQNkv9dMqUgSJemQWi6+2DU0eOHAbKJlSdrjbG5Tl02LSsV5uXVQa27O1Lwlxkw
-         lNfFJPJOE+yPr4S6gJX2MnKISJL8HQxPLOqWnmVBZk9NDwzdUsWR0h6BW9vA6a6o0Q/2
-         +7RY5zJnn219rlBr2XgI/ESjKSKVuroYE8k3fZYGfmUL21bdOslgXSPn1tyyMbkk6eMs
-         KvoA==
-X-Gm-Message-State: AOAM530PEcVF4AKFW/OQrNTeYnm+A9HZIVd4Mgw90KuDCEh2XHmHKkJu
-        rlE6ZSH9+7eo9pAt1HyW824Fgng=
-X-Google-Smtp-Source: ABdhPJyZayJnee33cEuYPLpvv8OyZZt5YkVa8FQA9aXv9nTs8vxc6i5A2MxwMGdecxLvtPyRUjxzAQ==
-X-Received: by 2002:a92:c6cb:: with SMTP id v11mr27435851ilm.206.1592237761673;
-        Mon, 15 Jun 2020 09:16:01 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id g15sm8158427ilr.5.2020.06.15.09.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 09:16:01 -0700 (PDT)
-Received: (nullmailer pid 1876770 invoked by uid 1000);
-        Mon, 15 Jun 2020 16:15:59 -0000
-Date:   Mon, 15 Jun 2020 10:15:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     linux-kernel@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: remoteproc: k3-dsp: Update bindings
- for C71x DSPs
-Message-ID: <20200615161559.GA1876521@bogus>
-References: <20200612225357.8251-1-s-anna@ti.com>
- <20200612225357.8251-2-s-anna@ti.com>
+        Mon, 15 Jun 2020 12:17:56 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2181FC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p6GnmDUPB8eMnYJNSFAMEf26+Raf9w/fxd1XfSZxDoY=; b=s0E9pLYTDbXguSDj/n9DW5BHvf
+        7a++E+yu6QSGls201Iv5kblUQhKYyssCNWSYC+uTa1KIyZi22W0KkE2+tLhyZVlw1OYZ4dw1YnFe0
+        DAGEynY8Nv0KyLOQx0eWUacKKeO/4Q76QmbHDjCThlUfOGwa5/F89Uqae5StvhO1Fv5w3NN5DD93p
+        Xk1o3mgg2nrS3iHSEpHJ3v0HKJR6lh3McR9kF8FrpOfmsG9f3Vjh0H5ljwsyJE6j2LLJ/p0o0/GgF
+        5WOlf86aX584vxSBLpwrazoEWvwL6VjkHJ6LaNjX721l6HDHD7MQ28i8xIahVnmMXRhhinHVbWjYX
+        7sErih+w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkrnQ-0000j3-Ln; Mon, 15 Jun 2020 16:17:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 643CB301A32;
+        Mon, 15 Jun 2020 18:17:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A87720BCADEE; Mon, 15 Jun 2020 18:17:13 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 18:17:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>
+Subject: Re: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
+Message-ID: <20200615161713.GH2554@hirez.programming.kicks-ass.net>
+References: <20200518160750.GA279861@hirez.programming.kicks-ass.net>
+ <87367xvvmy.fsf@nanos.tec.linutronix.de>
+ <20200519083826.GC279861@hirez.programming.kicks-ass.net>
+ <20200519090226.GD279861@hirez.programming.kicks-ass.net>
+ <CAJhGHyCStHRzqv2Di57ALnBiPCpKjob4TG6Hj76+NowpNLqD7w@mail.gmail.com>
+ <20200523130836.GB2483@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200612225357.8251-2-s-anna@ti.com>
+In-Reply-To: <20200523130836.GB2483@worktop.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Jun 2020 17:53:56 -0500, Suman Anna wrote:
-> Some Texas Instruments K3 family of SoCs have one of more newer
-> generation TMS320C71x CorePac processor subsystem in addition to
-> the existing TMS320C66x CorePac processor subsystems. Update the
-> device tree bindings document for the C71x DSP devices.
+On Sat, May 23, 2020 at 03:08:36PM +0200, Peter Zijlstra wrote:
+> On Sat, May 23, 2020 at 10:52:24AM +0800, Lai Jiangshan wrote:
 > 
-> The example is also updated to show the single C71 DSP present
-> on J721E SoCs.
+> > Hello,
+> > 
+> > I, who don't know how does the objtool handle it, am just curious.
+> > _begin() and _end() are symmetrical, which means if _end() (without nop)
+> > can escape, so can _begin() in a reverse way. For example:
+> > 
+> > noinstr void foo()
+> > {
+> >     instrumentation_begin();
+> >     do {
+> >             instrumentation_begin();
+> >             ...
+> >             instrumentation_end();
+> >     } while (cond);
+> >     bar();
+> >     instrumentation_end();
+> > }
+> > 
+> > Here, the first _begin() can be "dragged" into the do-while block.
+> > Expectedly, objtool validation should not complain here.
+> > 
+> > But objtool validation's not complaining means it can handle it
+> > magically correctly (by distinguishing how many _begin()s should
+> > be taken around the jmp target when jmp in a specific path), or
+> > handle it by not checking if all paths have the same count onto
+> > a jmp target (a little nervous to me), or other possible ways.
 > 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> v3:
->  - Dropped Rob's previous Reviewed-by tag due to decent changes in the
->    patch
->  - Replaced the minItems and maxItems from reg with actual items list
->  - Dropped C71 reserved memory nodes from example
-> v2: https://patchwork.kernel.org/patch/11563231/
+> No, I tihnk you're right. It could be we never hit this particular
+> problem. Even the one described, where end leaks out, is quite rare. For
+> instance, the last one I debgged (that led to this patch) only showed
+> itself with gcc-9, but not with gcc-8 for example.
 > 
->  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 68 +++++++++++++++----
->  1 file changed, 55 insertions(+), 13 deletions(-)
-> 
+> Anyway, if we ever find the above, I'll add the NOP to begin too.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+FYI, I just found one, I'll be making instrumentation_begin() a NOP
+too.
