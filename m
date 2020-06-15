@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904AA1F989D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7812D1F98A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730272AbgFONby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729875AbgFONbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:31:53 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A741E2071A;
-        Mon, 15 Jun 2020 13:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592227913;
-        bh=DNx2FOJBhMQcsxpwss5JX13KZQpzmknMo4MZDCRvaTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kWg1QPUT203sfVo4cN0dkBf3ax/CI8eZwCZTRDjv+wBMzPFsXVK/qN+vc/jXfeuxV
-         soK+NrRQU6lXqwR+TMgW9IGnmXFT8GRM7tSbRgBZMHbWxq/LN2GPgL77E1OKGmLG2m
-         kGqrWXANrPxWp+T2/JYhHIl9CgrcdSX/qqFFzzQ8=
-Date:   Mon, 15 Jun 2020 14:31:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Cc:     kdasu.kdev@gmail.com, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 3/5] spi: bcm-qspi: Do not split transfers into small
- chunks
-Message-ID: <20200615133150.GT4447@sirena.org.uk>
-References: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
- <20200615040557.2011-4-mark.tomlinson@alliedtelesis.co.nz>
+        id S1730486AbgFONcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729875AbgFONcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 09:32:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27E4C061A0E;
+        Mon, 15 Jun 2020 06:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lp5DlO/OShb3qWPJbf6KTclUJMM2vVsGWEVRG2GOUyg=; b=CBk/rJNRZrGoDsIgXRbmF83ahA
+        8HZXVRWDoLfj8AbfLPcAlvA9mzhbGd8Hr4S8a6ES6MxWO3tK7M35sTWBqKnOspS2gZp6EoC7f9Ebx
+        T4sgeFTe/+gUCb1OS846QQudO3EPoj4VpoZKSv3ItDA6woMEtOPHPsSmmjTIXzYjBkPWa6Iozds8s
+        BXkuDVBB3m73e9mr83YyjzbDweWuTNByhJNT4mlcLNB3whw5TLFEult9WrebvFeXLTasIwoWIOiMl
+        buAZPYOJzDBircZ8r7zc7dYqVP7XznunrObBkS2aGl244S/KbAIzAkA/9iBpbGDrK9E6UVyFjuBTz
+        ZUjYUkRQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkpDq-0007J0-DO; Mon, 15 Jun 2020 13:32:22 +0000
+Date:   Mon, 15 Jun 2020 06:32:22 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v6 00/51] Large pages in the page cache
+Message-ID: <20200615133222.GA26990@infradead.org>
+References: <20200610201345.13273-1-willy@infradead.org>
+ <20200611065954.GA21475@infradead.org>
+ <20200611112412.GA8681@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TJ9V72hR/LoebVea"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615040557.2011-4-mark.tomlinson@alliedtelesis.co.nz>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200611112412.GA8681@bombadil.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 11, 2020 at 04:24:12AM -0700, Matthew Wilcox wrote:
+> On Wed, Jun 10, 2020 at 11:59:54PM -0700, Christoph Hellwig wrote:
+> > On Wed, Jun 10, 2020 at 01:12:54PM -0700, Matthew Wilcox wrote:
+> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > > 
+> > > Another fortnight, another dump of my current large pages work.
+> > > I've squished a lot of bugs this time.  xfstests is much happier now,
+> > > running for 1631 seconds and getting as far as generic/086.  This patchset
+> > > is getting a little big, so I'm going to try to get some bits of it
+> > > upstream soon (the bits that make sense regardless of whether the rest
+> > > of this is merged).
+> > 
+> > At this size a git tree to pull would also be nice..
+> 
+> That was literally the next paragraph ...
 
---TJ9V72hR/LoebVea
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 15, 2020 at 04:05:55PM +1200, Mark Tomlinson wrote:
-> Instead of splitting transfers into smaller parts, just perform the
-> operation that the higher level asked for.
-
-I don't understand this change - presumably there was some reason for
-splitting the transfers into smaller chunks (issues keeping up with
-FIFOs or something)?  How is whatever that reason is handled?
-
---TJ9V72hR/LoebVea
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7neEUACgkQJNaLcl1U
-h9DAPwf/f7MYucU1Yu2itPj+OWXklfxkXLzGLvoujwfjGfJolzFqbslCSlcHKkUH
-vNVdnlwNWIEufuxlgQevTuaE20sZKDKhS2eS9aaieODpt0bknbj/La/q3otQiNW7
-5MdSPhOO0N+Gq2W3zX1e+biaTuS4KOEVDla6QOfrJ0VuUgKOxDP9Jdp96oOKypt5
-rA5RamnnjaUM4i2i2VUBqOzIBWQdASrSaTOMA1o640swXH+1gqAlcjJrV40Ijczr
-5C3s4txzOWJ7kCsdy9knZWkW/KEnMY3lj/c73A8LhkDzdtiozC2QScWoHIz0vvxT
-yoNf/pBUq9d3jRcpqbP6KTf+NzijWA==
-=ikNT
------END PGP SIGNATURE-----
-
---TJ9V72hR/LoebVea--
+Oops.  Next time with more coffee..
