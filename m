@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835DB1F9A68
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484011F9A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgFOOgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728326AbgFOOgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:36:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C5FE206B7;
-        Mon, 15 Jun 2020 14:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592231784;
-        bh=ype2UwsEJQA9RCKVIpGpA9vIFkTyIQOQ4sKP1eAXFbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sRnd9myuAlE2K1Nj2iURRl7w9qJ8EkYdNdH+K+1/phMf0kpQoAY1Pxp7TJ1JfE1Bv
-         IS0K9Zxia4mxtl4V1nzuqvNO6G2NXNI+bmmTQPTgW5XKEnO5J9uL2LHNVwhcwBS3Ik
-         ag3vadWejMFiNKgNM8XdbJeap+BU3716MyK6XAPQ=
-Date:   Mon, 15 Jun 2020 15:36:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "matthias.schiffer@ew.tq-group.com" 
-        <matthias.schiffer@ew.tq-group.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 RFC 1/2] spi: introduce fallback to pio
-Message-ID: <20200615143622.GX4447@sirena.org.uk>
-References: <20200611134042.GG4671@sirena.org.uk>
- <VE1PR04MB66383245FAD2AE33CFEA76F789810@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200612101357.GA5396@sirena.org.uk>
- <VE1PR04MB66384013797FE6B01943F2A889810@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200612141611.GI5396@sirena.org.uk>
- <VE1PR04MB6638B43E3AC83286946DABCD899F0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200615123553.GP4447@sirena.org.uk>
- <VE1PR04MB6638C65257F41072C3D61583899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200615133905.GV4447@sirena.org.uk>
- <VE1PR04MB6638793C00742D5BA72F8AC2899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
+        id S1730628AbgFOOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728326AbgFOOhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 10:37:09 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7DFC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:37:08 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id u17so9474772vsu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jQ7S3FlEiexYsr4lwFQ+YPcMSE4i4i8SYc02PMpdNRs=;
+        b=OrN4GhiCldEYngS5C9zMWmKc8uT0jp2fECCklT9801PrIRD6hkwiJ3JGiK1iHeGhI+
+         e5UGox5+6/NlvlOUcwJXW/xpmnMU89WF82kjAEMmEBpqHxVQ3d+tcz2wx2W8OQ/s44jZ
+         Q0rQIksw4dkw8w0N5mEfN25a5oxnvwGyAm2mg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jQ7S3FlEiexYsr4lwFQ+YPcMSE4i4i8SYc02PMpdNRs=;
+        b=CioQFkoNTnsXasJwoieTtDLka93Th63bCd6X8UCqGVK8fDd+mRWN4+oMSJFk/5ZvOw
+         VG/+aslrupSQWEi+ncPctcOluvylrW94xmIjQIsl/eOHNJy0FNcMVfBxaRRNLf6nGoaw
+         tst1CSqQUVLTMh4tdcY1+G5ZPV8lUYjOwF4feHGpLIYUkR0kS23XR8m44U+kbNtswzFU
+         7owFenij73WsJIAOU4mNk+nwzTVcRGm3VAYAjFQLhYczdywJ4OwUj+d736NAy+yZgfta
+         WES70FPhp9cuQuPjfYd492SjswUsHsrYIx+Pzow9avLi5u2GxLEEyCD4jaTLGwBhepaQ
+         UT2w==
+X-Gm-Message-State: AOAM533Lgj1wf7FZsdnvFyXeg4YP5ftD0n7SzPduxvzE+SWsra79zEsj
+        n/PIQs+08LivlnLPdiD/px1tMILYRd8=
+X-Google-Smtp-Source: ABdhPJxN0U7d7PGrWgvgFUf6kza61khU+K2tLppHR1yC1LLtxZOX9v2Njk+tz8cP+LBfzYvDekSweg==
+X-Received: by 2002:a67:8c89:: with SMTP id o131mr14565483vsd.218.1592231827252;
+        Mon, 15 Jun 2020 07:37:07 -0700 (PDT)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
+        by smtp.gmail.com with ESMTPSA id t2sm2334389vka.28.2020.06.15.07.37.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 07:37:06 -0700 (PDT)
+Received: by mail-vk1-f181.google.com with SMTP id i1so3984738vkp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:37:06 -0700 (PDT)
+X-Received: by 2002:a1f:280c:: with SMTP id o12mr18294000vko.92.1592231825528;
+ Mon, 15 Jun 2020 07:37:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6yuPXOSZRpyw7iEV"
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6638793C00742D5BA72F8AC2899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200612123003.v2.1.Ibe95d8f3daef01e5c57d4c8c398f04d6a839492c@changeid>
+In-Reply-To: <20200612123003.v2.1.Ibe95d8f3daef01e5c57d4c8c398f04d6a839492c@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 15 Jun 2020 07:36:54 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W6d-Asap63+MDga26k2krfNOZ4ftcM1HPp3T0oXWdA0A@mail.gmail.com>
+Message-ID: <CAD=FV=W6d-Asap63+MDga26k2krfNOZ4ftcM1HPp3T0oXWdA0A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] drm/bridge: ti-sn65dsi86: Don't compile GPIO bits
+ if not CONFIG_OF_GPIO
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sean Paul <seanpaul@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---6yuPXOSZRpyw7iEV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 12, 2020 at 12:31 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The kernel test robot noted that if "OF" is defined (which is needed
+> to select DRM_TI_SN65DSI86 at all) but not OF_GPIO that we'd get
+> compile failures because some of the members that we access in "struct
+> gpio_chip" are only defined "#if defined(CONFIG_OF_GPIO)".
+>
+> All the GPIO bits in the driver are all nicely separated out.  We'll
+> guard them with the same "#if defined" that the header has and add a
+> little stub function if OF_GPIO is not defined.
+>
+> Fixes: 27ed2b3f22ed ("drm/bridge: ti-sn65dsi86: Export bridge GPIOs to Linux")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
+> Changes in v2: None
+>
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 
-On Mon, Jun 15, 2020 at 02:18:54PM +0000, Robin Gong wrote:
-> On 2020/06/15 21:39 Mark Brown <broonie@kernel.org> wrote:
-> > On Mon, Jun 15, 2020 at 01:35:01PM +0000, Robin Gong wrote:
+The kernel test robot gave me another yell over the weekend.  I think
+the whole series is ready to land, but if nothing else could at least
+patch #1 land to fix the build error so the robot is happy?
 
-> > > Then how about choosing specific error code for such dma not ready
-> > > case where nothing went out on the bus neither?
-
-> > Yes, that's what I suggested.
-
-> Seems not easy to find a suitable error value, how about EBADR which
-> sounds like no any available dma_async_tx_descriptor got by calling dmaen=
-gine_prep_slave_sg?=20
-
-> #define EBADR           53      /* Invalid request descriptor */
-
-We could also pass in a flag that could be set separately to the error
-code to indicate that nothing had happened to the hardware yet.
-
---6yuPXOSZRpyw7iEV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7nh2UACgkQJNaLcl1U
-h9CGngf9FJjxiiGTABi3SIsOJXFnGblWLqB3vln9SMDIbAPj/yGiDdpERP2vrY1W
-7k5dVCoCvMS3H85xHNvGXPWcWiAMdr2kvxYtHSOXafk/x18RNkFypSPrJGNH8aFa
-bJAFTdhXBNO1Tzkfyv8jEXenmexA8Zvr98tiCjY6y1KzVIxXUS76Z0m610y3t01m
-tBtsjAkAXoKe7N00fwx6mhZKwOlOmj7xXhETXAWGi7hMipmWTMlBDfijumFNivy0
-ZmZdGZkr7H8rmKS664LAce29F1vBAGJ1DDCR7uZPNz0Tv2hT7gOTadOvuionzbvw
-c1zT5i2KtlUGpSNfABZa0rmrPwY5dg==
-=DUZv
------END PGP SIGNATURE-----
-
---6yuPXOSZRpyw7iEV--
+-Doug
