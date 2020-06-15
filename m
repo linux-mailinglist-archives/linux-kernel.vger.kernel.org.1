@@ -2,180 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FFF1FA27A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED501FA284
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 23:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731767AbgFOVGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 17:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731669AbgFOVGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 17:06:42 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF7FC08C5C3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 14:06:42 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id q69so4279307vkq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 14:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZLvWjCloxY3lhqt5Y/n4uc8TQYyU0FRxQJFsgkejp+0=;
-        b=oHJ0ysAF5smXaRh+kIKQMkrbriZOwor9F6OemiNx01/wXgAGLwhBlbIEEMKQo62y91
-         4LBerGtB5SmuUX4V2ewdAzu2N6Gwp6ppHZB0kEk/M7lOth5nWq3B583KxSorq0f4tqaK
-         bgHWuFAYGHgv2uGoMyEC6gCqFR0FXFav+ulME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZLvWjCloxY3lhqt5Y/n4uc8TQYyU0FRxQJFsgkejp+0=;
-        b=GK+fsDeHjNSBd4qXDsgpNbi7utD5LetjbYJc5TxPfuXs/Rgxjx70tXpKFmmU1qcBWT
-         oiaiZqlAuFAogb89rZX+nMWcguCtinq1kpUZuYmYY1PN8/TxE1Kro9+GchgCkBs07W48
-         LEixixL267O5I45n76k+z210Xxz5qPTm7ztiJFWtuxINR2+eS+AiZJ5C1wxbvzxIOoUN
-         9sZ0LpKc8tDgQQbexTBwVS7XL8JWLEwW4cZrcSOQE5lM0doRh4U7hW7yBeTU7Mgij8a6
-         4Topr5mOXxWjaWT+5tWl3qoYx7gac3TOdKF+JhOz0xef3hRoghCk+pd6oBEQ+pwaNkeV
-         klxA==
-X-Gm-Message-State: AOAM533bjGWSGVVuF7KOja2jKuLwh1jP/4liVTLtT95WJ0rhRnlDBSYl
-        MRpx8ByWDEQW5LLmmXkLNQNrCQ==
-X-Google-Smtp-Source: ABdhPJzjezht/+Uj1VbmlPsJCoJsHI9A++v/BYMYgyek0uRnOZTj2+CK/NUWfHuYenZe3qyJwG8UhQ==
-X-Received: by 2002:a05:6122:33a:: with SMTP id d26mr20565530vko.30.1592255201576;
-        Mon, 15 Jun 2020 14:06:41 -0700 (PDT)
-Received: from alain.c.googlers.com.com (252.177.243.35.bc.googleusercontent.com. [35.243.177.252])
-        by smtp.gmail.com with ESMTPSA id g22sm27554vso.8.2020.06.15.14.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 14:06:40 -0700 (PDT)
-From:   Alain Michaud <alainm@chromium.org>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2] bluetooth: Adding a configurable autoconnect timeout
-Date:   Mon, 15 Jun 2020 21:06:38 +0000
-Message-Id: <20200615210638.132889-1-alainm@chromium.org>
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+        id S1731808AbgFOVHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 17:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726207AbgFOVHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 17:07:47 -0400
+Received: from localhost (lfbn-ncy-1-150-120.w83-194.abo.wanadoo.fr [83.194.232.120])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FFCE20739;
+        Mon, 15 Jun 2020 21:07:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592255266;
+        bh=gcLqdMHBmpb70W2w0706bkJG11nt+9jdXNiIszD6y1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vg/RKp+xE+7tSJwAY8owtsM8G5IHDRN+wd7OOjQozHNyosc2y+skoq23hizo7CF77
+         Uz2XDvQyHkAAlmCAbJSyX/017k2WORbh/7XQYowo3qx1D6MIqNk2XQ5NF6UEEuP1JW
+         im99Kdsq3KATcssxDBdJRDcG9VMn8bdkbToxgzZI=
+Date:   Mon, 15 Jun 2020 23:07:44 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] tick/sched: update full_nohz status after SCHED dep
+ is cleared
+Message-ID: <20200615210743.GA21371@lenoir>
+References: <20200520140402.358880-1-juri.lelli@redhat.com>
+ <20200520162400.GA8800@lenoir>
+ <20200520164925.GM10078@localhost.localdomain>
+ <20200520170215.GB8800@lenoir>
+ <20200520184710.GO10078@localhost.localdomain>
+ <20200521004443.GB15455@lenoir>
+ <20200521170020.GQ10078@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521170020.GQ10078@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a configurable LE autoconnect timeout.
+On Thu, May 21, 2020 at 07:00:20PM +0200, Juri Lelli wrote:
+> ksoftirqd/3-26    [003]    99.942485: timer_expire_entry:   timer=0xffffffffa55a9d20 function=clocksource_watchdog now=4294759328 baseclk=4294759328
+> ksoftirqd/3-26    [003]    99.942489: timer_start:          timer=0xffffffffa55a9d20 function=clocksource_watchdog expires=4294759822 [timeout=494] cpu=4 idx=114 flags=D|P|I
+> ksoftirqd/3-26    [003]    99.942491: timer_expire_exit:    timer=0xffffffffa55a9d20
+>   sysjitter-2377  [004]    99.942491: call_function_single_entry: vector=251
+>   sysjitter-2377  [004]    99.942492: call_function_single_exit: vector=251
+> ksoftirqd/3-26    [003]    99.942493: softirq_exit:         vec=1 [action=TIMER]
+> ksoftirqd/3-26    [003]    99.942494: softirq_entry:        vec=7 [action=SCHED]
+>   sysjitter-2377  [004]    99.942494: hrtimer_start:        hrtimer=0xffff92e9df91fd20 function=tick_sched_timer/0x0 expires=92630457385 softexpires=92630457385
+> ---
+> 
+> So, my understanding is that clock gets reactivated on CPU 4 to run
+> clocksource watchdog (indeed if I use tsc=nowatchdog this above doesn't
+> happen, but the potential issue is still there I guess).
 
-Signed-off-by: Alain Michaud <alainm@chromium.org>
----
+CPU 4 is being disturbed by an IPI. It's possibly caused by RCU, there
+is a pending fix that I need to refresh and repost but you may
+want to give it a try: https://lore.kernel.org/lkml/20200515003429.4317-1-frederic@kernel.org/
 
-Changes in v1:
-Fixing longer than 80 char line.
+> 
+> ---
+>   sysjitter-2377  [004]   100.438455: local_timer_entry:    vector=236
+>   sysjitter-2377  [004]   100.438456: hrtimer_cancel:       hrtimer=0xffff92e9df91fd20
+>   sysjitter-2377  [004]   100.438458: hrtimer_expire_entry: hrtimer=0xffff92e9df91fd20 now=92630461337 function=tick_sched_timer/0x0
+>   sysjitter-2377  [004]   100.438460: kernel_stack:         <stack trace>
+> => __ftrace_trace_stack (ffffffffa37da921)
+> => __raise_softirq_irqoff (ffffffffa36daf50)
+> => raise_softirq (ffffffffa36db0fe)
+> => update_process_times (ffffffffa3768f9d)
+> => tick_sched_handle (ffffffffa377aaa2)
+> => tick_sched_timer (ffffffffa377ad53)
+> => __hrtimer_run_queues (ffffffffa3769cf0)
+> => hrtimer_interrupt (ffffffffa376a58a)
+> => smp_apic_timer_interrupt (ffffffffa40028f8)
+> => apic_timer_interrupt (ffffffffa4001b7f)
+>   sysjitter-2377  [004]   100.438461: softirq_raise:        vec=1 [action=TIMER]
+>   sysjitter-2377  [004]   100.438464: kernel_stack:         <stack trace>
+> => __ftrace_trace_stack (ffffffffa37da921)
+> => __raise_softirq_irqoff (ffffffffa36daf50)
+> => raise_softirq (ffffffffa36db0fe)
+> => trigger_load_balance (ffffffffa371cb9c)
+> => update_process_times (ffffffffa3768fc7)
+> => tick_sched_handle (ffffffffa377aaa2)
+> => tick_sched_timer (ffffffffa377ad53)
+> => __hrtimer_run_queues (ffffffffa3769cf0)
+> => hrtimer_interrupt (ffffffffa376a58a)
+> => smp_apic_timer_interrupt (ffffffffa40028f8)
+> => apic_timer_interrupt (ffffffffa4001b7f)
+>   sysjitter-2377  [004]   100.438465: softirq_raise:        vec=7 [action=SCHED]
+> ---
+> 
+> Tick fires, the two softirq_raise (which you wondered about) seems to
+> come from
+> 
+>  1. update_process_times::run_local_timers (TIMER_SOFTIRQ)
+>  2. update_process_times::scheduler_tick::trigger_load_balance (SCHED_SOFTIRQ)
 
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         |  1 +
- net/bluetooth/hci_event.c        |  2 +-
- net/bluetooth/hci_request.c      |  4 ++--
- net/bluetooth/mgmt_config.c      | 13 +++++++++++++
- 5 files changed, 18 insertions(+), 3 deletions(-)
+Well, the places raising the softirqs are always the same. Now how the timer
+internals can decide to raise the TIMER_SOFTIRQ when there is no callback
+expired is more mysterious.
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 0d5dbb6cb5a0..f8e800479608 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -340,6 +340,7 @@ struct hci_dev {
- 	__u16		def_br_lsto;
- 	__u16		def_page_timeout;
- 	__u16		def_multi_adv_rotation_duration;
-+	__u16		def_le_autoconnect_timeout;
- 
- 	__u16		pkt_type;
- 	__u16		esco_type;
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 4f1052a7c488..73fb0843fb89 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3422,6 +3422,7 @@ struct hci_dev *hci_alloc_dev(void)
- 	hdev->le_rx_def_phys = HCI_LE_SET_PHY_1M;
- 	hdev->le_num_of_adv_sets = HCI_MAX_ADV_INSTANCES;
- 	hdev->def_multi_adv_rotation_duration = HCI_DEFAULT_ADV_DURATION;
-+	hdev->def_le_autoconnect_timeout = HCI_LE_AUTOCONN_TIMEOUT;
- 
- 	hdev->rpa_timeout = HCI_DEFAULT_RPA_TIMEOUT;
- 	hdev->discov_interleaved_timeout = DISCOV_INTERLEAVED_TIMEOUT;
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index cfeaee347db3..beb9bb1da0ba 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5319,7 +5319,7 @@ static struct hci_conn *check_pending_le_conn(struct hci_dev *hdev,
- 	}
- 
- 	conn = hci_connect_le(hdev, addr, addr_type, BT_SECURITY_LOW,
--			      HCI_LE_AUTOCONN_TIMEOUT, HCI_ROLE_MASTER,
-+			      hdev->def_le_autoconnect_timeout, HCI_ROLE_MASTER,
- 			      direct_rpa);
- 	if (!IS_ERR(conn)) {
- 		/* If HCI_AUTO_CONN_EXPLICIT is set, conn is already owned
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 04f846958ad6..9b011c539281 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -2791,8 +2791,8 @@ static void start_discovery(struct hci_dev *hdev, u8 *status)
- 			 * to do BR/EDR inquiry.
- 			 */
- 			hci_req_sync(hdev, interleaved_discov,
--				     hdev->le_scan_int_discovery * 2, HCI_CMD_TIMEOUT,
--				     status);
-+				     hdev->le_scan_int_discovery * 2,
-+				     HCI_CMD_TIMEOUT, status);
- 			break;
- 		}
- 
-diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-index f6dfbe93542c..0ff77ef05fc5 100644
---- a/net/bluetooth/mgmt_config.c
-+++ b/net/bluetooth/mgmt_config.c
-@@ -17,6 +17,12 @@
- 	{ cpu_to_le16(hdev->_param_name_) } \
- }
- 
-+#define HDEV_PARAM_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
-+{ \
-+	{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-+	{ cpu_to_le16(jiffies_to_msecs(hdev->_param_name_)) } \
-+}
-+
- int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 			   u16 data_len)
- {
-@@ -59,6 +65,8 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		HDEV_PARAM_U16(0x0018, le_conn_max_interval),
- 		HDEV_PARAM_U16(0x0019, le_conn_latency),
- 		HDEV_PARAM_U16(0x001a, le_supv_timeout),
-+		HDEV_PARAM_U16_JIFFIES_TO_MSECS(0x001b,
-+						def_le_autoconnect_timeout),
- 	};
- 	struct mgmt_rp_read_def_system_config *rp = (void *)params;
- 
-@@ -129,6 +137,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x0018:
- 		case 0x0019:
- 		case 0x001a:
-+		case 0x001b:
- 			if (len != sizeof(u16)) {
- 				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
- 					    len, sizeof(u16), type);
-@@ -238,6 +247,10 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x0001a:
- 			hdev->le_supv_timeout = TLV_GET_LE16(buffer);
- 			break;
-+		case 0x0001b:
-+			hdev->def_le_autoconnect_timeout =
-+					msecs_to_jiffies(TLV_GET_LE16(buffer));
-+			break;
- 		default:
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
--- 
-2.27.0.290.gba653c62da-goog
+> 
+> ---
+>   sysjitter-2377  [004]   100.438468: hrtimer_expire_exit:  hrtimer=0xffff92e9df91fd20
+>   sysjitter-2377  [004]   100.438470: local_timer_exit:     vector=236
+>   sysjitter-2377  [004]   100.438473: sched_wakeup:         ksoftirqd/4:31 [120] success=1 CPU:004
+>   sysjitter-2377  [004]   100.438474: tick_stop:            success=0 dependency=SCHED
+>   sysjitter-2377  [004]   100.438476: hrtimer_start:        hrtimer=0xffff92e9df91fd20 function=tick_sched_timer/0x0 expires=92630512937 softexpires=92630512937
+>   sysjitter-2377  [004]   100.438484: irq_work_entry:       vector=246
+>   sysjitter-2377  [004]   100.438491: irq_work_exit:        vector=246
+>   sysjitter-2377  [004]   100.438492: tick_stop:            success=0 dependency=SCHED
+>   sysjitter-2377  [004]   100.438495: sched_switch:         sysjitter:2377 [120] R ==> ksoftirqd/4:31 [120]
+> ksoftirqd/4-31    [004]   100.438497: softirq_entry:        vec=1 [action=TIMER]
+> ksoftirqd/4-31    [004]   100.438499: timer_cancel:         timer=0xffffffffa55a9d20
+> ksoftirqd/4-31    [004]   100.438501: timer_expire_entry:   timer=0xffffffffa55a9d20 function=clocksource_watchdog now=4294759824 baseclk=4294759824
+> ksoftirqd/4-31    [004]   100.438504: timer_start:          timer=0xffffffffa55a9d20 function=clocksource_watchdog expires=4294760322 [timeout=498] cpu=5 idx=113 flags=D|P|I
+> ---
+> 
+> Queueing clocksource watchdog on CPU5.
+> 
+> ---
+> ksoftirqd/4-31    [004]   100.438506: timer_expire_exit:    timer=0xffffffffa55a9d20
+> ksoftirqd/4-31    [004]   100.438507: local_timer_entry:    vector=236
+> ---
+> 
+> Back to back timer?
 
+It looks like the tick has been reprogrammed very early indeed.
+
+> 
+> ---
+> ksoftirqd/4-31    [004]   100.438509: hrtimer_cancel:       hrtimer=0xffff92e9df91fd20
+> ksoftirqd/4-31    [004]   100.438511: hrtimer_expire_entry: hrtimer=0xffff92e9df91fd20 now=92630515022 function=tick_sched_timer/0x0
+> ksoftirqd/4-31    [004]   100.438515: kernel_stack:         <stack trace>
+> => __ftrace_trace_stack (ffffffffa37da921)
+> => __raise_softirq_irqoff (ffffffffa36daf50)
+> => raise_softirq (ffffffffa36db0fe)
+> => rcu_sched_clock_irq (ffffffffa375af4a)
+> => update_process_times (ffffffffa3768fa4)
+> => tick_sched_handle (ffffffffa377aaa2)
+> => tick_sched_timer (ffffffffa377ad53)
+> => __hrtimer_run_queues (ffffffffa3769cf0)
+> => hrtimer_interrupt (ffffffffa376a58a)
+> => smp_apic_timer_interrupt (ffffffffa40028f8)
+> => apic_timer_interrupt (ffffffffa4001b7f)
+> => filter_pred_32 (ffffffffa37f3357)
+> => filter_match_preds (ffffffffa37f3510)
+> => trace_event_buffer_commit (ffffffffa37dc7eb)
+> => trace_event_raw_event_softirq (ffffffffa36dab77)
+> => __do_softirq (ffffffffa420025a)
+> => run_ksoftirqd (ffffffffa36dadc6)
+> => smpboot_thread_fn (ffffffffa36ffdb8)
+> => kthread (ffffffffa36f9fb7)
+> => ret_from_fork (ffffffffa4000215)
+> ksoftirqd/4-31    [004]   100.438516: softirq_raise:        vec=9 [action=RCU]
+> ksoftirqd/4-31    [004]   100.438520: kernel_stack:         <stack trace>
+> => __ftrace_trace_stack (ffffffffa37da921)
+> => __raise_softirq_irqoff (ffffffffa36daf50)
+> => raise_softirq (ffffffffa36db0fe)
+> => trigger_load_balance (ffffffffa371cb9c)
+> => update_process_times (ffffffffa3768fc7)
+> => tick_sched_handle (ffffffffa377aaa2)
+> => tick_sched_timer (ffffffffa377ad53)
+> => __hrtimer_run_queues (ffffffffa3769cf0)
+> => hrtimer_interrupt (ffffffffa376a58a)
+> => smp_apic_timer_interrupt (ffffffffa40028f8)
+> => apic_timer_interrupt (ffffffffa4001b7f)
+> => filter_pred_32 (ffffffffa37f3357)
+> => filter_match_preds (ffffffffa37f3510)
+> => trace_event_buffer_commit (ffffffffa37dc7eb)
+> => trace_event_raw_event_softirq (ffffffffa36dab77)
+> => __do_softirq (ffffffffa420025a)
+> => run_ksoftirqd (ffffffffa36dadc6)
+> => smpboot_thread_fn (ffffffffa36ffdb8)
+> => kthread (ffffffffa36f9fb7)
+> => ret_from_fork (ffffffffa4000215)
+> ksoftirqd/4-31    [004]   100.438520: softirq_raise:        vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.438521: hrtimer_expire_exit:  hrtimer=0xffff92e9df91fd20
+> ksoftirqd/4-31    [004]   100.438523: hrtimer_start:        hrtimer=0xffff92e9df91fd20 function=tick_sched_timer/0x0 expires=92631512937 softexpires=92631512937
+> ksoftirqd/4-31    [004]   100.438525: local_timer_exit:     vector=236
+> ksoftirqd/4-31    [004]   100.438527: tick_stop:            success=0 dependency=SCHED
+> ---
+> 
+> At this point (I think) ksoftirqd is already going to sleep, so only
+> sysjitter will be eventually executing on CPU4, but tick_stop check
+> still sees nr_running == 2.
+
+As long at it hasn't been dequeued from the runqueue, tick_stop sees nr_running == 2.
+
+> 
+> ---
+> ksoftirqd/4-31    [004]   100.438530: softirq_exit:         vec=1 [action=TIMER]
+
+Was there a corresponding softirq_enter? With timers expiring inside?
+
+> ksoftirqd/4-31    [004]   100.438531: softirq_entry:        vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.438533: softirq_exit:         vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.438534: softirq_entry:        vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.438535: softirq_exit:         vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.438536: softirq_entry:        vec=9 [action=RCU]
+> ksoftirqd/4-31    [004]   100.438537: softirq_exit:         vec=9 [action=RCU]
+> ksoftirqd/4-31    [004]   100.438540: sched_switch:         ksoftirqd/4:31 [120] S ==> sysjitter:2377 [120]
+> ---
+> 
+> And tick again fires below.
+> 
+> ---
+>   sysjitter-2377  [004]   100.439509: local_timer_entry:    vector=236
+>   sysjitter-2377  [004]   100.439511: hrtimer_cancel:       hrtimer=0xffff92e9df91fd20
+>   sysjitter-2377  [004]   100.439512: hrtimer_expire_entry: hrtimer=0xffff92e9df91fd20 now=92631515408 function=tick_sched_timer/0x0
+
+Right that's expected behaviour.
+
+>   sysjitter-2377  [004]   100.439518: softirq_raise:        vec=7 [action=SCHED]
+>   sysjitter-2377  [004]   100.439520: hrtimer_expire_exit:  hrtimer=0xffff92e9df91fd20
+>   sysjitter-2377  [004]   100.439521: hrtimer_start:        hrtimer=0xffff92e9df91fd20 function=tick_sched_timer/0x0 expires=92632512937 softexpires=92632512937
+>   sysjitter-2377  [004]   100.439522: local_timer_exit:     vector=236
+>   sysjitter-2377  [004]   100.439525: sched_wakeup:         ksoftirqd/4:31 [120] success=1 CPU:004
+>   sysjitter-2377  [004]   100.439527: tick_stop:            success=0 dependency=SCHED
+>   sysjitter-2377  [004]   100.439529: irq_work_entry:       vector=246
+>   sysjitter-2377  [004]   100.439531: irq_work_exit:        vector=246
+>   sysjitter-2377  [004]   100.439532: tick_stop:            success=0 dependency=SCHED
+>   sysjitter-2377  [004]   100.439534: sched_switch:         sysjitter:2377 [120] R ==> ksoftirqd/4:31 [120]
+> ksoftirqd/4-31    [004]   100.439536: softirq_entry:        vec=1 [action=TIMER]
+> ksoftirqd/4-31    [004]   100.439537: softirq_exit:         vec=1 [action=TIMER]
+
+The empty timer softirq again.
+
+> ksoftirqd/4-31    [004]   100.439538: softirq_entry:        vec=7 [action=SCHED]
+> ksoftirqd/4-31    [004]   100.439540: softirq_exit:         vec=7 [action=SCHED]
+
+I'm also wondering if it's expected to see the sched softirq repeating so often.
+
+> ksoftirqd/4-31    [004]   100.439541: sched_switch:         ksoftirqd/4:31 [120] S ==> sysjitter:2377 [120]
+> ---
+> 
+> History seems to repeat itself until ~2s later (this is one of the
+> pathological runs) when an ipi fires on CPU4 and SCHED dependecy is seen
+> as cleared (as only sysjitter thread was is running at that point).
+> 
+> Does this make sense and help in any way? Suggestions for debugging this
+> further? :-)
+
+Let's see if I can reproduce it first. If not I'll need to bother you further :)
+
+Thanks!
