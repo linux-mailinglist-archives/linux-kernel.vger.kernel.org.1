@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1C01F9FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14B41F9FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbgFOTE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 15:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
+        id S1731415AbgFOTFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 15:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731249AbgFOTE0 (ORCPT
+        with ESMTP id S1729354AbgFOTFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:04:26 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CD5C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:04:25 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id i4so262585pjd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:04:25 -0700 (PDT)
+        Mon, 15 Jun 2020 15:05:41 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94BDC061A0E;
+        Mon, 15 Jun 2020 12:05:41 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id o5so19101101iow.8;
+        Mon, 15 Jun 2020 12:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9aW2TqrBLH8LeFdcz9gJFpsSwBcZN5ImxsbMz/APSqI=;
-        b=lMnXpMZZ28eB1AUnoYs0tMCcfdx9eomDMjAwwW3tQo1QWecVxMGf4Z9oaZqZ0DSC9J
-         2kdu8TS9YCnn3/TZaRoxoLXK308sh0TkEM2S9r1iOsf5XFgv1gHIODJ2b1KSLoDQU2gr
-         2GkTorHfQSznZssJuKgKDyKM2FHoLNgGsjtxAaSGs39xQuzdBO8oFjHZRCA1vzJmkHuE
-         FrP7hVmxLNMjj55B8KoaF5Zzn5gLiy03derdrZFzbR+UtzN3f/tpmNXR7KuPoQQBbFB2
-         zD6DWqxILh+69QkSkIQYbHTSGhmqUbWK5DPPtTDnPrfIO6PmhLpzTNAl2BoKwml1HovC
-         CzTg==
+        bh=GlZB0LoHOoKwQ25KMcwRS0hvH3SBcs0IIs6yHO+vpjo=;
+        b=M5y+0H5UBj1QDe1vqlNBfbMBYsTjZ+0iYenjFgi2255cNAbbu49yNXp9E+1ldZh+LT
+         d9hFBsjun9b+bmxqA3bY9bEiccRUFTei3YnSYtuKVfCfeC5TMfSGfcyQpl9xJc66YdSj
+         QEhuVa+RYnhCyPNI6H75ZkRwZ28sZVMTA0vkUtUxd55clOHJgZxfX/F1UIBRQPCtS/I+
+         hJKtmDDey99OVr2abgfmV9eCOfgKDie/+0nrWtRCdVv1sMPZp+S7wdGR/DVczn1gZErY
+         GiTjXX3+STQ8j6rk1cU6GRq9OITPAUHPnu2bby7MdV1O/D6KaQ9qG3syqgyOA1SvJdi+
+         V+TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9aW2TqrBLH8LeFdcz9gJFpsSwBcZN5ImxsbMz/APSqI=;
-        b=YLsTz7OnjXL+/vF42BKFwlxXP58N0X75Za4xGMPdnRene/GiJeaVWBhs0DOnqQpWKB
-         dhBNlko+WgsBx/Hj7fOCtwyt1Tn4yXhv10/0mL3UkaTHbcjg1aENnm63lup2fnOWaUoa
-         EU+KRp8yLaOc1FBBay8ulfXNEu4XJvq7mcLknh52QhK1MWPrTDSWI1fW9zq1FNzEJyCg
-         bTugk9Er8E53cpaxoD6HE0s3VICeMFEHZ40xxf5uC69UDsmwF7FbcGBq/jxhkEBOJAra
-         WbK9u5zNu9mroYRJu90xQlpnkmLZpRA0fg7R9op4xV7FeOakrzYRAo6x1X44tLJyPhCg
-         pDeg==
-X-Gm-Message-State: AOAM530Aj6fiNSMNpzB6qbHNZlN2tqSX2ipk7TReFG6EmoBJZfGsAl9k
-        mSEXmLIcvELTMNr1F6ISz3j1U+RkGiJ53XOibe4Si530EHQ=
-X-Google-Smtp-Source: ABdhPJylLhumge3iLMOwdrqKasfZc2kbu7Zpnn7izPXUiTo/OOS+izBX7wRfEj0QlmWA813ZcGQ3QUzhmD/VSOhu3wk=
-X-Received: by 2002:a17:90b:1244:: with SMTP id gx4mr707505pjb.136.1592247864399;
- Mon, 15 Jun 2020 12:04:24 -0700 (PDT)
+        bh=GlZB0LoHOoKwQ25KMcwRS0hvH3SBcs0IIs6yHO+vpjo=;
+        b=CdKV31WEmNx/j+CsTJDrcSdX1SimmDMu0jM3GFS43Xa3AmLAihwUqTnYuEyH7UrcX2
+         DMSaMk8qwo2DMzaVUDLmv8d4H+DDleH4MskIrmKPIFNa9UXdLP5Bew9lJJUKdvQARHNr
+         9LdkfeQPCdfzhCwphIrC2LKN4r0FwetC7b5ekrHvdQ4up0aaB7KxvfNpGLslxR4CMEIp
+         PfzcN1Jy/zfq9w8cuBxScY5XTBGDzZElOGtVn7ZAFKXFq/BNzKXo5sDm+e75Q1akccdQ
+         QfjHOPL6Aw6vA3S6ihFvm74M/KsYLVg/pV8JMf6XWLQ3FlV/6h0sPZLOpALfhcRtG62E
+         4FiQ==
+X-Gm-Message-State: AOAM5327YasPFMIiTal8guWGeSqtduC+VisCTDPiR6wWbOeadXkUNazr
+        3Gp9CJP/rolPiWmGjqN62tFaV6qdKQQJdMVqCfhgdXrS
+X-Google-Smtp-Source: ABdhPJwFitc4fctNCGzL+an035af/hiZ0EyeHkkdO35NxHNkYJBKqvTtkAKnJdUaC4ZGvsObyOsChpvFN+rEKmpIIyc=
+X-Received: by 2002:a5e:8e47:: with SMTP id r7mr29172100ioo.204.1592247941114;
+ Mon, 15 Jun 2020 12:05:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200615184302.7591-1-elver@google.com>
-In-Reply-To: <20200615184302.7591-1-elver@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 15 Jun 2020 21:04:13 +0200
-Message-ID: <CAAeHK+zdNpMhpaHRYHxc9a5ghp4MBR3ecxxWem8-yrNFLYTFEg@mail.gmail.com>
-Subject: Re: [PATCH] kcov: Unconditionally add -fno-stack-protector to
- compiler options
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
+In-Reply-To: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
+From:   Kamal Dasu <kdasu.kdev@gmail.com>
+Date:   Mon, 15 Jun 2020 15:05:30 -0400
+Message-ID: <CAC=U0a13v6_qS0oa3Tdbf89o3ywSkugu=oMHwR_4gf9ucKg61g@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Improvements to spi-bcm-qspi
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 8:43 PM Marco Elver <elver@google.com> wrote:
->
-> Unconditionally add -fno-stack-protector to KCOV's compiler options, as
-> all supported compilers support the option. This saves a compiler
-> invocation to determine if the option is supported.
->
-> Because Clang does not support -fno-conserve-stack, and
-> -fno-stack-protector was wrapped in the same cc-option, we were missing
-> -fno-stack-protector with Clang. Unconditionally adding this option
-> fixes this for Clang.
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Split out from series:
->         https://lkml.kernel.org/r/20200605082839.226418-2-elver@google.com
-> as there is no dependency on the preceding patch (which will be dropped).
-> ---
->  kernel/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/Makefile b/kernel/Makefile
-> index f3218bc5ec69..592cb549dcb8 100644
-> --- a/kernel/Makefile
-> +++ b/kernel/Makefile
-> @@ -35,7 +35,7 @@ KCOV_INSTRUMENT_stacktrace.o := n
->  KCOV_INSTRUMENT_kcov.o := n
->  KASAN_SANITIZE_kcov.o := n
->  KCSAN_SANITIZE_kcov.o := n
-> -CFLAGS_kcov.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
-> +CFLAGS_kcov.o := $(call cc-option, -fno-conserve-stack) -fno-stack-protector
->
->  # cond_syscall is currently not LTO compatible
->  CFLAGS_sys_ni.o = $(DISABLE_LTO)
-> --
-> 2.27.0.290.gba653c62da-goog
->
+Mark,
 
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+This block is used on multiple Broadcom SoCs and would like to get
+comments from all who deal with iProc and have touched this file as
+well.
+Please copy :
+Florian Fainelli <f.fainelli@gmail.com>
+Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+and
+bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM SPI DRIVER)
+
+Kamal
+
+On Mon, Jun 15, 2020 at 12:06 AM Mark Tomlinson
+<mark.tomlinson@alliedtelesis.co.nz> wrote:
+>
+> This series of patches came from a single large Broadcom patch that
+> implements drivers for a number of their integrated switch chips. Mostly
+> this is just splitting the qspi driver into smaller parts and doesn't
+> include much original from me.
+>
+> Mark Tomlinson (5):
+>   spi: bcm-qspi: Add support for setting BSPI clock
+>   spi: bcm-qspi: Improve debug reading SPI data
+>   spi: bcm-qspi: Do not split transfers into small chunks
+>   spi: bcm-qspi: Make multiple data blocks interrupt-driven
+>   spi: bcm-qspi: Improve interrupt handling
+>
+>  drivers/spi/spi-bcm-qspi.c | 189 ++++++++++++++++++++++---------------
+>  drivers/spi/spi-bcm-qspi.h |   5 +-
+>  2 files changed, 115 insertions(+), 79 deletions(-)
+>
+> --
+> 2.27.0
+>
