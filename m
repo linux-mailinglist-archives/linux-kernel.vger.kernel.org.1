@@ -2,96 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EC71F9FF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E1D1FA001
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731449AbgFOTKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 15:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731371AbgFOTKT (ORCPT
+        id S1731457AbgFOTMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 15:12:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58378 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729354AbgFOTME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:10:19 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3473C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:10:18 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i3so16010302ljg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bLrasL53j1rcRe899kvLmCMS2kS/RWB75sihborwOiM=;
-        b=DU/av6GzFEWftb06S7JjYSuQL7mwTQX2oFzubBhqTr2gBiqg95+qQX9FqcOTm9AjwQ
-         Yq0zZ9x9/hOq8rqWpgeww9tEr2/8p15ZJQPl+E1hFXLI91NsEMARowGIpz1YT/Hxq+Ec
-         tVOtVB/wETKIX+FyhrN8QKEePGQgISImY71OM=
+        Mon, 15 Jun 2020 15:12:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592248323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gBDypd72AayeylkkdmJfk3R+s+aCIKax33JorcXAteU=;
+        b=HZhbvUeNmU2tZJfP3AaFmYlzwHSdFQGl7OO62+uPjBDuo2S7XxL54NwBW7HQ3mwF2arQO1
+        SbjJt/ekmd5WW7t4eGvD6wZveK6VwOnoEToH6Ecb7fd74AcoNel7PAI7aMwYdLmgziiKLm
+        o+BF31DqGrcZ6wV064rCQHSr/+e9CaI=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-7z01uD96Po6yOUcINHXr1Q-1; Mon, 15 Jun 2020 15:11:51 -0400
+X-MC-Unique: 7z01uD96Po6yOUcINHXr1Q-1
+Received: by mail-qt1-f199.google.com with SMTP id u26so14745390qtj.21
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:11:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bLrasL53j1rcRe899kvLmCMS2kS/RWB75sihborwOiM=;
-        b=odEMpp8WnBSOL9lKU31bLFH22p356tEcwzezDZJPSwRnpHZFSBVmQNTNl6SQ3WqNDC
-         Y21X3H8aDs3lwota8ElrH2oaxjO0OYRnMCKB8Oj3HY3MSn6ZdAoOre1CWHUzgLINBTxO
-         tXrXmaBOdPeFdGgMynTyEvfUfm0GZJpCkW/ACySpJRwR24kxV8GVaVQQZlFXRn4N/WJ/
-         mzQPsRzG8sr/bDn5DOxBw4f1qTyGPbtbJiGgep7Ru0tomH22hoYfq6GPJnIQu9tjvWQC
-         r5baa9ZIRAxzyd46HinxRUDUJA+dxvzvr5EjVB2UIqPszbYuv8Uk2WtAE3i8ViZjkDYA
-         b3WQ==
-X-Gm-Message-State: AOAM532Vu/9ltrhQVFBlydvy6f1UFbtQZA6w/kWhHmfhbCcGh8U+lgjJ
-        ggsThoAiZjDTyGl2fxDRSOehFIU3Lks=
-X-Google-Smtp-Source: ABdhPJzkYSIuAkPff+g2+RfU+hzz/xjjDjWe0zmuZis7QiW4x2LNBYVcgpS8GTJGPbN/0ff6igXcWQ==
-X-Received: by 2002:a2e:9b8f:: with SMTP id z15mr3860134lji.59.1592248216530;
-        Mon, 15 Jun 2020 12:10:16 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id m14sm939012lfp.18.2020.06.15.12.10.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 12:10:15 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id x18so20510598lji.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 12:10:15 -0700 (PDT)
-X-Received: by 2002:a2e:97c3:: with SMTP id m3mr14454425ljj.312.1592248214672;
- Mon, 15 Jun 2020 12:10:14 -0700 (PDT)
+        bh=gBDypd72AayeylkkdmJfk3R+s+aCIKax33JorcXAteU=;
+        b=GcRls6STAUEcHdo2PubG5UXPucztwJK9KXMWTtQCmiqqHWMeqcN6zjLVOu2GFtQiHG
+         sbItNb7+fckney7kVceRBLC7pC/YW+ov4Lk8qF76LAqo/BGoPpB//ObOkdxG3skcSKxZ
+         rYokzQtdvy5VjUTl2tMi0ALmngT1U8hI2t8eWbepl0oUT9nwrfE8jkySP7lOEKCJAqcW
+         5ZQTLXBZPKjFA9Q0556Jk6yPHPLeommvEHtEcbwch+4yVZLnaKi6AMiferzSYXU6RuKq
+         fjQ1yRwZkYpVfUyD2zoDDJiLR+G9Hs53bzd01j4uCkr6yUhposAZg4dJrd9khbR8/oer
+         6pmw==
+X-Gm-Message-State: AOAM533s7//DGhio1cW99Sj6TPkelW/0/LQsB3tWEqAhJTgyYmKM8322
+        Qs0UTgBZigmngp2H3rYZ0HCe7xug4w/rzIs2925dyl3veRYuXENLJ0zmO7h40gmYcXjIltm60mQ
+        6D5pBNocq9K5C5ahG+pIuezQ9Q3c8UJ16LF9UxydU
+X-Received: by 2002:a0c:e254:: with SMTP id x20mr25376399qvl.153.1592248310799;
+        Mon, 15 Jun 2020 12:11:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwj+hvBQAKPt+byrNt/W/RfLxG8oA1B0DgJCFqfYRYBqVFrGbuH2lT9c3kQXLnUlruGJeek3QiU4rpm8VmJsTc=
+X-Received: by 2002:a0c:e254:: with SMTP id x20mr25376377qvl.153.1592248310457;
+ Mon, 15 Jun 2020 12:11:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200611040453.GK12456@shao2-debian> <CAHk-=whCjhBgJv0z6JoOKMyfnBp0WhH6oa=ayuRRLtgJxOkd5Q@mail.gmail.com>
- <CAG48ez1v1b4X5LgFya6nvi33-TWwqna_dc5jGFVosqQhdn_Nkg@mail.gmail.com>
-In-Reply-To: <CAG48ez1v1b4X5LgFya6nvi33-TWwqna_dc5jGFVosqQhdn_Nkg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Jun 2020 12:09:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgAH-yXX=1T_hqenVVmQPVKP-dkRKKkHYcWAXK0tRzz6Q@mail.gmail.com>
-Message-ID: <CAHk-=wgAH-yXX=1T_hqenVVmQPVKP-dkRKKkHYcWAXK0tRzz6Q@mail.gmail.com>
-Subject: Re: [gup] 17839856fd: stress-ng.vm-splice.ops_per_sec 2158.6% improvement
-To:     Jann Horn <jannh@google.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <1589395957-24628-1-git-send-email-bhsharma@redhat.com> <CACi5LpMKSNz=_OQWmEQ2kaswbjAONjn2pXQiu=jCA=wMt3wGCQ@mail.gmail.com>
+In-Reply-To: <CACi5LpMKSNz=_OQWmEQ2kaswbjAONjn2pXQiu=jCA=wMt3wGCQ@mail.gmail.com>
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+Date:   Tue, 16 Jun 2020 00:41:37 +0530
+Message-ID: <CACi5LpNYtAFq6PYjsYArViz+gzuh5-_CKZLBqo826oWhERrx8A@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Append new variables to vmcoreinfo (TCR_EL1.T1SZ
+ for arm64 and MAX_PHYSMEM_BITS for all archs)
+To:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Bhupesh SHARMA <bhupesh.linux@gmail.com>,
+        Boris Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dave Anderson <anderson@redhat.com>,
+        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        John Donnelly <john.p.donnelly@oracle.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Amit Kachhap <amit.kachhap@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        kexec mailing list <kexec@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:33 AM Jann Horn <jannh@google.com> wrote:
+Hello Catalin, Will,
+
+On Tue, Jun 2, 2020 at 10:54 AM Bhupesh Sharma <bhsharma@redhat.com> wrote:
 >
-> So in summary I guess the test was just really slow up until now
-> because it was hitting a slowpath that you wouldn't hit during normal
-> usage? At least for vmsplice(), writing uninitialized pages doesn't
-> really make a whole lot of sense...
+> Hello,
+>
+> On Thu, May 14, 2020 at 12:22 AM Bhupesh Sharma <bhsharma@redhat.com> wrote:
+> >
+> > Apologies for the delayed update. Its been quite some time since I
+> > posted the last version (v5), but I have been really caught up in some
+> > other critical issues.
+> >
+> > Changes since v5:
+> > ----------------
+> > - v5 can be viewed here:
+> >   http://lists.infradead.org/pipermail/kexec/2019-November/024055.html
+> > - Addressed review comments from James Morse and Boris.
+> > - Added Tested-by received from John on v5 patchset.
+> > - Rebased against arm64 (for-next/ptr-auth) branch which has Amit's
+> >   patchset for ARMv8.3-A Pointer Authentication feature vmcoreinfo
+> >   applied.
+> >
+> > Changes since v4:
+> > ----------------
+> > - v4 can be seen here:
+> >   http://lists.infradead.org/pipermail/kexec/2019-November/023961.html
+> > - Addressed comments from Dave and added patches for documenting
+> >   new variables appended to vmcoreinfo documentation.
+> > - Added testing report shared by Akashi for PATCH 2/5.
+> >
+> > Changes since v3:
+> > ----------------
+> > - v3 can be seen here:
+> >   http://lists.infradead.org/pipermail/kexec/2019-March/022590.html
+> > - Addressed comments from James and exported TCR_EL1.T1SZ in vmcoreinfo
+> >   instead of PTRS_PER_PGD.
+> > - Added a new patch (via [PATCH 3/3]), which fixes a simple typo in
+> >   'Documentation/arm64/memory.rst'
+> >
+> > Changes since v2:
+> > ----------------
+> > - v2 can be seen here:
+> >   http://lists.infradead.org/pipermail/kexec/2019-March/022531.html
+> > - Protected 'MAX_PHYSMEM_BITS' vmcoreinfo variable under CONFIG_SPARSEMEM
+> >   ifdef sections, as suggested by Kazu.
+> > - Updated vmcoreinfo documentation to add description about
+> >   'MAX_PHYSMEM_BITS' variable (via [PATCH 3/3]).
+> >
+> > Changes since v1:
+> > ----------------
+> > - v1 was sent out as a single patch which can be seen here:
+> >   http://lists.infradead.org/pipermail/kexec/2019-February/022411.html
+> >
+> > - v2 breaks the single patch into two independent patches:
+> >   [PATCH 1/2] appends 'PTRS_PER_PGD' to vmcoreinfo for arm64 arch, whereas
+> >   [PATCH 2/2] appends 'MAX_PHYSMEM_BITS' to vmcoreinfo in core kernel code (all archs)
+> >
+> > This patchset primarily fixes the regression reported in user-space
+> > utilities like 'makedumpfile' and 'crash-utility' on arm64 architecture
+> > with the availability of 52-bit address space feature in underlying
+> > kernel. These regressions have been reported both on CPUs which don't
+> > support ARMv8.2 extensions (i.e. LVA, LPA) and are running newer kernels
+> > and also on prototype platforms (like ARMv8 FVP simulator model) which
+> > support ARMv8.2 extensions and are running newer kernels.
+> >
+> > The reason for these regressions is that right now user-space tools
+> > have no direct access to these values (since these are not exported
+> > from the kernel) and hence need to rely on a best-guess method of
+> > determining value of 'vabits_actual' and 'MAX_PHYSMEM_BITS' supported
+> > by underlying kernel.
+> >
+> > Exporting these values via vmcoreinfo will help user-land in such cases.
+> > In addition, as per suggestion from makedumpfile maintainer (Kazu),
+> > it makes more sense to append 'MAX_PHYSMEM_BITS' to
+> > vmcoreinfo in the core code itself rather than in arm64 arch-specific
+> > code, so that the user-space code for other archs can also benefit from
+> > this addition to the vmcoreinfo and use it as a standard way of
+> > determining 'SECTIONS_SHIFT' value in user-land.
+> >
+> > Cc: Boris Petkov <bp@alien8.de>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: James Morse <james.morse@arm.com>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Steve Capper <steve.capper@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Paul Mackerras <paulus@samba.org>
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Dave Anderson <anderson@redhat.com>
+> > Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
+> > Cc: John Donnelly <john.p.donnelly@oracle.com>
+> > Cc: scott.branden@broadcom.com
+> > Cc: Amit Kachhap <amit.kachhap@arm.com>
+> > Cc: x86@kernel.org
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-doc@vger.kernel.org
+> > Cc: kexec@lists.infradead.org
+> >
+> > Bhupesh Sharma (2):
+> >   crash_core, vmcoreinfo: Append 'MAX_PHYSMEM_BITS' to vmcoreinfo
+> >   arm64/crash_core: Export TCR_EL1.T1SZ in vmcoreinfo
+> >
+> >  Documentation/admin-guide/kdump/vmcoreinfo.rst | 16 ++++++++++++++++
+> >  arch/arm64/include/asm/pgtable-hwdef.h         |  1 +
+> >  arch/arm64/kernel/crash_core.c                 | 10 ++++++++++
+> >  kernel/crash_core.c                            |  1 +
+> >  4 files changed, 28 insertions(+)
+>
+> Ping. @James Morse , Others
+>
+> Please share if you have some comments regarding this patchset.
 
-Heh. My main worry with that commit was that we'd see the reverse
-effect: somebody implicitly depending on the continued sharing of
-pages in some odd splice situation, and where breaking the COW would
-result in a performance degradation.
+Ping. I think we have two Tested-by available from Oracle and Marvell
+folks on this patchset and no further review-comments.
+Can you please help review/pick this patchset via the arm64 tree?
 
-The fact that it went the other way instead is somewhat ironic.
+User-space utilities like makedumpfile and crash have been broken
+since 52-bit VA addressing was enabled on arm64 kernel, so distros are
+obliged to carry downstream-only fixes for these user-space utilities
+to make them work with the kernel which support 52-bit VA addressing
+on arm64.
 
-But good.
+Thanks,
+Bhupesh
 
-I guess I'll just ping the stable people to say "yeah, put that in
-stable too". It's a fix, and apparently it _helps_ performance for the
-degenerate cases rather than hurting anything.
-
-             Linus
