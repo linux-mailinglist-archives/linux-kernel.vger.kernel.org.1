@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FDA1F8E0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7491F8E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbgFOGq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:46:59 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:61278 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgFOGq6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592203619; x=1623739619;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=n9xEj1S1zm4BAv1ix2dtneBn+lmgT67gEX3XKW8QTbY=;
-  b=ERmnc3yEwYl8tzzIYK8C7Ml+QTVP6m2OVPRXXEk4ClfuCCIi1h/l2c27
-   h2aH/sL0p0qcAmyL52UmzeuNb4Izk5zcA4k9K5ghzIoGlbKQ4B6imUohF
-   T0GMo8wPtC8CI1KUn0hmxSOHK9bsLWQOBdCflyxbHoy7OoZZLhJzeUEVV
-   Q=;
-IronPort-SDR: CKYfCodys5a2jbgE+Cga2MzmUs8G9bh61AkZVN7lNVFObrSjZNlvWjx0Mxh0En0ObCNn5Ps/xx
- S3PfG+xdyHCA==
-X-IronPort-AV: E=Sophos;i="5.73,514,1583193600"; 
-   d="scan'208";a="43948403"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 15 Jun 2020 06:46:56 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 63D97A1E5D;
-        Mon, 15 Jun 2020 06:46:55 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 06:46:54 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.214) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 15 Jun 2020 06:46:49 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Pavel Machek <pavel@ucw.cz>
-CC:     Jiri Slaby <jslaby@suse.cz>, Michael Ellerman <mpe@ellerman.id.au>,
-        SeongJae Park <sjpark@amazon.com>,
-        Joe Perches <joe@perches.com>, <akpm@linux-foundation.org>,
-        <apw@canonical.com>, SeongJae Park <sjpark@amazon.de>,
-        <colin.king@canonical.com>, <sj38.park@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v4 0/2] Recommend denylist/allowlist instead of blacklist/whitelist
-Date:   Mon, 15 Jun 2020 08:46:31 +0200
-Message-ID: <20200615064631.18910-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615061208.GA31489@amd> (raw)
+        id S1728514AbgFOGrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 02:47:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728276AbgFOGrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 02:47:12 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80BB520707;
+        Mon, 15 Jun 2020 06:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592203631;
+        bh=7Q6CZYyu5yNzedIqh5sJBgI5/YLkukvok0P9JrKqBOM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Timn/k2a8kskuaPhpAvq549OmLmEiCyRYr4NrxeeI7y3+mBdKafYyssRAolCcXAER
+         6gDuLwCtPCxR/KQRZTDb5BMrxehqO64T4uq41LKCGp0ihsTG6q7lzXZflW7Aj6wjVv
+         gu6QUjZRFARYeaID4FEuFmJHaDHD1HKXYKkT3xw8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jkith-009nm0-D8; Mon, 15 Jun 2020 08:47:09 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org
+Subject: [PATCH 01/29] mm: vmalloc.c: remove a kernel-doc annotation from a removed parameter
+Date:   Mon, 15 Jun 2020 08:46:40 +0200
+Message-Id: <cf778850a32adce7b06831cc7973f98400fc0775.1592203542.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1592203542.git.mchehab+huawei@kernel.org>
+References: <cover.1592203542.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.214]
-X-ClientProxiedBy: EX13D10UWA001.ant.amazon.com (10.43.160.216) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 08:12:08 +0200 Pavel Machek <pavel@ucw.cz> wrote:
+The prot argument was removed. Drop it als from the kernel-doc
+markup.
 
-> 
-> [-- Attachment #1: Type: text/plain, Size: 1115 bytes --]
-> 
-> On Mon 2020-06-15 06:21:43, Jiri Slaby wrote:
-> > On 14. 06. 20, 23:29, Pavel Machek wrote:
-> 
-> > >> It's not like blacklist / whitelist are even good to begin with, it's
-> > >> not obvious which is which, you have to learn that black is bad and
-> > >> white is good.
-> > >>
-> > >> Blocklist (or denylist?) and allowlist are actually more descriptive and
-> > >> less likely to cause confusion.
-> > > 
-> > > You do not understand how word "blacklist" is used inside the kernel,
-> > > do you? Do a quick grep.
+Fixes: 3c8ce1be43d3 ("mm: remove the prot argument from vm_map_ram")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ mm/vmalloc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I of course did grep of the terms before making this patchset.  There are so
-many uses of the term, and therefore I thought it would be very hard and
-painful to replace the whole words.  Of course, I also found some miuse of the
-terms and therefore I thought automatic scripting for the replacement also
-wouldn't make sense.
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 3091c2ca60df..957a0be77270 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1862,7 +1862,6 @@ EXPORT_SYMBOL(vm_unmap_ram);
+  * @pages: an array of pointers to the pages to be mapped
+  * @count: number of pages
+  * @node: prefer to allocate data structures on this node
+- * @prot: memory protection to use. PAGE_KERNEL for regular RAM
+  *
+  * If you use this function for less than VMAP_MAX_ALLOC pages, it could be
+  * faster than vmap so it's good.  But if you mix long-life and short-life
+-- 
+2.26.2
 
-That's why I made gives only warning to future patches.   What this patch aims
-to do is avoiding the further spread of the terms, and incremental replacements
-to better terms, rather than the one point buggy and risky replacement.
-
-> > 
-> > And now, do the same for "blocklist".
-> > 
-> > And is "denylist" a proper word? As grep gives zarro results...
-> > 
-> > It's not that easy to find alternatives. OTOH, admittedly, "blacklist"
-> > is used improperly in some contexts. Some synonyms fit better.
-> 
-> Well, many of the uses is "list of hardware that needs particular
-> workaround" or "list of hardware that is broken in some
-> way"... Neither 'blocklist' nor 'denylist' fit that usage.
-
-Agreed, 'denylist' would also not fit in there.  That said, this patchset will
-warn even such case so that people can think once again and find better term.
-So, I agree this patch is imperfect for many cases, but better than nothing.
-
-
-Thanks,
-SeongJae Park
