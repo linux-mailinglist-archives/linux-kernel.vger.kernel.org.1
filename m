@@ -2,145 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB4B1F8F39
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689B71F8F84
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgFOHRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:17:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgFOHRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:17:53 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFCCF206D7;
-        Mon, 15 Jun 2020 07:17:31 +0000 (UTC)
-Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
- than zone sizes
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Hoan@os.amperecomputing.com, James.Bottomley@hansenpartnership.com,
-        akpm@linux-foundation.org, bcain@codeaurora.org, bhe@redhat.com,
-        catalin.marinas@arm.com, corbet@lwn.net, dalias@libc.org,
-        davem@davemloft.net, deller@gmx.de, geert@linux-m68k.org,
-        green.hu@gmail.com, guoren@kernel.org, gxt@pku.edu.cn,
-        heiko.carstens@de.ibm.com, jcmvbkbc@gmail.com,
-        ley.foon.tan@intel.com, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
-        mattst88@gmail.com, mhocko@kernel.org, monstr@monstr.eu,
-        mpe@ellerman.id.au, msalter@redhat.com, nickhu@andestech.com,
-        openrisc@lists.librecores.org, paul.walmsley@sifive.com,
-        richard@nod.at, rppt@linux.ibm.com, shorne@gmail.com,
-        sparclinux@vger.kernel.org, tony.luck@intel.com,
-        tsbogend@alpha.franken.de, uclinux-h8-devel@lists.sourceforge.jp,
-        vgupta@synopsys.com, x86@kernel.org, ysato@users.sourceforge.jp
-References: <20200412194859.12663-5-rppt@kernel.org>
- <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
- <20200615062234.GA7882@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <24563231-ed19-6f4f-617e-4d6bfc7553e4@linux-m68k.org>
-Date:   Mon, 15 Jun 2020 17:17:28 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728801AbgFOH0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:26:16 -0400
+Received: from mail-177142.yeah.net ([123.58.177.142]:57487 "EHLO
+        mail-177142.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728589AbgFOH0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 03:26:16 -0400
+X-Greylist: delayed 463 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jun 2020 03:26:15 EDT
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-177142.yeah.net (Hmail) with ESMTP id C84A06445C6;
+        Mon, 15 Jun 2020 15:18:29 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AMQAhwC7CIPskkflFGpmIqrA.3.1592205509810.Hmail.wangqing@vivo.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZHJpdmVyc1xibG9jazogVXNlIGtvYmpfdG9fZGV2KCkgQVBJ?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.124
+In-Reply-To: <20200612102651-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200615062234.GA7882@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from wangqing@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 15 Jun 2020 15:18:29 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Mon, 15 Jun 2020 15:18:29 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHU9DTR8fSh4aHUIeVkpOQklJS05OS0JDTkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVKS0tZBg++
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhDSUNPTUxKTENLN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Nio6Eww4TDgyKwgQEB0XPTwLFjIKCTpVSFVKTkJJSUtOTkpLSUtNVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSk5MVUtVSEpVSklPWVdZCAFZQUhISkw3Bg++
+X-HM-Tid: 0a72b6d804be6473kursc84a06445c6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On 15/6/20 4:22 pm, Mike Rapoport wrote:
-> On Mon, Jun 15, 2020 at 01:53:42PM +1000, Greg Ungerer wrote:
->> From: Mike Rapoport <rppt@linux.ibm.com>
->>> Currently, architectures that use free_area_init() to initialize memory map
->>> and node and zone structures need to calculate zone and hole sizes. We can
->>> use free_area_init_nodes() instead and let it detect the zone boundaries
->>> while the architectures will only have to supply the possible limits for
->>> the zones.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>
->> This is causing some new warnings for me on boot on at least one non-MMU m68k target:
-> 
-> There were a couple of changes that cause this. The free_area_init()
-> now relies on memblock data and architectural limits for zone sizes
-> rather than on explisit pfns calculated by the arch code. I've update
-> motorola variant and missed coldfire. Angelo sent a fix for mcfmmu.c
-> [1] and I've updated it to include nommu as well
-> 
-> [1] https://lore.kernel.org/linux-m68k/20200614225119.777702-1-angelo.dureghello@timesys.com
-> 
->>From 55b8523df2a5c4565b132c0691990f0821040fec Mon Sep 17 00:00:00 2001
-> From: Angelo Dureghello <angelo.dureghello@timesys.com>
-> Date: Mon, 15 Jun 2020 00:51:19 +0200
-> Subject: [PATCH] m68k: fix registration of memory regions with memblock
-> 
-> Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-> introduced assumption that UMA systems have their memory at node 0 and
-> updated most of them, but it forgot nommu and coldfire variants of m68k.
-> 
-> The later change in free area initialization in commit fa3354e4ea39 ("mm:
-> free_area_init: use maximal zone PFNs rather than zone sizes") exposed that
-> and caused a lot of "BUG: Bad page state in process swapper" reports.
-
-Even with this patch applied I am still seeing the same messages.
-
-Regards
-Greg
-
-
-
-> Using memblock_add_node() with nid = 0 to register memory banks solves the
-> problem.
-> 
-> Fixes: 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-> Fixes: fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than zone sizes")
-> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-> Co-developed-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   arch/m68k/kernel/setup_no.c | 2 +-
->   arch/m68k/mm/mcfmmu.c       | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index e779b19e0193..0c4589a39ba9 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -138,7 +138,7 @@ void __init setup_arch(char **cmdline_p)
->   	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
->   		 __bss_stop, memory_start, memory_start, memory_end);
->   
-> -	memblock_add(memory_start, memory_end - memory_start);
-> +	memblock_add_node(memory_start, memory_end - memory_start, 0);
->   
->   	/* Keep a copy of command line */
->   	*cmdline_p = &command_line[0];
-> diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-> index 29f47923aa46..7d04210d34f0 100644
-> --- a/arch/m68k/mm/mcfmmu.c
-> +++ b/arch/m68k/mm/mcfmmu.c
-> @@ -174,7 +174,7 @@ void __init cf_bootmem_alloc(void)
->   	m68k_memory[0].addr = _rambase;
->   	m68k_memory[0].size = _ramend - _rambase;
->   
-> -	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
-> +	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
->   
->   	/* compute total pages in system */
->   	num_pages = PFN_DOWN(_ramend - _rambase);
-> 
+ClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGRyaXZlcnNcYmxvY2s6IFVzZSBrb2JqX3RvX2RldigpIEFQ
+ST5PbiBGcmksIEp1biAxMiwgMjAyMCBhdCAwMzoxMDo1NlBNICswODAwLCBXYW5nIFFpbmcgd3Jv
+dGU6Cj4+IFVzZSBrb2JqX3RvX2RldigpIEFQSSBpbnN0ZWFkIG9mIGNvbnRhaW5lcl9vZigpLgo+
+PiAKPj4gU2lnbmVkLW9mZi1ieTogV2FuZyBRaW5nIDx3YW5ncWluZ0B2aXZvLmNvbT4KPj4gLS0t
+Cj4+ICBkcml2ZXJzL2Jsb2NrL3ZpcnRpb19ibGsuYyB8IDIgKy0KPj4gIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+PiAgbW9kZSBjaGFuZ2UgMTAwNjQ0ID0+
+IDEwMDc1NSBkcml2ZXJzL2Jsb2NrL3ZpcnRpb19ibGsuYwo+Cj4KPlN1YmplY3Qgc2hvdWxkIHBy
+b2JhYmx5IHVzZSAiLyIuIEJlc2lkZXMgdGhhdCAtIHRyaXZpYWwgdHJlZT8KU29ycnksIEkgd2ls
+bCBtb2RpZnkgc3ViamVjdCB1c2luZyAiLyIuIEJ1dCB3aGF0IGRvIHlvdSBtZWFuIGFib3V0IHRy
+aXZpYWwgdHJlZT8KPgo+PiAKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmxvY2svdmlydGlvX2Js
+ay5jIGIvZHJpdmVycy9ibG9jay92aXJ0aW9fYmxrLmMKPj4gaW5kZXggOWQyMWJmMC4uYzgwODQw
+NQo+PiAtLS0gYS9kcml2ZXJzL2Jsb2NrL3ZpcnRpb19ibGsuYwo+PiArKysgYi9kcml2ZXJzL2Js
+b2NrL3ZpcnRpb19ibGsuYwo+PiBAQCAtNjMwLDcgKzYzMCw3IEBAIHN0YXRpYyBzdHJ1Y3QgYXR0
+cmlidXRlICp2aXJ0YmxrX2F0dHJzW10gPSB7Cj4+ICBzdGF0aWMgdW1vZGVfdCB2aXJ0YmxrX2F0
+dHJzX2FyZV92aXNpYmxlKHN0cnVjdCBrb2JqZWN0ICprb2JqLAo+PiAgCQlzdHJ1Y3QgYXR0cmli
+dXRlICphLCBpbnQgbikKPj4gIHsKPj4gLQlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBjb250YWluZXJf
+b2Yoa29iaiwgc3RydWN0IGRldmljZSwga29iaik7Cj4+ICsJc3RydWN0IGRldmljZSAqZGV2ID0g
+a29ial90b19kZXYoa29iaik7Cj4+ICAJc3RydWN0IGdlbmRpc2sgKmRpc2sgPSBkZXZfdG9fZGlz
+ayhkZXYpOwo+PiAgCXN0cnVjdCB2aXJ0aW9fYmxrICp2YmxrID0gZGlzay0+cHJpdmF0ZV9kYXRh
+Owo+PiAgCXN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2ID0gdmJsay0+dmRldjsKPj4gLS0gCj4+
+IDIuNy40Cj4KDQoNCg==
