@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E0A1F98DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762201F98E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730626AbgFONdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        id S1730648AbgFONeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730333AbgFONdu (ORCPT
+        with ESMTP id S1730638AbgFONeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:33:50 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C16C061A0E;
-        Mon, 15 Jun 2020 06:33:50 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g5so13094323otg.6;
-        Mon, 15 Jun 2020 06:33:50 -0700 (PDT)
+        Mon, 15 Jun 2020 09:34:07 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29051C061A0E;
+        Mon, 15 Jun 2020 06:34:07 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id f7so17468338ejq.6;
+        Mon, 15 Jun 2020 06:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jqmttIKDv0CjLA+NO+HgmwFUY3hsIX4ea9REGpMDxTM=;
-        b=sMwR/d96SkC8pPPjhsxJCmWF490809kPW2Tgd0DAqdk0yhj0iosebr7yKJhVJ4jYo8
-         Pi7smhYVMepAT6rBbXSY3A3WCmyBcwCZGX6sr3pnP7looBEBq7gI3biTwrbRYLyZzgRn
-         ZPC/UqifZldp29cfHa/I2vlDc/U07ndI37ZMxsT5mCMgYDDUg1FPvlX2Oyi43fnI6eXz
-         dfDA6jzn27vDNnSRXoaBzvA0V4/EVPpipEKB/X3gsE5fnqmtTtAoHd0Lgi/UlG1+Jpak
-         VMpk5YmiHW8PgUI5coQBoAmTkF+5OozDvCYFf60zTnnhZxGuxos8p8+mBNU1lY3AEy7g
-         l99A==
+        bh=D2V1qAE11MNlrSXseMOlYDGmQZmq5VRcnjVpJmM7yzg=;
+        b=GbIldhCdOCVrXEk+ONIEUVLgT0UsbDx8tLCIdwL2uVK0L8Ezi/vkURRR4WlfbiCfht
+         x/F/qgWd21c9PhWl6xCe99JQ1RZw1/+2cxirrPJC9s7GybkalRLGVnHdkRSzOmNjCA1H
+         /S1J7Qda5Y4rgJPjIGX2uum2NncaCTNtYaNmAjyKN4/w38uVr1F928XE8iRGv6cwzU22
+         XXtrdgDqU9/rUGwnrmfy9sUjc66dfTbOEuh891oRPkDExQUNYjKl3Vj9IZCBBZsHDxi6
+         8bSSEDrtNV704lENX5H5ZRAi8a1Z3ny7cUBzhsD/vhjZk4InSqYrSdrtbIvJeLezThfb
+         3NHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jqmttIKDv0CjLA+NO+HgmwFUY3hsIX4ea9REGpMDxTM=;
-        b=N6IAAo2BmTB87Ii6C2IPAXTrdCFGyJhhTHtyV8srkcjxY/XFLfWlb51N69LdBf9mUU
-         Bh/zanogLbYGipljKnd7m1f2nyDM680e7XKS9knrMRMGKeYoEj2t1iYnxu0UpJUHiBaz
-         HxRnvk+frYXxdK9DHNGk9s+6WqauXbNUqeJFGgxCyfHmaGM0Q2076T1z8rUGRW0MWMaf
-         au2hUbs4pvCvrl9+UQrcZBLTF/zVy9AY4g0KxttABX8IfSB00wNAvHxm+dkF7JAi0wDY
-         FmGJ9HpAcyfCYmVYA2C5PDg8MphkDfYS0PIz8lDtqb+FgINYsxJPynryYCLX4ZEM7HVj
-         Fh0A==
-X-Gm-Message-State: AOAM533v9jR3QsobmuWFkHX7Hp3nVYPI7e85Bf3vWCHWzkwRaqHOx8vb
-        jHsQI9j9qNk5dZxn1Xvx6a2BIDxnlw3sVONyoQI=
-X-Google-Smtp-Source: ABdhPJxXDP3gox9eDujaSteeOhmnftxfu9fMErF+5NLIINlVuLstQB9q2UdduCCvhxJnaxIbX9TEDRSUj0UCqYE1WV8=
-X-Received: by 2002:a05:6830:2003:: with SMTP id e3mr20375240otp.89.1592228029199;
- Mon, 15 Jun 2020 06:33:49 -0700 (PDT)
+        bh=D2V1qAE11MNlrSXseMOlYDGmQZmq5VRcnjVpJmM7yzg=;
+        b=MQ9CP2FGBeVn8g5eyobuRrbU3aT1Vm4AJ3CTLjrzpG0DGwWJkONUR0xjq0ILIKMLeg
+         G84QA+VHAy2nxfqopg8+1GXYeR/Lju42AScfJ0LLfloF3kCQglyO78PtCv7/l0wfcUaq
+         SLuDilA+um+a1u0BpI67eMwT25LWiQ1R0XrzVRMCZDnQ7WKYKzDCxsda/Y4Fk91bd5RB
+         PIsWaFcxyO6Xo1SUd3d7y250MBcWbA5J38TyZBU1JE7tbod5X7kGXZBuMq6+dHCxfeAk
+         3kt3BdBw+KyjdNMVbSVbYUAL5DlVHVUvyrrVebdmxtpbUKGRcS2QVDNlBwWzLoezjhTN
+         Cqzw==
+X-Gm-Message-State: AOAM532N1migWf/LQ/CWOC57cyh5DQqQsC7UK6BSZvHu8t6e8A+O37lC
+        KOcFcpsVBJUGVxkqUJVTx/qqtuze8Rhai6DXZFg=
+X-Google-Smtp-Source: ABdhPJzeJ2Yrey1vBEGdZaJnJxSnmLJHNM8zVVXUFYwnfHr2tIRNLk8hVbekn0NLieVUa+bUfXOM0ywx4KZAvQxQROw=
+X-Received: by 2002:a17:906:198d:: with SMTP id g13mr12938685ejd.281.1592228045820;
+ Mon, 15 Jun 2020 06:34:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200613024130.3356-1-nramas@linux.microsoft.com> <20200613024130.3356-6-nramas@linux.microsoft.com>
-In-Reply-To: <20200613024130.3356-6-nramas@linux.microsoft.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Mon, 15 Jun 2020 09:33:38 -0400
-Message-ID: <CAEjxPJ7v5Lu-vzqg0ZVh8zJ9uZ=odN3jt_5+9d9x+RydsNWK0g@mail.gmail.com>
-Subject: Re: [PATCH 5/5] LSM: Define workqueue for measuring security module state
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Stephen Smalley <stephen.smalley@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1592208439-17594-1-git-send-email-krzk@kernel.org>
+ <e1f0326c-8ae8-ffb3-aace-10433b0c78a6@pengutronix.de> <20200615123052.GO4447@sirena.org.uk>
+ <CA+h21hqC7hAenifvRqbwss=Sr+dAu3H9Dx=UF0TS0WVbkzTj2Q@mail.gmail.com>
+ <20200615131012.GB2634@kozik-lap> <CA+h21hoCUC-UqHKLOsMhiEZdyTctUwNC6pqijpD9X96ZZq4M7w@mail.gmail.com>
+ <20200615132842.GA3321@kozik-lap>
+In-Reply-To: <20200615132842.GA3321@kozik-lap>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Mon, 15 Jun 2020 16:33:54 +0300
+Message-ID: <CA+h21hpagCDVbjzh_==B_m2HiVrZv1MsvEcY=fPmqSequ6jvJA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] spi: spi-fsl-dspi: Fix external abort on interrupt
+ in exit paths
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, stable@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 10:42 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
+On Mon, 15 Jun 2020 at 16:28, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> The data maintained by the security modules could be tampered with by
-> malware. The LSM needs to periodically query the state of
-> the security modules and measure the data when the state is changed.
+> On Mon, Jun 15, 2020 at 04:14:06PM +0300, Vladimir Oltean wrote:
+> > On Mon, 15 Jun 2020 at 16:10, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> >
+> > >
+> > > It is a slightly different bug which so this patch should have a follow
+> > > up.
+> > >
+> > > Best regards,
+> > > Krzysztof
+> > >
+> >
+> > Why is it a different bug? It's the same bug.
 >
-> Define a workqueue for handling this periodic query and measurement.
+> One bug is using devm-interface for shared interrupts and second is not
+> caring about suspend/resume.
+>
+> Best regards,
+> Krzysztof
+>
 
-Won't this make it difficult/impossible to predict the IMA PCR value?
-Unless I missed it, you are going to end up measuring every N minutes
-even if there was no change and therefore constantly be extending the
-PCR.  That will break attestation or sealing against the IMA PCR.
+The problem is that you don't have a way to stop servicing a shared
+interrupt safely and on demand, before clk_disable_unprepare.
+So it's exactly the same problem on suspend and on remove.
+Avoiding to think about the suspend problem now means that you'll end
+up having an overall worse solution.
