@@ -2,114 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184781F907A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5425A1F9057
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgFOHuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:50:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40174 "EHLO mx2.suse.de"
+        id S1728929AbgFOHt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:49:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40176 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728875AbgFOHtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:49:20 -0400
+        id S1728878AbgFOHtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 03:49:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 82F3EB001;
+        by mx2.suse.de (Postfix) with ESMTP id BEAFDB071;
         Mon, 15 Jun 2020 07:49:21 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 30/38] vt_ioctl: eliminate use of uival and ucval
-Date:   Mon, 15 Jun 2020 09:49:02 +0200
-Message-Id: <20200615074910.19267-30-jslaby@suse.cz>
+Subject: [PATCH 31/38] vt_ioctl: move K* ioctls to a separate function
+Date:   Mon, 15 Jun 2020 09:49:03 +0200
+Message-Id: <20200615074910.19267-31-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They were used for the first parameter of put_user. But put_user accepts
-constants in the parameter and also determines the type only by the
-second parameter. So we can safely drop these helpers and simplify the
-code a bit.
-
-Including the removal of set_int label.
+We create a new vt_k_ioctl here and move there all the K* ioctls.  This
+makes vt_ioctl significantly smaller.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt_ioctl.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/tty/vt/vt_ioctl.c | 294 ++++++++++++++++++++------------------
+ 1 file changed, 157 insertions(+), 137 deletions(-)
 
 diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index 87fe088c3eb4..911edd8d1272 100644
+index 911edd8d1272..1b423bdc488e 100644
 --- a/drivers/tty/vt/vt_ioctl.c
 +++ b/drivers/tty/vt/vt_ioctl.c
-@@ -353,8 +353,6 @@ int vt_ioctl(struct tty_struct *tty,
+@@ -241,133 +241,15 @@ int vt_waitactive(int n)
+ #define GPLAST 0x3df
+ #define GPNUM (GPLAST - GPFIRST + 1)
+ 
+-
+-
+-static inline int 
+-do_fontx_ioctl(int cmd, struct consolefontdesc __user *user_cfd, int perm, struct console_font_op *op)
+-{
+-	struct consolefontdesc cfdarg;
+-	int i;
+-
+-	if (copy_from_user(&cfdarg, user_cfd, sizeof(struct consolefontdesc))) 
+-		return -EFAULT;
+- 	
+-	switch (cmd) {
+-	case PIO_FONTX:
+-		if (!perm)
+-			return -EPERM;
+-		op->op = KD_FONT_OP_SET;
+-		op->flags = KD_FONT_FLAG_OLD;
+-		op->width = 8;
+-		op->height = cfdarg.charheight;
+-		op->charcount = cfdarg.charcount;
+-		op->data = cfdarg.chardata;
+-		return con_font_op(vc_cons[fg_console].d, op);
+-	case GIO_FONTX: {
+-		op->op = KD_FONT_OP_GET;
+-		op->flags = KD_FONT_FLAG_OLD;
+-		op->width = 8;
+-		op->height = cfdarg.charheight;
+-		op->charcount = cfdarg.charcount;
+-		op->data = cfdarg.chardata;
+-		i = con_font_op(vc_cons[fg_console].d, op);
+-		if (i)
+-			return i;
+-		cfdarg.charheight = op->height;
+-		cfdarg.charcount = op->charcount;
+-		if (copy_to_user(user_cfd, &cfdarg, sizeof(struct consolefontdesc)))
+-			return -EFAULT;
+-		return 0;
+-		}
+-	}
+-	return -EINVAL;
+-}
+-
+-static inline int 
+-do_unimap_ioctl(int cmd, struct unimapdesc __user *user_ud, int perm, struct vc_data *vc)
+-{
+-	struct unimapdesc tmp;
+-
+-	if (copy_from_user(&tmp, user_ud, sizeof tmp))
+-		return -EFAULT;
+-	switch (cmd) {
+-	case PIO_UNIMAP:
+-		if (!perm)
+-			return -EPERM;
+-		return con_set_unimap(vc, tmp.entry_ct, tmp.entries);
+-	case GIO_UNIMAP:
+-		if (!perm && fg_console != vc->vc_num)
+-			return -EPERM;
+-		return con_get_unimap(vc, tmp.entry_ct, &(user_ud->entry_ct), tmp.entries);
+-	}
+-	return 0;
+-}
+-
+-/* deallocate a single console, if possible (leave 0) */
+-static int vt_disallocate(unsigned int vc_num)
+-{
+-	struct vc_data *vc = NULL;
+-	int ret = 0;
+-
+-	console_lock();
+-	if (vt_busy(vc_num))
+-		ret = -EBUSY;
+-	else if (vc_num)
+-		vc = vc_deallocate(vc_num);
+-	console_unlock();
+-
+-	if (vc && vc_num >= MIN_NR_CONSOLES)
+-		tty_port_put(&vc->port);
+-
+-	return ret;
+-}
+-
+-/* deallocate all unused consoles, but leave 0 */
+-static void vt_disallocate_all(void)
+-{
+-	struct vc_data *vc[MAX_NR_CONSOLES];
+-	int i;
+-
+-	console_lock();
+-	for (i = 1; i < MAX_NR_CONSOLES; i++)
+-		if (!vt_busy(i))
+-			vc[i] = vc_deallocate(i);
+-		else
+-			vc[i] = NULL;
+-	console_unlock();
+-
+-	for (i = 1; i < MAX_NR_CONSOLES; i++) {
+-		if (vc[i] && i >= MIN_NR_CONSOLES)
+-			tty_port_put(&vc[i]->port);
+-	}
+-}
+-
+-
+-/*
+- * We handle the console-specific ioctl's here.  We allow the
+- * capability to modify any console, not just the fg_console. 
+- */
+-int vt_ioctl(struct tty_struct *tty,
+-	     unsigned int cmd, unsigned long arg)
++static int vt_k_ioctl(struct tty_struct *tty, unsigned int cmd,
++		unsigned long arg, bool perm)
+ {
  	struct vc_data *vc = tty->driver_data;
- 	struct console_font_op op;	/* used in multiple places here */
- 	unsigned int console = vc->vc_num;
--	unsigned char ucval;
--	unsigned int uival;
+-	struct console_font_op op;	/* used in multiple places here */
+-	unsigned int console = vc->vc_num;
  	void __user *up = (void __user *)arg;
- 	int i, perm;
+-	int i, perm;
++	unsigned int console = vc->vc_num;
  	int ret;
-@@ -406,8 +404,7 @@ int vt_ioctl(struct tty_struct *tty,
- 		/*
- 		 * this is naïve.
- 		 */
--		ucval = KB_101;
--		return put_user(ucval, (char __user *)arg);
-+		return put_user(KB_101, (char __user *)arg);
  
+-	/*
+-	 * To have permissions to do most of the vt ioctls, we either have
+-	 * to be the owner of the tty, or have CAP_SYS_TTY_CONFIG.
+-	 */
+-	perm = 0;
+-	if (current->signal->tty == tty || capable(CAP_SYS_TTY_CONFIG))
+-		perm = 1;
+- 
+ 	switch (cmd) {
+-	case TIOCLINUX:
+-		return tioclinux(tty, arg);
+ 	case KIOCSOUND:
+ 		if (!perm)
+ 			return -EPERM;
+@@ -387,7 +269,7 @@ int vt_ioctl(struct tty_struct *tty,
+ 			return -EPERM;
+ 	{
+ 		unsigned int ticks, count;
+-		
++
  		/*
- 		 * These cannot be implemented on any machine that implements
-@@ -495,8 +492,7 @@ int vt_ioctl(struct tty_struct *tty,
+ 		 * Generate the tone for the appropriate number of ticks.
+ 		 * If the time is zero, turn off sound ourselves.
+@@ -433,11 +315,11 @@ int vt_ioctl(struct tty_struct *tty,
+ #endif
+ 
+ 	/* Linux m68k/i386 interface for setting the keyboard delay/repeat rate */
+-		
++
+ 	case KDKBDREP:
+ 	{
+ 		struct kbd_repeat kbrep;
+-		
++
+ 		if (!capable(CAP_SYS_TTY_CONFIG))
+ 			return -EPERM;
+ 
+@@ -573,6 +455,157 @@ int vt_ioctl(struct tty_struct *tty,
+ 		spin_unlock_irq(&vt_spawn_con.lock);
  		break;
  
- 	case KDGETMODE:
--		uival = vc->vc_mode;
--		goto setint;
-+		return put_user(vc->vc_mode, (int __user *)arg);
- 
- 	case KDMAPDISP:
- 	case KDUNMAPDISP:
-@@ -516,8 +512,7 @@ int vt_ioctl(struct tty_struct *tty,
++	case KDFONTOP: {
++		struct console_font_op op;
++
++		if (copy_from_user(&op, up, sizeof(op)))
++			return -EFAULT;
++		if (!perm && op.op != KD_FONT_OP_GET)
++			return -EPERM;
++		ret = con_font_op(vc, &op);
++		if (ret)
++			return ret;
++		if (copy_to_user(up, &op, sizeof(op)))
++			return -EFAULT;
++		break;
++	}
++
++	default:
++		return -ENOIOCTLCMD;
++	}
++
++	return 0;
++}
++
++static inline int do_fontx_ioctl(int cmd,
++		struct consolefontdesc __user *user_cfd, int perm,
++		struct console_font_op *op)
++{
++	struct consolefontdesc cfdarg;
++	int i;
++
++	if (copy_from_user(&cfdarg, user_cfd, sizeof(struct consolefontdesc)))
++		return -EFAULT;
++
++	switch (cmd) {
++	case PIO_FONTX:
++		if (!perm)
++			return -EPERM;
++		op->op = KD_FONT_OP_SET;
++		op->flags = KD_FONT_FLAG_OLD;
++		op->width = 8;
++		op->height = cfdarg.charheight;
++		op->charcount = cfdarg.charcount;
++		op->data = cfdarg.chardata;
++		return con_font_op(vc_cons[fg_console].d, op);
++	case GIO_FONTX: {
++		op->op = KD_FONT_OP_GET;
++		op->flags = KD_FONT_FLAG_OLD;
++		op->width = 8;
++		op->height = cfdarg.charheight;
++		op->charcount = cfdarg.charcount;
++		op->data = cfdarg.chardata;
++		i = con_font_op(vc_cons[fg_console].d, op);
++		if (i)
++			return i;
++		cfdarg.charheight = op->height;
++		cfdarg.charcount = op->charcount;
++		if (copy_to_user(user_cfd, &cfdarg, sizeof(struct consolefontdesc)))
++			return -EFAULT;
++		return 0;
++		}
++	}
++	return -EINVAL;
++}
++
++static inline int do_unimap_ioctl(int cmd, struct unimapdesc __user *user_ud,
++		int perm, struct vc_data *vc)
++{
++	struct unimapdesc tmp;
++
++	if (copy_from_user(&tmp, user_ud, sizeof tmp))
++		return -EFAULT;
++	switch (cmd) {
++	case PIO_UNIMAP:
++		if (!perm)
++			return -EPERM;
++		return con_set_unimap(vc, tmp.entry_ct, tmp.entries);
++	case GIO_UNIMAP:
++		if (!perm && fg_console != vc->vc_num)
++			return -EPERM;
++		return con_get_unimap(vc, tmp.entry_ct, &(user_ud->entry_ct),
++				tmp.entries);
++	}
++	return 0;
++}
++
++/* deallocate a single console, if possible (leave 0) */
++static int vt_disallocate(unsigned int vc_num)
++{
++	struct vc_data *vc = NULL;
++	int ret = 0;
++
++	console_lock();
++	if (vt_busy(vc_num))
++		ret = -EBUSY;
++	else if (vc_num)
++		vc = vc_deallocate(vc_num);
++	console_unlock();
++
++	if (vc && vc_num >= MIN_NR_CONSOLES)
++		tty_port_put(&vc->port);
++
++	return ret;
++}
++
++/* deallocate all unused consoles, but leave 0 */
++static void vt_disallocate_all(void)
++{
++	struct vc_data *vc[MAX_NR_CONSOLES];
++	int i;
++
++	console_lock();
++	for (i = 1; i < MAX_NR_CONSOLES; i++)
++		if (!vt_busy(i))
++			vc[i] = vc_deallocate(i);
++		else
++			vc[i] = NULL;
++	console_unlock();
++
++	for (i = 1; i < MAX_NR_CONSOLES; i++) {
++		if (vc[i] && i >= MIN_NR_CONSOLES)
++			tty_port_put(&vc[i]->port);
++	}
++}
++
++/*
++ * We handle the console-specific ioctl's here.  We allow the
++ * capability to modify any console, not just the fg_console.
++ */
++int vt_ioctl(struct tty_struct *tty,
++	     unsigned int cmd, unsigned long arg)
++{
++	struct vc_data *vc = tty->driver_data;
++	struct console_font_op op;	/* used in multiple places here */
++	void __user *up = (void __user *)arg;
++	int i, perm;
++	int ret;
++
++	/*
++	 * To have permissions to do most of the vt ioctls, we either have
++	 * to be the owner of the tty, or have CAP_SYS_TTY_CONFIG.
++	 */
++	perm = 0;
++	if (current->signal->tty == tty || capable(CAP_SYS_TTY_CONFIG))
++		perm = 1;
++
++	ret = vt_k_ioctl(tty, cmd, arg, perm);
++	if (ret != -ENOIOCTLCMD)
++		return ret;
++
++	switch (cmd) {
++	case TIOCLINUX:
++		return tioclinux(tty, arg);
+ 	case VT_SETMODE:
+ 	{
+ 		struct vt_mode tmp;
+@@ -922,19 +955,6 @@ int vt_ioctl(struct tty_struct *tty,
  		break;
+ #endif
  
- 	case KDGKBMODE:
--		uival = vt_do_kdgkbmode(console);
--		return put_user(uival, (int __user *)arg);
-+		return put_user(vt_do_kdgkbmode(console), (int __user *)arg);
- 
- 	/* this could be folded into KDSKBMODE, but for compatibility
- 	   reasons it is not so easy to fold KDGKBMETA into KDGKBMODE */
-@@ -526,9 +521,7 @@ int vt_ioctl(struct tty_struct *tty,
- 
- 	case KDGKBMETA:
- 		/* FIXME: should review whether this is worth locking */
--		uival = vt_do_kdgkbmeta(console);
--	setint:
--		return put_user(uival, (int __user *)arg);
-+		return put_user(vt_do_kdgkbmeta(console), (int __user *)arg);
- 
- 	case KDGETKEYCODE:
- 	case KDSETKEYCODE:
-@@ -650,8 +643,8 @@ int vt_ioctl(struct tty_struct *tty,
- 			if (!vt_in_use(i))
- 				break;
- 		console_unlock();
--		uival = i < MAX_NR_CONSOLES ? (i+1) : -1;
--		goto setint;		 
-+		i = i < MAX_NR_CONSOLES ? (i+1) : -1;
-+		return put_user(i, (int __user *)arg);
- 
- 	/*
- 	 * ioctl(fd, VT_ACTIVATE, num) will cause us to switch to vt # num,
+-	case KDFONTOP: {
+-		if (copy_from_user(&op, up, sizeof(op)))
+-			return -EFAULT;
+-		if (!perm && op.op != KD_FONT_OP_GET)
+-			return -EPERM;
+-		ret = con_font_op(vc, &op);
+-		if (ret)
+-			return ret;
+-		if (copy_to_user(up, &op, sizeof(op)))
+-			return -EFAULT;
+-		break;
+-	}
+-
+ 	case PIO_SCRNMAP:
+ 		if (!perm)
+ 			return -EPERM;
 -- 
 2.27.0
 
