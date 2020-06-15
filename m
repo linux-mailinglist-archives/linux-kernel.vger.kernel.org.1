@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EF81F9456
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6391F9464
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgFOKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:08:38 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:17446 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726111AbgFOKIh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:08:37 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FA4rPe026164;
-        Mon, 15 Jun 2020 12:08:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=P5EQA0kAJCU+qpoArB1dL5j+XIOcEoHAZRZPU8tJLpA=;
- b=fblue4OGMu74YEGyWEtTI5zp+7RsKb6+m9fchxDjseMEs6haCHJHJ4eF+YwlTFuwgeoe
- NYmfJwVtfycsBB94nHzPJN7DTodmVR8fp021QY+QQ1DK5mucaHtj6NCWpWIrWt6kyNnX
- W2Y9tVrCFHHpIXWwS+iFeQ0bYGXeuZPqpTKy2krM+5obz/WBGHLUeMpBuocsIOaJ/5SB
- i/xxNKCidvMeEBha5oAVPNBaEh7GSebmHMgC/ufCu1oSgJfaL8xVOwrhGmsI30F0vunH
- DT64ZluIZg6NcrfH+fW0WaPjsR7iCSO3MJQp1QslgstKQgpUz/SQFHst+j40TPnhi8mt 7Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mmjvs19m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 12:08:23 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EBF77100034;
-        Mon, 15 Jun 2020 12:08:22 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D99A72C38BB;
-        Mon, 15 Jun 2020 12:08:22 +0200 (CEST)
-Received: from lmecxl0912.tpe.st.com (10.75.127.51) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun
- 2020 12:08:22 +0200
-Subject: Re: [PATCH 00/15] Fix STM32 DT issues on v5.7-rc4
-To:     Benjamin Gaignard <benjamin.gaignard@st.com>,
-        <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-References: <20200513145935.22493-1-benjamin.gaignard@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <6b0e95ab-e240-c493-1bc1-276dd68933fe@st.com>
-Date:   Mon, 15 Jun 2020 12:08:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729213AbgFOKMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:12:48 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2308 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728368AbgFOKMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 06:12:47 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id D56DDB752A101E85160F;
+        Mon, 15 Jun 2020 11:12:45 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.26.179) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 15 Jun 2020 11:12:45 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <bp@alien8.de>, <james.morse@arm.com>, <lenb@kernel.org>,
+        <tony.luck@intel.com>, <dan.carpenter@oracle.com>,
+        <zhangliguang@linux.alibaba.com>,
+        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
+        <jroedel@suse.de>
+CC:     <yangyicong@hisilicon.com>, <jonathan.cameron@huawei.com>,
+        <tanxiaofei@huawei.com>, <shiju.jose@huawei.com>
+Subject: [PATCH v9 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
+Date:   Mon, 15 Jun 2020 11:09:57 +0100
+Message-ID: <20200615100959.499-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200513145935.22493-1-benjamin.gaignard@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.26.179]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin
+Presently the vendor drivers are unable to do the recovery for the
+vendor specific recoverable HW errors because APEI driver does not
+support reporting the error to the vendor drivers.
 
-On 5/13/20 4:59 PM, Benjamin Gaignard wrote:
-> This series fixes issues hight lighted by dtbs_check on STM32 devicetrees.
-> The patches has been developped on top of v5.7-rc4 tag.
-> 
-> Benjamin Gaignard (15):
->    ARM: dts: stm32: remove useless interrupt-names property on stm32f429
->    ARM: dts: stm32: update pwm pinctrl node names for stm32f4
->    ARM: dts: stm32: update led nodes names for stm32f249-disco
->    ARM: dts: stm32: update led nodes names for stm32f469-disco
->    ARM: dts: stm32: remove useless interrupt-names property on stm32f746
->    ARM: dts: stm32: update led nodes names for stm32f429-eval
->    ARM: dts: stm32: update led nodes names for stm32f769-disco
->    ARM: dts: stm32: update led nodes names for stm32f746-eval
->    ARM: dts: stm32: remove useless interrupt-names property on stm32f743
->    ARM: dts: stm32: Update nodes names for stm32h743 pinctrl
->    ARM: dts: stm32: Update nodes names for stm32mp15 pinctrl
->    ARM: dts: stm32: Add missing #address and #size cells on spi node for
->      stm32mp151
->    ARM: dts: stm32: update led nodes names for stm32f746-eval
->    dt-bindings: pinctrl: stm32: Add missing interrupts property
->    dt-bindings: usb: dwc2: Fix issues for stm32mp15x SoC
-> 
->   .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml          |  3 +++
->   Documentation/devicetree/bindings/usb/dwc2.yaml                |  6 ++++--
->   arch/arm/boot/dts/stm32429i-eval.dts                           |  8 ++++----
->   arch/arm/boot/dts/stm32746g-eval.dts                           |  8 ++++----
->   arch/arm/boot/dts/stm32f4-pinctrl.dtsi                         |  4 ++--
->   arch/arm/boot/dts/stm32f429-disco.dts                          |  4 ++--
->   arch/arm/boot/dts/stm32f429.dtsi                               |  1 -
->   arch/arm/boot/dts/stm32f469-disco.dts                          |  8 ++++----
->   arch/arm/boot/dts/stm32f746.dtsi                               |  1 -
->   arch/arm/boot/dts/stm32f769-disco.dts                          |  4 ++--
->   arch/arm/boot/dts/stm32h743-pinctrl.dtsi                       | 10 +++++-----
->   arch/arm/boot/dts/stm32h743.dtsi                               |  1 -
->   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi                       |  6 +++---
->   arch/arm/boot/dts/stm32mp151.dtsi                              |  2 ++
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi                         |  2 +-
->   15 files changed, 36 insertions(+), 32 deletions(-)
-> 
+patch set
+1. add new interface to the APEI driver for reporting the 
+   vendor specific non-fatal HW errors to the drivers.
 
-Series applied on stm32-next. Note that changes in patch 11 were already 
-present thanks to another patch and patch 14 has already been taken by 
-Linus.
+2. add driver to handle HiSilicon hip PCIe controller's errors.
 
-Regards
-Alex
+V9:
+1. Fixed 2 improvements suggested by the kbuild test robot. 
+1.1 Change ghes_gdata_pool_init() as static function.
+1.2. Removed using buffer to store the error data for
+     logging in the hisi_pcie_handle_error()
+
+V8:
+1. Removed reporting the standard errors through the interface
+   because of the conflict with the recent patches in the
+   memory error handling path.
+2. Fix comments by Dan Carpenter.
+   
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
+
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
+
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+
+V3:
+1. Fix the comments from Bjorn Helgaas.
+
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
+
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.
+
+Shiju Jose (1):
+  ACPI / APEI: Add support to notify the vendor specific HW errors
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 | 130 +++++++++-
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 305 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  28 +++
+ 5 files changed, 471 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+
+-- 
+2.17.1
+
+
