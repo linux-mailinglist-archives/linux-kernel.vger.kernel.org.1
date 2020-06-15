@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64BD1F92CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624041F92F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgFOJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:09:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5891 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728411AbgFOJJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:09:04 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E0CBB22AA912C8934AB8;
-        Mon, 15 Jun 2020 17:09:01 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 15 Jun 2020 17:08:53 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] IB/srpt: Fix a potential null pointer dereference
-Date:   Mon, 15 Jun 2020 17:12:20 +0800
-Message-ID: <20200615091220.6439-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1729264AbgFOJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:12:51 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54735 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728865AbgFOJMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:12:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0U.bnhqt_1592212365;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U.bnhqt_1592212365)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 15 Jun 2020 17:12:46 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk
+Cc:     ming.lei@redhat.com, baolin.wang@linux.alibaba.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] blk-mq: Remove redundant 'return' statement
+Date:   Mon, 15 Jun 2020 17:12:23 +0800
+Message-Id: <a93d3ae2b37c01bc1d30b0eb229241b81405e6ad.1592212094.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In srpt_cm_req_recv(), it is possible that sdev is NULL,
-so we should test sdev before using it.
+The blk_mq_all_tag_iter() is a void function, thus remove
+the redundant 'return' statement in this function.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ block/blk-mq-tag.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 98552749d71c..72053254bf84 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2143,7 +2143,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 			    const struct srp_login_req *req,
- 			    const char *src_addr)
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 44f3d09..ae722f8 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -376,7 +376,7 @@ static void __blk_mq_all_tag_iter(struct blk_mq_tags *tags,
+ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+ 		void *priv)
  {
--	struct srpt_port *sport = &sdev->port[port_num - 1];
-+	struct srpt_port *sport;
- 	struct srpt_nexus *nexus;
- 	struct srp_login_rsp *rsp = NULL;
- 	struct srp_login_rej *rej = NULL;
-@@ -2162,6 +2162,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 	if (WARN_ON(!sdev || !req))
- 		return -EINVAL;
+-	return __blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
++	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
+ }
  
-+	sport = &sdev->port[port_num - 1];
- 	it_iu_len = be32_to_cpu(req->req_it_iu_len);
- 
- 	pr_info("Received SRP_LOGIN_REQ with i_port_id %pI6, t_port_id %pI6 and it_iu_len %d on port %d (guid=%pI6); pkey %#04x\n",
+ /**
 -- 
-2.17.1
+1.8.3.1
 
