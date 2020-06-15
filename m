@@ -2,196 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3D11F9B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D301F9BAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730906AbgFOPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729875AbgFOPLM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:11:12 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FE4C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:11:11 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id c8so18243132iob.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PieIGvQlj3E4NH14G199DoG6j5Cbq8FJrA0WPNTIlWg=;
-        b=C5ACjIi/TkkOTzIVo/MR1GdGIhWnkkF+rEO579iDy7hjEpvc3EJ7rhU0mjVUXUHyeh
-         HesF59K2qmTzk3x7jr3DDKlMfRs4I932YCIGBecS8OEtFy5sGxpUmcEqVUN4f+eL2LtZ
-         852bNCHCsW6/JOQM+9wjVUCPUHJHffLQ5tC8bmZGBUaGn1Qi6TvRZmf1yKEZOQM1wfWj
-         y3bKqqkBKkAYUxJpaLpzr39pTVGM+qyGJzlVMLv9hvAG3Pz4JuTpu3ayYVezhTi5g6Wo
-         4CjDeC2/827S3CYrax7W+dVLXvIw4T3Wt9T8K+un5poarzjISI+NfA/0wGodAXnV79+r
-         5TaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PieIGvQlj3E4NH14G199DoG6j5Cbq8FJrA0WPNTIlWg=;
-        b=ct/MpFswYZLiZGzah3Goi8mj+5yHG1Uvu/qntduwas33nH86F1ghklKh5c2HglQ1/j
-         kif4EkRvV9ucyBUvcQgjzlp+A4KK168ZOb2ev82mwwHhhcWPmLWHAcW0zxv3WINLBv8f
-         8rEbSlAErtT5caojKXqhGDfDD1PcCWMJtY6gzKHnhyESSDROFF4iKThkGJU9T01ILTdR
-         79ejFNbVKBK0qct+Gyp9bAJJIlvrVCfdX6xRWpwpUo+M4rHOxbCn5J/V6l+V616wU5hC
-         sgKM7lrPVWBXrCxVKyYBgJfRosN/CpbUxqs/upDokwHPhGb3OA+C+5kg4OcgRIVYEgZd
-         SByA==
-X-Gm-Message-State: AOAM531ta2jhwSAONNTaEHFTVUTAfkUg6MVSaZU00+iKR96inxKXtJUz
-        u6MOAyLMcienUfLiAKZYmvUdQBZiLH4ymvN9JpUybqHD
-X-Google-Smtp-Source: ABdhPJyGZp1m2WH/mUKvQLav5aU64ZZQSf6FLyDvOTrzG/Kwrk07DtR62ay+1BrYrXVAVd0GUPueWWq1zwjLP2PL750=
-X-Received: by 2002:a02:6a1a:: with SMTP id l26mr21977264jac.66.1592233871265;
- Mon, 15 Jun 2020 08:11:11 -0700 (PDT)
+        id S1730860AbgFOPOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:14:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46680 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730766AbgFOPOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 11:14:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 60AF8AF3F;
+        Mon, 15 Jun 2020 15:14:19 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 17:14:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
+        akpm@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v2 13/24] dyndbg: combine flags & mask into a struct, use
+ that
+Message-ID: <20200615151414.GI31238@alley>
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+ <20200613155738.2249399-14-jim.cromie@gmail.com>
 MIME-Version: 1.0
-References: <20200611054454.2547-1-kdasu.kdev@gmail.com> <20200611054454.2547-2-kdasu.kdev@gmail.com>
- <20200611092707.75da8c6a@xps13> <CAC=U0a3RXScu12LkU+hCv_5Lp_he92ExRFSgqLkwx40D6Xtrag@mail.gmail.com>
- <20200612090728.043b6baf@xps13> <CAC=U0a1oLPs_=SgUTxYPxiW8JpQXOpz-RbL2KrgzDjutt1v0mQ@mail.gmail.com>
- <20200615091923.0c3c7aa7@xps13>
-In-Reply-To: <20200615091923.0c3c7aa7@xps13>
-From:   Kamal Dasu <kdasu.kdev@gmail.com>
-Date:   Mon, 15 Jun 2020 11:11:00 -0400
-Message-ID: <CAC=U0a14R-ZFtwcjESLn67tOfM=DPtdm_Ljuu6Y6Xyx6mRS-Lw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: rawnand: brcmnand: Ecc error handling on EDU transfers
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Brian Norris <computersforpeace@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200613155738.2249399-14-jim.cromie@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 3:19 AM Miquel Raynal <miquel.raynal@bootlin.com> w=
-rote:
->
-> Hi Kamal,
->
-> Kamal Dasu <kdasu.kdev@gmail.com> wrote on Fri, 12 Jun 2020 12:34:22
-> -0400:
->
-> > On Fri, Jun 12, 2020 at 3:07 AM Miquel Raynal <miquel.raynal@bootlin.co=
-m> wrote:
-> > >
-> > > Hi Kamal,
-> > >
-> > > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 12:04:29
-> > > -0400:
-> > >
-> > > > On Thu, Jun 11, 2020 at 3:27 AM Miquel Raynal <miquel.raynal@bootli=
-n.com> wrote:
-> > > > >
-> > > > > Hi Kamal,
-> > > > >
-> > > > > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 01:44=
-:54
-> > > > > -0400:
-> > > > >
-> > > > > > Implemented ECC correctable and uncorrectable error handling fo=
-r EDU
-> > > > >
-> > > > > Implement?
-> > > > >
-> > > > > > reads. If ECC correctable bitflips are encountered  on EDU tran=
-sfer,
-> > > > >
-> > > > > extra space                                         ^
-> > > > >
-> > > > > > read page again using pio, This is needed due to a controller l=
-mitation
-> > > > >
-> > > > > s/pio/PIO/
-> > > > >
-> > > > > > where read and corrected data is not transferred to the DMA buf=
-fer on ECC
-> > > > > > errors. This holds true for ECC correctable errors beyond set t=
-hreshold.
-> > > > >
-> > > > > error.
-> > > > >
-> > > > > Not sure what the last sentence means?
-> > > > >
-> > > >
-> > > > NAND controller allows for setting a correctable  ECC threshold num=
-ber
-> > > > of bits beyond which it will actually report the error to the drive=
-r.
-> > > > e.g. for BCH-4 the threshold is 3, so 3-bit and 4-bit errors will
-> > > > generate correctable ECC interrupt however 1-bit and 2-bit errors w=
-ill
-> > > > be corrected silently.
-> > > > From the above example EDU hardware will not transfer corrected dat=
-a
-> > > > to the DMA buffer for 3-bit and 4-bit errors that get reported. So
-> > > > once we detect
-> > > > the error duing EDU we read the page again using pio.
-> > >
-> > > Ok I see what you mean, can't you fake the threshold instead? The NAN=
-D
-> > > controller in Linux is not supposed to handle this threshold, the NAN=
-D
-> > > core is in charge. So what the controller driver should do is just:
-> > > increase the number of bitflips + return the maximum number or bitfli=
-p
-> > > or increase the failure counter. Is this already the case?
-> > >
-> > /* threshold =3D ceil(BCH-level * 0.75) */
-> > brcmnand_wr_corr_thresh(host, DIV_ROUND_UP(chip->ecc.strength * 3, 4));
-> > This how the threshold is set, all it means is that for high BCH
-> > levels don't interrupt on low number (less than threshold) of
-> > bit_flips. Yes the controller driver only increments correctable ECC
-> > count. But due the EDU design an EDU operation is disrupted when the
-> > controller interrupts on correctable ECC errors during subpage ECC
-> > calculations. Hence the driver needs to read the page again with PIO
-> > to transfer corrected data.
->
-> IIUC, you are doing the job twice: you should just return a number of
-> bitflips or an error to the NAND core. So that's why I'm telling that
-> you should get rid of this threshold. It would avoid the need for the
-> PIO transfer too.
+On Sat 2020-06-13 09:57:27, Jim Cromie wrote:
+> combine flags & mask into a struct, and replace those 2 parameters in
+> 3 functions: ddebug_change, ddebug_parse_flags, ddebug_read_flags,
+> altering the derefs in them accordingly.
+> 
+> This simplifies the 3 function sigs, preparing for more changes.
+> We dont yet need mask from ddebug_read_flags, but will soon.
+> ---
+>  lib/dynamic_debug.c | 46 +++++++++++++++++++++++----------------------
+>  1 file changed, 24 insertions(+), 22 deletions(-)
+> 
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index 93c627e9c094..8dc073a6e8a4 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -62,6 +62,11 @@ struct ddebug_iter {
+>  	unsigned int idx;
+>  };
+>  
+> +struct flagsettings {
 
-I think you are reading some statements in isolation that probably are
-causing some confusion.
-EDU design has a flaw in case of reported  ECC error interrupt in that
-corrected data is not transferred to the DMA buffer. The PIO is needed
-to read corrected data into the NAND data buffer and only for the
-reported errors. So there is no need to change the threshold
-calculation logic, if we get rid of the threshold then we will have to
-do the PIO read on any correctable bit error if it occurs during EDU
-reads.
+Please. use underscore to help with parsing such a long names.
+I mean use: flags_settings.
 
->
-> You also say that the controller "only increments correctable ECC
-> count", what do you mean exactly?
+> +	unsigned int flags;
+> +	unsigned int mask;
+> +};
 
-Maybe that statement was a bit misleading. To be clear when an ECC
-error is reported the controller gives the bit_flips count  as well as
-updates the ECC error address Register and ecc error status registers.
-This logic works as expected in the hardware.
+static int ddebug_change(const struct ddebug_query *query,
+> -			unsigned int pflags, unsigned int mask)
+> +			 struct flagsettings *mods)
 
->The controller does not report errors
-> when the number of bitflips happens to be above the BCH threshold? This
-> would be the only case where what is currently done would be actually
-> needed though.
+> -static int ddebug_read_flags(const char *str, unsigned int *flags)
+> +static int ddebug_read_flags(const char *str, struct flagsettings *f)
 
- It's the other way. The controller only reports bit errors beyond
->=3Dthreshold value, will not report otherwise and silently correct the
-data. There is no problem in  cases where erros are corrected
-silently. Now ECC (un)correctable on EDU reads are detected by simply
-reading back the ECC Error address register. And in case of reported
-uncorrectable ECC errors are treated as usual.  And for reported
-correctable ECC errors we need to read the page again using PIO so
-that the corrected data is properly transferred. All this applies to
-EDU transfer only.
+> -static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+> -			       unsigned int *maskp)
+> +static int ddebug_parse_flags(const char *str, struct flagsettings *mods)
 
->
-> Thanks,
-> Miqu=C3=A8l
+What "mods" stands for, please?
 
-Kamal
+I have to say that using a parameter called "mods" in a function
+called parse_flags() is inconsistent and confusing.
+
+Best Regards,
+Petr
