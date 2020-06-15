@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7971F9CD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40991F9CC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730905AbgFOQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:16:19 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:1632 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729949AbgFOQQS (ORCPT
+        id S1730797AbgFOQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:15:46 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:10006 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729949AbgFOQPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:16:18 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FGF0sD011191;
-        Mon, 15 Jun 2020 18:15:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=Xkqzh+C6FWWTmU37LOuSdIhSb7PIonm3PgO/z5FgNvI=;
- b=dx9RMEyVylmWbL5lXa3SYNQDq5f+d6Y9WE9r8Bt2mowHekYmFYSA8uDz97hu5nEjDJiR
- xNot7L6wZ5Ri7nZHMz+6OhDs+KO4PoVouTv2UizzKPmHjKgLFAKC9JjIfkFadVf7hc3q
- Kve2XkRskN3RCva7qEr7MhVVKpJP3ktxOJCRTTcqJ7WAQsDrJY1ZoZH1XfKb+uVEUD+/
- FMfOwNkwUAoj2R06SqIEU4E7BPCkmW/p/yYOdTDBmmIAX3Sx+7ZNWnTA8QGCLUS1aZBm
- ihdUgylbm28bGNvCrer0rFzpjhAPAoG04XkQJtHYSpKWu3mAW4poQGVToOJMG/FSYMRO jw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mmjvthje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 18:15:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2178C10002A;
-        Mon, 15 Jun 2020 18:15:54 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1374B2C5ADA;
-        Mon, 15 Jun 2020 18:15:54 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun 2020 18:15:53
- +0200
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Mon, 15 Jun 2020 12:15:45 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200615161541epoutp04fb39555f1bb8a1ae4e8195a44b4e4626~Yw8pIWABr0401004010epoutp04B
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:15:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200615161541epoutp04fb39555f1bb8a1ae4e8195a44b4e4626~Yw8pIWABr0401004010epoutp04B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592237741;
+        bh=yn3ZGD3Sx3u9Xx0Gs4zDm9kZr9Wmnca8BtW7gNrs0f8=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=IUzfOVGo6yNO6b1tEEYeyqjPNpsYXTtZdOY2FjFOZ1scE5bh3S29H5gNQrEW4RNu2
+         apyQ0IfM2BVOvh4ypvUsO8ZMDJLE7U8DXObmAAs0uz9B6wadfFt10VGrA8m4tUrcTq
+         ho0m4749DnkcCfXqtmVxO7jClZWSSPK8GLbfNphg=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200615161540epcas5p1f284bbb11bcb5d84ed0d6753d9f957ef~Yw8oM0xY_2011020110epcas5p1f;
+        Mon, 15 Jun 2020 16:15:40 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EE.85.09475.CAE97EE5; Tue, 16 Jun 2020 01:15:40 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200615161539epcas5p26241107c8eaabfae1edafc35256091e0~Yw8nBstNa1810518105epcas5p28;
+        Mon, 15 Jun 2020 16:15:39 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200615161539epsmtrp26cfc9488f423cfe861fe655a0ca4588c~Yw8nA3U8o0928009280epsmtrp2R;
+        Mon, 15 Jun 2020 16:15:39 +0000 (GMT)
+X-AuditID: b6c32a4b-389ff70000002503-18-5ee79eacead8
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F9.B0.08303.BAE97EE5; Tue, 16 Jun 2020 01:15:39 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.108.234.165]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200615161536epsmtip1dffc161c3bdee0e92186109a3b7e45a6~Yw8kCavY91507915079epsmtip1I;
+        Mon, 15 Jun 2020 16:15:36 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzk@kernel.org>
+Cc:     <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <avri.altman@wdc.com>,
+        <martin.petersen@oracle.com>, <kwmad.kim@samsung.com>,
+        <stanley.chu@mediatek.com>, <cang@codeaurora.org>,
+        <linux-samsung-soc@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH 6/6] ARM: multi_v7_defconfig: enable STUSB160X Type-C port controller support
-Date:   Mon, 15 Jun 2020 18:15:12 +0200
-Message-ID: <20200615161512.19150-7-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615161512.19150-1-amelie.delaunay@st.com>
-References: <20200615161512.19150-1-amelie.delaunay@st.com>
+        <linux-kernel@vger.kernel.org>, <kishon@ti.com>
+In-Reply-To: <20200614110202.GA9009@kozik-lap>
+Subject: RE: [RESEND PATCH v10 10/10] arm64: dts: Add node for ufs exynos7
+Date:   Mon, 15 Jun 2020 21:45:34 +0530
+Message-ID: <000001d64330$35947020$a0bd5060$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_06:2020-06-15,2020-06-15 signatures=0
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG4t7PjQZEdjsbMgiywO+bF2ZMTLwIE8gPVATQJid0Cb/nUPqjnqNbQ
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7bCmpu6aec/jDF590bN4+fMqm8Wn9ctY
+        LeYfOcdqceFpD5vF+fMb2C1ubjnKYrHp8TVWi8u75rBZzDi/j8mi+/oONovlx/8xWfzfs4Pd
+        YunWm4wOvB6X+3qZPDat6mTz2Lyk3qPl5H4Wj49Pb7F49G1Zxehx/MZ2Jo/Pm+Q82g90MwVw
+        RnHZpKTmZJalFunbJXBl7N1zg7FgEnvFpcPrmBsYr7N1MXJySAiYSOxYeZ6xi5GLQ0hgN6PE
+        poc3GUESQgKfGCW6fjhAJD4zShzdcpcFpuP53XYmiKJdjBLzj5tBFL1hlJi4/irYWDYBXYkd
+        i9vAbBEge/ON5ewgRcwCt5gknl/5zAqS4BTQk7gy8QZYkbCAl8TiUxPBVrMIqEp8mHQZrIZX
+        wFLi4dPXULagxMmZT8CuYBbQlli28DUzxEUKEj+fLmOFWOYmMf3LPkaIGnGJoz97mEEWSwjc
+        4JDonrGNFaLBReLXsQdMELawxKvjW9ghbCmJz+/2Ah3EAWRnS/TsMoYI10gsnXcM6nt7iQNX
+        5rCAlDALaEqs36UPsYpPovf3EyaITl6JjjYhiGpVieZ3V6E6pSUmdndDHeAhcaB9H/sERsVZ
+        SB6bheSxWUgemIWwbAEjyypGydSC4tz01GLTAuO81HK94sTc4tK8dL3k/NxNjOA0p+W9g/HR
+        gw96hxiZOBgPMUpwMCuJ8B6Sfx4nxJuSWFmVWpQfX1Sak1p8iFGag0VJnFfpx5k4IYH0xJLU
+        7NTUgtQimCwTB6dUA5PPb4eG5lsJl+WeRRdM594+q2WdqM2bj7aG0hu3Llj7bmFHeovFuQId
+        ybu1epe+dYld0JD7fOpfz8rdH5uWZmSWrnlxLJO3zmzZwZbjIa7T+PzXnHu2LPlFp72rdOHK
+        B1n7tN9+CD7xJXHKM6a5yoG7hMp6CratvMp/cX7IE5+dzMo/75/Y3f8s3X1xnIy5T5TNoUMX
+        vnbfEiqWj4u6xfo+WsrCvfuOK9f2bdo62fEzOO98z+r47F0R+ttv1dTVHGLfu3U33dm+/vCT
+        2y/jFO5vkY17PSmEd/nJM6kZ+5LfhxooOH+Lush04883VhHv76d1hY8H3LLe61zw/Ia9sdDX
+        v836IVdNfh7fslPqXfgGJZbijERDLeai4kQALx9+vuIDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGIsWRmVeSWpSXmKPExsWy7bCSnO7qec/jDBZdlrR4+fMqm8Wn9ctY
+        LeYfOcdqceFpD5vF+fMb2C1ubjnKYrHp8TVWi8u75rBZzDi/j8mi+/oONovlx/8xWfzfs4Pd
+        YunWm4wOvB6X+3qZPDat6mTz2Lyk3qPl5H4Wj49Pb7F49G1Zxehx/MZ2Jo/Pm+Q82g90MwVw
+        RnHZpKTmZJalFunbJXBlbFvXxFKwhbXizrNVLA2My1i6GDk5JARMJJ7fbWfqYuTiEBLYwShx
+        5m0LI0RCWuL6xgnsELawxMp/z9khil4xSizrbGUDSbAJ6ErsWNwGZosA2ZtvLAcrYhZ4xiSx
+        /tx/qI5HjBKXmqazglRxCuhJXJl4A6xDWMBLYvGpiWDrWARUJT5MugxWwytgKfHw6WsoW1Di
+        5MwnYLcyC2hLPL35FM5etvA1M8R5ChI/ny5jhbjCTWL6l32MEDXiEkd/9jBPYBSehWTULCSj
+        ZiEZNQtJywJGllWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMFRq6W1g3HPqg96hxiZ
+        OBgPMUpwMCuJ8B6Sfx4nxJuSWFmVWpQfX1Sak1p8iFGag0VJnPfrrIVxQgLpiSWp2ampBalF
+        MFkmDk6pBqYZyWntagy+f8tqF37x2fzmlJrYzOg9bV83LBMRtKxsW7l5ZkfKuamR/9YpTe7U
+        aw2c4JIkxr3iRhxD0adLn01+TOs9lVgVsNmpKOxM1LHF7Hf76779u+c71XW+vNZz6+A3WzXP
+        L/x6MO5mX9rXzVo9AimeqlNCRFOSGS75nl5+RuLe9GnWzx5abZP4OH9q6ZKruzTWu5Tfm5BY
+        anG2UH7/sYmxp7xSO/lefGfiWzCh86/nwngN2ZLJc3YHiBqbXRLu8Hw3/77Vllm7+QPOb59i
+        sVj5anCjsHDkkX1y8w83W7ZGc104wqd8/TbL1lVzVKYfiVcu60r7Z712bq6qep/ZZP5Yw+16
+        RzauSzc2OiKhxFKckWioxVxUnAgAVKBKmkkDAAA=
+X-CMS-MailID: 20200615161539epcas5p26241107c8eaabfae1edafc35256091e0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200613030458epcas5p3f9667bab202d99fb332d5bf5aad63c85
+References: <20200613024706.27975-1-alim.akhtar@samsung.com>
+        <CGME20200613030458epcas5p3f9667bab202d99fb332d5bf5aad63c85@epcas5p3.samsung.com>
+        <20200613024706.27975-11-alim.akhtar@samsung.com>
+        <20200614110202.GA9009@kozik-lap>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for the STMicroelectronics STUSB160X USB Type-C port
-controller driver by turning on CONFIG_TYPEC and CONFIG_TYPEC_STUSB160X as
-modules.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
----
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 95543914d3c7..f85ee102c9a3 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -821,6 +821,8 @@ CONFIG_USB_CONFIGFS_F_HID=y
- CONFIG_USB_CONFIGFS_F_UVC=y
- CONFIG_USB_CONFIGFS_F_PRINTER=y
- CONFIG_USB_ETH=m
-+CONFIG_TYPEC=m
-+CONFIG_TYPEC_STUSB160X=m
- CONFIG_MMC=y
- CONFIG_MMC_BLOCK_MINORS=16
- CONFIG_MMC_ARMMMCI=y
--- 
-2.17.1
-
+> On Sat, Jun 13, 2020 at 08:17:06AM +0530, Alim Akhtar wrote:
+> > Adding dt node foe UFS and UFS-PHY for exynos7 SoC.
+> >
+> > Signed-off-by: Alim Akhtar <alim.akhtar=40samsung.com>
+> > Tested-by: Pawe=C5=82=20Chmiel=20<pawel.mikolaj.chmiel=40gmail.com>=0D=
+=0A>=20>=20---=0D=0A>=20>=20=20.../boot/dts/exynos/exynos7-espresso.dts=20=
+=20=20=20=20=20=7C=20=204=20++=0D=0A>=20>=20=20arch/arm64/boot/dts/exynos/e=
+xynos7.dtsi=20=20=20=20=20=20=20=7C=2043=20++++++++++++++++++-=0D=0A>=20>=
+=20=202=20files=20changed,=2045=20insertions(+),=202=20deletions(-)=0D=0A>=
+=20>=0D=0A>=20=0D=0A>=20This=20is=20already=20applied=20and=20in=20the=20li=
+nux-next.=20=20Don't=20resend=20applied=20patches.=0D=0A>=20=0D=0ASorry=20K=
+rzysztof,=20did=20not=20realized=20that=20this=20was=20already=20landed=20i=
+n=20Linux-next,=20=20your=20point=20taken.=0D=0A=0D=0A>=20Best=20regards,=
+=0D=0A>=20Krzysztof=0D=0A=0D=0A
