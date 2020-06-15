@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A9E1F9F10
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3411F9F30
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 20:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731305AbgFOSIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 14:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        id S1731167AbgFOSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 14:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728585AbgFOSIf (ORCPT
+        with ESMTP id S1728585AbgFOSMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 14:08:35 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC41C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 11:08:35 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d8so7109358plo.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 11:08:35 -0700 (PDT)
+        Mon, 15 Jun 2020 14:12:38 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B991C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 11:12:37 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id t24so14669046qtj.15
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 11:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wNA6Ua9Lonp8W1XwPz+OQDM2cFgREkBYyRe/5AvHSyM=;
-        b=mfT5qYMslqR0NSzLt2YbNgSHf2yXFmMLVQ6ukeXZkCkzarBaNDR4BlvrPhBw8FPp4J
-         lP8nIEfU6h/Y5BieUQ9fN2gsR+LuoTFJJUuYmPA4pKdBt3bZa1Ehi452whffbSAa38Lp
-         /wpPrYgD1c9QkDUEzZXiZQVB02fpsPkOKAj60=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Qo/ijuM+ow8dAc5wZ5WE1a+KxROlqopnh8Kv9W50dgE=;
+        b=LJDUo22t6hXKapYyqN9R7tj7xlwtHlZqlpX2Kvnahx4equE7eFy9ZeqZs8yzrvSvLU
+         toYaZ870Rz0SA+eygx4eP7sJZWNNCXwHsN9dJiyRLNxLnhidBaxqDouSATPVQjsHXjka
+         wQ2EMOeZp4bKP46wfk1reLheh6nthxQ1Q9jIIQ+0x1kQIqc7Ld7Npcx25QHHzTA4LwNs
+         4fU28+zWRzWNw7TjboUaX1yed+Ql5EwJ8R7QzN7+26TSYQwfCqdW2I2+78qEUCGWJJuA
+         wnGwrKwfOAQuATJRUovlEtAwFw8vg3yKlOkUpnJrz9QettVnlE7IVTo7lpyKgLoqdZQy
+         DVxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wNA6Ua9Lonp8W1XwPz+OQDM2cFgREkBYyRe/5AvHSyM=;
-        b=dDreZMpOHLhFBtQatbcesicmK0Xjcd0exr++p/ubVEAcSklw3thlrJhbMWB6UwdgOY
-         R4IdExbA18h+6fg5VwmdGfIyKyvumFeV6VWm9ask2xCgEKzi1tr3ZLEi7iCIPxWn2ypn
-         Qe4YTGHe1y/RGQ6USbmSI1F88IXFIgthjmVJ5PgomhQVtEUuhoL3eZPPHcsDV6UVcBD8
-         x3MOx5GXtTO8z5GaS1l3LK0OKVABMyJ6vxR5D7kG8EHJnEr2RuKIhN4KNSRLISqDP9+w
-         daEPmczXZp3jKcAE+RfQzFLd3JwW/3i2kImdZuWuH/pakJDq420umlH+VkUp5Kammzf3
-         r0oA==
-X-Gm-Message-State: AOAM532ACJV69ZWzlljKv5SsNJn0DPLQ3feECFJdVSSdZpo0JaezplCd
-        iVm6Q0z8u6xgAxXYa4n8B/YsUw==
-X-Google-Smtp-Source: ABdhPJx1uTCtEysTdsh5KwD95wd27X1vLNF8jXSOTLrnI5ZnRgaT2kjt78URIQIrBwa7IpmcRX/2ag==
-X-Received: by 2002:a17:90a:55c7:: with SMTP id o7mr426683pjm.205.1592244515390;
-        Mon, 15 Jun 2020 11:08:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e124sm14211530pfh.140.2020.06.15.11.08.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 11:08:34 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 11:08:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Windsor <dwindsor@gmail.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        "shakeelb@google.com" <shakeelb@google.com>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Qo/ijuM+ow8dAc5wZ5WE1a+KxROlqopnh8Kv9W50dgE=;
+        b=mVPIKqvgYH/T3Lkv//S1bQipIVVlw13aCtvIKgyKRHrLSudPt8EZEBRkxXpKpQtpQf
+         Nc6twzWlF/aG4RGqtQYNjZFe5LrprXaojGY1KmN+fNe3MiRJx4FMT3+WjIY8UhWDewIS
+         GdFhkj0M43WCnSPn9JXIqUbV/HXY1BlAsaG8K8xyvf7JxHNBKXVDM+lD3lcmp1+84Zvb
+         fRYXS1rPdcM40J2Qfft4xVXnWnx36juTDt7xWGchLohq0z/7HWID3K/TswvHZmfiGeZD
+         LO/35NKG01RRhlR+oWyRoqgeeqsnRVyORknHhU65UsdP5l0wdxFu3z6gEFKIWu4l7JIA
+         hj9g==
+X-Gm-Message-State: AOAM531/NKtR6kNNSDpNvdmhl8Aci89qSySoy2dYUD5D7CdjJz0b5i+N
+        cJ9WCOUjmyMfiUzHM3MAukkTkEZW1ulcc+xJQI8=
+X-Google-Smtp-Source: ABdhPJxQb4G9Cz605Z31vyYjmIjI52702EV7OleU8dKDQt9aEVVuVlDnNTCy6qMEKEPGvEGr60ypoxJJqB4nM5ufuSc=
+X-Received: by 2002:a0c:b712:: with SMTP id t18mr25455456qvd.245.1592244756513;
+ Mon, 15 Jun 2020 11:12:36 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 11:12:32 -0700
+Message-Id: <20200615181232.119491-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+Subject: [PATCH] security: fix the key_permission LSM hook function type
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     David Howells <dhowells@redhat.com>,
         James Morris <jamorris@linux.microsoft.com>,
-        "alex.huangjianhui@huawei.com" <alex.huangjianhui@huawei.com>,
-        "dylix.dailei@huawei.com" <dylix.dailei@huawei.com>,
-        "chenzefeng2@huawei.com" <chenzefeng2@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
-Message-ID: <202006151108.5B25D5A31@keescook>
-References: <20200612183450.4189588-1-keescook@chromium.org>
- <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com>
- <202006142054.C00B3E9C9@keescook>
- <CY4PR1101MB23261B27ACF9D7FBC3969318E79C0@CY4PR1101MB2326.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR1101MB23261B27ACF9D7FBC3969318E79C0@CY4PR1101MB2326.namprd11.prod.outlook.com>
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 05:35:58AM +0000, Reshetova, Elena wrote:
-> > On Mon, Jun 15, 2020 at 10:10:08AM +0800, Xiaoming Ni wrote:
-> > > On 2020/6/13 2:34, Kees Cook wrote:
-> > > > This series was never applied[1], and was recently pointed out as
-> > > > missing[2]. If someone has a tree for this, please take it. Otherwise,
-> > > > please Ack and I'll send it to Linus.
-> > > >
-> > > > Thanks!
-> > > >
-> > > > -Kees
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/20190306110549.7628-1-
-> > elena.reshetova@intel.com/
-> > > > [2] https://lore.kernel.org/lkml/1591957695-118312-1-git-send-email-
-> > nixiaoming@huawei.com/
-> > > >
-> > > > Elena Reshetova (3):
-> > > >    nsproxy: convert nsproxy.count to refcount_t
-> > > >    groups: convert group_info.usage to refcount_t
-> > > >    creds: convert cred.usage to refcount_t
-> > > >
-> > > >   include/linux/cred.h    | 15 +++++++-------
-> > > >   include/linux/nsproxy.h |  7 +++----
-> > > >   kernel/cred.c           | 44 ++++++++++++++++++++---------------------
-> > > >   kernel/groups.c         |  2 +-
-> > > >   kernel/nsproxy.c        |  6 +++---
-> > > >   net/sunrpc/auth.c       |  2 +-
-> > > >   6 files changed, 38 insertions(+), 38 deletions(-)
-> > > >
-> > >
-> > > Should mm->mm_users also be replaced by refcount_t?
-> > 
-> > I'll say "yes". :)
-> > https://lore.kernel.org/lkml/1487671124-11188-1-git-send-email-
-> > elena.reshetova@intel.com/
-> > 
-> > > In addition, is it better to change all variables that use
-> > > atomic_dec_and_test to control the release process to refconut_t?
-> > 
-> > For the most part, yes. The following may find a lot of them:
-> > scripts/coccinelle/api/atomic_as_refcounter.cocci
-> > 
-> > If you can go through that and double check for prior series from Elena,
-> > we can get through all the rest of them.
-> 
-> I have these ones also here in case anyone is interested:
-> https://github.com/ereshetova/linux-stable/commits/refcount_t_fs
-> https://github.com/ereshetova/linux-stable/commits/refcount_t_block
-> 
-> They haven't been rebased for a while, but if there is an interest, 
-> I can certainly do it.
+Commit 8c0637e950d6 ("keys: Make the KEY_NEED_* perms an enum rather than
+a mask") changed the type of the key_permission callback functions, but
+didn't change the type of the hook, which trips indirect call checking with
+Control-Flow Integrity (CFI). This change fixes the issue by changing the
+hook type to match the functions.
 
-That would be great; yes!
+Fixes: 8c0637e950d6 ("keys: Make the KEY_NEED_* perms an enum rather than a mask")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ include/linux/lsm_hook_defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 6791813cd439..24f6683f1cfc 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -360,7 +360,7 @@ LSM_HOOK(int, 0, key_alloc, struct key *key, const struct cred *cred,
+ 	 unsigned long flags)
+ LSM_HOOK(void, LSM_RET_VOID, key_free, struct key *key)
+ LSM_HOOK(int, 0, key_permission, key_ref_t key_ref, const struct cred *cred,
+-	 unsigned perm)
++	 enum key_need_perm need_perm)
+ LSM_HOOK(int, 0, key_getsecurity, struct key *key, char **_buffer)
+ #endif /* CONFIG_KEYS */
+ 
+
+base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
 -- 
-Kees Cook
+2.27.0.290.gba653c62da-goog
+
