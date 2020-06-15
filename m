@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A967A1F90D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A411F914F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729006AbgFOH6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:58:51 -0400
-Received: from smtp.asem.it ([151.1.184.197]:51429 "EHLO smtp.asem.it"
+        id S1728829AbgFOI03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:26:29 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:19322 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728868AbgFOH6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:58:49 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000317057.MSG 
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:58:39 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 15
- Jun 2020 09:58:37 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 15 Jun 2020 09:58:37 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-csky@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] doc: devicetree: bindings: fix spelling mistake
-Date:   Mon, 15 Jun 2020 09:58:35 +0200
-Message-ID: <20200615075835.15202-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A09020A.5EE72A2D.0065,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+        id S1728162AbgFOI02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:26:28 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49lkv53h6Nz9v03C;
+        Mon, 15 Jun 2020 10:26:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id b_rTsqgA_kcz; Mon, 15 Jun 2020 10:26:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49lkv23ynTz9v1fZ;
+        Mon, 15 Jun 2020 10:26:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 81B3D8B786;
+        Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id lsX-bHFjEBuH; Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 44F098B791;
+        Mon, 15 Jun 2020 09:48:25 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1B25265B0A; Mon, 15 Jun 2020 07:48:25 +0000 (UTC)
+Message-Id: <ca8c9f8249f523b1fab873e67b81b11989d46553.1592207216.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/fixmap: Fix FIX_EARLY_DEBUG_BASE when page size is
+ 256k
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Albert Herranz <albert_herranz@yahoo.es>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 15 Jun 2020 07:48:25 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo: "triger" --> "trigger"
+FIX_EARLY_DEBUG_BASE reserves a 128k area for debuging.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-Acked-by: Guo Ren <guoren@kernel.org>
+When page size is 256k, the calculation results in a 0 number of
+pages, leading to the following failure:
+
+  CC      arch/powerpc/kernel/asm-offsets.s
+In file included from ./arch/powerpc/include/asm/nohash/32/pgtable.h:77:0,
+                 from ./arch/powerpc/include/asm/nohash/pgtable.h:8,
+                 from ./arch/powerpc/include/asm/pgtable.h:20,
+                 from ./include/linux/pgtable.h:6,
+                 from ./arch/powerpc/include/asm/kup.h:42,
+                 from ./arch/powerpc/include/asm/uaccess.h:9,
+                 from ./include/linux/uaccess.h:11,
+                 from ./include/linux/crypto.h:21,
+                 from ./include/crypto/hash.h:11,
+                 from ./include/linux/uio.h:10,
+                 from ./include/linux/socket.h:8,
+                 from ./include/linux/compat.h:15,
+                 from arch/powerpc/kernel/asm-offsets.c:14:
+./arch/powerpc/include/asm/fixmap.h:75:2: error: overflow in enumeration values
+  __end_of_permanent_fixed_addresses,
+  ^
+make[2]: *** [arch/powerpc/kernel/asm-offsets.s] Error 1
+
+Ensure the debug area is at least one page.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: b8e8efaa8639 ("powerpc: reserve fixmap entries for early debug")
+Cc: stable@vger.kernel.org
+Cc: Albert Herranz <albert_herranz@yahoo.es>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
+ arch/powerpc/include/asm/fixmap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v1: add Acked-by: Guo Ren <guoren@kernel.org>
-
- Documentation/devicetree/bindings/gpio/mediatek,mt7621-gpio.txt | 2 +-
- .../devicetree/bindings/interrupt-controller/csky,mpintc.txt    | 2 +-
- Documentation/devicetree/bindings/timer/csky,mptimer.txt        | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/gpio/mediatek,mt7621-gpio.txt b/Documentation/devicetree/bindings/gpio/mediatek,mt7621-gpio.txt
-index ba455589f869..e1c49b660d3a 100644
---- a/Documentation/devicetree/bindings/gpio/mediatek,mt7621-gpio.txt
-+++ b/Documentation/devicetree/bindings/gpio/mediatek,mt7621-gpio.txt
-@@ -12,7 +12,7 @@ Required properties for the top level node:
-    Only the GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW flags are supported.
- - #interrupt-cells : Specifies the number of cells needed to encode an
-    interrupt. Should be 2. The first cell defines the interrupt number,
--   the second encodes the triger flags encoded as described in
-+   the second encodes the trigger flags encoded as described in
-    Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
- - compatible:
-   - "mediatek,mt7621-gpio" for Mediatek controllers
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/csky,mpintc.txt b/Documentation/devicetree/bindings/interrupt-controller/csky,mpintc.txt
-index e13405355166..e6bbcae4d07f 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/csky,mpintc.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/csky,mpintc.txt
-@@ -10,7 +10,7 @@ Interrupt number definition:
-  16-31  : private  irq, and we use 16 as the co-processor timer.
-  31-1024: common irq for soc ip.
- 
--Interrupt triger mode: (Defined in dt-bindings/interrupt-controller/irq.h)
-+Interrupt trigger mode: (Defined in dt-bindings/interrupt-controller/irq.h)
-  IRQ_TYPE_LEVEL_HIGH (default)
-  IRQ_TYPE_LEVEL_LOW
-  IRQ_TYPE_EDGE_RISING
-diff --git a/Documentation/devicetree/bindings/timer/csky,mptimer.txt b/Documentation/devicetree/bindings/timer/csky,mptimer.txt
-index 15cfec08fbb8..f5c7e99cf52b 100644
---- a/Documentation/devicetree/bindings/timer/csky,mptimer.txt
-+++ b/Documentation/devicetree/bindings/timer/csky,mptimer.txt
-@@ -8,7 +8,7 @@ regs is accessed by cpu co-processor 4 registers with mtcr/mfcr.
-  - PTIM_CTLR "cr<0, 14>" Control reg to start reset timer.
-  - PTIM_TSR  "cr<1, 14>" Interrupt cleanup status reg.
-  - PTIM_CCVR "cr<3, 14>" Current counter value reg.
-- - PTIM_LVR  "cr<6, 14>" Window value reg to triger next event.
-+ - PTIM_LVR  "cr<6, 14>" Window value reg to trigger next event.
- 
- ==============================
- timer node bindings definition
+diff --git a/arch/powerpc/include/asm/fixmap.h b/arch/powerpc/include/asm/fixmap.h
+index 29188810ba30..925cf89cbf4b 100644
+--- a/arch/powerpc/include/asm/fixmap.h
++++ b/arch/powerpc/include/asm/fixmap.h
+@@ -52,7 +52,7 @@ enum fixed_addresses {
+ 	FIX_HOLE,
+ 	/* reserve the top 128K for early debugging purposes */
+ 	FIX_EARLY_DEBUG_TOP = FIX_HOLE,
+-	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+((128*1024)/PAGE_SIZE)-1,
++	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128, PAGE_SIZE)/PAGE_SIZE)-1,
+ #ifdef CONFIG_HIGHMEM
+ 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
+ 	FIX_KMAP_END = FIX_KMAP_BEGIN+(KM_TYPE_NR*NR_CPUS)-1,
 -- 
-2.17.1
+2.25.0
 
