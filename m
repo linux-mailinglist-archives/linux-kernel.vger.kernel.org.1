@@ -2,233 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90241F9E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89781F9E3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgFOROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgFOROG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:14:06 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF219207DA;
-        Mon, 15 Jun 2020 17:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592241245;
-        bh=biF6+GXRgmF5o0BXFMaiIWabRbz9GGjtwF2twAhw/FY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KhxUCVrD+Ar8qGXz0PSliBFL9QbgCdenboSNkOHdYdQqZ7lPVEuCaSUG/Tu/za6eM
-         4Wn06XbAhjTQOJv6Zi8q3c9a762dpS0ZjEXh+Gi9YSp+lW2AFiNmB87PH6UAKuCr8d
-         3RmgVUuVQtclzrshGIJliEtDUmU0HcDMtZlW7pwg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D737935218F0; Mon, 15 Jun 2020 10:14:04 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 10:14:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, x86@kernel.org, elver@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        will@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com
-Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
-Message-ID: <20200615171404.GI2723@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200603114014.152292216@infradead.org>
- <20200603114051.896465666@infradead.org>
- <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
- <20200615155513.GG2554@hirez.programming.kicks-ass.net>
- <20200615162427.GI2554@hirez.programming.kicks-ass.net>
+        id S1731237AbgFOROq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 13:14:46 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:45940 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729354AbgFOROp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:14:45 -0400
+Received: by mail-io1-f65.google.com with SMTP id y5so18680975iob.12;
+        Mon, 15 Jun 2020 10:14:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hiOijoD53LX37YRMIwEiw00dAjUSx8soGvrpBh7UCNk=;
+        b=Qp9t/KukYyFxOiVzLy05euwvk2eHpu3iUN54O56gdnqMdhs2oFTtUmSgr4OIRQjalN
+         jXMkicbQ4ftOaaksx7gMLuIc3GhsFBoXB2aZGezpjzQeKaMSlrMz73L31/4eiPwL5tBz
+         /5YHxy7eu6z22XXhs8l7pTRL0G/QBzRJaMUTpiYtNBCM4XI/uVysscsjv0GjSS5R5eLn
+         X/G8UJjcxLdni/NPuaRrZiHgM9EgvKETQe+VQgxCHc1MDSJtI8yS//l3Eox9bZwEk8bt
+         ilYdm1Fq0tW4DduMvS+ERjovuHRWvAGo2WCsz2aMvM8+2ng1nj+GEMPmAzwpQpuySFn9
+         R3FA==
+X-Gm-Message-State: AOAM530pGKBUdNU2LvGx9W34hCV31XdZccl4eENEIq0xY1ixgBBSdL3w
+        nb9zQ1tGiSkmPgchUoKczQ==
+X-Google-Smtp-Source: ABdhPJzMt4RbwBhE8d8aXJ1Kn/OXGkG36uamUKf5TRxX+ttPOWrLxY6THuuBLi6cS0RFohMBITK0UQ==
+X-Received: by 2002:a02:7f4d:: with SMTP id r74mr21951710jac.51.1592241283969;
+        Mon, 15 Jun 2020 10:14:43 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id v11sm8354642ile.61.2020.06.15.10.14.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 10:14:43 -0700 (PDT)
+Received: (nullmailer pid 1974668 invoked by uid 1000);
+        Mon, 15 Jun 2020 17:14:41 -0000
+Date:   Mon, 15 Jun 2020 11:14:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, marex@denx.de,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH V2 2/3] dt-bindings: spi: Convert imx cspi to json-schema
+Message-ID: <20200615171441.GA1971091@bogus>
+References: <1591235731-15673-1-git-send-email-Anson.Huang@nxp.com>
+ <1591235731-15673-3-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615162427.GI2554@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1591235731-15673-3-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:24:27PM +0200, Peter Zijlstra wrote:
-> On Mon, Jun 15, 2020 at 05:55:13PM +0200, Peter Zijlstra wrote:
-> > On Mon, Jun 15, 2020 at 05:49:05PM +0200, Peter Zijlstra wrote:
-> > > @@ -983,13 +993,17 @@ noinstr void rcu_nmi_enter(void)
-> > >  		if (!in_nmi())
-> > >  			rcu_cleanup_after_idle();
-> > >  
-> > > +		instrumentation_begin();
-> > > +		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-> > > +		instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-> > > +		// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> > > +		instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-> > > +
-> > >  		incby = 1;
-> > >  	} else if (!in_nmi()) {
-> > >  		instrumentation_begin();
-> > >  		rcu_irq_enter_check_tick();
-> > > -		instrumentation_end();
-> > >  	}
-> > > -	instrumentation_begin();
-> > >  	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
-> > >  			  rdp->dynticks_nmi_nesting,
-> > >  			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
-> > 
-> > Oh, that's lost a possible instrumentation_begin() :/ But weirdly
-> > objtool didn't complain about that... Let me poke at that.
-
-This merge window has been quite the trainwreck, hasn't it?  :-/
-
-> Like so then...
-
-Looks plausible, firing up some tests.
-
-							Thanx, Paul
-
+On Thu, Jun 04, 2020 at 09:55:30AM +0800, Anson Huang wrote:
+> Convert the i.MX CSPI binding to DT schema format using json-schema,
+> update compatible, remove obsolete properties "fsl,spi-num-chipselects"
+> and update the example based on latest DT file.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 > ---
-> Subject: rcu: Fixup noinstr warnings
-> 
-> A KCSAN build revealed we have explicit annoations through atomic_*()
-> usage, switch to arch_atomic_*() for the respective functions.
-> 
-> vmlinux.o: warning: objtool: rcu_nmi_exit()+0x4d: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x25: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_nmi_enter()+0x4f: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0x2a: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: __rcu_is_watching()+0x25: call to __kcsan_check_access() leaves .noinstr.text section
-> 
-> Additionally, without the NOP in instrumentation_begin(), objtool would
-> not detect the lack of the 'else instrumentation_begin();' branch in
-> rcu_nmi_enter().
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Changes since V1:
+> 	- add "unevaluatedProperties: false".
 > ---
->  include/linux/compiler.h |    2 +-
->  kernel/rcu/tree.c        |   33 +++++++++++++++++++++++++--------
->  2 files changed, 26 insertions(+), 9 deletions(-)
+>  .../devicetree/bindings/spi/fsl-imx-cspi.txt       | 56 ------------
+>  .../devicetree/bindings/spi/fsl-imx-cspi.yaml      | 99 ++++++++++++++++++++++
+>  2 files changed, 99 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/fsl-imx-cspi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/fsl-imx-cspi.yaml
 > 
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -123,7 +123,7 @@ void ftrace_likely_update(struct ftrace_
->  #ifdef CONFIG_DEBUG_ENTRY
->  /* Begin/end of an instrumentation safe region */
->  #define instrumentation_begin() ({					\
-> -	asm volatile("%c0:\n\t"						\
-> +	asm volatile("%c0: nop\n\t"						\
->  		     ".pushsection .discard.instr_begin\n\t"		\
->  		     ".long %c0b - .\n\t"				\
->  		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -250,7 +250,7 @@ static noinstr void rcu_dynticks_eqs_ent
->  	 * next idle sojourn.
->  	 */
->  	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
-> -	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-> +	seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
->  	// RCU is no longer watching.  Better be in extended quiescent state!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
->  		     (seq & RCU_DYNTICK_CTRL_CTR));
-> @@ -274,13 +274,13 @@ static noinstr void rcu_dynticks_eqs_exi
->  	 * and we also must force ordering with the next RCU read-side
->  	 * critical section.
->  	 */
-> -	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-> +	seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
->  	// RCU is now watching.  Better not be in an extended quiescent state!
->  	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
->  		     !(seq & RCU_DYNTICK_CTRL_CTR));
->  	if (seq & RCU_DYNTICK_CTRL_MASK) {
-> -		atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
-> +		arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
->  		smp_mb__after_atomic(); /* _exit after clearing mask. */
->  	}
->  }
-> @@ -313,7 +313,7 @@ static __always_inline bool rcu_dynticks
->  {
->  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
->  
-> -	return !(atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
-> +	return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
->  }
->  
->  /*
-> @@ -633,6 +633,10 @@ static noinstr void rcu_eqs_enter(bool u
->  	do_nocb_deferred_wakeup(rdp);
->  	rcu_prepare_for_idle();
->  	rcu_preempt_deferred_qs(current);
+> diff --git a/Documentation/devicetree/bindings/spi/fsl-imx-cspi.txt b/Documentation/devicetree/bindings/spi/fsl-imx-cspi.txt
+> deleted file mode 100644
+> index 33bc58f..0000000
+> --- a/Documentation/devicetree/bindings/spi/fsl-imx-cspi.txt
+> +++ /dev/null
+> @@ -1,56 +0,0 @@
+> -* Freescale (Enhanced) Configurable Serial Peripheral Interface
+> -  (CSPI/eCSPI) for i.MX
+> -
+> -Required properties:
+> -- compatible :
+> -  - "fsl,imx1-cspi" for SPI compatible with the one integrated on i.MX1
+> -  - "fsl,imx21-cspi" for SPI compatible with the one integrated on i.MX21
+> -  - "fsl,imx27-cspi" for SPI compatible with the one integrated on i.MX27
+> -  - "fsl,imx31-cspi" for SPI compatible with the one integrated on i.MX31
+> -  - "fsl,imx35-cspi" for SPI compatible with the one integrated on i.MX35
+> -  - "fsl,imx51-ecspi" for SPI compatible with the one integrated on i.MX51
+> -  - "fsl,imx53-ecspi" for SPI compatible with the one integrated on i.MX53 and later Soc
+> -  - "fsl,imx8mq-ecspi" for SPI compatible with the one integrated on i.MX8MQ
+> -  - "fsl,imx8mm-ecspi" for SPI compatible with the one integrated on i.MX8MM
+> -  - "fsl,imx8mn-ecspi" for SPI compatible with the one integrated on i.MX8MN
+> -  - "fsl,imx8mp-ecspi" for SPI compatible with the one integrated on i.MX8MP
+> -- reg : Offset and length of the register set for the device
+> -- interrupts : Should contain CSPI/eCSPI interrupt
+> -- clocks : Clock specifiers for both ipg and per clocks.
+> -- clock-names : Clock names should include both "ipg" and "per"
+> -See the clock consumer binding,
+> -	Documentation/devicetree/bindings/clock/clock-bindings.txt
+> -
+> -Recommended properties:
+> -- cs-gpios : GPIOs to use as chip selects, see spi-bus.txt.  While the native chip
+> -select lines can be used, they appear to always generate a pulse between each
+> -word of a transfer.  Most use cases will require GPIO based chip selects to
+> -generate a valid transaction.
+> -
+> -Optional properties:
+> -- num-cs :  Number of total chip selects, see spi-bus.txt.
+> -- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+> -Documentation/devicetree/bindings/dma/dma.txt.
+> -- dma-names: DMA request names, if present, should include "tx" and "rx".
+> -- fsl,spi-rdy-drctl: Integer, representing the value of DRCTL, the register
+> -controlling the SPI_READY handling. Note that to enable the DRCTL consideration,
+> -the SPI_READY mode-flag needs to be set too.
+> -Valid values are: 0 (disabled), 1 (edge-triggered burst) and 2 (level-triggered burst).
+> -
+> -Obsolete properties:
+> -- fsl,spi-num-chipselects : Contains the number of the chipselect
+> -
+> -Example:
+> -
+> -ecspi@70010000 {
+> -	#address-cells = <1>;
+> -	#size-cells = <0>;
+> -	compatible = "fsl,imx51-ecspi";
+> -	reg = <0x70010000 0x4000>;
+> -	interrupts = <36>;
+> -	cs-gpios = <&gpio3 24 0>, /* GPIO3_24 */
+> -		   <&gpio3 25 0>; /* GPIO3_25 */
+> -	dmas = <&sdma 3 7 1>, <&sdma 4 7 2>;
+> -	dma-names = "rx", "tx";
+> -	fsl,spi-rdy-drctl = <1>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/spi/fsl-imx-cspi.yaml b/Documentation/devicetree/bindings/spi/fsl-imx-cspi.yaml
+> new file mode 100644
+> index 0000000..606af7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/fsl-imx-cspi.yaml
+> @@ -0,0 +1,99 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/fsl-imx-cspi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-> +	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+> +title: Freescale (Enhanced) Configurable Serial Peripheral Interface (CSPI/eCSPI) for i.MX
 > +
->  	instrumentation_end();
->  	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
->  	// RCU is watching here ...
-> @@ -692,6 +696,7 @@ noinstr void rcu_nmi_exit(void)
->  {
->  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
->  
-> +	instrumentation_begin();
->  	/*
->  	 * Check for ->dynticks_nmi_nesting underflow and bad ->dynticks.
->  	 * (We are exiting an NMI handler, so RCU better be paying attention
-> @@ -705,7 +710,6 @@ noinstr void rcu_nmi_exit(void)
->  	 * leave it in non-RCU-idle state.
->  	 */
->  	if (rdp->dynticks_nmi_nesting != 1) {
-> -		instrumentation_begin();
->  		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
->  				  atomic_read(&rdp->dynticks));
->  		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
-> @@ -714,13 +718,15 @@ noinstr void rcu_nmi_exit(void)
->  		return;
->  	}
->  
-> -	instrumentation_begin();
->  	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
->  	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
->  	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
->  
->  	if (!in_nmi())
->  		rcu_prepare_for_idle();
+> +maintainers:
+> +  - Shawn Guo <shawn.guo@linaro.org>
 > +
-> +	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-> +	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
->  	instrumentation_end();
->  
->  	// RCU is watching here ...
-> @@ -838,6 +844,10 @@ static void noinstr rcu_eqs_exit(bool us
->  	rcu_dynticks_eqs_exit();
->  	// ... but is watching here.
->  	instrumentation_begin();
+> +allOf:
+> +  - $ref: "/schemas/spi/spi-controller.yaml#"
 > +
-> +	// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> +	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: fsl,imx1-cspi
+> +      - const: fsl,imx21-cspi
+> +      - const: fsl,imx27-cspi
+> +      - const: fsl,imx31-cspi
+> +      - const: fsl,imx35-cspi
+> +      - const: fsl,imx51-ecspi
+> +      - const: fsl,imx53-ecspi
+> +      - items:
+> +        - enum:
+> +          - fsl,imx50-ecspi
+> +          - fsl,imx6q-ecspi
+> +          - fsl,imx6sx-ecspi
+> +          - fsl,imx6sl-ecspi
+> +          - fsl,imx6sll-ecspi
+> +          - fsl,imx6ul-ecspi
+> +          - fsl,imx7d-ecspi
+> +          - fsl,imx8mq-ecspi
+> +          - fsl,imx8mm-ecspi
+> +          - fsl,imx8mn-ecspi
+> +          - fsl,imx8mp-ecspi
+> +        - const: fsl,imx51-ecspi
 > +
->  	rcu_cleanup_after_idle();
->  	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-> @@ -983,13 +993,20 @@ noinstr void rcu_nmi_enter(void)
->  		if (!in_nmi())
->  			rcu_cleanup_after_idle();
->  
-> +		instrumentation_begin();
-> +		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-> +		instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-> +		// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> +		instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+> +  reg:
+> +    maxItems: 1
 > +
->  		incby = 1;
->  	} else if (!in_nmi()) {
->  		instrumentation_begin();
->  		rcu_irq_enter_check_tick();
-> -		instrumentation_end();
-> +	} else {
-> +		instrumentation_begin();
->  	}
-> -	instrumentation_begin();
+> +  interrupts:
+> +    maxItems: 1
 > +
->  	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
->  			  rdp->dynticks_nmi_nesting,
->  			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+> +  clocks:
+> +    items:
+> +      - description: SoC SPI ipg clock
+> +      - description: SoC SPI per clock
+> +    maxItems: 2
+
+Can drop 'maxItems', it is redundant here.
+
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ipg
+> +      - const: per
+> +    maxItems: 2
+
+And here.
+
+> +
+> +  dmas:
+> +    items:
+> +      - description: DMA controller phandle and request line for RX
+> +      - description: DMA controller phandle and request line for TX
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +      - const: tx
+> +
+> +  fsl,spi-rdy-drctl:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Integer, representing the value of DRCTL, the register controlling
+> +      the SPI_READY handling. Note that to enable the DRCTL consideration,
+> +      the SPI_READY mode-flag needs to be set too.
+> +      Valid values are: 0 (disabled), 1 (edge-triggered burst) and 2 (level-triggered burst).
+> +    enum: [0, 1, 2]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx5-clock.h>
+> +
+> +    spi@70010000 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        compatible = "fsl,imx51-ecspi";
+> +        reg = <0x70010000 0x4000>;
+> +        interrupts = <36>;
+> +        clocks = <&clks IMX5_CLK_ECSPI1_IPG_GATE>,
+> +                 <&clks IMX5_CLK_ECSPI1_PER_GATE>;
+> +        clock-names = "ipg", "per";
+> +    };
+> -- 
+> 2.7.4
+> 
