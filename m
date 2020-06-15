@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF671FA37B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123911FA375
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 00:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgFOWXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 18:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgFOWXo (ORCPT
+        id S1726631AbgFOWXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 18:23:35 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26921 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726589AbgFOWXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:23:44 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15560C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:23:44 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so21110013ljv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fmb9LbkW00jXn2iCA2oMUh0qcJ6N12lt1xDN5WwkwPk=;
-        b=X5oA5ZkI6BmYRo4G5tjAU7J1NaMnr5CZsGfkdzLhi7WbZ11gomiHh/T2MuSk2Lhkg9
-         v9D27QyUcwnm/E5k9nB+xI80JwHC2OAGJSEPxGTzo+TOedfzm82cbpySAeDY8Vf+Sfj7
-         lksbb23BPujdX2vOVAmYxKtIvmyJZfE2ie1VU=
+        Mon, 15 Jun 2020 18:23:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592259812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hFdmGMxgVY9SCrIC7JRov+UEIMXRQlq//9kYQVhiH/M=;
+        b=e7ENQZe/nCMzz+YliuRem6FYXFPE990t7ltErPrPZpsxj8jBjtEY4J7KGJpO0HiO/Uqjcx
+        a5Qp4b1ViXh16UrsBCK0G3Psz/FkCSzy3QyZwXsZu5X3mvXCDqtkMGDXIEZwUolaLvmSMt
+        jbKhMesRI1bUqiPP7C5YnfNXPxau8iQ=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-L9kuBOrRMfOB9l5dA9-bZQ-1; Mon, 15 Jun 2020 18:23:30 -0400
+X-MC-Unique: L9kuBOrRMfOB9l5dA9-bZQ-1
+Received: by mail-qv1-f70.google.com with SMTP id f18so14096891qvr.22
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:23:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fmb9LbkW00jXn2iCA2oMUh0qcJ6N12lt1xDN5WwkwPk=;
-        b=Dpumt4OMvA1xhMKu2w33TL3mTHbK9xT/dNWwIbSZ6bRRD+xaB7SEkTBay8b2JNz7lp
-         Nn9unh8QyoUIzk4KiP6dLLWJRxQv6ux9YThn0amff+nuoS2g8XY+twEkKGsD1TTcIePn
-         AAxl/fVOU27olK/AYVpaFN7JkAe+Ya4ZCn7FlcZzmBprHUQNeLfZGBD1/Md5bhYkk6Af
-         +F9hmwwIA00jnCuuuZOuSjKnrCymhGTwWdZtGNrygY3hlzk5qN1+GE2nDpvKf1uxm/ZL
-         Ls4f8nmLSL9XibfR4xl0vWyhtG4UV62kOpLpnGWHq8eWbIQPRNPdyN0IRxFIZIwWs3rt
-         qhCQ==
-X-Gm-Message-State: AOAM531LEmL2lRhBgEewXfYKHuTBKjQaFf8/62Wj7f9vyIvX1rNd45Xb
-        NTAQIq5GtS4k6nt2CU6NCajxbwZeKlk=
-X-Google-Smtp-Source: ABdhPJw2Mzw5R8/dLUpIqssn7Wij9J1Q6CZ/lOK38apgNw2NZib4UVW7jXX1E0NpEbXJd/+sUQWq+w==
-X-Received: by 2002:a2e:98c2:: with SMTP id s2mr13981070ljj.288.1592259821607;
-        Mon, 15 Jun 2020 15:23:41 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id a1sm5718244lfi.36.2020.06.15.15.23.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 15:23:40 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id n24so21081344lji.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 15:23:40 -0700 (PDT)
-X-Received: by 2002:a2e:9cd4:: with SMTP id g20mr13634729ljj.371.1592259820216;
- Mon, 15 Jun 2020 15:23:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hFdmGMxgVY9SCrIC7JRov+UEIMXRQlq//9kYQVhiH/M=;
+        b=OZzVtBneVUwGEFmMlU0wL6R6Q+GdMCGM7JVnkf6XDJpvj57s9HmMSRVriUoefIkfWC
+         W8jLes9MaEb/IBuhN3aU6b4aDgg+Xa8FkOy5hJq5MjJCGSIod1N9QMp/TeB2hSj3Tvih
+         tNbTC1l3oWJ2WBA7mIetOPhvyS4JZTTgt3h43QQC/+VqovW1N6ocaBApi40u0PHO8vhW
+         VrY+uSPdDDvMgkl4Gsh/fla8H7sX0lRWNYlV8RQrDcZbzUtmHL21kLYNXTTV2/zlT7hb
+         JCa/AsiZzMIRPyNwgV5rRERQjROUIS/+cbIX572ye4ilayW1W//0/vIsjZWHSQEtNByX
+         lCFw==
+X-Gm-Message-State: AOAM5321OZFJooNh4g9WN1iQ2eFfCA1CTJPtzeGpqJnDsIneGvT9EDm2
+        9J8lLxcTWQP/4eISMuqRav6ceuLSJVuKZXmwWKbBJVubvaozluuTHYGLI/WbDbTHu56DQiL7PgT
+        7aeg9UqKFgc9H/3QydeU9wATj
+X-Received: by 2002:ac8:6b85:: with SMTP id z5mr18085318qts.191.1592259809921;
+        Mon, 15 Jun 2020 15:23:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCHSpItvnT+zujJi8Dw2Mt/hCs0Eyj0uPUFU6ftwD79VcDBySWQ3kGNSQx9oX0uN74D1xjYw==
+X-Received: by 2002:ac8:6b85:: with SMTP id z5mr18085295qts.191.1592259809716;
+        Mon, 15 Jun 2020 15:23:29 -0700 (PDT)
+Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id r14sm12370742qke.62.2020.06.15.15.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 15:23:29 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH 25/25] mm/xtensa: Use mm_fault_accounting()
+Date:   Mon, 15 Jun 2020 18:23:28 -0400
+Message-Id: <20200615222328.8745-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
+References: <20200615221607.7764-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <446c7a14-db97-6389-a03c-9ffccd251529@linuxfoundation.org>
- <CAHk-=wjmZzz6b_9iBGp+3Nysb0A6_3VatmUdr_ArgyqHq0KMcA@mail.gmail.com>
- <f5102546-786d-eb63-10c5-97a92c0be311@linuxfoundation.org>
- <CAHk-=wgB6xs-gfihkMSngyAcRHaQ0oE3jVawVMzzAh4Xm0VsSQ@mail.gmail.com> <c35745bb-5700-f6c8-ae5b-e931502cb270@linuxfoundation.org>
-In-Reply-To: <c35745bb-5700-f6c8-ae5b-e931502cb270@linuxfoundation.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 15 Jun 2020 15:23:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh_d7dqoC40M9AvU3g8v0AtexV-rMLDkvkiQQCU1TnHGw@mail.gmail.com>
-Message-ID: <CAHk-=wh_d7dqoC40M9AvU3g8v0AtexV-rMLDkvkiQQCU1TnHGw@mail.gmail.com>
-Subject: Re: Linux 5.8-rc1 BUG unable to handle page fault (snd_pcm)
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 2:18 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> Yeah. I should have thought about adding module path. With module path
-> added, I get better results:
->
-> [   15.341267] ? snd_pcm_hw_params (./include/linux/string.h:391
-> /home/shuah/lkml/linux_5.8/sound/core/pcm_native.c:759) snd_pcm
-> [   15.341272] snd_pcm_common_ioctl (sound/core/pcm_native.c:792
-> /home/shuah/lkml/linux_5.8/sound/core/pcm_native.c:3210) snd_pcm
+Use the new mm_fault_accounting() helper for page fault accounting.
 
-Yeah, now it gives the complete path and you see exactly which
-memset() it ends up being, ie it's that
+Avoid doing page fault accounting multiple times if the page fault is retried.
 
-        /* clear the buffer for avoiding possible kernel info leaks */
-        if (runtime->dma_area && !substream->ops->copy_user)
-                memset(runtime->dma_area, 0, runtime->dma_bytes);
+CC: Chris Zankel <chris@zankel.net>
+CC: Max Filippov <jcmvbkbc@gmail.com>
+CC: linux-xtensa@linux-xtensa.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/xtensa/mm/fault.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-Quite often  with all the inlining the compiler does it can be really
-hard to figure out where things come from when you just see the symbol
-and offset.
+diff --git a/arch/xtensa/mm/fault.c b/arch/xtensa/mm/fault.c
+index e7172bd53ced..511a2c5f9857 100644
+--- a/arch/xtensa/mm/fault.c
++++ b/arch/xtensa/mm/fault.c
+@@ -42,7 +42,7 @@ void do_page_fault(struct pt_regs *regs)
+ 	int code;
+ 
+ 	int is_write, is_exec;
+-	vm_fault_t fault;
++	vm_fault_t fault, major = 0;
+ 	unsigned int flags = FAULT_FLAG_DEFAULT;
+ 
+ 	code = SEGV_MAPERR;
+@@ -109,6 +109,7 @@ void do_page_fault(struct pt_regs *regs)
+ 	 * the fault.
+ 	 */
+ 	fault = handle_mm_fault(vma, address, flags);
++	major |= fault & VM_FAULT_MAJOR;
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+@@ -123,10 +124,6 @@ void do_page_fault(struct pt_regs *regs)
+ 		BUG();
+ 	}
+ 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+-		if (fault & VM_FAULT_MAJOR)
+-			current->maj_flt++;
+-		else
+-			current->min_flt++;
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+@@ -140,12 +137,7 @@ void do_page_fault(struct pt_regs *regs)
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
+-	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+-	if (flags & VM_FAULT_MAJOR)
+-		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, regs, address);
+-	else
+-		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, regs, address);
+-
++	mm_fault_accounting(current, regs, address, major);
+ 	return;
+ 
+ 	/* Something tried to access memory that isn't in our memory map..
+-- 
+2.26.2
 
-Ok, in this case there aren't that many calls to memset() in that
-file, and it might have been obvious which one it was in this case.
-But sometimes they just come from various inline helper functions too,
-and when automation can give us the answer easily, it's the thing to
-do.
-
-> > Maybe even just a warning about lacking a module path when there are
-> > module symbols present?
-> >
->
-> It does tell you the usage.
-
-Yes, it's more that it's very easy to overlook it, and then get a
-partial decode.
-
-Once you know how to use that script, it's very convenient, but the
-problem tends to be that too few people are aware of it in the first
-place.
-
-                 Linus
