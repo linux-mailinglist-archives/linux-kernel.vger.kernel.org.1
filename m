@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379C21F914C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469CB1F9155
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgFOIY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728422AbgFOIY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:24:56 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58817C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 01:24:55 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id o26so10831868edq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 01:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZhrHsoF+IuuCWsNYTt36CnOUPKOXLNanHzXXw538ijY=;
-        b=Uy4iXrsdKb9Jk+JDiX/Chl9qMKx9QpugSWS5NkriaPMVcmD97vURwhir28xYpfpmqh
-         SPDMoEWcuI4fT1IewSfOaVTFRjIgC0ZgI+aTtHVa8Bt1v7S6TEeRQHOUatH5LzhwpGJ+
-         6YojzNXVz6UCsvtK15ZaCT6yZnZ3E7q4SDk9Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZhrHsoF+IuuCWsNYTt36CnOUPKOXLNanHzXXw538ijY=;
-        b=BYACubktYF99B1cFWyx7D8uIKVrHLYmKsVU6bjcvpqxh4iphb35lHnZk5zYCVybnBe
-         iGA7oiWYKYkPz+90ZBDwhepRfesEOj/TBDsQsD6w0J/GUyHqLM49I0PKHXfZH+V6EstA
-         NhbytcNkvdEemiTCIDW/YSBOt/eDMG6Nkru/FGSmslFQZADOrRoHggD4QugXbz8anw+z
-         ZJM6XjpK11uwqni1MYqSLSUKKYXiIm0buQVEyydprIEy/KgbmtWrKqJvFbw19sqHRn02
-         XPAZfSykzHAoYd752KnOVRbXjKXXWoHBUIGIMmmEnA9tBZFcyK52B4TOBd/CAnSCoOao
-         DInQ==
-X-Gm-Message-State: AOAM530N2IgFbOB9rhamJ3Q/+IPQsj+4xpSDyjcrbo4IcKtFOviQKoO5
-        0lAJfclqbeVcEOpm9WYmBS/Jg3zo9BY0haPfOMPHfA==
-X-Google-Smtp-Source: ABdhPJyTYfl7L17Ro5jQwnBv2wTKOxjN4zvQSKG7SGBI4x6Y1v+nhySmXXUUI9zXVpw1KDpsuc+QcQbm++UqGImgmT8=
-X-Received: by 2002:a50:d785:: with SMTP id w5mr22156433edi.212.1592209493931;
- Mon, 15 Jun 2020 01:24:53 -0700 (PDT)
+        id S1728946AbgFOI0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:26:55 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5828 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728852AbgFOI0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:26:54 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EF3B0151BA05F3817A22;
+        Mon, 15 Jun 2020 16:26:35 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 15 Jun
+ 2020 16:26:25 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: Eliminate usage of uninitialized_var()
+ macro
+To:     Jason Yan <yanaijie@huawei.com>, <jaegeuk@kernel.org>,
+        <chao@kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        <kernel-hardening@lists.openwall.com>
+References: <20200615040212.3681503-1-yanaijie@huawei.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <d1562b04-125f-c112-7272-d99ed1e38549@huawei.com>
+Date:   Mon, 15 Jun 2020 16:26:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200612004644.255692-1-mike.kravetz@oracle.com>
- <20200612015842.GC23230@ZenIV.linux.org.uk> <b1756da5-4e91-298f-32f1-e5642a680cbf@oracle.com>
- <CAOQ4uxg=o2SVbfUiz0nOg-XHG8irvAsnXzFWjExjubk2v_6c_A@mail.gmail.com>
-In-Reply-To: <CAOQ4uxg=o2SVbfUiz0nOg-XHG8irvAsnXzFWjExjubk2v_6c_A@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 15 Jun 2020 10:24:42 +0200
-Message-ID: <CAJfpegv28Z2aECcb+Yfqum54zfwV=k1G1n_o3o6O-QTWOy3T4Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] hugetlb: use f_mode & FMODE_HUGETLBFS to identify
- hugetlbfs files
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Colin Walters <walters@verbum.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200615040212.3681503-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 8:53 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On 2020/6/15 12:02, Jason Yan wrote:
+> This is an effort to eliminate the uninitialized_var() macro[1].
+> 
+> The use of this macro is the wrong solution because it forces off ANY
+> analysis by the compiler for a given variable. It even masks "unused
+> variable" warnings.
+> 
+> Quoted from Linus[2]:
+> 
+> "It's a horrible thing to use, in that it adds extra cruft to the
+> source code, and then shuts up a compiler warning (even the _reliable_
+> warnings from gcc)."
+> 
+> The gcc option "-Wmaybe-uninitialized" has been disabled and this change
+> will not produce any warnnings even with "make W=1".
+> 
+> [1] https://github.com/KSPP/linux/issues/81
+> [2] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
+> 
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  fs/f2fs/data.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 326c63879ddc..e6ec61274d76 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2856,7 +2856,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+>  	};
+>  #endif
+>  	int nr_pages;
+> -	pgoff_t uninitialized_var(writeback_index);
+> +	pgoff_t writeback_index;
 
-> > I also looked at normal filesystem lower and hugetlbfs upper.  Yes, overlayfs
-> > allows this.  This is somewhat 'interesting' as write() is not supported in
-> > hugetlbfs.  Writing to files in the overlay actually ended up writing to
-> > files in the lower filesystem.  That seems wrong, but overlayfs is new to me.
-
-Yes, this very definitely should not happen.
-
-> I am not sure how that happened, but I think that ovl_open_realfile()
-> needs to fixup f_mode flags FMODE_CAN_WRITE | FMODE_CAN_READ
-> after open_with_fake_path().
-
-Okay, but how did the write actually get to the lower layer?
-
-I failed to reproduce this.  Mike, how did you trigger this?
+I suggest to delete this variable directly, as we did for mm in
+commit 28659cc8cc87 (mm/page-writeback.c: remove unused variable).
 
 Thanks,
-Miklos
+
+>  	pgoff_t index;
+>  	pgoff_t end;		/* Inclusive */
+>  	pgoff_t done_index;
+> 
