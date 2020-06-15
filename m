@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088D71F9E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260A41F9E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731266AbgFORcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:32:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:52812 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgFORcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:32:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B79C1F1;
-        Mon, 15 Jun 2020 10:32:02 -0700 (PDT)
-Received: from [10.57.9.128] (unknown [10.57.9.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E3FC3F73C;
-        Mon, 15 Jun 2020 10:32:00 -0700 (PDT)
-Subject: Re: [PATCH v2] spi: bcm2835: Enable shared interrupt support
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     lukas@wunner.de,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-References: <20200604212819.715-1-f.fainelli@gmail.com>
- <142d48ae-2725-1368-3e11-658449662371@arm.com>
- <20200605132037.GF5413@sirena.org.uk>
- <2e371a32-fb52-03a2-82e4-5733d9f139cc@arm.com>
- <06342e88-e130-ad7a-9f97-94f09156f868@arm.com>
- <d3fe8b56-83ef-8ef0-bb05-11c7cb2419f8@gmail.com>
- <a6f158e3-af51-01d9-331c-4bc8b6847abb@arm.com>
- <20200608112840.GC4593@sirena.org.uk>
- <bb9dbf11-9e33-df60-f5ae-f7fdfe8458b4@gmail.com>
- <20200615170031.GA4447@sirena.org.uk>
- <692bc94e-d574-e07a-d834-c0d569e87bba@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2f354ed0-9fb7-59ea-ddd1-78703d9c818e@arm.com>
-Date:   Mon, 15 Jun 2020 18:31:58 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731284AbgFORcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 13:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731196AbgFORcu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:32:50 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F58C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:32:50 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b16so8096045pfi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 10:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MXiTVmySLinwx/ohTb+qSbZFWKUCXVmO5le+pblRvB4=;
+        b=G0mA6JzChysz4vfhRHU6jq7QE/eHCQELey0LnpzfKSltZnUX4xJrQcsFvDqNuuzn/B
+         FQxQmO1cTFK2rwGfPExYUmB1UGc+D0FhPK1IWgrpsi9Tnelh53bMnIAGxe548hlLCDgz
+         K8Qxo955RfvfEP5VJzZbZ6z34BV7rZNu9ZAzI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MXiTVmySLinwx/ohTb+qSbZFWKUCXVmO5le+pblRvB4=;
+        b=fYFClOqCmvty5fUYq9fFyZ8tcNIJtkmXHInEPyl2ye+WfSbHnIpuyVaMm49v1oncDi
+         /m34IXilngPmpca/timdxGtGZhEyVFXFpmzV5nysZ7qUoQZ+HYOznHfc1w7gwSUq3r7t
+         Aq7s+qiU/Jwu6hXB0nhyRfcOqLpBGO5HJp76cf1hJEiNmm25UWrwT+tZGuRJQLqn3ggL
+         qoSlDpUWfvgeoSU5vLK4hCU3ZELmQOcC5yJlHfOTnDoGI9WJ03/ypUJaqCIN2/a57+LI
+         4zYAajC1/lD5+17X08o4fZiZ8+I845YX/cYYCY6dkVJXg0S9iudddS4cFmXNvBrwRhyY
+         4uBQ==
+X-Gm-Message-State: AOAM533dEm/EQo0aT85MWFay0BKkcIoYnnJOqSBSMrxEnRzYAXDeOmB9
+        UPem2lUNFmrPkFUntatqkWqrkA==
+X-Google-Smtp-Source: ABdhPJwx4PYvnCYX2JxTXMHgP55Wrhu8eXLVeZVNpAxBLT0KLVHVOQYT0WO997vdvPGw+oFzo0eXRg==
+X-Received: by 2002:a62:194d:: with SMTP id 74mr25149159pfz.21.1592242370263;
+        Mon, 15 Jun 2020 10:32:50 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id f3sm115586pjw.57.2020.06.15.10.32.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 10:32:49 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 10:32:48 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, saravanak@google.com, nm@ti.com,
+        bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org
+Subject: Re: [PATCH v6 5/5] cpufreq: qcom: Disable fast switch when scaling
+ DDR/L3
+Message-ID: <20200615173248.GV4525@google.com>
+References: <20200605213332.609-1-sibis@codeaurora.org>
+ <20200605213332.609-6-sibis@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <692bc94e-d574-e07a-d834-c0d569e87bba@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200605213332.609-6-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-15 18:04, Florian Fainelli wrote:
+On Sat, Jun 06, 2020 at 03:03:32AM +0530, Sibi Sankar wrote:
+> Disable fast switch when the opp-tables required for scaling DDR/L3
+> are populated.
 > 
-> 
-> On 6/15/2020 10:00 AM, Mark Brown wrote:
->> On Mon, Jun 15, 2020 at 09:34:58AM -0700, Florian Fainelli wrote:
->>
->>> OK, so this has been dropped for spi/for-next right? How do we move from
->>> there?
->>
->> Well, I actually have it queued up for applying so unless I pull it
->> before my scripts get that far through the stuff I queued over the merge
->> window it'll go in (I dropped it due to it not being a bugfix).  If it
->> were me I'd go with the two instruction hit from checking the flag TBH
->> but otherwise I guess __always_inline should work for compilers that
->> misoptimize.  None of this is getting in the way of the framework so if
->> everyone involved in the driver is happy to spend time optimising it
->> and dealing with the fragility then it's fine by me.
-> 
-> OK, how about I send you an increment patch (would a fixup be okay?)
-> that adds __always_inline since we know from this thread that some
-> compilers may mis-optimize the function inlining?
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 
-Now that I've been inclined to go and look up the documentation, are we 
-sure this so-very-contentious check is even correct? From my reading of 
-things we're checking whether the RXR interrupt function is *enabled*, 
-which still says nothing about whether either condition for the 
-interrupt being *asserted* is true (RXR = 1 or DONE = 1). Thus if more 
-than one SPI instance is active at once we could still end up trying to 
-service an IRQ on a controller that didn't raise it.
+not sure a separate patch is needed for this, but anyway:
 
-Robin.
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
