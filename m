@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FEE1FA155
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C0E1FA15C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 22:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731445AbgFOUUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 16:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731249AbgFOUUd (ORCPT
+        id S1731466AbgFOUVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 16:21:47 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:56645 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730054AbgFOUVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 16:20:33 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1C2C061A0E;
-        Mon, 15 Jun 2020 13:20:32 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0CC09120ED49A;
-        Mon, 15 Jun 2020 13:20:32 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 13:20:31 -0700 (PDT)
-Message-Id: <20200615.132031.260816488025362367.davem@davemloft.net>
-To:     bruceshenzk@gmail.com
-Cc:     jcliburn@gmail.com, chris.snook@gmail.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: alx: fix race condition in alx_remove
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200615155029.21002-1-bruceshenzk@gmail.com>
-References: <20200614165912.25622-1-bruceshenzk@gmail.com>
-        <20200615155029.21002-1-bruceshenzk@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 15 Jun 2020 13:20:32 -0700 (PDT)
+        Mon, 15 Jun 2020 16:21:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592252504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=LHOwL6jMIuTyNQ2/9f6CpOOFyVxyxBr/Q//T3vuo+z4=;
+        b=Z1naqXXFx9GCjqCrmMt5y51MLloki08r7nFcQzh6rWT+t2zgaoKX0pUjtQSj/n6bq7okiv
+        XtP/TAfoHNj7Itv/Q9Je9o1PZSMzzRyLiF0PiewDR3NvNtyh5iKngDqGdFgsyGWFtRwDaa
+        QOYAZ2cNy54PCL+xrxeVt75xhWn+l40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-dF99QhNIPdijJG7skzE-nw-1; Mon, 15 Jun 2020 16:21:35 -0400
+X-MC-Unique: dF99QhNIPdijJG7skzE-nw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2781B873402;
+        Mon, 15 Jun 2020 20:21:34 +0000 (UTC)
+Received: from virtlab500.virt.lab.eng.bos.redhat.com (virtlab500.virt.lab.eng.bos.redhat.com [10.19.152.160])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F0806ED96;
+        Mon, 15 Jun 2020 20:21:33 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com
+Subject: [PATCH v1 0/1] limit the i40e msix vectors based on housekeeping CPUs
+Date:   Mon, 15 Jun 2020 16:21:24 -0400
+Message-Id: <20200615202125.27831-1-nitesh@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zekun Shen <bruceshenzk@gmail.com>
-Date: Mon, 15 Jun 2020 11:50:29 -0400
+Issue
+=====
+With the current implementation at the time of i40e_init_msix(), i40e
+creates vectors only based on the number of online CPUs. This would
+be problematic for RT setup that includes a large number of isolated
+but very few housekeeping CPUs. This is because in those setups
+an attempt to move all IRQs from isolated to housekeeping CPUs may
+easily fail due to per CPU vector limit.
 
-> There is a race condition exist during termination. The path is
-> alx_stop and then alx_remove. An alx_schedule_link_check could be called
-> before alx_stop by interrupt handler and invoke alx_link_check later.
-> Alx_stop frees the napis, and alx_remove cancels any pending works.
-> If any of the work is scheduled before termination and invoked before
-> alx_remove, a null-ptr-deref occurs because both expect alx->napis[i].
-> 
-> This patch fix the race condition by moving cancel_work_sync functions
-> before alx_free_napis inside alx_stop. Because interrupt handler can call
-> alx_schedule_link_check again, alx_free_irq is moved before
-> cancel_work_sync calls too.
-> 
-> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+Setup For The Issue
+===================
+I have triggered this issue on a setup that had a total of 72
+cores among which 68 were isolated and only 4 were left for
+housekeeping tasks. I was using tuned's realtime-virtual-host profile
+to configure the system. However, Tuned reported the error message
+'Failed to set SMP affinity of IRQ xxx to '00000040,00000010,00000005':
+[Errno 28] No space left on the device' for several IRQs in tuned.log.
+Note: There were other IRQs as well pinned to the housekeeping CPUs that
+      were generated by other drivers.
 
-Applied, thank you.
+Fix
+===
+- In this proposed fix I have replaced num_online_cpus in i40e_init_msix()
+  with the number of housekeeping CPUs.
+- The reason why I chose to include both HK_FLAG_DOMAIN & HK_FLAG_WQ is
+  because we would also need IRQ isolation with something like systemd's
+  CPU affinity.
+
+
+Testing
+=======
+To test this change I had added a tracepoint in i40e_init_msix() to
+find the number of CPUs derived for vector creation with and without
+tuned's realtime-virtual-host profile. As per expectation with the profile
+applied I was only getting the number of housekeeping CPUs and all
+available CPUs without it.
+
+
+Nitesh Narayan Lal (1):
+  i40e: limit the msix vectors based on housekeeping CPUs
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+-- 
+
