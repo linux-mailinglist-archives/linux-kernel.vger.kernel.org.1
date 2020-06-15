@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2581FA4A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053C51FA4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgFOXlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:41:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55532 "EHLO mail.kernel.org"
+        id S1726871AbgFOXno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:43:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:56734 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgFOXls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:41:48 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31274208E4;
-        Mon, 15 Jun 2020 23:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592264507;
-        bh=KW8OwXmOxLlBVkwoLa3rLCxr1DR6gy95eELwEQ1pDgc=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ql0aKDmtQXUOIuKffz0vUTICCaPO4YmWqN1pHK6klPkQbOCUU15TEr2nyeFALaTVh
-         usPN9UkUxAQSL5Gni4ozGpvUrCRpWs+amQ9PCP6RXC1mtUiHzvzYAYgmC9ckeDE9/q
-         HsDiGA4pHX33kXURqZ2JGDb9jSgnv5iU/d4Td69k=
-Date:   Tue, 16 Jun 2020 00:41:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>, linux-spi@vger.kernel.org,
-        Robert Richter <rrichter@marvell.com>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <1590680799-5640-1-git-send-email-tharvey@gateworks.com>
-References: <1590680799-5640-1-git-send-email-tharvey@gateworks.com>
-Subject: Re: [RFC PATCH] spi: spi-cavium-thunderx: flag controller as half duplex
-Message-Id: <159226448569.27735.14957300459470061468.b4-ty@kernel.org>
+        id S1726601AbgFOXnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:43:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E24671FB;
+        Mon, 15 Jun 2020 16:43:42 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E28253F73C;
+        Mon, 15 Jun 2020 16:43:41 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: [PATCH v2 0/4] sched: Instrument sched domain flags
+Date:   Tue, 16 Jun 2020 00:41:50 +0100
+Message-Id: <20200615234154.23982-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 May 2020 08:46:39 -0700, Tim Harvey wrote:
-> The OcteonTX (TX1/ThunderX) SPI controller does not support full
-> duplex transactions. Set the appropriate flag such that the spi
-> core will return -EINVAL on such transactions requested by chip
-> drivers.
-> 
-> This is an RFC as I need someone from Marvell/Cavium to confirm
-> if this driver is used for other silicon that does support
-> full duplex transfers (in which case we will need to identify
-> that we are running on the ThunderX arch before setting the flag).
+Hi,
 
-Applied to
+I've repeatedly stared at an SD flag and asked myself "how should that be
+set up in the domain hierarchy anyway?". I figured that if we formalize our
+flags zoology a bit, we could also do some runtime assertions on them -
+this is what this series is all about.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Patches
+=======
 
-Thanks!
+The idea is to associate the flags with a metatype that describes how they
+should be set in a sched domain hierarchy - details are in the comments and
+commit logs. For now it's just a simple parent/children relationship
+description ("if this SD has it, all its {parents, children} have it").
 
-[1/1] spi: spi-cavium-thunderx: flag controller as half duplex
-      commit: e8510d43f219beff1f426080049a5462148afd2f
+The good thing is that this all goes away when CONFIG_SCHED_DEBUG isn't
+set. The bad thing is that replaces SD_* flags definitions with some
+unsavoury macros. This is mainly because I wanted to avoid having to
+duplicate work between declaring the flags and declaring their metatypes.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+There's also the removal of yet another SD flag (SD_SHARE_POWERDOMAIN).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Some deltas
+===========
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This time around it's a slight size increase (w/o SCHED_DEBUG): 
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+  $ compare.sh before after vmlinux.o
+  cpu_attach_domain                                         996       1000   +4
+  build_sched_domains                                      4716       4728   +12
 
-Thanks,
-Mark
+Comparing the objdumps side by side, nothing obvious stands out to me.
+
+Revisions
+=========
+
+RFC -> v2
+---------
+
+RFC at: https://lkml.kernel.org/r/20200311183320.19186-1-valentin.schneider@arm.com
+
+o Rebased on top of tip/sched/core
+o Aligned wording of comments between flags
+o Rectified some flag descriptions (Morten)
+o Added removal of SD_SHARE_POWERDOMAIN (Morten)
+
+Cheers,
+Valentin
+
+Valentin Schneider (4):
+  sched/topology: Split out SD_* flags declaration to its own file
+  sched/topology: Define and assign sched_domain flag metadata
+  sched/topology: Verify SD_* flags setup when sched_debug is on
+  arm, sched/topology: Remove SD_SHARE_POWERDOMAIN
+
+ arch/arm/kernel/topology.c     |   2 +-
+ include/linux/sched/sd_flags.h | 133 +++++++++++++++++++++++++++++++++
+ include/linux/sched/topology.h |  29 +++----
+ kernel/sched/topology.c        |  27 +++++--
+ 4 files changed, 169 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/sched/sd_flags.h
+
+--
+2.27.0
+
