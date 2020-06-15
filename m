@@ -2,178 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BB01F94E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57E81F94FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 13:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgFOKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:50:23 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:26604 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728815AbgFOKuL (ORCPT
+        id S1729569AbgFOLGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 07:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728304AbgFOLGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:50:11 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FAWlLl003188;
-        Mon, 15 Jun 2020 12:50:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=6uazfPAhQsttgP5kzZTw92A9LjEqdyZWqPnjXh89SHU=;
- b=oS6225LDlBacpl1Ddp48BwFpC3AjwYU6WszDnpBmvJyMVLu3A99UsTAMux5ThvFGXLdT
- EGKbmHBHT1RwwsvWZtGETAqqnfqJUn8hacHEZ8fWeieTN3j3BuFUGFh3AnWEgWcAmSDe
- 8mEKZpYJa2klMIpGrfOVeHs2OeaCBiemAmW3pJWkC5OABdFKlKbicvxyJiDDzjeVZxCM
- MJZT7wGb5ubVnMS8az9TEu4JpUCXYdYVzFftMfgQePUKsu7F9mYpB8etX2ZAbDrUEgnW
- ifHB1d6k5wffirFxYAsBj1HrqL3hw5EirUI4TT0ugMkXEzN1omzOFHoJnSBUSMLSQI21 9w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mmjvs6j8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 12:50:00 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6828B10002A;
-        Mon, 15 Jun 2020 12:50:00 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3A0382B8A11;
-        Mon, 15 Jun 2020 12:50:00 +0200 (CEST)
-Received: from lmecxl0912.tpe.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun
- 2020 12:49:59 +0200
-Subject: Re: [PATCH 1/5] ARM: dts: stm32: add usart2, usart3 and uart7 pins in
- stm32mp15-pinctrl
-To:     Erwan Le Ray <erwan.leray@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-References: <20200528074029.24962-1-erwan.leray@st.com>
- <20200528074029.24962-2-erwan.leray@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <2ee07ea1-1336-3bc5-d978-c5dc5cd5f04f@st.com>
-Date:   Mon, 15 Jun 2020 12:49:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 15 Jun 2020 07:06:14 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E134C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 04:06:14 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d128so14377923wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 04:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bkSrH01Y9/k1sqHTBOMyZUGjP61F3NctXnv7Wc5jLaA=;
+        b=pI712vEnq3B3TlnbyFkdvI5qsIsT62Zhg790hq2UMhXw2u3m5JeC13EbTaU3S9eGN0
+         1f7rR9B2mlCYXbokxg0sZgojsN2AB+p0uy4yUAh5B4irpWKhzbdZQNxafSYtU3MT1df8
+         2/OnToMBAI8l9wcM6Nv2vi0uGTyFWUf1tN1HK6kvv+lcNZwkb/HlCfZcwfcWwWdfdkKa
+         uAd3ZEJCq15xALYZ94eDPZjqzPOS3GgAI8GFLnG7KmbSP3BDkq5mAV93zF0HBqxNNh5U
+         k3G/tv87zN5SteF9hTrSng4vPbbwepYFLH16sa96Ak9vK3J633J7IEPV958dxk6jCd27
+         /Peg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bkSrH01Y9/k1sqHTBOMyZUGjP61F3NctXnv7Wc5jLaA=;
+        b=HBkmeKZzDJsFw2EeQnWCQxTObDXKr1JX6oJLawtaOKN+wFHQjFXTlJXrE9Ls1Z6Nod
+         kPPGGs/xBcLm+ZZl6PgJYGf03cezEV4XU5XJRZStPZSm9+7Niqd/Y5wpLtADJY3XSc1J
+         2vcc8ez1jVIQm0LuPAz37u3jePN0Ci0cE9x8aX+cuynq63cOJmdWByo+QKB9aTNux+xB
+         8YhJqnAX76cHBXd4A1z//VcOup0/NLzUhlYBcyCR0QGVMx1MvdZbtuGEv9pUbwpSH5ID
+         3nR7zS7RMlHqDD4YZQkmIbwLiMhsDa80XtcxOFirSygixxyHmr98+6TFl/28JRTJeytT
+         jaGw==
+X-Gm-Message-State: AOAM530UDh+1Cfxta2Po1N+cOueSxOxuOZUt7VdKYE/zErg+OJI0+xcb
+        p5w5qDjLfE+5DoxGLFutjPmKSF/feqM=
+X-Google-Smtp-Source: ABdhPJyieyVjnMOv5YdDlns8avn2+fz2WmpkAFDaFceRhnpAnkevW5sSSQ+ykrMI6aCIM9/a0Lz9nQ==
+X-Received: by 2002:a1c:9c8c:: with SMTP id f134mr12143548wme.142.1592219172670;
+        Mon, 15 Jun 2020 04:06:12 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id x66sm22527394wmb.40.2020.06.15.04.06.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Jun 2020 04:06:12 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] nvmem: add ONIE NVMEM cells support
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>
+References: <20200529230451.21337-1-vadym.kochan@plvision.eu>
+ <20200529230451.21337-3-vadym.kochan@plvision.eu>
+ <8a8653c5-b112-4042-cbdf-8498e38d14ee@linaro.org>
+ <20200601090300.GA21928@plvision.eu>
+ <0d664272-4ef9-fe2c-02f4-60e9ecb41e20@linaro.org>
+ <20200601102749.GA25323@plvision.eu> <20200605105351.GA1118@plvision.eu>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <9f73d7ea-1f1f-9820-a9d1-55baa984873e@linaro.org>
+Date:   Mon, 15 Jun 2020 12:06:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200528074029.24962-2-erwan.leray@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200605105351.GA1118@plvision.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erwan
-
-On 5/28/20 9:40 AM, Erwan Le Ray wrote:
-> Adds usart2_pins_c, usart3_pins_b, usart3_pins_c and uart7_pins_c pins
-> configurations in stm32mp15-pinctrl.
-> - usart2_pins_c pins are connected to Bluetooth chip on dk2 board.
-> - usart3_pins_b pins are connected to GPIO expansion connector on evx board.
-> - usart3_pins_c pins are connected to GPIO expansion connector on dkx board.
-> - uart7_pins_c pins are connected to Arduino Uno connector on dkx board.
-> 
-> Signed-off-by: Erwan Le Ray <erwan.leray@st.com>
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> index fb98a66977fe..99e399e4e4c3 100644
-> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> @@ -1658,6 +1658,36 @@
->   		};
-> 
-
-...
 
 
-> +	usart3_pins_b: usart3-0 {
-> +		pins1 {
-> +			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
+On 05/06/2020 11:53, Vadym Kochan wrote:
+>> One of the example is atmel eeprom (at24), but there might be different
+>> devices.
+>>
+>> But can you please explain what is the technical/conceptual issue with
+>> this approach ?
+>>
+>> Thanks,
+> I just I'd like to clarify if there is a way it can be acceptable. The
+> problem is that there is TLV format which  might be used on any nvmem
+> device which contains for example mac address which needs to be exposed
+> as nvmem cell. If to populate cells via nvmem_config then anyway I need
+> to parse these cells from the "target" nvmem device.
 
-On EVx board this line is shared with ETH_CLK. The choice between both 
-is done thanks to SB23 and default choice is "ETH_CLK". So hardware 
-update has to be done to use usart3_rts. some words around that in 
-comment would be great.
 
-Thanks
-alex
 
-> +			bias-disable;
-> +			drive-push-pull;
-> +			slew-rate = <0>;
-> +		};
-> +		pins2 {
-> +			pinmux = <STM32_PINMUX('B', 12, AF8)>, /* USART3_RX */
-> +				 <STM32_PINMUX('I', 10, AF8)>; /* USART3_CTS_NSS */
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	usart3_idle_pins_b: usart3-idle-0 {
-> +		pins1 {
-> +			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
-> +				 <STM32_PINMUX('I', 10, ANALOG)>; /* USART3_CTS_NSS */
-> +		};
-> +		pins2 {
-> +			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	usart3_sleep_pins_b: usart3-sleep-0 {
-> +		pins {
-> +			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
-> +				 <STM32_PINMUX('I', 10, ANALOG)>, /* USART3_CTS_NSS */
-> +				 <STM32_PINMUX('B', 12, ANALOG)>; /* USART3_RX */
-> +		};
-> +	};
-> +
-> +	usart3_pins_c: usart3-1 {
-> +		pins1 {
-> +			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
-> +			bias-disable;
-> +			drive-push-pull;
-> +			slew-rate = <0>;
-> +		};
-> +		pins2 {
-> +			pinmux = <STM32_PINMUX('B', 12, AF8)>, /* USART3_RX */
-> +				 <STM32_PINMUX('B', 13, AF7)>; /* USART3_CTS_NSS */
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	usart3_idle_pins_c: usart3-idle-1 {
-> +		pins1 {
-> +			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
-> +				 <STM32_PINMUX('B', 13, ANALOG)>; /* USART3_CTS_NSS */
-> +		};
-> +		pins2 {
-> +			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	usart3_sleep_pins_c: usart3-sleep-1 {
-> +		pins {
-> +			pinmux = <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
-> +				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
-> +				 <STM32_PINMUX('B', 13, ANALOG)>, /* USART3_CTS_NSS */
-> +				 <STM32_PINMUX('B', 12, ANALOG)>; /* USART3_RX */
-> +		};
-> +	};
-> +
->   	usbotg_hs_pins_a: usbotg-hs-0 {
->   		pins {
->   			pinmux = <STM32_PINMUX('A', 10, ANALOG)>; /* OTG_ID */
-> 
+As a first step this need to be part of the provider logic to parse this 
+before nvmem provider is registered. If there are more users for such 
+parsing, we can think of adding some level of parsing to nvmem core itself.
+
+Hope this answers your query.
+
+Thanks,
+srini
