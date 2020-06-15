@@ -2,140 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39341F96E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910871F96F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730015AbgFOMpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729989AbgFOMpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:45:11 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ACFC05BD1E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 05:45:11 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o8so5061180wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 05:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5WfldrA7Ybz/CNtCQsbY2j9hmaVRS/lefK2C8B4/ydo=;
-        b=R5VktszuPwRyfKbFUb+M5pY4vbiXCrk4+CjaMUdUvbr7PL1EAycwk6hGg4WlqYqmSY
-         i46OfPU4CdegDGwNZ89JPs5mBGxAqhTNbEV7Eqxql4wv+MFbyHcmJURiBnibI5m9o+Mz
-         95M+LPZV7RdAvnGdDKofnOZsLb4NljOrjzxghwOXeVYOwW1P3B2O7lly8VxrGBEin/5M
-         634k7g8/GeaLN9NVEhvjgSLc/+Rv/LlOHfmPtwECdnW8JBSagOi3A4sT3GVVXvf0dhaf
-         8WyQqLaEYjxztW7LztMm4qjwAeRjtZoyLIeaw6Fi4uh8tljKNIEpNLRIzQDaD7qBNE/j
-         E3bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5WfldrA7Ybz/CNtCQsbY2j9hmaVRS/lefK2C8B4/ydo=;
-        b=mEOl77+234hjga+5gfbFr9FzxLLH+CYZm76pA0ljKFSnWZoSoqTlx1Bxd02VbGr/ag
-         zTd2TwBc6tVRKr9KmzKbMUNYUiXeQJ62HOdj2nU/Xj82roSC18R1Ke7iD21J+bWEtXuU
-         gDrn6GnuXcMVcqhfvBl7W+2yDvvYbpu8sJZgREldoc52DLIXX4hbu9hFJG1IQr8jAiUW
-         qFYaKDzz7u3JB3fyd6aBI36Wu+2g6o+O0lVkjFnRWdd/Ca+9WoFc0nEsHKmpxWCWxJDg
-         0gsYbntY9lTpgqFoGYMBNavlToGwKrDihv3A5Af1TaL6sJDLCeeS796vnANhrBYPS3gl
-         uw2g==
-X-Gm-Message-State: AOAM530NdLSkk9qQnpJptij5fXSh59Ya2jf3iaf/yB84tBkJdJbR2EjB
-        KfAI1EElBBhi7VTWhglGK41xyDhebReJPQ==
-X-Google-Smtp-Source: ABdhPJyOUgN6W95sji6BAD0z9Le4kY3qbFFlPrhTK7NksEopHHTFOHCgqndp2ELuG3T5LFhG8TYLWQ==
-X-Received: by 2002:a1c:188:: with SMTP id 130mr13072660wmb.93.1592225109747;
-        Mon, 15 Jun 2020 05:45:09 -0700 (PDT)
-Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id c16sm24705585wrx.4.2020.06.15.05.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 05:45:09 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 14:45:06 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] ARM: dts: am5729: beaglebone-ai: fix rgmii phy-mode
-Message-ID: <20200615124506.GA3833448@x1>
-References: <20200611220951.GA3355634@x1>
- <10637da2-8751-3c6f-cf1e-f0a53cca292d@ti.com>
+        id S1730068AbgFOMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:46:36 -0400
+Received: from sauhun.de ([88.99.104.3]:37664 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbgFOMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 08:46:36 -0400
+Received: from localhost (p54b333b6.dip0.t-ipconnect.de [84.179.51.182])
+        by pokefinder.org (Postfix) with ESMTPSA id 787C62C204E;
+        Mon, 15 Jun 2020 14:46:32 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 14:46:28 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     "qiangming.xia" <qiangming.xia@mediatek.com>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com
+Subject: Re: [PATCH] i2c: mediatek: Add i2c support for continuous mode
+Message-ID: <20200615124628.GA4423@kunai>
+References: <20200508071809.10187-1-qiangming.xia@mediatek.com>
+ <1592217629.22302.4.camel@mbjsdccf07>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
 Content-Disposition: inline
-In-Reply-To: <10637da2-8751-3c6f-cf1e-f0a53cca292d@ti.com>
+In-Reply-To: <1592217629.22302.4.camel@mbjsdccf07>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 12:34:57PM +0300, Grygorii Strashko wrote:
-> 
-> 
-> On 12/06/2020 01:09, Drew Fustini wrote:
-> > Since commit cd28d1d6e52e ("net: phy: at803x: Disable phy delay for
-> > RGMII mode") the networking is broken on the BeagleBone AI which has
-> > the AR8035 PHY for Gigabit Ethernet [0].  The fix is to switch from
-> > phy-mode = "rgmii" to phy-mode = "rgmii-rxid".
-> > 
-> > Note: Grygorii Strashko made a similar phy-mode fix in 820f8a870f65 for
-> > other AM5729 boards.
-> 
-> commit ref is incorrect
 
-Do you mean commit ref 820f8a870f65 ? 
-("ARM: dts: am57xx: fix networking on boards with ksz9031 phy")
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I thought it made sense to point to that commit as you seemed to be
-fixing a very similar issue, just for a different phy.
+On Mon, Jun 15, 2020 at 06:40:29PM +0800, qiangming.xia wrote:
+> Hi, Wolfram
+> 	Do you have time to take a look at this? Thanks.
 
-Or did you mean commit ref cd28d1d6e52e ?
-("net: phy: at803x: Disable phy delay for RGMII mode")
+Please resend and CC Qii Wang who is now the maintainer of this driver.
 
-I believe this is the commit that made it necessary to change the
-phy-mode property for the AR8035 PHY.
 
-> > 
-> > [0] https://github.com/beagleboard/beaglebone-ai/blob/master/BeagleBone-AI_sch.pdf
-> > 
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> > Fixes: cd28d1d6e52e ("net: phy: at803x: Disable phy delay for RGMII mode")
-> 
-> Pls change fixed tag to
-> 520557d4854b ARM: dts: am5729: beaglebone-ai: adding device tree
-> as this board DTB was merged only in 5.8.
+--u3/rZRmxL6MmkK24
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Ok, will do.
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> > Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> > ---
-> >   arch/arm/boot/dts/am5729-beagleboneai.dts | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm/boot/dts/am5729-beagleboneai.dts b/arch/arm/boot/dts/am5729-beagleboneai.dts
-> > index 9877d7709d41..4c51c6b05e64 100644
-> > --- a/arch/arm/boot/dts/am5729-beagleboneai.dts
-> > +++ b/arch/arm/boot/dts/am5729-beagleboneai.dts
-> > @@ -505,7 +505,7 @@ &mac {
-> >   &cpsw_emac0 {
-> >   	phy-handle = <&phy0>;
-> > -	phy-mode = "rgmii";
-> > +	phy-mode = "rgmii-rxid";
-> >   };
-> >   &ocp {
-> > 
-> 
-> Thanks, pls fix above and you can add my
-> Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> 
-> -- 
-> Best regards,
-> grygorii
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7nbaAACgkQFA3kzBSg
+KbYpPA/+Pw8TxeQKArxUAcaWTX/EPixqO5I46dmHVtb8dLEURvVjQSN7sZ2WuELD
+8LoBIuzYwvGXEFQvZzIgVy4iPB+91icdaz9TpugxSPQD9EOLfIabqUxJXKZz8H+D
+y/gw0Zng3NVWO0L0b4qscEBaeEa+uoTtSh5xuxZ2rTqYErBTUnrPbvioaFrUV7/2
+uCynxVcXd5u7VRyFGZAkzNyOn/kaWOBY5IRU1dxTIUajrvHH2B4qOPzTpEvjatnG
+8968n1FRfIXucBtn1nK3uhbiCA1DAjNb1bvuhDm2gy7sBkDWk0Viz0+1REn5KaCJ
+xvoW1UQONvRvR3AYGM2ws9ywhcKlfU/mdFlXbDPDYl2rqgQ11vTE+zIAGztFtw5l
+kOPbDyV+svGqYPaRwzu7pPNQ6q/XZkFMdYhc8kW7Pwk/gcfxbE9af2fvSPik0RcO
+75++PPLviGvmyO8H+rgeZiGbILKBwMjgdLZL2rbGZ+X24oyP7MskhikWbgoe+KiO
+BznRPjs6ZU6Kx7WJp/V/IakiW2YxzRhZD282VHmlTiLGFGLTgTPz67t9SX7iVkSk
+iysMA5DaY4t86G0IJVnAqzLCNiWTb+7iSbfywEF4PtebRvsvg1KkrkLNDSuyJ5sM
+0PLQWDl+ORX3Fk7+3CZ917VMR7jbe2XdJ7Ja9rQ0uhhr6npJkuw=
+=AqiD
+-----END PGP SIGNATURE-----
 
-Thanks for taking the time to review.
-
--Drew
+--u3/rZRmxL6MmkK24--
