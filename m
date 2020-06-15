@@ -2,119 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918C01F8F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380791F8F65
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgFOHWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:22:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42698 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728528AbgFOHWs (ORCPT
+        id S1728609AbgFOHXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:23:20 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60173 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728597AbgFOHXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:22:48 -0400
-X-UUID: 98853a236838499bb5811a01b059dffb-20200615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1p/mBZcy6sHsnC7cHVAVgHT2d4KvBg+27AI/6Uhvh9c=;
-        b=Mh7jYGd8dRFc7G+VM8E7+VRttKfXrKHKnoE9gHhDR2wjKbJ3dNxE2xvJMdYoAmtuWvf1iXr5XunULifKwzGd6ocFwGWehfqBsqy70aAaUtS0zFwCZ9BrA8IV4olCw4FzawMqcjzCx2lxzLDQMhTYdqlDa+PZvbCku37Z+Pkcj7E=;
-X-UUID: 98853a236838499bb5811a01b059dffb-20200615
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 870495025; Mon, 15 Jun 2020 15:22:38 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 15 Jun 2020 15:22:36 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Jun 2020 15:22:36 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <cc.chou@mediatek.com>,
-        <chaotian.jing@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v3 2/2] scsi: ufs: Add trace event for UIC commands
-Date:   Mon, 15 Jun 2020 15:22:35 +0800
-Message-ID: <20200615072235.23042-3-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200615072235.23042-1-stanley.chu@mediatek.com>
-References: <20200615072235.23042-1-stanley.chu@mediatek.com>
+        Mon, 15 Jun 2020 03:23:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592205797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DWSQ7TzFCPTxWe8HmQSmBV7hNMRZ/Fyl0silEj6pvAY=;
+        b=L07X6N0efN3OscpE/X9wIg0ITYpUCyeLn6R+nsTDnbaKUGabIjvYc5TJ1d0ZIpzx/QfcHf
+        fFqtI0j6BtBtuHrnBc7VC0WRr+uVYMBaRtbBmTF4TtfZTpY3k82kqp3FjWdg/yRzIQm2K0
+        4cxJHf4PPoX9Zl3I/GBbcMnQPmicsGQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-ecXJ71sHM66H_jmQIYvxrg-1; Mon, 15 Jun 2020 03:23:15 -0400
+X-MC-Unique: ecXJ71sHM66H_jmQIYvxrg-1
+Received: by mail-wm1-f71.google.com with SMTP id a18so4658054wmm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 00:23:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DWSQ7TzFCPTxWe8HmQSmBV7hNMRZ/Fyl0silEj6pvAY=;
+        b=JIKw2skAzM4bq5KV6hUrS3zX4GvZq0hMpj5vVOD25WnIgdQvfLCqAhNNvWVZoJdcAF
+         zQj/fXd8TiR3CPVHPJBsJQ20eJkUBPuo2/WoltHhmh9BQLJ3t6A96LUXWF35jfI+pOwQ
+         IWnrXgLBIy15pHSNa56oy3yHM0seuPdHi2S7t62fHFZNC5xzdg15Ve5swhNvw4mcWWmI
+         2Tf/ntpjXPVd/WKtbhYm58yCXJj+1RSRfLgyIKNXLMmbvIdv1Occpf8OB4eG3LPGNIgw
+         nVUE2x5VDLHp0oTeEWf0cL6sbVsZQw6qffwWqLFS54zL6EEX7P+r9CJqsUsndV3KT9Fc
+         93Yg==
+X-Gm-Message-State: AOAM531MpIcKo3aobLhgh6VnErychfbbITytMGTeI8FG+XCTphMrJuPi
+        j75wugM7LbmCS7rNz157tFCvi6yfqf+F5s6WI1O8dxHIYYkSiAw4XywHhPlDNOQXye+2pLg1DFD
+        gU5/jKX8xJ6qdgpxUbYrvyICV
+X-Received: by 2002:adf:f847:: with SMTP id d7mr26632558wrq.261.1592205794211;
+        Mon, 15 Jun 2020 00:23:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4AzRkEmQ5p+prTmG2+DllWCywp5X3TfYTIV/yAdbItyMD18ixBFX0caqeDHHMcD/75TVyHg==
+X-Received: by 2002:adf:f847:: with SMTP id d7mr26632537wrq.261.1592205793927;
+        Mon, 15 Jun 2020 00:23:13 -0700 (PDT)
+Received: from steredhat ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id a6sm22724347wrn.38.2020.06.15.00.23.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 00:23:13 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 09:23:10 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Jeff Moyer <jmoyer@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] io_uring: add restrictions to support untrusted
+ applications and guests
+Message-ID: <20200615072310.iymkgr4dqdwzafg3@steredhat>
+References: <20200609142406.upuwpfmgqjeji4lc@steredhat>
+ <f96beb0a-415c-92fb-96f4-3902b613e9e4@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: E480AC581F2CCFBAB70C1410BBF35B768838CBDFF7362722302DE912D2F9049B2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f96beb0a-415c-92fb-96f4-3902b613e9e4@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VXNlIHRoZSBmdHJhY2UgaW5mcmFzdHJ1Y3R1cmUgdG8gY29uZGl0aW9uYWxseSB0cmFjZSBVRlMg
-VUlDIGNvbW1hbmQNCmV2ZW50cy4NCg0KTmV3IHRyYWNlIGV2ZW50ICJ1ZnNoY2RfdWljX2NvbW1h
-bmQiIGlzIGNyZWF0ZWQsIHdoaWNoIHNhbXBsZXMgdGhlDQpmb2xsb3dpbmcgVUZTIFVJQyBjb21t
-YW5kIGRhdGE6DQotIERldmljZSBuYW1lDQotIE9wdGlvbmFsIGlkZW50aWZpY2F0aW9uIHN0cmlu
-Zw0KLSBVSUMgY29tbWFuZCBvcGNvZGUNCi0gVUlDIGNvbW1hbmQgYXJndW1lbnQxDQotIFVJQyBj
-b21tYW5kIGFyZ3VtZW50Mg0KLSBVSUMgY29tbWFuZCBhcmdlbWVudDMNCg0KVXNhZ2U6DQoJZWNo
-byAxID4gL3N5cy9rZXJuZWwvZGVidWcvdHJhY2luZy9ldmVudHMvdWZzL2VuYWJsZQ0KCWNhdCAv
-c3lzL2tlcm5lbC9kZWJ1Zy90cmFjaW5nL3RyYWNlX3BpcGUNCg0KU2lnbmVkLW9mZi1ieTogU3Rh
-bmxleSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCkFja2VkLWJ5OiBBdnJpIEFsdG1h
-biA8YXZyaS5hbHRtYW5Ad2RjLmNvbT4NCi0tLQ0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMg
-IHwgMjYgKysrKysrKysrKysrKysrKysrKysrKysrKysNCiBpbmNsdWRlL3RyYWNlL2V2ZW50cy91
-ZnMuaCB8IDMxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAyIGZpbGVzIGNoYW5n
-ZWQsIDU3IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZz
-aGNkLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQppbmRleCBhZDRmYzgyOWNiYjIuLjFl
-MTMxNmJhNzA4MiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCisrKyBi
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCkBAIC0zNDAsNiArMzQwLDI2IEBAIHN0YXRpYyB2
-b2lkIHVmc2hjZF9hZGRfdG1fdXBpdV90cmFjZShzdHJ1Y3QgdWZzX2hiYSAqaGJhLCB1bnNpZ25l
-ZCBpbnQgdGFnLA0KIAkJCSZkZXNjcC0+aW5wdXRfcGFyYW0xKTsNCiB9DQogDQorc3RhdGljIHZv
-aWQgdWZzaGNkX2FkZF91aWNfY29tbWFuZF90cmFjZShzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0KKwkJ
-CQkJIHN0cnVjdCB1aWNfY29tbWFuZCAqdWNtZCwNCisJCQkJCSBjb25zdCBjaGFyICpzdHIpDQor
-ew0KKwl1MzIgY21kOw0KKw0KKwlpZiAoIXRyYWNlX3Vmc2hjZF91aWNfY29tbWFuZF9lbmFibGVk
-KCkpDQorCQlyZXR1cm47DQorDQorCWlmICghc3RyY21wKHN0ciwgInNlbmQiKSkNCisJCWNtZCA9
-IHVjbWQtPmNvbW1hbmQ7DQorCWVsc2UNCisJCWNtZCA9IHVmc2hjZF9yZWFkbChoYmEsIFJFR19V
-SUNfQ09NTUFORCk7DQorDQorCXRyYWNlX3Vmc2hjZF91aWNfY29tbWFuZChkZXZfbmFtZShoYmEt
-PmRldiksIHN0ciwgY21kLA0KKwkJCQkgdWZzaGNkX3JlYWRsKGhiYSwgUkVHX1VJQ19DT01NQU5E
-X0FSR18xKSwNCisJCQkJIHVmc2hjZF9yZWFkbChoYmEsIFJFR19VSUNfQ09NTUFORF9BUkdfMiks
-DQorCQkJCSB1ZnNoY2RfcmVhZGwoaGJhLCBSRUdfVUlDX0NPTU1BTkRfQVJHXzMpKTsNCit9DQor
-DQogc3RhdGljIHZvaWQgdWZzaGNkX2FkZF9jb21tYW5kX3RyYWNlKHN0cnVjdCB1ZnNfaGJhICpo
-YmEsDQogCQl1bnNpZ25lZCBpbnQgdGFnLCBjb25zdCBjaGFyICpzdHIpDQogew0KQEAgLTIwNTIs
-NiArMjA3Miw4IEBAIHVmc2hjZF9kaXNwYXRjaF91aWNfY21kKHN0cnVjdCB1ZnNfaGJhICpoYmEs
-IHN0cnVjdCB1aWNfY29tbWFuZCAqdWljX2NtZCkNCiAJdWZzaGNkX3dyaXRlbChoYmEsIHVpY19j
-bWQtPmFyZ3VtZW50MiwgUkVHX1VJQ19DT01NQU5EX0FSR18yKTsNCiAJdWZzaGNkX3dyaXRlbCho
-YmEsIHVpY19jbWQtPmFyZ3VtZW50MywgUkVHX1VJQ19DT01NQU5EX0FSR18zKTsNCiANCisJdWZz
-aGNkX2FkZF91aWNfY29tbWFuZF90cmFjZShoYmEsIHVpY19jbWQsICJzZW5kIik7DQorDQogCS8q
-IFdyaXRlIFVJQyBDbWQgKi8NCiAJdWZzaGNkX3dyaXRlbChoYmEsIHVpY19jbWQtPmNvbW1hbmQg
-JiBDT01NQU5EX09QQ09ERV9NQVNLLA0KIAkJICAgICAgUkVHX1VJQ19DT01NQU5EKTsNCkBAIC00
-ODMzLDYgKzQ4NTUsMTAgQEAgc3RhdGljIGlycXJldHVybl90IHVmc2hjZF91aWNfY21kX2NvbXBs
-KHN0cnVjdCB1ZnNfaGJhICpoYmEsIHUzMiBpbnRyX3N0YXR1cykNCiAJCWNvbXBsZXRlKGhiYS0+
-dWljX2FzeW5jX2RvbmUpOw0KIAkJcmV0dmFsID0gSVJRX0hBTkRMRUQ7DQogCX0NCisNCisJaWYg
-KHJldHZhbCA9PSBJUlFfSEFORExFRCkNCisJCXVmc2hjZF9hZGRfdWljX2NvbW1hbmRfdHJhY2Uo
-aGJhLCBoYmEtPmFjdGl2ZV91aWNfY21kLA0KKwkJCQkJICAgICAiY29tcGxldGUiKTsNCiAJcmV0
-dXJuIHJldHZhbDsNCiB9DQogDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS90cmFjZS9ldmVudHMvdWZz
-LmggYi9pbmNsdWRlL3RyYWNlL2V2ZW50cy91ZnMuaA0KaW5kZXggNWYzMDA3MzkyNDBkLi44NDg0
-MWIzYTdmZmQgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL3RyYWNlL2V2ZW50cy91ZnMuaA0KKysrIGIv
-aW5jbHVkZS90cmFjZS9ldmVudHMvdWZzLmgNCkBAIC0yNDksNiArMjQ5LDM3IEBAIFRSQUNFX0VW
-RU5UKHVmc2hjZF9jb21tYW5kLA0KIAkpDQogKTsNCiANCitUUkFDRV9FVkVOVCh1ZnNoY2RfdWlj
-X2NvbW1hbmQsDQorCVRQX1BST1RPKGNvbnN0IGNoYXIgKmRldl9uYW1lLCBjb25zdCBjaGFyICpz
-dHIsIHUzMiBjbWQsDQorCQkgdTMyIGFyZzEsIHUzMiBhcmcyLCB1MzIgYXJnMyksDQorDQorCVRQ
-X0FSR1MoZGV2X25hbWUsIHN0ciwgY21kLCBhcmcxLCBhcmcyLCBhcmczKSwNCisNCisJVFBfU1RS
-VUNUX19lbnRyeSgNCisJCV9fc3RyaW5nKGRldl9uYW1lLCBkZXZfbmFtZSkNCisJCV9fc3RyaW5n
-KHN0ciwgc3RyKQ0KKwkJX19maWVsZCh1MzIsIGNtZCkNCisJCV9fZmllbGQodTMyLCBhcmcxKQ0K
-KwkJX19maWVsZCh1MzIsIGFyZzIpDQorCQlfX2ZpZWxkKHUzMiwgYXJnMykNCisJKSwNCisNCisJ
-VFBfZmFzdF9hc3NpZ24oDQorCQlfX2Fzc2lnbl9zdHIoZGV2X25hbWUsIGRldl9uYW1lKTsNCisJ
-CV9fYXNzaWduX3N0cihzdHIsIHN0cik7DQorCQlfX2VudHJ5LT5jbWQgPSBjbWQ7DQorCQlfX2Vu
-dHJ5LT5hcmcxID0gYXJnMTsNCisJCV9fZW50cnktPmFyZzIgPSBhcmcyOw0KKwkJX19lbnRyeS0+
-YXJnMyA9IGFyZzM7DQorCSksDQorDQorCVRQX3ByaW50aygNCisJCSIlczogJXM6IGNtZDogMHgl
-eCwgYXJnMTogMHgleCwgYXJnMjogMHgleCwgYXJnMzogMHgleCIsDQorCQlfX2dldF9zdHIoc3Ry
-KSwgX19nZXRfc3RyKGRldl9uYW1lKSwgX19lbnRyeS0+Y21kLA0KKwkJX19lbnRyeS0+YXJnMSwg
-X19lbnRyeS0+YXJnMiwgX19lbnRyeS0+YXJnMw0KKwkpDQorKTsNCisNCiBUUkFDRV9FVkVOVCh1
-ZnNoY2RfdXBpdSwNCiAJVFBfUFJPVE8oY29uc3QgY2hhciAqZGV2X25hbWUsIGNvbnN0IGNoYXIg
-KnN0ciwgdm9pZCAqaGRyLCB2b2lkICp0c2YpLA0KIA0KLS0gDQoyLjE4LjANCg==
+On Sun, Jun 14, 2020 at 09:52:30AM -0600, Jens Axboe wrote:
+> On 6/9/20 8:24 AM, Stefano Garzarella wrote:
+> > Hi Jens,
+> > Stefan and I have a proposal to share with io_uring community.
+> > Before implementing it we would like to discuss it to receive feedbacks and
+> > to see if it could be accepted:
+> > 
+> > Adding restrictions to io_uring
+> > =====================================
+> > The io_uring API provides submission and completion queues for performing
+> > asynchronous I/O operations. The queues are located in memory that is
+> > accessible to both the host userspace application and the kernel, making it
+> > possible to monitor for activity through polling instead of system calls. This
+> > design offers good performance and this makes exposing io_uring to guests an
+> > attractive idea for improving I/O performance in virtualization.
+> > 
+> > PoC and preliminary benchmarks
+> > ---------------------------
+> > We realized a PoC, using QEMU and virtio-blk device, to share io_uring
+> > CQ and SQ rings with the guest.
+> > QEMU initializes io_uring, registers the device (NVMe) fd through
+> > io_uring_register(2), and maps the rings in the guest memory.
+> > The virtio-blk driver uses these rings to send requests instead of using
+> > the standard virtqueues.
+> > 
+> > The PoC implements a pure polling solution where the application is polling
+> > (IOPOLL enabled) in the guest and the sqpoll_kthread is polling in the host
+> > (SQPOLL and IOPOLL enabled).
+> > 
+> > These are the encouraging results we obtained from this preliminary work;
+> > we used fio (rw=randread bs=4k) to measure the kIOPS on a NVMe device:
+> > 
+> > - bare-metal
+> >                                                        iodepth
+> >   | fio ioengine                              |  1  |  8  |  16 |  32 |
+> >   |-------------------------------------------|----:|----:|----:|----:|
+> >   | io_uring (SQPOLL + IOPOLL)                | 119 | 550 | 581 | 585 |
+> >   | io_uring (IOPOLL)                         | 122 | 502 | 519 | 538 |
+> > 
+> > - QEMU/KVM guest (aio=io_uring)
+> >                                                        iodepth
+> >   | virtio-blk            | fio ioengine      |  1  |  8  |  16 |  32 |
+> >   |-----------------------|-------------------|----:|----:|----:|----:|
+> >   | virtqueues            | io_uring (IOPOLL) |  27 | 144 | 209 | 266 |
+> >   | virtqueues + iothread | io_uring (IOPOLL) |  73 | 264 | 306 | 312 |
+> >   | io_uring passthrough  | io_uring (IOPOLL) | 104 | 532 | 577 | 585 |
+> > 
+> >   All guest experiments are using the QEMU io_uring backend with SQPOLL and
+> >   IOPOLL enabled. The virtio-blk driver is modified to support blovk io_poll
+> >   on both virtqueues and io_uring passthrough.
+> > 
+> > Before developing this proof-of-concept further we would like to discuss
+> > io_uring changes required to restrict rings since this mechanism is a
+> > prerequisite for real-world use cases where guests are untrusted.
+> > 
+> > Restrictions
+> > ------------
+> > This document proposes io_uring API changes that safely allow untrusted
+> > applications or guests to use io_uring. io_uring's existing security model is
+> > that of kernel system call handler code. It is designed to reject invalid
+> > inputs from host userspace applications. Supporting guests as io_uring API
+> > clients adds a new trust domain with access to even fewer resources than host
+> > userspace applications.
+> > 
+> > Guests do not have direct access to host userspace application file descriptors
+> > or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
+> > as QEMU, grants access to a subset of its file descriptors and memory. The
+> > allowed file descriptors are typically the disk image files belonging to the
+> > guest. The memory is typically the virtual machine's RAM that the VMM has
+> > allocated on behalf of the guest.
+> > 
+> > The following extensions to the io_uring API allow the host application to
+> > grant access to some of its file descriptors.
+> > 
+> > These extensions are designed to be applicable to other use cases besides
+> > untrusted guests and are not virtualization-specific. For example, the
+> > restrictions can be used to allow only a subset of sqe operations available to
+> > an application similar to seccomp syscall whitelisting.
+> > 
+> > An address translation and memory restriction mechanism would also be
+> > necessary, but we can discuss this later.
+> > 
+> > The IOURING_REGISTER_RESTRICTIONS opcode
+> > ----------------------------------------
+> > The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
+> > installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
+> > passed to untrusted code with the knowledge that only operations present in the
+> > whitelist can be executed.
+> > 
+> > The whitelist approach ensures that new features added to io_uring do not
+> > accidentally become available when an existing application is launched on a
+> > newer kernel version.
+> > 
+> > The IORING_REGISTER_RESTRICTIONS opcode takes an array of struct
+> > io_uring_restriction elements that describe whitelisted features:
+> > 
+> >   #define IORING_REGISTER_RESTRICTIONS 11
+> > 
+> >   /* struct io_uring_restriction::opcode values */
+> >   enum {
+> >       /* Allow an io_uring_register(2) opcode */
+> >       IORING_RESTRICTION_REGISTER_OP,
+> > 
+> >       /* Allow an sqe opcode */
+> >       IORING_RESTRICTION_SQE_OP,
+> > 
+> >       /* Only allow fixed files */
+> >       IORING_RESTRICTION_FIXED_FILES_ONLY,
+> > 
+> >       /* Only allow registered addresses and translate them */
+> >       IORING_RESTRICTION_BUFFER_CHECK
+> >   };
+> > 
+> >   struct io_uring_restriction {
+> >       __u16 opcode;
+> >       union {
+> >           __u8 register_op; /* IORING_RESTRICTION_REGISTER_OP */
+> >           __u8 sqe_op;      /* IORING_RESTRICTION_SQE_OP */
+> >       };
+> >       __u8 resv;
+> >       __u32 resv2[3];
+> >   };
+> > 
+> > This call can only be made once. Afterwards it is not possible to change
+> > restrictions anymore. This prevents untrusted code from removing restrictions.
+> > 
+> > Limiting access to io_uring operations
+> > --------------------------------------
+> > The following example shows how to whitelist IORING_OP_READV, IORING_OP_WRITEV,
+> > and IORING_OP_FSYNC:
+> > 
+> >   struct io_uring_restriction restrictions[] = {
+> >       {
+> >           .opcode = IORING_RESTRICTION_SQE_OP,
+> >           .sqe_op = IORING_OP_READV,
+> >       },
+> >       {
+> >           .opcode = IORING_RESTRICTION_SQE_OP,
+> >           .sqe_op = IORING_OP_WRITEV,
+> >       },
+> >       {
+> >           .opcode = IORING_RESTRICTION_SQE_OP,
+> >           .sqe_op = IORING_OP_FSYNC,
+> >       },
+> >       ...
+> >   };
+> > 
+> >   io_uring_register(ringfd, IORING_REGISTER_RESTRICTIONS,
+> >                     restrictions, ARRAY_SIZE(restrictions));
+> > 
+> > Limiting access to file descriptors
+> > -----------------------------------
+> > The fixed files mechanism can be used to limit access to a set of file
+> > descriptors:
+> > 
+> >   struct io_uring_restriction restrictions[] = {
+> >       {
+> >           .opcode = IORING_RESTRICTION_FIXED_FILES_ONLY,
+> >       },
+> >       ...
+> >   };
+> > 
+> >   io_uring_register(ringfd, IORING_REGISTER_RESTRICTIONS,
+> >                     restrictions, ARRAY_SIZE(restrictions));
+> > 
+> > Only requests with the sqe->flags IOSQE_FIXED_FILE bit set will be allowed.
+> 
+> I don't think this sounds unreasonable, but I'd really like to see a
+> prototype hacked up before rendering any further opinions on it :-)
+
+Yeah :-) I'll be back with a prototype of this changes ASAP.
+
+Thanks for you feedback,
+Stefano
 
