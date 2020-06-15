@@ -2,130 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD4F1F9A27
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475411F99C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730580AbgFOO2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 10:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730110AbgFOO2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:28:49 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2D9C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:28:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id u26so146692wmn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xGDCFEKi8HPI3D0JqHhVUyKhW7cWu5yo2qs+AF/FFQg=;
-        b=Le1ui5h1RFDRX7MHDNBOe50JiR6qxmvuYkfJy1r90c0vukA2QbHtCC4GjaGhFi7aY1
-         UfVZVUoClT7O/3WPSZ4WZFovdZUEVQ+XHmOCdzqJvgUdW2BeYmUIncJAZl7SHmK8EPpO
-         Xwto79YM518LbFSqELX9i9IoK3X0emmXvFr5P9YjZ+hcflPmSZPE/47zOJ2CLWBPZ9R/
-         FjXErRJAQRSufzyoJTBg8TN75eHwMCfckicK/iC/UKtttLIVkCgQbjh9lt2F2CWumOvu
-         7KA/feRfIM0R5fdFwxwYKb4mrlNg3sxIJT7hfccnSV4BpnIsevRelZKhwoJwjQwOmEmM
-         VhGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xGDCFEKi8HPI3D0JqHhVUyKhW7cWu5yo2qs+AF/FFQg=;
-        b=Q8JwqFRJqiSsdG3ki3bEL3s9Dn7sPbdPe4B7onFy16V62wOrf7JYE0N1VKep2qbePz
-         qNd0J9JC58dwMVqb+OK5ZdUyLQ/7N7MtLd4ArcF0a52eWFD2yXE2VToYuNXzzrKyiDNd
-         r1KYZfbTBphZoMG7Do0RY9oWsA9Zm9Xt+SB9JJW/NeTHCZ5ZjRcy9cGJmF+Bj8MTSuUR
-         zNEei8ScB1JjQHWyArbymaAApTNaOPRon7IJmyVsTp52L1jK3srQ0cOKzu66BJqUWxH9
-         dBuCkIfYx4S+BbGh1nB22DlBQGJtmPoEJ6CpLl1l3cRGNYl100DLJNNBDsGsYLxy/qEu
-         k3zQ==
-X-Gm-Message-State: AOAM533M5/yaowo3ZrKCYtVw3ztXRbFcFp7JudZkh48wYM9n/0o240y2
-        VhkHMfaQzASsCBmBOgVvWhhxww==
-X-Google-Smtp-Source: ABdhPJzjPlB084ZbJ22w6JnJ0+3/LKJfBN9RTr2pz+fW7ZJKZZzu0Z/8wTigeY3ja39uTmOlimT/RA==
-X-Received: by 2002:a1c:7717:: with SMTP id t23mr13299332wmi.175.1592231327311;
-        Mon, 15 Jun 2020 07:28:47 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id a6sm24329946wrn.38.2020.06.15.07.28.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2020 07:28:46 -0700 (PDT)
-Subject: Re: [RFC v2 1/3] dt-bindings: nvmem: Add devicetree bindings for
- qfprom-efuse
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        dhavalp@codeaurora.org, mturney@codeaurora.org,
-        sparate@codeaurora.org, c_rbokka@codeaurora.org,
-        mkurumel@codeaurora.org
-References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org>
- <1591868882-16553-2-git-send-email-rbokka@codeaurora.org>
- <CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com>
- <0ee1d7fa-0520-a347-6a55-6ab646284b1a@linaro.org>
- <CAD=FV=WGCvQTRHWX4Dvx+pTf010NbEzQMgcV4WDKQ6M8KO-cRw@mail.gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <9f702f74-1fb7-423b-0899-0bdaeafbef82@linaro.org>
-Date:   Mon, 15 Jun 2020 15:28:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WGCvQTRHWX4Dvx+pTf010NbEzQMgcV4WDKQ6M8KO-cRw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730141AbgFOOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:14:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:34462 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728773AbgFOOOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 10:14:06 -0400
+IronPort-SDR: Rg4rbE70YBB0lRZKozeCjrGZJaCYCYuMt8TQ9CHo9IvmDC0FPC/DiOk1C+YyV0BfrvYV1MXO/H
+ 5xxUUwhCOoWQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 07:14:05 -0700
+IronPort-SDR: FK6Doo0pad3ZqG23ryY2kjg47LjDN6k11ZgJOwjID2AHLtM6jprU5IeGDlYWjirPgjH6iycimd
+ 6Y3zupR8rKUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
+   d="scan'208";a="476029192"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Jun 2020 07:14:04 -0700
+From:   richard.gong@linux.intel.com
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        richard.gong@linux.intel.com, Richard Gong <richard.gong@intel.com>
+Subject: [PATCH 0/4] extend svc and rsu drivers for new RSU features 
+Date:   Mon, 15 Jun 2020 09:29:04 -0500
+Message-Id: <1592231348-31334-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Richard Gong <richard.gong@intel.com>
 
+Patches have been internally reviewed by colleagues at Intel.
 
-On 15/06/2020 15:27, Doug Anderson wrote:
-> Hi,
-> 
-> On Mon, Jun 15, 2020 at 3:44 AM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
->>
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - qcom,qfprom
->>>
->>> As per discussion in patch #1, I believe SoC compatible should be here
->>> too in case it is ever needed.  This is standard practice for dts
->>> files for IP blocks embedded in an SoC.  AKA, this should be:
->>>
->>>       items:
->>>         - enum:
->>>             - qcom,apq8064-qfprom
->>>             - qcom,apq8084-qfprom
->>>             - qcom,msm8974-qfprom
->>>             - qcom,msm8916-qfprom
->>>             - qcom,msm8996-qfprom
->>>             - qcom,msm8998-qfprom
->>>             - qcom,qcs404-qfprom
->>>             - qcom,sc7180-qfprom
->>>             - qcom,sdm845-qfprom
->>
->>
->> Above is not required for now in this patchset, as we can attach data at
->> runtime specific to version of the qfprom.
->>
->> This can be added when required!
-> 
-> I'm OK with leaving off for this patchset.  After we get everything
-> landed for blowing fuses then I can send out a separate patch where we
-> can debate the merits of adding the SoC-specific compatible strings.
-> :-)  Sound good?
+DCMF = Decision Configuration Management Firmware. The max retry parameter
+is the maximum times the images is allowed to reload itself before giving
+up and starting RSU failover flow.
 
-Sounds good!
+Extend Intel Stratix10 service layer and Remote System Update (RSU)
+drivers to get decision configuration management firmware (DCMF) versions
+and max retry parameter value.
 
---srini
+Add 5 device attributes to Intel Stratix10 Remote System Update (RSU)
+sysfs interface.
 
-> 
-> -Doug
-> 
+Correct the incorrect flag value for COMMAND_RECONFIG_FLAG_PARTIAL and
+increase FPGA reconfig timeout values.
+
+Richard Gong (4):
+  firmware: stratix10-svc: correct reconfig flag and timeout values
+  firmware: stratix10-svc: extend svc to support new RSU features
+  firmware: stratix10-rsu: extend rsu driver for new features
+  firmware: rsu: add device attributes to sysfs interface
+
+ .../testing/sysfs-devices-platform-stratix10-rsu   |  36 +++++
+ drivers/firmware/stratix10-rsu.c                   | 166 ++++++++++++++++++++-
+ drivers/firmware/stratix10-svc.c                   |  17 +++
+ include/linux/firmware/intel/stratix10-smc.h       |  43 ++++++
+ .../linux/firmware/intel/stratix10-svc-client.h    |  17 ++-
+ 5 files changed, 269 insertions(+), 10 deletions(-)
+
+-- 
+2.7.4
+
