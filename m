@@ -2,90 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272791F945E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A6E1F946E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 12:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgFOKMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 06:12:14 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:22460 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728368AbgFOKMO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 06:12:14 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FA9nop017544;
-        Mon, 15 Jun 2020 12:12:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=d3GjQF0BzX+PN+NqBFNl58BCi48VHp5WyEJcoWpGzZE=;
- b=Qh4w60ADIEMTpDsoxohyQ9Ih50clXyZZs9u/+lc0WnUycb7Ig8HgvcIuavp2QzBzto9s
- pmW6O42deSa+OyUIEJwKxCQAROZ0VGg+0just0JmbVu/62FSwt4Q0tIpX7FtW45WENV8
- NlQRnYxPP9yo6PgAxoZUxtKZALY1kNaZVreGndLuxbjFprxzTKbgn2OKSGKrNGuuI7PP
- 195FLNG567s+Alro3Cc6ZWB2C185rEBbI8vGh1I0BmBtCGpNrtO6S+DIiauFDVV+dJqT
- Zy/d4GlEPlf4aJ5u/jFASaKo5pIy4za3/CvRlZNzepua/Ziop0gM9nyscvOEZh4u4Pi9 nQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mkx915uv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jun 2020 12:12:02 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9D9D5100042;
-        Mon, 15 Jun 2020 12:12:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8845720E2C3;
-        Mon, 15 Jun 2020 12:12:01 +0200 (CEST)
-Received: from lmecxl0912.tpe.st.com (10.75.127.49) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 15 Jun
- 2020 12:12:00 +0200
-Subject: Re: [PATCH 0/3] STM32 update uart4 pin configuration for low power
-To:     Erwan Le Ray <erwan.leray@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-References: <20200528073853.24759-1-erwan.leray@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <751071df-6879-da91-3519-38770971c43f@st.com>
-Date:   Mon, 15 Jun 2020 12:12:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728986AbgFOKQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 06:16:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34158 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728505AbgFOKQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 06:16:11 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jkm9s-0005U9-00; Mon, 15 Jun 2020 12:16:04 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C39B8C0688; Mon, 15 Jun 2020 12:14:43 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 12:14:43 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Bibo Mao <maobibo@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
+Message-ID: <20200615101443.GA10075@alpha.franken.de>
+References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <20200528073853.24759-1-erwan.leray@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-15_02:2020-06-15,2020-06-15 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erwan
+On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
+> Function set_pmd_at is to set pmd entry, if tlb entry need to
+> be flushed, there exists pmdp_huge_clear_flush alike function
+> before set_pmd_at is called. So it is not necessary to call
+> flush_tlb_all in this function.
 
-On 5/28/20 9:38 AM, Erwan Le Ray wrote:
-> Update uart4 pin configuration for low power in pinctrl, and for ed/ev
-> and dkx boards.
-> 
-> Erwan Le Ray (3):
->    ARM: dts: stm32: update uart4 pin configuration for low power on
->      stm32mp157
->    ARM: dts: stm32: Update pin states for uart4 on stm32mp157c-ed1
->    ARM: dts: stm32: Update UART4 pin states on stm32mp15xx-dkx
-> 
->   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 17 +++++++++++++++++
->   arch/arm/boot/dts/stm32mp157c-ed1.dts    |  4 +++-
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi   |  4 +++-
->   3 files changed, 23 insertions(+), 2 deletions(-)
-> 
+have you checked all set_pmd_at() calls ? I found a few case where
+it's not clear to me, if tlb flushing is done... If you think this
+is still the right thing to do, please change arch/mips/mm/pgtable-32.c
+as well.
 
-Series applied on stm32-next.
+Thomas.
 
-Regards
-Alex
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
