@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0398C1F93A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126171F93AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbgFOJj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728411AbgFOJjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:39:25 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D39C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:39:23 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j10so16354212wrw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x9qVcMyMnAhIbMYyOKNI3DNf1/EsHJJwGDoEeZdbbEc=;
-        b=mvzt6E/Ip29QYzcw4SeSGZLcTRX6vuGws4dsFpmc6bjwwLEAXvsQuthjvhj+xyg7eD
-         E8PjWN+AhT/v927ry9Ls0aGhJRkbVVOH+L+ALMpyFslZ8tBov/yszBQdS9BVk+T8PZac
-         4I/3GSp2Z6+FMQopuHYZWbaJDvUTTyULUnkLyP2FJfuJh7drpG4vBXKQlCF6sYxubYm1
-         8pGLnIAG5fFpvWDtUl3wPWZV3BpBD62B60Q0sRtm7lVkDHSBVgYHUl57OUGw0rpJPUiV
-         uX6KNkq6q+bg+zlUJkGh4wMqoYXOokwuja3vh3aTcQnlbb+u9UrGiN7yZTK+DUHHzYZ0
-         uNzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x9qVcMyMnAhIbMYyOKNI3DNf1/EsHJJwGDoEeZdbbEc=;
-        b=GF+UO84D6JMr0yRp7lT8l1XDCw0Gv3Y8eN6or8yR+nTfuMsfsVYx4wPR5nlNVBnl4w
-         A5byJTYtQ6fuH4u4A9FpD0PYBklkguqyqHxkwW7Qgx0K5z2hPln+q/WkFAF/H7+VGOHL
-         phvns7yiC56g30+x0KPk0cdCi5zSzLHo2vPnUXHtKia4mse3+VrQViaO7fvYqa+Dmtfv
-         0XcMhfD2FOcjkosMQNseqZV7TPYju03O4PdUYIOK+zg9xrMMCCaFzX7R6VfjBkId7I8b
-         OOLTgnYffv9aB2cJ+1u/vR7IK/ausQI6hezSrUgT13kNJ+c3QEJsl9wM+WkkOSkEJp0e
-         jChQ==
-X-Gm-Message-State: AOAM533EaAqYghnjQ45Cn6Huio7/j0KE8xAHu/7NCLXAYZ7WCnrQ+qxG
-        6/ut6E1tGe+m8nVj0bE36/yuLw==
-X-Google-Smtp-Source: ABdhPJwg4yBzXAAfc5/XyddS3tc1Y/ihkvQBUtTGCQEGFf9ytyOkVlVpb/Yg9ey/vqcPIxF00eExpQ==
-X-Received: by 2002:a5d:5270:: with SMTP id l16mr28075101wrc.80.1592213962660;
-        Mon, 15 Jun 2020 02:39:22 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id k12sm23824737wrn.42.2020.06.15.02.39.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2020 02:39:22 -0700 (PDT)
-Subject: Re: [PATCH] nvmem: sc27xx: add sc2730 efuse support
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Freeman Liu <freeman.liu@unisoc.com>
-References: <20200615032347.10586-1-zhang.lyra@gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <504216f8-34f6-11a0-d98e-84ff3901ed52@linaro.org>
-Date:   Mon, 15 Jun 2020 10:39:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729352AbgFOJk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:40:26 -0400
+Received: from mga14.intel.com ([192.55.52.115]:28925 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728411AbgFOJk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:40:26 -0400
+IronPort-SDR: MEy6tbFepUDj348cFVI4zdq+A2doPimbzZmpWRjWjw6vgo/k0snuPDunjRAGHvs+7cH6AXdKec
+ Jo9xc/WvPJWQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 02:40:23 -0700
+IronPort-SDR: LHQqZ76Fn7bIbBFT7Zn7EpEOpc4QRKtaF80t6uGidUtlRfn4y7YzJbrBh+rgoQ+f/DrYLdkEsI
+ sbi6SZmcyNeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
+   d="scan'208";a="276501595"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006.jf.intel.com with ESMTP; 15 Jun 2020 02:40:17 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jklbH-00DXN0-GZ; Mon, 15 Jun 2020 12:40:19 +0300
+Date:   Mon, 15 Jun 2020 12:40:19 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Aaron Ma <aaron.ma@canonical.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        HungNien Chen <hn.chen@weidahitech.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Pavel Balan <admin@kryma.net>, Tin Huynh <tnhuynh@apm.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        You-Sheng Yang <vicamo.yang@canonical.com>
+Subject: Re: [PATCH 1/2] i2c: designware: Only check the first byte for SMBus
+ block read length
+Message-ID: <20200615094019.GP2428291@smile.fi.intel.com>
+References: <20200614210255.4641-1-sultan@kerneltoast.com>
+ <20200614210255.4641-2-sultan@kerneltoast.com>
 MIME-Version: 1.0
-In-Reply-To: <20200615032347.10586-1-zhang.lyra@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200614210255.4641-2-sultan@kerneltoast.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15/06/2020 04:23, Chunyan Zhang wrote:
-> From: Freeman Liu <freeman.liu@unisoc.com>
+On Sun, Jun 14, 2020 at 02:02:54PM -0700, Sultan Alsawaf wrote:
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
 > 
-> Add support to the new efuse IP which is integrated in the SC2730
-> which includes multiple blocks in a single chip.
+> SMBus block reads can be broken because the read function will just skip
+> over bytes it doesn't like until reaching a byte that conforms to the
+> length restrictions for block reads. This is problematic when it isn't
+> known if the incoming payload is indeed a conforming block read.
 > 
-> Signed-off-by: Freeman Liu <freeman.liu@unisoc.com>
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> According to the SMBus specification, block reads will only send the
+> payload length in the first byte, so we can fix this by only considering
+> the first byte in a sequence for block read length purposes.
+
+I'm wondering if this overlaps with [1]. AFAIU that one is also makes sure that
+the length is not a garbage.
+
+[1]: https://lore.kernel.org/linux-i2c/20200613104109.2989-1-mans@mansr.com/T/#u
+
+> Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 > ---
->   drivers/nvmem/sc27xx-efuse.c | 34 +++++++++++++++++++++++++++++++---
->   1 file changed, 31 insertions(+), 3 deletions(-)
+>  drivers/i2c/busses/i2c-designware-master.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-> index ab5e7e0bc3d8..7d453c9d80da 100644
-> --- a/drivers/nvmem/sc27xx-efuse.c
-> +++ b/drivers/nvmem/sc27xx-efuse.c
+> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+> index d6425ad6e6a3..16d38b8fc19a 100644
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -398,7 +398,6 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>  	len += (flags & I2C_CLIENT_PEC) ? 2 : 1;
+>  	dev->tx_buf_len = len - min_t(u8, len, dev->rx_outstanding);
+>  	msgs[dev->msg_read_idx].len = len;
+> -	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+>  
+>  	return len;
+>  }
+> @@ -430,10 +429,11 @@ i2c_dw_read(struct dw_i2c_dev *dev)
+>  			u32 flags = msgs[dev->msg_read_idx].flags;
+>  
+>  			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
+> -			/* Ensure length byte is a valid value */
+> -			if (flags & I2C_M_RECV_LEN &&
+> -			    tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
+> -				len = i2c_dw_recv_len(dev, tmp);
+> +			if (flags & I2C_M_RECV_LEN) {
+> +				/* Ensure length byte is a valid value */
+> +				if (tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0)
+> +					len = i2c_dw_recv_len(dev, tmp);
+> +				msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+>  			}
+>  			*buf++ = tmp;
+>  			dev->rx_outstanding--;
+> -- 
+> 2.27.0
+> 
 
-...
-
->   
-> @@ -187,8 +206,15 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
->   	struct nvmem_config econfig = { };
->   	struct nvmem_device *nvmem;
->   	struct sc27xx_efuse *efuse;
-> +	const struct sc27xx_efuse_variant_data *pdata;
->   	int ret;
->   
-> +	pdata = of_device_get_match_data(&pdev->dev);
-> +	if (!pdata) {
-
-This check is totally unnecessary as you would not end up here unless 
-there is a matching compatible!
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-You could move this after kmalloc and assign efuse->var_data directly!!
-
-
---srini
-
-> +		dev_err(&pdev->dev, "No matching driver data found\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	efuse = devm_kzalloc(&pdev->dev, sizeof(*efuse), GFP_KERNEL);
->   	if (!efuse)
->   		return -ENOMEM;
-> @@ -219,6 +245,7 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
->   
->   	mutex_init(&efuse->mutex);
->   	efuse->dev = &pdev->dev;
-> +	efuse->var_data = pdata;
->   
