@@ -2,269 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D36C1F9968
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7121F9977
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 16:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgFON4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:56:39 -0400
-Received: from mga07.intel.com ([134.134.136.100]:41361 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730064AbgFON4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:56:33 -0400
-IronPort-SDR: xsgUCWypnEjeYc4gJuthrZfMKxu2LGLGLn5BXRMQCsE1PA//FACNCR8qDmqytbRboDROgUOBdQ
- T85FDNXeQ5EA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 06:56:30 -0700
-IronPort-SDR: bzGQ6brRlmu8LL6l1aFfQCGVKmV6QkpNPX1n9Gdkr+MiLZv4Vyyv7YMaTY/MSPIqIpCI5qEU7a
- kYK8Vqegpfog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
-   d="scan'208";a="276565199"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006.jf.intel.com with ESMTP; 15 Jun 2020 06:56:29 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jkpbD-00DaIE-KU; Mon, 15 Jun 2020 16:56:31 +0300
-Date:   Mon, 15 Jun 2020 16:56:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     linus.walleij@linaro.org, akpm@linux-foundation.org,
-        vilhelm.gray@gmail.com, arnd@arndb.de, linux-arch@vger.kernel.org,
+        id S1730120AbgFOOBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 10:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728773AbgFOOBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 10:01:12 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC125C061A0E;
+        Mon, 15 Jun 2020 07:01:11 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id p5so17232386wrw.9;
+        Mon, 15 Jun 2020 07:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=M7wQKWp9lNb+0zWRIHsa3B/WaoRNCApu4CB/A57cLAA=;
+        b=QYWmZk35FyUTn2ZVO/ILE+7wV0p9nKuexSfotzMLtwksG9mZT8SaHCx6GkpndBvjtv
+         ERbAhDS0UK5Yz9TmoRQaf9AosmldGH6QyEkp0UyvbFRx0MefuJnOS24MN1EaOxHx48fc
+         VMpRbQHPvoEqGP6Iep7jFFM6PR7FwGaqtkd4JqpY1dhokoBOA2oO9qAABtvkLEd79632
+         BhRLCB/7Lh1qQwhZGqWUlbMzQjD7tVzJuqtLstZyF5qaQvKxyNarA3Yv49lBBCvA0siG
+         hTf2S2/hLpoWANuEmbUXqTQVr0MJtUj7Js69HCmIeg60oFZUI/OhH/mMpbSPYxmB+zXC
+         8KEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=M7wQKWp9lNb+0zWRIHsa3B/WaoRNCApu4CB/A57cLAA=;
+        b=gPwJOJhpGYsduILtmcYE8cKYMotw8wRSqgjZW212GS2GgS890mFqI8+SdzK8JVwVSa
+         e9FR7WUMHQaIiQxYOUfGBce5DxkDL4A4x+qdO/GSydc/xOJ4itsxBsoww3FDhGbvkz15
+         Be9x34TDtCKfuTs6DYXEKYpGjo/r8GBx/3bvb6Jzqw9oGKPK4PEgr/oClbr5A7KKdOsa
+         JGEtu9ab2Wf97qdQta8F/XvXIX9rb80QR3bW/a9XUUqEMVMbrXX/+LsnHs7D/corzx0A
+         UPp9UlnPTbScuJqmT4sGgiGtXOChAtYqii/eOMR4aiE6QPHxTKOUcngTwG0BErvd9XTc
+         obqQ==
+X-Gm-Message-State: AOAM531zv2h57VtrNFpVofIEzm7kqpAQYEDaQ5QCmqU/OH3m+idZ32sm
+        4L+7KPxL6xssh+Swio7MF9UZVTu6
+X-Google-Smtp-Source: ABdhPJy4hwrw4GC32VIHoHzNMPLIZ+ob1IM2iYpeXw/u5Ad2TzyFeOTTQE2m/CfgvzuE7W9ttFPQ/g==
+X-Received: by 2002:a5d:40d0:: with SMTP id b16mr28482081wrq.218.1592229670557;
+        Mon, 15 Jun 2020 07:01:10 -0700 (PDT)
+Received: from [192.168.43.243] ([5.100.193.151])
+        by smtp.gmail.com with ESMTPSA id d17sm25697154wrg.75.2020.06.15.07.01.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jun 2020 07:01:08 -0700 (PDT)
+Subject: Re: [PATCH 1/1] io_uring: fix lazy work init
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/4] bitops: Introduce the for_each_set_clump macro
-Message-ID: <20200615135631.GF2428291@smile.fi.intel.com>
-References: <cover.1592224128.git.syednwaris@gmail.com>
- <fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com>
+Cc:     jiufei.xue@linux.alibaba.com,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+References: <a75c1537cc655cb766e8e2517e18f74e13d60f1b.1592228129.git.asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <1d7ac6e0-a14c-a102-ad33-a3b2b1e160d4@gmail.com>
+Date:   Mon, 15 Jun 2020 16:59:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <a75c1537cc655cb766e8e2517e18f74e13d60f1b.1592228129.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:21:18PM +0530, Syed Nayyar Waris wrote:
-> This macro iterates for each group of bits (clump) with set bits,
-> within a bitmap memory region. For each iteration, "start" is set to
-> the bit offset of the found clump, while the respective clump value is
-> stored to the location pointed by "clump". Additionally, the
-> bitmap_get_value and bitmap_set_value functions are introduced to
-> respectively get and set a value of n-bits in a bitmap memory region.
-> The n-bits can have any size less than or equal to BITS_PER_LONG.
-> Moreover, during setting value of n-bit in bitmap, if a situation arise
-> that the width of next n-bit is exceeding the word boundary, then it
-> will divide itself such that some portion of it is stored in that word,
-> while the remaining portion is stored in the next higher word. Similar
-> situation occurs while retrieving value of n-bits from bitmap.
+On 15/06/2020 16:36, Pavel Begunkov wrote:
+> Don't leave garbage in req.work before punting async on -EAGAIN
+> in io_iopoll_queue().
+
+oops, cc'ed a wrong person.
++Cc: Xiaoguang Wang
+
 > 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> [  140.922099] general protection fault, probably for non-canonical
+>      address 0xdead000000000100: 0000 [#1] PREEMPT SMP PTI
+> ...
+> [  140.922105] RIP: 0010:io_worker_handle_work+0x1db/0x480
+> ...
+> [  140.922114] Call Trace:
+> [  140.922118]  ? __next_timer_interrupt+0xe0/0xe0
+> [  140.922119]  io_wqe_worker+0x2a9/0x360
+> [  140.922121]  ? _raw_spin_unlock_irqrestore+0x24/0x40
+> [  140.922124]  kthread+0x12c/0x170
+> [  140.922125]  ? io_worker_handle_work+0x480/0x480
+> [  140.922126]  ? kthread_park+0x90/0x90
+> [  140.922127]  ret_from_fork+0x22/0x30
+> 
+> Fixes: 7cdaf587de7c ("io_uring: avoid whole io_wq_work copy for requests
+> completed inline")
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 > ---
-> Changes in v8:
->  - No change.
+>  fs/io_uring.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes in v7:
->  - No change.
-> 
-> Changes in v6:
->  - No change.
-> 
-> Changes in v5:
->  - No change.
-> 
-> Changes in v4:
->  - No change.
-> 
-> Changes in v3:
->  - No change.
-> 
-> Changes in v2:
->  - No change.
-> 
->  include/asm-generic/bitops/find.h | 19 ++++++++++
->  include/linux/bitmap.h            | 61 +++++++++++++++++++++++++++++++
->  include/linux/bitops.h            | 13 +++++++
->  lib/find_bit.c                    | 14 +++++++
->  4 files changed, 107 insertions(+)
-> 
-> diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
-> index 9fdf21302fdf..4e6600759455 100644
-> --- a/include/asm-generic/bitops/find.h
-> +++ b/include/asm-generic/bitops/find.h
-> @@ -97,4 +97,23 @@ extern unsigned long find_next_clump8(unsigned long *clump,
->  #define find_first_clump8(clump, bits, size) \
->  	find_next_clump8((clump), (bits), (size), 0)
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 54addaba742d..410b2df16c71 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -1105,6 +1105,7 @@ static inline void io_prep_async_work(struct io_kiocb *req,
+>  			req->work.flags |= IO_WQ_WORK_UNBOUND;
+>  	}
 >  
-> +/**
-> + * find_next_clump - find next clump with set bits in a memory region
-> + * @clump: location to store copy of found clump
-> + * @addr: address to base the search on
-> + * @size: bitmap size in number of bits
-> + * @offset: bit offset at which to start searching
-> + * @clump_size: clump size in bits
-> + *
-> + * Returns the bit offset for the next set clump; the found clump value is
-> + * copied to the location pointed by @clump. If no bits are set, returns @size.
-> + */
-> +extern unsigned long find_next_clump(unsigned long *clump,
-> +				      const unsigned long *addr,
-> +				      unsigned long size, unsigned long offset,
-> +				      unsigned long clump_size);
-> +
-> +#define find_first_clump(clump, bits, size, clump_size) \
-> +	find_next_clump((clump), (bits), (size), 0, (clump_size))
-> +
->  #endif /*_ASM_GENERIC_BITOPS_FIND_H_ */
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 99058eb81042..7ab2c65fc964 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -75,7 +75,11 @@
->   *  bitmap_from_arr32(dst, buf, nbits)          Copy nbits from u32[] buf to dst
->   *  bitmap_to_arr32(buf, src, nbits)            Copy nbits from buf to u32[] dst
->   *  bitmap_get_value8(map, start)               Get 8bit value from map at start
-> + *  bitmap_get_value(map, start, nbits)		Get bit value of size
-> + *						'nbits' from map at start
->   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
-> + *  bitmap_set_value(map, value, start, nbits)	Set bit value of size 'nbits'
-> + *						of map at start
->   *
->   * Note, bitmap_zero() and bitmap_fill() operate over the region of
->   * unsigned longs, that is, bits behind bitmap till the unsigned long
-> @@ -563,6 +567,34 @@ static inline unsigned long bitmap_get_value8(const unsigned long *map,
->  	return (map[index] >> offset) & 0xFF;
->  }
+> +	io_req_init_async(req);
+>  	io_req_work_grab_env(req, def);
 >  
-> +/**
-> + * bitmap_get_value - get a value of n-bits from the memory region
-> + * @map: address to the bitmap memory region
-> + * @start: bit offset of the n-bit value
-> + * @nbits: size of value in bits
-> + *
-> + * Returns value of nbits located at the @start bit offset within the @map
-> + * memory region.
-> + */
-> +static inline unsigned long bitmap_get_value(const unsigned long *map,
-> +					      unsigned long start,
-> +					      unsigned long nbits)
-> +{
-> +	const size_t index = BIT_WORD(start);
-> +	const unsigned long offset = start % BITS_PER_LONG;
-> +	const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
-> +	const unsigned long space = ceiling - start;
-> +	unsigned long value_low, value_high;
-> +
-> +	if (space >= nbits)
-> +		return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-
-Andrew, note that this requires to have GENMASK() fix [1] applied.
-
-[1]: https://lore.kernel.org/lkml/20200608221823.35799-1-rikard.falkeborn@gmail.com/
-
-> +	else {
-> +		value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
-> +		value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
-> +		return (value_low >> offset) | (value_high << space);
-> +	}
-> +}
-> +
->  /**
->   * bitmap_set_value8 - set an 8-bit value within a memory region
->   * @map: address to the bitmap memory region
-> @@ -579,6 +611,35 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
->  	map[index] |= value << offset;
->  }
->  
-> +/**
-> + * bitmap_set_value - set n-bit value within a memory region
-> + * @map: address to the bitmap memory region
-> + * @value: value of nbits
-> + * @start: bit offset of the n-bit value
-> + * @nbits: size of value in bits
-> + */
-> +static inline void bitmap_set_value(unsigned long *map,
-> +				    unsigned long value,
-> +				    unsigned long start, unsigned long nbits)
-> +{
-> +	const size_t index = BIT_WORD(start);
-> +	const unsigned long offset = start % BITS_PER_LONG;
-> +	const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
-> +	const unsigned long space = ceiling - start;
-> +
-> +	value &= GENMASK(nbits - 1, 0);
-> +
-> +	if (space >= nbits) {
-> +		map[index] &= ~(GENMASK(nbits + offset - 1, offset));
-> +		map[index] |= value << offset;
-> +	} else {
-> +		map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
-> +		map[index] |= value << offset;
-> +		map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> +		map[index + 1] |= (value >> space);
-> +	}
-> +}
-> +
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* __LINUX_BITMAP_H */
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index 9acf654f0b19..41c2d9ce63e7 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -62,6 +62,19 @@ extern unsigned long __sw_hweight64(__u64 w);
->  	     (start) < (size); \
->  	     (start) = find_next_clump8(&(clump), (bits), (size), (start) + 8))
->  
-> +/**
-> + * for_each_set_clump - iterate over bitmap for each clump with set bits
-> + * @start: bit offset to start search and to store the current iteration offset
-> + * @clump: location to store copy of current 8-bit clump
-> + * @bits: bitmap address to base the search on
-> + * @size: bitmap size in number of bits
-> + * @clump_size: clump size in bits
-> + */
-> +#define for_each_set_clump(start, clump, bits, size, clump_size) \
-> +	for ((start) = find_first_clump(&(clump), (bits), (size), (clump_size)); \
-> +	     (start) < (size); \
-> +	     (start) = find_next_clump(&(clump), (bits), (size), (start) + (clump_size), (clump_size)))
-> +
->  static inline int get_bitmask_order(unsigned int count)
->  {
->  	int order;
-> diff --git a/lib/find_bit.c b/lib/find_bit.c
-> index 49f875f1baf7..1341bd39b32a 100644
-> --- a/lib/find_bit.c
-> +++ b/lib/find_bit.c
-> @@ -190,3 +190,17 @@ unsigned long find_next_clump8(unsigned long *clump, const unsigned long *addr,
->  	return offset;
->  }
->  EXPORT_SYMBOL(find_next_clump8);
-> +
-> +unsigned long find_next_clump(unsigned long *clump, const unsigned long *addr,
-> +			       unsigned long size, unsigned long offset,
-> +			       unsigned long clump_size)
-> +{
-> +	offset = find_next_bit(addr, size, offset);
-> +	if (offset == size)
-> +		return size;
-> +
-> +	offset = rounddown(offset, clump_size);
-> +	*clump = bitmap_get_value(addr, offset, clump_size);
-> +	return offset;
-> +}
-> +EXPORT_SYMBOL(find_next_clump);
-> -- 
-> 2.26.2
+>  	*link = io_prep_linked_timeout(req);
 > 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Pavel Begunkov
