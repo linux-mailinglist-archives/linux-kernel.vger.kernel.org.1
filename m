@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FC91FA4B3
+	by mail.lfdr.de (Postfix) with ESMTP id 543E11FA4B2
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgFOXn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:43:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:56764 "EHLO foss.arm.com"
+        id S1727012AbgFOXnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:43:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:56774 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726909AbgFOXnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:43:47 -0400
+        id S1726943AbgFOXns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:43:48 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BEF41045;
-        Mon, 15 Jun 2020 16:43:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C072811FB;
+        Mon, 15 Jun 2020 16:43:47 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8C6FE3F73C;
-        Mon, 15 Jun 2020 16:43:45 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C183B3F73C;
+        Mon, 15 Jun 2020 16:43:46 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
-Subject: [PATCH v2 3/4] sched/topology: Verify SD_* flags setup when sched_debug is on
-Date:   Tue, 16 Jun 2020 00:41:53 +0100
-Message-Id: <20200615234154.23982-4-valentin.schneider@arm.com>
+Cc:     Morten Rasmussen <morten.rasmussen@arm.com>, mingo@kernel.org,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com
+Subject: [PATCH v2 4/4] arm, sched/topology: Remove SD_SHARE_POWERDOMAIN
+Date:   Tue, 16 Jun 2020 00:41:54 +0100
+Message-Id: <20200615234154.23982-5-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615234154.23982-1-valentin.schneider@arm.com>
 References: <20200615234154.23982-1-valentin.schneider@arm.com>
@@ -34,49 +35,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have some description of what we expect the flags layout to
-be, we can use that to assert at runtime that the actual layout is sane.
+This flag was introduced in 2014 by commit
 
+  d77b3ed5c9f8 ("sched: Add a new SD_SHARE_POWERDOMAIN for sched_domain")
+
+but AFAIA it was never leveraged by the scheduler. The closest thing I can
+think of is EAS caring about frequency domains, and it does that by
+leveraging performance domains.
+
+Remove the flag.
+
+Suggested-by: Morten Rasmussen <morten.rasmussen@arm.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/topology.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/arm/kernel/topology.c     |  2 +-
+ include/linux/sched/sd_flags.h | 20 ++++++--------------
+ kernel/sched/topology.c        | 10 +++-------
+ 3 files changed, 10 insertions(+), 22 deletions(-)
 
+diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
+index b5adaf744630..353f3ee660e4 100644
+--- a/arch/arm/kernel/topology.c
++++ b/arch/arm/kernel/topology.c
+@@ -243,7 +243,7 @@ void store_cpu_topology(unsigned int cpuid)
+ 
+ static inline int cpu_corepower_flags(void)
+ {
+-	return SD_SHARE_PKG_RESOURCES  | SD_SHARE_POWERDOMAIN;
++	return SD_SHARE_PKG_RESOURCES;
+ }
+ 
+ static struct sched_domain_topology_level arm_topology[] = {
+diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
+index 6cad2bd954fe..48ed983a523e 100644
+--- a/include/linux/sched/sd_flags.h
++++ b/include/linux/sched/sd_flags.h
+@@ -83,21 +83,13 @@ SD_FLAG(SD_ASYM_CPUCAPACITY,    5, SDF_SHARED_PARENT)
+  */
+ SD_FLAG(SD_SHARE_CPUCAPACITY,   6, SDF_SHARED_CHILD)
+ 
+-/*
+- * Domain members share power domain
+- *
+- * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
+- * the same power domain.
+- */
+-SD_FLAG(SD_SHARE_POWERDOMAIN,   7, SDF_SHARED_CHILD)
+-
+ /*
+  * Domain members share CPU package resources (i.e. caches)
+  *
+  * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
+  * the same cache(s).
+  */
+-SD_FLAG(SD_SHARE_PKG_RESOURCES, 8, SDF_SHARED_CHILD)
++SD_FLAG(SD_SHARE_PKG_RESOURCES, 7, SDF_SHARED_CHILD)
+ 
+ /*
+  * Only a single load balancing instance
+@@ -107,7 +99,7 @@ SD_FLAG(SD_SHARE_PKG_RESOURCES, 8, SDF_SHARED_CHILD)
+  * this flag set, then all of its parents need to have it too (otherwise the
+  * serialization doesn't make sense).
+  */
+-SD_FLAG(SD_SERIALIZE,           9, SDF_SHARED_PARENT)
++SD_FLAG(SD_SERIALIZE,           8, SDF_SHARED_PARENT)
+ 
+ /*
+  * Place busy tasks earlier in the domain
+@@ -116,7 +108,7 @@ SD_FLAG(SD_SERIALIZE,           9, SDF_SHARED_PARENT)
+  * up, but currently assumed to be set from the base domain upwards (see
+  * update_top_cache_domain()).
+  */
+-SD_FLAG(SD_ASYM_PACKING,        10, SDF_SHARED_CHILD)
++SD_FLAG(SD_ASYM_PACKING,        9, SDF_SHARED_CHILD)
+ 
+ /*
+  * Prefer to place tasks in a sibling domain
+@@ -124,18 +116,18 @@ SD_FLAG(SD_ASYM_PACKING,        10, SDF_SHARED_CHILD)
+  * NONE: Set up until domains start spanning NUMA nodes. Close to being a
+  * SHARED_CHILD flag, but cleared below domains with SD_ASYM_CPUCAPACITY.
+  */
+-SD_FLAG(SD_PREFER_SIBLING,      11, 0)
++SD_FLAG(SD_PREFER_SIBLING,      10, 0)
+ 
+ /*
+  * sched_domains of this level overlap
+  *
+  * SHARED_PARENT: Set for all NUMA levels above NODE.
+  */
+-SD_FLAG(SD_OVERLAP,             12, SDF_SHARED_PARENT)
++SD_FLAG(SD_OVERLAP,             11, SDF_SHARED_PARENT)
+ 
+ /*
+  * cross-node balancing
+  *
+  * SHARED_PARENT: Set for all NUMA levels above NODE.
+  */
+-SD_FLAG(SD_NUMA,                13, SDF_SHARED_PARENT)
++SD_FLAG(SD_NUMA,                12, SDF_SHARED_PARENT)
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 1d7b446fac7d..2082a07b91a9 100644
+index 2082a07b91a9..1dd5b6405d62 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -29,6 +29,7 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
- 				  struct cpumask *groupmask)
- {
- 	struct sched_group *group = sd->groups;
-+	int flags = sd->flags;
- 
- 	cpumask_clear(groupmask);
- 
-@@ -43,6 +44,22 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
- 		printk(KERN_ERR "ERROR: domain->groups does not contain CPU%d\n", cpu);
+@@ -165,8 +165,7 @@ static int sd_degenerate(struct sched_domain *sd)
+ 			 SD_BALANCE_EXEC |
+ 			 SD_SHARE_CPUCAPACITY |
+ 			 SD_ASYM_CPUCAPACITY |
+-			 SD_SHARE_PKG_RESOURCES |
+-			 SD_SHARE_POWERDOMAIN)) {
++			 SD_SHARE_PKG_RESOURCES)) {
+ 		if (sd->groups != sd->groups->next)
+ 			return 0;
  	}
+@@ -197,8 +196,7 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+ 			    SD_ASYM_CPUCAPACITY |
+ 			    SD_SHARE_CPUCAPACITY |
+ 			    SD_SHARE_PKG_RESOURCES |
+-			    SD_PREFER_SIBLING |
+-			    SD_SHARE_POWERDOMAIN);
++			    SD_PREFER_SIBLING);
+ 		if (nr_node_ids == 1)
+ 			pflags &= ~SD_SERIALIZE;
+ 	}
+@@ -1309,7 +1307,6 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
+  *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
+  *   SD_SHARE_PKG_RESOURCES - describes shared caches
+  *   SD_NUMA                - describes NUMA topologies
+- *   SD_SHARE_POWERDOMAIN   - describes shared power domain
+  *
+  * Odd one out, which beside describing the topology has a quirk also
+  * prescribes the desired behaviour that goes along with it:
+@@ -1320,8 +1317,7 @@ int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
+ 	(SD_SHARE_CPUCAPACITY	|	\
+ 	 SD_SHARE_PKG_RESOURCES |	\
+ 	 SD_NUMA		|	\
+-	 SD_ASYM_PACKING	|	\
+-	 SD_SHARE_POWERDOMAIN)
++	 SD_ASYM_PACKING)
  
-+	for (; flags; flags &= flags - 1) {
-+		unsigned int idx = __ffs(flags);
-+		unsigned int flag = BIT(idx);
-+		unsigned int meta_flags = sd_flag_debug[idx].meta_flags;
-+
-+		if ((meta_flags & SDF_SHARED_CHILD) && sd->child &&
-+		    !(sd->child->flags & flag))
-+			printk(KERN_ERR "ERROR: flag %s set here but not in child\n",
-+			       sd_flag_debug[idx].name);
-+
-+		if ((meta_flags & SDF_SHARED_PARENT) && sd->parent &&
-+		    !(sd->parent->flags & flag))
-+			printk(KERN_ERR "ERROR: flag %s set here but not in parent\n",
-+			       sd_flag_debug[idx].name);
-+	}
-+
- 	printk(KERN_DEBUG "%*s groups:", level + 1, "");
- 	do {
- 		if (!group) {
+ static struct sched_domain *
+ sd_init(struct sched_domain_topology_level *tl,
 -- 
 2.27.0
 
