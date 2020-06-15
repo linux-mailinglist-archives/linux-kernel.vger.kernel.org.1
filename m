@@ -2,90 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2301F9C30
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56CD1F9C3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgFOPru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730356AbgFOPru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:47:50 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D50CC061A0E;
-        Mon, 15 Jun 2020 08:47:49 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id 25so16258067oiy.13;
-        Mon, 15 Jun 2020 08:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ylGNwumtH93sk6ap1x6lmEE198yuK1dm1zAaklJl8g=;
-        b=jVghkgRp7hdCYHS8KXn7SZaSC/jlmZ79a/kvSQjohVUBd9++iecOfILVZYG0ToEFhu
-         EHKv+4HyTiQfFmvXrvDEoEchH7dnwJSoCcKE7lH1e8orud1FKo1m4DlEoDCZqAh3BvSf
-         1SC7+Lg0nynjxJ1hj8JopzoDLH9WFpug1Sll65n/zbAgAepcub06FI8fNHwmhBRPw2Id
-         bokYp6rDR/caWB1NUJxZR5zxopPtL2WRW4sA7ddlGVllErbkB+57mxQeog/hlDTZtlS6
-         IZVOsZj42fpwZTDhXQ9D8fM1CYQA9z4LhHPwiULVnkd8Nal7ovcPTe+9qxtiTZplsw8P
-         ux1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ylGNwumtH93sk6ap1x6lmEE198yuK1dm1zAaklJl8g=;
-        b=b6YPBADJRR8WgDM5v2rCfxmwI4hv49+O+kXrFIkIQWctToEhiuHWHKGc4AG8+W59VD
-         yxIJaE3h4DJJDPZOQ45ukuDBugqpi7+mArbx/GlWTDhgR8GyrXwOHquh6bm/d+FBHPc3
-         wioutkb5uhFF92veKipNcdhttXwA/I2KLUjQT6wdP7vLkeKJcp65CGbHxdGCK6esV4S6
-         kvdn2gMAPZxDi4GrHHHv1KWt2bhmhaK5zBwvweosHizLo6SlbGw+ujlLjmIxvvHARL8/
-         GUlYSVcn/wIvJe39jqzPoDMO8cN7d2RiXFIPlE2/0C7kBznWzp6sLBwyxuMjvRBt+FKO
-         kmwg==
-X-Gm-Message-State: AOAM530I1ohmJzptIYq/O3Z/1vp1wN3A0fylLO7TosgKqik0kGkBretz
-        wthBzt9LAj5wTRJl9MPt+AmtXOSoXcptCao+jkBj7OCN
-X-Google-Smtp-Source: ABdhPJzxziUB41Y3/haG7lsP77O+nHBwMLgKjRaJR0MctPtx2C+lF3qC3uOpgy+nLbeH6Hg5QeSNQUhRRpYuamctHNg=
-X-Received: by 2002:aca:55c1:: with SMTP id j184mr8900951oib.160.1592236068457;
- Mon, 15 Jun 2020 08:47:48 -0700 (PDT)
+        id S1730629AbgFOPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:48:58 -0400
+Received: from mga02.intel.com ([134.134.136.20]:37512 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730321AbgFOPsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 11:48:55 -0400
+IronPort-SDR: eAr1d9AGC9yutfqhM5WnDV6PF3kkPYr6UEYASkt/aoyKt3qW/5y6kWugwH2IVQdPOJpqLxs4G6
+ uCB0DC0rrjVQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 08:48:54 -0700
+IronPort-SDR: gkkYVgcY8xV06BkKjnJOGSlBzFZYve2j2awE0FGSSUIvIj3XiwAj5QsvMoP3GPr1BbNqj0sBuD
+ XicWuOj61BNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
+   d="scan'208";a="382581571"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Jun 2020 08:48:54 -0700
+Date:   Mon, 15 Jun 2020 08:48:54 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v2 12/12] x86/traps: Fix up invalid PASID
+Message-ID: <20200615154854.GB13792@romley-ivt3.sc.intel.com>
+References: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
+ <1592008893-9388-13-git-send-email-fenghua.yu@intel.com>
+ <20200615075649.GK2497@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200613024130.3356-1-nramas@linux.microsoft.com>
- <20200613024130.3356-6-nramas@linux.microsoft.com> <CAEjxPJ7v5Lu-vzqg0ZVh8zJ9uZ=odN3jt_5+9d9x+RydsNWK0g@mail.gmail.com>
- <1592233145.11061.129.camel@linux.ibm.com>
-In-Reply-To: <1592233145.11061.129.camel@linux.ibm.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Mon, 15 Jun 2020 11:47:37 -0400
-Message-ID: <CAEjxPJ61dup9HDQny_TAb7we-vcN-sM17y4x0Pos3d7ERaab9g@mail.gmail.com>
-Subject: Re: [PATCH 5/5] LSM: Define workqueue for measuring security module state
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615075649.GK2497@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 10:59 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
->
-> On Mon, 2020-06-15 at 09:33 -0400, Stephen Smalley wrote:
-> > On Fri, Jun 12, 2020 at 10:42 PM Lakshmi Ramasubramanian
-> > <nramas@linux.microsoft.com> wrote:
-> > >
-> > > The data maintained by the security modules could be tampered with by
-> > > malware. The LSM needs to periodically query the state of
-> > > the security modules and measure the data when the state is changed.
-> > >
-> > > Define a workqueue for handling this periodic query and measurement.
-> >
-> > Won't this make it difficult/impossible to predict the IMA PCR value?
-> > Unless I missed it, you are going to end up measuring every N minutes
-> > even if there was no change and therefore constantly be extending the
-> > PCR.  That will break attestation or sealing against the IMA PCR.
->
-> Even if it attempts to add the same measurement to the list multiple
-> times, unless something changed, there should only be one measurement
-> in the list.
+Hi, Peter,
+On Mon, Jun 15, 2020 at 09:56:49AM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 12, 2020 at 05:41:33PM -0700, Fenghua Yu wrote:
+> > +/*
+> > + * Apply some heuristics to see if the #GP fault was caused by a thread
+> > + * that hasn't had the IA32_PASID MSR initialized.  If it looks like that
+> > + * is the problem, try initializing the IA32_PASID MSR. If the heuristic
+> > + * guesses incorrectly, take one more #GP fault.
+> 
+> How is that going to help? Aren't we then going to run this same
+> heuristic again and again and again?
 
-Is the PCR only extended once?
+The heuristic always initializes the MSR with the per mm PASID IIF the
+mm has a valid PASID but the MSR doesn't have one. This heuristic usually
+happens only once on the first #GP in a thread.
+
+If the next #GP still comes in, the heuristic finds out the MSR already
+has a valid PASID and thus will not fixup the MSR any more. The fixup()
+returns "false" and lets others to handle the #GP.
+
+So the heuristic will be executed once (at most) and won't be executed
+again and again.
+
+> 
+> > + */
+> > +bool __fixup_pasid_exception(void)
+> > +{
+> > +	u64 pasid_msr;
+> > +	unsigned int pasid;
+> > +
+> > +	/*
+> > +	 * This function is called only when this #GP was triggered from user
+> > +	 * space. So the mm cannot be NULL.
+> > +	 */
+> > +	pasid = current->mm->pasid;
+> > +	/* If the mm doesn't have a valid PASID, then can't help. */
+> > +	if (invalid_pasid(pasid))
+> > +		return false;
+> > +
+> > +	/*
+> > +	 * Since IRQ is disabled now, the current task still owns the FPU on
+> 
+> That's just weird and confusing. What you want to say is that you rely
+> on the exception disabling the interrupt.
+
+I checked SDM again. You are right. #GP can be interrupted by machine check
+or other interrupts. So I cannot assume the current task still owns the FPU.
+Instead of directly rdmsr() and wrmsr(), I will add helpers that can access
+either the MSR on the processor or the PASID state in the memory.
+
+> 
+> > +	 * this CPU and the PASID MSR can be directly accessed.
+> > +	 *
+> > +	 * If the MSR has a valid PASID, the #GP must be for some other reason.
+> > +	 *
+> > +	 * If rdmsr() is really a performance issue, a TIF_ flag may be
+> > +	 * added to check if the thread has a valid PASID instead of rdmsr().
+> 
+> I don't understand any of this. Nobody except us writes to this MSR, we
+> should bloody well know what's in it. What gives?
+
+Patch 4 describes how to manage the MSR and patch 7 describes the format
+of the MSR (20-bit PASID value and bit 31 is valid bit).
+
+Are they sufficient to help? Or do you mean something else?
+
+> > +	 */
+> > +	rdmsrl(MSR_IA32_PASID, pasid_msr);
+> > +	if (pasid_msr & MSR_IA32_PASID_VALID)
+> > +		return false;
+> > +
+> > +	/* Fix up the MSR if the MSR doesn't have a valid PASID. */
+> > +	wrmsrl(MSR_IA32_PASID, pasid | MSR_IA32_PASID_VALID);
+> > +
+> > +	return true;
+> > +}
+> > -- 
+> > 2.19.1
+> > 
+
+Thanks.
+
+-Fenghua
