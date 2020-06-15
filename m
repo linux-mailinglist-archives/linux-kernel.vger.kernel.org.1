@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166541FA015
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F9A1FA01A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgFOTWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 15:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728093AbgFOTWz (ORCPT
+        id S1728961AbgFOTYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 15:24:04 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:44374 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728093AbgFOTYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:22:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C6DC061A0E;
-        Mon, 15 Jun 2020 12:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=1SYTwpfB40+JGZH3GQvOKxvSVPzTOSW3WlfOs5EOLH0=; b=JLGm/mOAW+/i4uJ5JrpcZNUndT
-        w3i4B341Ih/AC8yrlBlLTOpPHZdLHl6Dju82tC2wReRTx6nYmCILE22RdtxTsYW2IOvVfzH7FSFZC
-        h3HJoTbFzueBfPOFJom+mGAIL9NpEMn6OnFYKVtnIEQWUK2YAzMFHdPXFDhMueI4/1Tq7GCIQJqVm
-        ItT8tAK3p14xyDnAdroABoNLdUupPoyv7bcaViU3f6IhaZjgOK1ZWHAaKQaZbStfV+7FGfqyrJ78S
-        g2SWVVxL+rAfOLm3Vm6P8rbhLrni4/OxZM/MCFha92X/Qf9ucYh5bIe9+Wb4gy9FQFKNOMUrVBdT9
-        C1/02cSA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jkuh4-0003nA-CC; Mon, 15 Jun 2020 19:22:54 +0000
-To:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] trace/events/block.h: drop kernel-doc for dropped function
- parameter
-Message-ID: <d572a150-192a-bbce-4449-8de45bce1a9b@infradead.org>
-Date:   Mon, 15 Jun 2020 12:22:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 15 Jun 2020 15:24:03 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A63731818F1C1;
+        Mon, 15 Jun 2020 19:24:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3874:4321:5007:6119:7903:8603:10004:10400:10848:10967:11026:11232:11658:11914:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: push89_210d4b126df8
+X-Filterd-Recvd-Size: 1648
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 15 Jun 2020 19:24:01 +0000 (UTC)
+Message-ID: <7abefbc81fc6aaefed6bbd2117e7bc97b90babe9.camel@perches.com>
+Subject: Re: [PATCH 1/4] proc/bootconfig: Fix to use correct quotes for value
+From:   Joe Perches <joe@perches.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Date:   Mon, 15 Jun 2020 12:24:00 -0700
+In-Reply-To: <20200615151139.5cc223fc@oasis.local.home>
+References: <159197538852.80267.10091816844311950396.stgit@devnote2>
+         <159197539793.80267.10836787284189465765.stgit@devnote2>
+         <20200615151139.5cc223fc@oasis.local.home>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Mon, 2020-06-15 at 15:11 -0400, Steven Rostedt wrote:
+> On Sat, 13 Jun 2020 00:23:18 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+[]
+> > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+[]
+> > @@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> >  {
+> >  	struct xbc_node *leaf, *vnode;
+> >  	const char *val;
+> > +	char q;
+> >  	char *key, *end = dst + size;
+> >  	int ret = 0;
+> 
+> Hmm, shouldn't the above have the upside-down xmas tree format?
+> 
+> 	struct xbc_node *leaf, *vnode;
+> 	char *key, *end = dst + size;
+> 	const char *val;
+> 	char q;
+> 	int ret = 0;
 
-Fix kernel-doc warning: the parameter was removed, so also remove
-the kernel-doc notation for it.
+Please don't infect kernel sources with that style oddity.
 
-../include/trace/events/block.h:278: warning: Excess function parameter 'error' description in 'trace_block_bio_complete'
-
-Fixes: d24de76af836 ("block: remove the error argument to the block_bio_complete tracepoint")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
----
- include/trace/events/block.h |    1 -
- 1 file changed, 1 deletion(-)
-
---- linux-next-20200615.orig/include/trace/events/block.h
-+++ linux-next-20200615/include/trace/events/block.h
-@@ -254,7 +254,6 @@ TRACE_EVENT(block_bio_bounce,
-  * block_bio_complete - completed all work on the block operation
-  * @q: queue holding the block operation
-  * @bio: block operation completed
-- * @error: io error value
-  *
-  * This tracepoint indicates there is no further work to do on this
-  * block IO operation @bio.
 
