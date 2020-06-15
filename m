@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49511F9C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12151F9C41
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 17:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgFOPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 11:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
+        id S1730693AbgFOPvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 11:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730321AbgFOPtK (ORCPT
+        with ESMTP id S1727785AbgFOPvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 11:49:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1C3C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 08:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/aTpc7TE2Si6G86LJEN2yNkL/a/l/Clrfw1nJF9mG7s=; b=nSl/WYg9Mu7vD9zvYjqzD8s0Dh
-        rRXcocivk1w4WcmZ+Um949j2a9JHcOMne6HK+NrErDeXMVFeRP1CmfFbPU599/PW2OjoTErPA1nQ/
-        7Q0c0dSrGqpdojx9/wTq2NiDSTd+e+Fuf9DxTTnJi2ERE3l09koZLSHZFxD4q73IL6xQrO3G8GM3t
-        Vlx4VpdFf93z8x6UiptbaZq2cQPYRJU4W0vZHMg+Re2pa3fxWljdQ48AC07YMRBs5n3QLS/dRV5v0
-        Q0DzycrLU//OPtlu/moKK14+VjO9gG+7py+Doqvp8Ei5N4Tz/yqq3kL09+QmDsLYEsLFmAHXKvFbB
-        yL6xNJRQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jkrMB-0005VA-7y; Mon, 15 Jun 2020 15:49:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79534306102;
-        Mon, 15 Jun 2020 17:49:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5BB7920E05A91; Mon, 15 Jun 2020 17:49:05 +0200 (CEST)
-Date:   Mon, 15 Jun 2020 17:49:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de
-Cc:     x86@kernel.org, elver@google.com, paulmck@kernel.org,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        will@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com
-Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
-Message-ID: <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
-References: <20200603114014.152292216@infradead.org>
- <20200603114051.896465666@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603114051.896465666@infradead.org>
+        Mon, 15 Jun 2020 11:51:01 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021E8C061A0E;
+        Mon, 15 Jun 2020 08:51:01 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id dp10so7945017qvb.10;
+        Mon, 15 Jun 2020 08:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=N9MFjwIDkU/fRqTGThssGDIRUjhg7G4jDT1glvQytko=;
+        b=X6/gFRBEJqbq4+cK0EGmbFrgwomFmfr5VkoFKsDNSFrhhdfoslSRjoM7gQ42xcICsG
+         U/wljtL5OhFb8BZ0LZ48hCmYesemEBxVgbZPauTA9XPY1VUy4KEdyts95yq9dFN1OMeO
+         7gFqWfdIMqRv+mpONsnRV8MCNb/abPPIjyMYThcTOoK8hRcl0oukJZJV2Ql1xbdzzCZq
+         uPayhqVctr9ekAn1upOhXqEwEEpNwbII/kgrSAjd6DYfo4OlZ1PDpuupzqWJ/4C7LQ4Q
+         uJY9GfUIvEWEXUKS25KcAhaq/MLcmyJQNNrpjBYfcN+A3pmxwon1fcdwpbEUWUHUmzou
+         53eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=N9MFjwIDkU/fRqTGThssGDIRUjhg7G4jDT1glvQytko=;
+        b=CLmJ56AIRUFLcx+1MD0S3c9uqJyhZuKj66AMA3Vp/91H1/AihWnHZDuAAmoWMuP5bh
+         m/pesHKUi9vmIuiMvqhOzjlnF+iWlgqLaAzhigeA90YEZht69MYea1F4Rss+HGxG+4d0
+         l6mcyPNmn2iw0xUNyZ4Z4OyrCIFNePIdhPSU5YInegU0eRIZXWBjmeVW9A9u4crdvkr7
+         T5S3Q248OICq/MxzFks4qW9LioglmG9qMw9XlTrO0SPDol2Y8YEe+OstwLhfWotAMTAa
+         dofe8ejbTGx74LGQYp7FHSgEcNX7zmscsD1pKvEVvPBv2iO9f9aF9i50FqtMLhfZ6hDW
+         Ow2Q==
+X-Gm-Message-State: AOAM531CFqgTSQgw/U+v86ua00VUnYyeesE/AgjCYSbJyK0wvtfAFoCQ
+        31kqgvjno49Zs6QOh/4lIFA=
+X-Google-Smtp-Source: ABdhPJwS5pLhv+GpLxbnPFbPnNMz5u4jKgJdKqPDGY5OlRkFbGA76E8NSp8H1Sa6R8xxkGGx8TDq9Q==
+X-Received: by 2002:a0c:c303:: with SMTP id f3mr25899662qvi.240.1592236260121;
+        Mon, 15 Jun 2020 08:51:00 -0700 (PDT)
+Received: from buszk-y710.fios-router.home (pool-108-54-206-188.nycmny.fios.verizon.net. [108.54.206.188])
+        by smtp.googlemail.com with ESMTPSA id 185sm11757262qke.92.2020.06.15.08.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 08:50:59 -0700 (PDT)
+From:   Zekun Shen <bruceshenzk@gmail.com>
+Cc:     Zekun Shen <bruceshenzk@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: alx: fix race condition in alx_remove
+Date:   Mon, 15 Jun 2020 11:50:29 -0400
+Message-Id: <20200615155029.21002-1-bruceshenzk@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200614165912.25622-1-bruceshenzk@gmail.com>
+References: <20200614165912.25622-1-bruceshenzk@gmail.com>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 01:40:16PM +0200, Peter Zijlstra wrote:
-> A KCSAN build revealed we have explicit annoations through atomic_*()
-> usage, switch to arch_atomic_*() for the respective functions.
-> 
-> vmlinux.o: warning: objtool: rcu_nmi_exit()+0x4d: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_dynticks_eqs_enter()+0x25: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_nmi_enter()+0x4f: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: rcu_dynticks_eqs_exit()+0x2a: call to __kcsan_check_access() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: __rcu_is_watching()+0x25: call to __kcsan_check_access() leaves .noinstr.text section
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20200603084818.GB2627@hirez.programming.kicks-ass.net
-> ---
+There is a race condition exist during termination. The path is
+alx_stop and then alx_remove. An alx_schedule_link_check could be called
+before alx_stop by interrupt handler and invoke alx_link_check later.
+Alx_stop frees the napis, and alx_remove cancels any pending works.
+If any of the work is scheduled before termination and invoked before
+alx_remove, a null-ptr-deref occurs because both expect alx->napis[i].
 
-How's this then? It anticipiates the removal of that andnot thing.
+This patch fix the race condition by moving cancel_work_sync functions
+before alx_free_napis inside alx_stop. Because interrupt handler can call
+alx_schedule_link_check again, alx_free_irq is moved before
+cancel_work_sync calls too.
 
+Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
 ---
- kernel/rcu/tree.c |   30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+Changes in v2:
+- move alx_free_irq before cancel_work_sync calls
+- prevent another interrupt to cause race condition
 
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -250,7 +250,7 @@ static noinstr void rcu_dynticks_eqs_ent
- 	 * next idle sojourn.
- 	 */
- 	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
--	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-+	seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
- 	// RCU is no longer watching.  Better be in extended quiescent state!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
- 		     (seq & RCU_DYNTICK_CTRL_CTR));
-@@ -274,13 +274,13 @@ static noinstr void rcu_dynticks_eqs_exi
- 	 * and we also must force ordering with the next RCU read-side
- 	 * critical section.
- 	 */
--	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-+	seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
- 	// RCU is now watching.  Better not be in an extended quiescent state!
- 	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
- 		     !(seq & RCU_DYNTICK_CTRL_CTR));
- 	if (seq & RCU_DYNTICK_CTRL_MASK) {
--		atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
-+		arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
- 		smp_mb__after_atomic(); /* _exit after clearing mask. */
- 	}
- }
-@@ -313,7 +313,7 @@ static __always_inline bool rcu_dynticks
+ drivers/net/ethernet/atheros/alx/main.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/atheros/alx/main.c b/drivers/net/ethernet/atheros/alx/main.c
+index b9b4edb91..9b7f1af5f 100644
+--- a/drivers/net/ethernet/atheros/alx/main.c
++++ b/drivers/net/ethernet/atheros/alx/main.c
+@@ -1249,8 +1249,12 @@ static int __alx_open(struct alx_priv *alx, bool resume)
+ 
+ static void __alx_stop(struct alx_priv *alx)
  {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
--	return !(atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
-+	return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
+-	alx_halt(alx);
+ 	alx_free_irq(alx);
++
++	cancel_work_sync(&alx->link_check_wk);
++	cancel_work_sync(&alx->reset_wk);
++
++	alx_halt(alx);
+ 	alx_free_rings(alx);
+ 	alx_free_napis(alx);
  }
+@@ -1855,9 +1859,6 @@ static void alx_remove(struct pci_dev *pdev)
+ 	struct alx_priv *alx = pci_get_drvdata(pdev);
+ 	struct alx_hw *hw = &alx->hw;
  
- /*
-@@ -633,6 +633,10 @@ static noinstr void rcu_eqs_enter(bool u
- 	do_nocb_deferred_wakeup(rdp);
- 	rcu_prepare_for_idle();
- 	rcu_preempt_deferred_qs(current);
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-+	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-+
- 	instrumentation_end();
- 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
- 	// RCU is watching here ...
-@@ -692,6 +696,7 @@ noinstr void rcu_nmi_exit(void)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+-	cancel_work_sync(&alx->link_check_wk);
+-	cancel_work_sync(&alx->reset_wk);
+-
+ 	/* restore permanent mac address */
+ 	alx_set_macaddr(hw, hw->perm_addr);
  
-+	instrumentation_begin();
- 	/*
- 	 * Check for ->dynticks_nmi_nesting underflow and bad ->dynticks.
- 	 * (We are exiting an NMI handler, so RCU better be paying attention
-@@ -705,7 +710,6 @@ noinstr void rcu_nmi_exit(void)
- 	 * leave it in non-RCU-idle state.
- 	 */
- 	if (rdp->dynticks_nmi_nesting != 1) {
--		instrumentation_begin();
- 		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
- 				  atomic_read(&rdp->dynticks));
- 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
-@@ -714,13 +718,15 @@ noinstr void rcu_nmi_exit(void)
- 		return;
- 	}
- 
--	instrumentation_begin();
- 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
- 	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
- 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
- 
- 	if (!in_nmi())
- 		rcu_prepare_for_idle();
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_enter()
-+	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
- 	instrumentation_end();
- 
- 	// RCU is watching here ...
-@@ -838,6 +844,10 @@ static void noinstr rcu_eqs_exit(bool us
- 	rcu_dynticks_eqs_exit();
- 	// ... but is watching here.
- 	instrumentation_begin();
-+
-+	// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-+	instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-+
- 	rcu_cleanup_after_idle();
- 	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-@@ -983,13 +993,17 @@ noinstr void rcu_nmi_enter(void)
- 		if (!in_nmi())
- 			rcu_cleanup_after_idle();
- 
-+		instrumentation_begin();
-+		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-+		instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-+		// instrumentation for the noinstr rcu_dynticks_eqs_exit()
-+		instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-+
- 		incby = 1;
- 	} else if (!in_nmi()) {
- 		instrumentation_begin();
- 		rcu_irq_enter_check_tick();
--		instrumentation_end();
- 	}
--	instrumentation_begin();
- 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
- 			  rdp->dynticks_nmi_nesting,
- 			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+-- 
+2.17.1
+
