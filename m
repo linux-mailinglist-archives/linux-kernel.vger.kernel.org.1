@@ -2,87 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAB41F925A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A069C1F9260
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 10:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgFOI4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 04:56:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53576 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729018AbgFOI4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:56:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ECEE0AA7C;
-        Mon, 15 Jun 2020 08:56:51 +0000 (UTC)
-Message-ID: <1f5863414c56e45398a3660d718da81126af430a.camel@suse.de>
-Subject: Re: [PATCH v4 5/5] usb: xhci-pci: Add reset controller support
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Marek Vasut <marex@denx.de>, mbrugger@suse.com,
-        u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        mark.kettenis@xs4all.nl
-Date:   Mon, 15 Jun 2020 10:56:45 +0200
-In-Reply-To: <7959ad10-4112-e880-14d9-9c24574c8026@denx.de>
-References: <20200612164632.25648-1-nsaenzjulienne@suse.de>
-         <20200612164632.25648-6-nsaenzjulienne@suse.de>
-         <7959ad10-4112-e880-14d9-9c24574c8026@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-eWvZBlqpVqim0ArsX7ky"
-User-Agent: Evolution 3.36.3 
+        id S1729133AbgFOI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 04:59:30 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:38947 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbgFOI7a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:59:30 -0400
+Received: from localhost.localdomain (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 43EF6200015;
+        Mon, 15 Jun 2020 08:59:27 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Kamal Dasu <kdasu.kdev@gmail.com>, computersforpeace@gmail.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: brcmnand: ECC error handling on EDU transfers
+Date:   Mon, 15 Jun 2020 10:59:25 +0200
+Message-Id: <20200615085925.22266-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200612212902.21347-3-kdasu.kdev@gmail.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 33d5c3d07abfc06a44fba577cec76fe8099a0cdc
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-06-12 at 21:29:02 UTC, Kamal Dasu wrote:
+> Implement ECC correctable and uncorrectable error handling for EDU
+> reads. If ECC correctable bitflips are encountered on EDU transfer,
+> read page again using PIO. This is needed due to a NAND controller
+> limitation where corrected data is not transferred to the DMA buffer
+> on ECC error. This applies to ECC correctable errors that are reported
+> by the controller hardware based on set number of bitflips threshold in
+> the controller threshold register, bitflips below the threshold are
+> corrected silently and are not reported by the controller hardware.
+> 
+> Fixes: a5d53ad26a8b ("mtd: rawnand: brcmnand: Add support for flash-edu for dma transfers")
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
---=-eWvZBlqpVqim0ArsX7ky
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-On Fri, 2020-06-12 at 19:08 +0200, Marek Vasut wrote:
-> On 6/12/20 6:46 PM, Nicolas Saenz Julienne wrote:
-> > Some atypical users of xhci-pci might need to manually reset their xHCI
-> > controller before starting the HCD setup. Check if a reset controller
-> > device is available to the PCI bus and trigger a reset.
-> >=20
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > ---
-> >  drivers/usb/host/xhci-pci.c | 38 +++++++++++++++++++++++++++++++++++--
-> >  1 file changed, 36 insertions(+), 2 deletions(-)
->=20
-> Can the XHCI core code do the reset management instead ? Then everyone
-> benefits from it.
-
-I'll look into it.
-
-> The rest of the series is nice, thanks.
-
-Thanks!
-
-Regards,
-Nicolas
-
-
-
---=-eWvZBlqpVqim0ArsX7ky
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7nN80ACgkQlfZmHno8
-x/72RAgAgD80smgpcmi5WtdW5GX+k5TR7ZDGlh1+H4Byg7EXCfL+/o0bWqQIUSA2
-M8yk2gZwNLYnWfF5LYVqBio70I2Kaj4bim6W4py5d7M9TMZq+/pFtIyAD3tH+Ni1
-Z+fW+75mhkEZz0K6fJOGYiF0pa+R3QkHtKhNluBRf4QKzu1ZTz0iQhNG2qKlsnMG
-UdVuPlLn9asWtKgeZlsMp3CqBAWmEtnoZ2uzclmwvWUa5JSe1jFHWHvFicOeKT0F
-kNKCdR/gJe0fBXHGh5iPzZ1kSOh1YJ0JHpm3GKW+TKMbe2GKoMvC76gQUHzgPqZo
-0U/ajTPrV3mtIMlZPB7TviyeihZKfA==
-=7138
------END PGP SIGNATURE-----
-
---=-eWvZBlqpVqim0ArsX7ky--
-
+Miquel
