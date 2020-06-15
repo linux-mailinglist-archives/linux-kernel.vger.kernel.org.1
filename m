@@ -2,220 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C940F1F8D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 07:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCDF1F8D53
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 07:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgFOFf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 01:35:26 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:46987 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgFOFfZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 01:35:25 -0400
-Received: from [192.168.1.11] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id A6F3F100003;
-        Mon, 15 Jun 2020 05:35:18 +0000 (UTC)
-Subject: Re: [PATCH 0/2] PUD/PGDIR entries for linear mapping
-To:     Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <Atish.Patra@wdc.com>
-References: <20200603153608.30056-1-alex@ghiti.fr>
- <CAOnJCUJSKvLDsXC8+wyO1xsZDzLJmjY2kwMKhjz0t+uS8h0pDw@mail.gmail.com>
- <7ad7057e-fdab-14ef-9bdb-c77ccefd208a@ghiti.fr>
- <CAOnJCUKcMmchxgeHNx997EH5JM_OAJFUDCNT6Ca2B-xHE4YT5A@mail.gmail.com>
- <36739fc4-21ea-14f4-f2a6-52614b602dea@ghiti.fr>
- <8867b8d5-4a15-fbc1-67e1-7fc48be6eae3@ghiti.fr>
- <CAOnJCUJGgFKmVyvan6j9n93FJjAnsDP-QHzgTZ3kNAeJfAV_9Q@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <05648f6c-1792-80b7-ae80-388664fda580@ghiti.fr>
-Date:   Mon, 15 Jun 2020 01:35:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728261AbgFOFgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 01:36:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:64043 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728210AbgFOFgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 01:36:04 -0400
+IronPort-SDR: AxCI4PtEvaiycsC0zNn9K/DcIc8NFaVIz9DcsPQGFel8hgSnKb5XfF/KJ/H0oVHuu8Ka0WcKbY
+ tAZudzWGxE1g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2020 22:36:04 -0700
+IronPort-SDR: tjL4Phx3B6mSrPeEU7YUADxc+Y2AH+SC5itT3EmJbCyBtDRSrsQWek5MGOIrf0M5HJ1HnlozsK
+ gGKiLmEN1kWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,514,1583222400"; 
+   d="scan'208";a="420246022"
+Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
+  by orsmga004.jf.intel.com with ESMTP; 14 Jun 2020 22:36:00 -0700
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX110.amr.corp.intel.com (10.22.240.8) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Sun, 14 Jun 2020 22:36:00 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.53) by
+ edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Sun, 14 Jun 2020 22:35:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XVMk0zq6AeCQ57Ahe7QawcdNeQJDnevEq2g7tXyRHw2jbNejeIGi5sOJCivemjRUv/SU1xcKLuDjb3rqWKdngPJjMms96q6LXk2h5QJQtG44mTJgjaMSuEfIc4H30krtJSr3auhz1z2QcKmiQAtjVoGlb6YIUrq7hM1A/MIl3JZ2521V72QcHqVrrmQi8eOQdgH9e9s4HEcEi01phTTWmUNwiSciOrpG4Yl7aW8RN9nCjHdLhu0cyvfuS8xld1PtJQoVgAkIY6thGaCXzpFh7oTBuMDFRzAy9ZqsZ2BGl3OLYNopdU1ViwazHOzab//1MfZkjEwNGQ5Co572wR2fVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2FHnxFQInOnNhp6WkZxcpmlfDD/vTclkA6UHAYI11Js=;
+ b=mQPJiPWD1pYLQvBPB/iTSBQF6rTTHo3WtJyLToomjXZchbAYDGrSG3GAt5bXqcNC0pWaZtQSNM95fZew7VIYa/Z44swgehHIgjg/IVgKenic/ERbM1YIyM/Dqcr62FPTzC5xP9hEP+VLtG1fLRsVEh9u93mf2OErvsNixrDwAo4XXNfrcgJN1UCMgz73oQqvYqVqedr2w2CCsrRv5sSq3TYrwtE6RX2/1daCWK/rgdwp4Tiw44Ou6piUlt3IOqRJ9+jAU/625CNB2mFmurzG+NtAF6FJwFaMkj3qKg1TDq9iwxtkAueUuiyIKHjyaJkQ0vs/4N6k8dFlt1FKNXyQqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2FHnxFQInOnNhp6WkZxcpmlfDD/vTclkA6UHAYI11Js=;
+ b=rQtjTpag3NqR6wvuC9fZXBtwLEC9jgEIbDGf3I8zqG2x+n2FVdF4ATJRJRs3hkqhaycDsuKGf4QO/qdDHhBZg8AloibvXwFQnrxtfvvJDsER1ZpVBq74mra6k8Scp2F5spHPmiX5Y4fA+bYzYlu8MMB2Z+fBsRMQ3hS6WzZ4Ryo=
+Received: from CY4PR1101MB2326.namprd11.prod.outlook.com
+ (2603:10b6:903:b3::23) by CY4PR11MB1367.namprd11.prod.outlook.com
+ (2603:10b6:903:2d::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Mon, 15 Jun
+ 2020 05:35:58 +0000
+Received: from CY4PR1101MB2326.namprd11.prod.outlook.com
+ ([fe80::20ad:67f:8bea:34a0]) by CY4PR1101MB2326.namprd11.prod.outlook.com
+ ([fe80::20ad:67f:8bea:34a0%8]) with mapi id 15.20.3088.028; Mon, 15 Jun 2020
+ 05:35:58 +0000
+From:   "Reshetova, Elena" <elena.reshetova@intel.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        "alex.huangjianhui@huawei.com" <alex.huangjianhui@huawei.com>,
+        "dylix.dailei@huawei.com" <dylix.dailei@huawei.com>,
+        "chenzefeng2@huawei.com" <chenzefeng2@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
+Thread-Topic: [PATCH 0/3] Convert nsproxy, groups, and creds to refcount_t
+Thread-Index: AQHWQOg7pvDM2vjI7kmUTaz/F8Qw8ajY8l4AgAAdh4CAABsdYA==
+Date:   Mon, 15 Jun 2020 05:35:58 +0000
+Message-ID: <CY4PR1101MB23261B27ACF9D7FBC3969318E79C0@CY4PR1101MB2326.namprd11.prod.outlook.com>
+References: <20200612183450.4189588-1-keescook@chromium.org>
+ <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com>
+ <202006142054.C00B3E9C9@keescook>
+In-Reply-To: <202006142054.C00B3E9C9@keescook>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.151.191]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d3bff23a-b160-42ac-a730-08d810edfb85
+x-ms-traffictypediagnostic: CY4PR11MB1367:
+x-microsoft-antispam-prvs: <CY4PR11MB1367ED95BE6FC7DB41AD53F0E79C0@CY4PR11MB1367.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 04359FAD81
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7/5u2PoNi5fnLi4o32kU7xODNTdtCO23o28q2JR6u74XcdE+OB7Cdt5ySjQ22G4QroCrEeGhY5rXp4vtVBWQ8trSk1oMm4vMk2WOQqhi7UMvXWtAGVdYbewWobjdhbLJEAgkhw7eaHsxp70kKzNRh1aPh6xdvZKJ7qpCQt4Q8lpXJL+oqsqTEjy1CTjMy3ZHtTS5agZjxuPJ2uoD/dAsJjpeHSEqDQkBSbHIl8+VJTseUqw4fP0vJcHXg3eW74z5kKbTbOX9UwE2FlAmN1QGMGztNPSNIReZc0tOIW3N38kyyiUrzFZ5V6csdrIfHRTw7UHrDDZfIU/ZrjwgcrE7vFB3sZTXehQSV0G4H3IkSkoAzJOUOJ/ZDpBDR2ArTRzJWYF8fq3dj1cIlruml4m9hA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2326.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(396003)(366004)(39860400002)(316002)(6506007)(53546011)(2906002)(66476007)(66446008)(66556008)(64756008)(76116006)(66946007)(26005)(4326008)(9686003)(55016002)(186003)(33656002)(86362001)(7696005)(966005)(478600001)(110136005)(5660300002)(7416002)(54906003)(8676002)(83380400001)(71200400001)(8936002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: jO6T3dTolTxLhSCrRgkslLBMFeoN4KkI5BoPMIL8mL+e5CcvDhSkZo9oLGDMlZP49Y1SqQDKLX4Wdw1O88AIVZejt7hCVvnfklKfoa+RitrOzO/gkXIF8KjuYx7kmOX7eufUi1z1Jp0XhDT1biyE8Gthrj3Xc49uBrELhewbnWKPM4dW6x+GixPzeH5iONbEausMWolzOzTaZokpaGtU4d+MLQiuGuYIH20nVSUKcRI+B5rsae58TuqNvIuC+r01W5g+g477AkVTtAnJ/GAiTFxo3P+V1BnfKDfUMbzFfWuH8ceLlMEAhzs9NJ4L/OWRzuHO7Q5Vir0NsoHasU4sFxI+YT1S/CbabpeXXLFytnY3hUKUuGFT2bq/sdip64mWKEtbAqXz+jmamh/XqsgsALDqkm5lENS4YWKy5N1PjmQFc3jkQSM8XjTaYJJnt7ze0I7GzzFLklEJqoPuI8+BbQ1X0zqMeXUkn8e2xs0LBbsiKAxgM2lfvrLaF3zrLGbP
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAOnJCUJGgFKmVyvan6j9n93FJjAnsDP-QHzgTZ3kNAeJfAV_9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: fr
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3bff23a-b160-42ac-a730-08d810edfb85
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2020 05:35:58.4399
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N0fycMOrheA11Pg4ow0/aaES9ZH6dpxJfDG9ZFLEpxVkHmlJl9fn2UwLh9qY4+tN+5+z7zVb9esIGHJEsT/fAitA5dBGQmJoqkpmHcD9eXc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1367
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Atish,
+> On Mon, Jun 15, 2020 at 10:10:08AM +0800, Xiaoming Ni wrote:
+> > On 2020/6/13 2:34, Kees Cook wrote:
+> > > This series was never applied[1], and was recently pointed out as
+> > > missing[2]. If someone has a tree for this, please take it. Otherwise=
+,
+> > > please Ack and I'll send it to Linus.
+> > >
+> > > Thanks!
+> > >
+> > > -Kees
+> > >
+> > > [1] https://lore.kernel.org/lkml/20190306110549.7628-1-
+> elena.reshetova@intel.com/
+> > > [2] https://lore.kernel.org/lkml/1591957695-118312-1-git-send-email-
+> nixiaoming@huawei.com/
+> > >
+> > > Elena Reshetova (3):
+> > >    nsproxy: convert nsproxy.count to refcount_t
+> > >    groups: convert group_info.usage to refcount_t
+> > >    creds: convert cred.usage to refcount_t
+> > >
+> > >   include/linux/cred.h    | 15 +++++++-------
+> > >   include/linux/nsproxy.h |  7 +++----
+> > >   kernel/cred.c           | 44 ++++++++++++++++++++------------------=
+---
+> > >   kernel/groups.c         |  2 +-
+> > >   kernel/nsproxy.c        |  6 +++---
+> > >   net/sunrpc/auth.c       |  2 +-
+> > >   6 files changed, 38 insertions(+), 38 deletions(-)
+> > >
+> >
+> > Should mm->mm_users also be replaced by refcount_t?
+>=20
+> I'll say "yes". :)
+> https://lore.kernel.org/lkml/1487671124-11188-1-git-send-email-
+> elena.reshetova@intel.com/
+>=20
+> > In addition, is it better to change all variables that use
+> > atomic_dec_and_test to control the release process to refconut_t?
+>=20
+> For the most part, yes. The following may find a lot of them:
+> scripts/coccinelle/api/atomic_as_refcounter.cocci
+>=20
+> If you can go through that and double check for prior series from Elena,
+> we can get through all the rest of them.
 
-Le 6/12/20 à 1:43 PM, Atish Patra a écrit :
-> On Fri, Jun 12, 2020 at 6:17 AM Alex Ghiti <alex@ghiti.fr> wrote:
->> Le 6/12/20 à 8:59 AM, Alex Ghiti a écrit :
->>> Hi Atish,
->>>
->>> Le 6/11/20 à 1:29 PM, Atish Patra a écrit :
->>>> On Wed, Jun 10, 2020 at 11:51 PM Alex Ghiti<alex@ghiti.fr>  wrote:
->>>>> Hi Atish,
->>>>>
->>>>> Le 6/10/20 à 2:32 PM, Atish Patra a écrit :
->>>>>> On Wed, Jun 3, 2020 at 8:36 AM Alexandre Ghiti<alex@ghiti.fr>  wrote:
->>>>>>> This small patchset intends to use PUD/PGDIR entries for linear
->>>>>>> mapping
->>>>>>> in order to better utilize TLB.
->>>>>>>
->>>>>>> At the moment, only PMD entries can be used since on common platforms
->>>>>>> (qemu/unleashed), the kernel is loaded at DRAM + 2MB which
->>>>>>> dealigns virtual
->>>>>>> and physical addresses and then prevents the use of PUD/PGDIR
->>>>>>> entries.
->>>>>>> So the kernel must be able to get those 2MB for PAGE_OFFSET to map
->>>>>>> the
->>>>>>> beginning of the DRAM: this is achieved in patch 1.
->>>>>>>
->>>>>> I don't have in depth knowledge of how mm code works so this question
->>>>>> may be a completely
->>>>>> stupid one :). Just for my understanding,
->>>>>> As per my understanding, kernel will map those 2MB of memory but
->>>>>> never use it.
->>>>>> How does the kernel ensure that it doesn't allocate any memory from
->>>>>> those 2MB
->>>>>> memory if it is not marked as reserved?
->>>>> Yes, a 1GB hugepage will cover those 2MB: I rely on the previous boot
->>>>> stage to mark this region
->>>>> as reserved if there is something there (like opensbi). Otherwise, the
->>>>> kernel will indeed try to
->>>>> allocate memory from there :)
->>>>>
->>>> In that case, this patch mandates that the firmware region has to be
->>>> mark "reserved"
->>>> the device tree so that the Linux kernel doesn't try to allocate
->>>> memory from there.
->>>> OpenSBI is already doing it from v0.7. Thus, any user using latest
->>>> OpenSBI can leverage
->>>> this patch for a better TLB utilization.
->>>
->>> Note that *currently* OpenSBI v0.7 still adds the "no-map" property
->>> which prevents such optimization.
->>>
-> Thanks for the clarification. When I said latest, I meant including
-> your patch in the mailing list.
->
->>>> However, legacy previous boot stages(BBL) do not reserve this area via
->>>> DT which may
->>>> result in an unexpected crash. I am not sure how many developers still
->>>> use BBL though.
->>>>
->>>> Few general suggestions to tackle this problem:
->>>> 1. This mandatory requirement should be added to the booting document
->>>> so that any other
->>>> SBI implementation is also aware of it.
->>>> 2. You may have to move the patch1 to a separate config so that any
->>>> users of legacy boot stages
->>>> can disable this feature.
->>>
->>> IMHO, the region occupied by runtime services should be marked as
->>> reserved in the device-tree. So it seems redundant to add this as a
->>> requirement, I would rather consider its absence as a bug.
->>>
-> I agree. I was just suggesting to document this bug :).
+I have these ones also here in case anyone is interested:
+https://github.com/ereshetova/linux-stable/commits/refcount_t_fs
+https://github.com/ereshetova/linux-stable/commits/refcount_t_block
 
-Oh ok then, we meant the same thing :)
->
->>> Even if I understand that this might break some system, I don't like
->>> the idea of a new config to support old "buggy" bootloaders: when will
->>> we be able to remove it ? We'll never know when people will stop using
->>> those bootloaders, so it will stay here forever...Where can I find the
-> Personally, I am fine with that. However, there were few concerns in the past.
-> I am leaving it to Palmer to decide.
->
-> @Palmer Dabbelt : Any thoughts ?
->
->>> boot document you are talking about ? Can we simply state here that
->>> this kernel version will not be compatible with those bootloaders
->>> (we'll draw an exhaustive list here) ?
-> Yes.
->
->> Ok, I have just found Documentation/riscv/boot-image-header.rst: could
->> we imagine doing something like incrementing the version and use that as
->> a hint in the kernel not to map the 2MB offset ? That's still legacy,
->> but at least it does not require to recompile a kernel as the check
->> would be done at runtime.
->>
-> I was suggesting to add a risc-v specific booting document and
-> document this "bug".
-> Documentation/riscv/boot-image-header.rst can be linked from that document or
-> the boot hader content can be included in that. No changes in code is necessary.
->
-> Eventually, this booting document will also include other additional
-> booting constraints for RISC-V
-> such as minimum extension required to boot Linux, csr state upon
-> entering S-mode, mmu state.
+They haven't been rebased for a while, but if there is an interest,=20
+I can certainly do it.
 
-
-Ok I will prepare a boot document that links to the existing documents and
-add all of that, I will need you for the last constraints that I don't 
-know about.
-
-Thanks Atish,
-
-Alex
-
->>> Alex
->>>
->>>
->>>>> Alex
->>>>>
->>>>>
->>>>>>> But furthermore, at the moment, the firmware (opensbi) explicitly
->>>>>>> asks the
->>>>>>> kernel not to map the region it occupies, which is on those common
->>>>>>> platforms at the very beginning of the DRAM and then it also dealigns
->>>>>>> virtual and physical addresses. I proposed a patch here:
->>>>>>>
->>>>>>> https://github.com/riscv/opensbi/pull/167
->>>>>>>
->>>>>>> that removes this 'constraint' but *not* all the time as it offers
->>>>>>> some
->>>>>>> kind of protection in case PMP is not available. So sometimes, we may
->>>>>>> have a part of the memory below the kernel that is removed creating a
->>>>>>> misalignment between virtual and physical addresses. So for
->>>>>>> performance
->>>>>>> reasons, we must at least make sure that PMD entries can be used:
->>>>>>> that
->>>>>>> is guaranteed by patch 1 too.
->>>>>>>
->>>>>>> Finally the second patch simply improves best_map_size so that
->>>>>>> whenever
->>>>>>> possible, PUD/PGDIR entries are used.
->>>>>>>
->>>>>>> Below is the kernel page table without this patch on a 6G platform:
->>>>>>>
->>>>>>> ---[ Linear mapping ]---
->>>>>>> 0xffffc00000000000-0xffffc00176e00000 0x0000000080200000 5998M
->>>>>>> PMD     D A . . . W R V
->>>>>>>
->>>>>>> And with this patchset + opensbi patch:
->>>>>>>
->>>>>>> ---[ Linear mapping ]---
->>>>>>> 0xffffc00000000000-0xffffc00140000000 0x0000000080000000
->>>>>>> 5G PUD     D A . . . W R V
->>>>>>> 0xffffc00140000000-0xffffc00177000000 0x00000001c0000000 880M
->>>>>>> PMD     D A . . . W R V
->>>>>>>
->>>>>>> Alexandre Ghiti (2):
->>>>>>>      riscv: Get memory below load_pa while ensuring linear mapping
->>>>>>> is PMD
->>>>>>>        aligned
->>>>>>>      riscv: Use PUD/PGDIR entries for linear mapping when possible
->>>>>>>
->>>>>>>     arch/riscv/include/asm/page.h |  8 ++++
->>>>>>>     arch/riscv/mm/init.c          | 69
->>>>>>> +++++++++++++++++++++++++++++------
->>>>>>>     2 files changed, 65 insertions(+), 12 deletions(-)
->>>>>>>
->>>>>>> --
->>>>>>> 2.20.1
->>>>>>>
->>>>>>>
->
->
+Best Regards,
+Elena.
