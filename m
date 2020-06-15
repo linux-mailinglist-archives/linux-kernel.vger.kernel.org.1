@@ -2,84 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12811F8EE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 08:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0061F8F45
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgFOG6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 02:58:53 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34371 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728276AbgFOG6v (ORCPT
+        id S1728552AbgFOHSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:18:08 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54096 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728284AbgFOHSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:58:51 -0400
-Received: by mail-wr1-f67.google.com with SMTP id r7so15863614wro.1;
-        Sun, 14 Jun 2020 23:58:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=15pzvZ3HgzVpOIe1NSunNL4NazqLAoN4J8Q/f2NVLd8=;
-        b=kJO4LvBPRRxzDW+hruK9cyPECKVXeUaSwoFgi+rt2G6j+lvqMywBKgbouLf/Eo2fOy
-         NpyxzN1XfaIgdFRG5jULjxbGPCBbX4HODlf39u3MEvt14GwJ55uKeBypggTnNZ7vBCd0
-         HGPkDqMSgwZxG/6ZlDE+KOz5E3m957i07jdGGGyKgyjHdNHlsVAvNeqBgFujfsnJJQpb
-         ijW+HdEUM6Ys8hizKHPZhkPKBRO7NI348HpK8s/0W94RxXbmOXuQIP8N7zZI4I5sWSxD
-         xU3jbcyUWF4nBN4mhDKyeLdsSqswK3xq51Y9iPsRHZqTYMcFh0LJxR47A7uDRKdIAOGA
-         gGug==
-X-Gm-Message-State: AOAM530Ug/mBhDx99ZzCAvVdxySQtHBGrpPVy9akjY7ZLvcOEqATSO1d
-        3aL/+pj7KFtMQjX3lycC8ig=
-X-Google-Smtp-Source: ABdhPJxC3uTidSFQuPJd5N+ZIugAF5DjMqJZwBdBMRxo/CsJfJGnW54QJwO/PEzPpqMarcPL1KnxUw==
-X-Received: by 2002:a5d:5585:: with SMTP id i5mr26775604wrv.112.1592204329345;
-        Sun, 14 Jun 2020 23:58:49 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id d63sm22195666wmc.22.2020.06.14.23.58.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 14 Jun 2020 23:58:48 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 08:58:46 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     wu000273@umn.edu
-Cc:     kjlu@umn.edu,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] char: hw_random: Fix a reference count leak.
-Message-ID: <20200615065846.GA5791@kozik-lap>
-References: <20200613214128.32665-1-wu000273@umn.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200613214128.32665-1-wu000273@umn.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 15 Jun 2020 03:18:05 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200615071802epoutp03dfe0cec22af2c247a832ce7b1e43dce8~YpnNfC9_t1310913109epoutp03f
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 07:18:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200615071802epoutp03dfe0cec22af2c247a832ce7b1e43dce8~YpnNfC9_t1310913109epoutp03f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592205482;
+        bh=hIePvCahKROD7i1SFLGyXqFGsYiA33yIxFyYUgHZ4fM=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=pKaIF39qBNaw0wWWBHQYaj0ezE4zIFkD1YBvskyXG0nCBV0Q+8a0S/d4f7GSMqh4B
+         zlmSSogIE15AAUvcQOTST2hj6QlbNB/0WL+4vneQnBCGE0DftuBgugmSxTRx9digr/
+         KdDwwGpDkEVNuWxIyYwBgKz5rWE+VzruF0QcZKig=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200615071802epcas1p1142d77fd170dc68c4a793e71736844dd~YpnNBSPOb2304123041epcas1p1r;
+        Mon, 15 Jun 2020 07:18:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH v2 0/5] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 15 Jun 2020 15:27:08 +0900
+X-CMS-MailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 04:41:28PM -0500, wu000273@umn.edu wrote:
-> From: Qiushi Wu <wu000273@umn.edu>
-> 
-> Calling pm_runtime_get_sync increments the counter even in case of
-> failure, causing incorrect ref count if pm_runtime_put_sync is not
-> called in error handling paths. Thus replace the jump target
-> "err_pm_get" by "err_clock".
-> 
-> Fixes: 6cd225cc5d8a ("hwrng: exynos - add Samsung Exynos True RNG driver")
-> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
 
-1. Cc: <stable@vger.kernel.org>
-2. Subject prefix:
-	hwrng: exynos - 
-3. Subject title: Fix PM runtime reference count leak
-   (no need for end stop)
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
 
-With these changes:
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+The current version only supports the DCM (device control mode).
+This patch consists of 4 parts to support HPB feature.
 
-Best regards,
-Krzysztof
+1) UFS-feature layer
+2) HPB probe and initialization process
+3) READ -> HPB READ using cached map information
+4) L2P (logical to physical) map management
 
+The UFS-feature is an additional layer to avoid the structure in which the
+UFS-core driver and the UFS-feature are entangled with each other in a 
+single module.
+By adding the layer, UFS-features composed of various combinations can be
+supported. Also, even if a new feature is added, modification of the 
+UFS-core driver can be minimized.
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB module.
+
+The HPB module manages the L2P map using information received from the
+device. For active sub-region, the HPB module caches through ufshpb_map
+request. For the in-active region, the HPB module discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+This series patches are based on the 5.8/scsi-queue branch.
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Changelog:
+
+v1 -> v2
+1. Change sub-region context DS static allocation to dynamic allocation.
+2. Change the full boilerplate text to SPDX style.
+3. Other cleanups.
+
+Daejun park (5):
+ scsi: ufs: Add UFS feature related parameter
+ scsi: ufs: Add UFS feature layer
+ scsi: ufs: Introduce HPB module
+ scsi: ufs: L2P map management for HPB read
+ scsi: ufs: Prepare HPB read for cached sub-region
+ 
+ drivers/scsi/ufs/Kconfig      |    9 +
+ drivers/scsi/ufs/Makefile     |    3 +-
+ drivers/scsi/ufs/ufs.h        |   12 +
+ drivers/scsi/ufs/ufsfeature.c |  148 +++
+ drivers/scsi/ufs/ufsfeature.h |   69 ++
+ drivers/scsi/ufs/ufshcd.c     |   19 +
+ drivers/scsi/ufs/ufshcd.h     |    3 +
+ drivers/scsi/ufs/ufshpb.c     | 1988 ++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h     |  234 +++++
+ 9 files changed, 2484 insertions(+), 1 deletion(-)
+ created mode 100644 drivers/scsi/ufs/ufsfeature.c
+ created mode 100644 drivers/scsi/ufs/ufsfeature.h
+ created mode 100644 drivers/scsi/ufs/ufshpb.c
+ created mode 100644 drivers/scsi/ufs/ufshpb.h
