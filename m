@@ -2,105 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19081F9E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04E31F9EA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 19:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731255AbgFORfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 13:35:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:60144 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729847AbgFORfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:35:18 -0400
-IronPort-SDR: YwrT5Lkv5HZDZsACtBnspln9ds2k3+nKIKngwPmAg5bR7NfA9dw6hD+YURDvD7KXcbNhvWd2zj
- GMR7msC99AmQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 10:35:18 -0700
-IronPort-SDR: 51+mZbATzb7maRcHc1mjVbVrxDqDO6M2cv45SsM7b+oxHngCDcFSqacinDVTDXr7OPEcmXRB/a
- d40MxvSKq9pQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
-   d="scan'208";a="298594064"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Jun 2020 10:35:16 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH][RFC] PM / s2idle: Clear _TIF_POLLING_NRFLAG before suspend to idle
-Date:   Tue, 16 Jun 2020 01:36:11 +0800
-Message-Id: <20200615173611.15349-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1731147AbgFORhS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Jun 2020 13:37:18 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:52021 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729124AbgFORhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:37:18 -0400
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 30E6B100005;
+        Mon, 15 Jun 2020 17:37:14 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 19:37:12 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Kamal Dasu <kdasu.kdev@gmail.com>
+Cc:     Brian Norris <computersforpeace@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: rawnand: brcmnand: Ecc error handling on EDU
+ transfers
+Message-ID: <20200615193712.487d1f85@xps13>
+In-Reply-To: <CAC=U0a14R-ZFtwcjESLn67tOfM=DPtdm_Ljuu6Y6Xyx6mRS-Lw@mail.gmail.com>
+References: <20200611054454.2547-1-kdasu.kdev@gmail.com>
+        <20200611054454.2547-2-kdasu.kdev@gmail.com>
+        <20200611092707.75da8c6a@xps13>
+        <CAC=U0a3RXScu12LkU+hCv_5Lp_he92ExRFSgqLkwx40D6Xtrag@mail.gmail.com>
+        <20200612090728.043b6baf@xps13>
+        <CAC=U0a1oLPs_=SgUTxYPxiW8JpQXOpz-RbL2KrgzDjutt1v0mQ@mail.gmail.com>
+        <20200615091923.0c3c7aa7@xps13>
+        <CAC=U0a14R-ZFtwcjESLn67tOfM=DPtdm_Ljuu6Y6Xyx6mRS-Lw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suspend to idle was found to not work on Goldmont CPU recently.
-And the issue was triggered due to:
+Hi Kamal,
 
-1. On Goldmont the CPU in idle can only be woken up via IPIs,
-   not POLL mode:
-   Commit 08e237fa56a1 ("x86/cpu: Add workaround for MONITOR
-   instruction erratum on Goldmont based CPUs")
-2. When the CPU is entering suspend to idle process, the
-  _TIF_POLLING_NRFLAG is kept on.
-3. Commit b2a02fc43a1f ("smp: Optimize send_call_function_single_ipi()")
-   makes use of _TIF_POLLING_NRFLAG to avoid sending IPIs to
-   idle CPUs.
-4. As a result, some IPIs related functions might not work
-   well during suspend to idle on Goldmont. For example, one
-   suspected victim:
-   tick_unfreeze() -> timekeeping_resume() -> hrtimers_resume()
-   -> clock_was_set() -> on_each_cpu() might wait forever,
-   because the IPIs will not be sent to the CPUs which are
-   sleeping with _TIF_POLLING_NRFLAG set, and Goldmont CPU
-   could not be woken up by only setting _TIF_NEED_RESCHED
-   on the monitor address.
+Kamal Dasu <kdasu.kdev@gmail.com> wrote on Mon, 15 Jun 2020 11:11:00
+-0400:
 
-I don't find a way in Ubuntu to update the firmware of Goldmont
-and check if the issue was gone, a fix patch would do no harm.
-Clear the _TIF_POLLING_NRFLAG flag before entering suspend to idle,
-and let the driver's enter_s2idle() to decide whether to set
-_TIF_POLLING_NRFLAG or not. So that to avoid the scenario described
-above and keep the context consistent with before.
+> On Mon, Jun 15, 2020 at 3:19 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >
+> > Hi Kamal,
+> >
+> > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Fri, 12 Jun 2020 12:34:22
+> > -0400:
+> >  
+> > > On Fri, Jun 12, 2020 at 3:07 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:  
+> > > >
+> > > > Hi Kamal,
+> > > >
+> > > > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 12:04:29
+> > > > -0400:
+> > > >  
+> > > > > On Thu, Jun 11, 2020 at 3:27 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:  
+> > > > > >
+> > > > > > Hi Kamal,
+> > > > > >
+> > > > > > Kamal Dasu <kdasu.kdev@gmail.com> wrote on Thu, 11 Jun 2020 01:44:54
+> > > > > > -0400:
+> > > > > >  
+> > > > > > > Implemented ECC correctable and uncorrectable error handling for EDU  
+> > > > > >
+> > > > > > Implement?
+> > > > > >  
+> > > > > > > reads. If ECC correctable bitflips are encountered  on EDU transfer,  
+> > > > > >
+> > > > > > extra space                                         ^
+> > > > > >  
+> > > > > > > read page again using pio, This is needed due to a controller lmitation  
+> > > > > >
+> > > > > > s/pio/PIO/
+> > > > > >  
+> > > > > > > where read and corrected data is not transferred to the DMA buffer on ECC
+> > > > > > > errors. This holds true for ECC correctable errors beyond set threshold.  
+> > > > > >
+> > > > > > error.
+> > > > > >
+> > > > > > Not sure what the last sentence means?
+> > > > > >  
+> > > > >
+> > > > > NAND controller allows for setting a correctable  ECC threshold number
+> > > > > of bits beyond which it will actually report the error to the driver.
+> > > > > e.g. for BCH-4 the threshold is 3, so 3-bit and 4-bit errors will
+> > > > > generate correctable ECC interrupt however 1-bit and 2-bit errors will
+> > > > > be corrected silently.
+> > > > > From the above example EDU hardware will not transfer corrected data
+> > > > > to the DMA buffer for 3-bit and 4-bit errors that get reported. So
+> > > > > once we detect
+> > > > > the error duing EDU we read the page again using pio.  
+> > > >
+> > > > Ok I see what you mean, can't you fake the threshold instead? The NAND
+> > > > controller in Linux is not supposed to handle this threshold, the NAND
+> > > > core is in charge. So what the controller driver should do is just:
+> > > > increase the number of bitflips + return the maximum number or bitflip
+> > > > or increase the failure counter. Is this already the case?
+> > > >  
+> > > /* threshold = ceil(BCH-level * 0.75) */
+> > > brcmnand_wr_corr_thresh(host, DIV_ROUND_UP(chip->ecc.strength * 3, 4));
+> > > This how the threshold is set, all it means is that for high BCH
+> > > levels don't interrupt on low number (less than threshold) of
+> > > bit_flips. Yes the controller driver only increments correctable ECC
+> > > count. But due the EDU design an EDU operation is disrupted when the
+> > > controller interrupts on correctable ECC errors during subpage ECC
+> > > calculations. Hence the driver needs to read the page again with PIO
+> > > to transfer corrected data.  
+> >
+> > IIUC, you are doing the job twice: you should just return a number of
+> > bitflips or an error to the NAND core. So that's why I'm telling that
+> > you should get rid of this threshold. It would avoid the need for the
+> > PIO transfer too.  
+> 
+> I think you are reading some statements in isolation that probably are
+> causing some confusion.
+> EDU design has a flaw in case of reported  ECC error interrupt in that
+> corrected data is not transferred to the DMA buffer. The PIO is needed
+> to read corrected data into the NAND data buffer and only for the
+> reported errors. So there is no need to change the threshold
+> calculation logic, if we get rid of the threshold then we will have to
+> do the PIO read on any correctable bit error if it occurs during EDU
+> reads.
+> 
+> >
+> > You also say that the controller "only increments correctable ECC
+> > count", what do you mean exactly?  
+> 
+> Maybe that statement was a bit misleading. To be clear when an ECC
+> error is reported the controller gives the bit_flips count  as well as
+> updates the ECC error address Register and ecc error status registers.
+> This logic works as expected in the hardware.
+> 
+> >The controller does not report errors
+> > when the number of bitflips happens to be above the BCH threshold? This
+> > would be the only case where what is currently done would be actually
+> > needed though.  
+> 
+>  It's the other way. The controller only reports bit errors beyond
+> >=threshold value, will not report otherwise and silently correct the  
+> data. There is no problem in  cases where erros are corrected
+> silently. Now ECC (un)correctable on EDU reads are detected by simply
+> reading back the ECC Error address register. And in case of reported
+> uncorrectable ECC errors are treated as usual.  And for reported
+> correctable ECC errors we need to read the page again using PIO so
+> that the corrected data is properly transferred. All this applies to
+> EDU transfer only.
+> 
 
-Fixes: b2a02fc43a1f ("smp: Optimize send_call_function_single_ipi()")
-Reported-by: kbuild test robot <lkp@intel.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- drivers/cpuidle/cpuidle.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Thank you very much for the explanation, I understand better how this
+controller works now.
 
-diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-index c149d9e20dfd..d17dad362d34 100644
---- a/drivers/cpuidle/cpuidle.c
-+++ b/drivers/cpuidle/cpuidle.c
-@@ -13,6 +13,7 @@
- #include <linux/mutex.h>
- #include <linux/sched.h>
- #include <linux/sched/clock.h>
-+#include <linux/sched/idle.h>
- #include <linux/notifier.h>
- #include <linux/pm_qos.h>
- #include <linux/cpu.h>
-@@ -186,8 +187,10 @@ int cpuidle_enter_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev)
- 	 * be frozen safely.
- 	 */
- 	index = find_deepest_state(drv, dev, U64_MAX, 0, true);
--	if (index > 0)
-+	if (index > 0) {
-+		__current_clr_polling();
- 		enter_s2idle_proper(drv, dev, index);
-+	}
- 
- 	return index;
- }
--- 
-2.17.1
 
+Cheers,
+Miquèl
