@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919571F9D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6E11F9D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 18:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbgFOQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 12:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731041AbgFOQWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 12:22:32 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC44C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:22:31 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id x1so18081194ejd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 09:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/vrNNxvqzd1+6WcN18UWNnrm3SzmXd8+xL+vm2U41hs=;
-        b=Zo5ehkbMWUQUNb9n3tIc5zV9ibuTmwKK3biPsJDwDAFXGbT+pEyjb5SZPDnyHTAj62
-         5OlXN3u5Q1MlWMVccYeP/p46e2nsmyVmGIyJUq85kS/I3ylT7lFNXt8QTXkbVt/tM72H
-         lfXAm2MWFyvoXvuiq5tn7ggY15XVP9TVWDYgk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/vrNNxvqzd1+6WcN18UWNnrm3SzmXd8+xL+vm2U41hs=;
-        b=hMRnXSkAZas3F98UflmUtXAcWtFL8s/MZ/7k+JoPqHCIE2HwyJ5qiUTCsSPcuS5WB2
-         XfNh2E70SnGCOMVjX+3KmMaflernpmRYPfc2gLSkygbo8RSGF2/Olp60Bo1jWox0n31L
-         453qkv2Fzv9AoaxJ+B38pP+4P9r79pyUTAsL/Iudrw1PSHpF+T3CdZR3mLcM4IbODGmQ
-         mhuAuB4QKBgbshzEOqKP1s98OvV4Ti0uhyfSO1INDrM7RsoxblpLUdxMw5Pim50pEkez
-         j5DTixNSmpRXr45OdfjM9Rv+Z0V5gvRQpvsiMzW9Sohy1UIfw2JHYaqlRTsnQwUNxZeh
-         vcjA==
-X-Gm-Message-State: AOAM532Af5iGT6XRFFjIXNTZL+22palUNPxB2dQQD7U8vkmtOHhd9CdC
-        q4lRfpa2CYBpMR4LrRCFjguhJ0SN1T0gd5s83//TDw==
-X-Google-Smtp-Source: ABdhPJx+bT/qo9gxqE/zoNAe1/BkPFy8sVFIY15o/zABl1r/0Kd+6QCAu4UjRjIvp6LUm6j//qBO9qKM9BgOO+88yFw=
-X-Received: by 2002:a17:906:5595:: with SMTP id y21mr27317038ejp.61.1592238149992;
- Mon, 15 Jun 2020 09:22:29 -0700 (PDT)
+        id S1731092AbgFOQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 12:23:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730764AbgFOQXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:23:31 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE2D72078A;
+        Mon, 15 Jun 2020 16:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592238211;
+        bh=XalKfGZb8n85Dlowgyhn+CM2djvVHZZnTX/8wIWHJ7w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=G80YnnLbQpmqujLdva4c9XxxuubAh89NU3DkHMzNo/CP4kG0h5Ml/XfwwnXIUBG5j
+         mA2zb2XW9oORXy/lSyUhYA2bHKe0TAgaLKYatuf8Id7nYFcP5c7Xo4LGQz38L23ENF
+         65vAefPlo9mavATRzrlriaLouZAAxHxSZ6Qs8SJ0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CAECE3522EFD; Mon, 15 Jun 2020 09:23:30 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 09:23:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, frederic@kernel.org
+Subject: Re: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
+Message-ID: <20200615162330.GF2723@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200615125654.678940605@infradead.org>
 MIME-Version: 1.0
-References: <CAJ-EccOy4qDpbfrP5=KH40LSOx1F4-ciY2=hFv_c+goUHLJ6PQ@mail.gmail.com>
- <CAHk-=wiLXXR1+o4VAuw5MM3V1D8h6C6te3y8VMvW8iAJw6noJg@mail.gmail.com>
- <CAJ-EccPGQ62yMK1Nmvie4qWzproSqb4POwAD4_0Nt62KLbGhqg@mail.gmail.com> <alpine.LRH.2.21.2006151517230.9003@namei.org>
-In-Reply-To: <alpine.LRH.2.21.2006151517230.9003@namei.org>
-From:   Micah Morton <mortonm@chromium.org>
-Date:   Mon, 15 Jun 2020 09:22:19 -0700
-Message-ID: <CAJ-EccO+4s8Dd=wj75ckfp4ZLhppt7uCgg2chf4SvTOxzqbgPw@mail.gmail.com>
-Subject: Re: [GIT PULL] SafeSetID LSM changes for v5.8
-To:     James Morris <jmorris@namei.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        John Johansen <john.johansen@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615125654.678940605@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 14, 2020 at 10:21 PM James Morris <jmorris@namei.org> wrote:
->
-> On Sun, 14 Jun 2020, Micah Morton wrote:
->
-> > This patch was sent to the security mailing list and there were no objections.
->
-> Standard practice for new or modified LSM hooks is that they are reviewed
-> and acked by maintainers of major LSMs (SELinux, AppArmor, and Smack, at
-> least).
->
-> "No objections" should be considered "not reviewed".
->
-> Can you add your tree to linux-next?
-> https://www.kernel.org/doc/man-pages/linux-next.html
+On Mon, Jun 15, 2020 at 02:56:54PM +0200, Peter Zijlstra wrote:
+> Hi,
+> 
+> So Paul reported rcutorture hitting a NULL dereference, and patch #1 fixes it.
+> 
+> Now, patch #1 is obviously correct, but I can't explain how exactly it leads to
+> the observed NULL pointer dereference. The NULL pointer deref happens in
+> find_matching_se()'s last while() loop when is_same_group() fails even though
+> both parents are NULL.
 
-Sure, I can do that. I should just send an email to Stephen Rothwell
-asking him to include the -next branch from my tree?
+My bisection of yet another bug sometimes hits the scheduler NULL pointer
+dereference on older commits.  I will try out patch #2.
 
->
-> --
-> James Morris
-> <jmorris@namei.org>
->
+Whether this is reassuring or depressing, I have no idea.  :-/
+
+> The only explanation I have for that is that we just did an activate_task()
+> while: 'task_cpu(p) != cpu_of(rq)', because then 'p->se.cfs_rq' doesn't match.
+> However, I can't see how the lack of #1 would lead to that. Never-the-less,
+> patch #2 adds assertions to warn us of this case.
+> 
+> Patch #3 is a trivial rename that ought to eradicate some confusion.
+> 
+> The last 3 patches is what I ended up with for cleaning up the whole
+> smp_call_function/irq_work/ttwu thing more.
+
+Would it be possible to allow a target CPU # on those instances of
+__call_single_data?  This is extremely helpful for debugging lost
+smp_call_function*() calls.
+
+						Thanx, Paul
