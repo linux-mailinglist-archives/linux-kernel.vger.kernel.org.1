@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9971F963D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1646D1F9659
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 14:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgFOMOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 08:14:10 -0400
-Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:52605 "EHLO
-        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729981AbgFOMOE (ORCPT
+        id S1730004AbgFOMP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 08:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729642AbgFOMPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 08:14:04 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 99F0B1C35E4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 13:14:00 +0100 (IST)
-Received: (qmail 24394 invoked from network); 15 Jun 2020 12:14:00 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.5])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jun 2020 12:14:00 -0000
-Date:   Mon, 15 Jun 2020 13:13:58 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] fs: Do not check if there is a fsnotify watcher on pseudo
- inodes
-Message-ID: <20200615121358.GF3183@techsingularity.net>
+        Mon, 15 Jun 2020 08:15:24 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E0EC061A0E;
+        Mon, 15 Jun 2020 05:15:24 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a137so15671678oii.3;
+        Mon, 15 Jun 2020 05:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OYfeN+lomf5loXuUSsePWE7mRHJpvA/I4T/5bpNYLAY=;
+        b=T4AGUVXndhnCDxHQKxLQEEIc7ZokeMONi82ra0kiJCuQXe9+11agB7ic0ynPmiAoSb
+         YidIatx5FjuebJ9yH5fabmkbLzPM+66rbekkPAMm+rocOnEtGC0tqhKCRbibxP78oO8O
+         nglHx6uNc6cPOTSvevCrGFEgn98bPyInJoHeLkTMagnFAno4QsEqJ/H06FEGAYr/d9IM
+         2guwwi62J8i82MhHKColWTGHiRz3R0EJgpE4xCg3U/x8m0DGrSl9Q9jbFzuju49YurpP
+         pG3X7Gdr5W+6C4bKny6xvD4XZIYR2T6lVZJcgdRrCxwHe1yMkwfOT9BMi+EQ5CJxNtHB
+         87pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OYfeN+lomf5loXuUSsePWE7mRHJpvA/I4T/5bpNYLAY=;
+        b=EpJPYeHb9cRA4EvAVOsTIBst+Zreq+VSd2mAi1j05lkbs763B+ngqYpDo5hyQVfObJ
+         fA2Pz0b0nBzZlq38vWV//yNA09hJqgBUuByvafpN3VzIC3e+bCwQk4YBanEJECLlLf6D
+         01P91GpXbr8hTgp5brQ86a1fwRDUpYtmtFOT5Jz2sSMwI5JQdaIdgdzL6yl37wFo2yeo
+         np2zeQwXpOLP2ZB6kShM4UUlLtlVCR9U0ar6aDQGeXWhn8atS5wEtySfLhc70ebt0+dP
+         wq1qOMBgaMsuhLIvB+KqUSua/qpcTTY1f3AFhLac8uQDgwmQIarQc4Vetw6jh6DYLbLf
+         3Dag==
+X-Gm-Message-State: AOAM533SbwHbCLin1jLhT0Eld5FBVPilX3qsbh/Cg1/QRW9yyjub6fKo
+        XPuy5dV+pQHJ71BOtZhORNhA1E5j5/XJxnC0MqI=
+X-Google-Smtp-Source: ABdhPJztOxHdnvbh3si4JN5xzx3gZccaRMhjgkbZe5bLxwDBW5pTkhmE9ShDj0Bv2mq7su7RD+R2Vcb9E9HVjBArfU4=
+X-Received: by 2002:aca:ec97:: with SMTP id k145mr8317724oih.92.1592223323851;
+ Mon, 15 Jun 2020 05:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200613024130.3356-1-nramas@linux.microsoft.com>
+ <20200613024130.3356-5-nramas@linux.microsoft.com> <CAEjxPJ49UaZc9pc-+VN8Cx8rcdrjD6NMoLOO_zqENezobmfwVA@mail.gmail.com>
+In-Reply-To: <CAEjxPJ49UaZc9pc-+VN8Cx8rcdrjD6NMoLOO_zqENezobmfwVA@mail.gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 15 Jun 2020 08:15:13 -0400
+Message-ID: <CAEjxPJ4MMjGGMy5b5pFfdZ=mUiBMv4M558Kwdu_VG8OOCU_aUA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] LSM: Define SELinux function to measure security state
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Stephen Smalley <stephen.smalley@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog since v1
-o Updated changelog
+On Mon, Jun 15, 2020 at 7:57 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+> I think I mentioned this on a previous version of these patches, but I
+> would recommend including more than just the enabled and enforcing
+> states in your measurement.  Other low-hanging fruit would be the
+> other selinux_state booleans (checkreqprot, initialized,
+> policycap[0..__POLICYDB_CAPABILITY_MAX]).  Going a bit further one
+> could take a hash of the loaded policy by using security_read_policy()
 
-The kernel uses internal mounts created by kern_mount() and populated
-with files with no lookup path by alloc_file_pseudo for a variety of
-reasons. An example of such a mount is for anonymous pipes. For pipes,
-every vfs_write regardless of filesystem, fsnotify_modify() is called to
-notify of any changes which incurs a small amount of overhead in fsnotify
-even when there are no watchers. It can also trigger for reads and readv
-and writev, it was simply vfs_write() that was noticed first.
+On second thought, you probably a variant of security_read_policy()
+since it would be a kernel-internal allocation and thus shouldn't use
+vmalloc_user().
 
-A patch is pending that reduces, but does not eliminte, the overhead of
-fsnotify but for files that cannot be looked up via a path, even that
-small overhead is unnecessary. The user API for fanotify is based on
-the pathname and a dirfd and proc entries appear to be the only visible
-representation of the files. Proc does not have the same pathname as the
-internal entry and the proc inode is not the same as the internal inode
-so even if fanotify is used on a file under /proc/XX/fd, no useful events
-are notified.
-
-This patch changes alloc_file_pseudo() to always opt out of fsnotify by
-setting FMODE_NONOTIFY flag so that no check is made for fsnotify watchers
-on pseudo files. This should be safe as the underlying helper for the
-dentry is d_alloc_pseudo which explicitly states that no lookups are ever
-performed meaning that fanotify should have nothing useful to attach to.
-
-The test motivating this was "perf bench sched messaging --pipe". On
-a single-socket machine using threads the difference of the patch was
-as follows.
-
-                              5.7.0                  5.7.0
-                            vanilla        nofsnotify-v1r1
-Amean     1       1.3837 (   0.00%)      1.3547 (   2.10%)
-Amean     3       3.7360 (   0.00%)      3.6543 (   2.19%)
-Amean     5       5.8130 (   0.00%)      5.7233 *   1.54%*
-Amean     7       8.1490 (   0.00%)      7.9730 *   2.16%*
-Amean     12     14.6843 (   0.00%)     14.1820 (   3.42%)
-Amean     18     21.8840 (   0.00%)     21.7460 (   0.63%)
-Amean     24     28.8697 (   0.00%)     29.1680 (  -1.03%)
-Amean     30     36.0787 (   0.00%)     35.2640 *   2.26%*
-Amean     32     38.0527 (   0.00%)     38.1223 (  -0.18%)
-
-The difference is small but in some cases it's outside the noise so
-while marginal, there is still some small benefit to ignoring fsnotify
-for files allocated via alloc_file_pseudo in some cases.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- fs/file_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 30d55c9a1744..0076ccf67a7d 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -229,7 +229,7 @@ struct file *alloc_file_pseudo(struct inode *inode, struct vfsmount *mnt,
- 		d_set_d_op(path.dentry, &anon_ops);
- 	path.mnt = mntget(mnt);
- 	d_instantiate(path.dentry, inode);
--	file = alloc_file(&path, flags, fops);
-+	file = alloc_file(&path, flags | FMODE_NONOTIFY, fops);
- 	if (IS_ERR(file)) {
- 		ihold(inode);
- 		path_put(&path);
+> and then computing a hash using whatever hash ima prefers over the
+> returned data,len pair.  You likely also need to think about how to
+> allow future extensibility of the state in a backward-compatible
+> manner, so that future additions do not immediately break systems
+> relying on older measurements.
