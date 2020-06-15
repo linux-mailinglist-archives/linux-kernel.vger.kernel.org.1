@@ -2,110 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1ED1F940E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394341F9414
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 11:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbgFOJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 05:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728369AbgFOJ47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:56:59 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8E6C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:56:58 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q25so14181597wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 02:56:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jsEUyoBTDZqiVYB9PCZ1vVhMpPe0f/z8iobsEEaUCw4=;
-        b=hee7HZ6p8is7oxi8Go4xvjyiDZzsY/Q+zce2fLd0aZKNQ4xq9xxZXaeTFvZyTHGx0u
-         We48FXH41ePPSmjgZtYxZYcJb0Uoa/nkYeRcJwhhzBMu/ML0l51V3qHJrUedtxhKHlys
-         107STx4b3Qbby2dqKQ7s734eMiKgDM8Z8rj5YjQBw6JEQtdpwkUCBsRq+MpToxj2hGS5
-         ZRBBucPpuY/Kf7Qps9hGJoxtK4BqnKR6bebmikQszNyf5LMJtRI3AW5e8Yeov2as/M87
-         m01CbnP9fo+lblePdhg+zIrzirypT1fqvxlRcTLiNoxzFTl4p/OkfyAZSC7k7NmGFEKI
-         jR0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jsEUyoBTDZqiVYB9PCZ1vVhMpPe0f/z8iobsEEaUCw4=;
-        b=bbRso443lbz+sKIX3Os5ubyrqYA51k5pWVftEeEQhXJNvYs8alZ3CVp3qo9jUmPPUa
-         X1PJ0UY1cldpgiDd7jRQfU92nWJ+l2K8fXcn78LjBly+tdH1Mo+g4Kb/VSkeTPVUk288
-         mAsscvTlg7UTwBeggdaju4ul8EuonixY63Ae7809N/9F6+ahk6B0yFJ82a32UUr3ib8W
-         vbYUHbK1S416B4sPbRRMhb9JPJ4NESrXyeI52jtEFBKG5+Aku5IfQlWvBrw4tMvvc9G3
-         UBPZ7Z+CtC9I5e6XfOWjx+dhhdm6dk+aAmlFTAxoL6NYIE3HCRFaqSl1Hx+2Qy/b50ti
-         Z+0g==
-X-Gm-Message-State: AOAM531j1es6B+sVfCUPdp0+sU+NzIimIm7hCrpYaKTkvkTlXmLQZYEg
-        VVf3un5YyPxH8aeqEQN1y2J/vg==
-X-Google-Smtp-Source: ABdhPJxZKKismQou/hvN0RyW10M0LOdtR9H7U0D3onGtbD82lRgrB1A+y0Judglrp+oKwjLU5BgKcw==
-X-Received: by 2002:a1c:4c12:: with SMTP id z18mr12843943wmf.155.1592215017188;
-        Mon, 15 Jun 2020 02:56:57 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id t7sm22347837wrq.41.2020.06.15.02.56.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2020 02:56:56 -0700 (PDT)
-Subject: Re: [RFC v2 2/3] drivers: nvmem: Add QTI qfprom-efuse support
-To:     Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        dhavalp@codeaurora.org, mturney@codeaurora.org,
-        sparate@codeaurora.org, c_rbokka@codeaurora.org,
-        mkurumel@codeaurora.org
-References: <1591868882-16553-1-git-send-email-rbokka@codeaurora.org>
- <1591868882-16553-3-git-send-email-rbokka@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <39ad93ee-236d-0e5e-571a-28ef91173309@linaro.org>
-Date:   Mon, 15 Jun 2020 10:56:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <1591868882-16553-3-git-send-email-rbokka@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729312AbgFOJ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 05:57:58 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22915 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728369AbgFOJ56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:57:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592215077; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=x4pbcEfTHQQiuFcc3iK26RbpCmgWr/+nQ32We6j78BY=; b=v9yU02ATy0OU8HwregNCUzz1g15wYolwOw0Sq8f3Swm2+FH/Bsox9iRCZFU0no+t5CgGu7TP
+ 0vFCSIoxRmgh3ccQNJZX/6LIjrKAer4XS5NS+XLMq5rWzd4mrVjVv40+TWAved9abGkej1lp
+ fOoshIMM0GfuZoUSpLrUtEwlejY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5ee7460da3d8a44743f9532d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Jun 2020 09:57:33
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4BD4DC433CB; Mon, 15 Jun 2020 09:57:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40C02C433CA;
+        Mon, 15 Jun 2020 09:57:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 40C02C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Sahitya Tummala <stummala@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] f2fs: fix use-after-free when accessing bio->bi_crypt_context
+Date:   Mon, 15 Jun 2020 15:27:15 +0530
+Message-Id: <1592215035-27365-1-git-send-email-stummala@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There could be a potential race between these two paths below,
+leading to use-after-free when accessing  bio->bi_crypt_context.
 
-I think Doug already covered most of the comments and his fixes seems be 
-in right direction.
+f2fs_write_cache_pages
+->f2fs_do_write_data_page on page#1
+  ->f2fs_inplace_write_data
+    ->f2fs_merge_page_bio
+      ->add_bio_entry
+->f2fs_do_write_data_page on page#2
+  ->f2fs_inplace_write_data
+    ->f2fs_merge_page_bio
+      ->f2fs_crypt_mergeable_bio
+        ->fscrypt_mergeable_bio
+  				       f2fs_write_begin on page#1
+				       ->f2fs_wait_on_page_writeback
+				         ->f2fs_submit_merged_ipu_write
+					   ->__submit_bio
+					The bio gets completed, calling
+					bio_endio
+					->bio_uninit
+					  ->bio_crypt_free_ctx
+	  ->use-after-free issue
 
-On 11/06/2020 10:48, Ravi Kumar Bokka wrote:
-> +	qfpraw = platform_get_resource_byname(pdev, IORESOURCE_MEM, "raw");
-> +
-> +	priv->qfpraw = devm_ioremap_resource(dev, qfpraw);
-> +	if (IS_ERR(priv->qfpraw)) {
+Fix this by moving f2fs_crypt_mergeable_bio() check within
+add_ipu_page() so that it's done under bio_list_lock to prevent
+the above race.
 
-General comment for up-streaming is that your patch should not break 
-whats in mainline, Your patch is totally ignoring!! Please be mindful 
-while doing changes to drivers which are used by other platforms.
+Fixes: 15e76ad23e72 ("f2fs: add inline encryption support")
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+---
+v2:
+  - simplify the logic as per Eric's suggestion to submit the bio in
+    add_ipu_page() itself instead of using f2fs_submit_merged_ipu_write()
 
---srini
-> +		ret = PTR_ERR(priv->qfpraw);
-> +		goto err;
-> +	}
-> +
-> +	qfpconf = platform_get_resource_byname(pdev, IORESOURCE_MEM, "conf");
-> +
-> +	priv->qfpconf = devm_ioremap_resource(dev, qfpconf);
-> +	if (IS_ERR(priv->qfpconf)) {
-> +		ret = PTR_ERR(priv->qfpconf);
-> +		goto err;
-> +	}
-> +
-> +	qfpcorrected = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> +						    "corrected");
-> +
-> +	priv->qfpcorrected = devm_ioremap_resource(dev, qfpcorrected);
-> +	if (IS_ERR(priv->qfpcorrected)) {
-> +		ret = PTR_ERR(priv->qfpcorrected);
-> +		goto err;
-> +	}
+ fs/f2fs/data.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 0dfa8d3..9710555 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -762,9 +762,10 @@ static void del_bio_entry(struct bio_entry *be)
+ 	kmem_cache_free(bio_entry_slab, be);
+ }
+ 
+-static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
++static int add_ipu_page(struct f2fs_io_info *fio, struct bio **bio,
+ 							struct page *page)
+ {
++	struct f2fs_sb_info *sbi = fio->sbi;
+ 	enum temp_type temp;
+ 	bool found = false;
+ 	int ret = -EAGAIN;
+@@ -780,6 +781,16 @@ static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
+ 				continue;
+ 
+ 			found = true;
++			if (page_is_mergeable(sbi, *bio, *fio->last_block,
++						fio->new_blkaddr) &&
++			    f2fs_crypt_mergeable_bio(*bio,
++						    fio->page->mapping->host,
++						    fio->page->index, fio) &&
++			    bio_add_page(*bio, page, PAGE_SIZE, 0) ==
++					    PAGE_SIZE) {
++				ret = 0;
++				break;
++			}
+ 
+ 			if (bio_add_page(*bio, page, PAGE_SIZE, 0) ==
+ 							PAGE_SIZE) {
+@@ -787,7 +798,7 @@ static int add_ipu_page(struct f2fs_sb_info *sbi, struct bio **bio,
+ 				break;
+ 			}
+ 
+-			/* bio is full */
++			/* page can't be merged into bio; submit the bio */
+ 			del_bio_entry(be);
+ 			__submit_bio(sbi, *bio, DATA);
+ 			break;
+@@ -872,11 +883,6 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 	trace_f2fs_submit_page_bio(page, fio);
+ 	f2fs_trace_ios(fio, 0);
+ 
+-	if (bio && (!page_is_mergeable(fio->sbi, bio, *fio->last_block,
+-				       fio->new_blkaddr) ||
+-		    !f2fs_crypt_mergeable_bio(bio, fio->page->mapping->host,
+-					      fio->page->index, fio)))
+-		f2fs_submit_merged_ipu_write(fio->sbi, &bio, NULL);
+ alloc_new:
+ 	if (!bio) {
+ 		bio = __bio_alloc(fio, BIO_MAX_PAGES);
+@@ -886,7 +892,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 
+ 		add_bio_entry(fio->sbi, bio, page, fio->temp);
+ 	} else {
+-		if (add_ipu_page(fio->sbi, &bio, page))
++		if (add_ipu_page(fio, &bio, page))
+ 			goto alloc_new;
+ 	}
+ 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
