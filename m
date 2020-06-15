@@ -2,189 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B97D1F994F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE251F98A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 15:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbgFONud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 09:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728510AbgFONub (ORCPT
+        id S1730460AbgFONcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 09:32:00 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:34635 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729875AbgFONb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:50:31 -0400
-X-Greylist: delayed 1477 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 Jun 2020 06:50:31 PDT
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77236C061A0E;
-        Mon, 15 Jun 2020 06:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=RRZYWBoIuPtmDaMa0TmpMUNpOE6w5lqFYe+cBmKMpHQ=; b=mZ
-        tmxJ86HeiW0lwKAyvmBD4KRIg5YF8PCP2O5yeE1Rijc6h9OARxc1Q6LRoqR/4jZg3M/1LKDcPYQSO
-        0U7USPy44HMzdmtKIJqEIXVAWRUiMrHfZ/BnpcM38my8DkBAamvFzp0BylCzT+VYayVTN21AUuUdR
-        v+c376q+HlrezE9kqQKY1GOVEBPHNaXr74Z64e0ECKapQhz+YrZ1+U9OS9zTMxHCFMk7cadYxDEuJ
-        TAgJcghmrpnBCTq4oRyyjmdfii2EDEWSy9HeL+bqDQ5E/0a+mrE/+032ItujptIPYAdoWBJAdtfTo
-        lOcZdKRRmlEiT02Q+tYK9FSxQyh6a83w==;
-Received: from johnkeeping.plus.com ([81.174.171.191] helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1jkp7U-00024q-Lm; Mon, 15 Jun 2020 14:25:48 +0100
-From:   John Keeping <john@metanate.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     John Keeping <john@metanate.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Dixit Parmar <dixitparmar19@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: st1232 - read resolution from touch panel
-Date:   Mon, 15 Jun 2020 14:25:32 +0100
-Message-Id: <20200615132533.3852637-1-john@metanate.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 15 Jun 2020 09:31:57 -0400
+Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MYedH-1jNstO1k39-00VeYK; Mon, 15 Jun 2020 15:31:53 +0200
+Received: by mail-qv1-f42.google.com with SMTP id y9so7708053qvs.4;
+        Mon, 15 Jun 2020 06:31:52 -0700 (PDT)
+X-Gm-Message-State: AOAM5305tInq4MdV51zaxMlkPZL5vPRQhofoU/azItpj7hXr3Ha2g5Tl
+        micFfM+mhRo0p9H5aTSx4sECt1APlScxHUsZfsA=
+X-Google-Smtp-Source: ABdhPJyz/mDGs74yzNIwblWPhWFapqdfcdEr4Un1uVSJ/plIiN/A4CId8Axns/qweYspANUjYrgyMPVOZOnIui2BnnA=
+X-Received: by 2002:a05:6214:846:: with SMTP id dg6mr23541266qvb.210.1592227911673;
+ Mon, 15 Jun 2020 06:31:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+References: <20200615130032.931285-1-hch@lst.de> <20200615130032.931285-3-hch@lst.de>
+In-Reply-To: <20200615130032.931285-3-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 15 Jun 2020 15:31:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0bRD3RzE_X6Tjzu9Tj+OhHhP+S=k6+VYODBGko8oQhew@mail.gmail.com>
+Message-ID: <CAK8P3a0bRD3RzE_X6Tjzu9Tj+OhHhP+S=k6+VYODBGko8oQhew@mail.gmail.com>
+Subject: Re: [PATCH 2/6] exec: simplify the compat syscall handling
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:wILCgVPfEuQ7it6PKCvdx9OXRwj6hxxZoHP08P3xgGjbwwONfSr
+ URaA2EsNOEAqy1repJn2J4TD/jF1lFyaLqMOssBSsrzcd8l29Th8nfcvkElJtStg0GvKumY
+ n8LJWG5KTaalNZG7xt7Os9Y4oeiuw1TTFiVIOKibywh+IY1elVqNF6SnPVsAZk+/iD6z4HW
+ 6VmOnmOy0/8ZTrRABm9Yg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4nDmmrljaTw=:0McypPwOg1kRK0OS1vw7sw
+ rrEaMfCyfaXoeoEKOHlrTaBGQS3+0qsSNS1c4g9moJOf2gsMo1MX7ZHD8hBBBY+mNiXjtJUmQ
+ f+3BFCKv6WRo/o+3u7uJoCjuK1IlKdGeKyfIuX3KJ2erK3Tet8YbhKvxYIi7k+HESavrDQTYG
+ cBIAWn0lINIcPd+Q3PP1Avm5CIFjxiwZ4rwL1yyB1N+nADoYJ9VpO50yXBe7VqA6SfakzFpMD
+ XBIuRSg+xUrRSgjO/GF21mV3lM4aJE9FCSwaJxVeP2ABvRanWYReH30EqrG0WlF9V3/5T5IgA
+ SeJKodf+M793+RswCnnFrpdrE655SeehROBd+bRwEhoy4b4kITDOVtR3ppukaqskl2axXZnfT
+ Dd2tA9nEAfu46BSzxpnoFmgxmlFiPZILYMiVhh3oIN4YlHK+vN9kFN9VnJOp86f2vzzycXc1U
+ ByFyaheBd2l39xn/Xp0P6rljH3Ybj4hG6STeaklasRU1KGHxh0QEF/re2GkDeSURDwfKT0uZc
+ 1bOAzzp8rzfFxCObYuzmmzplKCqQPBF9OBge1DNOeRXb+jHhGxWKQGiFprbd2InCJexFwqmGM
+ cWcackcCSUtY5PJTD+PTODiQT7bQpESqHhN1tA2NOdHeoTtBT2CAWP4VzE2mkgYhlVbzfTtD9
+ NhmpvXRl97txthECZt403rT4TfCIbEzzFk0WPzszIGO7ptineF/HF4SYrR7TtjGSWNhkFgoZ9
+ lNOuXAkgFbdaKtL5+sX43xCm8eR7HAfSPD2NBtPj9ez5GsRvNeKcyVpwFrcD8mtnCnqrgyb/w
+ L3te1QqJjifdvv8Nw6ePcO/2OewnkkO8moRpjQ7CDTZKl7i84U=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ST1232 and ST1633 touch controllers have read/write registers for
-the X and Y resolution and it seems that these can also be
-pre-programmed so that the resolution is matched to that of the display
-paired with the touch panel.
+On Mon, Jun 15, 2020 at 3:00 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> The only differenence betweeen the compat exec* syscalls and their
+> native versions is that compat_ptr sign extension, and the fact that
+> the pointer arithmetics for the two dimensional arrays needs to use
+> the compat pointer size.  Instead of the compat wrappers and the
+> struct user_arg_ptr machinery just use in_compat_syscall() to do the
+> right thing for the compat case deep inside get_user_arg_ptr().
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Instead of hard coding the resolution in the driver, read it from the
-controller when probing.  This requires a delay after de-asserting reset
-in order to ensure that the I2C communication succeeds.
+Nice!
 
-I have tested this on ST1633 and the datasheet for ST1232 indicates that
-the format of these registers is the same there (and at the same
-address).
+I have an older patch doing the same for sys_mount() somewhere,
+but never got around to send that. One day we should see if we
+can just do this for all of them.
 
-Signed-off-by: John Keeping <john@metanate.com>
----
- drivers/input/touchscreen/st1232.c | 55 +++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 9 deletions(-)
+> -
+> -static const char __user *get_user_arg_ptr(struct user_arg_ptr argv, int nr)
+> +static const char __user *
+> +get_user_arg_ptr(const char __user *const __user *argv, int nr)
+>  {
+>         const char __user *native;
+>
+>  #ifdef CONFIG_COMPAT
+> -       if (unlikely(argv.is_compat)) {
+> +       if (in_compat_syscall()) {
+> +               const compat_uptr_t __user *compat_argv =
+> +                       compat_ptr((unsigned long)argv);
+>                 compat_uptr_t compat;
+>
+> -               if (get_user(compat, argv.ptr.compat + nr))
+> +               if (get_user(compat, compat_argv + nr))
+>                         return ERR_PTR(-EFAULT);
+>
+>                 return compat_ptr(compat);
+>         }
+>  #endif
 
-diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-index 63b29c7279e2..4e032d3a3737 100644
---- a/drivers/input/touchscreen/st1232.c
-+++ b/drivers/input/touchscreen/st1232.c
-@@ -28,10 +28,10 @@
- 
- #define ST_TS_MAX_FINGERS	10
- 
-+#define ST1232_RESOLUTION_REG	0x04
-+
- struct st_chip_info {
- 	bool	have_z;
--	u16	max_x;
--	u16	max_y;
- 	u16	max_area;
- 	u16	max_fingers;
- 	u8	start_reg;
-@@ -44,6 +44,8 @@ struct st1232_ts_data {
- 	struct dev_pm_qos_request low_latency_req;
- 	struct gpio_desc *reset_gpio;
- 	const struct st_chip_info *chip_info;
-+	u16 max_x;
-+	u16 max_y;
- 	int read_buf_len;
- 	u8 *read_buf;
- };
-@@ -117,6 +119,36 @@ static int st1232_ts_parse_and_report(struct st1232_ts_data *ts)
- 	return n_contacts;
- }
- 
-+static int st1232_ts_read_resolution(struct st1232_ts_data *ts)
-+{
-+	struct i2c_client *client = ts->client;
-+	u8 start_reg = ST1232_RESOLUTION_REG;
-+	u8 buf[3];
-+	struct i2c_msg msg[] = {
-+		{
-+			.addr	= client->addr,
-+			.len	= sizeof(start_reg),
-+			.buf	= &start_reg,
-+		},
-+		{
-+			.addr	= client->addr,
-+			.flags	= I2C_M_RD,
-+			.len	= sizeof(buf),
-+			.buf	= buf,
-+		},
-+	};
-+	int ret;
-+
-+	ret = i2c_transfer(client->adapter, msg, ARRAY_SIZE(msg));
-+	if (ret != ARRAY_SIZE(msg))
-+		return ret < 0 ? ret : -EIO;
-+
-+	ts->max_x = (((buf[0] & 0xf0) << 4) | buf[1]) - 1;
-+	ts->max_y = (((buf[0] & 0x0f) << 8) | buf[2]) - 1;
-+
-+	return 0;
-+}
-+
- static irqreturn_t st1232_ts_irq_handler(int irq, void *dev_id)
- {
- 	struct st1232_ts_data *ts = dev_id;
-@@ -146,8 +178,10 @@ static irqreturn_t st1232_ts_irq_handler(int irq, void *dev_id)
- 
- static void st1232_ts_power(struct st1232_ts_data *ts, bool poweron)
- {
--	if (ts->reset_gpio)
-+	if (ts->reset_gpio) {
- 		gpiod_set_value_cansleep(ts->reset_gpio, !poweron);
-+		msleep(100);
-+	}
- }
- 
- static void st1232_ts_power_off(void *data)
-@@ -157,8 +191,6 @@ static void st1232_ts_power_off(void *data)
- 
- static const struct st_chip_info st1232_chip_info = {
- 	.have_z		= true,
--	.max_x		= 0x31f, /* 800 - 1 */
--	.max_y		= 0x1df, /* 480 -1 */
- 	.max_area	= 0xff,
- 	.max_fingers	= 2,
- 	.start_reg	= 0x12,
-@@ -166,8 +198,6 @@ static const struct st_chip_info st1232_chip_info = {
- 
- static const struct st_chip_info st1633_chip_info = {
- 	.have_z		= false,
--	.max_x		= 0x13f, /* 320 - 1 */
--	.max_y		= 0x1df, /* 480 -1 */
- 	.max_area	= 0x00,
- 	.max_fingers	= 5,
- 	.start_reg	= 0x12,
-@@ -236,6 +266,13 @@ static int st1232_ts_probe(struct i2c_client *client,
- 		return error;
- 	}
- 
-+	error = st1232_ts_read_resolution(ts);
-+	if (error) {
-+		dev_err(&client->dev,
-+			"Failed to read touch panel resolution: %d\n", error);
-+		return error;
-+	}
-+
- 	input_dev->name = "st1232-touchscreen";
- 	input_dev->id.bustype = BUS_I2C;
- 
-@@ -244,9 +281,9 @@ static int st1232_ts_probe(struct i2c_client *client,
- 				     ts->chip_info->max_area, 0, 0);
- 
- 	input_set_abs_params(input_dev, ABS_MT_POSITION_X,
--			     0, ts->chip_info->max_x, 0, 0);
-+			     0, ts->max_x, 0, 0);
- 	input_set_abs_params(input_dev, ABS_MT_POSITION_Y,
--			     0, ts->chip_info->max_y, 0, 0);
-+			     0, ts->max_y, 0, 0);
- 
- 	touchscreen_parse_properties(input_dev, true, &ts->prop);
- 
--- 
-2.27.0
+I would expect that the "#ifdef CONFIG_COMPAT" can be removed
+now, since compat_ptr() and in_compat_syscall() are now defined
+unconditionally. I have not tried that though.
 
+> +/*
+> + * x32 syscalls are listed in the same table as x86_64 ones, so we need to
+> + * define compat syscalls that are exactly the same as the native version for
+> + * the syscall table machinery to work.  Sigh..
+> + */
+> +#ifdef CONFIG_X86_X32
+>  COMPAT_SYSCALL_DEFINE3(execve, const char __user *, filename,
+> -       const compat_uptr_t __user *, argv,
+> -       const compat_uptr_t __user *, envp)
+> +                      const char __user *const __user *, argv,
+> +                      const char __user *const __user *, envp)
+>  {
+> -       return do_compat_execve(AT_FDCWD, getname(filename), argv, envp, 0);
+> +       return do_execveat(AT_FDCWD, getname(filename), argv, envp, 0, NULL);
+>  }
+
+Maybe move it to arch/x86/kernel/process_64.c or arch/x86/entry/syscall_x32.c
+to keep it out of the common code if this is needed. I don't really understand
+the comment, why can't this just use this?
+
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -379,7 +379,7 @@
+ 517    x32     recvfrom                compat_sys_recvfrom
+ 518    x32     sendmsg                 compat_sys_sendmsg
+ 519    x32     recvmsg                 compat_sys_recvmsg
+-520    x32     execve                  compat_sys_execve
++520    x32     execve                  sys_execve
+ 521    x32     ptrace                  compat_sys_ptrace
+ 522    x32     rt_sigpending           compat_sys_rt_sigpending
+ 523    x32     rt_sigtimedwait         compat_sys_rt_sigtimedwait_time64
+@@ -404,7 +404,7 @@
+ 542    x32     getsockopt              compat_sys_getsockopt
+ 543    x32     io_setup                compat_sys_io_setup
+ 544    x32     io_submit               compat_sys_io_submit
+-545    x32     execveat                compat_sys_execveat
++545    x32     execveat                sys_execveat
+ 546    x32     preadv2                 compat_sys_preadv64v2
+ 547    x32     pwritev2                compat_sys_pwritev64v2
+ 548    x32     process_madvise         compat_sys_process_madvise
+
+       Arnd
