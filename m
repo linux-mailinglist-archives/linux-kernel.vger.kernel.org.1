@@ -2,69 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CBE1FA3F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954CF1FA404
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 01:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgFOXNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 19:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFOXNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 19:13:08 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CD8D2068E;
-        Mon, 15 Jun 2020 23:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592262788;
-        bh=HGJzoC5XExSt4wsgEPUS6ZDs+czaXfcrRPmazD8rgiE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TSVprE2cHcnj3VQS/DYhJcGT/tVAu1KwGLoLZG0+K6bFoqo5kxrPn2ZR0CtyC1ZG1
-         VwEEJLiIfovpjuTT/DXSnK1hdpgl0YFErq/nrn8qaVNarJjqrMdhIb7mIgaZ9Dnhzx
-         KBk9ABBgvakiwxpgZBObfI+bmaBcHHYwNryUiudw=
-Date:   Mon, 15 Jun 2020 18:18:27 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Thomas Winischhofer <thomas@winischhofer.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] usb: sisusb_con: Use array_size() helper in memcpy()
-Message-ID: <20200615231827.GA21348@embeddedor>
+        id S1726739AbgFOXTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 19:19:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35123 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726313AbgFOXTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 19:19:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592263161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I1KNOxcQ0qqYSlRio7jZscN2pXxgFAfVqBfMLcPoOnc=;
+        b=Z5iVu6TRIUUyT0rFptMET+OM13Rm1a8beC+LleKAOpgEx9Mdw5qMyDsJjR0itKW7Kn9GkS
+        ZKxCodbr1TWpIulG5O0D7uSdugTH8V0Zo6Xk5xnQtV4HAyRm8d4BoUBv8JTuhk49VzC723
+        Uv+M5JVmlVTcI4parzdmGgocyB/9Lbk=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-qCTOZNNVNtSASZjvEAUy3A-1; Mon, 15 Jun 2020 19:19:20 -0400
+X-MC-Unique: qCTOZNNVNtSASZjvEAUy3A-1
+Received: by mail-qv1-f70.google.com with SMTP id v1so14220534qvx.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I1KNOxcQ0qqYSlRio7jZscN2pXxgFAfVqBfMLcPoOnc=;
+        b=pGhNPri7a4XgKAU6jusHrJahz6QbL444xjwAVPpb1VW+KKBoHuK+Ie0AxBMd2RsTnp
+         NcTnMBrS7Pk5Xjux13jTCS6oMnyf4QJ6xsUz6TWns0RNigG3Q2BZVOQdS3pVNXtbrgs5
+         EC0cvVZiHE6N+DMUHmnI9HMPUgFp7LUaOE5Db8zHJY7TVvlGjYwiYF4azwG0f+yRW/ct
+         uT0e68mASjkhJ9zqDk0H5Q5/AoY46rM1sqp8F09t4MHTUFCpYmdeCgCSRk0jZZT8btb0
+         5/oez/ImtZFREPDHviTX09xGe5E8gq5fc43o9EF1X6i7p/hhD/4yBnqem/uIWmMjhn9e
+         WJTA==
+X-Gm-Message-State: AOAM532VLyfXBCX1Mddi4/AOcX2ckoD2rGF61IsEshbokxQbSMbesgU+
+        aXeu+M6vmej7NU21kcoJy4MB3KXfayaQmDUGbjIth1N4Lrz2+5+X/sXJbh+eggSFikPM7cDxO2X
+        lk2YjIZCQiGv4OsuHZvZ1+ZUo
+X-Received: by 2002:a37:4753:: with SMTP id u80mr17430222qka.178.1592263159485;
+        Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIWF2yERjbTMsKnmdkICYDe+u35MHII6GwvHr//31ozLgOpPP0ktTYlVsaYcYaq8F5SQOSdQ==
+X-Received: by 2002:a37:4753:: with SMTP id u80mr17430204qka.178.1592263159179;
+        Mon, 15 Jun 2020 16:19:19 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id s15sm14057084qtc.95.2020.06.15.16.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 16:19:18 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 19:19:17 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 02/25] mm: Introduce mm_fault_accounting()
+Message-ID: <20200615231917.GA6307@xz-x1>
+References: <20200615221607.7764-1-peterx@redhat.com>
+ <20200615221607.7764-3-peterx@redhat.com>
+ <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use array_size() helper instead of the open-coded version in memcpy().
-These sorts of multiplication factors need to be wrapped in array_size().
+On Mon, Jun 15, 2020 at 03:32:40PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > Provide this helper for doing memory page fault accounting across archs.  It
+> > can be defined unconditionally because perf_sw_event() is always defined, and
+> > perf_sw_event() will be a no-op if !CONFIG_PERF_EVENTS.
+> 
+> Well, the downside is that now it forces a separate I$ miss and all
+> those extra arguments because it's a out-of-line function and the
+> compiler won't see that they all go away.
+> 
+> Yeah, maybe some day maybe we'll have LTO and these kinds of things
+> will not matter. And maybe they already don't. But it seems kind of
+> sad to basically force non-optimal code generation from this series.
 
-This issue was found with the help of Coccinelle and, audited and fixed
-manually.
+I tried to make it static inline firstly in linux/mm.h, however it'll need to
+have linux/mm.h include linux/perf_event.h which seems to have created a loop
+dependency of headers.  I verified current code will at least generate inlined
+functions too for x86 (no mm_fault_accounting() in "objdump -t vmlinux") with
+gcc10.
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/usb/misc/sisusbvga/sisusb_con.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Another alternative is to make it a macro, it's just that I feel the function
+definition is a bit cleaner.  Any further suggestions welcomed too.
 
-diff --git a/drivers/usb/misc/sisusbvga/sisusb_con.c b/drivers/usb/misc/sisusbvga/sisusb_con.c
-index cd0155310fea..586d6b01c3c4 100644
---- a/drivers/usb/misc/sisusbvga/sisusb_con.c
-+++ b/drivers/usb/misc/sisusbvga/sisusb_con.c
-@@ -1226,7 +1226,7 @@ sisusbcon_font_set(struct vc_data *c, struct console_font *font,
- 		sisusb->font_backup = vmalloc(array_size(charcount, 32));
- 
- 	if (sisusb->font_backup) {
--		memcpy(sisusb->font_backup, font->data, charcount * 32);
-+		memcpy(sisusb->font_backup, font->data, array_size(charcount, 32));
- 		sisusb->font_backup_size = charcount;
- 		sisusb->font_backup_height = font->height;
- 		sisusb->font_backup_512 = (charcount == 512) ? 1 : 0;
+> 
+> Why would you export the symbol, btw? Page fault handling is never a module.
+
+I followed handle_mm_fault() which is exported too, since potentially
+mm_fault_accounting() should always be called in the same context of
+handle_mm_fault().  Or do you prefer me to drop it?
+
+Thanks,
+
 -- 
-2.27.0
+Peter Xu
 
