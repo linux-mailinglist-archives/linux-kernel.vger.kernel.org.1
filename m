@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880EC1F9072
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6AA1F906E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbgFOHt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:49:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40194 "EHLO mx2.suse.de"
+        id S1729002AbgFOHty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:49:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40192 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728889AbgFOHtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728890AbgFOHtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Jun 2020 03:49:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1805BB090;
+        by mx2.suse.de (Postfix) with ESMTP id 4674CB0B8;
         Mon, 15 Jun 2020 07:49:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 33/38] vt_ioctl: move vt_setactivate out of vt_ioctl
-Date:   Mon, 15 Jun 2020 09:49:05 +0200
-Message-Id: <20200615074910.19267-33-jslaby@suse.cz>
+Subject: [PATCH 34/38] vt_ioctl: move vt_reldisp out of vt_ioctl
+Date:   Mon, 15 Jun 2020 09:49:06 +0200
+Message-Id: <20200615074910.19267-34-jslaby@suse.cz>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200615074910.19267-1-jslaby@suse.cz>
 References: <20200615074910.19267-1-jslaby@suse.cz>
@@ -36,104 +36,116 @@ It's too long to be inlined.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/vt/vt_ioctl.c | 74 +++++++++++++++++++++------------------
- 1 file changed, 39 insertions(+), 35 deletions(-)
+ drivers/tty/vt/vt_ioctl.c | 88 ++++++++++++++++++---------------------
+ 1 file changed, 40 insertions(+), 48 deletions(-)
 
 diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index 978c33ad6619..e8bcfcdbedbb 100644
+index e8bcfcdbedbb..cdb7f0370ca9 100644
 --- a/drivers/tty/vt/vt_ioctl.c
 +++ b/drivers/tty/vt/vt_ioctl.c
-@@ -633,6 +633,44 @@ static int vt_io_ioctl(struct vc_data *vc, unsigned int cmd, void __user *up,
+@@ -633,6 +633,42 @@ static int vt_io_ioctl(struct vc_data *vc, unsigned int cmd, void __user *up,
  	return 0;
  }
  
-+static int vt_setactivate(struct vt_setactivate __user *sa)
++static int vt_reldisp(struct vc_data *vc, unsigned int swtch)
 +{
-+	struct vt_setactivate vsa;
-+	struct vc_data *nvc;
-+	int ret;
++	int newvt, ret;
 +
-+	if (copy_from_user(&vsa, sa, sizeof(vsa)))
-+		return -EFAULT;
-+	if (vsa.console == 0 || vsa.console > MAX_NR_CONSOLES)
-+		return -ENXIO;
++	if (vc->vt_mode.mode != VT_PROCESS)
++		return -EINVAL;
 +
-+	vsa.console = array_index_nospec(vsa.console, MAX_NR_CONSOLES + 1);
-+	vsa.console--;
-+	console_lock();
-+	ret = vc_allocate(vsa.console);
-+	if (ret) {
-+		console_unlock();
-+		return ret;
++	/* Switched-to response */
++	if (vc->vt_newvt < 0) {
++		 /* If it's just an ACK, ignore it */
++		return swtch == VT_ACKACQ ? 0 : -EINVAL;
 +	}
 +
-+	/*
-+	 * This is safe providing we don't drop the console sem between
-+	 * vc_allocate and finishing referencing nvc.
-+	 */
-+	nvc = vc_cons[vsa.console].d;
-+	nvc->vt_mode = vsa.mode;
-+	nvc->vt_mode.frsig = 0;
-+	put_pid(nvc->vt_pid);
-+	nvc->vt_pid = get_pid(task_pid(current));
-+	console_unlock();
++	/* Switching-from response */
++	if (swtch == 0) {
++		/* Switch disallowed, so forget we were trying to do it. */
++		vc->vt_newvt = -1;
++		return 0;
++	}
 +
-+	/* Commence switch and lock */
-+	/* Review set_console locks */
-+	set_console(vsa.console);
++	/* The current vt has been released, so complete the switch. */
++	newvt = vc->vt_newvt;
++	vc->vt_newvt = -1;
++	ret = vc_allocate(newvt);
++	if (ret)
++		return ret;
++
++	/*
++	 * When we actually do the console switch, make sure we are atomic with
++	 * respect to other console switches..
++	 */
++	complete_change_console(vc_cons[newvt].d);
 +
 +	return 0;
 +}
 +
- /* deallocate a single console, if possible (leave 0) */
- static int vt_disallocate(unsigned int vc_num)
+ static int vt_setactivate(struct vt_setactivate __user *sa)
  {
-@@ -797,44 +835,10 @@ int vt_ioctl(struct tty_struct *tty,
- 		break;
- 
- 	case VT_SETACTIVATE:
--	{
--		struct vt_setactivate vsa;
--		struct vc_data *nvc;
--
- 		if (!perm)
+ 	struct vt_setactivate vsa;
+@@ -865,55 +901,11 @@ int vt_ioctl(struct tty_struct *tty,
  			return -EPERM;
  
--		if (copy_from_user(&vsa, (struct vt_setactivate __user *)arg,
--					sizeof(struct vt_setactivate)))
--			return -EFAULT;
--		if (vsa.console == 0 || vsa.console > MAX_NR_CONSOLES)
--			return -ENXIO;
--
--		vsa.console = array_index_nospec(vsa.console,
--						 MAX_NR_CONSOLES + 1);
--		vsa.console--;
--		console_lock();
--		ret = vc_allocate(vsa.console);
--		if (ret) {
+ 		console_lock();
+-		if (vc->vt_mode.mode != VT_PROCESS) {
 -			console_unlock();
--			return ret;
+-			return -EINVAL;
 -		}
+-		/*
+-		 * Switching-from response
+-		 */
+-		if (vc->vt_newvt >= 0) {
+-			if (arg == 0)
+-				/*
+-				 * Switch disallowed, so forget we were trying
+-				 * to do it.
+-				 */
+-				vc->vt_newvt = -1;
 -
--		/* This is safe providing we don't drop the
--		   console sem between vc_allocate and
--		   finishing referencing nvc */
--		nvc = vc_cons[vsa.console].d;
--		nvc->vt_mode = vsa.mode;
--		nvc->vt_mode.frsig = 0;
--		put_pid(nvc->vt_pid);
--		nvc->vt_pid = get_pid(task_pid(current));
--		console_unlock();
--
--		/* Commence switch and lock */
--		/* Review set_console locks */
--		set_console(vsa.console);
+-			else {
+-				/*
+-				 * The current vt has been released, so
+-				 * complete the switch.
+-				 */
+-				int newvt;
+-				newvt = vc->vt_newvt;
+-				vc->vt_newvt = -1;
+-				ret = vc_allocate(newvt);
+-				if (ret) {
+-					console_unlock();
+-					return ret;
+-				}
+-				/*
+-				 * When we actually do the console switch,
+-				 * make sure we are atomic with respect to
+-				 * other console switches..
+-				 */
+-				complete_change_console(vc_cons[newvt].d);
+-			}
+-		} else {
+-			/*
+-			 * Switched-to response
+-			 */
+-			/*
+-			 * If it's just an ACK, ignore it
+-			 */
+-			if (arg != VT_ACKACQ) {
+-				console_unlock();
+-				return -EINVAL;
+-			}
+-		}
++		ret = vt_reldisp(vc, arg);
+ 		console_unlock();
 -		break;
--	}
-+		return vt_setactivate(up);
++
++		return ret;
++
  
- 	/*
- 	 * wait until the specified VT has been activated
+ 	 /*
+ 	  * Disallocate memory associated to VT (but leave VT1)
 -- 
 2.27.0
 
