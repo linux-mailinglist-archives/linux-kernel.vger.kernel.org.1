@@ -2,148 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1C1FA0A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7111FA0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 21:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731433AbgFOTm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 15:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S1729995AbgFOTpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 15:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730913AbgFOTmz (ORCPT
+        with ESMTP id S1728773AbgFOTpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:42:55 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A6CC061A0E;
-        Mon, 15 Jun 2020 12:42:54 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id s23so8265516pfh.7;
-        Mon, 15 Jun 2020 12:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0qrQRoXABWjnKwQa7O+onv4TFfIuamL/7UM0/e+lKcY=;
-        b=L2sUgJQOmXLIdpN/acBHO/x2Cs7rcGS5cLssbvpSCPQavY3CLsMPoxVRWpDQ4X3gg2
-         Q6EhXUvFvQYhYYYikWxkiO8jgo9sxSaLKxp0irclj3xWDXwHWzSmnmErDycvzIxS3G0i
-         fKcDmGBbWHU5ZcS45ePpyoZ62Grc589q5VCS5LX8TwDSRLtIrtWycymbEQ0o3/Xb/FP4
-         K/IlsTc96LpXUjzuoz74MUtSgISWwunogcs9Kn7bx5EbyvWj8Dah2flMxF9A0IKyNFOe
-         qylDtRWWQUxDgq9sjf9xcJLZWxo4W1z4ascb3zMs8UXv1cFkP939eIgwwnwwVCaEdeI6
-         WQqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0qrQRoXABWjnKwQa7O+onv4TFfIuamL/7UM0/e+lKcY=;
-        b=X2ny6vDoe+7KIUVmK1lWnDte8x3yD3KPMryMY4HcAzUN6ZdZ1WoQixAW1YFz6CtXju
-         Rkj60ldv0/DAyqz5qcxBLwBqjuVxoPorteYHEgYPoC5ZBYFbUdy/a8hJkjxyU6iNwsPU
-         BRld8FZ4T8a/cJ7GalG5MdhoZ/MJQk1zARI171p2Tmgu7FZZjgQcQG7dnQB+bwwIXngG
-         FTKJQL79XacsEmrqFJ8PqhxuNukq4boGomMxIzATTH2ixRhujCB2lcgnCZkhHM5zoOSp
-         cHnfJvSaqH5+W4R//PnZ/nVQZ5eLO3t37MKNW/bJpAXg+crgLhWEa5sdeuiod9TO/szD
-         VU3w==
-X-Gm-Message-State: AOAM5321NhYxSb4vfi8Diau057WeFlDMRKg7xcoXRe9Wn5VyoD8sX3zq
-        qMz+lxc3pxWGAjqMc6MMGCE=
-X-Google-Smtp-Source: ABdhPJzd8NKZ4V1T8V4Nkdlh9ron23wWPpYk6qMRFJf5t5GVGxrIMoa3t6qMXRy8YkjSV+ietR9EQg==
-X-Received: by 2002:a63:546:: with SMTP id 67mr23612510pgf.364.1592250173912;
-        Mon, 15 Jun 2020 12:42:53 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n65sm14213758pfn.17.2020.06.15.12.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 12:42:53 -0700 (PDT)
-Subject: Re: [PATCH v2] spi: bcm2835: Enable shared interrupt support
-To:     Robin Murphy <robin.murphy@arm.com>, Lukas Wunner <lukas@wunner.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-References: <20200604212819.715-1-f.fainelli@gmail.com>
- <142d48ae-2725-1368-3e11-658449662371@arm.com>
- <20200605132037.GF5413@sirena.org.uk>
- <2e371a32-fb52-03a2-82e4-5733d9f139cc@arm.com>
- <06342e88-e130-ad7a-9f97-94f09156f868@arm.com>
- <d3fe8b56-83ef-8ef0-bb05-11c7cb2419f8@gmail.com>
- <a6f158e3-af51-01d9-331c-4bc8b6847abb@arm.com>
- <20200608114148.4bau4mdcvwgf25ut@wunner.de>
- <3d4fd3f9-9bde-90a8-bef5-9fc97cc9b363@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2e4a6c4b-857f-1000-e7fd-327b0800fb97@gmail.com>
-Date:   Mon, 15 Jun 2020 12:42:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        Mon, 15 Jun 2020 15:45:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732BCC061A0E;
+        Mon, 15 Jun 2020 12:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xBOByS3E0Zys2CPBDIgxUeZbWA4Bggf7qnRRJFZDgbg=; b=ccJZoZAJS7S+exDFb7nwytDFaz
+        jMY9z+wNIHCwcVBo5f6lLYxF4r+7koFDk5eaZG5VVHJhTUPaIlTz6Rox/3u3g8adfDUPxollIE9bk
+        6aKS/j5V2d6yQQAw4RIWYR0kFAGpg2LQmTQwBJp+zg2wj2IqNE3JeYBnzum+14hiJbpkaMw5YVAgO
+        I/oXCCZtVNxEqIanK3xz5UJijXZy4KvEPQTWx4Z139hHwvDrYhpbiQHxNImlMbUKxvQe7wa3pF3Lp
+        VsaDeRDWqTg5m2uDjj2bwMDN10SSt0YG6tSBMjtH2u10GpD4ukK1VZd4Oa+ZT4Be0tPhIIeL2qtmd
+        YutHTJhg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jkv2S-0008J0-KF; Mon, 15 Jun 2020 19:45:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C9CB3028C8;
+        Mon, 15 Jun 2020 21:44:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6724E203D5DB2; Mon, 15 Jun 2020 21:44:58 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 21:44:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Subject: Re: [tip: x86/entry] x86/entry: Treat BUG/WARN as NMI-like entries
+Message-ID: <20200615194458.GL2531@hirez.programming.kicks-ass.net>
+References: <f8fe40e0088749734b4435b554f73eee53dcf7a8.1591932307.git.luto@kernel.org>
+ <159199140855.16989.18012912492179715507.tip-bot2@tip-bot2>
+ <20200615145018.GU2531@hirez.programming.kicks-ass.net>
+ <CALCETrWhbg_61CTo9_T6s1NDFvOgUx7ebSzhXj7O_m8htePwKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <3d4fd3f9-9bde-90a8-bef5-9fc97cc9b363@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWhbg_61CTo9_T6s1NDFvOgUx7ebSzhXj7O_m8htePwKA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 15, 2020 at 10:06:20AM -0700, Andy Lutomirski wrote:
+> On Mon, Jun 15, 2020 at 7:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
+> Hmm.  IMO you're making two changes here, and this is fiddly enough
+> that it might be worth separating them for bisection purposes.
 
-On 6/15/2020 12:09 PM, Robin Murphy wrote:
-> On 2020-06-08 12:41, Lukas Wunner wrote:
->> On Mon, Jun 08, 2020 at 12:11:11PM +0100, Robin Murphy wrote:
->>> And all in code that has at least one obvious inefficiency left on
->>> the table either way.
->>
->> Care to submit a patch to overcome that inefficiency?
-> 
-> I'll have a quick go, but without any way to measure performance impact
-> (or even test for correctness) I don't fancy going too deep based purely
-> on disassembly and ARM11 cycle timings.
-> 
->>> This thread truly epitomises Knuth's "premature optimisation"
->>> quote... ;)
->>
->> The thread came about because it can be determined at compile time
->> whether the interrupt is going to be shared:
-> 
-> ...which is exactly my point - "because it can be" is anything but proof
-> that avoiding a trivial check makes enough measurable difference to
-> justify putting in the effort to do so.
-> 
->> On the BCM2835 (Raspberry Pi 1), CONFIG_ARCH_MULTI_V6 is set and this
->> SoC doesn't have multiple bcm2835-spi instances, so no shared interrupt.
->>
->> The question is how to discern BCM2836/BCM2837 (Raspberry Pi 2/3), which
->> do not have multiple instances, and BCM2711 (Raspberry Pi 4) which does.
-> 
-> Hmm, how much relative importance does that have? On a 700MHz ARM11 it's
-> obviously desirable to spend as little time in the IRQ handler as
-> possible in order to have time left to do anything else, but on the
-> other SoCs even if the IRQ remains permanently asserted it can still
-> only consume 25% of the available CPU capacity, at which point the
-> impact of 2-3 cycles either way at 1GHz+ seems pretty much immeasurable.
-> 
->> The Raspberry Pi Foundation compiles BCM2711 kernels with
->> CONFIG_ARM_LPAE=y,
->> but Florian considered that kludgy as a discriminator and opted for
->> runtime-detection via the compatible string instead.  If you've got
->> a better idea please come forward.
->>
->> Is "optimize shared IRQ support away if IS_ENABLED(CONFIG_ARCH_MULTI_V6),
->> else leave it in" the best we can do?
-> 
-> In all honesty I'm starting to think it seriously might be :)
+Sure, can do.
 
-Or how about this: we slightly re-structure the interrupt handler such
-that all possible interrupt conditions are explicitly handled and
-terminate with a return IRQ_HANDLED, and those which are not, including
-in the case of a "spurious" (because the interrupt was triggered for
-another SPI controller instance), then we finish the function with
-IRQ_NONE. This would not impact the performance for the BCM2835/36/37
-which would still have a single controller/single interrupt line to handle.
--- 
-Florian
+> > ---
+> >
+> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> > index af75109485c26..a47e74923c4c8 100644
+> > --- a/arch/x86/kernel/traps.c
+> > +++ b/arch/x86/kernel/traps.c
+> > @@ -218,21 +218,22 @@ static inline void handle_invalid_op(struct pt_regs *regs)
+> >
+> >  DEFINE_IDTENTRY_RAW(exc_invalid_op)
+> >  {
+> > -       bool rcu_exit;
+> > -
+> >         /*
+> >          * Handle BUG/WARN like NMIs instead of like normal idtentries:
+> >          * if we bugged/warned in a bad RCU context, for example, the last
+> >          * thing we want is to BUG/WARN again in the idtentry code, ad
+> >          * infinitum.
+> >          */
+> > -       if (!user_mode(regs) && is_valid_bugaddr(regs->ip)) {
+> > -               enum bug_trap_type type;
+> > +       if (!user_mode(regs)) {
+> > +               enum bug_trap_type type = BUG_TRAP_TYPE_NONE;
+> >
+> >                 nmi_enter();
+> >                 instrumentation_begin();
+> >                 trace_hardirqs_off_finish();
+> > -               type = report_bug(regs->ip, regs);
+> > +
+> > +               if (is_valid_bugaddr(regs->ip))
+> > +                       type = report_bug(regs->ip, regs);
+> > +
+> 
+> Sigh, this is indeed necessary.
+
+:-)
+
+> >                 if (regs->flags & X86_EFLAGS_IF)
+> >                         trace_hardirqs_on_prepare();
+> >                 instrumentation_end();
+> > @@ -249,13 +250,16 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
+> >                  * was just a normal #UD, we want to continue onward and
+> >                  * crash.
+> >                  */
+> > -       }
+> > +               handle_invalid_op(regs);
+> 
+> But this is really a separate change.  This makes handle_invalid_op()
+> be NMI-like even for non-BUG/WARN kernel #UD entries.  One might argue
+> that this doesn't matter, and that's probably right, but I think it
+> should be its own change with its own justification.  With just my
+> patch, I intentionally call handle_invalid_op() via the normal
+> idtentry_enter_cond_rcu() path.
+
+All !user exceptions really should be NMI-like. If you want to go
+overboard, I suppose you can look at IF and have them behave interrupt
+like when set, but why make things complicated.
+
+Anyway, let me to smaller and proper patches for this.
