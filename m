@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2746A1F8F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDB61F8F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Jun 2020 09:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgFOHYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 03:24:10 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46402 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728368AbgFOHYJ (ORCPT
+        id S1728739AbgFOHZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 03:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgFOHZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 03:24:09 -0400
-X-UUID: 76efff77d7964554ab7924da97e32582-20200615
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qBTmmysW9mKb6RFIDfIeX1e+1dXzsBfF2+qumyv3dGk=;
-        b=o8c0FPcpuBDXKePFQOGk+QKCHcz4v/jOU34m+VhL7h6DVFLkcvEozZ2PeDQj2ZpDet6LHAUl/Bfuw/tfDoOvprX9Qmj+zh6lEAtMCJuQdePNol5ZvD78uT1SeCRnmLNK7n3zW/hOWNBJ0USkzTDU01rY/SevStDsR8aJyg8Z/vg=;
-X-UUID: 76efff77d7964554ab7924da97e32582-20200615
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1253782035; Mon, 15 Jun 2020 15:24:05 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 15 Jun 2020 15:24:03 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Jun 2020 15:24:02 +0800
-Message-ID: <1592205843.25636.82.camel@mtkswgap22>
-Subject: RE: [PATCH v2 2/2] scsi: ufs: Add trace event for UIC commands
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Avri Altman <Avri.Altman@wdc.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>
-Date:   Mon, 15 Jun 2020 15:24:03 +0800
-In-Reply-To: <SN6PR04MB46400CE00A5CAF16CE4D4367FC9C0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200615064753.20935-1-stanley.chu@mediatek.com>
-         <20200615064753.20935-3-stanley.chu@mediatek.com>
-         <SN6PR04MB46400CE00A5CAF16CE4D4367FC9C0@SN6PR04MB4640.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 15 Jun 2020 03:25:42 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10057C05BD1E;
+        Mon, 15 Jun 2020 00:25:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t18so15927266wru.6;
+        Mon, 15 Jun 2020 00:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=nb16NTER+xpaHsVhWoWJPF4ib0zB+sCmpD4uKPsQK90=;
+        b=bmmzQQ/GjlL2wJU6lF6sbg5E28rEUR1tyA0WHuN5wVeFKIeEl6N/tltEu8U8uORn2r
+         TBgQdbVhPpknpuUOER9QYdPJtaH8QxFlt7qh9CCdVo9DejN9s0bv8MQAdXntK0XYbxvP
+         0oDCbBGWp9pxOawH0oSCOqiHGA+oGwcrHNg3ekpvGSO2SnqB7lVKG2uP39qKB3fdo3jS
+         CaP/58DkjQzLdLzVKtydVWsceDQr5FWMmXO4HLC1M/q9htw7zMnz6GvPJesYGZVin690
+         N2rIJ0JlAK6xlrLwkcdaVyw2UxMAJ0lVWlIWjF0564BLMiS21gwUW45BvgJHrF3TNZ+i
+         x6lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nb16NTER+xpaHsVhWoWJPF4ib0zB+sCmpD4uKPsQK90=;
+        b=cVgLF98NOxw1eVrVci9oHNq+XxMYUo9BDPOc9CUGUETaBDaiCQnL48Yc4QWUrFkuSs
+         S3R0yIrAnQjj1FBRJ7r+Hdcfr2x0uMg3pAMxr/v4+zvzGjg4GISTtaXIji+6mk9nLDwa
+         etogHsmDXp+lz3tEpAbqufE0OJrM9iwThuloohL8V0I3MlIK8CeUFTZywD06WaIA0j95
+         +I3MSWePSQrmEXMSNjjl45KGVHoLzTB9wQsjv6WxF1iUu1a71LuBe0Y7o8c7EThZjUvP
+         2UMyyOz0+lObeZSYlzPyjKRAJj0wjorZ5zzV7w/oZ/tBLYOCydAmj+gDi9abPoeFw80E
+         kECQ==
+X-Gm-Message-State: AOAM531evOLHBVN9kn3TRyYoRSLI0Bv2xR+hCsxiGaRSZ4+4D1Xe0cCZ
+        5gLDaMk36EarDs/5xjrQvRXxRvNH
+X-Google-Smtp-Source: ABdhPJye24RWgWJOgiZeU4B2GS5O9/UD8w/lbkYYMMsJKl9O2KsFaKRS02bo9zC1imfhULIKKambsw==
+X-Received: by 2002:a5d:6550:: with SMTP id z16mr29326696wrv.392.1592205939801;
+        Mon, 15 Jun 2020 00:25:39 -0700 (PDT)
+Received: from localhost.localdomain ([5.100.193.151])
+        by smtp.gmail.com with ESMTPSA id b187sm21897402wmd.26.2020.06.15.00.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 00:25:39 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/4] io_uring: cancel all task's requests on exit
+Date:   Mon, 15 Jun 2020 10:24:04 +0300
+Message-Id: <c587cf1bfa2e842a207efd50abdbc7d81e033463.1592205754.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <cover.1592205754.git.asml.silence@gmail.com>
+References: <cover.1592205754.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: CCA224B35034D6AA6CDD7520EB7BDB9D9CA9E88F74510A9DD30EC7E85C9088CB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQXZyaSwNCg0KT24gTW9uLCAyMDIwLTA2LTE1IGF0IDA3OjEzICswMDAwLCBBdnJpIEFsdG1h
-biB3cm90ZToNCj4gPiAgICAgICAgIC8qIFdyaXRlIFVJQyBDbWQgKi8NCj4gPiAgICAgICAgIHVm
-c2hjZF93cml0ZWwoaGJhLCB1aWNfY21kLT5jb21tYW5kICYgQ09NTUFORF9PUENPREVfTUFTSywN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgUkVHX1VJQ19DT01NQU5EKTsNCj4gPiBAQCAtNDgy
-NSwxMSArNDg0NywxNSBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgdWZzaGNkX3VpY19jbWRfY29tcGwo
-c3RydWN0DQo+ID4gdWZzX2hiYSAqaGJhLCB1MzIgaW50cl9zdGF0dXMpDQo+ID4gICAgICAgICAg
-ICAgICAgICAgICAgICAgdWZzaGNkX2dldF91aWNfY21kX3Jlc3VsdChoYmEpOw0KPiA+ICAgICAg
-ICAgICAgICAgICBoYmEtPmFjdGl2ZV91aWNfY21kLT5hcmd1bWVudDMgPQ0KPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIHVmc2hjZF9nZXRfZG1lX2F0dHJfdmFsKGhiYSk7DQo+ID4gKyAgICAg
-ICAgICAgICAgIHVmc2hjZF9hZGRfdWljX2NvbW1hbmRfdHJhY2UoaGJhLCBoYmEtPmFjdGl2ZV91
-aWNfY21kLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICJjb21wbGV0ZSIpOw0KPiA+ICAgICAgICAgICAgICAgICBjb21wbGV0ZSgmaGJhLT5hY3RpdmVf
-dWljX2NtZC0+ZG9uZSk7DQo+ID4gICAgICAgICAgICAgICAgIHJldHZhbCA9IElSUV9IQU5ETEVE
-Ow0KPiA+ICAgICAgICAgfQ0KPiA+IA0KPiA+ICAgICAgICAgaWYgKChpbnRyX3N0YXR1cyAmIFVG
-U0hDRF9VSUNfUFdSX01BU0spICYmIGhiYS0+dWljX2FzeW5jX2RvbmUpIHsNCj4gPiArICAgICAg
-ICAgICAgICAgdWZzaGNkX2FkZF91aWNfY29tbWFuZF90cmFjZShoYmEsIGhiYS0+YWN0aXZlX3Vp
-Y19jbWQsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ImNvbXBsZXRlIik7DQo+ID4gICAgICAgICAgICAgICAgIGNvbXBsZXRlKGhiYS0+dWljX2FzeW5j
-X2RvbmUpOw0KPiA+ICAgICAgICAgICAgICAgICByZXR2YWwgPSBJUlFfSEFORExFRDsNCj4gDQo+
-IA0KPiBXaHkgbm90IGNhbGwgdWZzaGNkX2FkZF91aWNfY29tbWFuZF90cmFjZSBvbmNlIGlmIHJl
-dHZhbCA9PSBJUlFfSEFORExFRD8NCj4gSXMgaXQgdGhhdCB0aGUgZXhhY3QgdGltZXN0YW1wPw0K
-DQpUaGFua3MhIFRoaXMgbWFrZXMgdGhlIGNvZGUgY2xlYW5lci4NCkZpeGVkIGluIHYzLg0KDQpT
-dGFubGV5IENodQ0K
+If a process is going away, io_uring_flush() will cancel only 1
+request with a matching pid. Cancel all of them
+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ fs/io-wq.c    | 14 --------------
+ fs/io-wq.h    |  1 -
+ fs/io_uring.c | 14 ++++++++++++--
+ 3 files changed, 12 insertions(+), 17 deletions(-)
+
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 3b0bd956e539..a44ad3b98886 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -1023,20 +1023,6 @@ enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork)
+ 	return io_wq_cancel_cb(wq, io_wq_io_cb_cancel_data, (void *)cwork, false);
+ }
+ 
+-static bool io_wq_pid_match(struct io_wq_work *work, void *data)
+-{
+-	pid_t pid = (pid_t) (unsigned long) data;
+-
+-	return work->task_pid == pid;
+-}
+-
+-enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid)
+-{
+-	void *data = (void *) (unsigned long) pid;
+-
+-	return io_wq_cancel_cb(wq, io_wq_pid_match, data, false);
+-}
+-
+ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+ {
+ 	int ret = -ENOMEM, node;
+diff --git a/fs/io-wq.h b/fs/io-wq.h
+index 7d5bd431c5e3..b72538fe5afd 100644
+--- a/fs/io-wq.h
++++ b/fs/io-wq.h
+@@ -125,7 +125,6 @@ static inline bool io_wq_is_hashed(struct io_wq_work *work)
+ 
+ void io_wq_cancel_all(struct io_wq *wq);
+ enum io_wq_cancel io_wq_cancel_work(struct io_wq *wq, struct io_wq_work *cwork);
+-enum io_wq_cancel io_wq_cancel_pid(struct io_wq *wq, pid_t pid);
+ 
+ typedef bool (work_cancel_fn)(struct io_wq_work *, void *);
+ 
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7f18c29388d6..8bde42775693 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -7428,6 +7428,13 @@ static void io_uring_cancel_files(struct io_ring_ctx *ctx,
+ 	}
+ }
+ 
++static bool io_cancel_pid_cb(struct io_wq_work *work, void *data)
++{
++	pid_t pid = (pid_t) (unsigned long) data;
++
++	return work->task_pid == pid;
++}
++
+ static int io_uring_flush(struct file *file, void *data)
+ {
+ 	struct io_ring_ctx *ctx = file->private_data;
+@@ -7437,8 +7444,11 @@ static int io_uring_flush(struct file *file, void *data)
+ 	/*
+ 	 * If the task is going away, cancel work it may have pending
+ 	 */
+-	if (fatal_signal_pending(current) || (current->flags & PF_EXITING))
+-		io_wq_cancel_pid(ctx->io_wq, task_pid_vnr(current));
++	if (fatal_signal_pending(current) || (current->flags & PF_EXITING)) {
++		void *data = (void *) (unsigned long)task_pid_vnr(current);
++
++		io_wq_cancel_cb(ctx->io_wq, io_cancel_pid_cb, data, true);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.24.0
 
