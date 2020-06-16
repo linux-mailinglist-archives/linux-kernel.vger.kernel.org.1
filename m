@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6CE1FB8F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6007C1FB768
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732905AbgFPQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:00:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51022 "EHLO mail.kernel.org"
+        id S1731200AbgFPPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731797AbgFPPxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:03 -0400
+        id S1731705AbgFPPpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B212208D5;
-        Tue, 16 Jun 2020 15:53:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68A0221473;
+        Tue, 16 Jun 2020 15:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322783;
-        bh=+z2rEzPrdmHOBWRCBOlmjBsTUF6O4EPLsLOg3tNTKG4=;
+        s=default; t=1592322345;
+        bh=6pBozKCjOHj7AkZeu8lezbDBJZhgI7O2YCTuNLUPR2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUkPXvzgBblakl4kL+3cgjFzMZUrXrNg+sO3kur5Lxy4ySDIjqjgL0PoZwPTFNhBh
-         5iqe6ggppPQo+Qi6GYDCk55tyvqV0rV2ySiUTCB2frnq2dd6aRexMMXSvQg/O8mVxq
-         UOdGOFmW4l2+aphO9j56kfEtTCXF6q6CtDmrpAFY=
+        b=q6BkBYaPbyi23YXUgCGWoQU4axneU20xRpAUpLzKoyKWgH338kzsw0g2vYky55m1y
+         nozusB4i7pRdfh8dm7wfVmzkF7l8NoJxCsetI+mHxqpaaMo0o0gQUxIqnIjlTOWmzw
+         jEnY3xKbUxUL4H3mlqJz4RO22XUvoSA7ZRT/Y7RY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 072/161] ALSA: hda/realtek - add a pintbl quirk for several Lenovo machines
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.7 088/163] PM: runtime: clk: Fix clk_pm_runtime_get() error path
 Date:   Tue, 16 Jun 2020 17:34:22 +0200
-Message-Id: <20200616153109.808486710@linuxfoundation.org>
+Message-Id: <20200616153111.059772720@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 573fcbfd319ccef26caa3700320242accea7fd5c upstream.
+commit 64c7d7ea22d86cacb65d0c097cc447bc0e6d8abd upstream.
 
-A couple of Lenovo ThinkCentre machines all have 2 front mics and they
-use the same codec alc623 and have the same pin config, so add a
-pintbl entry for those machines to apply the fixup
-ALC283_FIXUP_HEADSET_MIC.
+clk_pm_runtime_get() assumes that the PM-runtime usage counter will
+be dropped by pm_runtime_get_sync() on errors, which is not the case,
+so PM-runtime references to devices acquired by the former are leaked
+on errors returned by the latter.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20200608115541.9531-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fix this by modifying clk_pm_runtime_get() to drop the reference if
+pm_runtime_get_sync() returns an error.
+
+Fixes: 9a34b45397e5 clk: Add support for runtime PM
+Cc: 4.15+ <stable@vger.kernel.org> # 4.15+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/clk/clk.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8124,6 +8124,12 @@ static const struct snd_hda_pin_quirk al
- 		ALC225_STANDARD_PINS,
- 		{0x12, 0xb7a60130},
- 		{0x17, 0x90170110}),
-+	SND_HDA_PIN_QUIRK(0x10ec0623, 0x17aa, "Lenovo", ALC283_FIXUP_HEADSET_MIC,
-+		{0x14, 0x01014010},
-+		{0x17, 0x90170120},
-+		{0x18, 0x02a11030},
-+		{0x19, 0x02a1103f},
-+		{0x21, 0x0221101f}),
- 	{}
- };
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -114,7 +114,11 @@ static int clk_pm_runtime_get(struct clk
+ 		return 0;
  
+ 	ret = pm_runtime_get_sync(core->dev);
+-	return ret < 0 ? ret : 0;
++	if (ret < 0) {
++		pm_runtime_put_noidle(core->dev);
++		return ret;
++	}
++	return 0;
+ }
+ 
+ static void clk_pm_runtime_put(struct clk_core *core)
 
 
