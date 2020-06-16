@@ -2,171 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889A61FC097
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303D51FC0A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbgFPVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 17:03:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46305 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728666AbgFPVDU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 17:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592341398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jrv6u/IyjeoGyX7Yz14HGrcrd86qr4fiQrLVf2Tt4MM=;
-        b=RO2ejTt8EL6Sp6wQwtQ6NSI4gYPDYTK7xHNi8UfCeXCPFRF+zJFEEOG8nUTl1Mk+QEtO6p
-        ynSunFbGZn+EWwJYC+MUmefDTJ/AoVbDvIiwXPZ59wBgWPyRb2Th+NXZzfEZeScWrid6mO
-        gUJy8X5SyVX4RhdubudP6l7m2YyZ3qQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-k6v_PQdWMmK81La-sldPLg-1; Tue, 16 Jun 2020 17:03:16 -0400
-X-MC-Unique: k6v_PQdWMmK81La-sldPLg-1
-Received: by mail-qk1-f200.google.com with SMTP id g72so85393qke.18
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:03:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jrv6u/IyjeoGyX7Yz14HGrcrd86qr4fiQrLVf2Tt4MM=;
-        b=otKD1leT9WWqzEX8gG/b7ewOrUc96zCXDzgp9qcjJzd0GKrdJh8hIva2QZBZ/W45o0
-         ygLPa2+Sw3ON4uITYkrYK2b+dvEf3YAkrSh4jUrhFRmVNY9dkI2Dshcn6OmS8IJ7rZtF
-         vMZHPRxUhAhC+bLpqnqOOnhWDcYCVM/fvWMVwkBZrVy8+Llf4X7+FChNFhLBFlNXfXr8
-         cBKrEx0YpG4vTSk7I6NMVXXLPgYz6TAK2bkMSf77MWs4XB6rkEvYFT4gzkf2PWJf2T5Y
-         umFJ393cC9vrDcXoEU9nvMjQRsR0A3/1daVvOPMNMfxBJFPL1oImKJMC4H1liBxvj2ez
-         7mOQ==
-X-Gm-Message-State: AOAM532qblENbddaO0SfpkRhy4/6LQJ3CnlC/kdBEjdJpbFicNnrwsAT
-        aMQg1WL+7qExCv804nDEV4cp6PW2YNvF8P5d2ykcZ80fl6mXFc3HSgn2NICPVVM36aKUZXEsHz0
-        MQsFcHvMrdDaXw68a3mHYEf7Q
-X-Received: by 2002:ac8:6ec5:: with SMTP id f5mr23634386qtv.163.1592341395502;
-        Tue, 16 Jun 2020 14:03:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxF61Dh2xefzBMPBEm2C7AoRpqAxg6bYegNDhmpzkQWpsDpqFwc6dGag1E30rH+tRg9dP4ZMQ==
-X-Received: by 2002:ac8:6ec5:: with SMTP id f5mr23634348qtv.163.1592341395148;
-        Tue, 16 Jun 2020 14:03:15 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id 6sm13935183qkl.26.2020.06.16.14.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 14:03:14 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 17:03:12 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        openrisc@lists.librecores.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/25] mm: Page fault accounting cleanups
-Message-ID: <20200616210312.GF11838@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <CAHk-=wiTjaXHu+uxMi0xCZQOm4KVr0MucECAK=Zm4p4YZZ1XEg@mail.gmail.com>
+        id S1729256AbgFPVFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 17:05:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44392 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbgFPVFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 17:05:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592341502; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IMNNo1BqQ1o0gHuNsl/LI5YBXnEGtDooQJTtyr/egAU=;
+ b=QtXDE+mHR+rWv9Mp43y1WDFBEJJ/QVJ0rhAY96BydOCDVy64EmJEqacm2vaPq+nzGKT6c2UV
+ B9uXsS+mh8jmbN+487LPSdesiq6pEedzGIbcmhj6JaoqwGb7tqT3e85qh0TXRz/u1ok210k2
+ 23Y9PCC3VmbCV6CKu/NBLPW2c94=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5ee933fd117610c7ff2678e6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 21:05:01
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 77EDEC43395; Tue, 16 Jun 2020 21:05:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3197CC433C9;
+        Tue, 16 Jun 2020 21:05:00 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiTjaXHu+uxMi0xCZQOm4KVr0MucECAK=Zm4p4YZZ1XEg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Jun 2020 02:35:00 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, saravanak@google.com, nm@ti.com,
+        bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v6 4/5] cpufreq: qcom: Update the bandwidth levels on
+ frequency change
+In-Reply-To: <20200615172553.GU4525@google.com>
+References: <20200605213332.609-1-sibis@codeaurora.org>
+ <20200605213332.609-5-sibis@codeaurora.org>
+ <20200615172553.GU4525@google.com>
+Message-ID: <e21f85d64d72ec637c10dae93e8323bb@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 11:55:17AM -0700, Linus Torvalds wrote:
-> On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > This series tries to address all of them by introducing mm_fault_accounting()
-> > first, so that we move all the page fault accounting into the common code base,
-> > then call it properly from arch pf handlers just like handle_mm_fault().
-> 
-> Hmm.
-> 
-> So having looked at this a bit more, I'd actually like to go even
-> further, and just get rid of the per-architecture code _entirely_.
-> 
-> Here's a straw-man patch to the generic code - the idea is mostly laid
-> out in the comment that I'm just quoting here directly too:
-> 
->         /*
->          * Do accounting in the common code, to avoid unnecessary
->          * architecture differences or duplicated code.
->          *
->          * We arbitrarily make the rules be:
->          *
->          *  - faults that never even got here (because the address
->          *    wasn't valid). That includes arch_vma_access_permitted()
->          *    failing above.
->          *
->          *    So this is expressly not a "this many hardware page
->          *    faults" counter. Use the hw profiling for that.
->          *
->          *  - incomplete faults (ie RETRY) do not count (see above).
->          *    They will only count once completed.
->          *
->          *  - the fault counts as a "major" fault when the final
->          *    successful fault is VM_FAULT_MAJOR, or if it was a
->          *    retry (which implies that we couldn't handle it
->          *    immediately previously).
->          *
->          *  - if the fault is done for GUP, regs wil be NULL and
->          *    no accounting will be done (but you _could_ pass in
->          *    your own regs and it would be accounted to the thread
->          *    doing the fault, not to the target!)
->          */
-> 
-> the code itself in the patch is
-> 
->  (a) pretty trivial and self-evident
-> 
->  (b) INCOMPLETE
-> 
-> that (b) is worth noting: this patch won't compile on its own. It
-> intentionally leaves all the users without the new 'regs' argument,
-> because you obviously simply need to remove all the code that
-> currently tries to do any accounting.
-> 
-> Comments?
+Hey Matthias,
+Thanks for taking time to review
+the series.
 
-Looks clean to me.  The definition of "major faults" will slightly change even
-for those who has done the "major |= fault & MAJOR" operations before, but at
-least I can't see anything bad about that either...
+On 2020-06-15 22:55, Matthias Kaehlcke wrote:
+> Hi Sibi,
+> 
+> On Sat, Jun 06, 2020 at 03:03:31AM +0530, Sibi Sankar wrote:
+>> Add support to parse optional OPP table attached to the cpu node when
+>> the OPP bandwidth values are populated. This allows for scaling of
+>> DDR/L3 bandwidth levels with frequency change.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>> 
+>> v6:
+>>  * Add global flag to distinguish between voltage update and opp add.
+>>    Use the same flag before trying to scale ddr/l3 bw [Viresh]
+>>  * Use dev_pm_opp_find_freq_ceil to grab all opps [Viresh]
+>>  * Move dev_pm_opp_of_find_icc_paths into probe [Viresh]
+>> 
+>> v5:
+>>  * Use dev_pm_opp_adjust_voltage instead [Viresh]
+>>  * Misc cleanup
+>> 
+>> v4:
+>>  * Split fast switch disable into another patch [Lukasz]
+>> 
+>>  drivers/cpufreq/qcom-cpufreq-hw.c | 82 
+>> ++++++++++++++++++++++++++++++-
+>>  1 file changed, 80 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c 
+>> b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> index fc92a8842e252..8fa6ab6e0e4b6 100644
+>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+>> @@ -6,6 +6,7 @@
+>>  #include <linux/bitfield.h>
+>>  #include <linux/cpufreq.h>
+>>  #include <linux/init.h>
+>> +#include <linux/interconnect.h>
+>>  #include <linux/kernel.h>
+>>  #include <linux/module.h>
+>>  #include <linux/of_address.h>
+>> @@ -30,6 +31,48 @@
+>> 
+>>  static unsigned long cpu_hw_rate, xo_rate;
+>>  static struct platform_device *global_pdev;
+>> +static bool icc_scaling_enabled;
+> 
+> It seem you rely on 'icc_scaling_enabled' to be initialized to 'false'.
+> This works during the first initialization, but not if the 'device' is
+> unbound/rebound. In theory things shouldn't be different in a succesive
 
-To make things easier, we can use the 1st patch to introduce this change,
-however pass regs==NULL at the callers to never trigger this accounting.  Then
-we can still use one patch for each arch to do the final convertions.
+yes it shouldn't but sure I'll set
+it to false along the way.
+
+> initialization, however for robustness the variable should be 
+> explicitly
+> set to 'false' somewhere in the code path (_probe(), _read_lut(), ...).
 
 > 
-> This is a bigger change, but I think it might be worth it to _really_
-> consolidate the major/minor logic.
+>> +static int qcom_cpufreq_set_bw(struct cpufreq_policy *policy,
+>> +			       unsigned long freq_khz)
+>> +{
+>> +	unsigned long freq_hz = freq_khz * 1000;
+>> +	struct dev_pm_opp *opp;
+>> +	struct device *dev;
+>> +	int ret;
+>> +
+>> +	dev = get_cpu_device(policy->cpu);
+>> +	if (!dev)
+>> +		return -ENODEV;
+>> +
+>> +	opp = dev_pm_opp_find_freq_exact(dev, freq_hz, true);
+>> +	if (IS_ERR(opp))
+>> +		return PTR_ERR(opp);
+>> +
+>> +	ret = dev_pm_opp_set_bw(dev, opp);
+>> +	dev_pm_opp_put(opp);
+>> +	return ret;
+>> +}
+>> +
+>> +static int qcom_cpufreq_update_opp(struct device *cpu_dev,
+>> +				   unsigned long freq_khz,
+>> +				   unsigned long volt)
+>> +{
+>> +	unsigned long freq_hz = freq_khz * 1000;
+>> +	int ret;
+>> +
+>> +	/* Skip voltage update if the opp table is not available */
+>> +	if (!icc_scaling_enabled)
+>> +		return dev_pm_opp_add(cpu_dev, freq_hz, volt);
+>> +
+>> +	ret = dev_pm_opp_adjust_voltage(cpu_dev, freq_hz, volt, volt, volt);
+>> +	if (ret) {
+>> +		dev_err(cpu_dev, "Voltage update failed freq=%ld\n", freq_khz);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return dev_pm_opp_enable(cpu_dev, freq_hz);
+>> +}
+>> 
+>>  static int qcom_cpufreq_hw_target_index(struct cpufreq_policy 
+>> *policy,
+>>  					unsigned int index)
+>> @@ -39,6 +82,9 @@ static int qcom_cpufreq_hw_target_index(struct 
+>> cpufreq_policy *policy,
+>> 
+>>  	writel_relaxed(index, perf_state_reg);
+>> 
+>> +	if (icc_scaling_enabled)
+>> +		qcom_cpufreq_set_bw(policy, freq);
+>> +
+>>  	arch_set_freq_scale(policy->related_cpus, freq,
+>>  			    policy->cpuinfo.max_freq);
+>>  	return 0;
+>> @@ -89,11 +135,31 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>>  	u32 data, src, lval, i, core_count, prev_freq = 0, freq;
+>>  	u32 volt;
+>>  	struct cpufreq_frequency_table	*table;
+>> +	struct dev_pm_opp *opp;
+>> +	unsigned long rate;
+>> +	int ret;
+>> 
+>>  	table = kcalloc(LUT_MAX_ENTRIES + 1, sizeof(*table), GFP_KERNEL);
+>>  	if (!table)
+>>  		return -ENOMEM;
+>> 
+>> +	ret = dev_pm_opp_of_add_table(cpu_dev);
+>> +	if (!ret) {
+>> +		/* Disable all opps and cross-validate against LUT */
 > 
-> One detail worth noting: I do wonder if we should put the
-> 
->     perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-> 
-> just in the arch code at the top of the fault handling, and consider
-> it entirely unrelated to the major/minor fault handling. The
-> major/minor faults fundamnetally are about successes. But the plain
-> PERF_COUNT_SW_PAGE_FAULTS could be about things that fail, including
-> things that never even get to this point at all.
-> 
-> I'm not convinced it's useful to have three SW events that are defined
-> to be A=B+C.
+> nit: IIUC the cross-validation doesn't happen in this branch, so the
+> comment is a bit misleading. Maybe change it to "Disable all opps to
+> cross-validate against the LUT {below,later}".
 
-IMHO it's still common to have a "total" statistics in softwares even if each
-of the subsets are accounted separately.  Here it's just a bit special because
-there're only two elements so the addition is so straightforward.  It seems a
-trade-off on whether we'd like to do the accounting of errornous faults, or we
-want to make it cleaner by put them altogether but only successful page faults.
-I slightly preferred the latter due to the fact that I failed to find great
-usefulness out of keeping error fault accountings, but no strong opinions..
+sure will re-word it.
 
-Thanks,
+> 
+>> +		icc_scaling_enabled = true;
+>> +		for (rate = 0; ; rate++) {
+>> +			opp = dev_pm_opp_find_freq_ceil(cpu_dev, &rate);
+>> +			if (IS_ERR(opp))
+>> +				break;
+>> +
+>> +			dev_pm_opp_put(opp);
+>> +			dev_pm_opp_disable(cpu_dev, rate);
+>> +		}
+>> +	} else if (ret != -ENODEV) {
+>> +		dev_err(cpu_dev, "Invalid opp table in device tree\n");
+>> +		return ret;
+>> +	}
+>> +
+>>  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+>>  		data = readl_relaxed(base + REG_FREQ_LUT +
+>>  				      i * LUT_ROW_SIZE);
+>> @@ -112,7 +178,7 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>> 
+>>  		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
+>>  			table[i].frequency = freq;
+>> -			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
+>> +			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
+> 
+> This is the cross-validation mentioned above, right? Shouldn't it 
+> include
+> a check of the return value?
+
+Yes, this is the cross-validation step,
+we adjust the voltage if opp-tables are
+present/added successfully and enable
+them, else we would just do a add opp.
+We don't want to exit early on a single
+opp failure. We will error out a bit
+later if the opp-count ends up to be
+zero.
+
+> 
+>>  			dev_dbg(cpu_dev, "index=%d freq=%d, core_count %d\n", i,
+>>  				freq, core_count);
+>>  		} else if (core_count == LUT_TURBO_IND) {
+>> @@ -133,7 +199,8 @@ static int qcom_cpufreq_hw_read_lut(struct device 
+>> *cpu_dev,
+>>  			if (prev->frequency == CPUFREQ_ENTRY_INVALID) {
+>>  				prev->frequency = prev_freq;
+>>  				prev->flags = CPUFREQ_BOOST_FREQ;
+>> -				dev_pm_opp_add(cpu_dev,	prev_freq * 1000, volt);
+>> +				qcom_cpufreq_update_opp(cpu_dev, prev_freq,
+>> +							volt);
+> 
+> ditto
+> 
+> nit: with the updated max line length it isn't necessary anymore to 
+> break
+> this into multiple lines
+> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/checkpatch.pl?h=v5.8-rc1#n54),
+> though the coding style still has the old limit.
+
+yeah I'll expand it.
 
 -- 
-Peter Xu
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
