@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC101FB8E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA6D1FB6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgFPP7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:59:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
+        id S1730676AbgFPPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732891AbgFPPxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:41 -0400
+        id S1730535AbgFPPlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1311E207C4;
-        Tue, 16 Jun 2020 15:53:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53D90208D5;
+        Tue, 16 Jun 2020 15:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322820;
-        bh=jekqzddmXorLFHyyC5EL7qj8S8lyLz0vDRMB0nadoCg=;
+        s=default; t=1592322064;
+        bh=hZp3Mldm+3jkW42Y6cDhDCLhzps582Vypb3ZdBx/WTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjPwPXyw0dNtlZKqKTKA4ElVkdl8sdPV4tp+5GmEFtYD0YcTfnUWzzgph9Lc9nQ8C
-         MIXvrQ+tiwENeexkVmdei2b5o/iNH9dTiPy51rg43kzVw30Ox0/rPxByYamjTXPphh
-         pfFe4ac+EldnXk46yTOVlwK6p2lE7DYR7gIW5v8M=
+        b=z+5W7LCpbOPbO9nljaFAvYoU+aJObuDO7y8QVjBt43Ygeetr1bDDK+caMTlNtpyOa
+         KfFAdym0O602tIB/nZFssjwf78ZRJ386IaN41fFv5UtvKGjl2suDohkd7SvfaI9Qoc
+         ShK/2ZJsOYO3owG98Ve6vVo3KDw8uSLyiMlG3LDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.6 116/161] ovl: initialize error in ovl_copy_xattr
+        stable@vger.kernel.org,
+        syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com,
+        Barret Rhoden <brho@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.4 122/134] perf: Add cond_resched() to task_function_call()
 Date:   Tue, 16 Jun 2020 17:35:06 +0200
-Message-Id: <20200616153111.882703317@linuxfoundation.org>
+Message-Id: <20200616153106.631067401@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuxuan Shui <yshuiv7@gmail.com>
+From: Barret Rhoden <brho@google.com>
 
-commit 520da69d265a91c6536c63851cbb8a53946974f0 upstream.
+commit 2ed6edd33a214bca02bd2b45e3fc3038a059436b upstream.
 
-In ovl_copy_xattr, if all the xattrs to be copied are overlayfs private
-xattrs, the copy loop will terminate without assigning anything to the
-error variable, thus returning an uninitialized value.
+Under rare circumstances, task_function_call() can repeatedly fail and
+cause a soft lockup.
 
-If ovl_copy_xattr is called from ovl_clear_empty, this uninitialized error
-value is put into a pointer by ERR_PTR(), causing potential invalid memory
-accesses down the line.
+There is a slight race where the process is no longer running on the cpu
+we targeted by the time remote_function() runs.  The code will simply
+try again.  If we are very unlucky, this will continue to fail, until a
+watchdog fires.  This can happen in a heavily loaded, multi-core virtual
+machine.
 
-This commit initialize error with 0. This is the correct value because when
-there's no xattr to copy, because all xattrs are private, ovl_copy_xattr
-should succeed.
-
-This bug is discovered with the help of INIT_STACK_ALL and clang.
-
-Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
-Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
-Fixes: 0956254a2d5b ("ovl: don't copy up opaqueness")
-Cc: stable@vger.kernel.org # v4.8
-Signed-off-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Reported-by: syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com
+Signed-off-by: Barret Rhoden <brho@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414222920.121401-1-brho@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/overlayfs/copy_up.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/events/core.c |   23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -40,7 +40,7 @@ int ovl_copy_xattr(struct dentry *old, s
- {
- 	ssize_t list_size, size, value_size = 0;
- 	char *buf, *name, *value = NULL;
--	int uninitialized_var(error);
-+	int error = 0;
- 	size_t slen;
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -93,11 +93,11 @@ static void remote_function(void *data)
+  * @info:	the function call argument
+  *
+  * Calls the function @func when the task is currently running. This might
+- * be on the current CPU, which just calls the function directly
++ * be on the current CPU, which just calls the function directly.  This will
++ * retry due to any failures in smp_call_function_single(), such as if the
++ * task_cpu() goes offline concurrently.
+  *
+- * returns: @func return value, or
+- *	    -ESRCH  - when the process isn't running
+- *	    -EAGAIN - when the process moved away
++ * returns @func return value or -ESRCH when the process isn't running
+  */
+ static int
+ task_function_call(struct task_struct *p, remote_function_f func, void *info)
+@@ -110,11 +110,16 @@ task_function_call(struct task_struct *p
+ 	};
+ 	int ret;
  
- 	if (!(old->d_inode->i_opflags & IOP_XATTR) ||
+-	do {
+-		ret = smp_call_function_single(task_cpu(p), remote_function, &data, 1);
+-		if (!ret)
+-			ret = data.ret;
+-	} while (ret == -EAGAIN);
++	for (;;) {
++		ret = smp_call_function_single(task_cpu(p), remote_function,
++					       &data, 1);
++		ret = !ret ? data.ret : -EAGAIN;
++
++		if (ret != -EAGAIN)
++			break;
++
++		cond_resched();
++	}
+ 
+ 	return ret;
+ }
 
 
