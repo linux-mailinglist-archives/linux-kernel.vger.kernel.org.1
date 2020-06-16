@@ -2,225 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698B81FB32E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE8A1FB34C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgFPOAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:00:46 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:37397 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729139AbgFPOAm (ORCPT
+        id S1729278AbgFPOC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728908AbgFPOCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:00:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592316042; x=1623852042;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xXlRuWDsgHzsC/cK9WaU+YzlpcD2wIPLoPF5OvjRa5Y=;
-  b=rwPO/s52fm32nCrgN/xl1n5gnb1DFierB2+JxDQBOFnQ1kl9HfNVrL66
-   v9l7bcCVK0W4MYLPfbDsxAueGNfs79UhqkKTtui6FOfR2tw8BoGXuhr2k
-   DEXjG+MGMhDGFjH+KaCYMXDACi2FU10b4VkCPopQKwnkIap4keRwReO2e
-   /3wBNBi20WWGRCWBmdXAfCEY7ytPI64Ia9GSibHDJ+IYRJDK0+7HX28hU
-   M0qP6kAsQwtotTcRycKOqNEgxgDBIXHt4n6EqU89GmEfxKkJAaD9fSZwi
-   gg39mfZ6ZBvvcvWIRlENpzufetdsQJUP0Exswn40Bc1om25H3WWge21Uc
-   g==;
-IronPort-SDR: uY6g/8+zHQx2OtaDYvTdpzDMcDYqcyFmfGRLTYLmbrghuptB1K/p3lOIexnQ7kgGtHeK7o+YVm
- IpT05gLi4DDdBvo1e285JX5oOauyxpYE59u2E7mLXGVHZgz+dgB8UvSSAaCWlub+TLP8neAuWY
- auOxweCzt+zq33PkKGYJa4dm8mjoD04WSKaW96jAcRIBriLr4kFqav5LKx5CwCOwPcS8GIAgkG
- PHVLdmG5fL61DrZ+o2F+9GVmmKYM/JpV+FeNwV/QtkH/kzK162fGhxtbO/AAhKL3cINj8aocx5
- rpU=
-X-IronPort-AV: E=Sophos;i="5.73,518,1583218800"; 
-   d="scan'208";a="15973195"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Jun 2020 07:00:40 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 16 Jun 2020 07:00:40 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 16 Jun 2020 07:00:34 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v3 3/3] arm64: dts: sparx5: Add Sparx5 eMMC support
-Date:   Tue, 16 Jun 2020 16:00:27 +0200
-Message-ID: <20200616140027.4949-4-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616140027.4949-1-lars.povlsen@microchip.com>
-References: <20200616140027.4949-1-lars.povlsen@microchip.com>
+        Tue, 16 Jun 2020 10:02:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8B1C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qo9CnAT+aab0Ut3f7Yuy5n9QdYXS6e410dJb6BVWkRI=; b=Xums47GEWXlRQz7J1HKYxW9gMr
+        JD0TMHDcMhQ8xkqodcrWJFLIQd5swU5qrm/olpW54z3c3jZXeCzb03CYU1OzCW/gPla8Dui8ZQxLd
+        n3flGqm0V+23+DraWxkS6YK/kfUgiJ+BHszJqzJK/lSlL7JvVGprakhRvXTvUA31LaUcBExJR1lA6
+        4gqKweGxBGnoey+ksrWp0GifwLUzSYDUTaddEMsOb9l2HvPjk6UubqlgBJc73xKbG694LiWav9uHY
+        c/2Eq9hTzgS9T2eGm5ztDHu6jRtBrpOvFB6P52AHlZOw24SwWiw+bXPSGI0L7rBTq4d/CaktbIjRN
+        UUMHW0kQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlCA4-0003JY-UF; Tue, 16 Jun 2020 14:02:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E110630018A;
+        Tue, 16 Jun 2020 16:01:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CD7F22038E4EB; Tue, 16 Jun 2020 16:01:58 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 16:01:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Lichao Liu <liulichao@loongson.cn>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/rt: Don't active rt throtting when no running cfs
+ task
+Message-ID: <20200616140158.GY2531@hirez.programming.kicks-ass.net>
+References: <20200616123729.153430-1-liulichao@loongson.cn>
+ <20200616095027.1a2048d0@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616095027.1a2048d0@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds eMMC support to the applicable Sparx5 board configuration
-files.
+On Tue, Jun 16, 2020 at 09:50:27AM -0400, Steven Rostedt wrote:
+> On Tue, 16 Jun 2020 20:37:29 +0800
+> Lichao Liu <liulichao@loongson.cn> wrote:
+> 
+> > Active rt throtting will dequeue rt_rq from rq at least 50ms,
+> > When there is no running cfs task, do we still active it?
+> > 
+> 
+> This is something I would like to have.
+> 
+> Peter, what's your thought on this?
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     | 24 +++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      | 23 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb134_emmc.dts | 23 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb135_emmc.dts | 23 ++++++++++++++++++
- 4 files changed, 93 insertions(+)
+I'd love to just delete all of this.. that said, I'm not sure this
+change makes sense, because it doesn't deal sanely with the case where
+the task will appear right after we did this.
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 84bca999420ef..c9dbd1a8b22b6 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/clock/microchip,sparx5.h>
- 
- / {
- 	compatible = "microchip,sparx5";
-@@ -162,6 +163,20 @@ timer1: timer@600105000 {
- 			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		sdhci0: sdhci@600800000 {
-+			compatible = "microchip,dw-sparx5-sdhci";
-+			status = "disabled";
-+			reg = <0x6 0x00800000 0x1000>;
-+			pinctrl-0 = <&emmc_pins>;
-+			pinctrl-names = "default";
-+			clocks = <&clks CLK_ID_AUX1>;
-+			clock-names = "core";
-+			assigned-clocks = <&clks CLK_ID_AUX1>;
-+			assigned-clock-rates = <800000000>;
-+			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+			bus-width = <8>;
-+		};
-+
- 		gpio: pinctrl@6110101e0 {
- 			compatible = "microchip,sparx5-pinctrl";
- 			reg = <0x6 0x110101e0 0x90>, <0x6 0x10508010 0x100>;
-@@ -191,6 +206,15 @@ i2c2_pins: i2c2-pins {
- 				pins = "GPIO_28", "GPIO_29";
- 				function = "twi2";
- 			};
-+
-+			emmc_pins: emmc-pins {
-+				pins = "GPIO_34", "GPIO_35", "GPIO_36",
-+					"GPIO_37", "GPIO_38", "GPIO_39",
-+					"GPIO_40", "GPIO_41", "GPIO_42",
-+					"GPIO_43", "GPIO_44", "GPIO_45",
-+					"GPIO_46", "GPIO_47";
-+				function = "emmc";
-+			};
- 		};
- 
- 		i2c0: i2c@600101000 {
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index 91ee5b6cfc37a..573309fe45823 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -16,6 +16,29 @@ memory@0 {
- 	};
- };
- 
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	bus-width = <8>;
-+	non-removable;
-+	pinctrl-0 = <&emmc_pins>;
-+	max-frequency = <8000000>;
-+	microchip,clock-delay = <10>;
-+};
-+
- &i2c1 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-index 10081a66961bb..bbb9852c1f151 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>;
-+	non-removable;
-+	max-frequency = <52000000>;
-+	bus-width = <8>;
-+	microchip,clock-delay = <10>;
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-index 741f0e12260e5..f82266fe2ad49 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	emmc_pins: emmc-pins {
-+		/* NB: No "GPIO_35", "GPIO_36", "GPIO_37"
-+		 * (N/A: CARD_nDETECT, CARD_WP, CARD_LED)
-+		 */
-+		pins = "GPIO_34", "GPIO_38", "GPIO_39",
-+			"GPIO_40", "GPIO_41", "GPIO_42",
-+			"GPIO_43", "GPIO_44", "GPIO_45",
-+			"GPIO_46", "GPIO_47";
-+		drive-strength = <3>;
-+		function = "emmc";
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>;
-+	non-removable;
-+	max-frequency = <52000000>;
-+	bus-width = <8>;
-+	microchip,clock-delay = <10>;
-+};
--- 
-2.27.0
-
+The right thing to do is that fair deadline server thing.
