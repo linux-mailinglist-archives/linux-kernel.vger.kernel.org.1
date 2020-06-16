@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BEA1FB075
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196931FB09B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgFPMWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S1728743AbgFPMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728991AbgFPMWK (ORCPT
+        with ESMTP id S1725901AbgFPMYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:22:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A171C08C5C5;
-        Tue, 16 Jun 2020 05:22:10 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jlAbO-0004ln-4u; Tue, 16 Jun 2020 14:22:06 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3F8531C07B4;
-        Tue, 16 Jun 2020 14:21:56 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 12:21:56 -0000
-From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/idle,stop: Remove .get_rr_interval from sched_class
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200603080304.16548-4-dietmar.eggemann@arm.com>
-References: <20200603080304.16548-4-dietmar.eggemann@arm.com>
+        Tue, 16 Jun 2020 08:24:48 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACEFC08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:24:47 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id i1so4747741vkp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=iTW4NrGfh0PDdjhRgJzlTzwDB7I200l97XzsQrj8pClLbC973AOYMs+UgrDQBnmQHn
+         sbVNP0m+RsXTBn5vGi+Ym3PGfgn/NKCAD3c3hTQn/jG32ti9GUeXEIC4HGlX5rBV8evH
+         PkZyYSPSPFa0K5MQTfqref6nYfrq01ZzxeJlyRmG3swsZAgNWpXYYrEeVzLb+d7n6r27
+         2C+PW5k+eYvEbw85FmH6aTZ13OJV26qXGoP7Vb+nLLKd0EdSACzT9anGbrYaVz9cV2Tx
+         9bdS7WAdpj2T4ZWCr4qmvbfaZ5FvIgU1upx2IDvh/a9IsbPzSAiGK5WUUYBakuZq0HiK
+         QGfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=L3E9RSdeZJUdl68x+LVbOH+WoBSm2wJbQ0rpwTgABJwk6stLimKOrJYxcZwNKitI/U
+         jjENnl4+ObqVx0oTbRl2evkcYHOC9bxO+sg68+YZsULApKBTcUVsUg1rwvfPJU8F3ghv
+         7zR/HDv66MyvgvfbTMLRoXilIUkA1OD4LxroWsUCpTFQgnI4Hrs2Lio+NBP+5XkWlLGu
+         O26V1QkmXToyCqGTSyloGQvE1h7izKKOCt2rdjHWxEQNBuozZFBJd3Xhy5TDgO946fBz
+         WF10wfNtuOylTcPEvSVqxf62EnlhXtIJ8bgnqoO/Xuo0mRDX7so64UXMrHZVEI4VgaKl
+         Rwug==
+X-Gm-Message-State: AOAM532EpYpCI/OkZyN3k5eHOIqjocOFccHhKnLI96jvM7mN4IM0LISd
+        xq6pUkuruTEo7mjUJfN8tpZRGcT6XSDqNarZ2mk=
+X-Google-Smtp-Source: ABdhPJyerXcvP+ggjhPvcEHsfGMG/N9M3k2poNZRxE20pvCN29MA9NMfcAgHoxYBIcG69v1P7wnYH6w1IVNh1zNhYZ8=
+X-Received: by 2002:a1f:1696:: with SMTP id 144mr1280787vkw.84.1592310286191;
+ Tue, 16 Jun 2020 05:24:46 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159231011604.16989.9736333462235066498.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Received: by 2002:a9f:240c:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 05:24:45
+ -0700 (PDT)
+Reply-To: idrisomar259@gmail.com
+From:   idris omar <revpreciousugwu@gmail.com>
+Date:   Tue, 16 Jun 2020 05:24:45 -0700
+Message-ID: <CAKzv419XuG8a2-LfC=w_q8=3Nk4Q0xZpK3m-_ExCrt+Snb-KZg@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+-- 
+Sir / Madam,
 
-Commit-ID:     e3e76a6a04114ec95b0969cd026e8904c67b431b
-Gitweb:        https://git.kernel.org/tip/e3e76a6a04114ec95b0969cd026e8904c67b431b
-Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
-AuthorDate:    Wed, 03 Jun 2020 10:03:03 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 15 Jun 2020 14:10:01 +02:00
+Hi Friend I am the accountant and auditing manager of the
+International Finance Bank Plc bf I want to transfer an abandoned sum
+of 10.5 millions USD  to your account.50% will be for you. No risk
+involved.
 
-sched/idle,stop: Remove .get_rr_interval from sched_class
+Contact me for more details.
 
-The idle task and stop task sched_classes return 0 in this function.
+Kindly reply me back to my alternative email address (
+idrisomar259@gmail.com  )
 
-The single call site in sched_rr_get_interval() calls
-p->sched_class->get_rr_interval() only conditional in case it is
-defined. Otherwise time_slice=0 will be used.
+Thanks,
 
-The deadline sched class does not define it. Commit a57beec5d427
-("sched: Make sched_class::get_rr_interval() optional") introduced
-the default time-slice=0 for sched classes which do not provide this
-function.
-
-So .get_rr_interval for idle and stop sched_class can be removed to
-shrink the code a little.
-
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200603080304.16548-4-dietmar.eggemann@arm.com
----
- kernel/sched/idle.c      | 7 -------
- kernel/sched/stop_task.c | 8 --------
- 2 files changed, 15 deletions(-)
-
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 05deb81..8d75ca2 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -446,11 +446,6 @@ prio_changed_idle(struct rq *rq, struct task_struct *p, int oldprio)
- 	BUG();
- }
- 
--static unsigned int get_rr_interval_idle(struct rq *rq, struct task_struct *task)
--{
--	return 0;
--}
--
- static void update_curr_idle(struct rq *rq)
- {
- }
-@@ -479,8 +474,6 @@ const struct sched_class idle_sched_class = {
- 
- 	.task_tick		= task_tick_idle,
- 
--	.get_rr_interval	= get_rr_interval_idle,
--
- 	.prio_changed		= prio_changed_idle,
- 	.switched_to		= switched_to_idle,
- 	.update_curr		= update_curr_idle,
-diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
-index 4c9e997..3e50a6a 100644
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -102,12 +102,6 @@ prio_changed_stop(struct rq *rq, struct task_struct *p, int oldprio)
- 	BUG(); /* how!?, what priority? */
- }
- 
--static unsigned int
--get_rr_interval_stop(struct rq *rq, struct task_struct *task)
--{
--	return 0;
--}
--
- static void update_curr_stop(struct rq *rq)
- {
- }
-@@ -136,8 +130,6 @@ const struct sched_class stop_sched_class = {
- 
- 	.task_tick		= task_tick_stop,
- 
--	.get_rr_interval	= get_rr_interval_stop,
--
- 	.prio_changed		= prio_changed_stop,
- 	.switched_to		= switched_to_stop,
- 	.update_curr		= update_curr_stop,
+Mr Idris Omar
