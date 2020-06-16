@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3240D1FB4F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B219C1FB4FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729280AbgFPOtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        id S1729346AbgFPOvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729005AbgFPOtQ (ORCPT
+        with ESMTP id S1726341AbgFPOvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:49:16 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9BC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:49:16 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k22so15632425qtm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:49:16 -0700 (PDT)
+        Tue, 16 Jun 2020 10:51:16 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2E8C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:51:13 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c185so19381061qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:51:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CUmJhIGetdIkAi0i6BuHTYP3lWjyyl3D6ViYyQf5Uj4=;
-        b=T9PcuYYuyqV5DBP+Yu+qBoWWvsosy7WrOz2UZz9Zck/OOGvvo09KjfNXgQ8YmHT6H/
-         eCU+bRWnVVWYfLKI7uTYZiiZiXisshQs0IffavOpsOtanvduJmuOVdtdDjHdJrJJinQx
-         2mEgqZU4POO6ZaqSAI10q5E8bC3FnURn+gPrsAVIvA1MkX5MM8+9nYFteJDBnWFeFHyc
-         bxboleBlmbyJU+PQ+eusbLckfBFxu805iZ3sEmSEXR/4GSuUjIuTlmlZJsJa2lUeP6+j
-         X7xL1UfBG3hpLiuxOMQ//BR3YfrMN8mxysgjo9hY6Xx8mbesxNOrj34Oyczf+uhFQv7y
-         2ibA==
+        bh=WFLTgGJ5LOxQenKARdYfCrtk1t6VepdL6VzhUDlajMc=;
+        b=Kts+k6euY5oLtf5tmwXRNFGUhGHWkdA7OewYzlqCFmqsO+oP0gOkY9veTjBzlWEVYl
+         UORvYhTCJc2coOGYzHiOfO209HA2dXWViqq2uItkXW9GiBStJbWAuyqNnAzsi87QFenO
+         tVsl5e/8qY72GrV51aSGSGpp84hSGPA9tqRgdswktLogXcOb/mrl/DivaUgypINt6eJC
+         Pqh79vjuddjzhus+huIbYxGlzNM3acc/mdoRsswn+fU0cHTCXQ0FzIsresCNiQRRfdo/
+         e1LGh8lQMxzk4O9P8KReJAj6xsnscr8TBP1awTvFnHlZY5Y6XPgzfsP32D7wG+lIbvnw
+         kxfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CUmJhIGetdIkAi0i6BuHTYP3lWjyyl3D6ViYyQf5Uj4=;
-        b=YfoYmx1U2NVh75blwKR9fCmXzojyledZd/A5JuluUYFHYotIOOQMyLxDjomCprQpn9
-         bpC5wTN7XjYe9mPuirfm+sB1Asw+vWKOoS29rYx31TmAuHKNItcITZ3S9cacrRuxakOh
-         SWtxic8laUtpdg8NyY71J0ML6K5Ig5fwV3DzDCCBgi8gPOzwXy9Ww1eIY/i5YtQy9S0E
-         pGeU2cV/JRZHhirhQ4UeS6sXU1g1q7b2M3ou53VPTX2V3qrh1YS0vZYSMuHQVO7NUE/b
-         /TQ9BEeco+zTmbGcxtDwwCwpllAh3XJeMhmFNnmt3gu8OVHCM4R3/3FKi+2zYbdKfaR1
-         H2YQ==
-X-Gm-Message-State: AOAM531pRietoz17eMOtXleYKBu1U8vtxSvks4jEQkmx1tiqucY+sKS6
-        OA9aKl9n51a1fwaO18GAc8ljIJ8DXUQ=
-X-Google-Smtp-Source: ABdhPJwj4PjxoL2t78uKg/myLcWJrkgfT9al4jQhoq8LRWuMH2RgCLfzDv9x9ep3f8Ovj0ZUX3FCVA==
-X-Received: by 2002:ac8:4281:: with SMTP id o1mr20843587qtl.322.1592318954708;
-        Tue, 16 Jun 2020 07:49:14 -0700 (PDT)
+        bh=WFLTgGJ5LOxQenKARdYfCrtk1t6VepdL6VzhUDlajMc=;
+        b=YagMvvKJwgZZ+YDkiKPRmbGHZpJNNvN3hO+PvTy4BXGSvqdk5UXNDCDAkw8y+AExXO
+         mZt6crl3xpn/8Lq4d2VXSPyXbh0bwsB4Oij1glmmYlZ/dtZCSiEk6ujKjBMVowSqTTWW
+         fg8jlrwua0GpHuB9iQyk6UIb7jGrf9i4IkTHEnMsk0Q03mRLu6itztD1n6NxtLSnrxA2
+         6pcvpppFvhdoWCiWcChthjMOGj0z+i2LHIO7+4+2HuvTmfPGdHcjmKSI8iJ+HNnayoiA
+         IVYJF5TzMMmNB4yQ8NfqeBB4Ja+jfxgQO8xByJxf4/txd+OOJF4RFzSyzj/Q9qbVH3Cj
+         QmGA==
+X-Gm-Message-State: AOAM533gC7CiITs8kp+Nnv4Jk1Aj/Gz7d0Wx2RMPdzf2TEtb3ZfQjRWj
+        Azu7M+gSYNNvCMpY7xm5efP8SQ==
+X-Google-Smtp-Source: ABdhPJxoUuTjR/HnDD2RiYFZgrfAUGyaCqz8mMZepgrb6ol93ORKtTjYRCMvmCGQ/4segqqcHUSyrA==
+X-Received: by 2002:a05:620a:1114:: with SMTP id o20mr21147059qkk.120.1592319073084;
+        Tue, 16 Jun 2020 07:51:13 -0700 (PDT)
 Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id c58sm16783501qtd.27.2020.06.16.07.49.13
+        by smtp.gmail.com with ESMTPSA id z19sm16357992qtz.81.2020.06.16.07.51.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 07:49:14 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 10:48:36 -0400
+        Tue, 16 Jun 2020 07:51:12 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 10:50:35 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     js1304@gmail.com
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
@@ -56,30 +56,26 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Minchan Kim <minchan.kim@gmail.com>,
         Michal Hocko <mhocko@suse.com>, kernel-team@lge.com,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH for v5.8 2/3] mm/swap: fix for "mm: workingset: age
- nonresident information alongside anonymous pages"
-Message-ID: <20200616144836.GB616830@cmpxchg.org>
+Subject: Re: [PATCH for v5.8 3/3] mm/memory: fix IO cost for anonymous page
+Message-ID: <20200616145035.GC616830@cmpxchg.org>
 References: <1592288204-27734-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592288204-27734-3-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592288204-27734-4-git-send-email-iamjoonsoo.kim@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592288204-27734-3-git-send-email-iamjoonsoo.kim@lge.com>
+In-Reply-To: <1592288204-27734-4-git-send-email-iamjoonsoo.kim@lge.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 03:16:43PM +0900, js1304@gmail.com wrote:
+On Tue, Jun 16, 2020 at 03:16:44PM +0900, js1304@gmail.com wrote:
 > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > 
-> Non-file-lru page could also be activated in mark_page_accessed()
-> and we need to count this activation for nonresident_age.
-
-Good catch. Shmem pages use mark_page_accessed().
-
-> Note that it's better for this patch to be squashed into the patch
-> "mm: workingset: age nonresident information alongside anonymous pages".
+> With synchronous IO swap device, swap-in is directly handled in fault
+> code. Since IO cost notation isn't added there, with synchronous IO swap
+> device, LRU balancing could be wrongly biased. Fix it to count it
+> in fault code.
 > 
 > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
