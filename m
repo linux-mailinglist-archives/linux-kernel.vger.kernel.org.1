@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085421FBA9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D1B1FB94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731197AbgFPPnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
+        id S1732817AbgFPQCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:02:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731153AbgFPPno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:44 -0400
+        id S1732624AbgFPPus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:50:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E643208D5;
-        Tue, 16 Jun 2020 15:43:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B617221527;
+        Tue, 16 Jun 2020 15:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322223;
-        bh=xxAjpRjVLlI8NKW4e1lJlk10UMBdmbGEv5G6zi0b0B8=;
+        s=default; t=1592322648;
+        bh=haZufumXIivprfu8VoTRQ4JkgkKWPzkC5c1Tw18T4LE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tn8UR3Vr6w66lUdOkCuSRvLA4vZ5z2XfQHSYj3MbQXhuErZCNuYPYXwOCuW7Jj/0Q
-         pQw0v3IK71Ey0+cIg97K/H/+avMlve5457UhEkU/BlBtJusTSQwsTz4qIp8u6CE9HX
-         HXfvZp4Ko+hvjREsX/dKf3zb+4oHjbXWZc0A8bks=
+        b=a19DOTF0j/BOOmK/GE22x34y8Tv8ql+s7g7/fJ2R7ZBNRl27JwkDqhGRE18hlrK6z
+         i4R4ZpkQGkhnST7GwcgfYv48fWg4qEpHKZCBcq8vXhgUW/IIbK3+0Lpv10Afghc2pj
+         yqGsCuqBVvejOY59Aix7Sw4PgvoTL4MUebVJ/YVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Franciosi <felipe@nutanix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.7 048/163] KVM: x86: respect singlestep when emulating instruction
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 032/161] spi: dw: Fix native CS being unset
 Date:   Tue, 16 Jun 2020 17:33:42 +0200
-Message-Id: <20200616153109.154140150@linuxfoundation.org>
+Message-Id: <20200616153107.918956461@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +48,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felipe Franciosi <felipe@nutanix.com>
+[ Upstream commit 9aea644ca17b94f82ad7fa767cbc4509642f4420 ]
 
-commit 384dea1c9183880be183cfaae161d99aafd16df6 upstream.
+Commit 6e0a32d6f376 ("spi: dw: Fix default polarity of native
+chipselect") attempted to fix the problem when GPIO active-high
+chip-select is utilized to communicate with some SPI slave. It fixed
+the problem, but broke the normal native CS support. At the same time
+the reversion commit ada9e3fcc175 ("spi: dw: Correct handling of native
+chipselect") didn't solve the problem either, since it just inverted
+the set_cs() polarity perception without taking into account that
+CS-high might be applicable. Here is what is done to finally fix the
+problem.
 
-When userspace configures KVM_GUESTDBG_SINGLESTEP, KVM will manage the
-presence of X86_EFLAGS_TF via kvm_set/get_rflags on vcpus. The actual
-rflag bit is therefore hidden from callers.
+DW SPI controller demands any native CS being set in order to proceed
+with data transfer. So in order to activate the SPI communications we
+must set any bit in the Slave Select DW SPI controller register no
+matter whether the platform requests the GPIO- or native CS. Preferably
+it should be the bit corresponding to the SPI slave CS number. But
+currently the dw_spi_set_cs() method activates the chip-select
+only if the second argument is false. Since the second argument of the
+set_cs callback is expected to be a boolean with "is-high" semantics
+(actual chip-select pin state value), the bit in the DW SPI Slave
+Select register will be set only if SPI core requests the driver
+to set the CS in the low state. So this will work for active-low
+GPIO-based CS case, and won't work for active-high CS setting
+the bit when SPI core actually needs to deactivate the CS.
 
-That includes init_emulate_ctxt() which uses the value returned from
-kvm_get_flags() to set ctxt->tf. As a result, x86_emulate_instruction()
-will skip a single step, leaving singlestep_rip stale and not returning
-to userspace.
+This commit fixes the problem for all described cases. So no matter
+whether an SPI slave needs GPIO- or native-based CS with active-high
+or low signal the corresponding bit will be set in SER.
 
-This resolves the issue by observing the vcpu guest_debug configuration
-alongside ctxt->tf in x86_emulate_instruction(), performing the single
-step if set.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Fixes: ada9e3fcc175 ("spi: dw: Correct handling of native chipselect")
+Fixes: 6e0a32d6f376 ("spi: dw: Fix default polarity of native chipselect")
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Felipe Franciosi <felipe@nutanix.com>
-Message-Id: <20200519081048.8204-1-felipe@nutanix.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200515104758.6934-5-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-dw.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -6923,7 +6923,7 @@ restart:
- 		if (!ctxt->have_exception ||
- 		    exception_type(ctxt->exception.vector) == EXCPT_TRAP) {
- 			kvm_rip_write(vcpu, ctxt->eip);
--			if (r && ctxt->tf)
-+			if (r && (ctxt->tf || (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)))
- 				r = kvm_vcpu_do_singlestep(vcpu);
- 			if (kvm_x86_ops.update_emulated_instruction)
- 				kvm_x86_ops.update_emulated_instruction(vcpu);
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index 31e3f866d11a..6c2d8df50507 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -128,12 +128,20 @@ void dw_spi_set_cs(struct spi_device *spi, bool enable)
+ {
+ 	struct dw_spi *dws = spi_controller_get_devdata(spi->controller);
+ 	struct chip_data *chip = spi_get_ctldata(spi);
++	bool cs_high = !!(spi->mode & SPI_CS_HIGH);
+ 
+ 	/* Chip select logic is inverted from spi_set_cs() */
+ 	if (chip && chip->cs_control)
+ 		chip->cs_control(!enable);
+ 
+-	if (!enable)
++	/*
++	 * DW SPI controller demands any native CS being set in order to
++	 * proceed with data transfer. So in order to activate the SPI
++	 * communications we must set a corresponding bit in the Slave
++	 * Enable register no matter whether the SPI core is configured to
++	 * support active-high or active-low CS level.
++	 */
++	if (cs_high == enable)
+ 		dw_writel(dws, DW_SPI_SER, BIT(spi->chip_select));
+ 	else if (dws->cs_override)
+ 		dw_writel(dws, DW_SPI_SER, 0);
+-- 
+2.25.1
+
 
 
