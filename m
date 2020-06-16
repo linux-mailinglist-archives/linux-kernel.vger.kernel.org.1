@@ -2,121 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6551FB016
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4362E1FB026
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgFPMSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728798AbgFPMRh (ORCPT
+        id S1728994AbgFPMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:18:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52324 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgFPMSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:17:37 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210AC08C5C3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:37 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b7so1143850pju.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MpmBavrAY+NcMSTsAQ48p6wNUiPoSL0d6miZz8y14IE=;
-        b=hwME/2Hm3k/tQH8+cNITC/0sv5z1s66dwLdL9ZBejhoO8dCZP8qWsUz1a7Ty6ig6/k
-         ZwMDrtDor3C/9rmei6eOmJ03z7IO5+ZmY0lJ4C91pk38otK0rMkONaIUlhBecx/xZp7H
-         a8Q/lGNgicWPz2MztwMBSKUoMI9KIuvaIMr8s=
+        Tue, 16 Jun 2020 08:18:16 -0400
+Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1jlAVr-0001WZ-My
+        for linux-kernel@vger.kernel.org; Tue, 16 Jun 2020 12:16:23 +0000
+Received: by mail-ej1-f69.google.com with SMTP id s4so9334509eju.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:16:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MpmBavrAY+NcMSTsAQ48p6wNUiPoSL0d6miZz8y14IE=;
-        b=DVS7FfJ3kRQJSLNQtR2+lqPXkvP+3VvBp9tIQRbLGeY3/yC3nrNRdKLr5n0NQ5CBW+
-         5K0eNVPUmNKeGyCiD7sJce7kPF64sihF3f8BTwM+4/5apnKsGwTkw85Tgu6QjvKkvQrt
-         Sy+0hW46f6hCGFyJ2JU2xblEyKWn9LWtbR4u84hPdYdOQsz07ffY0J/TkJz/+bS84wO3
-         9+rsrZkkSHshrEBi5M4uDpze2niEsO54mPEcAJf/mqK5bdcS97LmCH4Y4kyfA77r92Zc
-         P/yAOPmGAEHjAg8KyY2r5+FV/6OWYFqzlTms8GjnzfARslQWQMTYtpTtwjRzt3FQUDmf
-         yjEA==
-X-Gm-Message-State: AOAM530yx1BR95XMTjNkf5zI/m7GhGsAkOBzfvVLWFlr4IvtVDF9ZMfC
-        NHyIwnV6p3dSUNiVwBhMIzucIQ==
-X-Google-Smtp-Source: ABdhPJx+VzlhYRDn2bciHUsOTxFZn0WI19a1389Xf6c/UNJAsKB62DbXZwkrPG+vjKCyonbf4o/IyQ==
-X-Received: by 2002:a17:90a:f0d4:: with SMTP id fa20mr2743765pjb.160.1592309856671;
-        Tue, 16 Jun 2020 05:17:36 -0700 (PDT)
-Received: from shiro.work (p1285116-ipngn200805sizuokaden.shizuoka.ocn.ne.jp. [114.171.61.116])
-        by smtp.googlemail.com with ESMTPSA id f23sm2360703pja.8.2020.06.16.05.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 05:17:36 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v4 12/12] ARM: mstar: Add dts for 70mai midrive d08
-Date:   Tue, 16 Jun 2020 21:15:25 +0900
-Message-Id: <20200616121525.1409790-13-daniel@0x0f.com>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200616121525.1409790-1-daniel@0x0f.com>
-References: <20200612130032.3905240-2-daniel@0x0f.com>
- <20200616121525.1409790-1-daniel@0x0f.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uSiEfAqqR7fvXOn2pGb0zZk/ANl8osJ8htzBpR8+Og0=;
+        b=o/DJCj2OP6K1wnKdmD00HRl4BShp9hbJTlo9kZCK0dCamwFa/3KtckypGpHkbIp5L+
+         kHsJrPCNB/8u+HZyPTK49siJmpsfamPJGFkXkATwMt9MFjNs6LG23Y2LCwt+SzBGXhSX
+         biKn3JLSis7Kce38EZx+hrnieh3g4fCZaxdnsIb5mVMWS5Xs54/8QmXnhV5sAYfYh4Se
+         PwLboQUT/RxtLynsuWl5vviK/S8zvZAI66PZ8Aw/FX6K11sVeQTlo2isn3xppCvMFKcr
+         +ZnvzSfSznBHBZn5dQ+3n3XRFvpTwIzCN0rdwAPmB32+l1rpuNjreg0P1t4HyEdGsrJ4
+         gC9g==
+X-Gm-Message-State: AOAM530YnS3MkSMb63l+vRfuO8yAatxDT23Re+7wyX1EKAORxlvtl6Jp
+        HMsYyGVlUqaH5hw7drngGJlGNvnTZ7KlFfeHj5CU9HsMK0omGkvKn6Bw8IqQtJhYZIpS5LQ0HsV
+        7nmnY56FSjIJ19g6FPHc2aG3tMY2Rfgm10eI8SPYYV5TEDmVuUL9wzl3zzw==
+X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr2421576ejr.482.1592309783315;
+        Tue, 16 Jun 2020 05:16:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRf01weiozezGWpOuTw/Ljoemb8IOy896dOLcGjhU0I1Y8MkoUPVNeqcN5Mb++pNPXU6iqhZuUbsK0OPh4CYY=
+X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr2421546ejr.482.1592309782997;
+ Tue, 16 Jun 2020 05:16:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200616073833.GF5653@shao2-debian> <55e7a318-9021-f350-c80f-bc95070568fb@suse.cz>
+In-Reply-To: <55e7a318-9021-f350-c80f-bc95070568fb@suse.cz>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Tue, 16 Jun 2020 09:15:47 -0300
+Message-ID: <CAHD1Q_yxYB9UX4he8CeZMzdr8MhQAzrZtgc5+TsnWRv_dgMSfA@mail.gmail.com>
+Subject: Re: [kernel/watchdog.c] f117955a22: kmsg.Failed_to_set_sysctl_parameter'kernel.softlockup_panic=#':parameter_not_found
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds initial support for the 70mai midrive d08 dash camera.
+Thanks Vlastimil! I agree with you..it's a good new behavior to report
+that case, I guess.
+Cheers,
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/arm/boot/dts/Makefile                    |  3 ++-
- .../boot/dts/mercury5-ssc8336n-midrived08.dts | 25 +++++++++++++++++++
- 2 files changed, 27 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/mercury5-ssc8336n-midrived08.dts
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4a5f8075a4f6..caf4a47ba799 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1344,7 +1344,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
- dtb-$(CONFIG_ARCH_MILBEAUT) += milbeaut-m10v-evb.dtb
- dtb-$(CONFIG_ARCH_MSTARV7) += \
- 	infinity-msc313-breadbee_crust.dtb \
--	infinity3-msc313e-breadbee.dtb
-+	infinity3-msc313e-breadbee.dtb \
-+	mercury5-ssc8336n-midrived08.dtb
- dtb-$(CONFIG_ARCH_ZX) += zx296702-ad1.dtb
- dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-ast2500-evb.dtb \
-diff --git a/arch/arm/boot/dts/mercury5-ssc8336n-midrived08.dts b/arch/arm/boot/dts/mercury5-ssc8336n-midrived08.dts
-new file mode 100644
-index 000000000000..f24bd8cb8e60
---- /dev/null
-+++ b/arch/arm/boot/dts/mercury5-ssc8336n-midrived08.dts
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 thingy.jp.
-+ * Author: Daniel Palmer <daniel@thingy.jp>
-+ */
-+
-+/dts-v1/;
-+#include "mercury5-ssc8336n.dtsi"
-+
-+/ {
-+	model = "70mai Midrive D08";
-+	compatible = "70mai,midrived08", "mstar,mercury5";
-+
-+	aliases {
-+		serial0 = &pm_uart;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&pm_uart {
-+	status = "okay";
-+};
--- 
-2.27.0.rc0
+Guilherme
 
+On Tue, Jun 16, 2020 at 5:02 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 6/16/20 9:38 AM, kernel test robot wrote:
+> > Greeting,
+> >
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: f117955a2255721a6a0e9cecf6cad3a6eb43cbc3 ("kernel/watchdog.c: convert {soft/hard}lockup boot parameters to sysctl aliases")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >
+> > in testcase: boot
+> >
+> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> >
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >
+> >
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> >
+> >
+> >
+> > [    5.306502] netconsole: network logging started
+> > [    5.793973] input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input3
+> > [    5.804702] e1000: eth0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+> > [    5.828198] Sending DHCP requests ., OK
+> > [    5.829815] IP-Config: Got DHCP answer from 10.0.2.2, my address is 10.0.2.15
+> > [    5.831412] IP-Config: Complete:
+> > [    5.832501]      device=eth0, hwaddr=52:54:00:12:34:56, ipaddr=10.0.2.15, mask=255.255.255.0, gw=10.0.2.2
+> > [    5.835246]      host=vm-snb-ssd-19, domain=, nis-domain=(none)
+> > [    5.836806]      bootserver=10.0.2.2, rootserver=10.0.2.2, rootpath=
+> > [    5.836808]      nameserver0=10.0.2.3
+> > [    5.839613] ALSA device list:
+> > [    5.857103]   No soundcards found.
+> > [    5.860706] Freeing unused kernel image (initmem) memory: 1540K
+> > [    5.868210] Write protecting the kernel read-only data: 20480k
+> > [    5.870913] Freeing unused kernel image (text/rodata gap) memory: 2044K
+> > [    5.872636] Freeing unused kernel image (rodata/data gap) memory: 68K
+> > [    5.874149] rodata_test: all tests were successful
+> > [    5.875553] Failed to set sysctl parameter 'kernel.softlockup_panic=1': parameter not found
+>
+> In case the line above is the reason for this report, then it's because .config has:
+>
+> # CONFIG_SOFTLOCKUP_DETECTOR is not set
+>
+> While previously the softlockup_panic=1 parameter would be just silently ignored
+> in that case. I don't think it's wrong to report it, though.
+>
+> > [    5.896259] Run /init as init process
+> > [    5.897454]   with arguments:
+> > [    5.898493]     /init
+> > [    5.899418]   with environment:
+> > [    5.900468]     HOME=/
+> > [    5.901346]     TERM=linux
+> > [    5.902311]     user=lkp
+> > [    5.903266]     job=/lkp/jobs/scheduled/vm-snb-ssd-19/boot-1-debian-i386-20191205.cgz-f117955a2255721a6a0e9cecf6cad3a6eb43cbc3-20200615-43661-1fqppwn-3.yaml
+> > [    5.906363]     ARCH=x86_64
+> > [    5.907358]     kconfig=x86_64-kexec
+> > [    5.908495]     branch=linus/master
+> > [    5.909564]     commit=f117955a2255721a6a0e9cecf6cad3a6eb43cbc3
+> > [    5.910982]     BOOT_IMAGE=/pkg/linux/x86_64-kexec/gcc-9/f117955a2255721a6a0e9cecf6cad3a6eb43cbc3/vmlinuz-5.7.0-12506-gf117955a22557
+> > [    5.913735]     max_uptime=600
+> > [    5.914651]     RESULT_ROOT=/result/boot/1/vm-snb-ssd/debian-i386-20191205.cgz/x86_64-kexec/gcc-9/f117955a2255721a6a0e9cecf6cad3a6eb43cbc3/3
+> > [    5.917437]     LKP_SERVER=inn
+> > [    5.918425]     selinux=0
+> > [    5.919398]     softlockup_panic=1
+> > [    5.920495]     nmi_watchdog=panic
+> > [    5.925722]     prompt_ramdisk=0
+> > [    5.926843]     vga=normal
+> > [    5.927739]     watchdog_thresh=60
+> > [    5.934222] systemd[1]: RTC configured in localtime, applying delta of 0 minutes to system time.
+> > [    5.937449] systemd[1]: Failed to insert module 'autofs4': No such file or directory
+> > [    5.941850] random: systemd: uninitialized urandom read (16 bytes read)
+> > [    5.947176] random: systemd: uninitialized urandom read (16 bytes read)
+> >
+> >
+> > To reproduce:
+> >
+> >         # build kernel
+> >       cd linux
+> >       cp config-5.7.0-12506-gf117955a22557 .config
+> >       make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage
+> >
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> >
+> >
+> >
+> > Thanks,
+> > Rong Chen
+> >
+>
