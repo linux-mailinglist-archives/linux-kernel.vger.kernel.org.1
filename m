@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4508C1FBA04
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EED61FBB04
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgFPQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38570 "EHLO mail.kernel.org"
+        id S1731162AbgFPPkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731789AbgFPPq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:27 -0400
+        id S1731118AbgFPPkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:40:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDCA620776;
-        Tue, 16 Jun 2020 15:46:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B7012082F;
+        Tue, 16 Jun 2020 15:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322386;
-        bh=ZBnV5sxUwynEG5lSAIADmzfkPNAJRl5QKE8Qtn7F+yA=;
+        s=default; t=1592322016;
+        bh=Y7GdLNJHI2Hd160+eiyQ7RPdrDBWi0SuwVkbiLOYrPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z3DUOK7rGxbLDWGs6uiiMD+jPjtEGj05Dx++BE/awa961sjllfQ2g/gjtnPbmcoJk
-         +BbE8s9neDPrcLdMCV8hTqlcn2CYbBo371dpe9iWPqPk5H1qBOOQafA9T59tnrUR48
-         uFy2FOSCEAQHRi/5PoIZHiVvAo0FgoHpBJpN4hm4=
+        b=OAU5EevcYAXmYjhK745e9q9LZCwHOl1x2Qh/Z8W+3hD9Dl6ljcMofuMMVBd1cqIy+
+         AVXrGroz47ET1KjUnlKtB4DSq1x0k3qi1iZrN/2/Y8GJ2x4N6NuGqU9W+nShi1lJ1P
+         uH9gMQv3jVKn1Kahu6/jdmhd1Wzl1oYY70uz7Rkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 111/163] net: ethernet: ti: ale: fix allmulti for nu type ale
-Date:   Tue, 16 Jun 2020 17:34:45 +0200
-Message-Id: <20200616153112.122979967@linuxfoundation.org>
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 103/134] KVM: nSVM: fix condition for filtering async PF
+Date:   Tue, 16 Jun 2020 17:34:47 +0200
+Message-Id: <20200616153105.724080334@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,98 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit bc139119a1708ae3db1ebb379630f286e28d06e8 ]
+commit a3535be731c2a343912578465021f50937f7b099 upstream.
 
-On AM65xx MCU CPSW2G NUSS and 66AK2E/L NUSS allmulti setting does not allow
-unregistered mcast packets to pass.
+Async page faults have to be trapped in the host (L1 in this case),
+since the APF reason was passed from L0 to L1 and stored in the L1 APF
+data page.  This was completely reversed: the page faults were passed
+to the guest, a L2 hypervisor.
 
-This happens, because ALE VLAN entries on these SoCs do not contain port
-masks for reg/unreg mcast packets, but instead store indexes of
-ALE_VLAN_MASK_MUXx_REG registers which intended for store port masks for
-reg/unreg mcast packets.
-This path was missed by commit 9d1f6447274f ("net: ethernet: ti: ale: fix
-seeing unreg mcast packets with promisc and allmulti disabled").
-
-Hence, fix it by taking into account ALE type in cpsw_ale_set_allmulti().
-
-Fixes: 9d1f6447274f ("net: ethernet: ti: ale: fix seeing unreg mcast packets with promisc and allmulti disabled")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/ti/cpsw_ale.c |   49 ++++++++++++++++++++++++++++++-------
- 1 file changed, 40 insertions(+), 9 deletions(-)
 
---- a/drivers/net/ethernet/ti/cpsw_ale.c
-+++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -604,10 +604,44 @@ void cpsw_ale_set_unreg_mcast(struct cps
- 	}
- }
- 
-+static void cpsw_ale_vlan_set_unreg_mcast(struct cpsw_ale *ale, u32 *ale_entry,
-+					  int allmulti)
-+{
-+	int unreg_mcast;
-+
-+	unreg_mcast =
-+		cpsw_ale_get_vlan_unreg_mcast(ale_entry,
-+					      ale->vlan_field_bits);
-+	if (allmulti)
-+		unreg_mcast |= ALE_PORT_HOST;
-+	else
-+		unreg_mcast &= ~ALE_PORT_HOST;
-+	cpsw_ale_set_vlan_unreg_mcast(ale_entry, unreg_mcast,
-+				      ale->vlan_field_bits);
-+}
-+
-+static void
-+cpsw_ale_vlan_set_unreg_mcast_idx(struct cpsw_ale *ale, u32 *ale_entry,
-+				  int allmulti)
-+{
-+	int unreg_mcast;
-+	int idx;
-+
-+	idx = cpsw_ale_get_vlan_unreg_mcast_idx(ale_entry);
-+
-+	unreg_mcast = readl(ale->params.ale_regs + ALE_VLAN_MASK_MUX(idx));
-+
-+	if (allmulti)
-+		unreg_mcast |= ALE_PORT_HOST;
-+	else
-+		unreg_mcast &= ~ALE_PORT_HOST;
-+
-+	writel(unreg_mcast, ale->params.ale_regs + ALE_VLAN_MASK_MUX(idx));
-+}
-+
- void cpsw_ale_set_allmulti(struct cpsw_ale *ale, int allmulti, int port)
- {
- 	u32 ale_entry[ALE_ENTRY_WORDS];
--	int unreg_mcast = 0;
- 	int type, idx;
- 
- 	for (idx = 0; idx < ale->params.ale_entries; idx++) {
-@@ -624,15 +658,12 @@ void cpsw_ale_set_allmulti(struct cpsw_a
- 		if (port != -1 && !(vlan_members & BIT(port)))
- 			continue;
- 
--		unreg_mcast =
--			cpsw_ale_get_vlan_unreg_mcast(ale_entry,
--						      ale->vlan_field_bits);
--		if (allmulti)
--			unreg_mcast |= ALE_PORT_HOST;
-+		if (!ale->params.nu_switch_ale)
-+			cpsw_ale_vlan_set_unreg_mcast(ale, ale_entry, allmulti);
- 		else
--			unreg_mcast &= ~ALE_PORT_HOST;
--		cpsw_ale_set_vlan_unreg_mcast(ale_entry, unreg_mcast,
--					      ale->vlan_field_bits);
-+			cpsw_ale_vlan_set_unreg_mcast_idx(ale, ale_entry,
-+							  allmulti);
-+
- 		cpsw_ale_write(ale, idx, ale_entry);
- 	}
- }
+---
+ arch/x86/kvm/svm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -3237,8 +3237,8 @@ static int nested_svm_exit_special(struc
+ 			return NESTED_EXIT_HOST;
+ 		break;
+ 	case SVM_EXIT_EXCP_BASE + PF_VECTOR:
+-		/* When we're shadowing, trap PFs, but not async PF */
+-		if (!npt_enabled && svm->vcpu.arch.apf.host_apf_reason == 0)
++		/* Trap async PF even if not shadowing */
++		if (!npt_enabled || svm->vcpu.arch.apf.host_apf_reason)
+ 			return NESTED_EXIT_HOST;
+ 		break;
+ 	default:
 
 
