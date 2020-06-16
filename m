@@ -2,113 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24881FAEB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3D01FAECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgFPK4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 06:56:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64356 "EHLO mga05.intel.com"
+        id S1728416AbgFPK7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 06:59:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:35430 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728168AbgFPK4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 06:56:17 -0400
-IronPort-SDR: DWKtOVJW4SrR8JmzBLaarVAiVo1nzQ702c5yRsLNB8RgkbZHOA4nIlEzeZbCWGhxW0oU1pBdjt
- D8eqLyxgoCQA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 03:56:16 -0700
-IronPort-SDR: iS5GbzbjKPiXqDKhZpPrConT0bcq2eWASHaqzKGx4fvllcs2ZidupIXhxZrWjdC+Jga7qklkly
- S/l/9R7DZuJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
-   d="scan'208";a="382837797"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Jun 2020 03:56:12 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 16 Jun 2020 13:56:12 +0300
-Date:   Tue, 16 Jun 2020 13:56:12 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: Re: [PATCH 2/6] usb: typec: add typec_find_pwr_opmode
-Message-ID: <20200616105612.GL3213128@kuha.fi.intel.com>
-References: <20200615161512.19150-1-amelie.delaunay@st.com>
- <20200615161512.19150-3-amelie.delaunay@st.com>
+        id S1728306AbgFPK7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 06:59:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B221F1;
+        Tue, 16 Jun 2020 03:59:24 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.1.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 401933F6CF;
+        Tue, 16 Jun 2020 03:59:23 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 11:59:20 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH 1/6] arm64/vdso: use the fault callback to map vvar pages
+Message-ID: <20200616105920.GB11780@C02TD0UTHF1T.local>
+References: <20200616075545.312684-1-avagin@gmail.com>
+ <20200616075545.312684-2-avagin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615161512.19150-3-amelie.delaunay@st.com>
+In-Reply-To: <20200616075545.312684-2-avagin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:15:08PM +0200, Amelie Delaunay wrote:
-> This patch adds a function that converts power operation mode string into
-> power operation mode value.
-> 
-> It is useful to configure power operation mode through device tree
-> property, as power capabilities may be linked to hardware design.
-> 
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+On Tue, Jun 16, 2020 at 12:55:40AM -0700, Andrei Vagin wrote:
+> This is required to support time namespaces where a time namespace data
+> page is different for each namespace.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Can you please give a bit more of an introduction to the changes here?
+As-is, this doesn't give reviewers the necessary context to understand
+the change, nor does it justify it.
 
+Ideally, a commit message for this should look something like:
+
+| Currently the vdso has no awareness of time namespaces, which may
+| apply distinct offsets to processes in different namespaces. To handle
+| this within the vdso, we'll need to expose a per-namespace data page.
+|
+| As a preparatory step, this patch separates the vdso data page from
+| the code pages, and has it faulted in via its own fault callback.
+| Subsquent patches will extend this to support distinct pages per time
+| namespace.
+
+Otherwise, I have a few minor comments below.
+
+> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Dmitry Safonov <dima@arista.com>
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
 > ---
->  drivers/usb/typec/class.c | 15 +++++++++++++++
->  include/linux/usb/typec.h |  1 +
->  2 files changed, 16 insertions(+)
+>  arch/arm64/kernel/vdso.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index c9234748537a..59e1837ef85e 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -1448,6 +1448,21 @@ void typec_set_pwr_opmode(struct typec_port *port,
+> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
+> index 4e016574bd91..b0aec4e8c9b4 100644
+> --- a/arch/arm64/kernel/vdso.c
+> +++ b/arch/arm64/kernel/vdso.c
+> @@ -108,28 +108,32 @@ static int __vdso_init(enum vdso_abi abi)
+>  			PAGE_SHIFT;
+>  
+>  	/* Allocate the vDSO pagelist, plus a page for the data. */
+> -	vdso_pagelist = kcalloc(vdso_info[abi].vdso_pages + 1,
+> +	vdso_pagelist = kcalloc(vdso_info[abi].vdso_pages,
+>  				sizeof(struct page *),
+>  				GFP_KERNEL);
+
+The comment above is now stale. Can you please update it, or (event
+better) delete it entirely?
+
+>  	if (vdso_pagelist == NULL)
+>  		return -ENOMEM;
+>  
+> -	/* Grab the vDSO data page. */
+> -	vdso_pagelist[0] = phys_to_page(__pa_symbol(vdso_data));
+> -
+> -
+>  	/* Grab the vDSO code pages. */
+>  	pfn = sym_to_pfn(vdso_info[abi].vdso_code_start);
+>  
+>  	for (i = 0; i < vdso_info[abi].vdso_pages; i++)
+> -		vdso_pagelist[i + 1] = pfn_to_page(pfn + i);
+> +		vdso_pagelist[i] = pfn_to_page(pfn + i);
+>  
+> -	vdso_info[abi].dm->pages = &vdso_pagelist[0];
+> -	vdso_info[abi].cm->pages = &vdso_pagelist[1];
+> +	vdso_info[abi].cm->pages = vdso_pagelist;
+>  
+>  	return 0;
 >  }
->  EXPORT_SYMBOL_GPL(typec_set_pwr_opmode);
 >  
-> +/**
-> + * typec_find_pwr_opmode - Get the typec power operation mode capability
-> + * @name: power operation mode string
-> + *
-> + * This routine is used to find the typec_pwr_opmode by its string @name.
-> + *
-> + * Returns typec_pwr_opmode if success, otherwise negative error code.
-> + */
-> +int typec_find_pwr_opmode(const char *name)
+> +static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
+> +			     struct vm_area_struct *vma, struct vm_fault *vmf)
 > +{
-> +	return match_string(typec_pwr_opmodes,
-> +			    ARRAY_SIZE(typec_pwr_opmodes), name);
+> +	if (vmf->pgoff == 0)
+> +		return vmf_insert_pfn(vma, vmf->address,
+> +				sym_to_pfn(vdso_data));
+> +	return VM_FAULT_SIGBUS;
 > +}
-> +EXPORT_SYMBOL_GPL(typec_find_pwr_opmode);
+
+This might look better as:
+
+|	if (vmf->pgoff != 0)
+|		return VM_FAULT_SIGBUS;
+|	
+|	return vmf_insert_pfn(vma, vmf->address, sym_to_pfn(vdso_data));
+
 > +
->  /**
->   * typec_find_orientation - Convert orientation string to enum typec_orientation
->   * @name: Orientation string
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 5daa1c49761c..f7c63ee3d443 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -254,6 +254,7 @@ int typec_set_mode(struct typec_port *port, int mode);
+>  static int __setup_additional_pages(enum vdso_abi abi,
+>  				    struct mm_struct *mm,
+>  				    struct linux_binprm *bprm,
+> @@ -150,7 +154,7 @@ static int __setup_additional_pages(enum vdso_abi abi,
+>  	}
 >  
->  void *typec_get_drvdata(struct typec_port *port);
->  
-> +int typec_find_pwr_opmode(const char *name);
->  int typec_find_orientation(const char *name);
->  int typec_find_port_power_role(const char *name);
->  int typec_find_power_role(const char *name);
+>  	ret = _install_special_mapping(mm, vdso_base, PAGE_SIZE,
+> -				       VM_READ|VM_MAYREAD,
+> +				       VM_READ|VM_MAYREAD|VM_PFNMAP,
+
+This change needs to be explained in the commit message. WHy is it
+necessary, and why only so for the data page?
+
+Thanks,
+Mark.
+
+>  				       vdso_info[abi].dm);
+>  	if (IS_ERR(ret))
+>  		goto up_fail;
+> @@ -209,6 +213,7 @@ static struct vm_special_mapping aarch32_vdso_maps[] = {
+>  #ifdef CONFIG_COMPAT_VDSO
+>  	[AA32_MAP_VVAR] = {
+>  		.name = "[vvar]",
+> +		.fault = vvar_fault,
+>  	},
+>  	[AA32_MAP_VDSO] = {
+>  		.name = "[vdso]",
+> @@ -376,6 +381,7 @@ enum aarch64_map {
+>  static struct vm_special_mapping aarch64_vdso_maps[] __ro_after_init = {
+>  	[AA64_MAP_VVAR] = {
+>  		.name	= "[vvar]",
+> +		.fault = vvar_fault,
+>  	},
+>  	[AA64_MAP_VDSO] = {
+>  		.name	= "[vdso]",
 > -- 
-> 2.17.1
-
-thanks,
-
--- 
-heikki
+> 2.24.1
+> 
