@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF21FB35F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE621FB361
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbgFPOEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:04:00 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6343 "EHLO huawei.com"
+        id S1729198AbgFPOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:04:06 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6344 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728997AbgFPOD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:03:59 -0400
+        id S1729003AbgFPOEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:04:01 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9F381D7136FA4F2B2E33;
+        by Forcepoint Email with ESMTP id A527A8CCF87222C63618;
         Tue, 16 Jun 2020 22:03:57 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 16 Jun 2020 22:03:50 +0800
+ 14.3.487.0; Tue, 16 Jun 2020 22:03:51 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <will@kernel.org>, <robin.murphy@arm.com>
 CC:     <joro@8bytes.org>, <trivial@kernel.org>,
@@ -24,10 +24,12 @@ CC:     <joro@8bytes.org>, <trivial@kernel.org>,
         <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
         <linuxarm@huawei.com>, <maz@kernel.org>,
         "John Garry" <john.garry@huawei.com>
-Subject: [PATCH RFC v2 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
-Date:   Tue, 16 Jun 2020 21:59:49 +0800
-Message-ID: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
+Subject: [PATCH v2 1/4] iommu/arm-smmu-v3: Fix trivial typo
+Date:   Tue, 16 Jun 2020 21:59:50 +0800
+Message-ID: <1592315993-164290-2-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
+References: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.58]
@@ -37,45 +39,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As mentioned in [0], the CPU may consume many cycles processing
-arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
-get space on the queue takes approx 25% of the cycles for this function.
+Set "cmq" -> "cmdq".
 
-This series removes that cmpxchg().
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ drivers/iommu/arm-smmu-v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For my NVMe test with 3x NVMe SSDs, I'm getting a ~24% throughput
-increase:
-Before: 1310 IOPs
-After: 1630 IOPs
-
-I also have a test harness to check the rate of DMA map+unmaps we can
-achieve:
-
-CPU count	32	64	128
-Before:		63187	19418	10169
-After:		93287	44789	15862
-
-(unit is map+unmaps per CPU per second)
-
-There's no specific problem that I know of with this series, as previous
-issues should now be fixed - but I'm a bit nervous about how we deal with
-the queue being full and wrapping.
-
-And I want to test more.
-
-Thanks
-
-[0] https://lore.kernel.org/linux-iommu/B926444035E5E2439431908E3842AFD24B86DB@DGGEMI525-MBS.china.huawei.com/T/#ma02e301c38c3e94b7725e685757c27e39c7cbde3
-
-John Garry (4):
-  iommu/arm-smmu-v3: Fix trivial typo
-  iommu/arm-smmu-v3: Calculate bits for prod and owner
-  iommu/arm-smmu-v3: Always issue a CMD_SYNC per batch
-  iommu/arm-smmu-v3: Remove cmpxchg() in arm_smmu_cmdq_issue_cmdlist()
-
- drivers/iommu/arm-smmu-v3.c | 210 ++++++++++++++++++++++--------------
- 1 file changed, 131 insertions(+), 79 deletions(-)
-
+diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+index f578677a5c41..a8e814c652fe 100644
+--- a/drivers/iommu/arm-smmu-v3.c
++++ b/drivers/iommu/arm-smmu-v3.c
+@@ -1479,7 +1479,7 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+ 		}
+ 
+ 		/*
+-		 * Try to unlock the cmq lock. This will fail if we're the last
++		 * Try to unlock the cmdq lock. This will fail if we're the last
+ 		 * reader, in which case we can safely update cmdq->q.llq.cons
+ 		 */
+ 		if (!arm_smmu_cmdq_shared_tryunlock(cmdq)) {
 -- 
 2.26.2
 
