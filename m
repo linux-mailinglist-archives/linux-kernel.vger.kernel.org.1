@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5BF1FBBC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEE21FBBCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730583AbgFPQbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:31:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46101 "EHLO mga17.intel.com"
+        id S1730837AbgFPQcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729167AbgFPQbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:31:45 -0400
-IronPort-SDR: 48O7QsjXl56BYrM3RJ8Krrj7ryY3zy5VC/XGOhxMpCHmAmVIMiV03hR9hORd1VuUhOKSfARE0A
- GVTfelL2IUeA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 09:31:45 -0700
-IronPort-SDR: 719ePnbyZDjL5iP2Vd92+ADc2o9Uu/Gxwqp73SoLkL83IO4eSH5Sirq/2MQwqsfEhgA5O8fBk0
- WlzUlKA5KFDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
-   d="scan'208";a="263061031"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 16 Jun 2020 09:31:41 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id C65EC217; Tue, 16 Jun 2020 19:31:39 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCH v1] ARM: bcm2835: Fix integer overflow in rpi_firmware_print_firmware_revision()
-Date:   Tue, 16 Jun 2020 19:31:39 +0300
-Message-Id: <20200616163139.4229-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.27.0.rc2
+        id S1730588AbgFPQcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:32:46 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71BD620882;
+        Tue, 16 Jun 2020 16:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592325166;
+        bh=v1NEVGl2JZ+x6Y+VmJrgJFlKm7OXUpbzQ/E9bGRWjFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khGHiJvcszZgXVCQrXtmKy8FXo7lOoT75j/6La/xCYBoAOLJN1hPDEyaIJR5HnaRT
+         sqHPvhlOFObJWLZkJwgHKl22dEpyHhpuGCDP5vsMzbL7TaBLKJhd/0qJr6T39obBAq
+         TPMUrPJxB7A3wi3RPTHF1GKB013UktuhDufa6KEc=
+Date:   Tue, 16 Jun 2020 22:02:42 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Viresh Kumar <vireshk@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/11] dmaengine: dw: Take Baikal-T1 SoC DW DMAC
+ peculiarities into account
+Message-ID: <20200616163242.GO2324254@vkoul-mobl>
+References: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
+ <20200602092734.6oekfmilbpx54y64@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200602092734.6oekfmilbpx54y64@mobilestation>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-time64_t is 64-bit width type, we are not supposed to supply lesser ones
-as in the case of rpi_firmware_print_firmware_revision() after the commit
-4a60f58ee002 ("ARM: bcm2835: Switch to use %ptT"). Use temporary variable
-of time64_t type to correctly handle lesser types.
+Hi Serge,
 
-Fixes: 4a60f58ee002 ("ARM: bcm2835: Switch to use %ptT")
-Reported-by: Stefan Wahren <wahrenst@gmx.net>
-Reported-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
----
- drivers/firmware/raspberrypi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On 02-06-20, 12:27, Serge Semin wrote:
+> Vinod, Viresh
+> 
+> Andy's finished his review. So all the patches of the series (except one rather
+> decorative, which we have different opinion of) are tagged by him. Since merge
+> window is about to be opened please consider to merge the series in. I'll really
+> need it to be in the kernel to provide the noLLP-problem fix for the Dw APB SSI
+> in 5.8.
 
-diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-index ef8098856a47..625c8fdceabf 100644
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -181,6 +181,7 @@ EXPORT_SYMBOL_GPL(rpi_firmware_property);
- static void
- rpi_firmware_print_firmware_revision(struct rpi_firmware *fw)
- {
-+	time64_t date_and_time;
- 	u32 packet;
- 	int ret = rpi_firmware_property(fw,
- 					RPI_FIRMWARE_GET_FIRMWARE_REVISION,
-@@ -189,7 +190,9 @@ rpi_firmware_print_firmware_revision(struct rpi_firmware *fw)
- 	if (ret)
- 		return;
- 
--	dev_info(fw->cl.dev, "Attached to firmware from %ptT\n", &packet);
-+	/* This is not compatible with y2038 */
-+	date_and_time = packet;
-+	dev_info(fw->cl.dev, "Attached to firmware from %ptT\n", &date_and_time);
- }
- 
- static void
+Sorry it was too late for 5.8.. merge window is closed now, i will
+review it shortly
+
 -- 
-2.27.0.rc2
-
+~Vinod
