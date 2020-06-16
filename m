@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9551FBA48
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82FE1FBB4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731417AbgFPPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:44:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34880 "EHLO mail.kernel.org"
+        id S1732615AbgFPQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:18:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731990AbgFPPoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:44:32 -0400
+        id S1730604AbgFPPiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDE32208D5;
-        Tue, 16 Jun 2020 15:44:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE39820C56;
+        Tue, 16 Jun 2020 15:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322272;
-        bh=oy8Ne+jeLXvgmLgXt/ubGvSCJ8wk0wvHtZ/C7KZN9qg=;
+        s=default; t=1592321896;
+        bh=t3syh8NXFdpKAyNciH2hnkU2ovTSPSnl0INFvSsgUww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MeiBtGWxB1MrZoz6+JuM3F4Uw10rkjYn/m95KPbiL9V+siMeecfWvUGsetiHd6LyS
-         hdg6WJGNh/4J5muXmvHvN/43ZnJHCyBfU0WEhMThy/AwI96O6hhFjWVUyk12wvh4bv
-         IdbFEtGhyNoCgO2UerCRah5QzRzs15SNQbRSDFmI=
+        b=0LqlLGrvwCtDebIMJ8LWhf9gd1N/egXrlLSP9H3JtNoFPwjVlK99cX9WrZBW32cAl
+         IPAlph+vSnQ5fAN9VydhxhiJh4gq23ZAqAeQiJee1izhAqbbgrhx3w6t1SGZLyBGJJ
+         nemPO/gh1qwOMEjJ8VEgROlknF2kMK/r3Ed1MIpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 068/163] ALSA: pcm: disallow linking stream to itself
+Subject: [PATCH 5.4 058/134] ALSA: pcm: disallow linking stream to itself
 Date:   Tue, 16 Jun 2020 17:34:02 +0200
-Message-Id: <20200616153110.103210684@linuxfoundation.org>
+Message-Id: <20200616153103.552524198@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,7 +65,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -2166,6 +2166,12 @@ static int snd_pcm_link(struct snd_pcm_s
+@@ -1994,6 +1994,12 @@ static int snd_pcm_link(struct snd_pcm_s
  	}
  	pcm_file = f.file->private_data;
  	substream1 = pcm_file->substream;
