@@ -2,58 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243BD1FAAF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028331FAB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgFPIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:20:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62156 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgFPIUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:20:43 -0400
-IronPort-SDR: aOUi4FXalfg1kdXsKXuHGsIPSMLsGP4NPZIlsLmyTycRRZxJ/KnmMRkqn5fszi0oTAJRKc1yEy
- wF2Xju97ByBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 01:20:42 -0700
-IronPort-SDR: t0bpjd+Q4VKPC+61dXRLYFNPcf5pPWtmPGdNQMvv1hNVMlRocJWKWMn0DWM265is/EYejzUSYU
- SYOn6AFH6J1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
-   d="scan'208";a="262066840"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga007.jf.intel.com with ESMTP; 16 Jun 2020 01:20:42 -0700
-Date:   Tue, 16 Jun 2020 01:20:42 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: Fix MSR range of APIC registers in X2APIC mode
-Message-ID: <20200616082042.GE26491@linux.intel.com>
-References: <20200616073307.16440-1-xiaoyao.li@intel.com>
+        id S1727852AbgFPIVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:21:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44789 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgFPIVm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:21:42 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jl6qX-0004KJ-Aq; Tue, 16 Jun 2020 08:21:29 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/i915: fix a couple of spelling mistakes in kernel parameter help text
+Date:   Tue, 16 Jun 2020 09:21:29 +0100
+Message-Id: <20200616082129.65517-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616073307.16440-1-xiaoyao.li@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 03:33:07PM +0800, Xiaoyao Li wrote:
-> Only MSR address range 0x800 through 0x8ff is architecturally reserved
-> and dedicated for accessing APIC registers in x2APIC mode.
-> 
-> Fixes: 0105d1a52640 ("KVM: x2apic interface to lapic")
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
+From: Colin Ian King <colin.king@canonical.com>
 
-And perhaps more importantly, there are real MSRs that are overlapped,
-e.g. MSR_IA32_TME_ACTIVATE.  This probably warrants a Cc to stable; as you
-found out the hard way, this breaks ignore_msrs.
+There are a couple of spelling mistakes in kernel parameter help text,
+namely "helpfull" and "paramters".  Fix them.
 
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/i915/i915_params.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
+index a7b61e6ec508..8d8db9ff0a48 100644
+--- a/drivers/gpu/drm/i915/i915_params.c
++++ b/drivers/gpu/drm/i915/i915_params.c
+@@ -99,8 +99,8 @@ i915_param_named_unsafe(enable_psr, int, 0400,
+ 
+ i915_param_named(psr_safest_params, bool, 0400,
+ 	"Replace PSR VBT parameters by the safest and not optimal ones. This "
+-	"is helpfull to detect if PSR issues are related to bad values set in "
+-	" VBT. (0=use VBT paramters, 1=use safest parameters)");
++	"is helpful to detect if PSR issues are related to bad values set in "
++	" VBT. (0=use VBT parameters, 1=use safest parameters)");
+ 
+ i915_param_named_unsafe(force_probe, charp, 0400,
+ 	"Force probe the driver for specified devices. "
+-- 
+2.27.0.rc0
+
