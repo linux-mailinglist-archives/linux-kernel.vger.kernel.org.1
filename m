@@ -2,108 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7855A1FBE81
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860EC1FBE9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgFPSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:54:01 -0400
-Received: from smtprelay0159.hostedemail.com ([216.40.44.159]:58294 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726805AbgFPSyA (ORCPT
+        id S1730573AbgFPS5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 14:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730543AbgFPS5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:54:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 1290410050792;
-        Tue, 16 Jun 2020 18:53:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:965:966:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2525:2560:2563:2682:2685:2693:2740:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3743:3865:3866:3867:3868:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:4390:4395:5007:6248:6691:6742:6743:7807:7808:7875:7903:9025:9108:10004:10400:10848:11026:11658:11914:12043:12048:12050:12295:12296:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:13845:14096:14097:14181:14659:14721:14777:21080:21433:21451:21627:21811:21990:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cent55_291055a26e01
-X-Filterd-Recvd-Size: 3364
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 16 Jun 2020 18:53:51 +0000 (UTC)
-Message-ID: <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to
- kfree_sensitive()
-From:   Joe Perches <joe@perches.com>
-To:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Sterba <dsterba@suse.cz>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Date:   Tue, 16 Jun 2020 11:53:50 -0700
-In-Reply-To: <20200616015718.7812-1-longman@redhat.com>
-References: <20200616015718.7812-1-longman@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Tue, 16 Jun 2020 14:57:48 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A70C061573;
+        Tue, 16 Jun 2020 11:57:48 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id g44so7267023uae.12;
+        Tue, 16 Jun 2020 11:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=++LLNhIunq6DJtsYt7QZbdqySyg8Go49MpsG3rgmJFk=;
+        b=ucqd3uRfFrWWfhaWf9cHHzOjFfxjf+pM4uKzNCUtF/d+yZgJyda2W8vRmNZTm1bayL
+         ApfngBOpOMdN6PzBTFTDn5ZDvzQ+hZTx/O5Bc61BarswK4M3/TWkbP3G/EDw7yFl6FfN
+         b0WGuUH8p94o8xa78M0Pw5GtNyBAXLSbVfEAZ3JVVtxB52wjpaXUrbWmvhrHK7amPaTC
+         I89MkXxWZL+P9zfwnOofiMiR05w0LUtemmqwx9eF7rxbYZV5LbvLH4BW4vn5xvvlZeKa
+         rO44opmN0Vbscb9rd2pRP5SMuncZsYxio5xx/pJuIGqU3W5RlSOKaL20wL3KjIhGOarv
+         eIKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=++LLNhIunq6DJtsYt7QZbdqySyg8Go49MpsG3rgmJFk=;
+        b=GRIC7JJ91raUgO2YCmNEzq1WuxJgiG5Rgj4dbdbe/LGMW4hteZwH8a4+ACGxmS+Rqt
+         /RFK8UEoLBxDMRGmR0MkS/VaAC85aCfwh3d7P7idNbQsF12eI1DII3ylI8ROcs9mXQxl
+         zfhIgY2JCpZBvIOh8pdGOiH8xlvZNFbC4PE5mcGail2+7MyW+EL4YAMPf0+EJabvqCxt
+         ICglS+iRiGa6V0EGO5uRabtqnF5LA9a5gdOkmCWZ2Fgx6Dccble4GkH3xQh5kxR82aqj
+         ucRu33D8zqyJUWw/o7xcct7l4kQVrpgkHJHYp+yhOgUtlg1ZO0U923DU0RmrmjWdIVpX
+         0g5w==
+X-Gm-Message-State: AOAM533D7f1ElUVAShSB/Yxy6wZlyGv+tB0dDCncPJqdxW5N6GJohFWq
+        7hL3QU2HZcv+Zuv9dhdRhy4aMc2k6/TdJlWbIQE=
+X-Google-Smtp-Source: ABdhPJyYmytGR8vTEkPVUPgo49cK7EQnTHmS8BVcg2vn5GTHd6Fgny/W6WxC0wlrw/Rf9G2X+D5P4Lx6cnQx09zgPeI=
+X-Received: by 2002:ab0:71ce:: with SMTP id n14mr3669545uao.46.1592333867137;
+ Tue, 16 Jun 2020 11:57:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200614200121.14147-1-digetx@gmail.com> <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
+ <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com> <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
+ <646b3f37-0f72-7f3b-388f-f71dbcdd5c84@gmail.com>
+In-Reply-To: <646b3f37-0f72-7f3b-388f-f71dbcdd5c84@gmail.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 16 Jun 2020 19:54:04 +0100
+Message-ID: <CACvgo50BFH5qsPyWx9a1aZ4k5bzjSN-3KTU0BvnZ-nG-hfzKOQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
->  v4:
->   - Break out the memzero_explicit() change as suggested by Dan Carpenter
->     so that it can be backported to stable.
->   - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
->     now as there can be a bit more discussion on what is best. It will be
->     introduced as a separate patch later on after this one is merged.
+On Tue, 16 Jun 2020 at 18:20, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 16.06.2020 18:48, Emil Velikov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Tue, 16 Jun 2020 at 12:40, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> 16.06.2020 01:26, Emil Velikov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> Hi Dmitry,
+> >>>
+> >>> On Mon, 15 Jun 2020 at 08:28, Dmitry Osipenko <digetx@gmail.com> wrot=
+e:
+> >>>>
+> >>>> Hello!
+> >>>>
+> >>>> This series adds 180=C2=B0 display plane rotation support to the NVI=
+DIA Tegra
+> >>>> DRM driver which is needed for devices that have display panel physi=
+cally
+> >>>> mounted upside-down, like Nexus 7 tablet device for example [1]. Sin=
+ce
+> >>>> DRM panel rotation is a new thing for a userspace, currently only
+> >>>> Opentegra Xorg driver handles the rotated display panel [2], but thi=
+s
+> >>>> is good enough for the start.
+> >>>>
+> >>>> Note that later on it should be possible to implement a transparent =
+180=C2=B0
+> >>>> display rotation for Tegra DRM driver which will remove the need to =
+have
+> >>>> a bleeding edge userspace that knows how to rotate display planes an=
+d I'm
+> >>>> slowly working on it. For the starter we can go with the minimal rot=
+ation
+> >>>> support, so it's not a blocker.
+> >>>>
+> >>>> This series is based on the work that was made by Derek Basehore for=
+ the
+> >>>> Mediatek driver [3], his patch is included into this patchset. I add=
+ed
+> >>>> my tested-by tag to the Derek's patch.
+> >>>>
+> >>>> Please review and apply, thanks in advance!
+> >>>>
+> >>>> [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/202006071=
+54327.18589-3-digetx@gmail.com/
+> >>>> [2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb=
+20a3959bbe5bc3a3b67e55977093fd5114ca
+> >>>> [3] https://lkml.org/lkml/2020/3/5/1119
+> >>>>
+> >>>> Changelog:
+> >>>>
+> >>>> v2: - Dropped "drm/panel: Set display info in panel attach" patch, w=
+hich
+> >>>>       turned out to be obsolete now.
+> >>>>
+> >>>>     - Renamed the cover-latter, hopefully this will fix the bouncing=
+ emails.
+> >>>>
+> >>>> Derek Basehore (1):
+> >>>>   drm/panel: Add helper for reading DT rotation
+> >>>>
+> >>>> Dmitry Osipenko (4):
+> >>>>   drm/panel: lvds: Set up panel orientation
+> >>>
+> >>> IMHO it's perfectly reasonable to report the panel orientation to
+> >>> userspace, which can apply plane rotation as needed.
+> >>>
+> >>> Although I see that this series, alike Derek's, has a couple of issue=
+s:
+> >>>  - only a single panel driver is updated
+> >>>  - rotation is _not_ listed as supported property, in said panel
+> >>> driver device-tree bindings
+> >>>
+> >>> My personal inclination is that we should aim for a comprehensive sol=
+ution:
+> >>>  - wire all panel drivers, as currently documented (quick grep list b=
+elow)
+> >>>  - document and wire-up the lvds and boe panels - as proposed by you
+> >>> and Derek respectively
+> >>>
+> >>> HTH
+> >>> Emil
+> >>>
+> >>> Documentation/devicetree/bindings/display/himax,hx8357d.txt:2
+> >>> Documentation/devicetree/bindings/display/ilitek,ili9225.txt:2
+> >>> Documentation/devicetree/bindings/display/ilitek,ili9341.txt:2
+> >>> Documentation/devicetree/bindings/display/ilitek,ili9486.yaml:2
+> >>> Documentation/devicetree/bindings/display/multi-inno,mi0283qt.txt:2
+> >>> Documentation/devicetree/bindings/display/panel/panel-common.yaml:2
+> >>> Documentation/devicetree/bindings/display/sitronix,st7586.txt:1
+> >>> Documentation/devicetree/bindings/display/sitronix,st7735r.yaml:2
+> >>
+> >> Rotation is a common DT panel property that is described in the
+> >> panel-common.yaml.
+> > The property was introduced almost exclusively for tiny drm panels.
+> > Those ones are a bit different from the rest (in panel/) -
+> > MIPI-DBI/SPI w/o (not connected at least) an actual GPU.
+> >
+> > To make it a bit better, the rotation is seemingly performed in the
+> > tiny driver itself ouch.
+> >
+> >> This property is supported by all panel bindings
+> >> because these bindings inherent the common properties from the
+> >> panel-common.yaml.
+> >>
+> > Seems like that was an unintentional change with the conversion to YAML=
+.
+> > Beforehand only a few selected panels had rotation. Upon closer look -
+> > some panels do have follow-up fixes, to remove/limit the implicit
+> > inclusion.
+>
+> Interesting.. my understanding that the rotation property is supposed to
+> be a generic property which represents physical orientation of a display
+> panel and hence it should be applicable to all panels.
+>
+You're spot on - it is/should be a generic property.
 
-To this larger audience and last week without reply:
-https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
+I believe that in general many panels were mounted in the correct
+orientation so the property, kernel and userspace were slow to catch
+up. In some cases panels will use flip x+y to denote 180 rotation, yet
+lacking the rotation property.
+The s6e8aa0 is an example of the last oddity. To make it better, the
+two dts in-tree always set both flip x and y.
 
-Are there _any_ fastpath uses of kfree or vfree?
+Tl;Dr: Hysterical raisins
 
-Many patches have been posted recently to fix mispairings
-of specific types of alloc and free functions.
+> > Sam seems like you've done most of the YAML conversion. IMHO it would
+> > make sense to revisit the patches and inherit common properties only
+> > as applicable.
+> >
+> >> I don't think that it makes sense to wire up rotation property to all
+> >> panel drivers at once because those drivers will be untested, at least=
+ I
+> >> don't know anything about those other panels and can't test them. It
+> >> will be much better to support the rotation on by as-needed basis for
+> >> each panel driver individually.
+> >
+> > How about CCing the author and reviewer asking them to test the patch?
+> > The only place where the patches might cause an issue is with tiny,
+> > although patches would still be appreciated.
+>
+> There are quite a lot of panel drivers and I'm a bit doubtful that at
+> least half of devices that use those panels have any real use for the
+> rotation property. I could write the patches.. but in the end it could
+> be a wasted effort if nobody needs it, so I'd prefer not to do it.
 
-To eliminate these mispairings at a runtime cost of four
-comparisons, should the kfree/vfree/kvfree/kfree_const
-functions be consolidated into a single kfree?
+That's why I mentioned the rotation introduction or "confusion" if I
+may. Skimming through the pre/post YAML device tree bindings and grep
+through the panel themselves will greatly reduce the list.
+In other words: if neither binding documentation/in-tree dts nor panel
+mentions rotation - omit it.
 
-Something like the below:
-
-   void kfree(const void *addr)
-   {
-   	if (is_kernel_rodata((unsigned long)addr))
-   		return;
-
-   	if (is_vmalloc_addr(addr))
-   		_vfree(addr);
-   	else
-   		_kfree(addr);
-   }
-
-   #define kvfree		kfree
-   #define vfree		kfree
-   #define kfree_const	kfree
-
-
+-Emil
