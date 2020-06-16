@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EE51FB9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AA21FBAF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732695AbgFPQGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:06:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41204 "EHLO mail.kernel.org"
+        id S1731462AbgFPPld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730181AbgFPPrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:42 -0400
+        id S1731414AbgFPPl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B85872071A;
-        Tue, 16 Jun 2020 15:47:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8703207C4;
+        Tue, 16 Jun 2020 15:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322461;
-        bh=24ofpfUOvGV2D+ipJB4zYSjP/GGm7wxY4Ps53nNY6OQ=;
+        s=default; t=1592322087;
+        bh=7iKMm7KSRQUJ5Y+WeKndqu7co8tjv7zaxZdV9VUdtYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0XBWvFJk436nLRt3yiFNFRMo5n+OFGqKV5aTIHFlams+J8YzUT7MM4YfRqFF2B49X
-         FkQxj5xucoCDfqHS2nktZZCg7sI1KAJ3zYQ31x/O+R6J9H3iUzJio+1OxAHsbbaebZ
-         JsMgmX19ZlkvXl9LroUunYPGmC5SzVnu+2+3D35c=
+        b=lruX1qxKxA+OWnCtwdubSggnzRLhRKqlLaIA5T2F2g0SVYv+3C01+ugRQHxc1EA6B
+         CNamN9xZyM7/wOeNEHNExcFhBx+6wFBFFmLW7klM9HPWOEYZDkk2G1TK6JkR8F7Gb9
+         h6gVERzQVj5UcU/xvqYjCWw1xP+2O6p9Ht2swoEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com
-Subject: [PATCH 5.7 140/163] ath9k: Fix use-after-free Read in ath9k_wmi_ctrl_rx
+        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 130/134] mmc: sdio: Fix several potential memory leaks in mmc_sdio_init_card()
 Date:   Tue, 16 Jun 2020 17:35:14 +0200
-Message-Id: <20200616153113.516044499@linuxfoundation.org>
+Message-Id: <20200616153107.014964022@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,152 +42,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-commit abeaa85054ff8cfe8b99aafc5c70ea067e5d0908 upstream.
+commit a94a59f43749b4f8cd81b8be87c95f9ef898d19d upstream.
 
-Free wmi later after cmd urb has been killed, as urb cb will access wmi.
+Over the years, the code in mmc_sdio_init_card() has grown to become quite
+messy. Unfortunate this has also lead to that several paths are leaking
+memory in form of an allocated struct mmc_card, which includes additional
+data, such as initialized struct device for example.
 
-the case reported by syzbot:
-https://lore.kernel.org/linux-usb/0000000000000002fc05a1d61a68@google.com
-BUG: KASAN: use-after-free in ath9k_wmi_ctrl_rx+0x416/0x500
-drivers/net/wireless/ath/ath9k/wmi.c:215
-Read of size 1 at addr ffff8881cef1417c by task swapper/1/0
+Unfortunate, it's a too complex task find each offending commit. Therefore,
+this change fixes all memory leaks at once.
 
-Call Trace:
-<IRQ>
-ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:215
-ath9k_htc_rx_msg+0x2da/0xaf0
-drivers/net/wireless/ath/ath9k/htc_hst.c:459
-ath9k_hif_usb_reg_in_cb+0x1ba/0x630
-drivers/net/wireless/ath/ath9k/hif_usb.c:718
-__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
-usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
-dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
-call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
-expire_timers kernel/time/timer.c:1449 [inline]
-__run_timers kernel/time/timer.c:1773 [inline]
-__run_timers kernel/time/timer.c:1740 [inline]
-run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
-
-Reported-and-tested-by: syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200404041838.10426-3-hqjagain@gmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20200430091640.455-3-ulf.hansson@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/ath/ath9k/hif_usb.c      |    5 +++--
- drivers/net/wireless/ath/ath9k/hif_usb.h      |    1 +
- drivers/net/wireless/ath/ath9k/htc_drv_init.c |   10 +++++++---
- drivers/net/wireless/ath/ath9k/wmi.c          |    5 ++++-
- drivers/net/wireless/ath/ath9k/wmi.h          |    3 ++-
- 5 files changed, 17 insertions(+), 7 deletions(-)
+ drivers/mmc/core/sdio.c |   58 ++++++++++++++++++++++--------------------------
+ 1 file changed, 27 insertions(+), 31 deletions(-)
 
---- a/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -973,7 +973,7 @@ err:
- 	return -ENOMEM;
- }
+--- a/drivers/mmc/core/sdio.c
++++ b/drivers/mmc/core/sdio.c
+@@ -584,7 +584,7 @@ try_again:
+ 	 */
+ 	err = mmc_send_io_op_cond(host, ocr, &rocr);
+ 	if (err)
+-		goto err;
++		return err;
  
--static void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev)
-+void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev)
- {
- 	usb_kill_anchored_urbs(&hif_dev->regout_submitted);
- 	ath9k_hif_usb_dealloc_reg_in_urbs(hif_dev);
-@@ -1341,8 +1341,9 @@ static void ath9k_hif_usb_disconnect(str
- 
- 	if (hif_dev->flags & HIF_USB_READY) {
- 		ath9k_htc_hw_deinit(hif_dev->htc_handle, unplugged);
--		ath9k_htc_hw_free(hif_dev->htc_handle);
- 		ath9k_hif_usb_dev_deinit(hif_dev);
-+		ath9k_destoy_wmi(hif_dev->htc_handle->drv_priv);
-+		ath9k_htc_hw_free(hif_dev->htc_handle);
+ 	/*
+ 	 * For SPI, enable CRC as appropriate.
+@@ -592,17 +592,15 @@ try_again:
+ 	if (mmc_host_is_spi(host)) {
+ 		err = mmc_spi_set_crc(host, use_spi_crc);
+ 		if (err)
+-			goto err;
++			return err;
  	}
  
- 	usb_set_intfdata(interface, NULL);
---- a/drivers/net/wireless/ath/ath9k/hif_usb.h
-+++ b/drivers/net/wireless/ath/ath9k/hif_usb.h
-@@ -133,5 +133,6 @@ struct hif_device_usb {
+ 	/*
+ 	 * Allocate card structure.
+ 	 */
+ 	card = mmc_alloc_card(host, NULL);
+-	if (IS_ERR(card)) {
+-		err = PTR_ERR(card);
+-		goto err;
+-	}
++	if (IS_ERR(card))
++		return PTR_ERR(card);
  
- int ath9k_hif_usb_init(void);
- void ath9k_hif_usb_exit(void);
-+void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev);
+ 	if ((rocr & R4_MEMORY_PRESENT) &&
+ 	    mmc_sd_get_cid(host, ocr & rocr, card->raw_cid, NULL) == 0) {
+@@ -610,19 +608,15 @@ try_again:
  
- #endif /* HTC_USB_H */
---- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-@@ -931,8 +931,9 @@ err_init:
- int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
- 			   u16 devid, char *product, u32 drv_info)
- {
--	struct ieee80211_hw *hw;
-+	struct hif_device_usb *hif_dev;
- 	struct ath9k_htc_priv *priv;
-+	struct ieee80211_hw *hw;
- 	int ret;
+ 		if (oldcard && (oldcard->type != MMC_TYPE_SD_COMBO ||
+ 		    memcmp(card->raw_cid, oldcard->raw_cid, sizeof(card->raw_cid)) != 0)) {
+-			mmc_remove_card(card);
+-			pr_debug("%s: Perhaps the card was replaced\n",
+-				mmc_hostname(host));
+-			return -ENOENT;
++			err = -ENOENT;
++			goto mismatch;
+ 		}
+ 	} else {
+ 		card->type = MMC_TYPE_SDIO;
  
- 	hw = ieee80211_alloc_hw(sizeof(struct ath9k_htc_priv), &ath9k_htc_ops);
-@@ -967,7 +968,10 @@ int ath9k_htc_probe_device(struct htc_ta
+ 		if (oldcard && oldcard->type != MMC_TYPE_SDIO) {
+-			mmc_remove_card(card);
+-			pr_debug("%s: Perhaps the card was replaced\n",
+-				mmc_hostname(host));
+-			return -ENOENT;
++			err = -ENOENT;
++			goto mismatch;
+ 		}
+ 	}
+ 
+@@ -677,7 +671,7 @@ try_again:
+ 	if (!oldcard && card->type == MMC_TYPE_SD_COMBO) {
+ 		err = mmc_sd_get_csd(host, card);
+ 		if (err)
+-			return err;
++			goto remove;
+ 
+ 		mmc_decode_cid(card);
+ 	}
+@@ -704,7 +698,12 @@ try_again:
+ 			mmc_set_timing(card->host, MMC_TIMING_SD_HS);
+ 		}
+ 
+-		goto finish;
++		if (oldcard)
++			mmc_remove_card(card);
++		else
++			host->card = card;
++
++		return 0;
+ 	}
+ 
+ 	/*
+@@ -730,16 +729,14 @@ try_again:
+ 		goto remove;
+ 
+ 	if (oldcard) {
+-		int same = (card->cis.vendor == oldcard->cis.vendor &&
+-			    card->cis.device == oldcard->cis.device);
+-		mmc_remove_card(card);
+-		if (!same) {
+-			pr_debug("%s: Perhaps the card was replaced\n",
+-				mmc_hostname(host));
+-			return -ENOENT;
++		if (card->cis.vendor == oldcard->cis.vendor &&
++		    card->cis.device == oldcard->cis.device) {
++			mmc_remove_card(card);
++			card = oldcard;
++		} else {
++			err = -ENOENT;
++			goto mismatch;
+ 		}
+-
+-		card = oldcard;
+ 	}
+ 	card->ocr = ocr_card;
+ 	mmc_fixup_device(card, sdio_fixup_methods);
+@@ -800,16 +797,15 @@ try_again:
+ 		err = -EINVAL;
+ 		goto remove;
+ 	}
+-finish:
+-	if (!oldcard)
+-		host->card = card;
++
++	host->card = card;
  	return 0;
  
- err_init:
--	ath9k_deinit_wmi(priv);
-+	ath9k_stop_wmi(priv);
-+	hif_dev = (struct hif_device_usb *)htc_handle->hif_dev;
-+	ath9k_hif_usb_dealloc_urbs(hif_dev);
-+	ath9k_destoy_wmi(priv);
- err_free:
- 	ieee80211_free_hw(hw);
- 	return ret;
-@@ -982,7 +986,7 @@ void ath9k_htc_disconnect_device(struct
- 			htc_handle->drv_priv->ah->ah_flags |= AH_UNPLUGGED;
- 
- 		ath9k_deinit_device(htc_handle->drv_priv);
--		ath9k_deinit_wmi(htc_handle->drv_priv);
-+		ath9k_stop_wmi(htc_handle->drv_priv);
- 		ieee80211_free_hw(htc_handle->drv_priv->hw);
- 	}
- }
---- a/drivers/net/wireless/ath/ath9k/wmi.c
-+++ b/drivers/net/wireless/ath/ath9k/wmi.c
-@@ -112,14 +112,17 @@ struct wmi *ath9k_init_wmi(struct ath9k_
- 	return wmi;
++mismatch:
++	pr_debug("%s: Perhaps the card was replaced\n", mmc_hostname(host));
+ remove:
+-	if (!oldcard)
++	if (oldcard != card)
+ 		mmc_remove_card(card);
+-
+-err:
+ 	return err;
  }
  
--void ath9k_deinit_wmi(struct ath9k_htc_priv *priv)
-+void ath9k_stop_wmi(struct ath9k_htc_priv *priv)
- {
- 	struct wmi *wmi = priv->wmi;
- 
- 	mutex_lock(&wmi->op_mutex);
- 	wmi->stopped = true;
- 	mutex_unlock(&wmi->op_mutex);
-+}
- 
-+void ath9k_destoy_wmi(struct ath9k_htc_priv *priv)
-+{
- 	kfree(priv->wmi);
- }
- 
---- a/drivers/net/wireless/ath/ath9k/wmi.h
-+++ b/drivers/net/wireless/ath/ath9k/wmi.h
-@@ -179,7 +179,6 @@ struct wmi {
- };
- 
- struct wmi *ath9k_init_wmi(struct ath9k_htc_priv *priv);
--void ath9k_deinit_wmi(struct ath9k_htc_priv *priv);
- int ath9k_wmi_connect(struct htc_target *htc, struct wmi *wmi,
- 		      enum htc_endpoint_id *wmi_ctrl_epid);
- int ath9k_wmi_cmd(struct wmi *wmi, enum wmi_cmd_id cmd_id,
-@@ -189,6 +188,8 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum
- void ath9k_wmi_event_tasklet(unsigned long data);
- void ath9k_fatal_work(struct work_struct *work);
- void ath9k_wmi_event_drain(struct ath9k_htc_priv *priv);
-+void ath9k_stop_wmi(struct ath9k_htc_priv *priv);
-+void ath9k_destoy_wmi(struct ath9k_htc_priv *priv);
- 
- #define WMI_CMD(_wmi_cmd)						\
- 	do {								\
 
 
