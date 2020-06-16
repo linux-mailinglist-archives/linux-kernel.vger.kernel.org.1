@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871671FAF4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CB91FAF42
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgFPLds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 07:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
+        id S1728633AbgFPLdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 07:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728333AbgFPLc6 (ORCPT
+        with ESMTP id S1728501AbgFPLdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 07:32:58 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BC6C08C5C9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:32:52 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id k13so11202283vsm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:32:52 -0700 (PDT)
+        Tue, 16 Jun 2020 07:33:06 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2146C08C5C5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:33:05 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id u15so4702218vkk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1C4xlbOuF8hLryefQXY445HSGUPqVPlV2H+ODb1eYxA=;
-        b=ceofJhQisogT8djGC+30R6rH9kr18j8pEGv0o3E7GDSHGgQsSPhVHRc6HbNfK958xu
-         Itwe4tAW3ORMqnAngeF8gkzFFaOMZ+PuMRuNbeq1hm9SVEJcJNck70qMbwnLCKDIMlNK
-         /jgfIu08OHf/QouS/AlteiIEFOgmx33pDwImiI0lLCz+ZVTubelWtLR6UiwyA/uYTrPL
-         56pr8YjveJBuLa0t/dg3sUzoeT7Pms0qMYcEYTQvVfjf7+kznUMrxFnXAwL3Mvy4ajRD
-         ZW/bUsx8bXFvw78umR4r3LHiGZaV/Rg2LKkR8p3RWfvImjI/zmJOBvmLpVJxu6zHMuJ0
-         f0hQ==
+        bh=yS/6e/WCxZenWj9cO6UlgV0ZueHyZ1C28NWHU0JWvMY=;
+        b=zSO1xWCI7V3fwY5yJE/kKH0xluZrLvP7XojSc1tZbMaxWYatHTVYF3xmiua7boWXoQ
+         /wmEZPVlEr/tPhzegCZ5DxYQ7kTp0NxPET9S0BJS6uPYFScnVoisZn5YVXpfZFNAUPVe
+         E261x3yvjxDsM3DozkKtKAak3Ps0rPg1kks78JL+0S7dkM7+huylVU2hj1k7RYrYSn0W
+         aLqmQtxDiwlmZQ9aUreicXQd0w1ft5kij+p7/1U9CLhZTpwtFdp8Xue8d5zuYsvjQZgW
+         VEmTchuBWyxG7IoGARTHIREuPFp1i3Nysx26MqL1+I/CnPrCjVpGumurwyKDfNzn1F4K
+         DByg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1C4xlbOuF8hLryefQXY445HSGUPqVPlV2H+ODb1eYxA=;
-        b=S5eFPwK52vfblOJzb5wy0dGqDgCv145Gp50xpWY8wsALOKEc2umrrcx1IllfurwkRS
-         mqdrfKbxGazaxjHzplqFXybfGct/o8J91cL3RRzG5l04cz8443XjaMa81YGHPyzbldX2
-         jXleXFy3WecHb9YAA/+eTvKnTOAF9CmRyIfUGdwuQj+fBgvveVGRUVf58J0tg/90ZTjh
-         GQFn00Rpq0veRTv36+fsnOB89jI/LYpWqcsYsqTa6mdehxFwPq/p5ILeFUG8l0Kc9Tqu
-         e+tAjfmJqDov3oEutQxUcyL1YUItECR+yxpipm676dnwL0RW32Zi7kJizFQG2DoTR8DM
-         Bj1Q==
-X-Gm-Message-State: AOAM532xu/1Bpj0XM7Dj6VlrBYzDT+X6v5VzzQwisfGLIDSfd0pC3IRy
-        YRMPM6asfZVIxKzJBQxES4+vQQd3kk5Vqyaxe2pu2A==
-X-Google-Smtp-Source: ABdhPJw63noGBljzHWsWI4sYYIst23+5lAqRC5OLkTcOQ4G7Dp0cAbxMHpwylGBv2AxyVk8ZHK1Du/uSYKkWqtndx84=
-X-Received: by 2002:a67:db88:: with SMTP id f8mr1115288vsk.165.1592307171958;
- Tue, 16 Jun 2020 04:32:51 -0700 (PDT)
+        bh=yS/6e/WCxZenWj9cO6UlgV0ZueHyZ1C28NWHU0JWvMY=;
+        b=p2Dy7RhnyzevBTX6leiLIQYOcGyKS2O66qadR86dkogjowRfjsYCz9l+tJ9Q2BgSK7
+         +6MKaG0pX3KNCJL41xVCJm37j5g8GEFffNSpVmJLJbJwfIjXrmnEWZlDIyElDtm5fAVH
+         ukqk0pLK+/NgnsYiQwh05FW5WdJMGObmE1pSIwxIFshbANBF9cJjgqyoBZv77tzs9nhC
+         HDb0jJ1x7CEui8LW2BlddgDUHYtUD6TQxOGjcgD79UISsIJT0aCAwvufTfePJ6cKPVeX
+         cbY6wf2vYvPPHVdGW9M6AYtLHnyOtAO8zl8IUysufTYtxw4Q8WpGlilHp15UPOmZEH6h
+         eftw==
+X-Gm-Message-State: AOAM5335BDu5cJYBHsOPNrfbob+PdLvhLPLODaESwK06X6U1afhnNoYX
+        IG8bichuwqye/p+C65W764zzOp+fRX/Uxzw2w8axgA==
+X-Google-Smtp-Source: ABdhPJyjMOjyUc4A/bFC2IEyahD8R1FiPDEbgPyOZ0ntp/23TwR+c4zzqMGiaNpEh5hEfDmfBPnYKmBSY9C6UP9z80A=
+X-Received: by 2002:a1f:9511:: with SMTP id x17mr1128044vkd.101.1592307185187;
+ Tue, 16 Jun 2020 04:33:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1591691846-7578-1-git-send-email-ppvk@codeaurora.org> <1591691846-7578-3-git-send-email-ppvk@codeaurora.org>
-In-Reply-To: <1591691846-7578-3-git-send-email-ppvk@codeaurora.org>
+References: <1591326240-28928-1-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <1591326240-28928-1-git-send-email-skomatineni@nvidia.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 16 Jun 2020 13:32:15 +0200
-Message-ID: <CAPDyKFr8Ge617QchXG1cMgZUvPZ+fRUpJamv173h1faz7-0baw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] dt-bindings: mmc: sdhci-msm: Add interconnect BW
- scaling strings
-To:     Pradeep P V K <ppvk@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+Date:   Tue, 16 Jun 2020 13:32:27 +0200
+Message-ID: <CAPDyKFpscyQXYF+WQ98_sRvonCL+ZbddX+ctw3umQ8HLAqvxmA@mail.gmail.com>
+Subject: Re: [PATCH] sdhci: tegra: Add comment for PADCALIB and PAD_CONTROL NVQUIRKS
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-mmc-owner@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>, sibis@codeaurora.org,
-        matthias@chromium.org
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Jun 2020 at 10:38, Pradeep P V K <ppvk@codeaurora.org> wrote:
+On Fri, 5 Jun 2020 at 05:04, Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
 >
-> Add interconnect bandwidth scaling supported strings for qcom-sdhci
-> controller.
+> This patch adds comments about NVQUIRKS HAS_PADCALIB and NEEDS_PAD_CONTROL.
 >
-> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 
 Applied for next, thanks!
 
@@ -89,45 +77,30 @@ Uffe
 
 
 > ---
->  Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+>  drivers/mmc/host/sdhci-tegra.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-> index b8e1d2b..3b602fd 100644
-> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
-> @@ -54,6 +54,21 @@ Required properties:
->  - qcom,dll-config: Chipset and Platform specific value. Use this field to
->         specify the DLL_CONFIG register value as per Hardware Programming Guide.
->
-> +Optional Properties:
-> +* Following bus parameters are required for interconnect bandwidth scaling:
-> +- interconnects: Pairs of phandles and interconnect provider specifier
-> +                to denote the edge source and destination ports of
-> +                the interconnect path.
-> +
-> +- interconnect-names: For sdhc, we have two main paths.
-> +               1. Data path : sdhc to ddr
-> +               2. Config path : cpu to sdhc
-> +               For Data interconnect path the name supposed to be
-> +               is "sdhc-ddr" and for config interconnect path it is
-> +               "cpu-sdhc".
-> +               Please refer to Documentation/devicetree/bindings/
-> +               interconnect/ for more details.
-> +
->  Example:
->
->         sdhc_1: sdhci@f9824900 {
-> @@ -71,6 +86,9 @@ Example:
->
->                 clocks = <&gcc GCC_SDCC1_APPS_CLK>, <&gcc GCC_SDCC1_AHB_CLK>;
->                 clock-names = "core", "iface";
-> +               interconnects = <&qnoc MASTER_SDCC_ID &qnoc SLAVE_DDR_ID>,
-> +                               <&qnoc MASTER_CPU_ID &qnoc SLAVE_SDCC_ID>;
-> +               interconnect-names = "sdhc-ddr","cpu-sdhc";
->
->                 qcom,dll-config = <0x000f642c>;
->                 qcom,ddr-config = <0x80040868>;
+> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+> index 3a372ab..0a3f9d0 100644
+> --- a/drivers/mmc/host/sdhci-tegra.c
+> +++ b/drivers/mmc/host/sdhci-tegra.c
+> @@ -96,7 +96,16 @@
+>  #define NVQUIRK_ENABLE_SDR50                           BIT(3)
+>  #define NVQUIRK_ENABLE_SDR104                          BIT(4)
+>  #define NVQUIRK_ENABLE_DDR50                           BIT(5)
+> +/*
+> + * HAS_PADCALIB NVQUIRK is for SoC's supporting auto calibration of pads
+> + * drive strength.
+> + */
+>  #define NVQUIRK_HAS_PADCALIB                           BIT(6)
+> +/*
+> + * NEEDS_PAD_CONTROL NVQUIRK is for SoC's having separate 3V3 and 1V8 pads.
+> + * 3V3/1V8 pad selection happens through pinctrl state selection depending
+> + * on the signaling mode.
+> + */
+>  #define NVQUIRK_NEEDS_PAD_CONTROL                      BIT(7)
+>  #define NVQUIRK_DIS_CARD_CLK_CONFIG_TAP                        BIT(8)
+>  #define NVQUIRK_CQHCI_DCMD_R1B_CMD_TIMING              BIT(9)
 > --
-> 1.9.1
+> 2.7.4
 >
