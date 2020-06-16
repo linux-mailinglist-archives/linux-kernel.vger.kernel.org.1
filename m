@@ -2,247 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CBA1FA7E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B561FA7F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgFPEqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 00:46:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54232 "EHLO mail.kernel.org"
+        id S1726699AbgFPExO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 00:53:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47502 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgFPEqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 00:46:36 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725790AbgFPExO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 00:53:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592283192; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=TnM1d+LijmPwv3QcoivuaXlgi9UGoODJljwXJ93Cqh0=; b=gCdql9ZR1RRzkRzIkqyK6KytEVisGGkd4n/OfuT63Z+DWRCLdapCMHK7TA3Iou48GrSNaEPh
+ WMn4HOM1PAgfZlJ7+nRF/fc+AeYnwHWrI3zti/Ue4bsWnmcXkpfy1WQEbEinp+MWc6DhtOua
+ +8bqQAV3ZYL3p+SIXD8I8AYMcmI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5ee8502aad153efa340722a3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 04:52:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE0E2C43387; Tue, 16 Jun 2020 04:52:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.206.24.160] (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30832206DB;
-        Tue, 16 Jun 2020 04:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592282795;
-        bh=5gDFn5P6wSFQJ52Xxmdb7V5k+gomrQfYAQ0eF53nfTY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j2EUkj+5fc5oNgZty0JRoIvCT4uUByj46uBNiu3fYdU4Mj5hWCWIi61uE7Vx1JMEF
-         Bo4AjH3jovQ5+l3YW2chKZ2amQK929DDzb+SjgpuoO50RX9DxZv6s4W0iwBphGVcMO
-         XYoi9sl/MY7ITxeAv3+7XzX6MpFhEEIuhmRAgNB0=
-Date:   Mon, 15 Jun 2020 23:51:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [GIT PULL v2] flexible-array member conversion patches for 5.8-rc2
-Message-ID: <20200616045155.GA2728@embeddedor>
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E765C433C8;
+        Tue, 16 Jun 2020 04:52:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4E765C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sanm@codeaurora.org
+Subject: Re: [PATCH v7 2/4] usb: dwc3: qcom: Add interconnect support in dwc3
+ driver
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+References: <1585718145-29537-1-git-send-email-sanm@codeaurora.org>
+ <1585718145-29537-3-git-send-email-sanm@codeaurora.org>
+ <159120577830.69627.13288547914742515702@swboyd.mtv.corp.google.com>
+ <d9ccf188-4f00-d3ac-ba0f-73f06c087553@codeaurora.org>
+ <159126939154.69627.13027312816468830595@swboyd.mtv.corp.google.com>
+ <20200615194239.GW4525@google.com>
+From:   "Sandeep Maheswaram (Temp)" <sanm@codeaurora.org>
+Message-ID: <3f8fcb0e-387d-e902-9f6b-1fde9d6ae404@codeaurora.org>
+Date:   Tue, 16 Jun 2020 10:22:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200615194239.GW4525@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-v2 of today's pull request. I considerably reduced the size of the changelog
-text for all the patches, while at the same time, pointing people to where
-they can read further details about the changes, in case they want/need to.
+On 6/16/2020 1:12 AM, Matthias Kaehlcke wrote:
+> On Thu, Jun 04, 2020 at 04:16:31AM -0700, Stephen Boyd wrote:
+>> Quoting Sandeep Maheswaram (Temp) (2020-06-04 02:43:09)
+>>> On 6/3/2020 11:06 PM, Stephen Boyd wrote:
+>>>> Quoting Sandeep Maheswaram (2020-03-31 22:15:43)
+>>>>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>>>>> index 1dfd024..d33ae86 100644
+>>>>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>>>>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>>>>> @@ -285,6 +307,101 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
+>>>>>           return 0;
+>>>>>    }
+>>>>>    
+>>>>> +
+>>>>> +/**
+>>>>> + * dwc3_qcom_interconnect_init() - Get interconnect path handles
+>>>>> + * @qcom:                      Pointer to the concerned usb core.
+>>>>> + *
+>>>>> + */
+>>>>> +static int dwc3_qcom_interconnect_init(struct dwc3_qcom *qcom)
+>>>>> +{
+>>>>> +       struct device *dev = qcom->dev;
+>>>>> +       int ret;
+>>>>> +
+>>>>> +       if (!device_is_bound(&qcom->dwc3->dev))
+>>>>> +               return -EPROBE_DEFER;
+>>>> How is this supposed to work? I see that this was added in an earlier
+>>>> revision of this patch series but there isn't any mention of why
+>>>> device_is_bound() is used here. It would be great if there was a comment
+>>>> detailing why this is necessary. It sounds like maximum_speed is
+>>>> important?
+>>>>
+>>>> Furthermore, dwc3_qcom_interconnect_init() is called by
+>>>> dwc3_qcom_probe() which is the function that registers the device for
+>>>> qcom->dwc3->dev. If that device doesn't probe between the time it is
+>>>> registered by dwc3_qcom_probe() and this function is called then we'll
+>>>> fail dwc3_qcom_probe() with -EPROBE_DEFER. And that will remove the
+>>>> qcom->dwc3->dev device from the platform bus because we call
+>>>> of_platform_depopulate() on the error path of dwc3_qcom_probe().
+>>>>
+>>>> So isn't this whole thing racy and can potentially lead us to a driver
+>>>> probe loop where the wrapper (dwc3_qcom) and the core (dwc3) are probing
+>>>> and we're trying to time it just right so that driver for dwc3 binds
+>>>> before we setup interconnects? I don't know if dwc3 can communicate to
+>>>> the wrapper but that would be more of a direct way to do this. Or maybe
+>>>> the wrapper should try to read the DT property for maximum speed and
+>>>> fallback to a worst case high bandwidth value if it can't figure it out
+>>>> itself without help from dwc3 core.
+>>>>
+>>> This was added in V4 to address comments from Matthias in V3
+>>>
+>>> https://patchwork.kernel.org/patch/11148587/
+>>>
+>> Yes, that why I said:
+>>
+>> "I see that this was added in an earlier
+>>   revision of this patch series but there isn't any mention of why
+>>   device_is_bound() is used here. It would be great if there was a comment
+>>   detailing why this is necessary. It sounds like maximum_speed is
+>>   important?"
+>>
+>> Can you please respond to the rest of my email?
+> I agree with Stephen that using device_is_bound() isn't a good option
+> in this case, when I suggested it I wasn't looking at the big picture
+> of how probing the core driver is triggered, sorry about that.
+>
+> Reading the speed from the DT with usb_get_maximum_speed() as Stephen
+> suggests would be an option, the inconvenient is that we then
+> essentially require the property to be defined, while the core driver
+> gets a suitable value from hardware registers. Not sure if the wrapper
+> driver could read from the same registers.
+>
+> One option could be to poll device_is_bound() for 100 ms (or so), with
+> sleeps between polls. It's not elegant but would probably work if we
+> don't find a better solution.
+if (np)
+         ret = dwc3_qcom_of_register_core(pdev);
+     else
+         ret = dwc3_qcom_acpi_register_core(pdev);
 
-I also reduced the size and modified the commit message for the pull request.
-It no longer contains the part about the one-element arrays.
+     if (ret) {
+         dev_err(dev, "failed to register DWC3 Core, err=%d\n", ret);
+         goto depopulate;
+     }
 
-Thanks
---
-Gustavo
+     ret = dwc3_qcom_interconnect_init(qcom);
+     if (ret)
+         goto depopulate;
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+     qcom->mode = usb_get_dr_mode(&qcom->dwc3->dev);
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+Before calling dwc3_qcom_interconnect_init we are checking
 
-are available in the Git repository at:
+     if (ret) {
+         dev_err(dev, "failed to register DWC3 Core, err=%d\n", ret);
+         goto depopulate;
+     }
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/flex-array-conversions-5.8-rc2
+Doesn't  this condition confirm the core driver is probed?
 
-for you to fetch changes up to 76fafbfffb447d2a5a95d5a9486b0217c00f9785:
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
-  w1: Replace zero-length array with flexible-array (2020-06-15 23:08:32 -0500)
-
-----------------------------------------------------------------
-flexible-array member conversion patches for 5.8-rc2
-
-Hi Linus,
-
-Please, pull the following patches that replace zero-length arrays with
-flexible-array members.
-
-Notice that all of these patches have been baking in linux-next for
-two development cycles now.
-
-There is a regular need in the kernel to provide a way to declare having a
-dynamically sized set of trailing elements in a structure. Kernel code should
-always use “flexible array members”[1] for these cases. The older style of
-one-element or zero-length arrays should no longer be used[2].
-
-C99 introduced “flexible array members”, which lacks a numeric size for the
-array declaration entirely:
-
-struct something {
-        size_t count;
-        struct foo items[];
-};
-
-This is the way the kernel expects dynamically sized trailing elements to be
-declared. It allows the compiler to generate errors when the flexible array
-does not occur last in the structure, which helps to prevent some kind of
-undefined behavior[3] bugs from being inadvertently introduced to the codebase.
-It also allows the compiler to correctly analyze array sizes (via sizeof(),
-CONFIG_FORTIFY_SOURCE, and CONFIG_UBSAN_BOUNDS). For instance, there is no
-mechanism that warns us that the following application of the sizeof() operator
-to a zero-length array always results in zero:
-
-struct something {
-        size_t count;
-        struct foo items[0];
-};
-
-struct something *instance;
-
-instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-instance->count = count;
-
-size = sizeof(instance->items) * instance->count;
-memcpy(instance->items, source, size);
-
-At the last line of code above, size turns out to be zero, when one might have
-thought it represents the total size in bytes of the dynamic memory recently
-allocated for the trailing array items. Here are a couple examples of this
-issue[4][5]. Instead, flexible array members have incomplete type, and so the
-sizeof() operator may not be applied[6], so any misuse of such operators will
-be immediately noticed at build time.
-
-The cleanest and least error-prone way to implement this is through the use of
-a flexible array member:
-
-struct something {
-        size_t count;
-        struct foo items[];
-};
-
-struct something *instance;
-
-instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-instance->count = count;
-
-size = sizeof(instance->items[0]) * instance->count;
-memcpy(instance->items, source, size);
-
-Thanks
---
-Gustavo
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://github.com/KSPP/linux/issues/21
-[3] https://git.kernel.org/linus/76497732932f15e7323dc805e8ea8dc11bb587cf
-[4] https://git.kernel.org/linus/f2cd32a443da694ac4e28fbf4ac6f9d5cc63a539
-[5] https://git.kernel.org/linus/ab91c2a89f86be2898cee208d492816ec238b2cf
-[6] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (41):
-      firmware: dmi-sysfs: Replace zero-length array with flexible-array member
-      firmware: google: memconsole: Replace zero-length array with flexible-array member
-      firmware: google: vpd: Replace zero-length array with flexible-array member
-      aio: Replace zero-length array with flexible-array
-      ARM: tegra: Replace zero-length array with flexible-array
-      dmaengine: Replace zero-length array with flexible-array
-      can: peak_canfd: Replace zero-length array with flexible-array
-      can: Replace zero-length array with flexible-array
-      crypto: Replace zero-length array with flexible-array
-      drbd: Replace zero-length array with flexible-array
-      drm/edid: Replace zero-length array with flexible-array
-      cb710: Replace zero-length array with flexible-array
-      firewire: ohci: Replace zero-length array with flexible-array
-      FS-Cache: Replace zero-length array with flexible-array
-      ia64: kernel: unwind_i.h: Replace zero-length array with flexible-array
-      samples: mei: Replace zero-length array with flexible-array
-      ibft: Replace zero-length array with flexible-array
-      jffs2: Replace zero-length array with flexible-array
-      KVM: Replace zero-length array with flexible-array
-      kexec: Replace zero-length array with flexible-array
-      keys: encrypted-type: Replace zero-length array with flexible-array
-      kprobes: Replace zero-length array with flexible-array
-      libata: Replace zero-length array with flexible-array
-      tools/testing/nvdimm: Replace zero-length array with flexible-array
-      block: Replace zero-length array with flexible-array
-      oprofile: Replace zero-length array with flexible-array
-      firmware: pcdp: Replace zero-length array with flexible-array
-      media: pwc: Replace zero-length array with flexible-array
-      rapidio: Replace zero-length array with flexible-array
-      RxRPC: Replace zero-length array with flexible-array
-      phy: samsung: Replace zero-length array with flexible-array
-      sctp: Replace zero-length array with flexible-array
-      ima: Replace zero-length array with flexible-array
-      ASoC: SOF: Replace zero-length array with flexible-array
-      Squashfs: Replace zero-length array with flexible-array
-      stm class: Replace zero-length array with flexible-array
-      dmaengine: tegra-apb: Replace zero-length array with flexible-array
-      tifm: Replace zero-length array with flexible-array
-      soc: ti: Replace zero-length array with flexible-array
-      tracing/probe: Replace zero-length array with flexible-array
-      w1: Replace zero-length array with flexible-array
-
- arch/ia64/kernel/unwind_i.h                   |  2 +-
- block/partitions/ldm.h                        |  2 +-
- drivers/amba/tegra-ahb.c                      |  2 +-
- drivers/block/drbd/drbd_int.h                 |  2 +-
- drivers/block/drbd/drbd_protocol.h            |  8 +++---
- drivers/crypto/chelsio/chcr_crypto.h          |  8 +++---
- drivers/dma/milbeaut-hdmac.c                  |  2 +-
- drivers/dma/milbeaut-xdmac.c                  |  2 +-
- drivers/dma/moxart-dma.c                      |  2 +-
- drivers/dma/tegra20-apb-dma.c                 |  2 +-
- drivers/dma/ti/edma.c                         |  2 +-
- drivers/dma/ti/k3-udma.c                      |  2 +-
- drivers/dma/timb_dma.c                        |  2 +-
- drivers/firewire/core-cdev.c                  |  2 +-
- drivers/firewire/core-transaction.c           |  2 +-
- drivers/firewire/core.h                       |  2 +-
- drivers/firewire/nosy.c                       |  2 +-
- drivers/firewire/ohci.c                       |  2 +-
- drivers/firmware/dmi-sysfs.c                  |  2 +-
- drivers/firmware/google/memconsole-coreboot.c |  2 +-
- drivers/firmware/google/vpd.c                 |  2 +-
- drivers/firmware/iscsi_ibft.c                 |  2 +-
- drivers/firmware/pcdp.h                       |  2 +-
- drivers/hwtracing/stm/policy.c                |  2 +-
- drivers/hwtracing/stm/stm.h                   |  4 +--
- drivers/media/usb/pwc/pwc.h                   |  2 +-
- drivers/net/can/peak_canfd/peak_pciefd_main.c |  4 +--
- drivers/oprofile/cpu_buffer.h                 |  2 +-
- drivers/phy/samsung/phy-samsung-usb2.h        |  2 +-
- drivers/rapidio/rio-scan.c                    |  2 +-
- drivers/soc/ti/knav_qmss.h                    |  2 +-
- drivers/w1/w1_netlink.h                       |  4 +--
- fs/aio.c                                      |  2 +-
- fs/jffs2/nodelist.h                           |  2 +-
- fs/jffs2/summary.h                            |  4 +--
- fs/squashfs/squashfs_fs.h                     | 16 ++++++------
- include/drm/drm_displayid.h                   |  2 +-
- include/keys/encrypted-type.h                 |  2 +-
- include/keys/rxrpc-type.h                     |  4 +--
- include/linux/can/skb.h                       |  2 +-
- include/linux/cb710.h                         |  2 +-
- include/linux/dmaengine.h                     |  4 +--
- include/linux/fscache-cache.h                 |  2 +-
- include/linux/kexec.h                         |  2 +-
- include/linux/kprobes.h                       |  2 +-
- include/linux/kvm_host.h                      |  2 +-
- include/linux/libata.h                        |  2 +-
- include/linux/sctp.h                          | 36 +++++++++++++--------------
- include/linux/tifm.h                          |  2 +-
- kernel/trace/trace_probe.h                    |  2 +-
- samples/mei/mei-amt-version.c                 |  2 +-
- security/integrity/integrity.h                |  4 +--
- sound/soc/sof/probe.h                         |  8 +++---
- tools/testing/nvdimm/test/nfit_test.h         |  6 ++---
- 54 files changed, 96 insertions(+), 96 deletions(-)
