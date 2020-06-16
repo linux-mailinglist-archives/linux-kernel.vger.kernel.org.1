@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620961FB6CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97621FB774
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731195AbgFPPk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54846 "EHLO mail.kernel.org"
+        id S1731607AbgFPPqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731151AbgFPPkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:22 -0400
+        id S1732179AbgFPPqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:46:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25494207C4;
-        Tue, 16 Jun 2020 15:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F36942071A;
+        Tue, 16 Jun 2020 15:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322021;
-        bh=socGpP4zTxygVK39kI8tdX5mVQwNf/ee6QMe7SNPel0=;
+        s=default; t=1592322373;
+        bh=na2xOGjmbKeSW1QL4qIHXsFaPB5RgUOVliuVQ9YY+lE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pql1cVvV0DuFbAoJgyIdSkNOVwDGWC4VFwGZiWmd24izsPa2r6dKsuWkmzPoGHsjQ
-         aAMCTQqd48/XinufGz/y5YNgKOy/PwEklu4Blqdo96IxuU1mogMg0DgaVvBUGpttrA
-         Bu66+u9rSyYajFeFF3sm/txPIKJ2iWgSRoIyr5MA=
+        b=M2MPwlgbu3IGpV+nuAg8FZYcHYgaBewQ/ePJoDc0oKPj4DhzKxsntCHIZSos1hjB+
+         IWLhk3SDlwh8514XwzQJyDQh/to/tFPnCmy9KM0ul1e9DChkRswO2B/Wq++gvZgFvu
+         SQfItB1N7UXDW27cJHtGdHATwRm2FiJlwB4Us5qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -34,12 +34,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 078/134] gup: document and work around "COW can break either way" issue
-Date:   Tue, 16 Jun 2020 17:34:22 +0200
-Message-Id: <20200616153104.503714043@linuxfoundation.org>
+Subject: [PATCH 5.7 089/163] gup: document and work around "COW can break either way" issue
+Date:   Tue, 16 Jun 2020 17:34:23 +0200
+Message-Id: <20200616153111.107980948@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -146,7 +146,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
 +++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -619,6 +619,14 @@ static int i915_gem_userptr_get_pages(st
+@@ -598,6 +598,14 @@ static int i915_gem_userptr_get_pages(st
  				      GFP_KERNEL |
  				      __GFP_NORETRY |
  				      __GFP_NOWARN);
@@ -163,7 +163,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  						       num_pages,
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -161,13 +161,22 @@ static int follow_pfn_pte(struct vm_area
+@@ -382,13 +382,22 @@ static int follow_pfn_pte(struct vm_area
  }
  
  /*
@@ -186,11 +186,11 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 + */
 +static inline bool should_force_cow_break(struct vm_area_struct *vma, unsigned int flags)
 +{
-+	return is_cow_mapping(vma->vm_flags) && (flags & FOLL_GET);
++	return is_cow_mapping(vma->vm_flags) && (flags & (FOLL_GET | FOLL_PIN));
  }
  
  static struct page *follow_page_pte(struct vm_area_struct *vma,
-@@ -823,12 +832,18 @@ static long __get_user_pages(struct task
+@@ -1066,9 +1075,11 @@ static long __get_user_pages(struct task
  				goto out;
  			}
  			if (is_vm_hugetlb_page(vma)) {
@@ -198,8 +198,12 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 +					foll_flags |= FOLL_WRITE;
  				i = follow_hugetlb_page(mm, vma, pages, vmas,
  						&start, &nr_pages, i,
--						gup_flags, nonblocking);
-+						foll_flags, nonblocking);
+-						gup_flags, locked);
++						foll_flags, locked);
+ 				if (locked && *locked == 0) {
+ 					/*
+ 					 * We've got a VM_FAULT_RETRY
+@@ -1082,6 +1093,10 @@ static long __get_user_pages(struct task
  				continue;
  			}
  		}
@@ -210,7 +214,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  retry:
  		/*
  		 * If we have a pending SIGKILL, don't keep faulting pages and
-@@ -2316,6 +2331,10 @@ static bool gup_fast_permitted(unsigned
+@@ -2674,6 +2689,10 @@ static bool gup_fast_permitted(unsigned
   *
   * If the architecture does not support this function, simply return with no
   * pages pinned.
@@ -221,7 +225,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
   */
  int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
  			  struct page **pages)
-@@ -2343,6 +2362,12 @@ int __get_user_pages_fast(unsigned long
+@@ -2709,6 +2728,12 @@ int __get_user_pages_fast(unsigned long
  	 *
  	 * We do not adopt an rcu_read_lock(.) here as we also want to
  	 * block IPIs that come from THPs splitting.
@@ -234,7 +238,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	 */
  
  	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
-@@ -2415,10 +2440,17 @@ int get_user_pages_fast(unsigned long st
+@@ -2766,10 +2791,17 @@ static int internal_get_user_pages_fast(
  	if (unlikely(!access_ok((void __user *)start, len)))
  		return -EFAULT;
  
@@ -248,14 +252,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
  	    gup_fast_permitted(start, end)) {
  		local_irq_disable();
--		gup_pgd_range(addr, end, gup_flags, pages, &nr);
-+		gup_pgd_range(addr, end, gup_flags | FOLL_WRITE, pages, &nr);
+-		gup_pgd_range(addr, end, gup_flags, pages, &nr_pinned);
++		gup_pgd_range(addr, end, gup_flags | FOLL_WRITE, pages, &nr_pinned);
  		local_irq_enable();
- 		ret = nr;
+ 		ret = nr_pinned;
  	}
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
-@@ -1454,13 +1454,12 @@ out_unlock:
+@@ -1515,13 +1515,12 @@ out_unlock:
  }
  
  /*
