@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C601FB930
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F871FBA7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732699AbgFPPvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47988 "EHLO mail.kernel.org"
+        id S1731890AbgFPPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732664AbgFPPv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:27 -0400
+        id S1728448AbgFPPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:43:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B5D1208D5;
-        Tue, 16 Jun 2020 15:51:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33169208D5;
+        Tue, 16 Jun 2020 15:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322686;
-        bh=AU8kPO1hPe5EGPaST5+To5lYsboUwNEV7+7aWvUfdVY=;
+        s=default; t=1592322228;
+        bh=tsKDLnWFTSaaElZKoZK2jgT8PGZj3lzOrzE87+HxmHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G+yTT5kljlEhuvJK7SHb9Pku84zKmGMJemHI816EOakBU06FjBN4O7sHmLmrpzCr7
-         kZgg/FH4imAG32j6njWYAeOQ1xeiRAsNymjsgHGe61Nfo4zFqz5K9M5WVLUYEbxdvx
-         vgt5P8FWq/Q7wypyzYbYGLIgGJm8bPBamOb389dM=
+        b=ITXpQoLKcPz/GVKWfqEbdQeC0/8k2V+vvtke/4HslFQV1e6cgu8FXmWVQPv+SdKn5
+         CelU5BAR+IPnoCQeUsLhhbQvvoT5l9YvIVGST8AdAWC/UehFtSPCXG2ipdxFY2Ro44
+         ai3NHwn41u0hS7NgwS01b6g9LxQrsV+mYmKiRjww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 034/161] smack: avoid unused sip variable warning
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.7 050/163] powerpc/ptdump: Properly handle non standard page size
 Date:   Tue, 16 Jun 2020 17:33:44 +0200
-Message-Id: <20200616153108.013763072@linuxfoundation.org>
+Message-Id: <20200616153109.245579324@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,166 +44,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 00720f0e7f288d29681d265c23b22bb0f0f4e5b4 ]
+commit b00ff6d8c1c3898b0f768cbb38ef722d25bd2f39 upstream.
 
-The mix of IS_ENABLED() and #ifdef checks has left a combination
-that causes a warning about an unused variable:
+In order to properly display information regardless of the page size,
+it is necessary to take into account real page size.
 
-security/smack/smack_lsm.c: In function 'smack_socket_connect':
-security/smack/smack_lsm.c:2838:24: error: unused variable 'sip' [-Werror=unused-variable]
- 2838 |   struct sockaddr_in6 *sip = (struct sockaddr_in6 *)sap;
+Fixes: cabe8138b23c ("powerpc: dump as a single line areas mapping a single physical page.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/a53b2a0ffd042a8d85464bf90d55bc5b970e00a1.1589866984.git.christophe.leroy@csgroup.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Change the code to use C-style checks consistently so the compiler
-can handle it correctly.
-
-Fixes: 87fbfffcc89b ("broken ping to ipv6 linklocal addresses on debian buster")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smack.h     |  6 ------
- security/smack/smack_lsm.c | 25 ++++++++-----------------
- 2 files changed, 8 insertions(+), 23 deletions(-)
+ arch/powerpc/mm/ptdump/ptdump.c |   21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/security/smack/smack.h b/security/smack/smack.h
-index 62529f382942..335d2411abe4 100644
---- a/security/smack/smack.h
-+++ b/security/smack/smack.h
-@@ -148,7 +148,6 @@ struct smk_net4addr {
- 	struct smack_known	*smk_label;	/* label */
- };
+--- a/arch/powerpc/mm/ptdump/ptdump.c
++++ b/arch/powerpc/mm/ptdump/ptdump.c
+@@ -60,6 +60,7 @@ struct pg_state {
+ 	unsigned long start_address;
+ 	unsigned long start_pa;
+ 	unsigned long last_pa;
++	unsigned long page_size;
+ 	unsigned int level;
+ 	u64 current_flags;
+ 	bool check_wx;
+@@ -157,9 +158,9 @@ static void dump_addr(struct pg_state *s
+ #endif
  
--#if IS_ENABLED(CONFIG_IPV6)
- /*
-  * An entry in the table identifying IPv6 hosts.
-  */
-@@ -159,9 +158,7 @@ struct smk_net6addr {
- 	int			smk_masks;	/* mask size */
- 	struct smack_known	*smk_label;	/* label */
- };
--#endif /* CONFIG_IPV6 */
- 
--#ifdef SMACK_IPV6_PORT_LABELING
- /*
-  * An entry in the table identifying ports.
-  */
-@@ -174,7 +171,6 @@ struct smk_port_label {
- 	short			smk_sock_type;	/* Socket type */
- 	short			smk_can_reuse;
- };
--#endif /* SMACK_IPV6_PORT_LABELING */
- 
- struct smack_known_list_elem {
- 	struct list_head	list;
-@@ -335,9 +331,7 @@ extern struct smack_known smack_known_web;
- extern struct mutex	smack_known_lock;
- extern struct list_head smack_known_list;
- extern struct list_head smk_net4addr_list;
--#if IS_ENABLED(CONFIG_IPV6)
- extern struct list_head smk_net6addr_list;
--#endif /* CONFIG_IPV6 */
- 
- extern struct mutex     smack_onlycap_lock;
- extern struct list_head smack_onlycap_list;
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 8c61d175e195..14bf2f4aea3b 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -50,10 +50,8 @@
- #define SMK_RECEIVING	1
- #define SMK_SENDING	2
- 
--#ifdef SMACK_IPV6_PORT_LABELING
--DEFINE_MUTEX(smack_ipv6_lock);
-+static DEFINE_MUTEX(smack_ipv6_lock);
- static LIST_HEAD(smk_ipv6_port_list);
--#endif
- static struct kmem_cache *smack_inode_cache;
- struct kmem_cache *smack_rule_cache;
- int smack_enabled;
-@@ -2320,7 +2318,6 @@ static struct smack_known *smack_ipv4host_label(struct sockaddr_in *sip)
- 	return NULL;
+ 	pt_dump_seq_printf(st->seq, REG "-" REG " ", st->start_address, addr - 1);
+-	if (st->start_pa == st->last_pa && st->start_address + PAGE_SIZE != addr) {
++	if (st->start_pa == st->last_pa && st->start_address + st->page_size != addr) {
+ 		pt_dump_seq_printf(st->seq, "[" REG "]", st->start_pa);
+-		delta = PAGE_SIZE >> 10;
++		delta = st->page_size >> 10;
+ 	} else {
+ 		pt_dump_seq_printf(st->seq, " " REG " ", st->start_pa);
+ 		delta = (addr - st->start_address) >> 10;
+@@ -190,7 +191,7 @@ static void note_prot_wx(struct pg_state
  }
  
--#if IS_ENABLED(CONFIG_IPV6)
- /*
-  * smk_ipv6_localhost - Check for local ipv6 host address
-  * @sip: the address
-@@ -2388,7 +2385,6 @@ static struct smack_known *smack_ipv6host_label(struct sockaddr_in6 *sip)
+ static void note_page(struct pg_state *st, unsigned long addr,
+-	       unsigned int level, u64 val)
++	       unsigned int level, u64 val, unsigned long page_size)
+ {
+ 	u64 flag = val & pg_level[level].mask;
+ 	u64 pa = val & PTE_RPN_MASK;
+@@ -202,6 +203,7 @@ static void note_page(struct pg_state *s
+ 		st->start_address = addr;
+ 		st->start_pa = pa;
+ 		st->last_pa = pa;
++		st->page_size = page_size;
+ 		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
+ 	/*
+ 	 * Dump the section of virtual memory when:
+@@ -213,7 +215,7 @@ static void note_page(struct pg_state *s
+ 	 */
+ 	} else if (flag != st->current_flags || level != st->level ||
+ 		   addr >= st->marker[1].start_address ||
+-		   (pa != st->last_pa + PAGE_SIZE &&
++		   (pa != st->last_pa + st->page_size &&
+ 		    (pa != st->start_pa || st->start_pa != st->last_pa))) {
  
- 	return NULL;
- }
--#endif /* CONFIG_IPV6 */
+ 		/* Check the PTE flags */
+@@ -241,6 +243,7 @@ static void note_page(struct pg_state *s
+ 		st->start_address = addr;
+ 		st->start_pa = pa;
+ 		st->last_pa = pa;
++		st->page_size = page_size;
+ 		st->current_flags = flag;
+ 		st->level = level;
+ 	} else {
+@@ -256,7 +259,7 @@ static void walk_pte(struct pg_state *st
  
- /**
-  * smack_netlabel - Set the secattr on a socket
-@@ -2477,7 +2473,6 @@ static int smack_netlabel_send(struct sock *sk, struct sockaddr_in *sap)
- 	return smack_netlabel(sk, sk_lbl);
- }
+ 	for (i = 0; i < PTRS_PER_PTE; i++, pte++) {
+ 		addr = start + i * PAGE_SIZE;
+-		note_page(st, addr, 4, pte_val(*pte));
++		note_page(st, addr, 4, pte_val(*pte), PAGE_SIZE);
  
--#if IS_ENABLED(CONFIG_IPV6)
- /**
-  * smk_ipv6_check - check Smack access
-  * @subject: subject Smack label
-@@ -2510,7 +2505,6 @@ static int smk_ipv6_check(struct smack_known *subject,
- 	rc = smk_bu_note("IPv6 check", subject, object, MAY_WRITE, rc);
- 	return rc;
- }
--#endif /* CONFIG_IPV6 */
- 
- #ifdef SMACK_IPV6_PORT_LABELING
- /**
-@@ -2599,6 +2593,7 @@ static void smk_ipv6_port_label(struct socket *sock, struct sockaddr *address)
- 	mutex_unlock(&smack_ipv6_lock);
- 	return;
- }
-+#endif
- 
- /**
-  * smk_ipv6_port_check - check Smack port access
-@@ -2661,7 +2656,6 @@ static int smk_ipv6_port_check(struct sock *sk, struct sockaddr_in6 *address,
- 
- 	return smk_ipv6_check(skp, object, address, act);
- }
--#endif /* SMACK_IPV6_PORT_LABELING */
- 
- /**
-  * smack_inode_setsecurity - set smack xattrs
-@@ -2836,24 +2830,21 @@ static int smack_socket_connect(struct socket *sock, struct sockaddr *sap,
- 		return 0;
- 	if (IS_ENABLED(CONFIG_IPV6) && sap->sa_family == AF_INET6) {
- 		struct sockaddr_in6 *sip = (struct sockaddr_in6 *)sap;
--#ifdef SMACK_IPV6_SECMARK_LABELING
--		struct smack_known *rsp;
--#endif
-+		struct smack_known *rsp = NULL;
- 
- 		if (addrlen < SIN6_LEN_RFC2133)
- 			return 0;
--#ifdef SMACK_IPV6_SECMARK_LABELING
--		rsp = smack_ipv6host_label(sip);
-+		if (__is_defined(SMACK_IPV6_SECMARK_LABELING))
-+			rsp = smack_ipv6host_label(sip);
- 		if (rsp != NULL) {
- 			struct socket_smack *ssp = sock->sk->sk_security;
- 
- 			rc = smk_ipv6_check(ssp->smk_out, rsp, sip,
- 					    SMK_CONNECTING);
- 		}
--#endif
--#ifdef SMACK_IPV6_PORT_LABELING
--		rc = smk_ipv6_port_check(sock->sk, sip, SMK_CONNECTING);
--#endif
-+		if (__is_defined(SMACK_IPV6_PORT_LABELING))
-+			rc = smk_ipv6_port_check(sock->sk, sip, SMK_CONNECTING);
-+
- 		return rc;
  	}
- 	if (sap->sa_family != AF_INET || addrlen < sizeof(struct sockaddr_in))
--- 
-2.25.1
-
+ }
+@@ -273,7 +276,7 @@ static void walk_pmd(struct pg_state *st
+ 			/* pmd exists */
+ 			walk_pte(st, pmd, addr);
+ 		else
+-			note_page(st, addr, 3, pmd_val(*pmd));
++			note_page(st, addr, 3, pmd_val(*pmd), PMD_SIZE);
+ 	}
+ }
+ 
+@@ -289,7 +292,7 @@ static void walk_pud(struct pg_state *st
+ 			/* pud exists */
+ 			walk_pmd(st, pud, addr);
+ 		else
+-			note_page(st, addr, 2, pud_val(*pud));
++			note_page(st, addr, 2, pud_val(*pud), PUD_SIZE);
+ 	}
+ }
+ 
+@@ -308,7 +311,7 @@ static void walk_pagetables(struct pg_st
+ 			/* pgd exists */
+ 			walk_pud(st, pgd, addr);
+ 		else
+-			note_page(st, addr, 1, pgd_val(*pgd));
++			note_page(st, addr, 1, pgd_val(*pgd), PGDIR_SIZE);
+ 	}
+ }
+ 
+@@ -363,7 +366,7 @@ static int ptdump_show(struct seq_file *
+ 
+ 	/* Traverse kernel page tables */
+ 	walk_pagetables(&st);
+-	note_page(&st, 0, 0, 0);
++	note_page(&st, 0, 0, 0, 0);
+ 	return 0;
+ }
+ 
 
 
