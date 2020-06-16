@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03D21FBA2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0A81FB908
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732530AbgFPQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
+        id S1733095AbgFPQAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:00:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732067AbgFPPpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:19 -0400
+        id S1732821AbgFPPwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34E112098B;
-        Tue, 16 Jun 2020 15:45:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B64C208D5;
+        Tue, 16 Jun 2020 15:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322318;
-        bh=VgkC+fRBKLBKgQ0OEx+Emu859oW44liBSJU0qTAPumQ=;
+        s=default; t=1592322773;
+        bh=338AucczY2mLow4d9IdceneS8Dm9fzEUvS1ZacGLH8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cZF4KBO2tlutyw080GgJ+kvxl/kaHZMLne/cPlCoCcdVk6pSFAj8HhFQoftsBsDlW
-         PyPSj29Qn+K5A4qBUhsnn9a2fGow+s+XKabdPP82BRZEvUBHki+003+yqI3OGVTniB
-         4/Rks7Q/lsqOxJdBgrxR3n65cPVY8V9+RYS4n0a4=
+        b=dIwyZzvhk5uI7bPLuLSN0tL+4N/srZ0qHBXfoE/yqyD1v8nZ/f5dq1KGz5WVIH242
+         9yxwnMyAqux0opK1DUb3UwjgHvRrDi2fH4o5walMuTu523v3bxQRidRsXkGpaIyEeX
+         GCM7QUh8EhXF+ig0SDG/CuIazPAfupZdzkPVxdVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 084/163] spi: bcm2835: Fix controller unregister order
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 068/161] ALSA: es1688: Add the missed snd_card_free()
 Date:   Tue, 16 Jun 2020 17:34:18 +0200
-Message-Id: <20200616153110.867877823@linuxfoundation.org>
+Message-Id: <20200616153109.619370736@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-commit 9dd277ff92d06f6aa95b39936ad83981d781f49b upstream.
+commit d9b8fbf15d05350b36081eddafcf7b15aa1add50 upstream.
 
-The BCM2835 SPI driver uses devm_spi_register_controller() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-bcm2835_spi_remove() before unregistering the SPI controller via
-devres_release_all().
+snd_es968_pnp_detect() misses a snd_card_free() in a failed path.
+Add the missed function call to fix it.
 
-This order is incorrect:  bcm2835_spi_remove() tears down the DMA
-channels and turns off the SPI controller, including its interrupts
-and clock.  The SPI controller is thus no longer usable.
-
-When the SPI controller is subsequently unregistered, it unbinds all
-its slave devices.  If their drivers need to access the SPI bus,
-e.g. to quiesce their interrupts, unbinding will fail.
-
-As a rule, devm_spi_register_controller() must not be used if the
-->remove() hook performs teardown steps which shall be performed
-after unbinding of slaves.
-
-Fix by using the non-devm variant spi_register_controller().  Note that
-the struct spi_controller as well as the driver-private data are not
-freed until after bcm2835_spi_remove() has finished, so accessing them
-is safe.
-
-Fixes: 247263dba208 ("spi: bcm2835: use devm_spi_register_master()")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.13+
-Link: https://lore.kernel.org/r/2397dd70cdbe95e0bc4da2b9fca0f31cb94e5aed.1589557526.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: a20971b201ac ("ALSA: Merge es1688 and es968 drivers")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200603092459.1424093-1-hslester96@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-bcm2835.c |    4 +++-
+ sound/isa/es1688/es1688.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -1347,7 +1347,7 @@ static int bcm2835_spi_probe(struct plat
- 		goto out_dma_release;
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -267,8 +267,10 @@ static int snd_es968_pnp_detect(struct p
+ 		return error;
  	}
- 
--	err = devm_spi_register_controller(&pdev->dev, ctlr);
-+	err = spi_register_controller(ctlr);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI controller: %d\n",
- 			err);
-@@ -1374,6 +1374,8 @@ static int bcm2835_spi_remove(struct pla
- 
- 	bcm2835_debugfs_remove(bs);
- 
-+	spi_unregister_controller(ctlr);
-+
- 	/* Clear FIFOs, and disable the HW block */
- 	bcm2835_wr(bs, BCM2835_SPI_CS,
- 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
+ 	error = snd_es1688_probe(card, dev);
+-	if (error < 0)
++	if (error < 0) {
++		snd_card_free(card);
+ 		return error;
++	}
+ 	pnp_set_card_drvdata(pcard, card);
+ 	snd_es968_pnp_is_probed = 1;
+ 	return 0;
 
 
