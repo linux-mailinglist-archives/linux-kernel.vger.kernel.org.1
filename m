@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6C01FB7D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4C11FB66B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732586AbgFPPuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45362 "EHLO mail.kernel.org"
+        id S1730201AbgFPPhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732567AbgFPPuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:02 -0400
+        id S1729543AbgFPPhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23D142071A;
-        Tue, 16 Jun 2020 15:50:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7371D2098B;
+        Tue, 16 Jun 2020 15:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322601;
-        bh=oI8bt8FHuEyhhxFsFd+uUjYBPVSPisKrstaA3CDzgjo=;
+        s=default; t=1592321821;
+        bh=Vd13UFuLRvX/wXDN1nr/A/1EkJ1sZrXmJi+i4KKoCh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2rtNv6KOkdtlR2e46JCfRJ4tqmvmg6PuUdiYUXsfWRZBqIIapjiG8Rj2mzJd7yXIX
-         ko8YoSspqYCg4Fhip9B4gZv7Dpi5tshMNMKji91OSItslRkmIZ4I/HyDVTFr5RoMa9
-         uWqgjxKoH1tjeQtovqyGNT7WDyG/fPmL+7eQgqDU=
+        b=tqJ+jdasZD0DA+4qC4Mm/fjox8p0juWtw2gaXSB5M1r3DWv2+naaS3KLzDMXfNJa1
+         3NL0vXs6xmswsAtdrCqvD2h5wpyBau2zT++11v6M6wa/apzWsRounWgspFzGoQG/2W
+         9OG40oxpMNjjZ9O7R0e+1gY28FmzJb+szHN6eSBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 004/161] tun: correct header offsets in napi frags mode
-Date:   Tue, 16 Jun 2020 17:33:14 +0200
-Message-Id: <20200616153106.619018416@linuxfoundation.org>
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 011/134] sched/fair: Dont NUMA balance for kthreads
+Date:   Tue, 16 Jun 2020 17:33:15 +0200
+Message-Id: <20200616153101.228510546@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 96aa1b22bd6bb9fccf62f6261f390ed6f3e7967f ]
+[ Upstream commit 18f855e574d9799a0e7489f8ae6fd8447d0dd74a ]
 
-Tun in IFF_NAPI_FRAGS mode calls napi_gro_frags. Unlike netif_rx and
-netif_gro_receive, this expects skb->data to point to the mac layer.
+Stefano reported a crash with using SQPOLL with io_uring:
 
-But skb_probe_transport_header, __skb_get_hash_symmetric, and
-xdp_do_generic in tun_get_user need skb->data to point to the network
-header. Flow dissection also needs skb->protocol set, so
-eth_type_trans has to be called.
+  BUG: kernel NULL pointer dereference, address: 00000000000003b0
+  CPU: 2 PID: 1307 Comm: io_uring-sq Not tainted 5.7.0-rc7 #11
+  RIP: 0010:task_numa_work+0x4f/0x2c0
+  Call Trace:
+   task_work_run+0x68/0xa0
+   io_sq_thread+0x252/0x3d0
+   kthread+0xf9/0x130
+   ret_from_fork+0x35/0x40
 
-Ensure the link layer header lies in linear as eth_type_trans pulls
-ETH_HLEN. Then take the same code paths for frags as for not frags.
-Push the link layer header back just before calling napi_gro_frags.
+which is task_numa_work() oopsing on current->mm being NULL.
 
-By pulling up to ETH_HLEN from frag0 into linear, this disables the
-frag0 optimization in the special case when IFF_NAPI_FRAGS is used
-with zero length iov[0] (and thus empty skb->linear).
+The task work is queued by task_tick_numa(), which checks if current->mm is
+NULL at the time of the call. But this state isn't necessarily persistent,
+if the kthread is using use_mm() to temporarily adopt the mm of a task.
 
-Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Petar Penkov <ppenkov@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Change the task_tick_numa() check to exclude kernel threads in general,
+as it doesn't make sense to attempt ot balance for kthreads anyway.
+
+Reported-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/865de121-8190-5d30-ece5-3b097dc74431@kernel.dk
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/tun.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1908,8 +1908,11 @@ drop:
- 		skb->dev = tun->dev;
- 		break;
- 	case IFF_TAP:
--		if (!frags)
--			skb->protocol = eth_type_trans(skb, tun->dev);
-+		if (frags && !pskb_may_pull(skb, ETH_HLEN)) {
-+			err = -ENOMEM;
-+			goto drop;
-+		}
-+		skb->protocol = eth_type_trans(skb, tun->dev);
- 		break;
- 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 193b6ab74d7f..8a0e6bdba50d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2678,7 +2678,7 @@ static void task_tick_numa(struct rq *rq, struct task_struct *curr)
+ 	/*
+ 	 * We don't care about NUMA placement if we don't have memory.
+ 	 */
+-	if (!curr->mm || (curr->flags & PF_EXITING) || work->next != work)
++	if ((curr->flags & (PF_EXITING | PF_KTHREAD)) || work->next != work)
+ 		return;
  
-@@ -1966,9 +1969,12 @@ drop:
- 	}
- 
- 	if (frags) {
-+		u32 headlen;
-+
- 		/* Exercise flow dissector code path. */
--		u32 headlen = eth_get_headlen(tun->dev, skb->data,
--					      skb_headlen(skb));
-+		skb_push(skb, ETH_HLEN);
-+		headlen = eth_get_headlen(tun->dev, skb->data,
-+					  skb_headlen(skb));
- 
- 		if (unlikely(headlen > skb_headlen(skb))) {
- 			this_cpu_inc(tun->pcpu_stats->rx_dropped);
+ 	/*
+-- 
+2.25.1
+
 
 
