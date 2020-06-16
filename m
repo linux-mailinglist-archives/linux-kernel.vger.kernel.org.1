@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552CE1FB245
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 15:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7581FB24E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 15:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728895AbgFPNgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 09:36:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37652 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727966AbgFPNgu (ORCPT
+        id S1728889AbgFPNje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 09:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726261AbgFPNjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 09:36:50 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GDVVjT101545;
-        Tue, 16 Jun 2020 09:36:42 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31pg44s0dm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 09:36:42 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05GDWxXi108139;
-        Tue, 16 Jun 2020 09:36:41 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31pg44s0cg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 09:36:41 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05GDLgiQ009521;
-        Tue, 16 Jun 2020 13:36:39 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 31mpe826fu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 13:36:39 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05GDaaQU9830446
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jun 2020 13:36:36 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 873684C04E;
-        Tue, 16 Jun 2020 13:36:36 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0C594C04A;
-        Tue, 16 Jun 2020 13:36:35 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.26.88])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Jun 2020 13:36:35 +0000 (GMT)
-Subject: Re: [PATCH v2 1/1] s390: virtio: let arch accept devices without
- IOMMU feature
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <1592224764-1258-1-git-send-email-pmorel@linux.ibm.com>
- <1592224764-1258-2-git-send-email-pmorel@linux.ibm.com>
- <20200616115202.0285aa08.pasic@linux.ibm.com>
- <ef235cc9-9d4b-1247-c01a-9dd1c63f437c@linux.ibm.com>
- <20200616142010.04b7ba19.cohuck@redhat.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <8ba494d2-ad91-bc5c-2df8-b9d81c435211@linux.ibm.com>
-Date:   Tue, 16 Jun 2020 15:36:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 16 Jun 2020 09:39:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F4AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 06:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NX4/RAif7Qv0NRDyEqVkKAgLJrAgF0MHnstuThWnuPY=; b=PaYdmCv5e2DLub+pdwJuwWlhXs
+        l5usGFGbtrNW3QP4yazJjyBd6Xmf/AEkTxw/f851ece9hv8JoW7/6WWM/LNR39uDv7gvW1Lth8GKi
+        r11P/57AsXTc7aeGYH2AzdPK2jzvERd5CVoMimq3T0pRvC3Rkmy2rU9ldb2C8MSSYeQdEYslL5Iab
+        QAxKcCeOj8gVUw5ykaumJRMe6iTbxwEah2nuSUVJxVn3uxtpXfB4eK3SiEPU4VUgt2MZtwRTjDknl
+        /WXSVLXoAYsWm/9jjC3trjbV9PVXTQ5SIIDEN03fBVt9K+RR3LyY8QeHUfJyOGgK7nNZI5WdMar/V
+        o0riZMHQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlBnl-0000Zb-Vh; Tue, 16 Jun 2020 13:38:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E332D30018A;
+        Tue, 16 Jun 2020 15:38:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9D74C20244311; Tue, 16 Jun 2020 15:38:55 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 15:38:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peng Wang <rocking@linux.alibaba.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] sched/fair: Optimize dequeue_task_fair()
+Message-ID: <20200616133855.GX2531@hirez.programming.kicks-ass.net>
+References: <6f2f195aea48bc50187dfb064aa530ba132be01b.1592230286.git.rocking@linux.alibaba.com>
+ <701eef9a40de93dcf5fe7063fd607bca5db38e05.1592287263.git.rocking@linux.alibaba.com>
+ <CAKfTPtDUXmDB8w+03c2dqrjKDJyp7wrgdwj0oADg8N--9jmRJw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200616142010.04b7ba19.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- cotscore=-2147483648 bulkscore=0 malwarescore=0 impostorscore=0
- clxscore=1015 mlxscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 adultscore=0 mlxlogscore=834
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006160097
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDUXmDB8w+03c2dqrjKDJyp7wrgdwj0oADg8N--9jmRJw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-06-16 14:20, Cornelia Huck wrote:
-> On Tue, 16 Jun 2020 12:52:50 +0200
-> Pierre Morel <pmorel@linux.ibm.com> wrote:
+On Tue, Jun 16, 2020 at 02:31:15PM +0200, Vincent Guittot wrote:
+> On Tue, 16 Jun 2020 at 08:05, Peng Wang <rocking@linux.alibaba.com> wrote:
+> >
+> > While looking at enqueue_task_fair and dequeue_task_fair, it occurred
+> > to me that dequeue_task_fair can also be optimized as Vincent described
+> > in commit 7d148be69e3a ("sched/fair: Optimize enqueue_task_fair()").
+> >
+> > When encountering throttled cfs_rq, dequeue_throttle label can ensure
+> > se not to be NULL, and rq->nr_running remains unchanged, so we can also
+> > skip the early balance check.
+> >
+> > Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
 > 
->> On 2020-06-16 11:52, Halil Pasic wrote:
->>> On Mon, 15 Jun 2020 14:39:24 +0200
->>> Pierre Morel <pmorel@linux.ibm.com> wrote:
-> 
->>>> @@ -162,6 +163,11 @@ bool force_dma_unencrypted(struct device *dev)
->>>>    	return is_prot_virt_guest();
->>>>    }
->>>>    
->>>> +int arch_needs_iommu_platform(struct virtio_device *dev)
->>>
->>> Maybe prefixing the name with virtio_ would help provide the
->>> proper context.
->>
->> The virtio_dev makes it obvious and from the virtio side it should be
->> obvious that the arch is responsible for this.
->>
->> However if nobody has something against I change it.
-> 
-> arch_needs_virtio_iommu_platform()?
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-fine with me
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+Thanks!
