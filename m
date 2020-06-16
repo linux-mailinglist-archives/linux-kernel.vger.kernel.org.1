@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA6B1FB8A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9AA1FB7BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732540AbgFPP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:57:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54400 "EHLO mail.kernel.org"
+        id S1731341AbgFPPtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730423AbgFPPyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:49 -0400
+        id S1731831AbgFPPs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:48:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4955C21532;
-        Tue, 16 Jun 2020 15:54:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 744662071A;
+        Tue, 16 Jun 2020 15:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322889;
-        bh=elelhq3eXzJEGg4KEYfrGqUEE7Xby74bH5YIvlict1o=;
+        s=default; t=1592322537;
+        bh=FFSxGwBGfMCiFQduasCBES4XmyOFzA/eJW0MOePvNZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yXyF449tJr2hxn0uv4m07PG6vhgcG6sN3fssFIbxOqM+CZKiO9IZNcpMN8NSoNsNX
-         rp4Y55CuWXlQpZyEbBNwsDFoVS1SLFY9HzDuxDGSnz9tPL8Mdi6klMsO4FCRDc+fDP
-         RkT8HAmjBct9KIAI5MHJRv/EUhvIKBH5UCGgsZGk=
+        b=LJ6/26a8FvXnRPo/DMMK/peY+wzrxCtI6jrThuHJ0XeYjf+N1ioTB712mqSP8D/pw
+         9+C65RoU8TjmibG1Quex4/+1fi7KwsNdpmEcN7YMRUzP4hIXt57tF/DOXCZLABTJF5
+         sEE4WC/sU2bpTrw9HlYsN8doSpLDMzBJsOO/OEZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 144/161] mm/slub: fix a memory leak in sysfs_slab_add()
-Date:   Tue, 16 Jun 2020 17:35:34 +0200
-Message-Id: <20200616153113.210430028@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dominik Mierzejewski <dominik@greysector.net>,
+        Mattia Dongili <malattia@linux.it>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.7 161/163] platform/x86: sony-laptop: Make resuming thermal profile safer
+Date:   Tue, 16 Jun 2020 17:35:35 +0200
+Message-Id: <20200616153114.518926366@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,77 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Mattia Dongili <malattia@linux.it>
 
-commit dde3c6b72a16c2db826f54b2d49bdea26c3534a2 upstream.
+commit 476d60b1b4c8a2b14a53ef9b772058f35e604661 upstream.
 
-syzkaller reports for memory leak when kobject_init_and_add() returns an
-error in the function sysfs_slab_add() [1]
+The thermal handle object may fail initialization when the module is
+loaded in the first place. Avoid attempting to use it on resume then.
 
-When this happened, the function kobject_put() is not called for the
-corresponding kobject, which potentially leads to memory leak.
-
-This patch fixes the issue by calling kobject_put() even if
-kobject_init_and_add() fails.
-
-[1]
-  BUG: memory leak
-  unreferenced object 0xffff8880a6d4be88 (size 8):
-  comm "syz-executor.3", pid 946, jiffies 4295772514 (age 18.396s)
-  hex dump (first 8 bytes):
-    70 69 64 5f 33 00 ff ff                          pid_3...
-  backtrace:
-     kstrdup+0x35/0x70 mm/util.c:60
-     kstrdup_const+0x3d/0x50 mm/util.c:82
-     kvasprintf_const+0x112/0x170 lib/kasprintf.c:48
-     kobject_set_name_vargs+0x55/0x130 lib/kobject.c:289
-     kobject_add_varg lib/kobject.c:384 [inline]
-     kobject_init_and_add+0xd8/0x170 lib/kobject.c:473
-     sysfs_slab_add+0x1d8/0x290 mm/slub.c:5811
-     __kmem_cache_create+0x50a/0x570 mm/slub.c:4384
-     create_cache+0x113/0x1e0 mm/slab_common.c:407
-     kmem_cache_create_usercopy+0x1a1/0x260 mm/slab_common.c:505
-     kmem_cache_create+0xd/0x10 mm/slab_common.c:564
-     create_pid_cachep kernel/pid_namespace.c:54 [inline]
-     create_pid_namespace kernel/pid_namespace.c:96 [inline]
-     copy_pid_ns+0x77c/0x8f0 kernel/pid_namespace.c:148
-     create_new_namespaces+0x26b/0xa30 kernel/nsproxy.c:95
-     unshare_nsproxy_namespaces+0xa7/0x1e0 kernel/nsproxy.c:229
-     ksys_unshare+0x3d2/0x770 kernel/fork.c:2969
-     __do_sys_unshare kernel/fork.c:3037 [inline]
-     __se_sys_unshare kernel/fork.c:3035 [inline]
-     __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3035
-     do_syscall_64+0xa1/0x530 arch/x86/entry/common.c:295
-
-Fixes: 80da026a8e5d ("mm/slub: fix slab double-free in case of duplicate sysfs filename")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Link: http://lkml.kernel.org/r/20200602115033.1054-1-wanghai38@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer objects for ASL create_field() operator")
+Reported-by: Dominik Mierzejewski <dominik@greysector.net>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207491
+Signed-off-by: Mattia Dongili <malattia@linux.it>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/slub.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/sony-laptop.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5778,8 +5778,10 @@ static int sysfs_slab_add(struct kmem_ca
+--- a/drivers/platform/x86/sony-laptop.c
++++ b/drivers/platform/x86/sony-laptop.c
+@@ -2288,7 +2288,12 @@ static void sony_nc_thermal_cleanup(stru
+ #ifdef CONFIG_PM_SLEEP
+ static void sony_nc_thermal_resume(void)
+ {
+-	unsigned int status = sony_nc_thermal_mode_get();
++	int status;
++
++	if (!th_handle)
++		return;
++
++	status = sony_nc_thermal_mode_get();
  
- 	s->kobj.kset = kset;
- 	err = kobject_init_and_add(&s->kobj, &slab_ktype, NULL, "%s", name);
--	if (err)
-+	if (err) {
-+		kobject_put(&s->kobj);
- 		goto out;
-+	}
- 
- 	err = sysfs_create_group(&s->kobj, &slab_attr_group);
- 	if (err)
+ 	if (status != th_handle->mode)
+ 		sony_nc_thermal_mode_set(th_handle->mode);
 
 
