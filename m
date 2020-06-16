@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D01FB7A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4C41FB85F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732386AbgFPPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:48:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41950 "EHLO mail.kernel.org"
+        id S1733116AbgFPPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732360AbgFPPsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:48:02 -0400
+        id S1730949AbgFPPzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:55:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC26220776;
-        Tue, 16 Jun 2020 15:48:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AE93207C4;
+        Tue, 16 Jun 2020 15:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322481;
-        bh=DV1eG+bY7x696UP/Pb0uc8f2sQAeD4yGUDNfsEzAbek=;
+        s=default; t=1592322942;
+        bh=9LsHXU5o/B/7oKH7E4oU4W40c3T/IVPg5ovlaMl8Eac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frP36BZgk0eJ3WhkBn8pZgbsG2VPsGGslTncqDk3ZMCe+WTFVgk2P288Pj+fqlLpf
-         U5WjTscI4xLlmVnrMlUrlgMlVcQKo3qR43Q0Ag7T0rrGmW0sGwRM3wopic8jqHF5Ch
-         bchVlhObxceU4CQVFUDVJbG954EFDcTnpD6BU/x4=
+        b=wkFQwRUkC7MCopPAV+n88s3hH9vMH96mjAHKczyD/8wJ82kPrQP/nKk0XCZSBRuCg
+         7Th363cKGQKcXzlS4vbw/1aUFHpkOGhVHu6IdnK6UawuOIHY4px90kwO5HWunLu8DW
+         EL8oOQllu5L0qe2wMBm1rWqyL+mvRtc3juR3V/ZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com,
-        Barret Rhoden <brho@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.7 148/163] perf: Add cond_resched() to task_function_call()
-Date:   Tue, 16 Jun 2020 17:35:22 +0200
-Message-Id: <20200616153113.894021545@linuxfoundation.org>
+        stable@vger.kernel.org, Sumit Saxena <sumit.saxena@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.6 133/161] scsi: megaraid_sas: TM command refire leads to controller firmware crash
+Date:   Tue, 16 Jun 2020 17:35:23 +0200
+Message-Id: <20200616153112.691440839@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barret Rhoden <brho@google.com>
+From: Sumit Saxena <sumit.saxena@broadcom.com>
 
-commit 2ed6edd33a214bca02bd2b45e3fc3038a059436b upstream.
+commit 6fd8525a70221c26823b1c7e912fb21f218fb0c5 upstream.
 
-Under rare circumstances, task_function_call() can repeatedly fail and
-cause a soft lockup.
+When TM command times out, driver invokes the controller reset. Post reset,
+driver re-fires pended TM commands which leads to firmware crash.
 
-There is a slight race where the process is no longer running on the cpu
-we targeted by the time remote_function() runs.  The code will simply
-try again.  If we are very unlucky, this will continue to fail, until a
-watchdog fires.  This can happen in a heavily loaded, multi-core virtual
-machine.
+Post controller reset, return pended TM commands back to OS.
 
-Reported-by: syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com
-Signed-off-by: Barret Rhoden <brho@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200414222920.121401-1-brho@google.com
+Link: https://lore.kernel.org/r/20200508085242.23406-1-chandrakanth.patil@broadcom.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/events/core.c |   23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -95,11 +95,11 @@ static void remote_function(void *data)
-  * @info:	the function call argument
-  *
-  * Calls the function @func when the task is currently running. This might
-- * be on the current CPU, which just calls the function directly
-+ * be on the current CPU, which just calls the function directly.  This will
-+ * retry due to any failures in smp_call_function_single(), such as if the
-+ * task_cpu() goes offline concurrently.
-  *
-- * returns: @func return value, or
-- *	    -ESRCH  - when the process isn't running
-- *	    -EAGAIN - when the process moved away
-+ * returns @func return value or -ESRCH when the process isn't running
-  */
- static int
- task_function_call(struct task_struct *p, remote_function_f func, void *info)
-@@ -112,11 +112,16 @@ task_function_call(struct task_struct *p
- 	};
- 	int ret;
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -4238,6 +4238,7 @@ void megasas_refire_mgmt_cmd(struct mega
+ 	struct fusion_context *fusion;
+ 	struct megasas_cmd *cmd_mfi;
+ 	union MEGASAS_REQUEST_DESCRIPTOR_UNION *req_desc;
++	struct MPI2_RAID_SCSI_IO_REQUEST *scsi_io_req;
+ 	u16 smid;
+ 	bool refire_cmd = 0;
+ 	u8 result;
+@@ -4305,6 +4306,11 @@ void megasas_refire_mgmt_cmd(struct mega
+ 			result = COMPLETE_CMD;
+ 		}
  
--	do {
--		ret = smp_call_function_single(task_cpu(p), remote_function, &data, 1);
--		if (!ret)
--			ret = data.ret;
--	} while (ret == -EAGAIN);
-+	for (;;) {
-+		ret = smp_call_function_single(task_cpu(p), remote_function,
-+					       &data, 1);
-+		ret = !ret ? data.ret : -EAGAIN;
++		scsi_io_req = (struct MPI2_RAID_SCSI_IO_REQUEST *)
++				cmd_fusion->io_request;
++		if (scsi_io_req->Function == MPI2_FUNCTION_SCSI_TASK_MGMT)
++			result = RETURN_CMD;
 +
-+		if (ret != -EAGAIN)
-+			break;
-+
-+		cond_resched();
-+	}
- 
- 	return ret;
- }
+ 		switch (result) {
+ 		case REFIRE_CMD:
+ 			megasas_fire_cmd_fusion(instance, req_desc);
+@@ -4533,7 +4539,6 @@ megasas_issue_tm(struct megasas_instance
+ 	if (!timeleft) {
+ 		dev_err(&instance->pdev->dev,
+ 			"task mgmt type 0x%x timed out\n", type);
+-		cmd_mfi->flags |= DRV_DCMD_SKIP_REFIRE;
+ 		mutex_unlock(&instance->reset_mutex);
+ 		rc = megasas_reset_fusion(instance->host, MFI_IO_TIMEOUT_OCR);
+ 		mutex_lock(&instance->reset_mutex);
 
 
