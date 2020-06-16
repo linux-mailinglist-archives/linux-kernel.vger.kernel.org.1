@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D8D1FBAC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D491FBADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731905AbgFPQOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:14:00 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20563 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731927AbgFPQNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:13:49 -0400
-IronPort-SDR: ZgmWzhJ80MG3NItDlDwc9g4M6vmXoIyXCJMPqHUTN6l0LMbkN9mK0Alug+0JYrHHA1vAkrNjyN
- Uxv1i4c6f8Sg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 09:13:46 -0700
-IronPort-SDR: s2xxeIxq0R/RHPd43MmtBx3TzSajNMKwChcbJx9i1j44y6nPDxbbZfpk5oN00suBVgKiAOjY07
- J+3xB5a1coLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
-   d="scan'208";a="273203116"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003.jf.intel.com with ESMTP; 16 Jun 2020 09:13:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jlEDa-00Drxm-3q; Tue, 16 Jun 2020 19:13:46 +0300
-Date:   Tue, 16 Jun 2020 19:13:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Wahren <wahrenst@gmx.net>
-Subject: Re: [PATCH v3 2/3] ARM: bcm2835: Switch to use %ptT
-Message-ID: <20200616161346.GW2428291@smile.fi.intel.com>
-References: <20200415170046.33374-1-andriy.shevchenko@linux.intel.com>
- <20200415170046.33374-3-andriy.shevchenko@linux.intel.com>
- <5551ac7d9c7ba7df2b44832af49b3744869b34ef.camel@suse.de>
+        id S1730204AbgFPQOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:14:46 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37474 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732261AbgFPQOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:14:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592324081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EGk4MDxuxjJxgEfnB6gIyOaKHUzMx57nfzVxFUf1flw=;
+        b=b/U4j28mnQmJJ2K3ZZsm0kFoFZauhNVQWi91KqZiObYKmnSxwHnOTGNlUxvUVAm+Up9VPI
+        mU+iLjzCDkwv9A0SIT6YKPmLVt4CmJ2j8f6U4UirpCAp9qmuzdGfXS4Za1xCMavVHWpU2L
+        le6pg+Ywc8kZp3Ung2wBcWIrLEw7GYU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-KOglBjA_PZOFj8z9UPRzyA-1; Tue, 16 Jun 2020 12:14:39 -0400
+X-MC-Unique: KOglBjA_PZOFj8z9UPRzyA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22EC5100A69D;
+        Tue, 16 Jun 2020 16:14:32 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.192.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C6FF7CAA0;
+        Tue, 16 Jun 2020 16:14:28 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <like.xu@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: SVM: drop MSR_IA32_PERF_CAPABILITIES from emulated MSRs
+Date:   Tue, 16 Jun 2020 18:14:27 +0200
+Message-Id: <20200616161427.375651-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5551ac7d9c7ba7df2b44832af49b3744869b34ef.camel@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 05:53:23PM +0200, Nicolas Saenz Julienne wrote:
-> On Wed, 2020-04-15 at 20:00 +0300, Andy Shevchenko wrote:
-> > Use %ptT instead of open coded variant to print content of
-> > time64_t type in human readable format.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> 
-> as originally reported by Stefan Wahren, this patch is likely to be the cause
-> for a regression on RPi3b+ 32bit mode (multi_v7_defconfig,
-> 5.8.0-rc1-00019-ga5dc8300df75):
-> 
-> [    3.759892] raspberrypi-firmware soc:firmware: Attached to firmware from 18446744073709048425-02-19T15:52:16
-> 
-> Whereas the same doesn't seem to happen in 64bit mode:
-> 
-> [    1.584126] raspberrypi-firmware soc:firmware: Attached to firmware from 2020-02-12T12:39:27
+state_test/smm_test selftests are failing on AMD with:
+"Unexpected result from KVM_GET_MSRS, r: 51 (failed MSR was 0x345)"
 
-Had you chance to run test_printf on that machine and see if it reports any failure?
-If no, can you provide a raw date which makes this happen?
+MSR_IA32_PERF_CAPABILITIES is an emulated MSR indeed but only on Intel,
+make svm_has_emulated_msr() skip it so it is not returned by
+KVM_GET_MSR_INDEX_LIST.
 
-Ah, I think I have an idea what is going on... stay tuned!
+Fixes: 27461da31089 ("KVM: x86/pmu: Support full width counting")
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Does below fix it?
-
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -181,6 +181,7 @@ EXPORT_SYMBOL_GPL(rpi_firmware_property);
- static void
- rpi_firmware_print_firmware_revision(struct rpi_firmware *fw)
- {
-+	time64_t date_and_time;
- 	u32 packet;
- 	int ret = rpi_firmware_property(fw,
- 					RPI_FIRMWARE_GET_FIRMWARE_REVISION,
-@@ -189,7 +190,8 @@ rpi_firmware_print_firmware_revision(struct rpi_firmware *fw)
- 	if (ret)
- 		return;
- 
--	dev_info(fw->cl.dev, "Attached to firmware from %ptT\n", &packet);
-+	date_and_time = packet;
-+	dev_info(fw->cl.dev, "Attached to firmware from %ptT\n", &date_and_time);
- }
-
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 8ccfa4197d9c..2c423d64fb8f 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3539,6 +3539,8 @@ static bool svm_has_emulated_msr(u32 index)
+ 	case MSR_IA32_MCG_EXT_CTL:
+ 	case MSR_IA32_VMX_BASIC ... MSR_IA32_VMX_VMFUNC:
+ 		return false;
++	case MSR_IA32_PERF_CAPABILITIES:
++		return false;
+ 	default:
+ 		break;
+ 	}
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.4
 
