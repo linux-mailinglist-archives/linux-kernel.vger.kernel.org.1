@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2DA1FB9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416EF1FBAFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732622AbgFPQHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
+        id S1732336AbgFPQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:16:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731610AbgFPPrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:20 -0400
+        id S1731370AbgFPPlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D41FB20776;
-        Tue, 16 Jun 2020 15:47:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 274B1208E4;
+        Tue, 16 Jun 2020 15:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322440;
-        bh=tXCInQ492qS0VJvjkWDrgHfS0WMGwrboSxRtphkF/Fo=;
+        s=default; t=1592322066;
+        bh=VwSN0YU9Oj7OXqaDGPp3XR8cYu0IhWpaSJ1/3foAwJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rW5U0YRKejJCyG0AD5hBEeWUZvu+xpQEZ+bRpgD6unz95Dk3LQ4aMkYcxRFZp9bEs
-         LVjxyCL/CgFXrbLrOezhDfnIv5ORY3BpxLVdyoLoekLk77T3f1CLXH5rv0nPcxRgci
-         ZL2DmEjJi596TdZs1aB1Np8qRPlW4msyFAASmMY4=
+        b=uKSDx1cYN/hyKrOlJgj0RNCP/C8HozykYLtaGiBeSJhfp14FNpHphDnmOkc0OuFlL
+         XIkfG1AseULL1xgOAgsFA3MLS+xE1NwGJ3f4C6N46k/I1dsZ/jqyAhFMsE4ZJE9O2W
+         a7pd2wBM6rp0ulfM5RQDAHA2CjVVSBPEgvSaVix0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>
-Subject: [PATCH 5.7 133/163] KVM: arm64: Stop writing aarch32s CSSELR into ACTLR
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Andi Shyti <andi.shyti@intel.com>
+Subject: [PATCH 5.4 123/134] agp/intel: Reinforce the barrier after GTT updates
 Date:   Tue, 16 Jun 2020 17:35:07 +0200
-Message-Id: <20200616153113.183145359@linuxfoundation.org>
+Message-Id: <20200616153106.677326783@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 7c582bf4ed84f3eb58bdd1f63024a14c17551e7d upstream.
+commit f30d3ced9fafa03e4855508929b5b6334907f45e upstream.
 
-aarch32 has pairs of registers to access the high and low parts of 64bit
-registers. KVM has a union of 64bit sys_regs[] and 32bit copro[]. The
-32bit accessors read the high or low part of the 64bit sys_reg[] value
-through the union.
+After changing the timing between GTT updates and execution on the GPU,
+we started seeing sporadic failures on Ironlake. These were narrowed
+down to being an insufficiently strong enough barrier/delay after
+updating the GTT and scheduling execution on the GPU. By forcing the
+uncached read, and adding the missing barrier for the singular
+insert_page (relocation paths), the sporadic failures go away.
 
-Both sys_reg_descs[] and cp15_regs[] list access_csselr() as the accessor
-for CSSELR{,_EL1}. access_csselr() is only aware of the 64bit sys_regs[],
-and expects r->reg to be 'CSSELR_EL1' in the enum, index 2 of the 64bit
-array.
-
-cp15_regs[] uses the 32bit copro[] alias of sys_regs[]. Here CSSELR is
-c0_CSSELR which is the same location in sys_reg[]. r->reg is 'c0_CSSELR',
-index 4 in the 32bit array.
-
-access_csselr() uses the 32bit r->reg value to access the 64bit array,
-so reads and write the wrong value. sys_regs[4], is ACTLR_EL1, which
-is subsequently save/restored when we enter the guest.
-
-ACTLR_EL1 is supposed to be read-only for the guest. This register
-only affects execution at EL1, and the host's value is restored before
-we return to host EL1.
-
-Convert the 32bit register index back to the 64bit version.
-
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529150656.7339-2-james.morse@arm.com
+Fixes: 983d308cb8f6 ("agp/intel: Serialise after GTT updates")
+Fixes: 3497971a71d8 ("agp/intel: Flush chipset writes after updating a single PTE")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Acked-by: Andi Shyti <andi.shyti@intel.com>
+Cc: stable@vger.kernel.org # v4.0+
+Link: https://patchwork.freedesktop.org/patch/msgid/20200410083535.25464-1-chris@chris-wilson.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kvm/sys_regs.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/char/agp/intel-gtt.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1305,10 +1305,16 @@ static bool access_clidr(struct kvm_vcpu
- static bool access_csselr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 			  const struct sys_reg_desc *r)
+--- a/drivers/char/agp/intel-gtt.c
++++ b/drivers/char/agp/intel-gtt.c
+@@ -846,6 +846,7 @@ void intel_gtt_insert_page(dma_addr_t ad
+ 			   unsigned int flags)
  {
-+	int reg = r->reg;
-+
-+	/* See the 32bit mapping in kvm_host.h */
-+	if (p->is_aarch32)
-+		reg = r->reg / 2;
-+
- 	if (p->is_write)
--		vcpu_write_sys_reg(vcpu, p->regval, r->reg);
-+		vcpu_write_sys_reg(vcpu, p->regval, reg);
- 	else
--		p->regval = vcpu_read_sys_reg(vcpu, r->reg);
-+		p->regval = vcpu_read_sys_reg(vcpu, reg);
- 	return true;
+ 	intel_private.driver->write_entry(addr, pg, flags);
++	readl(intel_private.gtt + pg);
+ 	if (intel_private.driver->chipset_flush)
+ 		intel_private.driver->chipset_flush();
  }
+@@ -871,7 +872,7 @@ void intel_gtt_insert_sg_entries(struct
+ 			j++;
+ 		}
+ 	}
+-	wmb();
++	readl(intel_private.gtt + j - 1);
+ 	if (intel_private.driver->chipset_flush)
+ 		intel_private.driver->chipset_flush();
+ }
+@@ -1105,6 +1106,7 @@ static void i9xx_cleanup(void)
  
+ static void i9xx_chipset_flush(void)
+ {
++	wmb();
+ 	if (intel_private.i9xx_flush_page)
+ 		writel(1, intel_private.i9xx_flush_page);
+ }
 
 
