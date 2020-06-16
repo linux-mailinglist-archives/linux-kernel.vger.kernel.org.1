@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D38D1FB687
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E751FB802
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730540AbgFPPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
+        id S1731732AbgFPPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730487AbgFPPh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:59 -0400
+        id S1732490AbgFPPve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:51:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA91C20B1F;
-        Tue, 16 Jun 2020 15:37:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C970E214DB;
+        Tue, 16 Jun 2020 15:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321878;
-        bh=Lq0rzd8/VWyjqzu7gI6W77XhrAJW8U6FGO1gnHwgDWU=;
+        s=default; t=1592322694;
+        bh=HpNJ3q8VhMPUwZr5wg2XHd0tXHo7Vqwt6uIEiQ4MXjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bGG14uTMZUUgiGEr7jgkex61hPHlMHAxE3WNNPkW64uwxrP9W1gq7ZxwsPWl0O4OS
-         SjNevqU0cP620kdp9/qYAOOEzfJLk+M+pWJq//5JZ0csV8tpp3YE7LrhC4r2JAV4hN
-         KlMDpT3JHrl2xR9eob+M8Y4NKl0W4xbDPK0WZIBM=
+        b=qHfPruonOE3vI+OYSM1uXaAjrXiT4KOlOQlElVcPvjWm0LwD7f5Wcpjdq3uHuFSar
+         pW9vj28AiT11HzGTRuvnzU7hG2fAP/QQnVCL9Rf9ir45XGdlSLFFQaqTva/WMgkEY6
+         HYWiJnYAb0Df3rvO2cS7DHUHkHVgjrKb52Gg54wM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hill Ma <maahiuzeon@gmail.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.4 043/134] x86/reboot/quirks: Add MacBook6,1 reboot quirk
+        stable@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 037/161] s390/pci: Log new handle in clp_disable_fh()
 Date:   Tue, 16 Jun 2020 17:33:47 +0200
-Message-Id: <20200616153102.858974098@linuxfoundation.org>
+Message-Id: <20200616153108.149665067@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hill Ma <maahiuzeon@gmail.com>
+From: Petr Tesarik <ptesarik@suse.com>
 
-commit 140fd4ac78d385e6c8e6a5757585f6c707085f87 upstream.
+[ Upstream commit e1750a3d9abbea2ece29cac8dc5a6f5bc19c1492 ]
 
-On MacBook6,1 reboot would hang unless parameter reboot=pci is added.
-Make it automatic.
+After disabling a function, the original handle is logged instead of
+the disabled handle.
 
-Signed-off-by: Hill Ma <maahiuzeon@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200425200641.GA1554@cslab.localdomain
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lkml.kernel.org/r/20200522183922.5253-1-ptesarik@suse.com
+Fixes: 17cdec960cf7 ("s390/pci: Recover handle in clp_set_pci_fn()")
+Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
+Signed-off-by: Petr Tesarik <ptesarik@suse.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/reboot.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/s390/pci/pci_clp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -197,6 +197,14 @@ static const struct dmi_system_id reboot
- 			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook5"),
- 		},
- 	},
-+	{	/* Handle problems with rebooting on Apple MacBook6,1 */
-+		.callback = set_pci_reboot,
-+		.ident = "Apple MacBook6,1",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook6,1"),
-+		},
-+	},
- 	{	/* Handle problems with rebooting on Apple MacBookPro5 */
- 		.callback = set_pci_reboot,
- 		.ident = "Apple MacBookPro5",
+diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
+index 0d3d8f170ea4..25208fa95426 100644
+--- a/arch/s390/pci/pci_clp.c
++++ b/arch/s390/pci/pci_clp.c
+@@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
+ 
+ int clp_disable_fh(struct zpci_dev *zdev)
+ {
+-	u32 fh = zdev->fh;
+ 	int rc;
+ 
+ 	if (!zdev_enabled(zdev))
+ 		return 0;
+ 
+ 	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
+-	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
++	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
+ 	return rc;
+ }
+ 
+-- 
+2.25.1
+
 
 
