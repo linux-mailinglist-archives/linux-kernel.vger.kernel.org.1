@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308521FB686
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E7F1FB7D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730523AbgFPPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49874 "EHLO mail.kernel.org"
+        id S1730670AbgFPPuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:50:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730464AbgFPPh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:56 -0400
+        id S1732375AbgFPPt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:49:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A9802145D;
-        Tue, 16 Jun 2020 15:37:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75C6121475;
+        Tue, 16 Jun 2020 15:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321875;
-        bh=+/l/HKb94QJ1fLl/aY9Ci1ZVow5m6nAWV0fLci86yno=;
+        s=default; t=1592322599;
+        bh=R8b4aXiaDVa9gpxOJ77HU6fmfPrXxPzH9NZlAi6jZ1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NeDMx25ZQIH8D5w+BPKQwsOcabVhIBhtZIYkc94JShrxMgwYxdAm3mGoDCXJBXiSL
-         1INTJ3fWe05yph54X/3HFZDfIIXVI4A1I2A0Y/Fxo8YZI5dM4PwomFDimYQJ0al8sh
-         A+UrW+hbMt/u6YYTdvOSJciVEnGWhoQq/cePlctE=
+        b=Kkn/A7fA3qTLJ5ihlq3e4PKiAsm4FxVX1BWqodl35DR6KB0cCl9QGIbm43ab3HIsU
+         kCQIRL97YZDgRXQXmdnP+Rcold/4xFq2rF7vh7So/UTS0hz6tP9QPNWc/rhFr+VrAF
+         fph8ohiTzgdGkBqzXBGolDi5yd2Aa/Pvz7wtyQWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andi Shyti <andi@etezian.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/134] Input: mms114 - fix handling of mms345l
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 003/161] net_failover: fixed rollback in net_failover_open()
 Date:   Tue, 16 Jun 2020 17:33:13 +0200
-Message-Id: <20200616153101.128744865@linuxfoundation.org>
+Message-Id: <20200616153106.573957731@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 3f8f770575d911c989043d8f0fb8dec96360c41c ]
+[ Upstream commit e8224bfe77293494626f6eec1884fee7b87d0ced ]
 
-MMS345L is another first generation touch screen from Melfas,
-which uses the same registers as MMS152.
+found by smatch:
+drivers/net/net_failover.c:65 net_failover_open() error:
+ we previously assumed 'primary_dev' could be null (see line 43)
 
-However, using I2C_M_NOSTART for it causes errors when reading:
-
-	i2c i2c-0: sendbytes: NAK bailout.
-	mms114 0-0048: __mms114_read_reg: i2c transfer failed (-5)
-
-The driver works fine as soon as I2C_M_NOSTART is removed.
-
-Reviewed-by: Andi Shyti <andi@etezian.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200405170904.61512-1-stephan@gerhold.net
-[dtor: removed separate mms345l handling, made everyone use standard
-transfer mode, propagated the 10bit addressing flag to the read part of the
-transfer as well.]
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: cfc80d9a1163 ("net: Introduce net_failover driver")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/mms114.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/net/net_failover.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
-index a5ab774da4cc..fca908ba4841 100644
---- a/drivers/input/touchscreen/mms114.c
-+++ b/drivers/input/touchscreen/mms114.c
-@@ -91,15 +91,15 @@ static int __mms114_read_reg(struct mms114_data *data, unsigned int reg,
- 	if (reg <= MMS114_MODE_CONTROL && reg + len > MMS114_MODE_CONTROL)
- 		BUG();
+--- a/drivers/net/net_failover.c
++++ b/drivers/net/net_failover.c
+@@ -61,7 +61,8 @@ static int net_failover_open(struct net_
+ 	return 0;
  
--	/* Write register: use repeated start */
-+	/* Write register */
- 	xfer[0].addr = client->addr;
--	xfer[0].flags = I2C_M_TEN | I2C_M_NOSTART;
-+	xfer[0].flags = client->flags & I2C_M_TEN;
- 	xfer[0].len = 1;
- 	xfer[0].buf = &buf;
- 
- 	/* Read data */
- 	xfer[1].addr = client->addr;
--	xfer[1].flags = I2C_M_RD;
-+	xfer[1].flags = (client->flags & I2C_M_TEN) | I2C_M_RD;
- 	xfer[1].len = len;
- 	xfer[1].buf = val;
- 
-@@ -428,10 +428,8 @@ static int mms114_probe(struct i2c_client *client,
- 	const void *match_data;
- 	int error;
- 
--	if (!i2c_check_functionality(client->adapter,
--				I2C_FUNC_PROTOCOL_MANGLING)) {
--		dev_err(&client->dev,
--			"Need i2c bus that supports protocol mangling\n");
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-+		dev_err(&client->dev, "Not supported I2C adapter\n");
- 		return -ENODEV;
- 	}
- 
--- 
-2.25.1
-
+ err_standby_open:
+-	dev_close(primary_dev);
++	if (primary_dev)
++		dev_close(primary_dev);
+ err_primary_open:
+ 	netif_tx_disable(dev);
+ 	return err;
 
 
