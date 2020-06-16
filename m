@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CAE1FBAB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AAA1FB97A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgFPPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:43:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32768 "EHLO mail.kernel.org"
+        id S1732740AbgFPQER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:04:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731797AbgFPPn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:28 -0400
+        id S1732549AbgFPPtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:49:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4779208E4;
-        Tue, 16 Jun 2020 15:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22A212071A;
+        Tue, 16 Jun 2020 15:49:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322208;
-        bh=Wzn3XjHzpPwQWIlZS8NemT9LPOAPP3EdLDLU/Ufm+nM=;
+        s=default; t=1592322588;
+        bh=XzVd0lZiloehEKPbTGLt3ZQh1nAHtnKqZP4nBXUXmCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hDHprG/F95CVccpS5MIHgE4jUvu191+cQsJGUe4EqzFA2sKdzfQvsjMl1QPEJHeZy
-         AdukwS1sPSQgcXGQp+DYO8EgI3AbZtKerZ+LrrJG8tL9Bb43K3Au/OHeu8JdK10hO3
-         T4Ny7WFQyxQsq9g0Qe8VAHTGXwwKkAAcpq2xDOp0=
+        b=RFbG1Ip5DPrhDyqktXTquZ3fmSmt/a0GCLFb2KJl+Uk+Z71L9zaADCSOPktnkO5TL
+         gZW8APuuMHaQmBp/rV6PCwVbRcSXYBqcHOjn+kjuTIo65Oy6T5mUo22not+a6llmR7
+         cteLQdbMn8kaczeBAO+1tmJdXH/HBG257O0RkO6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.7 042/163] x86/vdso: Unbreak paravirt VDSO clocks
+        stable@vger.kernel.org, Vlad Buslov <vladbu@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 026/161] selftests: fix flower parent qdisc
 Date:   Tue, 16 Jun 2020 17:33:36 +0200
-Message-Id: <20200616153108.879879486@linuxfoundation.org>
+Message-Id: <20200616153107.645810197@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Vlad Buslov <vladbu@mellanox.com>
 
-commit 7778d8417b74aded842eeb372961cfc460417fa0 upstream.
+[ Upstream commit 0531b0357ba37464e5c0033e1b7c69bbf5ecd8fb ]
 
-The conversion of x86 VDSO to the generic clock mode storage broke the
-paravirt and hyperv clocksource logic. These clock sources have their own
-internal sequence counter to validate the clocksource at the point of
-reading it. This is necessary because the hypervisor can invalidate the
-clocksource asynchronously so a check during the VDSO data update is not
-sufficient. If the internal check during read invalidates the clocksource
-the read return U64_MAX. The original code checked this efficiently by
-testing whether the result (casted to signed) is negative, i.e. bit 63 is
-set. This was done that way because an extra indicator for the validity had
-more overhead.
+Flower tests used to create ingress filter with specified parent qdisc
+"parent ffff:" but dump them on "ingress". With recent commit that fixed
+tcm_parent handling in dump those are not considered same parent anymore,
+which causes iproute2 tc to emit additional "parent ffff:" in first line of
+filter dump output. The change in output causes filter match in tests to
+fail.
 
-The conversion broke this check because the check was replaced by a check
-for a valid VDSO clock mode.
+Prevent parent qdisc output when dumping filters in flower tests by always
+correctly specifying "ingress" parent both when creating and dumping
+filters.
 
-The wreckage manifests itself when the paravirt clock is installed as a
-valid VDSO clock and during runtime invalidated by the hypervisor,
-e.g. after a host suspend/resume cycle. After the invalidation the read
-function returns U64_MAX which is used as cycles and makes the clock jump
-by ~2200 seconds, and become stale until the 2200 seconds have elapsed
-where it starts to jump again. The period of this effect depends on the
-shift/mult pair of the clocksource and the jumps and staleness are an
-artifact of undefined but reproducible behaviour of math overflow.
-
-Implement an x86 version of the new vdso_cycles_ok() inline which adds this
-check back and a variant of vdso_clocksource_ok() which lets the compiler
-optimize it out to avoid the extra conditional. That's suboptimal when the
-system does not have a VDSO capable clocksource, but that's not the case
-which is optimized for.
-
-Fixes: 5d51bee725cc ("clocksource: Add common vdso clock mode storage")
-Reported-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200606221532.080560273@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: a7df4870d79b ("net_sched: fix tcm_parent in tc filter dump")
+Signed-off-by: Vlad Buslov <vladbu@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/vdso/gettimeofday.h |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ .../selftests/tc-testing/tc-tests/filters/tests.json        | 6 +++---
+ tools/testing/selftests/tc-testing/tdc_batch.py             | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/arch/x86/include/asm/vdso/gettimeofday.h
-+++ b/arch/x86/include/asm/vdso/gettimeofday.h
-@@ -271,6 +271,24 @@ static __always_inline const struct vdso
- 	return __vdso_data;
- }
+diff --git a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
+index 8877f7b2b809..12aa4bc1f6a0 100644
+--- a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
++++ b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
+@@ -32,7 +32,7 @@
+         "setup": [
+             "$TC qdisc add dev $DEV2 ingress"
+         ],
+-        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 parent ffff: handle 0xffffffff flower action ok",
++        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 ingress handle 0xffffffff flower action ok",
+         "expExitCode": "0",
+         "verifyCmd": "$TC filter show dev $DEV2 ingress",
+         "matchPattern": "filter protocol ip pref 1 flower.*handle 0xffffffff",
+@@ -77,9 +77,9 @@
+         },
+         "setup": [
+             "$TC qdisc add dev $DEV2 ingress",
+-            "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
++            "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
+         ],
+-        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
++        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
+         "expExitCode": "2",
+         "verifyCmd": "$TC -s filter show dev $DEV2 ingress",
+         "matchPattern": "filter protocol ip pref 1 flower chain 0 handle",
+diff --git a/tools/testing/selftests/tc-testing/tdc_batch.py b/tools/testing/selftests/tc-testing/tdc_batch.py
+index 6a2bd2cf528e..995f66ce43eb 100755
+--- a/tools/testing/selftests/tc-testing/tdc_batch.py
++++ b/tools/testing/selftests/tc-testing/tdc_batch.py
+@@ -72,21 +72,21 @@ mac_prefix = args.mac_prefix
  
-+static inline bool arch_vdso_clocksource_ok(const struct vdso_data *vd)
-+{
-+	return true;
-+}
-+#define vdso_clocksource_ok arch_vdso_clocksource_ok
-+
-+/*
-+ * Clocksource read value validation to handle PV and HyperV clocksources
-+ * which can be invalidated asynchronously and indicate invalidation by
-+ * returning U64_MAX, which can be effectively tested by checking for a
-+ * negative value after casting it to s64.
-+ */
-+static inline bool arch_vdso_cycles_ok(u64 cycles)
-+{
-+	return (s64)cycles >= 0;
-+}
-+#define vdso_cycles_ok arch_vdso_cycles_ok
-+
- /*
-  * x86 specific delta calculation.
-  *
+ def format_add_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter add dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter add dev {} {} protocol ip ingress handle {} "
+             " flower {} src_mac {} dst_mac {} action drop {}".format(
+                 device, prio, handle, skip, src_mac, dst_mac, share_action))
+ 
+ 
+ def format_rep_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter replace dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter replace dev {} {} protocol ip ingress handle {} "
+             " flower {} src_mac {} dst_mac {} action drop {}".format(
+                 device, prio, handle, skip, src_mac, dst_mac, share_action))
+ 
+ 
+ def format_del_filter(device, prio, handle, skip, src_mac, dst_mac,
+                       share_action):
+-    return ("filter del dev {} {} protocol ip parent ffff: handle {} "
++    return ("filter del dev {} {} protocol ip ingress handle {} "
+             "flower".format(device, prio, handle))
+ 
+ 
+-- 
+2.25.1
+
 
 
