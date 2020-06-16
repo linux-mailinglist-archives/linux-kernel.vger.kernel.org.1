@@ -2,115 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0CC1FAF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE361FAF50
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgFPLdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 07:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbgFPLdN (ORCPT
+        id S1728731AbgFPLdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 07:33:50 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60337 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728440AbgFPLc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 07:33:13 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEAEC08C5C4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:33:13 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id y23so1623800vkd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZSg0muGbkwOyh6Ot3lTlpvo0Mmt4wgCAweHT5tRHxm0=;
-        b=VibwAZSD84LU+4hHmx7H20bVV8ZpftSbkJ7qeyM+fPSnWy5b52HMmY8uC6oN/TOJ3N
-         Ppd7MeLLzhu4lLdwL1u8+HFFzEJwEkIRbPl3l2liiO84a2tEXnOOLJLVeD2eQr2LEdo1
-         GuqKU5ksA+/+QuCtf656nkvB+l8BnzLR+CwMeWI8NMKjSG87T6hTFLog6RcU8uJ5b42y
-         lBqr6ENJXZQ31zwwwbbWm8fG8NZlpIVe4l6fg47KvRL/VkNsBi3g56UkQTQ64+dQKFpF
-         89zZO5b6w/YjOAiLDeGYGxLcR5EKhAFvvlLFVKqumAr2y0DtwWTd9++bWUxaqHYG4fEh
-         NmyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZSg0muGbkwOyh6Ot3lTlpvo0Mmt4wgCAweHT5tRHxm0=;
-        b=RDXHnrqxYIwtF12eL0svlixgZAUdJbIrr9dBcnkf3pCUJYfz955efuv60IbPyPxxVt
-         VmpovvvNOFICNQCLwE4Mel1nXqSSxRIKo7PxlS1mtQyqjR9S2wSGA+B9fxMSLeTpEzze
-         O4dG/IHwcDsH8RtzXF78s+A9KMXpRUbNu114qhWMj7j+qaIGTiZz7Vvuh2wHhwr079an
-         Sp0HlbsyyfajIQTCSP/R3rK/qjAOSYclQpmaCcaIxnssEMHamtP+hpp1qRnyCANLbmSl
-         YhhUmZy3JoKEIPmXscC1Co54nIxLT2TkhUv/daLQKcodfOewg0Os6ZFl88FZPialDH6c
-         ZAbw==
-X-Gm-Message-State: AOAM533EjCLOLiu6XCix36r9yE81GvbnRYxzZ6Jyefy6Bh0+pjUoT56B
-        biKlzcRgeRUxUCAF8XFBTI83XgI5BX5l2JOmfCp8gQ==
-X-Google-Smtp-Source: ABdhPJznqqxzYSq4IwrFjXL5kmjhHPScZNDOA7H32xZbM7qlqeiuriVkd5OOYnJKbb8oO4Q4Ov7r07YvZL4Xn1v7YjE=
-X-Received: by 2002:a1f:2145:: with SMTP id h66mr1118293vkh.53.1592307192362;
- Tue, 16 Jun 2020 04:33:12 -0700 (PDT)
+        Tue, 16 Jun 2020 07:32:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592307178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5HmXip2NqxtzCfW1WJOah2yPReQyknfAoLWFvpY0/7Q=;
+        b=D5zdUtAGxmSDT0mEHEaY6cbwq6/7RZTydi4U6Lp4O9t4FQOGxru9s5JtXDDer9paSLj03F
+        KiqsN24vRWuGdhU/koeqorlPodf2qlOh2BXCQ4tN20wNX9Bo3e0n4j4GcL+Orsqcq7AdH2
+        EioJpyKE+xJ49drTSU7eioLExoxS/zQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-3VCy-tjwNyqpwFUWggKbJw-1; Tue, 16 Jun 2020 07:32:55 -0400
+X-MC-Unique: 3VCy-tjwNyqpwFUWggKbJw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2087D100961C;
+        Tue, 16 Jun 2020 11:32:54 +0000 (UTC)
+Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 007EC6FDD1;
+        Tue, 16 Jun 2020 11:32:52 +0000 (UTC)
+From:   Prarit Bhargava <prarit@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prarit Bhargava <prarit@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v5] x86/split_lock: Sanitize userspace and guest error output
+Date:   Tue, 16 Jun 2020 07:32:50 -0400
+Message-Id: <20200616113250.2061-1-prarit@redhat.com>
 MIME-Version: 1.0
-References: <20200608084458.32014-1-narmstrong@baylibre.com>
-In-Reply-To: <20200608084458.32014-1-narmstrong@baylibre.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 16 Jun 2020 13:32:36 +0200
-Message-ID: <CAPDyKFo7VA-wbOZUxExUpPoc+u446KecFARX0KNCakaubowpXg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: meson-gx: limit segments to 1 when dram-access-quirk
- is needed
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Art Nikpal <art@khadas.com>,
-        Christian Hewitt <christianshewitt@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Jun 2020 at 10:45, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> The actual max_segs computation leads to failure while using the broadcom
-> sdio brcmfmac/bcmsdh driver, since the driver tries to make usage of scatter
-> gather.
->
-> But with the dram-access-quirk we use a 1,5K SRAM bounce buffer, and the
-> max_segs current value of 3 leads to max transfers to 4,5k, which doesn't work.
->
-> This patch sets max_segs to 1 to better describe the hardware limitation,
-> and fix the SDIO functionnality with the brcmfmac/bcmsdh driver on Amlogic
-> G12A/G12B SoCs on boards like SEI510 or Khadas VIM3.
->
-> Reported-by: Art Nikpal <art@khadas.com>
-> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
-> Fixes: acdc8e71d9bb ("mmc: meson-gx: add dram-access-quirk")
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+There are two problems with kernel messages in fatal mode that were found
+during testing of guests and userspace programs.
 
-Applied for fixes and by adding a stable tag, thanks!
+The first is that no kernel message is output when the split lock detector
+is triggered with a userspace program.  As a result the userspace process
+dies from receiving SIGBUS with no indication to the user of what caused
+the process to die.
 
-Kind regards
-Uffe
+The second problem is that only the first triggering guest causes a kernel
+message to be output because the message is output with pr_warn_once().
+This also results in a loss of information to the user.
 
+While fixing these I noticed that the same message was being output
+three times so I'm cleaning that up too.
 
-> ---
->  drivers/mmc/host/meson-gx-mmc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-> index 35400cf2a2e4..cfaf8e7e22ec 100644
-> --- a/drivers/mmc/host/meson-gx-mmc.c
-> +++ b/drivers/mmc/host/meson-gx-mmc.c
-> @@ -1143,9 +1143,11 @@ static int meson_mmc_probe(struct platform_device *pdev)
->
->         mmc->caps |= MMC_CAP_CMD23;
->         if (host->dram_access_quirk) {
-> +               /* Limit segments to 1 due to low available sram memory */
-> +               mmc->max_segs = 1;
->                 /* Limit to the available sram memory */
-> -               mmc->max_segs = SD_EMMC_SRAM_DATA_BUF_LEN / mmc->max_blk_size;
-> -               mmc->max_blk_count = mmc->max_segs;
-> +               mmc->max_blk_count = SD_EMMC_SRAM_DATA_BUF_LEN /
-> +                                    mmc->max_blk_size;
->         } else {
->                 mmc->max_blk_count = CMD_CFG_LENGTH_MASK;
->                 mmc->max_segs = SD_EMMC_DESC_BUF_LEN /
-> --
-> 2.22.0
->
+Fix fatal mode output, and use consistent messages for fatal and
+warn modes for both userspace and guests.
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+Cc: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+---
+v2: Do not output a message if CPL 3 Alignment Check is turned on (xiaoyao.li)
+v3: refactor code (sean.j.christopherson)
+v4: Fix Sign off (sean.j.christopherson)
+v5: Fix Sign off (sean.j.christopherson)
+
+ arch/x86/kernel/cpu/intel.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 63926c94eb5f..3a373f0be674 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1074,11 +1074,14 @@ static void split_lock_init(void)
+ 	split_lock_verify_msr(sld_state != sld_off);
+ }
+ 
+-static void split_lock_warn(unsigned long ip)
++static bool handle_split_lock(unsigned long ip)
+ {
+-	pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
++	pr_warn("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
+ 			    current->comm, current->pid, ip);
+ 
++	if (sld_state != sld_warn)
++		return false;
++
+ 	/*
+ 	 * Disable the split lock detection for this task so it can make
+ 	 * progress and set TIF_SLD so the detection is re-enabled via
+@@ -1086,18 +1089,13 @@ static void split_lock_warn(unsigned long ip)
+ 	 */
+ 	sld_update_msr(false);
+ 	set_tsk_thread_flag(current, TIF_SLD);
++	return true;
+ }
+ 
+ bool handle_guest_split_lock(unsigned long ip)
+ {
+-	if (sld_state == sld_warn) {
+-		split_lock_warn(ip);
++	if (handle_split_lock(ip))
+ 		return true;
+-	}
+-
+-	pr_warn_once("#AC: %s/%d %s split_lock trap at address: 0x%lx\n",
+-		     current->comm, current->pid,
+-		     sld_state == sld_fatal ? "fatal" : "bogus", ip);
+ 
+ 	current->thread.error_code = 0;
+ 	current->thread.trap_nr = X86_TRAP_AC;
+@@ -1108,10 +1106,10 @@ EXPORT_SYMBOL_GPL(handle_guest_split_lock);
+ 
+ bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+ {
+-	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
++	if (regs->flags & X86_EFLAGS_AC)
+ 		return false;
+-	split_lock_warn(regs->ip);
+-	return true;
++
++	return handle_split_lock(regs->ip);
+ }
+ 
+ /*
+-- 
+2.21.3
+
