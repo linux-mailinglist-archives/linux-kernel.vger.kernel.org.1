@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13931FB928
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9C31FBB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732635AbgFPPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S1731832AbgFPQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:18:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732205AbgFPPuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:51 -0400
+        id S1730593AbgFPPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B444207C4;
-        Tue, 16 Jun 2020 15:50:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56B30214DB;
+        Tue, 16 Jun 2020 15:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322650;
-        bh=bJ5vHl2H8/BvNDVhsIs4pfBDlyCaMBFtm0KMc8o1C+U=;
+        s=default; t=1592321893;
+        bh=+1D9kExDD3bEf33XbVDEMg9hH0GZgEy1vDz5bhWcY/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1fKUX3+M0Lq6ZSvmq3uanhrvCdcr5uJMgqez4iYxkkAdB7YROpJkCS1AsffQ2ilH
-         i7bapP6WkYq8zzlzMUs4njnN5ZsP3FVsCCgK159S5hqdO3CFJTdM9JXo6NDirYQBuO
-         6lGcmyVXtvIvVTReGsJZWSVHp2Y196ZPEinahk5E=
+        b=HmoQFxWu4H6kiq8DEZ2O2bXXXfiakAavN5JtdEiTRvmgDuRWDCgfGaYT0YXa+XKE5
+         cqKAwnBM3fNqWqeOAnOphZs9KNwpLkuSsRWKGVe/mlGPxrVP9+kX7OkTzIYQglpzvD
+         QArCVKb1g1HRq+375DWTV8LQH9asL1rVSJW0nrzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaochun Lee <lixc17@lenovo.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.6 050/161] x86/PCI: Mark Intel C620 MROMs as having non-compliant BARs
-Date:   Tue, 16 Jun 2020 17:34:00 +0200
-Message-Id: <20200616153108.760510470@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 057/134] ALSA: hda/realtek - add a pintbl quirk for several Lenovo machines
+Date:   Tue, 16 Jun 2020 17:34:01 +0200
+Message-Id: <20200616153103.506479809@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaochun Lee <lixc17@lenovo.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 1574051e52cb4b5b7f7509cfd729b76ca1117808 upstream.
+commit 573fcbfd319ccef26caa3700320242accea7fd5c upstream.
 
-The Intel C620 Platform Controller Hub has MROM functions that have non-PCI
-registers (undocumented in the public spec) where BAR 0 is supposed to be,
-which results in messages like this:
+A couple of Lenovo ThinkCentre machines all have 2 front mics and they
+use the same codec alc623 and have the same pin config, so add a
+pintbl entry for those machines to apply the fixup
+ALC283_FIXUP_HEADSET_MIC.
 
-  pci 0000:00:11.0: [Firmware Bug]: reg 0x30: invalid BAR (can't size)
-
-Mark these MROM functions as having non-compliant BARs so we don't try to
-probe any of them.  There are no other BARs on these devices.
-
-See the Intel C620 Series Chipset Platform Controller Hub Datasheet,
-May 2019, Document Number 336067-007US, sec 2.1, 35.5, 35.6.
-
-[bhelgaas: commit log, add 0xa26d]
-Link: https://lore.kernel.org/r/1589513467-17070-1-git-send-email-lixiaochun.2888@163.com
-Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200608115541.9531-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/pci/fixup.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/hda/patch_realtek.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/x86/pci/fixup.c
-+++ b/arch/x86/pci/fixup.c
-@@ -572,6 +572,10 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_IN
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6f60, pci_invalid_bar);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fa0, pci_invalid_bar);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fc0, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ec, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ed, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26c, pci_invalid_bar);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26d, pci_invalid_bar);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8156,6 +8156,12 @@ static const struct snd_hda_pin_quirk al
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+ 		{0x17, 0x90170110}),
++	SND_HDA_PIN_QUIRK(0x10ec0623, 0x17aa, "Lenovo", ALC283_FIXUP_HEADSET_MIC,
++		{0x14, 0x01014010},
++		{0x17, 0x90170120},
++		{0x18, 0x02a11030},
++		{0x19, 0x02a1103f},
++		{0x21, 0x0221101f}),
+ 	{}
+ };
  
- /*
-  * Device [1022:7808]
 
 
