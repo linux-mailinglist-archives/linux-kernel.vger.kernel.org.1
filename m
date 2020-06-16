@@ -2,189 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6791FAAB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510F21FAAB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgFPIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:05:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgFPIFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:05:19 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276DE2074D;
-        Tue, 16 Jun 2020 08:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592294719;
-        bh=xS1bz/I8TuJWQXl/b8r7l6ZWj5h9r7ECmLDtJ9PzSgk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yeo3WK8ZeBdlZV9PyIT6cPW7zKJnQqiFsHfXXJpyg6SBIy5CQRba96zgytf1wqKtx
-         /xNL0V4FTR+y5pUniIQJBR9d3mH+vK1NvVY0sYgJVyrV/5M+pA6zQSE6OCt5MJpP9T
-         eR5PS3LXBKW9KQaENu4vnHy0n3wyLJYHJdt64VBE=
-Date:   Tue, 16 Jun 2020 17:05:16 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] proc/bootconfig: Fix to use correct quotes for
- value
-Message-Id: <20200616170516.927d75bd98237466339fca33@kernel.org>
-In-Reply-To: <20200615151139.5cc223fc@oasis.local.home>
-References: <159197538852.80267.10091816844311950396.stgit@devnote2>
-        <159197539793.80267.10836787284189465765.stgit@devnote2>
-        <20200615151139.5cc223fc@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727873AbgFPIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbgFPIFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:05:33 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519ABC03E96A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:05:32 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j10so19703825wrw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nSbbk12sklznSzURmDgyRvyV4JyDaN7OpY0qUFnGrF0=;
+        b=T6FxFVn1hxbyVOJ1IyLfuqYj92YRLnRIsyx3/oowDA+x3BzDhwFFmEeKEnPEP9MPEA
+         Q4cmnsQT8k+IMgfrS+3spLNWSL06RqN5ebkLysnP6qXhcUQk9AGZtEgX1tRfPkNPU28/
+         4jJVm8GVo0U9VldN1mn1ClAGq/x7SH0XL66fJeIzZRX/G6Q1xsok0Y2PUuquOkR1aBlj
+         tApAtsDp/nIGk0fmm6PqW/vfj/Q4Rw28Yj9ozigY3qyY7ZyVtXEVHsL7xsk+ercb4Sqv
+         UZEfOeVoDSU05JYPGHHufWHF007CvNHJQzCssmMv5YBp5l3UD2RZwRoXhJzjSl2+bRq7
+         xLxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nSbbk12sklznSzURmDgyRvyV4JyDaN7OpY0qUFnGrF0=;
+        b=f9WEePo1j/1YDrL/W98n+sRNxQ0P/2LNWSIw/AMvO2DoDy1Zhj+ZkFM2dX3ltm6UkX
+         O7/7rTD1IuazxjuzEbWn2/fTK0R21IM4UET1owXyq11wCSOEsMr6aliir0dvky8mq8sB
+         7TD/+SHd+1sJE0Wp2PD4m38wJkHAxkClwooXPa6niq/9cxacItRE9T9DjD43lIXJitzM
+         c3VRNFqb3YhfdGZ2Uq9gQfN4nS5GhsRjtD5LJjg/OhUkr70FluwGRu5hM6XPjYFOAv1c
+         JtvREuxTNX0AORO2Xd7v5VSs5wAK82A3QvLEeWZZYYpSlFDIiduzNulED7mdDvj4NDBh
+         WL3g==
+X-Gm-Message-State: AOAM532W9RTNsSxsEGeQzwEvF2Oow98l9mGy39sZbOwTXoStotD+FIsB
+        WO8mdEnd59+GpVwsIyBHJbmnOQ==
+X-Google-Smtp-Source: ABdhPJxU65V0UN6yumv2HUuV4IN5upvbVb+ibQ9xncnrMwZn2lX2xkgru9+/gYpAYeYXxU41grhpcA==
+X-Received: by 2002:adf:ec0a:: with SMTP id x10mr1682760wrn.130.1592294731087;
+        Tue, 16 Jun 2020 01:05:31 -0700 (PDT)
+Received: from dell ([109.180.115.156])
+        by smtp.gmail.com with ESMTPSA id f2sm2679917wmj.39.2020.06.16.01.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 01:05:30 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 09:05:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/video/backlight: Use kobj_to_dev() instead
+Message-ID: <20200616080529.GK2608702@dell>
+References: <1592211242-31683-1-git-send-email-wangqing@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1592211242-31683-1-git-send-email-wangqing@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 15:11:39 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 15 Jun 2020, Wang Qing wrote:
 
-> On Sat, 13 Jun 2020 00:23:18 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> Use kobj_to_dev() instead of container_of()
 > 
-> > Fix /proc/bootconfig to show the correctly choose the
-> > double or single quotes according to the value.
-> > 
-> > If a bootconfig value includes a double quote character,
-> > we must use single-quotes to quote that value.
-> > 
-> > Fixes: c1a3c36017d4 ("proc: bootconfig: Add /proc/bootconfig to show boot config list")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  fs/proc/bootconfig.c |   13 +++++++++----
-> >  1 file changed, 9 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> > index 9955d75c0585..930d1dae33eb 100644
-> > --- a/fs/proc/bootconfig.c
-> > +++ b/fs/proc/bootconfig.c
-> > @@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
-> >  {
-> >  	struct xbc_node *leaf, *vnode;
-> >  	const char *val;
-> > +	char q;
-> >  	char *key, *end = dst + size;
-> >  	int ret = 0;
-> 
-> Hmm, shouldn't the above have the upside-down xmas tree format?
-> 
-> 	struct xbc_node *leaf, *vnode;
-> 	char *key, *end = dst + size;
-> 	const char *val;
-> 	char q;
-> 	int ret = 0;
-> 
-> 
-> Looks a little better that way. But anyway, more meat below.
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  drivers/video/backlight/lm3533_bl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>  mode change 100644 => 100755 drivers/video/backlight/lm3533_bl.c
 
-OK.
+I've fixed the broken subject line.
 
-> 
-> >  
-> > @@ -41,16 +42,20 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
-> >  			break;
-> >  		dst += ret;
-> >  		vnode = xbc_node_get_child(leaf);
-> > -		if (vnode && xbc_node_is_array(vnode)) {
-> > +		if (vnode) {
-> >  			xbc_array_for_each_value(vnode, val) {
-> > -				ret = snprintf(dst, rest(dst, end), "\"%s\"%s",
-> > -					val, vnode->next ? ", " : "\n");
-> 
-> The above is a functional change that is not described in the change
-> log.
-> 
-> You use to have:
-> 
-> 	if (vnode && xbc_node_is_array(vnode)) {
-> 		xbc_array_for_each_value() {
-> 			[..]
-> 		}
-> 	} else {
-> 		[..]
-> 	}
-> 
-> And now have:
-> 
-> 	if (vnode) {
-> 		xbc_array_for_each_value() {
-> 			[..]
-> 		}
-> 	} else {
-> 		[..]
-> 	}
-> 
-> Is "vnode" equivalent to "vnode && xbc_node_is_array(vnode)" ?
+For future submissions, please use `git log --oneline -- <SUBSUSTEM>`
+to view the expected formatting for any given <SUBSYSTEM>.
 
-No, it's not. But actually, the above change is equivalent, because
-xbc_array_for_each_value() can handle the vnode has no "next" member.
-(the array means just "a list of value node")
+Applied, thanks.
 
-Thus,
-
-if (vnode && xbc_node_is_array(vnode)) {
-	xbc_array_for_each_value(vnode)	/* vnode->next != NULL */
-		...
-} else {
-	snprintf(val); /* val is an empty string if !vnode */
-}
-
-is equivalent to 
-
-if (vnode) {
-	xbc_array_for_each_value(vnode)	/* vnode->next can be NULL */
-		...
-} else {
-	snprintf("");
-}
-
-> 
-> Why was this change made? It seems out of scope with the change log?
-
-Because I want to avoid checking double-quote in each value in 2 places.
-If we don't change the if() code, we need 
-
-	if (strchr(val, '"'))
-		q = '\'';
-	else
-		q = '"';
-
-this in 2 places.
-
-Anyway, I'll add it in the patch comment.
-
-Thank you,
-
-> 
-> -- Steve
-> 
-> 
-> > +				if (strchr(val, '"'))
-> > +					q = '\'';
-> > +				else
-> > +					q = '"';
-> > +				ret = snprintf(dst, rest(dst, end), "%c%s%c%s",
-> > +					q, val, q, vnode->next ? ", " : "\n");
-> >  				if (ret < 0)
-> >  					goto out;
-> >  				dst += ret;
-> >  			}
-> >  		} else {
-> > -			ret = snprintf(dst, rest(dst, end), "\"%s\"\n", val);
-> > +			ret = snprintf(dst, rest(dst, end), "\"\"\n");
-> >  			if (ret < 0)
-> >  				break;
-> >  			dst += ret;
-> 
-
+> diff --git a/drivers/video/backlight/lm3533_bl.c b/drivers/video/backlight/lm3533_bl.c
+> index ee09d1b..0c7830f
+> --- a/drivers/video/backlight/lm3533_bl.c
+> +++ b/drivers/video/backlight/lm3533_bl.c
+> @@ -235,7 +235,7 @@ static struct attribute *lm3533_bl_attributes[] = {
+>  static umode_t lm3533_bl_attr_is_visible(struct kobject *kobj,
+>  					     struct attribute *attr, int n)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct lm3533_bl *bl = dev_get_drvdata(dev);
+>  	umode_t mode = attr->mode;
+>  
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
