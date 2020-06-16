@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8891FA7E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF04F1FA7E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgFPEq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 00:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgFPEq5 (ORCPT
+        id S1726863AbgFPErt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 00:47:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34816 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgFPErt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 00:46:57 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA19C05BD43;
-        Mon, 15 Jun 2020 21:46:56 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x22so8921308pfn.3;
-        Mon, 15 Jun 2020 21:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gdcznPwXSPEx/HPzlO737tmp5HWnzdWQfrFQbb2WQrE=;
-        b=TmGPjEeQEK8OlP+IhxvuorrgBcx/nT4tEIRaWNNOoPUdzClokNJjqfcY2P/CbwbAmV
-         EWa6Sl4uPfzj9cT2EC5pTo6ftRJCs8cM4PbpgV4xhuyksDh1i38KGe0hpJTI5ml+eozi
-         FnUj0auXzF4z+W1ZMOrQQW5j6OWfoqjdwW9yqcx1U+EzRPT3WynSB3cB8H+Qths+mGXY
-         6teOIzmvUbZ7UgPopDRNrZn4uYyzk8s9Fj66tkJ1+bnV0yS7rlT7XvOghcpHUI0KGDvw
-         +rIqujybHWmNZk3TECQpBt2BeknLsDEuQvfKkOIyvd0/S4DanIUYLaSBzPMbQVPJ0gk1
-         Y4lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=gdcznPwXSPEx/HPzlO737tmp5HWnzdWQfrFQbb2WQrE=;
-        b=qeWtDqoJCNQVQOggV6qGMWN77AU4AVcJ3ADkyRnXVxe0VasvUMcVboVHoia+ZRA56Q
-         MK1z/FHkmOSkluSVvNjf+oGKJArW0szTl/+1EB4S8J063ruSBXroxq/MrGxbUQYaSBaQ
-         qs0fMCa88YO1elXr8LF2UVKkyV+kQ7jA4esgwX39rfGQY5vm4eGm8wtJqmbUiet+nxB9
-         OjnWU36mpwNOn02Dj0SvzYYcR0pHE1Raqdd8m6kzsVjUVqOa4Sw6HFX6tTZFMeHS8Jb3
-         rzUGBjCY6rVUGV0ul/ag+l6spmGa/94qxn8fUhhy7avza7LpX/izKL0nVo34sQS/bV9R
-         LrEg==
-X-Gm-Message-State: AOAM532YpfFhLoY43ZIwO9WmaUHG5/eJ92YKeIcHbj3MVGgAGUxYHfbi
-        Ui+D8iFmcQZePBZ/F4jfsRUg+FJn
-X-Google-Smtp-Source: ABdhPJy1bxACh1qEidxIOmibj9dy+gaDFb4RY6RzvOki3sSU4MsmJhtAcwFjyk2bC9JS4fctLVbTBw==
-X-Received: by 2002:a63:d652:: with SMTP id d18mr765120pgj.164.1592282815973;
-        Mon, 15 Jun 2020 21:46:55 -0700 (PDT)
-Received: from her0gyu-virtual-machine.localdomain ([1.221.137.163])
-        by smtp.gmail.com with ESMTPSA id z140sm16084374pfc.135.2020.06.15.21.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 21:46:55 -0700 (PDT)
-From:   youngjun <her0gyugyu@gmail.com>
-To:     amir73il@gmail.com
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, youngjun <her0gyugyu@gmail.com>
-Subject: [PATCH] ovl: inode reference leak in ovl_is_inuse true case.
-Date:   Tue, 16 Jun 2020 13:46:47 +0900
-Message-Id: <20200616044647.19071-1-her0gyugyu@gmail.com>
+        Tue, 16 Jun 2020 00:47:49 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jl3V4-0004Qd-59; Tue, 16 Jun 2020 04:47:06 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Wenwen Wang <wenwen@cs.uga.edu>,
+        Hui Wang <hui.wang@canonical.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Tomas Espeleta <tomas.espeleta@gmail.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] ALSA: hda: Make codec controlled LED support more generic
+Date:   Tue, 16 Jun 2020 12:46:58 +0800
+Message-Id: <20200616044702.17570-1-kai.heng.feng@canonical.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200615155645.32939-1-her0gyugyu@gmail.com>
-References: <20200615155645.32939-1-her0gyugyu@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When "ovl_is_inuse" true case, trap inode reference not put.
-plus adding the comment explaining sequence of
-ovl_is_inuse after ovl_setup_trap.
+Currently, only HDA codec GPIO controlled LED class is supported, and
+only via platform specific quirk.
 
-Signed-off-by: youngjun <her0gyugyu@gmail.com>
+There are systems that control LED via COEF instead of GPIO, and to
+support those systems, move the LED class registration to
+snd_hda_gen_add_micmute_led(), so all systems can facilitate the same
+interface.
+
+In addition to that, add LED_CORE_SUSPENDRESUME flag since some systems
+don't restore the LED properly after suspend.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- fs/overlayfs/super.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_generic.c   | 28 ++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c | 30 ------------------------------
+ 2 files changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 91476bc422f9..0396793dadb8 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -1029,6 +1029,12 @@ static const struct xattr_handler *ovl_xattr_handlers[] = {
- 	NULL
- };
- 
-+/*
-+ * Check if lower root conflicts with this overlay layers before checking
-+ * if it is in-use as upperdir/workdir of "another" mount, because we do
-+ * not bother to check in ovl_is_inuse() if the upperdir/workdir is in fact
-+ * in-use by our upperdir/workdir.
-+ */
- static int ovl_setup_trap(struct super_block *sb, struct dentry *dir,
- 			  struct inode **ptrap, const char *name)
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index f4e9d9445e18..4242407734c0 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -4006,6 +4006,28 @@ static const struct snd_kcontrol_new micmute_led_mode_ctl = {
+  *
+  * Returns 0 if the hook is established or a negative error code.
+  */
++
++#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
++static int micmute_led_set(struct led_classdev *led_cdev,
++			   enum led_brightness brightness)
++{
++	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
++	struct hda_gen_spec *spec = codec->spec;
++
++	spec->micmute_led.led_mode = !brightness;
++	call_micmute_led_update(codec);
++	return 0;
++}
++
++static struct led_classdev micmute_led_cdev = {
++	.name = "hda::micmute",
++	.max_brightness = 1,
++	.brightness_set_blocking = micmute_led_set,
++	.default_trigger = "audio-micmute",
++	.flags = LED_CORE_SUSPENDRESUME,
++};
++#endif
++
+ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 				void (*hook)(struct hda_codec *))
  {
-@@ -1499,8 +1505,10 @@ static int ovl_get_layers(struct super_block *sb, struct ovl_fs *ofs,
+@@ -4019,6 +4041,12 @@ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 	spec->cap_sync_hook = update_micmute_led;
+ 	if (!snd_hda_gen_add_kctl(spec, NULL, &micmute_led_mode_ctl))
+ 		return -ENOMEM;
++
++#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
++	micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++	if (devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev))
++		codec_warn(codec, "failed to register micmute LED\n");
++#endif
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_gen_add_micmute_led);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6d73f8beadb6..cead44a6c6cd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4109,26 +4109,6 @@ static void alc_gpio_micmute_update(struct hda_codec *codec)
+ 			    spec->gen.micmute_led.led_value);
+ }
  
- 		if (ovl_is_inuse(stack[i].dentry)) {
- 			err = ovl_report_in_use(ofs, "lowerdir");
--			if (err)
-+			if (err) {
-+				iput(trap);
- 				goto out;
-+			}
- 		}
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-static int micmute_led_set(struct led_classdev *led_cdev,
+-			   enum led_brightness brightness)
+-{
+-	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
+-	struct alc_spec *spec = codec->spec;
+-
+-	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+-			    spec->micmute_led_polarity, !!brightness);
+-	return 0;
+-}
+-
+-static struct led_classdev micmute_led_cdev = {
+-	.name = "hda::micmute",
+-	.max_brightness = 1,
+-	.brightness_set_blocking = micmute_led_set,
+-	.default_trigger = "audio-micmute",
+-};
+-#endif
+-
+ /* setup mute and mic-mute GPIO bits, add hooks appropriately */
+ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  int action,
+@@ -4136,9 +4116,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  unsigned int micmute_mask)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-	int err;
+-#endif
  
- 		mnt = clone_private_mount(&stack[i]);
+ 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
+ 
+@@ -4151,13 +4128,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 	if (micmute_mask) {
+ 		spec->gpio_mic_led_mask = micmute_mask;
+ 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
+-
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
+-		if (err)
+-			codec_warn(codec, "failed to register micmute LED\n");
+-#endif
+ 	}
+ }
+ 
 -- 
 2.17.1
 
-Thank you for comment Amir. I modified patch as you said.
