@@ -2,258 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187471FC22F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1701FC231
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgFPXRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 19:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        id S1726428AbgFPXT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 19:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgFPXRX (ORCPT
+        with ESMTP id S1725894AbgFPXT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:17:23 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E6FC06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:17:22 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id e11so290390ilr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:17:22 -0700 (PDT)
+        Tue, 16 Jun 2020 19:19:56 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBC6C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:19:54 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id i3so582874ljg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2suWlJa8CpH6BIGy7EoIm2xIgo7asmnb0ube9qU2ZKk=;
-        b=eq+7vwnpvebg3rd3wG9R+noiw205POdh0tWyYaRranqq/PD30SLj0QFQlCh+9IrNPE
-         lPcquAIew/6yDSLJ4H7rhCnTweLD0e5EXs2SBne34BYDYeHwV34PqkgyM0XBRQcyrkBD
-         ZYZE7toxMTPsLxWi3AErNt2zSzuOb4tWYafwc4eFqQsaddLZmlyEZGtVMzhvRuRwDWrR
-         LncAbtZYwsRE19gQNbbvhjW7sQUEL86wM3AVn+rY3Swkqwft3mWeVNV04Y+/Q8DilSvo
-         FIcLi8slFYfuV8gDATUiLWBYABJmthAIbWyzER3395cFjAf2A02yrrAJTkEkAk+cJrjS
-         y+bA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Q3NqWxyLOOv1rnd62CYs1OAA6O26ZjYHA/TuTD5bi7M=;
+        b=twhIch1q57KWiIJ91CDmo7zc2t0XjVXTUTP/xqTVUIw1n/qS2iuPGkBFRFuin3w1XW
+         KJ7qSAvq31uccaRUfWF5ePbxjCDLJWVX5f9QA2Ee6LuZvAroN2uRdmfQLZDN4RTWvT5A
+         Zqx+VVJLIdz7eOmgz3FfZdToQTYgfHeSsMLM4xc+NBzdVTkNiJY0ettWZrT/0XK+lvEp
+         xG1WgOSVaCVwLABUEmHNtXbhRL5HiUDbbluDMKeU04kb0r/D3v7+vCqncXYKfVEX/WgF
+         OjkHXTKBZIl8iT60W1OBxaQmMU2a4lECB7jNu5oVreEjHH3fECe7BFSIUmgkNGg+d2KT
+         5U+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2suWlJa8CpH6BIGy7EoIm2xIgo7asmnb0ube9qU2ZKk=;
-        b=EsCEJXsei4P/wYKetG8AsT/aWCuDc92YblaERbSd1o0uhGat6hXhYkTkldaCJXmROv
-         2xJbdxFwggn+U8SW0MGJ+uy4isng+EsxNPAwBprxO+LgStZFj0ge9xIDT63pUBb8fHiR
-         JA5YLTLR7Ng/3l/8xS9Qm8xXiEhxluzaZFg573/iM6Zk8adYT/G0VyOeuZ8YTdEr3bD4
-         1krrAcOZfDsneYWjpnLC2G/7iUeZmLcGSnijNCd929y2+26KaCorE4jMJCLOkroT9vRM
-         hVy0cD4XkhsoU2rjZXP1yJQZbSlI1amih6PeWUfl+iSa/shbzdQWYtj+JNFY/b8DFKm7
-         OtYQ==
-X-Gm-Message-State: AOAM530ABxgZGQrBW7UmFJXbDK6lnvI5jbkSziUMtyAnV8gr06sapUsa
-        fPqxM4KwFlTgP9fj2pJ0PJWzGKrnW+Mbu7TADGV+3A==
-X-Google-Smtp-Source: ABdhPJwV6lb4T8E6Us4v6aI0n/kcJpPwIFqsk2SK5vA5bPQN6SJQSZlp17j1pgg0EWXgiE6GIBwyukvNj686beLRO3I=
-X-Received: by 2002:a05:6e02:1208:: with SMTP id a8mr5682459ilq.118.1592349440425;
- Tue, 16 Jun 2020 16:17:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Q3NqWxyLOOv1rnd62CYs1OAA6O26ZjYHA/TuTD5bi7M=;
+        b=FDEVaN9+OIaE9hK0023P72DGxirKpOGlYic1ywS1NUbb0z1VeHWgJdlAEhbtxEQHsq
+         wEMFckeEVv1mfpqecdrGT1bgUkGtUoxB8CBgdZJsTKFJwwknanJm8pLPpk1ZExHZYYLx
+         kM/iHDDxczFWPosNq6eNkicEMJF52rR+m8oUfxd0+kEe/RXjEhLEa/Y4tOQvazBpatHD
+         SpwrZtyUDgkIGHTBYX4JNob7IcQ/v7dofCPAro7r77ySQh04Y87g5bd3fqD3kXOSZnmP
+         HkkUqVwjoRwttXnf2KIx82wszoq4IGYfOVAHH6bAOp/UHXxgBUc/ouSFucD8eGC4qSkl
+         jlRQ==
+X-Gm-Message-State: AOAM531xE504Wsemsci5Lsii3Bv+j2OzTBd9wu5yEm1p8hEMUxsnm8Li
+        qbEiEOaPMeZeZBj+fCrRcWOmBB4oFymMwQq/FBQ=
+X-Google-Smtp-Source: ABdhPJwbJx1H4lsslm8/65Pqnw738fBMf59nyLqittDuQ03gVe0O6TALZagDWtlR1BlF/J5Rmf1EgPPpFl/8X+FqROw=
+X-Received: by 2002:a2e:9ad6:: with SMTP id p22mr2598237ljj.3.1592349592743;
+ Tue, 16 Jun 2020 16:19:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <159234483706.6230.13753828995249423191.stgit@bmoger-ubuntu> <159234502394.6230.5169466123693241678.stgit@bmoger-ubuntu>
-In-Reply-To: <159234502394.6230.5169466123693241678.stgit@bmoger-ubuntu>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 16 Jun 2020 16:17:09 -0700
-Message-ID: <CALMp9eTxs5nb9Ay0ELVa71cmA9VPzaMSuGgW_iM2tmAVvXs4Pg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] KVM:SVM: Add extended intercept support
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>
+Received: by 2002:a2e:87d9:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 16:19:52
+ -0700 (PDT)
+Reply-To: hamzak02wadrago@gmail.com
+From:   Hamzak Wadrago <nad123far@gmail.com>
+Date:   Tue, 16 Jun 2020 23:19:52 +0000
+Message-ID: <CAK1usucco3pApC+1RGiGb-cra2MoVQiBWLzukKnHpjz0dR9gvw@mail.gmail.com>
+Subject: From Mr. Hamzak Wadrago:
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 3:03 PM Babu Moger <babu.moger@amd.com> wrote:
->
-> The new intercept bits have been added in vmcb control
-> area to support the interception of INVPCID instruction.
->
-> The following bit is added to the VMCB layout control area
-> to control intercept of INVPCID:
->
-> Byte Offset     Bit(s)          Function
-> 14h             2               intercept INVPCID
->
-> Add the interfaces to support these extended interception.
-> Also update the tracing for extended intercepts.
->
-> AMD documentation for INVPCID feature is available at "AMD64
-> Architecture Programmer=E2=80=99s Manual Volume 2: System Programming,
-> Pub. 24593 Rev. 3.34(or later)"
->
-> The documentation can be obtained at the links below:
-> Link: https://www.amd.com/system/files/TechDocs/24593.pdf
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D206537
+Dear Friend
 
-Not your change, but this documentation is terrible. There is no
-INVLPCID instruction, nor is there a PCID instruction.
+I am Mr hamzak wadrago, the chief operating officer with my bank and I
+want to inform you that an amount of US$15.5 million will be moved on
+your name as the Foreign Business Partner to our late deceased
+customer. I need your help to receive this money as we shall share the
+money in the ratio of 60:40%. You will receive this amount through a
+bank wire transfer.
 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/include/asm/svm.h |    3 ++-
->  arch/x86/kvm/svm/nested.c  |    6 +++++-
->  arch/x86/kvm/svm/svm.c     |    1 +
->  arch/x86/kvm/svm/svm.h     |   18 ++++++++++++++++++
->  arch/x86/kvm/trace.h       |   12 ++++++++----
->  5 files changed, 34 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-> index 8a1f5382a4ea..62649fba8908 100644
-> --- a/arch/x86/include/asm/svm.h
-> +++ b/arch/x86/include/asm/svm.h
-> @@ -61,7 +61,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
->         u32 intercept_dr;
->         u32 intercept_exceptions;
->         u64 intercept;
-> -       u8 reserved_1[40];
-> +       u32 intercept_extended;
-> +       u8 reserved_1[36];
+Please send your full names, direct telephone numbers, and physical
+address, more details and text of application form will be given to
+you upon your reply.
 
-It seems like a more straightforward implementation would simply
-change 'u64 intercept' to 'u32 intercept[3].'
+Your quick response will be highly appreciated.
 
->         u16 pause_filter_thresh;
->         u16 pause_filter_count;
->         u64 iopm_base_pa;
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 8a6db11dcb43..7f6d0f2533e2 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -121,6 +121,7 @@ void recalc_intercepts(struct vcpu_svm *svm)
->         c->intercept_dr =3D h->intercept_dr;
->         c->intercept_exceptions =3D h->intercept_exceptions;
->         c->intercept =3D h->intercept;
-> +       c->intercept_extended =3D h->intercept_extended;
->
->         if (g->int_ctl & V_INTR_MASKING_MASK) {
->                 /* We only want the cr8 intercept bits of L1 */
-> @@ -142,6 +143,7 @@ void recalc_intercepts(struct vcpu_svm *svm)
->         c->intercept_dr |=3D g->intercept_dr;
->         c->intercept_exceptions |=3D g->intercept_exceptions;
->         c->intercept |=3D g->intercept;
-> +       c->intercept_extended |=3D g->intercept_extended;
->  }
->
->  static void copy_vmcb_control_area(struct vmcb_control_area *dst,
-> @@ -151,6 +153,7 @@ static void copy_vmcb_control_area(struct vmcb_contro=
-l_area *dst,
->         dst->intercept_dr         =3D from->intercept_dr;
->         dst->intercept_exceptions =3D from->intercept_exceptions;
->         dst->intercept            =3D from->intercept;
-> +       dst->intercept_extended   =3D from->intercept_extended;
->         dst->iopm_base_pa         =3D from->iopm_base_pa;
->         dst->msrpm_base_pa        =3D from->msrpm_base_pa;
->         dst->tsc_offset           =3D from->tsc_offset;
-> @@ -433,7 +436,8 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
->         trace_kvm_nested_intercepts(nested_vmcb->control.intercept_cr & 0=
-xffff,
->                                     nested_vmcb->control.intercept_cr >> =
-16,
->                                     nested_vmcb->control.intercept_except=
-ions,
-> -                                   nested_vmcb->control.intercept);
-> +                                   nested_vmcb->control.intercept,
-> +                                   nested_vmcb->control.intercept_extend=
-ed);
->
->         /* Clear internal status */
->         kvm_clear_exception_queue(&svm->vcpu);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 9e333b91ff78..285e5e1ff518 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2801,6 +2801,7 @@ static void dump_vmcb(struct kvm_vcpu *vcpu)
->         pr_err("%-20s%04x\n", "dr_write:", control->intercept_dr >> 16);
->         pr_err("%-20s%08x\n", "exceptions:", control->intercept_exception=
-s);
->         pr_err("%-20s%016llx\n", "intercepts:", control->intercept);
-> +       pr_err("%-20s%08x\n", "intercepts (extended):", control->intercep=
-t_extended);
->         pr_err("%-20s%d\n", "pause filter count:", control->pause_filter_=
-count);
->         pr_err("%-20s%d\n", "pause filter threshold:",
->                control->pause_filter_thresh);
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 6ac4c00a5d82..935d08fac03d 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -311,6 +311,24 @@ static inline void clr_intercept(struct vcpu_svm *sv=
-m, int bit)
->         recalc_intercepts(svm);
->  }
->
-> +static inline void set_extended_intercept(struct vcpu_svm *svm, int bit)
-> +{
-> +       struct vmcb *vmcb =3D get_host_vmcb(svm);
-> +
-> +       vmcb->control.intercept_extended |=3D (1U << bit);
-> +
-> +       recalc_intercepts(svm);
-> +}
-> +
-> +static inline void clr_extended_intercept(struct vcpu_svm *svm, int bit)
-> +{
-> +       struct vmcb *vmcb =3D get_host_vmcb(svm);
-> +
-> +       vmcb->control.intercept_extended &=3D ~(1U << bit);
-> +
-> +       recalc_intercepts(svm);
-> +}
-
-You wouldn't need these new functions if you defined 'u32
-intercept[3],' as I suggested above. Just change set_intercept and
-clr_intercept to use __set_bit and __clear_bit.
-
->  static inline bool is_intercept(struct vcpu_svm *svm, int bit)
->  {
->         return (svm->vmcb->control.intercept & (1ULL << bit)) !=3D 0;
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index b66432b015d2..5c841c42b33d 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -544,14 +544,16 @@ TRACE_EVENT(kvm_nested_vmrun,
->  );
->
->  TRACE_EVENT(kvm_nested_intercepts,
-> -           TP_PROTO(__u16 cr_read, __u16 cr_write, __u32 exceptions, __u=
-64 intercept),
-> -           TP_ARGS(cr_read, cr_write, exceptions, intercept),
-> +           TP_PROTO(__u16 cr_read, __u16 cr_write, __u32 exceptions, __u=
-64 intercept,
-> +                    __u32 extended),
-> +           TP_ARGS(cr_read, cr_write, exceptions, intercept, extended),
->
->         TP_STRUCT__entry(
->                 __field(        __u16,          cr_read         )
->                 __field(        __u16,          cr_write        )
->                 __field(        __u32,          exceptions      )
->                 __field(        __u64,          intercept       )
-> +               __field(        __u32,          extended        )
->         ),
->
->         TP_fast_assign(
-> @@ -559,11 +561,13 @@ TRACE_EVENT(kvm_nested_intercepts,
->                 __entry->cr_write       =3D cr_write;
->                 __entry->exceptions     =3D exceptions;
->                 __entry->intercept      =3D intercept;
-> +               __entry->extended       =3D extended;
->         ),
->
-> -       TP_printk("cr_read: %04x cr_write: %04x excp: %08x intercept: %01=
-6llx",
-> +       TP_printk("cr_read: %04x cr_write: %04x excp: %08x intercept: %01=
-6llx"
-> +                 "intercept (extended): %08x",
->                 __entry->cr_read, __entry->cr_write, __entry->exceptions,
-> -               __entry->intercept)
-> +               __entry->intercept, __entry->extended)
->  );
->  /*
->   * Tracepoint for #VMEXIT while nested
->
+Yours sincerely,
+Mr. Hamzak Wadrago,
