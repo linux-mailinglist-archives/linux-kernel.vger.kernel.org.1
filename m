@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DBB1FB831
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D111FB6E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732920AbgFPPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:53:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52536 "EHLO mail.kernel.org"
+        id S1731418AbgFPPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731771AbgFPPxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:54 -0400
+        id S1731414AbgFPPlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07920208D5;
-        Tue, 16 Jun 2020 15:53:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4028208E4;
+        Tue, 16 Jun 2020 15:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322833;
-        bh=FomWAMvBZFJTmk1DReGUtwHCxzmw3Dki2Cp2WZwd6Ks=;
+        s=default; t=1592322082;
+        bh=dGUE12/42yvGP/krDtbWrOV0Sj51B3xIa7MIrNpMlhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OfinCQUpZsGWDTTIeXUYlNv+31rMbA9hHSnAy3D7n4It5gvvGbNxWnZhI4Sbas0gR
-         vL+Ugz/Nmn0esRclRqaO0m9Op3L9OnYksAlyElfxB7M9CTFLGTD5nlYtDpFaXlBuDI
-         GtqTIiPBgRz3Ayw6lF0Ylwx8kjSapNUV1ol75wY8=
+        b=VTZ7TccO9knwV0vDUhM8pFykbxgG43AkMHv+XMlcpiIAkkowfkaVWSyQNdXEvZsQ6
+         AcBuwnroAtKbma1tu4BK2dzZIcguzssuSyfU6X5EYec1wxkmKuUH+sIcQMRHpTssIF
+         fH1DSjDkoxYn5nLxkzT/sQbe/y1jmPEyjJI2B7tM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Matthew Riley <mattdr@google.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.6 121/161] EDAC/skx: Use the mcmtr register to retrieve close_pg/bank_xor_enable
-Date:   Tue, 16 Jun 2020 17:35:11 +0200
-Message-Id: <20200616153112.123106744@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 5.4 128/134] ARM: dts: at91: sama5d2_ptc_ek: fix sdmmc0 node description
+Date:   Tue, 16 Jun 2020 17:35:12 +0200
+Message-Id: <20200616153106.919058662@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,125 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+From: Ludovic Desroches <ludovic.desroches@microchip.com>
 
-commit 1032095053b34d474aa20f2625d97dd306e0991b upstream.
+commit a1af7f36c70369b971ee1cf679dd68368dad23f0 upstream.
 
-The skx_edac driver wrongly uses the mtr register to retrieve two fields
-close_pg and bank_xor_enable. Fix it by using the correct mcmtr register
-to get the two fields.
+Remove non-removable and mmc-ddr-1_8v properties from the sdmmc0
+node which come probably from an unchecked copy/paste.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Reported-by: Matthew Riley <mattdr@google.com>
-Acked-by: Aristeu Rozanski <aris@redhat.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/20200515210146.1337-1-tony.luck@intel.com
+Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Fixes:42ed535595ec "ARM: dts: at91: introduce the sama5d2 ptc ek board"
+Cc: stable@vger.kernel.org # 4.19 and later
+Link: https://lore.kernel.org/r/20200401221504.41196-1-ludovic.desroches@microchip.com
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/edac/i10nm_base.c |    2 +-
- drivers/edac/skx_base.c   |   20 ++++++++------------
- drivers/edac/skx_common.c |    6 +++---
- drivers/edac/skx_common.h |    2 +-
- 4 files changed, 13 insertions(+), 17 deletions(-)
+ arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/edac/i10nm_base.c
-+++ b/drivers/edac/i10nm_base.c
-@@ -161,7 +161,7 @@ static int i10nm_get_dimm_config(struct
- 				 mtr, mcddrtcfg, imc->mc, i, j);
+--- a/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_ptc_ek.dts
+@@ -125,8 +125,6 @@
+ 			bus-width = <8>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&pinctrl_sdmmc0_default>;
+-			non-removable;
+-			mmc-ddr-1_8v;
+ 			status = "okay";
+ 		};
  
- 			if (IS_DIMM_PRESENT(mtr))
--				ndimms += skx_get_dimm_info(mtr, 0, dimm,
-+				ndimms += skx_get_dimm_info(mtr, 0, 0, dimm,
- 							    imc, i, j);
- 			else if (IS_NVDIMM_PRESENT(mcddrtcfg, j))
- 				ndimms += skx_get_nvdimm_info(dimm, imc, i, j,
---- a/drivers/edac/skx_base.c
-+++ b/drivers/edac/skx_base.c
-@@ -163,27 +163,23 @@ static const struct x86_cpu_id skx_cpuid
- };
- MODULE_DEVICE_TABLE(x86cpu, skx_cpuids);
- 
--#define SKX_GET_MTMTR(dev, reg) \
--	pci_read_config_dword((dev), 0x87c, &(reg))
--
--static bool skx_check_ecc(struct pci_dev *pdev)
-+static bool skx_check_ecc(u32 mcmtr)
- {
--	u32 mtmtr;
--
--	SKX_GET_MTMTR(pdev, mtmtr);
--
--	return !!GET_BITFIELD(mtmtr, 2, 2);
-+	return !!GET_BITFIELD(mcmtr, 2, 2);
- }
- 
- static int skx_get_dimm_config(struct mem_ctl_info *mci)
- {
- 	struct skx_pvt *pvt = mci->pvt_info;
-+	u32 mtr, mcmtr, amap, mcddrtcfg;
- 	struct skx_imc *imc = pvt->imc;
--	u32 mtr, amap, mcddrtcfg;
- 	struct dimm_info *dimm;
- 	int i, j;
- 	int ndimms;
- 
-+	/* Only the mcmtr on the first channel is effective */
-+	pci_read_config_dword(imc->chan[0].cdev, 0x87c, &mcmtr);
-+
- 	for (i = 0; i < SKX_NUM_CHANNELS; i++) {
- 		ndimms = 0;
- 		pci_read_config_dword(imc->chan[i].cdev, 0x8C, &amap);
-@@ -193,14 +189,14 @@ static int skx_get_dimm_config(struct me
- 			pci_read_config_dword(imc->chan[i].cdev,
- 					      0x80 + 4 * j, &mtr);
- 			if (IS_DIMM_PRESENT(mtr)) {
--				ndimms += skx_get_dimm_info(mtr, amap, dimm, imc, i, j);
-+				ndimms += skx_get_dimm_info(mtr, mcmtr, amap, dimm, imc, i, j);
- 			} else if (IS_NVDIMM_PRESENT(mcddrtcfg, j)) {
- 				ndimms += skx_get_nvdimm_info(dimm, imc, i, j,
- 							      EDAC_MOD_STR);
- 				nvdimm_count++;
- 			}
- 		}
--		if (ndimms && !skx_check_ecc(imc->chan[0].cdev)) {
-+		if (ndimms && !skx_check_ecc(mcmtr)) {
- 			skx_printk(KERN_ERR, "ECC is disabled on imc %d\n", imc->mc);
- 			return -ENODEV;
- 		}
---- a/drivers/edac/skx_common.c
-+++ b/drivers/edac/skx_common.c
-@@ -304,7 +304,7 @@ static int skx_get_dimm_attr(u32 reg, in
- #define numrow(reg)	skx_get_dimm_attr(reg, 2, 4, 12, 1, 6, "rows")
- #define numcol(reg)	skx_get_dimm_attr(reg, 0, 1, 10, 0, 2, "cols")
- 
--int skx_get_dimm_info(u32 mtr, u32 amap, struct dimm_info *dimm,
-+int skx_get_dimm_info(u32 mtr, u32 mcmtr, u32 amap, struct dimm_info *dimm,
- 		      struct skx_imc *imc, int chan, int dimmno)
- {
- 	int  banks = 16, ranks, rows, cols, npages;
-@@ -324,8 +324,8 @@ int skx_get_dimm_info(u32 mtr, u32 amap,
- 		 imc->mc, chan, dimmno, size, npages,
- 		 banks, 1 << ranks, rows, cols);
- 
--	imc->chan[chan].dimms[dimmno].close_pg = GET_BITFIELD(mtr, 0, 0);
--	imc->chan[chan].dimms[dimmno].bank_xor_enable = GET_BITFIELD(mtr, 9, 9);
-+	imc->chan[chan].dimms[dimmno].close_pg = GET_BITFIELD(mcmtr, 0, 0);
-+	imc->chan[chan].dimms[dimmno].bank_xor_enable = GET_BITFIELD(mcmtr, 9, 9);
- 	imc->chan[chan].dimms[dimmno].fine_grain_bank = GET_BITFIELD(amap, 0, 0);
- 	imc->chan[chan].dimms[dimmno].rowbits = rows;
- 	imc->chan[chan].dimms[dimmno].colbits = cols;
---- a/drivers/edac/skx_common.h
-+++ b/drivers/edac/skx_common.h
-@@ -128,7 +128,7 @@ int skx_get_all_bus_mappings(unsigned in
- 
- int skx_get_hi_lo(unsigned int did, int off[], u64 *tolm, u64 *tohm);
- 
--int skx_get_dimm_info(u32 mtr, u32 amap, struct dimm_info *dimm,
-+int skx_get_dimm_info(u32 mtr, u32 mcmtr, u32 amap, struct dimm_info *dimm,
- 		      struct skx_imc *imc, int chan, int dimmno);
- 
- int skx_get_nvdimm_info(struct dimm_info *dimm, struct skx_imc *imc,
 
 
