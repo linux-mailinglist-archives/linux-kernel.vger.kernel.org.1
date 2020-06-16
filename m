@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5492B1FB05A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D231FB089
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbgFPMWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S1729356AbgFPMXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgFPMV6 (ORCPT
+        with ESMTP id S1728875AbgFPMWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:21:58 -0400
+        Tue, 16 Jun 2020 08:22:02 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0DBC08C5C2;
-        Tue, 16 Jun 2020 05:21:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C02FC08C5C2;
+        Tue, 16 Jun 2020 05:22:01 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jlAbB-0004e6-Ks; Tue, 16 Jun 2020 14:21:53 +0200
+        id 1jlAbD-0004ez-OP; Tue, 16 Jun 2020 14:21:55 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D0C8A1C06FE;
-        Tue, 16 Jun 2020 14:21:50 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 12:21:50 -0000
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 616581C07B4;
+        Tue, 16 Jun 2020 14:21:51 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 12:21:51 -0000
+From:   "tip-bot2 for Luca Abeni" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/pelt: Cleanup PELT divider
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+Subject: [tip: sched/core] sched/deadline: Implement fallback mechanism for !fit case
+Cc:     Luca Abeni <luca.abeni@santannapisa.it>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200612154703.23555-1-vincent.guittot@linaro.org>
-References: <20200612154703.23555-1-vincent.guittot@linaro.org>
+        Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200520134243.19352-6-dietmar.eggemann@arm.com>
+References: <20200520134243.19352-6-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Message-ID: <159231011058.16989.14137603065539923568.tip-bot2@tip-bot2>
+Message-ID: <159231011120.16989.2193698782650296357.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,142 +52,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     87e867b4269f29dac8190bca13912d08163a277f
-Gitweb:        https://git.kernel.org/tip/87e867b4269f29dac8190bca13912d08163a277f
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Fri, 12 Jun 2020 17:47:03 +02:00
+Commit-ID:     23e71d8ba42933bff12e453858fd68c073bc5258
+Gitweb:        https://git.kernel.org/tip/23e71d8ba42933bff12e453858fd68c073bc5258
+Author:        Luca Abeni <luca.abeni@santannapisa.it>
+AuthorDate:    Wed, 20 May 2020 15:42:43 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 15 Jun 2020 14:10:06 +02:00
+CommitterDate: Mon, 15 Jun 2020 14:10:05 +02:00
 
-sched/pelt: Cleanup PELT divider
+sched/deadline: Implement fallback mechanism for !fit case
 
-Factorize in a single place the calculation of the divider to be used to
-to compute *_avg from *_sum value
+When a task has a runtime that cannot be served within the scheduling
+deadline by any of the idle CPU (later_mask) the task is doomed to miss
+its deadline.
 
-Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+This can happen since the SCHED_DEADLINE admission control guarantees
+only bounded tardiness and not the hard respect of all deadlines.
+In this case try to select the idle CPU with the largest CPU capacity
+to minimize tardiness.
+
+Favor task_cpu(p) if it has max capacity of !fitting CPUs so that
+find_later_rq() can potentially still return it (most likely cache-hot)
+early.
+
+Signed-off-by: Luca Abeni <luca.abeni@santannapisa.it>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200612154703.23555-1-vincent.guittot@linaro.org
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Link: https://lkml.kernel.org/r/20200520134243.19352-6-dietmar.eggemann@arm.com
 ---
- kernel/sched/fair.c | 32 ++++++++++++++++++--------------
- kernel/sched/pelt.c |  2 +-
- kernel/sched/pelt.h |  5 +++++
- 3 files changed, 24 insertions(+), 15 deletions(-)
+ kernel/sched/cpudeadline.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 295c9ff..0424a0a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3094,7 +3094,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+diff --git a/kernel/sched/cpudeadline.c b/kernel/sched/cpudeadline.c
+index 8630f2a..8cb06c8 100644
+--- a/kernel/sched/cpudeadline.c
++++ b/kernel/sched/cpudeadline.c
+@@ -121,19 +121,31 @@ int cpudl_find(struct cpudl *cp, struct task_struct *p,
  
- #ifdef CONFIG_SMP
- 	do {
--		u32 divider = LOAD_AVG_MAX - 1024 + se->avg.period_contrib;
-+		u32 divider = get_pelt_divider(&se->avg);
+ 	if (later_mask &&
+ 	    cpumask_and(later_mask, cp->free_cpus, p->cpus_ptr)) {
+-		int cpu;
++		unsigned long cap, max_cap = 0;
++		int cpu, max_cpu = -1;
  
- 		se->avg.load_avg = div_u64(se_weight(se) * se->avg.load_sum, divider);
- 	} while (0);
-@@ -3440,16 +3440,18 @@ static inline void
- update_tg_cfs_util(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
- {
- 	long delta = gcfs_rq->avg.util_avg - se->avg.util_avg;
--	/*
--	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
--	 * See ___update_load_avg() for details.
--	 */
--	u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
-+	u32 divider;
+ 		if (!static_branch_unlikely(&sched_asym_cpucapacity))
+ 			return 1;
  
- 	/* Nothing to update */
- 	if (!delta)
- 		return;
- 
-+	/*
-+	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
-+	 * See ___update_load_avg() for details.
-+	 */
-+	divider = get_pelt_divider(&cfs_rq->avg);
+ 		/* Ensure the capacity of the CPUs fits the task. */
+ 		for_each_cpu(cpu, later_mask) {
+-			if (!dl_task_fits_capacity(p, cpu))
++			if (!dl_task_fits_capacity(p, cpu)) {
+ 				cpumask_clear_cpu(cpu, later_mask);
 +
- 	/* Set new sched_entity's utilization */
- 	se->avg.util_avg = gcfs_rq->avg.util_avg;
- 	se->avg.util_sum = se->avg.util_avg * divider;
-@@ -3463,16 +3465,18 @@ static inline void
- update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
- {
- 	long delta = gcfs_rq->avg.runnable_avg - se->avg.runnable_avg;
--	/*
--	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
--	 * See ___update_load_avg() for details.
--	 */
--	u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
-+	u32 divider;
- 
- 	/* Nothing to update */
- 	if (!delta)
- 		return;
- 
-+	/*
-+	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
-+	 * See ___update_load_avg() for details.
-+	 */
-+	divider = get_pelt_divider(&cfs_rq->avg);
++				cap = capacity_orig_of(cpu);
 +
- 	/* Set new sched_entity's runnable */
- 	se->avg.runnable_avg = gcfs_rq->avg.runnable_avg;
- 	se->avg.runnable_sum = se->avg.runnable_avg * divider;
-@@ -3500,7 +3504,7 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
- 	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
- 	 * See ___update_load_avg() for details.
- 	 */
--	divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
-+	divider = get_pelt_divider(&cfs_rq->avg);
++				if (cap > max_cap ||
++				    (cpu == task_cpu(p) && cap == max_cap)) {
++					max_cap = cap;
++					max_cpu = cpu;
++				}
++			}
+ 		}
  
- 	if (runnable_sum >= 0) {
- 		/*
-@@ -3646,7 +3650,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- 
- 	if (cfs_rq->removed.nr) {
- 		unsigned long r;
--		u32 divider = LOAD_AVG_MAX - 1024 + sa->period_contrib;
-+		u32 divider = get_pelt_divider(&cfs_rq->avg);
- 
- 		raw_spin_lock(&cfs_rq->removed.lock);
- 		swap(cfs_rq->removed.util_avg, removed_util);
-@@ -3701,7 +3705,7 @@ static void attach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
- 	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
- 	 * See ___update_load_avg() for details.
- 	 */
--	u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
-+	u32 divider = get_pelt_divider(&cfs_rq->avg);
- 
- 	/*
- 	 * When we attach the @se to the @cfs_rq, we must align the decay
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index dea5567..11bea3b 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -262,7 +262,7 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
- static __always_inline void
- ___update_load_avg(struct sched_avg *sa, unsigned long load)
- {
--	u32 divider = LOAD_AVG_MAX - 1024 + sa->period_contrib;
-+	u32 divider = get_pelt_divider(sa);
- 
- 	/*
- 	 * Step 2: update *_avg.
-diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-index eb034d9..795e43e 100644
---- a/kernel/sched/pelt.h
-+++ b/kernel/sched/pelt.h
-@@ -37,6 +37,11 @@ update_irq_load_avg(struct rq *rq, u64 running)
- }
- #endif
- 
-+static inline u32 get_pelt_divider(struct sched_avg *avg)
-+{
-+	return LOAD_AVG_MAX - 1024 + avg->period_contrib;
-+}
+-		if (!cpumask_empty(later_mask))
+-			return 1;
++		if (cpumask_empty(later_mask))
++			cpumask_set_cpu(max_cpu, later_mask);
 +
- /*
-  * When a task is dequeued, its estimated utilization should not be update if
-  * its util_avg has not been updated at least once.
++		return 1;
+ 	} else {
+ 		int best_cpu = cpudl_maximum(cp);
+ 
