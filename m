@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7EE1FB65C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308521FB686
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgFPPgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47162 "EHLO mail.kernel.org"
+        id S1730523AbgFPPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:38:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729969AbgFPPg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:36:29 -0400
+        id S1730464AbgFPPh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4268C20C09;
-        Tue, 16 Jun 2020 15:36:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A9802145D;
+        Tue, 16 Jun 2020 15:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321787;
-        bh=cR0PP+/MQZYLqQf3bbJfXoLuvhvnjpmt6Okx0cKiyf4=;
+        s=default; t=1592321875;
+        bh=+/l/HKb94QJ1fLl/aY9Ci1ZVow5m6nAWV0fLci86yno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjC737vEpAvDXMFIOwBZg2zpv/bpxLkrF12fjXrrIOu32Wi6g+ieCQYAMWQGjx+Nv
-         81zY6sHp6W5reoidUtv+UUfIFJC5cMclZKC0BPBZzdclo9xocdpylAmwtlczUVCvB6
-         IgstLisMGV20AVU/IP5EBzo/tPbAhuxCkZ5rCNFs=
+        b=NeDMx25ZQIH8D5w+BPKQwsOcabVhIBhtZIYkc94JShrxMgwYxdAm3mGoDCXJBXiSL
+         1INTJ3fWe05yph54X/3HFZDfIIXVI4A1I2A0Y/Fxo8YZI5dM4PwomFDimYQJ0al8sh
+         A+UrW+hbMt/u6YYTdvOSJciVEnGWhoQq/cePlctE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Jeremy Fitzhardinge <jeremy@goop.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jian Cai <jiancai@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>
-Subject: [PATCH 5.4 008/134] elfnote: mark all .note sections SHF_ALLOC
-Date:   Tue, 16 Jun 2020 17:33:12 +0200
-Message-Id: <20200616153101.080422549@linuxfoundation.org>
+        stable@vger.kernel.org, Andi Shyti <andi@etezian.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 009/134] Input: mms114 - fix handling of mms345l
+Date:   Tue, 16 Jun 2020 17:33:13 +0200
+Message-Id: <20200616153101.128744865@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
 References: <20200616153100.633279950@linuxfoundation.org>
@@ -51,58 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit 51da9dfb7f20911ae4e79e9b412a9c2d4c373d4b upstream.
+[ Upstream commit 3f8f770575d911c989043d8f0fb8dec96360c41c ]
 
-ELFNOTE_START allows callers to specify flags for .pushsection assembler
-directives.  All callsites but ELF_NOTE use "a" for SHF_ALLOC.  For vdso's
-that explicitly use ELF_NOTE_START and BUILD_SALT, the same section is
-specified twice after preprocessing, once with "a" flag, once without.
-Example:
+MMS345L is another first generation touch screen from Melfas,
+which uses the same registers as MMS152.
 
-.pushsection .note.Linux, "a", @note ;
-.pushsection .note.Linux, "", @note ;
+However, using I2C_M_NOSTART for it causes errors when reading:
 
-While GNU as allows this ordering, it warns for the opposite ordering,
-making these directives position dependent.  We'd prefer not to precisely
-match this behavior in Clang's integrated assembler.  Instead, the non
-__ASSEMBLY__ definition of ELF_NOTE uses
-__attribute__((section(".note.Linux"))) which is created with SHF_ALLOC,
-so let's make the __ASSEMBLY__ definition of ELF_NOTE consistent with C
-and just always use "a" flag.
+	i2c i2c-0: sendbytes: NAK bailout.
+	mms114 0-0048: __mms114_read_reg: i2c transfer failed (-5)
 
-This allows Clang to assemble a working mainline (5.6) kernel via:
-$ make CC=clang AS=clang
+The driver works fine as soon as I2C_M_NOSTART is removed.
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Cc: Jeremy Fitzhardinge <jeremy@goop.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/913
-Link: http://lkml.kernel.org/r/20200325231250.99205-1-ndesaulniers@google.com
-Debugged-by: Ilie Halip <ilie.halip@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jian Cai <jiancai@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Andi Shyti <andi@etezian.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20200405170904.61512-1-stephan@gerhold.net
+[dtor: removed separate mms345l handling, made everyone use standard
+transfer mode, propagated the 10bit addressing flag to the read part of the
+transfer as well.]
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/elfnote.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/touchscreen/mms114.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/include/linux/elfnote.h
-+++ b/include/linux/elfnote.h
-@@ -54,7 +54,7 @@
- .popsection				;
+diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
+index a5ab774da4cc..fca908ba4841 100644
+--- a/drivers/input/touchscreen/mms114.c
++++ b/drivers/input/touchscreen/mms114.c
+@@ -91,15 +91,15 @@ static int __mms114_read_reg(struct mms114_data *data, unsigned int reg,
+ 	if (reg <= MMS114_MODE_CONTROL && reg + len > MMS114_MODE_CONTROL)
+ 		BUG();
  
- #define ELFNOTE(name, type, desc)		\
--	ELFNOTE_START(name, type, "")		\
-+	ELFNOTE_START(name, type, "a")		\
- 		desc			;	\
- 	ELFNOTE_END
+-	/* Write register: use repeated start */
++	/* Write register */
+ 	xfer[0].addr = client->addr;
+-	xfer[0].flags = I2C_M_TEN | I2C_M_NOSTART;
++	xfer[0].flags = client->flags & I2C_M_TEN;
+ 	xfer[0].len = 1;
+ 	xfer[0].buf = &buf;
  
+ 	/* Read data */
+ 	xfer[1].addr = client->addr;
+-	xfer[1].flags = I2C_M_RD;
++	xfer[1].flags = (client->flags & I2C_M_TEN) | I2C_M_RD;
+ 	xfer[1].len = len;
+ 	xfer[1].buf = val;
+ 
+@@ -428,10 +428,8 @@ static int mms114_probe(struct i2c_client *client,
+ 	const void *match_data;
+ 	int error;
+ 
+-	if (!i2c_check_functionality(client->adapter,
+-				I2C_FUNC_PROTOCOL_MANGLING)) {
+-		dev_err(&client->dev,
+-			"Need i2c bus that supports protocol mangling\n");
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
++		dev_err(&client->dev, "Not supported I2C adapter\n");
+ 		return -ENODEV;
+ 	}
+ 
+-- 
+2.25.1
+
 
 
