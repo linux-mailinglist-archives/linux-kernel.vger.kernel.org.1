@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A671FB061
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837141FB07E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgFPMWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        id S1729287AbgFPMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgFPMWI (ORCPT
+        with ESMTP id S1728782AbgFPMWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:22:08 -0400
+        Tue, 16 Jun 2020 08:22:12 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D07CC08C5C2;
-        Tue, 16 Jun 2020 05:22:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3C2C08C5C2;
+        Tue, 16 Jun 2020 05:22:11 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jlAbM-0004ko-SP; Tue, 16 Jun 2020 14:22:05 +0200
+        id 1jlAbQ-0004m2-06; Tue, 16 Jun 2020 14:22:08 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 9B8C41C0852;
-        Tue, 16 Jun 2020 14:21:55 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 12:21:55 -0000
-From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 909371C0854;
+        Tue, 16 Jun 2020 14:21:56 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 12:21:56 -0000
+From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/debug: Add new tracepoints to track util_est
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+Subject: [tip: sched/core] sched/core: Remove redundant 'preempt' param from
+ sched_class->yield_to_task()
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1590597554-370150-1-git-send-email-vincent.donnefort@arm.com>
-References: <1590597554-370150-1-git-send-email-vincent.donnefort@arm.com>
+In-Reply-To: <20200603080304.16548-3-dietmar.eggemann@arm.com>
+References: <20200603080304.16548-3-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Message-ID: <159231011535.16989.4063331664061599328.tip-bot2@tip-bot2>
+Message-ID: <159231011637.16989.10871387940341637458.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,89 +51,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     4581bea8b4ec4de353369775dfef921191e393b3
-Gitweb:        https://git.kernel.org/tip/4581bea8b4ec4de353369775dfef921191e393b3
-Author:        Vincent Donnefort <vincent.donnefort@arm.com>
-AuthorDate:    Wed, 27 May 2020 17:39:14 +01:00
+Commit-ID:     0900acf2d8273f79432a4ded122ad5a265e85783
+Gitweb:        https://git.kernel.org/tip/0900acf2d8273f79432a4ded122ad5a265e85783
+Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
+AuthorDate:    Wed, 03 Jun 2020 10:03:02 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 15 Jun 2020 14:10:02 +02:00
+CommitterDate: Mon, 15 Jun 2020 14:10:01 +02:00
 
-sched/debug: Add new tracepoints to track util_est
+sched/core: Remove redundant 'preempt' param from sched_class->yield_to_task()
 
-The util_est signals are key elements for EAS task placement and
-frequency selection. Having tracepoints to track these signals enables
-load-tracking and schedutil testing and/or debugging by a toolkit.
+Commit 6d1cafd8b56e ("sched: Resched proper CPU on yield_to()") moved
+the code to resched the CPU from yield_to_task_fair() to yield_to()
+making the preempt parameter in sched_class->yield_to_task()
+unnecessary. Remove it. No other sched_class implements yield_to_task().
 
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/1590597554-370150-1-git-send-email-vincent.donnefort@arm.com
+Link: https://lkml.kernel.org/r/20200603080304.16548-3-dietmar.eggemann@arm.com
 ---
- include/trace/events/sched.h | 8 ++++++++
- kernel/sched/core.c          | 2 ++
- kernel/sched/fair.c          | 6 ++++++
- 3 files changed, 16 insertions(+)
+ kernel/sched/core.c  | 2 +-
+ kernel/sched/fair.c  | 2 +-
+ kernel/sched/sched.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index ed168b0..04f9a4c 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -634,6 +634,14 @@ DECLARE_TRACE(sched_overutilized_tp,
- 	TP_PROTO(struct root_domain *rd, bool overutilized),
- 	TP_ARGS(rd, overutilized));
- 
-+DECLARE_TRACE(sched_util_est_cfs_tp,
-+	TP_PROTO(struct cfs_rq *cfs_rq),
-+	TP_ARGS(cfs_rq));
-+
-+DECLARE_TRACE(sched_util_est_se_tp,
-+	TP_PROTO(struct sched_entity *se),
-+	TP_ARGS(se));
-+
- #endif /* _TRACE_SCHED_H */
- 
- /* This part must be outside protection */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9c89b0e..0208b71 100644
+index 8f36032..9c89b0e 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -36,6 +36,8 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
+@@ -5810,7 +5810,7 @@ again:
+ 	if (task_running(p_rq, p) || p->state)
+ 		goto out_unlock;
  
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
+-	yielded = curr->sched_class->yield_to_task(rq, p, preempt);
++	yielded = curr->sched_class->yield_to_task(rq, p);
+ 	if (yielded) {
+ 		schedstat_inc(rq->yld_count);
+ 		/*
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 69da576..a785a9b 100644
+index cbcb2f7..6a4dab2 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -3922,6 +3922,8 @@ static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
- 	enqueued  = cfs_rq->avg.util_est.enqueued;
- 	enqueued += _task_util_est(p);
- 	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
-+
-+	trace_sched_util_est_cfs_tp(cfs_rq);
+@@ -7157,7 +7157,7 @@ static void yield_task_fair(struct rq *rq)
+ 	set_skip_buddy(se);
  }
  
- /*
-@@ -3952,6 +3954,8 @@ util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
- 	ue.enqueued -= min_t(unsigned int, ue.enqueued, _task_util_est(p));
- 	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
+-static bool yield_to_task_fair(struct rq *rq, struct task_struct *p, bool preempt)
++static bool yield_to_task_fair(struct rq *rq, struct task_struct *p)
+ {
+ 	struct sched_entity *se = &p->se;
  
-+	trace_sched_util_est_cfs_tp(cfs_rq);
-+
- 	/*
- 	 * Skip update of task's estimated utilization when the task has not
- 	 * yet completed an activation, e.g. being migrated.
-@@ -4017,6 +4021,8 @@ util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
- 	ue.ewma >>= UTIL_EST_WEIGHT_SHIFT;
- done:
- 	WRITE_ONCE(p->se.avg.util_est, ue);
-+
-+	trace_sched_util_est_se_tp(&p->se);
- }
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 1d4e94c..8d5d068 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1748,7 +1748,7 @@ struct sched_class {
+ 	void (*enqueue_task) (struct rq *rq, struct task_struct *p, int flags);
+ 	void (*dequeue_task) (struct rq *rq, struct task_struct *p, int flags);
+ 	void (*yield_task)   (struct rq *rq);
+-	bool (*yield_to_task)(struct rq *rq, struct task_struct *p, bool preempt);
++	bool (*yield_to_task)(struct rq *rq, struct task_struct *p);
  
- static inline int task_fits_capacity(struct task_struct *p, long capacity)
+ 	void (*check_preempt_curr)(struct rq *rq, struct task_struct *p, int flags);
+ 
