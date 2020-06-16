@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB811FA68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAD01FA690
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 05:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgFPC4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgFPC43 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:56:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B43CC061A0E;
-        Mon, 15 Jun 2020 19:56:29 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B06CEF9;
-        Tue, 16 Jun 2020 04:56:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1592276184;
-        bh=+p29mN3O4KA8+pYMxFKIjzQpJJOcdUqinFmYsFDSJwI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LDcDxbJuHmMXCEwXE1fgvV7P0DQ7rvDH5MFaa0/spasIzJiZrahiaSyVccQo7PxvF
-         Hq9o1J5LX87Zvb548SyDFIR60KZiH6Nx1ygbLLuKTv9XFQwYcQVFcoex2uaTF+5WtP
-         BmtiYGcHquXcbee0W6D5KMulWW+a0goZwTeP/p2k=
-Date:   Tue, 16 Jun 2020 05:56:02 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] media: vsp1: Fix runtime PM imbalance on error
-Message-ID: <20200616025602.GG29596@pendragon.ideasonboard.com>
-References: <20200608052919.4984-1-dinghao.liu@zju.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200608052919.4984-1-dinghao.liu@zju.edu.cn>
+        id S1726387AbgFPDE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 23:04:56 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:35558 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725978AbgFPDE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 23:04:56 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E0AF81A0547;
+        Tue, 16 Jun 2020 05:04:53 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B6E321A053B;
+        Tue, 16 Jun 2020 05:04:49 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4B8E8402D0;
+        Tue, 16 Jun 2020 11:04:44 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] ASoC: fsl_ssi: Fix bclk calculation for mono channel
+Date:   Tue, 16 Jun 2020 10:53:48 +0800
+Message-Id: <034eff1435ff6ce300b6c781130cefd9db22ab9a.1592276147.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dinghao,
+For mono channel, SSI will switch to Normal mode.
 
-Thank you for the patch.
+In Normal mode and Network mode, the Word Length Control bits
+control the word length divider in clock generator, which is
+different with I2S Master mode (the word length is fixed to
+32bit), it should be the value of params_width(hw_params).
 
-On Mon, Jun 08, 2020 at 01:29:19PM +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+The condition "slots == 2" is not good for I2S Master mode,
+because for Network mode and Normal mode, the slots can also
+be 2. Then we need to use (ssi->i2s_net & SSI_SCR_I2S_MODE_MASK)
+to check if it is I2S Master mode.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+So we refine the formula for mono channel, otherwise there
+will be sound issue for S24_LE.
 
-I have however received multiple similar patches recently, for different
-drivers. I've CC'ed Rafael, the PM maintainer, in one of those e-mail
-threads, and questioned whether we should really mass-patch drivers, or
-fix the issue in pm_runtime_get_sync(). I'll defer pushing this patch
-until that discussion comes to a conclusion.
+Fixes: b0a7043d5c2c ("ASoC: fsl_ssi: Caculate bit clock rate using slot number and width")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v3
+- update according to Nicolin's comments
 
-> ---
-> 
-> Changelog:
-> 
-> v2: - Fix the imbalance in vsp1_device_get().
->       Use vsp1_device_get() and vsp1_device_put()
->       to replace pm_runtime_get_sync() and
->       pm_runtime_put_sync() in vsp1_probe().
-> ---
->  drivers/media/platform/vsp1/vsp1_drv.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-> index c650e45bb0ad..dc62533cf32c 100644
-> --- a/drivers/media/platform/vsp1/vsp1_drv.c
-> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
-> @@ -562,7 +562,12 @@ int vsp1_device_get(struct vsp1_device *vsp1)
->  	int ret;
->  
->  	ret = pm_runtime_get_sync(vsp1->dev);
-> -	return ret < 0 ? ret : 0;
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(vsp1->dev);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
->  }
->  
->  /*
-> @@ -845,12 +850,12 @@ static int vsp1_probe(struct platform_device *pdev)
->  	/* Configure device parameters based on the version register. */
->  	pm_runtime_enable(&pdev->dev);
->  
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = vsp1_device_get(vsp1);
->  	if (ret < 0)
->  		goto done;
->  
->  	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
-> -	pm_runtime_put_sync(&pdev->dev);
-> +	vsp1_device_put(vsp1);
->  
->  	for (i = 0; i < ARRAY_SIZE(vsp1_device_infos); ++i) {
->  		if ((vsp1->version & VI6_IP_VERSION_MODEL_MASK) ==
+changes in v2
+- refine patch for Network mode and Normal mode.
 
+ sound/soc/fsl/fsl_ssi.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index bad89b0d129e..1a2fa7f18142 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -678,8 +678,9 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	struct regmap *regs = ssi->regs;
+ 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
+ 	unsigned long clkrate, baudrate, tmprate;
+-	unsigned int slots = params_channels(hw_params);
+-	unsigned int slot_width = 32;
++	unsigned int channels = params_channels(hw_params);
++	unsigned int slot_width = params_width(hw_params);
++	unsigned int slots = 2;
+ 	u64 sub, savesub = 100000;
+ 	unsigned int freq;
+ 	bool baudclk_is_used;
+@@ -688,10 +689,14 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	/* Override slots and slot_width if being specifically set... */
+ 	if (ssi->slots)
+ 		slots = ssi->slots;
+-	/* ...but keep 32 bits if slots is 2 -- I2S Master mode */
+-	if (ssi->slot_width && slots != 2)
++	if (ssi->slot_width)
+ 		slot_width = ssi->slot_width;
+ 
++	/* ...but force 32 bits for stereo audio using I2S Master Mode */
++	if (channels == 2 &&
++	    (ssi->i2s_net & SSI_SCR_I2S_MODE_MASK) == SSI_SCR_I2S_MODE_MASTER)
++		slot_width = 32;
++
+ 	/* Generate bit clock based on the slot number and slot width */
+ 	freq = slots * slot_width * params_rate(hw_params);
+ 
 -- 
-Regards,
+2.21.0
 
-Laurent Pinchart
