@@ -2,258 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3801FA71F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 05:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CB71FA715
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 05:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgFPDq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 23:46:57 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:53444 "EHLO inva020.nxp.com"
+        id S1726523AbgFPDfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 23:35:12 -0400
+Received: from mga11.intel.com ([192.55.52.93]:52889 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgFPDq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 23:46:57 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 577321A056B;
-        Tue, 16 Jun 2020 05:46:55 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2E7611A0568;
-        Tue, 16 Jun 2020 05:46:50 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4BF16402E8;
-        Tue, 16 Jun 2020 11:46:44 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     ulf.hansson@linaro.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3] dt-bindings: mmc: Convert imx esdhc to json-schema
-Date:   Tue, 16 Jun 2020 11:35:49 +0800
-Message-Id: <1592278549-32283-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725978AbgFPDfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 23:35:11 -0400
+IronPort-SDR: qrSRGl4HxCHfMbhbthB2zx4G1tFIlwgrEeupE16Kr8Cdj9w6E3gWBNesAFWYHE/+25dkrUzpl+
+ V/MvJoxZVfjQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 20:35:11 -0700
+IronPort-SDR: 4bJt/MCnL6bzAU78afso5FW3yO3Ka6xGQi7hHHorxubxslqyLyG0spDfIyZ39w6VKu2d+l8URQ
+ c9YieamPPi2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,517,1583222400"; 
+   d="scan'208";a="476275786"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Jun 2020 20:35:09 -0700
+Date:   Tue, 16 Jun 2020 11:36:18 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][RFC] PM / s2idle: Clear _TIF_POLLING_NRFLAG before
+ suspend to idle
+Message-ID: <20200616033618.GA20959@chenyu-office.sh.intel.com>
+References: <20200615173611.15349-1-yu.c.chen@intel.com>
+ <20200615184041.GG2531@hirez.programming.kicks-ass.net>
+ <20200615193154.GJ2554@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615193154.GJ2554@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX ESDHC binding to DT schema format using json-schema
+On Mon, Jun 15, 2020 at 09:31:54PM +0200, Peter Zijlstra wrote:
+> On Mon, Jun 15, 2020 at 08:40:41PM +0200, Peter Zijlstra wrote:
+> 
+> > > @@ -186,8 +187,10 @@ int cpuidle_enter_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+> > >  	 * be frozen safely.
+> > >  	 */
+> > >  	index = find_deepest_state(drv, dev, U64_MAX, 0, true);
+> > > -	if (index > 0)
+> > > +	if (index > 0) {
+> > > +		__current_clr_polling();
+> > >  		enter_s2idle_proper(drv, dev, index);
+> > > +	}
+> > >  
+> > >  	return index;
+> > >  }
+> > 
+> > So how is that commit 08e237fa56a1 not suffient? That makes
+> > mwait_idle_with_hints() DTRT for this 'functionally challenged' piece of
+> > hardware.
+> > 
+> > AFAICT intel_enter_s2idle() uses mwait_idle_with_hints().
+> > 
+> > What am I missing?
+> 
+> What's missing is that cpuidle_enter_s2idle() doesn't properly match
+> call_cpuidle().
+>
+Right.
+> Something like so then. Your version is racy, if someone already set
+> TIF_NEED_RESCHED you just clear POLLING and go to sleep.
+> 
+Got it, I'll test the patch below.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V2:
-	- fix typo of "dealy" to "delay";
-	- remove unused "Several ranges could be specified." in voltage-ranges which contradicts
-	  the min/max items.
----
- .../devicetree/bindings/mmc/fsl-imx-esdhc.txt      |  67 -----------
- .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     | 124 +++++++++++++++++++++
- 2 files changed, 124 insertions(+), 67 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
- create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-
-diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
-deleted file mode 100644
-index de1b8bd..0000000
---- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
-+++ /dev/null
-@@ -1,67 +0,0 @@
--* Freescale Enhanced Secure Digital Host Controller (eSDHC) for i.MX
--
--The Enhanced Secure Digital Host Controller on Freescale i.MX family
--provides an interface for MMC, SD, and SDIO types of memory cards.
--
--This file documents differences between the core properties described
--by mmc.txt and the properties used by the sdhci-esdhc-imx driver.
--
--Required properties:
--- compatible : Should be "fsl,<chip>-esdhc", the supported chips include
--	       "fsl,imx25-esdhc"
--	       "fsl,imx35-esdhc"
--	       "fsl,imx51-esdhc"
--	       "fsl,imx53-esdhc"
--	       "fsl,imx6q-usdhc"
--	       "fsl,imx6sl-usdhc"
--	       "fsl,imx6sx-usdhc"
--	       "fsl,imx6ull-usdhc"
--	       "fsl,imx7d-usdhc"
--	       "fsl,imx7ulp-usdhc"
--	       "fsl,imx8mq-usdhc"
--	       "fsl,imx8mm-usdhc"
--	       "fsl,imx8mn-usdhc"
--	       "fsl,imx8mp-usdhc"
--	       "fsl,imx8qm-usdhc"
--	       "fsl,imx8qxp-usdhc"
--
--Optional properties:
--- fsl,wp-controller : Indicate to use controller internal write protection
--- fsl,delay-line : Specify the number of delay cells for override mode.
--  This is used to set the clock delay for DLL(Delay Line) on override mode
--  to select a proper data sampling window in case the clock quality is not good
--  due to signal path is too long on the board. Please refer to eSDHC/uSDHC
--  chapter, DLL (Delay Line) section in RM for details.
--- voltage-ranges : Specify the voltage range in case there are software
--  transparent level shifters on the outputs of the controller. Two cells are
--  required, first cell specifies minimum slot voltage (mV), second cell
--  specifies maximum slot voltage (mV). Several ranges could be specified.
--- fsl,tuning-start-tap: Specify the start dealy cell point when send first CMD19
--  in tuning procedure.
--- fsl,tuning-step: Specify the increasing delay cell steps in tuning procedure.
--  The uSDHC use one delay cell as default increasing step to do tuning process.
--  This property allows user to change the tuning step to more than one delay
--  cells which is useful for some special boards or cards when the default
--  tuning step can't find the proper delay window within limited tuning retries.
--- fsl,strobe-dll-delay-target: Specify the strobe dll control slave delay target.
--  This delay target programming host controller loopback read clock, and this
--  property allows user to change the delay target for the strobe input read clock.
--  If not use this property, driver default set the delay target to value 7.
--  Only eMMC HS400 mode need to take care of this property.
--
--Examples:
--
--esdhc@70004000 {
--	compatible = "fsl,imx51-esdhc";
--	reg = <0x70004000 0x4000>;
--	interrupts = <1>;
--	fsl,wp-controller;
--};
--
--esdhc@70008000 {
--	compatible = "fsl,imx51-esdhc";
--	reg = <0x70008000 0x4000>;
--	interrupts = <2>;
--	cd-gpios = <&gpio1 6 0>; /* GPIO1_6 */
--	wp-gpios = <&gpio1 5 0>; /* GPIO1_5 */
--};
-diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-new file mode 100644
-index 0000000..75dc116
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-@@ -0,0 +1,124 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/fsl-imx-esdhc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Enhanced Secure Digital Host Controller (eSDHC) for i.MX
-+
-+maintainers:
-+  - Shawn Guo <shawn.guo@linaro.org>
-+
-+allOf:
-+  - $ref: "mmc-controller.yaml"
-+
-+description: |
-+  The Enhanced Secure Digital Host Controller on Freescale i.MX family
-+  provides an interface for MMC, SD, and SDIO types of memory cards.
-+
-+  This file documents differences between the core properties described
-+  by mmc.txt and the properties used by the sdhci-esdhc-imx driver.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx25-esdhc
-+      - fsl,imx35-esdhc
-+      - fsl,imx51-esdhc
-+      - fsl,imx53-esdhc
-+      - fsl,imx6q-usdhc
-+      - fsl,imx6sl-usdhc
-+      - fsl,imx6sx-usdhc
-+      - fsl,imx6ull-usdhc
-+      - fsl,imx7d-usdhc
-+      - fsl,imx7ulp-usdhc
-+      - fsl,imx8mq-usdhc
-+      - fsl,imx8mm-usdhc
-+      - fsl,imx8mn-usdhc
-+      - fsl,imx8mp-usdhc
-+      - fsl,imx8qm-usdhc
-+      - fsl,imx8qxp-usdhc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  fsl,wp-controller:
-+    description: |
-+      boolean, if present, indicate to use controller internal write protection.
-+    type: boolean
-+
-+  fsl,delay-line:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Specify the number of delay cells for override mode.
-+      This is used to set the clock delay for DLL(Delay Line) on override mode
-+      to select a proper data sampling window in case the clock quality is not good
-+      due to signal path is too long on the board. Please refer to eSDHC/uSDHC
-+      chapter, DLL (Delay Line) section in RM for details.
-+    default: 0
-+
-+  voltage-ranges:
-+    $ref: '/schemas/types.yaml#/definitions/uint32-matrix'
-+    description: |
-+      Specify the voltage range in case there are software transparent level
-+      shifters on the outputs of the controller. Two cells are required, first
-+      cell specifies minimum slot voltage (mV), second cell specifies maximum
-+      slot voltage (mV).
-+    items:
-+      items:
-+        - description: value for minimum slot voltage
-+        - description: value for maximum slot voltage
-+    maxItems: 1
-+
-+  fsl,tuning-start-tap:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Specify the start delay cell point when send first CMD19 in tuning procedure.
-+    default: 0
-+
-+  fsl,tuning-step:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Specify the increasing delay cell steps in tuning procedure.
-+      The uSDHC use one delay cell as default increasing step to do tuning process.
-+      This property allows user to change the tuning step to more than one delay
-+      cells which is useful for some special boards or cards when the default
-+      tuning step can't find the proper delay window within limited tuning retries.
-+    default: 0
-+
-+  fsl,strobe-dll-delay-target:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Specify the strobe dll control slave delay target.
-+      This delay target programming host controller loopback read clock, and this
-+      property allows user to change the delay target for the strobe input read clock.
-+      If not use this property, driver default set the delay target to value 7.
-+      Only eMMC HS400 mode need to take care of this property.
-+    default: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mmc@70004000 {
-+        compatible = "fsl,imx51-esdhc";
-+        reg = <0x70004000 0x4000>;
-+        interrupts = <1>;
-+        fsl,wp-controller;
-+    };
-+
-+    mmc@70008000 {
-+        compatible = "fsl,imx51-esdhc";
-+        reg = <0x70008000 0x4000>;
-+        interrupts = <2>;
-+        cd-gpios = <&gpio1 6 0>; /* GPIO1_6 */
-+        wp-gpios = <&gpio1 5 0>; /* GPIO1_5 */
-+    };
--- 
-2.7.4
-
+Thanks,
+Chenyu
+> ---
+> 
+> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> index c149d9e20dfd..81bee8d03c6d 100644
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -133,8 +133,8 @@ int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+>  }
+>  
+>  #ifdef CONFIG_SUSPEND
+> -static void enter_s2idle_proper(struct cpuidle_driver *drv,
+> -				struct cpuidle_device *dev, int index)
+> +static void s2idle_enter(struct cpuidle_driver *drv,
+> +			 struct cpuidle_device *dev, int index)
+>  {
+>  	ktime_t time_start, time_end;
+>  
+> @@ -168,6 +168,15 @@ static void enter_s2idle_proper(struct cpuidle_driver *drv,
+>  	dev->states_usage[index].s2idle_usage++;
+>  }
+>  
+> +static int call_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev,
+> +		       int index)
+> +{
+> +	if (!current_clr_polling_and_test())
+> +		s2idle_enter(drv, dev, index);
+> +
+> +	return index;
+> +}
+> +
+>  /**
+>   * cpuidle_enter_s2idle - Enter an idle state suitable for suspend-to-idle.
+>   * @drv: cpuidle driver for the given CPU.
+> @@ -187,7 +196,7 @@ int cpuidle_enter_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+>  	 */
+>  	index = find_deepest_state(drv, dev, U64_MAX, 0, true);
+>  	if (index > 0)
+> -		enter_s2idle_proper(drv, dev, index);
+> +		call_s2idle(drv, dev, index);
+>  
+>  	return index;
+>  }
