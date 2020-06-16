@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7D01FBA7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678C71FBAA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731925AbgFPPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33574 "EHLO mail.kernel.org"
+        id S1731805AbgFPQMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:12:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730404AbgFPPny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:54 -0400
+        id S1731881AbgFPPn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:43:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F718214F1;
-        Tue, 16 Jun 2020 15:43:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9C65208E4;
+        Tue, 16 Jun 2020 15:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322233;
-        bh=jxRBAJoYesLcQ4lUzvJzOYBx7xIDXeU3frH7E2O1cAk=;
+        s=default; t=1592322236;
+        bh=tm5emzIZe1eyeA5dlv4d4lUnsTh7XE+ZpULMTA+WaiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEHHCsCov4R/cUKD35UFhP/IDwmNzmFG1Ed9gx1dDwWSIQMkw+zQUh0mvcBipxyON
-         55iyYtsiJUQj9EFDGDEZr4e0E5LUkpjDFSLgfxKozf627xALoSmYl/WTd7z2foVPJN
-         zEzx4Uw+iei3ojy7j8WE9G32cbpT5fU/BEOTMpkA=
+        b=wtZ3SIwF7Awg9OAfMvT0Ah5mFpixE30noSVSAUwsLFwVy+tjGFg8HA42yhr8PsXFm
+         vCL4fuMeZWGmo1ipWaEP2Lz7GaUzQePCpEAWCaj4U3ylidLyvJgaT+ZAZwxqwSeWjX
+         g6jT6ian/KtRmEPe+48keHT7yhwKvBo2BlUhXrnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        stable@vger.kernel.org, Pavel Dobias <dobias@2n.cz>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 051/163] ASoC: tlv320adcx140: Fix mic gain registers
-Date:   Tue, 16 Jun 2020 17:33:45 +0200
-Message-Id: <20200616153109.293589517@linuxfoundation.org>
+Subject: [PATCH 5.7 052/163] ASoC: max9867: fix volume controls
+Date:   Tue, 16 Jun 2020 17:33:46 +0200
+Message-Id: <20200616153109.340396353@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
 References: <20200616153106.849127260@linuxfoundation.org>
@@ -43,41 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Pavel Dobias <dobias@2n.cz>
 
-commit be8499c48f115b912f5747c420f66a5e2c31defe upstream.
+commit 8ba4dc3cff8cbe2c571063a5fd7116e8bde563ca upstream.
 
-Fix the mic gain registers for channels 2-4.
-The incorret register was being set as it was touching the CH1 config
-registers.
+The xmax values for Master Playback Volume and Mic Boost
+Capture Volume are specified incorrectly (one greater)
+which results in the wrong dB gain being shown to the user
+in the case of Master Playback Volume.
 
-Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Pavel Dobias <dobias@2n.cz>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200427203608.7031-1-dmurphy@ti.com
+Link: https://lore.kernel.org/r/20200515120757.24669-1-dobias@2n.cz
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/tlv320adcx140.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/max9867.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -511,11 +511,11 @@ static const struct snd_soc_dapm_route a
- static const struct snd_kcontrol_new adcx140_snd_controls[] = {
- 	SOC_SINGLE_TLV("Analog CH1 Mic Gain Volume", ADCX140_CH1_CFG1, 2, 42, 0,
- 			adc_tlv),
--	SOC_SINGLE_TLV("Analog CH2 Mic Gain Volume", ADCX140_CH1_CFG2, 2, 42, 0,
-+	SOC_SINGLE_TLV("Analog CH2 Mic Gain Volume", ADCX140_CH2_CFG1, 2, 42, 0,
- 			adc_tlv),
--	SOC_SINGLE_TLV("Analog CH3 Mic Gain Volume", ADCX140_CH1_CFG3, 2, 42, 0,
-+	SOC_SINGLE_TLV("Analog CH3 Mic Gain Volume", ADCX140_CH3_CFG1, 2, 42, 0,
- 			adc_tlv),
--	SOC_SINGLE_TLV("Analog CH4 Mic Gain Volume", ADCX140_CH1_CFG4, 2, 42, 0,
-+	SOC_SINGLE_TLV("Analog CH4 Mic Gain Volume", ADCX140_CH4_CFG1, 2, 42, 0,
- 			adc_tlv),
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -46,13 +46,13 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_R
  
- 	SOC_SINGLE_TLV("DRE Threshold", ADCX140_DRE_CFG0, 4, 9, 0,
+ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("Master Playback Volume", MAX9867_LEFTVOL,
+-			MAX9867_RIGHTVOL, 0, 41, 1, max9867_master_tlv),
++			MAX9867_RIGHTVOL, 0, 40, 1, max9867_master_tlv),
+ 	SOC_DOUBLE_R_TLV("Line Capture Volume", MAX9867_LEFTLINELVL,
+ 			MAX9867_RIGHTLINELVL, 0, 15, 1, max9867_line_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Capture Volume", MAX9867_LEFTMICGAIN,
+ 			MAX9867_RIGHTMICGAIN, 0, 20, 1, max9867_mic_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Boost Capture Volume", MAX9867_LEFTMICGAIN,
+-			MAX9867_RIGHTMICGAIN, 5, 4, 0, max9867_micboost_tlv),
++			MAX9867_RIGHTMICGAIN, 5, 3, 0, max9867_micboost_tlv),
+ 	SOC_SINGLE("Digital Sidetone Volume", MAX9867_SIDETONE, 0, 31, 1),
+ 	SOC_SINGLE_TLV("Digital Playback Volume", MAX9867_DACLEVEL, 0, 15, 1,
+ 			max9867_dac_tlv),
 
 
