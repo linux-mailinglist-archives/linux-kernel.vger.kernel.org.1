@@ -2,146 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046241FC248
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA8D1FC24F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgFPX2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 19:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgFPX2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:28:30 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0518DC061573;
-        Tue, 16 Jun 2020 16:28:29 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d8so36882plo.12;
-        Tue, 16 Jun 2020 16:28:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nokaqO/7ikLY/CaZfj8RUoWXt7iRv0GsTFng8UE3qCw=;
-        b=e6gwvDdVsFAYgNKppHkmPneIamMoxYKb+W8s99Afmhxm/8zE417O3gj6Fzg1PDGboS
-         xWiqlnxIQTI3upPI0UHHS6mWgN7nJBr01/atAzaO7z4KWBo/iZVWgAfrTHDWt03gc88A
-         wmmCNj9DhLunFnQjlyo+OPRItLYaHz/Xn6FWfd5bNfAw6LaYen9/0w0E+B4VY33cLY+8
-         P0R4wMuKjyxOZ7IG1XCcDhfPBbCrW7kcpF9Hw6Y4kkUCxW0ybg885R88J2XovyyCGUS4
-         2CEApyQqeu7SO77ui569hu6N5IyIbbUvNmkx0ZGgZH8aJ1DeUJOuA0crga3hn7rJHQzl
-         Sh9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nokaqO/7ikLY/CaZfj8RUoWXt7iRv0GsTFng8UE3qCw=;
-        b=kzC2Dy4UGn5zl/ren7xWWUqtCNUzFjZSXMQ/4wX5iOEgOJhhH8Oem7UccEBepkSVbN
-         FIwOpYPQhM7dP1+FKfokYTxmV6DJyrev2TedaVlTUz56ncb9kd2HinMNzqgTkyBovkYu
-         LPmgXUGHdHl7AsqEwex4hVcIyOiisUH9QMoTX8b70Xja4+nRzYHfR5QLuzmO5z6mpiho
-         ofU2shenqX37Hv8KsQTnHXMveJZNcwXLwFJ1ip8CpGj7EheCkPVjuTJm6dJne9K1Gxqv
-         IXg1QsLTactDvj3vNryV2/BbYLW1yi6LhWlRR9tV0HpM+bbD2P0iLIPPoDpQlPjROk62
-         GmYg==
-X-Gm-Message-State: AOAM533UdYdO2KKLxA4s0hRaSq9ELH0IEakaNEr7hKySPmtvUQZ1q3bY
-        yO3ZbrNuBrcOZx6KIIZZ1VY=
-X-Google-Smtp-Source: ABdhPJyewwpFThwB7lVfDvCFj438Fo7Ix52QUxyvLW3sT2CUftR5ocnuBGDk+n7WlQXuxAkGZHplNg==
-X-Received: by 2002:a17:902:ed14:: with SMTP id b20mr4118681pld.173.1592350108783;
-        Tue, 16 Jun 2020 16:28:28 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id b1sm3547523pjc.33.2020.06.16.16.28.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 16 Jun 2020 16:28:28 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 16:28:11 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: fsl_spdif: Add support for imx6sx platform
-Message-ID: <20200616232810.GA19896@Asurada-Nvidia>
-References: <1592289761-29118-1-git-send-email-shengjiu.wang@nxp.com>
- <1592289761-29118-2-git-send-email-shengjiu.wang@nxp.com>
+        id S1726530AbgFPXb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 19:31:27 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55417 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgFPXbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 19:31:22 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49mkwl1Gpjz9sSd;
+        Wed, 17 Jun 2020 09:31:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592350279;
+        bh=8Enzr05iqmdQEKnrvODMZ8/F/GGixYzwXWm/655F5TM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BwMj2eCa2lGurK4zw1uwzaS+m9kXADGwPYaLdJfx9o2TbS+m8Jcd1kZTrc/giZ4Dq
+         zP8JOLQANzMwsfdozhG2QwgID9UbzPXVgX2+Qb7Bm/+8LphEzIxCsBifzm2nHajW+k
+         rqSEQeV/TttREj2w/IgjcnWSM5o0D5wB7C/lAx/8niIw8sczf2XziiduuI5dAmmmaw
+         X6YP4kUnS3KU/aVf5TrejwV5EDH5qGhd1gxctTSMkAikDjrgvqK6QIBaWjcZhXNOHL
+         TwF/11Mee28jHD1lww5Q2jmPpyDK7KYDHY6PjJHCMDUXDkSeyebENA6BFraQBqfZ/o
+         CICx3xEGli6YA==
+Date:   Wed, 17 Jun 2020 09:26:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux-kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     <linux-arch@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <greg@kroah.com>
+Subject: [RFC Patch 0/2] fix up includes of linux/major.h
+Message-ID: <20200617092614.7897ccb2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592289761-29118-2-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/c1RdnDg/CwSxuJmBjtRxByn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:42:41PM +0800, Shengjiu Wang wrote:
-> The one difference on imx6sx platform is that the root clock
-> is shared with ASRC module, so we add a new flags "ind_root_clk"
-> which means the root clock is independent, then we will not
-> do the clk_set_rate and clk_round_rate to avoid impact ASRC
-> module usage.
-> 
-> As add a new flags, we include the soc specific data struct.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_spdif.c | 43 +++++++++++++++++++++++++++++++++++----
->  1 file changed, 39 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index 1b2e516f9162..00e06803d32f 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -42,6 +42,17 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
->  
->  #define DEFAULT_RXCLK_SRC	1
->  
-> +/**
-> + * struct fsl_spdif_soc_data: soc specific data
-> + *
-> + * @imx: for imx platform
-> + * @ind_root_clk: flag for round clk rate
-> + */
-> +struct fsl_spdif_soc_data {
-> +	bool imx;
-> +	bool ind_root_clk;
+--Sig_/c1RdnDg/CwSxuJmBjtRxByn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-"ind" doesn't look very straightforward; maybe "shared_root_clock"?
+Hi all,
 
-And for its comments:
-	* @shared_root_clock: flag of sharing a clock source with others;
-	*		      so the driver shouldn't set root clock rate
+[This is not cc'd very widely, but get_maintainers produces a very long
+list ...]
 
-> +};
-> +
->  /*
->   * SPDIF control structure
->   * Defines channel status, subcode and Q sub
-> @@ -93,6 +104,7 @@ struct fsl_spdif_priv {
->  	struct snd_soc_dai_driver cpu_dai_drv;
->  	struct platform_device *pdev;
->  	struct regmap *regmap;
-> +	const struct fsl_spdif_soc_data *soc;
+I have been looking at our include file mess off and on over time and
+have finally decided to start with something easy.  linux/major.h
+(actually uapi/linux/major.h) is included in quite a few places that
+are unnecessary and not included in pleaces it should be.  It also does
+not include (or depend on) any other file.  I was lead here while
+looking at reducding the size of linux/tty.h (which this patch series
+accomplishes).
 
-Looks better if we move it to the top of the list :)
+Just 2 patches currently:
 
-> @@ -421,7 +448,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
->  	sysclk_df = spdif_priv->sysclk_df[rate];
->  
->  	/* Don't mess up the clocks from other modules */
-> -	if (clk != STC_TXCLK_SPDIF_ROOT)
-> +	if (clk != STC_TXCLK_SPDIF_ROOT || !spdif_priv->soc->ind_root_clk)
->  		goto clk_set_bypass;
->  
->  	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
-> @@ -1186,7 +1213,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
->  			continue;
->  
->  		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
-> -					     i == STC_TXCLK_SPDIF_ROOT);
-> +					     i == STC_TXCLK_SPDIF_ROOT &&
-> +					     spdif_priv->soc->ind_root_clk);
+  1/2 Explicitly include linux/major.h where it is needed
+  2/2 Remove the include of linux/major.h from files that do not need it
 
-Having more than one place that checks the condition, we can add:
+ arch/alpha/kernel/osf_sys.c                      | 1 -
+ arch/alpha/kernel/process.c                      | 1 -
+ arch/arm/mach-iop32x/i2c.c                       | 1 -
+ arch/arm/mach-omap1/board-h3.c                   | 1 -
+ arch/arm/mach-pxa/corgi.c                        | 1 -
+ arch/arm/mach-pxa/lubbock.c                      | 1 -
+ arch/arm/mach-pxa/tosa.c                         | 1 -
+ arch/arm/mach-pxa/viper.c                        | 1 -
+ arch/m68k/atari/atasound.c                       | 1 -
+ arch/m68k/atari/stram.c                          | 1 -
+ arch/m68k/bvme6000/config.c                      | 1 -
+ arch/m68k/mvme147/config.c                       | 1 -
+ arch/m68k/mvme16x/config.c                       | 1 -
+ arch/m68k/q40/config.c                           | 1 -
+ arch/mips/fw/arc/arc_con.c                       | 1 -
+ arch/powerpc/platforms/83xx/km83xx.c             | 1 -
+ arch/powerpc/platforms/83xx/mpc832x_mds.c        | 1 -
+ arch/powerpc/platforms/83xx/mpc834x_itx.c        | 1 -
+ arch/powerpc/platforms/83xx/mpc834x_mds.c        | 1 -
+ arch/powerpc/platforms/83xx/mpc836x_mds.c        | 1 -
+ arch/powerpc/platforms/85xx/mpc85xx_cds.c        | 1 -
+ arch/powerpc/platforms/85xx/mpc85xx_mds.c        | 1 -
+ arch/powerpc/platforms/85xx/sbc8548.c            | 1 -
+ arch/powerpc/platforms/chrp/setup.c              | 1 -
+ arch/powerpc/platforms/maple/setup.c             | 1 -
+ arch/powerpc/platforms/powermac/setup.c          | 1 -
+ arch/powerpc/platforms/pseries/setup.c           | 1 -
+ arch/powerpc/sysdev/fsl_soc.c                    | 1 -
+ arch/powerpc/sysdev/tsi108_dev.c                 | 1 -
+ arch/sparc/kernel/setup_32.c                     | 1 -
+ arch/sparc/kernel/setup_64.c                     | 1 -
+ arch/um/drivers/ubd_kern.c                       | 1 +
+ arch/xtensa/platforms/xt2000/setup.c             | 1 -
+ arch/xtensa/platforms/xtfpga/setup.c             | 1 -
+ block/genhd.c                                    | 1 +
+ block/partitions/efi.h                           | 1 -
+ drivers/android/binderfs.c                       | 1 -
+ drivers/block/amiflop.c                          | 1 +
+ drivers/block/ataflop.c                          | 1 +
+ drivers/block/drbd/drbd_int.h                    | 1 -
+ drivers/block/drbd/drbd_main.c                   | 1 +
+ drivers/block/floppy.c                           | 1 +
+ drivers/block/swim.c                             | 1 +
+ drivers/block/swim3.c                            | 1 +
+ drivers/block/xen-blkfront.c                     | 1 +
+ drivers/cdrom/cdrom.c                            | 1 -
+ drivers/char/hpet.c                              | 1 -
+ drivers/char/mem.c                               | 1 +
+ drivers/char/mwave/mwavedd.c                     | 1 -
+ drivers/char/pcmcia/synclink_cs.c                | 1 -
+ drivers/char/random.c                            | 1 -
+ drivers/char/ttyprintk.c                         | 1 +
+ drivers/hid/hidraw.c                             | 1 -
+ drivers/ide/ide-cs.c                             | 1 -
+ drivers/ide/ide-disk.c                           | 1 -
+ drivers/ide/ide-floppy.c                         | 1 -
+ drivers/ide/ide-io.c                             | 1 -
+ drivers/ide/ide-iops.c                           | 1 -
+ drivers/ide/ide.c                                | 1 -
+ drivers/input/serio/serio_raw.c                  | 1 -
+ drivers/isdn/capi/capi.c                         | 1 -
+ drivers/md/md.c                                  | 1 +
+ drivers/message/fusion/mptctl.c                  | 1 +
+ drivers/misc/vmw_vmci/vmci_host.c                | 1 +
+ drivers/mmc/core/block.c                         | 1 +
+ drivers/mmc/host/android-goldfish.c              | 1 -
+ drivers/mtd/devices/pmc551.c                     | 1 -
+ drivers/mtd/devices/slram.c                      | 1 -
+ drivers/mtd/ftl.c                                | 1 -
+ drivers/mtd/maps/uclinux.c                       | 1 -
+ drivers/net/hamradio/mkiss.c                     | 1 -
+ drivers/net/tun.c                                | 1 -
+ drivers/parport/parport_cs.c                     | 1 -
+ drivers/pcmcia/cistpl.c                          | 1 -
+ drivers/pcmcia/cs.c                              | 1 -
+ drivers/pcmcia/socket_sysfs.c                    | 1 -
+ drivers/s390/block/dasd.c                        | 1 -
+ drivers/s390/block/dasd_genhd.c                  | 1 +
+ drivers/s390/block/dasd_ioctl.c                  | 1 -
+ drivers/s390/block/xpram.c                       | 1 +
+ drivers/s390/char/con3215.c                      | 1 +
+ drivers/s390/char/fs3270.c                       | 1 +
+ drivers/s390/char/raw3270.c                      | 1 -
+ drivers/s390/char/sclp_tty.c                     | 1 +
+ drivers/s390/char/tape_class.h                   | 1 -
+ drivers/s390/char/tty3270.c                      | 1 +
+ drivers/s390/scsi/zfcp_def.h                     | 1 -
+ drivers/sbus/char/display7seg.c                  | 1 -
+ drivers/scsi/nsp32.c                             | 1 -
+ drivers/scsi/pcmcia/aha152x_stub.c               | 1 -
+ drivers/scsi/pcmcia/nsp_cs.c                     | 1 -
+ drivers/scsi/pcmcia/qlogic_stub.c                | 1 -
+ drivers/scsi/sd.c                                | 1 +
+ drivers/scsi/sg.c                                | 1 +
+ drivers/scsi/sr.c                                | 1 +
+ drivers/scsi/st.c                                | 1 +
+ drivers/staging/kpc2000/kpc_dma/kpc_dma_driver.c | 1 +
+ drivers/staging/speakup/devsynth.c               | 1 +
+ drivers/tty/hvc/hvc_console.c                    | 1 -
+ drivers/tty/hvc/hvcs.c                           | 1 -
+ drivers/tty/hvc/hvsi.c                           | 1 -
+ drivers/tty/moxa.c                               | 1 -
+ drivers/tty/mxser.c                              | 1 -
+ drivers/tty/n_gsm.c                              | 1 -
+ drivers/tty/n_tty.c                              | 1 -
+ drivers/tty/rocket.c                             | 1 -
+ drivers/tty/serial/8250/8250_core.c              | 1 +
+ drivers/tty/serial/8250/serial_cs.c              | 1 -
+ drivers/tty/serial/apbuart.c                     | 1 +
+ drivers/tty/serial/atmel_serial.c                | 1 +
+ drivers/tty/serial/bcm63xx_uart.c                | 1 +
+ drivers/tty/serial/icom.c                        | 1 -
+ drivers/tty/serial/mcf.c                         | 1 +
+ drivers/tty/serial/mux.c                         | 1 +
+ drivers/tty/serial/pxa.c                         | 1 +
+ drivers/tty/serial/serial_txx9.c                 | 1 +
+ drivers/tty/serial/sh-sci.c                      | 1 -
+ drivers/tty/synclink.c                           | 1 -
+ drivers/tty/synclink_gt.c                        | 1 -
+ drivers/tty/synclinkmp.c                         | 1 -
+ drivers/tty/sysrq.c                              | 1 -
+ drivers/tty/tty_ioctl.c                          | 1 -
+ drivers/tty/vt/vt_ioctl.c                        | 1 -
+ drivers/watchdog/cpwd.c                          | 1 -
+ drivers/watchdog/watchdog_dev.c                  | 1 +
+ drivers/xen/evtchn.c                             | 1 -
+ drivers/xen/gntalloc.c                           | 1 +
+ fs/block_dev.c                                   | 1 -
+ fs/char_dev.c                                    | 1 -
+ fs/coda/psdev.c                                  | 1 -
+ fs/devpts/inode.c                                | 1 +
+ fs/proc/proc_tty.c                               | 1 +
+ fs/xfs/xfs_linux.h                               | 1 -
+ include/linux/blkdev.h                           | 1 -
+ include/linux/genhd.h                            | 1 -
+ include/linux/tty.h                              | 1 -
+ include/uapi/linux/raid/md_u.h                   | 2 ++
+ init/do_mounts.c                                 | 1 +
+ init/do_mounts.h                                 | 1 -
+ init/do_mounts_md.c                              | 1 +
+ init/do_mounts_rd.c                              | 1 +
+ kernel/bpf/inode.c                               | 1 -
+ net/ipv4/ipconfig.c                              | 1 -
+ tools/hv/hv_vss_daemon.c                         | 1 -
+ 144 files changed, 44 insertions(+), 101 deletions(-)
 
-/* Check if clk is a root clock that does not share clock source with others */
-static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
-{
-	return (clk == STC_TXCLK_SPDIF_ROOT) && !spdif->soc->shared_root_clock;
-}
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/c1RdnDg/CwSxuJmBjtRxByn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7pVRYACgkQAVBC80lX
+0Gzlcwf/b25QCg0ykDaOMiVG+okZvg5BqDreuD+is6k4L9JLgZ+YkTTUj8lg5opd
+EDjrV49J+q5TR/H7aPFIbfqoqmuVKblGKJ595+Xmnr68XggwMexS+QFKQUZaGLkX
+ekK/iEyHjl2ry7DFRLCa12tHBkmUML8W893Bqk4yjDugP+kyZ1wBwlAsDSSIO7fU
+jLWGJO+PKpAsiHbsaINoSfMZa6WUJ19ClJeeO4s0v4SXXqeOmhIwcUQI3XrzQm5x
+kntG/FskFUS5Sh/CeAAJmeR+9k03cgttIIHDjr5bGZYuY5q0q68Q/P91R5t6eaIu
+k79hxhqy2VZjw76J/G/xf0wNBwmT/w==
+=0vtK
+-----END PGP SIGNATURE-----
+
+--Sig_/c1RdnDg/CwSxuJmBjtRxByn--
