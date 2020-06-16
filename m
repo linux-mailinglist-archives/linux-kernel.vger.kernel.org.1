@@ -2,161 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397C21FAB1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C321FAB20
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgFPI0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:26:41 -0400
-Received: from mail-bn7nam10on2058.outbound.protection.outlook.com ([40.107.92.58]:6157
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726428AbgFPI0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:26:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k59EQrM5yAtv/9MCakoZyDIdsdrbdMr9slpFvHrvn0ndv1iBcmJW8mq6RK8Bzb/35vt4N76BNJUvSRHOy7XDG0LXWScW3KIpQBWXAnW6YE7/zqLriAWx+YuIaMnIHOp9hBwMqutPy/c8Fg6f3P7gaYReNYpeSxTDIOh+dULEbtKbqYnH876+Iz1hjHGOIEVYVZzW1BgRHXsWX5JuVX1rv6oOkOlPy8iNoLxygrWZwga0ogaEAjwlIMO2fsS6ODWty5WFs7bBnIJ6F8MmChYzCXE3DUcOkFxYSf4hI/9178IrCvg+89JVolN2eWcOUoDJskw0U6SckTNqmL4drpQKjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BSW5q4n2HcOtAFkHaHD1arUwxQxubXglGQPTFQQu/OM=;
- b=nZ7V7Qpn/Cyeus546l5TSPHGJaWYcp348OQ9lXvviW2kz7Zs17xvGmAkNgbttO+W6+QEW/jyPGayZL+G/TgH4K59fld/Gr/MUJhZGLmJvYigMf0gReeY0SWnqwp0OYuw1v6MxX5YLKzAI/DFOkYX0yx6nMPkeiaSkRVlq25zFx9Gz/KW6UVwHeDp8idruh1fsge1LKAPtu+gZVQkXKXcvikaPEwYvfnX3Ouv+JRkKKTRav+qTbe5nWr8Ic6xN+6MQW/FcIJBSSw5LYrUaQwqOvbYpCvB7fchS6nXX09m9m3cWUOXvaq5FHNyHP6ZOptploqWSG+YWMr3IHtV37LzLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BSW5q4n2HcOtAFkHaHD1arUwxQxubXglGQPTFQQu/OM=;
- b=aD37cj2lc6li/wzn2myGVW+e/ZIeXvUU1A106JgfqHT1Cx0qRuQzItuD61pSS3dsAd1PzXmWRcFK5OHLuxmyw2HDT6v3q97Kias0RwfPTQ4jP8cBayBTNB0unILcDRTUoxBq/5RjPUvazoUx9cX8MwdgJ5JjCaSFlfpgTAKej+w=
-Authentication-Results: synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
- by BYAPR03MB3575.namprd03.prod.outlook.com (2603:10b6:a02:ab::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.23; Tue, 16 Jun
- 2020 08:26:36 +0000
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3088.028; Tue, 16 Jun 2020
- 08:26:36 +0000
-Date:   Tue, 16 Jun 2020 16:26:17 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: dwc2: use well defined macros for power_down
-Message-ID: <20200616162617.38365cc8@xhacker.debian>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR02CA0036.apcprd02.prod.outlook.com
- (2603:1096:404:a6::24) To BYAPR03MB3573.namprd03.prod.outlook.com
- (2603:10b6:a02:ae::15)
+        id S1727945AbgFPI1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:27:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49366 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726467AbgFPI1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:27:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1F6DFAD7B;
+        Tue, 16 Jun 2020 08:27:15 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     vbabka@suse.cz
+Cc:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
+        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        liwang@redhat.com, mgorman@techsingularity.net,
+        stable@vger.kernel.org
+Subject: [PATCH 1/2] mm, compaction: make capture control handling safe wrt interrupts
+Date:   Tue, 16 Jun 2020 10:26:48 +0200
+Message-Id: <20200616082649.27173-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <b17acf5b-5e8a-3edf-5a64-603bf6177312@suse.cz>
+References: <b17acf5b-5e8a-3edf-5a64-603bf6177312@suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR02CA0036.apcprd02.prod.outlook.com (2603:1096:404:a6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.26 via Frontend Transport; Tue, 16 Jun 2020 08:26:35 +0000
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90e6d1e9-2bdb-4c67-956d-08d811cefbfc
-X-MS-TrafficTypeDiagnostic: BYAPR03MB3575:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB3575E8EB6C3F92AE23A3EA19ED9D0@BYAPR03MB3575.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:530;
-X-Forefront-PRVS: 04362AC73B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YWYYbwANDFcMURSOd51tFmHdLqmlKSHU+PJhTPCYvphTJraihwO9btatEN29K8Q6cxjU2le74E/ahlC9vUTlaGuf8MVF5FXdnLs5nrkIDuKdISuu+PHKCur5qUqhuMTRq07JQKEP+D9ODRPaBetGcRNjUPRUlXnXSW4jfYDy6gftjXENyWB2/3PRsal1RvFe87whIUmOuCCbEVgQud7w+MljKhsIKb9sWJSJf77W+QaOqLcbPUt42LKJ2fC9VQ3EEEkeycFktZjBJ280XEcBtDz4n3+LZLg05eJ6LH0Qzxb4GcODdhsG7d1bM+KvFhkh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(346002)(136003)(376002)(39860400002)(4326008)(16526019)(55016002)(186003)(2906002)(5660300002)(1076003)(66556008)(8676002)(26005)(8936002)(9686003)(66946007)(66476007)(316002)(956004)(110136005)(86362001)(6506007)(6666004)(478600001)(52116002)(83380400001)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: WaKQ+LTh4L3J2Nz118PETeFLkQgoEr0ef033fE6p5v8YLkh7pI8tihrKMQ239KiUW5iekEx87oaKhIij0c1RCwdd0MwfBpwE3Jd/YgtrtyAXGJ4lXa4O2BwH4SLO7MfiSceKWuLYmnS7elSFQ2VQpzVCWcLnI4zyN6qpIm5eC6nz02MAsa0JAbZEzHKseYT/vnow6aEQNUDH5sGB3D2wtaFTfx8ktD9/MsJoaVxMK3qwWRLGwELdd2Y9sZrhoQPsJzS+JwJIHljYKqkqOgBsa1RhT55U1UtZMtdkUuOEsnIsW6LuNuzRvEC9TZXmF/moJJe7yKLxTQOtPy+oVv865nMvANQvlJbCzsjlNubm1yGZwpR+saZQMESpF3xxlerZnGd52ykgthXWt9IyuOg+MfX9BTp5EEt4iD8zPWW62RXte3AvZBnI7K4ezcQHDbnn2EGvpf8PygnciMDKgZx+YPKeZVYUK6phiMFJtbavOkswmnWHYvqYU/MI8RbXkK3i
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90e6d1e9-2bdb-4c67-956d-08d811cefbfc
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 08:26:36.2704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jtWsBKNkXXBfsG2apaT+pS+Nhl2jCH5LisCbpAzr/l38KfcmUhSTZYJyN2CreARZK7/IIzGvCYAXr0rRO2N2Dg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3575
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the well defined macros such as DWC2_POWER_DOWN_PARAM_NONE,
-DWC2_POWER_DOWN_PARAM_PARTIAL and DWC2_POWER_DOWN_PARAM_HIBERNATION
-to make code more readable.
+Hugh reports:
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+=====
+While stressing compaction, one run oopsed on NULL capc->cc in
+__free_one_page()'s task_capc(zone): compact_zone_order() had been
+interrupted, and a page was being freed in the return from interrupt.
+
+Though you would not expect it from the source, both gccs I was using
+(a 4.8.1 and a 7.5.0) had chosen to compile compact_zone_order() with
+the ".cc = &cc" implemented by mov %rbx,-0xb0(%rbp) immediately before
+callq compact_zone - long after the "current->capture_control = &capc".
+An interrupt in between those finds capc->cc NULL (zeroed by an earlier
+rep stos).
+
+This could presumably be fixed by a barrier() before setting
+current->capture_control in compact_zone_order(); but would also need
+more care on return from compact_zone(), in order not to risk leaking
+a page captured by interrupt just before capture_control is reset.
+
+Maybe that is the preferable fix, but I felt safer for task_capc() to
+exclude the rather surprising possibility of capture at interrupt time.
+=====
+
+I have checked that gcc10 also behaves the same.
+
+The advantage of fix in compact_zone_order() is that we don't add another
+test in the page freeing hot path, and that it might prevent future problems
+if we stop exposing pointers to unitialized structures in current task.
+
+So this patch implements the suggestion for compact_zone_order() with barrier()
+(and WRITE_ONCE() to prevent store tearing) for setting
+current->capture_control, and prevents page leaking with WRITE_ONCE/READ_ONCE
+in the proper order.
+
+Fixes: 5e1f0f098b46 ("mm, compaction: capture a page under direct compaction")
+Cc: stable@vger.kernel.org # 5.1+
+Reported-by: Hugh Dickins <hughd@google.com>
+Suggested-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- drivers/usb/dwc2/hcd.c    |  4 ++--
- drivers/usb/dwc2/params.c | 12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ mm/compaction.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index b90f858af960..e9ac215b9663 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -3628,7 +3628,7 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
- 				"SetPortFeature - USB_PORT_FEAT_SUSPEND\n");
- 			if (windex != hsotg->otg_port)
- 				goto error;
--			if (hsotg->params.power_down == 2)
-+			if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_HIBERNATION)
- 				dwc2_enter_hibernation(hsotg, 1);
- 			else
- 				dwc2_port_suspend(hsotg, windex);
-@@ -3646,7 +3646,7 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
- 			break;
+diff --git a/mm/compaction.c b/mm/compaction.c
+index fd988b7e5f2b..86375605faa9 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2316,15 +2316,26 @@ static enum compact_result compact_zone_order(struct zone *zone, int order,
+ 		.page = NULL,
+ 	};
  
- 		case USB_PORT_FEAT_RESET:
--			if (hsotg->params.power_down == 2 &&
-+			if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_HIBERNATION &&
- 			    hsotg->hibernated)
- 				dwc2_exit_hibernation(hsotg, 0, 1, 1);
- 			hprt0 = dwc2_read_hprt0(hsotg);
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index ce736d67c7c3..8f9d061c4d5f 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -68,14 +68,14 @@ static void dwc2_set_his_params(struct dwc2_hsotg *hsotg)
- 	p->ahbcfg = GAHBCFG_HBSTLEN_INCR16 <<
- 		GAHBCFG_HBSTLEN_SHIFT;
- 	p->change_speed_quirk = true;
--	p->power_down = false;
-+	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
- }
+-	current->capture_control = &capc;
++	/*
++	 * Make sure the structs are really initialized before we expose the
++	 * capture control, in case we are interrupted and the interrupt handler
++	 * frees a page.
++	 */
++	barrier();
++	WRITE_ONCE(current->capture_control, &capc);
  
- static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
- {
- 	struct dwc2_core_params *p = &hsotg->params;
+ 	ret = compact_zone(&cc, &capc);
  
--	p->power_down = 0;
-+	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
- 	p->phy_utmi_width = 8;
- }
+ 	VM_BUG_ON(!list_empty(&cc.freepages));
+ 	VM_BUG_ON(!list_empty(&cc.migratepages));
  
-@@ -89,7 +89,7 @@ static void dwc2_set_rk_params(struct dwc2_hsotg *hsotg)
- 	p->host_perio_tx_fifo_size = 256;
- 	p->ahbcfg = GAHBCFG_HBSTLEN_INCR16 <<
- 		GAHBCFG_HBSTLEN_SHIFT;
--	p->power_down = 0;
-+	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
- }
+-	*capture = capc.page;
+-	current->capture_control = NULL;
++	/*
++	 * Make sure we hide capture control first before we read the captured
++	 * page pointer, otherwise an interrupt could free and capture a page
++	 * and we would leak it.
++	 */
++	WRITE_ONCE(current->capture_control, NULL);
++	*capture = READ_ONCE(capc.page);
  
- static void dwc2_set_ltq_params(struct dwc2_hsotg *hsotg)
-@@ -319,11 +319,11 @@ static void dwc2_set_param_power_down(struct dwc2_hsotg *hsotg)
- 	int val;
- 
- 	if (hsotg->hw_params.hibernation)
--		val = 2;
-+		val = DWC2_POWER_DOWN_PARAM_HIBERNATION;
- 	else if (hsotg->hw_params.power_optimized)
--		val = 1;
-+		val = DWC2_POWER_DOWN_PARAM_PARTIAL;
- 	else
--		val = 0;
-+		val = DWC2_POWER_DOWN_PARAM_NONE;
- 
- 	hsotg->params.power_down = val;
+ 	return ret;
  }
 -- 
 2.27.0
