@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FF51FB399
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35031FB3B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgFPOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:09:01 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:45949 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728694AbgFPOI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:08:59 -0400
-Received: by mail-pf1-f196.google.com with SMTP id a127so9542583pfa.12;
-        Tue, 16 Jun 2020 07:08:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AKN3xkZHGhXjYJKtlU4bgJbg4Zua5Zr3wZEUnZukPYA=;
-        b=aGxWrg5dyM347YefqTVYxNppvCCJSdOylSUBtYVbTtkOydAGgIkC9auC3E5sEiQYbM
-         VM6kPivn9sEgPyMz8g5mjz/RNHW937W5hObA6xBDFC3zbVLlHfp69ADySoiKvbnPSpIB
-         XvOSMPppx6ADT7jHgfgI/4WY7LMjiZ+X4td98HCf77kpRlXZlor/cDgXu6Qzqffe0Lkp
-         bytd14hwPd1rbUxadjpdrIkJpxOwK8JuQirrH3cXW+iMA0My477eXF/VY5a0KWohOI9i
-         1A4cjk1qABzJ+fkWKF7Aopb21NkUpyhwoECF3NZidfD9T2M6ne9gWGBPEmgYBGt4xAs6
-         z0tw==
-X-Gm-Message-State: AOAM533N5ed2bUyppVZJkcSqyYaPlomQXrsht5ZhTXfbSPKXcNZKw7+i
-        rQ5RB48UdaD3UUJoKTvD5Y0=
-X-Google-Smtp-Source: ABdhPJxvqeA4mS5CbWAq1QTTwdI4aDes22DBvQ2QH1b3ZgxqJ9QrlXi1rvpXsrtOZCUi914rTc490Q==
-X-Received: by 2002:a63:7d1d:: with SMTP id y29mr2222280pgc.189.1592316537850;
-        Tue, 16 Jun 2020 07:08:57 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id fy21sm2702187pjb.38.2020.06.16.07.08.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 07:08:56 -0700 (PDT)
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-To:     Finn Thain <fthain@telegraphics.com.au>, Chris Boot <bootc@boo.tc>
-Cc:     linuxppc-dev@lists.ozlabs.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
- <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
- <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
- <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
- <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
- <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
-Date:   Tue, 16 Jun 2020 07:08:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729589AbgFPOJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:09:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728869AbgFPOJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:09:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5ACE0ABE4;
+        Tue, 16 Jun 2020 14:09:57 +0000 (UTC)
+Message-ID: <d3346d7cb9655eb111b4126d72a08499c6254fef.camel@suse.de>
+Subject: Re: [PATCH v4 4/5] dm: pci: Assign controller device node to root
+ bridge
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Matthias Brugger <mbrugger@suse.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Bin Meng <bmeng.cn@gmail.com>, Marek Vasut <marex@denx.de>,
+        lk <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>
+Date:   Tue, 16 Jun 2020 16:09:49 +0200
+In-Reply-To: <CAPnjgZ2jarQArKN=0h0mNnxE7gAL0juvGhMxMF4a0CehqxWcRw@mail.gmail.com>
+References: <20200612164632.25648-1-nsaenzjulienne@suse.de>
+         <20200612164632.25648-5-nsaenzjulienne@suse.de>
+         <CAPnjgZ2jarQArKN=0h0mNnxE7gAL0juvGhMxMF4a0CehqxWcRw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-hRzj0/dqG4z0PRQp4I9N"
+User-Agent: Evolution 3.36.3 
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-16 02:42, Finn Thain wrote:
-> Martin said, "I'd appreciate a patch to remove it"
-> 
-> And Bart said, "do you want to keep this driver in the kernel tree?"
-> 
-> AFAICT both comments are quite ambiguous. I don't see an actionable 
-> request, just an expression of interest from people doing their jobs.
-> 
-> Note well: there is no pay check associated with having a MAINTAINERS file 
-> entry.
 
-Hi Finn,
+--=-hRzj0/dqG4z0PRQp4I9N
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As far as I know the sbp driver only has had one user ever and that user
-is no longer user the sbp driver. So why to keep it in the kernel tree?
-Restoring a kernel driver can be easy - the first step is a "git revert".
+On Tue, 2020-06-16 at 07:43 -0600, Simon Glass wrote:
+> Hi Nicolas,
+>=20
+> On Fri, 12 Jun 2020 at 10:47, Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > There is no distinction in DT between the PCI controller device and the
+> > root bridge, whereas such distinction exists from dm's perspective. Mak=
+e
+> > sure the root bridge ofnode is assigned to the controller's platform
+> > device node.
+> >=20
+> > This permits setups like this to work correctly:
+> >=20
+> >         pcie {
+> >                 compatible =3D "...";
+> >                 ...
+> >                 dev {
+> >                         reg =3D <0 0 0 0 0>;
+> >                         ...
+> >                 };
+> >         };
+> >=20
+> > Without this the dev node is assigned to the root bridge and the
+> > actual device search starts one level lower than expected.
+> >=20
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > ---
+> >  drivers/pci/pci-uclass.c | 15 ++++++++++++++-
+> >  1 file changed, 14 insertions(+), 1 deletion(-)
+>=20
+> Can you update the tests to handle this case please?
 
-Thanks,
+I'd be glad to, but I'm not familiar with the test FW in u-booy, coud give =
+me
+some pointers on where/how to test this?
 
-Bart.
+Regards,
+Nicolas
 
+
+--=-hRzj0/dqG4z0PRQp4I9N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7o0q0ACgkQlfZmHno8
+x/6vIAgAinbtz9aWXY9OMZDE68tOQOYWeDK5wVp7zlk4hA1VI1QmdSWkZ0KV6f+r
+GV+XxzmIAvxhv/G50aP5kqKy7KxB7oWTHCI4usPn3614DBKkxTrpshmmb+QiTCIM
+ugTFiw34xaKlSh4MVsiUSp4R737RR5GoX+iajIsLNpITw875SPNn6GdzyL/KWm80
+2ho2ptk0k+7o/2BXJpJ4BBcXgBBt74TZ7V/u4+LDbt1ZmRW5EGnxggl4W0vxed4n
+xULWrW1ipAI+7E/BDNibGEb8cVbaKBcrDg4hdKBKZWLkavJctCwoWfCXGiNOvPM6
+u4lYBsRWWCjDXmjx+rU+UGiVQqDVSw==
+=cIdv
+-----END PGP SIGNATURE-----
+
+--=-hRzj0/dqG4z0PRQp4I9N--
 
