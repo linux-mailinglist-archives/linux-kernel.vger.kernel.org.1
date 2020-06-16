@@ -2,214 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670DE1FBE8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9791FBEA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbgFPSzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgFPSzh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:55:37 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C6EC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 11:55:37 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d7so12392314lfi.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 11:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q0q8gubf8krgZV8oGCJJ77Manwa2gcrwHgDVVcoIMF4=;
-        b=Za9iu2csZgttP35aE+aT08tNb3V6uxoyuIhn76uFapZGtiQBoNJQlm46x1X88modKX
-         56L73dqUCWnkD91z+9cqMwv5Y5xo/wgnVPwKoQqgiOz23E0vmPXaA37iu5082TSSxz11
-         OBgSNYHUnDL9NHnY2O/1eCVT5xkEIS6vHlrTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q0q8gubf8krgZV8oGCJJ77Manwa2gcrwHgDVVcoIMF4=;
-        b=k4m0tQ++FHNaVWGwgQ7w2Ddf08HF9Mt6IBH9QfquH/2r5jJyj3sYQiXSxbelrgTOb+
-         Z1nV1n5YwWtZTnCfhMcGYBWeTTSUwkhuJjZSKNEw4dtSGX7LuDKwqPJA+XUwSQImbi7B
-         hSH8stHRO3eta4FoaL9ozQFAVHBq/N0J2Nl4fuT9L6xnyYhsi/r1QLto/sqUxfvfuxEC
-         LthZsbhIBwa/i2+4UfnhuMa+3Tgh/bMT9MUiDun22rSN/lf0xuxlt5XneI3+YLvhFwzj
-         mdOApobLlcR4hYQPOZ46sEYrlhr8lnK8kDzkYKbDnPB1ZZdPvJS1pPzd98ZQqp6S7kBF
-         /JAQ==
-X-Gm-Message-State: AOAM533xNamfCVwiwjWN0eUSnm2/DTKfwxyfCvSYlIwYzGZmGG5M7qmc
-        CYHj6gosi550ZtEk5u0om0weRxabTdw=
-X-Google-Smtp-Source: ABdhPJzD7If6nG1sjDWX1/pnHOwnxyv+n64Z7ClQTcxWgOO/JjVl4Z06NRy0rtJZCi55NznJClNKwQ==
-X-Received: by 2002:ac2:48a6:: with SMTP id u6mr2404776lfg.49.1592333735576;
-        Tue, 16 Jun 2020 11:55:35 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id y3sm4547970ljk.39.2020.06.16.11.55.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 11:55:34 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id q19so24896772lji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 11:55:34 -0700 (PDT)
-X-Received: by 2002:a2e:97c3:: with SMTP id m3mr2263094ljj.312.1592333733916;
- Tue, 16 Jun 2020 11:55:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200615221607.7764-1-peterx@redhat.com>
-In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 16 Jun 2020 11:55:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiTjaXHu+uxMi0xCZQOm4KVr0MucECAK=Zm4p4YZZ1XEg@mail.gmail.com>
-Message-ID: <CAHk-=wiTjaXHu+uxMi0xCZQOm4KVr0MucECAK=Zm4p4YZZ1XEg@mail.gmail.com>
-Subject: Re: [PATCH 00/25] mm: Page fault accounting cleanups
+        id S1730138AbgFPTAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgFPTAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:00:39 -0400
+Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5168D20739;
+        Tue, 16 Jun 2020 19:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592334038;
+        bh=gvebHjvAyLPJF/qhOC3nn20GbiVzxCamnFLA9V36sjs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BXJGiOY3aQLiseFicR4MV0NApUp6pohwCYcX1GZuK1mIkB1xGoNxwcl+riHA68Ec0
+         AjuxNIyHMBqrlFsynHI3k3vN2WyQY5A26O1LRvDnNpbf6RFnC3jQBleXzeD5+OlzkT
+         3vxHIxoSwRpW9enlsQWN0JYSdv8ffP/mMykOorcc=
+Date:   Tue, 16 Jun 2020 12:00:37 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
 To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        openrisc@lists.librecores.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="00000000000093703c05a8381612"
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 02/25] mm: Introduce mm_fault_accounting()
+Message-Id: <20200616120037.e96d8d9b42e615f3b8da222f@linux-foundation.org>
+In-Reply-To: <20200615231917.GA6307@xz-x1>
+References: <20200615221607.7764-1-peterx@redhat.com>
+        <20200615221607.7764-3-peterx@redhat.com>
+        <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
+        <20200615231917.GA6307@xz-x1>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000093703c05a8381612
-Content-Type: text/plain; charset="UTF-8"
+On Mon, 15 Jun 2020 19:19:17 -0400 Peter Xu <peterx@redhat.com> wrote:
 
-On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
->
-> This series tries to address all of them by introducing mm_fault_accounting()
-> first, so that we move all the page fault accounting into the common code base,
-> then call it properly from arch pf handlers just like handle_mm_fault().
+> On Mon, Jun 15, 2020 at 03:32:40PM -0700, Linus Torvalds wrote:
+> > On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > Provide this helper for doing memory page fault accounting across archs.  It
+> > > can be defined unconditionally because perf_sw_event() is always defined, and
+> > > perf_sw_event() will be a no-op if !CONFIG_PERF_EVENTS.
+> > 
+> > Well, the downside is that now it forces a separate I$ miss and all
+> > those extra arguments because it's a out-of-line function and the
+> > compiler won't see that they all go away.
+> > 
+> > Yeah, maybe some day maybe we'll have LTO and these kinds of things
+> > will not matter. And maybe they already don't. But it seems kind of
+> > sad to basically force non-optimal code generation from this series.
+> 
+> I tried to make it static inline firstly in linux/mm.h, however it'll need to
+> have linux/mm.h include linux/perf_event.h which seems to have created a loop
+> dependency of headers.  I verified current code will at least generate inlined
+> functions too for x86 (no mm_fault_accounting() in "objdump -t vmlinux") with
+> gcc10.
+> 
+> Another alternative is to make it a macro, it's just that I feel the function
+> definition is a bit cleaner.  Any further suggestions welcomed too.
 
-Hmm.
+Could create a new header file mm_fault.h which includes mm.h and
+perf_event.h.  A later cleanup could move other fault-related things
+into that header and add the appropriate inclusions into files which
+use these things.
 
-So having looked at this a bit more, I'd actually like to go even
-further, and just get rid of the per-architecture code _entirely_.
+btw, I think mm_account_fault() might be a better name for this function.
 
-Here's a straw-man patch to the generic code - the idea is mostly laid
-out in the comment that I'm just quoting here directly too:
+And some (kerneldoc) documentation would be nice.  Although this
+function is pretty self-evident.
 
-        /*
-         * Do accounting in the common code, to avoid unnecessary
-         * architecture differences or duplicated code.
-         *
-         * We arbitrarily make the rules be:
-         *
-         *  - faults that never even got here (because the address
-         *    wasn't valid). That includes arch_vma_access_permitted()
-         *    failing above.
-         *
-         *    So this is expressly not a "this many hardware page
-         *    faults" counter. Use the hw profiling for that.
-         *
-         *  - incomplete faults (ie RETRY) do not count (see above).
-         *    They will only count once completed.
-         *
-         *  - the fault counts as a "major" fault when the final
-         *    successful fault is VM_FAULT_MAJOR, or if it was a
-         *    retry (which implies that we couldn't handle it
-         *    immediately previously).
-         *
-         *  - if the fault is done for GUP, regs wil be NULL and
-         *    no accounting will be done (but you _could_ pass in
-         *    your own regs and it would be accounted to the thread
-         *    doing the fault, not to the target!)
-         */
+> > 
+> > Why would you export the symbol, btw? Page fault handling is never a module.
+> 
+> I followed handle_mm_fault() which is exported too, since potentially
+> mm_fault_accounting() should always be called in the same context of
+> handle_mm_fault().  Or do you prefer me to drop it?
 
-the code itself in the patch is
+Let's not add an unneeded export.  If someone for some reason needs it
+later, it can be added then.
 
- (a) pretty trivial and self-evident
-
- (b) INCOMPLETE
-
-that (b) is worth noting: this patch won't compile on its own. It
-intentionally leaves all the users without the new 'regs' argument,
-because you obviously simply need to remove all the code that
-currently tries to do any accounting.
-
-Comments?
-
-This is a bigger change, but I think it might be worth it to _really_
-consolidate the major/minor logic.
-
-One detail worth noting: I do wonder if we should put the
-
-    perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-
-just in the arch code at the top of the fault handling, and consider
-it entirely unrelated to the major/minor fault handling. The
-major/minor faults fundamnetally are about successes. But the plain
-PERF_COUNT_SW_PAGE_FAULTS could be about things that fail, including
-things that never even get to this point at all.
-
-I'm not convinced it's useful to have three SW events that are defined
-to be A=B+C.
-
-But this does *not* do that part. It' sreally just an RFC patch.
-
-                    Linus
-
---00000000000093703c05a8381612
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kbiacfcm0>
-X-Attachment-Id: f_kbiacfcm0
-
-IGluY2x1ZGUvbGludXgvbW0uaCB8ICAzICsrLQogbW0vbWVtb3J5LmMgICAgICAgIHwgNDYgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQogMiBmaWxlcyBjaGFu
-Z2VkLCA0NyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvbGludXgvbW0uaCBiL2luY2x1ZGUvbGludXgvbW0uaAppbmRleCBkYzdiODczMTBjMTAuLmU4
-MmE2MDQzMzljMCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tbS5oCisrKyBiL2luY2x1ZGUv
-bGludXgvbW0uaApAQCAtMTY0OCw3ICsxNjQ4LDggQEAgaW50IGludmFsaWRhdGVfaW5vZGVfcGFn
-ZShzdHJ1Y3QgcGFnZSAqcGFnZSk7CiAKICNpZmRlZiBDT05GSUdfTU1VCiBleHRlcm4gdm1fZmF1
-bHRfdCBoYW5kbGVfbW1fZmF1bHQoc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsCi0JCQl1bnNp
-Z25lZCBsb25nIGFkZHJlc3MsIHVuc2lnbmVkIGludCBmbGFncyk7CisJCQl1bnNpZ25lZCBsb25n
-IGFkZHJlc3MsIHVuc2lnbmVkIGludCBmbGFncywKKwkJCXN0cnVjdCBwdF9yZWdzICopOwogZXh0
-ZXJuIGludCBmaXh1cF91c2VyX2ZhdWx0KHN0cnVjdCB0YXNrX3N0cnVjdCAqdHNrLCBzdHJ1Y3Qg
-bW1fc3RydWN0ICptbSwKIAkJCSAgICB1bnNpZ25lZCBsb25nIGFkZHJlc3MsIHVuc2lnbmVkIGlu
-dCBmYXVsdF9mbGFncywKIAkJCSAgICBib29sICp1bmxvY2tlZCk7CmRpZmYgLS1naXQgYS9tbS9t
-ZW1vcnkuYyBiL21tL21lbW9yeS5jCmluZGV4IGRjN2YzNTQzYjFmZC4uZjE1MDU2MTUxZmIxIDEw
-MDY0NAotLS0gYS9tbS9tZW1vcnkuYworKysgYi9tbS9tZW1vcnkuYwpAQCAtNzIsNiArNzIsNyBA
-QAogI2luY2x1ZGUgPGxpbnV4L29vbS5oPgogI2luY2x1ZGUgPGxpbnV4L251bWEuaD4KIAorI2lu
-Y2x1ZGUgPGxpbnV4L3BlcmZfZXZlbnQuaD4KICNpbmNsdWRlIDx0cmFjZS9ldmVudHMva21lbS5o
-PgogCiAjaW5jbHVkZSA8YXNtL2lvLmg+CkBAIC00MzUzLDcgKzQzNTQsNyBAQCBzdGF0aWMgdm1f
-ZmF1bHRfdCBfX2hhbmRsZV9tbV9mYXVsdChzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwKICAq
-IHJldHVybiB2YWx1ZS4gIFNlZSBmaWxlbWFwX2ZhdWx0KCkgYW5kIF9fbG9ja19wYWdlX29yX3Jl
-dHJ5KCkuCiAgKi8KIHZtX2ZhdWx0X3QgaGFuZGxlX21tX2ZhdWx0KHN0cnVjdCB2bV9hcmVhX3N0
-cnVjdCAqdm1hLCB1bnNpZ25lZCBsb25nIGFkZHJlc3MsCi0JCXVuc2lnbmVkIGludCBmbGFncykK
-KwkJdW5zaWduZWQgaW50IGZsYWdzLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykKIHsKIAl2bV9mYXVs
-dF90IHJldDsKIApAQCAtNDM5NCw2ICs0Mzk1LDQ5IEBAIHZtX2ZhdWx0X3QgaGFuZGxlX21tX2Zh
-dWx0KHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hLCB1bnNpZ25lZCBsb25nIGFkZHJlc3MsCiAJ
-CQltZW1fY2dyb3VwX29vbV9zeW5jaHJvbml6ZShmYWxzZSk7CiAJfQogCisJaWYgKHJldCAmIFZN
-X0ZBVUxUX1JFVFJZKQorCQlyZXR1cm4gcmV0OworCisJLyoKKwkgKiBEbyBhY2NvdW50aW5nIGlu
-IHRoZSBjb21tb24gY29kZSwgdG8gYXZvaWQgdW5uZWNlc3NhcnkKKwkgKiBhcmNoaXRlY3R1cmUg
-ZGlmZmVyZW5jZXMgb3IgZHVwbGljYXRlZCBjb2RlLgorCSAqCisJICogV2UgYXJiaXRyYXJpbHkg
-bWFrZSB0aGUgcnVsZXMgYmU6CisJICoKKwkgKiAgLSBmYXVsdHMgdGhhdCBuZXZlciBldmVuIGdv
-dCBoZXJlIChiZWNhdXNlIHRoZSBhZGRyZXNzCisJICogICAgd2Fzbid0IHZhbGlkKS4gVGhhdCBp
-bmNsdWRlcyBhcmNoX3ZtYV9hY2Nlc3NfcGVybWl0dGVkKCkKKwkgKiAgICBmYWlsaW5nIGFib3Zl
-LgorCSAqCisJICogICAgU28gdGhpcyBpcyBleHByZXNzbHkgbm90IGEgInRoaXMgbWFueSBoYXJk
-d2FyZSBwYWdlCisJICogICAgZmF1bHRzIiBjb3VudGVyLiBVc2UgdGhlIGh3IHByb2ZpbGluZyBm
-b3IgdGhhdC4KKwkgKgorCSAqICAtIGluY29tcGxldGUgZmF1bHRzIChpZSBSRVRSWSkgZG8gbm90
-IGNvdW50IChzZWUgYWJvdmUpLgorCSAqICAgIFRoZXkgd2lsbCBvbmx5IGNvdW50IG9uY2UgY29t
-cGxldGVkLgorCSAqCisJICogIC0gdGhlIGZhdWx0IGNvdW50cyBhcyBhICJtYWpvciIgZmF1bHQg
-d2hlbiB0aGUgZmluYWwKKwkgKiAgICBzdWNjZXNzZnVsIGZhdWx0IGlzIFZNX0ZBVUxUX01BSk9S
-LCBvciBpZiBpdCB3YXMgYQorCSAqICAgIHJldHJ5ICh3aGljaCBpbXBsaWVzIHRoYXQgd2UgY291
-bGRuJ3QgaGFuZGxlIGl0CisJICogICAgaW1tZWRpYXRlbHkgcHJldmlvdXNseSkuCisJICoKKwkg
-KiAgLSBpZiB0aGUgZmF1bHQgaXMgZG9uZSBmb3IgR1VQLCByZWdzIHdpbCBiZSBOVUxMIGFuZAor
-CSAqICAgIG5vIGFjY291bnRpbmcgd2lsbCBiZSBkb25lIChidXQgeW91IF9jb3VsZF8gcGFzcyBp
-bgorCSAqICAgIHlvdXIgb3duIHJlZ3MgYW5kIGl0IHdvdWxkIGJlIGFjY291bnRlZCB0byB0aGUg
-dGhyZWFkCisJICogICAgZG9pbmcgdGhlIGZhdWx0LCBub3QgdG8gdGhlIHRhcmdldCEpCisJICov
-CisKKwlpZiAoIXJlZ3MpCisJCXJldHVybiByZXQ7CisKKwlwZXJmX3N3X2V2ZW50KFBFUkZfQ09V
-TlRfU1dfUEFHRV9GQVVMVFMsIDEsIHJlZ3MsIGFkZHJlc3MpOworCisJaWYgKChyZXQgJiBWTV9G
-QVVMVF9NQUpPUikgfHwgKGZsYWdzICYgRkFVTFRfRkxBR19UUklFRCkpIHsKKwkJY3VycmVudC0+
-bWFqX2ZsdCsrOworCQlwZXJmX3N3X2V2ZW50KFBFUkZfQ09VTlRfU1dfUEFHRV9GQVVMVFNfTUFK
-LCAxLCByZWdzLCBhZGRyZXNzKTsKKwl9IGVsc2UgeworCQljdXJyZW50LT5taW5fZmx0Kys7CisJ
-CXBlcmZfc3dfZXZlbnQoUEVSRl9DT1VOVF9TV19QQUdFX0ZBVUxUU19NSU4sIDEsIHJlZ3MsIGFk
-ZHJlc3MpOworCX0KKwogCXJldHVybiByZXQ7CiB9CiBFWFBPUlRfU1lNQk9MX0dQTChoYW5kbGVf
-bW1fZmF1bHQpOwo=
---00000000000093703c05a8381612--
