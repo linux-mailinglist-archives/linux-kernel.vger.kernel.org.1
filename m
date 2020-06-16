@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F3E1FB83F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BEB1FB6E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732723AbgFPPyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
+        id S1731420AbgFPPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732976AbgFPPyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:22 -0400
+        id S1729227AbgFPPlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF59B21527;
-        Tue, 16 Jun 2020 15:54:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FD1D208D5;
+        Tue, 16 Jun 2020 15:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322861;
-        bh=YR/fSLWDjp0B1QXPz2q4LAXzdeAvXobe2DK1zXxuYRw=;
+        s=default; t=1592322077;
+        bh=KcBtSG9xpoG4KBKN2wsFVC5ANJ63ngAtb8H3x5Iz6Dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zfU1Gy3sELiJ1rZ77uZRpWLZLmkROD2IxxX99o7gSbSTT6RwK6QGzrkmVyUKFUa/N
-         uYuf7uTnVhOvCTOen6A5Hp1i3SpD3rDkip6Jcpa046kSE/N9MZiWPG9H4yN2lq4Mfl
-         KEMgDau4KD/nQf5mlhx1h14kM+6EiwLrcrFkpO2o=
+        b=op07wFr9uFiK4u/xPYWyzm5Aa1Z0HBrj4V+6i+3n1yFV63AeFz0A4upGYW0QCNRsL
+         1zo09ioJIws9sk24J1qM4i0Y2n/TpvQRN6CmE3z0cL+KUHJg2N3jeVBr6wHLilzpDg
+         +vGu0ETVQk9+Qnm7ntjQfi3XxGeB7s88x8A0aZkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jue Wang <juew@google.com>,
-        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.6 103/161] x86/{mce,mm}: Unmap the entire page if the whole page is affected and poisoned
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 109/134] KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
 Date:   Tue, 16 Jun 2020 17:34:53 +0200
-Message-Id: <20200616153111.265371886@linuxfoundation.org>
+Message-Id: <20200616153106.007082794@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,145 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Luck <tony.luck@intel.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 17fae1294ad9d711b2c3dd0edef479d40c76a5e8 upstream.
+commit 3204be4109ad681523e3461ce64454c79278450a upstream.
 
-An interesting thing happened when a guest Linux instance took a machine
-check. The VMM unmapped the bad page from guest physical space and
-passed the machine check to the guest.
+AArch32 CP1x registers are overlayed on their AArch64 counterparts
+in the vcpu struct. This leads to an interesting problem as they
+are stored in their CPU-local format, and thus a CP1x register
+doesn't "hit" the lower 32bit portion of the AArch64 register on
+a BE host.
 
-Linux took all the normal actions to offline the page from the process
-that was using it. But then guest Linux crashed because it said there
-was a second machine check inside the kernel with this stack trace:
+To workaround this unfortunate situation, introduce a bias trick
+in the vcpu_cp1x() accessors which picks the correct half of the
+64bit register.
 
-do_memory_failure
-    set_mce_nospec
-         set_memory_uc
-              _set_memory_uc
-                   change_page_attr_set_clr
-                        cpa_flush
-                             clflush_cache_range_opt
-
-This was odd, because a CLFLUSH instruction shouldn't raise a machine
-check (it isn't consuming the data). Further investigation showed that
-the VMM had passed in another machine check because is appeared that the
-guest was accessing the bad page.
-
-Fix is to check the scope of the poison by checking the MCi_MISC register.
-If the entire page is affected, then unmap the page. If only part of the
-page is affected, then mark the page as uncacheable.
-
-This assumes that VMMs will do the logical thing and pass in the "whole
-page scope" via the MCi_MISC register (since they unmapped the entire
-page).
-
-  [ bp: Adjust to x86/entry changes. ]
-
-Fixes: 284ce4011ba6 ("x86/memory_failure: Introduce {set, clear}_mce_nospec()")
-Reported-by: Jue Wang <juew@google.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Jue Wang <juew@google.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200520163546.GA7977@agluck-desk2.amr.corp.intel.com
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Tested-by: James Morse <james.morse@arm.com>
+Acked-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/set_memory.h |   19 +++++++++++++------
- arch/x86/kernel/cpu/mce/core.c    |   11 +++++++++--
- include/linux/set_memory.h        |    2 +-
- 3 files changed, 23 insertions(+), 9 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/set_memory.h
-+++ b/arch/x86/include/asm/set_memory.h
-@@ -83,28 +83,35 @@ int set_direct_map_default_noflush(struc
- extern int kernel_set_to_readonly;
- 
- #ifdef CONFIG_X86_64
--static inline int set_mce_nospec(unsigned long pfn)
-+/*
-+ * Prevent speculative access to the page by either unmapping
-+ * it (if we do not require access to any part of the page) or
-+ * marking it uncacheable (if we want to try to retrieve data
-+ * from non-poisoned lines in the page).
-+ */
-+static inline int set_mce_nospec(unsigned long pfn, bool unmap)
- {
- 	unsigned long decoy_addr;
- 	int rc;
- 
- 	/*
--	 * Mark the linear address as UC to make sure we don't log more
--	 * errors because of speculative access to the page.
- 	 * We would like to just call:
--	 *      set_memory_uc((unsigned long)pfn_to_kaddr(pfn), 1);
-+	 *      set_memory_XX((unsigned long)pfn_to_kaddr(pfn), 1);
- 	 * but doing that would radically increase the odds of a
- 	 * speculative access to the poison page because we'd have
- 	 * the virtual address of the kernel 1:1 mapping sitting
- 	 * around in registers.
- 	 * Instead we get tricky.  We create a non-canonical address
- 	 * that looks just like the one we want, but has bit 63 flipped.
--	 * This relies on set_memory_uc() properly sanitizing any __pa()
-+	 * This relies on set_memory_XX() properly sanitizing any __pa()
- 	 * results with __PHYSICAL_MASK or PTE_PFN_MASK.
- 	 */
- 	decoy_addr = (pfn << PAGE_SHIFT) + (PAGE_OFFSET ^ BIT(63));
- 
--	rc = set_memory_uc(decoy_addr, 1);
-+	if (unmap)
-+		rc = set_memory_np(decoy_addr, 1);
-+	else
-+		rc = set_memory_uc(decoy_addr, 1);
- 	if (rc)
- 		pr_warn("Could not invalidate pfn=0x%lx from 1:1 map\n", pfn);
- 	return rc;
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -527,6 +527,13 @@ bool mce_is_memory_error(struct mce *m)
- }
- EXPORT_SYMBOL_GPL(mce_is_memory_error);
- 
-+static bool whole_page(struct mce *m)
-+{
-+	if (!mca_cfg.ser || !(m->status & MCI_STATUS_MISCV))
-+		return true;
-+	return MCI_MISC_ADDR_LSB(m->misc) >= PAGE_SHIFT;
-+}
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -392,8 +392,10 @@ void vcpu_write_sys_reg(struct kvm_vcpu
+  * CP14 and CP15 live in the same array, as they are backed by the
+  * same system registers.
+  */
+-#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
+-#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
++#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
 +
- bool mce_is_correctable(struct mce *m)
- {
- 	if (m->cpuvendor == X86_VENDOR_AMD && m->status & MCI_STATUS_DEFERRED)
-@@ -598,7 +605,7 @@ static int uc_decode_notifier(struct not
++#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
++#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
  
- 	pfn = mce->addr >> PAGE_SHIFT;
- 	if (!memory_failure(pfn, 0))
--		set_mce_nospec(pfn);
-+		set_mce_nospec(pfn, whole_page(mce));
- 
- 	return NOTIFY_OK;
- }
-@@ -1096,7 +1103,7 @@ static int do_memory_failure(struct mce
- 	if (ret)
- 		pr_err("Memory error not recovered");
- 	else
--		set_mce_nospec(m->addr >> PAGE_SHIFT);
-+		set_mce_nospec(m->addr >> PAGE_SHIFT, whole_page(m));
- 	return ret;
- }
- 
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -26,7 +26,7 @@ static inline int set_direct_map_default
- #endif
- 
- #ifndef set_mce_nospec
--static inline int set_mce_nospec(unsigned long pfn)
-+static inline int set_mce_nospec(unsigned long pfn, bool unmap)
- {
- 	return 0;
- }
+ struct kvm_vm_stat {
+ 	ulong remote_tlb_flush;
 
 
