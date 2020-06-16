@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C8A1FA64E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83471FA646
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgFPCKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:10:21 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:39738 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgFPCKV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:10:21 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1224EF9;
-        Tue, 16 Jun 2020 04:10:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1592273419;
-        bh=AcTUj0kR0QEuHzxBF4e7RX1bAoFLoeUE1yAmNqDbdgM=;
+        id S1726700AbgFPCGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 22:06:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726414AbgFPCGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 22:06:07 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CFDE2071A;
+        Tue, 16 Jun 2020 02:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592273166;
+        bh=Gidjz2z413BnEyhZQWUEtTYIY1LtOHmUnhXr+gU3mQQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I/hKs8fZ1G/O+P7tUaHHzKrkVeP1NsoWaS8rX8UR2SQMKCbeY5pddtHXoymJhgvrm
-         D7esNu/1aT7mmPKo2+r/WgSfjf2wdRaj77uFp8pOZwYrPzt7D1TCPunXLdtuSsLB/4
-         u3kU2141L0BDmbVxj8BfbjGZKRMXbELiU+ljJ6vY=
-Date:   Tue, 16 Jun 2020 05:09:56 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     wu000273@umn.edu
-Cc:     kjlu@umn.edu,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: vsp1: Fix a reference count leak.
-Message-ID: <20200616020956.GL1629@pendragon.ideasonboard.com>
-References: <20200613232357.18155-1-wu000273@umn.edu>
- <20200616020732.GK1629@pendragon.ideasonboard.com>
+        b=aIXJ9QSTWXOIDT5DKeikMaFmDuKcapcRJd6o2Gq9Gj7RNCD4PHKf11UOPTa0MqmlB
+         X9VXuDPd/WT7JY0catw6qiw7eOZ8k+PJ3ymhIBy6qbMZcsE6QC1qYGfjnc6YV5rIty
+         ZoiXgWecJakQ2oz1ChwRZCh5Wld6trGBD6kjUvV0=
+Date:   Mon, 15 Jun 2020 21:11:26 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] flexible-array member conversion patches for 5.8-rc2
+Message-ID: <20200616021126.GK10051@embeddedor>
+References: <20200615203917.GA15876@embeddedor>
+ <CAHk-=wiSQV3nxTkQwO55qaLsW9CdkROFqwc1S6RX3PXe8ONPaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616020732.GK1629@pendragon.ideasonboard.com>
+In-Reply-To: <CAHk-=wiSQV3nxTkQwO55qaLsW9CdkROFqwc1S6RX3PXe8ONPaQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 05:07:34AM +0300, Laurent Pinchart wrote:
-> Hi Qiushi,
+On Mon, Jun 15, 2020 at 04:07:28PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 15, 2020 at 1:34 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> >
+> > flexible-array member conversion patches for 5.8-rc2
 > 
-> (CC'ing Rafael and Geert)
+> Gaah. I merged this, and even spent some time trying to make the merge
+> message look better, and then when I started looking at the end
+> result, I ended up unpulling it.
 > 
-> Thank you for the patch.
+> It's all been recently rebased, which I might be willing to ignore for
+> something like this, but all these one-liner patches then come with a
+> boiler-plate commit message that is something like 50 lines long and
+> is actively misleading as it talks about "this tree-wide patch" and
+> just repeats the generic issues that were presented (better) in the
+> merge message anyway.
 > 
-> On Sat, Jun 13, 2020 at 06:23:57PM -0500, wu000273@umn.edu wrote:
-> > From: Qiushi Wu <wu000273@umn.edu>
-> > 
-> > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > when it returns an error code, causing incorrect ref count if
-> > pm_runtime_put_noidle() is not called in error handling paths.
-> > Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
-> > 
-> > Fixes: 1e6af546ee66 ("[media] v4l: vsp1: Implement runtime PM support")
-> > Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+> The individual commit messages literally add nothing specific to that
+> commit AT ALL except for the very first line, which is also
+> boiler-plate but at least mentions the subsystem.
 > 
-> https://lore.kernel.org/dri-devel/20200614134655.GA5960@pendragon.ideasonboard.com/
+> End result: when I do "git log" after having merged this, the result
+> is basically two *thousand* lines of repeated noise.
 > 
-> I really wonder if mass-patching all drivers is the best way forward.
+> Some repetition is fine. But 2000 lines of repeated boiler-plate makes
+> me go "that's actively detrimental to any use of 'git log'" and I
+> undid my pull.
+> 
 
-Also,
+Yep, you're right. We made the mistake of not having something to point
+people to, from the beginning; which we are trying to fix by adding the
+following documentation to deprecated.rst:
 
-https://lore.kernel.org/linux-media/20200608052919.4984-1-dinghao.liu@zju.edu.cn/
+https://lore.kernel.org/lkml/20200608213711.GA22271@embeddedor/
 
-> > ---
-> >  drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-> > index c650e45bb0ad..222c9e1261a0 100644
-> > --- a/drivers/media/platform/vsp1/vsp1_drv.c
-> > +++ b/drivers/media/platform/vsp1/vsp1_drv.c
-> > @@ -846,8 +846,10 @@ static int vsp1_probe(struct platform_device *pdev)
-> >  	pm_runtime_enable(&pdev->dev);
-> >  
-> >  	ret = pm_runtime_get_sync(&pdev->dev);
-> > -	if (ret < 0)
-> > +	if (ret < 0) {
-> > +		pm_runtime_put_noidle(&pdev->dev);
-> >  		goto done;
-> > +	}
-> >  
-> >  	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
-> >  	pm_runtime_put_sync(&pdev->dev);
+That's the reason why the log for these sorts of patches ended up being
+so repetitive: as a way to compensate for not having proper documentation
+in place from the beginning.
 
--- 
-Regards,
+And yes, it was my mistake not to remove part of the log from the changelog
+text when I turned the treewide patch into separate per-subsystem patches
+--for they to be properly tested by the 0-day CI Kernel Test Service.
 
-Laurent Pinchart
+I will modify the changelog text of the separate patches and send you the
+pull-request once again.
+
+BTW, the commit message is the exact same text we are planning to add to
+the deprecated.rst file, which will be used for both zero-length and
+one-element array conversions. It might be better to to remove the part
+for the one-element arrays, in this case.
+
+Thanks
+--
+Gustavo
