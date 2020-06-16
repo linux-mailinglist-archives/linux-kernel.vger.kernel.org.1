@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604751FB7F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D26E1FB694
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgFPPv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47452 "EHLO mail.kernel.org"
+        id S1730701AbgFPPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732647AbgFPPvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:07 -0400
+        id S1730676AbgFPPic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE42C208D5;
-        Tue, 16 Jun 2020 15:51:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7643E214F1;
+        Tue, 16 Jun 2020 15:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322666;
-        bh=NK+Mdaa2CdV53w/hhIbdJph8kk03NSGYr1vH+bpcorg=;
+        s=default; t=1592321912;
+        bh=S6WExwVSGNJ/dpy97J+ZO2L8QMT/TxVuJmTZabPgTMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=onJZ92jWT5FOUaomUz/CSd6PaZXGsoUpe1raWVpSa1x/dlUQUmyQfp9EsgnJn0l7C
-         0xN3b0eUz+wcF0iUDimhQrIDAlmBkuAHyzdivxOGY6IgXxAukaXQHrf86IdSmZbJu/
-         e3XBk2T8Pccmq0/8bsRaebHMgfdq1CM/QTQv4qe4=
+        b=ZeihOGU6e8DKdhoteihN+yKKf7ibHCEXt3Xy/EqChU3iteItoEnn8bE4LpLu779y7
+         nQt9PT+jw5zXqsy0giW24GlZCHDsEbT0/cyf7h/IgfQXd8mi7DO6IbsoJLJFhmJtzH
+         QYAvGu3FBKRR8MxX4wNppgcXKvSdSqUUO9y2Cf50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Upton <oupton@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 056/161] KVM: x86: allow KVM_STATE_NESTED_MTF_PENDING in kvm_state flags
-Date:   Tue, 16 Jun 2020 17:34:06 +0200
-Message-Id: <20200616153109.048029394@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 063/134] ACPI: CPPC: Fix reference count leak in acpi_cppc_processor_probe()
+Date:   Tue, 16 Jun 2020 17:34:07 +0200
+Message-Id: <20200616153103.789300486@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-commit df2a69af85bef169ab6810cc57f6b6b943941e7e upstream.
+commit 4d8be4bc94f74bb7d096e1c2e44457b530d5a170 upstream.
 
-The migration functionality was left incomplete in commit 5ef8acbdd687
-("KVM: nVMX: Emulate MTF when performing instruction emulation", 2020-02-23),
-fix it.
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-Fixes: 5ef8acbdd687 ("KVM: nVMX: Emulate MTF when performing instruction emulation")
-Cc: stable@vger.kernel.org
-Reviewed-by: Oliver Upton <oupton@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/x86.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/cppc_acpi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4568,7 +4568,7 @@ long kvm_arch_vcpu_ioctl(struct file *fi
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -865,6 +865,7 @@ int acpi_cppc_processor_probe(struct acp
+ 			"acpi_cppc");
+ 	if (ret) {
+ 		per_cpu(cpc_desc_ptr, pr->id) = NULL;
++		kobject_put(&cpc_ptr->kobj);
+ 		goto out_free;
+ 	}
  
- 		if (kvm_state.flags &
- 		    ~(KVM_STATE_NESTED_RUN_PENDING | KVM_STATE_NESTED_GUEST_MODE
--		      | KVM_STATE_NESTED_EVMCS))
-+		      | KVM_STATE_NESTED_EVMCS | KVM_STATE_NESTED_MTF_PENDING))
- 			break;
- 
- 		/* nested_run_pending implies guest_mode.  */
 
 
