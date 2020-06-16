@@ -2,58 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317801FAAAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6791FAAB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgFPIDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgFPIDK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:03:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F839C05BD43
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3LeCba4mbLZy+8I9XCqALq/Zp+vARf9z2EXRoJnbONI=; b=BwHS5FnObgRQYIAoHrlje2lgKV
-        VhlBTVM91Sy5Y12v3ohFP/7/D++XECwPyx02Nua4pH6XzzD2Uq7NQKjGa/m2p2UplmGPR6TBXHkKY
-        wM0l3PtKi9EHTEbTTEkcNfXhZfJVkh/DKw6IevygP/Duflz39LXHSiPGwPktPVoWOsCrapsOrPRc1
-        U+24EJztR0moL5xvvG2oDIXnlaANw0C66lJQn+jOUTjsgh27mHrhEFPee3TLmWA+rEIqVXLwXpSPD
-        bB0ZJn/IPTSPf0zw/v8gwNs8FrtDsgWidh3IVJhYBWJhyUT3LSmhewi1TrUA5MULaY1GoW7ZYdihr
-        odeBdVjw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jl6Yn-0004oG-VA; Tue, 16 Jun 2020 08:03:09 +0000
-Date:   Tue, 16 Jun 2020 01:03:09 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, frederic@kernel.org,
-        mtosatti@redhat.com, sassmann@redhat.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com
-Subject: Re: [Patch v1] i40e: limit the msix vectors based on housekeeping
- CPUs
-Message-ID: <20200616080309.GA21210@infradead.org>
-References: <20200615202125.27831-1-nitesh@redhat.com>
- <20200615202125.27831-2-nitesh@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615202125.27831-2-nitesh@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727029AbgFPIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgFPIFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:05:19 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 276DE2074D;
+        Tue, 16 Jun 2020 08:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592294719;
+        bh=xS1bz/I8TuJWQXl/b8r7l6ZWj5h9r7ECmLDtJ9PzSgk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yeo3WK8ZeBdlZV9PyIT6cPW7zKJnQqiFsHfXXJpyg6SBIy5CQRba96zgytf1wqKtx
+         /xNL0V4FTR+y5pUniIQJBR9d3mH+vK1NvVY0sYgJVyrV/5M+pA6zQSE6OCt5MJpP9T
+         eR5PS3LXBKW9KQaENu4vnHy0n3wyLJYHJdt64VBE=
+Date:   Tue, 16 Jun 2020 17:05:16 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] proc/bootconfig: Fix to use correct quotes for
+ value
+Message-Id: <20200616170516.927d75bd98237466339fca33@kernel.org>
+In-Reply-To: <20200615151139.5cc223fc@oasis.local.home>
+References: <159197538852.80267.10091816844311950396.stgit@devnote2>
+        <159197539793.80267.10836787284189465765.stgit@devnote2>
+        <20200615151139.5cc223fc@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 04:21:25PM -0400, Nitesh Narayan Lal wrote:
-> +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_WQ;
-> +	mask = housekeeping_cpumask(hk_flags);
-> +	cpus = cpumask_weight(mask);
+On Mon, 15 Jun 2020 15:11:39 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Code like this has no business inside a driver.  Please provide a
-proper core API for it instead.  Also please wire up
-pci_alloc_irq_vectors* to use this API as well.
+> On Sat, 13 Jun 2020 00:23:18 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > Fix /proc/bootconfig to show the correctly choose the
+> > double or single quotes according to the value.
+> > 
+> > If a bootconfig value includes a double quote character,
+> > we must use single-quotes to quote that value.
+> > 
+> > Fixes: c1a3c36017d4 ("proc: bootconfig: Add /proc/bootconfig to show boot config list")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  fs/proc/bootconfig.c |   13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> > index 9955d75c0585..930d1dae33eb 100644
+> > --- a/fs/proc/bootconfig.c
+> > +++ b/fs/proc/bootconfig.c
+> > @@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> >  {
+> >  	struct xbc_node *leaf, *vnode;
+> >  	const char *val;
+> > +	char q;
+> >  	char *key, *end = dst + size;
+> >  	int ret = 0;
+> 
+> Hmm, shouldn't the above have the upside-down xmas tree format?
+> 
+> 	struct xbc_node *leaf, *vnode;
+> 	char *key, *end = dst + size;
+> 	const char *val;
+> 	char q;
+> 	int ret = 0;
+> 
+> 
+> Looks a little better that way. But anyway, more meat below.
+
+OK.
+
+> 
+> >  
+> > @@ -41,16 +42,20 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> >  			break;
+> >  		dst += ret;
+> >  		vnode = xbc_node_get_child(leaf);
+> > -		if (vnode && xbc_node_is_array(vnode)) {
+> > +		if (vnode) {
+> >  			xbc_array_for_each_value(vnode, val) {
+> > -				ret = snprintf(dst, rest(dst, end), "\"%s\"%s",
+> > -					val, vnode->next ? ", " : "\n");
+> 
+> The above is a functional change that is not described in the change
+> log.
+> 
+> You use to have:
+> 
+> 	if (vnode && xbc_node_is_array(vnode)) {
+> 		xbc_array_for_each_value() {
+> 			[..]
+> 		}
+> 	} else {
+> 		[..]
+> 	}
+> 
+> And now have:
+> 
+> 	if (vnode) {
+> 		xbc_array_for_each_value() {
+> 			[..]
+> 		}
+> 	} else {
+> 		[..]
+> 	}
+> 
+> Is "vnode" equivalent to "vnode && xbc_node_is_array(vnode)" ?
+
+No, it's not. But actually, the above change is equivalent, because
+xbc_array_for_each_value() can handle the vnode has no "next" member.
+(the array means just "a list of value node")
+
+Thus,
+
+if (vnode && xbc_node_is_array(vnode)) {
+	xbc_array_for_each_value(vnode)	/* vnode->next != NULL */
+		...
+} else {
+	snprintf(val); /* val is an empty string if !vnode */
+}
+
+is equivalent to 
+
+if (vnode) {
+	xbc_array_for_each_value(vnode)	/* vnode->next can be NULL */
+		...
+} else {
+	snprintf("");
+}
+
+> 
+> Why was this change made? It seems out of scope with the change log?
+
+Because I want to avoid checking double-quote in each value in 2 places.
+If we don't change the if() code, we need 
+
+	if (strchr(val, '"'))
+		q = '\'';
+	else
+		q = '"';
+
+this in 2 places.
+
+Anyway, I'll add it in the patch comment.
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> > +				if (strchr(val, '"'))
+> > +					q = '\'';
+> > +				else
+> > +					q = '"';
+> > +				ret = snprintf(dst, rest(dst, end), "%c%s%c%s",
+> > +					q, val, q, vnode->next ? ", " : "\n");
+> >  				if (ret < 0)
+> >  					goto out;
+> >  				dst += ret;
+> >  			}
+> >  		} else {
+> > -			ret = snprintf(dst, rest(dst, end), "\"%s\"\n", val);
+> > +			ret = snprintf(dst, rest(dst, end), "\"\"\n");
+> >  			if (ret < 0)
+> >  				break;
+> >  			dst += ret;
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
