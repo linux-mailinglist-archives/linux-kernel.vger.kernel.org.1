@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FCF1FBA29
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3D11FBA21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732638AbgFPQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:09:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36470 "EHLO mail.kernel.org"
+        id S1730234AbgFPPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732075AbgFPPpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:16 -0400
+        id S1731659AbgFPPp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAC982071A;
-        Tue, 16 Jun 2020 15:45:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62F2D2071A;
+        Tue, 16 Jun 2020 15:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322316;
-        bh=0JERohV4x/Bj7qeK8SMYNWYmz3BUXkYI0JZHeSB8q1g=;
+        s=default; t=1592322327;
+        bh=jRX2BqKsnp6TD45Yoi2jMgpDW11Cawk4jDLNyN7IzcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ym0j7mxC534CRlDoVwal6hMu8Jo+Kii0TPlVPxR86jkVyrK2W9brVgLjHnInS/pOY
-         jX322jd31qhJrlg9cPsb5qGAz4ChCxcSOqS7dTX5LafheOof/ffNPmNw/rRz/Ux4Ya
-         RpnRJL7iAc13uUrpGydYFuDVJt+JOqLPGUWcbTlg=
+        b=cQzwkOi2GRDro2pIWVkcz8ovWrNgTAvWS21S8CR0FXXXCKwR1qQWjrGwFTRLlr/gz
+         11luO0w0rtxtr5oDTZuco9HwP585zuAL9iHjrxRQpAtGNAimaaGHMLZp9BotLujYpU
+         Om68cRY9PixtveflA3udzCpW7cFhr8NiLp9SJMGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.7 057/163] efi/efivars: Add missing kobject_put() in sysfs entry creation error path
-Date:   Tue, 16 Jun 2020 17:33:51 +0200
-Message-Id: <20200616153109.579761829@linuxfoundation.org>
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>
+Subject: [PATCH 5.7 058/163] smb3: fix incorrect number of credits when ioctl MaxOutputResponse > 64K
+Date:   Tue, 16 Jun 2020 17:33:52 +0200
+Message-Id: <20200616153109.627967037@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
 References: <20200616153106.849127260@linuxfoundation.org>
@@ -44,36 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Steve French <stfrench@microsoft.com>
 
-commit d8bd8c6e2cfab8b78b537715255be8d7557791c0 upstream.
+commit e80ddeb2f70ebd0786aa7cdba3e58bc931fa0bb5 upstream.
 
-The documentation provided by kobject_init_and_add() clearly spells out
-the need to call kobject_put() on the kobject if an error is returned.
-Add this missing call to the error path.
+We were not checking to see if ioctl requests asked for more than
+64K (ie when CIFSMaxBufSize was > 64K) so when setting larger
+CIFSMaxBufSize then ioctls would fail with invalid parameter errors.
+When requests ask for more than 64K in MaxOutputResponse then we
+need to ask for more than 1 credit.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: 亿一 <teroincn@gmail.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/efivars.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/cifs/smb2pdu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/efivars.c
-+++ b/drivers/firmware/efi/efivars.c
-@@ -522,8 +522,10 @@ efivar_create_sysfs_entry(struct efivar_
- 	ret = kobject_init_and_add(&new_var->kobj, &efivar_ktype,
- 				   NULL, "%s", short_name);
- 	kfree(short_name);
--	if (ret)
-+	if (ret) {
-+		kobject_put(&new_var->kobj);
- 		return ret;
-+	}
- 
- 	kobject_uevent(&new_var->kobj, KOBJ_ADD);
- 	if (efivar_entry_add(new_var, &efivar_sysfs_list)) {
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -2922,7 +2922,7 @@ SMB2_ioctl_init(struct cifs_tcon *tcon,
+ 	 * response size smaller.
+ 	 */
+ 	req->MaxOutputResponse = cpu_to_le32(max_response_size);
+-
++	req->sync_hdr.CreditCharge = cpu_to_le16(DIV_ROUND_UP(max_response_size, SMB2_MAX_BUFFER_SIZE));
+ 	if (is_fsctl)
+ 		req->Flags = cpu_to_le32(SMB2_0_IOCTL_IS_FSCTL);
+ 	else
 
 
