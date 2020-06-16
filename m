@@ -2,162 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43511FA562
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9B51FA573
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgFPBHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 21:07:50 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:21871 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgFPBHt (ORCPT
+        id S1726771AbgFPBNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 21:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgFPBNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 21:07:49 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200616010746epoutp0461502f2443a6c19f6cad6c9865740ba4~Y4NNWwa6_2254222542epoutp04v
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:07:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200616010746epoutp0461502f2443a6c19f6cad6c9865740ba4~Y4NNWwa6_2254222542epoutp04v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592269666;
-        bh=gnY88RXOssvH5Xww17ErLswdrAfp00DoI8np6JeQBP8=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ZKwZ/ZSUVspFfwwzAi713C12OqiW+Cgqz8oPM5CBTl9C31U6eAvosaqU5+X5LeNN3
-         SNt0Mhs9W2vszvRpgfqXXsP+j+rrxivr70JUye0m4GNXjhq2wE5mlcKrAqyZDVCqee
-         4fgwkR6tp1+ZgbkIPgpsrE+AzJt5yz2C9Ycbim3c=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200616010745epcas1p4647c4e2c103bb2a0f75f04a7ebb33d5d~Y4NMGTenh1149011490epcas1p4B;
-        Tue, 16 Jun 2020 01:07:45 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 49m96R35ZHzMqYlt; Tue, 16 Jun
-        2020 01:07:43 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        02.30.28581.F5B18EE5; Tue, 16 Jun 2020 10:07:43 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200616010742epcas1p2b477f89fb10453e26d1f66744cc3ff4e~Y4NJ9SDyA0868708687epcas1p24;
-        Tue, 16 Jun 2020 01:07:42 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200616010742epsmtrp206a398268b6ee10f5a027e331d45f31d~Y4NJ7y7GB2348323483epsmtrp2d;
-        Tue, 16 Jun 2020 01:07:42 +0000 (GMT)
-X-AuditID: b6c32a38-2e3ff70000006fa5-29-5ee81b5f1d8d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        18.91.08382.E5B18EE5; Tue, 16 Jun 2020 10:07:42 +0900 (KST)
-Received: from [10.113.221.211] (unknown [10.113.221.211]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200616010742epsmtip17295d77c48794ab76c150fbe260e959a~Y4NJmFhWK0736907369epsmtip1q;
-        Tue, 16 Jun 2020 01:07:42 +0000 (GMT)
-Subject: Re: [PATCH v2] drm/exynos: fix ref count leak in mic_pre_enable
-To:     Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu,
-        mccamant@cs.umn.edu
-From:   Inki Dae <inki.dae@samsung.com>
-Message-ID: <ece0b0bb-43d6-0e8e-3fcd-280dac6cd07f@samsung.com>
-Date:   Tue, 16 Jun 2020 10:13:23 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.9.0
+        Mon, 15 Jun 2020 21:13:44 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAB5C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:13:43 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w3so17727794qkb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=024dD2jIH4hLayUKB47VJpIZ1P0Ce1ME3zobZlALpg0=;
+        b=eHORBFoYoNU83sNEYcY+XUxSiwKnmb5b/fsiilJ6BebrlKJIbyx3WJTQpoiU39ZIQ3
+         GVnvonReFLnCnRrDryi5seZIOgvzg4a5Vyq0RbxcR7b1hAsUOHlJAoHPR3tqKT2b58lR
+         7Od2r+/KogPl0UumuCYgrylkZ0FvZwE5UDgQ9cWAokzixkdOuVkqaJs0HxsO8reecqnZ
+         jxlhtMDmcZpYKH8NBsk5Q16LWig5MGwPjIT6ZKfWnYt9dGzPYYAE2Ih8pCg81TRBq+80
+         aLpEupJZm0v3mAEowfmCsxwvLAkPTlvvhiP1pusx3eiEDDWh0/3nn3oSytViLKL6MENf
+         fWLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=024dD2jIH4hLayUKB47VJpIZ1P0Ce1ME3zobZlALpg0=;
+        b=ihz9IL35FXZUsqizWU+ZVPYEAySVPtA+5NsukHUwWNEf6lnMofA7s1fanpG7P2nmYV
+         DvbuPCKeTsnhc/nFLfVX2NnjYPNwIy49YYwPUNCB70tQd6C5fp0Njceb1IZ0FWwOq7q0
+         pq6yHQgl/PQY0Cl0WBiEqLxtPztZLhEfLEkle/BiWvodKSlHae+34Ulf19NOM7CD9u0g
+         SIVTs3CoiMua9yHq1zz51/2FuCnBPzjOpabABjXo74y/772vm6cC7nxCKFfGKMiXMysH
+         SUPIGoxbpxzLXvG0UwUhBkIcdj3GgGkTwd9Q9dLEVR2mCjlLMIbcJfZBdPui4VxjX0bu
+         S9kw==
+X-Gm-Message-State: AOAM533RNMCip/MP1y3QNCuldPhRRtVhIMwh0Ij1GmmAyzlWkIhCjrer
+        OKwt2neyiN7/Vp5TNesg3j0+/Q==
+X-Google-Smtp-Source: ABdhPJx8ravJnneVtPFjNhElXFNwpErAR7OClp8m2nqdpnFKDs4ETjFXELCr+HAhH5xXxM+yUOudbA==
+X-Received: by 2002:a37:aac4:: with SMTP id t187mr16433579qke.263.1592270022142;
+        Mon, 15 Jun 2020 18:13:42 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id v14sm14355907qtj.31.2020.06.15.18.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 18:13:41 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 21:13:34 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: linux-next: not-present page at swap_vma_readahead()
+Message-ID: <20200616011334.GA815@lca.pw>
+References: <62A0ACFC-E023-4269-8121-F96B879A8C51@lca.pw>
+ <81F06AA9-F25B-4342-9CF7-2763AC394A18@lca.pw>
+ <874ktl1p7y.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200615054928.55188-1-navid.emamdoost@gmail.com>
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUwTZxzOe9deryTdjvr1Wpnisf0BC5RC6w7Hh4mEnOIS1Iw4k7UccKGM
-        0nZtYTgxKzIY1iEUguOjTNhQsDLmmEMgMEJFWmSCDnECA9xgCJsTUwL7wLm1Hmb89/ye93ne
-        3+95P3BU/CMmwdO1JtagZTQk5sNruxYoDVZtm1eG3mjcTBUPDSDUv21WlLqzvIhRc3mf8Kn5
-        qds8qmTmN5RyfXpTQA0PXxZQN08+FFCtM3f51EinDaMqh79FKMsXhShVPNCOUpXlCxhVfD0P
-        20PQN8x1GN29UsejO6onBXSr/RRGX125z6enTzsR+uuGD+gzV+yAHq0/KaCXWrcn+BzNiFSz
-        TCpr8Ge1KbrUdG1aFBl/WLVXpdgVKguWRVCvkf5aJpONImMPJATHpWs8WUj/bEaT5aESGKOR
-        lEZHGnRZJtZfrTOaokhWn6rRR+hDjEymMUubFpKiy9wtCw0NU3iESRnqqnoXph/Bc7rKQszA
-        LLAAIQ4JOXR9NYpZgA8uJtoBtHQVoFzhBnC0dhThihUAf+q0os8tY/XjAm6hG8CRMdeaZRHA
-        ttOFwAJwfANBwyZrnJffSLhQWDc0j3l5lNgHS8ck3o0w4hVobZrGvFhERMO+fCvfi3kefrVz
-        HvXKNxFH4OAyw0l84UDVLM+LhUQM7KsoRLwYJbbA8dlza3gHzP+m5tk4kHiMw6GuKoQbOhYW
-        OSb4HN4Af3VeWcsvgUuPujHOkA+gtXIQ4YoiACdnfuBxqnDYc74c4QIEwi87pRy9E3as1gKu
-        8wvw0fLHfK8EEiJYVCjmJCTsv30PcBjCWw1WjMM0fHjNCUrBzup12arX5alel6f6/8Z1gGcH
-        m1m9MTONNcr08vWX3QqePfMgqh3U/v44xAEQHDgAxFFyo8ix44FSLEpljr3PGnQqQ5aGNTqA
-        wnPYVlSyKUXn+Sdak0qmCAsPD6fksl0KmYzcIhrYfUspJtIYE5vBsnrW8NyH4EKJGal4/dS0
-        223r4JccTV+dK/9MWqaPnPW9jEuPm5VnzwUMKbJ9p2xPerfmZvf1y/8Oak65OFFxX9EQs3gx
-        +sBCQO4Z0Phyc8KFooncnPP3TvxpGxk0Px2nhS5Gqc5x5jW1NB1yz02/uV2UxIjI9wjmSM9f
-        5ruHWsylNWxWy5TToFK/8fNHmQVuYunOO2yeXECWJMe0fj9x1t9UOtofL8e6tj251Ft7nZCK
-        0T3i5kuJlD0jYGtQTahwQS558dgffquHk37peSsq8WniP5P2Asl4cuN3yrer4l6yhxWX7bsa
-        m3xw4PPjZSd6X1U21NYc/NAtjV951684cK8tgj9se2C6IPTbT/KMakYWhBqMzH/HoD6fbwQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsWy7bCSnG6c9Is4g95duha9504yWfzfNpHZ
-        4srX92wWzxqns1q8uHeRxaL/8WtmixPzzrJbnD+/gd3ibNMbdotNj6+xWlzeNYfNYsb5fUwW
-        XWvbmC16T+5gtpgx+SWbRe/RRjYHAY9TDQvYPPZ+W8DisXPWXXaPTas62Ty2f3vA6nG/+ziT
-        x+Yl9R59W1Yxelxd2MTu8XmTXABXFJdNSmpOZllqkb5dAlfGzIUn2Aouc1TsmaTXwNjA3sXI
-        ySEhYCJxc+EtMFtIYDejxNR39V2MHEBxCYktWzkgTGGJw4eLuxi5gCreMkrc+v+GDSQuLOAh
-        sWKiG0hcROAUs8S27U+YQOLMAp4SE25KQdQfZ5TYuOY6E8h4NgFViYkr7rOB2LwCdhJHmiey
-        gtgsQPHfu14wg9iiAhESz7ffYISoEZQ4OfMJC4jNKWAvcWRqG9gcZgF1iT/zLjFD2OISt57M
-        h4rLSzRvnc08gVFoFpL2WUhaZiFpmYWkZQEjyypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k
-        /NxNjODI1dLcwbh91Qe9Q4xMHIyHGCU4mJVEeA/JP48T4k1JrKxKLcqPLyrNSS0+xCjNwaIk
-        znujcGGckEB6YklqdmpqQWoRTJaJg1Oqgelwc79WR0baCnadj6Hp6uee/+i7961m9qVwhbfM
-        KTve777LdPjvt6InQd9+6C58LFXg8uHPJebweJ9k5WdNz/6fVL34LHfzj7Dlbg3y/It0z6T9
-        v3LJw1FRbHmvScm7qQ8Tn24J4jRYHjpxMhdDjcj8xrsWfAt//ONrWVt+8KjKTc0ExvYatglK
-        9l1fNxyvSN3+PVM8LE1zQu3lMvV0heM7ZZ9Nsdm/TfekgG7sV7uYNzM/Tb3WGunLdYwxOOTB
-        aZVdh8Q4PF/w9v59ytu1xaidc+qNnlPLBFkPVm84oS7VYXxEqeuOnd0kDU6hG7s4F7zm2HVc
-        /+Vt0d/79m76znsoyU/qrknhmh2fNhTH5r9RYinOSDTUYi4qTgQAArHWaEsDAAA=
-X-CMS-MailID: 20200616010742epcas1p2b477f89fb10453e26d1f66744cc3ff4e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200615054950epcas1p3f266ec99c3608f49f733644d8cd41c1a
-References: <027d9eb5-a1c1-c329-72c3-a555b71f8677@samsung.com>
-        <CGME20200615054950epcas1p3f266ec99c3608f49f733644d8cd41c1a@epcas1p3.samsung.com>
-        <20200615054928.55188-1-navid.emamdoost@gmail.com>
+In-Reply-To: <874ktl1p7y.fsf@yhuang-dev.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-20. 6. 15. 오후 2:49에 Navid Emamdoost 이(가) 쓴 글:
-> in mic_pre_enable, pm_runtime_get_sync is called which
-> increments the counter even in case of failure, leading to incorrect
-> ref count. In case of failure, decrement the ref count before returning.
+On Wed, Apr 15, 2020 at 10:01:53AM +0800, Huang, Ying wrote:
+> Qian Cai <cai@lca.pw> writes:
 > 
-> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> ---
-> Changes in v2:
-> 	- reuse the unlock label and call pm_runtime_put_noidle
-
-Picked it up.
-
-Thanks,
-Inki Dae
-
-> ---
-> ---
->  drivers/gpu/drm/exynos/exynos_drm_mic.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> >> On Apr 14, 2020, at 10:32 AM, Qian Cai <cai@lca.pw> wrote:
+> >> 
+> >> Fuzzers are unhappy. Thoughts?
+> >
+> > This is rather to reproduce. All the traces so far are from copy_from_user() to trigger a page fault,
+> > and then it dereferences a bad pte in swap_vma_readahead(),
+> >
+> > 	for (i = 0, pte = ra_info.ptes; i < ra_info.nr_pte;
+> > 	     i++, pte++) {
+> > 		pentry = *pte;   <— crashed here.
+> > 		if (pte_none(pentry))
 > 
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_mic.c b/drivers/gpu/drm/exynos/exynos_drm_mic.c
-> index a86abc173605..3821ea76a703 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_mic.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_mic.c
-> @@ -269,8 +269,10 @@ static void mic_pre_enable(struct drm_bridge *bridge)
->  		goto unlock;
->  
->  	ret = pm_runtime_get_sync(mic->dev);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(mic->dev);
->  		goto unlock;
-> +	}
->  
->  	mic_set_path(mic, 1);
->  
+> Is it possible to bisect this?
 > 
+> Because the crash point is identified, it may be helpful to collect and
+> analyze the status of the faulting page table and readahead ptes.  But I
+> am not familiar with the ARM64 architecture.  So I cannot help much
+> here.
+
+Ying, looks like the bug is still there today which manifests itself
+into a different form. Looking at the logs, I believe it was involved
+with swapoff(). Any other thought? I still have not found time to bisect
+this yet.
+
+[  785.477183][ T8727] BUG: KASAN: slab-out-of-bounds in swapin_readahead+0x7b8/0xbc0
+swap_vma_readahead at mm/swap_state.c:759
+(inlined by) swapin_readahead at mm/swap_state.c:803
+[  785.484752][ T8727] Read of size 8 at addr ffff00886ecaffe8 by task trinity-c35/8727
+[  785.492488][ T8727] 
+[  785.494675][ T8727] CPU: 35 PID: 8727 Comm: trinity-c35 Not tainted 5.7.0-next-20200610 #3
+[  785.502942][ T8727] Hardware name: HPE Apollo 70             /C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
+[  785.513387][ T8727] Call trace:
+[  785.516538][ T8727]  dump_backtrace+0x0/0x398
+[  785.520891][ T8727]  show_stack+0x14/0x20
+[  785.524900][ T8727]  dump_stack+0x140/0x1b8
+[  785.529087][ T8727]  print_address_description.isra.12+0x54/0x4a8
+[  785.535185][ T8727]  kasan_report+0x134/0x1b8
+[  785.539545][ T8727]  __asan_report_load8_noabort+0x2c/0x50
+[  785.545036][ T8727]  swapin_readahead+0x7b8/0xbc0
+[  785.549745][ T8727]  do_swap_page+0xb1c/0x19a0
+[  785.554195][ T8727]  handle_mm_fault+0xf10/0x2b30
+[  785.558905][ T8727]  do_page_fault+0x230/0x908
+[  785.563354][ T8727]  do_translation_fault+0xe0/0x108
+[  785.568323][ T8727]  do_mem_abort+0x64/0x180
+[  785.572597][ T8727]  el1_sync_handler+0x188/0x1b8
+[  785.577305][ T8727]  el1_sync+0x7c/0x100
+[  785.581232][ T8727]  __arch_copy_to_user+0xc4/0x158
+[  785.586115][ T8727]  __arm64_sys_sysinfo+0x2c/0xd0
+[  785.590912][ T8727]  do_el0_svc+0x124/0x220
+[  785.595100][ T8727]  el0_sync_handler+0x260/0x408
+[  785.599807][ T8727]  el0_sync+0x140/0x180
+[  785.603818][ T8727] 
+[  785.606007][ T8727] Allocated by task 8673:
+[  785.610193][ T8727]  save_stack+0x24/0x50
+[  785.614208][ T8727]  __kasan_kmalloc.isra.13+0xc4/0xe0
+[  785.619350][ T8727]  kasan_slab_alloc+0x14/0x20
+[  785.623885][ T8727]  slab_post_alloc_hook+0x50/0xa8
+[  785.628769][ T8727]  kmem_cache_alloc+0x18c/0x438
+[  785.633479][ T8727]  create_object+0x58/0x960
+[  785.637844][ T8727]  kmemleak_alloc+0x2c/0x38
+[  785.642205][ T8727]  slab_post_alloc_hook+0x70/0xa8
+[  785.647089][ T8727]  kmem_cache_alloc_trace+0x178/0x308
+[  785.652322][ T8727]  refill_pi_state_cache.part.10+0x3c/0x1a8
+[  785.658073][ T8727]  futex_lock_pi+0x404/0x5e0
+[  785.662519][ T8727]  do_futex+0x790/0x1448
+[  785.666618][ T8727]  __arm64_sys_futex+0x204/0x588
+[  785.671411][ T8727]  do_el0_svc+0x124/0x220
+[  785.675603][ T8727]  el0_sync_handler+0x260/0x408
+[  785.680312][ T8727]  el0_sync+0x140/0x180
+[  785.684322][ T8727] 
+[  785.686510][ T8727] Freed by task 0:
+[  785.690088][ T8727]  save_stack+0x24/0x50
+[  785.694104][ T8727]  __kasan_slab_free+0x124/0x198
+[  785.698899][ T8727]  kasan_slab_free+0x10/0x18
+[  785.703340][ T8727]  slab_free_freelist_hook+0x110/0x298
+[  785.708648][ T8727]  kmem_cache_free+0xc8/0x3e0
+[  785.713175][ T8727]  free_object_rcu+0x1e0/0x3b8
+[  785.717796][ T8727]  rcu_core+0x8bc/0xf40
+[  785.721810][ T8727]  rcu_core_si+0xc/0x18
+[  785.725825][ T8727]  efi_header_end+0x2d8/0x1204
+[  785.730442][ T8727] 
+[  785.732625][ T8727] The buggy address belongs to the object at ffff00886ecafd28
+[  785.732625][ T8727]  which belongs to the cache kmemleak_object of size 368
+[  785.746875][ T8727] The buggy address is located 336 bytes to the right of
+[  785.746875][ T8727]  368-byte region [ffff00886ecafd28, ffff00886ecafe98)
+[  785.760519][ T8727] The buggy address belongs to the page:
+[  785.766009][ T8727] page:ffffffe021fbb280 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff00886ecaa8c8
+[  785.776268][ T8727] flags: 0x7ffff800000200(slab)
+[  785.780971][ T8727] raw: 007ffff800000200 ffffffe0222c12c8 ffffffe0223a1488 ffff000000323080
+[  785.789410][ T8727] raw: ffff00886ecaa8c8 00000000005b001d 00000001ffffffff 0000000000000000
+[  785.797849][ T8727] page dumped because: kasan: bad access85.811794][ T87270886ecaff00: fc  fc fc fc fc fc     ^
+[  785.842727]  ffff00886ecb0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[  785.858703][ T8727] ==================================================================
+[  785.866621][ T8727] Disabling lock debugging due to kernel taint
+[  785.872714][ T8727] get_swap_device: Bad swap file entry 58025a5a5a5a5a5a
+[  785.879523][ T8727] get_swap_device: Bad swap file entry 58025a5a5a5a5a5a
+[  785.886322][ T8727] get_swap_device: Bad swap file entry 58025a5a5a5a5a5a
