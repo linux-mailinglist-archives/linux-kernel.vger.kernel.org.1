@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693801FB7BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ACE1FB865
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732477AbgFPPtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43748 "EHLO mail.kernel.org"
+        id S1733137AbgFPPz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731956AbgFPPtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:00 -0400
+        id S1732800AbgFPPzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:55:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 094AD20776;
-        Tue, 16 Jun 2020 15:48:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB65D20882;
+        Tue, 16 Jun 2020 15:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322539;
-        bh=D08phPmLPEFAjRBvb1bT7wlfUFoPD9T/je8totMLYVk=;
+        s=default; t=1592322953;
+        bh=LWiefAQnaU3ygsFB7gOSKpm+9Fax1oNFwgGN2tI46bI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hsx8OGv34LX+YpgEyihUoRG1zfGfxsDS35eD+75YvN8QxDQU2giakHItbntj9lroA
-         jhtEHQbFG+SvEqV0guJjp+Y62p5bRynLVbunV0dNZDUli+7fmkwU4xXqRYKNCuOP/R
-         NXy+MtvOvfKyOxZvHr6aKtJOLBHKnIn8RAH0MImo=
+        b=iVZQDYO4r0XR5TRNOwHNW2Q1Y3s0AxbIZ2f/07Y9X45m58cgXOIOonECzvQb7CTaW
+         G6dHzVxnYKc8mhKaHXrId3yLTkBh6GFrgTwQ03Q1+C7VRnOSoxvVXvS/FQ5UvBwyIN
+         k2eQQYUxZ6Ex4tppJSh7F2ZP3c7HQURZ2zh9T6i4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ludovic Barre <ludovic.barre@st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.7 152/163] mmc: mmci_sdmmc: fix DMA API warning overlapping mappings
-Date:   Tue, 16 Jun 2020 17:35:26 +0200
-Message-Id: <20200616153114.087442710@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Subject: [PATCH 5.6 137/161] ath9k: Fix use-after-free Read in htc_connect_service
+Date:   Tue, 16 Jun 2020 17:35:27 +0200
+Message-Id: <20200616153112.890095438@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +44,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ludovic Barre <ludovic.barre@st.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit fe8d33bd33d527dee3155d2bccd714a655f37334 upstream.
+commit ced21a4c726bdc60b1680c050a284b08803bc64c upstream.
 
-Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
-WARNING: CPU: 1 PID: 20 at kernel/dma/debug.c:500 add_dma_entry+0x16c/0x17c
-DMA-API: exceeded 7 overlapping mappings of cacheline 0x031d2645
-Modules linked in:
-CPU: 1 PID: 20 Comm: kworker/1:1 Not tainted 5.5.0-rc2-00021-gdeda30999c2b-dirty #49
-Hardware name: STM32 (Device Tree Support)
-Workqueue: events_freezable mmc_rescan
-[<c03138c0>] (unwind_backtrace) from [<c030d760>] (show_stack+0x10/0x14)
-[<c030d760>] (show_stack) from [<c0f2eb28>] (dump_stack+0xc0/0xd4)
-[<c0f2eb28>] (dump_stack) from [<c034a14c>] (__warn+0xd0/0xf8)
-[<c034a14c>] (__warn) from [<c034a530>] (warn_slowpath_fmt+0x94/0xb8)
-[<c034a530>] (warn_slowpath_fmt) from [<c03bca0c>] (add_dma_entry+0x16c/0x17c)
-[<c03bca0c>] (add_dma_entry) from [<c03bdf54>] (debug_dma_map_sg+0xe4/0x3d4)
-[<c03bdf54>] (debug_dma_map_sg) from [<c0d09244>] (sdmmc_idma_prep_data+0x94/0xf8)
-[<c0d09244>] (sdmmc_idma_prep_data) from [<c0d05a2c>] (mmci_prep_data+0x2c/0xb0)
-[<c0d05a2c>] (mmci_prep_data) from [<c0d073ec>] (mmci_start_data+0x134/0x2f0)
-[<c0d073ec>] (mmci_start_data) from [<c0d078d0>] (mmci_request+0xe8/0x154)
-[<c0d078d0>] (mmci_request) from [<c0cecb44>] (mmc_start_request+0x94/0xbc)
+The skb is consumed by htc_send_epid, so it needn't release again.
 
-DMA api debug brings to light leaking dma-mappings, dma_map_sg and
-dma_unmap_sg are not correctly balanced.
+The case reported by syzbot:
 
-If a request is prepared, the dma_map/unmap are done in asynchronous call
-pre_req (prep_data) and post_req (unprep_data). In this case the
-dma-mapping is right balanced.
+https://lore.kernel.org/linux-usb/000000000000590f6b05a1c05d15@google.com
+usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size:
+51008
+usb 1-1: Service connection timeout for: 256
+==================================================================
+BUG: KASAN: use-after-free in atomic_read
+include/asm-generic/atomic-instrumented.h:26 [inline]
+BUG: KASAN: use-after-free in refcount_read include/linux/refcount.h:134
+[inline]
+BUG: KASAN: use-after-free in skb_unref include/linux/skbuff.h:1042
+[inline]
+BUG: KASAN: use-after-free in kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+Read of size 4 at addr ffff8881d0957994 by task kworker/1:2/83
 
-But if the request was not prepared, the data->host_cookie is define to
-zero and the dma_map/unmap must be done in the request.  The dma_map is
-called by mmci_dma_start (prep_data), but there is no dma_unmap in this
-case.
+Call Trace:
+kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+htc_connect_service.cold+0xa9/0x109
+drivers/net/wireless/ath/ath9k/htc_hst.c:282
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
 
-This patch adds dma_unmap_sg when the dma is finalized and the data cookie
-is zero (request not prepared).
+Allocated by task 83:
+kmem_cache_alloc_node+0xdc/0x330 mm/slub.c:2814
+__alloc_skb+0xba/0x5a0 net/core/skbuff.c:198
+alloc_skb include/linux/skbuff.h:1081 [inline]
+htc_connect_service+0x2cc/0x840
+drivers/net/wireless/ath/ath9k/htc_hst.c:257
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
 
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-Link: https://lore.kernel.org/r/20200526155103.12514-2-ludovic.barre@st.com
-Fixes: 46b723dd867d ("mmc: mmci: add stm32 sdmmc variant")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Freed by task 0:
+kfree_skb+0x102/0x3d0 net/core/skbuff.c:690
+ath9k_htc_txcompletion_cb+0x1f8/0x2b0
+drivers/net/wireless/ath/ath9k/htc_hst.c:356
+hif_usb_regout_cb+0x10b/0x1b0
+drivers/net/wireless/ath/ath9k/hif_usb.c:90
+__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+__do_softirq+0x21e/0x950 kernel/softirq.c:292
+
+Reported-and-tested-by: syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-2-hqjagain@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/mmci_stm32_sdmmc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath9k/htc_hst.c |    3 ---
+ drivers/net/wireless/ath/ath9k/wmi.c     |    1 -
+ 2 files changed, 4 deletions(-)
 
---- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-+++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -188,6 +188,9 @@ static int sdmmc_idma_start(struct mmci_
- static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
- {
- 	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-+
-+	if (!data->host_cookie)
-+		sdmmc_idma_unprep_data(host, data, 0);
- }
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -170,7 +170,6 @@ static int htc_config_pipe_credits(struc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- static void mmci_sdmmc_set_clkreg(struct mmci_host *host, unsigned int desired)
+@@ -206,7 +205,6 @@ static int htc_setup_complete(struct htc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -279,7 +277,6 @@ int htc_connect_service(struct htc_targe
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -336,7 +336,6 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum
+ 		ath_dbg(common, WMI, "Timeout waiting for WMI command: %s\n",
+ 			wmi_cmd_to_name(cmd_id));
+ 		mutex_unlock(&wmi->op_mutex);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
 
 
