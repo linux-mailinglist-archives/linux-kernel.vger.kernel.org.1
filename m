@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4949D1FB6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37741FB65B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731671AbgFPPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:42:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
+        id S1729976AbgFPPg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730841AbgFPPmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:42:20 -0400
+        id S1729938AbgFPPg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:36:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2DAC20C56;
-        Tue, 16 Jun 2020 15:42:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AC3520B1F;
+        Tue, 16 Jun 2020 15:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322139;
-        bh=XzVd0lZiloehEKPbTGLt3ZQh1nAHtnKqZP4nBXUXmCk=;
+        s=default; t=1592321785;
+        bh=xMDz6SQSPtfKU/lZT9ySa1YMh2Q5E7v4to60fHvQga0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M8SpbazFH2osbO62Lb/fnMwXS3x1nlDTYbNTtm9NL/6OQbnNaE8kmUWOV11MGD8l1
-         ekl0H1UuuGCL0b1Q8BOZUIR5rqF5Tt3WMdxQ7gYbkg7DXIW3spprT6U0L1Udwcqxrq
-         V9jrJYtdt893DoCnaJJJn6qQPOkoOgU+MPIjgADY=
+        b=lm2wk5AubcmDbrcPYEB/2Dg8X4luapuskWStE/ykfdGe3uWjX5pmIVIvaA+9N8oKG
+         rrTH2t2eHJarw5W75a4FUeNCeoSsx2qzX7BMZFES2nI7qg0f5Gr5+N7H+aRNdmID32
+         7FY6cDS9ciobHXeQn5sD2Yj/JnZuc0jbDT9BLGb8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlad Buslov <vladbu@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 016/163] selftests: fix flower parent qdisc
-Date:   Tue, 16 Jun 2020 17:33:10 +0200
-Message-Id: <20200616153107.656460940@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Maria Teguiani <teguiani@google.com>,
+        Matthias Maennich <maennich@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 007/134] bpf: Support llvm-objcopy for vmlinux BTF
+Date:   Tue, 16 Jun 2020 17:33:11 +0200
+Message-Id: <20200616153101.024401350@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +51,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vlad Buslov <vladbu@mellanox.com>
+From: Fangrui Song <maskray@google.com>
 
-[ Upstream commit 0531b0357ba37464e5c0033e1b7c69bbf5ecd8fb ]
+commit 90ceddcb495008ac8ba7a3dce297841efcd7d584 upstream.
 
-Flower tests used to create ingress filter with specified parent qdisc
-"parent ffff:" but dump them on "ingress". With recent commit that fixed
-tcm_parent handling in dump those are not considered same parent anymore,
-which causes iproute2 tc to emit additional "parent ffff:" in first line of
-filter dump output. The change in output causes filter match in tests to
-fail.
+Simplify gen_btf logic to make it work with llvm-objcopy. The existing
+'file format' and 'architecture' parsing logic is brittle and does not
+work with llvm-objcopy/llvm-objdump.
 
-Prevent parent qdisc output when dumping filters in flower tests by always
-correctly specifying "ingress" parent both when creating and dumping
-filters.
+'file format' output of llvm-objdump>=11 will match GNU objdump, but
+'architecture' (bfdarch) may not.
 
-Fixes: a7df4870d79b ("net_sched: fix tcm_parent in tc filter dump")
-Signed-off-by: Vlad Buslov <vladbu@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+.BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
+because it is part of vmlinux image used for introspection. C code
+can reference the section via linker script defined __start_BTF and
+__stop_BTF. This fixes a small problem that previous .BTF had the
+SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
+
+Additionally, `objcopy -I binary` synthesized symbols
+_binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
+used elsewhere) are replaced with more commonplace __start_BTF and
+__stop_BTF.
+
+Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
+"empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
+
+We use a dd command to change the e_type field in the ELF header from
+ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
+ET_EXEC as an input file is an extremely rare GNU ld feature that lld
+does not intend to support, because this is error-prone.
+
+The output section description .BTF in include/asm-generic/vmlinux.lds.h
+avoids potential subtle orphan section placement issues and suppresses
+--orphan-handling=warn warnings.
+
+Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Stanislav Fomichev <sdf@google.com>
+Tested-by: Andrii Nakryiko <andriin@fb.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Link: https://github.com/ClangBuiltLinux/linux/issues/871
+Link: https://lore.kernel.org/bpf/20200318222746.173648-1-maskray@google.com
+Signed-off-by: Maria Teguiani <teguiani@google.com>
+Tested-by: Matthias Maennich <maennich@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../selftests/tc-testing/tc-tests/filters/tests.json        | 6 +++---
- tools/testing/selftests/tc-testing/tdc_batch.py             | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ arch/powerpc/kernel/vmlinux.lds.S |    6 ------
+ include/asm-generic/vmlinux.lds.h |   22 +++++++++++++++++++---
+ kernel/bpf/sysfs_btf.c            |   11 +++++------
+ scripts/link-vmlinux.sh           |   24 ++++++++++--------------
+ 4 files changed, 34 insertions(+), 29 deletions(-)
 
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
-index 8877f7b2b809..12aa4bc1f6a0 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/filters/tests.json
-@@ -32,7 +32,7 @@
-         "setup": [
-             "$TC qdisc add dev $DEV2 ingress"
-         ],
--        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 parent ffff: handle 0xffffffff flower action ok",
-+        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip pref 1 ingress handle 0xffffffff flower action ok",
-         "expExitCode": "0",
-         "verifyCmd": "$TC filter show dev $DEV2 ingress",
-         "matchPattern": "filter protocol ip pref 1 flower.*handle 0xffffffff",
-@@ -77,9 +77,9 @@
-         },
-         "setup": [
-             "$TC qdisc add dev $DEV2 ingress",
--            "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
-+            "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop"
-         ],
--        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 parent ffff: flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
-+        "cmdUnderTest": "$TC filter add dev $DEV2 protocol ip prio 1 ingress flower dst_mac e4:11:22:11:4a:51 src_mac e4:11:22:11:4a:50 ip_proto tcp src_ip 1.1.1.1 dst_ip 2.2.2.2 action drop",
-         "expExitCode": "2",
-         "verifyCmd": "$TC -s filter show dev $DEV2 ingress",
-         "matchPattern": "filter protocol ip pref 1 flower chain 0 handle",
-diff --git a/tools/testing/selftests/tc-testing/tdc_batch.py b/tools/testing/selftests/tc-testing/tdc_batch.py
-index 6a2bd2cf528e..995f66ce43eb 100755
---- a/tools/testing/selftests/tc-testing/tdc_batch.py
-+++ b/tools/testing/selftests/tc-testing/tdc_batch.py
-@@ -72,21 +72,21 @@ mac_prefix = args.mac_prefix
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -326,12 +326,6 @@ SECTIONS
+ 		*(.branch_lt)
+ 	}
  
- def format_add_filter(device, prio, handle, skip, src_mac, dst_mac,
-                       share_action):
--    return ("filter add dev {} {} protocol ip parent ffff: handle {} "
-+    return ("filter add dev {} {} protocol ip ingress handle {} "
-             " flower {} src_mac {} dst_mac {} action drop {}".format(
-                 device, prio, handle, skip, src_mac, dst_mac, share_action))
+-#ifdef CONFIG_DEBUG_INFO_BTF
+-	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
+-		*(.BTF)
+-	}
+-#endif
+-
+ 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+ 		__start_opd = .;
+ 		KEEP(*(.opd))
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -496,10 +496,12 @@
+ 		__start___modver = .;					\
+ 		KEEP(*(__modver))					\
+ 		__stop___modver = .;					\
+-		. = ALIGN((align));					\
+-		__end_rodata = .;					\
+ 	}								\
+-	. = ALIGN((align));
++									\
++	BTF								\
++									\
++	. = ALIGN((align));						\
++	__end_rodata = .;
  
+ /* RODATA & RO_DATA provided for backward compatibility.
+  * All archs are supposed to use RO_DATA() */
+@@ -589,6 +591,20 @@
+ 	}
  
- def format_rep_filter(device, prio, handle, skip, src_mac, dst_mac,
-                       share_action):
--    return ("filter replace dev {} {} protocol ip parent ffff: handle {} "
-+    return ("filter replace dev {} {} protocol ip ingress handle {} "
-             " flower {} src_mac {} dst_mac {} action drop {}".format(
-                 device, prio, handle, skip, src_mac, dst_mac, share_action))
+ /*
++ * .BTF
++ */
++#ifdef CONFIG_DEBUG_INFO_BTF
++#define BTF								\
++	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
++		__start_BTF = .;					\
++		*(.BTF)							\
++		__stop_BTF = .;						\
++	}
++#else
++#define BTF
++#endif
++
++/*
+  * Init task
+  */
+ #define INIT_TASK_DATA_SECTION(align)					\
+--- a/kernel/bpf/sysfs_btf.c
++++ b/kernel/bpf/sysfs_btf.c
+@@ -9,15 +9,15 @@
+ #include <linux/sysfs.h>
  
+ /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+-extern char __weak _binary__btf_vmlinux_bin_start[];
+-extern char __weak _binary__btf_vmlinux_bin_end[];
++extern char __weak __start_BTF[];
++extern char __weak __stop_BTF[];
  
- def format_del_filter(device, prio, handle, skip, src_mac, dst_mac,
-                       share_action):
--    return ("filter del dev {} {} protocol ip parent ffff: handle {} "
-+    return ("filter del dev {} {} protocol ip ingress handle {} "
-             "flower".format(device, prio, handle))
+ static ssize_t
+ btf_vmlinux_read(struct file *file, struct kobject *kobj,
+ 		 struct bin_attribute *bin_attr,
+ 		 char *buf, loff_t off, size_t len)
+ {
+-	memcpy(buf, _binary__btf_vmlinux_bin_start + off, len);
++	memcpy(buf, __start_BTF + off, len);
+ 	return len;
+ }
  
+@@ -30,15 +30,14 @@ static struct kobject *btf_kobj;
  
--- 
-2.25.1
-
+ static int __init btf_vmlinux_init(void)
+ {
+-	if (!_binary__btf_vmlinux_bin_start)
++	if (!__start_BTF)
+ 		return 0;
+ 
+ 	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
+ 	if (!btf_kobj)
+ 		return -ENOMEM;
+ 
+-	bin_attr_btf_vmlinux.size = _binary__btf_vmlinux_bin_end -
+-				    _binary__btf_vmlinux_bin_start;
++	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
+ 
+ 	return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
+ }
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -113,9 +113,6 @@ vmlinux_link()
+ gen_btf()
+ {
+ 	local pahole_ver
+-	local bin_arch
+-	local bin_format
+-	local bin_file
+ 
+ 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+ 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+@@ -133,17 +130,16 @@ gen_btf()
+ 	info "BTF" ${2}
+ 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+ 
+-	# dump .BTF section into raw binary file to link with final vmlinux
+-	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
+-		cut -d, -f1 | cut -d' ' -f2)
+-	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+-		awk '{print $4}')
+-	bin_file=.btf.vmlinux.bin
+-	${OBJCOPY} --change-section-address .BTF=0 \
+-		--set-section-flags .BTF=alloc -O binary \
+-		--only-section=.BTF ${1} $bin_file
+-	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+-		--rename-section .data=.BTF $bin_file ${2}
++	# Create ${2} which contains just .BTF section but no symbols. Add
++	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
++	# deletes all symbols including __start_BTF and __stop_BTF, which will
++	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
++	# objcopy warnings: "empty loadable segment detected at ..."
++	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
++		--strip-all ${1} ${2} 2>/dev/null
++	# Change e_type to ET_REL so that it can be used to link final vmlinux.
++	# Unlike GNU ld, lld does not allow an ET_EXEC input.
++	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
+ }
+ 
+ # Create ${2} .o file with all symbols from the ${1} object file
 
 
