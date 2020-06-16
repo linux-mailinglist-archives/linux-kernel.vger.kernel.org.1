@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91911FA55D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91331FA566
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgFPBFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 21:05:24 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50594 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgFPBFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 21:05:24 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jl02A-0005jD-Qw; Tue, 16 Jun 2020 11:05:03 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 16 Jun 2020 11:05:02 +1000
-Date:   Tue, 16 Jun 2020 11:05:02 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Subject: Re: linux-next: build failures after merge of the vfs tree
-Message-ID: <20200616010502.GA28834@gondor.apana.org.au>
-References: <20200616103330.2df51a58@canb.auug.org.au>
- <20200616103440.35a80b4b@canb.auug.org.au>
+        id S1726735AbgFPBJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 21:09:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29764 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726327AbgFPBJN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 21:09:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592269752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ETWPRcEqi2xYFGp+N9uQV1NdwMdzaSSeQcMx7Y54xII=;
+        b=fynY8KlQ0wPJzTOR0hB2QsARRE4CEPkp/T2nON5CPUOHx17+uJOem06QxjBhmwLQ6EnMEf
+        S1ODIS8HxlGXYUR6v2hmkD4J1Jde7N0jTXl0KJz+J5BB5bolwwVCeuXbx2IxC8v9CUGYg2
+        bDicH8/OgRGsjQ09ipKTJvWQKuh20ps=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-IK-OBL4MO1ew5gV1Gmu6rw-1; Mon, 15 Jun 2020 21:09:10 -0400
+X-MC-Unique: IK-OBL4MO1ew5gV1Gmu6rw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BE8010059BA;
+        Tue, 16 Jun 2020 01:09:09 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 079B060C05;
+        Tue, 16 Jun 2020 01:09:07 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200615232751.GA22366@embeddedor>
+References: <20200615232751.GA22366@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH][next] afs: Use array3_size() helper in afs_extract_to_buf()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616103440.35a80b4b@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <761786.1592269747.1@warthog.procyon.org.uk>
+Date:   Tue, 16 Jun 2020 02:09:07 +0100
+Message-ID: <761787.1592269747@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:34:40AM +1000, Stephen Rothwell wrote:
-> [Just adding Herbert to cc]
-> 
-> On Tue, 16 Jun 2020 10:33:30 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> > 
-> > After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
-> > failed like this:
+Gustavo A. R. Silva <gustavoars@kernel.org> wrote:
 
-Thanks Stephen, here is an incremental patch to fix these up.
+> Use array3_size() helper instead of the open-coded version in
+> afs_extract_to_buf(). These sorts of multiplication factors need
+> to be wrapped in array3_size().
 
----8<---
-Because linux/uio.h included crypto/hash.h a number of header
-files that should have been included weren't.  This patch adds
-linux/slab.h where kmalloc/kfree are used, as well as a forward
-declaration in linux/socket.h for struct file.
+For afs_deliver_cb_callback(), this adds redundant checking, as does the one
+on the kmalloc() on the preceding line:
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 	f0187db056dc ("iov_iter: Move unnecessary inclusion of...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+		call->buffer = kmalloc(array3_size(call->count, 3, 4),
+				       GFP_KERNEL);
+		if (!call->buffer)
+			return -ENOMEM;
 
-diff --git a/drivers/dma/st_fdma.c b/drivers/dma/st_fdma.c
-index 67087dbe2f9f..962b6e05287b 100644
---- a/drivers/dma/st_fdma.c
-+++ b/drivers/dma/st_fdma.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
- #include <linux/remoteproc.h>
-+#include <linux/slab.h>
- 
- #include "st_fdma.h"
- 
-diff --git a/drivers/dma/uniphier-xdmac.c b/drivers/dma/uniphier-xdmac.c
-index 7b2f8a8c2d31..16b19654873d 100644
---- a/drivers/dma/uniphier-xdmac.c
-+++ b/drivers/dma/uniphier-xdmac.c
-@@ -12,6 +12,7 @@
- #include <linux/of.h>
- #include <linux/of_dma.h>
- #include <linux/platform_device.h>
-+#include <linux/slab.h>
- 
- #include "dmaengine.h"
- #include "virt-dma.h"
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 04d2bc97f497..e9cb30d8cbfb 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -10,6 +10,7 @@
- #include <linux/compiler.h>		/* __user			*/
- #include <uapi/linux/socket.h>
- 
-+struct file;
- struct pid;
- struct cred;
- struct socket;
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+because directly above them is a range check:
+
+		if (call->count > AFSCBMAX)
+			return afs_protocol_error(call, afs_eproto_cb_fid_count);
+
+limiting the array size to 50.
+
+Further, note that it's *not* a 3D array.  3 * 4 is the element size and is
+constant.  I've written it that way as the block is 3 XDR units, but the block
+size is actually 12 bytes.
+
+The one in the kmalloc() should also not be using array3_size() for the same
+reason.
+
+David
+
