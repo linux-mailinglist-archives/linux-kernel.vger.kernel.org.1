@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BAC1FB6D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903251FB828
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731358AbgFPPlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        id S1732899AbgFPPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731338AbgFPPk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:59 -0400
+        id S1732283AbgFPPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6AFD21531;
-        Tue, 16 Jun 2020 15:40:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4359A207C4;
+        Tue, 16 Jun 2020 15:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322058;
-        bh=mubmbuiDOXcWalU1TUhEBw7MU27CWb53kL0rpKji7d4=;
+        s=default; t=1592322812;
+        bh=1ELxeiNKC0u+xESZ8IGQ8vIZ933Fyh7SQNeFQw6Wj7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=me/RlDvvyOnFq2VzMDJ8rug0MCmr3t/penNGlnCSBGhQke7/I2Qiijm3Mi8wBlG+d
-         deLEXrfXEiiHH2jhDkpRJMp2vS/urHgKBgIAdM3tpCmfd9QLBPHEk1b0d+VtYHxP8E
-         4Sz+xeBD+bjLib3AOdpqOcoe15DV7kKiDDEwfi0Q=
+        b=VVAsKKO8Ol0mxNoLZGyVue8G0JOoLCIu2/Q1VlEuUwaU6BhIwojnvrXqdTsS2o/aR
+         6gqg6aKa0DJ9xHi92UXiRD4y0wA9Ypddo5fGcbx/R7SxIzxaAW7PWw+/cv+6tI2/YY
+         eEe2R9OXi4iDqBvw/1EL8Gm/vyTOdceqjr2QHgoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 120/134] mm/slub: fix a memory leak in sysfs_slab_add()
+        stable@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.6 114/161] net/mlx5: Disable reload while removing the device
 Date:   Tue, 16 Jun 2020 17:35:04 +0200
-Message-Id: <20200616153106.532769297@linuxfoundation.org>
+Message-Id: <20200616153111.786492956@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,77 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Parav Pandit <parav@mellanox.com>
 
-commit dde3c6b72a16c2db826f54b2d49bdea26c3534a2 upstream.
+[ Upstream commit 60904cd349abc98cb888fc28d1ca55a8e2cf87b3 ]
 
-syzkaller reports for memory leak when kobject_init_and_add() returns an
-error in the function sysfs_slab_add() [1]
+While unregistration is in progress, user might be reloading the
+interface.
+This can race with unregistration in below flow which uses the
+resources which are getting disabled by reload flow.
 
-When this happened, the function kobject_put() is not called for the
-corresponding kobject, which potentially leads to memory leak.
+Hence, disable the devlink reloading first when removing the device.
 
-This patch fixes the issue by calling kobject_put() even if
-kobject_init_and_add() fails.
+     CPU0                                   CPU1
+     ----                                   ----
+local_pci_remove()                  devlink_mutex
+  remove_one()                       devlink_nl_cmd_reload()
+    mlx5_unregister_device()           devlink_reload()
+                                       ops->reload_down()
+                                         mlx5_unload_one()
 
-[1]
-  BUG: memory leak
-  unreferenced object 0xffff8880a6d4be88 (size 8):
-  comm "syz-executor.3", pid 946, jiffies 4295772514 (age 18.396s)
-  hex dump (first 8 bytes):
-    70 69 64 5f 33 00 ff ff                          pid_3...
-  backtrace:
-     kstrdup+0x35/0x70 mm/util.c:60
-     kstrdup_const+0x3d/0x50 mm/util.c:82
-     kvasprintf_const+0x112/0x170 lib/kasprintf.c:48
-     kobject_set_name_vargs+0x55/0x130 lib/kobject.c:289
-     kobject_add_varg lib/kobject.c:384 [inline]
-     kobject_init_and_add+0xd8/0x170 lib/kobject.c:473
-     sysfs_slab_add+0x1d8/0x290 mm/slub.c:5811
-     __kmem_cache_create+0x50a/0x570 mm/slub.c:4384
-     create_cache+0x113/0x1e0 mm/slab_common.c:407
-     kmem_cache_create_usercopy+0x1a1/0x260 mm/slab_common.c:505
-     kmem_cache_create+0xd/0x10 mm/slab_common.c:564
-     create_pid_cachep kernel/pid_namespace.c:54 [inline]
-     create_pid_namespace kernel/pid_namespace.c:96 [inline]
-     copy_pid_ns+0x77c/0x8f0 kernel/pid_namespace.c:148
-     create_new_namespaces+0x26b/0xa30 kernel/nsproxy.c:95
-     unshare_nsproxy_namespaces+0xa7/0x1e0 kernel/nsproxy.c:229
-     ksys_unshare+0x3d2/0x770 kernel/fork.c:2969
-     __do_sys_unshare kernel/fork.c:3037 [inline]
-     __se_sys_unshare kernel/fork.c:3035 [inline]
-     __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3035
-     do_syscall_64+0xa1/0x530 arch/x86/entry/common.c:295
-
-Fixes: 80da026a8e5d ("mm/slub: fix slab double-free in case of duplicate sysfs filename")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Link: http://lkml.kernel.org/r/20200602115033.1054-1-wanghai38@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/slub.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c |    2 --
+ drivers/net/ethernet/mellanox/mlx5/core/main.c    |    2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5776,8 +5776,10 @@ static int sysfs_slab_add(struct kmem_ca
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -256,7 +256,6 @@ int mlx5_devlink_register(struct devlink
+ 		goto params_reg_err;
+ 	mlx5_devlink_set_params_init_values(devlink);
+ 	devlink_params_publish(devlink);
+-	devlink_reload_enable(devlink);
+ 	return 0;
  
- 	s->kobj.kset = kset;
- 	err = kobject_init_and_add(&s->kobj, &slab_ktype, NULL, "%s", name);
--	if (err)
-+	if (err) {
-+		kobject_put(&s->kobj);
- 		goto out;
-+	}
+ params_reg_err:
+@@ -266,7 +265,6 @@ params_reg_err:
  
- 	err = sysfs_create_group(&s->kobj, &slab_attr_group);
- 	if (err)
+ void mlx5_devlink_unregister(struct devlink *devlink)
+ {
+-	devlink_reload_disable(devlink);
+ 	devlink_params_unregister(devlink, mlx5_devlink_params,
+ 				  ARRAY_SIZE(mlx5_devlink_params));
+ 	devlink_unregister(devlink);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1371,6 +1371,7 @@ static int init_one(struct pci_dev *pdev
+ 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
+ 
+ 	pci_save_state(pdev);
++	devlink_reload_enable(devlink);
+ 	return 0;
+ 
+ err_load_one:
+@@ -1388,6 +1389,7 @@ static void remove_one(struct pci_dev *p
+ 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
+ 	struct devlink *devlink = priv_to_devlink(dev);
+ 
++	devlink_reload_disable(devlink);
+ 	mlx5_crdump_disable(dev);
+ 	mlx5_devlink_unregister(devlink);
+ 
 
 
