@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584581FBAFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F1C1FBAE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731299AbgFPPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
+        id S1731520AbgFPPlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731262AbgFPPks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:48 -0400
+        id S1731493AbgFPPlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CD0421531;
-        Tue, 16 Jun 2020 15:40:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FA0D21527;
+        Tue, 16 Jun 2020 15:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322047;
-        bh=Xur/2ps7vCdybjS3oNBWCqE5T1fBUF+bZqPQ5Ga/7Nw=;
+        s=default; t=1592322100;
+        bh=BQIdZJeDOCE9WwM3JO92EX6gcXA+2swmmGH6Vio4rTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pcr5PQDg6Lx8eg/07xZYEiSgTbW3KtHcpcsig+n8C786ON6WCQIt54SSHlfEda7uB
-         563rtgPctDSg8FOl/m09mlXshprQ9NEfQrhcysS+eD4CEOYPvUTFBJAQK1GEAvAB2A
-         grYEGfuIAiMHkx9agastku/jidMeETbhSd92qcyo=
+        b=0jtmJ0YBpTucN5eu3mSem1O34rQUaAXnjnKuhJ3Smv33+LNVd+JUlp+bW0dUWMpxN
+         KX1GsfYr0rRGy6l1zbwsZ4Tk+VtVRm45tJOCiHJ4GKcVnqn5fKK2LL+9//vHLraniQ
+         W4u0UHnSZMexuxZopEZU6pl+sPxV6FS+HSQheI/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>
-Subject: [PATCH 5.4 108/134] KVM: arm64: Stop writing aarch32s CSSELR into ACTLR
-Date:   Tue, 16 Jun 2020 17:34:52 +0200
-Message-Id: <20200616153105.958852397@linuxfoundation.org>
+        stable@vger.kernel.org, Sumit Saxena <sumit.saxena@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 110/134] scsi: megaraid_sas: TM command refire leads to controller firmware crash
+Date:   Tue, 16 Jun 2020 17:34:54 +0200
+Message-Id: <20200616153106.054546563@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
 References: <20200616153100.633279950@linuxfoundation.org>
@@ -43,65 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+From: Sumit Saxena <sumit.saxena@broadcom.com>
 
-commit 7c582bf4ed84f3eb58bdd1f63024a14c17551e7d upstream.
+commit 6fd8525a70221c26823b1c7e912fb21f218fb0c5 upstream.
 
-aarch32 has pairs of registers to access the high and low parts of 64bit
-registers. KVM has a union of 64bit sys_regs[] and 32bit copro[]. The
-32bit accessors read the high or low part of the 64bit sys_reg[] value
-through the union.
+When TM command times out, driver invokes the controller reset. Post reset,
+driver re-fires pended TM commands which leads to firmware crash.
 
-Both sys_reg_descs[] and cp15_regs[] list access_csselr() as the accessor
-for CSSELR{,_EL1}. access_csselr() is only aware of the 64bit sys_regs[],
-and expects r->reg to be 'CSSELR_EL1' in the enum, index 2 of the 64bit
-array.
+Post controller reset, return pended TM commands back to OS.
 
-cp15_regs[] uses the 32bit copro[] alias of sys_regs[]. Here CSSELR is
-c0_CSSELR which is the same location in sys_reg[]. r->reg is 'c0_CSSELR',
-index 4 in the 32bit array.
-
-access_csselr() uses the 32bit r->reg value to access the 64bit array,
-so reads and write the wrong value. sys_regs[4], is ACTLR_EL1, which
-is subsequently save/restored when we enter the guest.
-
-ACTLR_EL1 is supposed to be read-only for the guest. This register
-only affects execution at EL1, and the host's value is restored before
-we return to host EL1.
-
-Convert the 32bit register index back to the 64bit version.
-
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200508085242.23406-1-chandrakanth.patil@broadcom.com
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529150656.7339-2-james.morse@arm.com
+Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kvm/sys_regs.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1280,10 +1280,16 @@ static bool access_clidr(struct kvm_vcpu
- static bool access_csselr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 			  const struct sys_reg_desc *r)
- {
-+	int reg = r->reg;
-+
-+	/* See the 32bit mapping in kvm_host.h */
-+	if (p->is_aarch32)
-+		reg = r->reg / 2;
-+
- 	if (p->is_write)
--		vcpu_write_sys_reg(vcpu, p->regval, r->reg);
-+		vcpu_write_sys_reg(vcpu, p->regval, reg);
- 	else
--		p->regval = vcpu_read_sys_reg(vcpu, r->reg);
-+		p->regval = vcpu_read_sys_reg(vcpu, reg);
- 	return true;
- }
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -4227,6 +4227,7 @@ static void megasas_refire_mgmt_cmd(stru
+ 	struct fusion_context *fusion;
+ 	struct megasas_cmd *cmd_mfi;
+ 	union MEGASAS_REQUEST_DESCRIPTOR_UNION *req_desc;
++	struct MPI2_RAID_SCSI_IO_REQUEST *scsi_io_req;
+ 	u16 smid;
+ 	bool refire_cmd = 0;
+ 	u8 result;
+@@ -4284,6 +4285,11 @@ static void megasas_refire_mgmt_cmd(stru
+ 			break;
+ 		}
  
++		scsi_io_req = (struct MPI2_RAID_SCSI_IO_REQUEST *)
++				cmd_fusion->io_request;
++		if (scsi_io_req->Function == MPI2_FUNCTION_SCSI_TASK_MGMT)
++			result = RETURN_CMD;
++
+ 		switch (result) {
+ 		case REFIRE_CMD:
+ 			megasas_fire_cmd_fusion(instance, req_desc);
+@@ -4481,7 +4487,6 @@ megasas_issue_tm(struct megasas_instance
+ 	if (!timeleft) {
+ 		dev_err(&instance->pdev->dev,
+ 			"task mgmt type 0x%x timed out\n", type);
+-		cmd_mfi->flags |= DRV_DCMD_SKIP_REFIRE;
+ 		mutex_unlock(&instance->reset_mutex);
+ 		rc = megasas_reset_fusion(instance->host, MFI_IO_TIMEOUT_OCR);
+ 		mutex_lock(&instance->reset_mutex);
 
 
