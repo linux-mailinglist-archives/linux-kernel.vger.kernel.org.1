@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5B81FBF14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3B11FBF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730621AbgFPTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 15:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728518AbgFPTgG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:36:06 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9E6C061573;
-        Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id k18so11364629ybm.13;
-        Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Cwin4rM90xx7A90ILpx9q05b/HkXQADpjPRgjfWeDlU=;
-        b=XaZNJMpllLj9SgsmtZ+lqJUHo0KXy6kSs0NyKpsgQhW+hObxXQQUda1CGW+ukeBVGk
-         pIaSQEz9nrZ9vqpJDHOEwB5alQ0foiAVpjoqjYt0eubQ7Kr2hH6HxHEpnlgr3o+lAFl3
-         gQt0ZrAjAccGGrwhv51mg7bi2B8a8HdyqI8zl4V7FxNcZWy79rErOatULjQHFLChSbN7
-         wJ7eFFY3DJPYE8knqr39kovYupgdSF5nBjWbM4AXC8LrH7pzhG3Lj5QXkfnYQ2dD2GQr
-         Gp2MsNkNABLpCD3a6kCe+gO4TzoONLKukdJlCkWzsI+Mw0cih3CvpOyI3C2Ye04aTGef
-         h4HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Cwin4rM90xx7A90ILpx9q05b/HkXQADpjPRgjfWeDlU=;
-        b=d0fiSBHPewzAlcwCaLcbDnRwgT1cYu8LmIJzzJsyoNaLSSR0+8KEPqfP1eZjHdeH6k
-         b68zXH9fYMLELbZ9e5NGA+A9SC6DpyrzviAImeIP96S2cIqMVHcxMcTMMIg/k+HlZ9pE
-         arVLg8VfGDGiNpBVLAl6EUFDHPtQuWwtiuCY9VV2bLNLtv60kdEmowL+UQWAIaVP+UC4
-         dFjQ1o8xA99KvGeAsJdDvV+2eWBgF+ysoTcB/6FMNi45KowbvgYLhWBE5GA/8ERNUesx
-         2yNB5Bh4s9jnx1bt+DbAQYXKPNWMObTdJBkDg4mEgq3toXjT81ArRgi+rMaoKEH3l0Ty
-         h4AA==
-X-Gm-Message-State: AOAM533AoaZ01ZbQSny7zCbjIC26PjvGlpI2KWo8+3rhp8H4LsRt1zA1
-        x4W59avg/nlZMF6togGqO0k17SRWVaRe5Hf10uE=
-X-Google-Smtp-Source: ABdhPJzy8V0OHeGIv8WGHsfj6rOnMpwaHYCmQPuFrMNmYNU7wJrsNguRNRgcXkXB0pGgipkGkrGWa/W/Ab0RhmC9Cb0=
-X-Received: by 2002:a25:bc81:: with SMTP id e1mr6573459ybk.375.1592336165086;
- Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
+        id S1730990AbgFPTjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:39:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730792AbgFPTjX (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:39:23 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.162.131.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 756D820810;
+        Tue, 16 Jun 2020 19:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592336362;
+        bh=Xy6OqRUCqFwqYeR610bNt54TVmb+uhKNUrgS6dl3UV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NF5YuhrllIfDNymltrHZ+1Vv+srN2zQip0oBZKujCkgwDBxEivG8lSt+8J/Jvm1Qm
+         vKq0YRP+kyaiR/C6pG8CmLJqX3H9pTbmYG7LbI1ePOaigi0raGDbHupOopK7SCOmNi
+         0OHyqOW6UrF3bSjjEAwrFH0kYTLaov2CrbRu7vFQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 76EF040AFD; Tue, 16 Jun 2020 16:38:56 -0300 (-03)
+Date:   Tue, 16 Jun 2020 16:38:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <Linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>, kan.liang@intel.com,
+        "Jin, Yao" <yao.jin@intel.com>
+Subject: Re: [PATCH 0/2] Update CascadelakeX and SkylakeX events list
+Message-ID: <20200616193856.GC6393@kernel.org>
+References: <20200603021818.27028-1-yao.jin@linux.intel.com>
+ <911b4132-d1a1-f3c4-a2ed-2fcfe9a28fc6@linux.intel.com>
+ <CAP-5=fW3OCuVkQ8csYfHXj5c_pCSY5-6vDrj2r=MNDZmpo0f8g@mail.gmail.com>
+ <c7edd282-f58a-4efe-5961-6c1369b6b77b@linux.intel.com>
 MIME-Version: 1.0
-References: <20200615224112.GA12307@embeddedor> <875zbri7k8.fsf@suse.com>
-In-Reply-To: <875zbri7k8.fsf@suse.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 16 Jun 2020 14:35:54 -0500
-Message-ID: <CAH2r5mt-SYkFcq=73ES8eNi0LYKNctPFPe28x0SmBdf3gEwt5A@mail.gmail.com>
-Subject: Re: [PATCH] cifs: misc: Use array_size() in if-statement controlling expression
-To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7edd282-f58a-4efe-5961-6c1369b6b77b@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added the two reviewed-bys and merged into cifs-2.6.git for-next
+Em Tue, Jun 16, 2020 at 02:27:40PM +0800, Jin, Yao escreveu:
+> On 6/16/2020 2:16 PM, Ian Rogers wrote:
+> > On Mon, Jun 15, 2020 at 6:00 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
+> > > Can I get an ACK for this patchset?
+> > > On 6/3/2020 10:18 AM, Jin Yao wrote:
+> > > > This patchset updates CascadelakeX events to v1.08 and
+> > > > updates SkylakeX events to v1.21.
 
-On Tue, Jun 16, 2020 at 6:17 AM Aur=C3=A9lien Aptel via samba-technical
-<samba-technical@lists.samba.org> wrote:
->
-> Reviewed-by: Aurelien Aptel <aaptel@suse.com>
->
-> Cheers,
-> --
-> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
-> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
- DE
-> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
-=BCnchen)
->
+> > > > The events have been tested on CascadelakeX and SkylakeX
+> > > > servers with latest perf/core branch.
 
+> > could you rebase this on Arnaldo's tmp.perf/core tree?
+> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/core
+> > I tried using git am but get:
+> > Applying: perf vendor events: Update CascadelakeX events to v1.08
+> > error: patch fragment without header at line 279: @@ -213,14 +220,14 @@
+> > error: could not build fake ancestor
+> > Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
+> > 
+> > Thanks,
+> > Ian
+> > 
+> 
+> The patchset are applied OK on perf/core branch.
+> 
+> As far as I understand, the patch for posting should be based on perf/core branch, is it right?
 
---=20
-Thanks,
+Sorry, I've been testing with using tmp.perf/core as a way to more
+quickly make available what I've processed, before I test it thoroughly
+both with container builds and with manual testing, so the bleeding edge
+is there, perf/core becoming a bit more stable, as I'll try not to
+rebase it like before.
 
-Steve
+- Arnaldo
