@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191321FAA38
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05E31FAA46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgFPHnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 03:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbgFPHnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 03:43:13 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7225C20663;
-        Tue, 16 Jun 2020 07:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592293392;
-        bh=1pSplotTuJJE4CyD+G9q++EnmPd7meShTvU8xyLK98A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RuPgEAc02r/JqeDH31iJkiWWj5azW5vcasRKc2UKkNnkKYt7rUlLB3t8e6YLzm/mp
-         tTiI8JNt5w7p08n+zxG+gkvLQxSdAaOfHuJSWmpvUFzU4x1Sm4AGxf9E9b87vpKlvQ
-         FybJSAg3ok7ivN2DQjLnxxlJV+K+Q3KvRVj5aS50=
-Date:   Tue, 16 Jun 2020 08:43:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/25] mm/arm64: Use mm_fault_accounting()
-Message-ID: <20200616074307.GA1637@willie-the-truck>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615221607.7764-7-peterx@redhat.com>
+        id S1727036AbgFPHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 03:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgFPHpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 03:45:20 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF098C05BD43;
+        Tue, 16 Jun 2020 00:45:19 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id n24so20453783ejd.0;
+        Tue, 16 Jun 2020 00:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9UCZeGHHHKkRG4zqXE/A7RhXHhHKairl1CSt+Zzjpak=;
+        b=Cz1fVZIzFqI9PLwQigltSabqGPa014dqi5tTEQERMjzOcSgf7y+ue4y3N0vZZTJSbN
+         ZOKE4/X8uLCun3yDYaxUiH58zvDGalQuzZ7f/ugYyXbQeZXuso6jxwiBQp2iL6LMw6yt
+         u8DO7WuaQck0yZ05+BcjkhkzWSV9GTaEiJUb6xL0O0YhzVora9je9ie5Sfc1oAgsMRkQ
+         HrSWhRxduuJqf0uqkwrxwAqsNzKHQZnxUllF9hzvdL5mdAVZw8kbhQ9owN0CZfidVfdR
+         lwJ5Sl2e71hp6PvYdVo9xU0A/Omzi10k2ddiz23eBCncm5z4q4/FGp0rdsmaCdrsHHc+
+         wIcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9UCZeGHHHKkRG4zqXE/A7RhXHhHKairl1CSt+Zzjpak=;
+        b=I4GbN+J65kAhZHKQD+rfXfTA31dkciQPaoubNgnWuIQPGsnwa1T+MBAhjWiDOlVUbZ
+         HMMmHb8GYEVS0+Bo/1Wbkkh+Y264WbdxZmFYOIEhsxl68m6e1EhdvPbT04h7MP9+itLr
+         e+fflr6ApPaRF94K9r3TXNAP2aQ5MHY+WaKo+p/WxCEnMCik+GfBeOM0s60prdsd5CfT
+         rKiSBEP7TsYpV1rATp2mrBd+8pO271omN9hPutOmSHIMc+BGTQEb58OX1ARlCAhalmfk
+         hgcAhhyb8fyJPTi1DcaiLSrGyOxCwIG+o3gLIwwyVa6Le+CUF1HVU4O5btYzFyfGrAhR
+         f4tw==
+X-Gm-Message-State: AOAM531vdNL9z6wuoMLET2HREh887wpaWlE6c3GpFfSH7KEu0yUzjDnS
+        NCNlw54c6DJzqYeniTCOY+RVIc+v//vCJfXm2Og=
+X-Google-Smtp-Source: ABdhPJy6meDuVQDBwcDUxWt/oUvxUZtl4JuICUdPAZf17Kj+yj3BRrYlPu9XsWDJsU86OiHGTJ1s8o6f04CkYtRK/Io=
+X-Received: by 2002:a17:906:3a43:: with SMTP id a3mr1504252ejf.121.1592293518424;
+ Tue, 16 Jun 2020 00:45:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615221607.7764-7-peterx@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1592273581-31338-1-git-send-email-wangxidong_97@163.com>
+In-Reply-To: <1592273581-31338-1-git-send-email-wangxidong_97@163.com>
+From:   Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Date:   Tue, 16 Jun 2020 15:44:14 +0800
+Message-ID: <CAMDZJNUnsQM93DiP8zGyxEAzRgDogQc7HgMhSE-3WdWJWSsW8A@mail.gmail.com>
+Subject: Re: [ovs-dev] [PATCH 1/1] openvswitch: fix infoleak in conntrack
+To:     Xidong Wang <wangxidong_97@163.com>
+Cc:     Pravin B Shelar <pshelar@ovn.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        ovs dev <dev@openvswitch.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:15:48PM -0400, Peter Xu wrote:
-> Use the new mm_fault_accounting() helper for page fault accounting.
-> 
-> CC: Catalin Marinas <catalin.marinas@arm.com>
-> CC: Will Deacon <will@kernel.org>
-> CC: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+On Tue, Jun 16, 2020 at 10:13 AM Xidong Wang <wangxidong_97@163.com> wrote:
+>
+> From: xidongwang <wangxidong_97@163.com>
+>
+> The stack object =E2=80=9Czone_limit=E2=80=9D has 3 members. In function
+> ovs_ct_limit_get_default_limit(), the member "count" is
+> not initialized and sent out via =E2=80=9Cnla_put_nohdr=E2=80=9D.
+>
+> Signed-off-by: xidongwang <wangxidong_97@163.com>
 > ---
->  arch/arm64/mm/fault.c | 17 ++---------------
->  1 file changed, 2 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index c9cedc0432d2..09af7d7a60ec 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -484,8 +484,6 @@ static int __kprobes do_page_fault(unsigned long addr, unsigned int esr,
->  					 addr, esr, regs);
->  	}
->  
-> -	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-> -
->  	/*
->  	 * As per x86, we may deadlock here. However, since the kernel only
->  	 * validly references user space from well defined areas of the code,
-> @@ -535,20 +533,9 @@ static int __kprobes do_page_fault(unsigned long addr, unsigned int esr,
->  			      VM_FAULT_BADACCESS)))) {
->  		/*
->  		 * Major/minor page fault accounting is only done
-> -		 * once. If we go through a retry, it is extremely
-> -		 * likely that the page will be found in page cache at
-> -		 * that point.
-> +		 * once.
->  		 */
-> -		if (major) {
-> -			current->maj_flt++;
-> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, regs,
-> -				      addr);
-> -		} else {
-> -			current->min_flt++;
-> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, regs,
-> -				      addr);
-> -		}
-> -
-> +		mm_fault_accounting(current, regs, address, major);
+>  net/openvswitch/conntrack.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
+> index 4340f25..1b7820a 100644
+> --- a/net/openvswitch/conntrack.c
+> +++ b/net/openvswitch/conntrack.c
+> @@ -2020,6 +2020,7 @@ static int ovs_ct_limit_get_default_limit(struct ov=
+s_ct_limit_info *info,
+>  {
+>         struct ovs_zone_limit zone_limit;
+>         int err;
+> +       memset(&zone_limit, 0, sizeof(zone_limit));
+why not init zone.count =3D=3D 0, instead of memset, because zone_id/limit
+will be inited later.
+memset uses more cpu cycles.
+>         zone_limit.zone_id =3D OVS_ZONE_LIMIT_DEFAULT_ZONE;
+>         zone_limit.limit =3D info->default_limit;
+> --
+> 2.7.4
+>
+> _______________________________________________
+> dev mailing list
+> dev@openvswitch.org
+> https://mail.openvswitch.org/mailman/listinfo/ovs-dev
 
-Please can you explain why it's ok to move the PERF_COUNT_SW_PAGE_FAULTS
-update like this? Seems like a user-visible change to me, so some
-justification would really help.
 
-Will
+
+--=20
+Best regards, Tonghao
