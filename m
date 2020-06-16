@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2511FC253
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459CA1FC26A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgFPXcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 19:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgFPXcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:32:02 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBFDC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:32:02 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id a3so121965oid.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:32:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jZR76zTcu1z7oLJO1oPo6x5h1/7W/tIAc9DNWun2Jro=;
-        b=A+imL3Xumi3VRZIxUfyQtYqL4SA7G7E/2giwMRBcbO409QXLbYKBmCEsGUcJqa4TAY
-         HU+A+AmsENld/FcXObD2qTY0vt+cbLiaGJm9qbyZw0vkmsaJ7NDYQPWy1JEpm6ihyqYo
-         pS10I8MeABTV+7Z6yUApqXhNqxg3tpLAJIdzw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jZR76zTcu1z7oLJO1oPo6x5h1/7W/tIAc9DNWun2Jro=;
-        b=O0/ewYqTeGguQu1s2mCwa49LLl26mEgNuD85kwjLZL8VLAnEswgsZEiJYTNTGBsCgX
-         ha+HW9OIwzLQa1BkMub1jHLCECKTy7RJqbzD+rFteRgWdoZJBAl3LkVM3pK8QME4Q+At
-         1dB7i8Ua2HKeDcSMudM7H9gW8UT3RMlUWbbsI+QzuEn2FYQL4MAJzUtZ0YS7edSBjmn/
-         qMYIpB6lLvh+UWmaxQoOf1yG+9K/afsbzkKYE/NKsTHPOzNjJOZInHAiimhCWAnajaRQ
-         EtH6d6hKY7Z96HCAaBAqWNz2qtRAnykZ4v6zJuR2h7kLw6qsJChqtAsvBVg2dDecxtdr
-         jx7Q==
-X-Gm-Message-State: AOAM531We052TExNgh1A9LccFOwKVeOyTCKsipW/jqDPgF65eLIYCC1O
-        bknq2kYFWshIiTfz78W5bOuPWtEfB4PW/l1soO74nQ==
-X-Google-Smtp-Source: ABdhPJwe8HlKioFRvrB52wPJ2kMSEumu6r/YnRkn+Sg0kQa3w4uatWgIq71dkjgVv5uf+tX4zvqmniNxH4IY0WgJjkk=
-X-Received: by 2002:a05:6808:aa3:: with SMTP id r3mr5645675oij.170.1592350321223;
- Tue, 16 Jun 2020 16:32:01 -0700 (PDT)
+        id S1726433AbgFPXjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 19:39:42 -0400
+Received: from mta-out1.inet.fi ([62.71.2.202]:40956 "EHLO julia1.inet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgFPXjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 19:39:42 -0400
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Jun 2020 19:39:40 EDT
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrudejuddgvddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuffpveftnecuuegrihhlohhuthemuceftddtnecunecujfgurhepvffhuffkffgfgggtgfesthekredttdefjeenucfhrhhomhepkfhlkhhkrgcurfhruhhsihcuoehilhhkkhgrrdhprhhushhisehpphdrihhnvghtrdhfiheqnecuggftrfgrthhtvghrnhephfeigfehueefteduuefguefgveffhffgueeiieffffejvdeijedtuefhieduvedtnecukfhppeekgedrvdehuddrudelgedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopegludelvddrudeikedruddruddthegnpdhinhgvthepkeegrddvhedurdduleegrdduieegpdhmrghilhhfrhhomhepoehprhhushhilhdqudesmhgsohigrdhinhgvthdrfhhiqecuuefqffgjpeekuefkvffokffogfdprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
+Received: from [192.168.1.105] (84.251.194.164) by julia1.inet.fi (9.0.019.26-1) (authenticated as prusil-1)
+        id 5EE535C50013C974 for linux-kernel@vger.kernel.org; Wed, 17 Jun 2020 02:32:39 +0300
+To:     linux-kernel@vger.kernel.org
+From:   Ilkka Prusi <ilkka.prusi@pp.inet.fi>
+Subject: WARNING at switch_mm_irqs_off, followed by frozen machine
+Message-ID: <c060d969-beb1-f99b-ab56-d2e9fd85c5dc@pp.inet.fi>
+Date:   Wed, 17 Jun 2020 02:32:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200612164632.25648-1-nsaenzjulienne@suse.de>
- <20200612164632.25648-5-nsaenzjulienne@suse.de> <CAPnjgZ2jarQArKN=0h0mNnxE7gAL0juvGhMxMF4a0CehqxWcRw@mail.gmail.com>
- <d3346d7cb9655eb111b4126d72a08499c6254fef.camel@suse.de>
-In-Reply-To: <d3346d7cb9655eb111b4126d72a08499c6254fef.camel@suse.de>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Tue, 16 Jun 2020 17:31:49 -0600
-Message-ID: <CAPnjgZ3PwTWBQ2Vi4=Sc7JB699TrSxr=PAJupL_3POhJ00qSsA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] dm: pci: Assign controller device node to root bridge
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Matthias Brugger <mbrugger@suse.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Bin Meng <bmeng.cn@gmail.com>, Marek Vasut <marex@denx.de>,
-        lk <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Hi,
 
-On Tue, 16 Jun 2020 at 08:09, Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> On Tue, 2020-06-16 at 07:43 -0600, Simon Glass wrote:
-> > Hi Nicolas,
-> >
-> > On Fri, 12 Jun 2020 at 10:47, Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > There is no distinction in DT between the PCI controller device and the
-> > > root bridge, whereas such distinction exists from dm's perspective. Make
-> > > sure the root bridge ofnode is assigned to the controller's platform
-> > > device node.
-> > >
-> > > This permits setups like this to work correctly:
-> > >
-> > >         pcie {
-> > >                 compatible = "...";
-> > >                 ...
-> > >                 dev {
-> > >                         reg = <0 0 0 0 0>;
-> > >                         ...
-> > >                 };
-> > >         };
-> > >
-> > > Without this the dev node is assigned to the root bridge and the
-> > > actual device search starts one level lower than expected.
-> > >
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > ---
-> > >  drivers/pci/pci-uclass.c | 15 ++++++++++++++-
-> > >  1 file changed, 14 insertions(+), 1 deletion(-)
-> >
-> > Can you update the tests to handle this case please?
->
-> I'd be glad to, but I'm not familiar with the test FW in u-booy, coud give me
-> some pointers on where/how to test this?
->
+Yesterday my computer with kernel version 5.7.2 was frozen badly enough 
+that hard reset was necessary (did not react to SysRq keys). Upon 
+checking logs I found following warning and information from the time 
+just before resetting it.
 
-Yes it is at test/dm/pci.c and the device tree is test.dts
+Computer has AMD Ryzen 7 2700, Asus B450 motherboard.
 
-'make qcheck' to run all tests. To run one test, build for sandbox and
-then something like
+5.8-rc1 encountered BUG() and did not boot (iommu and smp_processor_id() 
+called from wrong context, I'll see if I can catch log somehow).
 
-u-boot -T -c "ut dm pci_swapcase"
+kernel: [ 1166.739530] ------------[ cut here ]------------
+kernel: [ 1166.739539] WARNING: CPU: 4 PID: 0 at 
+switch_mm_irqs_off+0x3ef/0x4a0
+kernel: [ 1166.739540] Modules linked in: nf_tables(E) nfnetlink(E) 
+binfmt_misc(E) nls_ascii(E) nls_cp437(E) vfat(E) fat(E) snd_hda_cod
+ec_realtek(E) snd_hda_codec_generic(E) ledtrig_audio(E) 
+snd_hda_codec_hdmi(E) snd_usb_audio(E) snd_hda_intel(E) 
+snd_intel_dspcfg(E) snd_usbmidi_lib(E) snd_hda_cod
+ec(E) snd_rawmidi(E) snd_hda_core(E) snd_hwdep(E) snd_seq_device(E) 
+mc(E) snd_pcm_oss(E) amdgpu(E) snd_mixer_oss(E) gpu_sched(E) snd_pcm(E) 
+ttm(E) snd_timer(E) jo
+ydev(E) drm_kms_helper(E) snd(E) cec(E) soundcore(E) eeepc_wmi(E) 
+asus_wmi(E) fb_sys_fops(E) syscopyarea(E) battery(E) edac_mce_amd(E) 
+sparse_keymap(E) sysfillrec
+t(E) sysimgblt(E) i2c_algo_bit(E) kvm_amd(E) video(E) kvm(E) 
+irqbypass(E) 8250(E) ccp(E) wmi_bmof(E) sg(E) 8250_base(E) r8169(E) 
+serial_mctrl_gpio(E) rng_core(E)
+crct10dif_pclmul(E) realtek(E) serial_core(E) crc32_pclmul(E) libphy(E) 
+ghash_clmulni_intel(E) aesni_intel(E) wmi(E) i2c_piix4(E) k10temp(E) 
+crypto_simd(E) cryptd
+(E) efi_pstore(E) glue_helper(E) efivars(E) acpi_cpufreq(E) button(E)
+kernel: [ 1166.739583]  nfsd(E) auth_rpcgss(E) nfs_acl(E) lockd(E) 
+grace(E) parport_pc(E) drm(E) sunrpc(E) ppdev(E) lp(E) agpgart(E) pa
+rport(E) efivarfs(E) ip_tables(E) x_tables(E) autofs4(E) raid10(E) 
+raid456(E) libcrc32c(E) async_raid6_recov(E) async_memcpy(E) async_pq(E) 
+async_xor(E) xor(E) async_tx(E) raid6_pq(E) raid1(E) raid0(E) 
+multipath(E) linear(E) md_mod(E) evdev(E) input_leds(E) hid_generic(E) 
+usbhid(E) hid(E) crc32c_intel(E) xhci_pci(E) xhci_hcd(E) sd_mod(E) 
+usbcore(E) t10_pi(E) gpio_amdpt(E) gpio_generic(E)
+kernel: [ 1166.739613] CPU: 4 PID: 0 Comm: swapper/4 Tainted: 
+G            E     5.7.2 #2
+kernel: [ 1166.739614] Hardware name: System manufacturer System Product 
+Name/TUF B450-PLUS GAMING, BIOS 2008 12/06/2019
+kernel: [ 1166.739618] RIP: 0010:switch_mm_irqs_off+0x3ef/0x4a0
+kernel: [ 1166.739621] Code: 00 00 0f 84 be fc ff ff b9 49 00 00 00 b8 
+01 00 00 00 31 d2 0f 30 48 8b 86 68 03 00 00 65 48 89 05 fe 9e fb 7e e9 
+9c fc ff ff <0f> 0b f0 4c 0f ab ad 00 04 00 00 e9 3b fe ff ff b9 49 00 
+00 00 b8
+kernel: [ 1166.739623] RSP: 0018:ffffc90000147e48 EFLAGS: 00210086
+kernel: [ 1166.739624] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
+0000000000000000
+kernel: [ 1166.739626] RDX: ffff88871e43c001 RSI: ffff88871e43c0c0 RDI: 
+ffff8886fdede440
+kernel: [ 1166.739627] RBP: ffff8886fdede440 R08: 0000000000000001 R09: 
+ffff8887f3b5d140
+kernel: [ 1166.739628] R10: 000000000000025f R11: 0000000000000018 R12: 
+ffff8886fdede440
+kernel: [ 1166.739629] R13: 0000000000000004 R14: ffff88871e43c0c0 R15: 
+0000000000000000
+kernel: [ 1166.739631] FS:  0000000000000000(0000) 
+GS:ffff8887fe900000(0000) knlGS:0000000000000000
+kernel: [ 1166.739632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kernel: [ 1166.739633] CR2: 00003d9b09447000 CR3: 000000071e4e0000 CR4: 
+00000000001406e0
+kernel: [ 1166.739635] Call Trace:
+kernel: [ 1166.739643]  __schedule+0x1cd/0x5e0
+kernel: [ 1166.739647]  schedule_idle+0x28/0x40
+kernel: [ 1166.739651]  do_idle+0x149/0x1f0
+kernel: [ 1166.739655]  cpu_startup_entry+0x19/0x20
+kernel: [ 1166.739659]  start_secondary+0x170/0x1c0
+kernel: [ 1166.739663]  secondary_startup_64+0xa4/0xb0
+kernel: [ 1166.739667] ---[ end trace 8c88a1b8567786da ]---
 
-for example.
+--
 
-You can perhaps use an existing PCI controller in test.dts but feel
-free to add one more if you need it for your test. Make sure that you
-don't break other tests.
+  - Ilkka Prusi
 
-Regards,
-Simon
+
