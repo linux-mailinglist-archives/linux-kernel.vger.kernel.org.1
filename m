@@ -2,274 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6161FB364
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319311FB334
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgFPOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:04:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48976 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729003AbgFPOEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:04:11 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 99BA45AC549A2D2B9715;
-        Tue, 16 Jun 2020 22:04:02 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 16 Jun 2020 22:03:52 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>
-CC:     <joro@8bytes.org>, <trivial@kernel.org>,
+        id S1729199AbgFPOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:00:51 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:1290 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729140AbgFPOAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1592316042; x=1623852042;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZwjUqHNGtzEBM75RIQXsqSv3DYyG/znHnZV28mZTKO0=;
+  b=Gh9RczqW46YtK4uuFKxvZOJ+6aYfiFOdQIMvozc2bB01VskWRFDLeQLw
+   ANROT1f+laJepD8Psv3XDulbkKk/OtOXd01Eej2yUXJTSswUltQJOte4p
+   z3IOw+MmSsX3Se5u6sAfTTML+ZDu+ji3goKKocK5wNkPuZ0Fx/O8GBfgs
+   9eLqRb3PSPuM6OgnR4V1yENvIZdZ/dKs0u2mkUxeuN2BpINGIymUwi83A
+   y3Nc4GVlt1se1BMHqd+7jl1Rzbp6Nt3ptiax9XoHd64E6qlYhN8yx0zdn
+   huqQ3flioW7kVTLwZh7koDW91NsvDgnruL3dSvR26wMbBZkRYH2SAYi6J
+   g==;
+IronPort-SDR: kHOYrxDh/iti501DLLgb1RUnDtWNU3/XOP6KmtTeF4gIOFb6SFm+Nm+Ij2FR4qNKVT84DodAnb
+ EhxPalSGMDTdOreFj/VIfDPFjwNqcf3fWocPUVmpU8jTc7lsqjsGNtPkC2jUnli7tJhHgoBeD8
+ vysf8Dm7tp83I81NujLoD9JUdvSb4ZtrC/RJpqHdMNTEnfcZLtGyRqJbl6khw+WDyfo0HDmN/G
+ +NYWef8TmevOQwZCwP9ZmgV0DKe1/JlRcpPwtxtk7JhJr+HWAN/vfxH9WkytTrZKPUS+WROZZH
+ psQ=
+X-IronPort-AV: E=Sophos;i="5.73,518,1583218800"; 
+   d="scan'208";a="78647033"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Jun 2020 07:00:36 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 16 Jun 2020 07:00:35 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 16 Jun 2020 07:00:29 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <maz@kernel.org>,
-        "John Garry" <john.garry@huawei.com>
-Subject: [PATCH RFC v2 4/4] iommu/arm-smmu-v3: Remove cmpxchg() in arm_smmu_cmdq_issue_cmdlist()
-Date:   Tue, 16 Jun 2020 21:59:53 +0800
-Message-ID: <1592315993-164290-5-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
-References: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v3 1/3] dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
+Date:   Tue, 16 Jun 2020 16:00:25 +0200
+Message-ID: <20200616140027.4949-2-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200616140027.4949-1-lars.povlsen@microchip.com>
+References: <20200616140027.4949-1-lars.povlsen@microchip.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been shown that the cmpxchg() for finding space in the cmdq can
-be a real bottleneck:
-- for more CPUs contending the cmdq, the cmpxchg() will fail more often
-- since the software-maintained cons pointer is updated on the same 64b
-  memory region, the chance of cmpxchg() failure increases again
+The Sparx5 SDHCI controller is based on the Designware controller IP.
 
-The cmpxchg() is removed as part of 2 related changes:
-
-- Update prod and cmdq owner in a single atomic add operation. For this, we
-  count the prod and owner in separate regions in prod memory.
-
-  As with simple binary counting, once the prod+wrap fields overflow, they
-  will zero. They should never overflow into "owner" region, and we zero
-  the non-owner, prod region for each owner. This maintains the prod
-  pointer.
-
-  As for the "owner", we now count this value, instead of setting a flag.
-  Similar to before, once the owner has finished gathering, it will clear
-  a mask. As such, a CPU declares itself as the "owner" when it reads zero
-  for this region. This zeroing will also clear possible overflow in
-  wrap+prod region, above.
-
-  The owner is now responsible for cmdq locking to avoid possible deadlock.
-  The owner will lock the cmdq for all non-owers it has gathered when they
-  have space in the queue and have written their entries.
-
-- Check for space in the cmdq after the prod pointer has been assigned.
-
-  We don't bother checking for space in the cmdq before assigning the prod
-  pointer, as this would be racy.
-
-  So since the prod pointer is updated unconditionally, it would be common
-  for no space to be available in the cmdq when prod is assigned - that
-  is, according the software-maintained prod and cons pointer. So now
-  it must be ensured that the entries are not yet written and not until
-  there is space.
-
-  How the prod pointer is maintained also leads to a strange condition
-  where the prod pointer can wrap past the cons pointer. We can detect this
-  condition, and report no space here. However, a prod pointer progressed
-  twice past the cons pointer cannot be detected. But it can be ensured that
-  this that this scenario does not occur, as we limit the amount of
-  commands any CPU can issue at any given time, such that we cannot
-  progress prod pointer further.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 ---
- drivers/iommu/arm-smmu-v3.c | 102 +++++++++++++++++++++---------------
- 1 file changed, 61 insertions(+), 41 deletions(-)
+ .../mmc/microchip,dw-sparx5-sdhci.yaml        | 65 +++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
 
-diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-index 36648163364c..fd42a98f501f 100644
---- a/drivers/iommu/arm-smmu-v3.c
-+++ b/drivers/iommu/arm-smmu-v3.c
-@@ -772,10 +772,19 @@ static bool queue_has_space(struct arm_smmu_ll_queue *q, u32 n)
- 	prod = Q_IDX(q, q->prod);
- 	cons = Q_IDX(q, q->cons);
- 
--	if (Q_WRP(q, q->prod) == Q_WRP(q, q->cons))
-+	if (Q_WRP(q, q->prod) == Q_WRP(q, q->cons)) {
-+		/* check if we have wrapped twice, meaning definitely no space */
-+		if (cons > prod)
-+			return false;
+diff --git a/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
+new file mode 100644
+index 0000000000000..55883290543b9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mmc/microchip,dw-sparx5-sdhci.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 		space = (1 << q->max_n_shift) - (prod - cons);
--	else
-+	} else {
-+		/* similar check to above */
-+		if (prod > cons)
-+			return false;
++title: Microchip Sparx5 Mobile Storage Host Controller Binding
 +
- 		space = cons - prod;
-+	}
- 
- 	return space >= n;
- }
-@@ -1073,7 +1082,7 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-  *   fails if the caller appears to be the last lock holder (yes, this is
-  *   racy). All successful UNLOCK routines have RELEASE semantics.
-  */
--static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq)
-+static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq, int count)
- {
- 	int val;
- 
-@@ -1083,12 +1092,12 @@ static void arm_smmu_cmdq_shared_lock(struct arm_smmu_cmdq *cmdq)
- 	 * to INT_MIN so these increments won't hurt as the value will remain
- 	 * negative.
- 	 */
--	if (atomic_fetch_inc_relaxed(&cmdq->lock) >= 0)
-+	if (atomic_fetch_add_relaxed(count, &cmdq->lock) >= 0)
- 		return;
- 
- 	do {
- 		val = atomic_cond_read_relaxed(&cmdq->lock, VAL >= 0);
--	} while (atomic_cmpxchg_relaxed(&cmdq->lock, val, val + 1) != val);
-+	} while (atomic_cmpxchg_relaxed(&cmdq->lock, val, val + count) != val);
- }
- 
- static void arm_smmu_cmdq_shared_unlock(struct arm_smmu_cmdq *cmdq)
-@@ -1374,8 +1383,10 @@ static void arm_smmu_cmdq_write_entries(struct arm_smmu_cmdq *cmdq, u64 *cmds,
-  *   insert their own list of commands then all of the commands from one
-  *   CPU will appear before any of the commands from the other CPU.
-  *
-- * - A CMD_SYNC is always inserted, ensuring that any CPU does not issue
-- *   more than the permitted amount commands at once.
-+ * - A CMD_SYNC is always inserted, which ensures we limit the prod pointer
-+ *   for when the cmdq is full, such that we don't wrap more than twice.
-+ *   It also makes it easy for the owner to know by how many to increment the
-+ *   cmdq lock.
-  */
- static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 				       u64 *cmds, int n)
-@@ -1388,39 +1399,38 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
- 	struct arm_smmu_ll_queue llq = {
- 		.max_n_shift = cmdq->q.llq.max_n_shift,
--	}, head = llq;
-+	}, head = llq, space = llq;
-+	u32 owner_val = 1 << cmdq->q.llq.owner_count_shift;
-+	u32 prod_mask = GENMASK(cmdq->q.llq.max_n_shift, 0);
-+	u32 owner_mask = GENMASK(30, cmdq->q.llq.owner_count_shift);
- 	int ret = 0;
- 
- 	/* 1. Allocate some space in the queue */
- 	local_irq_save(flags);
--	llq.val = READ_ONCE(cmdq->q.llq.val);
--	do {
--		u64 old;
- 
--		while (!queue_has_space(&llq, n + sync)) {
--			local_irq_restore(flags);
--			if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
--				dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
--			local_irq_save(flags);
--		}
-+	prod = atomic_fetch_add(n + sync + owner_val,
-+				&cmdq->q.llq.atomic.prod);
- 
--		head.cons = llq.cons;
--		head.prod = queue_inc_prod_n(&llq, n + sync) |
--					     CMDQ_PROD_OWNED_FLAG;
-+	owner = !(prod & owner_mask);
-+	llq.prod = prod_mask & prod;
-+	head.prod = queue_inc_prod_n(&llq, n + sync);
- 
--		old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
--		if (old == llq.val)
--			break;
-+	/*
-+	 * Ensure it's safe to write the entries. For this, we need to ensure
-+	 * that there is space in the queue from our prod pointer.
-+	 */
-+	space.cons = READ_ONCE(cmdq->q.llq.cons);
-+	space.prod = llq.prod;
-+	while (!queue_has_space(&space, n + sync)) {
-+		if (arm_smmu_cmdq_poll_until_not_full(smmu, &space))
-+			dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
- 
--		llq.val = old;
--	} while (1);
--	owner = !(llq.prod & CMDQ_PROD_OWNED_FLAG);
--	head.prod &= ~CMDQ_PROD_OWNED_FLAG;
--	llq.prod &= ~CMDQ_PROD_OWNED_FLAG;
-+		space.prod = llq.prod;
-+	}
- 
- 	/*
- 	 * 2. Write our commands into the queue
--	 * Dependency ordering from the cmpxchg() loop above.
-+	 * Dependency ordering from the space-checking while loop, above.
- 	 */
- 	arm_smmu_cmdq_write_entries(cmdq, cmds, llq.prod, n);
- 
-@@ -1428,27 +1438,24 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 	arm_smmu_cmdq_build_sync_cmd(cmd_sync, smmu, prod);
- 	queue_write(Q_ENT(&cmdq->q, prod), cmd_sync, CMDQ_ENT_DWORDS);
- 
--	/*
--	 * In order to determine completion of our CMD_SYNC, we must
--	 * ensure that the queue can't wrap twice without us noticing.
--	 * We achieve that by taking the cmdq lock as shared before
--	 * marking our slot as valid.
--	 */
--	arm_smmu_cmdq_shared_lock(cmdq);
--
- 	/* 3. Mark our slots as valid, ensuring commands are visible first */
- 	dma_wmb();
- 	arm_smmu_cmdq_set_valid_map(cmdq, llq.prod, head.prod);
- 
- 	/* 4. If we are the owner, take control of the SMMU hardware */
- 	if (owner) {
-+		int owner_count;
-+		u32 prod_tmp;
++allOf:
++  - $ref: "mmc-controller.yaml"
 +
- 		/* a. Wait for previous owner to finish */
- 		atomic_cond_read_relaxed(&cmdq->owner_prod, VAL == llq.prod);
- 
--		/* b. Stop gathering work by clearing the owned flag */
--		prod = atomic_fetch_andnot_relaxed(CMDQ_PROD_OWNED_FLAG,
--						   &cmdq->q.llq.atomic.prod);
--		prod &= ~CMDQ_PROD_OWNED_FLAG;
-+		/* b. Stop gathering work by clearing the owned mask */
-+		prod_tmp = atomic_fetch_andnot_relaxed(~prod_mask,
-+						       &cmdq->q.llq.atomic.prod);
-+		prod = prod_tmp & prod_mask;
-+		owner_count = prod_tmp & owner_mask;
-+		owner_count >>= cmdq->q.llq.owner_count_shift;
- 
- 		/*
- 		 * c. Wait for any gathered work to be written to the queue.
-@@ -1457,6 +1464,19 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
- 		 */
- 		arm_smmu_cmdq_poll_valid_map(cmdq, llq.prod, prod);
- 
-+		/*
-+		 * In order to determine completion of the CMD_SYNCs, we must
-+		 * ensure that the queue can't wrap twice without us noticing.
-+		 * We achieve that by taking the cmdq lock as shared before
-+		 * progressing the prod pointer.
-+		 * The owner does this for all the non-owners it has gathered.
-+		 * Otherwise, some non-owner(s) may lock the cmdq, blocking
-+		 * cons being updating. This could be when the cmdq has just
-+		 * become full. In this case, other sibling non-owners could be
-+		 * blocked from progressing, leading to deadlock.
-+		 */
-+		arm_smmu_cmdq_shared_lock(cmdq, owner_count);
++maintainers:
++  - Lars Povlsen <lars.povlsen@microchip.com>
 +
- 		/*
- 		 * d. Advance the hardware prod pointer
- 		 * Control dependency ordering from the entries becoming valid.
++# Everything else is described in the common file
++properties:
++  compatible:
++    const: microchip,dw-sparx5-sdhci
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description:
++      Handle to "core" clock for the sdhci controller.
++
++  clock-names:
++    items:
++      - const: core
++
++  microchip,clock-delay:
++    description: Delay clock to card to meet setup time requirements.
++      Each step increase by 1.25ns.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 1
++    maximum: 15
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/microchip,sparx5.h>
++    sdhci0: mmc@600800000 {
++        compatible = "microchip,dw-sparx5-sdhci";
++        reg = <0x00800000 0x1000>;
++        pinctrl-0 = <&emmc_pins>;
++        pinctrl-names = "default";
++        clocks = <&clks CLK_ID_AUX1>;
++        clock-names = "core";
++        assigned-clocks = <&clks CLK_ID_AUX1>;
++        assigned-clock-rates = <800000000>;
++        interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++        bus-width = <8>;
++        microchip,clock-delay = <10>;
++    };
 -- 
-2.26.2
+2.27.0
 
