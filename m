@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022471FB765
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52781FB803
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbgFPPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:45:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37164 "EHLO mail.kernel.org"
+        id S1731580AbgFPPvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:51:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731142AbgFPPpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:42 -0400
+        id S1732649AbgFPPvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:51:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4C2D20C09;
-        Tue, 16 Jun 2020 15:45:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35E5521501;
+        Tue, 16 Jun 2020 15:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322342;
-        bh=rm1bzAXLBXkymLfucPHjI52gwCHPLfYj8Fb3tWjdOxM=;
+        s=default; t=1592322696;
+        bh=jgxcL1X6W2aAeM8W8i4kiLVRIxHvBOrwl3wrmQEKn/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9bh1UZ1DdFkq3JHLGmOfhZaWTV4H5EmkRg4zZrldxUEYIeFz0bTTD06v3zcdZlOC
-         s80tACP+KOopFOQT1dBbFoslhL3jvcrU4mQIuGEI0I+Cwr0518qnEgdauim64i+gxn
-         VQRNwAD2YOl1nRcupdR2un03rXYCnDknML9i7508=
+        b=Z7Gt90aOLj0KDOGSxXp6BSAVTceJeG3uxssDbb0li2saseV88jfDfkaFVGjb3eEZ1
+         pEOGBFgkc0opCv1PdVTtZEQjNNwB0FO13juhP8HYzVH7Gm5XkOeX8JQczxENY63oAI
+         Rqo/gR6anZshsDv6PhyrsouXZQch9D7TJ6/7D/9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 054/163] io_uring: re-set iov base/len for buffer select retry
+        stable@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 038/161] x86/cpu/amd: Make erratum #1054 a legacy erratum
 Date:   Tue, 16 Jun 2020 17:33:48 +0200
-Message-Id: <20200616153109.432071451@linuxfoundation.org>
+Message-Id: <20200616153108.195884840@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Kim Phillips <kim.phillips@amd.com>
 
-commit dddb3e26f6d88c5344d28cb5ff9d3d6fa05c4f7a upstream.
+[ Upstream commit e2abfc0448a46d8a137505aa180caf14070ec535 ]
 
-We already have the buffer selected, but we should set the iter list
-again.
+Commit
 
-Cc: stable@vger.kernel.org # v5.7
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired
+		 counter IRPERF")
 
+mistakenly added erratum #1054 as an OS Visible Workaround (OSVW) ID 0.
+Erratum #1054 is not OSVW ID 0 [1], so make it a legacy erratum.
+
+There would never have been a false positive on older hardware that
+has OSVW bit 0 set, since the IRPERF feature was not available.
+
+However, save a couple of RDMSR executions per thread, on modern
+system configurations that correctly set non-zero values in their
+OSVW_ID_Length MSRs.
+
+[1] Revision Guide for AMD Family 17h Models 00h-0Fh Processors. The
+revision guide is available from the bugzilla link below.
+
+Fixes: 21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired counter IRPERF")
+Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200417143356.26054-1-kim.phillips@amd.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/amd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2333,8 +2333,14 @@ static ssize_t __io_iov_buffer_select(st
- static ssize_t io_iov_buffer_select(struct io_kiocb *req, struct iovec *iov,
- 				    bool needs_lock)
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 1f875fbe1384..f04cc01e629e 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1111,8 +1111,7 @@ static const int amd_erratum_383[] =
+ 
+ /* #1054: Instructions Retired Performance Counter May Be Inaccurate */
+ static const int amd_erratum_1054[] =
+-	AMD_OSVW_ERRATUM(0, AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+-
++	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+ 
+ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
  {
--	if (req->flags & REQ_F_BUFFER_SELECTED)
-+	if (req->flags & REQ_F_BUFFER_SELECTED) {
-+		struct io_buffer *kbuf;
-+
-+		kbuf = (struct io_buffer *) (unsigned long) req->rw.addr;
-+		iov[0].iov_base = u64_to_user_ptr(kbuf->addr);
-+		iov[0].iov_len = kbuf->len;
- 		return 0;
-+	}
- 	if (!req->rw.len)
- 		return 0;
- 	else if (req->rw.len > 1)
+-- 
+2.25.1
+
 
 
