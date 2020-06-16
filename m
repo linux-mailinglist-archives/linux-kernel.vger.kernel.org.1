@@ -2,185 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8FD1FBC52
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C401FBC55
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbgFPREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 13:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S1730736AbgFPRFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 13:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgFPREe (ORCPT
+        with ESMTP id S1729794AbgFPRFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 13:04:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB00C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 10:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ybfZuvGtNAD3OuHvtY9oE468XrDSMtDlHniKcQPRE+k=; b=h+fNcFuc4tyLe9+CTLgrSHSyKQ
-        1bKNLy1QGBmaJbYvWdKGrrR3DiLw+R7BOEG89qh2lFTHNeOtf4Q+wZJUVVmSG5jxLz4N3+krXlhzO
-        0Xu5Fwi+nbOiPuTq6yoGC2DeGsPl/VmKlw/HD+ASSpIBx41JTb4/IKD36DbZ/5xXAWjsvxhdKZ8mS
-        D8m+U0bhv1VTErYbOqF6bnCxvvu8f4Lyt5sk5J20dl6VsfoorIA6//iDvhyU11OFFyCyFgKoTgVpw
-        /5bNcms948mMZmGSYCfR5tKaKPGmJcD0nwlTx+B6Q1zy6HWJttR5MhC7w9QzMiBH84ycNHtirLNUp
-        ONMmdkrw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlF0O-0006dX-Ph; Tue, 16 Jun 2020 17:04:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 30518301A32;
-        Tue, 16 Jun 2020 19:04:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1565E2B77E16D; Tue, 16 Jun 2020 19:04:10 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 19:04:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, frederic@kernel.org
-Subject: Re: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
-Message-ID: <20200616170410.GL2554@hirez.programming.kicks-ass.net>
-References: <20200615125654.678940605@infradead.org>
- <20200615162330.GF2723@paulmck-ThinkPad-P72>
- <20200615164048.GC2531@hirez.programming.kicks-ass.net>
- <20200615172149.GJ2723@paulmck-ThinkPad-P72>
- <20200615191158.GK2531@hirez.programming.kicks-ass.net>
+        Tue, 16 Jun 2020 13:05:13 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF6FC061573;
+        Tue, 16 Jun 2020 10:05:11 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f185so3859064wmf.3;
+        Tue, 16 Jun 2020 10:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Df4lS1a4Afgip6mUYwPxDAu7PfQ0SWY73b7vyFMbsdY=;
+        b=CI3GXRng/K5RxhCOS2ZF34C0Ye8JxjrfxOlmQhW2IhqlU78cmj9vX2qakPBpyhaKCZ
+         EPrtQxOXVVhNTmrfMvB6u7rPfCEdiaBROHPuqrCsuhN0ZnMFfiid/0hQXTDSpQ5mUHyC
+         ZazlXCmEUzZoHaTgjbXV11ff2jaft3sQcWbiOJfJhStNCguLMBeM7HzwJ45SZbMReRyG
+         +O5rdV7YmSbau/2jpbHx64yfKAnS4r79vqLfosIM7tiuGs22qPC0DG+Lo9uAGVrNeHvv
+         XODkuQyVSl8Gv3F8WG88JXp9ZD75V5UnLPgYY38/uasWV76/p+Bhnl7BKcHgJ3tnxLlF
+         3mZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Df4lS1a4Afgip6mUYwPxDAu7PfQ0SWY73b7vyFMbsdY=;
+        b=SiHqaxDlhZsrCxEGgVhw6XE4ykr1WxuVcfQtOfR0Fuuw6pQhF+o5WhvCZouL3DxDmo
+         5YrfpipNL3+/JwW5hNkH8YB9BIPKYFhnJ22tF/cLweMshTZuc+l7BLl56eql4SZ5jAQ0
+         oV3bWtihA5NIo4JUXlhyfOBfTIlWGhEse239ojNRLHs1y0i6Yd0UorE/81mkcTbyFgaq
+         pnBgvX8KCMVDpGNMnpHoHKa7dqHj0qA3IRePmJyYFN4UsLzNS+YfN2jBUhbWRcDTSzUR
+         XsefEE9sS4VBbQSD84dA0CRk6rVOaCaELknUNCWN8w2jP1iEKeMtcLzR+r3Fay4EIyKz
+         JfGw==
+X-Gm-Message-State: AOAM533kHbbvW5AZsI/3xTbnXXGX5HbqQyXtt9X97E7OXO23sggW0C/a
+        0vLI9IPd6hOGtIbNqw5e1+I=
+X-Google-Smtp-Source: ABdhPJxRRzNwKYMdzdDi5JUyzHnahhqSfODmYl+q3iopHnH3Wx2Jl5Fzl4J9jJsr+CkhwDCeg3nh7A==
+X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr4346720wmh.111.1592327110274;
+        Tue, 16 Jun 2020 10:05:10 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id w1sm4682818wmi.13.2020.06.16.10.05.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 10:05:09 -0700 (PDT)
+Subject: Re: [PATCH v3 1/4] spi: bcm63xx-spi: add reset support
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        broonie@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200616070223.3401282-1-noltari@gmail.com>
+ <20200616070223.3401282-2-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d79c9e3d-fcf3-84ab-4a13-8ff00b4b2605@gmail.com>
+Date:   Tue, 16 Jun 2020 10:05:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615191158.GK2531@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200616070223.3401282-2-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 09:11:58PM +0200, Peter Zijlstra wrote:
-> On Mon, Jun 15, 2020 at 10:21:49AM -0700, Paul E. McKenney wrote:
-> > On Mon, Jun 15, 2020 at 06:40:48PM +0200, Peter Zijlstra wrote:
+
+
+On 6/16/2020 12:02 AM, Álvaro Fernández Rojas wrote:
+> bcm63xx arch resets the SPI controller at early boot. However, bmips arch
+> needs to perform a reset when probing the driver.
 > 
-> > > Thanks! I've got 16*TREE03 running since this morning, so far so nothing :/
-> > > (FWIW that's 16/9 times overcommit, idle time fluctuates around 10%).
-> > 
-> > My large system as large remote memory latencies, as in the better part
-> > of a microsecond.  My small system is old (Haswell).  So, just to grasp
-> > at the obvious straw, do you have access to a multisocket Haswell system?
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
+>  v3: use devm_reset_control_get_optional_exclusive
+>  v2: use devm_reset_control_get_exclusive
 > 
-> I've been running this on a 4 socket haswell ex.
+>  drivers/spi/spi-bcm63xx.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-bcm63xx.c b/drivers/spi/spi-bcm63xx.c
+> index 0f1b10a4ef0c..92e88901189c 100644
+> --- a/drivers/spi/spi-bcm63xx.c
+> +++ b/drivers/spi/spi-bcm63xx.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/err.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/of.h>
+> +#include <linux/reset.h>
+>  
+>  /* BCM 6338/6348 SPI core */
+>  #define SPI_6348_RSET_SIZE		64
+> @@ -493,6 +494,7 @@ static int bcm63xx_spi_probe(struct platform_device *pdev)
+>  	struct bcm63xx_spi *bs;
+>  	int ret;
+>  	u32 num_cs = BCM63XX_SPI_MAX_CS;
+> +	struct reset_control *reset;
+>  
+>  	if (dev->of_node) {
+>  		const struct of_device_id *match;
+> @@ -529,6 +531,15 @@ static int bcm63xx_spi_probe(struct platform_device *pdev)
+>  		return PTR_ERR(clk);
+>  	}
+>  
+> +	reset = devm_reset_control_get_optional_exclusive(dev, NULL);
+> +	if (IS_ERR(reset)) {
+> +		ret = PTR_ERR(reset);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev,
+> +				"failed to get reset controller: %d\n", ret);
+> +		return ret;
+> +	}
 
-Today, with patch 1 commented out, after ~5h20 I finally managed to trigger a splat.
+When the controller is optional, you don't need to do that manual error
+checking, as it does that for you already. You can only do:
 
-Let me go stare at it, see if it wants to yield it sekrets
+if (IS_ERR(reset))
+	return PTR_ERR(reset);
 
-[19324.742887] BUG: kernel NULL pointer dereference, address: 0000000000000150
-[19324.744075] #PF: supervisor read access in kernel mode
-[19324.744919] #PF: error_code(0x0000) - not-present page
-[19324.745786] PGD 0 P4D 0
-[19324.746215] Oops: 0000 [#1] PREEMPT SMP PTI
-[19324.746948] CPU: 10 PID: 76 Comm: ksoftirqd/10 Tainted: G        W         5.8.0-rc1+ #8
-[19324.748080] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[19324.749372] RIP: 0010:check_preempt_wakeup+0xad/0x1a0
-[19324.750218] Code: d0 39 d0 7d 2c 83 ea 01 48 8b 9b 48 01 00 00 39 d0 75 f2 48 39 bb 50 01 00 00 74 1e 48 8b ad 48 01 00 00 48 8b 9b 48 01 00 00 <48> 8b bd 50 01 00 00 48 39 bb 50 01 00 00 75 e2 48 85 ff 74 dd e8
-[19324.753364] RSP: 0000:ffffb3cb40320f50 EFLAGS: 00010087
-[19324.754255] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffffb400bce0
-[19324.755465] RDX: 0000000000000000 RSI: ffff93c1dbed5b00 RDI: ffff93c1df4a8380
-[19324.756682] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff93c1df2e83b0
-[19324.757848] R10: 0000000000000001 R11: 0000000000000335 R12: 0000000000000001
-[19324.758453] smpboot: CPU 11 is now offline
-[19324.759099] R13: ffff93c1dcf48000 R14: ffff93c1df4a8340 R15: ffff93c1df4a8340
-[19324.761167] FS:  0000000000000000(0000) GS:ffff93c1df480000(0000) knlGS:0000000000000000
-[19324.762559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19324.763527] CR2: 0000000000000150 CR3: 000000001e40a000 CR4: 00000000000006e0
-[19324.764726] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[19324.765929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[19324.767100] Call Trace:
-[19324.767516]  <IRQ>
-[19324.767875]  check_preempt_curr+0x62/0x90
-[19324.768586]  ttwu_do_wakeup.constprop.0+0xf/0x100
-[19324.769407]  sched_ttwu_pending+0xa9/0xe0
-[19324.770077]  __sysvec_call_function_single+0x28/0xe0
-[19324.770926]  asm_call_on_stack+0x12/0x20
-[19324.771594]  </IRQ>
-[19324.771951]  sysvec_call_function_single+0x94/0xd0
-[19324.772596]  asm_sysvec_call_function_single+0x12/0x20
-[19324.773254] RIP: 0010:_raw_spin_unlock_irqrestore+0x5/0x30
-[19324.774169] Code: e4 49 ff c3 90 c6 07 00 bf 01 00 00 00 e8 23 2d 53 ff 65 8b 05 cc 32 4b 4c 85 c0 74 01 c3 e8 b9 e4 49 ff c3 90 c6 07 00 56 9d <bf> 01 00 00 00 e8 01 2d 53 ff 65 8b 05 aa 32 4b 4c 85 c0 74 01 c3
-[19324.777267] RSP: 0000:ffffb3cb4030bd58 EFLAGS: 00000287
-[19324.777956] RAX: 0000000000000001 RBX: ffff93c1dbed5b00 RCX: ffff93c1dcd63400
-[19324.779015] RDX: 0000000000000000 RSI: 0000000000000287 RDI: ffff93c1dbed6284
-[19324.780067] RBP: 000000000000000a R08: 00001193646cd91c R09: ffff93c1df49c008
-[19324.781192] R10: ffffb3cb4030bdf8 R11: 000000000000032e R12: 0000000000000000
-[19324.782386] R13: 0000000000000287 R14: ffff93c1dbed6284 R15: ffff93c1df2e8340
-[19324.783565]  try_to_wake_up+0x232/0x530
-[19324.784057]  ? trace_raw_output_hrtimer_start+0x70/0x70
-[19324.784977]  call_timer_fn+0x28/0x150
-[19324.785606]  ? trace_raw_output_hrtimer_start+0x70/0x70
-[19324.786486]  run_timer_softirq+0x182/0x250
-[19324.787191]  ? set_next_entity+0x8b/0x1a0
-[19324.787867]  ? _raw_spin_unlock_irq+0xe/0x20
-[19324.788597]  ? finish_task_switch+0x7b/0x230
-[19324.789338]  __do_softirq+0xfc/0x32b
-[19324.789961]  ? smpboot_register_percpu_thread+0xd0/0xd0
-[19324.790904]  run_ksoftirqd+0x21/0x30
-[19324.791510]  smpboot_thread_fn+0x195/0x230
-[19324.792203]  kthread+0x13d/0x160
-[19324.792731]  ? kthread_create_worker_on_cpu+0x60/0x60
-[19324.793576]  ret_from_fork+0x22/0x30
-[19324.794186] Modules linked in:
-[19324.794729] CR2: 0000000000000150
-[19324.795303] ------------[ cut here ]------------
-[19324.795304] WARNING: CPU: 10 PID: 76 at kernel/smp.c:138 __smp_call_single_queue+0x40/0x50
-[19324.795305] Modules linked in:
-[19324.795306] CPU: 10 PID: 76 Comm: ksoftirqd/10 Not tainted 5.8.0-rc1+ #8
-[19324.795307] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[19324.795307] RIP: 0010:__smp_call_single_queue+0x40/0x50
-[19324.795308] Code: c2 40 91 02 00 4c 89 e6 4c 89 e7 48 03 14 c5 e0 56 2d b4 e8 b2 3a 2f 00 84 c0 75 04 5d 41 5c c3 89 ef 5d 41 5c e9 40 af f9 ff <0f> 0b eb cd 66 66 2e 0f 1f 84 00 00 00 00 00 90 41 54 49 89 f4 55
-[19324.795309] RSP: 0000:ffffb3cb4030bd18 EFLAGS: 00010046
-[19324.795310] RAX: 000000000000000a RBX: 0000000000000000 RCX: 00000000ffffffff
-[19324.795310] RDX: 00000000000090aa RSI: ffffffffb420bc3f RDI: ffffffffb4232e3e
-[19324.795311] RBP: 000000000000000a R08: 00001193646cd91c R09: ffff93c1df49c008
-[19324.795312] R10: ffffb3cb4030bdf8 R11: 000000000000032e R12: ffff93c1dbed5b30
-[19324.795312] R13: ffff93c1df4a8340 R14: 000000000000000a R15: ffff93c1df2e8340
-[19324.795313] FS:  0000000000000000(0000) GS:ffff93c1df480000(0000) knlGS:0000000000000000
-[19324.795313] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19324.795314] CR2: 00000000ffffffff CR3: 000000001e40a000 CR4: 00000000000006e0
-[19324.795315] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[19324.795315] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[19324.795316] Call Trace:
-[19324.795316]  ttwu_queue_wakelist+0xa4/0xc0
-[19324.795316]  try_to_wake_up+0x432/0x530
-[19324.795317]  ? trace_raw_output_hrtimer_start+0x70/0x70
-[19324.795317]  call_timer_fn+0x28/0x150
-[19324.795318]  ? trace_raw_output_hrtimer_start+0x70/0x70
-[19324.795318]  run_timer_softirq+0x182/0x250
-[19324.795319]  ? set_next_entity+0x8b/0x1a0
-[19324.795319]  ? _raw_spin_unlock_irq+0xe/0x20
-[19324.795319]  ? finish_task_switch+0x7b/0x230
-[19324.795320]  __do_softirq+0xfc/0x32b
-[19324.795320]  ? smpboot_register_percpu_thread+0xd0/0xd0
-[19324.795321]  run_ksoftirqd+0x21/0x30
-[19324.795321]  smpboot_thread_fn+0x195/0x230
-[19324.795321]  kthread+0x13d/0x160
-[19324.795322]  ? kthread_create_worker_on_cpu+0x60/0x60
-[19324.795322]  ret_from_fork+0x22/0x30
-[19324.795323] ---[ end trace 851fe1f1f7a85d8b ]---
-[19324.828475] ---[ end trace 851fe1f1f7a85d8c ]---
-[19324.829250] RIP: 0010:check_preempt_wakeup+0xad/0x1a0
-[19324.830107] Code: d0 39 d0 7d 2c 83 ea 01 48 8b 9b 48 01 00 00 39 d0 75 f2 48 39 bb 50 01 00 00 74 1e 48 8b ad 48 01 00 00 48 8b 9b 48 01 00 00 <48> 8b bd 50 01 00 00 48 39 bb 50 01 00 00 75 e2 48 85 ff 74 dd e8
-[19324.833208] RSP: 0000:ffffb3cb40320f50 EFLAGS: 00010087
-[19324.834098] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffffb400bce0
-[19324.835272] RDX: 0000000000000000 RSI: ffff93c1dbed5b00 RDI: ffff93c1df4a8380
-[19324.836466] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff93c1df2e83b0
-[19324.837669] R10: 0000000000000001 R11: 0000000000000335 R12: 0000000000000001
-[19324.838867] R13: ffff93c1dcf48000 R14: ffff93c1df4a8340 R15: ffff93c1df4a8340
-[19324.840019] FS:  0000000000000000(0000) GS:ffff93c1df480000(0000) knlGS:0000000000000000
-[19324.841316] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19324.842242] CR2: 0000000000000150 CR3: 000000001e40a000 CR4: 00000000000006e0
-[19324.843406] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[19324.844568] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[19324.845710] Kernel panic - not syncing: Fatal exception in interrupt
-[19324.846998] Kernel Offset: 0x32000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[19324.848713] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+and that's it. With that fixed in v4, you can add:
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
