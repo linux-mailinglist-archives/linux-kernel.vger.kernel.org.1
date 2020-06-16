@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C321FAB20
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FA21FAB1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgFPI1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:27:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49366 "EHLO mx2.suse.de"
+        id S1727922AbgFPI0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgFPI1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:27:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1F6DFAD7B;
-        Tue, 16 Jun 2020 08:27:15 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     vbabka@suse.cz
-Cc:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        liwang@redhat.com, mgorman@techsingularity.net,
-        stable@vger.kernel.org
-Subject: [PATCH 1/2] mm, compaction: make capture control handling safe wrt interrupts
-Date:   Tue, 16 Jun 2020 10:26:48 +0200
-Message-Id: <20200616082649.27173-1-vbabka@suse.cz>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <b17acf5b-5e8a-3edf-5a64-603bf6177312@suse.cz>
-References: <b17acf5b-5e8a-3edf-5a64-603bf6177312@suse.cz>
+        id S1726428AbgFPI0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:26:51 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3265E20739;
+        Tue, 16 Jun 2020 08:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592296010;
+        bh=zwfLiiOBJv9xd28/k4MWseO5mRe5jJl7Tlu1GcSaMnQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=w2c2Ybd7/S1rdMjRJx7tdDDHKFcteQHILKII8l5QRlwqqG7w4fzM1hdvsYjm0A4QV
+         SomjjZpuxuPmquQs8zHLOXxAQzPX3D0RE+bgRvFZ0bROzLi133kvtMmZ267oKu32li
+         aZgljVip8ixpLwQtburrAnyZ0HWuJsZDJ5Dc5gsU=
+Date:   Tue, 16 Jun 2020 09:26:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>
+Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "kdasu.kdev@gmail.com" <kdasu.kdev@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/5] spi: bcm-qspi: Make multiple data blocks
+ interrupt-driven
+Message-ID: <20200616082648.GE4447@sirena.org.uk>
+References: <20200615040557.2011-1-mark.tomlinson@alliedtelesis.co.nz>
+ <20200615040557.2011-5-mark.tomlinson@alliedtelesis.co.nz>
+ <20200615143233.GW4447@sirena.org.uk>
+ <40bae0160c6e24c3d90d4935eb31cf3de64abc9e.camel@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2+IiqX0tbFQDLF7Q"
+Content-Disposition: inline
+In-Reply-To: <40bae0160c6e24c3d90d4935eb31cf3de64abc9e.camel@alliedtelesis.co.nz>
+X-Cookie: Offer may end without notice.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hugh reports:
 
-=====
-While stressing compaction, one run oopsed on NULL capc->cc in
-__free_one_page()'s task_capc(zone): compact_zone_order() had been
-interrupted, and a page was being freed in the return from interrupt.
+--2+IiqX0tbFQDLF7Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Though you would not expect it from the source, both gccs I was using
-(a 4.8.1 and a 7.5.0) had chosen to compile compact_zone_order() with
-the ".cc = &cc" implemented by mov %rbx,-0xb0(%rbp) immediately before
-callq compact_zone - long after the "current->capture_control = &capc".
-An interrupt in between those finds capc->cc NULL (zeroed by an earlier
-rep stos).
+On Tue, Jun 16, 2020 at 03:07:17AM +0000, Mark Tomlinson wrote:
+> On Mon, 2020-06-15 at 15:32 +0100, Mark Brown wrote:
 
-This could presumably be fixed by a barrier() before setting
-current->capture_control in compact_zone_order(); but would also need
-more care on return from compact_zone(), in order not to risk leaking
-a page captured by interrupt just before capture_control is reset.
+> > Again was this done for a reason and if so do we understand why doing
+> > this from interrupt context is safe - how long can the interrupts be
+> > when stuffing the FIFO from interrupt context?
 
-Maybe that is the preferable fix, but I felt safer for task_capc() to
-exclude the rather surprising possibility of capture at interrupt time.
-=====
+> As I'm porting a Broadcom patch, I'm hoping someone else can add
+> something to this. From the history it appears there was a hard limit
 
-I have checked that gcc10 also behaves the same.
+If you didn't write this code then it should have at least one signoff
+=66rom the original source, I can't do anything with this without signoffs
+- please see Documentation/process/submitting-patches.rst for what this
+is and why it's important.
 
-The advantage of fix in compact_zone_order() is that we don't add another
-test in the page freeing hot path, and that it might prevent future problems
-if we stop exposing pointers to unitialized structures in current task.
+> (no small chunks), and this was changed to doing it in chunks with
+> patch 345309fa7c0c92, apparently to improve performance. I believe this
+> change further improves performance, but as the patch arrived without
+> any documentation, I'm not certain.
 
-So this patch implements the suggestion for compact_zone_order() with barrier()
-(and WRITE_ONCE() to prevent store tearing) for setting
-current->capture_control, and prevents page leaking with WRITE_ONCE/READ_ONCE
-in the proper order.
+Have you tested the impact on performance?
 
-Fixes: 5e1f0f098b46 ("mm, compaction: capture a page under direct compaction")
-Cc: stable@vger.kernel.org # 5.1+
-Reported-by: Hugh Dickins <hughd@google.com>
-Suggested-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/compaction.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+--2+IiqX0tbFQDLF7Q
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index fd988b7e5f2b..86375605faa9 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2316,15 +2316,26 @@ static enum compact_result compact_zone_order(struct zone *zone, int order,
- 		.page = NULL,
- 	};
- 
--	current->capture_control = &capc;
-+	/*
-+	 * Make sure the structs are really initialized before we expose the
-+	 * capture control, in case we are interrupted and the interrupt handler
-+	 * frees a page.
-+	 */
-+	barrier();
-+	WRITE_ONCE(current->capture_control, &capc);
- 
- 	ret = compact_zone(&cc, &capc);
- 
- 	VM_BUG_ON(!list_empty(&cc.freepages));
- 	VM_BUG_ON(!list_empty(&cc.migratepages));
- 
--	*capture = capc.page;
--	current->capture_control = NULL;
-+	/*
-+	 * Make sure we hide capture control first before we read the captured
-+	 * page pointer, otherwise an interrupt could free and capture a page
-+	 * and we would leak it.
-+	 */
-+	WRITE_ONCE(current->capture_control, NULL);
-+	*capture = READ_ONCE(capc.page);
- 
- 	return ret;
- }
--- 
-2.27.0
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7ogkcACgkQJNaLcl1U
+h9AeHgf+PeKNVWiTvF5IZERUnylT0z36L9JFKcSvYNtlJFeRKiQEMyF/l1OR2g+U
+R0TQERq0rcUof2GoqP3L4RgsykGVprSexq8YdIXNe1Zelmjk1H1S9kj4MvxkPKG7
+tCX8BRwOz61Lm7elp0aFbsCpYT2JmnpIYlDqiTehjeFJL4VBd11ZUDgv6disFTVA
+/pkVx2HMscDeBxLRaPBNOZMQy9FElRRV4TNGBjfFxGx0po+5bEk0r+TDPABG4fyG
+C6QxfPE7venVM5RrNjaljJRh30oBpTawrHo5UiTBefb7og9xBFal6rqpN0pygk79
+kFB4dIG9bsuRH3dOtZBqEzYzn1Rdqw==
+=5Rdi
+-----END PGP SIGNATURE-----
+
+--2+IiqX0tbFQDLF7Q--
