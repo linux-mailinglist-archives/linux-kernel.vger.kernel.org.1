@@ -2,225 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293A81FBA06
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0929C1FBA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732639AbgFPQIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:08:16 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53628 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732621AbgFPQIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:08:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592323686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAmfsG1yWQp7htmzd31AkeGRX9NdjCJmJao6WCNJhSM=;
-        b=BmJpuHEZwKXYSOnb4vbxjFOyA3bTGKge3rlhMwBTbDLm1hUmHJ0MH3hsorfYhHU4/EPHIA
-        1CPTbLlU5gLDMAy5haVh8HtnixOVACJis5LJVEYuy/yIIwJks2vHhUsKO6VSvt5TN898LA
-        mQtHotQj+4fjXK4BJx4x3vD6WVknkkc=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4--i01vMbTPHimJat9megvSQ-1; Tue, 16 Jun 2020 12:08:04 -0400
-X-MC-Unique: -i01vMbTPHimJat9megvSQ-1
-Received: by mail-wm1-f72.google.com with SMTP id v24so1459552wmh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:08:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zAmfsG1yWQp7htmzd31AkeGRX9NdjCJmJao6WCNJhSM=;
-        b=mO38A1kZFb7Qps0tJD8/7PrIc6RMhFnH+r5zXg/0DtwtmsELFJk6eTxa1rOculyW4c
-         r+07ZeB8SfOancqLOuA5TkfBn2Cl7oFxU4A6rtSVIKMmnjxTpbYJhVcdGJQaxeVj9pr/
-         OYEUe38SnYtq07UazPgLELy2PI7pau3vXXbt/FwuFhiacEwIiBj6CvPwTGT5WHW9crgU
-         qF6uZ1ePTjftUEJUeDLuFAmcbvY1zQc7LhzGa58x0Cw2eaEAuL6stceLNLrIvUr/BImx
-         6jEBQ9tgEzAzgYPLfSaEtjKMhvtCqZtZS7+FLGtYxfGaZQ6t4dx7GkRRpBioF15NX4/U
-         8f3g==
-X-Gm-Message-State: AOAM531Ygyw3VWgDMZX/nw2VDOjpxPU3dGSULPGRMPd6pyIVBTWwuCbM
-        p04Wndlx1wml2hy9NwmYAZxaSb0Zvho3O8xL6qNTFGvzom/5KTGwZZxJdCLS7H5+zEDJTWJMfA3
-        z/eRu054jwlKercQdglbM6wzc
-X-Received: by 2002:adf:f30d:: with SMTP id i13mr3605167wro.146.1592323682798;
-        Tue, 16 Jun 2020 09:08:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxb5FVBHSOCazvOPkG3bOZ/JxTqnrTMlUtzCXzy6s29kSBJKESc5gH7/BCfoimMoGcNzTEObQ==
-X-Received: by 2002:adf:f30d:: with SMTP id i13mr3605125wro.146.1592323682491;
-        Tue, 16 Jun 2020 09:08:02 -0700 (PDT)
-Received: from steredhat ([5.180.207.22])
-        by smtp.gmail.com with ESMTPSA id z2sm28570535wrs.87.2020.06.16.09.07.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 09:08:01 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 18:07:57 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <asarai@suse.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        io-uring <io-uring@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: [RFC] io_uring: add restrictions to support untrusted
- applications and guests
-Message-ID: <20200616160757.vc2jsgilvsgnrf3p@steredhat>
-References: <20200609142406.upuwpfmgqjeji4lc@steredhat>
- <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
- <20200615133310.qwdmnctrir5zgube@steredhat>
- <f7f2841e-3dbb-377f-f8f8-826506a938a6@kernel.dk>
- <20200616091247.hdmxcrnlrrxih7my@steredhat>
- <9483bbde-b1de-93b1-a239-4ba3613a63e5@kernel.dk>
+        id S1732005AbgFPQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:08:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54363 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732166AbgFPQIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:08:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592323719; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=MD92WfPRgR/jkFLJAG2o5YhCjEHFWsLDGTiEaMXk+O4=; b=m7xJtfd6CQazK7aMdgGAyfgDAeg/zKIYR4v4vPKc/QANRL8xvMCSW7qETLU4O2latcdIUlcC
+ 2zIjl4H6sm4IFpCkS1SeEmndSpnlJ2LyXgSvjIsz5ooRe3Urz7TWW4G/yYrYLTacpzc9/rAb
+ phNejYiJyzdf0QOP6GOioUkZH04=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5ee8ee75bfb34e631cae2c64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 16:08:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D9B68C433AD; Tue, 16 Jun 2020 16:08:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ilina)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2594BC433CA;
+        Tue, 16 Jun 2020 16:08:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2594BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=ilina@codeaurora.org
+Date:   Tue, 16 Jun 2020 10:08:18 -0600
+From:   Lina Iyer <ilina@codeaurora.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [RFC][PATCH 3/5] irqchip: Allow QCOM_PDC to be loadable as a
+ perment module
+Message-ID: <20200616160818.GD12942@codeaurora.org>
+References: <20200616061338.109499-1-john.stultz@linaro.org>
+ <20200616061338.109499-4-john.stultz@linaro.org>
+ <55e5982a-1e73-7013-e02d-5d1d30815fba@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <9483bbde-b1de-93b1-a239-4ba3613a63e5@kernel.dk>
+In-Reply-To: <55e5982a-1e73-7013-e02d-5d1d30815fba@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 09:26:31AM -0600, Jens Axboe wrote:
-> On 6/16/20 3:12 AM, Stefano Garzarella wrote:
-> > On Mon, Jun 15, 2020 at 11:00:25AM -0600, Jens Axboe wrote:
-> >> On 6/15/20 7:33 AM, Stefano Garzarella wrote:
-> >>> On Mon, Jun 15, 2020 at 11:04:06AM +0200, Jann Horn wrote:
-> >>>> +Kees, Christian, Sargun, Aleksa, kernel-hardening for their opinions
-> >>>> on seccomp-related aspects
-> >>>>
-> >>>> On Tue, Jun 9, 2020 at 4:24 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
-> >>>>> Hi Jens,
-> >>>>> Stefan and I have a proposal to share with io_uring community.
-> >>>>> Before implementing it we would like to discuss it to receive feedbacks and
-> >>>>> to see if it could be accepted:
-> >>>>>
-> >>>>> Adding restrictions to io_uring
-> >>>>> =====================================
-> >>>>> The io_uring API provides submission and completion queues for performing
-> >>>>> asynchronous I/O operations. The queues are located in memory that is
-> >>>>> accessible to both the host userspace application and the kernel, making it
-> >>>>> possible to monitor for activity through polling instead of system calls. This
-> >>>>> design offers good performance and this makes exposing io_uring to guests an
-> >>>>> attractive idea for improving I/O performance in virtualization.
-> >>>> [...]
-> >>>>> Restrictions
-> >>>>> ------------
-> >>>>> This document proposes io_uring API changes that safely allow untrusted
-> >>>>> applications or guests to use io_uring. io_uring's existing security model is
-> >>>>> that of kernel system call handler code. It is designed to reject invalid
-> >>>>> inputs from host userspace applications. Supporting guests as io_uring API
-> >>>>> clients adds a new trust domain with access to even fewer resources than host
-> >>>>> userspace applications.
-> >>>>>
-> >>>>> Guests do not have direct access to host userspace application file descriptors
-> >>>>> or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
-> >>>>> as QEMU, grants access to a subset of its file descriptors and memory. The
-> >>>>> allowed file descriptors are typically the disk image files belonging to the
-> >>>>> guest. The memory is typically the virtual machine's RAM that the VMM has
-> >>>>> allocated on behalf of the guest.
-> >>>>>
-> >>>>> The following extensions to the io_uring API allow the host application to
-> >>>>> grant access to some of its file descriptors.
-> >>>>>
-> >>>>> These extensions are designed to be applicable to other use cases besides
-> >>>>> untrusted guests and are not virtualization-specific. For example, the
-> >>>>> restrictions can be used to allow only a subset of sqe operations available to
-> >>>>> an application similar to seccomp syscall whitelisting.
-> >>>>>
-> >>>>> An address translation and memory restriction mechanism would also be
-> >>>>> necessary, but we can discuss this later.
-> >>>>>
-> >>>>> The IOURING_REGISTER_RESTRICTIONS opcode
-> >>>>> ----------------------------------------
-> >>>>> The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
-> >>>>> installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
-> >>>>> passed to untrusted code with the knowledge that only operations present in the
-> >>>>> whitelist can be executed.
-> >>>>
-> >>>> This approach of first creating a normal io_uring instance and then
-> >>>> installing restrictions separately in a second syscall means that it
-> >>>> won't be possible to use seccomp to restrict newly created io_uring
-> >>>> instances; code that should be subject to seccomp restrictions and
-> >>>> uring restrictions would only be able to use preexisting io_uring
-> >>>> instances that have already been configured by trusted code.
-> >>>>
-> >>>> So I think that from the seccomp perspective, it might be preferable
-> >>>> to set up these restrictions in the io_uring_setup() syscall. It might
-> >>>> also be a bit nicer from a code cleanliness perspective, since you
-> >>>> won't have to worry about concurrently changing restrictions.
-> >>>>
-> >>>
-> >>> Thank you for these details!
-> >>>
-> >>> It seems feasible to include the restrictions during io_uring_setup().
-> >>>
-> >>> The only doubt concerns the possibility of allowing the trusted code to
-> >>> do some operations, before passing queues to the untrusted code, for
-> >>> example registering file descriptors, buffers, eventfds, etc.
-> >>>
-> >>> To avoid this, I should include these operations in io_uring_setup(),
-> >>> adding some code that I wanted to avoid by reusing io_uring_register().
-> >>>
-> >>> If I add restrictions in io_uring_setup() and then add an operation to
-> >>> go into safe mode (e.g. a flag in io_uring_enter()), we would have the same
-> >>> problem, right?
-> >>>
-> >>> Just to be clear, I mean something like this:
-> >>>
-> >>>     /* params will include restrictions */
-> >>>     fd = io_uring_setup(entries, params);
-> >>>
-> >>>     /* trusted code */
-> >>>     io_uring_register_files(fd, ...);
-> >>>     io_uring_register_buffers(fd, ...);
-> >>>     io_uring_register_eventfd(fd, ...);
-> >>>
-> >>>     /* enable safe mode */
-> >>>     io_uring_enter(fd, ..., IORING_ENTER_ENABLE_RESTRICTIONS);
-> >>>
-> >>>
-> >>> Anyway, including a list of things to register in the 'params', passed
-> >>> to io_uring_setup(), should be feasible, if Jens agree :-)
-> >>
-> >> I wonder how best to deal with this, in terms of ring visibility vs
-> >> registering restrictions. We could potentially start the ring in a
-> >> disabled mode, if asked to. It'd still be visible in terms of having
-> >> the fd installed, but it'd just error requests. That'd leave you with
-> >> time to do the various setup routines needed before then flagging it
-> >> as enabled. My only worry on that would be adding overhead for doing
-> >> that. It'd be cheap enough to check for IORING_SETUP_DISABLED in
-> >> ctx->flags in io_uring_enter(), and return -EBADFD or something if
-> >> that's the case. That doesn't cover the SQPOLL case though, but maybe we
-> >> just don't start the sq thread if IORING_SETUP_DISABLED is set.
-> > 
-> > It seems to me a very good approach and easy to implement. In this way
-> > we can reuse io_uring_register() without having to modify too much
-> > io_uring_setup().
-> 
-> Right
-> 
-> >> We'd need a way to clear IORING_SETUP_DISABLED through
-> >> io_uring_register(). When clearing, that could then start the sq thread
-> >> as well, when SQPOLL is set.
-> > 
-> > Could we do it using io_uring_enter() since we have a flag field or
-> > do you think it's semantically incorrect?
-> 
-> Either way is probably fine, I gravitated towards io_uring_register()
-> since any io_uring_enter() should fail if the ring is disabled. But I
-> guess it's fine to allow the "enable" operation through io_uring_enter.
-> Keep in mind that io_uring_enter is the hottest path, where
-> io_uring_register is not nearly as hot and we can allow ourselves a bit
-> more flexibility there.
+On Tue, Jun 16 2020 at 05:30 -0600, Maulik Shah wrote:
+>Hi,
+>
+>On 6/16/2020 11:43 AM, John Stultz wrote:
+>>Allows qcom-pdc driver to be loaded as a permenent module
+>
+>typo: permanent
+>
+>>Also, due to the fact that IRQCHIP_DECLARE becomes a no-op when
+>>building as a module, we have to add the platform driver hooks
+>>explicitly.
+>>
+>>Thanks to Saravana for his help on pointing out the
+>>IRQCHIP_DECLARE issue and guidance on a solution.
+>>
+>>Cc: Andy Gross <agross@kernel.org>
+>>Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>Cc: Joerg Roedel <joro@8bytes.org>
+>>Cc: Thomas Gleixner <tglx@linutronix.de>
+>>Cc: Jason Cooper <jason@lakedaemon.net>
+>>Cc: Marc Zyngier <maz@kernel.org>
+>>Cc: Linus Walleij <linus.walleij@linaro.org>
+>>Cc: Lina Iyer <ilina@codeaurora.org>
+>>Cc: Saravana Kannan <saravanak@google.com>
+>>Cc: Todd Kjos <tkjos@google.com>
+>>Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>Cc: linux-arm-msm@vger.kernel.org
+>>Cc: iommu@lists.linux-foundation.org
+>>Cc: linux-gpio@vger.kernel.org
+>>Signed-off-by: John Stultz <john.stultz@linaro.org>
+>>---
+>>  drivers/irqchip/Kconfig    |  2 +-
+>>  drivers/irqchip/qcom-pdc.c | 30 ++++++++++++++++++++++++++++++
+>>  2 files changed, 31 insertions(+), 1 deletion(-)
+>>
+>>diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+>>index 29fead208cad..12765bed08f9 100644
+>>--- a/drivers/irqchip/Kconfig
+>>+++ b/drivers/irqchip/Kconfig
+>>@@ -425,7 +425,7 @@ config GOLDFISH_PIC
+>>           for Goldfish based virtual platforms.
+>>  config QCOM_PDC
+>>-	bool "QCOM PDC"
+>>+	tristate "QCOM PDC"
+>>  	depends on ARCH_QCOM
+>>  	select IRQ_DOMAIN_HIERARCHY
+>>  	help
+>>diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+>>index 6ae9e1f0819d..98d74160afcd 100644
+>>--- a/drivers/irqchip/qcom-pdc.c
+>>+++ b/drivers/irqchip/qcom-pdc.c
+>>@@ -11,7 +11,9 @@
+>>  #include <linux/irqdomain.h>
+>>  #include <linux/io.h>
+>>  #include <linux/kernel.h>
+>>+#include <linux/module.h>
+>>  #include <linux/of.h>
+>>+#include <linux/of_irq.h>
+>please move this include in order after of_device.h
+>>  #include <linux/of_address.h>
+>>  #include <linux/of_device.h>
+>>  #include <linux/soc/qcom/irq.h>
+>>@@ -430,4 +432,32 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+>>  	return ret;
+>>  }
+>>+#ifdef MODULE
+>>+static int qcom_pdc_probe(struct platform_device *pdev)
+>>+{
+>>+	struct device_node *np = pdev->dev.of_node;
+>>+	struct device_node *parent = of_irq_find_parent(np);
+>>+
+>>+	return qcom_pdc_init(np, parent);
+>>+}
+>>+
+>>+static const struct of_device_id qcom_pdc_match_table[] = {
+>>+	{ .compatible = "qcom,pdc" },
+>>+	{}
+>>+};
+>>+MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
+>>+
+>>+static struct platform_driver qcom_pdc_driver = {
+>>+	.probe = qcom_pdc_probe,
+>>+	.driver = {
+>>+		.name = "qcom-pdc",
+>>+		.of_match_table = qcom_pdc_match_table,
+>
+>can you please set .suppress_bind_attrs = true,
+>
+>This is to prevent bind/unbind using sysfs. Once irqchip driver module 
+>is loaded, it shouldn't get unbind at runtime.
+>
+That is a good point. We probably should do that to RPMH RSC driver as well.
 
-Right, now I see and I totally agree!
-
-> 
-> In summary, I'd be fine with io_uring_enter if it's slim and lean, still
-> leaning towards doing it in io_uring_register as it seems like a more
-> natural fit.
-
-Thanks for the clarification. I'll take that into account.
-
-Stefano
-
+>Thanks,
+>Maulik
+>>+	},
+>>+};
+>>+module_platform_driver(qcom_pdc_driver);
+>>+#else
+>>  IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
+>>+#endif
+>>+
+>>+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
+>>+MODULE_LICENSE("GPL v2");
+>
+>-- 
+>QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+>
