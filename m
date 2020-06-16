@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E601F1FACAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E661FAC9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgFPJgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 05:36:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6267 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728131AbgFPJg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 05:36:26 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B1B0AEC54AB3263F89AF;
-        Tue, 16 Jun 2020 17:36:23 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.173.221.230) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 16 Jun 2020 17:36:14 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <liangpeng10@huawei.com>, <zhengxiang9@huawei.com>,
-        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH 12/12] KVM: arm64: Enable stage2 hardware DBM
-Date:   Tue, 16 Jun 2020 17:35:53 +0800
-Message-ID: <20200616093553.27512-13-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20200616093553.27512-1-zhukeqian1@huawei.com>
-References: <20200616093553.27512-1-zhukeqian1@huawei.com>
+        id S1728212AbgFPJgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 05:36:08 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44472 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726261AbgFPJgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 05:36:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U.m0p4p_1592300158;
+Received: from 30.27.116.240(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U.m0p4p_1592300158)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Jun 2020 17:35:59 +0800
+Subject: Re: [PATCH v3 0/8] crpyto: introduce OSCCA certificate and SM2
+ asymmetric algorithm
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        dhowells@redhat.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, jmorris@namei.org, serge@hallyn.com,
+        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
+        zohar@linux.ibm.com, gilad@benyossef.com, pvanleeuwen@rambus.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org, zhang.jia@linux.alibaba.com
+References: <20200609134855.21431-1-tianjia.zhang@linux.alibaba.com>
+ <20200609205837.osganry2tyzwvanz@altlinux.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <254bf52e-eeb8-b615-be2a-d5cba976b63a@linux.alibaba.com>
+Date:   Tue, 16 Jun 2020 17:35:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.221.230]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200609205837.osganry2tyzwvanz@altlinux.org>
+Content-Type: text/plain; charset=koi8-r; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are ready to support hw management of dirty state, enable it if
-hardware support it.
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Peng Liang <liangpeng10@huawei.com>
----
- arch/arm64/include/asm/sysreg.h | 2 ++
- arch/arm64/kvm/reset.c          | 9 ++++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 463175f80341..b22bd903284d 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -744,6 +744,8 @@
- #define ID_AA64MMFR1_VMIDBITS_8		0
- #define ID_AA64MMFR1_VMIDBITS_16	2
- 
-+#define ID_AA64MMFR1_HADBS_DBS		2
-+
- /* id_aa64mmfr2 */
- #define ID_AA64MMFR2_E0PD_SHIFT		60
- #define ID_AA64MMFR2_FWB_SHIFT		40
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 52bb801c9b2c..c1215b13bdd5 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -427,7 +427,7 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
- {
- 	u64 vtcr = VTCR_EL2_FLAGS, mmfr0;
- 	u32 parange, phys_shift;
--	u8 lvls;
-+	u8 lvls, hadbs;
- 
- 	if (type & ~KVM_VM_TYPE_ARM_IPA_SIZE_MASK)
- 		return -EINVAL;
-@@ -465,6 +465,13 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
- 	 */
- 	vtcr |= VTCR_EL2_HA;
- 
-+#ifdef CONFIG_ARM64_HW_AFDBM
-+	hadbs = (read_sysreg(id_aa64mmfr1_el1) >>
-+			ID_AA64MMFR1_HADBS_SHIFT) & 0xf;
-+	if (hadbs == ID_AA64MMFR1_HADBS_DBS)
-+		vtcr |= VTCR_EL2_HD;
-+#endif
-+
- 	/* Set the vmid bits */
- 	vtcr |= (kvm_get_vmid_bits() == 16) ?
- 		VTCR_EL2_VS_16BIT :
--- 
-2.19.1
+On 2020/6/10 4:58, Vitaly Chikunov wrote:
+> Tianjia,
+> 
+> On Tue, Jun 09, 2020 at 09:48:47PM +0800, Tianjia Zhang wrote:
+>> Hello all,
+>>
+>> This new module implement the OSCCA certificate and SM2 public key
+>> algorithm. It was published by State Encryption Management Bureau, China.
+>> List of specifications for OSCCA certificate and SM2 elliptic curve
+>> public key cryptography:
+>>
+>> * GM/T 0003.1-2012
+>> * GM/T 0003.2-2012
+>> * GM/T 0003.3-2012
+>> * GM/T 0003.4-2012
+>> * GM/T 0003.5-2012
+>> * GM/T 0015-2012
+>> * GM/T 0009-2012
+>>
+>> IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+>> oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+>> scctc: http://www.gmbz.org.cn/main/bzlb.html
+>>
+>> These patchs add the OID object identifier defined by OSCCA. The
+>> x509 certificate supports sm2-with-sm3 type certificate parsing
+>> and verification.
+>>
+>> The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+>> made some additions to the kernel's original mpi library, and added the
+>> implementation of ec to better support elliptic curve-like algorithms.
+>>
+>> sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+>> of the OSCCA algorithm family have also been implemented in the kernel.
+>>
+>> Among them, sm3 and sm4 have been well implemented in the kernel.
+>> This group of patches has newly introduced sm2. In order to implement
+>> sm2 more perfectly, I expanded the mpi library and introduced the
+>> ec implementation of the mpi library as the basic algorithm. Compared
+>> to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
+>> complete and elegant, sm2 is implemented based on these algorithms.
+> 
+> Does it use constant-time algorithms?
+> 
+> Thanks,
+> 
 
+Sorry for not responding in time.
+This algorithm is constant-time algorithms, and this logic is 
+implemented in ec_mul_point().
+Will you consider implementing ecrdsa based on the mpi ec algorithm in 
+the future?
+
+Thanks and best,
+Tianjia
