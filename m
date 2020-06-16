@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C002A1FB89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126181FB77E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733003AbgFPPyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
+        id S1731113AbgFPPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:46:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732991AbgFPPy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:29 -0400
+        id S1732209AbgFPPqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:46:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8364207C4;
-        Tue, 16 Jun 2020 15:54:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2AA32071A;
+        Tue, 16 Jun 2020 15:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322869;
-        bh=cB0xYbRke6CaPhv+2x3VkaVLolCq4Lq7+R793GDpnis=;
+        s=default; t=1592322389;
+        bh=DstgrDs8R08mFlxBplzEZyCjzwwUFtv/2y1NO8+vwjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tbs3KAJXWBIZ+DHAG+gsceJsXfdgI/CWSUwS0WF5lzi3lojot1sCxJF+yChNLrg6r
-         z66sok+NXutI4ueCRYrsfW1dg2mXc5h+YZl8H5PhGYm/v8Djx25XeisyBvbTNgw7Oo
-         OB+CeJKTDIuOhd+/Ewqa4FUEacrjjtkFK5xTyWzA=
+        b=I7OVD1UPJt+Hk86dBM3VQqJgQFt2RcP7MWzv18Yqy8unwZqY+8i9j3adghGnh8Vbw
+         3x0T1gnrpG47DjK2hb7ihIS9bOxtYWblcTvY7alqUK8UaswQ2Bo0fDkcSWCG5zXOBw
+         tA9MNwcXsX+rBD2EpXepAzSQnkyCwajBwqTeufpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.6 096/161] crypto: algapi - Avoid spurious modprobe on LOADED
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 112/163] net: ethernet: ti: am65-cpsw-nuss: fix ale parameters init
 Date:   Tue, 16 Jun 2020 17:34:46 +0200
-Message-Id: <20200616153110.949933399@linuxfoundation.org>
+Message-Id: <20200616153112.170524664@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit beeb460cd12ac9b91640b484b6a52dcba9d9fc8f upstream.
+[ Upstream commit 2074f9eaa58795a99e9da61c10f93180f810cfd6 ]
 
-Currently after any algorithm is registered and tested, there's an
-unnecessary request_module("cryptomgr") even if it's already loaded.
-Also, CRYPTO_MSG_ALG_LOADED is sent twice, and thus if the algorithm is
-"crct10dif", lib/crc-t10dif.c replaces the tfm twice rather than once.
+The ALE parameters structure is created on stack, so it has to be reset
+before passing to cpsw_ale_create() to avoid garbage values.
 
-This occurs because CRYPTO_MSG_ALG_LOADED is sent using
-crypto_probing_notify(), which tries to load "cryptomgr" if the
-notification is not handled (NOTIFY_DONE).  This doesn't make sense
-because "cryptomgr" doesn't handle this notification.
-
-Fix this by using crypto_notify() instead of crypto_probing_notify().
-
-Fixes: dd8b083f9a5e ("crypto: api - Introduce notifier for new crypto algorithms")
-Cc: <stable@vger.kernel.org> # v4.20+
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- crypto/algapi.c |    2 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -403,7 +403,7 @@ static void crypto_wait_for_test(struct
- 	err = wait_for_completion_killable(&larval->completion);
- 	WARN_ON(err);
- 	if (!err)
--		crypto_probing_notify(CRYPTO_MSG_ALG_LOADED, larval);
-+		crypto_notify(CRYPTO_MSG_ALG_LOADED, larval);
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -1804,7 +1804,7 @@ MODULE_DEVICE_TABLE(of, am65_cpsw_nuss_o
  
- out:
- 	crypto_larval_kill(&larval->alg);
+ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
+ {
+-	struct cpsw_ale_params ale_params;
++	struct cpsw_ale_params ale_params = { 0 };
+ 	const struct of_device_id *of_id;
+ 	struct device *dev = &pdev->dev;
+ 	struct am65_cpsw_common *common;
 
 
