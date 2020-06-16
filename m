@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F471FB959
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085421FBA9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733210AbgFPQDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:03:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45998 "EHLO mail.kernel.org"
+        id S1731197AbgFPPnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732599AbgFPPuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:19 -0400
+        id S1731153AbgFPPno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:43:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0150208B8;
-        Tue, 16 Jun 2020 15:50:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E643208D5;
+        Tue, 16 Jun 2020 15:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322619;
-        bh=XntC1FNYkP+J2zrvMQnq4mbbNnvaGrMS1ILo3IOE6Ac=;
+        s=default; t=1592322223;
+        bh=xxAjpRjVLlI8NKW4e1lJlk10UMBdmbGEv5G6zi0b0B8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOkcW3BKP7VzUvcUos+s1PzDR2ReSWaTnS08FYoF7zWWg4QppG9RsSWGPxlTxsKAU
-         8PgbfMeAn5Y0G7t2RWiM+xvMeSoYeAATmBovW+nBFabIOzMHhGrig7SrZOerZ4+Him
-         BnajNSHExiEu6SGyzT5GfjS381JiQf5XBexsskUo=
+        b=Tn8UR3Vr6w66lUdOkCuSRvLA4vZ5z2XfQHSYj3MbQXhuErZCNuYPYXwOCuW7Jj/0Q
+         pQw0v3IK71Ey0+cIg97K/H/+avMlve5457UhEkU/BlBtJusTSQwsTz4qIp8u6CE9HX
+         HXfvZp4Ko+hvjREsX/dKf3zb+4oHjbXWZc0A8bks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 031/161] ASoC: SOF: imx: fix undefined reference issue
-Date:   Tue, 16 Jun 2020 17:33:41 +0200
-Message-Id: <20200616153107.871999768@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Franciosi <felipe@nutanix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.7 048/163] KVM: x86: respect singlestep when emulating instruction
+Date:   Tue, 16 Jun 2020 17:33:42 +0200
+Message-Id: <20200616153109.154140150@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,66 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Felipe Franciosi <felipe@nutanix.com>
 
-[ Upstream commit cb0312f61c3e95c71ec8955a94d42bf7eb5ba617 ]
+commit 384dea1c9183880be183cfaae161d99aafd16df6 upstream.
 
-make.cross ARCH=mips allyesconfig fails with the following error:
+When userspace configures KVM_GUESTDBG_SINGLESTEP, KVM will manage the
+presence of X86_EFLAGS_TF via kvm_set/get_rflags on vcpus. The actual
+rflag bit is therefore hidden from callers.
 
-sound/soc/sof/sof-of-dev.o:(.data.sof_of_imx8qxp_desc+0x40): undefined
-reference to `sof_imx8x_ops'.
+That includes init_emulate_ctxt() which uses the value returned from
+kvm_get_flags() to set ctxt->tf. As a result, x86_emulate_instruction()
+will skip a single step, leaving singlestep_rip stale and not returning
+to userspace.
 
-This seems to be a Makefile order issue, solve by using the same
-structure as for Intel platforms.
+This resolves the issue by observing the vcpu guest_debug configuration
+alongside ctxt->tf in x86_emulate_instruction(), performing the single
+step if set.
 
-Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF
-dependency")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20200409071832.2039-3-daniel.baluta@oss.nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Felipe Franciosi <felipe@nutanix.com>
+Message-Id: <20200519081048.8204-1-felipe@nutanix.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/sof/imx/Kconfig | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/x86/kvm/x86.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index 812749064ca8..9586635cf8ab 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -11,17 +11,26 @@ config SND_SOC_SOF_IMX_TOPLEVEL
- 
- if SND_SOC_SOF_IMX_TOPLEVEL
- 
-+config SND_SOC_SOF_IMX_OF
-+	def_tristate SND_SOC_SOF_OF
-+	select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
- config SND_SOC_SOF_IMX8_SUPPORT
- 	bool "SOF support for i.MX8"
--	depends on IMX_SCU
--	select IMX_DSP
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_IMX8
--	def_tristate SND_SOC_SOF_OF
--	depends on SND_SOC_SOF_IMX8_SUPPORT
-+	tristate
-+	depends on IMX_SCU
-+	select IMX_DSP
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
- 
- endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
--- 
-2.25.1
-
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6923,7 +6923,7 @@ restart:
+ 		if (!ctxt->have_exception ||
+ 		    exception_type(ctxt->exception.vector) == EXCPT_TRAP) {
+ 			kvm_rip_write(vcpu, ctxt->eip);
+-			if (r && ctxt->tf)
++			if (r && (ctxt->tf || (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)))
+ 				r = kvm_vcpu_do_singlestep(vcpu);
+ 			if (kvm_x86_ops.update_emulated_instruction)
+ 				kvm_x86_ops.update_emulated_instruction(vcpu);
 
 
