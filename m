@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937271FB7CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82581FB66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732544AbgFPPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:49:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
+        id S1730221AbgFPPhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732299AbgFPPti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:38 -0400
+        id S1730195AbgFPPhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 247F42071A;
-        Tue, 16 Jun 2020 15:49:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDC3F20C56;
+        Tue, 16 Jun 2020 15:37:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322578;
-        bh=h117viqMI6tSMFemKRGUcqrURTlQKffWF6U0GKYbEog=;
+        s=default; t=1592321824;
+        bh=wO96Syrd3Y+CQYFKAlkerJFStFL475pUlPCVcms5cC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w3Cqtrhgnr9WqsATkgW6qtIaaljFW0UIZsSJ2z7pzAJzlMtUPjXYnJ7go/sonIn02
-         v+ACdD9V9GmodLC2A2ElgwKLxI5dgJUkjsjsaydoSiMZOCVZptpvHXNSVyaqEdnRlu
-         T+IDshehsbuRlcX00F5zYKI1DgXnqSQrZOVzr8Xo=
+        b=Xg3Fp0utWisbhEbwRV3AK/OTm2q31Ov/tHOuR6ybMW3oovLM2c0FC6+L/DnKEmTzw
+         yQp8Nq/NVAkvQegdR3IEqWCYOLWr8JCufQTMgitrSWbGv5usUtWJ0WX20cRTIBgEfZ
+         qOT9K9cLvDpxHBCWNin23UCtyf1gjjcNmpw7M5ZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        stable@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 022/161] staging: wfx: fix double free
-Date:   Tue, 16 Jun 2020 17:33:32 +0200
-Message-Id: <20200616153107.452221697@linuxfoundation.org>
+Subject: [PATCH 5.4 029/134] perf probe: Accept the instance number of kretprobe event
+Date:   Tue, 16 Jun 2020 17:33:33 +0200
+Message-Id: <20200616153102.169724260@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +47,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 832cc98141b4b93acbb9231ca9e36f7fbe347f47 ]
+[ Upstream commit c6aab66a728b6518772c74bd9dff66e1a1c652fd ]
 
-In case of error in wfx_probe(), wdev->hw is freed. Since an error
-occurred, wfx_free_common() is called, then wdev->hw is freed again.
+Since the commit 6a13a0d7b4d1 ("ftrace/kprobe: Show the maxactive number
+on kprobe_events") introduced to show the instance number of kretprobe
+events, the length of the 1st format of the kprobe event will not 1, but
+it can be longer.  This caused a parser error in perf-probe.
 
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Fixes: 4033714d6cbe ("staging: wfx: fix init/remove vs IRQ race")
-Link: https://lore.kernel.org/r/20200505123757.39506-4-Jerome.Pouiller@silabs.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Skip the length check the 1st format of the kprobe event to accept this
+instance number.
+
+Without this fix:
+
+  # perf probe -a vfs_read%return
+  Added new event:
+    probe:vfs_read__return (on vfs_read%return)
+
+  You can now use it in all perf tools, such as:
+
+  	perf record -e probe:vfs_read__return -aR sleep 1
+
+  # perf probe -l
+  Semantic error :Failed to parse event name: r16:probe/vfs_read__return
+    Error: Failed to show event list.
+
+And with this fixes:
+
+  # perf probe -a vfs_read%return
+  ...
+  # perf probe -l
+    probe:vfs_read__return (on vfs_read%return)
+
+Fixes: 6a13a0d7b4d1 ("ftrace/kprobe: Show the maxactive number on kprobe_events")
+Reported-by: Yuxuan Shui <yshuiv7@gmail.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Yuxuan Shui <yshuiv7@gmail.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: stable@vger.kernel.org
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207587
+Link: http://lore.kernel.org/lkml/158877535215.26469.1113127926699134067.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/main.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/util/probe-event.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
-index 76b2ff7fc7fe..2c757b81efa9 100644
---- a/drivers/staging/wfx/main.c
-+++ b/drivers/staging/wfx/main.c
-@@ -466,7 +466,6 @@ int wfx_probe(struct wfx_dev *wdev)
- 
- err2:
- 	ieee80211_unregister_hw(wdev->hw);
--	ieee80211_free_hw(wdev->hw);
- err1:
- 	wfx_bh_unregister(wdev);
- 	return err;
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 91cab5f669d2..92b07be0b48b 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -1757,8 +1757,7 @@ int parse_probe_trace_command(const char *cmd, struct probe_trace_event *tev)
+ 	fmt1_str = strtok_r(argv0_str, ":", &fmt);
+ 	fmt2_str = strtok_r(NULL, "/", &fmt);
+ 	fmt3_str = strtok_r(NULL, " \t", &fmt);
+-	if (fmt1_str == NULL || strlen(fmt1_str) != 1 || fmt2_str == NULL
+-	    || fmt3_str == NULL) {
++	if (fmt1_str == NULL || fmt2_str == NULL || fmt3_str == NULL) {
+ 		semantic_error("Failed to parse event name: %s\n", argv[0]);
+ 		ret = -EINVAL;
+ 		goto out;
 -- 
 2.25.1
 
