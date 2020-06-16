@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E05A1FB02E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2861FB00C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgFPMSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        id S1728811AbgFPMRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgFPMRU (ORCPT
+        with ESMTP id S1728699AbgFPMRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:17:20 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8ADC08C5C5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:19 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id l24so567070pgb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:19 -0700 (PDT)
+        Tue, 16 Jun 2020 08:17:23 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C579C08C5C3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:22 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s10so9161442pgm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:17:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7Ofrbcs6powOIpLHVgUb+s2Y6gSuASwM2PMR2S8GC/8=;
-        b=K9GBZe8gNJO/W9HkRUGhLRRenI1uWzOY2VyMcVpQ1qpJoy8XFBU/gN9hplt+ZBwytp
-         Vl3FWj2Xe9Qotiq1GXQaR+lcoBmvS22iEhQgk3IrWMNrUgSANF8Ny/DCdDURZNZ9npKx
-         4DV78QiAjJ4kj6JhAdhMLmVrC5LAM7JTlQYnI=
+        bh=fDQC1q/6pTc2BSyh05jjBKpJepT+dwpazrZGsFLJpVo=;
+        b=ESIgPO/yFoN1yMwOvDNrlQaYh8bbunv9VbR9IKFnZbYX6dpCTDGH+c6VH2SDIdfESr
+         vkcjchgJk6GtVFwTNIHnN8OZeh0eizMagRZB+bTDD0IE1qBG1X8AdLbFDrBj6qZfvGOw
+         jXleuZz+UEUBvMbo8Remr4eW4uLhYb2tLHhlU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7Ofrbcs6powOIpLHVgUb+s2Y6gSuASwM2PMR2S8GC/8=;
-        b=TU4I8qNurxJEf8ICxEMfdU81vGq5syivMFebHUu2hG8UmVYHNux7LhhoiFFyL8+QkV
-         TJmzqkitUQWbLKFGOm00fRWcY9OT1uO2OmJdcausTCyXdyh486u+eMDKXR07BwdScg2L
-         d1Xyw2mMGcmc4DiKCy5qVLuH/+CdAZL3gixgEHmHAxxEf6edcf3xvEw9W5v72ib6kbA9
-         +3GT1PhkDcbz1bHvqY9602Wa4dIaWvl5I5gstvlkypsT5BDJLnpErFSoH/N0hbE9hEWN
-         THIWZheU9xN35GuTpvVJiDelTaJ6terEv0fsrfV4YWMBOQxOqgb+l7e7IpQpw13ShHiS
-         uexA==
-X-Gm-Message-State: AOAM533MuxxGAtmDjHfjQaT6L6sDWr+bfh+nN9Vh2Blf314/lYWHa9Gk
-        qCBNUDapNhZCRb8zPO6bI1/ZPQ==
-X-Google-Smtp-Source: ABdhPJx2/ZThHxd7TkGqkTWZKS35Q9MJ8+CEueo+tZWGJimgB1gnkJ2ft0DeXHEgR4K/xPkFcWleWw==
-X-Received: by 2002:a62:7dd1:: with SMTP id y200mr1787559pfc.184.1592309839077;
-        Tue, 16 Jun 2020 05:17:19 -0700 (PDT)
+        bh=fDQC1q/6pTc2BSyh05jjBKpJepT+dwpazrZGsFLJpVo=;
+        b=nN6P11NA4PpHqKDXYn0b8OU9jYhEDhMIe8bDGZt+b1ZjW5np1gT1X1N6VDgvG2qod3
+         /c/Id2yPhal30q6VvpR6ptA3tpN/kyLYzWEypFvC9Kv0UZrPPdVapAKiTcsfmyeq93lA
+         Vvrtsm64vcGdrWCLhdPsxVuKTbSj7NRObs7GNt5FXgXthnQHqUwksL8/ZAmWbW1QbC78
+         pRL3+T0lFd7Ss5qswPOAjkwO44MMboGhuwCAjl/pAIkLCIsgOWdroFqh8JVdjA6ALanH
+         6o+m85I+kgZmMddeZvVhqxR+A464dXixrq2qmhW9wk4kHazEZipKcgL9XESGplCazUSp
+         ozeQ==
+X-Gm-Message-State: AOAM533x+OqrMJEhnjK+5Rlx56JBCZ+AhIU1QXG5W/VFKzOAzvqFOU/N
+        dvhfe+7/4yGVXVbibfQidsW34Q==
+X-Google-Smtp-Source: ABdhPJyWmAquQyVAsMd+xi0kijqsxvUQQiX6VNMiN1pZ1XkqqyV013WG62jyzVMUsqdx145PjJ2Rmw==
+X-Received: by 2002:a63:c204:: with SMTP id b4mr1819831pgd.67.1592309841318;
+        Tue, 16 Jun 2020 05:17:21 -0700 (PDT)
 Received: from shiro.work (p1285116-ipngn200805sizuokaden.shizuoka.ocn.ne.jp. [114.171.61.116])
-        by smtp.googlemail.com with ESMTPSA id f23sm2360703pja.8.2020.06.16.05.17.17
+        by smtp.googlemail.com with ESMTPSA id f23sm2360703pja.8.2020.06.16.05.17.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 05:17:18 -0700 (PDT)
+        Tue, 16 Jun 2020 05:17:20 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v4 04/12] dt-bindings: vendor-prefixes: Add thingy.jp prefix
-Date:   Tue, 16 Jun 2020 21:15:17 +0900
-Message-Id: <20200616121525.1409790-5-daniel@0x0f.com>
+Subject: [PATCH v4 05/12] dt-bindings: arm: Add mstar YAML schema
+Date:   Tue, 16 Jun 2020 21:15:18 +0900
+Message-Id: <20200616121525.1409790-6-daniel@0x0f.com>
 X-Mailer: git-send-email 2.27.0.rc0
 In-Reply-To: <20200616121525.1409790-1-daniel@0x0f.com>
 References: <20200612130032.3905240-2-daniel@0x0f.com>
@@ -63,26 +63,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add prefix for thingy.jp
+This adds some intial boards for Armv7 based mstar platforms.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/arm/mstar.yaml        | 34 +++++++++++++++++++
+ MAINTAINERS                                   |  7 ++++
+ 2 files changed, 41 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/mstar.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 53cd050668e6..c209b3dc7ecc 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1038,6 +1038,8 @@ patternProperties:
-     description: Three Five Corp
-   "^thine,.*":
-     description: THine Electronics, Inc.
-+  "^thingyjp,.*":
-+    description: thingy.jp
-   "^ti,.*":
-     description: Texas Instruments
-   "^tianma,.*":
+diff --git a/Documentation/devicetree/bindings/arm/mstar.yaml b/Documentation/devicetree/bindings/arm/mstar.yaml
+new file mode 100644
+index 000000000000..7bb91a546b5f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/mstar.yaml
+@@ -0,0 +1,34 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/mstar.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MStar platforms device tree bindings
++
++maintainers:
++  - Daniel Palmer <daniel@thingy.jp>
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++        # infinity boards
++        - items:
++          - enum:
++              - thingyjp,breadbee-crust # thingy.jp BreadBee Crust
++              - thingyjp,breadbee-crustx # thingy.jp BreadBee Crustx
++          - const: mstar,infinity
++
++        # infinity3 boards
++        - items:
++          - enum:
++              - thingyjp,breadbee # thingy.jp BreadBee
++          - const: mstar,infinity3
++
++        # mercury5 boards
++        - items:
++          - enum:
++              - 70mai,midrived08 # 70mai midrive d08
++          - const: mstar,mercury5
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 68f21d46614c..a8640c1c50cc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2117,6 +2117,13 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	arch/arm/mach-pxa/mioa701.c
+ 
++ARM/MStar/Sigmastar Armv7 SoC support
++M:	Daniel Palmer <daniel@thingy.jp>
++L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++S:	Maintained
++W:	http://linux-chenxing.org/
++F:	Documentation/devicetree/bindings/arm/mstar.yaml
++
+ ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
+ M:	Michael Petchkovsky <mkpetch@internode.on.net>
+ S:	Maintained
 -- 
 2.27.0.rc0
 
