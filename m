@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78AB1FB868
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17A31FB872
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733141AbgFPP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:56:02 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60548 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733132AbgFPPz5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:55:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592322956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMvFt9x/GME+tYUTng0QoYKwCh/XoVUUjz+YXccVf9k=;
-        b=Rix2pl7O64W4uD1zXV3b8GB/hQEG/jiMJ/dnB1avC8mVxFsaDtckW9Xon74ExM1FicfEf1
-        4olhmdwo4cCqoq7yDX2zd4cJkTLPvqjIJ3SZE0F7iIaG1rTIV87AHehTB9hWaJD13WOEet
-        AXxuZQgWmLU8NpjiyeEJAsHAbb0uHfk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-Vc28Lxq8P5CWEsmSzSE5_g-1; Tue, 16 Jun 2020 11:55:52 -0400
-X-MC-Unique: Vc28Lxq8P5CWEsmSzSE5_g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2B8DE918;
-        Tue, 16 Jun 2020 15:55:50 +0000 (UTC)
-Received: from x2.localnet (ovpn-113-82.phx2.redhat.com [10.3.113.82])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 845DE60C05;
-        Tue, 16 Jun 2020 15:55:44 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Paul Moore <paul@paul-moore.com>, Mimi Zohar <zohar@linux.ibm.com>,
-        rgb@redhat.com, linux-integrity@vger.kernel.org,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] integrity: Add errno field in audit message
-Date:   Tue, 16 Jun 2020 11:55:42 -0400
-Message-ID: <1717101.NiBDiG0Zly@x2>
-Organization: Red Hat
-In-Reply-To: <958966b6-9972-051f-a7d5-cd6d1beb3244@linux.microsoft.com>
-References: <20200611000400.3771-1-nramas@linux.microsoft.com> <6643272.rC52FQZPYE@x2> <958966b6-9972-051f-a7d5-cd6d1beb3244@linux.microsoft.com>
+        id S1732854AbgFPP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:56:28 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36618 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732037AbgFPP4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:56:24 -0400
+IronPort-SDR: bf5uMDBNk4jen6J46nzFNpCj8ylFKBPNWlmshos+osf6px4+IzIiVEAMVExTRZ+gcdKDiPJVOU
+ Ox0FS2ciOZFQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 08:56:24 -0700
+IronPort-SDR: tr/ybh8U9PRGgKz1/fMBQlds+13oaI9vCV6Vh6bPppUS/SKenSmjUq9C5NfVXMyZsMxAYDEy89
+ PJe5LEbrUzPA==
+X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
+   d="scan'208";a="449888063"
+Received: from pperycz-mobl.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.213.235.69])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 08:56:20 -0700
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Paul Murphy <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/7] Add initial Keem Bay SoC / Board support
+Date:   Tue, 16 Jun 2020 16:56:06 +0100
+Message-Id: <20200616155613.121242-1-daniele.alessandrelli@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, June 16, 2020 11:43:31 AM EDT Lakshmi Ramasubramanian wrote:
-> On 6/16/20 8:29 AM, Steve Grubb wrote:
-> >>>>> The idea is a good idea, but you're assuming that "result" is always
-> >>>>> errno.  That was probably true originally, but isn't now.  For
-> >>>>> example, ima_appraise_measurement() calls xattr_verify(), which
-> >>>>> compares the security.ima hash with the calculated file hash.  On
-> >>>>> failure, it returns the result of memcmp().  Each and every code path
-> >>>>> will need to be checked.
-> >>>> 
-> >>>> Good catch Mimi.
-> >>>> 
-> >>>> Instead of "errno" should we just use "result" and log the value given
-> >>>> in the result parameter?
-> >>> 
-> >>> That would likely collide with another field of the same name which is
-> >>> the
-> >>> operation's results. If it really is errno, the name is fine. It's
-> >>> generic
-> >>> enough that it can be reused on other events if that mattered.
-> >> 
-> >> Steve, what is the historical reason why we have both "res" and
-> >> "result" for indicating a boolean success/fail?  I'm just curious how
-> >> we ended up this way, and who may still be using "result".
-> > 
-> > I think its pam and some other user space things did this. But because of
-> > mixed machines in datacenters supporting multiple versions of OS, we have
-> > to leave result alone. It has to be 0,1 or success/fail. We cannot use
-> > it for errno.
-> 
-> As Mimi had pointed out, since the value passed in result parameter is
-> not always an error code, "errno" is not an appropriate name.
-> 
-> Can we add a new field, say, "op_result" to report the result of the
-> specified operation?
+Hi,
 
-Sure. But since it is errno sometimes, how would we know when to translate 
-it?
+This patch-set adds initial support for a new Intel Movidius SoC code-named
+Keem Bay. The SoC couples an ARM Cortex A53 CPU with an Intel Movidius VPU.
 
--Steve
+This initial patch-set enables only the minimal set of components required to
+make the Keem Bay EVM board boot into initramfs.
+
+Brief summary of the patch-set:
+* Patches 1-2 add the Keem Bay SCMI Mailbox driver (needed to enable SCMI in
+  Keem Bay)
+* Patch 3 adds the ARCH_KEEMBAY config option
+* Patches 4-7 add minimal device tree for Keem Bay SoC and Keem Bay EVM
+  (together with information about the SoC maintainers)
+
+Regards,
+Daniele
 
 
+Daniele Alessandrelli (5):
+  arm64: Add config for Keem Bay SoC
+  dt-bindings: arm: Add Keem Bay bindings
+  MAINTAINERS: Add maintainers for Keem Bay SoC
+  arm64: dts: keembay: Add device tree for Keem Bay SoC
+  arm64: dts: keembay: Add device tree for Keem Bay EVM board
+
+Paul Murphy (2):
+  dt-bindings: mailbox: Add Keem Bay SCMI mailbox bindings
+  mailbox: keembay-scmi-mailbox: Add support for Keem Bay mailbox
+
+ .../devicetree/bindings/arm/keembay.yaml      |  19 ++
+ .../mailbox/intel,keembay-scmi-mailbox.yaml   |  44 ++++
+ MAINTAINERS                                   |  16 ++
+ arch/arm64/Kconfig.platforms                  |   5 +
+ arch/arm64/boot/dts/intel/Makefile            |   1 +
+ arch/arm64/boot/dts/intel/keembay-evm.dts     |  55 +++++
+ arch/arm64/boot/dts/intel/keembay-soc.dtsi    | 172 +++++++++++++++
+ drivers/mailbox/Kconfig                       |   9 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/keembay-scmi-mailbox.c        | 203 ++++++++++++++++++
+ include/dt-bindings/clock/keembay-clocks.h    | 188 ++++++++++++++++
+ include/dt-bindings/power/keembay-power.h     |  19 ++
+ 12 files changed, 733 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/keembay.yaml
+ create mode 100644 Documentation/devicetree/bindings/mailbox/intel,keembay-scmi-mailbox.yaml
+ create mode 100644 arch/arm64/boot/dts/intel/keembay-evm.dts
+ create mode 100644 arch/arm64/boot/dts/intel/keembay-soc.dtsi
+ create mode 100644 drivers/mailbox/keembay-scmi-mailbox.c
+ create mode 100644 include/dt-bindings/clock/keembay-clocks.h
+ create mode 100644 include/dt-bindings/power/keembay-power.h
+
+-- 
+2.26.2
 
