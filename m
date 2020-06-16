@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0312B1FAAA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C4F1FAAA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgFPIBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        id S1727070AbgFPICD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgFPIBQ (ORCPT
+        with ESMTP id S1726261AbgFPICA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:01:16 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0006DC05BD43
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:01:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u26so1668433wmn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:01:15 -0700 (PDT)
+        Tue, 16 Jun 2020 04:02:00 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C46C05BD43
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:01:59 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y20so2046022wmi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XCQQkMTQ5i0LzzLAqMYj0ZlgAAMCYhAeRgmSTuVWpiU=;
-        b=PdXRsKHo2oCz/8hxGQBkQV8rA1aKo0OTp0h9+96o15ErtKc6f16Dd3ycbRN9NSfsOq
-         iti334NTjzMW1HZaX5zFGaJPnp6eF9xhGXLsQL4EQsl4xP5777sVMLoWyyIMEtKY7bHo
-         pBIXbAprivzwyVYgJ+fMg56w16n3AvK+BoNuzfWnOJrfxn08Un9j3nB9uC+X5G6w6V3O
-         QcYaHk+fX6PRb7luMATq9n1ffCWBohaF5fA9MilLPGdpyIJev2j06pnn7rvrYHpJ/jra
-         j/bVTWH81cmWaMMambEOSwqklgHbl1Q3BbMPe9+vR2FYZGrIygWRrEwBFt3r68FoRxA6
-         AVYg==
+        bh=k3IyOecJ9U8+RFNYzcJYgMtOOcr6g2iirCuzmycgq3U=;
+        b=nkBUMx+bauu7tHtywYZH+P3WU21cPGV7QxrxKt+P4lqpdb1RNLJJ7QDbvG2CvCP3j3
+         afQ7JUBQLjBACAB6q7xCQyjmgXr0YQrWJo7pHrnEHInQD2sn1bWBWtjUl5iI9NN41aXI
+         EtfuP8d+/H/w0C5NBJOf7wdPUXKwBhOPMi4pQPmP9jiOgT2DqQt2eMMlOUXFDXefc5py
+         w3NwBUH+icYj3jn6XuqNnI0AcXykDJfFzNs79IGJkXlHO0sSIMVBiIRmQ07RQjve1e81
+         hqlqksW9bQdOU02VZ3cpW4TPZ/IFc7R2/bXrJJHOIYMkfAeuqGI6/8LoFm8FusYIHnI/
+         29YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=XCQQkMTQ5i0LzzLAqMYj0ZlgAAMCYhAeRgmSTuVWpiU=;
-        b=aDsdexk/Wxn0mDw9SOAt3dsjkSfEFugVL6vsLzsD6NzrubM1sE3YIz4aFJo4uka2h3
-         f8i+axeTz62qMcGCCdywyofMw9UTwFxqis2ANeyjl1nJqE5HuLxVnSeRfoSS7rOH0jWy
-         /ff/sK4QnsPgECeznFRD3dnSusHtBkgZsio1kLEVvurIgUJH6SAiBPqADab5gLM5HiZI
-         AFRtX7PkvzLgEECxYaIQ9hrS9s2W8ePdNvZgihxJlyJwUgEVclcV/9DiLrn0Z92O11n+
-         +fxddqqlgEF65r+OW7+2otw2rLLm014itwIibRKlY6nIEoPcLp84/uhDn8tfNVYzkIws
-         kLqA==
-X-Gm-Message-State: AOAM530FWjN+/Q3LEv+V5SPRh8huI+o0COtdiq6w/oy+Wo2SgxJGOI8O
-        FEQ3jP9WlAHvGjNT7JcPtud9eg==
-X-Google-Smtp-Source: ABdhPJwtczraf1q3fNGZhkclduNYNYI8K+xijJ86be2Gc7A4wCaDONGmmmpE6dQq3Anyi1FZCmAJ1w==
-X-Received: by 2002:a1c:6509:: with SMTP id z9mr1993858wmb.144.1592294474761;
-        Tue, 16 Jun 2020 01:01:14 -0700 (PDT)
+        bh=k3IyOecJ9U8+RFNYzcJYgMtOOcr6g2iirCuzmycgq3U=;
+        b=jjBv1KhCrqNihBV+ENwQUQ7v+Wz6VGEcTc/+aylJIrbQ4g0SHGlkDKfdfSEXpPh9+j
+         t8CKGSSynbvwl0dgADBEDan5IyGrcixyOQh0Kcyqst4cqLXlI3G+C4FHFiBB5dtU2M+P
+         O1oZAn62jOeiqkxTCFGvmgCXmLEeWVdtqNQRA2YNDv9eqOjGnUooJKWtm6JaogiikIrC
+         ZGar4HVPi8qqpMJepPQCVusZlZvb3HU0pEcSBlOBVEdGG9XEXxL2S36h3rzLQfRgjQfU
+         toPn12PM5UO9vnF1kCnthuWdjp4d6lI+c8jcQfbJfqDyNJgrIf33pi/UOaR5O861jnrV
+         aW5Q==
+X-Gm-Message-State: AOAM530J/1SGv8vqmNOW8Tbn/3SvBJtsSEPKgpn5qMQPbXqjzvjSzzrZ
+        DVAnJvjN6Nj/bZWCamFxOyWzmw==
+X-Google-Smtp-Source: ABdhPJwC9O1cX1bz3pVrfK8wV4xAvHFn5HcuDqJiOwjfTE2sEPvZgDVLYz5l5PxZKps81fvVXWPCVw==
+X-Received: by 2002:a1c:49d6:: with SMTP id w205mr1921297wma.151.1592294513848;
+        Tue, 16 Jun 2020 01:01:53 -0700 (PDT)
 Received: from dell ([109.180.115.156])
-        by smtp.gmail.com with ESMTPSA id j16sm33254269wre.21.2020.06.16.01.01.13
+        by smtp.gmail.com with ESMTPSA id m129sm2966824wmf.2.2020.06.16.01.01.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 01:01:14 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 09:01:12 +0100
+        Tue, 16 Jun 2020 01:01:53 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 09:01:51 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc:     s.nawrocki@samsung.com, linux-kernel@vger.kernel.org,
         patches@opensource.cirrus.com
-Subject: Re: [PATCH v2 1/4] mfd: arizona: Remove BUG_ON usage
-Message-ID: <20200616080112.GH2608702@dell>
+Subject: Re: [PATCH v2 3/4] mfd: madera: Remove unused forward declaration of
+ madera_codec_pdata
+Message-ID: <20200616080151.GI2608702@dell>
 References: <20200615135323.15215-1-ckeepax@opensource.cirrus.com>
+ <20200615135323.15215-3-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200615135323.15215-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20200615135323.15215-3-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,20 +71,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, 15 Jun 2020, Charles Keepax wrote:
 
-> BUG_ON macros are generally frowned upon when the issue isn't super
-> critical, the kernel can certainly carry on with the 32k clock on the
-> CODEC in a bad state so change the BUG_ON to a WARN_ON.
+> This forward declaration is redundant since the header including the
+> full data structure is included.
 > 
 > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 > ---
 > 
-> No changes since v1.
+> New since v1 of the series.
 > 
 > Thanks,
 > Charles
 > 
->  drivers/mfd/arizona-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/linux/mfd/madera/pdata.h | 1 -
+>  1 file changed, 1 deletion(-)
 
 Applied, thanks.
 
