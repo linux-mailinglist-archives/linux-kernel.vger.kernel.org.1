@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D106A1FB142
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CA81FB150
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgFPM4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgFPM4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:56:33 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D33C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:56:33 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id d2so16652641qtw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:56:33 -0700 (PDT)
+        id S1728826AbgFPM5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:57:25 -0400
+Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:39616
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728763AbgFPM5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 08:57:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G3IK405vB+EDTIXSu7itysh8bY8P/KqBxx+Jidi6qBtG9cPfqiHYaAQESn33Ei+I/8f86/7mGDhNumt7m+K5xrBTPFsuSrQjSi7Zzg06YONcla99Fo5pCvN2XAh9nxvlj1CUqe/INrpYlaGMgPfajalwksajvjJeUGpJuR3NB8ra5WbfcnHj9mXU5eYlu3HT9ELjunBuTThZ2yU6yiNjisJ98iLE9ZDAfXdF5CHQTLKBrXgMF7HGk0ARSCXbZQeoAxJYinQCEL3xdEbn/rjcWgrGneqbVjvoY5Sm7EMtifrgd3wQ/bKjd5H4NDa1xE2QUbUkgBS1QfGOIcQBXPNnUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zZJqt47qMEpHojUviZ7JZIu3ZBMFjF8n6md8YzdOm6M=;
+ b=CySZDGkChvtb1QA7zO97ZFaa1KK1sDBOpzXHP/+DLFV2DNSHOyg8JXRieMt5XCKCCsXbyhWS/5tp4qOFWxX8EsO88jhaX4X5secUIsSyuhQ14ZeojuxpBkUG3eBLfeli8rDOz28JIND50ACu4o5/XU9H5AoTd1+l+FWL5xIJZYOKZkHtGDWYaNyd5dsp/HR0+TVrzawduw1cWxO+KajYv1NGggfOWBo72Q3omA9jfyTTXJokWRviQwD9tMh2XxgM1Uh2ZvaMmftxe0Yb3RcBSj2l94KZT/PYXpIQOYWGqpee/Js4Ty2GzaXb6ZICaMwSx7boKUKeAMIkwOhBDgS8jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=JEQhTwQYPsGwAzZzLRu7bODyjB8wxGLamvh49Pujfk0=;
-        b=sSHE2J4HPUB3tIDmmWhIklNcdHKql+Uyvzmc6XqZpJzmMGO9f6RWeMHzZrA6nd1tSH
-         wMFPzYcAPkUjWTpoSnXWYqcJagGQ/qjFYIRVjH2z9YI/HeVHHQV5Pl3ZS6vTxa7SGj5L
-         j+utHFL7hNCvLLPoFB+AbBI8rZHh9d4+uQVvgsOqCTpmGC27qch98mbMkhW9CKDfvNJ8
-         c1NsXeSe3lzWr+2hbz2PjJhuS2gJbX8ZKdgrN0uNsF4RMooNpcflAm1VQJlWZ+0I9jie
-         0V6sIasNyxIBD6XERhgR0uOqbXiop7Ciwfj1E4eOd1HPeB+YNnkWvso/1bDHoPZ3yCxp
-         kg8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=JEQhTwQYPsGwAzZzLRu7bODyjB8wxGLamvh49Pujfk0=;
-        b=raZRygRs7hzzyj7VQrxroBF0+K2hBZPfQGadIDHKu6eqFWlJ8YdQ/4FWaoy/UtBVj4
-         JpyGuWALEr6hCbjsPMIN+Nhv8PJIGLCeVWTZ637abt6e4yQdfL9a84N+/IgAubIVYWzq
-         Ex0rp+XilR57dx5DP0mzZ8TrWWVKLngfEn12GsEW0oXTPeRy1oKqRYrvjahP5tie/QnR
-         PoL5dwjJPLIhrwpcpkxsVuAs78Q3B2I8IcgtgLSlvqkTT0E288VUsmIJnRY/VSeDbczv
-         DXFRjxuGxl5p/MptWXLjS2TsbO625SfsIsMpy+PbMY4D5OXIbd04FQrvqQgjVyMpOw56
-         s62g==
-X-Gm-Message-State: AOAM531C08HqF9tXErSREP96xwUthGdR5XpI3DUcebycmxRhqvXEm3YC
-        FaMkiCFcT7UacKjvAVFepVUX1iJuWQ==
-X-Google-Smtp-Source: ABdhPJwJECfqDtEzlbRiaVbG9X3exdfTM0hZYMe8eM3LQl2bahV0IpaKa5NjpgAs6dfyJ1u5JrhunEnOKA==
-X-Received: by 2002:a0c:e5c1:: with SMTP id u1mr2081593qvm.140.1592312191743;
- Tue, 16 Jun 2020 05:56:31 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 14:56:17 +0200
-Message-Id: <20200616125617.237428-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH] mm, kcsan: Instrument SLAB/SLUB free with "ASSERT_EXCLUSIVE_ACCESS"
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zZJqt47qMEpHojUviZ7JZIu3ZBMFjF8n6md8YzdOm6M=;
+ b=Pb2BAT5A6tG+fuM9eFdMdqA3zOEOhTVeioN3n0N4yUXkOU3czy+EvlzzcgN1MgpfMdhlGyMb60wKM0Ri0sDQ8PxFvwbLXDuJFoGZLlzzpHvrE2dgnd2TqfBWNKJPwv7NppT0wZcLBUiE+GqP0iuoIbXDpV2JSW6XhdKTWTGFiEg=
+Received: from MN2PR05CA0053.namprd05.prod.outlook.com (2603:10b6:208:236::22)
+ by BY5PR02MB6081.namprd02.prod.outlook.com (2603:10b6:a03:1f7::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Tue, 16 Jun
+ 2020 12:57:10 +0000
+Received: from BL2NAM02FT028.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:236:cafe::44) by MN2PR05CA0053.outlook.office365.com
+ (2603:10b6:208:236::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.10 via Frontend
+ Transport; Tue, 16 Jun 2020 12:57:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT028.mail.protection.outlook.com (10.152.77.165) with Microsoft SMTP
+ Server id 15.20.3088.18 via Frontend Transport; Tue, 16 Jun 2020 12:57:10
+ +0000
+Received: from [149.199.38.66] (port=32775 helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <bharat.kumar.gogada@xilinx.com>)
+        id 1jlB8I-0000xa-LM; Tue, 16 Jun 2020 05:56:06 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <bharat.kumar.gogada@xilinx.com>)
+        id 1jlB9J-0001rZ-No; Tue, 16 Jun 2020 05:57:09 -0700
+Received: from xsj-pvapsmtp01 (mailhost.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 05GCv0vp029825;
+        Tue, 16 Jun 2020 05:57:00 -0700
+Received: from [10.140.9.2] (helo=xhdbharatku40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <bharat.kumar.gogada@xilinx.com>)
+        id 1jlB99-0001oA-OL; Tue, 16 Jun 2020 05:57:00 -0700
+From:   Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        maz@kernel.org,
+        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Subject: [PATCH v9 0/2]  Adding support for Versal CPM as Root Port driver
+Date:   Tue, 16 Jun 2020 18:26:52 +0530
+Message-Id: <1592312214-9347-1-git-send-email-bharat.kumar.gogada@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(376002)(396003)(346002)(136003)(39860400002)(46966005)(70206006)(6666004)(82310400002)(70586007)(81166007)(5660300002)(4326008)(426003)(356005)(2616005)(9786002)(336012)(107886003)(36756003)(82740400003)(478600001)(2906002)(47076004)(186003)(26005)(8936002)(316002)(8676002)(83380400001)(7696005);DIR:OUT;SFP:1101;
+X-MS-PublicTrafficType: Email
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 1ba286f3-65dd-4550-2dfd-08d811f4c835
+X-MS-TrafficTypeDiagnostic: BY5PR02MB6081:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <BY5PR02MB6081806E69AB27EAA5379493A59D0@BY5PR02MB6081.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Forefront-PRVS: 04362AC73B
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aPVIcVbVW+Oqab/kiMJW5UsmddS/+u48PH5vO8s5Z9WgIVYCxZSUhDzgWuOg4YKWeBWCNX42fJ+/yuIM09B+pfzVkKlqeGXG3NMCca9/GolLluVRYthEpWryWhdtrTSeGiW/fkwkgoimj0bMWfmAklyvaDR8r4fIs+OXjlfjs6wtKdGx2dVOU6MocqL+ToCAvIUWRP4w2Wea/xOb8Ey2N9r62Ztd+eiiAjPzTzxZmh7vewgP9T4HN/49onkVzDsWIHZO30MNCokOyhtXV24zZaK4igdmDBiIQwej+1ZzdeBm4NHGeWV8C0tOKyndLRYSisnjWjXSUaN4cVPG0CH+GZreUiToNybRmuM9FbllqTIm98xxLlEauMzUwzsHWI0LLYGujKMk7Tlx/dGNi47uxQ==
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 12:57:10.1466
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ba286f3-65dd-4550-2dfd-08d811f4c835
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide the necessary KCSAN checks to assist with debugging racy
-use-after-frees. While KASAN is more reliable at generally catching such
-use-after-frees (due to its use of a quarantine), it can be difficult to
-debug racy use-after-frees. If a reliable reproducer exists, KCSAN can
-assist in debugging such issues.
+- Adding support for Versal CPM as Root port.
+- The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
+  block for CPM along with the integrated bridge can function
+  as PCIe Root Port.
+- Versal CPM uses GICv3 ITS feature for assigning MSI/MSI-X
+  vectors and handling MSI/MSI-X interrupts.
+- Bridge error and legacy interrupts in Versal CPM are handled using
+  Versal CPM specific interrupt line.
 
-Note: ASSERT_EXCLUSIVE_ACCESS is a convenience wrapper if the size is
-simply sizeof(var). Instead, here we just use __kcsan_check_access()
-explicitly to pass the correct size.
+Changes for v9:
+- Removed interrupt enablement outside irqchip flow as suggested
+  by Marc.
+- Removed using WARN_ON in if statement.
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/slab.c | 4 ++++
- mm/slub.c | 4 ++++
- 2 files changed, 8 insertions(+)
+Bharat Kumar Gogada (2):
+  PCI: xilinx-cpm: Add YAML schemas for Versal CPM Root Port
+  PCI: xilinx-cpm: Add Versal CPM Root Port driver
 
-diff --git a/mm/slab.c b/mm/slab.c
-index 9350062ffc1a..4c7013eeacd9 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3426,6 +3426,10 @@ static __always_inline void __cache_free(struct kmem_cache *cachep, void *objp,
- 	if (kasan_slab_free(cachep, objp, _RET_IP_))
- 		return;
- 
-+	/* Use KCSAN to help debug racy use-after-free. */
-+	__kcsan_check_access(objp, cachep->object_size,
-+			     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ASSERT);
-+
- 	___cache_free(cachep, objp, caller);
- }
- 
-diff --git a/mm/slub.c b/mm/slub.c
-index b8f798b50d44..57db6ca2e0dc 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1470,6 +1470,10 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s, void *x)
- 	if (!(s->flags & SLAB_DEBUG_OBJECTS))
- 		debug_check_no_obj_freed(x, s->object_size);
- 
-+	/* Use KCSAN to help debug racy use-after-free. */
-+	__kcsan_check_access(x, s->object_size,
-+			     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ASSERT);
-+
- 	/* KASAN might put x into memory quarantine, delaying its reuse */
- 	return kasan_slab_free(s, x, _RET_IP_);
- }
+ .../devicetree/bindings/pci/xilinx-versal-cpm.yaml |  99 ++++
+ drivers/pci/controller/Kconfig                     |   8 +
+ drivers/pci/controller/Makefile                    |   1 +
+ drivers/pci/controller/pcie-xilinx-cpm.c           | 615 +++++++++++++++++++++
+ 4 files changed, 723 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+ create mode 100644 drivers/pci/controller/pcie-xilinx-cpm.c
+
 -- 
-2.27.0.290.gba653c62da-goog
+2.7.4
 
