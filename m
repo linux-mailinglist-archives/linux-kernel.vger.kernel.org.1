@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C0F1FAC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F1A1FACA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgFPJdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 05:33:45 -0400
-Received: from verein.lst.de ([213.95.11.211]:37209 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgFPJdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 05:33:45 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BAFB068AFE; Tue, 16 Jun 2020 11:33:41 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 11:33:41 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Dexuan Cui <decui@microsoft.com>, Christoph Hellwig <hch@lst.de>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Ju-Hyoung Lee <juhlee@microsoft.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: Re: hv_hypercall_pg page permissios
-Message-ID: <20200616093341.GA26400@lst.de>
-References: <20200407073830.GA29279@lst.de> <C311EB52-A796-4B94-AADD-CCABD19B377E@amacapital.net> <HK0P153MB0322D52F61E540CA7515CC4BBF810@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM> <87y2ooiv5k.fsf@vitty.brq.redhat.com> <HK0P153MB0322DE798AA39BCCD4A208E4BF9C0@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM> <HK0P153MB0322EB3EE51073CC021D4AEABF9C0@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM> <87blljicjm.fsf@vitty.brq.redhat.com>
+        id S1728336AbgFPJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 05:36:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6334 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728240AbgFPJgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 05:36:16 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 968F783B892EBF894D59;
+        Tue, 16 Jun 2020 17:36:13 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.173.221.230) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 16 Jun 2020 17:36:03 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <liangpeng10@huawei.com>, <zhengxiang9@huawei.com>,
+        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH 00/12] KVM: arm64: Support stage2 hardware DBM
+Date:   Tue, 16 Jun 2020 17:35:41 +0800
+Message-ID: <20200616093553.27512-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87blljicjm.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 11:29:33AM +0200, Vitaly Kuznetsov wrote:
-> it seems we need something like PAGE_KERNEL_READONLY_EXEC but we don't
-> seem to have one on x86. Hypercall page is special in a way that the
-> guest doesn't need to write there at all. vmalloc_exec() seems to have
-> only one other user on x86: module_alloc() and it has other needs.
+This patch series add support for stage2 hardware DBM, and it is only
+used for dirty log for now.
 
-module_alloc actually is a weak function and overriden on x86 (and many
-other architectures) , so it isn't used either (did I mention that I hate
-weak functions?)
+It works well under some migration test cases, including VM with 4K
+pages or 2M THP. I checked the SHA256 hash digest of all memory and
+they keep same for source VM and destination VM, which means no dirty
+pages is missed under hardware DBM.
 
-> On
-> ARM, alloc_insn_page() does the following:
+Some key points:
+
+1. Only support hardware updates of dirty status for PTEs. PMDs and PUDs
+   are not involved for now.
+
+2. About *performance*: In RFC patch, I have mentioned that for every 64GB
+   memory, KVM consumes about 40ms to scan all PTEs to collect dirty log.
+   
+   Initially, I plan to solve this problem using parallel CPUs. However
+   I faced two problems.
+
+   The first is bottleneck of memory bandwith. Single thread will occupy
+   bandwidth about 500GB/s, we can support about 4 parallel threads at
+   most, so the ideal speedup ratio is low.
+
+   The second is huge impact on other CPUs. To scan PTs quickly, I use
+   smp_call_function_many, which is based on IPI, to dispatch workload
+   on other CPUs. Though it can complete work in time, the interrupt is
+   disabled during scaning PTs, which has huge impact on other CPUs.
+
+   Now, I make hardware dirty log can be dynamic enabled and disabled.
+   Userspace can enable it before VM migration and disable it when
+   remaining dirty pages is little. Thus VM downtime is not affected. 
 
 
+3. About correctness: Only add DBM bit when PTE is already writable, so
+   we still have readonly PTE and some mechanisms which rely on readonly
+   PTs are not broken.
 
-> 
-> arch/arm64/kernel/probes/kprobes.c:     page = vmalloc_exec(PAGE_SIZE);
-> arch/arm64/kernel/probes/kprobes.c-     if (page) {
-> arch/arm64/kernel/probes/kprobes.c-             set_memory_ro((unsigned long)page, 1);
-> arch/arm64/kernel/probes/kprobes.c-             set_vm_flush_reset_perms(page);
-> arch/arm64/kernel/probes/kprobes.c-     }
-> 
-> What if we do the same? (almost untested):
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index e2137070386a..31aadfea589b 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -23,6 +23,7 @@
->  #include <linux/kernel.h>
->  #include <linux/cpuhotplug.h>
->  #include <linux/syscore_ops.h>
-> +#include <linux/set_memory.h>
->  #include <clocksource/hyperv_timer.h>
->  
->  void *hv_hypercall_pg;
-> @@ -383,6 +384,8 @@ void __init hyperv_init(void)
->                 wrmsrl(HV_X64_MSR_GUEST_OS_ID, 0);
->                 goto remove_cpuhp_state;
->         }
-> +       set_memory_ro((unsigned long)hv_hypercall_pg, 1);
-> +       set_vm_flush_reset_perms(hv_hypercall_pg);
+4. About PTs modification races: There are two kinds of PTs modification.
+   
+   The first is adding or clearing specific bit, such as AF or RW. All
+   these operations have been converted to be atomic, avoid covering
+   dirty status set by hardware.
+   
+   The second is replacement, such as PTEs unmapping or changement. All
+   these operations will invoke kvm_set_pte finally. kvm_set_pte have
+   been converted to be atomic and we save the dirty status to underlying
+   bitmap if dirty status is coverred.
 
-This should work and might be the best for 5.8, but I think we need
-to sort this whole mess out for real.
+
+Keqian Zhu (12):
+  KVM: arm64: Add some basic functions to support hw DBM
+  KVM: arm64: Modify stage2 young mechanism to support hw DBM
+  KVM: arm64: Report hardware dirty status of stage2 PTE if coverred
+  KVM: arm64: Support clear DBM bit for PTEs
+  KVM: arm64: Add KVM_CAP_ARM_HW_DIRTY_LOG capability
+  KVM: arm64: Set DBM bit of PTEs during write protecting
+  KVM: arm64: Scan PTEs to sync dirty log
+  KVM: Omit dirty log sync in log clear if initially all set
+  KVM: arm64: Steply write protect page table by mask bit
+  KVM: arm64: Save stage2 PTE dirty status if it is coverred
+  KVM: arm64: Support disable hw dirty log after enable
+  KVM: arm64: Enable stage2 hardware DBM
+
+ arch/arm64/include/asm/kvm_host.h |  11 +
+ arch/arm64/include/asm/kvm_mmu.h  |  56 +++-
+ arch/arm64/include/asm/sysreg.h   |   2 +
+ arch/arm64/kvm/arm.c              |  22 +-
+ arch/arm64/kvm/mmu.c              | 411 ++++++++++++++++++++++++++++--
+ arch/arm64/kvm/reset.c            |  14 +-
+ include/uapi/linux/kvm.h          |   1 +
+ tools/include/uapi/linux/kvm.h    |   1 +
+ virt/kvm/kvm_main.c               |   7 +-
+ 9 files changed, 499 insertions(+), 26 deletions(-)
+
+-- 
+2.19.1
+
