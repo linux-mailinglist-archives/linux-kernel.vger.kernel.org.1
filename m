@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D7F1FA96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8F01FA971
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgFPHCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 03:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgFPHCc (ORCPT
+        id S1727796AbgFPHDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 03:03:05 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:41125 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgFPHDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 03:02:32 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A20CC03E97C;
-        Tue, 16 Jun 2020 00:02:32 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l10so19502701wrr.10;
-        Tue, 16 Jun 2020 00:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/D6+64ZUdejGJRJMqoRU2x61DrD8mP7AccKlTwbucWk=;
-        b=bD+zdCSQk7z5kAoShY/7lCz6ss5FR4L8vQ+PeKjYftWneGl8MwS4iSnkV6zsB2zMeJ
-         lXdH4Gaus8NSoD/I/o5/ozLjil4vnSu1jH6d30fdxDgMUDCwth18iC9Q47oqKpISf7jU
-         UMAKjGGSYaL/lMBSVnt8ChLimgmN0Zoew0mWrdTs4tFk+QQmrxWBjyQshkxOPVUdHIJJ
-         sj97C1l0gSCquhlAjn28m7VaTXcCD72NDmZmvfDbMQl014A28RKWjWH4b0vyx5I8bYXt
-         3jUIm4oF3IQuKb32U9YGOVDM0dG1DIMoaIDcDighByeaLdCb6GaU+eIwIBp69dcHE0J2
-         iJsA==
+        Tue, 16 Jun 2020 03:03:01 -0400
+Received: by mail-ej1-f65.google.com with SMTP id dp18so2100945ejc.8;
+        Tue, 16 Jun 2020 00:02:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/D6+64ZUdejGJRJMqoRU2x61DrD8mP7AccKlTwbucWk=;
-        b=MAgwphFX8KUP4cm5TQVla44Lp5xNcfgxyPmd8YSOsqzW+hqNMCNcF4zAJJPIp4Ed01
-         7U1jRJnwhcXx2edA5ecBXCSQKUe2ZE5W9qAWKCgq73BuhfRuQu7PRONnKgj/Pd007NxQ
-         sCmxCBTt8QPoOrxAdEaQhOxfJxQkpIpeDJw1fcqCgWrolBAeW3yh5Ft/1oKNp+js4o9s
-         3hjqD9B8XcXLe5YIZL6/tXTLlrBMUqn510dO6wJgPVIJV46A/Bvysnv067wR5mcWj2Hf
-         97tNZ3mbOt6npTw84P/XyIYx3E3zbabGYlXUzGcy4EbJvjj19g5Byp81u0cplbrAIWbL
-         VqPA==
-X-Gm-Message-State: AOAM532KYcKN2PJPzPSVEQXx5PPhMkWfCpbWmar/jLRNT7FMVmQ0JFUZ
-        diuVcLGwP3izIuTwHO+4rls=
-X-Google-Smtp-Source: ABdhPJzi/n7XU1cdxDdzEwN8TxfBEhzsT4SjTrAg4SkW/x5lg2I5SoFzXpF/64QNnsy7GYYj3hzgKw==
-X-Received: by 2002:a5d:4d89:: with SMTP id b9mr1542617wru.210.1592290951143;
-        Tue, 16 Jun 2020 00:02:31 -0700 (PDT)
-Received: from skynet.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
-        by smtp.gmail.com with ESMTPSA id a81sm2792897wmd.25.2020.06.16.00.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 00:02:30 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     broonie@kernel.org, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v3 4/4] spi: bcm63xx-hsspi: allow building for BMIPS
-Date:   Tue, 16 Jun 2020 09:02:23 +0200
-Message-Id: <20200616070223.3401282-5-noltari@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616070223.3401282-1-noltari@gmail.com>
-References: <20200616070223.3401282-1-noltari@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W+RINVE0XAWlLx/NciRZL3CxZwQ8/XrClWGZWDn4nfE=;
+        b=SUl4rQGIHivhb71P38XTo3bb5chjpqgajocfue2hqT6SnY6ArjPxgQTExOnU4iZ5b6
+         QX2QjT8b6UOVGPN0ikVzyb93tmRiuHXZzz7iFdjSk2lJSp92QghQMckn5Bd0No/eaJ95
+         SqjC0vjQl/DkBkBv757gP3kgdLTTZux1+/M64fB4lQWS658ZsRs3+xG8wxCA5MDktY/3
+         tVDlK3IDx/bd1qtPARuNae+XlpV6SKp/ya4qsQpednwqot+T2QVWF9l/uzgr+VfOtomv
+         mCPTHv6kir7GauYdNwQeYztpU/s/gIzfFxULEc8WGhq6ofHH+ob5EXCWWqVY3kpCLoUS
+         pquA==
+X-Gm-Message-State: AOAM530yjinjsQU8j5BI9o7G+e3IqytlFNG5r/VtiltddsUbPEmNr+yr
+        eRShRpsoO62B1me90lHew6s=
+X-Google-Smtp-Source: ABdhPJxl4oyx9iQxhRGORq2pzdp+iXjssmPRevhLNp+7V95nN07E3myCv4N1zJvRvpw1FVDX/qymKQ==
+X-Received: by 2002:a17:906:4b50:: with SMTP id j16mr1504437ejv.415.1592290978329;
+        Tue, 16 Jun 2020 00:02:58 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id ce14sm10568034ejc.3.2020.06.16.00.02.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 16 Jun 2020 00:02:57 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 09:02:54 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>, peron.clem@gmail.com,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-samsung-soc@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH RESEND v4] soc: samsung: Add simple voltage coupler for
+ Exynos5800
+Message-ID: <20200616070254.GA20282@kozik-lap>
+References: <CGME20200616065834eucas1p268ef16744422664c783b17f0a18c53e2@eucas1p2.samsung.com>
+ <20200616065821.29616-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200616065821.29616-1-m.szyprowski@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bcm63xx-hsspi controller is present on several BMIPS SoCs (BCM6318, BCM6328,
-BCM6362 and BCM63268).
+On Tue, Jun 16, 2020 at 08:58:21AM +0200, Marek Szyprowski wrote:
+> Add a simple custom voltage regulator coupler for Exynos5800 SoCs, which
+> require coupling between "vdd_arm" and "vdd_int" regulators. This coupler
+> ensures that the voltage values don't go below the bootloader-selected
+> operation point during the boot process until a the clients sets their
+> constraints. It is achieved by assuming minimal voltage value equal to
+> the current value if no constraints are set. This also ensures proper
+> voltage balancing if any of the client driver is missing.
+> 
+> The balancing code comes from the regulator/core.c with the additional
+> logic for handling regulators without client constraints applied added.
+> 
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- v3: no changes
- v2: no changes
+Thanks, applied.
 
- drivers/spi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index a9896e388355..500774fe1351 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -155,7 +155,7 @@ config SPI_BCM63XX
- 
- config SPI_BCM63XX_HSSPI
- 	tristate "Broadcom BCM63XX HS SPI controller driver"
--	depends on BCM63XX || ARCH_BCM_63XX || COMPILE_TEST
-+	depends on BCM63XX || BMIPS_GENERIC || ARCH_BCM_63XX || COMPILE_TEST
- 	help
- 	  This enables support for the High Speed SPI controller present on
- 	  newer Broadcom BCM63XX SoCs.
--- 
-2.27.0
+Best regards,
+Krzysztof
 
