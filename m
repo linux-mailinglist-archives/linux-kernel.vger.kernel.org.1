@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D491FBADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495951FBAF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgFPQOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:14:46 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37474 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732261AbgFPQOm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:14:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592324081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EGk4MDxuxjJxgEfnB6gIyOaKHUzMx57nfzVxFUf1flw=;
-        b=b/U4j28mnQmJJ2K3ZZsm0kFoFZauhNVQWi91KqZiObYKmnSxwHnOTGNlUxvUVAm+Up9VPI
-        mU+iLjzCDkwv9A0SIT6YKPmLVt4CmJ2j8f6U4UirpCAp9qmuzdGfXS4Za1xCMavVHWpU2L
-        le6pg+Ywc8kZp3Ung2wBcWIrLEw7GYU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-KOglBjA_PZOFj8z9UPRzyA-1; Tue, 16 Jun 2020 12:14:39 -0400
-X-MC-Unique: KOglBjA_PZOFj8z9UPRzyA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732397AbgFPQPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732361AbgFPQPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:15:50 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22EC5100A69D;
-        Tue, 16 Jun 2020 16:14:32 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.192.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C6FF7CAA0;
-        Tue, 16 Jun 2020 16:14:28 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Like Xu <like.xu@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: SVM: drop MSR_IA32_PERF_CAPABILITIES from emulated MSRs
-Date:   Tue, 16 Jun 2020 18:14:27 +0200
-Message-Id: <20200616161427.375651-1-vkuznets@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id E89A620882;
+        Tue, 16 Jun 2020 16:15:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592324149;
+        bh=fYUP88jpvExRcURUv+QWZjf7n0YAKgdb92mnl17R3i8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YtdntdNfZemJzgI8ZdunFonB0oo5zwvT4Ia0yD3Faa2wvrUt1kUwEB1HWiiwVSZkm
+         l14Qz/FzlZQRReDi4nTEjJTixWrKxIuaqUmN1C07cqWpNOo53gj8TumHwvZ2hTaF4d
+         D+CAeNyHNshjkjMsZt2H99PXHU2RwUA/ylN81zqw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C5A8B3521103; Tue, 16 Jun 2020 09:15:49 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 09:15:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: rseq.2 Restartable Sequences man page updated
+Message-ID: <20200616161549.GZ2723@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1094083824.1256.1591899797181.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1094083824.1256.1591899797181.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-state_test/smm_test selftests are failing on AMD with:
-"Unexpected result from KVM_GET_MSRS, r: 51 (failed MSR was 0x345)"
+On Thu, Jun 11, 2020 at 02:23:17PM -0400, Mathieu Desnoyers wrote:
+> Hi Michael,
+> 
+> I took the liberty of updating the rseq.2 man page based on your
+> last round of comments:
+> 
+> https://git.kernel.org/pub/scm/libs/librseq/librseq.git/tree/doc/man/rseq.2
+> 
+> Soon, rseq support will be integrated into glibc, and the maintainers
+> there want a stable link to documentation of the rseq system call.
+> Documentation is pretty much the only remaining blocker for integration
+> of rseq support into glibc.
+> 
+> Ideally it should land into the man-pages project, but since it's been
+> more than a year since I heard back from you, I am tempted to host it
+> myself within the librseq project, even though it's far from ideal for
+> hosting a kernel system call man page. Unfortunately, I suspect that
+> hosting it in two locations (librseq and man-pages) will eventually
+> create much confusion.
+> 
+> Can you look into the updated man page please ? I can do the edits
+> if you have further feedback.
 
-MSR_IA32_PERF_CAPABILITIES is an emulated MSR indeed but only on Intel,
-make svm_has_emulated_msr() skip it so it is not returned by
-KVM_GET_MSR_INDEX_LIST.
+For whatever it is worth, this looks good to me.
 
-Fixes: 27461da31089 ("KVM: x86/pmu: Support full width counting")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Michael, any reason this cannot be included into the official set of
+manual pages?
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 8ccfa4197d9c..2c423d64fb8f 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3539,6 +3539,8 @@ static bool svm_has_emulated_msr(u32 index)
- 	case MSR_IA32_MCG_EXT_CTL:
- 	case MSR_IA32_VMX_BASIC ... MSR_IA32_VMX_VMFUNC:
- 		return false;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		return false;
- 	default:
- 		break;
- 	}
--- 
-2.25.4
-
+							Thanx, Paul
