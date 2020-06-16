@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2171FB77B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713131FB839
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730675AbgFPPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
+        id S1732961AbgFPPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732200AbgFPPqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:35 -0400
+        id S1732942AbgFPPyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A88F5214F1;
-        Tue, 16 Jun 2020 15:46:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEC4321556;
+        Tue, 16 Jun 2020 15:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322394;
-        bh=lC0Nos0Z2xN682tVmoX7eeKjh3ClUl7Mw27xlR7HuUg=;
+        s=default; t=1592322846;
+        bh=Cy0Pcw1eJIo5XdE8jhQZwIHhrSWVtsnsbrsGEpRIzio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EsFpV+mQTJObZa2B0eQiJZh9sG9R6gTu8gtbspsSldCot4Tt2E2JSpXgME2a/dXIj
-         J4GXc0vWEdAA86efBJuGv2HkdlRgxwqCQy+6hJcK8SKnTMqvwWchyOwkuGaD2ai8oc
-         8IcwVp4hGsq3f0iS+1R1QBgyqWsQ/hmKXPOtVFhQ=
+        b=wdHfHaf6aTqQaKcdcn4ZMpBUZvOfioXcFV3h9CBEKD9Pp1jXjgaN1cc7/ZbhTunzh
+         CHkbirW0HqF08nshMqj57ewn1WdSdMI93bsm2zmXtqmGhOIlLTi2fCY0a3xb67H80F
+         wjXhqzQNmh/2J16frxeOWjSd9/b8Rflk8zkyKgzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oz Shlomo <ozsh@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.7 114/163] net/mlx5e: CT: Fix ipv6 nat header rewrite actions
-Date:   Tue, 16 Jun 2020 17:34:48 +0200
-Message-Id: <20200616153112.265339373@linuxfoundation.org>
+        stable@vger.kernel.org, LABBE Corentin <clabbe@baylibre.com>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH 5.6 099/161] crypto: virtio: Fix use-after-free in virtio_crypto_skcipher_finalize_req()
+Date:   Tue, 16 Jun 2020 17:34:49 +0200
+Message-Id: <20200616153111.084131462@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +49,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oz Shlomo <ozsh@mellanox.com>
+From: Longpeng(Mike) <longpeng2@huawei.com>
 
-[ Upstream commit 0d156f2deda8675c29fa2b8b5ed9b374370e47f2 ]
+commit 8c855f0720ff006d75d0a2512c7f6c4f60ff60ee upstream.
 
-Set the ipv6 word fields according to the hardware definitions.
+The system'll crash when the users insmod crypto/tcrypto.ko with mode=155
+( testing "authenc(hmac(sha1),cbc(aes))" ). It's caused by reuse the memory
+of request structure.
 
-Fixes: ac991b48d43c ("net/mlx5e: CT: Offload established flows")
-Signed-off-by: Oz Shlomo <ozsh@mellanox.com>
-Reviewed-by: Roi Dayan <roid@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+In crypto_authenc_init_tfm(), the reqsize is set to:
+  [PART 1] sizeof(authenc_request_ctx) +
+  [PART 2] ictx->reqoff +
+  [PART 3] MAX(ahash part, skcipher part)
+and the 'PART 3' is used by both ahash and skcipher in turn.
+
+When the virtio_crypto driver finish skcipher req, it'll call ->complete
+callback(in crypto_finalize_skcipher_request) and then free its
+resources whose pointers are recorded in 'skcipher parts'.
+
+However, the ->complete is 'crypto_authenc_encrypt_done' in this case,
+it will use the 'ahash part' of the request and change its content,
+so virtio_crypto driver will get the wrong pointer after ->complete
+finish and mistakenly free some other's memory. So the system will crash
+when these memory will be used again.
+
+The resources which need to be cleaned up are not used any more. But the
+pointers of these resources may be changed in the function
+"crypto_finalize_skcipher_request". Thus release specific resources before
+calling this function.
+
+Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
+Reported-by: LABBE Corentin <clabbe@baylibre.com>
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200123101000.GB24255@Red
+Acked-by: Gonglei <arei.gonglei@huawei.com>
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200602070501.2023-3-longpeng2@huawei.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-@@ -320,21 +320,21 @@ mlx5_tc_ct_parse_mangle_to_mod_act(struc
+---
+ drivers/crypto/virtio/virtio_crypto_algs.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -578,10 +578,11 @@ static void virtio_crypto_skcipher_final
+ 		scatterwalk_map_and_copy(req->iv, req->dst,
+ 					 req->cryptlen - AES_BLOCK_SIZE,
+ 					 AES_BLOCK_SIZE, 0);
+-	crypto_finalize_skcipher_request(vc_sym_req->base.dataq->engine,
+-					   req, err);
+ 	kzfree(vc_sym_req->iv);
+ 	virtcrypto_clear_request(&vc_sym_req->base);
++
++	crypto_finalize_skcipher_request(vc_sym_req->base.dataq->engine,
++					   req, err);
+ }
  
- 	case FLOW_ACT_MANGLE_HDR_TYPE_IP6:
- 		MLX5_SET(set_action_in, modact, length, 0);
--		if (offset == offsetof(struct ipv6hdr, saddr))
-+		if (offset == offsetof(struct ipv6hdr, saddr) + 12)
- 			field = MLX5_ACTION_IN_FIELD_OUT_SIPV6_31_0;
--		else if (offset == offsetof(struct ipv6hdr, saddr) + 4)
--			field = MLX5_ACTION_IN_FIELD_OUT_SIPV6_63_32;
- 		else if (offset == offsetof(struct ipv6hdr, saddr) + 8)
-+			field = MLX5_ACTION_IN_FIELD_OUT_SIPV6_63_32;
-+		else if (offset == offsetof(struct ipv6hdr, saddr) + 4)
- 			field = MLX5_ACTION_IN_FIELD_OUT_SIPV6_95_64;
--		else if (offset == offsetof(struct ipv6hdr, saddr) + 12)
-+		else if (offset == offsetof(struct ipv6hdr, saddr))
- 			field = MLX5_ACTION_IN_FIELD_OUT_SIPV6_127_96;
--		else if (offset == offsetof(struct ipv6hdr, daddr))
-+		else if (offset == offsetof(struct ipv6hdr, daddr) + 12)
- 			field = MLX5_ACTION_IN_FIELD_OUT_DIPV6_31_0;
--		else if (offset == offsetof(struct ipv6hdr, daddr) + 4)
--			field = MLX5_ACTION_IN_FIELD_OUT_DIPV6_63_32;
- 		else if (offset == offsetof(struct ipv6hdr, daddr) + 8)
-+			field = MLX5_ACTION_IN_FIELD_OUT_DIPV6_63_32;
-+		else if (offset == offsetof(struct ipv6hdr, daddr) + 4)
- 			field = MLX5_ACTION_IN_FIELD_OUT_DIPV6_95_64;
--		else if (offset == offsetof(struct ipv6hdr, daddr) + 12)
-+		else if (offset == offsetof(struct ipv6hdr, daddr))
- 			field = MLX5_ACTION_IN_FIELD_OUT_DIPV6_127_96;
- 		else
- 			return -EOPNOTSUPP;
+ static struct virtio_crypto_algo virtio_crypto_algs[] = { {
 
 
