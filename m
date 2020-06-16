@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C691FB6EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3170E1FB8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbgFPPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
+        id S1732467AbgFPQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731513AbgFPPlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:46 -0400
+        id S1732482AbgFPPxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37AF121475;
-        Tue, 16 Jun 2020 15:41:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C25D208D5;
+        Tue, 16 Jun 2020 15:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322105;
-        bh=PXQbYePEv5IhWEvTGJrooq3Lpy51SLgKHXT4N5t/O6I=;
+        s=default; t=1592322791;
+        bh=hGX29h/XEmSvwgUH6YsyVe/7+5yKRFxO/MI5vqy7xRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ryPo9ou737BGrLqpiLI8UaWvcCc+p8Dc5hzaUy92Qx76dQaBYAmOKEYsI+vUtqKAc
-         bp8sSrUXNn1d6wr+sWSiTjPOv2IbaBVvyRSYKUDNf2XjRdACQhl97h5+6gqcq9kfyM
-         NIJnu7c8JdKOdUaZRDT0RgVuetnUMbJPNsQipxiQ=
+        b=TrnJ/+vMR3pG7u50rvNA+Ci3PLBYaUCL9EZHvJtzQlz8ok+93rUY/6i45dA4dCCsK
+         buGgPjo85EY/jbffobwlyveQtGH7zcrh0He8wc7JS4bLja3GnQ6XLCJ8vJ6z+1stGR
+         gTsZ4lkLbJ0IizCkkVhcW+bwtgWrqL18ImSA198w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.4 112/134] selftests/ftrace: Return unsupported if no error_log file
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 106/161] dccp: Fix possible memleak in dccp_init and dccp_fini
 Date:   Tue, 16 Jun 2020 17:34:56 +0200
-Message-Id: <20200616153106.153416320@linuxfoundation.org>
+Message-Id: <20200616153111.408318496@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit 619ee76f5c9f6a1d601d1a056a454d62bf676ae4 upstream.
+[ Upstream commit c96b6acc8f89a4a7f6258dfe1d077654c11415be ]
 
-Check whether error_log file exists in tracing/error_log testcase
-and return UNSUPPORTED if no error_log file.
+There are some memory leaks in dccp_init() and dccp_fini().
 
-This can happen if we run the ftracetest on the older stable
-kernel.
+In dccp_fini() and the error handling path in dccp_init(), free lhash2
+is missing. Add inet_hashinfo2_free_mod() to do it.
 
-Fixes: 4eab1cc461a6 ("selftests/ftrace: Add tracing/error_log testcase")
-Cc: stable@vger.kernel.org
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+If inet_hashinfo2_init_mod() failed in dccp_init(),
+percpu_counter_destroy() should be called to destroy dccp_orphan_count.
+It need to goto out_free_percpu when inet_hashinfo2_init_mod() failed.
+
+Fixes: c92c81df93df ("net: dccp: fix kernel crash on module load")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc |    2 ++
- 1 file changed, 2 insertions(+)
+ include/net/inet_hashtables.h |    6 ++++++
+ net/dccp/proto.c              |    7 +++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
---- a/tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc
-+++ b/tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc
-@@ -14,6 +14,8 @@ if [ ! -f set_event ]; then
-     exit_unsupported
- fi
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -185,6 +185,12 @@ static inline spinlock_t *inet_ehash_loc
  
-+[ -f error_log ] || exit_unsupported
+ int inet_ehash_locks_alloc(struct inet_hashinfo *hashinfo);
+ 
++static inline void inet_hashinfo2_free_mod(struct inet_hashinfo *h)
++{
++	kfree(h->lhash2);
++	h->lhash2 = NULL;
++}
 +
- ftrace_errlog_check 'event filter parse error' '((sig >= 10 && sig < 15) || dsig ^== 17) && comm != bash' 'events/signal/signal_generate/filter'
+ static inline void inet_ehash_locks_free(struct inet_hashinfo *hashinfo)
+ {
+ 	kvfree(hashinfo->ehash_locks);
+--- a/net/dccp/proto.c
++++ b/net/dccp/proto.c
+@@ -1139,14 +1139,14 @@ static int __init dccp_init(void)
+ 	inet_hashinfo_init(&dccp_hashinfo);
+ 	rc = inet_hashinfo2_init_mod(&dccp_hashinfo);
+ 	if (rc)
+-		goto out_fail;
++		goto out_free_percpu;
+ 	rc = -ENOBUFS;
+ 	dccp_hashinfo.bind_bucket_cachep =
+ 		kmem_cache_create("dccp_bind_bucket",
+ 				  sizeof(struct inet_bind_bucket), 0,
+ 				  SLAB_HWCACHE_ALIGN, NULL);
+ 	if (!dccp_hashinfo.bind_bucket_cachep)
+-		goto out_free_percpu;
++		goto out_free_hashinfo2;
  
- exit 0
+ 	/*
+ 	 * Size and allocate the main established and bind bucket
+@@ -1242,6 +1242,8 @@ out_free_dccp_ehash:
+ 	free_pages((unsigned long)dccp_hashinfo.ehash, ehash_order);
+ out_free_bind_bucket_cachep:
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
++out_free_hashinfo2:
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ out_free_percpu:
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ out_fail:
+@@ -1265,6 +1267,7 @@ static void __exit dccp_fini(void)
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
+ 	dccp_ackvec_exit();
+ 	dccp_sysctl_exit();
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ }
+ 
 
 
