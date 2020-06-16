@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6501FC071
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C301FC074
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730606AbgFPU41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 16:56:27 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:34534 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730537AbgFPU4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 16:56:21 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id B884230D89C;
-        Tue, 16 Jun 2020 13:56:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com B884230D89C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1592340980;
-        bh=wfbg3gvJq29zwPDXM/Xv4PCCOzZXFGtxf8w+fJjea3Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BEx4eSc/IXtdGuU4w7w3gy5VDvSaIsWM+aTZ7EQ/ukeYRHAjIGHibVCdh9JCCkLow
-         H8sozSthkqY4sLe6n8lLg2Bm+oqhuvxuWlq//InBWhhD0eLSKPdHZhIZUat6+oVHtl
-         g5ASvypGd4H9LLDdRB1nfIv3EanB3F1o4d0bvWjU=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 32C48140069;
-        Tue, 16 Jun 2020 13:56:19 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 12/12] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
-Date:   Tue, 16 Jun 2020 16:55:19 -0400
-Message-Id: <20200616205533.3513-13-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200616205533.3513-1-james.quinlan@broadcom.com>
-References: <20200616205533.3513-1-james.quinlan@broadcom.com>
+        id S1730700AbgFPU4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 16:56:35 -0400
+Received: from mga14.intel.com ([192.55.52.115]:17159 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730453AbgFPU4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 16:56:32 -0400
+IronPort-SDR: q/+IbCPKVdoLd+BWN6Lw2qhL8NsleWXCoF9JmSYOvgMol1wmT5eJodFfLj6Eof2wjxkA4FI3a4
+ Q/255c8OOo+A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 13:56:31 -0700
+IronPort-SDR: zf4Y53dBEKcPjx6uKdVxaG8UVZm5RahWwZ6yADqa/Q4ka8CvTaxT+4y+0lBWaj5BR7QPTya7p2
+ WV/0A01nxZFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,519,1583222400"; 
+   d="scan'208";a="277051782"
+Received: from gosinald-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.36.106])
+  by orsmga006.jf.intel.com with ESMTP; 16 Jun 2020 13:56:26 -0700
+Date:   Tue, 16 Jun 2020 23:56:24 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Maxim Uvarov <maxim.uvarov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org,
+        peterhuewe@gmx.de, jgg@ziepe.ca, gregkh@linuxfoundation.org,
+        jens.wiklander@linaro.org, linux-integrity@vger.kernel.org,
+        arnd@linaro.org, sumit.garg@linaro.org
+Subject: Re: [PATCHv8 2/3] optee: enable support for multi-stage bus
+ enumeration
+Message-ID: <20200616205624.GE20943@linux.intel.com>
+References: <20200604175851.758-1-maxim.uvarov@linaro.org>
+ <20200604175851.758-3-maxim.uvarov@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200604175851.758-3-maxim.uvarov@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the support is in place with previous commits, we add several
-chips that use the BrcmSTB driver.
+On Thu, Jun 04, 2020 at 08:58:50PM +0300, Maxim Uvarov wrote:
+> Some drivers (like ftpm) can operate only after tee-supplicant
+> runs because of tee-supplicant provides things like storage
+> services (rpmb, shm).  This patch splits probe of non tee-supplicant
+> dependable drivers to the early stage, and after tee-supplicant run
+> probe other drivers.
+> 
+> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
+> Suggested-by: Sumit Garg <sumit.garg@linaro.org>
+> Suggested-by: Arnd Bergmann <arnd@linaro.org>
+> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 02b769534e53..1437ad1a26c8 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1184,6 +1184,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
- 
- static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
-+	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
- 	{},
- };
- 
--- 
-2.17.1
+Looks good to me but Jens should really go this through in detail. I'm
+not the decision maker on this one.
 
+/Jarkko
