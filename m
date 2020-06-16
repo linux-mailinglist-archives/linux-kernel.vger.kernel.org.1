@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B2F1FB640
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0041FB667
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729220AbgFPPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:33:57 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:45313 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728448AbgFPPd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:33:56 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GFD1Et005397;
-        Tue, 16 Jun 2020 17:33:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=ywECLfS8RJnUvCXHRDqenH4W2P5mGI7YRrQh1zdXSqs=;
- b=SKbzkvZ8Sh8AH5bW88BqONOypCrZFZCdlCxIv5kAzNuKFlU+HOUcNMI/OqCgpZraSC6Y
- 6/jibWFEnMfpx+LCOJD2IEtbKiNRFSDWq13MmFX0TdF1aPS/lPX2/gAzvc6JXjTXkYjF
- cLbYGA/zbJI7uw3SrKaYGTMycWh9OObAYos44B+jqFs1RZW9pJJoqRPyrfV+M+5jGujZ
- sxeKePJ8Mi/VK5O2MY+oHQ//6Ey9NhhBC2sKNYUQhQjJ0GdrAe78wvcYNUbVkIZyXbjm
- Vg8fQbwcA/ypu5Hl9oW+qtwrMlOHRpcZZ+EyuA2kkFQJdJZwxXbH5sZBZTeG+RrryVo2 pw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31mmjw05cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 17:33:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 075B010002A;
-        Tue, 16 Jun 2020 17:33:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node3.st.com [10.75.127.18])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E90032C890A;
-        Tue, 16 Jun 2020 17:33:40 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG6NODE3.st.com (10.75.127.18)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 16 Jun 2020 17:33:40
- +0200
-From:   Patrick Delaunay <patrick.delaunay@st.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Patrick Delaunay <patrick.delaunay@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH] ARM: dts: stm32: cosmetic update in stm32mp15-pinctrl.dtsi
-Date:   Tue, 16 Jun 2020 17:33:29 +0200
-Message-ID: <20200616153329.15148-1-patrick.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730137AbgFPPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730110AbgFPPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:36:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 909352098B;
+        Tue, 16 Jun 2020 15:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592321814;
+        bh=9ssOAW7ppA3qIA1s5QJqEpg4nrLN5tMpyiBlmt04Fqk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=r1YsBjtn6ksUx7PFCuzZrthFqyRI+frY/3zOM2QNOMXyUvOgBPNZngjsMYpxvDQxw
+         dRn+gyhm4mgQCTNmZP6OQbWSDMqG0cG9+drBG8vxKsDFn8dhcccW552mck9j04w/xs
+         xGofbLlKfpXk0paIbct6fB4QYIWYGoGkBksb/fbQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 026/134] KVM: x86: only do L1TF workaround on affected processors
+Date:   Tue, 16 Jun 2020 17:33:30 +0200
+Message-Id: <20200616153102.019041905@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG6NODE3.st.com
- (10.75.127.18)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use tabs where possible and remove multiple blanks lines.
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-Signed-off-by: Patrick Delaunay <patrick.delaunay@st.com>
+[ Upstream commit d43e2675e96fc6ae1a633b6a69d296394448cc32 ]
+
+KVM stores the gfn in MMIO SPTEs as a caching optimization.  These are split
+in two parts, as in "[high 11111 low]", to thwart any attempt to use these bits
+in an L1TF attack.  This works as long as there are 5 free bits between
+MAXPHYADDR and bit 50 (inclusive), leaving bit 51 free so that the MMIO
+access triggers a reserved-bit-set page fault.
+
+The bit positions however were computed wrongly for AMD processors that have
+encryption support.  In this case, x86_phys_bits is reduced (for example
+from 48 to 43, to account for the C bit at position 47 and four bits used
+internally to store the SEV ASID and other stuff) while x86_cache_bits in
+would remain set to 48, and _all_ bits between the reduced MAXPHYADDR
+and bit 51 are set.  Then low_phys_bits would also cover some of the
+bits that are set in the shadow_mmio_value, terribly confusing the gfn
+caching mechanism.
+
+To fix this, avoid splitting gfns as long as the processor does not have
+the L1TF bug (which includes all AMD processors).  When there is no
+splitting, low_phys_bits can be set to the reduced MAXPHYADDR removing
+the overlap.  This fixes "npt=0" operation on EPYC processors.
+
+Thanks to Maxim Levitsky for bisecting this bug.
+
+Cc: stable@vger.kernel.org
+Fixes: 52918ed5fcf0 ("KVM: SVM: Override default MMIO mask if memory encryption is enabled")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ arch/x86/kvm/mmu.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 7eb858732d6d..7d351757f2f8 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -210,8 +210,8 @@
- 				 <STM32_PINMUX('E', 2, ANALOG)>, /* ETH_RGMII_TXD3 */
- 				 <STM32_PINMUX('B', 11, ANALOG)>, /* ETH_RGMII_TX_CTL */
- 				 <STM32_PINMUX('C', 1, ANALOG)>, /* ETH_MDC */
--			         <STM32_PINMUX('A', 2, ANALOG)>, /* ETH_MDIO */
--			         <STM32_PINMUX('C', 4, ANALOG)>, /* ETH_RGMII_RXD0 */
-+				 <STM32_PINMUX('A', 2, ANALOG)>, /* ETH_MDIO */
-+				 <STM32_PINMUX('C', 4, ANALOG)>, /* ETH_RGMII_RXD0 */
- 				 <STM32_PINMUX('C', 5, ANALOG)>, /* ETH_RGMII_RXD1 */
- 				 <STM32_PINMUX('H', 6, ANALOG)>, /* ETH_RGMII_RXD2 */
- 				 <STM32_PINMUX('H', 7, ANALOG)>, /* ETH_RGMII_RXD3 */
-@@ -453,7 +453,7 @@
- 	i2c5_pins_b: i2c5-1 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 0, AF4)>, /* I2C5_SCL */
--			         <STM32_PINMUX('D', 1, AF4)>; /* I2C5_SDA */
-+				 <STM32_PINMUX('D', 1, AF4)>; /* I2C5_SDA */
- 			bias-disable;
- 			drive-open-drain;
- 			slew-rate = <0>;
-@@ -463,7 +463,7 @@
- 	i2c5_sleep_pins_b: i2c5-sleep-1 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 0, ANALOG)>, /* I2C5_SCL */
--			         <STM32_PINMUX('D', 1, ANALOG)>; /* I2C5_SDA */
-+				 <STM32_PINMUX('D', 1, ANALOG)>; /* I2C5_SDA */
- 		};
- 	};
+diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
+index 518100ea5ef4..50d67ad15790 100644
+--- a/arch/x86/kvm/mmu.c
++++ b/arch/x86/kvm/mmu.c
+@@ -343,6 +343,8 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_mask, u64 mmio_value, u64 access_mask)
+ {
+ 	BUG_ON((u64)(unsigned)access_mask != access_mask);
+ 	BUG_ON((mmio_mask & mmio_value) != mmio_value);
++	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << shadow_nonpresent_or_rsvd_mask_len));
++	WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
+ 	shadow_mmio_value = mmio_value | SPTE_MMIO_MASK;
+ 	shadow_mmio_mask = mmio_mask | SPTE_SPECIAL_MASK;
+ 	shadow_mmio_access_mask = access_mask;
+@@ -580,16 +582,15 @@ static void kvm_mmu_reset_all_pte_masks(void)
+ 	 * the most significant bits of legal physical address space.
+ 	 */
+ 	shadow_nonpresent_or_rsvd_mask = 0;
+-	low_phys_bits = boot_cpu_data.x86_cache_bits;
+-	if (boot_cpu_data.x86_cache_bits <
+-	    52 - shadow_nonpresent_or_rsvd_mask_len) {
++	low_phys_bits = boot_cpu_data.x86_phys_bits;
++	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
++	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
++			  52 - shadow_nonpresent_or_rsvd_mask_len)) {
++		low_phys_bits = boot_cpu_data.x86_cache_bits
++			- shadow_nonpresent_or_rsvd_mask_len;
+ 		shadow_nonpresent_or_rsvd_mask =
+-			rsvd_bits(boot_cpu_data.x86_cache_bits -
+-				  shadow_nonpresent_or_rsvd_mask_len,
+-				  boot_cpu_data.x86_cache_bits - 1);
+-		low_phys_bits -= shadow_nonpresent_or_rsvd_mask_len;
+-	} else
+-		WARN_ON_ONCE(boot_cpu_has_bug(X86_BUG_L1TF));
++			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
++	}
  
-@@ -1072,7 +1072,6 @@
- 		};
- 	};
- 
--
- 	sai2a_pins_b: sai2a-1 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('I', 6, AF10)>,	/* SAI2_SD_A */
+ 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
+ 		GENMASK_ULL(low_phys_bits - 1, PAGE_SHIFT);
 -- 
-2.17.1
+2.25.1
+
+
 
