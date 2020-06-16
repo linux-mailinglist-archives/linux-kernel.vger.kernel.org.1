@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11211FB78E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A66E1FB6D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732319AbgFPPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
+        id S1730547AbgFPPlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732303AbgFPPrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:13 -0400
+        id S1730009AbgFPPlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60A4021508;
-        Tue, 16 Jun 2020 15:47:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CCEA208E4;
+        Tue, 16 Jun 2020 15:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322432;
-        bh=c+0XdW9O/ZwTbnxHuQHU04UXfdF/gypjdKt3Avss+hg=;
+        s=default; t=1592322061;
+        bh=SrQIZo4/w6tvt/sn10MdGljp2fb7x+ziSKjuxf924D4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UHM4P+h3ohZcdhF4ayiJVjjkz4z5hU9veFnlWrv0KrQO671eK2xUQa0YpX2XTLTAO
-         Ajrvnw7r7SMjI68I8Dc0KfKb43OaplLLLi1u9nfiajdNRD5exihaPBk22zNhy4s5Tp
-         qWxvH9mV15XLSUX6Ot3LaFFQeJJmTItpTy4Me3Jo=
+        b=jEv7xaKtdlERy8qYUHoOl7FlU/ojbOB56XGx3KC/5efyzvM86OPX+7rXS2A7I/X83
+         KrQJ1UOOgAIUAEZWOIlSkjsCh9ugGXD2P0JvdlJyqltocBEjJAd3/TVdvslpVWLLj1
+         xRZPQ1rhicEMbPHNGspEHvXkJaGlO03nHJGj1MbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.7 130/163] KVM: nVMX: Consult only the "basic" exit reason when routing nested exit
-Date:   Tue, 16 Jun 2020 17:35:04 +0200
-Message-Id: <20200616153113.040756753@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 121/134] fat: dont allow to mount if the FAT length == 0
+Date:   Tue, 16 Jun 2020 17:35:05 +0200
+Message-Id: <20200616153106.581691635@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-commit 2ebac8bb3c2d35f5135466490fc8eeaf3f3e2d37 upstream.
+commit b1b65750b8db67834482f758fc385bfa7560d228 upstream.
 
-Consult only the basic exit reason, i.e. bits 15:0 of vmcs.EXIT_REASON,
-when determining whether a nested VM-Exit should be reflected into L1 or
-handled by KVM in L0.
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
 
-For better or worse, the switch statement in nested_vmx_exit_reflected()
-currently defaults to "true", i.e. reflects any nested VM-Exit without
-dedicated logic.  Because the case statements only contain the basic
-exit reason, any VM-Exit with modifier bits set will be reflected to L1,
-even if KVM intended to handle it in L0.
+Also Windows treats it as invalid format.
 
-Practically speaking, this only affects EXIT_REASON_MCE_DURING_VMENTRY,
-i.e. a #MC that occurs on nested VM-Enter would be incorrectly routed to
-L1, as "failed VM-Entry" is the only modifier that KVM can currently
-encounter.  The SMM modifiers will never be generated as KVM doesn't
-support/employ a SMI Transfer Monitor.  Ditto for "exit from enclave",
-as KVM doesn't yet support virtualizing SGX, i.e. it's impossible to
-enter an enclave in a KVM guest (L1 or L2).
-
-Fixes: 644d711aa0e1 ("KVM: nVMX: Deciding if L0 or L1 should handle an L2 exit")
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200227174430.26371-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/nested.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fat/inode.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5577,7 +5577,7 @@ bool nested_vmx_exit_reflected(struct kv
- 				vmcs_read32(VM_EXIT_INTR_ERROR_CODE),
- 				KVM_ISA_VMX);
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1519,6 +1519,12 @@ static int fat_read_bpb(struct super_blo
+ 		goto out;
+ 	}
  
--	switch (exit_reason) {
-+	switch ((u16)exit_reason) {
- 	case EXIT_REASON_EXCEPTION_NMI:
- 		if (is_nmi(intr_info))
- 			return false;
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
++
+ 	error = 0;
+ 
+ out:
 
 
