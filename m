@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CC61FB6D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA581FB644
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731253AbgFPPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731196AbgFPPkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:40 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1729590AbgFPPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:34:32 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42028 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728448AbgFPPec (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:34:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id C71AB8EE1E9;
+        Tue, 16 Jun 2020 08:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1592321671;
+        bh=ajob1nvDrla9Bt+f3LFtU00Hic0WFbZIYozt4cm3MGM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=W1sBeQ80o/S7QYGmkg7NPKLODl9DIayewfvNHRL0KXkV4cKwIIId31zNmJSXEAOn8
+         PmIczVXVyJ+XHkmj/F4XEVAvG601VQw6E+e3d1SlKbqVhn8CvXKJZo57Nbz5w9m9k9
+         Fk0B2hGn7EnmgCplAjGFyBu8ncCam1gBtEW7wy9I=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id e-XsTU0ZWdDv; Tue, 16 Jun 2020 08:34:30 -0700 (PDT)
+Received: from jarvis (unknown [216.116.10.17])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75A9C2082F;
-        Tue, 16 Jun 2020 15:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322040;
-        bh=mKEYBtnv5zZJdxSYEKrRd88IX5ReyrRvQNXH36wKkQI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+NyoJ5OIimIWAmwlc/2DtPo5J31Bl2APpmIlV0gUnvUpNe0L1TQMNhVtHhSUAKHN
-         FVTYczqhOKmR1gZyJGY3jO7G1tBB3TBcX7g1aZDm4jCYKGRikZvICdX75YyW303n6x
-         mELqSXtwcn2fgDinlxkLAsauNGSFi9uQjBym7L94=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonard Crestez <leonard.crestez@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/134] firmware: imx: warn on unexpected RX
-Date:   Tue, 16 Jun 2020 17:34:27 +0200
-Message-Id: <20200616153104.752713740@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4FE348EE188;
+        Tue, 16 Jun 2020 08:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1592321670;
+        bh=ajob1nvDrla9Bt+f3LFtU00Hic0WFbZIYozt4cm3MGM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=MYUprjVWr66NFNYQM4jxBy/5blzUQem+8Me7nmbSL8D6xUxpHQ1bYjYJWGDOSQFMP
+         0TrdM6NHXmZUCNnf60cYcNDgiCRbFbF2pklcj6OPtPybkwoQ7Zez969xlVSVJzMk5+
+         XhrYEFkvrYKP8ysOE/5zvYdq13fP6HbGfoQDNx8k=
+Message-ID: <1592321667.4394.5.camel@HansenPartnership.com>
+Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Chris Boot <bootc@boo.tc>
+Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux1394-devel@lists.sourceforge.net" 
+        <linux1394-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+Date:   Tue, 16 Jun 2020 08:34:27 -0700
+In-Reply-To: <SN4PR0401MB35982D889857E3C03E96E49D9B9D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
+         <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
+         <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
+         <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
+         <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
+         <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
+         <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
+         <SN4PR0401MB35982D889857E3C03E96E49D9B9D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonard Crestez <leonard.crestez@nxp.com>
+On Tue, 2020-06-16 at 14:13 +0000, Johannes Thumshirn wrote:
+> On 16/06/2020 16:09, Bart Van Assche wrote:
+> > On 2020-06-16 02:42, Finn Thain wrote:
+> > > Martin said, "I'd appreciate a patch to remove it"
+> > > 
+> > > And Bart said, "do you want to keep this driver in the kernel
+> > > tree?"
+> > > 
+> > > AFAICT both comments are quite ambiguous. I don't see an
+> > > actionable request, just an expression of interest from people
+> > > doing their jobs.
+> > > 
+> > > Note well: there is no pay check associated with having a
+> > > MAINTAINERS file 
+> > > entry.
+> > 
+> > Hi Finn,
+> > 
+> > As far as I know the sbp driver only has had one user ever and that
+> > user is no longer user the sbp driver. So why to keep it in the
+> > kernel tree? Restoring a kernel driver can be easy - the first step
+> > is a "git revert".
+> 
+> Why not move the driver to drivers/staging for 2 or 3 kernel releases
+> and if noone steps up, delete it?
 
-[ Upstream commit cf0fd404455ce13850cc15423a3c2958933de384 ]
+Because that's pretty much the worst of all worlds: If the driver is
+simply going orphaned it can stay where it is to avoid confusion.  If
+it's being removed, it's better to remove it from where it is because
+that makes the patch to restore it easy to find.
 
-The imx_scu_call_rpc function returns the result inside the
-same "msg" struct containing the transmitted message. This is
-implemented by holding a pointer to msg (which is usually on the stack)
-in sc_imx_rpc and writing to it from imx_scu_rx_callback.
+Chris, the thing is this: if this driver has just one user on a stable
+distro who complains about its removal six months to two years from
+now, Linus will descend on us from a great height (which won't matter
+to you, since you'll be long gone).  This makes everyone very wary of
+outright removal.  If you're really, really sure it has no users, it
+can be deleted, but if there's the slightest chance it has just one, it
+should get orphaned.
 
-This means that if the have_resp parameter is incorrect or SCU sends an
-unexpected response for any reason the most likely result is kernel stack
-corruption.
-
-Fix this by only setting sc_imx_rpc.msg for the duration of the
-imx_scu_call_rpc call and warning in imx_scu_rx_callback if unset.
-
-Print the unexpected response data to help debugging.
-
-Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
-Acked-by: Anson Huang <Anson.Huang@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/firmware/imx/imx-scu.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
-index 35a5f8f8eea5..6c6ac47d3c64 100644
---- a/drivers/firmware/imx/imx-scu.c
-+++ b/drivers/firmware/imx/imx-scu.c
-@@ -116,6 +116,12 @@ static void imx_scu_rx_callback(struct mbox_client *c, void *msg)
- 	struct imx_sc_rpc_msg *hdr;
- 	u32 *data = msg;
- 
-+	if (!sc_ipc->msg) {
-+		dev_warn(sc_ipc->dev, "unexpected rx idx %d 0x%08x, ignore!\n",
-+				sc_chan->idx, *data);
-+		return;
-+	}
-+
- 	if (sc_chan->idx == 0) {
- 		hdr = msg;
- 		sc_ipc->rx_size = hdr->size;
-@@ -187,7 +193,8 @@ int imx_scu_call_rpc(struct imx_sc_ipc *sc_ipc, void *msg, bool have_resp)
- 	mutex_lock(&sc_ipc->lock);
- 	reinit_completion(&sc_ipc->done);
- 
--	sc_ipc->msg = msg;
-+	if (have_resp)
-+		sc_ipc->msg = msg;
- 	sc_ipc->count = 0;
- 	ret = imx_scu_ipc_write(sc_ipc, msg);
- 	if (ret < 0) {
-@@ -209,6 +216,7 @@ int imx_scu_call_rpc(struct imx_sc_ipc *sc_ipc, void *msg, bool have_resp)
- 	}
- 
- out:
-+	sc_ipc->msg = NULL;
- 	mutex_unlock(&sc_ipc->lock);
- 
- 	dev_dbg(sc_ipc->dev, "RPC SVC done\n");
--- 
-2.25.1
-
-
+James
 
