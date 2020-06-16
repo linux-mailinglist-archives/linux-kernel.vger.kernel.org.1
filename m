@@ -2,185 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CBE1FB80F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566E61FB7CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732781AbgFPPwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S1732534AbgFPPtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732589AbgFPPwR (ORCPT
+        with ESMTP id S1732519AbgFPPtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:17 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66E7C061573;
-        Tue, 16 Jun 2020 08:52:16 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id i1so4922679vkp.8;
-        Tue, 16 Jun 2020 08:52:16 -0700 (PDT)
+        Tue, 16 Jun 2020 11:49:32 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A94C061573;
+        Tue, 16 Jun 2020 08:49:32 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x14so21311505wrp.2;
+        Tue, 16 Jun 2020 08:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5tUwv8GZvt0tLegCth1XOp+6yS8yReQyRSOWrSBlQn4=;
-        b=fI4dElivqPDBIde5zHrPQYVfRHoecvaR5xo2tlpmaSvwEURd0T3CLTe89tX8Ov7VVD
-         pFh7Hu0POSS26z2glZ3JYCbowKhH5z7mjGkigZN/pcaPT2YYEurO7olee9W3e68oKtPx
-         nF5bVCcpSA+9cLGc6xJZ6b0221kLKp8a3gSIpJmBvM7lf34BvnKlD9UJMArax01JPeTd
-         rg2hy3AFr6C5NxGh/iBUQgibmY54+x5KUwnqUYHTXT3iuxvdOR4TRcoEil1s6Msr1bda
-         DnI2Fg9A4r/DFruzrO0GCxCU/5Lzs+ffQmEuQ/lcZ1GLu4UQQpv95sQqImrT5bt5+3fG
-         XXTA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5DdpumczYer1vzyYLEBjn6HNhUmet7Q95lmH6nZR+oA=;
+        b=EgiFdnxTeJY8cjznp6PQXqvoiOqDIzX5Mu+fGi9ZJUX+5sY9Uq2jcVuL0batMqbDI1
+         o8Xu+jBcSc3ETlLA5o0LHy88Akoz9OzZqHJszjVUmR2V9Mbmxjbs4l7xJgTDicnCcQeH
+         6gQ2+2Q1+cxDgafp07cueNU47muxQs5tbiMsLF2CrEvN5HtVSw1ITaA8WiAQ1o5vOO+A
+         CtoXHJdHuZvWoIlAszBkT2K7gRkl9AwVHI86EVB/sgy4tUu8iSIFHS1MsC/3V+yz5Nzm
+         n6U1RRqhogNORJ1iFN4FVwsJ+QhE4d5mwq3YjdeXkIXM3lC6uaMoXS31SDuhuNmVGfe2
+         u2dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5tUwv8GZvt0tLegCth1XOp+6yS8yReQyRSOWrSBlQn4=;
-        b=GBVlB8hUcaTnkmMNSueXpOZ6Vo6JA3LBI60P3JbNFCfc3uYrlv2DHAnkX9Fi/zcmw2
-         BoJwdMWZl/X1vmPBJK/8MiMML3BchcvoxgCK6F88jsjpCSP9a65vzBufzm3pjUImNei0
-         xfs3q8nlhZ6TATxZzPzdmVZqNKd81xG5ZZnljYZn4DrZqmWx0QRS8QaNXkOgvI42F3QI
-         jvSjrmc8DBjEKJDMe1JhS3pbNSFqxzFiZcTun7HzqAhZcxEL7IueeGf+XVCTcK4geL+A
-         cevTZa2F6NPHaCImGWepNQWPrLe206H6gK4ZAYQQmq3E7ndwGzEQ8OjBu2MwgZ1Hvneg
-         saPQ==
-X-Gm-Message-State: AOAM533cZgM7LiRk3rMom2dRGZdz8VKDWnoBTOn26XR/H7avxJNGGJpM
-        5FItuwy0NDUY4st0tD6uMkRvIuI1gJEbo5i0I+I=
-X-Google-Smtp-Source: ABdhPJwHbzHiIoOeOqf88qGm635l6SYTNpkzRacF/MQtw+0fGQ+NRwhque+7rGZBn/dzalt7nyDZTCXKgzsXv6lYO+E=
-X-Received: by 2002:a1f:ee81:: with SMTP id m123mr2257220vkh.51.1592322735381;
- Tue, 16 Jun 2020 08:52:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5DdpumczYer1vzyYLEBjn6HNhUmet7Q95lmH6nZR+oA=;
+        b=GiF7ptmXu+aYQ4MlHf9eswExySL9mc4qNlJ4diYjvYYbU5LgPQKkL6XTeA+qMSmW3p
+         pTDfDoVf8CCPJeAp/p9vf4o0/nSYMY0xMpwuV0IT4NtBUdaBxoAcXyBDmzzNP0jMHoPl
+         VDowdxDuADn52JlZoX3iRe5GDUn4a3BjTd4kybx7tv1TssaeCP5Q6YziBwp4tt5pdukW
+         /NrZLvpjGllmPYHVJc495P/QAJ5KCyOQfz959OgHvDEsMBuKa6PRNK3eCVkbLGHIO3+G
+         QkHLmmsgXLBX96lsnovj6RPE2+aW0wfcNLf2U/VLHAh3DscxUO8WIvtd/G7xvEslfswa
+         O7mA==
+X-Gm-Message-State: AOAM531ZiKPN2jf5YZoGOWeqpp3IxFPX0O1++ICL22xsfk8VLSXgHhXy
+        EoBW0gguZozVLGjexLu/mgI=
+X-Google-Smtp-Source: ABdhPJwV7EoNU1H3o082LpYH1XlfkrVKA4HXT5i+T2TIXgDIWRTkvvImYhC/z6iTop1auSEsn/oH8g==
+X-Received: by 2002:adf:f882:: with SMTP id u2mr3978022wrp.40.1592322571413;
+        Tue, 16 Jun 2020 08:49:31 -0700 (PDT)
+Received: from localhost ([51.15.41.238])
+        by smtp.gmail.com with ESMTPSA id w10sm29855176wrp.16.2020.06.16.08.49.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 08:49:30 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 16:49:28 +0100
+From:   Stefan Hajnoczi <stefanha@gmail.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "Wu, Hao" <hao.wu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/15] vfio: expose virtual Shared Virtual Addressing
+ to VMs
+Message-ID: <20200616154928.GF1491454@stefanha-x1.localdomain>
+References: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
+ <20200615100214.GC1491454@stefanha-x1.localdomain>
+ <MWHPR11MB16451F1E4748DF97D6A1DDD48C9D0@MWHPR11MB1645.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200614200121.14147-1-digetx@gmail.com> <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
- <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
-In-Reply-To: <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Tue, 16 Jun 2020 16:48:34 +0100
-Message-ID: <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Wb5NtZlyOqqy58h0"
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB16451F1E4748DF97D6A1DDD48C9D0@MWHPR11MB1645.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 at 12:40, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 16.06.2020 01:26, Emil Velikov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Hi Dmitry,
-> >
-> > On Mon, 15 Jun 2020 at 08:28, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> Hello!
-> >>
-> >> This series adds 180=C2=B0 display plane rotation support to the NVIDI=
-A Tegra
-> >> DRM driver which is needed for devices that have display panel physica=
-lly
-> >> mounted upside-down, like Nexus 7 tablet device for example [1]. Since
-> >> DRM panel rotation is a new thing for a userspace, currently only
-> >> Opentegra Xorg driver handles the rotated display panel [2], but this
-> >> is good enough for the start.
-> >>
-> >> Note that later on it should be possible to implement a transparent 18=
-0=C2=B0
-> >> display rotation for Tegra DRM driver which will remove the need to ha=
-ve
-> >> a bleeding edge userspace that knows how to rotate display planes and =
-I'm
-> >> slowly working on it. For the starter we can go with the minimal rotat=
-ion
-> >> support, so it's not a blocker.
-> >>
-> >> This series is based on the work that was made by Derek Basehore for t=
-he
-> >> Mediatek driver [3], his patch is included into this patchset. I added
-> >> my tested-by tag to the Derek's patch.
-> >>
-> >> Please review and apply, thanks in advance!
-> >>
-> >> [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154=
-327.18589-3-digetx@gmail.com/
-> >> [2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20=
-a3959bbe5bc3a3b67e55977093fd5114ca
-> >> [3] https://lkml.org/lkml/2020/3/5/1119
-> >>
-> >> Changelog:
-> >>
-> >> v2: - Dropped "drm/panel: Set display info in panel attach" patch, whi=
-ch
-> >>       turned out to be obsolete now.
-> >>
-> >>     - Renamed the cover-latter, hopefully this will fix the bouncing e=
-mails.
-> >>
-> >> Derek Basehore (1):
-> >>   drm/panel: Add helper for reading DT rotation
-> >>
-> >> Dmitry Osipenko (4):
-> >>   drm/panel: lvds: Set up panel orientation
-> >
-> > IMHO it's perfectly reasonable to report the panel orientation to
-> > userspace, which can apply plane rotation as needed.
-> >
-> > Although I see that this series, alike Derek's, has a couple of issues:
-> >  - only a single panel driver is updated
-> >  - rotation is _not_ listed as supported property, in said panel
-> > driver device-tree bindings
-> >
-> > My personal inclination is that we should aim for a comprehensive solut=
-ion:
-> >  - wire all panel drivers, as currently documented (quick grep list bel=
-ow)
-> >  - document and wire-up the lvds and boe panels - as proposed by you
-> > and Derek respectively
-> >
-> > HTH
-> > Emil
-> >
-> > Documentation/devicetree/bindings/display/himax,hx8357d.txt:2
-> > Documentation/devicetree/bindings/display/ilitek,ili9225.txt:2
-> > Documentation/devicetree/bindings/display/ilitek,ili9341.txt:2
-> > Documentation/devicetree/bindings/display/ilitek,ili9486.yaml:2
-> > Documentation/devicetree/bindings/display/multi-inno,mi0283qt.txt:2
-> > Documentation/devicetree/bindings/display/panel/panel-common.yaml:2
-> > Documentation/devicetree/bindings/display/sitronix,st7586.txt:1
-> > Documentation/devicetree/bindings/display/sitronix,st7735r.yaml:2
->
-> Rotation is a common DT panel property that is described in the
-> panel-common.yaml.
-The property was introduced almost exclusively for tiny drm panels.
-Those ones are a bit different from the rest (in panel/) -
-MIPI-DBI/SPI w/o (not connected at least) an actual GPU.
 
-To make it a bit better, the rotation is seemingly performed in the
-tiny driver itself ouch.
+--Wb5NtZlyOqqy58h0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This property is supported by all panel bindings
-> because these bindings inherent the common properties from the
-> panel-common.yaml.
->
-Seems like that was an unintentional change with the conversion to YAML.
-Beforehand only a few selected panels had rotation. Upon closer look -
-some panels do have follow-up fixes, to remove/limit the implicit
-inclusion.
+On Tue, Jun 16, 2020 at 02:26:38AM +0000, Tian, Kevin wrote:
+> > From: Stefan Hajnoczi <stefanha@gmail.com>
+> > Sent: Monday, June 15, 2020 6:02 PM
+> >=20
+> > On Thu, Jun 11, 2020 at 05:15:19AM -0700, Liu Yi L wrote:
+> > > Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
+> > > Intel platforms allows address space sharing between device DMA and
+> > > applications. SVA can reduce programming complexity and enhance
+> > security.
+> > >
+> > > This VFIO series is intended to expose SVA usage to VMs. i.e. Sharing
+> > > guest application address space with passthru devices. This is called
+> > > vSVA in this series. The whole vSVA enabling requires QEMU/VFIO/IOMMU
+> > > changes. For IOMMU and QEMU changes, they are in separate series (lis=
+ted
+> > > in the "Related series").
+> > >
+> > > The high-level architecture for SVA virtualization is as below, the k=
+ey
+> > > design of vSVA support is to utilize the dual-stage IOMMU translation=
+ (
+> > > also known as IOMMU nesting translation) capability in host IOMMU.
+> > >
+> > >
+> > >     .-------------.  .---------------------------.
+> > >     |   vIOMMU    |  | Guest process CR3, FL only|
+> > >     |             |  '---------------------------'
+> > >     .----------------/
+> > >     | PASID Entry |--- PASID cache flush -
+> > >     '-------------'                       |
+> > >     |             |                       V
+> > >     |             |                CR3 in GPA
+> > >     '-------------'
+> > > Guest
+> > > ------| Shadow |--------------------------|--------
+> > >       v        v                          v
+> > > Host
+> > >     .-------------.  .----------------------.
+> > >     |   pIOMMU    |  | Bind FL for GVA-GPA  |
+> > >     |             |  '----------------------'
+> > >     .----------------/  |
+> > >     | PASID Entry |     V (Nested xlate)
+> > >     '----------------\.------------------------------.
+> > >     |             |   |SL for GPA-HPA, default domain|
+> > >     |             |   '------------------------------'
+> > >     '-------------'
+> > > Where:
+> > >  - FL =3D First level/stage one page tables
+> > >  - SL =3D Second level/stage two page tables
+> >=20
+> > Hi,
+> > Looks like an interesting feature!
+> >=20
+> > To check I understand this feature: can applications now pass virtual
+> > addresses to devices instead of translating to IOVAs?
+> >=20
+> > If yes, can guest applications restrict the vSVA address space so the
+> > device only has access to certain regions?
+> >=20
+> > On one hand replacing IOVA translation with virtual addresses simplifies
+> > the application programming model, but does it give up isolation if the
+> > device can now access all application memory?
+> >=20
+>=20
+> with SVA each application is allocated with a unique PASID to tag its
+> virtual address space. The device that claims SVA support must guarantee=
+=20
+> that one application can only program the device to access its own virtual
+> address space (i.e. all DMAs triggered by this application are tagged with
+> the application's PASID, and are translated by IOMMU's PASID-granular
+> page table). So, isolation is not sacrificed in SVA.
 
-Sam seems like you've done most of the YAML conversion. IMHO it would
-make sense to revisit the patches and inherit common properties only
-as applicable.
+Isolation between applications is preserved but there is no isolation
+between the device and the application itself. The application needs to
+trust the device.
 
-> I don't think that it makes sense to wire up rotation property to all
-> panel drivers at once because those drivers will be untested, at least I
-> don't know anything about those other panels and can't test them. It
-> will be much better to support the rotation on by as-needed basis for
-> each panel driver individually.
+Examples:
 
-How about CCing the author and reviewer asking them to test the patch?
-The only place where the patches might cause an issue is with tiny,
-although patches would still be appreciated.
+1. The device can snoop secret data from readable pages in the
+   application's virtual memory space.
 
--Emil
+2. The device can gain arbitrary execution on the CPU by overwriting
+   control flow addresses (e.g. function pointers, stack return
+   addresses) in writable pages.
+
+Stefan
+
+--Wb5NtZlyOqqy58h0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7o6ggACgkQnKSrs4Gr
+c8i4Dwf+Ja8+o4M38hy+I+mda6ZTLNogJhW1RTV2lBBk35XwDmYv+WqLnD/PrUNA
+NSu0+o9RXtM9lj0HS1KkRvJGpFs1Q/YtBH1p8vlpxXjyCglRIJdw2uAVejCPUxip
+Oez+BhKteh3v0betTZYyQsgAog/HcMU+0mZRGx2O1c9dcyz2+qq5xyKSO5OBjpd4
+mcV4DNabPK85TNquyyU3Di88H1A4VdGuDmKOoU5rER7W07c0nfbPgU+V/CEB1Fww
+LZ7G8QRQydGuZRyBROl9VhYI6YjMeKs8YxIDoJddQQOycSOgUZJxAZazPe9h4G78
+VlimM2C+wn7w/KXE5mbKg9CjbMkh7g==
+=cjRe
+-----END PGP SIGNATURE-----
+
+--Wb5NtZlyOqqy58h0--
