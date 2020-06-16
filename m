@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9C31FBB4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9551FBA48
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731832AbgFPQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:18:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
+        id S1731417AbgFPPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730593AbgFPPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:14 -0400
+        id S1731990AbgFPPoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:44:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56B30214DB;
-        Tue, 16 Jun 2020 15:38:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDE32208D5;
+        Tue, 16 Jun 2020 15:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321893;
-        bh=+1D9kExDD3bEf33XbVDEMg9hH0GZgEy1vDz5bhWcY/Q=;
+        s=default; t=1592322272;
+        bh=oy8Ne+jeLXvgmLgXt/ubGvSCJ8wk0wvHtZ/C7KZN9qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HmoQFxWu4H6kiq8DEZ2O2bXXXfiakAavN5JtdEiTRvmgDuRWDCgfGaYT0YXa+XKE5
-         cqKAwnBM3fNqWqeOAnOphZs9KNwpLkuSsRWKGVe/mlGPxrVP9+kX7OkTzIYQglpzvD
-         QArCVKb1g1HRq+375DWTV8LQH9asL1rVSJW0nrzs=
+        b=MeiBtGWxB1MrZoz6+JuM3F4Uw10rkjYn/m95KPbiL9V+siMeecfWvUGsetiHd6LyS
+         hdg6WJGNh/4J5muXmvHvN/43ZnJHCyBfU0WEhMThy/AwI96O6hhFjWVUyk12wvh4bv
+         IdbFEtGhyNoCgO2UerCRah5QzRzs15SNQbRSDFmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 057/134] ALSA: hda/realtek - add a pintbl quirk for several Lenovo machines
-Date:   Tue, 16 Jun 2020 17:34:01 +0200
-Message-Id: <20200616153103.506479809@linuxfoundation.org>
+Subject: [PATCH 5.7 068/163] ALSA: pcm: disallow linking stream to itself
+Date:   Tue, 16 Jun 2020 17:34:02 +0200
+Message-Id: <20200616153110.103210684@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit 573fcbfd319ccef26caa3700320242accea7fd5c upstream.
+commit 951e2736f4b11b58dc44d41964fa17c3527d882a upstream.
 
-A couple of Lenovo ThinkCentre machines all have 2 front mics and they
-use the same codec alc623 and have the same pin config, so add a
-pintbl entry for those machines to apply the fixup
-ALC283_FIXUP_HEADSET_MIC.
+Prevent SNDRV_PCM_IOCTL_LINK linking stream to itself - the code
+can't handle it. Fixed commit is not where bug was introduced, but
+changes the context significantly.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20200608115541.9531-1-hui.wang@canonical.com
+Cc: stable@vger.kernel.org
+Fixes: 0888c321de70 ("pcm_native: switch to fdget()/fdput()")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Link: https://lore.kernel.org/r/89c4a2487609a0ed6af3ecf01cc972bdc59a7a2d.1591634956.git.mirq-linux@rere.qmqm.pl
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    6 ++++++
+ sound/core/pcm_native.c |    6 ++++++
  1 file changed, 6 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8156,6 +8156,12 @@ static const struct snd_hda_pin_quirk al
- 		ALC225_STANDARD_PINS,
- 		{0x12, 0xb7a60130},
- 		{0x17, 0x90170110}),
-+	SND_HDA_PIN_QUIRK(0x10ec0623, 0x17aa, "Lenovo", ALC283_FIXUP_HEADSET_MIC,
-+		{0x14, 0x01014010},
-+		{0x17, 0x90170120},
-+		{0x18, 0x02a11030},
-+		{0x19, 0x02a1103f},
-+		{0x21, 0x0221101f}),
- 	{}
- };
- 
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2166,6 +2166,12 @@ static int snd_pcm_link(struct snd_pcm_s
+ 	}
+ 	pcm_file = f.file->private_data;
+ 	substream1 = pcm_file->substream;
++
++	if (substream == substream1) {
++		res = -EINVAL;
++		goto _badf;
++	}
++
+ 	group = kzalloc(sizeof(*group), GFP_KERNEL);
+ 	if (!group) {
+ 		res = -ENOMEM;
 
 
