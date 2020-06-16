@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC141FB757
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFF41FB6A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732068AbgFPPpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
+        id S1730244AbgFPPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732048AbgFPPpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:09 -0400
+        id S1730815AbgFPPi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ADED21475;
-        Tue, 16 Jun 2020 15:45:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C592B20B1F;
+        Tue, 16 Jun 2020 15:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322308;
-        bh=AlRSOhceULdtsyQsNQk9q0cqHewFDyvCCJNm0cGIo8g=;
+        s=default; t=1592321938;
+        bh=gt+AjfnTogwCXDa0RqxlbheP0cl930vbYCf3oDXcGJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doCER2JeDb/+cMdO3qJ8CYl6DlqD7EltEEjqwKLa2dK0fNXVoV1MkLI5scMWwa827
-         AiS/XdfatH9vd6WrgRoQMLRBHS7lb0za45apBfTqD1wLnIi0+/zIO/FFLkewxSukR0
-         U/70UkKxRupGPwn5b842OHAtvNv7zq1mKVDxhdi0=
+        b=DnMk4zXvXWJYlcntdsMLGWQ3V8cKfnuI5QX3RWq0sN45Mk0cJ+RTFmXAJX0phiGgz
+         jaPqBJiB5KdfWoHYrBL8S2+0Avh4zYQy+PwllSuJZdTpGPNXKZ/oGe4cnittFrSbHk
+         H+kwx8gVtXUX+7lfngOME2x8Pm1Z0e13OhQGGMl0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 081/163] spi: Fix controller unregister order
-Date:   Tue, 16 Jun 2020 17:34:15 +0200
-Message-Id: <20200616153110.725656843@linuxfoundation.org>
+Subject: [PATCH 5.4 072/134] spi: pxa2xx: Fix runtime PM ref imbalance on probe error
+Date:   Tue, 16 Jun 2020 17:34:16 +0200
+Message-Id: <20200616153104.227144164@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +47,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit 84855678add8aba927faf76bc2f130a40f94b6f7 upstream.
+commit 65e318e17358a3fd4fcb5a69d89b14016dee2f06 upstream.
 
-When an SPI controller unregisters, it unbinds all its slave devices.
-For this, their drivers may need to access the SPI bus, e.g. to quiesce
-interrupts.
+The PXA2xx SPI driver releases a runtime PM ref in the probe error path
+even though it hasn't acquired a ref earlier.
 
-However since commit ffbbdd21329f ("spi: create a message queueing
-infrastructure"), spi_destroy_queue() is executed before unbinding the
-slaves.  It sets ctlr->running = false, thereby preventing SPI bus
-access and causing unbinding of slave devices to fail.
+Apparently commit e2b714afee32 ("spi: pxa2xx: Disable runtime PM if
+controller registration fails") sought to copy-paste the invocation of
+pm_runtime_disable() from pxa2xx_spi_remove(), but erroneously copied
+the call to pm_runtime_put_noidle() as well.  Drop it.
 
-Fix by unbinding slaves before calling spi_destroy_queue().
-
-Fixes: ffbbdd21329f ("spi: create a message queueing infrastructure")
+Fixes: e2b714afee32 ("spi: pxa2xx: Disable runtime PM if controller registration fails")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.4+
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/8aaf9d44c153fe233b17bc2dec4eb679898d7e7b.1589557526.git.lukas@wunner.de
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.17+
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Link: https://lore.kernel.org/r/58b2ac6942ca1f91aaeeafe512144bc5343e1d84.1590408496.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/spi/spi-pxa2xx.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2760,6 +2760,8 @@ void spi_unregister_controller(struct sp
- 	struct spi_controller *found;
- 	int id = ctlr->bus_num;
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1889,7 +1889,6 @@ static int pxa2xx_spi_probe(struct platf
+ 	return status;
  
-+	device_for_each_child(&ctlr->dev, NULL, __unregister);
-+
- 	/* First make sure that this controller was ever added */
- 	mutex_lock(&board_lock);
- 	found = idr_find(&spi_master_idr, id);
-@@ -2772,7 +2774,6 @@ void spi_unregister_controller(struct sp
- 	list_del(&ctlr->list);
- 	mutex_unlock(&board_lock);
+ out_error_pm_runtime_enabled:
+-	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
  
--	device_for_each_child(&ctlr->dev, NULL, __unregister);
- 	device_unregister(&ctlr->dev);
- 	/* free bus id */
- 	mutex_lock(&board_lock);
+ out_error_clock_enabled:
 
 
