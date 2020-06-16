@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62371FB90F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03D21FBA2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732778AbgFPQAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:00:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
+        id S1732530AbgFPQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:09:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732748AbgFPPwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:41 -0400
+        id S1732067AbgFPPpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7592207C4;
-        Tue, 16 Jun 2020 15:52:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34E112098B;
+        Tue, 16 Jun 2020 15:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322761;
-        bh=9/f0wi49iItWo3HVGU0BxHoshxsiC38fZ6j+hzA7fI0=;
+        s=default; t=1592322318;
+        bh=VgkC+fRBKLBKgQ0OEx+Emu859oW44liBSJU0qTAPumQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ya/qYjlM9JDhxqYETjWj8+2Q/h5NMLbaL3szAEYaWnyKOaVtMxLxa6zlyaQBZ3bbC
-         H+AXcTXTFpZXChi3gIc/PC5SY/NiU+o5QLXQIaGeEI/4oxsxsFine4IZPf3uxj4R60
-         FqmhwWWtXbduNY4DK9u3Q9S0WCRvmWCnIt1VLBNI=
+        b=cZF4KBO2tlutyw080GgJ+kvxl/kaHZMLne/cPlCoCcdVk6pSFAj8HhFQoftsBsDlW
+         PyPSj29Qn+K5A4qBUhsnn9a2fGow+s+XKabdPP82BRZEvUBHki+003+yqI3OGVTniB
+         4/Rks7Q/lsqOxJdBgrxR3n65cPVY8V9+RYS4n0a4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>
-Subject: [PATCH 5.6 066/161] smb3: fix typo in mount options displayed in /proc/mounts
-Date:   Tue, 16 Jun 2020 17:34:16 +0200
-Message-Id: <20200616153109.524240065@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.7 084/163] spi: bcm2835: Fix controller unregister order
+Date:   Tue, 16 Jun 2020 17:34:18 +0200
+Message-Id: <20200616153110.867877823@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,32 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 7866c177a03b18be3d83175014c643546e5b53c6 upstream.
+commit 9dd277ff92d06f6aa95b39936ad83981d781f49b upstream.
 
-Missing the final 's' in "max_channels" mount option when displayed in
-/proc/mounts (or by mount command)
+The BCM2835 SPI driver uses devm_spi_register_controller() on bind.
+As a consequence, on unbind, __device_release_driver() first invokes
+bcm2835_spi_remove() before unregistering the SPI controller via
+devres_release_all().
 
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+This order is incorrect:  bcm2835_spi_remove() tears down the DMA
+channels and turns off the SPI controller, including its interrupts
+and clock.  The SPI controller is thus no longer usable.
+
+When the SPI controller is subsequently unregistered, it unbinds all
+its slave devices.  If their drivers need to access the SPI bus,
+e.g. to quiesce their interrupts, unbinding will fail.
+
+As a rule, devm_spi_register_controller() must not be used if the
+->remove() hook performs teardown steps which shall be performed
+after unbinding of slaves.
+
+Fix by using the non-devm variant spi_register_controller().  Note that
+the struct spi_controller as well as the driver-private data are not
+freed until after bcm2835_spi_remove() has finished, so accessing them
+is safe.
+
+Fixes: 247263dba208 ("spi: bcm2835: use devm_spi_register_master()")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v3.13+
+Link: https://lore.kernel.org/r/2397dd70cdbe95e0bc4da2b9fca0f31cb94e5aed.1589557526.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/cifsfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-bcm2835.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/cifs/cifsfs.c
-+++ b/fs/cifs/cifsfs.c
-@@ -621,7 +621,7 @@ cifs_show_options(struct seq_file *s, st
- 	seq_printf(s, ",actimeo=%lu", cifs_sb->actimeo / HZ);
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -1347,7 +1347,7 @@ static int bcm2835_spi_probe(struct plat
+ 		goto out_dma_release;
+ 	}
  
- 	if (tcon->ses->chan_max > 1)
--		seq_printf(s, ",multichannel,max_channel=%zu",
-+		seq_printf(s, ",multichannel,max_channels=%zu",
- 			   tcon->ses->chan_max);
+-	err = devm_spi_register_controller(&pdev->dev, ctlr);
++	err = spi_register_controller(ctlr);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "could not register SPI controller: %d\n",
+ 			err);
+@@ -1374,6 +1374,8 @@ static int bcm2835_spi_remove(struct pla
  
- 	return 0;
+ 	bcm2835_debugfs_remove(bs);
+ 
++	spi_unregister_controller(ctlr);
++
+ 	/* Clear FIFOs, and disable the HW block */
+ 	bcm2835_wr(bs, BCM2835_SPI_CS,
+ 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
 
 
