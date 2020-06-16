@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9811FBB20
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD7D1FB91B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730963AbgFPPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
+        id S1732625AbgFPQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:01:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730951AbgFPPja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:39:30 -0400
+        id S1732756AbgFPPwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C3152145D;
-        Tue, 16 Jun 2020 15:39:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D51EA21532;
+        Tue, 16 Jun 2020 15:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321970;
-        bh=RHVyUJryWVBrb37z8EtnL+5Xxwy5WhIbryfW9d+mlY4=;
+        s=default; t=1592322730;
+        bh=QIcS73uwgRHW6LMWNWdiRKdRJrtAF/id/hyM7AUDHKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNOD9wLMQhCPITDotwtwlcv+crJzmfaZvja50VnFYsweEx+bcu77AynJKLeqYcYsM
-         1pL4omj7p0E6RWTCRuo7bBQQY3hKR5c746K0Ie2fZC2bAsBjIyqpRmE9PvPnK3wcCB
-         0a31Xr0wmWE5H/GFgpbCKjb3bgJSktb/0dq94APw=
+        b=K0xxvKTobU7FVyAxZ6MnYZU63aWYEtNynGufKWi54CGprHgfQqIsbhfjVgqMuPoRT
+         YFAha6uNq1rKVnJ3ZFs457BRCowM1cLZSTstyLvERJ8tWhsrq3d0oGxfaMge/iyQaV
+         phBDEBszhtOuDFqSBrEW80l1DjrxocHxOVA6MUWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, LABBE Corentin <clabbe@baylibre.com>,
-        Gonglei <arei.gonglei@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/134] crypto: virtio: Fix use-after-free in virtio_crypto_skcipher_finalize_req()
-Date:   Tue, 16 Jun 2020 17:34:30 +0200
-Message-Id: <20200616153104.901978904@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Rodgman <dave.rodgman@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>, Willy Tarreau <w@1wt.eu>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        "Markus F.X.J. Oberhumer" <markus@oberhumer.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, Chao Yu <yuchao0@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 082/161] lib/lzo: fix ambiguous encoding bug in lzo-rle
+Date:   Tue, 16 Jun 2020 17:34:32 +0200
+Message-Id: <20200616153110.284300762@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,75 +49,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Dave Rodgman <dave.rodgman@arm.com>
 
-[ Upstream commit 8c855f0720ff006d75d0a2512c7f6c4f60ff60ee ]
+commit b5265c813ce4efbfa2e46fd27cdf9a7f44a35d2e upstream.
 
-The system'll crash when the users insmod crypto/tcrypto.ko with mode=155
-( testing "authenc(hmac(sha1),cbc(aes))" ). It's caused by reuse the memory
-of request structure.
+In some rare cases, for input data over 32 KB, lzo-rle could encode two
+different inputs to the same compressed representation, so that
+decompression is then ambiguous (i.e.  data may be corrupted - although
+zram is not affected because it operates over 4 KB pages).
 
-In crypto_authenc_init_tfm(), the reqsize is set to:
-  [PART 1] sizeof(authenc_request_ctx) +
-  [PART 2] ictx->reqoff +
-  [PART 3] MAX(ahash part, skcipher part)
-and the 'PART 3' is used by both ahash and skcipher in turn.
+This modifies the compressor without changing the decompressor or the
+bitstream format, such that:
 
-When the virtio_crypto driver finish skcipher req, it'll call ->complete
-callback(in crypto_finalize_skcipher_request) and then free its
-resources whose pointers are recorded in 'skcipher parts'.
+ - there is no change to how data produced by the old compressor is
+   decompressed
 
-However, the ->complete is 'crypto_authenc_encrypt_done' in this case,
-it will use the 'ahash part' of the request and change its content,
-so virtio_crypto driver will get the wrong pointer after ->complete
-finish and mistakenly free some other's memory. So the system will crash
-when these memory will be used again.
+ - an old decompressor will correctly decode data from the updated
+   compressor
 
-The resources which need to be cleaned up are not used any more. But the
-pointers of these resources may be changed in the function
-"crypto_finalize_skcipher_request". Thus release specific resources before
-calling this function.
+ - performance and compression ratio are not affected
 
-Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
-Reported-by: LABBE Corentin <clabbe@baylibre.com>
-Cc: Gonglei <arei.gonglei@huawei.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: virtualization@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200123101000.GB24255@Red
-Acked-by: Gonglei <arei.gonglei@huawei.com>
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Link: https://lore.kernel.org/r/20200602070501.2023-3-longpeng2@huawei.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ - we avoid introducing a new bitstream format
+
+In testing over 12.8M real-world files totalling 903 GB, three files
+were affected by this bug.  I also constructed 37M semi-random 64 KB
+files totalling 2.27 TB, and saw no affected files.  Finally I tested
+over files constructed to contain each of the ~1024 possible bad input
+sequences; for all of these cases, updated lzo-rle worked correctly.
+
+There is no significant impact to performance or compression ratio.
+
+Signed-off-by: Dave Rodgman <dave.rodgman@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Dave Rodgman <dave.rodgman@arm.com>
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc: Markus F.X.J. Oberhumer <markus@oberhumer.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Nitin Gupta <ngupta@vflare.org>
+Cc: Chao Yu <yuchao0@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200507100203.29785-1-dave.rodgman@arm.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/crypto/virtio/virtio_crypto_algs.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/lzo.txt    |    8 ++++++--
+ lib/lzo/lzo1x_compress.c |   13 +++++++++++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
-index 82b316b2f537..fea55b5da8b5 100644
---- a/drivers/crypto/virtio/virtio_crypto_algs.c
-+++ b/drivers/crypto/virtio/virtio_crypto_algs.c
-@@ -580,10 +580,11 @@ static void virtio_crypto_ablkcipher_finalize_req(
- 		scatterwalk_map_and_copy(req->info, req->dst,
- 					 req->nbytes - AES_BLOCK_SIZE,
- 					 AES_BLOCK_SIZE, 0);
--	crypto_finalize_ablkcipher_request(vc_sym_req->base.dataq->engine,
--					   req, err);
- 	kzfree(vc_sym_req->iv);
- 	virtcrypto_clear_request(&vc_sym_req->base);
-+
-+	crypto_finalize_ablkcipher_request(vc_sym_req->base.dataq->engine,
-+					   req, err);
- }
+--- a/Documentation/lzo.txt
++++ b/Documentation/lzo.txt
+@@ -159,11 +159,15 @@ Byte sequences
+            distance = 16384 + (H << 14) + D
+            state = S (copy S literals after this block)
+            End of stream is reached if distance == 16384
++           In version 1 only, to prevent ambiguity with the RLE case when
++           ((distance & 0x803f) == 0x803f) && (261 <= length <= 264), the
++           compressor must not emit block copies where distance and length
++           meet these conditions.
  
- static struct virtio_crypto_algo virtio_crypto_algs[] = { {
--- 
-2.25.1
-
+         In version 1 only, this instruction is also used to encode a run of
+-        zeros if distance = 0xbfff, i.e. H = 1 and the D bits are all 1.
++           zeros if distance = 0xbfff, i.e. H = 1 and the D bits are all 1.
+            In this case, it is followed by a fourth byte, X.
+-           run length = ((X << 3) | (0 0 0 0 0 L L L)) + 4.
++           run length = ((X << 3) | (0 0 0 0 0 L L L)) + 4
+ 
+       0 0 1 L L L L L  (32..63)
+            Copy of small block within 16kB distance (preferably less than 34B)
+--- a/lib/lzo/lzo1x_compress.c
++++ b/lib/lzo/lzo1x_compress.c
+@@ -268,6 +268,19 @@ m_len_done:
+ 				*op++ = (M4_MARKER | ((m_off >> 11) & 8)
+ 						| (m_len - 2));
+ 			else {
++				if (unlikely(((m_off & 0x403f) == 0x403f)
++						&& (m_len >= 261)
++						&& (m_len <= 264))
++						&& likely(bitstream_version)) {
++					// Under lzo-rle, block copies
++					// for 261 <= length <= 264 and
++					// (distance & 0x80f3) == 0x80f3
++					// can result in ambiguous
++					// output. Adjust length
++					// to 260 to prevent ambiguity.
++					ip -= m_len - 260;
++					m_len = 260;
++				}
+ 				m_len -= M4_MAX_LEN;
+ 				*op++ = (M4_MARKER | ((m_off >> 11) & 8));
+ 				while (unlikely(m_len > 255)) {
 
 
