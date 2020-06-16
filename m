@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1701FC231
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B400D1FC236
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 01:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgFPXT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 19:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFPXT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:19:56 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBC6C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:19:54 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i3so582874ljg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 16:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Q3NqWxyLOOv1rnd62CYs1OAA6O26ZjYHA/TuTD5bi7M=;
-        b=twhIch1q57KWiIJ91CDmo7zc2t0XjVXTUTP/xqTVUIw1n/qS2iuPGkBFRFuin3w1XW
-         KJ7qSAvq31uccaRUfWF5ePbxjCDLJWVX5f9QA2Ee6LuZvAroN2uRdmfQLZDN4RTWvT5A
-         Zqx+VVJLIdz7eOmgz3FfZdToQTYgfHeSsMLM4xc+NBzdVTkNiJY0ettWZrT/0XK+lvEp
-         xG1WgOSVaCVwLABUEmHNtXbhRL5HiUDbbluDMKeU04kb0r/D3v7+vCqncXYKfVEX/WgF
-         OjkHXTKBZIl8iT60W1OBxaQmMU2a4lECB7jNu5oVreEjHH3fECe7BFSIUmgkNGg+d2KT
-         5U+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Q3NqWxyLOOv1rnd62CYs1OAA6O26ZjYHA/TuTD5bi7M=;
-        b=FDEVaN9+OIaE9hK0023P72DGxirKpOGlYic1ywS1NUbb0z1VeHWgJdlAEhbtxEQHsq
-         wEMFckeEVv1mfpqecdrGT1bgUkGtUoxB8CBgdZJsTKFJwwknanJm8pLPpk1ZExHZYYLx
-         kM/iHDDxczFWPosNq6eNkicEMJF52rR+m8oUfxd0+kEe/RXjEhLEa/Y4tOQvazBpatHD
-         SpwrZtyUDgkIGHTBYX4JNob7IcQ/v7dofCPAro7r77ySQh04Y87g5bd3fqD3kXOSZnmP
-         HkkUqVwjoRwttXnf2KIx82wszoq4IGYfOVAHH6bAOp/UHXxgBUc/ouSFucD8eGC4qSkl
-         jlRQ==
-X-Gm-Message-State: AOAM531xE504Wsemsci5Lsii3Bv+j2OzTBd9wu5yEm1p8hEMUxsnm8Li
-        qbEiEOaPMeZeZBj+fCrRcWOmBB4oFymMwQq/FBQ=
-X-Google-Smtp-Source: ABdhPJwbJx1H4lsslm8/65Pqnw738fBMf59nyLqittDuQ03gVe0O6TALZagDWtlR1BlF/J5Rmf1EgPPpFl/8X+FqROw=
-X-Received: by 2002:a2e:9ad6:: with SMTP id p22mr2598237ljj.3.1592349592743;
- Tue, 16 Jun 2020 16:19:52 -0700 (PDT)
+        id S1726508AbgFPXUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 19:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725849AbgFPXUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 19:20:21 -0400
+Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B618A207DD;
+        Tue, 16 Jun 2020 23:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592349621;
+        bh=tiK4KMdA62onp2wByWby+/bwJDYFvHk4Oek1Xrw3dFA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=D7HZDgKlntaC82ZPfQik/dwZOJzJT8jigSpJ6AyIV8lHA6Cg/pM1zhcrNrtBna2A7
+         kwoDrlCmjaOCGTlzlQzpNBUXNCxV/ZBZyNFuk9Yb6KlzTl7Us1ydVRQaEVUwryEqso
+         wVt0aaNxTPk4+CMop//V+SdFwLsaSU0gEfDhcg3E=
+Date:   Tue, 16 Jun 2020 18:20:19 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rjw@rjwysocki.net, bp@alien8.de,
+        james.morse@arm.com, lenb@kernel.org, tony.luck@intel.com,
+        dan.carpenter@oracle.com, zhangliguang@linux.alibaba.com,
+        andriy.shevchenko@linux.intel.com, wangkefeng.wang@huawei.com,
+        jroedel@suse.de, yangyicong@hisilicon.com,
+        jonathan.cameron@huawei.com, tanxiaofei@huawei.com
+Subject: Re: [PATCH v9 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe
+ controller errors
+Message-ID: <20200616232019.GA1987909@bjorn-Precision-5520>
 MIME-Version: 1.0
-Received: by 2002:a2e:87d9:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 16:19:52
- -0700 (PDT)
-Reply-To: hamzak02wadrago@gmail.com
-From:   Hamzak Wadrago <nad123far@gmail.com>
-Date:   Tue, 16 Jun 2020 23:19:52 +0000
-Message-ID: <CAK1usucco3pApC+1RGiGb-cra2MoVQiBWLzukKnHpjz0dR9gvw@mail.gmail.com>
-Subject: From Mr. Hamzak Wadrago:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615101552.802-3-shiju.jose@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
+On Mon, Jun 15, 2020 at 11:15:52AM +0100, Shiju Jose wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> The HiSilicon HIP PCIe controller is capable of handling errors
+> on root port and perform port reset separately at each root port.
+> 
+> Add error handling driver for HIP PCIe controller to log
+> and report recoverable errors. Perform root port reset and restore
+> link status after the recovery.
+> 
+> Following are some of the PCIe controller's recoverable errors
+> 1. completion transmission timeout error.
+> 2. CRS retry counter over the threshold error.
+> 3. ECC 2 bit errors
+> 4. AXI bresponse/rresponse errors etc.
 
-I am Mr hamzak wadrago, the chief operating officer with my bank and I
-want to inform you that an amount of US$15.5 million will be moved on
-your name as the Foreign Business Partner to our late deceased
-customer. I need your help to receive this money as we shall share the
-money in the ratio of 60:40%. You will receive this amount through a
-bank wire transfer.
+> +static int hisi_pcie_notify_error(struct notifier_block *nb,
+> +				  unsigned long event, void *data)
+> +{
+> +	struct acpi_hest_generic_data *gdata = data;
+> +	const struct hisi_pcie_error_data *error_data =
+> +				acpi_hest_get_payload(gdata);
+> +	struct hisi_pcie_error_private *priv =
+> +			container_of(nb, struct hisi_pcie_error_private, nb);
+> +	struct platform_device *pdev = priv->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	u8 socket;
+> +
+> +	if (device_property_read_u8(dev, "socket", &socket))
+> +		return NOTIFY_DONE;
+> +
+> +	if (!guid_equal((guid_t *)gdata->section_type, &hisi_pcie_sec_type) ||
+> +	    error_data->socket_id != socket)
+> +		return NOTIFY_DONE;
 
-Please send your full names, direct telephone numbers, and physical
-address, more details and text of application form will be given to
-you upon your reply.
+I think you have to verify the GUID first before you can even safely
+extract a struct hisi_pcie_error_private from the payload:
 
-Your quick response will be highly appreciated.
+  if (!guid_equal(...))
+    return NOTIFY_DONE;
 
-Yours sincerely,
-Mr. Hamzak Wadrago,
+  priv = container_of(nb, struct hisi_pcie_error_private, nb);
+  pdev = priv->pdev;
+  dev = &pdev->dev;
+
+  if (device_property_read_u8(dev, "socket", &socket))
+    return NOTIFY_DONE;
+
+  if (error_data->socket_id != socket)
+    return NOTIFY_DONE;
+
+> +	hisi_pcie_handle_error(pdev, error_data);
+> +
+> +	return NOTIFY_OK;
+> +}
