@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416EF1FBAFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4981E1FB9D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732336AbgFPQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:16:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56406 "EHLO mail.kernel.org"
+        id S1732143AbgFPQHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731370AbgFPPlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:07 -0400
+        id S1732325AbgFPPrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 274B1208E4;
-        Tue, 16 Jun 2020 15:41:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BDCD2071A;
+        Tue, 16 Jun 2020 15:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322066;
-        bh=VwSN0YU9Oj7OXqaDGPp3XR8cYu0IhWpaSJ1/3foAwJ4=;
+        s=default; t=1592322443;
+        bh=mDDX03FzmPFI8VsvJmpXLYbjW3UZIUMBjMhepZSu4DI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uKSDx1cYN/hyKrOlJgj0RNCP/C8HozykYLtaGiBeSJhfp14FNpHphDnmOkc0OuFlL
-         XIkfG1AseULL1xgOAgsFA3MLS+xE1NwGJ3f4C6N46k/I1dsZ/jqyAhFMsE4ZJE9O2W
-         a7pd2wBM6rp0ulfM5RQDAHA2CjVVSBPEgvSaVix0=
+        b=bKR1lKR5BgLIuYnZKUnLEdA+v2PVbv203POs6+sRgAnXST5R9SgI3kMNEjpBS+JEp
+         8nVd+6Uxsx89JYXvspRa2U0qyFENmsZNWZBcvK6FQtdHy4cBmRAARCbLHrYmK34jfD
+         fCqo/YDOq1rgnDP94wqlHayh7cyWZv7O0MR/KKpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Andi Shyti <andi.shyti@intel.com>
-Subject: [PATCH 5.4 123/134] agp/intel: Reinforce the barrier after GTT updates
-Date:   Tue, 16 Jun 2020 17:35:07 +0200
-Message-Id: <20200616153106.677326783@linuxfoundation.org>
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.7 134/163] KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
+Date:   Tue, 16 Jun 2020 17:35:08 +0200
+Message-Id: <20200616153113.228643512@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Marc Zyngier <maz@kernel.org>
 
-commit f30d3ced9fafa03e4855508929b5b6334907f45e upstream.
+commit 3204be4109ad681523e3461ce64454c79278450a upstream.
 
-After changing the timing between GTT updates and execution on the GPU,
-we started seeing sporadic failures on Ironlake. These were narrowed
-down to being an insufficiently strong enough barrier/delay after
-updating the GTT and scheduling execution on the GPU. By forcing the
-uncached read, and adding the missing barrier for the singular
-insert_page (relocation paths), the sporadic failures go away.
+AArch32 CP1x registers are overlayed on their AArch64 counterparts
+in the vcpu struct. This leads to an interesting problem as they
+are stored in their CPU-local format, and thus a CP1x register
+doesn't "hit" the lower 32bit portion of the AArch64 register on
+a BE host.
 
-Fixes: 983d308cb8f6 ("agp/intel: Serialise after GTT updates")
-Fixes: 3497971a71d8 ("agp/intel: Flush chipset writes after updating a single PTE")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Acked-by: Andi Shyti <andi.shyti@intel.com>
-Cc: stable@vger.kernel.org # v4.0+
-Link: https://patchwork.freedesktop.org/patch/msgid/20200410083535.25464-1-chris@chris-wilson.co.uk
+To workaround this unfortunate situation, introduce a bias trick
+in the vcpu_cp1x() accessors which picks the correct half of the
+64bit register.
+
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Tested-by: James Morse <james.morse@arm.com>
+Acked-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/agp/intel-gtt.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/kvm_host.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -846,6 +846,7 @@ void intel_gtt_insert_page(dma_addr_t ad
- 			   unsigned int flags)
- {
- 	intel_private.driver->write_entry(addr, pg, flags);
-+	readl(intel_private.gtt + pg);
- 	if (intel_private.driver->chipset_flush)
- 		intel_private.driver->chipset_flush();
- }
-@@ -871,7 +872,7 @@ void intel_gtt_insert_sg_entries(struct
- 			j++;
- 		}
- 	}
--	wmb();
-+	readl(intel_private.gtt + j - 1);
- 	if (intel_private.driver->chipset_flush)
- 		intel_private.driver->chipset_flush();
- }
-@@ -1105,6 +1106,7 @@ static void i9xx_cleanup(void)
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -405,8 +405,10 @@ void vcpu_write_sys_reg(struct kvm_vcpu
+  * CP14 and CP15 live in the same array, as they are backed by the
+  * same system registers.
+  */
+-#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
+-#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
++#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
++
++#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
++#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
  
- static void i9xx_chipset_flush(void)
- {
-+	wmb();
- 	if (intel_private.i9xx_flush_page)
- 		writel(1, intel_private.i9xx_flush_page);
- }
+ struct kvm_vm_stat {
+ 	ulong remote_tlb_flush;
 
 
