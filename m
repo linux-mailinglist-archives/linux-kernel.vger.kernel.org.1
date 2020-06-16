@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822611FB6E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324161FB833
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgFPPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
+        id S1732938AbgFPPyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730106AbgFPPlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:25 -0400
+        id S1732922AbgFPPx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51ED7207C4;
-        Tue, 16 Jun 2020 15:41:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19AC7215A4;
+        Tue, 16 Jun 2020 15:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322084;
-        bh=REfJ7+ONixLxyVEXno+zYpwYGwcixL3r/XPDzbPOx0Y=;
+        s=default; t=1592322838;
+        bh=KERNEO/I/JhTJOE7gZeiLLtKqNd+wcWeZV80AwRWTDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFX9159XZQd+sR8GuVt/tyzgNk6GI5ac7NfnaBpru7Ipi4ZN0eKJJqeL1WnCTvhzu
-         tUkNhPExmaxTBlpkQrEDXtCMkAp9UfQhCGvNozGqrroMAEcRWvV7BHeGrfMqHFkNaX
-         a7YLncbbuL1dtfVjmTkz/KyYzQYXcZkftm+1rfjE=
+        b=ijuv+L+CnBmyHLjiebI1O5hAv/MHDrNFfHSLNKm6nAUrRJqYsIYEEhGvcAvIYXO3m
+         R7kt5wYhZ39iZPKxa/pw1XNh670XO6+AisC9mDbegrzmTEnE/FIYHghCbx+HDFucuR
+         XjfrWSxofVz7uBlm1SiUkzEDjbnSr2O9cucVpYf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 129/134] mmc: sdio: Fix potential NULL pointer error in mmc_sdio_init_card()
+        stable@vger.kernel.org, Richard Purdie <rpurdie@rpsys.net>,
+        Antonino Daplas <adaplas@pol.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH 5.6 123/161] video: fbdev: w100fb: Fix a potential double free.
 Date:   Tue, 16 Jun 2020 17:35:13 +0200
-Message-Id: <20200616153106.967580831@linuxfoundation.org>
+Message-Id: <20200616153112.220930130@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit f04086c225da11ad16d7f9a2fbca6483ab16dded upstream.
+commit 18722d48a6bb9c2e8d046214c0a5fd19d0a7c9f6 upstream.
 
-During some scenarios mmc_sdio_init_card() runs a retry path for the UHS-I
-specific initialization, which leads to removal of the previously allocated
-card. A new card is then re-allocated while retrying.
+Some memory is vmalloc'ed in the 'w100fb_save_vidmem' function and freed in
+the 'w100fb_restore_vidmem' function. (these functions are called
+respectively from the 'suspend' and the 'resume' functions)
 
-However, in one of the corresponding error paths we may end up to remove an
-already removed card, which likely leads to a NULL pointer exception. So,
-let's fix this.
+However, it is also freed in the 'remove' function.
 
-Fixes: 5fc3d80ef496 ("mmc: sdio: don't use rocr to check if the card could support UHS mode")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/20200430091640.455-2-ulf.hansson@linaro.org
+In order to avoid a potential double free, set the corresponding pointer
+to NULL once freed in the 'w100fb_restore_vidmem' function.
+
+Fixes: aac51f09d96a ("[PATCH] w100fb: Rewrite for platform independence")
+Cc: Richard Purdie <rpurdie@rpsys.net>
+Cc: Antonino Daplas <adaplas@pol.net>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: <stable@vger.kernel.org> # v2.6.14+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200506181902.193290-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/core/sdio.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/video/fbdev/w100fb.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/mmc/core/sdio.c
-+++ b/drivers/mmc/core/sdio.c
-@@ -718,9 +718,8 @@ try_again:
- 			/* Retry init sequence, but without R4_18V_PRESENT. */
- 			retries = 0;
- 			goto try_again;
--		} else {
--			goto remove;
- 		}
-+		return err;
+--- a/drivers/video/fbdev/w100fb.c
++++ b/drivers/video/fbdev/w100fb.c
+@@ -588,6 +588,7 @@ static void w100fb_restore_vidmem(struct
+ 		memsize=par->mach->mem->size;
+ 		memcpy_toio(remapped_fbuf + (W100_FB_BASE-MEM_WINDOW_BASE), par->saved_extmem, memsize);
+ 		vfree(par->saved_extmem);
++		par->saved_extmem = NULL;
  	}
+ 	if (par->saved_intmem) {
+ 		memsize=MEM_INT_SIZE;
+@@ -596,6 +597,7 @@ static void w100fb_restore_vidmem(struct
+ 		else
+ 			memcpy_toio(remapped_fbuf + (W100_FB_BASE-MEM_WINDOW_BASE), par->saved_intmem, memsize);
+ 		vfree(par->saved_intmem);
++		par->saved_intmem = NULL;
+ 	}
+ }
  
- 	/*
 
 
