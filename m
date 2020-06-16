@@ -2,102 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D2C1FB909
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81181FB937
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgFPQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732614AbgFPQAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:00:21 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 584D620882;
-        Tue, 16 Jun 2020 16:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592323220;
-        bh=nhtRihdq0ZnRFzRQVLYSMJPsEUezpVlbdISEsa2u8F0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qwvcb5lGhEbAtTjUKYtG+m/I0Vwuvkg8ZwXwxUy/bdqyWvbARwe+nPbeVmI45HELY
-         k32Drk1lwyA1R4DgzpmrRhwMQlZjKM1yiKXnfWlV1syy8bYMgCU/PyQWMQedOAzL/O
-         SQnIfmHT3qkfUTsuJbwEYKQrubysqHO7QnSE1Kws=
-Date:   Tue, 16 Jun 2020 12:00:19 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>, alexander.deucher@amd.com,
-        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
-        Hawking.Zhang@amd.com, tvrtko.ursulin@intel.com,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, spronovo@microsoft.com, iourit@microsoft.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [RFC PATCH 0/4] DirectX on Linux
-Message-ID: <20200616160019.GQ1931@sasha-vm>
-References: <20200519163234.226513-1-sashal@kernel.org>
- <55c57049-1869-7421-aa0f-3ce0b6a133cf@suse.de>
- <20200616105112.GC1718@bug>
- <20200616132819.GP1931@sasha-vm>
- <20200616144122.GA18447@duo.ucw.cz>
+        id S1732511AbgFPQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733172AbgFPQBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:01:49 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E598C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:01:49 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s10so9435755pgm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C2Y4BhWefKmP9iji9eylvkFo4/M9jmgkj2BXKFGkoJE=;
+        b=aJ8p70Y5LnowTS4d6Nvq5WyEu93YaLiozLfkw0uDW6dYUF3xQNCbIJvKarTK5Ed9iD
+         m7i0zsBqFI1pIpAyIluoSmBT0Risms7oI2Pp32JEbx7n0H5pqbwQtOkP1/KHECdDu/FT
+         ltBtg48/YKabACQ+Epr94E4U9IQIdRDp/x9Fs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C2Y4BhWefKmP9iji9eylvkFo4/M9jmgkj2BXKFGkoJE=;
+        b=Tj5B0sOyvW7yiSc/4SvjOK9qZdQaxIUwW5MWDEuTmUijbgjlHy2ib2QhE/J5BvWHZw
+         Pix4kuNJ6+I0gNTuecBWoD/1mVuTDmleF0SRFBgIPQAZqygEcXFWUOQZW7P0tCcvBBz7
+         z0j8cmQb5Xedim1IoC9Etifn6T5XDoCHdl06pKh9bKGJTevl39OzKbbxjY/uIQBf80gA
+         Bl8QhgM8x0YYkO3bVIn8wxO/+jSo/6gMmaY4IhA9fCt9f/1ZAaOfv14tlsqD3E6BNCP+
+         SMNhp0wgfb9MuMaTE/l7qMjW+RqV3KAMLmlVCrVsaOiI8wWdp+UKXXLP4z/2S9FkNTjE
+         ccwQ==
+X-Gm-Message-State: AOAM530JIZKnxe1+Ipxy+6wxLyEFWWspoCWbjwPlnkXnFXRCxIRhrlFT
+        iiPA47z7pz6iAuJ9A7Cv+XYW8w==
+X-Google-Smtp-Source: ABdhPJxZYUpPJAibIwbYuU5zDTSd1Kb3np/+gOul4WD0kGGfyZGJ7hHLOe/iwa9+dycWyfSgo2noGQ==
+X-Received: by 2002:a63:5307:: with SMTP id h7mr2625624pgb.28.1592323309057;
+        Tue, 16 Jun 2020 09:01:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id iq19sm2942471pjb.48.2020.06.16.09.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 09:01:48 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 09:01:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tycho Andersen <tycho@tycho.ws>, Jann Horn <jannh@google.com>,
+        "zhujianwei (C)" <zhujianwei7@huawei.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Matt Denton <mpdenton@google.com>,
+        Chris Palmer <palmer@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Hehuazhen <hehuazhen@huawei.com>, x86@kernel.org,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH 4/8] seccomp: Implement constant action bitmaps
+Message-ID: <202006160851.E8F9928AAB@keescook>
+References: <20200616074934.1600036-1-keescook@chromium.org>
+ <20200616074934.1600036-5-keescook@chromium.org>
+ <fc0c14cd-bcf0-c94c-6cba-d0ce1844e93c@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616144122.GA18447@duo.ucw.cz>
+In-Reply-To: <fc0c14cd-bcf0-c94c-6cba-d0ce1844e93c@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 04:41:22PM +0200, Pavel Machek wrote:
->On Tue 2020-06-16 09:28:19, Sasha Levin wrote:
->> On Tue, Jun 16, 2020 at 12:51:13PM +0200, Pavel Machek wrote:
->> > Hi!
->> >
->> > > > The driver creates the /dev/dxg device, which can be opened by user mode
->> > > > application and handles their ioctls. The IOCTL interface to the driver
->> > > > is defined in dxgkmthk.h (Dxgkrnl Graphics Port Driver ioctl
->> > > > definitions). The interface matches the D3DKMT interface on Windows.
->> > > > Ioctls are implemented in ioctl.c.
->> > >
->> > > Echoing what others said, you're not making a DRM driver. The driver should live outside
->> > > of the DRM code.
->> > >
->> >
->> > Actually, this sounds to me like "this should not be merged into linux kernel". I mean,
->> > we already have DRM API on Linux. We don't want another one, do we?
->>
->> This driver doesn't have any display functionality.
->
->Graphics cards without displays connected are quite common. I may be
->wrong, but I believe we normally handle them using DRM...
+On Tue, Jun 16, 2020 at 07:40:17AM -0700, Dave Hansen wrote:
+> On 6/16/20 12:49 AM, Kees Cook wrote:
+> > +	/* Mark the second page as untouched (i.e. "old") */
+> > +	preempt_disable();
+> > +	set_pte_at(&init_mm, vaddr, ptep, pte_mkold(*(READ_ONCE(ptep))));
+> > +	local_flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+> > +	preempt_enable();
+> 
+> If you can, I'd wrap that nugget up in a helper.  I'd also suggest being
+> very explicit in a comment about what it is trying to do: ensure no TLB
+> entries exist so that a future access will always set the Accessed bit.
 
-This is more similar to the accelerators that live in drivers/misc/
-right now.
+Yeah, good idea!
 
->> > And at the very least... this misses API docs for /dev/dxg. Code can't really
->> > be reviewed without that.
->>
->> The docs live here: https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/d3dkmthk/
->
->I don't see "/dev/dxg" being metioned there. Plus, kernel API
+> 
+> > +	/* Make sure the PTE agrees that it is untouched. */
+> > +	if (WARN_ON_ONCE(sd_touched(ptep)))
+> > +		return;
+> > +	/* Read a portion of struct seccomp_data from the second page. */
+> > +	check = sd->instruction_pointer;
+> > +	/* First, verify the contents are zero from vzalloc(). */
+> > +	if (WARN_ON_ONCE(check))
+> > +		return;
+> > +	/* Now make sure the ACCESSED bit has been set after the read. */
+> > +	if (!sd_touched(ptep)) {
+> > +		/*
+> > +		 * If autodetection fails, fall back to standard beahavior by
+> > +		 * clearing the entire "allow" bitmap.
+> > +		 */
+> > +		pr_warn_once("seccomp: cannot build automatic syscall filters\n");
+> > +		bitmap_zero(bitmaps->allow, NR_syscalls);
+> > +		return;
+> > +	}
+> 
+> I can't find any big holes with this.  It's the kind of code that makes
+> me nervous, but mostly because it's pretty different that anything else
+> we have in the kernel.
+> 
+> It's also clear to me here that you probably have a slightly different
+> expectation of what the PTE accessed flag means versus the hardware
+> guys.  What you are looking for it to mean is roughly: "a retired
+> instruction touched this page".
+> 
+> The hardware guys would probably say it's closer to "a TLB entry was
+> established for this page."  Remember that TLB entries can be
+> established speculatively or from things like prefetchers.  While I
+> don't know of anything microarchitectural today which would trip this
+> mechanism, it's entirely possible that something in the future might.
+> Accessing close to the page boundary is the exact kind of place folks
+> might want to optimize.
 
-Right, this is because this entire codebase is just a pipe to the API
-I've linked, it doesn't implement anything new on it's own.
+Yeah, and to that end, going the cBPF emulator route removes this kind
+of "weird" behavior.
 
->documentation should really go to Documentation, and be suitably
->licensed.
+> 
+> *But*, at least it would err in the direction of being conservative.  It
+> would say "somebody touched the page!" more often than it should, but
+> never _less_ often than it should.
 
-While I don't mind copying the docs into Documentation, I'm concerned
-that over time they will diverge from the docs on the website. This is
-similar to how other documentation (such as the virtio spec) live out of
-tree to avoid these issues.
+Right -- I made sure to design the bitmaps and the direction of the
+checking to fail towards running the filter instead of bypassing it.
 
-w.r.t the licensing, again: this was sent under GPL2 (note the SPDX tags
-in each file), and the patches carry a S-O-B by someone who was a
-Microsoft employee at the time the patches were sent.
+> One thing about the implementation (which is roughly):
+> 
+> 	// Touch the data:
+> 	check = sd->instruction_pointer;
+> 	// Examine the PTE mapping that data:
+> 	if (!sd_touched(ptep)) {
+> 		// something
+> 	}
+> 
+> There aren't any barriers in there, which could lead to the sd_touched()
+> check being ordered before the data touch.  I think a rmb() will
+> suffice.  You could even do it inside sd_touched().
+
+Ah yeah, I had convinced myself that READ_ONCE() gained me that
+coverage, but I guess that's not actually true here.
+
+> Was there a reason you chose to export a ranged TLB flush?  I probably
+> would have just used the single-page flush_tlb_one_kernel() for this
+> purpose if I were working in arch-specific code.
+
+No particular reason -- it just seemed easiest to make available given
+the interfaces. I could do the single-page version instead, if this way
+of doing things survives review. ;)
+
+Thanks for looking at it!
 
 -- 
-Thanks,
-Sasha
+Kees Cook
