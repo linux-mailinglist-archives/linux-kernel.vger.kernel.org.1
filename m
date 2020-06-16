@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C9B1FB810
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016771FB6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732610AbgFPPwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
+        id S1731053AbgFPPjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732767AbgFPPwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:23 -0400
+        id S1731038AbgFPPjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4796208D5;
-        Tue, 16 Jun 2020 15:52:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E70220B1F;
+        Tue, 16 Jun 2020 15:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322743;
-        bh=sXkEp1iCKGOb6vlUalvs5kX+brrJyhAxDQKUMCPhMTE=;
+        s=default; t=1592321990;
+        bh=jekqzddmXorLFHyyC5EL7qj8S8lyLz0vDRMB0nadoCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZHuvHIErql5UzVBKpo9qVHdSnFZUhJctp/XTOwznZ/yyg6PhQ0rINz83xY7sSxIXk
-         CeRFjibqdWTq+oeL8cEQvcIMsS/mJg8UpEPnnGPV0C/xtFiV5YoHSlb7Bq7F4Ib2uW
-         iK9xMLH4beUPdmzvQXtBOJumfe217Z0DL4ghF37Y=
+        b=fmDz/UGVpiQOv/T1aMxSDnb0kMFiM/JjhGQ6Fd9zn0N8aetmsYVCHwW3bIc6br1Pt
+         2ymf6x7h2MMOqyB6F9gON2RR14vaCe34EwzmVIucVQcHzY+TszDFoDLnoE8uglFxXB
+         Z12J172iU4X7FTeyBSZS3NURvt2kKVpe6xNJjeXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.6 086/161] spi: Fix controller unregister order
-Date:   Tue, 16 Jun 2020 17:34:36 +0200
-Message-Id: <20200616153110.467221859@linuxfoundation.org>
+        stable@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.4 094/134] ovl: initialize error in ovl_copy_xattr
+Date:   Tue, 16 Jun 2020 17:34:38 +0200
+Message-Id: <20200616153105.281938125@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Yuxuan Shui <yshuiv7@gmail.com>
 
-commit 84855678add8aba927faf76bc2f130a40f94b6f7 upstream.
+commit 520da69d265a91c6536c63851cbb8a53946974f0 upstream.
 
-When an SPI controller unregisters, it unbinds all its slave devices.
-For this, their drivers may need to access the SPI bus, e.g. to quiesce
-interrupts.
+In ovl_copy_xattr, if all the xattrs to be copied are overlayfs private
+xattrs, the copy loop will terminate without assigning anything to the
+error variable, thus returning an uninitialized value.
 
-However since commit ffbbdd21329f ("spi: create a message queueing
-infrastructure"), spi_destroy_queue() is executed before unbinding the
-slaves.  It sets ctlr->running = false, thereby preventing SPI bus
-access and causing unbinding of slave devices to fail.
+If ovl_copy_xattr is called from ovl_clear_empty, this uninitialized error
+value is put into a pointer by ERR_PTR(), causing potential invalid memory
+accesses down the line.
 
-Fix by unbinding slaves before calling spi_destroy_queue().
+This commit initialize error with 0. This is the correct value because when
+there's no xattr to copy, because all xattrs are private, ovl_copy_xattr
+should succeed.
 
-Fixes: ffbbdd21329f ("spi: create a message queueing infrastructure")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.4+
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/8aaf9d44c153fe233b17bc2dec4eb679898d7e7b.1589557526.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This bug is discovered with the help of INIT_STACK_ALL and clang.
+
+Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
+Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
+Fixes: 0956254a2d5b ("ovl: don't copy up opaqueness")
+Cc: stable@vger.kernel.org # v4.8
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/overlayfs/copy_up.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2768,6 +2768,8 @@ void spi_unregister_controller(struct sp
- 	struct spi_controller *found;
- 	int id = ctlr->bus_num;
+--- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -40,7 +40,7 @@ int ovl_copy_xattr(struct dentry *old, s
+ {
+ 	ssize_t list_size, size, value_size = 0;
+ 	char *buf, *name, *value = NULL;
+-	int uninitialized_var(error);
++	int error = 0;
+ 	size_t slen;
  
-+	device_for_each_child(&ctlr->dev, NULL, __unregister);
-+
- 	/* First make sure that this controller was ever added */
- 	mutex_lock(&board_lock);
- 	found = idr_find(&spi_master_idr, id);
-@@ -2780,7 +2782,6 @@ void spi_unregister_controller(struct sp
- 	list_del(&ctlr->list);
- 	mutex_unlock(&board_lock);
- 
--	device_for_each_child(&ctlr->dev, NULL, __unregister);
- 	device_unregister(&ctlr->dev);
- 	/* free bus id */
- 	mutex_lock(&board_lock);
+ 	if (!(old->d_inode->i_opflags & IOP_XATTR) ||
 
 
