@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F211FBA3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8E71FBA2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732967AbgFPQJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732839AbgFPQJc (ORCPT
+        id S1732666AbgFPQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:09:33 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29807 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732628AbgFPQJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:09:32 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1E0C0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:09:32 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b201so9737555pfb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Qr6LU5AJyvXIew1juXMAoqiI4cF7kmvmZdA39adClnc=;
-        b=Rkw9rZaVLXXtIQ0m20+mYgJQ4gcuayp8YvWp0pVNnyS2Ud5bvdUdx69IRXMW08dI+y
-         pzV/H7bWfkwsJ9crKNCDPM1q0WUffbNtBokPP+PZDWzzEdUIZWHq9M86Wqe0z1bOibJL
-         0kj7zDc/gs1pT2s4SL4bLi137RE65s/ZSVNpo=
+        Tue, 16 Jun 2020 12:09:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592323761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2y8KD7xWbYjXU/cEL7LgtQkBTECAhlAA76XR+Aplj6k=;
+        b=XT/uDfKZ+Nz+aKowO4BAdx/H5jwyTOnD34TZbFaDITYa3rC14T/bPWPFfbjAviz+qNEVP3
+        /9Ud2KhGIkL69nuh+nUNSnQr461W94Pmov/gsP9vJJWr2UfsgNpBXI/AHKi02EPH75JhTd
+        bXS6KQdqzryLGWRMALwusGgaUlBg/dQ=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-o0V_QEgzMSuTzbl1AfG3Xg-1; Tue, 16 Jun 2020 12:09:19 -0400
+X-MC-Unique: o0V_QEgzMSuTzbl1AfG3Xg-1
+Received: by mail-qt1-f198.google.com with SMTP id y5so17126531qtd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:09:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Qr6LU5AJyvXIew1juXMAoqiI4cF7kmvmZdA39adClnc=;
-        b=I4H/sc//ZKvrG2obVO9D9PbDcSYrsVWUapTeRh5hqU/Itx1jJF6q7BlMB2/AtOZOBr
-         sYOzQxdaHyIWsmhAQ4d+5eQSxDtaRr6HpfdkKRQYg0t6UJcZJnfo6Gq2gbgb5TR/bezP
-         dBSph09Hd2ZKBBnGY5e9qNBpKPxKylw2Znfu11DeG8U+hOfQxKUA/ylNZFn5T66yZ4DJ
-         G1k6JLqfXxin5lm9O3dYd3hNsV2r/0tCggMNop7R5JMvBYzmN+5dJQbSY2dg/AxHNLB5
-         RnhQuP/uqIu/dvkoQgTKw9QB3UhUbyxGyBE9Zfhr22baAETPuevkTSqlZnStnQyxnnRJ
-         1ATA==
-X-Gm-Message-State: AOAM531AukYqid84b/dPQITRprMPYKx6WNsRSAkvQby2sRrexUYo7ufH
-        I+pfJ0odZEgiBlWBXzmNHPaUYA==
-X-Google-Smtp-Source: ABdhPJw0IGP4wrEgB7iuDlwGXE4MMae76XZ2NoGZ/467ZGcMrf6sY2DenPwGzgjt24xH+kDh+E9WqA==
-X-Received: by 2002:a62:9242:: with SMTP id o63mr2821188pfd.310.1592323771469;
-        Tue, 16 Jun 2020 09:09:31 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id p8sm14999992pgs.29.2020.06.16.09.09.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 09:09:30 -0700 (PDT)
-Subject: Re: [PATCH v9 1/8] fs: introduce kernel_pread_file* support
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20200615194151.7011-1-scott.branden@broadcom.com>
- <20200615194151.7011-2-scott.branden@broadcom.com>
- <20200616073423.GC30385@infradead.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <b89a3f0f-51b9-7705-3a23-26196ae7716e@broadcom.com>
-Date:   Tue, 16 Jun 2020 09:09:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2y8KD7xWbYjXU/cEL7LgtQkBTECAhlAA76XR+Aplj6k=;
+        b=FS9Hxt+KDw7hhFODPY+dGkFqXIq5AsJ0R3U7vv6oVFopigQCkmczx9TE1cAr/+KGJJ
+         mmrmEV28ucDM4m1CKKajRTeZGa5i/jccIrbaaZVN4i4If/FavDv3NIDginETH30gSM8G
+         T9CYnhp6zsJ7C06XfGenp05w4OTUTPwqYvlY1jVf8hv+dSXxxCJ/J6RFCZktQwb+eOZW
+         1az74paapKlyV1WMrzPLVorlxWWqMi8EvnIvRaXtKMfo0SvHjtQIMbSxJ8zHHNkPAxIp
+         XsCgPek6i5LjozXq3dAyS4I6zZYV2SLvaqdEtWvTS636wMxNYkt+iw02nO92HP6Tdm2Q
+         nGSA==
+X-Gm-Message-State: AOAM531L2mi9inYeZLaaUZGX+aiR9t9T2kGAIdwhhj4b85NMlNce87PE
+        wJJN0Ge9z4D+ET9kVm4A4gZ3+K1Fxm42SdCjYxNHry0gjTNB9ycee9f9bgJBITsaEEt5U/KGcyb
+        XZpKGpMtDAC56DsO9ICQXO0eL
+X-Received: by 2002:ad4:54ea:: with SMTP id k10mr3112698qvx.66.1592323758931;
+        Tue, 16 Jun 2020 09:09:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoN5ZsEbH2t5hBW9WW5hOk33D7AAL34ncw5O7fmuB3JLmLE9egHSi0toqNT8A+dCzhofL/5Q==
+X-Received: by 2002:ad4:54ea:: with SMTP id k10mr3112676qvx.66.1592323758723;
+        Tue, 16 Jun 2020 09:09:18 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id y1sm15552040qta.82.2020.06.16.09.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 09:09:17 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 12:09:16 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Stefan Hajnoczi <stefanha@gmail.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Wu, Hao" <hao.wu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/15] vfio: expose virtual Shared Virtual Addressing
+ to VMs
+Message-ID: <20200616160916.GC11838@xz-x1>
+References: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
+ <20200615100214.GC1491454@stefanha-x1.localdomain>
+ <MWHPR11MB16451F1E4748DF97D6A1DDD48C9D0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20200616154928.GF1491454@stefanha-x1.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20200616073423.GC30385@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200616154928.GF1491454@stefanha-x1.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Tue, Jun 16, 2020 at 04:49:28PM +0100, Stefan Hajnoczi wrote:
+> Isolation between applications is preserved but there is no isolation
+> between the device and the application itself. The application needs to
+> trust the device.
+> 
+> Examples:
+> 
+> 1. The device can snoop secret data from readable pages in the
+>    application's virtual memory space.
+> 
+> 2. The device can gain arbitrary execution on the CPU by overwriting
+>    control flow addresses (e.g. function pointers, stack return
+>    addresses) in writable pages.
 
-On 2020-06-16 12:34 a.m., Christoph Hellwig wrote:
-> Seriously, no more additions to fs.h for this interface please.  As
-> requested before as the very first thing move it out of this header
-> used by just about every file in the kernel.  That is in addition
-> to all the other issues with the interface.
-I can add such to the start of this patch series. I'm guessing from:
-#define __kernel_read_file_id(id) \
-to
-extern int kernel_read_file_from_fd(int, void **, loff_t *, loff_t,
-                     enum kernel_read_file_id);
+To me, SVA seems to be that "middle layer" of secure where it's not as safe as
+VFIO_IOMMU_MAP_DMA which has buffer level granularity of control (but of course
+we pay overhead on buffer setups and on-the-fly translations), however it's far
+better than DMA with no IOMMU which can ruin the whole host/guest, because
+after all we do a lot of isolations as process based.
 
+IMHO it's the same as when we see a VM (or the QEMU process) as a whole along
+with the guest code.  In some cases we don't care if the guest did some bad
+things to mess up with its own QEMU process.  It is still ideal if we can even
+stop the guest from doing so, but when it's not easy to do it the ideal way, we
+just lower the requirement to not spread the influence to the host and other
+VMs.
+
+Thanks,
+
+-- 
+Peter Xu
 
