@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F23A1FB7FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692F41FB698
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732337AbgFPPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47780 "EHLO mail.kernel.org"
+        id S1730763AbgFPPim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732658AbgFPPvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:19 -0400
+        id S1730730AbgFPPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A8CF208D5;
-        Tue, 16 Jun 2020 15:51:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 544C5214F1;
+        Tue, 16 Jun 2020 15:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322678;
-        bh=tsKDLnWFTSaaElZKoZK2jgT8PGZj3lzOrzE87+HxmHA=;
+        s=default; t=1592321919;
+        bh=qPXtMOTdflutZMIJ3Kxe+EfHyqUsxZqyhk7CaUbd0Do=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ql367wKCw+IQsM/wMyP11Vo0zOsnY4X4BGX5wo6bR/iUOTjprNoIT3H+mYL0J/yDd
-         xq3ojNf7aalbozuvlna4yEi+oykquFgDpDYd1w+0LIEf2EpVhUdrzE/eblmeM7DUkC
-         CV7343lmCccer/34cK4zAXprrjRvfM5MAn7qQCe8=
+        b=PWtkTPJQgtGoXT/cL1QzKPyyNSpEMKCiP5zFTJTn7t8c7BbWwTLxlmoJyalD08Rx3
+         SJNZG7Wt1tT8D7xymWMavqfcdNJgNgtTF73WpdNeaEvFmfB0K9sXRPnvpiSRccN8qw
+         zRP6KjX0QLTE5CYfhoUNYpLSS4Gn8/vAibZeHuVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.6 060/161] powerpc/ptdump: Properly handle non standard page size
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.4 066/134] arm64: acpi: fix UBSAN warning
 Date:   Tue, 16 Jun 2020 17:34:10 +0200
-Message-Id: <20200616153109.235914013@linuxfoundation.org>
+Message-Id: <20200616153103.933415442@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,124 +46,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-commit b00ff6d8c1c3898b0f768cbb38ef722d25bd2f39 upstream.
+commit a194c33f45f83068ef13bf1d16e26d4ca3ecc098 upstream.
 
-In order to properly display information regardless of the page size,
-it is necessary to take into account real page size.
+Will reported a UBSAN warning:
 
-Fixes: cabe8138b23c ("powerpc: dump as a single line areas mapping a single physical page.")
+UBSAN: null-ptr-deref in arch/arm64/kernel/smp.c:596:6
+member access within null pointer of type 'struct acpi_madt_generic_interrupt'
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-rc6-00124-g96bc42ff0a82 #1
+Call trace:
+ dump_backtrace+0x0/0x384
+ show_stack+0x28/0x38
+ dump_stack+0xec/0x174
+ handle_null_ptr_deref+0x134/0x174
+ __ubsan_handle_type_mismatch_v1+0x84/0xa4
+ acpi_parse_gic_cpu_interface+0x60/0xe8
+ acpi_parse_entries_array+0x288/0x498
+ acpi_table_parse_entries_array+0x178/0x1b4
+ acpi_table_parse_madt+0xa4/0x110
+ acpi_parse_and_init_cpus+0x38/0x100
+ smp_init_cpus+0x74/0x258
+ setup_arch+0x350/0x3ec
+ start_kernel+0x98/0x6f4
+
+This is from the use of the ACPI_OFFSET in
+arch/arm64/include/asm/acpi.h. Replace its use with offsetof from
+include/linux/stddef.h which should implement the same logic using
+__builtin_offsetof, so that UBSAN wont warn.
+
+Reported-by: Will Deacon <will@kernel.org>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
+Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/a53b2a0ffd042a8d85464bf90d55bc5b970e00a1.1589866984.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/lkml/20200521100952.GA5360@willie-the-truck/
+Link: https://lore.kernel.org/r/20200608203818.189423-1-ndesaulniers@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/mm/ptdump/ptdump.c |   21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ arch/arm64/include/asm/acpi.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -60,6 +60,7 @@ struct pg_state {
- 	unsigned long start_address;
- 	unsigned long start_pa;
- 	unsigned long last_pa;
-+	unsigned long page_size;
- 	unsigned int level;
- 	u64 current_flags;
- 	bool check_wx;
-@@ -157,9 +158,9 @@ static void dump_addr(struct pg_state *s
- #endif
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -12,6 +12,7 @@
+ #include <linux/efi.h>
+ #include <linux/memblock.h>
+ #include <linux/psci.h>
++#include <linux/stddef.h>
  
- 	pt_dump_seq_printf(st->seq, REG "-" REG " ", st->start_address, addr - 1);
--	if (st->start_pa == st->last_pa && st->start_address + PAGE_SIZE != addr) {
-+	if (st->start_pa == st->last_pa && st->start_address + st->page_size != addr) {
- 		pt_dump_seq_printf(st->seq, "[" REG "]", st->start_pa);
--		delta = PAGE_SIZE >> 10;
-+		delta = st->page_size >> 10;
- 	} else {
- 		pt_dump_seq_printf(st->seq, " " REG " ", st->start_pa);
- 		delta = (addr - st->start_address) >> 10;
-@@ -190,7 +191,7 @@ static void note_prot_wx(struct pg_state
- }
+ #include <asm/cputype.h>
+ #include <asm/io.h>
+@@ -31,14 +32,14 @@
+  * is therefore used to delimit the MADT GICC structure minimum length
+  * appropriately.
+  */
+-#define ACPI_MADT_GICC_MIN_LENGTH   ACPI_OFFSET(  \
++#define ACPI_MADT_GICC_MIN_LENGTH   offsetof(  \
+ 	struct acpi_madt_generic_interrupt, efficiency_class)
  
- static void note_page(struct pg_state *st, unsigned long addr,
--	       unsigned int level, u64 val)
-+	       unsigned int level, u64 val, unsigned long page_size)
- {
- 	u64 flag = val & pg_level[level].mask;
- 	u64 pa = val & PTE_RPN_MASK;
-@@ -202,6 +203,7 @@ static void note_page(struct pg_state *s
- 		st->start_address = addr;
- 		st->start_pa = pa;
- 		st->last_pa = pa;
-+		st->page_size = page_size;
- 		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
- 	/*
- 	 * Dump the section of virtual memory when:
-@@ -213,7 +215,7 @@ static void note_page(struct pg_state *s
- 	 */
- 	} else if (flag != st->current_flags || level != st->level ||
- 		   addr >= st->marker[1].start_address ||
--		   (pa != st->last_pa + PAGE_SIZE &&
-+		   (pa != st->last_pa + st->page_size &&
- 		    (pa != st->start_pa || st->start_pa != st->last_pa))) {
+ #define BAD_MADT_GICC_ENTRY(entry, end)					\
+ 	(!(entry) || (entry)->header.length < ACPI_MADT_GICC_MIN_LENGTH || \
+ 	(unsigned long)(entry) + (entry)->header.length > (end))
  
- 		/* Check the PTE flags */
-@@ -241,6 +243,7 @@ static void note_page(struct pg_state *s
- 		st->start_address = addr;
- 		st->start_pa = pa;
- 		st->last_pa = pa;
-+		st->page_size = page_size;
- 		st->current_flags = flag;
- 		st->level = level;
- 	} else {
-@@ -256,7 +259,7 @@ static void walk_pte(struct pg_state *st
+-#define ACPI_MADT_GICC_SPE  (ACPI_OFFSET(struct acpi_madt_generic_interrupt, \
++#define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	spe_interrupt) + sizeof(u16))
  
- 	for (i = 0; i < PTRS_PER_PTE; i++, pte++) {
- 		addr = start + i * PAGE_SIZE;
--		note_page(st, addr, 4, pte_val(*pte));
-+		note_page(st, addr, 4, pte_val(*pte), PAGE_SIZE);
- 
- 	}
- }
-@@ -273,7 +276,7 @@ static void walk_pmd(struct pg_state *st
- 			/* pmd exists */
- 			walk_pte(st, pmd, addr);
- 		else
--			note_page(st, addr, 3, pmd_val(*pmd));
-+			note_page(st, addr, 3, pmd_val(*pmd), PMD_SIZE);
- 	}
- }
- 
-@@ -289,7 +292,7 @@ static void walk_pud(struct pg_state *st
- 			/* pud exists */
- 			walk_pmd(st, pud, addr);
- 		else
--			note_page(st, addr, 2, pud_val(*pud));
-+			note_page(st, addr, 2, pud_val(*pud), PUD_SIZE);
- 	}
- }
- 
-@@ -308,7 +311,7 @@ static void walk_pagetables(struct pg_st
- 			/* pgd exists */
- 			walk_pud(st, pgd, addr);
- 		else
--			note_page(st, addr, 1, pgd_val(*pgd));
-+			note_page(st, addr, 1, pgd_val(*pgd), PGDIR_SIZE);
- 	}
- }
- 
-@@ -363,7 +366,7 @@ static int ptdump_show(struct seq_file *
- 
- 	/* Traverse kernel page tables */
- 	walk_pagetables(&st);
--	note_page(&st, 0, 0, 0);
-+	note_page(&st, 0, 0, 0, 0);
- 	return 0;
- }
- 
+ /* Basic configuration for ACPI */
 
 
