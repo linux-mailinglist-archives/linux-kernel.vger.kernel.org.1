@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3671FB70F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F3F1FB669
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731784AbgFPPnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
+        id S1730179AbgFPPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731760AbgFPPnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:16 -0400
+        id S1729543AbgFPPhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 090BD21475;
-        Tue, 16 Jun 2020 15:43:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 893B420B1F;
+        Tue, 16 Jun 2020 15:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322195;
-        bh=Hc6HPcu3lWTLe5pewqxpatHVjTK77/y/ir6dhm7s+s8=;
+        s=default; t=1592321819;
+        bh=oXxrqKU3RYuFHlbwhWmrhjiO0p/+PyjSyNfifVE7cVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n95El8EhWQHFbN+vuirC7i1cT8YSjEd6wywfNI8nJONKOgyxOPWEQQ8CA85mOvfK4
-         Vu40jtXZ57U8bUhugCkOxLHwlU5phPB7F1N6gxenFw49YMlKyscCUaoyQq2cYy54zw
-         wvCaOnVbAcxYiaOVQU90DBtwj9xd3tT09xBfpoQc=
+        b=R+kJ0oPEfzq61A2iIwZtgeNdjVkL2JMacyYL44oCh67QrHtyvao+HYZXbGpYEE3bv
+         j/Ws1kNLXtaujMKtLpVGBYZAXD5F8ubYdCIwP+8V1TmgW8cFS/qAHcEWG7d6z/NIO8
+         w51/Azq1BINK3BS3OnxCDQUVUcvPHIl4dje6SBbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.7 038/163] x86/speculation: Prevent rogue cross-process SSBD shutdown
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 028/134] kobject: Make sure the parent does not get released before its children
 Date:   Tue, 16 Jun 2020 17:33:32 +0200
-Message-Id: <20200616153108.689145357@linuxfoundation.org>
+Message-Id: <20200616153102.122765377@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +49,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anthony Steinhauser <asteinhauser@google.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit dbbe2ad02e9df26e372f38cc3e70dab9222c832e upstream.
+[ Upstream commit 4ef12f7198023c09ad6d25b652bd8748c965c7fa ]
 
-On context switch the change of TIF_SSBD and TIF_SPEC_IB are evaluated
-to adjust the mitigations accordingly. This is optimized to avoid the
-expensive MSR write if not needed.
+In the function kobject_cleanup(), kobject_del(kobj) is
+called before the kobj->release(). That makes it possible to
+release the parent of the kobject before the kobject itself.
 
-This optimization is buggy and allows an attacker to shutdown the SSBD
-protection of a victim process.
+To fix that, adding function __kboject_del() that does
+everything that kobject_del() does except release the parent
+reference. kobject_cleanup() then calls __kobject_del()
+instead of kobject_del(), and separately decrements the
+reference count of the parent kobject after kobj->release()
+has been called.
 
-The update logic reads the cached base value for the speculation control
-MSR which has neither the SSBD nor the STIBP bit set. It then OR's the
-SSBD bit only when TIF_SSBD is different and requests the MSR update.
-
-That means if TIF_SSBD of the previous and next task are the same, then
-the base value is not updated, even if TIF_SSBD is set. The MSR write is
-not requested.
-
-Subsequently if the TIF_STIBP bit differs then the STIBP bit is updated
-in the base value and the MSR is written with a wrong SSBD value.
-
-This was introduced when the per task/process conditional STIPB
-switching was added on top of the existing SSBD switching.
-
-It is exploitable if the attacker creates a process which enforces SSBD
-and has the contrary value of STIBP than the victim process (i.e. if the
-victim process enforces STIBP, the attacker process must not enforce it;
-if the victim process does not enforce STIBP, the attacker process must
-enforce it) and schedule it on the same core as the victim process. If
-the victim runs after the attacker the victim becomes vulnerable to
-Spectre V4.
-
-To fix this, update the MSR value independent of the TIF_SSBD difference
-and dependent on the SSBD mitigation method available. This ensures that
-a subsequent STIPB initiated MSR write has the correct state of SSBD.
-
-[ tglx: Handle X86_FEATURE_VIRT_SSBD & X86_FEATURE_VIRT_SSBD correctly
-        and massaged changelog ]
-
-Fixes: 5bfbe3ad5840 ("x86/speculation: Prepare for per task indirect branch speculation control")
-Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20200513151840.36400-1-heikki.krogerus@linux.intel.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/process.c |   28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+ lib/kobject.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -545,28 +545,20 @@ static __always_inline void __speculatio
+diff --git a/lib/kobject.c b/lib/kobject.c
+index 83198cb37d8d..2bd631460e18 100644
+--- a/lib/kobject.c
++++ b/lib/kobject.c
+@@ -599,14 +599,7 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
+ }
+ EXPORT_SYMBOL_GPL(kobject_move);
  
- 	lockdep_assert_irqs_disabled();
+-/**
+- * kobject_del() - Unlink kobject from hierarchy.
+- * @kobj: object.
+- *
+- * This is the function that should be called to delete an object
+- * successfully added via kobject_add().
+- */
+-void kobject_del(struct kobject *kobj)
++static void __kobject_del(struct kobject *kobj)
+ {
+ 	struct kernfs_node *sd;
+ 	const struct kobj_type *ktype;
+@@ -625,9 +618,23 @@ void kobject_del(struct kobject *kobj)
  
--	/*
--	 * If TIF_SSBD is different, select the proper mitigation
--	 * method. Note that if SSBD mitigation is disabled or permanentely
--	 * enabled this branch can't be taken because nothing can set
--	 * TIF_SSBD.
--	 */
--	if (tif_diff & _TIF_SSBD) {
--		if (static_cpu_has(X86_FEATURE_VIRT_SSBD)) {
-+	/* Handle change of TIF_SSBD depending on the mitigation method. */
-+	if (static_cpu_has(X86_FEATURE_VIRT_SSBD)) {
-+		if (tif_diff & _TIF_SSBD)
- 			amd_set_ssb_virt_state(tifn);
--		} else if (static_cpu_has(X86_FEATURE_LS_CFG_SSBD)) {
-+	} else if (static_cpu_has(X86_FEATURE_LS_CFG_SSBD)) {
-+		if (tif_diff & _TIF_SSBD)
- 			amd_set_core_ssb_state(tifn);
--		} else if (static_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) ||
--			   static_cpu_has(X86_FEATURE_AMD_SSBD)) {
--			msr |= ssbd_tif_to_spec_ctrl(tifn);
--			updmsr  = true;
--		}
-+	} else if (static_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) ||
-+		   static_cpu_has(X86_FEATURE_AMD_SSBD)) {
-+		updmsr |= !!(tif_diff & _TIF_SSBD);
-+		msr |= ssbd_tif_to_spec_ctrl(tifn);
+ 	kobj->state_in_sysfs = 0;
+ 	kobj_kset_leave(kobj);
+-	kobject_put(kobj->parent);
+ 	kobj->parent = NULL;
+ }
++
++/**
++ * kobject_del() - Unlink kobject from hierarchy.
++ * @kobj: object.
++ *
++ * This is the function that should be called to delete an object
++ * successfully added via kobject_add().
++ */
++void kobject_del(struct kobject *kobj)
++{
++	struct kobject *parent = kobj->parent;
++
++	__kobject_del(kobj);
++	kobject_put(parent);
++}
+ EXPORT_SYMBOL(kobject_del);
+ 
+ /**
+@@ -663,6 +670,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+  */
+ static void kobject_cleanup(struct kobject *kobj)
+ {
++	struct kobject *parent = kobj->parent;
+ 	struct kobj_type *t = get_ktype(kobj);
+ 	const char *name = kobj->name;
+ 
+@@ -684,7 +692,7 @@ static void kobject_cleanup(struct kobject *kobj)
+ 	if (kobj->state_in_sysfs) {
+ 		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+ 			 kobject_name(kobj), kobj);
+-		kobject_del(kobj);
++		__kobject_del(kobj);
  	}
  
--	/*
--	 * Only evaluate TIF_SPEC_IB if conditional STIBP is enabled,
--	 * otherwise avoid the MSR write.
--	 */
-+	/* Only evaluate TIF_SPEC_IB if conditional STIBP is enabled. */
- 	if (IS_ENABLED(CONFIG_SMP) &&
- 	    static_branch_unlikely(&switch_to_cond_stibp)) {
- 		updmsr |= !!(tif_diff & _TIF_SPEC_IB);
+ 	if (t && t->release) {
+@@ -698,6 +706,8 @@ static void kobject_cleanup(struct kobject *kobj)
+ 		pr_debug("kobject: '%s': free name\n", name);
+ 		kfree_const(name);
+ 	}
++
++	kobject_put(parent);
+ }
+ 
+ #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+-- 
+2.25.1
+
 
 
