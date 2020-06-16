@@ -2,190 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4651FBF19
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF3E1FBF1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731043AbgFPTjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 15:39:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730301AbgFPTjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:39:44 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.162.131.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4CEF20810;
-        Tue, 16 Jun 2020 19:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592336383;
-        bh=U9o4JDxYO4HNf8D/oWmzZNEgJEBeZ4ggZ5aIabFuHsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JlZPYrjxwuNUPfBD7BnE1pGI/HjWxnIw4AKtYf7U3LvsTm0AIA3DSR5AKdYCDJhgP
-         iB+OHlswRoUXtmkAQvtq0FxN3xsu20kr78qzfpjgP3Ry1QWOsWlsZpyfxwM3jQe01z
-         4O6C3m0OgIfstvfu6AK8CJ/TW1KhmkPZJDnmjPVU=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0C94940AFD; Tue, 16 Jun 2020 16:39:41 -0300 (-03)
-Date:   Tue, 16 Jun 2020 16:39:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2] tools build: Check libasan and libubsan in
- Makefile.feature
-Message-ID: <20200616193941.GD6393@kernel.org>
-References: <1591164604-20806-1-git-send-email-yangtiezhu@loongson.cn>
- <20200603113228.GV31795@kernel.org>
- <7bbd7c0c-7e09-7eaf-5a54-602e70e36112@loongson.cn>
+        id S1731141AbgFPTkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730301AbgFPTku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:40:50 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D360CC061573;
+        Tue, 16 Jun 2020 12:40:50 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jlHRw-0007o7-3Z; Tue, 16 Jun 2020 21:40:48 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 619811C0095;
+        Tue, 16 Jun 2020 21:40:47 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 19:40:47 -0000
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/alternatives] x86/alternatives: Add pr_fmt() to debug macros
+Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200615175315.17301-1-bp@alien8.de>
+References: <20200615175315.17301-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bbd7c0c-7e09-7eaf-5a54-602e70e36112@loongson.cn>
-X-Url:  http://acmel.wordpress.com
+Message-ID: <159233644713.16989.15410679000166153913.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jun 15, 2020 at 10:20:10AM +0800, Tiezhu Yang escreveu:
-> On 06/03/2020 07:32 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Jun 03, 2020 at 02:10:04PM +0800, Tiezhu Yang escreveu:
-> > > When build perf with ASan or UBSan, if libasan or libubsan can not find,
-> > > the feature-glibc is 0 and there exists the following error log which is
-> > > wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
-> > > is also installed.
-> > > [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
-> > >    BUILD:   Doing 'make -j4' parallel build
-> > >    HOSTCC   fixdep.o
-> > >    HOSTLD   fixdep-in.o
-> > >    LINK     fixdep
-> > > <stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
-> > > <stdin>:1:0: warning: -fsanitize=address not supported for this target
-> > > Auto-detecting system features:
-> > > ...                         dwarf: [ OFF ]
-> > > ...            dwarf_getlocations: [ OFF ]
-> > > ...                         glibc: [ OFF ]
-> > > ...                          gtk2: [ OFF ]
-> > > ...                      libaudit: [ OFF ]
-> > > ...                        libbfd: [ OFF ]
-> > > ...                        libcap: [ OFF ]
-> > > ...                        libelf: [ OFF ]
-> > > ...                       libnuma: [ OFF ]
-> > > ...        numa_num_possible_cpus: [ OFF ]
-> > > ...                       libperl: [ OFF ]
-> > > ...                     libpython: [ OFF ]
-> > > ...                     libcrypto: [ OFF ]
-> > > ...                     libunwind: [ OFF ]
-> > > ...            libdw-dwarf-unwind: [ OFF ]
-> > > ...                          zlib: [ OFF ]
-> > > ...                          lzma: [ OFF ]
-> > > ...                     get_cpuid: [ OFF ]
-> > > ...                           bpf: [ OFF ]
-> > > ...                        libaio: [ OFF ]
-> > > ...                       libzstd: [ OFF ]
-> > > ...        disassembler-four-args: [ OFF ]
-> > > 
-> > > Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
-> > > Makefile.perf:224: recipe for target 'sub-make' failed
-> > > make[1]: *** [sub-make] Error 2
-> > > Makefile:69: recipe for target 'all' failed
-> > > make: *** [all] Error 2
-> > > [yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
-> > > /usr/include/gnu/libc-version.h
-> > > 
-> > > After install libasan and libubsan, the feature-glibc is 1 and the build
-> > > process is success, so the cause is related with libasan or libubsan, we
-> > > should check them and print an error log to reflect the reality.
-> > > 
-> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > > ---
-> > > 
-> > > v2:
-> > >    - Check libasan and libubsan in tools/build/Makefile.feature
-> > >    - Modify the patch subject
-> > > 
-> > >   tools/build/Makefile.feature | 7 +++++++
-> > >   1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > > index 3abd431..e147c17 100644
-> > > --- a/tools/build/Makefile.feature
-> > > +++ b/tools/build/Makefile.feature
-> > > @@ -252,3 +252,10 @@ ifeq ($(feature_verbose),1)
-> > >     $(foreach feat,$(TMP),$(call feature_print_status,$(feat),))
-> > >     $(info )
-> > >   endif
-> > > +
-> > > +ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
-> > > +  msg := $(error No libasan found, please install libasan);
-> > > +endif
-> > > +ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
-> > > +  msg := $(error No libubsan found, please install libubsan);
-> > > +endif
-> > Hey, we need to only do that if -fsanitize=address is in EXTRA_CFLAGS,
-> > right?
-> 
-> Sorry for the late reply.
-> Maybe -fsanitize=undefined is also needed.
-> Please reference tools/perf/Documentation/Build.txt
+The following commit has been merged into the x86/alternatives branch of tip:
 
-Can you send an updated patch then?
+Commit-ID:     1b2e335ebfa2243517e09f99653c78d1936cb6d2
+Gitweb:        https://git.kernel.org/tip/1b2e335ebfa2243517e09f99653c78d1936cb6d2
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Mon, 15 Jun 2020 19:49:46 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 16 Jun 2020 20:34:16 +02:00
+
+x86/alternatives: Add pr_fmt() to debug macros
+
+... in order to have debug output prefixed with the pr_fmt text "SMP
+alternatives:" which allows easy grepping:
+
+  $ dmesg | grep "SMP alternatives"
+  [    0.167783] SMP alternatives: alt table ffffffff8272c780, -> ffffffff8272fd6e
+  [    0.168620] SMP alternatives: feat: 3*32+16, old: (x86_64_start_kernel+0x37/0x73 \
+		  (ffffffff826093f7) len: 5), repl: (ffffffff8272fd6e, len: 5), pad: 0
+  [    0.170103] SMP alternatives: ffffffff826093f7: old_insn: e8 54 a8 da fe
+  [    0.171184] SMP alternatives: ffffffff8272fd6e: rpl_insn: e8 cd 3e c8 fe
+  ...
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200615175315.17301-1-bp@alien8.de
+---
+ arch/x86/kernel/alternative.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 8fd39ff..9e7dc37 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -53,7 +53,7 @@ __setup("noreplace-smp", setup_noreplace_smp);
+ #define DPRINTK(fmt, args...)						\
+ do {									\
+ 	if (debug_alternative)						\
+-		printk(KERN_DEBUG "%s: " fmt "\n", __func__, ##args);	\
++		printk(KERN_DEBUG pr_fmt(fmt) "\n", ##args);		\
+ } while (0)
  
-> > 
-> > I applied it and got:
-> > 
-> >    $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf
-> >    $ make O=/tmp/build/perf -C tools/perf install-bin
-> >    make: Entering directory '/home/acme/git/perf/tools/perf'
-> >      BUILD:   Doing 'make -j8' parallel build
-> >      HOSTCC   /tmp/build/perf/fixdep.o
-> >      HOSTLD   /tmp/build/perf/fixdep-in.o
-> >      LINK     /tmp/build/perf/fixdep
-> >    Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest version at 'tools/lib/bpf/hashmap.h'
-> >    diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
-> >    Warning: Kernel ABI header at 'tools/perf/util/hashmap.c' differs from latest version at 'tools/lib/bpf/hashmap.c'
-> >    diff -u tools/perf/util/hashmap.c tools/lib/bpf/hashmap.c
-> >    Auto-detecting system features:
-> >    ...                         dwarf: [ on  ]
-> >    ...            dwarf_getlocations: [ on  ]
-> >    ...                         glibc: [ on  ]
-> >    ...                          gtk2: [ on  ]
-> >    ...                        libbfd: [ on  ]
-> >    ...                        libcap: [ on  ]
-> >    ...                        libelf: [ on  ]
-> >    ...                       libnuma: [ on  ]
-> >    ...        numa_num_possible_cpus: [ on  ]
-> >    ...                       libperl: [ on  ]
-> >    ...                     libpython: [ on  ]
-> >    ...                     libcrypto: [ on  ]
-> >    ...                     libunwind: [ on  ]
-> >    ...            libdw-dwarf-unwind: [ on  ]
-> >    ...                          zlib: [ on  ]
-> >    ...                          lzma: [ on  ]
-> >    ...                     get_cpuid: [ on  ]
-> >    ...                           bpf: [ on  ]
-> >    ...                        libaio: [ on  ]
-> >    ...                       libzstd: [ on  ]
-> >    ...        disassembler-four-args: [ on  ]
-> >    /home/acme/git/perf/tools/build/Makefile.feature:255: *** No libasan found, please install libasan.  Stop.
-> >    make[1]: *** [Makefile.perf:231: sub-make] Error 2
-> >    make: *** [Makefile:110: install-bin] Error 2
-> >    make: Leaving directory '/home/acme/git/perf/tools/perf'
-> >    $
-> > 
-> > Something enclosed in:
-> > 
-> > 	ifneq ($(filter s% -fsanitize=address%,$(EXTRA_CFLAGS),),)
-> > 
-> > Right Jiri?
-> > 
-> > - Arnaldo
-> 
-
--- 
-
-- Arnaldo
+ #define DUMP_BYTES(buf, len, fmt, args...)				\
+@@ -64,7 +64,7 @@ do {									\
+ 		if (!(len))						\
+ 			break;						\
+ 									\
+-		printk(KERN_DEBUG fmt, ##args);				\
++		printk(KERN_DEBUG pr_fmt(fmt), ##args);			\
+ 		for (j = 0; j < (len) - 1; j++)				\
+ 			printk(KERN_CONT "%02hhx ", buf[j]);		\
+ 		printk(KERN_CONT "%02hhx\n", buf[j]);			\
