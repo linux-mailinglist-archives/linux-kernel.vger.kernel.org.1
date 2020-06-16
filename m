@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4831FB666
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B2F1FB640
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgFPPgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730070AbgFPPgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:36:49 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A81D20B1F;
-        Tue, 16 Jun 2020 15:36:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321808;
-        bh=eZQl0S2K3ZTzZ0LLyydp0Siqt2ix5XFxW31Fv2OTH6g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+RuCHmybubuyMxAGbba8ROwr68xdzaJNjxxCjehT3p1bCQvSCcCUFEn0u8tXTNEa
-         oxg9TwHug8aMHlYHXm+uTQfS9a4Nz0k6ffVmNvkyAXefTXzdm7G12m2ztwfb1PgTGH
-         bblYlBkkW4TwajxMQJ66LVyMlnvRxZqLfqlNCa68=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/134] s390/pci: Log new handle in clp_disable_fh()
-Date:   Tue, 16 Jun 2020 17:33:28 +0200
-Message-Id: <20200616153101.907591519@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729220AbgFPPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:33:57 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:45313 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728448AbgFPPd4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:33:56 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GFD1Et005397;
+        Tue, 16 Jun 2020 17:33:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=ywECLfS8RJnUvCXHRDqenH4W2P5mGI7YRrQh1zdXSqs=;
+ b=SKbzkvZ8Sh8AH5bW88BqONOypCrZFZCdlCxIv5kAzNuKFlU+HOUcNMI/OqCgpZraSC6Y
+ 6/jibWFEnMfpx+LCOJD2IEtbKiNRFSDWq13MmFX0TdF1aPS/lPX2/gAzvc6JXjTXkYjF
+ cLbYGA/zbJI7uw3SrKaYGTMycWh9OObAYos44B+jqFs1RZW9pJJoqRPyrfV+M+5jGujZ
+ sxeKePJ8Mi/VK5O2MY+oHQ//6Ey9NhhBC2sKNYUQhQjJ0GdrAe78wvcYNUbVkIZyXbjm
+ Vg8fQbwcA/ypu5Hl9oW+qtwrMlOHRpcZZ+EyuA2kkFQJdJZwxXbH5sZBZTeG+RrryVo2 pw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31mmjw05cy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Jun 2020 17:33:41 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 075B010002A;
+        Tue, 16 Jun 2020 17:33:41 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node3.st.com [10.75.127.18])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E90032C890A;
+        Tue, 16 Jun 2020 17:33:40 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG6NODE3.st.com (10.75.127.18)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 16 Jun 2020 17:33:40
+ +0200
+From:   Patrick Delaunay <patrick.delaunay@st.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Patrick Delaunay <patrick.delaunay@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH] ARM: dts: stm32: cosmetic update in stm32mp15-pinctrl.dtsi
+Date:   Tue, 16 Jun 2020 17:33:29 +0200
+Message-ID: <20200616153329.15148-1-patrick.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG6NODE3.st.com
+ (10.75.127.18)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <ptesarik@suse.com>
+Use tabs where possible and remove multiple blanks lines.
 
-[ Upstream commit e1750a3d9abbea2ece29cac8dc5a6f5bc19c1492 ]
-
-After disabling a function, the original handle is logged instead of
-the disabled handle.
-
-Link: https://lkml.kernel.org/r/20200522183922.5253-1-ptesarik@suse.com
-Fixes: 17cdec960cf7 ("s390/pci: Recover handle in clp_set_pci_fn()")
-Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
-Signed-off-by: Petr Tesarik <ptesarik@suse.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Patrick Delaunay <patrick.delaunay@st.com>
 ---
- arch/s390/pci/pci_clp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-index 281e0dd4c614..20e093f86329 100644
---- a/arch/s390/pci/pci_clp.c
-+++ b/arch/s390/pci/pci_clp.c
-@@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+index 7eb858732d6d..7d351757f2f8 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -210,8 +210,8 @@
+ 				 <STM32_PINMUX('E', 2, ANALOG)>, /* ETH_RGMII_TXD3 */
+ 				 <STM32_PINMUX('B', 11, ANALOG)>, /* ETH_RGMII_TX_CTL */
+ 				 <STM32_PINMUX('C', 1, ANALOG)>, /* ETH_MDC */
+-			         <STM32_PINMUX('A', 2, ANALOG)>, /* ETH_MDIO */
+-			         <STM32_PINMUX('C', 4, ANALOG)>, /* ETH_RGMII_RXD0 */
++				 <STM32_PINMUX('A', 2, ANALOG)>, /* ETH_MDIO */
++				 <STM32_PINMUX('C', 4, ANALOG)>, /* ETH_RGMII_RXD0 */
+ 				 <STM32_PINMUX('C', 5, ANALOG)>, /* ETH_RGMII_RXD1 */
+ 				 <STM32_PINMUX('H', 6, ANALOG)>, /* ETH_RGMII_RXD2 */
+ 				 <STM32_PINMUX('H', 7, ANALOG)>, /* ETH_RGMII_RXD3 */
+@@ -453,7 +453,7 @@
+ 	i2c5_pins_b: i2c5-1 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 0, AF4)>, /* I2C5_SCL */
+-			         <STM32_PINMUX('D', 1, AF4)>; /* I2C5_SDA */
++				 <STM32_PINMUX('D', 1, AF4)>; /* I2C5_SDA */
+ 			bias-disable;
+ 			drive-open-drain;
+ 			slew-rate = <0>;
+@@ -463,7 +463,7 @@
+ 	i2c5_sleep_pins_b: i2c5-sleep-1 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 0, ANALOG)>, /* I2C5_SCL */
+-			         <STM32_PINMUX('D', 1, ANALOG)>; /* I2C5_SDA */
++				 <STM32_PINMUX('D', 1, ANALOG)>; /* I2C5_SDA */
+ 		};
+ 	};
  
- int clp_disable_fh(struct zpci_dev *zdev)
- {
--	u32 fh = zdev->fh;
- 	int rc;
+@@ -1072,7 +1072,6 @@
+ 		};
+ 	};
  
- 	if (!zdev_enabled(zdev))
- 		return 0;
- 
- 	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
--	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
-+	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
- 	return rc;
- }
- 
+-
+ 	sai2a_pins_b: sai2a-1 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('I', 6, AF10)>,	/* SAI2_SD_A */
 -- 
-2.25.1
-
-
+2.17.1
 
