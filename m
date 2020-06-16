@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A301FAA84
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F741FAA86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 09:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgFPHz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 03:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S1726912AbgFPH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 03:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbgFPHz4 (ORCPT
+        with ESMTP id S1725896AbgFPHz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 03:55:56 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9A8C03E96A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 00:55:56 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id u8so1062459pje.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 00:55:56 -0700 (PDT)
+        Tue, 16 Jun 2020 03:55:57 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7D8C05BD43
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 00:55:57 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so2623478plo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 00:55:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3w3acXY0ruvQ2cOAk5Y6lKlS5LzTqXqZJuB6w0EA294=;
-        b=Cp8t/bjOY0qFMLYTzt16FoouVp9eINWmU8mmUpHX+AsFrDKIXkcT19z0suqBLghibO
-         OsWPTbNQ78wf/cMk9oUek30lb6kngbCTL91Ip4B4OBjsGHxi5xA/ijlrqrQlNLoGn/bn
-         l/7vyPUklqJG1Baun2pVxMHTasoW42ICl3Es6lVrZb83u6aebgtl+kJzIuZw8wkSuD5y
-         eWg48lc4rfg+C2iE2LQQqoBLqeCS++0+HVWVXWygJpkK1vDfoep1tzRrEdYp2cVb/jvQ
-         JC/cob986QCwZA/FpwkUZqZkbS85NacBJV0l0OpFKfn0vQWwu3XC3bjPcGWjDJb+aU5E
-         KZMw==
+        bh=7Pc3zQ9D2av6U7xF9LkytuVQ3TEKU9mvAt7OV64zjjY=;
+        b=HW8gH2+TWNb0LHKZx/L2PoIBSnyiXdbLTjOzJ/095pH2++lNTMOONJ7xnnd0H+jHXW
+         cy2ds/KJlPcq6GvcObZ0FRsBjmMtjKWL04vJrlL98/z3To2opDDDxNgkBGN8RuF7Ae3x
+         26fr4H4QJtPjynRAQ+ouigUzMUv/iRlDT0tVGf/ctsZen6y3c52pZY+T9a7+kTgc7hfX
+         +JWpN6PEiFPBEQX8/EqL6YsmcotVfmmhSi+4UuWoXiZEhIsClFPnNzka2k7W8rVdpxFy
+         p/t6p2eVOdaj9vQ12Q81vUnfC+XghwjgAFfIukI5h4ap265404FgcNAAVN7Y1VA0acZ9
+         uP9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=3w3acXY0ruvQ2cOAk5Y6lKlS5LzTqXqZJuB6w0EA294=;
-        b=awoV5ovljTrTIw/eKb059iZqhWStC2E81kPhGILyqTct543fDw/rNo3r9si3LUWKnz
-         TTGzPMCVWm6o48fx+9uhm53VUgi5ZdVt66pbzf4UfpVEEST/+WY4EUbn0KLJ0DC71tS8
-         QKMMD3cqCf9LXhZF6ooLfVU8aSqNZZH6jnjFkPGY5varfTaAIBtZhqayXTy4UJfY9OPf
-         7o9ne+Yy69mhC8LbWfaxKhzAwBDESzkvrVNkBadUzQ7/sNBb7VL0ga0B4CsarMWj8kfZ
-         Lo3yIx6XKHNpQzEXLHSYTFKyuq2Ylz4pYM4+nu2U7EqPN9oGYeNJH03wk5Hre8mC+UAC
-         ytog==
-X-Gm-Message-State: AOAM530zmowY6krtW+uzjwvhS2YTLSjAA3CURX2Oigcr1afI0vvpvD5F
-        1ySw8hZ0Oz2ybXqMiTC9low=
-X-Google-Smtp-Source: ABdhPJxhqk6SDQGJkU/TNYIJx17AQr2syQ5Y+J3NJhmvTDGSm/ZNzAFmXitcdYEV3AsxC8vPnrV8xw==
-X-Received: by 2002:a17:90a:356a:: with SMTP id q97mr1861201pjb.110.1592294155840;
-        Tue, 16 Jun 2020 00:55:55 -0700 (PDT)
+        bh=7Pc3zQ9D2av6U7xF9LkytuVQ3TEKU9mvAt7OV64zjjY=;
+        b=uEMZxtJBcYUW9En2yAhTRlij65QkwJMXn+sJOYxe+0IW5qONbYJOjSWYitTWr2AaeI
+         6vJGRGMTnorm3mfVYDXYNiuUox8WsD6pb34VUiHp4dPDFff6sLPLr3k/bda1oRXhQ9ec
+         JKy8iZ9hwlDsPciDQXNVHt4TrPo3pLlGUMdtIn/IiiT9jV6wcuem4NlTp6RI6ZuIBC3S
+         DhfvCj3RMvQTrI0Fib0UF/ntF+OAgQ09+csydBTBZdlLjFamNSAHAOB3xyOUb1VgJU6n
+         laZxumsgV2+VrE4BpPPzYrSDhOa5ZqKScGyXfkRdbMH9OoPEQ8l8oBN3jUDjRJSH2W3L
+         wGGQ==
+X-Gm-Message-State: AOAM53361prmP1BKGGzZbhZXBGC28iySFXJRKG2/jaszKoP8jHQwu5bq
+        KnxPAkBdJkBOnA6vrNmyQ+U=
+X-Google-Smtp-Source: ABdhPJysK/fjxfmRiTrNZmw9EgjGa6tFHoxvuUSFZZaxSjSNA9SxfwRSCAcSao3vO+Osm947ZTQLzw==
+X-Received: by 2002:a17:90b:3448:: with SMTP id lj8mr1567308pjb.163.1592294157009;
+        Tue, 16 Jun 2020 00:55:57 -0700 (PDT)
 Received: from laptop.hsd1.wa.comcast.net ([2601:600:817f:a132:df3e:521d:99d5:710d])
-        by smtp.gmail.com with ESMTPSA id g6sm16168984pfb.164.2020.06.16.00.55.55
+        by smtp.gmail.com with ESMTPSA id g6sm16168984pfb.164.2020.06.16.00.55.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 00:55:55 -0700 (PDT)
+        Tue, 16 Jun 2020 00:55:56 -0700 (PDT)
 From:   Andrei Vagin <avagin@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -57,9 +57,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Dmitry Safonov <dima@arista.com>,
         Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 1/6] arm64/vdso: use the fault callback to map vvar pages
-Date:   Tue, 16 Jun 2020 00:55:40 -0700
-Message-Id: <20200616075545.312684-2-avagin@gmail.com>
+Subject: [PATCH 2/6] arm64/vdso: Zap vvar pages when switching to a time namespace
+Date:   Tue, 16 Jun 2020 00:55:41 -0700
+Message-Id: <20200616075545.312684-3-avagin@gmail.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20200616075545.312684-1-avagin@gmail.com>
 References: <20200616075545.312684-1-avagin@gmail.com>
@@ -68,86 +68,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is required to support time namespaces where a time namespace data
-page is different for each namespace.
+The VVAR page layout depends on whether a task belongs to the root or
+non-root time namespace. Whenever a task changes its namespace, the VVAR
+page tables are cleared and then they will be re-faulted with a
+corresponding layout.
 
 Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Dmitry Safonov <dima@arista.com>
 Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- arch/arm64/kernel/vdso.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ arch/arm64/kernel/vdso.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index 4e016574bd91..b0aec4e8c9b4 100644
+index b0aec4e8c9b4..df4bb736d28a 100644
 --- a/arch/arm64/kernel/vdso.c
 +++ b/arch/arm64/kernel/vdso.c
-@@ -108,28 +108,32 @@ static int __vdso_init(enum vdso_abi abi)
- 			PAGE_SHIFT;
- 
- 	/* Allocate the vDSO pagelist, plus a page for the data. */
--	vdso_pagelist = kcalloc(vdso_info[abi].vdso_pages + 1,
-+	vdso_pagelist = kcalloc(vdso_info[abi].vdso_pages,
- 				sizeof(struct page *),
- 				GFP_KERNEL);
- 	if (vdso_pagelist == NULL)
- 		return -ENOMEM;
- 
--	/* Grab the vDSO data page. */
--	vdso_pagelist[0] = phys_to_page(__pa_symbol(vdso_data));
--
--
- 	/* Grab the vDSO code pages. */
- 	pfn = sym_to_pfn(vdso_info[abi].vdso_code_start);
- 
- 	for (i = 0; i < vdso_info[abi].vdso_pages; i++)
--		vdso_pagelist[i + 1] = pfn_to_page(pfn + i);
-+		vdso_pagelist[i] = pfn_to_page(pfn + i);
- 
--	vdso_info[abi].dm->pages = &vdso_pagelist[0];
--	vdso_info[abi].cm->pages = &vdso_pagelist[1];
-+	vdso_info[abi].cm->pages = vdso_pagelist;
- 
+@@ -125,6 +125,38 @@ static int __vdso_init(enum vdso_abi abi)
  	return 0;
  }
  
-+static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
-+			     struct vm_area_struct *vma, struct vm_fault *vmf)
++#ifdef CONFIG_TIME_NS
++/*
++ * The vvar page layout depends on whether a task belongs to the root or
++ * non-root time namespace. Whenever a task changes its namespace, the VVAR
++ * page tables are cleared and then they will re-faulted with a
++ * corresponding layout.
++ * See also the comment near timens_setup_vdso_data() for details.
++ */
++int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
 +{
-+	if (vmf->pgoff == 0)
-+		return vmf_insert_pfn(vma, vmf->address,
-+				sym_to_pfn(vdso_data));
-+	return VM_FAULT_SIGBUS;
-+}
++	struct mm_struct *mm = task->mm;
++	struct vm_area_struct *vma;
 +
- static int __setup_additional_pages(enum vdso_abi abi,
- 				    struct mm_struct *mm,
- 				    struct linux_binprm *bprm,
-@@ -150,7 +154,7 @@ static int __setup_additional_pages(enum vdso_abi abi,
- 	}
- 
- 	ret = _install_special_mapping(mm, vdso_base, PAGE_SIZE,
--				       VM_READ|VM_MAYREAD,
-+				       VM_READ|VM_MAYREAD|VM_PFNMAP,
- 				       vdso_info[abi].dm);
- 	if (IS_ERR(ret))
- 		goto up_fail;
-@@ -209,6 +213,7 @@ static struct vm_special_mapping aarch32_vdso_maps[] = {
- #ifdef CONFIG_COMPAT_VDSO
- 	[AA32_MAP_VVAR] = {
- 		.name = "[vvar]",
-+		.fault = vvar_fault,
- 	},
- 	[AA32_MAP_VDSO] = {
- 		.name = "[vdso]",
-@@ -376,6 +381,7 @@ enum aarch64_map {
- static struct vm_special_mapping aarch64_vdso_maps[] __ro_after_init = {
- 	[AA64_MAP_VVAR] = {
- 		.name	= "[vvar]",
-+		.fault = vvar_fault,
- 	},
- 	[AA64_MAP_VDSO] = {
- 		.name	= "[vdso]",
++	if (mmap_write_lock_killable(mm))
++		return -EINTR;
++
++	for (vma = mm->mmap; vma; vma = vma->vm_next) {
++		unsigned long size = vma->vm_end - vma->vm_start;
++
++		if (vma_is_special_mapping(vma, vdso_info[VDSO_ABI_AA64].dm))
++			zap_page_range(vma, vma->vm_start, size);
++#ifdef CONFIG_COMPAT_VDSO
++		if (vma_is_special_mapping(vma, vdso_info[VDSO_ABI_AA32].dm))
++			zap_page_range(vma, vma->vm_start, size);
++#endif
++	}
++
++	mmap_write_unlock(mm);
++	return 0;
++}
++#endif
++
+ static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
+ 			     struct vm_area_struct *vma, struct vm_fault *vmf)
+ {
 -- 
 2.24.1
 
