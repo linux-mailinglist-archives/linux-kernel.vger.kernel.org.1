@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637511FB775
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B264E1FB6C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbgFPPqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:46:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38208 "EHLO mail.kernel.org"
+        id S1731106AbgFPPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730270AbgFPPqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:16 -0400
+        id S1730247AbgFPPkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:40:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9387B2098B;
-        Tue, 16 Jun 2020 15:46:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECE1B21475;
+        Tue, 16 Jun 2020 15:40:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322376;
-        bh=C+AlfpWbyak2yWW6+lQ1jB1oFqNZLgmBcfOSY7J/CkA=;
+        s=default; t=1592322003;
+        bh=YpiDX//DCZyndsHiTNDCXemrMW/Ng3bYPltKA4HZ0As=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dzdu/9WfDhYa/7Z9pLESRBz8kJAK2Mnfni/QpWB39S+iu42OvrePcB/WzthF82R4J
-         7W/vXakFQksVTLI4qDmjzy6adeezgGRpjyuJ5/fuesGfQ7qS1XK327yTmjJ+XkmWoD
-         RkWDfIHfumgzlcXVUzsnTczGEIwMr2TO0ydJGpsM=
+        b=tmFkT8IqM5xcIxKS0RUm1FJsyQChqZsDsYh6TPKLISCdEtETbHt8PPfxLkQMStgVj
+         em63ev9P89wpDZV7c16B4caDLG8AGW8WSNW93VN8aYxsstOntS+b9ZP7/ZGpmZUtDW
+         65qsvfy5APIiI5Gkt/Z+T80cNQKvhzURSGv1GEoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.7 107/163] net/mlx5: Disable reload while removing the device
-Date:   Tue, 16 Jun 2020 17:34:41 +0200
-Message-Id: <20200616153111.941332665@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.4 098/134] cpufreq: Fix up cpufreq_boost_set_sw()
+Date:   Tue, 16 Jun 2020 17:34:42 +0200
+Message-Id: <20200616153105.476609204@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 60904cd349abc98cb888fc28d1ca55a8e2cf87b3 ]
+commit 552abb884e97d26589964e5a8c7e736f852f95f0 upstream.
 
-While unregistration is in progress, user might be reloading the
-interface.
-This can race with unregistration in below flow which uses the
-resources which are getting disabled by reload flow.
+After commit 18c49926c4bf ("cpufreq: Add QoS requests for userspace
+constraints") the return value of freq_qos_update_request(), that can
+be 1, passed by cpufreq_boost_set_sw() to its caller sometimes
+confuses the latter, which only expects to see 0 or negative error
+codes, so notice that cpufreq_boost_set_sw() can return an error code
+(which should not be -EINVAL for that matter) as soon as the first
+policy without a frequency table is found (because either all policies
+have a frequency table or none of them have it) and rework it to meet
+its caller's expectations.
 
-Hence, disable the devlink reloading first when removing the device.
-
-     CPU0                                   CPU1
-     ----                                   ----
-local_pci_remove()                  devlink_mutex
-  remove_one()                       devlink_nl_cmd_reload()
-    mlx5_unregister_device()           devlink_reload()
-                                       ops->reload_down()
-                                         mlx5_unload_one()
-
-Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: 18c49926c4bf ("cpufreq: Add QoS requests for userspace constraints")
+Reported-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/devlink.c |    2 --
- drivers/net/ethernet/mellanox/mlx5/core/main.c    |    2 ++
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -283,7 +283,6 @@ int mlx5_devlink_register(struct devlink
- 		goto params_reg_err;
- 	mlx5_devlink_set_params_init_values(devlink);
- 	devlink_params_publish(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- 
- params_reg_err:
-@@ -293,7 +292,6 @@ params_reg_err:
- 
- void mlx5_devlink_unregister(struct devlink *devlink)
+---
+ drivers/cpufreq/cpufreq.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2507,26 +2507,27 @@ EXPORT_SYMBOL_GPL(cpufreq_update_limits)
+ static int cpufreq_boost_set_sw(int state)
  {
--	devlink_reload_disable(devlink);
- 	devlink_params_unregister(devlink, mlx5_devlink_params,
- 				  ARRAY_SIZE(mlx5_devlink_params));
- 	devlink_unregister(devlink);
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1373,6 +1373,7 @@ static int init_one(struct pci_dev *pdev
- 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
+ 	struct cpufreq_policy *policy;
+-	int ret = -EINVAL;
  
- 	pci_save_state(pdev);
-+	devlink_reload_enable(devlink);
- 	return 0;
+ 	for_each_active_policy(policy) {
++		int ret;
++
+ 		if (!policy->freq_table)
+-			continue;
++			return -ENXIO;
  
- err_load_one:
-@@ -1390,6 +1391,7 @@ static void remove_one(struct pci_dev *p
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	struct devlink *devlink = priv_to_devlink(dev);
+ 		ret = cpufreq_frequency_table_cpuinfo(policy,
+ 						      policy->freq_table);
+ 		if (ret) {
+ 			pr_err("%s: Policy frequency update failed\n",
+ 			       __func__);
+-			break;
++			return ret;
+ 		}
  
-+	devlink_reload_disable(devlink);
- 	mlx5_crdump_disable(dev);
- 	mlx5_devlink_unregister(devlink);
+ 		ret = freq_qos_update_request(policy->max_freq_req, policy->max);
+ 		if (ret < 0)
+-			break;
++			return ret;
+ 	}
  
+-	return ret;
++	return 0;
+ }
+ 
+ int cpufreq_boost_trigger_state(int state)
 
 
