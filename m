@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755531FB328
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FF21FB35F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgFPOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:00:35 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:46763 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgFPOAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:00:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592316034; x=1623852034;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=unQ0smonLVJdukLZdKp67AJLTTij5kY3nS4sy5MJHsY=;
-  b=x+ENPzMLtnQyqMWtu8KZVLE2hHJ+NmLbOuZ4nr/Ld0qS2W1ToxAJPS5f
-   qnsJTZXdkrzHgmWVSceIZIXXU8M3IvkExg0exy53A7G+doRtjn+6D9oCs
-   xnQCcadIyxtbjbO6oPHl1vKphjY/9YaDh5FRMPjMyYt98iRnKGhEn8SWE
-   1s6K1bKEwrgATbjCI7wkhiRcoOyA+fXbDo+CwBn7l3xDO/dmraF9c9vJM
-   LLCDe489LSOKyzSfnf4nSBHPpsQcqCaFGRbjLSSe/GZMS1nX8Kpih/o4L
-   8QUnMkHJfIa7zL0wfA/eVeAiB3/6wOTnWgPxKCismbzhWkIsoUhHr2sdl
-   Q==;
-IronPort-SDR: YS7CfaPxcZ7Eqli+xu8y6DhdDKr/sFi6fKYNs7GCDf/f/ArlySlb6tgXpUTH0LMNdPtH1LN6rr
- ZcR8Z1QXNnbS8VAgRP/CUdO+GpPDUk5E7bD/+FXDwaaDeyos8UFc5OJWyfq+3AFwvUeAIVbRyT
- jQT1/BwXzj120JPWUZhvZi2E5uybmrVP0KQb9fjPIuUAA3nWekIlUdR+D4esATpchRcv0vDdJV
- TB/OpHL+Nq+ssG4wNpc2bqWSiQjUFQ8jtJumesalNdZzmcjJbdAm1SoE8gFQyD8Ux/q+YqU82u
- hZc=
-X-IronPort-AV: E=Sophos;i="5.73,518,1583218800"; 
-   d="scan'208";a="79657991"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Jun 2020 07:00:33 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 16 Jun 2020 07:00:33 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 16 Jun 2020 07:00:26 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        id S1729077AbgFPOEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:04:00 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6343 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728997AbgFPOD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:03:59 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9F381D7136FA4F2B2E33;
+        Tue, 16 Jun 2020 22:03:57 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 16 Jun 2020 22:03:50 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>
+CC:     <joro@8bytes.org>, <trivial@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v3 0/3] mmc: Adding support for Microchip Sparx5 SoC
-Date:   Tue, 16 Jun 2020 16:00:24 +0200
-Message-ID: <20200616140027.4949-1-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <maz@kernel.org>,
+        "John Garry" <john.garry@huawei.com>
+Subject: [PATCH RFC v2 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+Date:   Tue, 16 Jun 2020 21:59:49 +0800
+Message-ID: <1592315993-164290-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an add-on series to the main SoC Sparx5 series
-(Message-ID: <20200615133242.24911-1-lars.povlsen@microchip.com>
+As mentioned in [0], the CPU may consume many cycles processing
+arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
+get space on the queue takes approx 25% of the cycles for this function.
 
-It adds eMMC support for Sparx5, by adding a driver for the SoC SDHCI
-controller, DT configuration and DT binding documentation.
+This series removes that cmpxchg().
 
-Changes in v3:
-- Add dt-bindings for property "microchip,clock-delay"
-- Enforce "microchip,clock-delay" valid range in driver
-- Removed a noisy pr_debug() in sdhci_sparx5_adma_write_desc()
+For my NVMe test with 3x NVMe SSDs, I'm getting a ~24% throughput
+increase:
+Before: 1310 IOPs
+After: 1630 IOPs
 
-Changes in v2:
-- Changes in driver as per review comments
- - Drop debug code
- - Drop sysfs code
- - use usleep_range()
- - use mmc_hostname() in pr_debug()
- - Remove deactivated code
- - Minor cosmetics
+I also have a test harness to check the rate of DMA map+unmaps we can
+achieve:
 
-Lars Povlsen (3):
-  dt-bindings: mmc: Add Sparx5 SDHCI controller bindings
-  sdhci: sparx5: Add Sparx5 SoC eMMC driver
-  arm64: dts: sparx5: Add Sparx5 eMMC support
+CPU count	32	64	128
+Before:		63187	19418	10169
+After:		93287	44789	15862
 
- .../mmc/microchip,dw-sparx5-sdhci.yaml        |  65 +++++
- arch/arm64/boot/dts/microchip/sparx5.dtsi     |  24 ++
- .../boot/dts/microchip/sparx5_pcb125.dts      |  23 ++
- .../boot/dts/microchip/sparx5_pcb134_emmc.dts |  23 ++
- .../boot/dts/microchip/sparx5_pcb135_emmc.dts |  23 ++
- drivers/mmc/host/Kconfig                      |  13 +
- drivers/mmc/host/Makefile                     |   1 +
- drivers/mmc/host/sdhci-of-sparx5.c            | 269 ++++++++++++++++++
- 8 files changed, 441 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mmc/microchip,dw-sparx5-sdhci.yaml
- create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
+(unit is map+unmaps per CPU per second)
+
+There's no specific problem that I know of with this series, as previous
+issues should now be fixed - but I'm a bit nervous about how we deal with
+the queue being full and wrapping.
+
+And I want to test more.
+
+Thanks
+
+[0] https://lore.kernel.org/linux-iommu/B926444035E5E2439431908E3842AFD24B86DB@DGGEMI525-MBS.china.huawei.com/T/#ma02e301c38c3e94b7725e685757c27e39c7cbde3
+
+John Garry (4):
+  iommu/arm-smmu-v3: Fix trivial typo
+  iommu/arm-smmu-v3: Calculate bits for prod and owner
+  iommu/arm-smmu-v3: Always issue a CMD_SYNC per batch
+  iommu/arm-smmu-v3: Remove cmpxchg() in arm_smmu_cmdq_issue_cmdlist()
+
+ drivers/iommu/arm-smmu-v3.c | 210 ++++++++++++++++++++++--------------
+ 1 file changed, 131 insertions(+), 79 deletions(-)
 
 -- 
-2.27.0
+2.26.2
 
