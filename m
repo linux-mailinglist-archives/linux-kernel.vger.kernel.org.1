@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC751FBA46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA0D1FBB3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731972AbgFPPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
+        id S1731509AbgFPQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:17:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731968AbgFPPoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:44:19 -0400
+        id S1730839AbgFPPjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2230214DB;
-        Tue, 16 Jun 2020 15:44:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D07C20B1F;
+        Tue, 16 Jun 2020 15:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322259;
-        bh=AK6OqC3xja+xnPhxSEPb+ZQP/swy05uCs5cvUpjqHzc=;
+        s=default; t=1592321946;
+        bh=+eTaB3DunXf0dfxF8RjyOnRTQDPp0qInF/gYdu3xS0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DZj01Tsb3/ILKpiKzxJ4dzWVgIIa1p8ORa+bV892qrvwNpAq7ZOBjaYh84auFwhK6
-         DKxd0mHtBMuhkNe8LLins1ZZ+oarXCbs6XgJsN0oylKxF6j7l8v9GWrlAXC3gK9r1t
-         vUadX8Jaj0WC+ZEOCi3mpl4xJtw2SwUDghu6OTJ0=
+        b=liW+AVVQ4mOp0L/+eG/LLY3DCnGRGuzQXbGQJt2ixne1gC1lxOZUB+iRVuOTJu/F5
+         ggmLg4tPzI9gxtrHyIS8VWEIm1Rmbl6zAnjP6xhuIbFuEfyR7PJGfGlnWPdFP06XL2
+         OCJODTHedelt5xGIOii1WheXnx7eCrtOPfMF/5OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 055/163] io_uring: use kvfree() in io_sqe_buffer_register()
-Date:   Tue, 16 Jun 2020 17:33:49 +0200
-Message-Id: <20200616153109.480954030@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Franciosi <felipe@nutanix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 046/134] KVM: x86: respect singlestep when emulating instruction
+Date:   Tue, 16 Jun 2020 17:33:50 +0200
+Message-Id: <20200616153102.997527401@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Efremov <efremov@linux.com>
+From: Felipe Franciosi <felipe@nutanix.com>
 
-commit a8c73c1a614f6da6c0b04c393f87447e28cb6de4 upstream.
+commit 384dea1c9183880be183cfaae161d99aafd16df6 upstream.
 
-Use kvfree() to free the pages and vmas, since they are allocated by
-kvmalloc_array() in a loop.
+When userspace configures KVM_GUESTDBG_SINGLESTEP, KVM will manage the
+presence of X86_EFLAGS_TF via kvm_set/get_rflags on vcpus. The actual
+rflag bit is therefore hidden from callers.
 
-Fixes: d4ef647510b1 ("io_uring: avoid page allocation warnings")
-Signed-off-by: Denis Efremov <efremov@linux.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+That includes init_emulate_ctxt() which uses the value returned from
+kvm_get_flags() to set ctxt->tf. As a result, x86_emulate_instruction()
+will skip a single step, leaving singlestep_rip stale and not returning
+to userspace.
+
+This resolves the issue by observing the vcpu guest_debug configuration
+alongside ctxt->tf in x86_emulate_instruction(), performing the single
+step if set.
+
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200605093203.40087-1-efremov@linux.com
+Signed-off-by: Felipe Franciosi <felipe@nutanix.com>
+Message-Id: <20200519081048.8204-1-felipe@nutanix.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kvm/x86.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7093,8 +7093,8 @@ static int io_sqe_buffer_register(struct
- 
- 		ret = 0;
- 		if (!pages || nr_pages > got_pages) {
--			kfree(vmas);
--			kfree(pages);
-+			kvfree(vmas);
-+			kvfree(pages);
- 			pages = kvmalloc_array(nr_pages, sizeof(struct page *),
- 						GFP_KERNEL);
- 			vmas = kvmalloc_array(nr_pages,
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6833,7 +6833,7 @@ restart:
+ 		if (!ctxt->have_exception ||
+ 		    exception_type(ctxt->exception.vector) == EXCPT_TRAP) {
+ 			kvm_rip_write(vcpu, ctxt->eip);
+-			if (r && ctxt->tf)
++			if (r && (ctxt->tf || (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)))
+ 				r = kvm_vcpu_do_singlestep(vcpu);
+ 			__kvm_set_rflags(vcpu, ctxt->eflags);
+ 		}
 
 
