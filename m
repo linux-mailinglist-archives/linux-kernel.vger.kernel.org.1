@@ -2,140 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491C31FBD00
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D27F1FBD0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730590AbgFPRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 13:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728271AbgFPRbT (ORCPT
+        id S1731115AbgFPRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 13:32:58 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:40860 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730978AbgFPRc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 13:31:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1277BC06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 10:31:19 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s135so8852303pgs.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 10:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JFUWo+MiY48XJWPPKzfAjnu7zovw2GjrlHd1LDatkUI=;
-        b=KdHZt9Na9H2BvVy4TnqAAM6MCsluX1/DOyZOojU/LueEC1VqedufyiYouMxUonuloa
-         qCxaZeN2wznLC5bjslm2E85yu/5eg6LRBqJFk98+T6gpYG6Va5hU2sK5Txf+yUeCZiOx
-         knmvHOxbRkTaU53TifRPzsiJwHHmw4aWT2y2g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=JFUWo+MiY48XJWPPKzfAjnu7zovw2GjrlHd1LDatkUI=;
-        b=rkGtACNjKHj1BZ4qFg3dTTMtO32bMF3MbqRpxdusihp0unq/8pRCDW1PaWXReETyiB
-         kwY1U4lLORg6ESU25hk/Rx+HLpHJZMf6iAZELw17Ub9zkaPbHZIOwaMTScXceWtKwaKh
-         KuJ303Hi//CJYCiPXxCn8AFeAdOS7eB61x4bHafg08Fz+q9zVQ15t5I2be/1v2ozysLB
-         D7RegIMZE+6PHDqS05YP7Lighd6FAF+Jyt9hRaxP5a6K2GSatt0CDZT3PB2BURkq3trb
-         usHJpO8ABabetxiiQ8ebMwfq4ru8RC3ikbBthdbzGPnxXr5YYH5+roV3KerhDCb1+Vat
-         p7yQ==
-X-Gm-Message-State: AOAM533bh9QgRC3zeTSUKIyDE+GFbiPAAjm+n5bgvB+TxECrv6dya02J
-        DaEXUe1LepzendVYJVGNF4/9+g==
-X-Google-Smtp-Source: ABdhPJzT7jGgfpqMJ9IgTO3dypfg2xkVIHIazHYWCSMbgrj0Tdr5MxSlXhaWEouSjhLb0Sfk2BKE4Q==
-X-Received: by 2002:a63:7a56:: with SMTP id j22mr2326669pgn.293.1592328678209;
-        Tue, 16 Jun 2020 10:31:18 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c2sm17615493pfi.71.2020.06.16.10.31.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 10:31:17 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] spi: bcm63xx-spi: allow building for BMIPS
-To:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200616070223.3401282-1-noltari@gmail.com>
- <20200616070223.3401282-3-noltari@gmail.com>
- <20200616170724.GT4447@sirena.org.uk>
- <a6edd50d-db3f-8988-157c-ff66e2fd474a@gmail.com>
- <20200616172534.GU4447@sirena.org.uk>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- mQENBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAG0MEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPokB
- xAQQAQgArgUCXnQoOxcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFrZXktdXNh
- Z2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2RpbmdAcGdw
- LmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29tLmNvbQUb
- AwAAAAMWAgEFHgEAAAAEFQgJCgAKCRCBMbXEKbxmoHaNB/4p5GXw2Xlk4r2J0MsUAZE4Gnfc
- C4DtilufOGVR1K0/WhROYemyCAP+xuBj8bnQDBtZwB5ED37q4/p8DSmCnkEBjM5Cz12EZQzs
- utQgCV1UIgzryoiDZSF2XLslzF9LOSaOiNzpBvwEYNTZ+koEW+AOHEAgS6SbV2Hob8Zc32xF
- oQdKGwbSwcV8hS2YLL37VxKr2h8ZTtuTmhDNqxuKPzZuoAL61/4i8+BTyVZC4gUL/EUu7pG2
- rbwhg/s8TyQWWeBz18Xiw5K148TXT0LeErmTsJSPQFMqZ6AR/nuJDQzhIUiLeq/hvBs1BIQf
- REqNMShEnnMJfHjd8RFnGpdPk+hKuQENBFPAG8EBCACsa+9aKnvtPjGAnO1mn1hHKUBxVML2
- C3HQaDp5iT8Q8A0ab1OS4akj75P8iXYfZOMVA0Lt65taiFtiPT7pOZ/yc/5WbKhsPE9dwysr
- vHjHL2gP4q5vZV/RJduwzx8v9KrMZsVZlKbvcvUvgZmjG9gjPSLssTFhJfa7lhUtowFof0fA
- q3Zy+vsy5OtEe1xs5kiahdPb2DZSegXW7DFg15GFlj+VG9WSRjSUOKk+4PCDdKl8cy0LJs+r
- W4CzBB2ARsfNGwRfAJHU4Xeki4a3gje1ISEf+TVxqqLQGWqNsZQ6SS7jjELaB/VlTbrsUEGR
- 1XfIn/sqeskSeQwJiFLeQgj3ABEBAAGJAkEEGAECASsFAlPAG8IFGwwAAADAXSAEGQEIAAYF
- AlPAG8EACgkQk2AGqJgvD1UNFQgAlpN5/qGxQARKeUYOkL7KYvZFl3MAnH2VeNTiGFoVzKHO
- e7LIwmp3eZ6GYvGyoNG8cOKrIPvXDYGdzzfwxVnDSnAE92dv+H05yanSUv/2HBIZa/LhrPmV
- hXKgD27XhQjOHRg0a7qOvSKx38skBsderAnBZazfLw9OukSnrxXqW/5pe3mBHTeUkQC8hHUD
- Cngkn95nnLXaBAhKnRfzFqX1iGENYRH3Zgtis7ZvodzZLfWUC6nN8LDyWZmw/U9HPUaYX8qY
- MP0n039vwh6GFZCqsFCMyOfYrZeS83vkecAwcoVh8dlHdke0rnZk/VytXtMe1u2uc9dUOr68
- 7hA+Z0L5IQAKCRCBMbXEKbxmoLoHCACXeRGHuijOmOkbyOk7x6fkIG1OXcb46kokr2ptDLN0
- Ky4nQrWp7XBk9ls/9j5W2apKCcTEHONK2312uMUEryWI9BlqWnawyVL1LtyxLLpwwsXVq5m5
- sBkSqma2ldqBu2BHXZg6jntF5vzcXkqG3DCJZ2hOldFPH+czRwe2OOsiY42E/w7NUyaN6b8H
- rw1j77+q3QXldOw/bON361EusWHdbhcRwu3WWFiY2ZslH+Xr69VtYAoMC1xtDxIvZ96ps9ZX
- pUPJUqHJr8QSrTG1/zioQH7j/4iMJ07MMPeQNkmj4kGQOdTcsFfDhYLDdCE5dj5WeE6fYRxE
- Q3up0ArDSP1L
-Message-ID: <ea904b53-3f6f-da28-39f8-f811f432395a@broadcom.com>
-Date:   Tue, 16 Jun 2020 10:31:16 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        Tue, 16 Jun 2020 13:32:57 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id EE0E43C00BA;
+        Tue, 16 Jun 2020 19:32:54 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RkBGNM8CkM4J; Tue, 16 Jun 2020 19:32:48 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id EABF03C0022;
+        Tue, 16 Jun 2020 19:32:48 +0200 (CEST)
+Received: from vmlxhi-121.localdomain (10.72.92.132) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 16 Jun
+ 2020 19:32:48 +0200
+From:   Michael Rodin <mrodin@de.adit-jv.com>
+To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Michael Rodin <mrodin@de.adit-jv.com>, <michael@rodin.online>,
+        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>,
+        Steve Longerbeam <steve_longerbeam@mentor.com>
+Subject: [PATCH] media: rcar-vin: Move media_device_register to async completion
+Date:   Tue, 16 Jun 2020 19:31:36 +0200
+Message-ID: <1592328696-84533-1-git-send-email-mrodin@de.adit-jv.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200616172534.GU4447@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.72.92.132]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Steve Longerbeam <steve_longerbeam@mentor.com>
 
+The media_device is registered during driver probe, before async
+completion, so it is possible for .link_notify to be called before
+all devices are bound.
 
-On 6/16/2020 10:25 AM, Mark Brown wrote:
-> On Tue, Jun 16, 2020 at 10:15:15AM -0700, Florian Fainelli wrote:
->> On 6/16/2020 10:07 AM, Mark Brown wrote:
-> 
->>> Please do not submit new versions of already applied patches, please
->>> submit incremental updates to the existing code.  Modifying existing
->>> commits creates problems for other users building on top of those
->>> commits so it's best practice to only change pubished git commits if
->>> absolutely essential.
-> 
->> In Alvaro's defense, you applied the patches despite me requesting that
->> specific changes be made (use the optional reset control API variant).
-> 
-> I applied only the two patches that you'd acked, not the reset patches
-> which had problems.
+Fix this by moving media_device_register() to rvin_group_notify_complete().
+This ensures that all devices are now bound (the rcar-csi2 subdevices and
+and video capture devices) before .link_notify can be called.
 
-Indeed, sorry for not reading your commit message properly, I believe I
-request that before, cannot the "applied" response just reply with the
-patches *applied* and not *all* part of the series?
+Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Michael Rodin <mrodin@de.adit-jv.com>
+---
+ drivers/media/platform/rcar-vin/rcar-core.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-> 
->> Having a FAQ entry about what your expectations as a subsystem
->> maintainer are (ala netdev-FAQ.rst) could save you time along the way.
-> 
-> Incremental updates are the default AFAICT?
-> 
-
-It really depends if the maintainer is willing to rewrite his tree
-history, some people do, some people do not, especially if nothing has
-been submitted to Linus yet.
+diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
+index 7440c89..e70f83b 100644
+--- a/drivers/media/platform/rcar-vin/rcar-core.c
++++ b/drivers/media/platform/rcar-vin/rcar-core.c
+@@ -253,7 +253,6 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
+ 	struct media_device *mdev = &group->mdev;
+ 	const struct of_device_id *match;
+ 	struct device_node *np;
+-	int ret;
+ 
+ 	mutex_init(&group->lock);
+ 
+@@ -266,7 +265,6 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
+ 	vin_dbg(vin, "found %u enabled VIN's in DT", group->count);
+ 
+ 	mdev->dev = vin->dev;
+-	mdev->ops = &rvin_media_ops;
+ 
+ 	match = of_match_node(vin->dev->driver->of_match_table,
+ 			      vin->dev->of_node);
+@@ -278,11 +276,7 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
+ 
+ 	media_device_init(mdev);
+ 
+-	ret = media_device_register(&group->mdev);
+-	if (ret)
+-		rvin_group_cleanup(group);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static void rvin_group_release(struct kref *kref)
+@@ -688,6 +682,8 @@ static int rvin_group_notify_complete(struct v4l2_async_notifier *notifier)
+ 		return ret;
+ 	}
+ 
++	vin->group->mdev.ops = &rvin_media_ops;
++
+ 	/* Register all video nodes for the group. */
+ 	for (i = 0; i < RCAR_VIN_NUM; i++) {
+ 		if (vin->group->vin[i] &&
+@@ -736,8 +732,10 @@ static int rvin_group_notify_complete(struct v4l2_async_notifier *notifier)
+ 		}
+ 	}
+ 	mutex_unlock(&vin->group->lock);
++	if (ret)
++		return ret;
+ 
+-	return ret;
++	return media_device_register(&vin->group->mdev);
+ }
+ 
+ static void rvin_group_notify_unbind(struct v4l2_async_notifier *notifier,
 -- 
-Florian
+2.7.4
+
