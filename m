@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3511FB3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2221FB3D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgFPOMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:12:00 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:7908 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728596AbgFPOL6 (ORCPT
+        id S1729398AbgFPOM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:12:28 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:43387 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgFPOM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:11:58 -0400
+        Tue, 16 Jun 2020 10:12:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592316718; x=1623852718;
+  t=1592316745; x=1623852745;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=q+Nsa1rMhPliL3hgNpWPbU9ylD4jN5dyGMzMCWUn4Uc=;
-  b=o5l0hfwK2Z0EmuIgxlDgUBfSJNLVna08GQpQ03i6CLf5e8UnInwT/E0a
-   2Jm8HdTMUwUZpbooVrmxkLNCrKCHUNYAnEuc9aVsQ7qqBiwDhi8K226II
-   Bb3EuTEC6QVEYrEcKqEQmvOMAH8DOomTsuobiuSDUdi/YsZGMBErlgewp
-   w=;
-IronPort-SDR: gbUQTKYv5Do84JwuUEoHQrXZspHuB50NpoYZYqY2xV58Iy5Y1rez1KvGKsNbiUWrPXku2YTdL5
- ONNZckaOC9uw==
+  bh=w1Wrf62e73x+SRZTs2supCzGH7vYA1IEmIfHRiOCQt8=;
+  b=U+XMYBKkQxWtMChQYipgYhNytgEWZ/EBfACBwNB/Bad40dvu7Wpqby15
+   gAr+Z+LinTR0RRrzHw7lfVyFTICBJHD7cFP3+Vlx2YZyg0WsT4cwkVKvm
+   dYwK16HEMe8/NUk3T2T0Md81i2tLLnSbSgmJMaRlBI3r+o1DxDrSf0qbE
+   g=;
+IronPort-SDR: Q7vc99IXsCqljdqDle+7g6R/Hu+R7fF3+WAAXICsYy4e3/KZpWColZqgNokHRGLbDyKGPSQQW/
+ BKv5fjpf3ILQ==
 X-IronPort-AV: E=Sophos;i="5.73,518,1583193600"; 
-   d="scan'208";a="36588935"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 16 Jun 2020 14:11:53 +0000
+   d="scan'208";a="51356971"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 16 Jun 2020 14:12:23 +0000
 Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 7065FA228C;
-        Tue, 16 Jun 2020 14:11:50 +0000 (UTC)
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 922C12218D4;
+        Tue, 16 Jun 2020 14:12:20 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 14:11:49 +0000
+ id 15.0.1497.2; Tue, 16 Jun 2020 14:12:20 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.109) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 14:11:18 +0000
+ id 15.0.1497.2; Tue, 16 Jun 2020 14:11:52 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -56,9 +56,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <ying.huang@intel.com>, <david@redhat.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v4 6/8] mm/damon/debugfs: Support physical memory monitoring
-Date:   Tue, 16 Jun 2020 16:08:11 +0200
-Message-ID: <20200616140813.17863-7-sjpark@amazon.com>
+Subject: [RFC v4 7/8] tools/damon/record: Support physical memory address spce
+Date:   Tue, 16 Jun 2020 16:08:12 +0200
+Message-ID: <20200616140813.17863-8-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200616140813.17863-1-sjpark@amazon.com>
 References: <20200616140813.17863-1-sjpark@amazon.com>
@@ -74,58 +74,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit makes the debugfs interface to support the physical memory
-monitoring, in addition to the virtual memory monitoring.
-
-Users can do the physical memory monitoring by writing a special
-keyword, 'paddr\n' to the 'pids' debugfs file.  Then, DAMON will check
-the special keyword and configure the callbacks of the monitoring
-context for the debugfs user for physical memory.  This will internally
-add one fake monitoring target process, which has pid as -1.
-
-Unlike the virtual memory monitoring, DAMON debugfs will not
-automatically set the monitoring target region.  Therefore, users should
-also set the monitoring target address region using the 'init_regions'
-debugfs file.  While doing this, the 'pid' in the input should be '-1'.
-
-Finally, the physical memory monitoring will not automatically
-terminated because it has fake monitoring target process.  The user
-should explicitly turn off the monitoring by writing 'off' to the
-'monitor_on' debugfs file.
+This commit allows users to record the data accesses on physical memory
+address space by passing 'paddr' as target to 'damo-record'.  If the
+init regions are given, the regions will be monitored.  Else, it will
+monitor biggest conitguous 'System RAM' region in '/proc/iomem' and
+monitor the region.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ tools/damon/_damon.py |  2 ++
+ tools/damon/heats.py  |  2 +-
+ tools/damon/record.py | 29 ++++++++++++++++++++++++++++-
+ 3 files changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon.c b/mm/damon.c
-index fdf3425befb2..efd6428bd85e 100644
---- a/mm/damon.c
-+++ b/mm/damon.c
-@@ -1918,6 +1918,23 @@ static ssize_t debugfs_pids_write(struct file *file,
- 	if (IS_ERR(kbuf))
- 		return PTR_ERR(kbuf);
+diff --git a/tools/damon/_damon.py b/tools/damon/_damon.py
+index ad476cc61421..95d23c2ab6ee 100644
+--- a/tools/damon/_damon.py
++++ b/tools/damon/_damon.py
+@@ -27,6 +27,8 @@ def set_target(pid, init_regions=[]):
+     if not os.path.exists(debugfs_init_regions):
+         return 0
  
-+	if (!strncmp(kbuf, "paddr\n", count)) {
-+		/* Configure the context for physical memory monitoring */
-+		ctx->init_target_regions = kdamond_init_phys_regions;
-+		ctx->update_target_regions = kdamond_update_phys_regions;
-+		ctx->prepare_access_checks = kdamond_prepare_phys_access_checks;
-+		ctx->check_accesses = kdamond_check_phys_accesses;
++    if pid == 'paddr':
++        pid = -1
+     string = ' '.join(['%s %d %d' % (pid, r[0], r[1]) for r in init_regions])
+     return subprocess.call('echo "%s" > %s' % (string, debugfs_init_regions),
+             shell=True, executable='/bin/bash')
+diff --git a/tools/damon/heats.py b/tools/damon/heats.py
+index 99837083874e..34dbcf1a839d 100644
+--- a/tools/damon/heats.py
++++ b/tools/damon/heats.py
+@@ -307,7 +307,7 @@ def plot_heatmap(data_file, output_file):
+     set xrange [0:];
+     set yrange [0:];
+     set xlabel 'Time (ns)';
+-    set ylabel 'Virtual Address (bytes)';
++    set ylabel 'Address (bytes)';
+     plot '%s' using 1:2:3 with image;""" % (terminal, output_file, data_file)
+     subprocess.call(['gnuplot', '-e', gnuplot_cmd])
+     os.remove(data_file)
+diff --git a/tools/damon/record.py b/tools/damon/record.py
+index 6ce8721d782a..416dca940c1d 100644
+--- a/tools/damon/record.py
++++ b/tools/damon/record.py
+@@ -73,6 +73,29 @@ def set_argparser(parser):
+     parser.add_argument('-o', '--out', metavar='<file path>', type=str,
+             default='damon.data', help='output file path')
+ 
++def default_paddr_region():
++    "Largest System RAM region becomes the default"
++    ret = []
++    with open('/proc/iomem', 'r') as f:
++        # example of the line: '100000000-42b201fff : System RAM'
++        for line in f:
++            fields = line.split(':')
++            if len(fields) != 2:
++                continue
++            name = fields[1].strip()
++            if name != 'System RAM':
++                continue
++            addrs = fields[0].split('-')
++            if len(addrs) != 2:
++                continue
++            start = int(addrs[0], 16)
++            end = int(addrs[1], 16)
 +
-+		/* Set the fake target task pid as -1 */
-+		snprintf(kbuf, count, "-1    ");
-+	} else {
-+		/* Configure the context for virtual memory monitoring */
-+		ctx->init_target_regions = kdamond_init_vm_regions;
-+		ctx->update_target_regions = kdamond_update_vm_regions;
-+		ctx->prepare_access_checks = kdamond_prepare_vm_access_checks;
-+		ctx->check_accesses = kdamond_check_vm_accesses;
-+	}
++            sz_region = end - start
++            if not ret or sz_region > (ret[1] - ret[0]):
++                ret = [start, end]
++    return ret
 +
- 	targets = str_to_pids(kbuf, ret, &nr_targets);
- 	if (!targets) {
- 		ret = -ENOMEM;
+ def main(args=None):
+     global orig_attrs
+     if not args:
+@@ -93,7 +116,11 @@ def main(args=None):
+     target = args.target
+ 
+     target_fields = target.split()
+-    if not subprocess.call('which %s > /dev/null' % target_fields[0],
++    if target == 'paddr':   # physical memory address space
++        if not init_regions:
++            init_regions = [default_paddr_region()]
++        do_record(target, False, init_regions, new_attrs, orig_attrs)
++    elif not subprocess.call('which %s > /dev/null' % target_fields[0],
+             shell=True, executable='/bin/bash'):
+         do_record(target, True, init_regions, new_attrs, orig_attrs)
+     else:
 -- 
 2.17.1
 
