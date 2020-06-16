@@ -2,108 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0B61FAE9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80B81FAEA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgFPKwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 06:52:05 -0400
-Received: from verein.lst.de ([213.95.11.211]:37565 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726692AbgFPKwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 06:52:03 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4875968AEF; Tue, 16 Jun 2020 12:52:00 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 12:52:00 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Dexuan Cui <decui@microsoft.com>,
-        vkuznets <vkuznets@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Ju-Hyoung Lee <juhlee@microsoft.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: hv_hypercall_pg page permissios
-Message-ID: <20200616105200.GA32175@lst.de>
-References: <HK0P153MB0322DE798AA39BCCD4A208E4BF9C0@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM> <HK0P153MB0322EB3EE51073CC021D4AEABF9C0@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM> <20200616072318.GA17600@lst.de> <20200616101807.GO2531@hirez.programming.kicks-ass.net> <20200616102350.GA29684@lst.de> <20200616102412.GB29684@lst.de> <20200616103137.GQ2531@hirez.programming.kicks-ass.net> <20200616103313.GA30833@lst.de> <20200616104032.GR2531@hirez.programming.kicks-ass.net> <20200616104230.GA31314@lst.de>
+        id S1728632AbgFPKwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 06:52:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53586 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728168AbgFPKwf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 06:52:35 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7B9DD1C0BD2; Tue, 16 Jun 2020 12:52:33 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 12:52:24 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "Andrew F. Davis" <afd@ti.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Pali Roh??r <pali@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@proceq.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: supply: bq27xxx_battery: Notify about all
+ battery changes
+Message-ID: <20200616105224.GF1718@bug>
+References: <20200525141200.17199-1-krzk@kernel.org>
+ <fc59bcd5-1868-8c7a-9fc9-67ad70b477f4@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616104230.GA31314@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <fc59bcd5-1868-8c7a-9fc9-67ad70b477f4@ti.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 12:42:30PM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 16, 2020 at 12:40:32PM +0200, Peter Zijlstra wrote:
-> > On Tue, Jun 16, 2020 at 12:33:13PM +0200, Christoph Hellwig wrote:
-> > > sorry, s/ftrace/kprobes/.  See my updated branch here:
-> > > 
-> > > http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/module_alloc-cleanup
+On Tue 2020-05-26 21:24:39, Andrew F. Davis wrote:
+> On 5/25/20 10:11 AM, Krzysztof Kozlowski wrote:
+> > All battery related data could be important for user-space.  For example
+> > time-to-full could be shown to user on the screen or health could be
+> > monitored for any issues.  Instead of comparing few selected old/new
+> > values, just check if anything changed in the cache.
 > > 
-> > Ah the insn slot page, yes. Didn't you just loose VM_FLUSH_RESET_PERMS
-> > there?
 > 
-> Yes, we did.  vmalloc_exec had it, but given that module_alloc didn't
-> allocate executable on x86 it didn't.  I guess we should make sure it
-> is set by the low-level vmalloc code if exec permissions are set to
-> sort this mess out.
+> 
+> At least some value will change every time we poll the battery, are we
+> okay with having power_supply_changed() called every time?
 
-I think something like this should solve the issue:
+I believe that's very bad idea. AFAICT that would wake up userspace every
+5 seconds, eating power in unexpected way, and without easy ability of opting
+out. IOW a regression.
 
---
-diff --git a/arch/x86/include/asm/module.h b/arch/x86/include/asm/module.h
-index e988bac0a4a1c3..716e4de44a8e78 100644
---- a/arch/x86/include/asm/module.h
-+++ b/arch/x86/include/asm/module.h
-@@ -13,4 +13,6 @@ struct mod_arch_specific {
- #endif
- };
- 
-+void *module_alloc_prot(unsigned long size, pgprot_t prot);
-+
- #endif /* _ASM_X86_MODULE_H */
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index 34b153cbd4acb4..4db6e655120960 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -65,8 +65,10 @@ static unsigned long int get_module_load_offset(void)
- }
- #endif
- 
--void *module_alloc(unsigned long size)
-+void *module_alloc_prot(unsigned long size, pgprot_t prot)
- {
-+	unsigned int flags = (pgprot_val(prot) & _PAGE_NX) ?
-+			0 : VM_FLUSH_RESET_PERMS;
- 	void *p;
- 
- 	if (PAGE_ALIGN(size) > MODULES_LEN)
-@@ -75,7 +77,7 @@ void *module_alloc(unsigned long size)
- 	p = __vmalloc_node_range(size, MODULE_ALIGN,
- 				    MODULES_VADDR + get_module_load_offset(),
- 				    MODULES_END, GFP_KERNEL,
--				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-+				    prot, flags, NUMA_NO_NODE,
- 				    __builtin_return_address(0));
- 	if (p && (kasan_module_alloc(p, size) < 0)) {
- 		vfree(p);
-@@ -85,6 +87,11 @@ void *module_alloc(unsigned long size)
- 	return p;
- }
- 
-+void *module_alloc(unsigned long size)
-+{
-+	return module_alloc_prot(size, PAGE_KERNEL);
-+}
-+
- #ifdef CONFIG_X86_32
- int apply_relocate(Elf32_Shdr *sechdrs,
- 		   const char *strtab,
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
