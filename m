@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80391FB8F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC331FB75F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733040AbgFPQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:00:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50888 "EHLO mail.kernel.org"
+        id S1732100AbgFPPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731804AbgFPPw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:59 -0400
+        id S1732082AbgFPPpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FB99208D5;
-        Tue, 16 Jun 2020 15:52:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E39A20776;
+        Tue, 16 Jun 2020 15:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322778;
-        bh=8oOdO8G5uDNdbKO90o2ZU39T1Bp6Ti8hqZkMXc9pX6k=;
+        s=default; t=1592322324;
+        bh=ImD1zoy+Fx0CsZrmk+QIEfgyjaPXOBH8d6zBqOiEGqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FeDG7ke8Bh7tmkLlahGfBUbKgiokZkHX/6DQIc0Sm/0R7mXhzjQ28Y7OSpWsG7Nbk
-         8pGoWj3fZvsbOrTyDJoDZiAzw2ZUXzRpgUTgzJ8OP3ZU0Ad2Wv/6uZJ0IzT0zA7Zuz
-         JCfJdz60GY0lzHpkv31j1yFlChc2iwzqtj44fVjo=
+        b=CpOqgXczEyrgSR+fRvZF2iIVWZcsbMWwjTQ3QUX/GEZyovB3KxuO4GtYCFKz0aGo3
+         Y/utlnCl9dFUpkkY22TlUsyoiKVgVMC3mNf7klEvQhynyftQ35O/+P6gVb2VjfaZNF
+         uH+RnCvCeFs010TMf97kKHUqxwXna4fje9SZXITk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 070/161] ALSA: fireface: fix configuration error for nominal sampling transfer frequency
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.7 086/163] spi: bcm-qspi: Handle clock probe deferral
 Date:   Tue, 16 Jun 2020 17:34:20 +0200
-Message-Id: <20200616153109.713755288@linuxfoundation.org>
+Message-Id: <20200616153110.964339018@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit bbd6aac3ae15bef762af03bf62e35ace5c4292bd upstream.
+commit 0392727c261bab65a35cd4f82ee9459bc237591d upstream.
 
-128000 and 192000 are congruence modulo 32000, thus it's wrong to
-distinguish them as multiple of 32000 and 48000 by modulo 32000 at
-first.
+The clock provider may not be ready by the time spi-bcm-qspi gets
+probed, handle probe deferral using devm_clk_get_optional().
 
-Additionally, used condition statement to detect quadruple speed can
-cause missing bit flag.
-
-Furthermore, counter to ensure the configuration is wrong and it
-causes false positive.
-
-This commit fixes the above three bugs.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 60aec494b389 ("ALSA: fireface: support allocate_resources operation in latter protocol")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20200510074301.116224-2-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200420190853.45614-2-kdasu.kdev@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/firewire/fireface/ff-protocol-latter.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/spi/spi-bcm-qspi.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/sound/firewire/fireface/ff-protocol-latter.c
-+++ b/sound/firewire/fireface/ff-protocol-latter.c
-@@ -107,18 +107,18 @@ static int latter_allocate_resources(str
- 	int err;
- 
- 	// Set the number of data blocks transferred in a second.
--	if (rate % 32000 == 0)
--		code = 0x00;
-+	if (rate % 48000 == 0)
-+		code = 0x04;
- 	else if (rate % 44100 == 0)
- 		code = 0x02;
--	else if (rate % 48000 == 0)
--		code = 0x04;
-+	else if (rate % 32000 == 0)
-+		code = 0x00;
- 	else
- 		return -EINVAL;
- 
- 	if (rate >= 64000 && rate < 128000)
- 		code |= 0x08;
--	else if (rate >= 128000 && rate < 192000)
-+	else if (rate >= 128000)
- 		code |= 0x10;
- 
- 	reg = cpu_to_le32(code);
-@@ -140,7 +140,7 @@ static int latter_allocate_resources(str
- 		if (curr_rate == rate)
- 			break;
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1222,6 +1222,11 @@ int bcm_qspi_probe(struct platform_devic
  	}
--	if (count == 10)
-+	if (count > 10)
- 		return -ETIMEDOUT;
  
- 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); ++i) {
+ 	qspi = spi_master_get_devdata(master);
++
++	qspi->clk = devm_clk_get_optional(&pdev->dev, NULL);
++	if (IS_ERR(qspi->clk))
++		return PTR_ERR(qspi->clk);
++
+ 	qspi->pdev = pdev;
+ 	qspi->trans_pos.trans = NULL;
+ 	qspi->trans_pos.byte = 0;
+@@ -1335,13 +1340,6 @@ int bcm_qspi_probe(struct platform_devic
+ 		qspi->soc_intc = NULL;
+ 	}
+ 
+-	qspi->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(qspi->clk)) {
+-		dev_warn(dev, "unable to get clock\n");
+-		ret = PTR_ERR(qspi->clk);
+-		goto qspi_probe_err;
+-	}
+-
+ 	ret = clk_prepare_enable(qspi->clk);
+ 	if (ret) {
+ 		dev_err(dev, "failed to prepare clock\n");
 
 
