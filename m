@@ -2,169 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B2A1FA930
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 08:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504FA1FA934
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 08:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgFPGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 02:54:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46330 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgFPGyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 02:54:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8AE20AAD0;
-        Tue, 16 Jun 2020 06:54:04 +0000 (UTC)
-Date:   Tue, 16 Jun 2020 08:53:59 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
+        id S1727032AbgFPGyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 02:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgFPGyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 02:54:39 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2325C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 23:54:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h5so19532999wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 23:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ZEPVAfPR98ffU4HcJ8n3O8Rs7VWQME5L+qY7xcPu2Q8=;
+        b=YOLSQ/hHlyuz2FCheCDZnw7IDNAt7C64qby+01Mik/jYlMiCkM9fd013FSkvy6giKR
+         visuSburUxrjaqyExw+hBUK//ffRx0/pjslvGves3L7lq0ZTGMttXCJcZJy1B/8+142G
+         OMPJUxKWNpTMFJFTC4wyT27oZ0EvzaSQe8nTY4G6lpAh5kMOT/pP81OqWJaeCH9uFoC1
+         XUN4MIWbzy4G1FMhHGK49n0wlPJZ7Fp2u5Gw1VGVZHmkZ+FPsvxDWcf9e65ZT57/g5OU
+         fEhRH16WcE1MKwvhd8lpRY1T6D2lwGlv1GxZFlI0acMntyVLG2Y+FV8Uv7QsNhA6Ya7Q
+         g4bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=ZEPVAfPR98ffU4HcJ8n3O8Rs7VWQME5L+qY7xcPu2Q8=;
+        b=Lr0B0fZYC9WC6guqPywo0u+BqApHpY/A79AxpH3E6uaThFbZNCUfl9/FxhK8Oofaof
+         t2+x8X/CybALx5m0BSqFwxFntn3SyfDFlR8W8x6Osw5iJj5ErO58GJPWwUYRfxnPufDT
+         Qkcid4kczqO1yIyj56JPhfvRPlEupC/BMaz8XsiFHESFC1DkcjKU74LYBtybOFRw6rr5
+         98JXgLBd2lUtthDJ61vHqK9JvrPHIs2YenD/P26O0ihykavODnpv7dlumQfbzsWnddDE
+         FHdJzCs0IxjKVTWV4cj37A6mBO6FIfCvr0BmVlAHEY1F/H6Tdnc2S7G4up2SuGddugu3
+         y/8w==
+X-Gm-Message-State: AOAM533gqWYqBSpVc/lYdhBuC7bCgq+J+ymvlSPF7PXKtsVDxVr5zodo
+        SsXYvVOHur6ERvg/mRrM1gJ8fQ==
+X-Google-Smtp-Source: ABdhPJxI0GVoVyQ/MRgIv7AiXuVqi6L+3wuLe52/Bl06xZTxe35y0eMPzlD2ew8Wb+5/cLTvsbP//Q==
+X-Received: by 2002:adf:f552:: with SMTP id j18mr1318126wrp.279.1592290476475;
+        Mon, 15 Jun 2020 23:54:36 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:5592:7b9c:f9d9:6edb])
+        by smtp.gmail.com with ESMTPSA id g187sm2682245wma.17.2020.06.15.23.54.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 15 Jun 2020 23:54:35 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 08:54:32 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        luca abeni <luca.abeni@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+119ba87189432ead09b4@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: WARNING in enqueue_task_dl
-Message-ID: <20200616065359.ugoismxzpkkkkwjp@beryllium.lan>
-References: <000000000000b5e346057af4da06@google.com>
- <alpine.DEB.2.21.1811190921190.9459@nanos.tec.linutronix.de>
- <20181119130718.69eddf46@luca64>
- <20181119125241.GC9761@hirez.programming.kicks-ass.net>
- <20181119134349.GA2119@localhost.localdomain>
- <20181119153201.GB2119@localhost.localdomain>
- <a9d18394-250b-98e4-e66d-57622dbaf247@redhat.com>
- <CACT4Y+bcug1SpLS6RfpJ8gTVm0vXm_S_1s_BG9n=zrEVdaffFw@mail.gmail.com>
- <20190724044516.GA643@sol.localdomain>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [LKP] [sched/fair] 070f5e860e: reaim.jobs_per_min -10.5%
+ regression
+Message-ID: <20200616065432.GA18401@vingu-book>
+References: <20200319023819.GO11705@shao2-debian>
+ <20200612110616.20264-1-hdanton@sina.com>
+ <90f4036d-bb16-af67-8776-a2cbe67dfe7f@linux.intel.com>
+ <20200615081041.GA16990@vingu-book>
+ <d60343e9-b3a0-bdc7-84f4-e8c912f92c46@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20190724044516.GA643@sol.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d60343e9-b3a0-bdc7-84f4-e8c912f92c46@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 09:45:16PM -0700, Eric Biggers wrote:
-> On Thu, Feb 07, 2019 at 10:35:04AM +0100, 'Dmitry Vyukov' via syzkaller-bugs wrote:
-> > On Mon, Jan 7, 2019 at 5:19 PM Daniel Bristot de Oliveira
-> > <bristot@redhat.com> wrote:
-> > >
-> > > On 11/19/18 4:32 PM, Juri Lelli wrote:
-> > > > From 9326fd2b20269cffef7290bdc5b8173460d3c870 Mon Sep 17 00:00:00 2001
-> > > > From: Juri Lelli <juri.lelli@redhat.com>
-> > > > Date: Mon, 19 Nov 2018 16:04:42 +0100
-> > > > Subject: [PATCH] sched/core: Fix PI boosting between RT and DEADLINE
-> > > >
-> > > > syzbot reported the following warning:
-> > > >
-> > > >  WARNING: CPU: 1 PID: 6351 at kernel/sched/deadline.c:628
-> > > >  enqueue_task_dl+0x22da/0x38a0 kernel/sched/deadline.c:1504
-> > > >  PM: Basic memory bitmaps freed
-> > > >  Kernel panic - not syncing: panic_on_warn set ...
-> > > >  CPU: 1 PID: 6351 Comm: syz-executor0 Not tainted 4.20.0-rc2+ #338
-> > > >  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > > >  Google 01/01/2011
-> > > >  Call Trace:
-> > > >    __dump_stack lib/dump_stack.c:77 [inline]
-> > > >    dump_stack+0x244/0x39d lib/dump_stack.c:113
-> > > >    panic+0x2ad/0x55c kernel/panic.c:188
-> > > >    __warn.cold.8+0x20/0x45 kernel/panic.c:540
-> > > >    report_bug+0x254/0x2d0 lib/bug.c:186
-> > > >    fixup_bug arch/x86/kernel/traps.c:178 [inline]
-> > > >    do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:271
-> > > >    do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:290
-> > > >    invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:969
-> > > >  RIP: 0010:enqueue_task_dl+0x22da/0x38a0 kernel/sched/deadline.c:1504
-> > > >  Code: ff 48 8b 8d c8 fe ff ff 48 c1 e6 2a 4c 8b 9d d0 fe ff ff 8b 95 d8 fe
-> > > >  ff ff 48 8b 85 e0 fe ff ff e9 16 e4 ff ff e8 16 d0 ea ff <0f> 0b e9 17 f1
-> > > >  ff ff 48 8b bd e8 fe ff ff 4c 89 95 c8 fe ff ff 48
-> > > >  RSP: 0018:ffff8881ba39fa18 EFLAGS: 00010002
-> > > >  RAX: 0000000000000000 RBX: ffff8881b9d6c000 RCX: ffff8881b9d6c278
-> > > >  RDX: ffff8881b9d6c03c RSI: 0000000000000002 RDI: ffff8881daf2d710
-> > > >  RBP: ffff8881ba39fb78 R08: 0000000000000001 R09: ffff8881daf00000
-> > > >  R10: 0000001a4d4f1987 R11: ffff8881daf2db3b R12: 1ffff11037473f4e
-> > > >  R13: ffff8881b9d6c2cc R14: ffff8881daf2ccc0 R15: ffff8881daf2ccc0
-> > > >    enqueue_task+0x184/0x390 kernel/sched/core.c:730
-> > > >    __sched_setscheduler+0xe99/0x2190 kernel/sched/core.c:4336
-> > > >    sched_setattr kernel/sched/core.c:4394 [inline]
-> > > >    __do_sys_sched_setattr kernel/sched/core.c:4570 [inline]
-> > > >    __se_sys_sched_setattr kernel/sched/core.c:4549 [inline]
-> > > >    __x64_sys_sched_setattr+0x1b2/0x2f0 kernel/sched/core.c:4549
-> > > >    do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
-> > > >    entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > > >  RIP: 0033:0x457569
-> > > >  Code: fd b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
-> > > >  48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
-> > > >  ff 0f 83 cb b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> > > >  RSP: 002b:00007f05ce0a2c78 EFLAGS: 00000246 ORIG_RAX: 000000000000013a
-> > > >  RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000457569
-> > > >  RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000000
-> > > >  RBP: 000000000072bfa0 R08: 0000000000000000 R09: 0000000000000000
-> > > >  R10: 0000000000000000 R11: 0000000000000246 R12: 00007f05ce0a36d4
-> > > >  R13: 00000000004c369f R14: 00000000004d5730 R15: 00000000ffffffff
-> > > >
-> > > > At deadline.c:628 we have:
-> > > >
-> > > >  623 static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
-> > > >  624 {
-> > > >  625  struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
-> > > >  626  struct rq *rq = rq_of_dl_rq(dl_rq);
-> > > >  627
-> > > >  628  WARN_ON(dl_se->dl_boosted);
-> > > >  629  WARN_ON(dl_time_before(rq_clock(rq), dl_se->deadline));
-> > > >         [...]
-> > > >      }
-> > > >
-> > > > Which means that setup_new_dl_entity() has been called on a task
-> > > > currently boosted. This shouldn't happen though, as setup_new_
-> > > > dl_entity() is only called when the 'dynamic' deadline of the new entity
-> > > > is in the past w.r.t. rq_clock and boosted tasks shouldn't verify this
-> > > > condition.
-> > > >
-> > > > Digging through PI code I noticed that what above might in fact happen
-> > > > if an RT tasks blocks on an rt_mutex hold by a DEADLINE task. In the
-> > > > first branch of boosting conditions we check only if a pi_task 'dynamic'
-> > > > deadline is earlier than mutex holder's and in this case we set mutex
-> > > > holder to be dl_boosted. However, since RT 'dynamic' deadlines are only
-> > > > initialized if such tasks get boosted at some point (or if they become
-> > > > DEADLINE of course), in general RT 'dynamic' deadlines are usually equal
-> > > > to 0 and this verifies the aforementioned condition.
-> > > >
-> > > > Fix it by checking that the potential donor task is actually (even if
-> > > > temporary because in turn boosted) running at DEADLINE priority before
-> > > > using its 'dynamic' deadline value.
-> > > >
-> > > > Reported-by: syzbot+119ba87189432ead09b4@syzkaller.appspotmail.com
-> > > > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> > >
-> > > Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > 
-> > What happened with this patch? I still don't see it in linux-next.
-> > 
-> > There is a number of reproducers that involve sched_setattr and lead
-> > to dead machines on syzbot:
-> > https://syzkaller.appspot.com/bug?id=0b210638616bb68109e9642158d4c0072770ae1c
-> > 
-> 
-> Ping.  Patch is not applied, and this WARNING is still being hit.
-> 
-> Also note the bisection result:
-> 
-> 	commit 7c80cfc99b7bfdc92cee26f8008859f326f4a37f
-> 	Author: Peter Zijlstra <peterz@infradead.org>
-> 	Date: Sat May 6 14:03:17 2017 +0000
-> 
-> 	  sched/fair: Clean up calc_cfs_shares()
 
-I've tested this patch against 5.8-rc1. Without the fix, after around 2 hours
-the warning was triggered by the reproducer. With the patch, it survived
-roughly 12 hours without the warning.
+Hi Xing,
 
-Tested-by: Daniel Wagner <dwagner@suse.de>
+Le mardi 16 juin 2020 à 11:17:16 (+0800), Xing Zhengjun a écrit :
+> 
+> 
+> On 6/15/2020 4:10 PM, Vincent Guittot wrote:
+> > Hi Xing,
+> > 
+> > Le lundi 15 juin 2020 à 15:26:59 (+0800), Xing Zhengjun a écrit :
+> > > 
+> > > 
+> > > On 6/12/2020 7:06 PM, Hillf Danton wrote:
+> > > > 
+> > > > On Fri, 12 Jun 2020 14:36:49 +0800 Xing Zhengjun wrote:
+> > 
+
+...
+
+> > 
+> 
+> I apply the patch based on v5.7, the test result is as the following:
+
+TBH, I didn't expect that the results would still be bad, so i wonder if the threshold are
+the root problem.
+
+Could you run tests with the patch below that removes condition with runnable_avg ?
+I just want to make sure that those 2 conditions are the root cause.
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index da3e5b54715b..f5774d0af059 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8210,10 +8210,6 @@ group_has_capacity(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+        if (sgs->sum_nr_running < sgs->group_weight)
+                return true;
+
+-       if ((sgs->group_capacity * imbalance_pct) <
+-                       (sgs->group_runnable * 100))
+-               return false;
+-
+        if ((sgs->group_capacity * 100) >
+                        (sgs->group_util * imbalance_pct))
+                return true;
+@@ -8239,10 +8235,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+                        (sgs->group_util * imbalance_pct))
+                return true;
+
+-       if ((sgs->group_capacity * imbalance_pct) <
+-                       (sgs->group_runnable * 100))
+-               return true;
+-
+        return false;
+ }
+
+
+
+Thanks.
+Vincent
+
+> 
+> =========================================================================================
+> tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+> 
+> lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+> 
+> commit:
+>   9f68395333ad7f5bfe2f83473fed363d4229f11c
+>   070f5e860ee2bf588c99ef7b4c202451faa48236
+>   v5.7
+>   3e1643da53f3fc7414cfa3ad2a16ab2a164b7f4d (the test patch)
+> 
+> 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+> 3e1643da53f3fc7414cfa3ad2a1
+> ---------------- --------------------------- ---------------------------
+> ---------------------------
+>          %stddev     %change         %stddev     %change %stddev     %change
+> %stddev
+>              \          |                \          |                \
+> |                \
+>       0.69           -10.3%       0.62            -9.1%       0.62
+> -7.1%       0.64        reaim.child_systime
+>       0.62            -1.0%       0.61            +0.5%       0.62
+> +1.3%       0.63        reaim.child_utime
+>      66870           -10.0%      60187            -7.6%      61787
+> -6.1%      62807        reaim.jobs_per_min
+>      16717           -10.0%      15046            -7.6%      15446
+> -6.1%      15701        reaim.jobs_per_min_child
+>      97.84            -1.1%      96.75            -0.4%      97.43
+> -0.5%      97.34        reaim.jti
+>      72000           -10.8%      64216            -8.3%      66000
+> -5.7%      67885        reaim.max_jobs_per_min
+>       0.36           +10.6%       0.40            +7.8%       0.39
+> +6.9%       0.38        reaim.parent_time
+>       1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+> +32.5%       2.09 ±  6%  reaim.std_dev_percent
+>       0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+> +61.7%       0.01 ±  8%  reaim.std_dev_time
+>      50800            -2.4%      49600            -1.6%      50000
+> -1.3%      50133        reaim.workload
+> 
+> 
+> > > 
+> > > =========================================================================================
+> > > tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+> > > 
+> > > lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+> > > 
+> > > commit:
+> > >    9f68395333ad7f5bfe2f83473fed363d4229f11c
+> > >    070f5e860ee2bf588c99ef7b4c202451faa48236
+> > >    v5.7
+> > >    6b33257768b8dd3982054885ea310871be2cfe0b (Hillf's patch)
+> > > 
+> > > 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+> > > 6b33257768b8dd3982054885ea3
+> > > ---------------- --------------------------- ---------------------------
+> > > ---------------------------
+> > >           %stddev     %change         %stddev     %change %stddev     %change
+> > > %stddev
+> > >               \          |                \          |                \
+> > > |                \
+> > >        0.69           -10.3%       0.62            -9.1%       0.62
+> > > -10.1%       0.62        reaim.child_systime
+> > >        0.62            -1.0%       0.61            +0.5%       0.62
+> > > +0.3%       0.62        reaim.child_utime
+> > >       66870           -10.0%      60187            -7.6%      61787
+> > > -8.3%      61305        reaim.jobs_per_min
+> > >       16717           -10.0%      15046            -7.6%      15446
+> > > -8.3%      15326        reaim.jobs_per_min_child
+> > >       97.84            -1.1%      96.75            -0.4%      97.43
+> > > -0.5%      97.37        reaim.jti
+> > >       72000           -10.8%      64216            -8.3%      66000
+> > > -8.3%      66000        reaim.max_jobs_per_min
+> > >        0.36           +10.6%       0.40            +7.8%       0.39
+> > > +9.4%       0.39        reaim.parent_time
+> > >        1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+> > > +33.2%       2.11        reaim.std_dev_percent
+> > >        0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+> > > +65.3%       0.01 ±  3%  reaim.std_dev_time
+> > >       50800            -2.4%      49600            -1.6%      50000
+> > > -1.8%      49866        reaim.workload
+> > > 
+> > > 
+> > > 
+> > > -- 
+> > > Zhengjun Xing
+> 
+> -- 
+> Zhengjun Xing
