@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EA51FBE0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223381FBE06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgFPSaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58558 "EHLO mail.kernel.org"
+        id S1730604AbgFPSZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 14:25:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727114AbgFPSaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:30:14 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1727114AbgFPSZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 14:25:31 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF769208D5;
-        Tue, 16 Jun 2020 18:30:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8716E208D5;
+        Tue, 16 Jun 2020 18:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592332214;
-        bh=+U43ae00QtZYC2fRj8EXYkuee9mvOqEa/MSbVqqhQYM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fjSqoIQNikTyxryFm+WcT3xZez3p/YRVuJhuvyyKf0te9TU5v5Bsj1AQvUW26LrSC
-         rb/jzIJ9n1CPh1t5FkOdVrO9lXkYNHGJ4WtbE99hTBz6BlAJIMd+/fBEYmPaB7+KSH
-         RAH1d4wA7zmThijxkeq5mJoI/4RDgUrZrBQT02W4=
-Date:   Tue, 16 Jun 2020 19:30:10 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/4] spi: bcm63xx-spi: allow building for BMIPS
-Message-ID: <20200616183010.GV4447@sirena.org.uk>
-References: <ea904b53-3f6f-da28-39f8-f811f432395a@broadcom.com>
+        s=default; t=1592331931;
+        bh=L6sqfSgBmHN66ThR9qZuIm62kdJIyo1PoHR5cx2mp0Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eI5ha4zAruoT/Y0qoOY1+oRtaQhwhz101rJzQqnQRbw/6vp2GT74yCrUyjlXt64L2
+         AHe49xwkrQwD8R8B94fluOqsraWpgSaAa3YOxPoyD10ndvZggNtpvxWWJuEN1aJeuk
+         pjFtVwwAxRjQyzyP0ASgHq3pcpADDSp79MzgVKaI=
+Date:   Tue, 16 Jun 2020 13:30:50 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] rapidio/rio_mport_cdev: Use array_size() helper in
+ copy_{from,to}_user()
+Message-ID: <20200616183050.GA31840@embeddedor>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Mwz/dta3oUwEdwoz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea904b53-3f6f-da28-39f8-f811f432395a@broadcom.com>
-X-Cookie: Offer may end without notice.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use array_size() helper instead of the open-coded version in
+copy_{from,to}_user(). These sorts of multiplication factors
+need to be wrapped in array_size().
 
---Mwz/dta3oUwEdwoz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This issue was found with the help of Coccinelle and, audited
+and fixed manually.
 
-On Tue, Jun 16, 2020 at 10:31:16AM -0700, Florian Fainelli wrote:
-> On 6/16/2020 10:25 AM, Mark Brown wrote:
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/rapidio/devices/rio_mport_cdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> >> In Alvaro's defense, you applied the patches despite me requesting that
-> >> specific changes be made (use the optional reset control API variant).
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 451608e960a1..6943459f8ac2 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -981,7 +981,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+ 
+ 	if (unlikely(copy_from_user(transfer,
+ 				    (void __user *)(uintptr_t)transaction.block,
+-				    transaction.count * sizeof(*transfer)))) {
++				    array_size(sizeof(*transfer), transaction.count)))) {
+ 		ret = -EFAULT;
+ 		goto out_free;
+ 	}
+@@ -994,7 +994,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+ 
+ 	if (unlikely(copy_to_user((void __user *)(uintptr_t)transaction.block,
+ 				  transfer,
+-				  transaction.count * sizeof(*transfer))))
++				  array_size(sizeof(*transfer), transaction.count))))
+ 		ret = -EFAULT;
+ 
+ out_free:
+-- 
+2.27.0
 
-> > I applied only the two patches that you'd acked, not the reset patches
-> > which had problems.
-
-> Indeed, sorry for not reading your commit message properly, I believe I
-> request that before, cannot the "applied" response just reply with the
-> patches *applied* and not *all* part of the series?
-
-You might've mentioned it to someone else using b4 but not me - AFAICT
-it's not configurable.  I can see arguments either way TBH, but I do
-agree that the current output could be confusing and if nothing else the
-wording could be better.
-
---Mwz/dta3oUwEdwoz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7pD7EACgkQJNaLcl1U
-h9DksQf9HFV5rre0PXhojl9tIIGHjFqwzTO6VnO6Odha0mzeLl2hyAjTZxdBxHRW
-HxKz0NzZP+QTUCx9IyGAunVqA8IxwHHc7eKeYAhpQhn4078p1lhlVXyg07s5UT4r
-DATrqiCQHxPwZJooWA7rqG/So62fVpq7u102kcv9hTBEoUBOEEk4twK8yVVtKYdQ
-OOWZz5p+8Mcgn/S1Y/Gm5BnSU5m56Mra/cT/gqAIwp9Twa2otTK4QQeDXWdBsAwL
-M42G4vrF9d73GDJ+tB/DAm8XhPvio2dqxUYiXythXuBV0ssE0H2qbYmaqAmzGpnc
-I064gIC5DhcmWRuWIVZ9qVviHtQfOA==
-=fsdZ
------END PGP SIGNATURE-----
-
---Mwz/dta3oUwEdwoz--
