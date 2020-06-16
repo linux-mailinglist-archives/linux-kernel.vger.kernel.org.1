@@ -2,171 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C3A1FA642
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE561FA64B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgFPCFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S1726520AbgFPCH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 22:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgFPCFX (ORCPT
+        with ESMTP id S1725978AbgFPCH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:05:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE99EC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 19:05:22 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id j4so4430311plk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 19:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jqSbYIPnY6ci51ta8tYoTw2b3jpAI+B7iVRHzIcHBMc=;
-        b=skeTW2FKZcVJOT07Lv7sRc0GeKB4kjIUSEG1sKws8vBGognffqobLrxueS5gtKkgCv
-         DuMHuJPs1s8kctma7CssV7BnNpluob6TjtLa+usGzXYpJLvK21+okCK0L/tSKkvtDcMY
-         kEzr3aDVhj7louujAlY+98U1kMGf9zfmGCuhSrZMZZFaYCAJicH+WipgB6nAMY/2m0wE
-         LpsBjhOKmoj+H2sGbgiv3hWPNfFgtwHqkIVYg3yTXqo4INrX26NOhRuL1mV3ieqslZrw
-         Yy8TwqAsuxe81JZ5IAbppT/ssGNWUWpNPL4uI+mdveV4RonlzCIF6c5A5fIhXrE1f4Sv
-         9GaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jqSbYIPnY6ci51ta8tYoTw2b3jpAI+B7iVRHzIcHBMc=;
-        b=hedddqP0GDjWcWHfcFEZp5rmoFfQ7a+kVPh0Zu0uhoIM+WNkNKPYpHqGTvzTv6gESb
-         wis2GdhHQ3ht5s1H/kkEUbUI5+aIBmgBVWnIIcf3jLKtwc2bDs/1zeIvYGNEIIj2+RNP
-         Fhqy6zyEmpzoTJMGNYt2Wm3JJxdvLUcKbaFhE7HmFb9ZQLIbLpjU0WQOj718WQtElwAg
-         foZm7mwRUqp7IZrfwf8rMvge7iq7JJxD6QAwKxV3xv0gjQlB+yuMFyjzuSEzcYXnK7hF
-         Jt+MjcPKQO9avHQJNvau+HLN2PaSQSRWspxspJvzvVRpfSb7MDeixkeNfbPqEjJq/x7P
-         cAag==
-X-Gm-Message-State: AOAM532Iv+5Wo4OiJvpgQEo/UgeHnHvkUZUcQ8ckz7ey28kKOaqfGkDL
-        V5J74DjByTTWvr27AxF+mEc=
-X-Google-Smtp-Source: ABdhPJyV+LZWepMi1+A2rLs/paQuZyjS2m64Hfm8gC82rm4ZiTXJ05c9CTXLLUDbDxQDMMZKTKvZyw==
-X-Received: by 2002:a17:90b:4c0b:: with SMTP id na11mr538099pjb.176.1592273122516;
-        Mon, 15 Jun 2020 19:05:22 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id f14sm13076332pgj.62.2020.06.15.19.05.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 19:05:21 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Freeman Liu <freeman.liu@unisoc.com>
-Subject: [PATCH V2] nvmem: sc27xx: add sc2730 efuse support
-Date:   Tue, 16 Jun 2020 10:05:15 +0800
-Message-Id: <20200616020515.13494-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 15 Jun 2020 22:07:57 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF09EC061A0E;
+        Mon, 15 Jun 2020 19:07:56 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F1E75F9;
+        Tue, 16 Jun 2020 04:07:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1592273275;
+        bh=xYElGteoaj0H9zLGTP6RnYkFontC7H09EZpYQcLGUtM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=okB8LYmHYqilwBUAYyvrfQ8bW0QAZyYKM6eyUYx/nrm21scB5YMBKSQYZ1vtTbfyG
+         3aB2gQ73t4FEa5lDTz9s5RTQ1UDF7/TRujuLWEr0X3HErtSH3HRtE6/WK3lgf1mFXW
+         mzAhcKHvXnUVNu8akz1Y2/cdsrgG/Dm+PsjrCjmo=
+Date:   Tue, 16 Jun 2020 05:07:32 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     wu000273@umn.edu
+Cc:     kjlu@umn.edu,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: vsp1: Fix a reference count leak.
+Message-ID: <20200616020732.GK1629@pendragon.ideasonboard.com>
+References: <20200613232357.18155-1-wu000273@umn.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200613232357.18155-1-wu000273@umn.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Freeman Liu <freeman.liu@unisoc.com>
+Hi Qiushi,
 
-Add support to the new efuse IP which is integrated in the SC2730
-which includes multiple blocks in a single chip.
+(CC'ing Rafael and Geert)
 
-Signed-off-by: Freeman Liu <freeman.liu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
----
-Changes from v1:
-* Addressed comments from Srinivas;
-* Added reviewed-by from Baolin.
----
- drivers/nvmem/sc27xx-efuse.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-index ab5e7e0bc3d8..c825fc902d10 100644
---- a/drivers/nvmem/sc27xx-efuse.c
-+++ b/drivers/nvmem/sc27xx-efuse.c
-@@ -4,12 +4,14 @@
- #include <linux/hwspinlock.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/nvmem-provider.h>
- 
- /* PMIC global registers definition */
- #define SC27XX_MODULE_EN		0xc08
-+#define SC2730_MODULE_EN		0x1808
- #define SC27XX_EFUSE_EN			BIT(6)
- 
- /* Efuse controller registers definition */
-@@ -49,12 +51,29 @@
- #define SC27XX_EFUSE_POLL_TIMEOUT	3000000
- #define SC27XX_EFUSE_POLL_DELAY_US	10000
- 
-+/*
-+ * Since different PMICs of SC27xx series can have different
-+ * address , we should save address in the device data structure.
-+ */
-+struct sc27xx_efuse_variant_data {
-+	u32 module_en;
-+};
-+
- struct sc27xx_efuse {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct hwspinlock *hwlock;
- 	struct mutex mutex;
- 	u32 base;
-+	const struct sc27xx_efuse_variant_data *var_data;
-+};
-+
-+static const struct sc27xx_efuse_variant_data sc2731_edata = {
-+	.module_en = SC27XX_MODULE_EN,
-+};
-+
-+static const struct sc27xx_efuse_variant_data sc2730_edata = {
-+	.module_en = SC2730_MODULE_EN,
- };
- 
- /*
-@@ -119,7 +138,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
- 		return ret;
- 
- 	/* Enable the efuse controller. */
--	ret = regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN,
-+	ret = regmap_update_bits(efuse->regmap, efuse->var_data->module_en,
- 				 SC27XX_EFUSE_EN, SC27XX_EFUSE_EN);
- 	if (ret)
- 		goto unlock_efuse;
-@@ -169,7 +188,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
- 
- disable_efuse:
- 	/* Disable the efuse controller after reading. */
--	regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN, SC27XX_EFUSE_EN, 0);
-+	regmap_update_bits(efuse->regmap, efuse->var_data->module_en, SC27XX_EFUSE_EN, 0);
- unlock_efuse:
- 	sc27xx_efuse_unlock(efuse);
- 
-@@ -219,6 +238,7 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
- 
- 	mutex_init(&efuse->mutex);
- 	efuse->dev = &pdev->dev;
-+	efuse->var_data = of_device_get_match_data(&pdev->dev);
- 
- 	econfig.stride = 1;
- 	econfig.word_size = 1;
-@@ -238,7 +258,8 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id sc27xx_efuse_of_match[] = {
--	{ .compatible = "sprd,sc2731-efuse" },
-+	{ .compatible = "sprd,sc2731-efuse", .data = &sc2731_edata},
-+	{ .compatible = "sprd,sc2730-efuse", .data = &sc2730_edata},
- 	{ }
- };
- 
+On Sat, Jun 13, 2020 at 06:23:57PM -0500, wu000273@umn.edu wrote:
+> From: Qiushi Wu <wu000273@umn.edu>
+> 
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code, causing incorrect ref count if
+> pm_runtime_put_noidle() is not called in error handling paths.
+> Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+> 
+> Fixes: 1e6af546ee66 ("[media] v4l: vsp1: Implement runtime PM support")
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+
+https://lore.kernel.org/dri-devel/20200614134655.GA5960@pendragon.ideasonboard.com/
+
+I really wonder if mass-patching all drivers is the best way forward.
+
+> ---
+>  drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+> index c650e45bb0ad..222c9e1261a0 100644
+> --- a/drivers/media/platform/vsp1/vsp1_drv.c
+> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
+> @@ -846,8 +846,10 @@ static int vsp1_probe(struct platform_device *pdev)
+>  	pm_runtime_enable(&pdev->dev);
+>  
+>  	ret = pm_runtime_get_sync(&pdev->dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(&pdev->dev);
+>  		goto done;
+> +	}
+>  
+>  	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
+>  	pm_runtime_put_sync(&pdev->dev);
+
 -- 
-2.20.1
+Regards,
 
+Laurent Pinchart
