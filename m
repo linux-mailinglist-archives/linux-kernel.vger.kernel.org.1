@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BA21FB869
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840681FB7A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733147AbgFPP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
+        id S1732083AbgFPPsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:48:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733130AbgFPPz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:55:56 -0400
+        id S1732367AbgFPPry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D2D6207C4;
-        Tue, 16 Jun 2020 15:55:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79D0D2071A;
+        Tue, 16 Jun 2020 15:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322955;
-        bh=vW18VRNYV9BtNXSDwWxZYN38v2KsWgMa+JvycMWRHYU=;
+        s=default; t=1592322474;
+        bh=5JcNY3+ofa7957DqRCh2OsXj0EcV00v6wRJI0km4tQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gPB46nckNhqd/dvqngGPBDC9cNnUCirxXKV0pmIkloREgGUtO1fcKw/ypJFbAbhwJ
-         kUl/tXuP1ONmZQLlk8x+CrEdzcQYMlrj+oFv4E3xgdlBkM0sJVM+VNWwdihhsK+Uve
-         Mmn7rhJZT5Jtl2f1rZ0J3hopawdmhzRcDAmJacxg=
+        b=AXOxH4gkVDch+SpgmPUvqV7qnHygyGIxFWbOqx9/7e9AJqLGFu8+jiOlN9U/cl8/l
+         RbCx2g5OehqLuyVN+I9qY9PQLv8fAzLvdeGUtYm1wi2/wNv1GYX8fxfoUQ/tijNDch
+         eP2dDLvpB9U5xgq0Z0p3k5PNoxk/fYVCwmcmMzmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 128/161] KVM: nVMX: Consult only the "basic" exit reason when routing nested exit
-Date:   Tue, 16 Jun 2020 17:35:18 +0200
-Message-Id: <20200616153112.459145837@linuxfoundation.org>
+        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        syzbot+e3372a2afe1e7ef04bc7@syzkaller.appspotmail.com
+Subject: [PATCH 5.7 145/163] drm/vkms: Hold gem object while still in-use
+Date:   Tue, 16 Jun 2020 17:35:19 +0200
+Message-Id: <20200616153113.747491695@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Ezequiel Garcia <ezequiel@collabora.com>
 
-commit 2ebac8bb3c2d35f5135466490fc8eeaf3f3e2d37 upstream.
+commit 0ea2ea42b31abc1141f2fd3911f952a97d401fcb upstream.
 
-Consult only the basic exit reason, i.e. bits 15:0 of vmcs.EXIT_REASON,
-when determining whether a nested VM-Exit should be reflected into L1 or
-handled by KVM in L0.
+We need to keep the reference to the drm_gem_object
+until the last access by vkms_dumb_create.
 
-For better or worse, the switch statement in nested_vmx_exit_reflected()
-currently defaults to "true", i.e. reflects any nested VM-Exit without
-dedicated logic.  Because the case statements only contain the basic
-exit reason, any VM-Exit with modifier bits set will be reflected to L1,
-even if KVM intended to handle it in L0.
+Therefore, the put the object after it is used.
 
-Practically speaking, this only affects EXIT_REASON_MCE_DURING_VMENTRY,
-i.e. a #MC that occurs on nested VM-Enter would be incorrectly routed to
-L1, as "failed VM-Entry" is the only modifier that KVM can currently
-encounter.  The SMM modifiers will never be generated as KVM doesn't
-support/employ a SMI Transfer Monitor.  Ditto for "exit from enclave",
-as KVM doesn't yet support virtualizing SGX, i.e. it's impossible to
-enter an enclave in a KVM guest (L1 or L2).
+This fixes a use-after-free issue reported by syzbot.
 
-Fixes: 644d711aa0e1 ("KVM: nVMX: Deciding if L0 or L1 should handle an L2 exit")
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200227174430.26371-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+While here, change vkms_gem_create() symbol to static.
+
+Reported-and-tested-by: syzbot+e3372a2afe1e7ef04bc7@syzkaller.appspotmail.com
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200427214405.13069-1-ezequiel@collabora.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/nested.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_drv.h |    5 -----
+ drivers/gpu/drm/vkms/vkms_gem.c |   11 ++++++-----
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5562,7 +5562,7 @@ bool nested_vmx_exit_reflected(struct kv
- 				vmcs_read32(VM_EXIT_INTR_ERROR_CODE),
- 				KVM_ISA_VMX);
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -117,11 +117,6 @@ struct drm_plane *vkms_plane_init(struct
+ 				  enum drm_plane_type type, int index);
  
--	switch (exit_reason) {
-+	switch ((u16)exit_reason) {
- 	case EXIT_REASON_EXCEPTION_NMI:
- 		if (is_nmi(intr_info))
- 			return false;
+ /* Gem stuff */
+-struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
+-				       struct drm_file *file,
+-				       u32 *handle,
+-				       u64 size);
+-
+ vm_fault_t vkms_gem_fault(struct vm_fault *vmf);
+ 
+ int vkms_dumb_create(struct drm_file *file, struct drm_device *dev,
+--- a/drivers/gpu/drm/vkms/vkms_gem.c
++++ b/drivers/gpu/drm/vkms/vkms_gem.c
+@@ -97,10 +97,10 @@ vm_fault_t vkms_gem_fault(struct vm_faul
+ 	return ret;
+ }
+ 
+-struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
+-				       struct drm_file *file,
+-				       u32 *handle,
+-				       u64 size)
++static struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
++					      struct drm_file *file,
++					      u32 *handle,
++					      u64 size)
+ {
+ 	struct vkms_gem_object *obj;
+ 	int ret;
+@@ -113,7 +113,6 @@ struct drm_gem_object *vkms_gem_create(s
+ 		return ERR_CAST(obj);
+ 
+ 	ret = drm_gem_handle_create(file, &obj->gem, handle);
+-	drm_gem_object_put_unlocked(&obj->gem);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -142,6 +141,8 @@ int vkms_dumb_create(struct drm_file *fi
+ 	args->size = gem_obj->size;
+ 	args->pitch = pitch;
+ 
++	drm_gem_object_put_unlocked(gem_obj);
++
+ 	DRM_DEBUG_DRIVER("Created object of size %lld\n", size);
+ 
+ 	return 0;
 
 
