@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E751FB802
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022471FB765
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731732AbgFPPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48222 "EHLO mail.kernel.org"
+        id S1731453AbgFPPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732490AbgFPPve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:34 -0400
+        id S1731142AbgFPPpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C970E214DB;
-        Tue, 16 Jun 2020 15:51:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4C2D20C09;
+        Tue, 16 Jun 2020 15:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322694;
-        bh=HpNJ3q8VhMPUwZr5wg2XHd0tXHo7Vqwt6uIEiQ4MXjM=;
+        s=default; t=1592322342;
+        bh=rm1bzAXLBXkymLfucPHjI52gwCHPLfYj8Fb3tWjdOxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qHfPruonOE3vI+OYSM1uXaAjrXiT4KOlOQlElVcPvjWm0LwD7f5Wcpjdq3uHuFSar
-         pW9vj28AiT11HzGTRuvnzU7hG2fAP/QQnVCL9Rf9ir45XGdlSLFFQaqTva/WMgkEY6
-         HYWiJnYAb0Df3rvO2cS7DHUHkHVgjrKb52Gg54wM=
+        b=E9bh1UZ1DdFkq3JHLGmOfhZaWTV4H5EmkRg4zZrldxUEYIeFz0bTTD06v3zcdZlOC
+         s80tACP+KOopFOQT1dBbFoslhL3jvcrU4mQIuGEI0I+Cwr0518qnEgdauim64i+gxn
+         VQRNwAD2YOl1nRcupdR2un03rXYCnDknML9i7508=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 037/161] s390/pci: Log new handle in clp_disable_fh()
-Date:   Tue, 16 Jun 2020 17:33:47 +0200
-Message-Id: <20200616153108.149665067@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.7 054/163] io_uring: re-set iov base/len for buffer select retry
+Date:   Tue, 16 Jun 2020 17:33:48 +0200
+Message-Id: <20200616153109.432071451@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <ptesarik@suse.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit e1750a3d9abbea2ece29cac8dc5a6f5bc19c1492 ]
+commit dddb3e26f6d88c5344d28cb5ff9d3d6fa05c4f7a upstream.
 
-After disabling a function, the original handle is logged instead of
-the disabled handle.
+We already have the buffer selected, but we should set the iter list
+again.
 
-Link: https://lkml.kernel.org/r/20200522183922.5253-1-ptesarik@suse.com
-Fixes: 17cdec960cf7 ("s390/pci: Recover handle in clp_set_pci_fn()")
-Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
-Signed-off-by: Petr Tesarik <ptesarik@suse.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org # v5.7
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/pci/pci_clp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/io_uring.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-index 0d3d8f170ea4..25208fa95426 100644
---- a/arch/s390/pci/pci_clp.c
-+++ b/arch/s390/pci/pci_clp.c
-@@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
- 
- int clp_disable_fh(struct zpci_dev *zdev)
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2333,8 +2333,14 @@ static ssize_t __io_iov_buffer_select(st
+ static ssize_t io_iov_buffer_select(struct io_kiocb *req, struct iovec *iov,
+ 				    bool needs_lock)
  {
--	u32 fh = zdev->fh;
- 	int rc;
- 
- 	if (!zdev_enabled(zdev))
+-	if (req->flags & REQ_F_BUFFER_SELECTED)
++	if (req->flags & REQ_F_BUFFER_SELECTED) {
++		struct io_buffer *kbuf;
++
++		kbuf = (struct io_buffer *) (unsigned long) req->rw.addr;
++		iov[0].iov_base = u64_to_user_ptr(kbuf->addr);
++		iov[0].iov_len = kbuf->len;
  		return 0;
- 
- 	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
--	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
-+	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
- 	return rc;
- }
- 
--- 
-2.25.1
-
++	}
+ 	if (!req->rw.len)
+ 		return 0;
+ 	else if (req->rw.len > 1)
 
 
