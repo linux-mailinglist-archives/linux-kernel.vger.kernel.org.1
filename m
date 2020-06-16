@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F4D1FB920
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9811FBB20
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733008AbgFPQBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49100 "EHLO mail.kernel.org"
+        id S1730963AbgFPPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732740AbgFPPwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:03 -0400
+        id S1730951AbgFPPja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FAF8207C4;
-        Tue, 16 Jun 2020 15:52:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C3152145D;
+        Tue, 16 Jun 2020 15:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322722;
-        bh=yPmakgyZf3oG9P+PmWrdeHlR5ZNMhUmeT1qM0Vy9QHc=;
+        s=default; t=1592321970;
+        bh=RHVyUJryWVBrb37z8EtnL+5Xxwy5WhIbryfW9d+mlY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zst4VZTEFPbGl1RFL4DSU7d+TwxXv7cua4drehbnUFFdhHWzmSJihPZsFe7wXgC1R
-         /H9SFtqHUcPdxGLu/8DKGHTE2ruUgJDz9/NNQvb0jsh+8k4w0l2EE5XMPrHr/Q8jDy
-         DSF3EYsBjEuK/2igQvVeO0AR/jcNgvaDDsgr9jWM=
+        b=JNOD9wLMQhCPITDotwtwlcv+crJzmfaZvja50VnFYsweEx+bcu77AynJKLeqYcYsM
+         1pL4omj7p0E6RWTCRuo7bBQQY3hKR5c746K0Ie2fZC2bAsBjIyqpRmE9PvPnK3wcCB
+         0a31Xr0wmWE5H/GFgpbCKjb3bgJSktb/0dq94APw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.6 079/161] ACPI: GED: add support for _Exx / _Lxx handler methods
-Date:   Tue, 16 Jun 2020 17:34:29 +0200
-Message-Id: <20200616153110.139050486@linuxfoundation.org>
+        stable@vger.kernel.org, LABBE Corentin <clabbe@baylibre.com>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/134] crypto: virtio: Fix use-after-free in virtio_crypto_skcipher_finalize_req()
+Date:   Tue, 16 Jun 2020 17:34:30 +0200
+Message-Id: <20200616153104.901978904@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +50,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Longpeng(Mike) <longpeng2@huawei.com>
 
-commit ea6f3af4c5e63f6981c0b0ab8ebec438e2d5ef40 upstream.
+[ Upstream commit 8c855f0720ff006d75d0a2512c7f6c4f60ff60ee ]
 
-Per the ACPI spec, interrupts in the range [0, 255] may be handled
-in AML using individual methods whose naming is based on the format
-_Exx or _Lxx, where xx is the hex representation of the interrupt
-index.
+The system'll crash when the users insmod crypto/tcrypto.ko with mode=155
+( testing "authenc(hmac(sha1),cbc(aes))" ). It's caused by reuse the memory
+of request structure.
 
-Add support for this missing feature to our ACPI GED driver.
+In crypto_authenc_init_tfm(), the reqsize is set to:
+  [PART 1] sizeof(authenc_request_ctx) +
+  [PART 2] ictx->reqoff +
+  [PART 3] MAX(ahash part, skcipher part)
+and the 'PART 3' is used by both ahash and skcipher in turn.
 
-Cc: v4.9+ <stable@vger.kernel.org> # v4.9+
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When the virtio_crypto driver finish skcipher req, it'll call ->complete
+callback(in crypto_finalize_skcipher_request) and then free its
+resources whose pointers are recorded in 'skcipher parts'.
 
+However, the ->complete is 'crypto_authenc_encrypt_done' in this case,
+it will use the 'ahash part' of the request and change its content,
+so virtio_crypto driver will get the wrong pointer after ->complete
+finish and mistakenly free some other's memory. So the system will crash
+when these memory will be used again.
+
+The resources which need to be cleaned up are not used any more. But the
+pointers of these resources may be changed in the function
+"crypto_finalize_skcipher_request". Thus release specific resources before
+calling this function.
+
+Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
+Reported-by: LABBE Corentin <clabbe@baylibre.com>
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200123101000.GB24255@Red
+Acked-by: Gonglei <arei.gonglei@huawei.com>
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200602070501.2023-3-longpeng2@huawei.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/evged.c |   22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ drivers/crypto/virtio/virtio_crypto_algs.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/acpi/evged.c
-+++ b/drivers/acpi/evged.c
-@@ -79,6 +79,8 @@ static acpi_status acpi_ged_request_inte
- 	struct resource r;
- 	struct acpi_resource_irq *p = &ares->data.irq;
- 	struct acpi_resource_extended_irq *pext = &ares->data.extended_irq;
-+	char ev_name[5];
-+	u8 trigger;
- 
- 	if (ares->type == ACPI_RESOURCE_TYPE_END_TAG)
- 		return AE_OK;
-@@ -87,14 +89,28 @@ static acpi_status acpi_ged_request_inte
- 		dev_err(dev, "unable to parse IRQ resource\n");
- 		return AE_ERROR;
- 	}
--	if (ares->type == ACPI_RESOURCE_TYPE_IRQ)
-+	if (ares->type == ACPI_RESOURCE_TYPE_IRQ) {
- 		gsi = p->interrupts[0];
--	else
-+		trigger = p->triggering;
-+	} else {
- 		gsi = pext->interrupts[0];
-+		trigger = p->triggering;
-+	}
- 
- 	irq = r.start;
- 
--	if (ACPI_FAILURE(acpi_get_handle(handle, "_EVT", &evt_handle))) {
-+	switch (gsi) {
-+	case 0 ... 255:
-+		sprintf(ev_name, "_%c%02hhX",
-+			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
+index 82b316b2f537..fea55b5da8b5 100644
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -580,10 +580,11 @@ static void virtio_crypto_ablkcipher_finalize_req(
+ 		scatterwalk_map_and_copy(req->info, req->dst,
+ 					 req->nbytes - AES_BLOCK_SIZE,
+ 					 AES_BLOCK_SIZE, 0);
+-	crypto_finalize_ablkcipher_request(vc_sym_req->base.dataq->engine,
+-					   req, err);
+ 	kzfree(vc_sym_req->iv);
+ 	virtcrypto_clear_request(&vc_sym_req->base);
 +
-+		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
-+			break;
-+		/* fall through */
-+	default:
-+		if (ACPI_SUCCESS(acpi_get_handle(handle, "_EVT", &evt_handle)))
-+			break;
-+
- 		dev_err(dev, "cannot locate _EVT method\n");
- 		return AE_ERROR;
- 	}
++	crypto_finalize_ablkcipher_request(vc_sym_req->base.dataq->engine,
++					   req, err);
+ }
+ 
+ static struct virtio_crypto_algo virtio_crypto_algs[] = { {
+-- 
+2.25.1
+
 
 
