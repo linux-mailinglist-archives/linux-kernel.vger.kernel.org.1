@@ -2,238 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B381FC0D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7478F1FC0DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgFPVQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 17:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S1726451AbgFPVRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 17:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgFPVQa (ORCPT
+        with ESMTP id S1725773AbgFPVRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 17:16:30 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446A8C061573;
-        Tue, 16 Jun 2020 14:16:30 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i27so217926ljb.12;
-        Tue, 16 Jun 2020 14:16:30 -0700 (PDT)
+        Tue, 16 Jun 2020 17:17:37 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEEEC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:17:36 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d27so8054536lfq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:17:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OnZOezgZVzOz9JB4hQqD3uRAyvohb+j0oda6sI9lrns=;
-        b=Qwjrg/vI39KV/BVNwQVK88aehEvDlwgph3TCqPFTxNYt0KpwEpAZkM7KL3QcW+6wiN
-         //kV1IzXUlHXUGjZJkHSmigiJwYb3KdwZDZObx1PXSP/xT2tmQJ1XzrmmvojkVWpPknL
-         2PGOynS5ikN7+fi14+ISM3YTlFPZgMo9I8C+V+MH+JtJt/m0ZJhyMTcGqDOuKoW7ffsJ
-         Q+A5Qn6otX4Qh8llD43kfCA2fpLoVC/Tp/2RPJmvPbhW+Kd8Vg3qo8KkwMfCZ6HUyk7k
-         +oovK5b66w1iZmpek1dxhIChEWMds2ELKb77xO7dPqFV8pDIadt+vxDck/5UKD5GwqVV
-         FNCQ==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rZrMRZK+NBwpqKVitehAL9xTIrDppW8h8HoB5F49GD8=;
+        b=I+zYwfyHsGog+tXrkHOqqd0wp1mrc7LjZI96FBTEItv/JdmTmyIVxOfdGNBUdzRt5E
+         H3mFXYpMNKfZiK+suf6+097zwNshCg6hFbqmAa25Mk4N5dYseZXLwpTQc9h5C8k3Y1Sg
+         w9q2bLvXdEFqsTV1iw89KDEpbHvHIAqymqIr+nSeT3xmCO+M51z167uq9/e4h3iBHfip
+         a5cC/kzPJzae6hPwp2RDEZLp7ApMXVzqILgbtWOJ4ndLudPrG31eLec8eMTUwyfOgLLJ
+         grnpc3dVbqVthl3kgOgf8su5Vk2zv0acKvNt9P5/Al1zU4XK/e4AFkyLQTmq+Fj8pYpZ
+         Dn4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OnZOezgZVzOz9JB4hQqD3uRAyvohb+j0oda6sI9lrns=;
-        b=JJ5Bc+wLm4QowUFmh3xr6IzzonOqbh9QLLkOeQNaB5tjUIeiyX8tHwIF/ssK4rflKf
-         SzOE/XS02EqcRjZ2xskPjWqZWeXylvma6a8CZpSMNJnKkCJEmLdwTxTtlzhhJlI1BDAF
-         Nt15eVKJLmy/2ScXhmE1VoXzWj6m3I0IyzF7EXuEljgEBC/pv0Ioo3ZZzyDUJDNjGPes
-         xN/Sft5T/LQt3FFpnhQCf91uQ1xX5HvCubMKA3mJN/zq5HIuYfdicXb9B0x2ys//c2oK
-         bS0jLalEDvaIgr5MvlmrDB85nB3ROFcV69dF6Lq8tMAQmPokNVs1P8uco3l5tOujXVFp
-         GQIg==
-X-Gm-Message-State: AOAM530+C8qpLqr51663wOFjpAxbOJK2LfAZjEZHT/UF0AsjEKM9YmXM
-        jvr3fAaEgag8olz//8d5QJo=
-X-Google-Smtp-Source: ABdhPJxV0UzC1PmGkRHvtnIQwv36oY6aTT21lS7mK9zwEdagk0VyfLJ137UPRI8gR7YlMGQModFb7A==
-X-Received: by 2002:a2e:1558:: with SMTP id 24mr2293460ljv.202.1592342188684;
-        Tue, 16 Jun 2020 14:16:28 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id p19sm5516068lfc.91.2020.06.16.14.16.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 14:16:27 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
-To:     Emil Velikov <emil.l.velikov@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-References: <20200614200121.14147-1-digetx@gmail.com>
- <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
- <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
- <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
- <646b3f37-0f72-7f3b-388f-f71dbcdd5c84@gmail.com>
- <CACvgo50BFH5qsPyWx9a1aZ4k5bzjSN-3KTU0BvnZ-nG-hfzKOQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <fe845434-cbf6-29d4-eeb6-8868d628fd04@gmail.com>
-Date:   Wed, 17 Jun 2020 00:16:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rZrMRZK+NBwpqKVitehAL9xTIrDppW8h8HoB5F49GD8=;
+        b=EyDTwGdijxrrWNDdhJRBt07UfajH/hDB7th7kgYBl/CAUY5ReFbf5UZKUsO7JLmgRF
+         IlmEoFdznRHJFqEkEzfD4QP4lJ4yK4yhPsAlfCC2lP3m2S/q98IULKeHJsI0L3AMVgFw
+         yurLOmRgfsl/Eg7D5th+1r4f5OCjf8gDEedaQylQ5nytb5KBYaFlvy4cx5N2c9XvU0BB
+         pNXXxtdGgWIcAbHonlidq252rBCj5e4st6DvEvxhDvhTj4KXzPlQrc4m4sCP8jJwBFrE
+         9kDl3SZW4xHgPkjL0LauFE9ohiBHtCIe3feUewrgl4+ikwDB+i6FPAr02WjacAN3IwO0
+         61KQ==
+X-Gm-Message-State: AOAM53004SOD754/H26DOdl5Q9biGmwbv0mccjQeVsJHnjuIWOLABSIq
+        2BlVIERJQ/A375XGMu//qfPFHWzndWm4AhzSCg8NQsmKcw==
+X-Google-Smtp-Source: ABdhPJxpHQleWXov1W9//pLAITKlL504+pe7hMIseUIRwP0OPd5cxY2+wZK9l4cjgQ4u2DkW4L4id+X8Ub28k9c8oSE=
+X-Received: by 2002:a19:4945:: with SMTP id l5mr2740737lfj.12.1592342255315;
+ Tue, 16 Jun 2020 14:17:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACvgo50BFH5qsPyWx9a1aZ4k5bzjSN-3KTU0BvnZ-nG-hfzKOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=whfuea587g8rh2DeLFFGYxiVuh-bzq22osJwz3q4SOfmA@mail.gmail.com>
+ <CAEJqkgi3w+zvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com> <20200616203352.GA1815527@rani.riverdale.lan>
+In-Reply-To: <20200616203352.GA1815527@rani.riverdale.lan>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Tue, 16 Jun 2020 23:17:08 +0200
+Message-ID: <CAEJqkghzD_6F2N=M65uYHzpOOJ8bvMw18JCfwsiQoH-kToPKLQ@mail.gmail.com>
+Subject: Re: Linux 5.8-rc1
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.06.2020 21:54, Emil Velikov пишет:
-> On Tue, 16 Jun 2020 at 18:20, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 16.06.2020 18:48, Emil Velikov пишет:
->>> On Tue, 16 Jun 2020 at 12:40, Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>
->>>> 16.06.2020 01:26, Emil Velikov пишет:
->>>>> Hi Dmitry,
->>>>>
->>>>> On Mon, 15 Jun 2020 at 08:28, Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>>>
->>>>>> Hello!
->>>>>>
->>>>>> This series adds 180° display plane rotation support to the NVIDIA Tegra
->>>>>> DRM driver which is needed for devices that have display panel physically
->>>>>> mounted upside-down, like Nexus 7 tablet device for example [1]. Since
->>>>>> DRM panel rotation is a new thing for a userspace, currently only
->>>>>> Opentegra Xorg driver handles the rotated display panel [2], but this
->>>>>> is good enough for the start.
->>>>>>
->>>>>> Note that later on it should be possible to implement a transparent 180°
->>>>>> display rotation for Tegra DRM driver which will remove the need to have
->>>>>> a bleeding edge userspace that knows how to rotate display planes and I'm
->>>>>> slowly working on it. For the starter we can go with the minimal rotation
->>>>>> support, so it's not a blocker.
->>>>>>
->>>>>> This series is based on the work that was made by Derek Basehore for the
->>>>>> Mediatek driver [3], his patch is included into this patchset. I added
->>>>>> my tested-by tag to the Derek's patch.
->>>>>>
->>>>>> Please review and apply, thanks in advance!
->>>>>>
->>>>>> [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154327.18589-3-digetx@gmail.com/
->>>>>> [2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20a3959bbe5bc3a3b67e55977093fd5114ca
->>>>>> [3] https://lkml.org/lkml/2020/3/5/1119
->>>>>>
->>>>>> Changelog:
->>>>>>
->>>>>> v2: - Dropped "drm/panel: Set display info in panel attach" patch, which
->>>>>>       turned out to be obsolete now.
->>>>>>
->>>>>>     - Renamed the cover-latter, hopefully this will fix the bouncing emails.
->>>>>>
->>>>>> Derek Basehore (1):
->>>>>>   drm/panel: Add helper for reading DT rotation
->>>>>>
->>>>>> Dmitry Osipenko (4):
->>>>>>   drm/panel: lvds: Set up panel orientation
->>>>>
->>>>> IMHO it's perfectly reasonable to report the panel orientation to
->>>>> userspace, which can apply plane rotation as needed.
->>>>>
->>>>> Although I see that this series, alike Derek's, has a couple of issues:
->>>>>  - only a single panel driver is updated
->>>>>  - rotation is _not_ listed as supported property, in said panel
->>>>> driver device-tree bindings
->>>>>
->>>>> My personal inclination is that we should aim for a comprehensive solution:
->>>>>  - wire all panel drivers, as currently documented (quick grep list below)
->>>>>  - document and wire-up the lvds and boe panels - as proposed by you
->>>>> and Derek respectively
->>>>>
->>>>> HTH
->>>>> Emil
->>>>>
->>>>> Documentation/devicetree/bindings/display/himax,hx8357d.txt:2
->>>>> Documentation/devicetree/bindings/display/ilitek,ili9225.txt:2
->>>>> Documentation/devicetree/bindings/display/ilitek,ili9341.txt:2
->>>>> Documentation/devicetree/bindings/display/ilitek,ili9486.yaml:2
->>>>> Documentation/devicetree/bindings/display/multi-inno,mi0283qt.txt:2
->>>>> Documentation/devicetree/bindings/display/panel/panel-common.yaml:2
->>>>> Documentation/devicetree/bindings/display/sitronix,st7586.txt:1
->>>>> Documentation/devicetree/bindings/display/sitronix,st7735r.yaml:2
->>>>
->>>> Rotation is a common DT panel property that is described in the
->>>> panel-common.yaml.
->>> The property was introduced almost exclusively for tiny drm panels.
->>> Those ones are a bit different from the rest (in panel/) -
->>> MIPI-DBI/SPI w/o (not connected at least) an actual GPU.
->>>
->>> To make it a bit better, the rotation is seemingly performed in the
->>> tiny driver itself ouch.
->>>
->>>> This property is supported by all panel bindings
->>>> because these bindings inherent the common properties from the
->>>> panel-common.yaml.
->>>>
->>> Seems like that was an unintentional change with the conversion to YAML.
->>> Beforehand only a few selected panels had rotation. Upon closer look -
->>> some panels do have follow-up fixes, to remove/limit the implicit
->>> inclusion.
->>
->> Interesting.. my understanding that the rotation property is supposed to
->> be a generic property which represents physical orientation of a display
->> panel and hence it should be applicable to all panels.
->>
-> You're spot on - it is/should be a generic property.
-> 
-> I believe that in general many panels were mounted in the correct
-> orientation so the property, kernel and userspace were slow to catch
-> up. In some cases panels will use flip x+y to denote 180 rotation, yet
-> lacking the rotation property.
-> The s6e8aa0 is an example of the last oddity. To make it better, the
-> two dts in-tree always set both flip x and y.
-> 
-> Tl;Dr: Hysterical raisins
-> 
->>> Sam seems like you've done most of the YAML conversion. IMHO it would
->>> make sense to revisit the patches and inherit common properties only
->>> as applicable.
+Am Di., 16. Juni 2020 um 22:33 Uhr schrieb Arvind Sankar
+<nivedita@alum.mit.edu>:
+>
+> On Tue, Jun 16, 2020 at 10:11:46PM +0200, Gabriel C wrote:
+> > * Am So., 14. Juni 2020 um 22:44 Uhr schrieb Linus Torvalds
+> > <torvalds@linux-foundation.org>:
+> >
+> > Hello,
+> >
+> > > So I didn't really expect this, but 5.8 looks to be one of our biggest
+> > > releases of all time.
+> > >
+> >
+> > I hit a compiler error caused by e4160b2e4b02377c67f8ecd05786811598f39acd.
+> >
+> > x86/purgatory: Fail the build if purgatory.ro has missing symbols
+> >
+> > Having CONFIG_STACKPROTECTOR* & CONFIG_KEXEC_FILE enabled always
+> > results in a linking error like this:
+> >
+> > LD      arch/x86/purgatory/purgatory.chk
+> > ld: arch/x86/purgatory/purgatory.ro: in function `verify_sha256_digest':
+> > purgatory.c:(.text+0x108): undefined reference to `__stack_chk_fail'
+> > ld: arch/x86/purgatory/purgatory.ro: in function `sha256_transform':
+> > sha256.c:(.text+0x1c74): undefined reference to `__stack_chk_fail'
+> > ld: arch/x86/purgatory/purgatory.ro: in function `__sha256_final':
+> > sha256.c:(.text+0x1e65): undefined reference to `__stack_chk_fail'
+> > ld: arch/x86/purgatory/purgatory.ro: in function `_kstrtoull':
+> > string.c:(.text+0x2107): undefined reference to `__stack_chk_fail'
+> >
+> > I didn't look closer at that but from the error, it seems to be,
+> > some missing -fstack-protector* vs -fno-stack-protector* checks
+> > somewhere.
+> >
+> >
+> > Best Regards,
+> >
+> > Gabriel C
+>
+> Can you attach the output of gcc -dumpspecs and gcc -v? I suspect your
+> compiler enables stack protector by default. My distro compiler does
+> that too, but not if -ffreestanding is enabled (which it is for the
+> purgatory).
+>
 
-It looks to me that the conversion was done properly because rotation
-property was added as a common panel property from the start.
+Files including config uploaded to there:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=b60c1be747418a07fbe04f8533394a64b27b6181
+http://crazy.dev.frugalware.org/kernel/
 
->>>> I don't think that it makes sense to wire up rotation property to all
->>>> panel drivers at once because those drivers will be untested, at least I
->>>> don't know anything about those other panels and can't test them. It
->>>> will be much better to support the rotation on by as-needed basis for
->>>> each panel driver individually.
->>>
->>> How about CCing the author and reviewer asking them to test the patch?
->>> The only place where the patches might cause an issue is with tiny,
->>> although patches would still be appreciated.
->>
->> There are quite a lot of panel drivers and I'm a bit doubtful that at
->> least half of devices that use those panels have any real use for the
->> rotation property. I could write the patches.. but in the end it could
->> be a wasted effort if nobody needs it, so I'd prefer not to do it.
-> 
-> That's why I mentioned the rotation introduction or "confusion" if I
-> may. Skimming through the pre/post YAML device tree bindings and grep
-> through the panel themselves will greatly reduce the list.
-> In other words: if neither binding documentation/in-tree dts nor panel
-> mentions rotation - omit it.
+> Does this patch help?
+>
 
-I looked through the DT bindings and only those few tiny-DRM drivers use
-the DT rotation property. The parsed rotation value passed to the MIPI
-DBI core where it's validated and utilized further. I don't feel that
-it's worthwhile to touch that code because switching it to the common
-DRM helper for reading out DT orientation won't bring any real benefits.
+I'll test in a bit and let you know.
 
-The samsung-s6e8aa0 panel driver indeed uses the non-standard flip-x/y
-DT properties in order to achieve the 180 rotation, but I'm not sure
-whether it's worthwhile to touch this driver as well because it will
-require the board's DT change.
+> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+> index b04e6e72a592..088bd764e0b7 100644
+> --- a/arch/x86/purgatory/Makefile
+> +++ b/arch/x86/purgatory/Makefile
+> @@ -34,6 +34,7 @@ KCOV_INSTRUMENT := n
+>  PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+>  PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
+>  PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
+> +PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
+>
+>  # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
+>  # in turn leaves some undefined symbols like __fentry__ in purgatory and not
 
-The panel's orientation could be parsed by any panel driver and then
-assigned as the connector's property in order to allow userspace/FB-core
-to decide what to do with the rotated display. Apparently upstream
-kernel supports only that one Samsung device which has display panel
-mounted upside-down and it already uses the custom DT properties for
-achieving the 180 rotation. So I don't quite see any panel drivers that
-instantly could benefit from using the rotation property. Perhaps I can
-add the orientation support to the panel-simple driver, but will it be
-useful to anyone?
+Thx.
