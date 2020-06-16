@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55EA1FB955
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C677B1FBB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732589AbgFPQDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:03:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
+        id S1730925AbgFPPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731773AbgFPPu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:28 -0400
+        id S1730885AbgFPPjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFB0821475;
-        Tue, 16 Jun 2020 15:50:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7163D2145D;
+        Tue, 16 Jun 2020 15:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322627;
-        bh=QLPfxFYbCqhAoVAV8gU3WcOx1/qmLb/p/3Jog8BRv30=;
+        s=default; t=1592321953;
+        bh=tm5emzIZe1eyeA5dlv4d4lUnsTh7XE+ZpULMTA+WaiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j4GF4mY0zs8bulCGK7N0RWIwIADFM8kDFS86NvliKIndvqAxiHR5rUeN+DxrTHGCb
-         gaOndohVLjcvkWKx8q9ocFqmuVFa3VhrjXUZJbxsL9NPXcRts+tHuxDoOrhyErG/K6
-         T4Yir42Nup2Omr3kajINxbZVn3DQSHIJAI6WIb4E=
+        b=MAAdpPdnQs5eD0hXCh9dneJFsOnAkysJWmB2K7+vPWtkXxWxyEUEf73obSQn2xMkd
+         vFQ+4Z/FOuI3U9VP8sWO5Bo1rH261qV0QM+cuejlLRqC6yATSZdy7acKwZSlpSkJ//
+         0S5V/Jsyuqu6MIyVq9arbGam5qNacpF5jr9MqrRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rahul Kundu <rahul.kundu@chelsio.com>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 042/161] scsi: target: remove boilerplate code
-Date:   Tue, 16 Jun 2020 17:33:52 +0200
-Message-Id: <20200616153108.377377918@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Dobias <dobias@2n.cz>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 049/134] ASoC: max9867: fix volume controls
+Date:   Tue, 16 Jun 2020 17:33:53 +0200
+Message-Id: <20200616153103.139324893@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,101 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Pavel Dobias <dobias@2n.cz>
 
-[ Upstream commit e49a7d994379278d3353d7ffc7994672752fb0ad ]
+commit 8ba4dc3cff8cbe2c571063a5fd7116e8bde563ca upstream.
 
-iscsit_free_session() is equivalent to iscsit_stop_session() followed by a
-call to iscsit_close_session().
+The xmax values for Master Playback Volume and Mic Boost
+Capture Volume are specified incorrectly (one greater)
+which results in the wrong dB gain being shown to the user
+in the case of Master Playback Volume.
 
-Link: https://lore.kernel.org/r/20200313170656.9716-2-mlombard@redhat.com
-Tested-by: Rahul Kundu <rahul.kundu@chelsio.com>
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pavel Dobias <dobias@2n.cz>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200515120757.24669-1-dobias@2n.cz
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/target/iscsi/iscsi_target.c | 46 ++---------------------------
- drivers/target/iscsi/iscsi_target.h |  1 -
- 2 files changed, 2 insertions(+), 45 deletions(-)
+ sound/soc/codecs/max9867.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-index 9fc7e374a29b..1c7514543571 100644
---- a/drivers/target/iscsi/iscsi_target.c
-+++ b/drivers/target/iscsi/iscsi_target.c
-@@ -4566,49 +4566,6 @@ void iscsit_fail_session(struct iscsi_session *sess)
- 	sess->session_state = TARG_SESS_STATE_FAILED;
- }
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -46,13 +46,13 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_R
  
--int iscsit_free_session(struct iscsi_session *sess)
--{
--	u16 conn_count = atomic_read(&sess->nconn);
--	struct iscsi_conn *conn, *conn_tmp = NULL;
--	int is_last;
--
--	spin_lock_bh(&sess->conn_lock);
--	atomic_set(&sess->sleep_on_sess_wait_comp, 1);
--
--	list_for_each_entry_safe(conn, conn_tmp, &sess->sess_conn_list,
--			conn_list) {
--		if (conn_count == 0)
--			break;
--
--		if (list_is_last(&conn->conn_list, &sess->sess_conn_list)) {
--			is_last = 1;
--		} else {
--			iscsit_inc_conn_usage_count(conn_tmp);
--			is_last = 0;
--		}
--		iscsit_inc_conn_usage_count(conn);
--
--		spin_unlock_bh(&sess->conn_lock);
--		iscsit_cause_connection_reinstatement(conn, 1);
--		spin_lock_bh(&sess->conn_lock);
--
--		iscsit_dec_conn_usage_count(conn);
--		if (is_last == 0)
--			iscsit_dec_conn_usage_count(conn_tmp);
--
--		conn_count--;
--	}
--
--	if (atomic_read(&sess->nconn)) {
--		spin_unlock_bh(&sess->conn_lock);
--		wait_for_completion(&sess->session_wait_comp);
--	} else
--		spin_unlock_bh(&sess->conn_lock);
--
--	iscsit_close_session(sess);
--	return 0;
--}
--
- void iscsit_stop_session(
- 	struct iscsi_session *sess,
- 	int session_sleep,
-@@ -4693,7 +4650,8 @@ int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *tpg, int force)
- 	list_for_each_entry_safe(se_sess, se_sess_tmp, &free_list, sess_list) {
- 		sess = (struct iscsi_session *)se_sess->fabric_sess_ptr;
- 
--		iscsit_free_session(sess);
-+		iscsit_stop_session(sess, 1, 1);
-+		iscsit_close_session(sess);
- 		session_count++;
- 	}
- 
-diff --git a/drivers/target/iscsi/iscsi_target.h b/drivers/target/iscsi/iscsi_target.h
-index c95f56a3ce31..7409ce2a6607 100644
---- a/drivers/target/iscsi/iscsi_target.h
-+++ b/drivers/target/iscsi/iscsi_target.h
-@@ -43,7 +43,6 @@ extern int iscsi_target_rx_thread(void *);
- extern int iscsit_close_connection(struct iscsi_conn *);
- extern int iscsit_close_session(struct iscsi_session *);
- extern void iscsit_fail_session(struct iscsi_session *);
--extern int iscsit_free_session(struct iscsi_session *);
- extern void iscsit_stop_session(struct iscsi_session *, int, int);
- extern int iscsit_release_sessions_for_tpg(struct iscsi_portal_group *, int);
- 
--- 
-2.25.1
-
+ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("Master Playback Volume", MAX9867_LEFTVOL,
+-			MAX9867_RIGHTVOL, 0, 41, 1, max9867_master_tlv),
++			MAX9867_RIGHTVOL, 0, 40, 1, max9867_master_tlv),
+ 	SOC_DOUBLE_R_TLV("Line Capture Volume", MAX9867_LEFTLINELVL,
+ 			MAX9867_RIGHTLINELVL, 0, 15, 1, max9867_line_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Capture Volume", MAX9867_LEFTMICGAIN,
+ 			MAX9867_RIGHTMICGAIN, 0, 20, 1, max9867_mic_tlv),
+ 	SOC_DOUBLE_R_TLV("Mic Boost Capture Volume", MAX9867_LEFTMICGAIN,
+-			MAX9867_RIGHTMICGAIN, 5, 4, 0, max9867_micboost_tlv),
++			MAX9867_RIGHTMICGAIN, 5, 3, 0, max9867_micboost_tlv),
+ 	SOC_SINGLE("Digital Sidetone Volume", MAX9867_SIDETONE, 0, 31, 1),
+ 	SOC_SINGLE_TLV("Digital Playback Volume", MAX9867_DACLEVEL, 0, 15, 1,
+ 			max9867_dac_tlv),
 
 
