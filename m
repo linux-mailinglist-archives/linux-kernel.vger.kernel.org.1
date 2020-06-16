@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7601FBB83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CB41FB985
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731508AbgFPQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:19:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        id S1733163AbgFPQEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730205AbgFPPhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:07 -0400
+        id S1732542AbgFPPtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:49:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E9E12098B;
-        Tue, 16 Jun 2020 15:37:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A772E21473;
+        Tue, 16 Jun 2020 15:49:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321826;
-        bh=zpIpPomPOC5UU8WDjgESvYXTrjxI7qC3+cdXH6qAkQI=;
+        s=default; t=1592322586;
+        bh=rmHaqUT/vvmNrOYOGcZbtU0Y3rBcuPm4m+Rq9ThEigU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LHek30uWBypu6+HJdutv0TY/HP76121wj0N30RUXigVSQheMV+WUSXQnmqW1KhANa
-         Q9lT0Qsd214ce5THHE+sUI1i56kbvCkZi8m6ZfasziHuG/uxompuzEy6HrC7ZdV1GJ
-         HKo7bURpzreXoWkvGnoJP28tB1V1zEGiPOocbXII=
+        b=TGvj7jY0849Ji/C7kQAuwQYvhrDG932aSkTfScu2Bk5VpAIoo3h70yR4U4eqfjTsh
+         U3qLeB9RMOjeoWrq89oY3siJJnH/i7EJ03Dndz0sUI+GMMuGDL6/jJ7vGSOIRo+E3O
+         SyHOoXcIe7nmYNK5lWc2xecNr7k/lUNPc0jBYTCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -40,12 +40,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         David Rientjes <rientjes@google.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 030/134] mm: add kvfree_sensitive() for freeing sensitive data objects
-Date:   Tue, 16 Jun 2020 17:33:34 +0200
-Message-Id: <20200616153102.223495522@linuxfoundation.org>
+Subject: [PATCH 5.6 025/161] mm: add kvfree_sensitive() for freeing sensitive data objects
+Date:   Tue, 16 Jun 2020 17:33:35 +0200
+Message-Id: <20200616153107.597339297@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -93,10 +93,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 53bad834adf5..3285dae06c03 100644
+index 96deeecd9179..9b9f48489576 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -694,6 +694,7 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+@@ -669,6 +669,7 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
  }
  
  extern void kvfree(const void *addr);
@@ -105,10 +105,10 @@ index 53bad834adf5..3285dae06c03 100644
  /*
   * Mapcount of compound page as a whole, does not include mapped sub-pages.
 diff --git a/mm/util.c b/mm/util.c
-index 3ad6db9a722e..ab358c64bbd3 100644
+index 988d11e6c17c..dc1c877d5481 100644
 --- a/mm/util.c
 +++ b/mm/util.c
-@@ -594,6 +594,24 @@ void kvfree(const void *addr)
+@@ -604,6 +604,24 @@ void kvfree(const void *addr)
  }
  EXPORT_SYMBOL(kvfree);
  
@@ -134,7 +134,7 @@ index 3ad6db9a722e..ab358c64bbd3 100644
  {
  	unsigned long mapping;
 diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 7e9914943616..1ca8bfaed0e8 100644
+index 6d0ca48ae9a5..153d35c20d3d 100644
 --- a/security/keys/internal.h
 +++ b/security/keys/internal.h
 @@ -350,15 +350,4 @@ static inline void key_check(const struct key *key)
