@@ -2,64 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5471FB7E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC6A1FB68A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732617AbgFPPup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46662 "EHLO mail.kernel.org"
+        id S1729152AbgFPPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732612AbgFPPul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:41 -0400
+        id S1730521AbgFPPiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85F4021473;
-        Tue, 16 Jun 2020 15:50:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC7D720C56;
+        Tue, 16 Jun 2020 15:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322640;
-        bh=cfc5FjrY9vBGbt70tlqFyKkXVCs/JWORPS2LyxaMb0c=;
+        s=default; t=1592321883;
+        bh=bHg0dV46Jz1chb7Gwip6gcY2WQCwVUIDvqWYO0fC7hk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kko9/Ow/eR2P1/LvbMYef1DtH+6OlUyR2SzfcYZeyN2kP5DkazNQV12zTxByZoZp7
-         /Hch2jsHTN86ER7vscNmJh+tqWWKGGwExCzisxkM8SA1SCumSUzXe8bQYncEYMJlCH
-         8zHhssH/F5pDtu3brPPaErXgHmTj2B35t9fVG1Y4=
+        b=FAQrZeQhAMT/PHbYD8oHA0i8C+4pzYgVbKJmm4mxdp8bhErIl/YW7WxbxaoFfPnbD
+         BHLY/aTzi+doWHWRkhnGncBjv0k/Bs4QN0dUia+bEKUWNj2fi4vgnNwtHWM1PE183v
+         azzBMSjMZLZw/5RUqBteLbpXUO2o96C6pb1aigWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jiri Slaby <jslaby@suse.cz>, Jann Horn <jannh@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christopher Lameter <cl@linux.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Windsor <dave@nullcore.net>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Laura Abbott <labbott@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christoffer Dall <christoffer.dall@linaro.org>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Jan Kara <jack@suse.cz>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 047/161] usercopy: mark dma-kmalloc caches as usercopy caches
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Steve French <smfrench@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.4 053/134] smb3: add indatalen that can be a non-zero value to calculation of credit charge in smb2 ioctl
 Date:   Tue, 16 Jun 2020 17:33:57 +0200
-Message-Id: <20200616153108.615520697@linuxfoundation.org>
+Message-Id: <20200616153103.322549191@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -69,82 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vlastimil Babka <vbabka@suse.cz>
+From: Namjae Jeon <namjae.jeon@samsung.com>
 
-commit 49f2d2419d60a103752e5fbaf158cf8d07c0d884 upstream.
+commit ebf57440ec59a36e1fc5fe91e31d66ae0d1662d0 upstream.
 
-We have seen a "usercopy: Kernel memory overwrite attempt detected to
-SLUB object 'dma-kmalloc-1 k' (offset 0, size 11)!" error on s390x, as
-IUCV uses kmalloc() with __GFP_DMA because of memory address
-restrictions.  The issue has been discussed [2] and it has been noted
-that if all the kmalloc caches are marked as usercopy, there's little
-reason not to mark dma-kmalloc caches too.  The 'dma' part merely means
-that __GFP_DMA is used to restrict memory address range.
+Some of tests in xfstests failed with cifsd kernel server since commit
+e80ddeb2f70e. cifsd kernel server validates credit charge from client
+by calculating it base on max((InputCount + OutputCount) and
+(MaxInputResponse + MaxOutputResponse)) according to specification.
 
-As Jann Horn put it [3]:
- "I think dma-kmalloc slabs should be handled the same way as normal
-  kmalloc slabs. When a dma-kmalloc allocation is freshly created, it is
-  just normal kernel memory - even if it might later be used for DMA -,
-  and it should be perfectly fine to copy_from_user() into such
-  allocations at that point, and to copy_to_user() out of them at the
-  end. If you look at the places where such allocations are created, you
-  can see things like kmemdup(), memcpy() and so on - all normal
-  operations that shouldn't conceptually be different from usercopy in
-  any relevant way."
+MS-SMB2 specification describe credit charge calculation of smb2 ioctl :
 
-Thus this patch marks the dma-kmalloc-* caches as usercopy.
+If Connection.SupportsMultiCredit is TRUE, the server MUST validate
+CreditCharge based on the maximum of (InputCount + OutputCount) and
+(MaxInputResponse + MaxOutputResponse), as specified in section 3.3.5.2.5.
+If the validation fails, it MUST fail the IOCTL request with
+STATUS_INVALID_PARAMETER.
 
-[1] https://bugzilla.suse.com/show_bug.cgi?id=1156053
-[2] https://lore.kernel.org/kernel-hardening/bfca96db-bbd0-d958-7732-76e36c667c68@suse.cz/
-[3] https://lore.kernel.org/kernel-hardening/CAG48ez1a4waGk9kB0WLaSbs4muSoK0AYAVk8=XYaKj4_+6e6Hg@mail.gmail.com/
+This patch add indatalen that can be a non-zero value to calculation of
+credit charge in SMB2_ioctl_init().
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Acked-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Jann Horn <jannh@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Julian Wiedmann <jwi@linux.ibm.com>
-Cc: Ursula Braun <ubraun@linux.ibm.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: David Windsor <dave@nullcore.net>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Laura Abbott <labbott@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Christoffer Dall <christoffer.dall@linaro.org>
-Cc: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Luis de Bethencourt <luisbg@kernel.org>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Matthew Garrett <mjg59@google.com>
-Cc: Michal Kubecek <mkubecek@suse.cz>
-Link: http://lkml.kernel.org/r/7d810f6d-8085-ea2f-7805-47ba3842dc50@suse.cz
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e80ddeb2f70e ("smb3: fix incorrect number of credits when ioctl
+MaxOutputResponse > 64K")
+Cc: Stable <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Cc: Steve French <smfrench@gmail.com>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/slab_common.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/cifs/smb2pdu.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1303,7 +1303,8 @@ void __init create_kmalloc_caches(slab_f
- 			kmalloc_caches[KMALLOC_DMA][i] = create_kmalloc_cache(
- 				kmalloc_info[i].name[KMALLOC_DMA],
- 				kmalloc_info[i].size,
--				SLAB_CACHE_DMA | flags, 0, 0);
-+				SLAB_CACHE_DMA | flags, 0,
-+				kmalloc_info[i].size);
- 		}
- 	}
- #endif
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -2747,7 +2747,9 @@ SMB2_ioctl_init(struct cifs_tcon *tcon,
+ 	 * response size smaller.
+ 	 */
+ 	req->MaxOutputResponse = cpu_to_le32(max_response_size);
+-	req->sync_hdr.CreditCharge = cpu_to_le16(DIV_ROUND_UP(max_response_size, SMB2_MAX_BUFFER_SIZE));
++	req->sync_hdr.CreditCharge =
++		cpu_to_le16(DIV_ROUND_UP(max(indatalen, max_response_size),
++					 SMB2_MAX_BUFFER_SIZE));
+ 	if (is_fsctl)
+ 		req->Flags = cpu_to_le32(SMB2_0_IOCTL_IS_FSCTL);
+ 	else
 
 
