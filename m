@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5991FB42A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59DD1FB45E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgFPOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgFPOXd (ORCPT
+        id S1729132AbgFPO2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:28:05 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44784 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgFPO2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:23:33 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4159C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:23:32 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id t9so1545129ioj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BBGVqxqh3i+zDg1UYEi18GrICwpH/7qq/yRRJB/ldwA=;
-        b=oVRLq48ubMx2g6U1E1F3L2qpu59eu7CFvzflNS+ii1eG6U9+LIZgrfyEwwd+Gu1q7H
-         tp0ejZcUZ1BgeukhdPNO0FnBnzOVQRwvYQGA6qmu7WDEnh4CKhuNkaY6rCQo+t99xqiN
-         uhleXuL2Q0BhoqwPwADvyGfoMjgc9VQQ+Z0glL7dylKzLgzihEOhf/ZWIomY0Fa9cNcy
-         nxeFo5myouGNW7M6Yreti5y4gsBuQhWvsus2uEW+5vvmkNDx59D3CDmSEldl6DUaB3YL
-         doDCcpA14SJxRM+9zNWBbzo1Pc1pnRGi9g57XYhD/Enb3rPOQYKceifwGhxmqitScxlO
-         skYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BBGVqxqh3i+zDg1UYEi18GrICwpH/7qq/yRRJB/ldwA=;
-        b=tk2MCESXVjSIYZBooMqgimWdMapfw4At+cE8dkS1KcQJ40lwqleJ+cOe+6BmNgQcZG
-         M+z8P1BCxEEO0laJ1/AzyB5emlKlmhsgBfkOxtR5qbtsi+c5Blp3k57/BI5gGf5V2HiB
-         oAX99muBizbQmeS8T7IA24hHEQFj+GzxT6pH/5xYiIj1FJnnsjsLoPiE9Wjv4A6/+cm/
-         BHpzG9Jphv7aPsT7tmRjRETbmFvZm/unfNP5LfBesKFMTJsQzSiTiTx9y1jiBhz5F287
-         P+kCAFu9JiqQ+pcyVBlV7tCTnnvcMclofcpZ29g0iG2+Dd82VKGpNBAdUWTR3MlEfqeM
-         pmsw==
-X-Gm-Message-State: AOAM533fViZJyjgukcEP3h8x/bxGwZPobY3nSEDy4ufcm7B/RGDM5GBI
-        RREzxnwXQky5XD0sK4jqkCC6gru3fw==
-X-Google-Smtp-Source: ABdhPJxgAKlha6UCW7CjPxsi1+smk/dtZvHJ1rg2jZ6VI//FtweS8feWf9TedJ8m27ryuUmXw4zsAQ==
-X-Received: by 2002:a5e:940b:: with SMTP id q11mr3371201ioj.76.1592317410583;
-        Tue, 16 Jun 2020 07:23:30 -0700 (PDT)
-Received: from localhost.localdomain (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id w78sm10049881ilk.14.2020.06.16.07.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 07:23:30 -0700 (PDT)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 2/2] x86/x32: Convert x32_rt_sigreturn to native syscall
-Date:   Tue, 16 Jun 2020 10:23:15 -0400
-Message-Id: <20200616142315.375918-3-brgerst@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200616142315.375918-1-brgerst@gmail.com>
-References: <20200616142315.375918-1-brgerst@gmail.com>
+        Tue, 16 Jun 2020 10:28:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GELOZQ057447;
+        Tue, 16 Jun 2020 14:26:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UepsmQC/DlQFZ6+UxfaNjoC9RmBOSxOKZ2W1AkmRQd8=;
+ b=WvEeJyFmKL8HM4eLekulNPcOb25Sw7YajmFzrepd+1TsQe+PNe2o6it9fFwXghV3FsHv
+ QdrFGubdjTeCc6kAWKTDSEoqMv3it70YtNHwfwRr3qSfXcxJVIBcqm6X7SGsetYqkHWx
+ H7ruRtQFUVaMSNzeIOu+jnB9ul0qpA74I5CLeOsjFOWmZFGD+qOJ1lRDn7UN2JHhoajF
+ f/9ecfn6gkdb7upj+cJi6IY4VZZEPZcXh9vvLg7+i5e+33eQa6zJ2K1MWUsjTMUYhONT
+ ZCDycK9k04JLa7cAHqpl868otcTeoTLOGNWMgNDyB7bEprwRuViNVIe1IhKb+72uVtQ1 Lw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31p6e5y3y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Jun 2020 14:26:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05GEODoW027404;
+        Tue, 16 Jun 2020 14:26:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 31p6s7kbhq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jun 2020 14:26:56 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05GEQfNL026862;
+        Tue, 16 Jun 2020 14:26:42 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Jun 2020 07:26:41 -0700
+Date:   Tue, 16 Jun 2020 17:26:24 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        David Sterba <dsterba@suse.cz>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] mm, treewide: Rename kzfree() to kfree_sensitive()
+Message-ID: <20200616142624.GO4282@kadam>
+References: <20200616015718.7812-1-longman@redhat.com>
+ <20200616015718.7812-3-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616015718.7812-3-longman@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9653 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=886 adultscore=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006160106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9653 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=893 lowpriorityscore=0 clxscore=1011
+ suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006160106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x32_rt_sigreturn doesn't need to be a compat syscall because there aren't two
-versions.
+Last time you sent this we couldn't decide which tree it should go
+through.  Either the crypto tree or through Andrew seems like the right
+thing to me.
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/entry/syscalls/syscall_64.tbl            | 2 +-
- arch/x86/kernel/signal.c                          | 2 +-
- tools/perf/arch/x86/entry/syscalls/syscall_64.tbl | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Also the other issue is that it risks breaking things if people add
+new kzfree() instances while we are doing the transition.  Could you
+just add a "#define kzfree kfree_sensitive" so that things continue to
+compile and we can remove it in the next kernel release?
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 78847b32e137..5fb63ac69971 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -368,7 +368,7 @@
- # is defined.
- #
- 512	x32	rt_sigaction		compat_sys_rt_sigaction
--513	x32	rt_sigreturn		compat_sys_x32_rt_sigreturn
-+513	x32	rt_sigreturn		sys_x32_rt_sigreturn
- 514	x32	ioctl			compat_sys_ioctl
- 515	x32	readv			compat_sys_readv
- 516	x32	writev			compat_sys_writev
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 399f97abee02..8a3d1cd4ea70 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -856,7 +856,7 @@ void signal_fault(struct pt_regs *regs, void __user *frame, char *where)
- }
- 
- #ifdef CONFIG_X86_X32_ABI
--COMPAT_SYSCALL_DEFINE0(x32_rt_sigreturn)
-+SYSCALL_DEFINE0(x32_rt_sigreturn)
- {
- 	struct pt_regs *regs = current_pt_regs();
- 	struct rt_sigframe_x32 __user *frame;
-diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-index 37b844f839bc..36a3c8a913da 100644
---- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -367,7 +367,7 @@
- # is defined.
- #
- 512	x32	rt_sigaction		compat_sys_rt_sigaction
--513	x32	rt_sigreturn		compat_sys_x32_rt_sigreturn
-+513	x32	rt_sigreturn		sys_x32_rt_sigreturn
- 514	x32	ioctl			compat_sys_ioctl
- 515	x32	readv			compat_sys_readv
- 516	x32	writev			compat_sys_writev
--- 
-2.26.2
+regards,
+dan carpenter
 
