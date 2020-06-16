@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9AA1FB7BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD181FB848
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731341AbgFPPtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43656 "EHLO mail.kernel.org"
+        id S1733033AbgFPPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731831AbgFPPs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:48:57 -0400
+        id S1732553AbgFPPyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 744662071A;
-        Tue, 16 Jun 2020 15:48:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 033012158C;
+        Tue, 16 Jun 2020 15:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322537;
-        bh=FFSxGwBGfMCiFQduasCBES4XmyOFzA/eJW0MOePvNZM=;
+        s=default; t=1592322892;
+        bh=LUaGMoUbjdbFQRmoKpjS+1KFdgYIxUgQbBO85tMnjrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJ6/26a8FvXnRPo/DMMK/peY+wzrxCtI6jrThuHJ0XeYjf+N1ioTB712mqSP8D/pw
-         9+C65RoU8TjmibG1Quex4/+1fi7KwsNdpmEcN7YMRUzP4hIXt57tF/DOXCZLABTJF5
-         sEE4WC/sU2bpTrw9HlYsN8doSpLDMzBJsOO/OEZA=
+        b=PliDeAK+YJNlWt/o2kDLeLs7Fh9lherSnog45q7dR+boE59IKD73g6NUHA/+dKzdJ
+         6kkT5fCOAYVIfHA7p/ovwYDDKOVQCZD9ty9kR9JLdW9dX6oeddwL4oRX4Xr6kuXCFY
+         jQ/bwysTrFT1kWEDqe0HZvk9+es8UP7flCQiWPmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dominik Mierzejewski <dominik@greysector.net>,
-        Mattia Dongili <malattia@linux.it>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 5.7 161/163] platform/x86: sony-laptop: Make resuming thermal profile safer
+        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 145/161] fat: dont allow to mount if the FAT length == 0
 Date:   Tue, 16 Jun 2020 17:35:35 +0200
-Message-Id: <20200616153114.518926366@linuxfoundation.org>
+Message-Id: <20200616153113.251317880@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mattia Dongili <malattia@linux.it>
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-commit 476d60b1b4c8a2b14a53ef9b772058f35e604661 upstream.
+commit b1b65750b8db67834482f758fc385bfa7560d228 upstream.
 
-The thermal handle object may fail initialization when the module is
-loaded in the first place. Avoid attempting to use it on resume then.
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
 
-Fixes: 6d232b29cfce ("ACPICA: Dispatcher: always generate buffer objects for ASL create_field() operator")
-Reported-by: Dominik Mierzejewski <dominik@greysector.net>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207491
-Signed-off-by: Mattia Dongili <malattia@linux.it>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Also Windows treats it as invalid format.
+
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/platform/x86/sony-laptop.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/fat/inode.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/platform/x86/sony-laptop.c
-+++ b/drivers/platform/x86/sony-laptop.c
-@@ -2288,7 +2288,12 @@ static void sony_nc_thermal_cleanup(stru
- #ifdef CONFIG_PM_SLEEP
- static void sony_nc_thermal_resume(void)
- {
--	unsigned int status = sony_nc_thermal_mode_get();
-+	int status;
-+
-+	if (!th_handle)
-+		return;
-+
-+	status = sony_nc_thermal_mode_get();
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1520,6 +1520,12 @@ static int fat_read_bpb(struct super_blo
+ 		goto out;
+ 	}
  
- 	if (status != th_handle->mode)
- 		sony_nc_thermal_mode_set(th_handle->mode);
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
++
+ 	error = 0;
+ 
+ out:
 
 
