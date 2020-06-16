@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DB01FBA13
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7538A1FB913
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732353AbgFPQIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
+        id S1732818AbgFPQA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732166AbgFPPqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:11 -0400
+        id S1732787AbgFPPwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AF9920776;
-        Tue, 16 Jun 2020 15:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEEC0208D5;
+        Tue, 16 Jun 2020 15:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322371;
-        bh=Nd5CAFcb1qbBMYToCoK0811GTdwgJBHbQfz1EiufNmM=;
+        s=default; t=1592322756;
+        bh=ImD1zoy+Fx0CsZrmk+QIEfgyjaPXOBH8d6zBqOiEGqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K461u75HZ4comF2yE/IYWr/5p2lXYfihChaHvR44XU8P/QGFPIOjMOkKmpnpMdBFc
-         IVVdJC7BKAasxQ/yL4dKYENAERBuNAUv9oIxsdX+lEy9eTp8TuTBzJbqYkLuBcp2vV
-         1KM0M7RNaGkws8bL+iWg2G0sogUk88arE8+irfe4=
+        b=eCNvlJT1j+sEKy+nd47kQpf9iOMiuXkVFWzdTMZ5ik78JLm5+wv08xzAYhnhjFUyh
+         Z6jjdfz9j4KgTZJjFjl328ZyP22ZWo6iJm1GtUZgmPs06TTQIYzIXif4FywjFsjKPh
+         WefNDB0w+xA92IfZbYfSIETHPdzN89Xb9dI74NlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 106/163] net: macb: Only disable NAPI on the actual error path
-Date:   Tue, 16 Jun 2020 17:34:40 +0200
-Message-Id: <20200616153111.895371384@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 091/161] spi: bcm-qspi: Handle clock probe deferral
+Date:   Tue, 16 Jun 2020 17:34:41 +0200
+Message-Id: <20200616153110.713624489@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 939a5bf7c9b7a1ad9c5d3481c93766a522773531 ]
+commit 0392727c261bab65a35cd4f82ee9459bc237591d upstream.
 
-A recent change added a disable to NAPI into macb_open, this was
-intended to only happen on the error path but accidentally applies
-to all paths. This causes NAPI to be disabled on the success path, which
-leads to the network to no longer functioning.
+The clock provider may not be ready by the time spi-bcm-qspi gets
+probed, handle probe deferral using devm_clk_get_optional().
 
-Fixes: 014406babc1f ("net: cadence: macb: disable NAPI on error")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200420190853.45614-2-kdasu.kdev@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/cadence/macb_main.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2565,15 +2565,14 @@ static int macb_open(struct net_device *
- 	if (bp->ptp_info)
- 		bp->ptp_info->ptp_init(dev);
+---
+ drivers/spi/spi-bcm-qspi.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1222,6 +1222,11 @@ int bcm_qspi_probe(struct platform_devic
+ 	}
  
-+	return 0;
+ 	qspi = spi_master_get_devdata(master);
 +
- napi_exit:
- 	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue)
- 		napi_disable(&queue->napi);
- pm_exit:
--	if (err) {
--		pm_runtime_put_sync(&bp->pdev->dev);
--		return err;
--	}
--	return 0;
-+	pm_runtime_put_sync(&bp->pdev->dev);
-+	return err;
- }
++	qspi->clk = devm_clk_get_optional(&pdev->dev, NULL);
++	if (IS_ERR(qspi->clk))
++		return PTR_ERR(qspi->clk);
++
+ 	qspi->pdev = pdev;
+ 	qspi->trans_pos.trans = NULL;
+ 	qspi->trans_pos.byte = 0;
+@@ -1335,13 +1340,6 @@ int bcm_qspi_probe(struct platform_devic
+ 		qspi->soc_intc = NULL;
+ 	}
  
- static int macb_close(struct net_device *dev)
+-	qspi->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(qspi->clk)) {
+-		dev_warn(dev, "unable to get clock\n");
+-		ret = PTR_ERR(qspi->clk);
+-		goto qspi_probe_err;
+-	}
+-
+ 	ret = clk_prepare_enable(qspi->clk);
+ 	if (ret) {
+ 		dev_err(dev, "failed to prepare clock\n");
 
 
