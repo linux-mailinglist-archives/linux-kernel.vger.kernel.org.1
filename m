@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089DF1FA5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C2C1FA5B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgFPBdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 21:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgFPBdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 21:33:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DC9C08C5C2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:33:41 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id c12so14279243qtq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cDOEIQV5YQAeIdEMMGx3+/GevUyhzhDnAbEIVpCOnXI=;
-        b=B8O7J4rJokQDXjU31zgPybo1cTW2Je/Kd6MMZp1L9D1ePsA7Yu4unjGsty4wjVY6y5
-         6KOLOawoFG95cEFHEsatqraAC7BNZXmTMnc1cgE/6paJHcMrwiZUwPlyLqKnmoXZzH6E
-         f8uVTRRbgDFf56GPhBFtDkrkqau8ltI7y0uho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cDOEIQV5YQAeIdEMMGx3+/GevUyhzhDnAbEIVpCOnXI=;
-        b=JaYNSUC1u5ZABeZCieSfKqJAcny3ri0u9VyJ9XNWj/7dPeSwHmaJ+48yORnbgYYqDC
-         v9CZFbwupN83C7yOTotluG/DsueFGsOMhGUBtUS1dcKupln4DsBXCO8NZTEyQdicb0I7
-         7hwcckXqsFjPTLFE1vedbLGLTzgZK0saRquh43WGBeOG8f5csZdyDA1mFNVaKl3BBNuA
-         s1cwxw243InmUv0G37F4zo3LsPYyqYTZUPbS7X+pRucKdbhea5yvSkhIu23bHyjS5sgB
-         YLwUudIoqiN4sb6I+fH3KDaMQ2M0m0RV4OAkOkfKHJ9wGMrXJqXA1ivbuHQRWUhsI6we
-         ythg==
-X-Gm-Message-State: AOAM533O+UZG6wBbg1B+mB/pxmb48Xr7FsKahnw0CHW1L32NgGpimMpT
-        G5tSeRU4d6v4uGsI1eN3Gou/2jszZGTVWPkXHNrMcA==
-X-Google-Smtp-Source: ABdhPJzfoS6eBeapghRz9PNlO0sf80T4JJIcwcg/RDgpsN2vhEmKNBk9sSWTfS/Osmsto+Bn7eoaf1doTxFmQlzCvjg=
-X-Received: by 2002:aed:35af:: with SMTP id c44mr18911337qte.349.1592271221067;
- Mon, 15 Jun 2020 18:33:41 -0700 (PDT)
+        id S1726314AbgFPBgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 21:36:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22558 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgFPBgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 21:36:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592271402; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=xMh92ChtsXia9yszVbB8XBW80SKYdVIfI1TvNqZjeKY=; b=A+PJJH1Xt1qKJdsdjwC/2GiQVbYTTb6JyPvP1WUxrbzo9IHtNKwUkUmxRUycqoD26ln1bRjI
+ yUH0UQqYXhPA2Y9ZWYl8Lc8mU/okoI8xJNYbrPcB4JdS1iqei+KljWZgldEbdR+Yg1okie1n
+ nMhjxQB6KiU6LjUFnCbaRC+QRkg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ee8221d8fe116ddd9ecd3e4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 01:36:29
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 694AEC43391; Tue, 16 Jun 2020 01:36:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9B682C433C8;
+        Tue, 16 Jun 2020 01:36:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9B682C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
+Date:   Tue, 16 Jun 2020 07:06:22 +0530
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Satya Tangirala <satyat@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stummala@codeaurora.org
+Subject: Re: [PATCH] f2fs: fix use-after-free when accessing
+ bio->bi_crypt_context
+Message-ID: <20200616013622.GC2916@codeaurora.org>
+References: <1592193588-21701-1-git-send-email-stummala@codeaurora.org>
+ <20200615050019.GA3100@sol.localdomain>
+ <20200615061633.GA23467@google.com>
+ <20200615095316.GB2916@codeaurora.org>
+ <20200615154720.GA902@sol.localdomain>
 MIME-Version: 1.0
-References: <20200615190119.382589-1-drc@linux.vnet.ibm.com>
- <CACKFLimd0a=Y8WyvqCt4BD7SU_Cg1vQ=baKs6-uPv0dZuCm=mw@mail.gmail.com> <95bf20c6-a812-32ad-fd38-45cba7e10491@linux.vnet.ibm.com>
-In-Reply-To: <95bf20c6-a812-32ad-fd38-45cba7e10491@linux.vnet.ibm.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Mon, 15 Jun 2020 18:33:29 -0700
-Message-ID: <CACKFLi=-2jUO4UU2BKERqee1XMOgf7OrGerurAf53B-axJwotw@mail.gmail.com>
-Subject: Re: [PATCH] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
-To:     David Christensen <drc@linux.vnet.ibm.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615154720.GA902@sol.localdomain>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 3:21 PM David Christensen
-<drc@linux.vnet.ibm.com> wrote:
->
-> On 6/15/20 1:45 PM, Michael Chan wrote:
-> > On Mon, Jun 15, 2020 at 12:01 PM David Christensen
-> > <drc@linux.vnet.ibm.com> wrote:
-> >>
-> >> The driver function tg3_io_error_detected() calls napi_disable twice,
-> >> without an intervening napi_enable, when the number of EEH errors exceeds
-> >> eeh_max_freezes, resulting in an indefinite sleep while holding rtnl_lock.
-> >>
-> >> The function is called once with the PCI state pci_channel_io_frozen and
-> >> then called again with the state pci_channel_io_perm_failure when the
-> >> number of EEH failures in an hour exceeds eeh_max_freezes.
-> >>
-> >> Protecting the calls to napi_enable/napi_disable with a new state
-> >> variable prevents the long sleep.
-> >
-> > This works, but I think a simpler fix is to check tp->pcierr_recovery
-> > in tg3_io_error_detected() and skip most of the tg3 calls (including
-> > the one that disables NAPI) if the flag is true.
->
-> This might be the smallest change that would work.  Does it make sense
-> to the reader?
->
-> diff --git a/drivers/net/ethernet/broadcom/tg3.c
-> b/drivers/net/ethernet/broadcom/tg3.c
-> index 7a3b22b35238..1f37c69d213d 100644
-> --- a/drivers/net/ethernet/broadcom/tg3.c
-> +++ b/drivers/net/ethernet/broadcom/tg3.c
-> @@ -18168,8 +18168,8 @@ static pci_ers_result_t
-> tg3_io_error_detected(struct pci_dev *pdev,
->
->          rtnl_lock();
->
-> -       /* We probably don't have netdev yet */
-> -       if (!netdev || !netif_running(netdev))
-> +       /* May be second call or maybe we don't have netdev yet */
-> +       if (tp->pcierr_recovery || !netdev || !netif_running(netdev))
+On Mon, Jun 15, 2020 at 08:47:20AM -0700, Eric Biggers wrote:
+> On Mon, Jun 15, 2020 at 03:23:16PM +0530, Sahitya Tummala wrote:
+> > > 
+> > > Should I fold this change into the original patch? Or keep it as a
+> > > separate patch when I send out the fscrypt/f2fs inline encryption
+> > > patches?
+> > 
+> > It may be good to keep it seperate as we already have the base FBE patches in
+> > several downstream kernels, so this fix can be applied easily. But I will
+> > leave it up to you to take a call on this.
+> > 
+> 
+> We should fold it in because the patch this fixes isn't applied upstream yet.
+> 
+> We'll need to submit this as a separate fix to the Android common kernels
+> because they already have a previous version of the inline encryption patchset.
+> (I assume that's where you have the code from.)  But that doesn't affect what we
+> do upstream.
 
-Dereferencing tp needs to be done after checking netdev.  If we don't
-have netdev, tp won't be valid.
+Sure, no concerns from my side. It can be merged into the original series.
 
-Other than that, I think the logic looks good and is quite clear.
+Thanks,
 
-Thanks.
+> 
+> - Eric
+
+-- 
+--
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
