@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B1F1FBB7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FFE1FBB86
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732515AbgFPQTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        id S1732646AbgFPQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731894AbgFPQTK (ORCPT
+        with ESMTP id S1731856AbgFPQTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:19:10 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF06C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:10 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n6so16409980otl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:10 -0700 (PDT)
+        Tue, 16 Jun 2020 12:19:44 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F991C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:43 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id s28so12643642edw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=fiWLJlRK7hIrVJhqrA73kDSLrIv9Ym+IMHSkrLmFVXs=;
-        b=W/psw7rJjjj0igh5USfHJFwAvdGtWgwMOOIfoxPkytUdSSQAdFOH/bfQIqrUsIOuzv
-         a9Vl2sPr7U6gMv9WtD5uCoRamUoj0WIOZ/n0nICz5buDFIt1jLDFuvkvAOZuebZGPj4r
-         Jn2sggqqK9sb1MI3Um3GNHKq17xFRhWCG166HdQLYSHMEk2FY5ACBBZ5hN2lGun81Qyi
-         GJENDCD6oY3Wj4DPdEsHzNRbtcAkvwi4zjzLFGU1+ft+jy2FY0geCnqGSH6Q4MrxLAjz
-         HCQPdEi04N1sqR64Sbg1vccPjTualudux+UTkyybTF1we4OWenyu+uqGY2pczphBKFNF
-         WhEw==
+        bh=hr3yVEPV6lA1nanRTqWI8IJryq24qnnSTFJ14MM/7zs=;
+        b=DZHrUyxnI2wxj8f69u1+U5wzsYX16HUl/aTv7JYK9V6CybdFLK91SGat3bh7Zz5pKw
+         eYWNsiiq8LeeM+qtd7hoZtFM79A0GikMLP2CTK6Vi7ZZ3Pmc8rO8F/88x/U8wjBzFXFN
+         AIPABW4VADwBnv3oGKeg7KUqSBmIPbMNrxfXP5kMM8OMO1Pcj0s8YPKN2cZrU+HnFBrU
+         VqlKs3aaMLtqjjlJwDCST5EVn6wc9W5nXa48X3RPiivOEQlkEzTUg/2yeuO2FyDFZIvX
+         G9k72NLkB0J8o6esTtqZXiRhC3ZF3v+XgQP08ADK7sTgozAKVy3ir0QokMg/k6nW07/+
+         qObQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=fiWLJlRK7hIrVJhqrA73kDSLrIv9Ym+IMHSkrLmFVXs=;
-        b=aeS9eyuGxhiJZnDfKYll2MyBqkXk8vgoPaOe3qwiBcpmg/z4NBblFOcWaL4V0s+dDg
-         OOPpd0+Z8ckRxU0MHrUsv4/B6NQNr0YqZxi8GGSyLJzjAfNcl/HydoqvRD5yrZwsjrMg
-         JPX++UbmDlztCBlSN9H3Dd1ieXGP7OoNs3O+2KeCDe8V94Td4QJgwoxKGVF2YIRoKSPz
-         8NsPSwwLeQKeQ3r33qab321NMNXtqJTx3nZqykV24PhUyuciQEYM/3445oNBd4ymhQZe
-         rTdJ7pN8NjiokOhsxvGXS0L6FVaFxCWaCjhU4dIYf9qFtX7l4giYiGiYo1oVUIaS+nRZ
-         HrNw==
-X-Gm-Message-State: AOAM533AS+qJ3+Jgkr5e3Jb2eZdS1HoyO3ZhuwZMKlENe8y6DyW/VCS6
-        3OBW8MOuwV/NwtgqmqxM1sCM1h7TOABpxA==
-X-Google-Smtp-Source: ABdhPJwJLUo+s/3zvXyuzd5xR5zRDZ7iEWewkVzWg80Un1dA516CGEOvT/txqHhK+aWdjAw3vd97RA==
-X-Received: by 2002:a05:6830:1d1:: with SMTP id r17mr3101139ota.19.1592324348502;
-        Tue, 16 Jun 2020 09:19:08 -0700 (PDT)
-Received: from cisco ([2601:282:902:b340:f5b5:cc36:51c:a840])
-        by smtp.gmail.com with ESMTPSA id k84sm4256949oia.3.2020.06.16.09.19.05
+        bh=hr3yVEPV6lA1nanRTqWI8IJryq24qnnSTFJ14MM/7zs=;
+        b=kaoLk2KazO7PTTX9SgkC1zHrq7tLgUBfkZvhYvyB55DckSef04UZEF1mz9eKgWMGpc
+         1vzNXOmS4yAB5wtTXC03eR/kyiaNfbmO2Qi1+NXnD+6ZT4ktoDqOSzJDgxOF8R+mrZB7
+         8j+ScR9ZJLMv5J0rHiMG3SL7QfGoxWLaPMDgSKbeZEbRtyGRts/ydKphSQPoQNY2+ig5
+         alaOYqBlYp6tfXlH9CO1IepmNuUoTpmFVEVgarsvCvCMuFwunMR+6WFxcpmaqEXCndg2
+         sK4pBwJd5YC6O9rgVhtwzMRmMozd4LKGZsj5p83VJXkvgSIuAYr+SR0PyL6AbRaAYUA7
+         enFw==
+X-Gm-Message-State: AOAM531oIPs9bYCWZm1WXPN4m5YfMTfqFhzSqXlv0YRG8xTjfudFrJMt
+        +1bTmLqHbPkz+bTB1zjUYCJLtw==
+X-Google-Smtp-Source: ABdhPJwxZcp1lp6WrQvxCOa4+J+L4Hbhu6KDNsF55SP0s+x799vNFH70u0bmPLYwCTn8NeutUxBsnQ==
+X-Received: by 2002:aa7:d6d0:: with SMTP id x16mr3399666edr.175.1592324382014;
+        Tue, 16 Jun 2020 09:19:42 -0700 (PDT)
+Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
+        by smtp.gmail.com with ESMTPSA id ce25sm10330788edb.45.2020.06.16.09.19.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 09:19:07 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 10:18:59 -0600
-From:   Tycho Andersen <tycho@tycho.ws>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 10/11] seccomp: Switch addfd to Extensible Argument
- ioctl
-Message-ID: <20200616161859.GL2893648@cisco>
-References: <20200616032524.460144-1-keescook@chromium.org>
- <20200616032524.460144-11-keescook@chromium.org>
- <20200616145546.GH2893648@cisco>
- <202006160904.A30F2C5B9E@keescook>
+        Tue, 16 Jun 2020 09:19:41 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 18:19:39 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>
+Subject: Re: [PATCH V2] ARM: dts: am335x-pocketbeagle: Fix mmc0 Write Protect
+Message-ID: <20200616161939.GA4007093@x1>
+References: <20200609214521.GB2995279@x1>
+ <20200616161024.GC37466@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202006160904.A30F2C5B9E@keescook>
+In-Reply-To: <20200616161024.GC37466@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 09:05:29AM -0700, Kees Cook wrote:
-> On Tue, Jun 16, 2020 at 08:55:46AM -0600, Tycho Andersen wrote:
-> > On Mon, Jun 15, 2020 at 08:25:23PM -0700, Kees Cook wrote:
-> > > This patch is based on discussions[1] with Sargun Dhillon, Christian
-> > > Brauner, and David Laight. Instead of building size into the addfd
-> > > structure, make it a function of the ioctl command (which is how sizes are
-> > > normally passed to ioctls). To support forward and backward compatibility,
-> > > just mask out the direction and size, and match everything. The size (and
-> > > any future direction) checks are done along with copy_struct_from_user()
-> > > logic. Also update the selftests to check size bounds.
-> > > 
-> > > [1] https://lore.kernel.org/lkml/20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal
-> > > 
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  include/uapi/linux/seccomp.h                  |  2 -
-> > >  kernel/seccomp.c                              | 21 ++++++----
-> > >  tools/testing/selftests/seccomp/seccomp_bpf.c | 40 ++++++++++++++++---
-> > >  3 files changed, 49 insertions(+), 14 deletions(-)
-> > > 
-> > > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-> > > index c347160378e5..473a61695ac3 100644
-> > > --- a/include/uapi/linux/seccomp.h
-> > > +++ b/include/uapi/linux/seccomp.h
-> > > @@ -118,7 +118,6 @@ struct seccomp_notif_resp {
-> > >  
-> > >  /**
-> > >   * struct seccomp_notif_addfd
-> > > - * @size: The size of the seccomp_notif_addfd structure
-> > >   * @id: The ID of the seccomp notification
-> > >   * @flags: SECCOMP_ADDFD_FLAG_*
-> > >   * @srcfd: The local fd number
-> > > @@ -126,7 +125,6 @@ struct seccomp_notif_resp {
-> > >   * @newfd_flags: The O_* flags the remote FD should have applied
-> > >   */
-> > >  struct seccomp_notif_addfd {
-> > > -	__u64 size;
+On Tue, Jun 16, 2020 at 09:10:24AM -0700, Tony Lindgren wrote:
+> * Drew Fustini <drew@beagleboard.org> [200609 14:46]:
+> > AM3358 pin mcasp0_aclkr (ZCZ ball B13) [0] is routed to P1.31 header [1]
+> > Mode 4 of this pin is mmc0_sdwp (SD Write Protect).  A signal connected
+> > to P1.31 may accidentally trigger mmc0 write protection.  To avoid this
+> > situation, do not put mcasp0_aclkr in mode 4 (mmc0_sdwp) by default.
 > > 
-> > Huh? Won't this break builds?
+> > [0] http://www.ti.com/lit/ds/symlink/am3358.pdf
+> > [1] https://github.com/beagleboard/pocketbeagle/wiki/System-Reference-Manual#531_Expansion_Headers
+> > 
+> > Fixes: 047905376a16 (ARM: dts: Add am335x-pocketbeagle)
+> > Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > ---
+> > V2 change:
+> > - correct P1.13 to P1.31, apologies for not catching that in V1
 > 
-> Only if they use addfd without this patch? :) Are you saying I should
-> collapse this patch into the main addfd and test patches?
+> Thanks (manually) applying into fixes. Your outgoing mail server has replaced
+> the tabs in the patch with spaces making it not apply FYI.
+> 
+> Regards,
+> 
+> Tony
 
-Oh, derp, I see :) Yeah, maybe that would be good.
+Thanks, Tony.
 
-Tycho
+That is werid about the spaces.  I use mutt to send mail via smtp.google.com
+(beagleboard.org is gsuite).  I'll inspect more closely next time.
