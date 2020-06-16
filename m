@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985651FB77C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E16D1FB8E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731301AbgFPPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
+        id S1732745AbgFPP7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730049AbgFPPqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:32 -0400
+        id S1732308AbgFPPxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 122E121473;
-        Tue, 16 Jun 2020 15:46:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77D55208D5;
+        Tue, 16 Jun 2020 15:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322391;
-        bh=G3+7YwfmCftXoGAKSqvknHj6X2bwZy+Mwn8MdcTJ/ak=;
+        s=default; t=1592322818;
+        bh=Q9VzjPAFTOrJwsOtNxPwztfgd+T3mqZj6+9goc1O0fw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/nF4PE+seUdkgnNgvsp46MpVVX9YIDELl2DL+DuhlNpNSlURC0v8W5jtznoSw36N
-         yUFhv08hjNv5RqTP+0a6ohfJ/s5ASdON7bXJj5oYAZ9NXlHF8bhrupme10jVShaMrT
-         zP5rFYghg3U8i7HPZ94wFW/E8We5e4ceOFw99G94=
+        b=aAPlqmXVxvIAw44IKmzBAMz1+1/UUd5PHHN+fMKN7zn+7p2vwlyhyX4EJ4sMxXJHn
+         0uW6IEnDRf4qRfdL94AIHN9rHbN2PvKyTPWAY/f8E/wzOWijZmO5J79GOqaKmTFCMa
+         46sZ5fIELkclJyfwda3x0yY4KZDprYlpvJbHTpeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Valentin Longchamp <valentin@longchamp.me>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 113/163] net: sched: export __netdev_watchdog_up()
-Date:   Tue, 16 Jun 2020 17:34:47 +0200
-Message-Id: <20200616153112.216801135@linuxfoundation.org>
+        stable@vger.kernel.org, Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH 5.6 098/161] crypto: virtio: Fix dest length calculation in __virtio_crypto_skcipher_do_req()
+Date:   Tue, 16 Jun 2020 17:34:48 +0200
+Message-Id: <20200616153111.045388591@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +48,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Longchamp <valentin@longchamp.me>
+From: Longpeng(Mike) <longpeng2@huawei.com>
 
-[ Upstream commit 1a3db27ad9a72d033235b9673653962c02e3486e ]
+commit d90ca42012db2863a9a30b564a2ace6016594bda upstream.
 
-Since the quiesce/activate rework, __netdev_watchdog_up() is directly
-called in the ucc_geth driver.
+The src/dst length is not aligned with AES_BLOCK_SIZE(which is 16) in some
+testcases in tcrypto.ko.
 
-Unfortunately, this function is not available for modules and thus
-ucc_geth cannot be built as a module anymore. Fix it by exporting
-__netdev_watchdog_up().
+For example, the src/dst length of one of cts(cbc(aes))'s testcase is 17, the
+crypto_virtio driver will set @src_data_len=16 but @dst_data_len=17 in this
+case and get a wrong at then end.
 
-Since the commit introducing the regression was backported to stable
-branches, this one should ideally be as well.
+  SRC: pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp (17 bytes)
+  EXP: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc pp (17 bytes)
+  DST: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 00 (pollute the last bytes)
+  (pp: plaintext  cc:ciphertext)
 
-Fixes: 79dde73cf9bc ("net/ethernet/freescale: rework quiesce/activate for ucc_geth")
-Signed-off-by: Valentin Longchamp <valentin@longchamp.me>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this issue by limit the length of dest buffer.
+
+Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200602070501.2023-4-longpeng2@huawei.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/sched/sch_generic.c |    1 +
+ drivers/crypto/virtio/virtio_crypto_algs.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -464,6 +464,7 @@ void __netdev_watchdog_up(struct net_dev
- 			dev_hold(dev);
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -402,6 +402,7 @@ __virtio_crypto_skcipher_do_req(struct v
+ 		goto free;
  	}
- }
-+EXPORT_SYMBOL_GPL(__netdev_watchdog_up);
  
- static void dev_watchdog_up(struct net_device *dev)
- {
++	dst_len = min_t(unsigned int, req->cryptlen, dst_len);
+ 	pr_debug("virtio_crypto: src_len: %u, dst_len: %llu\n",
+ 			req->cryptlen, dst_len);
+ 
 
 
