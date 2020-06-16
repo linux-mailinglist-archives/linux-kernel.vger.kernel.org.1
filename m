@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384361FC17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 00:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72B81FC184
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 00:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgFPWU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 18:20:56 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:39715 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgFPWU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 18:20:56 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id b14129e7;
-        Tue, 16 Jun 2020 22:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=RQicizWyLHOE2iCPPK+/7SOXm9U=; b=zwqQ/g
-        3Xq/tR7g2fHoBQXiJS3CWnnxoDeJkGT47tGoxmHOECjg2pvQJPYNo/Ejq0CvHM1o
-        NCmge4rzYj7J/eHj9zJSeCG2eCkYQL9HaXTBeZrPxQo/3F7GTUifv5/bO4a4v1Ud
-        tX/Z6mwcr0ATqWjJ5YOhLIS4J3U4wYUmcvjLJYoTjsmMdQqd2L5YBxtCdTOUFHKq
-        mTD5KglvYfKuW154UJWyquve3RxyAMu6/S9EDsGIU4oyJc7XHMpgyuPBZdABo96n
-        hzaxhz0tYYJKgIhXTZEKROYDp4gxesLOTbEKAPzbpWOQ+zn5bn7B9Bm251JldpEA
-        sspq8gtWfQRzWYpw==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 86c41781 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 16 Jun 2020 22:02:52 +0000 (UTC)
-Received: by mail-io1-f41.google.com with SMTP id y5so363070iob.12;
-        Tue, 16 Jun 2020 15:20:53 -0700 (PDT)
-X-Gm-Message-State: AOAM531ciYCogHcehdyvkF/zUX9H3htBgXM5v4q+IUrAQuVcj3yfD3j8
-        iGpaLijqzXNdCQn2yewxtt+WsVcL9wzULYt4FHs=
-X-Google-Smtp-Source: ABdhPJzh/Fg/J98wbBnb2dT30/tZcvAhpbVxMckFzIR66mY0R34JuTMP4lkUQFiOJY295tUKmsjnNdvjO8f57XidyrQ=
-X-Received: by 2002:a05:6638:216f:: with SMTP id p15mr28530779jak.86.1592346052223;
- Tue, 16 Jun 2020 15:20:52 -0700 (PDT)
+        id S1726432AbgFPWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 18:25:51 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42397 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgFPWZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 18:25:51 -0400
+Received: by mail-qk1-f195.google.com with SMTP id l17so203475qki.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 15:25:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VcKfZlE4WkUhVaivLHqicBLfv47GDp8cYmEaB3V/yXI=;
+        b=rLUoZOZ8JStWVgPsHXFSVdi320jWCV4Ds7VR5rrRt/QsR4iWrUUAbnnTZxOJqUAlv9
+         K6v8KHmt7jSPub5mX+0VdcviG47+K+YpN7I1KhH6KURl++xrs6wIHamEFCQJfyCX+xEl
+         I2Zm1VI6+X8ULHt3+KJSboK1TLC3Pg40bRU9cCETlFf9keGSq6g6NR0HUbHiHWqHKu/E
+         kSn+CQBu40Ka+KDq3CI++5w/ayhBeCxBcApXJMIRvuO0U8QB8OVf1cfY001dHFwhgdck
+         ba6+Jw5NJiVUXn2ydZ0Y6GOQDcbgH2JA0xKnddG2EZRrQbhMB3XGaubB06bQ2AVCXMNL
+         hxYg==
+X-Gm-Message-State: AOAM5334bOpdYk8cpc98h4oXqBHXs34P421zuaBjvx3Z8WwKL+EA06YG
+        CvQGMUNy//RMj72r3QrILGQ=
+X-Google-Smtp-Source: ABdhPJzFBcXfx4S8pNUEkIHwipaB95eGAuUAwTxzAUh2H7g200UUY9Jq7+mPMqFlgP6VAR8d66371Q==
+X-Received: by 2002:a37:4753:: with SMTP id u80mr22286270qka.178.1592346350157;
+        Tue, 16 Jun 2020 15:25:50 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id p13sm15290473qke.135.2020.06.16.15.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 15:25:49 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     x86@kernel.org, kexec@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gabriel C <nix.or.die@googlemail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [PATCH] x86/purgatory: Add -fno-stack-protector
+Date:   Tue, 16 Jun 2020 18:25:47 -0400
+Message-Id: <20200616222547.1979233-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <CAEJqkggDJEC4W9V6ijmPoE0-soKE7zBUWUiDLdCZArEsDo9vrQ@mail.gmail.com>
+References: <CAEJqkggDJEC4W9V6ijmPoE0-soKE7zBUWUiDLdCZArEsDo9vrQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAHmME9rmAznrAmEQTOaLeMM82iMFTfCNfpxDGXw4CJjuVEF_gQ@mail.gmail.com>
- <20200615104332.901519-1-Jason@zx2c4.com>
-In-Reply-To: <20200615104332.901519-1-Jason@zx2c4.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 16 Jun 2020 16:20:41 -0600
-X-Gmail-Original-Message-ID: <CAHmME9oemScgo2mg8fzqtJCbKJfu-op0WvG5RcpBCS1hHNmpZw@mail.gmail.com>
-Message-ID: <CAHmME9oemScgo2mg8fzqtJCbKJfu-op0WvG5RcpBCS1hHNmpZw@mail.gmail.com>
-Subject: Re: [PATCH] acpi: disallow loading configfs acpi tables when locked down
-To:     Len Brown <lenb@kernel.org>, rjw@rjwysocki.net
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael, Len,
+The purgatory Makefile removes -fstack-protector options if they were
+configured in, but does not currently add -fno-stack-protector.
 
-Looks like I should have CC'd you on this patch. This is probably
-something we should get into 5.8-rc2, so that it can then get put into
-stable kernels, as some people think this is security sensitive.
-Bigger picture is this:
+If gcc was configured with the --enable-default-ssp configure option,
+this results in the stack protector still being enabled for the
+purgatory (absent distro-specific specs files that might disable it
+again for freestanding compilations), if the main kernel is being
+compiled with stack protection enabled (if it's disabled for the main
+kernel, the top-level Makefile will add -fno-stack-protector).
 
-https://data.zx2c4.com/american-unsigned-language-2.gif
-https://data.zx2c4.com/american-unsigned-language-2-fedora-5.8.png
+This will break the build since commit
+  e4160b2e4b02 ("x86/purgatory: Fail the build if purgatory.ro has missing symbols")
+and prior to that would have caused runtime failure when trying to use
+kexec.
 
-Also, somebody mentioned to me that Microsoft's ACPI implementation
-disallows writes to system memory as a security mitigation. I haven't
-looked at what that actually entails, but I wonder if entirely
-disabling support for ACPI_ADR_SPACE_SYSTEM_MEMORY would be sensible.
-I haven't looked at too many DSDTs. Would that break real hardware, or
-does nobody do that? Alternatively, the range of acceptable addresses
-for SystemMemory could exclude kernel memory. Would that break
-anything? Have you heard about Microsoft's mitigation to know more
-details on what they figured out they could safely restrict without
-breaking hardware? Either way, food for thought I suppose.
+Explicitly add -fno-stack-protector to avoid this, as done in other
+Makefiles that need to disable the stack protector.
 
-Jason
+Reported-by: Gabriel C <nix.or.die@googlemail.com>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+---
+ arch/x86/purgatory/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index b04e6e72a592..088bd764e0b7 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -34,6 +34,7 @@ KCOV_INSTRUMENT := n
+ PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+ PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
+ PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
++PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
+ 
+ # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
+ # in turn leaves some undefined symbols like __fentry__ in purgatory and not
+-- 
+2.26.2
+
