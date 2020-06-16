@@ -2,129 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AD31FACA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1FB1FACB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgFPJgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 05:36:13 -0400
-Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:26656
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S1728502AbgFPJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 05:36:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47346 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726099AbgFPJgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 05:36:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G97VSFmKu2KiCPI4XOk1oBmO6T+xqBLF123gL7562/ycrGvCsjoNOw5L3Jkwj8stPmTXRSwyxUS9JBOvxwNruFdDUHcTInGthGvrxSJd70NbqgmoqfrpAAQNK4Ll/sb8UsBO5z3yNiTppebpTMBGU6mzQriv18lhPtHkGCwnMt5jlohcsIvWaQl06Ezm9MNVyGET580EVFueNhnUHFgrHNK6brlnvjAF/OrUU/dtN7SX+SkgM6mOHQ5HDs91K3KwKrMtJNIZeNZZE0UfoOnl7cZg/91Jw2RQ4fcCjtAPAXWyjql8REm2DdIf59VGLqf2g+V0Yecw0GvSNP4wdp2C9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cU+sgOXakDtGYijQ64gZND2Wf5aBlSsbn5bzbIMzBY=;
- b=fsK0aCdXENpCROcRsmGHlExqHcH32wMvjWqNOWMh/QSlupb2eNN/VIL18WLMMcCPCiUc4Dmc1b7/GAru/Ku3KLzPeXs4uaec/GjTvHia6nwDh3+GsujayazvqoXnWesejw77vZP0FPkm5XgdKiXJf4NTR/La4xl61h+zYQn1Zzq7BxqditR4T89aWBglxUMPQ2FnVGNI9ZmNhrAgACrt68ZfRXJgGS9lo+DRr0TbPya6PK1ZVbMtdLaOlSgKm2LFdIcau8ii6krezfrP5jvkyIMU9swn8LcuIVZc3kJ7gNuAy8xR76IW6+2RBkD8gJ0oXmPIxXjHPzpi3JJe6PEVnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cU+sgOXakDtGYijQ64gZND2Wf5aBlSsbn5bzbIMzBY=;
- b=pUykOiAurO4DwJ1WqM/h1AmTzap6LxPFPW6fRDPJFDKjsSsovwNWB526hxi33qU+xRHcElG9NaFzzTVP8V4iUKbpG4ovPATldKVvm+O+G3bsDtUMZAw2QbHnjKS3Qtd6PttUZrMkMXo5XqgQ+hPAZLi4CK08Gyof1H5FOYC5WW8=
-Authentication-Results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM5PR12MB1449.namprd12.prod.outlook.com (2603:10b6:4:10::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3109.21; Tue, 16 Jun 2020 09:36:00 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::c1bc:8ef9:9ba3:99bf]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::c1bc:8ef9:9ba3:99bf%10]) with mapi id 15.20.3088.029; Tue, 16 Jun
- 2020 09:35:59 +0000
-Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
-To:     Alexander Monakov <amonakov@ispras.ru>
-Cc:     linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org
-References: <20200529200738.1923-1-amonakov@ispras.ru>
- <56761139-f794-39b1-4dfa-dfc05fbe5f60@amd.com>
- <alpine.LNX.2.20.13.2006011132530.16067@monopod.intra.ispras.ru>
- <dba1e37a-1ed7-ef7f-7252-2ebd1d6bde8c@amd.com>
- <alpine.LNX.2.20.13.2006152346320.21123@monopod.intra.ispras.ru>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <b01994db-da9b-d8e6-e0c1-1af35dd62191@amd.com>
-Date:   Tue, 16 Jun 2020 16:35:48 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <alpine.LNX.2.20.13.2006152346320.21123@monopod.intra.ispras.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32)
- To DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18)
+        id S1728341AbgFPJgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 05:36:22 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B60935F1AB9CCB5C0849;
+        Tue, 16 Jun 2020 17:36:18 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.173.221.230) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 16 Jun 2020 17:36:09 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <liangpeng10@huawei.com>, <zhengxiang9@huawei.com>,
+        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH 07/12] KVM: arm64: Scan PTEs to sync dirty log
+Date:   Tue, 16 Jun 2020 17:35:48 +0800
+Message-ID: <20200616093553.27512-8-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+In-Reply-To: <20200616093553.27512-1-zhukeqian1@huawei.com>
+References: <20200616093553.27512-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (159.192.253.167) by SGAP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.19 via Frontend Transport; Tue, 16 Jun 2020 09:35:56 +0000
-X-Originating-IP: [159.192.253.167]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0bd570d1-b7ef-4733-43fb-08d811d8ad52
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1449:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1449A962748243910033A3EDF39D0@DM5PR12MB1449.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 04362AC73B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Trh1rX62RVI2kI2bPDanGQGpAPGz6n5wOMChvBlciEQlM4z4JC7f3/aNuMccFzqvqb6y8KvUKKKAtSZ4Jja8bySJfPHMfzOCc59nsdwIvewmMC2y85irHEgktyCay02i41Mv7SzFYdUcybP2QiG4hbwDv/UWh49VM2OEXQ/hU6Sc+JUApzho6F5F7a6gEon9KfAn7kEMcSz1tvaflvjv0hQV/zyjn3EaT49JMhpu0he6gYXHh3bQ1rUVX77KK9kG3sR0DKBLqvjwL7RAIUcfw4poiUuiD/jVkPLKOfVpdKOi8A3EPFvd3IRk1G1/BU0h483+gqFB/SoqIUjFIfy0yNqvGjMcKQ8lVYQoD4DSZsv3vFx0rA3YdB07agVCTvU8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(44832011)(66476007)(6666004)(66946007)(5660300002)(31696002)(31686004)(66556008)(956004)(86362001)(8676002)(2616005)(52116002)(6916009)(6512007)(36756003)(186003)(16526019)(2906002)(6486002)(4326008)(53546011)(6506007)(26005)(83380400001)(8936002)(316002)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ppfQxRbr/KpTBZoyrg3b4f2CFXg+awkDVmvJK/uyp+4rvpKl+anfLsVvZpgrlGckGDUlPbJPEukHeLCGri9E3DCVxBzC7yCakqWYNYEyYKKEvZXClsHzGdPBg5bRRKgrcc6Ne98WR7ggkPyfMceNTqOaRo4VgwAR9NmrtGl5A1vf89H+218R5DSE/dEUXia9S/SqKD6XWhdn9T+kHKMXLfHQSso34oiOcba/Bx2zMAi+mA8nmLAalGDkUFzq4/Qd6D4ZE1XYAA066NiUQ2NgfQbu5seMs1mEQnQxylhvdPseiiZocNLzFjkq7JwPGEN+J/hiGt5Cf0NjUpiy5OG2xvVyIjJXpcTK2FWkF0v5RapHJ40idoJ5S/2YYgegEOxavAQWF/ka/NL+o4TtKYD0PqJ3qo/iZvDJE3VtBlm9Nd5k3mkq5Z5dz+dXIL5/koVLIMj1+23VUNI0B5kFrhebcrxEnYUzsRb2u5AMhfYOqjlXGZrM6uxnl4RmlfR8oy+i
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bd570d1-b7ef-4733-43fb-08d811d8ad52
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 09:35:59.8220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k3sU3NJiEFAbPsKW0gjJt8ub6sGc5f0qbNnv1G9GJUumX8axlBWPzk7VJ4z6I/V0HCTpov4IbHB4QhtzN0WDCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1449
+Content-Type: text/plain
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For hardware management of dirty state, dirty state is stored in
+PTEs. We have to scan all PTEs to sync dirty log to memslot dirty
+bitmap.
 
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Peng Liang <liangpeng10@huawei.com>
+---
+ arch/arm64/include/asm/kvm_host.h |   2 +
+ arch/arm64/kvm/arm.c              |   6 +-
+ arch/arm64/kvm/mmu.c              | 162 ++++++++++++++++++++++++++++++
+ virt/kvm/kvm_main.c               |   4 +-
+ 4 files changed, 172 insertions(+), 2 deletions(-)
 
-On 6/16/20 3:48 AM, Alexander Monakov wrote:
->> Alexander
->>
->> On 6/1/20 4:01 PM, Alexander Monakov wrote:
->>> On Mon, 1 Jun 2020, Suravee Suthikulpanit wrote:
->>>
->>>>> Moving init_iommu_perf_ctr just after iommu_flush_all_caches resolves
->>>>> the issue. This is the earliest point in amd_iommu_init_pci where the
->>>>> call succeeds on my laptop.
->>>> According to your description, it should just need to be anywhere after
->>>> the
->>>> pci_enable_device() is called for the IOMMU device, isn't it? So, on your
->>>> system, what if we just move the init_iommu_perf_ctr() here:
->>> No, this doesn't work, as I already said in the paragraph you are responding
->>> to. See my last sentence in the quoted part.
->>>
->>> So the implication is init_device_table_dma together with subsequent cache
->>> flush is also setting up something that is necessary for counters to be
->>> writable.
->>>
->>> Alexander
->>>
->> Instead of blindly moving the code around to a spot that would just work,
->> I am trying to understand what might be required here. In this case,
->> the init_device_table_dma()should not be needed. I suspect it's the IOMMU
->> invalidate all command that's also needed here.
->>
->> I'm also checking with the HW and BIOS team. Meanwhile, could you please give
->> the following change a try:
-> Hello. Can you give any update please?
-> 
-> Alexander
-> 
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 2bc3256759e3..910ec33afea8 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -489,6 +489,8 @@ void force_vm_exit(const cpumask_t *mask);
+ void kvm_mmu_wp_memory_region(struct kvm *kvm, int slot);
+ void kvm_mmu_clear_dbm(struct kvm *kvm, struct kvm_memory_slot *memslot);
+ void kvm_mmu_clear_dbm_all(struct kvm *kvm);
++void kvm_mmu_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot);
++void kvm_mmu_sync_dirty_log_all(struct kvm *kvm);
+ 
+ int handle_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ 		int exception_index);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 850cc5cbc6f0..92f0b40a30fa 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1209,7 +1209,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 
+ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
+ {
+-
++#ifdef CONFIG_ARM64_HW_AFDBM
++	if (kvm->arch.hw_dirty_log) {
++		kvm_mmu_sync_dirty_log(kvm, memslot);
++	}
++#endif
+ }
+ 
+ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 742c7943176f..3aa0303d83f0 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -2600,6 +2600,168 @@ void kvm_mmu_clear_dbm_all(struct kvm *kvm)
+ 		kvm_mmu_clear_dbm(kvm, memslot);
+ 	}
+ }
++
++/**
++ * stage2_sync_dirty_log_ptes() - synchronize dirty log from PMD range
++ * @kvm:	The KVM pointer
++ * @pmd:	pointer to pmd entry
++ * @addr:	range start address
++ * @end:	range end address
++ */
++static void stage2_sync_dirty_log_ptes(struct kvm *kvm, pmd_t *pmd,
++				       phys_addr_t addr, phys_addr_t end)
++{
++	pte_t *pte;
++
++	pte = pte_offset_kernel(pmd, addr);
++	do {
++		if (!pte_none(*pte) && !kvm_s2pte_readonly(pte))
++			mark_page_dirty(kvm, addr >> PAGE_SHIFT);
++	} while (pte++, addr += PAGE_SIZE, addr != end);
++}
++
++/**
++ * stage2_sync_dirty_log_pmds() - synchronize dirty log from PUD range
++ * @kvm:	The KVM pointer
++ * @pud:	pointer to pud entry
++ * @addr:	range start address
++ * @end:	range end address
++ */
++static void stage2_sync_dirty_log_pmds(struct kvm *kvm, pud_t *pud,
++				       phys_addr_t addr, phys_addr_t end)
++{
++	pmd_t *pmd;
++	phys_addr_t next;
++
++	pmd = stage2_pmd_offset(kvm, pud, addr);
++	do {
++		next = stage2_pmd_addr_end(kvm, addr, end);
++		if (!pmd_none(*pmd) && !pmd_thp_or_huge(*pmd))
++			stage2_sync_dirty_log_ptes(kvm, pmd, addr, next);
++	} while (pmd++, addr = next, addr != end);
++}
++
++/**
++ * stage2_sync_dirty_log_puds() - synchronize dirty log from P4D range
++ * @kvm:	The KVM pointer
++ * @pgd:	pointer to pgd entry
++ * @addr:	range start address
++ * @end:	range end address
++ */
++static void stage2_sync_dirty_log_puds(struct kvm *kvm, p4d_t *p4d,
++				       phys_addr_t addr, phys_addr_t end)
++{
++	pud_t *pud;
++	phys_addr_t next;
++
++	pud = stage2_pud_offset(kvm, p4d, addr);
++	do {
++		next = stage2_pud_addr_end(kvm, addr, end);
++		if (!stage2_pud_none(kvm, *pud) && !stage2_pud_huge(kvm, *pud))
++			stage2_sync_dirty_log_pmds(kvm, pud, addr, next);
++	} while (pud++, addr = next, addr != end);
++}
++
++/**
++ * stage2_sync_dirty_log_p4ds() - synchronize dirty log from PGD range
++ * @kvm:	The KVM pointer
++ * @pgd:	pointer to pgd entry
++ * @addr:	range start address
++ * @end:	range end address
++ */
++static void stage2_sync_dirty_log_p4ds(struct kvm *kvm, pgd_t *pgd,
++				       phys_addr_t addr, phys_addr_t end)
++{
++	p4d_t *p4d;
++	phys_addr_t next;
++
++	p4d = stage2_p4d_offset(kvm, pgd, addr);
++	do {
++		next = stage2_p4d_addr_end(kvm, addr, end);
++		if (!stage2_p4d_none(kvm, *p4d))
++			stage2_sync_dirty_log_puds(kvm, p4d, addr, next);
++	} while (p4d++, addr = next, addr != end);
++}
++
++/**
++ * stage2_sync_dirty_log_range() - synchronize dirty log from stage2 memory
++ * region range
++ * @kvm:	The KVM pointer
++ * @addr:	Start address of range
++ * @end:	End address of range
++ */
++static void stage2_sync_dirty_log_range(struct kvm *kvm, phys_addr_t addr,
++					phys_addr_t end)
++{
++	pgd_t *pgd;
++	phys_addr_t next;
++
++	pgd = kvm->arch.pgd + stage2_pgd_index(kvm, addr);
++	do {
++		cond_resched_lock(&kvm->mmu_lock);
++		if (!READ_ONCE(kvm->arch.pgd))
++			break;
++		next = stage2_pgd_addr_end(kvm, addr, end);
++		if (stage2_pgd_present(kvm, *pgd))
++			stage2_sync_dirty_log_p4ds(kvm, pgd, addr, next);
++	} while (pgd++, addr = next, addr != end);
++}
++
++/**
++ * kvm_mmu_sync_dirty_log() - synchronize dirty log from stage2 PTEs for
++ * memory slot
++ * @kvm:	The KVM pointer
++ * @slot:	The memory slot to synchronize dirty log
++ *
++ * Called to synchronize dirty log (marked by hw) after memory region
++ * KVM_GET_DIRTY_LOG operation is called. After this function returns
++ * all dirty log information (for that hw will modify page tables during
++ * this routine, it is true only when guest is stopped, but it is OK
++ * because we won't miss dirty log finally.) are collected into memslot
++ * dirty_bitmap. Afterwards dirty_bitmap can be copied to userspace.
++ *
++ * Acquires kvm_mmu_lock. Called with kvm->slots_lock mutex acquired,
++ * serializing operations for VM memory regions.
++ */
++void kvm_mmu_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
++{
++	phys_addr_t start = memslot->base_gfn << PAGE_SHIFT;
++	phys_addr_t end = (memslot->base_gfn + memslot->npages) << PAGE_SHIFT;
++	int idx;
++
++	if (WARN_ON_ONCE(!memslot->dirty_bitmap))
++                return;
++
++	idx = srcu_read_lock(&kvm->srcu);
++	spin_lock(&kvm->mmu_lock);
++
++	stage2_sync_dirty_log_range(kvm, start, end);
++
++	spin_unlock(&kvm->mmu_lock);
++	srcu_read_unlock(&kvm->srcu, idx);
++}
++
++/**
++ * kvm_mmu_sync_dirty_log_all() - synchronize dirty log from PTEs for whole VM
++ * @kvm:	The KVM pointer
++ *
++ * Called with kvm->slots_lock mutex acquired
++ */
++void kvm_mmu_sync_dirty_log_all(struct kvm *kvm)
++{
++	struct kvm_memslots *slots = kvm_memslots(kvm);
++	struct kvm_memory_slot *memslots = slots->memslots;
++	struct kvm_memory_slot *memslot;
++	int slot;
++
++	if (unlikely(!slots->used_slots))
++		return;
++
++	for (slot = 0; slot < slots->used_slots; slot++) {
++		memslot = &memslots[slot];
++		kvm_mmu_sync_dirty_log(kvm, memslot);
++	}
++}
+ #endif /* CONFIG_ARM64_HW_AFDBM */
+ 
+ void kvm_arch_commit_memory_region(struct kvm *kvm,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index a852af5c3214..3722343fd460 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2581,7 +2581,9 @@ static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
+ 	if (memslot && memslot->dirty_bitmap) {
+ 		unsigned long rel_gfn = gfn - memslot->base_gfn;
+ 
+-		set_bit_le(rel_gfn, memslot->dirty_bitmap);
++		/* Speed up if this bit has already been set */
++		if (!test_bit_le(rel_gfn, memslot->dirty_bitmap))
++			set_bit_le(rel_gfn, memslot->dirty_bitmap);
+ 	}
+ }
+ 
+-- 
+2.19.1
 
-Sorry for late reply. I have a reproducer and working with the HW team to understand the issue.
-I should be able to provide update with solution by the end of this week.
-
-Suravee
