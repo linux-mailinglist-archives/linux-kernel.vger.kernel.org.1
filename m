@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B011FAB46
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB391FAB49
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgFPIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
+        id S1727903AbgFPIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728074AbgFPIcH (ORCPT
+        with ESMTP id S1725901AbgFPIct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:32:07 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8381C03E97C
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:32:06 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id s1so22496356ljo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sQ4U7wvoNlcpjuMW/4KAQuHPsQCChERlSO2SrjCLc4A=;
-        b=yzgs82TyqjiolbSZa0hACzF4gN7GCdrUZ3PkJIwNsxrwGymEWug+COKC95YBk6TI0K
-         2Y0WbWcE0rB11ecpIHasmBOEfu2LHU1jVxms4CkS6c1YBhHphAVGDqxKnQPW4PBBc7hb
-         LMdJwAntiTOBJmW2XA6P3lnRabzZ3UT3E9uy8o/U1SwZ5oitYwRLHc5WSAN8DB/8WxGH
-         VrB15nm/FvXI/F5bPdrN/KsIQp6inbymvEpyLN7rdC7zEFqzsH+Jxw7zBeSbaDF9hj4Z
-         jaXPYaexNoE0Z92Ldpp3NqRRd9Su8ihOkFK3xJAvMTKv498p1DzKxsLxehhJydEQaZ+i
-         fWig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sQ4U7wvoNlcpjuMW/4KAQuHPsQCChERlSO2SrjCLc4A=;
-        b=GjziAUHb6WiJRG9pasVH061zB/I6jF91nDSs5u53JBrqxKJLBuxouvdMijWNuKyMEH
-         kelWx3LNz8Jjq8Rvtroh5FxjIrcqINpAyp2vZYZA0cH8HCb+wltLXStBHOVpIjvSG+Ss
-         D95f+Gbl6sc/+2XAA/3wJHuL7c64oh1SJLgQVryZlOm409pzbv2zvNH0ruOJvyWSRbKY
-         aiZxefnJoO/B5SPYhAmCpCxHaLVBn/i67M6UbBV3BN/QjVKtepqdYgwS940pN5c3CN0V
-         VPZi2Y9hSTUMNHLtGJ0knLJ7E7NMv6flm68096DLRg0FiWUERNfNMsTN/R+Q4S+5sWQh
-         hU1A==
-X-Gm-Message-State: AOAM531QvF9GhTRmqGLcM3wDwhQ26ux4qd/4VimP1ENHbAuzqekH9Mrp
-        YIshRs1IQIFvSmLisy64WVNV1MrXeWiF/YiG3MQIrQ==
-X-Google-Smtp-Source: ABdhPJzDjr7Vp4IVSdnf58s8G/HEW2ciu0txbLcKtPfjhvTLWtyM16wHBxujqgvNRbb533tvY8VqBYbmo4AT2CdyIOc=
-X-Received: by 2002:a2e:350a:: with SMTP id z10mr837916ljz.104.1592296325111;
- Tue, 16 Jun 2020 01:32:05 -0700 (PDT)
+        Tue, 16 Jun 2020 04:32:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD737C05BD43
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QjseRY7ePwYJxBy+fzhqff7/CBSWJFymIkTnxqjIliE=; b=C1BbaxJPdFl/eQTKVsRJzm8Z4e
+        j3RkSN7q0/+ytMV4qxjz8Ti0Cz398+1XYFApw1UxjuzSrLDG/BsreMfsGP19NJKlzJjtKU1hgjpS7
+        BpWAvoWAabXUDvM2j1vuwv4OFc51crqDML5GNPw9RTIKRGGrjab0pReFkeuRaDUIt/h/aRfXrwsl6
+        DCbtW+UYmcSYMCCMBGj0f2AYUIFIVR6pbXa3DVc2jDbMGrSkoc5JqB4zG5JUNNYeXWcKXysY0/Hmz
+        7HiTtjyweivTTAgdYEf2oYmMmeIc894alYL9vK9NgZpmdHP2JOzTtOYkAnhN803B3xMP59BxzDvn1
+        xyr/lX/Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jl71I-0000wY-BF; Tue, 16 Jun 2020 08:32:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9AF0E30018A;
+        Tue, 16 Jun 2020 10:32:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 801CA2B9CA58C; Tue, 16 Jun 2020 10:32:33 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 10:32:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matt Helsley <mhelsley@vmware.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
+        elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
+        rostedt@goodmis.org, jthierry@redhat.com, mbenes@suse.cz
+Subject: Re: [RFC][PATCH 1/3] objtool: Clean up elf_write() condition
+Message-ID: <20200616083233.GK2554@hirez.programming.kicks-ass.net>
+References: <20200612143034.933422660@infradead.org>
+ <20200612143553.953897818@infradead.org>
+ <20200615183448.GD25598@rlwimi.vmware.com>
+ <20200615184411.GH2531@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200608125143.GA2789203@x1>
-In-Reply-To: <20200608125143.GA2789203@x1>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 16 Jun 2020 10:31:54 +0200
-Message-ID: <CACRpkdZupnetd29aehw4HF3isGgRHbqxWZuTkPBusm_EmvjZ4g@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl-single: fix pcs_parse_pinconf() return value
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615184411.GH2531@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 2:51 PM Drew Fustini <drew@beagleboard.org> wrote:
+On Mon, Jun 15, 2020 at 08:44:11PM +0200, Peter Zijlstra wrote:
+> On Mon, Jun 15, 2020 at 11:34:48AM -0700, Matt Helsley wrote:
+> > On Fri, Jun 12, 2020 at 04:30:35PM +0200, Peter Zijlstra wrote:
+> > > With there being multiple ways to change the ELF data, let's more
+> > > concisely track modification.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > 
+> > Would it make sense to set the relocation section's "changed" flag in
+> > addition to the elf struct's changed flag in elf_rebuild_reloc_section()?
+> > 
+> > Right now I think the code is  assuming that it's a newly created section
+> > but it would be more defensive to set it during a rebuild too I think.
+> 
+> Indeed, currently the code assumes (and this is so) elf_rebuild_rela_sections()
+> is only called on an elf_create_reloc_section() result and thus setting
+> ->changed is superfluous.
+> 
+> But sure, I can certainly set them there too.
 
-> This patch causes pcs_parse_pinconf() to return -ENOTSUPP when no
-> pinctrl_map is added.  The current behavior is to return 0 when
-> !PCS_HAS_PINCONF or !nconfs.  Thus pcs_parse_one_pinctrl_entry()
-> incorrectly assumes that a map was added and sets num_maps = 2.
->
-> Analysis:
-> =========
-> The function pcs_parse_one_pinctrl_entry() calls pcs_parse_pinconf()
-> if PCS_HAS_PINCONF is enabled.  The function pcs_parse_pinconf()
-> returns 0 to indicate there was no error and num_maps is then set to 2:
->
->  980 static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
->  981                                                 struct device_node *np,
->  982                                                 struct pinctrl_map **map,
->  983                                                 unsigned *num_maps,
->  984                                                 const char **pgnames)
->  985 {
-> <snip>
-> 1053         (*map)->type = PIN_MAP_TYPE_MUX_GROUP;
-> 1054         (*map)->data.mux.group = np->name;
-> 1055         (*map)->data.mux.function = np->name;
-> 1056
-> 1057         if (PCS_HAS_PINCONF && function) {
-> 1058                 res = pcs_parse_pinconf(pcs, np, function, map);
-> 1059                 if (res)
-> 1060                         goto free_pingroups;
-> 1061                 *num_maps = 2;
-> 1062         } else {
-> 1063                 *num_maps = 1;
-> 1064         }
->
-> However, pcs_parse_pinconf() will also return 0 if !PCS_HAS_PINCONF or
-> !nconfs.  I believe these conditions should indicate that no map was
-> added by returning -ENOTSUPP. Otherwise pcs_parse_one_pinctrl_entry()
-> will set num_maps = 2 even though no maps were successfully added, as
-> it does not reach "m++" on line 940:
->
->  895 static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
->  896                              struct pcs_function *func,
->  897                              struct pinctrl_map **map)
->  898
->  899 {
->  900         struct pinctrl_map *m = *map;
-> <snip>
->  917         /* If pinconf isn't supported, don't parse properties in below. */
->  918         if (!PCS_HAS_PINCONF)
->  919                 return 0;
->  920
->  921         /* cacluate how much properties are supported in current node */
->  922         for (i = 0; i < ARRAY_SIZE(prop2); i++) {
->  923                 if (of_find_property(np, prop2[i].name, NULL))
->  924                         nconfs++;
->  925         }
->  926         for (i = 0; i < ARRAY_SIZE(prop4); i++) {
->  927                 if (of_find_property(np, prop4[i].name, NULL))
->  928                         nconfs++;
->  929         }
->  930         if (!nconfs)
->  919                 return 0;
->  932
->  933         func->conf = devm_kcalloc(pcs->dev,
->  934                                   nconfs, sizeof(struct pcs_conf_vals),
->  935                                   GFP_KERNEL);
->  936         if (!func->conf)
->  937                 return -ENOMEM;
->  938         func->nconfs = nconfs;
->  939         conf = &(func->conf[0]);
->  940         m++;
->
-> This situtation will cause a boot failure [0] on the BeagleBone Black
-> (AM3358) when am33xx_pinmux node in arch/arm/boot/dts/am33xx-l4.dtsi
-> has compatible = "pinconf-single" instead of "pinctrl-single".
->
-> The patch fixes this issue by returning -ENOSUPP when !PCS_HAS_PINCONF
-> or !nconfs, so that pcs_parse_one_pinctrl_entry() will know that no
-> map was added.
->
-> Logic is also added to pcs_parse_one_pinctrl_entry() to distinguish
-> between -ENOSUPP and other errors.  In the case of -ENOSUPP, num_maps
-> is set to 1 as it is valid for pinconf to be enabled and a given pin
-> group to not any pinconf properties.
->
-> [0] https://lore.kernel.org/linux-omap/20200529175544.GA3766151@x1/
->
-> Fixes: 9dddb4df90d1 ("pinctrl: single: support generic pinconf")
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Delta to the patch.
 
-Patch applied as non-critical (for-next) fix.
-
-If there is no hurry let's merge it this way with lots of testing
-along the way.
-
-Yours,
-Linus Walleij
+---
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2740,7 +2740,7 @@ int check(const char *_objname, bool orc
+ 
+ 	objname = _objname;
+ 
+-	file.elf = elf_open_read(objname, orc ? O_RDWR : O_RDONLY);
++	file.elf = elf_open_read(objname, O_RDWR);
+ 	if (!file.elf)
+ 		return 1;
+ 
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -849,11 +849,14 @@ static int elf_rebuild_rela_section(stru
+ 	return 0;
+ }
+ 
+-int elf_rebuild_reloc_section(struct section *sec)
++int elf_rebuild_reloc_section(struct elf *elf, struct section *sec)
+ {
+ 	struct reloc *reloc;
+ 	int nr;
+ 
++	sec->changed = true;
++	elf->changed = true;
++
+ 	nr = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list)
+ 		nr++;
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -134,7 +134,7 @@ struct reloc *find_reloc_by_dest(const s
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+-int elf_rebuild_reloc_section(struct section *sec);
++int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
+ 
+ #define for_each_sec(file, sec)						\
+ 	list_for_each_entry(sec, &file->elf->sections, list)
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -222,7 +222,7 @@ int create_orc_sections(struct objtool_f
+ 		}
+ 	}
+ 
+-	if (elf_rebuild_reloc_section(ip_relocsec))
++	if (elf_rebuild_reloc_section(file->elf, ip_relocsec))
+ 		return -1;
+ 
+ 	return 0;
