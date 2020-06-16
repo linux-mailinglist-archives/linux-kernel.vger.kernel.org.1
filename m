@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2A51FB0A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971701FB0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgFPM16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:27:58 -0400
-Received: from mailgate-2.ics.forth.gr ([139.91.1.5]:38296 "EHLO
-        mailgate-2.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728326AbgFPM15 (ORCPT
+        id S1728679AbgFPM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:29:01 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32415 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726261AbgFPM3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:27:57 -0400
-Received: from av3.ics.forth.gr (av3in [139.91.1.77])
-        by mailgate-2.ics.forth.gr (8.14.4/ICS-FORTH/V10-1.8-GATE) with ESMTP id 05GCRU4N019960;
-        Tue, 16 Jun 2020 12:27:37 GMT
-X-AuditID: 8b5b014d-257ff700000045c5-e8-5ee8bab847aa
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 9D.6F.17861.8BAB8EE5; Tue, 16 Jun 2020 15:27:37 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Tue, 16 Jun 2020 08:29:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592310538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=67GIuCamd4MgSsvesfvqYg7CyR/yaU34h6Ys25meAe0=;
+        b=YLyaUimnSgPa84m4KXj0OjczvmDjb8tcLayO2Ygu3E/Z+fmfw0A7fOGMKFG+qRT0/s+y/L
+        jHmbZyuPKpm4W3UqgGbWI9/6dw7oXYehRWaegryqdvXQwCpLMWRD3FfrLXMbRQMtNNdvuI
+        5Hu9mdfPvDnoZ5C7pRWA8LXDjCtIntI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-wuG3kYVvOVG4mvlBtbhxKA-1; Tue, 16 Jun 2020 08:28:55 -0400
+X-MC-Unique: wuG3kYVvOVG4mvlBtbhxKA-1
+Received: by mail-wm1-f72.google.com with SMTP id t145so1186168wmt.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:28:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=67GIuCamd4MgSsvesfvqYg7CyR/yaU34h6Ys25meAe0=;
+        b=EfLHiIdzijEL1i4rFxfCjT9rWGSnqlJ3LFCjkXXrp57VihyLpsGExubopwqCblCeC4
+         d2S2J1OIYzmGCoIGSNs351nYVlGFFJODL5Cyh/Llqcrc2Rr5j2wJqu9YvYmqYriVSq1S
+         KhcVkITV5jrdbdFWONID5oRgZSl7b1R3W51xTOtTuqvv+8vskUG3COEjZb9h2brB3hF6
+         n1AxnKCdm+3lySlncsl1JtZsvPWnFT8dkXTQDiB4aB/CVTPcblqGpOvUJeJxptvismv/
+         BILPPXanL5QFP5X4rxFcYEdVU+/v+ha9Bh//FVOeBil9PyVafMGvv93p2dF4oBTvEdDM
+         lY0Q==
+X-Gm-Message-State: AOAM532pPnsNjSxsu1R13CjDEO/yL8YEUqf+/Uw0n4Q1eiqnxW3WgJZP
+        XXzJDetVtIvsUISKj4eU78BmLoR00fhTmuBDP2mrrldiQh7UZgvlOzuYI5nEWlRtjr9mwcC8hxh
+        CThMTXbUchOH1ghhkGgDlTM4O
+X-Received: by 2002:a5d:4f81:: with SMTP id d1mr2971493wru.95.1592310533566;
+        Tue, 16 Jun 2020 05:28:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNsomDYYUeDLHsz6oPtzv9ic6c3G/8BovSOHkTiki/aC+lDX9Zjg+2kCJO168r708tABUNrw==
+X-Received: by 2002:a5d:4f81:: with SMTP id d1mr2971469wru.95.1592310533343;
+        Tue, 16 Jun 2020 05:28:53 -0700 (PDT)
+Received: from [192.168.178.58] ([151.30.88.161])
+        by smtp.gmail.com with ESMTPSA id z206sm3745314wmg.30.2020.06.16.05.28.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 05:28:52 -0700 (PDT)
+Subject: Re: [kvm-unit-tests PATCH] x86: pmu: Test full-width counter writes
+ support
+To:     Thomas Huth <thuth@redhat.com>, Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200529074347.124619-1-like.xu@linux.intel.com>
+ <20200529074347.124619-4-like.xu@linux.intel.com>
+ <b1a5472b-f7d0-82b0-e753-dabf81254488@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1272fbd7-3ff1-5eac-e9e2-78b824fbc4e0@redhat.com>
+Date:   Tue, 16 Jun 2020 14:28:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 16 Jun 2020 15:27:36 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] riscv: Support CONFIG_STRICT_DEVMEM
-Organization: FORTH
-In-Reply-To: <7faa60aa4a606b5c5c1ae374d82a7eee6c764b38.1592292685.git.zong.li@sifive.com>
-References: <cover.1592292685.git.zong.li@sifive.com>
- <7faa60aa4a606b5c5c1ae374d82a7eee6c764b38.1592292685.git.zong.li@sifive.com>
-Message-ID: <29425dbf7d54bab2733d28480d3adb61@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.9
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKLMWRmVeSWpSXmKPExsXSHT1dWXfnrhdxBm9WMFtc3jWHzWLb5xY2
-        i5eXe5gt2mbxW3y4O5vNgdXjzcuXLB6bl9R7XGq+zu7xeZNcAEsUl01Kak5mWWqRvl0CV8bK
-        tytZCjokKu4suMzawLhVuIuRk0NCwETi2NzzLF2MXBxCAkcZJZ7ebWWGSJhKzN7byQhi8woI
-        Spyc+YQFxGYWsJCYemU/I4QtL9G8dTZYPYuAqsT0y6vBbDYBTYn5lw6C1YsIKEhcWbIRqrdC
-        Yuu/30wgtrCAjcSvFyvA4vwCwhKf7l5kBbE5BSIl7rfdZoQ4qIVRovnIVRaII1wkOpa8gjpO
-        ReLD7wfsILaogLLEzcPP2ScwCs5CcussJLfOQnLrAkbmVYwCiWXGepnJxXpp+UUlGXrpRZsY
-        wSHN6LuD8fbmt3qHGJk4GA8xSnAwK4nwRtu+iBPiTUmsrEotyo8vKs1JLT7EKM3BoiTOm8e9
-        PFZIID2xJDU7NbUgtQgmy8TBKdXAJD7956upAdVMwrJLpxRv+vSV67lgUnLd2fuSuW+8JYIL
-        07aZWqzl43s6/7LXxlsMNaL/Gb3Puxw5r39N9eiVq6nen+Z+yZIVzP5b41rIYHD8s+FRw6l+
-        b2YJ7WS8/VrA6WhSm+5CkY/yn1yEDjQ0FAqs13VyZ1LRY552t9GQLcMwTebXoR3H5NZPTyhw
-        4yyc4dEnVhO34eaZptWefirfvU7OKOn93sZe2G3cu3V6q8oLzpLnlp9bt9bt0IyXPj/bbSLH
-        HeHFc6b/4nPIWOXwok+x2kG4oXXlizdRRTdMj5ZdN7v1tnB71NajLfPeT6nImJb75tKv154z
-        BGednTnBIvnc3ntNW07PeDbV0E7siRJLcUaioRZzUXEiAAwwNb3YAgAA
-X-Greylist: inspected by milter-greylist-4.6.2 (mailgate-2.ics.forth.gr [139.91.1.5]); Tue, 16 Jun 2020 12:27:37 +0000 (GMT) for IP:'139.91.1.77' DOMAIN:'av3in' HELO:'av3.ics.forth.gr' FROM:'mick@ics.forth.gr' RCPT:''
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mailgate-2.ics.forth.gr [139.91.1.5]); Tue, 16 Jun 2020 12:27:37 +0000 (GMT)
+In-Reply-To: <b1a5472b-f7d0-82b0-e753-dabf81254488@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2020-06-16 10:45, Zong Li έγραψε:
-> Implement the 'devmem_is_allowed()' interface for RISC-V, like some of
-> other architectures have done. It will be called from 
-> range_is_allowed()
-> when userpsace attempts to access /dev/mem.
+On 16/06/20 12:49, Thomas Huth wrote:
+> On 29/05/2020 09.43, Like Xu wrote:
+>> When the full-width writes capability is set, use the alternative MSR
+>> range to write larger sign counter values (up to GP counter width).
+>>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>  lib/x86/msr.h |   1 +
+>>  x86/pmu.c     | 125 ++++++++++++++++++++++++++++++++++++++++----------
+>>  2 files changed, 102 insertions(+), 24 deletions(-)
+> [...]
+>> @@ -452,6 +468,66 @@ static void check_running_counter_wrmsr(void)
+>>  	report_prefix_pop();
+>>  }
+>>  
+>> +static void check_counters(void)
+>> +{
+>> +	check_gp_counters();
+>> +	check_fixed_counters();
+>> +	check_rdpmc();
+>> +	check_counters_many();
+>> +	check_counter_overflow();
+>> +	check_gp_counter_cmask();
+>> +	check_running_counter_wrmsr();
+>> +}
+>> +
+>> +static void do_unsupported_width_counter_write(void *index)
+>> +{
+>> +	wrmsr(MSR_IA32_PMC0 + *((int *) index), 0xffffff0123456789ull);
+>> +}
+>> +
+>> +static void  check_gp_counters_write_width(void)
+>> +{
+>> +	u64 val_64 = 0xffffff0123456789ull;
+>> +	u64 val_32 = val_64 & ((1ul << 32) - 1);
+>  Hi,
 > 
-> Access to exclusive IOMEM and kernel RAM is denied unless
-> CONFIG_STRICT_DEVMEM is set to 'n'.
+> this broke compilation on 32-bit hosts:
 > 
-> Test it by devmem, the result as follows:
+>  https://travis-ci.com/github/huth/kvm-unit-tests/jobs/349654654#L710
 > 
->  - CONFIG_STRICT_DEVMEM=y
-> 	$ devmem 0x10010000
-> 	0x00000000
-> 	$ devmem 0x80200000
-> 	0x0000106F
-> 
->  - CONFIG_STRICT_DEVMEM is not set
-> 	$ devmem 0x10010000
-> 	devmem: mmap: Operation not permitted
-> 	$ devmem 0x80200000
-> 	devmem: mmap: Operation not permitted
-> 
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  arch/riscv/Kconfig          |  1 +
->  arch/riscv/include/asm/io.h |  2 ++
->  arch/riscv/mm/init.c        | 19 +++++++++++++++++++
->  3 files changed, 22 insertions(+)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 128192e14ff2..ffd7841ede4c 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -16,6 +16,7 @@ config RISCV
->  	select ARCH_HAS_BINFMT_FLAT
->  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
->  	select ARCH_HAS_DEBUG_WX
-> +	select ARCH_HAS_DEVMEM_IS_ALLOWED
->  	select ARCH_HAS_GCOV_PROFILE_ALL
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_HAS_MMIOWB
-> diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
-> index 3835c3295dc5..04ac65ab93ce 100644
-> --- a/arch/riscv/include/asm/io.h
-> +++ b/arch/riscv/include/asm/io.h
-> @@ -147,4 +147,6 @@ __io_writes_outs(outs, u64, q, __io_pbr(), 
-> __io_paw())
-> 
->  #include <asm-generic/io.h>
-> 
-> +extern int devmem_is_allowed(unsigned long pfn);
-> +
->  #endif /* _ASM_RISCV_IO_H */
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index bbe816e03b2f..5e7e61519acc 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -517,6 +517,25 @@ void mark_rodata_ro(void)
->  }
->  #endif
-> 
-> +#ifdef CONFIG_STRICT_DEVMEM
-> +#include <linux/ioport.h>
-> +/*
-> + * devmem_is_allowed() checks to see if /dev/mem access to a certain 
-> address
-> + * is valid. The argument is a physical page number.
-> + *
-> + * Disallow access to system RAM as well as device-exclusive MMIO 
-> regions.
-> + * This effectively disable read()/write() on /dev/mem.
-> + */
-> +int devmem_is_allowed(unsigned long pfn)
-> +{
-> +	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
-> +		return 0;
-> +	if (!page_is_ram(pfn))
-> +		return 1;
-> +	return 0;
-> +}
-> +#endif
-> +
->  void __init resource_init(void)
->  {
->  	struct memblock_region *region;
+> Fix should be easy, I guess - either use 1ull or specify the mask
+> 0xffffffff directly.
 
-This shouldn't be part of /mm/init.c, it has nothing to do with memory 
-initialization, I suggest we move it to another file like mmap.c on 
-arm/arm64. Also before using iomem_is_exclusive we should probably also 
-mark any reserved regions with the no-map attribute as busy|exclusive, 
-reserved-memory regions are not necessarily part of the main memory so 
-the page_is_ram check may pass and iomem_is_exclusive won't do any good.
+Or
+
+u64 val_32 = (u64)(u32) val_64;
+
+I'll send a patch.
+
+Paolo
+
