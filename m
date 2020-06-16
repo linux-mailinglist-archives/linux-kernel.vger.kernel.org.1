@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903251FB828
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11211FB78E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732899AbgFPPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
+        id S1732319AbgFPPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:47:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732283AbgFPPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:33 -0400
+        id S1732303AbgFPPrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4359A207C4;
-        Tue, 16 Jun 2020 15:53:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60A4021508;
+        Tue, 16 Jun 2020 15:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322812;
-        bh=1ELxeiNKC0u+xESZ8IGQ8vIZ933Fyh7SQNeFQw6Wj7g=;
+        s=default; t=1592322432;
+        bh=c+0XdW9O/ZwTbnxHuQHU04UXfdF/gypjdKt3Avss+hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VVAsKKO8Ol0mxNoLZGyVue8G0JOoLCIu2/Q1VlEuUwaU6BhIwojnvrXqdTsS2o/aR
-         6gqg6aKa0DJ9xHi92UXiRD4y0wA9Ypddo5fGcbx/R7SxIzxaAW7PWw+/cv+6tI2/YY
-         eEe2R9OXi4iDqBvw/1EL8Gm/vyTOdceqjr2QHgoQ=
+        b=UHM4P+h3ohZcdhF4ayiJVjjkz4z5hU9veFnlWrv0KrQO671eK2xUQa0YpX2XTLTAO
+         Ajrvnw7r7SMjI68I8Dc0KfKb43OaplLLLi1u9nfiajdNRD5exihaPBk22zNhy4s5Tp
+         qWxvH9mV15XLSUX6Ot3LaFFQeJJmTItpTy4Me3Jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.6 114/161] net/mlx5: Disable reload while removing the device
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.7 130/163] KVM: nVMX: Consult only the "basic" exit reason when routing nested exit
 Date:   Tue, 16 Jun 2020 17:35:04 +0200
-Message-Id: <20200616153111.786492956@linuxfoundation.org>
+Message-Id: <20200616153113.040756753@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-[ Upstream commit 60904cd349abc98cb888fc28d1ca55a8e2cf87b3 ]
+commit 2ebac8bb3c2d35f5135466490fc8eeaf3f3e2d37 upstream.
 
-While unregistration is in progress, user might be reloading the
-interface.
-This can race with unregistration in below flow which uses the
-resources which are getting disabled by reload flow.
+Consult only the basic exit reason, i.e. bits 15:0 of vmcs.EXIT_REASON,
+when determining whether a nested VM-Exit should be reflected into L1 or
+handled by KVM in L0.
 
-Hence, disable the devlink reloading first when removing the device.
+For better or worse, the switch statement in nested_vmx_exit_reflected()
+currently defaults to "true", i.e. reflects any nested VM-Exit without
+dedicated logic.  Because the case statements only contain the basic
+exit reason, any VM-Exit with modifier bits set will be reflected to L1,
+even if KVM intended to handle it in L0.
 
-     CPU0                                   CPU1
-     ----                                   ----
-local_pci_remove()                  devlink_mutex
-  remove_one()                       devlink_nl_cmd_reload()
-    mlx5_unregister_device()           devlink_reload()
-                                       ops->reload_down()
-                                         mlx5_unload_one()
+Practically speaking, this only affects EXIT_REASON_MCE_DURING_VMENTRY,
+i.e. a #MC that occurs on nested VM-Enter would be incorrectly routed to
+L1, as "failed VM-Entry" is the only modifier that KVM can currently
+encounter.  The SMM modifiers will never be generated as KVM doesn't
+support/employ a SMI Transfer Monitor.  Ditto for "exit from enclave",
+as KVM doesn't yet support virtualizing SGX, i.e. it's impossible to
+enter an enclave in a KVM guest (L1 or L2).
 
-Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: 644d711aa0e1 ("KVM: nVMX: Deciding if L0 or L1 should handle an L2 exit")
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200227174430.26371-1-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/devlink.c |    2 --
- drivers/net/ethernet/mellanox/mlx5/core/main.c    |    2 ++
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -256,7 +256,6 @@ int mlx5_devlink_register(struct devlink
- 		goto params_reg_err;
- 	mlx5_devlink_set_params_init_values(devlink);
- 	devlink_params_publish(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
+---
+ arch/x86/kvm/vmx/nested.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -5577,7 +5577,7 @@ bool nested_vmx_exit_reflected(struct kv
+ 				vmcs_read32(VM_EXIT_INTR_ERROR_CODE),
+ 				KVM_ISA_VMX);
  
- params_reg_err:
-@@ -266,7 +265,6 @@ params_reg_err:
- 
- void mlx5_devlink_unregister(struct devlink *devlink)
- {
--	devlink_reload_disable(devlink);
- 	devlink_params_unregister(devlink, mlx5_devlink_params,
- 				  ARRAY_SIZE(mlx5_devlink_params));
- 	devlink_unregister(devlink);
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1371,6 +1371,7 @@ static int init_one(struct pci_dev *pdev
- 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
- 
- 	pci_save_state(pdev);
-+	devlink_reload_enable(devlink);
- 	return 0;
- 
- err_load_one:
-@@ -1388,6 +1389,7 @@ static void remove_one(struct pci_dev *p
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	struct devlink *devlink = priv_to_devlink(dev);
- 
-+	devlink_reload_disable(devlink);
- 	mlx5_crdump_disable(dev);
- 	mlx5_devlink_unregister(devlink);
- 
+-	switch (exit_reason) {
++	switch ((u16)exit_reason) {
+ 	case EXIT_REASON_EXCEPTION_NMI:
+ 		if (is_nmi(intr_info))
+ 			return false;
 
 
