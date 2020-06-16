@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA891FA5A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14DD1FA5B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbgFPB1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 21:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgFPB1Q (ORCPT
+        id S1726378AbgFPBfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 21:35:10 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:51736 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725949AbgFPBfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 21:27:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FA5C061A0E;
-        Mon, 15 Jun 2020 18:27:15 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 49F82F9;
-        Tue, 16 Jun 2020 03:27:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1592270834;
-        bh=yVhdm4SmO3wkXqvKwAY69etuikCBZKRYuD4KmrUh1q0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FQSvnTVBX3f5SqO3sC1FJmr87CZEgDB2GeYpJ6t1MWr7iPx3WCHsMIeMWAHX5JZcI
-         pOrrNnySCtO4QjgIPkebFxXT7BA54jdQ6PDbGpZsuuJ9yLFv1kNM3GFqVsnb47mXX7
-         O3+D9HQC4H79Ays/zPN9+DcJXivDaescPY1p2scA=
-Date:   Tue, 16 Jun 2020 04:26:52 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/6] drm/of: Make drm_of_find_panel_or_bridge() to
- check graph's presence
-Message-ID: <20200616012652.GG1629@pendragon.ideasonboard.com>
-References: <20200614172234.8856-1-digetx@gmail.com>
- <20200614172234.8856-3-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200614172234.8856-3-digetx@gmail.com>
+        Mon, 15 Jun 2020 21:35:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0U.jHwZU_1592270980;
+Received: from localhost(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0U.jHwZU_1592270980)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Jun 2020 09:29:48 +0800
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+To:     kirill.shutemov@linux.intel.com, akpm@linux-foundation.org
+Cc:     yang.shi@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: thp: remove debug_cow switch
+Date:   Tue, 16 Jun 2020 09:29:40 +0800
+Message-Id: <1592270980-116062-1-git-send-email-yang.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Since commit 3917c80280c93a7123f1a3a6dcdb10a3ea19737d ("thp: change CoW
+semantics for anon-THP"), the CoW page fault of THP has been rewritten,
+debug_cow is not used anymore.  So, just remove it.
 
-Thank you for the patch.
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+---
+ include/linux/huge_mm.h |  7 -------
+ mm/huge_memory.c        | 21 ---------------------
+ 2 files changed, 28 deletions(-)
 
-On Sun, Jun 14, 2020 at 08:22:30PM +0300, Dmitry Osipenko wrote:
-> When graph isn't defined in a device-tree, the of_graph_get_remote_node()
-> prints a noisy error message, telling that port node is not found. This is
-> undesirable behaviour in our case because absence of a panel/bridge graph
-> is a valid case. Let's check presence of the local port in a device-tree
-> before proceeding with parsing the graph.
-> 
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/gpu/drm/drm_of.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-> index b50b44e76279..e0652c38f357 100644
-> --- a/drivers/gpu/drm/drm_of.c
-> +++ b/drivers/gpu/drm/drm_of.c
-> @@ -239,13 +239,24 @@ int drm_of_find_panel_or_bridge(const struct device_node *np,
->  				struct drm_bridge **bridge)
->  {
->  	int ret = -EPROBE_DEFER;
-> -	struct device_node *remote;
-> +	struct device_node *local, *remote;
->  
->  	if (!panel && !bridge)
->  		return -EINVAL;
->  	if (panel)
->  		*panel = NULL;
->  
-> +	/*
-> +	 * of_graph_get_remote_node() produces a noisy error message if port
-> +	 * node isn't found and the absence of the port is a legit case here,
-> +	 * so at first we silently check presence of the local port.
-> +	 */
-> +	local = of_graph_get_local_port(np);
-> +	if (!local)
-> +		return -ENODEV;
-> +
-> +	of_node_put(local);
-> +
-
-The code looks fine, but you may want to take into account my proposal
-in 1/7 to instead create a of_graph_has_port() function. The could would
-be simpler here.
-
->  	remote = of_graph_get_remote_node(np, port, endpoint);
->  	if (!remote)
->  		return -ENODEV;
-
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index 71f2077..b8d7c36 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -181,13 +181,6 @@ static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+ #define transparent_hugepage_use_zero_page()				\
+ 	(transparent_hugepage_flags &					\
+ 	 (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+-#ifdef CONFIG_DEBUG_VM
+-#define transparent_hugepage_debug_cow()				\
+-	(transparent_hugepage_flags &					\
+-	 (1<<TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG))
+-#else /* CONFIG_DEBUG_VM */
+-#define transparent_hugepage_debug_cow() 0
+-#endif /* CONFIG_DEBUG_VM */
+ 
+ extern unsigned long thp_get_unmapped_area(struct file *filp,
+ 		unsigned long addr, unsigned long len, unsigned long pgoff,
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 78c84be..2f585d2 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -303,24 +303,6 @@ static ssize_t hpage_pmd_size_show(struct kobject *kobj,
+ static struct kobj_attribute hpage_pmd_size_attr =
+ 	__ATTR_RO(hpage_pmd_size);
+ 
+-#ifdef CONFIG_DEBUG_VM
+-static ssize_t debug_cow_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf)
+-{
+-	return single_hugepage_flag_show(kobj, attr, buf,
+-				TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG);
+-}
+-static ssize_t debug_cow_store(struct kobject *kobj,
+-			       struct kobj_attribute *attr,
+-			       const char *buf, size_t count)
+-{
+-	return single_hugepage_flag_store(kobj, attr, buf, count,
+-				 TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG);
+-}
+-static struct kobj_attribute debug_cow_attr =
+-	__ATTR(debug_cow, 0644, debug_cow_show, debug_cow_store);
+-#endif /* CONFIG_DEBUG_VM */
+-
+ static struct attribute *hugepage_attr[] = {
+ 	&enabled_attr.attr,
+ 	&defrag_attr.attr,
+@@ -329,9 +311,6 @@ static ssize_t debug_cow_store(struct kobject *kobj,
+ #ifdef CONFIG_SHMEM
+ 	&shmem_enabled_attr.attr,
+ #endif
+-#ifdef CONFIG_DEBUG_VM
+-	&debug_cow_attr.attr,
+-#endif
+ 	NULL,
+ };
+ 
 -- 
-Regards,
+1.8.3.1
 
-Laurent Pinchart
