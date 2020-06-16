@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFF41FB6A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882001FB8F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgFPPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51914 "EHLO mail.kernel.org"
+        id S1732828AbgFPPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730815AbgFPPi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:58 -0400
+        id S1732426AbgFPPwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C592B20B1F;
-        Tue, 16 Jun 2020 15:38:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB316207C4;
+        Tue, 16 Jun 2020 15:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321938;
-        bh=gt+AjfnTogwCXDa0RqxlbheP0cl930vbYCf3oDXcGJw=;
+        s=default; t=1592322771;
+        bh=9p4Mo042Rqy4vJYBei02Cv/NT0DA2OR0anc2hVo4VZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DnMk4zXvXWJYlcntdsMLGWQ3V8cKfnuI5QX3RWq0sN45Mk0cJ+RTFmXAJX0phiGgz
-         jaPqBJiB5KdfWoHYrBL8S2+0Avh4zYQy+PwllSuJZdTpGPNXKZ/oGe4cnittFrSbHk
-         H+kwx8gVtXUX+7lfngOME2x8Pm1Z0e13OhQGGMl0=
+        b=o2+WmjdWGZTGBVIqlYJ/vaULATE1YXSpk/95OoYQdEACHRG4/OtuqXcwS28COr0R8
+         1szj/ESt8EHjoHn0MGTNz6Pjl5C8CHWVpvProch1Xc3rsymcDXRPU0iG1DkNI/8G2k
+         +6fffkH7FfaNJ6ci58//4XFTsyX3XXx84dJpLZNs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 072/134] spi: pxa2xx: Fix runtime PM ref imbalance on probe error
-Date:   Tue, 16 Jun 2020 17:34:16 +0200
-Message-Id: <20200616153104.227144164@linuxfoundation.org>
+        stable@vger.kernel.org, Breno Lima <breno.lima@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.6 067/161] watchdog: imx_sc_wdt: Fix reboot on crash
+Date:   Tue, 16 Jun 2020 17:34:17 +0200
+Message-Id: <20200616153109.572647627@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Fabio Estevam <festevam@gmail.com>
 
-commit 65e318e17358a3fd4fcb5a69d89b14016dee2f06 upstream.
+commit e56d48e92b1017b6a8dbe64923a889283733fd96 upstream.
 
-The PXA2xx SPI driver releases a runtime PM ref in the probe error path
-even though it hasn't acquired a ref earlier.
+Currently when running the samples/watchdog/watchdog-simple.c
+application and forcing a kernel crash by doing:
 
-Apparently commit e2b714afee32 ("spi: pxa2xx: Disable runtime PM if
-controller registration fails") sought to copy-paste the invocation of
-pm_runtime_disable() from pxa2xx_spi_remove(), but erroneously copied
-the call to pm_runtime_put_noidle() as well.  Drop it.
+# ./watchdog-simple &
+# echo c > /proc/sysrq-trigger
 
-Fixes: e2b714afee32 ("spi: pxa2xx: Disable runtime PM if controller registration fails")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.17+
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Link: https://lore.kernel.org/r/58b2ac6942ca1f91aaeeafe512144bc5343e1d84.1590408496.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The system does not reboot as expected.
+
+Fix it by calling imx_sc_wdt_set_timeout() to configure the i.MX8QXP
+watchdog with a proper timeout.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 986857acbc9a ("watchdog: imx_sc: Add i.MX system controller watchdog support")
+Reported-by: Breno Lima <breno.lima@nxp.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Breno Lima <breno.lima@nxp.com>
+Link: https://lore.kernel.org/r/20200412230122.5601-1-festevam@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-pxa2xx.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/watchdog/imx_sc_wdt.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1889,7 +1889,6 @@ static int pxa2xx_spi_probe(struct platf
- 	return status;
+--- a/drivers/watchdog/imx_sc_wdt.c
++++ b/drivers/watchdog/imx_sc_wdt.c
+@@ -177,6 +177,11 @@ static int imx_sc_wdt_probe(struct platf
+ 	wdog->timeout = DEFAULT_TIMEOUT;
  
- out_error_pm_runtime_enabled:
--	pm_runtime_put_noidle(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+ 	watchdog_init_timeout(wdog, 0, dev);
++
++	ret = imx_sc_wdt_set_timeout(wdog, wdog->timeout);
++	if (ret)
++		return ret;
++
+ 	watchdog_stop_on_reboot(wdog);
+ 	watchdog_stop_on_unregister(wdog);
  
- out_error_clock_enabled:
 
 
