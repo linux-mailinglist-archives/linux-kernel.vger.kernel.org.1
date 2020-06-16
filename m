@@ -2,413 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CDD1FA669
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803871FA66B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgFPCXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:23:50 -0400
-Received: from mga12.intel.com ([192.55.52.136]:19294 "EHLO mga12.intel.com"
+        id S1726698AbgFPCY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 22:24:56 -0400
+Received: from mga06.intel.com ([134.134.136.31]:12578 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgFPCXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:23:49 -0400
-IronPort-SDR: yyQxQS39V9u9zuyeSXY7cE7dcG8ARKl2kCMsIK4T8DnmzhjPSi03HOvcQ6eahyiH/fh+TJITyt
- eKiuEzG3Z6Uw==
+        id S1725984AbgFPCYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 22:24:55 -0400
+IronPort-SDR: 7BnkgbXTWFlDSsnvmJ04DlwbiiFI+occoTSRCcMH+8TuUzgu6zTLE/3JKq7HTFT8jAcCsr6+rQ
+ wBdAE/ZNiVHg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 19:23:47 -0700
-IronPort-SDR: +8kKmWNGShx52rU2nInPBIcjV35AAAVTBl5+UMQhMLwzBF0zbQ/wuV/D/9LTiUnPWUESYocXWT
- 77tE5REVXkig==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 19:24:54 -0700
+IronPort-SDR: R7aMeLfchfV34/hfpkLurSZuW6GC4dOwh8V3oPfRxVy+cFsniHX99wxkVwGMX9AaKFSyQqbWuL
+ VAB0O4Bqo5zg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,517,1583222400"; 
-   d="scan'208";a="262885388"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Jun 2020 19:23:47 -0700
-Date:   Mon, 15 Jun 2020 19:23:47 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v13 3/6] powerpc/papr_scm: Fetch nvdimm health
- information from PHYP
-Message-ID: <20200616022347.GC4160762@iweiny-DESK2.sc.intel.com>
-References: <20200615124407.32596-1-vaibhav@linux.ibm.com>
- <20200615124407.32596-4-vaibhav@linux.ibm.com>
+   d="scan'208";a="298731748"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Jun 2020 19:24:54 -0700
+Received: from fmsmsx162.amr.corp.intel.com (10.18.125.71) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 15 Jun 2020 19:24:54 -0700
+Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
+ fmsmsx162.amr.corp.intel.com (10.18.125.71) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 15 Jun 2020 19:24:53 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
+ by edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Mon, 15 Jun 2020 19:24:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aZuuqxGG4lcWrtl5zkdp/voUvvxTOPfZPX+gMvZUcEbH0GX8AJ27rtisRGuXY2JbrgFguGXyOa7QmOmsSR9bhIUPzrOUf5fA2uyHkvXc+9hbmSezvCiTIypKr3sl7QntPFQciSpEP61cmYmE4aP1Lpjdt1jskwn4ox1gKVrtF1QSAu6CJbgOvxt4nhgE+lGpL5keY2JiZY/yuKYLa/EwRGPYDCZh3vxZp4MLO7WnS4m6QwVPXIOO8OwnKMrS++FwXHBsEcHDVBdfGJodE9kijAlaOcDbllu5Y0SERyqecyg1Ura2mly/Ap3omVefKwEeKxKDistnfriwYsw0TAPXMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XEqp4grqrMMCENyRiWXaRhGVnQkvx7go0XL6cYMMAFI=;
+ b=ZySU2ftQgu0nGk2Dy7y1K0CqcmQhdElQe1A2e71izFda761wUQnpdgK1cSncr/5XHVUqI+tHZD8kwyKmWmdqF/YtSlm8ppIFQi7FroLiSVHC8MEPiUEhLMPhW8x3YyLQNrtPDcmtnHsbSGcDRiVfsolj20a6zSWKmg1LeJ8Xpqd5i+F9RxfYHP0n/oVHtO/NoKt1+SGikUdBk0Yv6o9f67FHEnBZkcTy54j6iV+MKLqQV3FgbtnQoQoZ9E8HMnD1+HUaGWuHUylKR/LczfNNlHBbu1euWOcy79esckfNzaeHs26IHxdI64OPgwryvtrz7i+7lnThL+xGNQKDUgnIuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XEqp4grqrMMCENyRiWXaRhGVnQkvx7go0XL6cYMMAFI=;
+ b=A+6MtaU5tAzs4+DCXbRA6srX7TiMJ4POqzrOx//+EzUj78mbGb5z44nbkAEqAc43/Pq/qe1ztFCVBsTQ4grGGgyJTORNz1LzXCp4pMLriF7rWz8BswKKM1ruKlESalXAP+Of9eIve34TWz0i1wvgAO3fhYPrEv6O82WCPnkQ5yo=
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com (2603:10b6:4:7::18) by
+ DM6PR11MB4596.namprd11.prod.outlook.com (2603:10b6:5:2a6::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3088.20; Tue, 16 Jun 2020 02:24:51 +0000
+Received: from DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::2c3d:98d9:4e81:c86c]) by DM5PR11MB1435.namprd11.prod.outlook.com
+ ([fe80::2c3d:98d9:4e81:c86c%6]) with mapi id 15.20.3088.029; Tue, 16 Jun 2020
+ 02:24:51 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+CC:     "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "Wu, Hao" <hao.wu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 02/15] iommu: Report domain nesting info
+Thread-Topic: [PATCH v2 02/15] iommu: Report domain nesting info
+Thread-Index: AQHWP+lAvgybSaO2NECN4P16s7e2zKjTzaSAgADgFXCABDlcgIAARuNggAFU34CAAAJCQA==
+Date:   Tue, 16 Jun 2020 02:24:51 +0000
+Message-ID: <DM5PR11MB1435C08C428B34EA4546BB49C39D0@DM5PR11MB1435.namprd11.prod.outlook.com>
+References: <1591877734-66527-1-git-send-email-yi.l.liu@intel.com>
+        <1591877734-66527-3-git-send-email-yi.l.liu@intel.com>
+ <20200611133015.1418097f@x1.home>
+ <DM5PR11MB143571773B05359FA2F46FB6C3810@DM5PR11MB1435.namprd11.prod.outlook.com>
+ <MWHPR11MB1645A7EBC706AC8A075EA83D8C9C0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <DM5PR11MB1435EB4D10A6EF16BF95C811C39C0@DM5PR11MB1435.namprd11.prod.outlook.com>
+ <MWHPR11MB16456A9F54BA70D5381F2D758C9D0@MWHPR11MB1645.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB16456A9F54BA70D5381F2D758C9D0@MWHPR11MB1645.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+dlp-product: dlpe-windows
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.52.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 85283556-209d-4f83-4db7-08d8119c7331
+x-ms-traffictypediagnostic: DM6PR11MB4596:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB459634EBD0F82363E4196451C39D0@DM6PR11MB4596.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 04362AC73B
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TnueoURQC8qLtdk58AElIzYsfvvtXdGfBHxG3H9vY1LnOJLIBnn6QoE+1jX3m6X3HLZQL2aeHwF/oppuTwD+pIaiWXWA9kXiQ/R24NzTmcowf4wxi2d3itxIneDjCbtG8fTovmtomhgAYfSHte5IFyLL1FOxYY/bl/0swb8KjhfVI4NNNKr/DaXdaORCR3Fqq41oB+buzGRJ4sVrnS7QndPrr+QA+qs8jU1CdHwgeC9NbAX/iOKYp+bEqf9+7fGt116wRhbLeSTuez8O6JQ4TSsAH+StjEdTeQKGgoOjjXHExM9kSWZSmPP0L4ooLZaZzMHFVw/NYXJ30ainGYYLL8IoKXAgRjK4GZSr2K3iIRYCpHL626X8mbQvYG3VlNchlwNxnPPU6mqcU9wfuL4jQA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(136003)(39860400002)(396003)(346002)(5660300002)(52536014)(71200400001)(7696005)(26005)(186003)(33656002)(54906003)(110136005)(6506007)(316002)(7416002)(966005)(86362001)(478600001)(76116006)(66446008)(64756008)(66556008)(66476007)(66946007)(2906002)(8936002)(8676002)(9686003)(83380400001)(55016002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: tDK8C56ehLyTow8rPGJgemAkPlh+hyoLyAQJerVojva2TA1VCMBfmv02QQGNzEVmYt+vyNBGaay2QNNl942QbRLtMEQzjujSIro/isNyiUa/NeNvOlmD8HPAYSP9xkE2JTc9EAHmWvqhxoGXbJxWzdcCjMiD5Q6DwFW2qgypfgrP6kQVmClGr9+wlPdrGhpqq64JOEBNx6C2NR8iLYsR1qhDkKj0dVk/KZVL7rpIKtJt3IUp2tc6CUMK6LJWCOB5OZ1NYb69noOOHkJhVO0bDicdorlk6UvDRi8fB775vTPHpB1MdbxNK2gX+mbQykH4B+1NcOcWSG6jpVjTssTl+oUSgXUWMEru/aCUfTQr0VE/ip+gpwH7uSKZq5aCKg72wxo4/C1mzXxWu2dSFfyrQ23yJJt7SpIrtIHE+DuLneEu0KXpNsnVGZ5Kg/vEFhbiGhKZS+kMkqpo7YzBonC2fiHicGM/7U8kWi//HbBPD6zC1Ihw3/iSKk/FthGjt2I5
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615124407.32596-4-vaibhav@linux.ibm.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85283556-209d-4f83-4db7-08d8119c7331
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2020 02:24:51.6957
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uOyxfJbBitYz9unSAfv8NoyvXsa6aH0D98Ks+3xypStmBdDX57+Fs34B6tO4+Ix6tdR8uURiiHb1CDVSI2CRSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4596
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:14:04PM +0530, Vaibhav Jain wrote:
-> Implement support for fetching nvdimm health information via
-> H_SCM_HEALTH hcall as documented in Ref[1]. The hcall returns a pair
-> of 64-bit bitmap, bitwise-and of which is then stored in
-> 'struct papr_scm_priv' and subsequently partially exposed to
-> user-space via newly introduced dimm specific attribute
-> 'papr/flags'. Since the hcall is costly, the health information is
-> cached and only re-queried, 60s after the previous successful hcall.
-> 
-> The patch also adds a  documentation text describing flags reported by
-> the the new sysfs attribute 'papr/flags' is also introduced at
-> Documentation/ABI/testing/sysfs-bus-papr-pmem.
-> 
-> [1] commit 58b278f568f0 ("powerpc: Provide initial documentation for
-> PAPR hcalls")
-> 
-> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Ira Weiny <ira.weiny@intel.com>
+> From: Tian, Kevin <kevin.tian@intel.com>
+> Sent: Tuesday, June 16, 2020 9:56 AM
+>=20
+> > From: Liu, Yi L <yi.l.liu@intel.com>
+> > Sent: Monday, June 15, 2020 2:05 PM
+> >
+> > Hi Kevin,
+> >
+> > > From: Tian, Kevin <kevin.tian@intel.com>
+> > > Sent: Monday, June 15, 2020 9:23 AM
+> > >
+> > > > From: Liu, Yi L <yi.l.liu@intel.com>
+> > > > Sent: Friday, June 12, 2020 5:05 PM
+> > > >
+> > > > Hi Alex,
+> > > >
+> > > > > From: Alex Williamson <alex.williamson@redhat.com>
+> > > > > Sent: Friday, June 12, 2020 3:30 AM
+> > > > >
+> > > > > On Thu, 11 Jun 2020 05:15:21 -0700
+> > > > > Liu Yi L <yi.l.liu@intel.com> wrote:
+> > > > >
+> > > > > > IOMMUs that support nesting translation needs report the
+> > > > > > capability info to userspace, e.g. the format of first level/st=
+age paging
+> > > structures.
+> > > > > >
+> > > > > > Cc: Kevin Tian <kevin.tian@intel.com>
+> > > > > > CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > > > > Cc: Eric Auger <eric.auger@redhat.com>
+> > > > > > Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > > > > > Cc: Joerg Roedel <joro@8bytes.org>
+> > > > > > Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> > > > > > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > > > > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > > > ---
+> > > > > > @Jean, Eric: as nesting was introduced for ARM, but looks like =
+no
+> > > > > > actual user of it. right? So I'm wondering if we can reuse
+> > > > > > DOMAIN_ATTR_NESTING to retrieve nesting info? how about your
+> > > > opinions?
+> > > > > >
+> > > > > >  include/linux/iommu.h      |  1 +
+> > > > > >  include/uapi/linux/iommu.h | 34
+> > > > ++++++++++++++++++++++++++++++++++
+> > > > > >  2 files changed, 35 insertions(+)
+> > > > > >
+> > > > > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h inde=
+x
+> > > > > > 78a26ae..f6e4b49 100644
+> > > > > > --- a/include/linux/iommu.h
+> > > > > > +++ b/include/linux/iommu.h
+> > > > > > @@ -126,6 +126,7 @@ enum iommu_attr {
+> > > > > >  	DOMAIN_ATTR_FSL_PAMUV1,
+> > > > > >  	DOMAIN_ATTR_NESTING,	/* two stages of translation */
+> > > > > >  	DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+> > > > > > +	DOMAIN_ATTR_NESTING_INFO,
+> > > > > >  	DOMAIN_ATTR_MAX,
+> > > > > >  };
+> > > > > >
+> > > > > > diff --git a/include/uapi/linux/iommu.h
+> > > > > > b/include/uapi/linux/iommu.h index 303f148..02eac73 100644
+> > > > > > --- a/include/uapi/linux/iommu.h
+> > > > > > +++ b/include/uapi/linux/iommu.h
+> > > > > > @@ -332,4 +332,38 @@ struct iommu_gpasid_bind_data {
+> > > > > >  	};
+> > > > > >  };
+> > > > > >
+> > > > > > +struct iommu_nesting_info {
+> > > > > > +	__u32	size;
+> > > > > > +	__u32	format;
+> > > > > > +	__u32	features;
+> > > > > > +#define IOMMU_NESTING_FEAT_SYSWIDE_PASID	(1 << 0)
+> > > > > > +#define IOMMU_NESTING_FEAT_BIND_PGTBL		(1 << 1)
+> > > > > > +#define IOMMU_NESTING_FEAT_CACHE_INVLD		(1 <<
+> > 2)
+> > > > > > +	__u32	flags;
+> > > > > > +	__u8	data[];
+> > > > > > +};
+> > > > > > +
+> > > > > > +/*
+> > > > > > + * @flags:	VT-d specific flags. Currently reserved for future
+> > > > > > + *		extension.
+> > > > > > + * @addr_width:	The output addr width of first level/stage
+> > > translation
+> > > > > > + * @pasid_bits:	Maximum supported PASID bits, 0 represents
+> > no
+> > > > PASID
+> > > > > > + *		support.
+> > > > > > + * @cap_reg:	Describe basic capabilities as defined in VT-d
+> > > > capability
+> > > > > > + *		register.
+> > > > > > + * @cap_mask:	Mark valid capability bits in @cap_reg.
+> > > > > > + * @ecap_reg:	Describe the extended capabilities as defined in
+> VT-d
+> > > > > > + *		extended capability register.
+> > > > > > + * @ecap_mask:	Mark the valid capability bits in @ecap_reg.
+> > > > >
+> > > > > Please explain this a little further, why do we need to tell
+> > > > > userspace about cap/ecap register bits that aren't valid through =
+this
+> > interface?
+> > > > > Thanks,
+> > > >
+> > > > we only want to tell userspace about the bits marked in the
+> > cap/ecap_mask.
+> > > > cap/ecap_mask is kind of white-list of the cap/ecap register.
+> > > > userspace should only care about the bits in the white-list, for ot=
+her
+> > > > bits, it should ignore.
+> > > >
+> > > > Regards,
+> > > > Yi Liu
+> > >
+> > > For invalid bits if kernel just clears them then do we still need add=
+itional
+> > mask bits
+> > > to explicitly mark them out? I guess this might be the point that Ale=
+x asked...
+> >
+> > For invalid bits, kernel will clear them. But I think the mask bits is
+> > still necessary. The mask bits tells user space the bits related to
+> > nesting. Without it, user space may have no idea about it.
+>=20
+> userspace should know which bit is related to nesting and then should
+> check that bit explicitly...
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+ok, so userspace could get such info by the understanding of spec, right?
+if user space could get it, then I think it's uncessary to have cap/ecap ma=
+sk
+bits.
 
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-> ---
-> Changelog:
-> 
-> v12..v13:
-> * None
-> 
-> v11..v12:
-> * None
-> 
-> v10..v11:
-> * None
-> 
-> v9..v10:
-> * Removed an avoidable 'goto' in __drc_pmem_query_health. [ Ira ].
-> 
-> Resend:
-> * Added ack from Aneesh.
-> 
-> v8..v9:
-> * Rename some variables and defines to reduce usage of term SCM
->   replacing it with PMEM [Dan Williams, Aneesh]
-> * s/PAPR_SCM_DIMM/PAPR_PMEM/g
-> * s/papr_scm_nd_attributes/papr_nd_attributes/g
-> * s/papr_scm_nd_attribute_group/papr_nd_attribute_group/g
-> * s/papr_scm_dimm_attr_groups/papr_nd_attribute_groups/g
-> * Renamed file sysfs-bus-papr-scm to sysfs-bus-papr-pmem
-> 
-> v7..v8:
-> * Update type of variable 'rc' in __drc_pmem_query_health() and
->   drc_pmem_query_health() to long and int respectively. [ Ira ]
-> * Updated the patch description to s/64 bit Big Endian Number/64-bit
->   bitmap/ [ Ira, Aneesh ].
-> 
-> Resend:
-> * None
-> 
-> v6..v7 :
-> * Used the exported buf_seq_printf() function to generate content for
->   'papr/flags'
-> * Moved the PAPR_SCM_DIMM_* bit-flags macro definitions to papr_scm.c
->   and removed the papr_scm.h file [Mpe]
-> * Some minor consistency issued in sysfs-bus-papr-scm
->   documentation. [Mpe]
-> * s/dimm_mutex/health_mutex/g [Mpe]
-> * Split drc_pmem_query_health() into two function one of which takes
->   care of caching and locking. [Mpe]
-> * Fixed a local copy creation of dimm health information using
->   READ_ONCE(). [Mpe]
-> 
-> v5..v6 :
-> * Change the flags sysfs attribute from 'papr_flags' to 'papr/flags'
->   [Dan Williams]
-> * Include documentation for 'papr/flags' attr [Dan Williams]
-> * Change flag 'save_fail' to 'flush_fail' [Dan Williams]
-> * Caching of health bitmap to reduce expensive hcalls [Dan Williams]
-> * Removed usage of PPC_BIT from 'papr-scm.h' header [Mpe]
-> * Replaced two __be64 integers from papr_scm_priv to a single u64
->   integer [Mpe]
-> * Updated patch description to reflect the changes made in this
->   version.
-> * Removed avoidable usage of 'papr_scm_priv.dimm_mutex' from
->   flags_show() [Dan Williams]
-> 
-> v4..v5 :
-> * None
-> 
-> v3..v4 :
-> * None
-> 
-> v2..v3 :
-> * Removed PAPR_SCM_DIMM_HEALTH_NON_CRITICAL as a condition for
->        	 NVDIMM unarmed [Aneesh]
-> 
-> v1..v2 :
-> * New patch in the series.
-> ---
->  Documentation/ABI/testing/sysfs-bus-papr-pmem |  27 +++
->  arch/powerpc/platforms/pseries/papr_scm.c     | 168 +++++++++++++++++-
->  2 files changed, 193 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-papr-pmem
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> new file mode 100644
-> index 000000000000..5b10d036a8d4
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-> @@ -0,0 +1,27 @@
-> +What:		/sys/bus/nd/devices/nmemX/papr/flags
-> +Date:		Apr, 2020
-> +KernelVersion:	v5.8
-> +Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-> +Description:
-> +		(RO) Report flags indicating various states of a
-> +		papr-pmem NVDIMM device. Each flag maps to a one or
-> +		more bits set in the dimm-health-bitmap retrieved in
-> +		response to H_SCM_HEALTH hcall. The details of the bit
-> +		flags returned in response to this hcall is available
-> +		at 'Documentation/powerpc/papr_hcalls.rst' . Below are
-> +		the flags reported in this sysfs file:
-> +
-> +		* "not_armed"	: Indicates that NVDIMM contents will not
-> +				  survive a power cycle.
-> +		* "flush_fail"	: Indicates that NVDIMM contents
-> +				  couldn't be flushed during last
-> +				  shut-down event.
-> +		* "restore_fail": Indicates that NVDIMM contents
-> +				  couldn't be restored during NVDIMM
-> +				  initialization.
-> +		* "encrypted"	: NVDIMM contents are encrypted.
-> +		* "smart_notify": There is health event for the NVDIMM.
-> +		* "scrubbed"	: Indicating that contents of the
-> +				  NVDIMM have been scrubbed.
-> +		* "locked"	: Indicating that NVDIMM contents cant
-> +				  be modified until next power cycle.
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index f35592423380..0c091622b15e 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -12,6 +12,7 @@
->  #include <linux/libnvdimm.h>
->  #include <linux/platform_device.h>
->  #include <linux/delay.h>
-> +#include <linux/seq_buf.h>
->  
->  #include <asm/plpar_wrappers.h>
->  
-> @@ -22,6 +23,44 @@
->  	 (1ul << ND_CMD_GET_CONFIG_DATA) | \
->  	 (1ul << ND_CMD_SET_CONFIG_DATA))
->  
-> +/* DIMM health bitmap bitmap indicators */
-> +/* SCM device is unable to persist memory contents */
-> +#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
-> +/* SCM device failed to persist memory contents */
-> +#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
-> +/* SCM device contents are persisted from previous IPL */
-> +#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
-> +/* SCM device contents are not persisted from previous IPL */
-> +#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
-> +/* SCM device memory life remaining is critically low */
-> +#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
-> +/* SCM device will be garded off next IPL due to failure */
-> +#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
-> +/* SCM contents cannot persist due to current platform health status */
-> +#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
-> +/* SCM device is unable to persist memory contents in certain conditions */
-> +#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
-> +/* SCM device is encrypted */
-> +#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
-> +/* SCM device has been scrubbed and locked */
-> +#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
-> +
-> +/* Bits status indicators for health bitmap indicating unarmed dimm */
-> +#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
-> +				PAPR_PMEM_HEALTH_UNHEALTHY)
-> +
-> +/* Bits status indicators for health bitmap indicating unflushed dimm */
-> +#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
-> +
-> +/* Bits status indicators for health bitmap indicating unrestored dimm */
-> +#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
-> +
-> +/* Bit status indicators for smart event notification */
-> +#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
-> +				    PAPR_PMEM_HEALTH_FATAL |	\
-> +				    PAPR_PMEM_HEALTH_UNHEALTHY)
-> +
-> +/* private struct associated with each region */
->  struct papr_scm_priv {
->  	struct platform_device *pdev;
->  	struct device_node *dn;
-> @@ -39,6 +78,15 @@ struct papr_scm_priv {
->  	struct resource res;
->  	struct nd_region *region;
->  	struct nd_interleave_set nd_set;
-> +
-> +	/* Protect dimm health data from concurrent read/writes */
-> +	struct mutex health_mutex;
-> +
-> +	/* Last time the health information of the dimm was updated */
-> +	unsigned long lasthealth_jiffies;
-> +
-> +	/* Health information for the dimm */
-> +	u64 health_bitmap;
->  };
->  
->  static int drc_pmem_bind(struct papr_scm_priv *p)
-> @@ -144,6 +192,61 @@ static int drc_pmem_query_n_bind(struct papr_scm_priv *p)
->  	return drc_pmem_bind(p);
->  }
->  
-> +/*
-> + * Issue hcall to retrieve dimm health info and populate papr_scm_priv with the
-> + * health information.
-> + */
-> +static int __drc_pmem_query_health(struct papr_scm_priv *p)
-> +{
-> +	unsigned long ret[PLPAR_HCALL_BUFSIZE];
-> +	long rc;
-> +
-> +	/* issue the hcall */
-> +	rc = plpar_hcall(H_SCM_HEALTH, ret, p->drc_index);
-> +	if (rc != H_SUCCESS) {
-> +		dev_err(&p->pdev->dev,
-> +			"Failed to query health information, Err:%ld\n", rc);
-> +		return -ENXIO;
-> +	}
-> +
-> +	p->lasthealth_jiffies = jiffies;
-> +	p->health_bitmap = ret[0] & ret[1];
-> +
-> +	dev_dbg(&p->pdev->dev,
-> +		"Queried dimm health info. Bitmap:0x%016lx Mask:0x%016lx\n",
-> +		ret[0], ret[1]);
-> +
-> +	return 0;
-> +}
-> +
-> +/* Min interval in seconds for assuming stable dimm health */
-> +#define MIN_HEALTH_QUERY_INTERVAL 60
-> +
-> +/* Query cached health info and if needed call drc_pmem_query_health */
-> +static int drc_pmem_query_health(struct papr_scm_priv *p)
-> +{
-> +	unsigned long cache_timeout;
-> +	int rc;
-> +
-> +	/* Protect concurrent modifications to papr_scm_priv */
-> +	rc = mutex_lock_interruptible(&p->health_mutex);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Jiffies offset for which the health data is assumed to be same */
-> +	cache_timeout = p->lasthealth_jiffies +
-> +		msecs_to_jiffies(MIN_HEALTH_QUERY_INTERVAL * 1000);
-> +
-> +	/* Fetch new health info is its older than MIN_HEALTH_QUERY_INTERVAL */
-> +	if (time_after(jiffies, cache_timeout))
-> +		rc = __drc_pmem_query_health(p);
-> +	else
-> +		/* Assume cached health data is valid */
-> +		rc = 0;
-> +
-> +	mutex_unlock(&p->health_mutex);
-> +	return rc;
-> +}
->  
->  static int papr_scm_meta_get(struct papr_scm_priv *p,
->  			     struct nd_cmd_get_config_data_hdr *hdr)
-> @@ -286,6 +389,64 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
->  	return 0;
->  }
->  
-> +static ssize_t flags_show(struct device *dev,
-> +			  struct device_attribute *attr, char *buf)
-> +{
-> +	struct nvdimm *dimm = to_nvdimm(dev);
-> +	struct papr_scm_priv *p = nvdimm_provider_data(dimm);
-> +	struct seq_buf s;
-> +	u64 health;
-> +	int rc;
-> +
-> +	rc = drc_pmem_query_health(p);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Copy health_bitmap locally, check masks & update out buffer */
-> +	health = READ_ONCE(p->health_bitmap);
-> +
-> +	seq_buf_init(&s, buf, PAGE_SIZE);
-> +	if (health & PAPR_PMEM_UNARMED_MASK)
-> +		seq_buf_printf(&s, "not_armed ");
-> +
-> +	if (health & PAPR_PMEM_BAD_SHUTDOWN_MASK)
-> +		seq_buf_printf(&s, "flush_fail ");
-> +
-> +	if (health & PAPR_PMEM_BAD_RESTORE_MASK)
-> +		seq_buf_printf(&s, "restore_fail ");
-> +
-> +	if (health & PAPR_PMEM_ENCRYPTED)
-> +		seq_buf_printf(&s, "encrypted ");
-> +
-> +	if (health & PAPR_PMEM_SMART_EVENT_MASK)
-> +		seq_buf_printf(&s, "smart_notify ");
-> +
-> +	if (health & PAPR_PMEM_SCRUBBED_AND_LOCKED)
-> +		seq_buf_printf(&s, "scrubbed locked ");
-> +
-> +	if (seq_buf_used(&s))
-> +		seq_buf_printf(&s, "\n");
-> +
-> +	return seq_buf_used(&s);
-> +}
-> +DEVICE_ATTR_RO(flags);
-> +
-> +/* papr_scm specific dimm attributes */
-> +static struct attribute *papr_nd_attributes[] = {
-> +	&dev_attr_flags.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group papr_nd_attribute_group = {
-> +	.name = "papr",
-> +	.attrs = papr_nd_attributes,
-> +};
-> +
-> +static const struct attribute_group *papr_nd_attr_groups[] = {
-> +	&papr_nd_attribute_group,
-> +	NULL,
-> +};
-> +
->  static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
->  {
->  	struct device *dev = &p->pdev->dev;
-> @@ -312,8 +473,8 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
->  	dimm_flags = 0;
->  	set_bit(NDD_LABELING, &dimm_flags);
->  
-> -	p->nvdimm = nvdimm_create(p->bus, p, NULL, dimm_flags,
-> -				  PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
-> +	p->nvdimm = nvdimm_create(p->bus, p, papr_nd_attr_groups,
-> +				  dimm_flags, PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
->  	if (!p->nvdimm) {
->  		dev_err(dev, "Error creating DIMM object for %pOF\n", p->dn);
->  		goto err;
-> @@ -399,6 +560,9 @@ static int papr_scm_probe(struct platform_device *pdev)
->  	if (!p)
->  		return -ENOMEM;
->  
-> +	/* Initialize the dimm mutex */
-> +	mutex_init(&p->health_mutex);
-> +
->  	/* optional DT properties */
->  	of_property_read_u32(dn, "ibm,metadata-size", &metadata_size);
->  
-> -- 
-> 2.26.2
-> 
+> >
+> > Maybe talk about QEMU usage of the cap/ecap bits would help. QEMU
+> > vIOMMU
+> > decides cap/ecap bits according to QEMU cmdline. But not all of them ar=
+e
+> > compatible with hardware support. Especially, vIOMMU built on nesting.
+> > So needs to sync the cap/ecap bits with host side. Based on the mask
+> > bits, QEMU can compare the cap/ecap bits configured by QEMU cmdline wit=
+h
+> > the cap/ecap bits reported by this interface. This comparation is limit=
+ed
+> > to the nesting related bits in cap/ecap, the other bits are not include=
+d
+> > and can use the configuration by QEMU cmdline.
+>=20
+> I didn't get this explanation. Based on patch [15/15], nesting capabiliti=
+es
+> are defined as:
+> +/* Nesting Support Capability Alignment */
+> +#define VTD_CAP_FL1GP		(1ULL << 56)
+> +#define VTD_CAP_FL5LP		(1ULL << 60)
+> +#define VTD_ECAP_PRS		(1ULL << 29)
+> +#define VTD_ECAP_ERS		(1ULL << 30)
+> +#define VTD_ECAP_SRS		(1ULL << 31)
+> +#define VTD_ECAP_EAFS		(1ULL << 34)
+> +#define VTD_ECAP_PASID		(1ULL << 40)
+>=20
+> When Qemu gets an cmdline option it knows which bit out of above
+> list should be checked against hardware capability. Then just do the
+> check bit-by-bit. Why do we need mask bit in uapi to tell which bits
+> are valid?
+
+as above reply, if userspace has the check list for the cap/ecap bits,
+then it's not necessary to use mask bit.
+
+> Unless 0/1 doesn't represent validity of some bit. Do we
+> have such example?
+
+yes, like the pasid bits. it's 20 bits. but we already got pasid_bits
+in the iommu_nesting_info_vtd structure. so it's not covered in the
+ecap_bits.
+
+Regards,
+Yi Liu
+
+> >
+> > The link below show the current Intel vIOMMU usage on the cap/ecap bits=
+.
+> > For each assigned device, vIOMMU will compare the nesting related bits =
+in
+> > cap/ecap and mask out the bits which hardware doesn't support. After th=
+e
+> > machine is intilized, the vIOMMU cap/ecap bits are determined. If user
+> > hot-plug devices to VM, vIOMMU will fail it if the hardware cap/ecap bi=
+ts
+> > behind hot-plug device are not compatible with determined vIOMMU
+> > cap/ecap
+> > bits.
+> >
+> > https://www.spinics.net/lists/kvm/msg218294.html
+> >
+> > Regards,
+> > Yi Liu
+> >
+> > > >
+> > > > > Alex
+> > > > >
+> > > > >
+> > > > > > + */
+> > > > > > +struct iommu_nesting_info_vtd {
+> > > > > > +	__u32	flags;
+> > > > > > +	__u16	addr_width;
+> > > > > > +	__u16	pasid_bits;
+> > > > > > +	__u64	cap_reg;
+> > > > > > +	__u64	cap_mask;
+> > > > > > +	__u64	ecap_reg;
+> > > > > > +	__u64	ecap_mask;
+> > > > > > +};
+> > > > > > +
+> > > > > >  #endif /* _UAPI_IOMMU_H */
+
