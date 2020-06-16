@@ -2,171 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CEF1FAF26
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5571FAF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgFPL2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 07:28:40 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31347 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728176AbgFPL2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 07:28:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592306918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8XrojXvGsQrzvO/Ri1rEyqqDQsXzc/MuTUzoBCmek2U=;
-        b=agRdMFaspM9Nwa54S/L6hn5jNs9/RrbGaKFjSlzSF9gePzO7yBMQhhNlM8LvrxfmipCVxU
-        MNQVfVpEUqtUdmv7+bWbMr2ijVu3jZ+MzbvA89Nnz7zTJusOaOfo0iizK0sxyLAaLG2NUW
-        NShuqMXBWC8dSV0sdLwoXXMHB+O/lNI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-Ivfosb3VPqqUSd4F1p0T2w-1; Tue, 16 Jun 2020 07:28:35 -0400
-X-MC-Unique: Ivfosb3VPqqUSd4F1p0T2w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728460AbgFPLaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 07:30:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:14108 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgFPLaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 07:30:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592307021; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=RTLcSYYKGCznp62vlVdfOr6g6s60R3IwkNGZ7WpqjjY=; b=dJgM7oRJQu/bA+aq7hrmk4WJFtwMslSGyMmWx7EXieOMs5QROhArHddDrWUG0zpd2jBJ249Q
+ HVrKnDtUiSP+5iH2efP4DnOApw5/8X4Ho9vRAM2jJxHKGBJvck7ptFK1zyt0FVv7weoSc5zL
+ /4Jj5fBYVBsgqwqs5ZWhf6vVeOk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-east-1.postgun.com with SMTP id
+ 5ee8ad43567385e8e7c150ff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 11:30:11
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 65EC4C433A1; Tue, 16 Jun 2020 11:30:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.129] (unknown [106.222.0.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DF3E835B5A;
-        Tue, 16 Jun 2020 11:28:33 +0000 (UTC)
-Received: from prarit.bos.redhat.com (prarit-guest.7a2m.lab.eng.bos.redhat.com [10.16.222.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F32C378F0F;
-        Tue, 16 Jun 2020 11:28:31 +0000 (UTC)
-Subject: Re: [PATCH v4] x86/split_lock: Sanitize userspace and guest error
- output
-To:     linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A225C433C9;
+        Tue, 16 Jun 2020 11:30:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3A225C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [RFC][PATCH 3/5] irqchip: Allow QCOM_PDC to be loadable as a
+ perment module
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <20200616112702.1703-1-prarit@redhat.com>
-From:   Prarit Bhargava <prarit@redhat.com>
-Message-ID: <f9d8edb6-97f7-13c2-008b-8be8ff69604a@redhat.com>
-Date:   Tue, 16 Jun 2020 07:28:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-gpio@vger.kernel.org
+References: <20200616061338.109499-1-john.stultz@linaro.org>
+ <20200616061338.109499-4-john.stultz@linaro.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <55e5982a-1e73-7013-e02d-5d1d30815fba@codeaurora.org>
+Date:   Tue, 16 Jun 2020 16:59:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200616112702.1703-1-prarit@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200616061338.109499-4-john.stultz@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was sent in error.
+Hi,
 
-Sorry,
+On 6/16/2020 11:43 AM, John Stultz wrote:
+> Allows qcom-pdc driver to be loaded as a permenent module
 
-P.
+typo: permanent
 
-
-On 6/16/20 7:27 AM, Prarit Bhargava wrote:
-> There are two problems with kernel messages in fatal mode that were found
-> during testing of guests and userspace programs.
-> 
-> The first is that no kernel message is output when the split lock detector
-> is triggered with a userspace program.  As a result the userspace process
-> dies from receiving SIGBUS with no indication to the user of what caused
-> the process to die.
-> 
-> The second problem is that only the first triggering guest causes a kernel
-> message to be output because the message is output with pr_warn_once().
-> This also results in a loss of information to the user.
-> 
-> While fixing these I noticed that the same message was being output
-> three times so I'm cleaning that up too.
-> 
-> Fix fatal mode output, and use consistent messages for fatal and
-> warn modes for both userspace and guests.
-> 
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Also, due to the fact that IRQCHIP_DECLARE becomes a no-op when
+> building as a module, we have to add the platform driver hooks
+> explicitly.
+>
+> Thanks to Saravana for his help on pointing out the
+> IRQCHIP_DECLARE issue and guidance on a solution.
+>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
 > Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Rahul Tanwar <rahul.tanwar@linux.intel.com>
-> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-> Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Lina Iyer <ilina@codeaurora.org>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 > ---
-> v2: Do not output a message if CPL 3 Alignment Check is turned on (xiaoyao.li)
-> v3: refactor code (sean.j.christopherson)
-> v4: Fix Sign off (sean.j.christopherson)
-> 
->  arch/x86/kernel/cpu/intel.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-> index 63926c94eb5f..3a373f0be674 100644
-> --- a/arch/x86/kernel/cpu/intel.c
-> +++ b/arch/x86/kernel/cpu/intel.c
-> @@ -1074,11 +1074,14 @@ static void split_lock_init(void)
->  	split_lock_verify_msr(sld_state != sld_off);
->  }
->  
-> -static void split_lock_warn(unsigned long ip)
-> +static bool handle_split_lock(unsigned long ip)
->  {
-> -	pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
-> +	pr_warn("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
->  			    current->comm, current->pid, ip);
->  
-> +	if (sld_state != sld_warn)
-> +		return false;
+>   drivers/irqchip/Kconfig    |  2 +-
+>   drivers/irqchip/qcom-pdc.c | 30 ++++++++++++++++++++++++++++++
+>   2 files changed, 31 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 29fead208cad..12765bed08f9 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -425,7 +425,7 @@ config GOLDFISH_PIC
+>            for Goldfish based virtual platforms.
+>   
+>   config QCOM_PDC
+> -	bool "QCOM PDC"
+> +	tristate "QCOM PDC"
+>   	depends on ARCH_QCOM
+>   	select IRQ_DOMAIN_HIERARCHY
+>   	help
+> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+> index 6ae9e1f0819d..98d74160afcd 100644
+> --- a/drivers/irqchip/qcom-pdc.c
+> +++ b/drivers/irqchip/qcom-pdc.c
+> @@ -11,7 +11,9 @@
+>   #include <linux/irqdomain.h>
+>   #include <linux/io.h>
+>   #include <linux/kernel.h>
+> +#include <linux/module.h>
+>   #include <linux/of.h>
+> +#include <linux/of_irq.h>
+please move this include in order after of_device.h
+>   #include <linux/of_address.h>
+>   #include <linux/of_device.h>
+>   #include <linux/soc/qcom/irq.h>
+> @@ -430,4 +432,32 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
+>   	return ret;
+>   }
+>   
+> +#ifdef MODULE
+> +static int qcom_pdc_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct device_node *parent = of_irq_find_parent(np);
 > +
->  	/*
->  	 * Disable the split lock detection for this task so it can make
->  	 * progress and set TIF_SLD so the detection is re-enabled via
-> @@ -1086,18 +1089,13 @@ static void split_lock_warn(unsigned long ip)
->  	 */
->  	sld_update_msr(false);
->  	set_tsk_thread_flag(current, TIF_SLD);
-> +	return true;
->  }
->  
->  bool handle_guest_split_lock(unsigned long ip)
->  {
-> -	if (sld_state == sld_warn) {
-> -		split_lock_warn(ip);
-> +	if (handle_split_lock(ip))
->  		return true;
-> -	}
-> -
-> -	pr_warn_once("#AC: %s/%d %s split_lock trap at address: 0x%lx\n",
-> -		     current->comm, current->pid,
-> -		     sld_state == sld_fatal ? "fatal" : "bogus", ip);
->  
->  	current->thread.error_code = 0;
->  	current->thread.trap_nr = X86_TRAP_AC;
-> @@ -1108,10 +1106,10 @@ EXPORT_SYMBOL_GPL(handle_guest_split_lock);
->  
->  bool handle_user_split_lock(struct pt_regs *regs, long error_code)
->  {
-> -	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
-> +	if (regs->flags & X86_EFLAGS_AC)
->  		return false;
-> -	split_lock_warn(regs->ip);
-> -	return true;
+> +	return qcom_pdc_init(np, parent);
+> +}
 > +
-> +	return handle_split_lock(regs->ip);
->  }
->  
->  /*
-> 
+> +static const struct of_device_id qcom_pdc_match_table[] = {
+> +	{ .compatible = "qcom,pdc" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
+> +
+> +static struct platform_driver qcom_pdc_driver = {
+> +	.probe = qcom_pdc_probe,
+> +	.driver = {
+> +		.name = "qcom-pdc",
+> +		.of_match_table = qcom_pdc_match_table,
+
+can you please set .suppress_bind_attrs = true,
+
+This is to prevent bind/unbind using sysfs. Once irqchip driver module 
+is loaded, it shouldn't get unbind at runtime.
+
+Thanks,
+Maulik
+> +	},
+> +};
+> +module_platform_driver(qcom_pdc_driver);
+> +#else
+>   IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
+> +#endif
+> +
+> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
+> +MODULE_LICENSE("GPL v2");
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
