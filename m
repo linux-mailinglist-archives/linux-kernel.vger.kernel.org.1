@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF771FB69A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A771FB751
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgFPPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51484 "EHLO mail.kernel.org"
+        id S1732045AbgFPPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729916AbgFPPiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:46 -0400
+        id S1731542AbgFPPpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 696B520B1F;
-        Tue, 16 Jun 2020 15:38:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C524821475;
+        Tue, 16 Jun 2020 15:45:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321925;
+        s=default; t=1592322301;
         bh=Z1qeNrPzQX2HeO121luRbN2+mEG0uHjTupsRDDT/lHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vezeWBxwRMb4XCU+EgCyrmN1iavJGO2MIB+ZYhSW3bD8BCARpeRszbNWLWK6rJBCC
-         /OcKTJF5zLinF1uiCjGZdNfBBEUKULF7ze/ZQXH6c/EPVrfKqQs73/q6A1N4x2S+Wo
-         6CXxJlIYGh2GeXYl4wBF86FogHZC/m0oeatj9RLk=
+        b=JFGvF0y3pAGCnxpZjg7dAh364xWSBCclmciY/c+zPl+l1b55FPs5SnOY4PH3uVrxd
+         Qe4YepKuYqEqG3oZbeoAS5uw1hn9G8FAq9DADIB9pH9+/pdNVu5hPSA+ggtc7jqWPu
+         kCpUPPGgh2wsrYef5cYmiJ1f4pVgdzA/st+a39p8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -33,12 +33,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ryusuke Konishi <konishi.ryusuke@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 068/134] nilfs2: fix null pointer dereference at nilfs_segctor_do_construct()
+Subject: [PATCH 5.7 078/163] nilfs2: fix null pointer dereference at nilfs_segctor_do_construct()
 Date:   Tue, 16 Jun 2020 17:34:12 +0200
-Message-Id: <20200616153104.031312267@linuxfoundation.org>
+Message-Id: <20200616153110.580658651@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
