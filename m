@@ -2,91 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B039D1FBDE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE56B1FBDFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729390AbgFPSXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:23:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54136 "EHLO mail.kernel.org"
+        id S1730344AbgFPSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 14:24:26 -0400
+Received: from v6.sk ([167.172.42.174]:47722 "EHLO v6.sk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726282AbgFPSX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:23:29 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88845208D5;
-        Tue, 16 Jun 2020 18:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592331808;
-        bh=h96pX3kj7dYEFYjTWnRdrQFgB9YLpLSutCA+J+4ZzuY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1NbpAzSD+fa23xHR4jDxv4/ZGz4o6ym6JxV449gwnyurEOJ/e8gJO+qTDxENFdAg2
-         xKM3CdXM4pJXxBm9v34WJJTXYypagtSGKTadWSOH6v3+PSDsUoaZmrywBcs201igty
-         yLSvDV7ATi7rwXuvgx78PJIBP0Ixc2cgyW82sil8=
-Date:   Tue, 16 Jun 2020 11:23:27 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Mike Snitzer <msnitzer@redhat.com>,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
-        linux-crypto@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Milan Broz <mbroz@redhat.com>
-Subject: Re: [dm-devel] [PATCH 4/4] crypto: fix the drivers that don't
- respect CRYPTO_TFM_REQ_MAY_SLEEP
-Message-ID: <20200616182327.GE207319@gmail.com>
-References: <alpine.LRH.2.02.2006091259250.30590@file01.intranet.prod.int.rdu2.redhat.com>
- <20200610010450.GA6449@gondor.apana.org.au>
- <alpine.LRH.2.02.2006100756270.27811@file01.intranet.prod.int.rdu2.redhat.com>
- <20200610121106.GA23137@gondor.apana.org.au>
- <alpine.LRH.2.02.2006161052540.28052@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2006161102250.28052@file01.intranet.prod.int.rdu2.redhat.com>
- <20200616175022.GD207319@gmail.com>
- <alpine.LRH.2.02.2006161416510.12390@file01.intranet.prod.int.rdu2.redhat.com>
+        id S1729543AbgFPSYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 14:24:21 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id ABB7D61625;
+        Tue, 16 Jun 2020 18:23:49 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 13/13] MMP DTS updates for 5.9
+Date:   Tue, 16 Jun 2020 20:23:28 +0200
+Message-Id: <20200616182341.944473-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2006161416510.12390@file01.intranet.prod.int.rdu2.redhat.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:18:17PM -0400, Mikulas Patocka wrote:
-> 
-> 
-> On Tue, 16 Jun 2020, Eric Biggers wrote:
-> 
-> > On Tue, Jun 16, 2020 at 11:02:50AM -0400, Mikulas Patocka wrote:
-> > > Fix the crypto drivers that don't respect CRYPTO_TFM_REQ_MAY_SLEEP. If
-> > > CRYPTO_TFM_REQ_MAY_SLEEP is not set, the driver must not do allocation
-> > > that sleeps.
-> > > 
-> > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> > 
-> > I think you need to split this up per driver with a proper explanation and a
-> > "Fixes:" tag for each driver.
-> > 
-> > Also, these bugs should have been detected by the crypto self-tests already,
-> > since they test having preemption disabled and CRYPTO_TFM_REQ_MAY_SLEEP cleared.
-> > Can you double check whether these are all valid fixes?  One thing to watch out
-> > for is that CRYPTO_TFM_REQ_MAY_SLEEP only applies to the function call like
-> > crypto_skcipher_encrypt() itself.  If the implementation is asynchronous and the
-> > request gets processed in the background (i.e. if crypto_skcipher_encrypt()
-> > returns -EINPROGRESS), the background work doesn't have to honor
-> > CRYPTO_TFM_REQ_MAY_SLEEP.
-> > 
-> > - Eric
-> 
-> I can only compile-test this patch. I don't have the hardware.
-> 
+Hi,
 
-I'm just asking for you to check the code extra carefully.  The fact that the
-self-tests should have been detecting this type of bug implies that these might
-not actually be valid fixes.
+chained to this message is a patch set I hope would end up queued into
+soc/arm/dt for 5.9. It applies cleanly on top of v5.8-rc1.
 
-However, we do know that not all crypto drivers are being actively tested with
-the latest self-tests and with kernel debugging options enabled.  So it's
-expected that some are indeed broken.
+I've checked I'm not adding new validation errors and booted the v5.8-rc1
+kernels with appended DTBs on the XO-1.75 and Dell Ariel board.
 
-- Eric
+Lubo
+
+
