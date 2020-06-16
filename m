@@ -2,165 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B081FB8ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7001FBACF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731451AbgFPP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:59:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52486 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732382AbgFPP7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:59:42 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GFxHG0023277;
-        Tue, 16 Jun 2020 11:59:42 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31pux0bwar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 11:59:41 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05GFxZIv025182;
-        Tue, 16 Jun 2020 11:59:41 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31pux0bw9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 11:59:41 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05GFvCiP005113;
-        Tue, 16 Jun 2020 15:59:38 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 31mpe7t9b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 15:59:38 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05GFxZdT8520138
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jun 2020 15:59:35 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0CBA11C058;
-        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4956C11C054;
-        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.3.58])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
-Date:   Tue, 16 Jun 2020 17:59:33 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 19/25] mm/s390: Use mm_fault_accounting()
-Message-ID: <20200616155933.GA12897@oc3871087118.ibm.com>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615222302.8452-1-peterx@redhat.com>
+        id S1732016AbgFPQO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730939AbgFPPmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:42:40 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 396EA208E4;
+        Tue, 16 Jun 2020 15:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592322159;
+        bh=f4dWbME0zvTO4lNAmFwEvgbVjHjm7e7nyr1BsvdN+HM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L/MFTqtrZk5z3eF9xclHqF7/oNEJmyNUCzXlWrRJ29uGVhRf4rHUZ/42xRmfVZC8W
+         m59ztvXPgByI/9zfFtE12tSNu5HLToVqseTyf0XKE5cYERvD+srDxultp/jpVFxYG/
+         LHXlAk/4wap4yV4ga5kEtmAt7QfPsOzraB/18Fm4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Alla Segal <allas@mellanox.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 005/163] bridge: Avoid infinite loop when suppressing NS messages with invalid options
+Date:   Tue, 16 Jun 2020 17:32:59 +0200
+Message-Id: <20200616153107.117704051@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615222302.8452-1-peterx@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- cotscore=-2147483648 lowpriorityscore=0 spamscore=0 suspectscore=0
- malwarescore=0 clxscore=1011 adultscore=0 phishscore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006160108
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:23:02PM -0400, Peter Xu wrote:
-> Use the new mm_fault_accounting() helper for page fault accounting.
-> 
-> Avoid doing page fault accounting multiple times if the page fault is retried.
-> 
-> CC: Heiko Carstens <heiko.carstens@de.ibm.com>
-> CC: Vasily Gorbik <gor@linux.ibm.com>
-> CC: Christian Borntraeger <borntraeger@de.ibm.com>
-> CC: linux-s390@vger.kernel.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  arch/s390/mm/fault.c | 21 +++++----------------
->  1 file changed, 5 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> index dedc28be27ab..8ca207635b59 100644
-> --- a/arch/s390/mm/fault.c
-> +++ b/arch/s390/mm/fault.c
-> @@ -392,7 +392,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  	unsigned long trans_exc_code;
->  	unsigned long address;
->  	unsigned int flags;
-> -	vm_fault_t fault;
-> +	vm_fault_t fault, major = 0;
-> 
->  	tsk = current;
->  	/*
-> @@ -428,7 +428,6 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  	}
-> 
->  	address = trans_exc_code & __FAIL_ADDR_MASK;
-> -	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
->  	flags = FAULT_FLAG_DEFAULT;
->  	if (user_mode(regs))
->  		flags |= FAULT_FLAG_USER;
-> @@ -480,6 +479,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  	 * the fault.
->  	 */
->  	fault = handle_mm_fault(vma, address, flags);
-> +	major |= fault & VM_FAULT_MAJOR;
->  	if (fault_signal_pending(fault, regs)) {
->  		fault = VM_FAULT_SIGNAL;
->  		if (flags & FAULT_FLAG_RETRY_NOWAIT)
-> @@ -489,21 +489,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  	if (unlikely(fault & VM_FAULT_ERROR))
->  		goto out_up;
-> 
-> -	/*
-> -	 * Major/minor page fault accounting is only done on the
-> -	 * initial attempt. If we go through a retry, it is extremely
-> -	 * likely that the page will be found in page cache at that point.
-> -	 */
->  	if (flags & FAULT_FLAG_ALLOW_RETRY) {
-> -		if (fault & VM_FAULT_MAJOR) {
-> -			tsk->maj_flt++;
-> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
-> -				      regs, address);
-> -		} else {
-> -			tsk->min_flt++;
-> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
-> -				      regs, address);
-> -		}
->  		if (fault & VM_FAULT_RETRY) {
->  			if (IS_ENABLED(CONFIG_PGSTE) && gmap &&
->  			    (flags & FAULT_FLAG_RETRY_NOWAIT)) {
+From: Ido Schimmel <idosch@mellanox.com>
 
-Seems like the call to mm_fault_accounting() will be missed if
-we entered here with FAULT_FLAG_RETRY_NOWAIT flag set, since it
-jumps to "out_up"...
+[ Upstream commit 53fc685243bd6fb90d90305cea54598b78d3cbfc ]
 
-> @@ -519,6 +505,9 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  			goto retry;
->  		}
->  	}
-> +
-> +	mm_fault_accounting(tsk, regs, address, major);
-> +
->  	if (IS_ENABLED(CONFIG_PGSTE) && gmap) {
->  		address =  __gmap_link(gmap, current->thread.gmap_addr,
->  				       address);
-> -- 
-> 2.26.2
-> 
+When neighbor suppression is enabled the bridge device might reply to
+Neighbor Solicitation (NS) messages on behalf of remote hosts.
+
+In case the NS message includes the "Source link-layer address" option
+[1], the bridge device will use the specified address as the link-layer
+destination address in its reply.
+
+To avoid an infinite loop, break out of the options parsing loop when
+encountering an option with length zero and disregard the NS message.
+
+This is consistent with the IPv6 ndisc code and RFC 4886 which states
+that "Nodes MUST silently discard an ND packet that contains an option
+with length zero" [2].
+
+[1] https://tools.ietf.org/html/rfc4861#section-4.3
+[2] https://tools.ietf.org/html/rfc4861#section-4.6
+
+Fixes: ed842faeb2bd ("bridge: suppress nd pkts on BR_NEIGH_SUPPRESS ports")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reported-by: Alla Segal <allas@mellanox.com>
+Tested-by: Alla Segal <allas@mellanox.com>
+Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/bridge/br_arp_nd_proxy.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/net/bridge/br_arp_nd_proxy.c
++++ b/net/bridge/br_arp_nd_proxy.c
+@@ -276,6 +276,10 @@ static void br_nd_send(struct net_bridge
+ 	ns_olen = request->len - (skb_network_offset(request) +
+ 				  sizeof(struct ipv6hdr)) - sizeof(*ns);
+ 	for (i = 0; i < ns_olen - 1; i += (ns->opt[i + 1] << 3)) {
++		if (!ns->opt[i + 1]) {
++			kfree_skb(reply);
++			return;
++		}
+ 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
+ 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
+ 			break;
+
+
