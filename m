@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78CE1FB3C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFAA1FB3C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgFPOKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:10:24 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:13439 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgFPOKY (ORCPT
+        id S1729628AbgFPOKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:10:47 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:38173 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgFPOKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:10:24 -0400
+        Tue, 16 Jun 2020 10:10:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592316624; x=1623852624;
+  t=1592316646; x=1623852646;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=NkQV8XZb6WAEthYy8o1WXcIlkgPfAm++tDmi/3RmsTU=;
-  b=Od6LTABf6O1bDEOR8txPA/jVbdk5ncF93BV2JfeFghS4i3Wgck3j3HgT
-   E45sWczWFHNnTK1sEgbkmFPOpggU5l3+Mly6j5UYFwBYOMQ1opCfRmsJK
-   Zq8SjCqkXplp2ZfxMs1dQQiK/+dSVVo71pgiMS4K1JLWk/7bm2s+8z/h+
-   g=;
-IronPort-SDR: qvKh6XWzQXfZpX7zQAK8XPGEHLAqde90iq+zdKLpTK07lOE7/qKoZw8CsHO3zfm78RCCaKPCkU
- XShxEVHonoIg==
+  bh=3cn2fFarr9khrJLb1VKOUd3GG4bZbVaq3DfkaSlwmdw=;
+  b=ayexdK7dSGn/hXiga/1IQTDv1M8qQoJQwc8xVWF5TLD6odpFbM66kAqf
+   xukoUFjnGxHRPUFFvU6oZUrjnmsIKZ/a7aPmHb9Yta4aAoyDfYUcQNJPq
+   o/R2NdcEcOEGA0yqRQz0WtLTREJHiqaTrDbZDNZWcTZAYPTx/53QNgwUb
+   o=;
+IronPort-SDR: d7geXE5AZCSZJVyrFYYCm5XYhbOsS/Anr/LD81kfq05PEFkRq4zbhEJsEXM3VLSoqELAezkFwx
+ A+uMxQLHT95A==
 X-IronPort-AV: E=Sophos;i="5.73,518,1583193600"; 
-   d="scan'208";a="36584488"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 16 Jun 2020 14:10:20 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id C2992A17C1;
-        Tue, 16 Jun 2020 14:10:17 +0000 (UTC)
+   d="scan'208";a="44413840"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Jun 2020 14:10:41 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id BB7DCA24E9;
+        Tue, 16 Jun 2020 14:10:39 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 14:10:17 +0000
+ id 15.0.1497.2; Tue, 16 Jun 2020 14:10:39 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.109) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Jun 2020 14:09:58 +0000
+ id 15.0.1497.2; Tue, 16 Jun 2020 14:10:19 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -56,9 +56,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <ying.huang@intel.com>, <david@redhat.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v4 3/8] Docs/damon: Document 'initial_regions' feature
-Date:   Tue, 16 Jun 2020 16:08:08 +0200
-Message-ID: <20200616140813.17863-4-sjpark@amazon.com>
+Subject: [RFC v4 4/8] mm/rmap: Export essential functions for rmap_run
+Date:   Tue, 16 Jun 2020 16:08:09 +0200
+Message-ID: <20200616140813.17863-5-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200616140813.17863-1-sjpark@amazon.com>
 References: <20200616140813.17863-1-sjpark@amazon.com>
@@ -74,58 +74,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit documents the 'initial_regions' feature.
+This commit exports the three essential functions for ramp walk,
+'page_lock_anon_vma_read()', 'rmap_walk()', and 'page_rmapping()', to
+GPL modules.  Those will be used by DAMON for the physical memory
+address based access monitoring in the following commit.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 34 ++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ mm/rmap.c | 2 ++
+ mm/util.c | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 2f5b67302094..24f1b05a859a 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -329,6 +329,40 @@ having pids 42 and 4242 as the processes to be monitored and check it again::
- Note that setting the pids doesn't start the monitoring.
+diff --git a/mm/rmap.c b/mm/rmap.c
+index f79a206b271a..20ac37b27a7d 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -579,6 +579,7 @@ struct anon_vma *page_lock_anon_vma_read(struct page *page)
+ 	rcu_read_unlock();
+ 	return anon_vma;
+ }
++EXPORT_SYMBOL_GPL(page_lock_anon_vma_read);
  
+ void page_unlock_anon_vma_read(struct anon_vma *anon_vma)
+ {
+@@ -1934,6 +1935,7 @@ void rmap_walk(struct page *page, struct rmap_walk_control *rwc)
+ 	else
+ 		rmap_walk_file(page, rwc, false);
+ }
++EXPORT_SYMBOL_GPL(rmap_walk);
  
-+Initial Monitoring Target Regions
-+---------------------------------
-+
-+DAMON automatically sets and updates the monitoring target regions so that
-+entire memory mappings of target processes can be covered.  However, users
-+might want to limit the monitoring region to specific address ranges, such as
-+the heap, the stack, or specific file-mapped area.  Or, some users might know
-+the initial access pattern of their workloads and therefore want to set optimal
-+initial regions for the 'adaptive regions adjustment'.
-+
-+In such cases, users can explicitly set the initial monitoring target regions
-+as they want, by writing proper values to the ``init_regions`` file.  Each line
-+of the input should represent one region in below form.::
-+
-+    <pid> <start address> <end address>
-+
-+The ``pid`` should be already in ``pids`` file, and the regions should be
-+passed in address order.  For example, below commands will set a couple of
-+address ranges, ``1-100`` and ``100-200`` as the initial monitoring target
-+region of process 42, and another couple of address ranges, ``20-40`` and
-+``50-100`` as that of process 4242.::
-+
-+    # cd <debugfs>/damon
-+    # echo "42   1       100
-+            42   100     200
-+            4242 20      40
-+            4242 50      100" > init_regions
-+
-+Note that this sets the initial monitoring target regions only.  DAMON will
-+automatically updates the boundary of the regions after one ``regions update
-+interval``.  Therefore, users should set the ``regions update interval`` large
-+enough.
-+
-+
- Record
- ------
+ /* Like rmap_walk, but caller holds relevant rmap lock */
+ void rmap_walk_locked(struct page *page, struct rmap_walk_control *rwc)
+diff --git a/mm/util.c b/mm/util.c
+index 988d11e6c17c..1df32546fe28 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -620,6 +620,7 @@ void *page_rmapping(struct page *page)
+ 	page = compound_head(page);
+ 	return __page_rmapping(page);
+ }
++EXPORT_SYMBOL_GPL(page_rmapping);
  
+ /*
+  * Return true if this page is mapped into pagetables.
 -- 
 2.17.1
 
