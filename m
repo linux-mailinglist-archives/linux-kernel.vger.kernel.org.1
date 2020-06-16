@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6821FB4F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E66B1FB51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbgFPOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728515AbgFPOtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:49:33 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1729579AbgFPOzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgFPOzL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:55:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571AAC061573;
+        Tue, 16 Jun 2020 07:55:11 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f4c00fc4f770d23423cf8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4c00:fc4f:770d:2342:3cf8])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82ED0208B3;
-        Tue, 16 Jun 2020 14:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592318973;
-        bh=ovSysk6kOqKTv082hockt1TpSKGLzWO2f3kVdMiM78o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=loYJF9f7xfeyaBWVBmiXz3O8oEAEuwPE8LD1LEc01/05HTs9EHi54G2MNShbF+4x6
-         GzSFw2VZCxY5rpp+mqH0wnwRznSKF8IqqQP5JC2g7fzuum4louloudFhn08jJevpDG
-         Vel8U2AphFpDC2kHy71bI/PtRONOMefkJYCBStKs=
-Date:   Tue, 16 Jun 2020 09:54:52 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] drm/i915/selftests: Fix inconsistent IS_ERR and PTR_ERR
-Message-ID: <20200616145452.GA25291@embeddedor>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5C0271EC0105;
+        Tue, 16 Jun 2020 16:55:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1592319308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kFkypjbdP/vo6vFlfenF45SwDu1Af+aAxvzK8DH0D/E=;
+        b=Wy455MzSJMKKi6Y3/SZZuHPIFkc2iTfegGA7tuEi0hft+0Djp3cnUpathkxps352FmM32x
+        k0eGBWtqtmz6Osvdq48WZ4MBpXGa7M53M+45BLkK1HN4o6L7dQb+6f5MQLWUVmzHuN4S4N
+        hBtfWz/ewWGP6w63fyiNO7GQNjxhFDo=
+Date:   Tue, 16 Jun 2020 16:55:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jacky Hu <hengqing.hu@gmail.com>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tony.luck@intel.com, x86@kernel.org,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 0/2] MCA and EDAC updates for AMD Family 17h, Model 60h
+Message-ID: <20200616145501.GI13515@zn.tnic>
+References: <20200607043709.48178-1-hengqing.hu@gmail.com>
+ <20200615115950.GG14668@zn.tnic>
+ <a9d0cfc4-1aed-d6ed-c6f2-336b56d91f20@roeck-us.net>
+ <20200616143517.GH13515@zn.tnic>
+ <a2f55a9c-25fd-d79d-5f20-8144694f394d@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a2f55a9c-25fd-d79d-5f20-8144694f394d@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix inconsistent IS_ERR and PTR_ERR in live_timeslice_nopreempt().
+On Tue, Jun 16, 2020 at 07:46:36AM -0700, Guenter Roeck wrote:
+> No, that is independent. It is more like a note to myself. I'll have to get
+> debug dumps from someone with affected chip(s), and for that to work
+> support for those chips has to be enabled in k10temp.
 
-The proper pointer to be passed as argument to PTR_ERR() is ce.
+Ok, then, will take those patches as is.
 
-This bug was detected with the help of Coccinelle.
+Thx.
 
-Fixes: b72f02d78e4f ("drm/i915/gt: Prevent timeslicing into unpreemptable requests")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/gpu/drm/i915/gt/selftest_lrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-index 91543494f595..393339de0910 100644
---- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-@@ -1337,7 +1337,7 @@ static int live_timeslice_nopreempt(void *arg)
- 
- 		ce = intel_context_create(engine);
- 		if (IS_ERR(ce)) {
--			err = PTR_ERR(rq);
-+			err = PTR_ERR(ce);
- 			goto out_spin;
- 		}
- 
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
