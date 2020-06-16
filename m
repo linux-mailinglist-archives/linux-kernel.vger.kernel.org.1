@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5661E1FC101
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2151FC10D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgFPV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 17:28:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41439 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725849AbgFPV26 (ORCPT
+        id S1726161AbgFPVg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 17:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgFPVg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 17:28:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592342937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rRh+bsO5ya1vyuXRzWMbWmQBQBQw6GO67hQ8ugA1dfs=;
-        b=AT3o9UtGJ+vZ0+xTRjWFFlNC0UjkryVU9wLZXbKRCAX/qf7WOooVxMgCP31KAbJzvgXU7g
-        9BGYuzono5444tWZ2UEaofNaTVjDteeDcs/eadebYRpQ6p2GrFsEnyNyLALFFn0ZsE6T5/
-        WkxW8SUJ31RFDFNuVLBxz5OVMlesoc8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-mlueeNVfP4uJI35iJJhv_Q-1; Tue, 16 Jun 2020 17:28:55 -0400
-X-MC-Unique: mlueeNVfP4uJI35iJJhv_Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B122080F5E4;
-        Tue, 16 Jun 2020 21:28:54 +0000 (UTC)
-Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5FAB5C1BD;
-        Tue, 16 Jun 2020 21:28:53 +0000 (UTC)
-Date:   Tue, 16 Jun 2020 15:28:53 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: vfio: refcount_t: underflow; use-after-free.
-Message-ID: <20200616152853.1f6239f4@x1.home>
-In-Reply-To: <20200616085052.sahrunsesjyjeyf2@beryllium.lan>
-References: <20200616085052.sahrunsesjyjeyf2@beryllium.lan>
-Organization: Red Hat
+        Tue, 16 Jun 2020 17:36:26 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F8EC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:36:25 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y11so299026ljm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bo7plRbMTFleyAjLLTsRUvojzHf3AJoP6Ocr+axXXic=;
+        b=F/ghH9X9DmUEWE6zdY70+qW2EMy4XuEYpKrGHIQ46jToI4vLQmarz8uCof2DMWQiSz
+         GdovuzqALG4go5E32DX+08pEqL2ucxEKPntYnlYwNg5dG6mCbOLgNuDzmD1+hCSgWDeu
+         pRvxT1KbsHiuVxW4QHFDrjERKVelRF+AoaIJYCHptV9YGCQMFPElnMBfiFIUBGUB0XrH
+         7stQ8rEUIg7UvnDHigx8WWdekBVRNRrhzbs7ya7d1iyQ726E6VvMPb9IEGL433wTFFe2
+         HXbW9Xagif8+xF2SIvEye9cV2Kb+g5b6T8GFkV0s8X/lZJVf4hGwMZNwZQ0m0qDgiZJf
+         /p1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bo7plRbMTFleyAjLLTsRUvojzHf3AJoP6Ocr+axXXic=;
+        b=sDwlxuoOK2YipNJJJOj6dljNyDm0UfG9wl3hVfDK6Jz85k1g+0mcCQoH0dlfkrBLZn
+         mjMvjLAZIsNd0BU8MPqTGwUzT/1uXfM9gnEnyZ/wD8mSQ7xwgEtn9WndhaOuSakG8U14
+         q/uKpPESDfWJVa801q73pLfjFwv4lu4fjMtTTQ3M8K6XfVUyhLjlg9XrCLSRktSl65Mv
+         LyXeAxoMM0Sdtm7Gd+wArsPJXrwLp82YXqzpaM5kMpFxnurzEDlK1kISVyuNfIBF2/nk
+         V149dcv6KtuG61I/+VlCATMrcJjGZjKThGxhHsbA+GDSgGxfKttXcCRDjjNRrIR2TSwQ
+         xQFg==
+X-Gm-Message-State: AOAM530kx6GXgz7JB+6TtUkMNJa293HFp5LPEG6irHUp8pV4sf5MPkhv
+        b3Yt/d+H8JOyS5I47Y4V73A9hqx7r2G9iACYvQ==
+X-Google-Smtp-Source: ABdhPJxAnuoORWfKNVUMcdyixjIw7M2htJF5QditBWpjtGDO7qldSubUNMy7jh3MHWqwrLh0i4xsD07mO/9tNfNcnFc=
+X-Received: by 2002:a2e:6a05:: with SMTP id f5mr2429121ljc.272.1592343383841;
+ Tue, 16 Jun 2020 14:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <CAHk-=whfuea587g8rh2DeLFFGYxiVuh-bzq22osJwz3q4SOfmA@mail.gmail.com>
+ <CAEJqkgi3w+zvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com>
+ <20200616203352.GA1815527@rani.riverdale.lan> <CAEJqkghzD_6F2N=M65uYHzpOOJ8bvMw18JCfwsiQoH-kToPKLQ@mail.gmail.com>
+In-Reply-To: <CAEJqkghzD_6F2N=M65uYHzpOOJ8bvMw18JCfwsiQoH-kToPKLQ@mail.gmail.com>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Tue, 16 Jun 2020 23:35:57 +0200
+Message-ID: <CAEJqkggDJEC4W9V6ijmPoE0-soKE7zBUWUiDLdCZArEsDo9vrQ@mail.gmail.com>
+Subject: Re: Linux 5.8-rc1
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 10:50:52 +0200
-Daniel Wagner <dwagner@suse.de> wrote:
+Am Di., 16. Juni 2020 um 23:17 Uhr schrieb Gabriel C
+<nix.or.die@googlemail.com>:
+>
+> Am Di., 16. Juni 2020 um 22:33 Uhr schrieb Arvind Sankar
+> <nivedita@alum.mit.edu>:
+> > Does this patch help?
+> >
+>
+> I'll test in a bit and let you know.
 
-> Hi,
-> 
-> I'm getting the warning below when starting a KVM the second time with an
-> Emulex PCI card 'passthroughed' into a KVM. I'm terminating the session
-> via 'ctrl-a x', not sure if this is relevant.
-> 
-> This is with 5.8-rc1. IIRC, older version didn't have this problem.
 
-Thanks for the report, it's a new regression.  I've just posted a fix
-for it.  Thanks,
+With the patch the kernel compiles fine.
 
-Alex
-
+> > diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+> > index b04e6e72a592..088bd764e0b7 100644
+> > --- a/arch/x86/purgatory/Makefile
+> > +++ b/arch/x86/purgatory/Makefile
+> > @@ -34,6 +34,7 @@ KCOV_INSTRUMENT := n
+> >  PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+> >  PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
+> >  PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
+> > +PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
+> >
+> >  # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
+> >  # in turn leaves some undefined symbols like __fentry__ in purgatory and not
+>
