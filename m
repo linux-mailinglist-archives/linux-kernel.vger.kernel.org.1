@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E7F1FB7D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007F21FB65F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730670AbgFPPuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45300 "EHLO mail.kernel.org"
+        id S1730022AbgFPPgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732375AbgFPPt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:59 -0400
+        id S1729997AbgFPPgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:36:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75C6121475;
-        Tue, 16 Jun 2020 15:49:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4B2B21475;
+        Tue, 16 Jun 2020 15:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322599;
-        bh=R8b4aXiaDVa9gpxOJ77HU6fmfPrXxPzH9NZlAi6jZ1U=;
+        s=default; t=1592321793;
+        bh=+TEMy27BblOXnMlqgiWZu2b8YQF3RwzOnroYFUg/yFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kkn/A7fA3qTLJ5ihlq3e4PKiAsm4FxVX1BWqodl35DR6KB0cCl9QGIbm43ab3HIsU
-         kCQIRL97YZDgRXQXmdnP+Rcold/4xFq2rF7vh7So/UTS0hz6tP9QPNWc/rhFr+VrAF
-         fph8ohiTzgdGkBqzXBGolDi5yd2Aa/Pvz7wtyQWI=
+        b=TnIcMfvIDK0dMlwRIu8bM5I0zfRggw/+tK2v8LBd7ypvxxWDYxb/VXL95s+jiLohi
+         UnFcfRdQWF03uCwuMo8ypE+R0oPAEkO6KdBb7UVmP3oRJWldLa1l9mVAuxOevVESgl
+         08q7cLL2p9DAHSgrolSogt2uTzsLY9wtzlHdJ2Ws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 003/161] net_failover: fixed rollback in net_failover_open()
-Date:   Tue, 16 Jun 2020 17:33:13 +0200
-Message-Id: <20200616153106.573957731@linuxfoundation.org>
+        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Fredrik Strupe <fredrik@strupe.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 010/134] ARM: 8977/1: ptrace: Fix mask for thumb breakpoint hook
+Date:   Tue, 16 Jun 2020 17:33:14 +0200
+Message-Id: <20200616153101.179709255@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-[ Upstream commit e8224bfe77293494626f6eec1884fee7b87d0ced ]
+[ Upstream commit 3866f217aaa81bf7165c7f27362eee5d7919c496 ]
 
-found by smatch:
-drivers/net/net_failover.c:65 net_failover_open() error:
- we previously assumed 'primary_dev' could be null (see line 43)
+call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
+and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
+(0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
+instructions will be masked out. This makes the function match 32-bit
+thumb instructions where the second half-word is equal to instr_val,
+regardless of the first half-word.
 
-Fixes: cfc80d9a1163 ("net: Introduce net_failover driver")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The result in this case is that all undefined 32-bit thumb instructions
+with the second half-word equal to 0xde01 (udf #1) work as breakpoints
+and will raise a SIGTRAP instead of a SIGILL, instead of just the one
+intended 16-bit instruction. An example of such an instruction is
+0xeaa0de01, which is unallocated according to Arm ARM and should raise a
+SIGILL, but instead raises a SIGTRAP.
+
+This patch fixes the issue by setting all the bits in instr_mask, which
+will still match the intended 16-bit thumb instruction (where the
+upper half is always 0), but not any 32-bit thumb instructions.
+
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/net_failover.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/kernel/ptrace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/net_failover.c
-+++ b/drivers/net/net_failover.c
-@@ -61,7 +61,8 @@ static int net_failover_open(struct net_
- 	return 0;
+diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
+index 324352787aea..db9401581cd2 100644
+--- a/arch/arm/kernel/ptrace.c
++++ b/arch/arm/kernel/ptrace.c
+@@ -219,8 +219,8 @@ static struct undef_hook arm_break_hook = {
+ };
  
- err_standby_open:
--	dev_close(primary_dev);
-+	if (primary_dev)
-+		dev_close(primary_dev);
- err_primary_open:
- 	netif_tx_disable(dev);
- 	return err;
+ static struct undef_hook thumb_break_hook = {
+-	.instr_mask	= 0xffff,
+-	.instr_val	= 0xde01,
++	.instr_mask	= 0xffffffff,
++	.instr_val	= 0x0000de01,
+ 	.cpsr_mask	= PSR_T_BIT,
+ 	.cpsr_val	= PSR_T_BIT,
+ 	.fn		= break_trap,
+-- 
+2.25.1
+
 
 
