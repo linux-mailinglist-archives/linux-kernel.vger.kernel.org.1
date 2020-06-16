@@ -2,44 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176301FB673
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF6E1FB676
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgFPPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:37:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
+        id S1730354AbgFPPhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbgFPPh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:28 -0400
+        id S1730330AbgFPPhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE8AA21531;
-        Tue, 16 Jun 2020 15:37:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16DF3214F1;
+        Tue, 16 Jun 2020 15:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321847;
-        bh=eWWeWFD8+ZmiBmvnxKGIjqql1otCpxBt3Mc8wL6tcoE=;
+        s=default; t=1592321852;
+        bh=bJ5vHl2H8/BvNDVhsIs4pfBDlyCaMBFtm0KMc8o1C+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ry1yawuqqffRD/etoVugWEYr6XPd7plYlGps0LzrXaEYirEoIBswKjh/BYNeBX6Hi
-         EJ0xmVMDdWO0Hk1aQAyPn9F8h1CFr+kMBiziDdNsUF8bczoTQaR8Tn0E6B47um0szk
-         krqz1q898zY6Dcj6bKUPpxZ5Nez4gHqxYAf7tPhM=
+        b=XIkPRhq6SwR55qa+Pmgsjri5+BbpxDDqZIi64g6EfMwv3dJ18dZN5kDNG2trnxt6q
+         yelhZlGQ7a73Z8o3UbsRCyWDBUFoQLO8lZ45pVJnUnWpb9VAQw3GfAOJVAcLklqWZO
+         VqctlxmKEzikrtpEw94og+4+GyIDe0hL4DYqEvwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Alistair Delva <adelva@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Bob Haarman <inglorion@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH 5.4 038/134] x86_64: Fix jiffies ODR violation
-Date:   Tue, 16 Jun 2020 17:33:42 +0200
-Message-Id: <20200616153102.612286017@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaochun Lee <lixc17@lenovo.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.4 039/134] x86/PCI: Mark Intel C620 MROMs as having non-compliant BARs
+Date:   Tue, 16 Jun 2020 17:33:43 +0200
+Message-Id: <20200616153102.667930938@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
 References: <20200616153100.633279950@linuxfoundation.org>
@@ -52,125 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Haarman <inglorion@google.com>
+From: Xiaochun Lee <lixc17@lenovo.com>
 
-commit d8ad6d39c35d2b44b3d48b787df7f3359381dcbf upstream.
+commit 1574051e52cb4b5b7f7509cfd729b76ca1117808 upstream.
 
-'jiffies' and 'jiffies_64' are meant to alias (two different symbols that
-share the same address).  Most architectures make the symbols alias to the
-same address via a linker script assignment in their
-arch/<arch>/kernel/vmlinux.lds.S:
+The Intel C620 Platform Controller Hub has MROM functions that have non-PCI
+registers (undocumented in the public spec) where BAR 0 is supposed to be,
+which results in messages like this:
 
-jiffies = jiffies_64;
+  pci 0000:00:11.0: [Firmware Bug]: reg 0x30: invalid BAR (can't size)
 
-which is effectively a definition of jiffies.
+Mark these MROM functions as having non-compliant BARs so we don't try to
+probe any of them.  There are no other BARs on these devices.
 
-jiffies and jiffies_64 are both forward declared for all architectures in
-include/linux/jiffies.h. jiffies_64 is defined in kernel/time/timer.c.
+See the Intel C620 Series Chipset Platform Controller Hub Datasheet,
+May 2019, Document Number 336067-007US, sec 2.1, 35.5, 35.6.
 
-x86_64 was peculiar in that it wasn't doing the above linker script
-assignment, but rather was:
-1. defining jiffies in arch/x86/kernel/time.c instead via the linker script.
-2. overriding the symbol jiffies_64 from kernel/time/timer.c in
-arch/x86/kernel/vmlinux.lds.s via 'jiffies_64 = jiffies;'.
-
-As Fangrui notes:
-
-  In LLD, symbol assignments in linker scripts override definitions in
-  object files. GNU ld appears to have the same behavior. It would
-  probably make sense for LLD to error "duplicate symbol" but GNU ld
-  is unlikely to adopt for compatibility reasons.
-
-This results in an ODR violation (UB), which seems to have survived
-thus far. Where it becomes harmful is when;
-
-1. -fno-semantic-interposition is used:
-
-As Fangrui notes:
-
-  Clang after LLVM commit 5b22bcc2b70d
-  ("[X86][ELF] Prefer to lower MC_GlobalAddress operands to .Lfoo$local")
-  defaults to -fno-semantic-interposition similar semantics which help
-  -fpic/-fPIC code avoid GOT/PLT when the referenced symbol is defined
-  within the same translation unit. Unlike GCC
-  -fno-semantic-interposition, Clang emits such relocations referencing
-  local symbols for non-pic code as well.
-
-This causes references to jiffies to refer to '.Ljiffies$local' when
-jiffies is defined in the same translation unit. Likewise, references to
-jiffies_64 become references to '.Ljiffies_64$local' in translation units
-that define jiffies_64.  Because these differ from the names used in the
-linker script, they will not be rewritten to alias one another.
-
-2. Full LTO
-
-Full LTO effectively treats all source files as one translation
-unit, causing these local references to be produced everywhere.  When
-the linker processes the linker script, there are no longer any
-references to jiffies_64' anywhere to replace with 'jiffies'.  And
-thus '.Ljiffies$local' and '.Ljiffies_64$local' no longer alias
-at all.
-
-In the process of porting patches enabling Full LTO from arm64 to x86_64,
-spooky bugs have been observed where the kernel appeared to boot, but init
-doesn't get scheduled.
-
-Avoid the ODR violation by matching other architectures and define jiffies
-only by linker script.  For -fno-semantic-interposition + Full LTO, there
-is no longer a global definition of jiffies for the compiler to produce a
-local symbol which the linker script won't ensure aliases to jiffies_64.
-
-Fixes: 40747ffa5aa8 ("asmlinkage: Make jiffies visible")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reported-by: Alistair Delva <adelva@google.com>
-Debugged-by: Nick Desaulniers <ndesaulniers@google.com>
-Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Bob Haarman <inglorion@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # build+boot on
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
+[bhelgaas: commit log, add 0xa26d]
+Link: https://lore.kernel.org/r/1589513467-17070-1-git-send-email-lixiaochun.2888@163.com
+Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/852
-Link: https://lkml.kernel.org/r/20200602193100.229287-1-inglorion@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/time.c        |    4 ----
- arch/x86/kernel/vmlinux.lds.S |    4 ++--
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ arch/x86/pci/fixup.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/x86/kernel/time.c
-+++ b/arch/x86/kernel/time.c
-@@ -25,10 +25,6 @@
- #include <asm/hpet.h>
- #include <asm/time.h>
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -572,6 +572,10 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_IN
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6f60, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fa0, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fc0, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ec, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ed, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26c, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26d, pci_invalid_bar);
  
--#ifdef CONFIG_X86_64
--__visible volatile unsigned long jiffies __cacheline_aligned_in_smp = INITIAL_JIFFIES;
--#endif
--
- unsigned long profile_pc(struct pt_regs *regs)
- {
- 	unsigned long pc = instruction_pointer(regs);
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -36,13 +36,13 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
- #ifdef CONFIG_X86_32
- OUTPUT_ARCH(i386)
- ENTRY(phys_startup_32)
--jiffies = jiffies_64;
- #else
- OUTPUT_ARCH(i386:x86-64)
- ENTRY(phys_startup_64)
--jiffies_64 = jiffies;
- #endif
- 
-+jiffies = jiffies_64;
-+
- #if defined(CONFIG_X86_64)
  /*
-  * On 64-bit, align RODATA to 2MB so we retain large page mappings for
+  * Device [1022:7808]
 
 
