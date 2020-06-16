@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11A51FB6A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4895C1FB74D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730869AbgFPPjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:39:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51808 "EHLO mail.kernel.org"
+        id S1731401AbgFPPox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730800AbgFPPi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:56 -0400
+        id S1730574AbgFPPos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:44:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04EED214DB;
-        Tue, 16 Jun 2020 15:38:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F89721475;
+        Tue, 16 Jun 2020 15:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321935;
-        bh=hrPJaqBtBAC9t2XIQGFN01J5C4GBN6PhtjcTxc7Cm6g=;
+        s=default; t=1592322287;
+        bh=2Em7vKIpKvy+bDt4TkT/4BokSyQ2joH3t0jkwKrZN50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KWhrxaH6G8DH4w5q5TRXjlTt+crlL7/ScURCsKlZZyw4kDcb+innCtm5BNBv/712E
-         ijeJ9R9KSfDIMNc5DoxxEkyfvOIFAvtP6cJxE2JYk9SLMwP9oQ2RzcgE0ClxuHjgRa
-         b53QjRWOVII5Z97gng4V/qaoEP0ZwCmOE+/jf6vA=
+        b=da2vr+9ejQjZTWvMebsnKeBtv4aYwODm+ZaUEMtuQywC84XkNd5jAHZc4xf7GDJaz
+         MCxrxb3v+9IuOS6g7DKaKrOfbD59Upk/1WsTKd0urn9NCpFz3ZD3OgCEBVvAc2YMyq
+         3mfKGXt40YowL4dzTnBTMFduKe3QoZ4EVp6Uz4M0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 045/134] KVM: x86/mmu: Set mmio_value to 0 if reserved #PF cant be generated
-Date:   Tue, 16 Jun 2020 17:33:49 +0200
-Message-Id: <20200616153102.948427458@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.7 056/163] io_uring: allow O_NONBLOCK async retry
+Date:   Tue, 16 Jun 2020 17:33:50 +0200
+Message-Id: <20200616153109.528537455@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 6129ed877d409037b79866327102c9dc59a302fe upstream.
+commit c5b856255cbc3b664d686a83fa9397a835e063de upstream.
 
-Set the mmio_value to '0' instead of simply clearing the present bit to
-squash a benign warning in kvm_mmu_set_mmio_spte_mask() that complains
-about the mmio_value overlapping the lower GFN mask on systems with 52
-bits of PA space.
-
-Opportunistically clean up the code and comments.
+We can assume that O_NONBLOCK is always honored, even if we don't
+have a ->read/write_iter() for the file type. Also unify the read/write
+checking for allowing async punt, having the write side factoring in the
+REQ_F_NOWAIT flag as well.
 
 Cc: stable@vger.kernel.org
-Fixes: d43e2675e96fc ("KVM: x86: only do L1TF workaround on affected processors")
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200527084909.23492-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 490e89676a52 ("io_uring: only force async punt if poll based retry can't handle it")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/mmu.c |   27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+ fs/io_uring.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -6248,25 +6248,16 @@ static void kvm_set_mmio_spte_mask(void)
- 	u64 mask;
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2038,6 +2038,10 @@ static bool io_file_supports_async(struc
+ 	if (S_ISREG(mode) && file->f_op != &io_uring_fops)
+ 		return true;
  
- 	/*
--	 * Set the reserved bits and the present bit of an paging-structure
--	 * entry to generate page fault with PFER.RSV = 1.
-+	 * Set a reserved PA bit in MMIO SPTEs to generate page faults with
-+	 * PFEC.RSVD=1 on MMIO accesses.  64-bit PTEs (PAE, x86-64, and EPT
-+	 * paging) support a maximum of 52 bits of PA, i.e. if the CPU supports
-+	 * 52-bit physical addresses then there are no reserved PA bits in the
-+	 * PTEs and so the reserved PA approach must be disabled.
- 	 */
--
--	/*
--	 * Mask the uppermost physical address bit, which would be reserved as
--	 * long as the supported physical address width is less than 52.
--	 */
--	mask = 1ull << 51;
--
--	/* Set the present bit. */
--	mask |= 1ull;
--
--	/*
--	 * If reserved bit is not supported, clear the present bit to disable
--	 * mmio page fault.
--	 */
--	if (shadow_phys_bits == 52)
--		mask &= ~1ull;
-+	if (shadow_phys_bits < 52)
-+		mask = BIT_ULL(51) | PT_PRESENT_MASK;
-+	else
-+		mask = 0;
++	/* any ->read/write should understand O_NONBLOCK */
++	if (file->f_flags & O_NONBLOCK)
++		return true;
++
+ 	if (!(file->f_mode & FMODE_NOWAIT))
+ 		return false;
  
- 	kvm_mmu_set_mmio_spte_mask(mask, mask, ACC_WRITE_MASK | ACC_USER_MASK);
- }
+@@ -2080,8 +2084,7 @@ static int io_prep_rw(struct io_kiocb *r
+ 		kiocb->ki_ioprio = get_current_ioprio();
+ 
+ 	/* don't allow async punt if RWF_NOWAIT was requested */
+-	if ((kiocb->ki_flags & IOCB_NOWAIT) ||
+-	    (req->file->f_flags & O_NONBLOCK))
++	if (kiocb->ki_flags & IOCB_NOWAIT)
+ 		req->flags |= REQ_F_NOWAIT;
+ 
+ 	if (force_nonblock)
+@@ -2722,7 +2725,8 @@ copy_iov:
+ 			if (ret)
+ 				goto out_free;
+ 			/* any defer here is final, must blocking retry */
+-			if (!file_can_poll(req->file))
++			if (!(req->flags & REQ_F_NOWAIT) &&
++			    !file_can_poll(req->file))
+ 				req->flags |= REQ_F_MUST_PUNT;
+ 			return -EAGAIN;
+ 		}
 
 
