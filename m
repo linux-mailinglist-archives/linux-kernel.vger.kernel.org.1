@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6487C1FB8EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FAF1FB790
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733028AbgFPP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51900 "EHLO mail.kernel.org"
+        id S1732332AbgFPPrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:47:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732382AbgFPPxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:35 -0400
+        id S1732317AbgFPPrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0B29207C4;
-        Tue, 16 Jun 2020 15:53:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BC3820E65;
+        Tue, 16 Jun 2020 15:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322815;
-        bh=CsmU7ymn6SkmOal5pl7XmtF+1V/WOn0gWqxHgLpj0P0=;
+        s=default; t=1592322437;
+        bh=NBVUODQbI1T1MtGAlUTn/rshWC+w1j++5qEaRVUjYSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eer1RDK6tx6r6g9E4gae3CDgNQN6dHmVl2dYwWBTGiOgVS/CbwRuzKsQ0M60LeqXw
-         n9tNsNzlW2EqjZegg5Lp6bY/7RSs88MrTuOoXJJNv/G7wVFRW0L/FwbRH6y9ccAhJf
-         DVRvp739Av1Ra8+nV71P6V59/jqat1eiex31snng=
+        b=B9QivGj4rlFN5/RxL5TAjXTPEGclN6xzRt96a8SwwXamI7+Fbh7ZiMAXfqBpgvZ2m
+         QuR5YX+w99/k6mAHnjcH+CRCdlXRpaFjiTBgVYireStRh5fpdwQkbFCS27tjvmNjmC
+         TXIqd1+Zb+UXaJNrg/YPyQFXb2tNscCJFMfxU7yc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzbot+61958888b1c60361a791@syzkaller.appspotmail.com
-Subject: [PATCH 5.6 115/161] ovl: fix out of bounds access warning in ovl_check_fb_len()
-Date:   Tue, 16 Jun 2020 17:35:05 +0200
-Message-Id: <20200616153111.834564988@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Xing Li <lixing@loongson.cn>, Huacai Chen <chenhc@lemote.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.7 132/163] KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
+Date:   Tue, 16 Jun 2020 17:35:06 +0200
+Message-Id: <20200616153113.136106158@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Goldstein <amir73il@gmail.com>
+From: Xing Li <lixing@loongson.cn>
 
-commit 522f6e6cba6880a038e2bd88e10390b84cd3febd upstream.
+commit 5816c76dea116a458f1932eefe064e35403248eb upstream.
 
-syzbot reported out of bounds memory access from open_by_handle_at()
-with a crafted file handle that looks like this:
+If a CPU support more than 32bit vmbits (which is true for 64bit CPUs),
+VPN2_MASK set to fixed 0xffffe000 will lead to a wrong EntryHi in some
+functions such as _kvm_mips_host_tlb_inv().
 
-  { .handle_bytes = 2, .handle_type = OVL_FILEID_V1 }
+The cpu_vmbits definition of 32bit CPU in cpu-features.h is 31, so we
+still use the old definition.
 
-handle_bytes gets rounded down to 0 and we end up calling:
-  ovl_check_fh_len(fh, 0) => ovl_check_fb_len(fh + 3, -3)
-
-But fh buffer is only 2 bytes long, so accessing struct ovl_fb at
-fh + 3 is illegal.
-
-Fixes: cbe7fba8edfc ("ovl: make sure that real fid is 32bit aligned in memory")
-Reported-and-tested-by: syzbot+61958888b1c60361a791@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org> # v5.5
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Stable <stable@vger.kernel.org>
+Reviewed-by: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Signed-off-by: Xing Li <lixing@loongson.cn>
+[Huacai: Improve commit messages]
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Message-Id: <1590220602-3547-3-git-send-email-chenhc@lemote.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/overlayfs/overlayfs.h |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/include/asm/kvm_host.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/overlayfs/overlayfs.h
-+++ b/fs/overlayfs/overlayfs.h
-@@ -339,6 +339,9 @@ int ovl_check_fb_len(struct ovl_fb *fb,
+--- a/arch/mips/include/asm/kvm_host.h
++++ b/arch/mips/include/asm/kvm_host.h
+@@ -274,7 +274,11 @@ enum emulation_result {
+ #define MIPS3_PG_SHIFT		6
+ #define MIPS3_PG_FRAME		0x3fffffc0
  
- static inline int ovl_check_fh_len(struct ovl_fh *fh, int fh_len)
- {
-+	if (fh_len < sizeof(struct ovl_fh))
-+		return -EINVAL;
-+
- 	return ovl_check_fb_len(&fh->fb, fh_len - OVL_FH_WIRE_OFFSET);
- }
- 
++#if defined(CONFIG_64BIT)
++#define VPN2_MASK		GENMASK(cpu_vmbits - 1, 13)
++#else
+ #define VPN2_MASK		0xffffe000
++#endif
+ #define KVM_ENTRYHI_ASID	cpu_asid_mask(&boot_cpu_data)
+ #define TLB_IS_GLOBAL(x)	((x).tlb_lo[0] & (x).tlb_lo[1] & ENTRYLO_G)
+ #define TLB_VPN2(x)		((x).tlb_hi & VPN2_MASK)
 
 
