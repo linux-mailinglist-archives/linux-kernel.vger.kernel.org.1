@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BF81FB7A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BAA1FB870
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732379AbgFPPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41882 "EHLO mail.kernel.org"
+        id S1732757AbgFPP4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732063AbgFPPr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:59 -0400
+        id S1733102AbgFPPzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:55:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E43720E65;
-        Tue, 16 Jun 2020 15:47:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2BE521527;
+        Tue, 16 Jun 2020 15:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322479;
-        bh=LUaGMoUbjdbFQRmoKpjS+1KFdgYIxUgQbBO85tMnjrA=;
+        s=default; t=1592322940;
+        bh=UngR6ZULQj+X4Dj4/WBbfZV8St5pfzIyh3OVCShYe18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zpe6IxKSxN8kbkGIDPN5j6E52zWds/P9tqjoh2/XsykyQgNgoog5CdmO08INd9rBY
-         HVi+H2jSvchYyBMhT5BLpWSLuSd2GSsSzVcJdeCKVBJ52PxXDu14iwxU5AWIhzd/nm
-         uwha/V3SKiGtsJGcVwvkXfcxGSbuJfYGLUYhkFHA=
+        b=Wkx8UMcDwuYwzkj/JNDSjtJEM/77Frs4sz5/3/skWs5RE6hSheMde1pNdEo+jAnC7
+         0BHz9setTTYDinnvxORcMywaIL8NE8UTJhssqwdjFXCSq9RlzcOEF7BLqRdrLf53B/
+         SAlJzTri6SgksQx5+YufYmERive7Mih1VYoweZpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.7 147/163] fat: dont allow to mount if the FAT length == 0
-Date:   Tue, 16 Jun 2020 17:35:21 +0200
-Message-Id: <20200616153113.843610229@linuxfoundation.org>
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.6 132/161] KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
+Date:   Tue, 16 Jun 2020 17:35:22 +0200
+Message-Id: <20200616153112.643402427@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,42 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+From: Marc Zyngier <maz@kernel.org>
 
-commit b1b65750b8db67834482f758fc385bfa7560d228 upstream.
+commit 3204be4109ad681523e3461ce64454c79278450a upstream.
 
-If FAT length == 0, the image doesn't have any data. And it can be the
-cause of overlapping the root dir and FAT entries.
+AArch32 CP1x registers are overlayed on their AArch64 counterparts
+in the vcpu struct. This leads to an interesting problem as they
+are stored in their CPU-local format, and thus a CP1x register
+doesn't "hit" the lower 32bit portion of the AArch64 register on
+a BE host.
 
-Also Windows treats it as invalid format.
+To workaround this unfortunate situation, introduce a bias trick
+in the vcpu_cp1x() accessors which picks the correct half of the
+64bit register.
 
-Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
-Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Tested-by: James Morse <james.morse@arm.com>
+Acked-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fat/inode.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/include/asm/kvm_host.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -1520,6 +1520,12 @@ static int fat_read_bpb(struct super_blo
- 		goto out;
- 	}
- 
-+	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
-+		if (!silent)
-+			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
-+		goto out;
-+	}
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -404,8 +404,10 @@ void vcpu_write_sys_reg(struct kvm_vcpu
+  * CP14 and CP15 live in the same array, as they are backed by the
+  * same system registers.
+  */
+-#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
+-#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
++#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
 +
- 	error = 0;
++#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
++#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
  
- out:
+ struct kvm_vm_stat {
+ 	ulong remote_tlb_flush;
 
 
