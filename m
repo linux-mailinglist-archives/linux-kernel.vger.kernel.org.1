@@ -2,114 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D60B1FA67D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5700F1FA687
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgFPCjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:39:01 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:59286 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725978AbgFPCjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:39:01 -0400
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8CF88761207;
-        Tue, 16 Jun 2020 12:38:57 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jl1V2-0002F3-Dd; Tue, 16 Jun 2020 12:38:56 +1000
-Date:   Tue, 16 Jun 2020 12:38:56 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] xfs: fix use-after-free on CIL context on shutdown
-Message-ID: <20200616023856.GD2005@dread.disaster.area>
-References: <20200611013952.2589997-1-yukuai3@huawei.com>
- <20200611022848.GQ2040@dread.disaster.area>
- <20200611024503.GR2040@dread.disaster.area>
- <9d13cb34-5625-ed84-71f5-ad48204589a1@huawei.com>
+        id S1726653AbgFPCu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 22:50:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:22554 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgFPCu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 22:50:28 -0400
+IronPort-SDR: mFmmbHKG9SBBc40uMzDjCJR0OCap/SchHUTMi2ZuL1Y+AZJXMOJYLzj4UMOej+hzYEi+IJmXZE
+ 9kh46i7dgXlA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 19:50:27 -0700
+IronPort-SDR: EooRz/LA+ATGqtDCneDKtobTGFprX0pDFQt4zaWlIbGdGmDApuNBSJoM7oNEJMR3+VMawXixMT
+ XZpPyokdgYdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,517,1583222400"; 
+   d="scan'208";a="261998340"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by orsmga007.jf.intel.com with ESMTP; 15 Jun 2020 19:50:23 -0700
+Subject: Re: [kmemleak] b751c52bb5: BUG:kernel_hang_in_boot_stage
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <20200610075156.GE12456@shao2-debian>
+ <20200610105640.GB26099@gaia>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <9bc70c0d-00b3-ff5a-e8bd-d4315e367fad@intel.com>
+Date:   Tue, 16 Jun 2020 10:50:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d13cb34-5625-ed84-71f5-ad48204589a1@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
-        a=4gZMuf7uG7p2KhJwSLEA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200610105640.GB26099@gaia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 09:16:09AM +0800, yukuai (C) wrote:
-> On 2020/6/11 10:45, Dave Chinner wrote:
-> > 
-> > From: Dave Chinner <dchinner@redhat.com>
-> > 
-> > xlog_wait() on the CIL context can reference a freed context if the
-> > waiter doesn't get scheduled before the CIL context is freed. This
-> > can happen when a task is on the hard throttle and the CIL push
-> > aborts due to a shutdown. This was detected by generic/019:
-> > 
-> > thread 1			thread 2
-> > 
-> > __xfs_trans_commit
-> >   xfs_log_commit_cil
-> >    <CIL size over hard throttle limit>
-> >    xlog_wait
-> >     schedule
-> > 				xlog_cil_push_work
-> > 				wake_up_all
-> > 				<shutdown aborts commit>
-> > 				xlog_cil_committed
-> > 				kmem_free
-> > 
-> >     remove_wait_queue
-> >      spin_lock_irqsave --> UAF
-> > 
-> > Fix it by moving the wait queue to the CIL rather than keeping it in
-> > in the CIL context that gets freed on push completion. Because the
-> > wait queue is now independent of the CIL context and we might have
-> > multiple contexts in flight at once, only wake the waiters on the
-> > push throttle when the context we are pushing is over the hard
-> > throttle size threshold.
-> 
-> Hi, Dave,
-> 
-> How do you think about the following fix:
-> 
-> 1. use autoremove_wake_func(), and remove remove_wait_queue() to
-> avoid UAF.
-> 2. add finish_wait().
-> 
-> @@ -576,12 +576,13 @@ xlog_wait(
->                 __releases(lock)
->  {
->         DECLARE_WAITQUEUE(wait, current);
-> +       wait.func = autoremove_wake_function;
-> 
->         add_wait_queue_exclusive(wq, &wait);
->         __set_current_state(TASK_UNINTERRUPTIBLE);
->         spin_unlock(lock);
->         schedule();
-> -       remove_wait_queue(wq, &wait);
-> +       finish_wait(wq, &wait);
->  }
 
-Yes, that would address this specific symptom of the problem, but it
-doesn't fix the problem root cause: that the wq can be freed while
-this function sleeps. IMO, this sort of change leaves a trap for
-future modifications - all the code calling xlog_wait() assumes the
-embedded wq the task is sleeping on still exists after waiting so we
-really should be fixing the problem the incorrect existence
-guarantee in the CIL code that you tripped over.
 
-Cheers,
+On 6/10/20 6:56 PM, Catalin Marinas wrote:
+> On Wed, Jun 10, 2020 at 03:51:56PM +0800, kernel test robot wrote:
+>> FYI, we noticed the following commit (built with gcc-7):
+>>
+>> commit: b751c52bb587ae66f773b15204ef7a147467f4c7 ("kmemleak: increase DEBUG_KMEMLEAK_EARLY_LOG_SIZE default to 16K")
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>
+>> in testcase: boot
+>>
+>> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> [...]
+>> BUG: kernel hang in boot stage
+>>
+>> To reproduce:
+>>
+>>          # build kernel
+>> 	cd linux
+>> 	cp config-5.3.0-11789-gb751c52bb587a .config
+>> 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=i386 olddefconfig prepare modules_prepare bzImage
+> I've never tried kmemleak on i386.
+>
+> Anyway, I'm not sure what caused the hang (or whether it's a hang at
+> all) but I suspect prior to the above commit, kmemleak probably just
+> disabled itself (early log  buffer exceeded). So the bug may have been
+> there already, only that kmemleak started working and tripped over it
+> when the log buffer increased.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Hi,
+
+Sorry for the late, I can reproduce the problem with command "bin/lkp 
+qemu -k <bzImage> job-script",
+and the kernel hangs:
+
+[    0.333897] -----------------------------------------------------
+[    0.334561]                                  |block | try |context|
+[    0.335170] -----------------------------------------------------
+[    0.335760]                           context:  ok  |  ok  |  ok |
+[    0.337995]                               try:  ok  |  ok  |  ok |
+[    0.340089]                             block:  ok  |  ok  |  ok |
+[    0.342175]                          spinlock:  ok  |  ok  |  ok |
+[    0.344481] -------------------------------------------------------
+[    0.345068] Good, all 261 testcases passed! |
+[    0.345514] ---------------------------------
+KVM internal error. Suberror: 3
+extra data[0]: 80000b0e
+extra data[1]: 31
+extra data[2]: 182
+extra data[3]: bfff0
+EAX=00000000 EBX=00200297 ECX=00000000 EDX=ffffffff
+ESI=d2e997c0 EDI=d2e997f0 EBP=d2bbb038 ESP=c00bfff4
+EIP=f4dccd57 EFL=00210046 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =007b 00000000 ffffffff 00c0f300 DPL=3 DS   [-WA]
+CS =0060 00000000 ffffffff 00c09b00 DPL=0 CS32 [-RA]
+SS =0068 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+DS =007b 00000000 ffffffff 00c0f300 DPL=3 DS   [-WA]
+FS =00d8 23331000 ffffffff 00809300 DPL=0 DS16 [-WA]
+GS =00e0 f6422900 00000018 00409100 DPL=0 DS   [--A]
+LDT=0000 00000000 ffffffff 00c00000
+TR =0080 ff403000 0000206b 00008b00 DPL=0 TSS32-busy
+GDT=     ff401000 000000ff
+IDT=     ff400000 000007ff
+CR0=80050033 CR2=00000000 CR3=130fc000 CR4=00000690
+DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 
+DR3=0000000000000000
+DR6=00000000fffe0ff0 DR7=0000000000000400
+EFER=0000000000000000
+Code=00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 00 
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 00 00 00
+
+>
+> Is there a chance that the kernel got much slower with kmemleak enabled
+> and the test scripts timed out?
+no, the parent commit log is:
+
+[    0.313845] -----------------------------------------------------
+[    0.314608]                                  |block | try |context|
+[    0.315314] -----------------------------------------------------
+[    0.315974]                           context:  ok  |  ok  |  ok |
+[    0.318261]                               try:  ok  |  ok  |  ok |
+[    0.320478]                             block:  ok  |  ok  |  ok |
+[    0.322562]                          spinlock:  ok  |  ok  |  ok |
+[    0.324825] -------------------------------------------------------
+[    0.325403] Good, all 261 testcases passed! |
+[    0.325809] ---------------------------------
+[    0.326221] kmemleak: Early log buffer exceeded (401), please 
+increase DEBUG_KMEMLEAK_EARLY_LOG_SIZE
+[    0.327065] ACPI: Core revision 20190816
+[    0.327585] clocksource: hpet: mask: 0xffffffff max_cycles: 
+0xffffffff, max_idle_ns: 19112604467 ns
+[    0.328545] APIC: Switch to symmetric I/O mode setup
+[    0.329009] Enabling APIC mode:  Flat.  Using 1 I/O APICs
+[    0.329572] masked ExtINT on CPU#0
+[    0.330686] ENABLING IO-APIC IRQs
+[    0.331001] init IO_APIC IRQs
+[    0.331274]  apic 0 pin 0 not connected
+
+>
+> Does this problem still exist with the latest mainline?
+yes, still in v5.7.
+
+Best Regards,
+Rong Chen
