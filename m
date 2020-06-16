@@ -2,130 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A451FA7C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA16A1FA7D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 06:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgFPEbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 00:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgFPEbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 00:31:47 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0681BC05BD1E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 21:31:46 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u128so1760435pgu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 21:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yggJLQ1EcUgjHF19yDwrup+mzwUkwfoI6w/Q8w2BPpk=;
-        b=EfhXBKtMMpywDdVRa97crf16rSBhJmC9upTtrKRxHjbYQ6vb5dFVW0F6JjwosFOWkY
-         6EoRWcAzi6fqfgfosquSl77qy0o7OrBZp1CfljklHXisVRNBXDuNSOnz/qDKBJo4sZAI
-         AIJubRaqdZkaJ+BNb46H0OzDMUg4+GeXDIRApMrupAA3f32FYfGS7R5cYoPcXV+kqxrB
-         7YtCX7uuyUPpo6iXPtNvbTdQjxNf3K5GZ1W3AmIokh4hfydqgAcyUJnVMyQT5D+lm4lK
-         Tanbbi3aIPnGPUGzU2ni0I1dVsAlTlFmVRtE60MvAMuE3YVDSJvaYN5jCxXiotiU5gBD
-         ZVhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yggJLQ1EcUgjHF19yDwrup+mzwUkwfoI6w/Q8w2BPpk=;
-        b=qlpwwt5rKzF/hgGRQvtUYuAF4CtLpkhgEU/oBETmKeoHvpB1o/JwkdhceQT+WRCRZc
-         9Dw1CYb7E3sW5odObTJ3ekQ02yPfvz7NlfOlWMZToUy/gBTvTXWmZ3JBf3kBdVaPlzh7
-         GNG4a569qjpOLv8b2QySO36RyzrjBUlrBYCyCyTqXdgGhxX1BkgMZF794pkDliraSBw+
-         pw5iiPmQ6V2L/eNqCIVji4GVc3bccboJLO+8ezVEYZTlO2O10WdMit5KxweXksiHNKIA
-         QmUe/brc4tI3k1XpBrKuW9y3YwAGXELboiVTHOBN5KdmXSB9W9RWke03yEs7V6Li211r
-         /XXA==
-X-Gm-Message-State: AOAM530sFMk+98aw2GeDsHejVc0/a4SKsYVV7AMTXjKb9CxTL7iXPXuo
-        zeFclLnOWZm2fEl/VgVNnSIqTg==
-X-Google-Smtp-Source: ABdhPJydDW3Q5YoUvXjbkK975S5wvd5Z8OCpB+59uxLDjteoZCSrgET+C2HheXpQubqW97fxpEilUw==
-X-Received: by 2002:a63:7c5e:: with SMTP id l30mr697662pgn.276.1592281906422;
-        Mon, 15 Jun 2020 21:31:46 -0700 (PDT)
-Received: from localhost ([122.172.119.132])
-        by smtp.gmail.com with ESMTPSA id h35sm937737pje.29.2020.06.15.21.31.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Jun 2020 21:31:45 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 10:01:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     rjw@rjwysocki.net, rafael@kernel.org, arnd@arndb.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        kernel-team@android.com, tkjos@google.com, adharmap@codeaurora.org
-Subject: Re: [PATCH 2/2] cpufreq: Specify default governor on command line
-Message-ID: <20200616043143.obk5k3rv737j5dnd@vireshk-i7>
-References: <20200615165554.228063-1-qperret@google.com>
- <20200615165554.228063-3-qperret@google.com>
+        id S1727015AbgFPEiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 00:38:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46305 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726489AbgFPEiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 00:38:01 -0400
+IronPort-SDR: iDn2zRnfleZBaGVzsknGh2cnCyLg5pOypnR5HLiTOBAACnIRF2nN+NUXw9wgMijYeOXYgUG/YX
+ tqGhSJL9d2wQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 21:38:00 -0700
+IronPort-SDR: 3mc7HYOCh2ZOvLb1+O4gVAyxqqrHqmeFwSlr4y3pH+LwzPkgAUz6qNObp7c3RguX4SUcV6DaPS
+ KADvRnR0exqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,517,1583222400"; 
+   d="scan'208";a="382756410"
+Received: from lkp-server02.sh.intel.com (HELO ec7aa6149bd9) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Jun 2020 21:37:58 -0700
+Received: from kbuild by ec7aa6149bd9 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jl3MD-0000Ry-SY; Tue, 16 Jun 2020 04:37:57 +0000
+Date:   Tue, 16 Jun 2020 12:37:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:lkmm] BUILD SUCCESS a08ae995e32ffd5e54b714f941c7cdde4a83eade
+Message-ID: <5ee84c7c.T+N+0zN9rHKboMI9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615165554.228063-3-qperret@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-06-20, 17:55, Quentin Perret wrote:
-> +static void cpufreq_get_default_governor(void)
-> +{
-> +	default_governor = cpufreq_parse_governor(cpufreq_param_governor);
-> +	if (!default_governor) {
-> +		if (*cpufreq_param_governor)
-> +			pr_warn("Failed to find %s\n", cpufreq_param_governor);
-> +		default_governor = cpufreq_default_governor();
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm
+branch HEAD: a08ae995e32ffd5e54b714f941c7cdde4a83eade  Documentation/litmus-tests: Cite an RCU litmus test
 
-A module_get() never happened for this case and so maybe a
-module_put() should never get called.
+elapsed time: 485m
 
-> +	}
-> +}
-> +
-> +static void cpufreq_put_default_governor(void)
-> +{
-> +	if (!default_governor)
-> +		return;
-> +	module_put(default_governor->owner);
-> +	default_governor = NULL;
-> +}
-> +
->  static int cpufreq_init_governor(struct cpufreq_policy *policy)
->  {
->  	int ret;
-> @@ -2701,6 +2721,8 @@ int cpufreq_register_driver(struct cpufreq_driver *driver_data)
->  
->  	if (driver_data->setpolicy)
->  		driver_data->flags |= CPUFREQ_CONST_LOOPS;
-> +	else
-> +		cpufreq_get_default_governor();
->  
->  	if (cpufreq_boost_supported()) {
->  		ret = create_boost_sysfs_file();
-> @@ -2769,6 +2791,7 @@ int cpufreq_unregister_driver(struct cpufreq_driver *driver)
->  	subsys_interface_unregister(&cpufreq_interface);
->  	remove_boost_sysfs_file();
->  	cpuhp_remove_state_nocalls_cpuslocked(hp_online);
-> +	cpufreq_put_default_governor();
->  
->  	write_lock_irqsave(&cpufreq_driver_lock, flags);
->  
-> @@ -2792,4 +2815,5 @@ static int __init cpufreq_core_init(void)
->  	return 0;
->  }
+configs tested: 113
+configs skipped: 1
 
-And since this is a per boot thing, there is perhaps no need of doing
-these at driver register/unregister, I would rather do it at:
-cpufreq_core_init() time itself and so we will never need to run
-cpufreq_put_default_governor() and so can be removed.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-And another thing I am not able to understand (despite you commenting
-about that in the commit log) is what happens if the default governor
-chosen is built as a module ?
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                         axm55xx_defconfig
+mips                         bigsur_defconfig
+mips                      bmips_stb_defconfig
+sh                            migor_defconfig
+c6x                              allyesconfig
+arm                             pxa_defconfig
+um                           x86_64_defconfig
+mips                      pic32mzda_defconfig
+arm                       versatile_defconfig
+ia64                      gensparse_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200615
+i386                 randconfig-a002-20200615
+i386                 randconfig-a001-20200615
+i386                 randconfig-a004-20200615
+i386                 randconfig-a005-20200615
+i386                 randconfig-a003-20200615
+i386                 randconfig-a006-20200616
+i386                 randconfig-a002-20200616
+i386                 randconfig-a001-20200616
+i386                 randconfig-a004-20200616
+i386                 randconfig-a005-20200616
+i386                 randconfig-a003-20200616
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
+i386                 randconfig-a015-20200615
+i386                 randconfig-a011-20200615
+i386                 randconfig-a014-20200615
+i386                 randconfig-a013-20200615
+i386                 randconfig-a016-20200615
+i386                 randconfig-a012-20200615
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
 
--- 
-viresh
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
