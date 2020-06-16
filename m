@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7355C1FBDD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E21FBDD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgFPSSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
+        id S1729815AbgFPSSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 14:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgFPSSH (ORCPT
+        with ESMTP id S1726282AbgFPSSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:18:07 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB682C061573;
-        Tue, 16 Jun 2020 11:18:06 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id b82so3780289wmb.1;
-        Tue, 16 Jun 2020 11:18:06 -0700 (PDT)
+        Tue, 16 Jun 2020 14:18:08 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8C5C061573;
+        Tue, 16 Jun 2020 11:18:07 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l10so21742277wrr.10;
+        Tue, 16 Jun 2020 11:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8LmTayBVPTW7ENh+5gUw2mLnloWnahd4HWesLcexzGo=;
-        b=Wmwst1uDZnj0G6rQmKnFIjglBbaV6IRWpaOCshlQeIyVPGyNS+85y9fL1KeHsx1hkq
-         fu15VLouNuSqAe7iT9xuFobBH1oDZ4mEcyBXIndvBEGLJWMl1MRBGqLfR0pDPSAYnpxw
-         cx5MYkkemqqLDTt2YahSQBJ5rxHFXsYndFSm+Qb8a9xJWN7n1h1fMIiRU45znDWdvmew
-         7qqP2yt9GGQWQkF3yTa5HS51mWUswxTPo15K6XR/PEzvKc6Fop+D5FlMe0Y2dcMAgO4V
-         fkmTGDSkKv4+zfFKtNthqFRMMA0MCft8n1qWWiDjwdwzxfaej0hinRHd12GkahbadXDy
-         QIRQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8b9w5Bl2hRduQlm5Ms5q2rrQhAAPM6If/ziLRYU2pNA=;
+        b=gwb3A+Az/M8/mSOMrobEndzEbDF9O6nZjaLrtPnL9ccc1tEDKZ4zoR/xI915JKDohZ
+         nREap0BDMicV5GOHBYJQlC1KOgibyM+7Jo0dGStow2l0leuYM8Xx/oOeEh2rXw6eDgpa
+         JiatzvrM/nSq6+J/+nSISzW0MPTsk0UjIJOQiufJNWojjwGW8+sMdzguhjSGX12TV+hA
+         UGt5b9CG88h6eTxy4mzTGCspeESYLxq+J5MpSdVEaBu/PP6sQRs3sncrvd3BVmYroBri
+         d4egmK76kwdzXQmypBXv0fPjzY8LUSkY+1iBU23PIoCl3zKAs893GOEyCycaju4d5Sn0
+         SNHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8LmTayBVPTW7ENh+5gUw2mLnloWnahd4HWesLcexzGo=;
-        b=LhRYrKLeNmtpzN7Glzx1DkZm5898OPmmZrj+Ih8Z/Ld6i7ArEKirDZCt1z7BA59Oin
-         6KKdpqQT1Fe1XdSnURzQZmhd+H4hxfXr+O7JzzaDNoUwLUQLkc7RW99xnIbjPlA98ith
-         /il7h83zJWHS5EmkRPRmalccMxoKMC2bcdJ7JAektPTnQ//qFLNgwDyjB6t7gSQl7UwR
-         j+/iMbbS8v9DPDVpqUv2T/pr+iNoHA8CXLrQngHWVs9uhwOuXCsEh/on4FS8INTsW7W3
-         fzmlz/UQu+jqKcMf/IVEYpvtEBfK1RWoYxS2lzlYLxC84Fj3DL1K0arYeUuxmiDyxTM6
-         XVPA==
-X-Gm-Message-State: AOAM531CovtekS5qA8Ztb7oUWEsVsnUDTQxPuWP/lFxkisWmXI0drMwQ
-        nRJz5BcBpAADiSEs5asuvgE=
-X-Google-Smtp-Source: ABdhPJxfsQl4YYQbvO8WxxGctX/5GUoJol6KmDxSRoCYT5kgEI/5RSxDBWDb7Yt4qlMFh96CYZMyNA==
-X-Received: by 2002:a05:600c:2042:: with SMTP id p2mr4690151wmg.85.1592331485223;
-        Tue, 16 Jun 2020 11:18:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8b9w5Bl2hRduQlm5Ms5q2rrQhAAPM6If/ziLRYU2pNA=;
+        b=Rf8ZOkBx8qXCwHFGhe+jN8j5hEJGdZnfPACpMKUaxIrT4GApipS2LER690so37fHGg
+         yrQnEUm/pmhlYoIB/XchmYS1Lm9pW1fRLH/qLKlOE3XnSn5+bi3BmNVjlZfxyXwA6/HI
+         OVnoWLaRVAm4wi8pqQMn5Kxc4fhvIUoYMbyK+YpXDNXyfqwUneZCPEB5ueKORS+nxLth
+         fwf3e8UeOdvTVBSeYxbeKYAlGo/cxpmgle2JbcexxoRbLBQWBhETuqwZj5l5yzsH4P9K
+         FRKYeiaOx0ziAlxhFtM63cD9Z1m0K/dIY36UBrDlPGJZOlKtyxxxdc5nx7g9ZNOPC/w/
+         smtg==
+X-Gm-Message-State: AOAM531hjXEVxp6gDH6dqDgQ75y2cQKnC2iLrAoCKrIS+JMpo1dLDJGL
+        85o03dMAjuJRJEj/snhmOM/hHDQd4rU=
+X-Google-Smtp-Source: ABdhPJwbPkYjXMpg9rPLEmw8iujy82MzJeuXEayutCiKGTao6xvPSkg9H39yipRMGNeONYVpnZC5IA==
+X-Received: by 2002:adf:f2c2:: with SMTP id d2mr4204754wrp.424.1592331486195;
+        Tue, 16 Jun 2020 11:18:06 -0700 (PDT)
 Received: from skynet.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
-        by smtp.gmail.com with ESMTPSA id u3sm28651091wrw.89.2020.06.16.11.18.04
+        by smtp.gmail.com with ESMTPSA id u3sm28651091wrw.89.2020.06.16.11.18.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 11:18:04 -0700 (PDT)
+        Tue, 16 Jun 2020 11:18:05 -0700 (PDT)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     simon@fire.lp0.eu, jonas.gorski@gmail.com, kishon@ti.com,
@@ -58,10 +58,12 @@ To:     simon@fire.lp0.eu, jonas.gorski@gmail.com, kishon@ti.com,
         linux-arm-kernel@lists.infradead.org
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH v2 0/2] phy: bcm63xx-usbh: Add BCM63xx USBH driver
-Date:   Tue, 16 Jun 2020 20:18:00 +0200
-Message-Id: <20200616181802.3498745-1-noltari@gmail.com>
+Subject: [PATCH v2 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
+Date:   Tue, 16 Jun 2020 20:18:01 +0200
+Message-Id: <20200616181802.3498745-2-noltari@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200616181802.3498745-1-noltari@gmail.com>
+References: <20200616181802.3498745-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -70,26 +72,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add BCM63xx USBH PHY driver for BMIPS.
+Document BCM63xx USBH PHY bindings.
 
-v2: introduce changes suggested by Florian:
- - phy-cells changed to 1.
- - Drop OF dependency (use device_get_match_data).
- - Drop __initconst from variant tables.
- - Use devm_clk_get_optional.
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v2: phy-cells changed to 1.
 
-Álvaro Fernández Rojas (2):
-  dt-bindings: phy: add bcm63xx-usbh bindings
-  phy: bcm63xx-usbh: Add BCM63xx USBH driver
-
- .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   |  72 +++
- drivers/phy/broadcom/Kconfig                  |   9 +
- drivers/phy/broadcom/Makefile                 |   1 +
- drivers/phy/broadcom/phy-bcm63xx-usbh.c       | 433 ++++++++++++++++++
- 4 files changed, 515 insertions(+)
+ .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
- create mode 100644 drivers/phy/broadcom/phy-bcm63xx-usbh.c
 
+diff --git a/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+new file mode 100644
+index 000000000000..9ef2c1f8aa00
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/brcm,bcm63xx-usbh-phy.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: BCM63xx USBH PHY
++
++maintainers:
++  - Álvaro Fernández Rojas <noltari@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - brcm,bcm6318-usbh-phy
++      - brcm,bcm6328-usbh-phy
++      - brcm,bcm6358-usbh-phy
++      - brcm,bcm6362-usbh-phy
++      - brcm,bcm6368-usbh-phy
++      - brcm,bcm63268-usbh-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: usbh
++      - const: usb_ref
++
++  resets:
++    maxItems: 1
++
++  "#phy-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - "#phy-cells"
++
++if:
++  properties:
++    compatible:
++      enum:
++        - brcm,bcm6318-usbh-phy
++        - brcm,bcm6328-usbh-phy
++        - brcm,bcm6362-usbh-phy
++        - brcm,bcm63268-usbh-phy
++
++then:
++  properties:
++    power-domains:
++      maxItems: 1
++  required:
++    - power-domains
++
++examples:
++  - |
++    usbh: usb-phy@10001700 {
++      compatible = "brcm,bcm6368-usbh-phy";
++      reg = <0x10001700 0x38>;
++      clocks = <&periph_clk BCM6368_CLK_USBH>;
++      clock-names = "usbh";
++      resets = <&periph_rst BCM6368_RST_USBH>;
++      #phy-cells = <1>;
++    };
 -- 
 2.27.0
 
