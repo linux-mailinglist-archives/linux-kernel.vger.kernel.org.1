@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689E91FAF0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F771FAF15
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 13:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgFPLYE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Jun 2020 07:24:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50783 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgFPLYC (ORCPT
+        id S1728506AbgFPLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 07:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgFPLYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 07:24:02 -0400
-Received: from mail-pl1-f198.google.com ([209.85.214.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jl9h9-0005PP-Sv
-        for linux-kernel@vger.kernel.org; Tue, 16 Jun 2020 11:24:00 +0000
-Received: by mail-pl1-f198.google.com with SMTP id b5so5287021pls.17
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 04:23:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=RKV/iihpMFOKrX8Dy/UHawwcIU/eq1oQLDV9xYsClvQ=;
-        b=QubAzf16E4/SURbmIjFraYRZQfSK85c+5vKk0fGj23lDbGGn8bN28JWNoS5IMzrFk4
-         qY4auJSJ2g5463J0xPz1A8myy6obYbHH81VKA+0LVz1tX5NYXHZNu6zhySeFY4pepZFr
-         GtYUAUfx4D5cloO/VZoaOiF4cTv0HmUdbFucqKM42X7kDn5MaL8cvkcHJTwaES28P8eY
-         MixcXZ4PX10TC0txPhjKF2JMIvm3pKG3YLfykyEixOBB7UY8Ivzr9zeIL3XetL56EiXr
-         VxKP7JxmYfXvdFlsEofixI2ufNHt4AN5ZzP5/D5wRT/bKO3Tg/CX4cmZhSr++rtVYLq6
-         TuOQ==
-X-Gm-Message-State: AOAM530HCOtJALLlOFaliJzr+pptSLELQvYiAVq874LI6qz048nPPwHH
-        KdXTCRKfTbqm9FA9gkP4LmMSjtjCtJj32J19VdIiBlrJ7QNqsW0bDf58u3fXjnuP8Dsb6jTaWcv
-        OI/6I8ZQuHJ4apapuMM6zX8j0Atq1clQfpxMQxBfchw==
-X-Received: by 2002:aa7:9f10:: with SMTP id g16mr1692901pfr.47.1592306638258;
-        Tue, 16 Jun 2020 04:23:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxn76cJL80QgLRqpVQR9LS39Yxme3oExRkYxI5UyhE9Nws2RV5nZr3RTYu817dCcgb8VQkTjA==
-X-Received: by 2002:aa7:9f10:: with SMTP id g16mr1692885pfr.47.1592306637881;
-        Tue, 16 Jun 2020 04:23:57 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id gg10sm2268181pjb.38.2020.06.16.04.23.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jun 2020 04:23:57 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] e1000e: continue to init phy even when failed to disable
- ULP
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200616100512.22512-1-aaron.ma@canonical.com>
-Date:   Tue, 16 Jun 2020 19:23:53 +0800
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vitaly.lifshits@intel.com,
-        sasha.neftin@intel.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <4CC928F1-02CC-4675-908E-42B26C151FA1@canonical.com>
-References: <20200616100512.22512-1-aaron.ma@canonical.com>
-To:     Aaron Ma <aaron.ma@canonical.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Tue, 16 Jun 2020 07:24:41 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529AAC08C5C2;
+        Tue, 16 Jun 2020 04:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dx/XDzmerQqHyMbNLBn+Q6s8VjrBl9v+6BnDFssdgrQ=; b=tUKMMmlm3EnU2lxXAKbz3w9Qbs
+        59yhwU6FOtCCroQoFjW2uNXAffoPEwewaugQRiFECn4Go7fy5R9RyPsgm008fHygRH/vFPTiCnWM2
+        g06WevqHZ5+lFlV6Uk3TyBPWkeEV1JJ5r8rh4L+K4f0d+jB2gk6+L0eKldWP0tx+Ql8B8kSerMRkT
+        qRTVHZ4xX2bVgF8m4F1mJ3VJOWV1KTZZGi1FrazYSZx0V2UkQPDpGcC3lohSD3ltpDcx0VebstcP2
+        Iz2Xx4sbeKvL0k2aimmLl0hEo112ZaNqWPH5w3lnpS+q+CUvxoFLPTQMpMGTnBrIspklKjAQx7j2S
+        Y6fh647g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jl9hS-0008PC-8L; Tue, 16 Jun 2020 11:24:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8721306089;
+        Tue, 16 Jun 2020 13:24:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 993442BECAD2D; Tue, 16 Jun 2020 13:24:15 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 13:24:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dexuan Cui <decui@microsoft.com>, vkuznets <vkuznets@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Ju-Hyoung Lee <juhlee@microsoft.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: hv_hypercall_pg page permissios
+Message-ID: <20200616112415.GT2531@hirez.programming.kicks-ass.net>
+References: <HK0P153MB0322EB3EE51073CC021D4AEABF9C0@HK0P153MB0322.APCP153.PROD.OUTLOOK.COM>
+ <20200616072318.GA17600@lst.de>
+ <20200616101807.GO2531@hirez.programming.kicks-ass.net>
+ <20200616102350.GA29684@lst.de>
+ <20200616102412.GB29684@lst.de>
+ <20200616103137.GQ2531@hirez.programming.kicks-ass.net>
+ <20200616103313.GA30833@lst.de>
+ <20200616104032.GR2531@hirez.programming.kicks-ass.net>
+ <20200616104230.GA31314@lst.de>
+ <20200616105200.GA32175@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616105200.GA32175@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 16, 2020 at 12:52:00PM +0200, Christoph Hellwig wrote:
 
+> I think something like this should solve the issue:
+> 
+> --
+> diff --git a/arch/x86/include/asm/module.h b/arch/x86/include/asm/module.h
+> index e988bac0a4a1c3..716e4de44a8e78 100644
+> --- a/arch/x86/include/asm/module.h
+> +++ b/arch/x86/include/asm/module.h
+> @@ -13,4 +13,6 @@ struct mod_arch_specific {
+>  #endif
+>  };
+>  
+> +void *module_alloc_prot(unsigned long size, pgprot_t prot);
+> +
+>  #endif /* _ASM_X86_MODULE_H */
+> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+> index 34b153cbd4acb4..4db6e655120960 100644
+> --- a/arch/x86/kernel/module.c
+> +++ b/arch/x86/kernel/module.c
+> @@ -65,8 +65,10 @@ static unsigned long int get_module_load_offset(void)
+>  }
+>  #endif
+>  
+> -void *module_alloc(unsigned long size)
+> +void *module_alloc_prot(unsigned long size, pgprot_t prot)
+>  {
+> +	unsigned int flags = (pgprot_val(prot) & _PAGE_NX) ?
+> +			0 : VM_FLUSH_RESET_PERMS;
+>  	void *p;
+>  
+>  	if (PAGE_ALIGN(size) > MODULES_LEN)
+> @@ -75,7 +77,7 @@ void *module_alloc(unsigned long size)
+>  	p = __vmalloc_node_range(size, MODULE_ALIGN,
+>  				    MODULES_VADDR + get_module_load_offset(),
+>  				    MODULES_END, GFP_KERNEL,
+> -				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> +				    prot, flags, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  	if (p && (kasan_module_alloc(p, size) < 0)) {
+>  		vfree(p);
 
-> On Jun 16, 2020, at 18:05, Aaron Ma <aaron.ma@canonical.com> wrote:
-> 
-> After commit "e1000e: disable s0ix entry and exit flows for ME systems",
-> some ThinkPads always failed to disable ulp by ME.
-> commit "e1000e: Warn if disabling ULP failed" break out of init phy:
-> 
-> error log:
-> [   42.364753] e1000e 0000:00:1f.6 enp0s31f6: Failed to disable ULP
-> [   42.524626] e1000e 0000:00:1f.6 enp0s31f6: PHY Wakeup cause - Unicast Packet
-> [   42.822476] e1000e 0000:00:1f.6 enp0s31f6: Hardware Error
-> 
-> When disable s0ix, E1000_FWSM_ULP_CFG_DONE will never be 1.
-> If continue to init phy like before, it can work as before.
-> iperf test result good too.
-> 
-> Chnage e_warn to e_dbg, in case it confuses.
-> 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
-> drivers/net/ethernet/intel/e1000e/ich8lan.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-> index f999cca37a8a..63405819eb83 100644
-> --- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-> +++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-> @@ -302,8 +302,7 @@ static s32 e1000_init_phy_workarounds_pchlan(struct e1000_hw *hw)
-> 	hw->dev_spec.ich8lan.ulp_state = e1000_ulp_state_unknown;
-> 	ret_val = e1000_disable_ulp_lpt_lp(hw, true);
+Hurmm.. Yes it would. It just doesn't feel right though. Can't we
+unconditionally set the flag? At worst it makes free a little bit more
+expensive.
 
-If si0x entry isn't enabled, maybe skip calling e1000_disable_ulp_lpt_lp() altogether?
-We can use e1000e_check_me() to check that.
-
-> 	if (ret_val) {
-> -		e_warn("Failed to disable ULP\n");
-> -		goto out;
-> +		e_dbg("Failed to disable ULP\n");
-> 	}
-
-The change of "e1000e: Warn if disabling ULP failed" is intentional to catch bugs like this.
-
-Kai-Heng
-
-> 
-> 	ret_val = hw->phy.ops.acquire(hw);
-> -- 
-> 2.26.2
-> 
-
+The thing is, I don't think _NX is the only prot that needs restoring.
+Any prot other than the default (RW IIRC) needs restoring.
