@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793A41FB8C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA321FB7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732953AbgFPPyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        id S1730711AbgFPPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732945AbgFPPyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:08 -0400
+        id S1731039AbgFPPrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52A7D208D5;
-        Tue, 16 Jun 2020 15:54:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD1262071A;
+        Tue, 16 Jun 2020 15:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322848;
-        bh=CrzTrc5c9xnViH8P/PW4MxiFG+LWf+qeo9pyDB6PFo0=;
+        s=default; t=1592322466;
+        bh=Ktbx907Vc7Cf/keYgCLNc5qvxloSh/qfQ0N/wziWuKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V9/70D/1Mo8Kh7roos1OlkpFN5TDNvnT/2O23MULA6dCNy/vXcbfQCmAX1KMor1IP
-         Qo7WbrDvVbOKbuTethWg19NcbrCDxTXjxg+HGwch4iNsD6GzREUkxCvSoGnYMR1AYS
-         EdgdR7HGLeb910JInd1wp6Y4wEmqbbQrWWkVtPV0=
+        b=R78RFotTmBeUDXQGo35zvMe+rQ7wNcv0rGCwEcJgoKkAgLfgcpI9DPW/jn7SOFd+V
+         j+0jHz5LQ8RGMvL2wKNnaYXdNdTmKNWgi/jtuomRLPYsCRbSb83YJzAWVYv9puWMR/
+         f1Iru5/GyelK9+kAmD9AiVvXxgr5sQ3wnaKo+hxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 126/161] KVM: nSVM: fix condition for filtering async PF
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+d403396d4df67ad0bd5f@syzkaller.appspotmail.com
+Subject: [PATCH 5.7 142/163] ath9x: Fix stack-out-of-bounds Write in ath9k_hif_usb_rx_cb
 Date:   Tue, 16 Jun 2020 17:35:16 +0200
-Message-Id: <20200616153112.364158492@linuxfoundation.org>
+Message-Id: <20200616153113.611049655@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit a3535be731c2a343912578465021f50937f7b099 upstream.
+commit 19d6c375d671ce9949a864fb9a03e19f5487b4d3 upstream.
 
-Async page faults have to be trapped in the host (L1 in this case),
-since the APF reason was passed from L0 to L1 and stored in the L1 APF
-data page.  This was completely reversed: the page faults were passed
-to the guest, a L2 hypervisor.
+Add barrier to accessing the stack array skb_pool.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+The case reported by syzbot:
+https://lore.kernel.org/linux-usb/0000000000003d7c1505a2168418@google.com
+BUG: KASAN: stack-out-of-bounds in ath9k_hif_usb_rx_stream
+drivers/net/wireless/ath/ath9k/hif_usb.c:626 [inline]
+BUG: KASAN: stack-out-of-bounds in ath9k_hif_usb_rx_cb+0xdf6/0xf70
+drivers/net/wireless/ath/ath9k/hif_usb.c:666
+Write of size 8 at addr ffff8881db309a28 by task swapper/1/0
+
+Call Trace:
+ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:626
+[inline]
+ath9k_hif_usb_rx_cb+0xdf6/0xf70
+drivers/net/wireless/ath/ath9k/hif_usb.c:666
+__usb_hcd_giveback_urb+0x1f2/0x470 drivers/usb/core/hcd.c:1648
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1713
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+
+Reported-and-tested-by: syzbot+d403396d4df67ad0bd5f@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-5-hqjagain@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/svm.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/hif_usb.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -3236,8 +3236,8 @@ static int nested_svm_exit_special(struc
- 			return NESTED_EXIT_HOST;
- 		break;
- 	case SVM_EXIT_EXCP_BASE + PF_VECTOR:
--		/* When we're shadowing, trap PFs, but not async PF */
--		if (!npt_enabled && svm->vcpu.arch.apf.host_apf_reason == 0)
-+		/* Trap async PF even if not shadowing */
-+		if (!npt_enabled || svm->vcpu.arch.apf.host_apf_reason)
- 			return NESTED_EXIT_HOST;
- 		break;
- 	default:
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -612,6 +612,11 @@ static void ath9k_hif_usb_rx_stream(stru
+ 			hif_dev->remain_skb = nskb;
+ 			spin_unlock(&hif_dev->rx_lock);
+ 		} else {
++			if (pool_index == MAX_PKT_NUM_IN_TRANSFER) {
++				dev_err(&hif_dev->udev->dev,
++					"ath9k_htc: over RX MAX_PKT_NUM\n");
++				goto err;
++			}
+ 			nskb = __dev_alloc_skb(pkt_len + 32, GFP_ATOMIC);
+ 			if (!nskb) {
+ 				dev_err(&hif_dev->udev->dev,
 
 
