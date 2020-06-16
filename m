@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678C71FBAA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB48B1FBB2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731805AbgFPQMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33654 "EHLO mail.kernel.org"
+        id S1730640AbgFPQRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731881AbgFPPn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:56 -0400
+        id S1730069AbgFPPjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C65208E4;
-        Tue, 16 Jun 2020 15:43:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A15622145D;
+        Tue, 16 Jun 2020 15:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322236;
-        bh=tm5emzIZe1eyeA5dlv4d4lUnsTh7XE+ZpULMTA+WaiU=;
+        s=default; t=1592321962;
+        bh=9kuZ9Z/CpB400aIu5hJrhqvJUq4xSkrb7iwrXF3uG+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wtZ3SIwF7Awg9OAfMvT0Ah5mFpixE30noSVSAUwsLFwVy+tjGFg8HA42yhr8PsXFm
-         vCL4fuMeZWGmo1ipWaEP2Lz7GaUzQePCpEAWCaj4U3ylidLyvJgaT+ZAZwxqwSeWjX
-         g6jT6ian/KtRmEPe+48keHT7yhwKvBo2BlUhXrnk=
+        b=RIwBwyNxQRp1hZszUwlGmbZJe3aJK5IUI3jPk4XdHLBR1gPT/07d2dOhadMTOhBq8
+         J4T4nSgagRzNo0NoS5NeFbJ0o8e6trVrbECuw2/wo9ucTkzCGiAzrRrefubn1mfYVQ
+         Vro+bKKavn1FFltlj+B4GbPOnNRtBp6ciaVce4h4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Dobias <dobias@2n.cz>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 052/163] ASoC: max9867: fix volume controls
+        stable@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 042/134] x86/speculation: PR_SPEC_FORCE_DISABLE enforcement for indirect branches.
 Date:   Tue, 16 Jun 2020 17:33:46 +0200
-Message-Id: <20200616153109.340396353@linuxfoundation.org>
+Message-Id: <20200616153102.810413161@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Dobias <dobias@2n.cz>
+From: Anthony Steinhauser <asteinhauser@google.com>
 
-commit 8ba4dc3cff8cbe2c571063a5fd7116e8bde563ca upstream.
+commit 4d8df8cbb9156b0a0ab3f802b80cb5db57acc0bf upstream.
 
-The xmax values for Master Playback Volume and Mic Boost
-Capture Volume are specified incorrectly (one greater)
-which results in the wrong dB gain being shown to the user
-in the case of Master Playback Volume.
+Currently, it is possible to enable indirect branch speculation even after
+it was force-disabled using the PR_SPEC_FORCE_DISABLE option. Moreover, the
+PR_GET_SPECULATION_CTRL command gives afterwards an incorrect result
+(force-disabled when it is in fact enabled). This also is inconsistent
+vs. STIBP and the documention which cleary states that
+PR_SPEC_FORCE_DISABLE cannot be undone.
 
-Signed-off-by: Pavel Dobias <dobias@2n.cz>
+Fix this by actually enforcing force-disabled indirect branch
+speculation. PR_SPEC_ENABLE called after PR_SPEC_FORCE_DISABLE now fails
+with -EPERM as described in the documentation.
+
+Fixes: 9137bb27e60e ("x86/speculation: Add prctl() control for indirect branch speculation")
+Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200515120757.24669-1-dobias@2n.cz
-Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/max9867.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/bugs.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -46,13 +46,13 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_R
- 
- static const struct snd_kcontrol_new max9867_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("Master Playback Volume", MAX9867_LEFTVOL,
--			MAX9867_RIGHTVOL, 0, 41, 1, max9867_master_tlv),
-+			MAX9867_RIGHTVOL, 0, 40, 1, max9867_master_tlv),
- 	SOC_DOUBLE_R_TLV("Line Capture Volume", MAX9867_LEFTLINELVL,
- 			MAX9867_RIGHTLINELVL, 0, 15, 1, max9867_line_tlv),
- 	SOC_DOUBLE_R_TLV("Mic Capture Volume", MAX9867_LEFTMICGAIN,
- 			MAX9867_RIGHTMICGAIN, 0, 20, 1, max9867_mic_tlv),
- 	SOC_DOUBLE_R_TLV("Mic Boost Capture Volume", MAX9867_LEFTMICGAIN,
--			MAX9867_RIGHTMICGAIN, 5, 4, 0, max9867_micboost_tlv),
-+			MAX9867_RIGHTMICGAIN, 5, 3, 0, max9867_micboost_tlv),
- 	SOC_SINGLE("Digital Sidetone Volume", MAX9867_SIDETONE, 0, 31, 1),
- 	SOC_SINGLE_TLV("Digital Playback Volume", MAX9867_DACLEVEL, 0, 15, 1,
- 			max9867_dac_tlv),
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1261,11 +1261,14 @@ static int ib_prctl_set(struct task_stru
+ 			return 0;
+ 		/*
+ 		 * Indirect branch speculation is always disabled in strict
+-		 * mode.
++		 * mode. It can neither be enabled if it was force-disabled
++		 * by a  previous prctl call.
++
+ 		 */
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
 
 
