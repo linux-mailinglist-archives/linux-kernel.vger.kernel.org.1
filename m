@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A2C1FB971
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745091FBAAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732928AbgFPQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S1730752AbgFPQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731719AbgFPPt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:56 -0400
+        id S1731828AbgFPPni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:43:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06C0221473;
-        Tue, 16 Jun 2020 15:49:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD3B7208D5;
+        Tue, 16 Jun 2020 15:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322596;
-        bh=RnGfq6XicmATSrcxTW6KBYrhcOmlfHfLCVHxBNwjR68=;
+        s=default; t=1592322218;
+        bh=nuyPltg19qoaXdjqgPcOi6VSiHkbYcLdjaks4P/9Jog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vja6/PMUGukflHuEkHf6a/iujaU3zD2WfU7Q9DCZcjjDnL5wG7iK6NFrn85tR10P8
-         8ZE3KygC0SwBEyx85+gpjVTN4kCYCk1trwEGuc3aEZmT8MuDsnqJfSMDQiNgqvUbxJ
-         CD43HWu231B4/zD+6vdMN919PFwYR3e9twqscvOs=
+        b=Hi2xCFpBKor3JJJLUdnMC2UmmQUVezPSrn5KasSffr9OGZ/U6yF388ir+86/7Ppjd
+         0kmjHhSy2bSZZPsA0mZGe9jU7QS1qdNzkUbwb9EJzhtyNa6JHkiXJcPDVQyL6QqFcI
+         gtvabtGDJO1ywLPHNHsIAysPD29G3Q2bn6PsZbk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 029/161] powerpc/xive: Clear the page tables for the ESB IO mapping
-Date:   Tue, 16 Jun 2020 17:33:39 +0200
-Message-Id: <20200616153107.790285704@linuxfoundation.org>
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH 5.7 046/163] KVM: VMX: enable X86_FEATURE_WAITPKG in KVM capabilities
+Date:   Tue, 16 Jun 2020 17:33:40 +0200
+Message-Id: <20200616153109.065725641@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,71 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Maxim Levitsky <mlevitsk@redhat.com>
 
-[ Upstream commit a101950fcb78b0ba20cd487be6627dea58d55c2b ]
+commit 0abcc8f65cc23b65bc8d1614cc64b02b1641ed7c upstream.
 
-Commit 1ca3dec2b2df ("powerpc/xive: Prevent page fault issues in the
-machine crash handler") fixed an issue in the FW assisted dump of
-machines using hash MMU and the XIVE interrupt mode under the POWER
-hypervisor. It forced the mapping of the ESB page of interrupts being
-mapped in the Linux IRQ number space to make sure the 'crash kexec'
-sequence worked during such an event. But it didn't handle the
-un-mapping.
+Even though we might not allow the guest to use WAITPKG's new
+instructions, we should tell KVM that the feature is supported by the
+host CPU.
 
-This mapping is now blocking the removal of a passthrough IO adapter
-under the POWER hypervisor because it expects the guest OS to have
-cleared all page table entries related to the adapter. If some are
-still present, the RTAS call which isolates the PCI slot returns error
-9001 "valid outstanding translations".
+Note that vmx_waitpkg_supported checks that WAITPKG _can_ be set in
+secondary execution controls as specified by VMX capability MSR, rather
+that we actually enable it for a guest.
 
-Remove these mapping in the IRQ data cleanup routine.
+Cc: stable@vger.kernel.org
+Fixes: e69e72faa3a0 ("KVM: x86: Add support for user wait instructions")
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Message-Id: <20200523161455.3940-2-mlevitsk@redhat.com>
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Under KVM, this cleanup is not required because the ESB pages for the
-adapter interrupts are un-mapped from the guest by the hypervisor in
-the KVM XIVE native device. This is now redundant but it's harmless.
-
-Fixes: 1ca3dec2b2df ("powerpc/xive: Prevent page fault issues in the machine crash handler")
-Cc: stable@vger.kernel.org # v5.5+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200429075122.1216388-2-clg@kaod.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/xive/common.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/kvm/vmx/vmx.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/powerpc/sysdev/xive/common.c b/arch/powerpc/sysdev/xive/common.c
-index fe8d396e2301..16df9cc8f360 100644
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/msi.h>
-+#include <linux/vmalloc.h>
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7138,6 +7138,9 @@ static __init void vmx_set_cpu_caps(void
+ 	/* CPUID 0x80000001 */
+ 	if (!cpu_has_vmx_rdtscp())
+ 		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
++
++	if (vmx_waitpkg_supported())
++		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
+ }
  
- #include <asm/prom.h>
- #include <asm/io.h>
-@@ -1013,12 +1014,16 @@ EXPORT_SYMBOL_GPL(is_xive_irq);
- void xive_cleanup_irq_data(struct xive_irq_data *xd)
- {
- 	if (xd->eoi_mmio) {
-+		unmap_kernel_range((unsigned long)xd->eoi_mmio,
-+				   1u << xd->esb_shift);
- 		iounmap(xd->eoi_mmio);
- 		if (xd->eoi_mmio == xd->trig_mmio)
- 			xd->trig_mmio = NULL;
- 		xd->eoi_mmio = NULL;
- 	}
- 	if (xd->trig_mmio) {
-+		unmap_kernel_range((unsigned long)xd->trig_mmio,
-+				   1u << xd->esb_shift);
- 		iounmap(xd->trig_mmio);
- 		xd->trig_mmio = NULL;
- 	}
--- 
-2.25.1
-
+ static void vmx_request_immediate_exit(struct kvm_vcpu *vcpu)
 
 
