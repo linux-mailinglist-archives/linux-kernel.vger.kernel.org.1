@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD7D1FB91B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A5D1FBA18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732625AbgFPQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:01:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
+        id S1732141AbgFPPp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732756AbgFPPwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:11 -0400
+        id S1732128AbgFPPpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D51EA21532;
-        Tue, 16 Jun 2020 15:52:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33F1C21473;
+        Tue, 16 Jun 2020 15:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322730;
-        bh=QIcS73uwgRHW6LMWNWdiRKdRJrtAF/id/hyM7AUDHKc=;
+        s=default; t=1592322352;
+        bh=hGX29h/XEmSvwgUH6YsyVe/7+5yKRFxO/MI5vqy7xRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0xxvKTobU7FVyAxZ6MnYZU63aWYEtNynGufKWi54CGprHgfQqIsbhfjVgqMuPoRT
-         YFAha6uNq1rKVnJ3ZFs457BRCowM1cLZSTstyLvERJ8tWhsrq3d0oGxfaMge/iyQaV
-         phBDEBszhtOuDFqSBrEW80l1DjrxocHxOVA6MUWI=
+        b=WF0sy2QEztuv1XK0GXLXdOBKjkhBJ49E5n40xXkcel8LohmhMg8fbt00Q6HOLtcFh
+         n+7v1krBiIDSXhlSMpNpU3zbYHdf5eEavLmvQ5WNdPLJbJXEgDSpk73CFHHBdMAfxL
+         t/OSsPOFbQlB/1ls4bKnYKUy5Pm1gJd0nPSuilvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Rodgman <dave.rodgman@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>, Willy Tarreau <w@1wt.eu>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        "Markus F.X.J. Oberhumer" <markus@oberhumer.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, Chao Yu <yuchao0@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 082/161] lib/lzo: fix ambiguous encoding bug in lzo-rle
-Date:   Tue, 16 Jun 2020 17:34:32 +0200
-Message-Id: <20200616153110.284300762@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 099/163] dccp: Fix possible memleak in dccp_init and dccp_fini
+Date:   Tue, 16 Jun 2020 17:34:33 +0200
+Message-Id: <20200616153111.567487534@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,97 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Rodgman <dave.rodgman@arm.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit b5265c813ce4efbfa2e46fd27cdf9a7f44a35d2e upstream.
+[ Upstream commit c96b6acc8f89a4a7f6258dfe1d077654c11415be ]
 
-In some rare cases, for input data over 32 KB, lzo-rle could encode two
-different inputs to the same compressed representation, so that
-decompression is then ambiguous (i.e.  data may be corrupted - although
-zram is not affected because it operates over 4 KB pages).
+There are some memory leaks in dccp_init() and dccp_fini().
 
-This modifies the compressor without changing the decompressor or the
-bitstream format, such that:
+In dccp_fini() and the error handling path in dccp_init(), free lhash2
+is missing. Add inet_hashinfo2_free_mod() to do it.
 
- - there is no change to how data produced by the old compressor is
-   decompressed
+If inet_hashinfo2_init_mod() failed in dccp_init(),
+percpu_counter_destroy() should be called to destroy dccp_orphan_count.
+It need to goto out_free_percpu when inet_hashinfo2_init_mod() failed.
 
- - an old decompressor will correctly decode data from the updated
-   compressor
-
- - performance and compression ratio are not affected
-
- - we avoid introducing a new bitstream format
-
-In testing over 12.8M real-world files totalling 903 GB, three files
-were affected by this bug.  I also constructed 37M semi-random 64 KB
-files totalling 2.27 TB, and saw no affected files.  Finally I tested
-over files constructed to contain each of the ~1024 possible bad input
-sequences; for all of these cases, updated lzo-rle worked correctly.
-
-There is no significant impact to performance or compression ratio.
-
-Signed-off-by: Dave Rodgman <dave.rodgman@arm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Dave Rodgman <dave.rodgman@arm.com>
-Cc: Willy Tarreau <w@1wt.eu>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc: Markus F.X.J. Oberhumer <markus@oberhumer.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Nitin Gupta <ngupta@vflare.org>
-Cc: Chao Yu <yuchao0@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200507100203.29785-1-dave.rodgman@arm.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: c92c81df93df ("net: dccp: fix kernel crash on module load")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- Documentation/lzo.txt    |    8 ++++++--
- lib/lzo/lzo1x_compress.c |   13 +++++++++++++
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ include/net/inet_hashtables.h |    6 ++++++
+ net/dccp/proto.c              |    7 +++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
---- a/Documentation/lzo.txt
-+++ b/Documentation/lzo.txt
-@@ -159,11 +159,15 @@ Byte sequences
-            distance = 16384 + (H << 14) + D
-            state = S (copy S literals after this block)
-            End of stream is reached if distance == 16384
-+           In version 1 only, to prevent ambiguity with the RLE case when
-+           ((distance & 0x803f) == 0x803f) && (261 <= length <= 264), the
-+           compressor must not emit block copies where distance and length
-+           meet these conditions.
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -185,6 +185,12 @@ static inline spinlock_t *inet_ehash_loc
  
-         In version 1 only, this instruction is also used to encode a run of
--        zeros if distance = 0xbfff, i.e. H = 1 and the D bits are all 1.
-+           zeros if distance = 0xbfff, i.e. H = 1 and the D bits are all 1.
-            In this case, it is followed by a fourth byte, X.
--           run length = ((X << 3) | (0 0 0 0 0 L L L)) + 4.
-+           run length = ((X << 3) | (0 0 0 0 0 L L L)) + 4
+ int inet_ehash_locks_alloc(struct inet_hashinfo *hashinfo);
  
-       0 0 1 L L L L L  (32..63)
-            Copy of small block within 16kB distance (preferably less than 34B)
---- a/lib/lzo/lzo1x_compress.c
-+++ b/lib/lzo/lzo1x_compress.c
-@@ -268,6 +268,19 @@ m_len_done:
- 				*op++ = (M4_MARKER | ((m_off >> 11) & 8)
- 						| (m_len - 2));
- 			else {
-+				if (unlikely(((m_off & 0x403f) == 0x403f)
-+						&& (m_len >= 261)
-+						&& (m_len <= 264))
-+						&& likely(bitstream_version)) {
-+					// Under lzo-rle, block copies
-+					// for 261 <= length <= 264 and
-+					// (distance & 0x80f3) == 0x80f3
-+					// can result in ambiguous
-+					// output. Adjust length
-+					// to 260 to prevent ambiguity.
-+					ip -= m_len - 260;
-+					m_len = 260;
-+				}
- 				m_len -= M4_MAX_LEN;
- 				*op++ = (M4_MARKER | ((m_off >> 11) & 8));
- 				while (unlikely(m_len > 255)) {
++static inline void inet_hashinfo2_free_mod(struct inet_hashinfo *h)
++{
++	kfree(h->lhash2);
++	h->lhash2 = NULL;
++}
++
+ static inline void inet_ehash_locks_free(struct inet_hashinfo *hashinfo)
+ {
+ 	kvfree(hashinfo->ehash_locks);
+--- a/net/dccp/proto.c
++++ b/net/dccp/proto.c
+@@ -1139,14 +1139,14 @@ static int __init dccp_init(void)
+ 	inet_hashinfo_init(&dccp_hashinfo);
+ 	rc = inet_hashinfo2_init_mod(&dccp_hashinfo);
+ 	if (rc)
+-		goto out_fail;
++		goto out_free_percpu;
+ 	rc = -ENOBUFS;
+ 	dccp_hashinfo.bind_bucket_cachep =
+ 		kmem_cache_create("dccp_bind_bucket",
+ 				  sizeof(struct inet_bind_bucket), 0,
+ 				  SLAB_HWCACHE_ALIGN, NULL);
+ 	if (!dccp_hashinfo.bind_bucket_cachep)
+-		goto out_free_percpu;
++		goto out_free_hashinfo2;
+ 
+ 	/*
+ 	 * Size and allocate the main established and bind bucket
+@@ -1242,6 +1242,8 @@ out_free_dccp_ehash:
+ 	free_pages((unsigned long)dccp_hashinfo.ehash, ehash_order);
+ out_free_bind_bucket_cachep:
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
++out_free_hashinfo2:
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ out_free_percpu:
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ out_fail:
+@@ -1265,6 +1267,7 @@ static void __exit dccp_fini(void)
+ 	kmem_cache_destroy(dccp_hashinfo.bind_bucket_cachep);
+ 	dccp_ackvec_exit();
+ 	dccp_sysctl_exit();
++	inet_hashinfo2_free_mod(&dccp_hashinfo);
+ 	percpu_counter_destroy(&dccp_orphan_count);
+ }
+ 
 
 
