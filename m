@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EA91FBB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E03B1FBA33
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732551AbgFPQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51580 "EHLO mail.kernel.org"
+        id S1732076AbgFPPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730778AbgFPPir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:47 -0400
+        id S1732014AbgFPPpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:45:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E09092145D;
-        Tue, 16 Jun 2020 15:38:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C011E214F1;
+        Tue, 16 Jun 2020 15:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321927;
-        bh=wvUPej3zM+ZC3yYLDBwGVQF0xVeG3yGO+0KB/2ilLpM=;
+        s=default; t=1592322311;
+        bh=xxVKiJYiKQHPVlsvJqfb6i1u1RbCOP2tXDKq74uJItw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DUqcnjATBjr1NfAzhj/6aNCPJA5CZmzoIobNmVUConc1syOjR0q1Ar5hhZ/U+QPAZ
-         YfykSQlgyhuC8k0X+gBPMtYJrN0JXUtMIl9IVmS3vcDPIO8NW6+eRkz80zrmxM0j5s
-         4+z6xreoPufvjsjN4F5rr9XwsjhDXNMt8VLN0eyE=
+        b=r9WzVN5TIumNQgMb7UB8bMc6Nbu+IMuP2HFRxCGbGuezMza8c2ynKm1Y51oNgZJ3u
+         tchM+q/hIa/IPmgAGEeQmQFfiDWVw9cxwokkTdGOGNjqNaMYXe1k8aZ3FPFBZgmSg0
+         Pc6wJmKG23ybApRkh29ZqcdjlNK0Cknbyy9dhe20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baruch Siach <baruch@tkos.co.il>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 069/134] spi: dw: Fix controller unregister order
-Date:   Tue, 16 Jun 2020 17:34:13 +0200
-Message-Id: <20200616153104.081888338@linuxfoundation.org>
+Subject: [PATCH 5.7 082/163] spi: pxa2xx: Fix controller unregister order
+Date:   Tue, 16 Jun 2020 17:34:16 +0200
+Message-Id: <20200616153110.775633502@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,14 +47,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit ca8b19d61e3fce5d2d7790cde27a0b57bcb3f341 upstream.
+commit 32e5b57232c0411e7dea96625c415510430ac079 upstream.
 
-The Designware SPI driver uses devm_spi_register_controller() on bind.
+The PXA2xx SPI driver uses devm_spi_register_controller() on bind.
 As a consequence, on unbind, __device_release_driver() first invokes
-dw_spi_remove_host() before unregistering the SPI controller via
+pxa2xx_spi_remove() before unregistering the SPI controller via
 devres_release_all().
 
-This order is incorrect:  dw_spi_remove_host() shuts down the chip,
+This order is incorrect:  pxa2xx_spi_remove() disables the chip,
 rendering the SPI bus inaccessible even though the SPI controller is
 still registered.  When the SPI controller is subsequently unregistered,
 it unbinds all its slave devices.  Because their drivers cannot access
@@ -68,42 +68,49 @@ unregistering the controller and specifically after unbinding of slaves.
 Fix by reverting to the non-devm variant of spi_register_controller().
 
 An alternative approach would be to use device-managed functions for all
-steps in dw_spi_remove_host(), e.g. by calling devm_add_action_or_reset()
+steps in pxa2xx_spi_remove(), e.g. by calling devm_add_action_or_reset()
 on probe.  However that approach would add more LoC to the driver and
 it wouldn't lend itself as well to backporting to stable.
 
-Fixes: 04f421e7b0b1 ("spi: dw: use managed resources")
+The improper use of devm_spi_register_controller() was introduced in 2013
+by commit a807fcd090d6 ("spi: pxa2xx: use devm_spi_register_master()"),
+but all earlier versions of the driver going back to 2006 were likewise
+broken because they invoked spi_unregister_master() at the end of
+pxa2xx_spi_remove(), rather than at the beginning.
+
+Fixes: e0c9905e87ac ("[PATCH] SPI: add PXA2xx SSP SPI Driver")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v3.14+
-Cc: Baruch Siach <baruch@tkos.co.il>
-Link: https://lore.kernel.org/r/3fff8cb8ae44a9893840d0688be15bb88c090a14.1590408496.git.lukas@wunner.de
+Cc: stable@vger.kernel.org # v2.6.17+
+Cc: Tsuchiya Yuto <kitakar@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206403#c1
+Link: https://lore.kernel.org/r/834c446b1cf3284d2660f1bee1ebe3e737cd02a9.1590408496.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-dw.c |    4 +++-
+ drivers/spi/spi-pxa2xx.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -532,7 +532,7 @@ int dw_spi_add_host(struct device *dev,
- 		}
- 	}
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1884,7 +1884,7 @@ static int pxa2xx_spi_probe(struct platf
  
--	ret = devm_spi_register_controller(dev, master);
-+	ret = spi_register_controller(master);
- 	if (ret) {
- 		dev_err(&master->dev, "problem registering spi master\n");
- 		goto err_dma_exit;
-@@ -556,6 +556,8 @@ void dw_spi_remove_host(struct dw_spi *d
- {
- 	dw_spi_debugfs_remove(dws);
+ 	/* Register with the SPI framework */
+ 	platform_set_drvdata(pdev, drv_data);
+-	status = devm_spi_register_controller(&pdev->dev, controller);
++	status = spi_register_controller(controller);
+ 	if (status != 0) {
+ 		dev_err(&pdev->dev, "problem registering spi controller\n");
+ 		goto out_error_pm_runtime_enabled;
+@@ -1916,6 +1916,8 @@ static int pxa2xx_spi_remove(struct plat
  
-+	spi_unregister_controller(dws->master);
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
++	spi_unregister_controller(drv_data->controller);
 +
- 	if (dws->dma_ops && dws->dma_ops->dma_exit)
- 		dws->dma_ops->dma_exit(dws);
- 
+ 	/* Disable the SSP at the peripheral and SOC level */
+ 	pxa2xx_spi_write(drv_data, SSCR0, 0);
+ 	clk_disable_unprepare(ssp->clk);
 
 
