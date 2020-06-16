@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DE31FA81B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 07:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD0C1FA827
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 07:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgFPFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 01:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S1726906AbgFPFXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 01:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgFPFMV (ORCPT
+        with ESMTP id S1726161AbgFPFXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 01:12:21 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF4C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 22:12:21 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y5so20490786iob.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 22:12:21 -0700 (PDT)
+        Tue, 16 Jun 2020 01:23:24 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267CBC05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 22:23:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id v11so704390pgb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 22:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=sF7E9M9M9C8VAOujo4g/NOIFcAYsVHIwoR+spYFBtyE=;
-        b=r60eMOPa5JB9902ysCKrNI7ac62L21elL4+EL4uCwjaD4sNq4K2Uj4sAazXNameAaj
-         ID7NonJoToO0gD7lKV7rnDuXQWpgG/ojoNJ25M22j+5SoDKF8nW37UZmqNjzebQuuSI9
-         a4q1wXzmYQi111XLXBOiZFN9WW7Q13nyp6jzU=
+        bh=F8di4l+s/Ly7rCfnAJCSNumrdSsKS4ibEMc0wr155Lw=;
+        b=lM7xYNKXNC3/18xNrWIVK8uekEsB6xz+aF3OvLQ+WQIAjqOxxrV8QNtErcVGyjuFYg
+         g2ekGJtibX1TQHLUZjVom/gQ9oi3PiHmEHLFjd3KY7POCjycjtV/31bAAc+1sdmzT3wg
+         Cx1zS4qoeLjGbtlpMuEJw+mtrkfV25ndvHW68jWZDEuri/PNWiNlS1GwyOUVSu8H+RDY
+         UYtFd2wci0vd0yvpivgutSmG5c70wvCz7AH+y5R5KA6+n/DKwUZ0Qc5blx5dy8Gq7ljM
+         9LF9mi16mdnjqFoTQpRlgZXl+AHQOlwBrEXSMqWB0bmXsUN14uYuObilLRMZRY638bir
+         nDGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sF7E9M9M9C8VAOujo4g/NOIFcAYsVHIwoR+spYFBtyE=;
-        b=FqwbNzL3YHCeHI6kPgVHE9GcPpY/M0tqCuaM2/n7LJzqNS0Ym3l4GMhmyh4YyHASZn
-         9PtaKwTlBHMQGxBQW9byDl8aTQQ0ZEPDNMGxkH28JJHO7FzP8QxVC2z/iIvrINKZYiOi
-         ZULww1dRw+2GVlSpHg9tfxB7afoUtIjWSwhUzF9FtR3yvCeXcbDIJbVFZrtPIejtsaq9
-         8T1AfAtTMhmKqO3iEh0ZE72k4UylhP5O6f6x0ee0eIwBrBR3gTZThEpPPdHe5A4x54jd
-         4qg4a3LokPBmdsRlufIDWM9IcJASVOrt2ZkSvbvyF1oryAv7I55o46MFXZ0FkFJWM3B5
-         5eFw==
-X-Gm-Message-State: AOAM533k/yQNYvj2tQmDw5nhSE1tJ185Op3HTzyhYRdMsmx0fRIPEoI/
-        46CuNJmm98sS8cbtiQYuy0vmgA==
-X-Google-Smtp-Source: ABdhPJyVhQLX2fk4FkYMix9csXU1HQWEE674dB4w2Xqfii5o7Hwo1KMua7Zm/FBZcNGEURfmX7PTdg==
-X-Received: by 2002:a6b:5c01:: with SMTP id z1mr915362ioh.177.1592284340936;
-        Mon, 15 Jun 2020 22:12:20 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id l26sm9347068ild.59.2020.06.15.22.12.20
+        bh=F8di4l+s/Ly7rCfnAJCSNumrdSsKS4ibEMc0wr155Lw=;
+        b=iDN9Se+Gi5NFhaL0rjQDCiX815fzVBc3mAhqn3MBrvSCXve7juVm2hDxdgjWRskn25
+         7jofDFFHf5F/1GfO1WAiB5uLByDEclXJa8trfIEPH9usIS9pLlM0aScbOsy7L7l1pv4B
+         4Lr0mgx9j4bb123EX2IN6jObp5DmkkC0RyPHXftXK35fpU3SbHI4yn/IXXaM/aV72Kdd
+         tZcWJ4WG7t6Osw+n4FfMHvmIrVM8qaVVh5RSlBw+78OHk/nHscPL0EdmUr+HbUu5DXZd
+         M+4ChvJ+TYdPIz9bqgSa/5c9IM4XOU6bu/gtVD4E3Cax46l783MRrmKloDyzJRDizq+c
+         PGKQ==
+X-Gm-Message-State: AOAM533yCCuazeXlbrxE1nnLF6dZnga3IzcokMqJiJfX+/WLwL/7nRLu
+        RRYPh5x9YFvaRLCoezkwuNBf9ovAxlA=
+X-Google-Smtp-Source: ABdhPJy/DgyZOR7OSTrsOc0TGFWHgdklAdqqTv+6cq9ydXh1cUOIgbk3cVS/IZxiJP2tDbUJtD47xg==
+X-Received: by 2002:a05:6a00:843:: with SMTP id q3mr579487pfk.107.1592285003585;
+        Mon, 15 Jun 2020 22:23:23 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id h6sm15684333pfq.214.2020.06.15.22.23.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jun 2020 22:12:20 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 05:12:19 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Jann Horn <jannh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [RFC PATCH] seccomp: Add extensibility mechanism to read
- notifications
-Message-ID: <20200616051218.GA16032@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20200613072609.5919-1-sargun@sargun.me>
- <CAG48ez2ZyYkHhbuwLYehR5fx2_d9yoVg4tBmyqvVqpy-oZ-0cA@mail.gmail.com>
+        Mon, 15 Jun 2020 22:23:23 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 22:23:07 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ASoC: fsl_ssi: Fix bclk calculation for mono channel
+Message-ID: <20200616052304.GA24055@Asurada-Nvidia>
+References: <034eff1435ff6ce300b6c781130cefd9db22ab9a.1592276147.git.shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez2ZyYkHhbuwLYehR5fx2_d9yoVg4tBmyqvVqpy-oZ-0cA@mail.gmail.com>
+In-Reply-To: <034eff1435ff6ce300b6c781130cefd9db22ab9a.1592276147.git.shengjiu.wang@nxp.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 11:36:22AM +0200, Jann Horn wrote:
-> On Sat, Jun 13, 2020 at 9:26 AM Sargun Dhillon <sargun@sargun.me> wrote:
-> > This introduces an extensibility mechanism to receive seccomp
-> > notifications. It uses read(2), as opposed to using an ioctl. The listener
-> > must be first configured to write the notification via the
-> > SECCOMP_IOCTL_NOTIF_CONFIG ioctl with the fields that the user is
-> > interested in.
-> >
-> > This is different than the old SECCOMP_IOCTL_NOTIF_RECV method as it allows
-> > for more flexibility. It allows the user to opt into certain fields, and
-> > not others. This is nice for users who want to opt into some fields like
-> > thread group leader. In the future, this mechanism can be used to expose
-> > file descriptors to users,
+On Tue, Jun 16, 2020 at 10:53:48AM +0800, Shengjiu Wang wrote:
+> For mono channel, SSI will switch to Normal mode.
 > 
-> Please don't touch the caller's file descriptor table from read/write
-> handlers, only from ioctl handlers. A process should always be able to
-> read from files supplied by an untrusted user without having to worry
-> about new entries mysteriously popping up in its fd table.
+> In Normal mode and Network mode, the Word Length Control bits
+> control the word length divider in clock generator, which is
+> different with I2S Master mode (the word length is fixed to
+> 32bit), it should be the value of params_width(hw_params).
 > 
-Acknowledged.
-
-Is something like:
-ioctl(listener, SECCOMP_GET_MEMORY, notification_id);
-
-reasonable in your opinion?
-
-> > such as a representation of the process's
-> > memory. It also has good forwards and backwards compatibility guarantees.
-> > Users with programs compiled against newer headers will work fine on older
-> > kernels as long as they don't opt into any sizes, or optional fields that
-> > are only available on newer kernels.
-> >
-> > The ioctl method relies on an extensible struct[1]. This extensible struct
-> > is slightly misleading[2] as the ioctl number changes when we extend it.
-> > This breaks backwards compatibility with older kernels even if we're not
-> > asking for any fields that we do not need. In order to deal with this, the
-> > ioctl number would need to be dynamic, or the user would need to pass the
-> > size they're expecting, and we would need to implemented "extended syscall"
-> > semantics in ioctl. This potentially causes issue to future work of
-> > kernel-assisted copying for ioctl user buffers.
+> The condition "slots == 2" is not good for I2S Master mode,
+> because for Network mode and Normal mode, the slots can also
+> be 2. Then we need to use (ssi->i2s_net & SSI_SCR_I2S_MODE_MASK)
+> to check if it is I2S Master mode.
 > 
-> I don't see the issue. Can't you replace "switch (cmd)" with "switch
-> (cmd & ~IOCSIZE_MASK)" and then check the size separately?
-It depends:
-1. If we rely purely on definitions in ioctl.h, and the user they've pulled
-   in a newer header file, on an older kernel, it will fail. This is because
-   the size is bigger, and we don't actually know if they're interested in
-   those new values
-2. We can define new seccomp IOCTL versions, and expose these to the user.
-   This has some niceness to it, in that there's a simple backwards compatibiity
-   story. This is a little unorthodox though.
-3. We do something like embed the version / size that someone is interested
-   in in the struct, and the ioctl reads it in order to determine which version
-   of the fields to populate. This is effectively what the read approach does
-   with more steps.
+> So we refine the formula for mono channel, otherwise there
+> will be sound issue for S24_LE.
+> 
+> Fixes: b0a7043d5c2c ("ASoC: fsl_ssi: Caculate bit clock rate using slot number and width")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-There's no reason we can't do #3. Just a complexity tradeoff.
+Reviewed-by: Nicolin Chen <nicoleotsuka@gmail.com>
