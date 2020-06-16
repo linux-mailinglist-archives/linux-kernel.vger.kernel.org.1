@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78AA1FB7AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9171B1FB6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732396AbgFPPsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        id S1731554AbgFPPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732097AbgFPPsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:48:07 -0400
+        id S1731522AbgFPPlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B680D20776;
-        Tue, 16 Jun 2020 15:48:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D84FC20C56;
+        Tue, 16 Jun 2020 15:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322486;
-        bh=FomWAMvBZFJTmk1DReGUtwHCxzmw3Dki2Cp2WZwd6Ks=;
+        s=default; t=1592322108;
+        bh=LWiefAQnaU3ygsFB7gOSKpm+9Fax1oNFwgGN2tI46bI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O/uLkyKeJOrbEswk1gyTZfQ3Cuhui8NneSW6ahu0l86Fn+K7XvQmi2QeiBPryuAVu
-         Ju15qYJDoTZwQ8TBEmvFIVR5Ws5S6G2l3BtD9z7jskDzg++hM60RZfIvjxgCyDHb1f
-         NHFP/W3AtBAacJmXN3driAggBfSFjW/1EHNVMhPc=
+        b=JYVv6sTeaT/iFnEjLN2JPAQctTlm5cImW9eFVS8/s+V9ZP/6NNhJG5k+xKrkLO5dS
+         cef/Tpa9ymaO/pC310+UOX1bB3gv9HqgK/nfiJvNlnOijeqrcQrc76i78Y5ucH3wF0
+         mnIEcCbGaxDsLR1Lh8jXCoiwBN69qduBE5lyAlbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Matthew Riley <mattdr@google.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.7 123/163] EDAC/skx: Use the mcmtr register to retrieve close_pg/bank_xor_enable
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 113/134] ath9k: Fix use-after-free Read in htc_connect_service
 Date:   Tue, 16 Jun 2020 17:34:57 +0200
-Message-Id: <20200616153112.703060986@linuxfoundation.org>
+Message-Id: <20200616153106.203171955@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,125 +44,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 1032095053b34d474aa20f2625d97dd306e0991b upstream.
+commit ced21a4c726bdc60b1680c050a284b08803bc64c upstream.
 
-The skx_edac driver wrongly uses the mtr register to retrieve two fields
-close_pg and bank_xor_enable. Fix it by using the correct mcmtr register
-to get the two fields.
+The skb is consumed by htc_send_epid, so it needn't release again.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Reported-by: Matthew Riley <mattdr@google.com>
-Acked-by: Aristeu Rozanski <aris@redhat.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Link: https://lore.kernel.org/r/20200515210146.1337-1-tony.luck@intel.com
+The case reported by syzbot:
+
+https://lore.kernel.org/linux-usb/000000000000590f6b05a1c05d15@google.com
+usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size:
+51008
+usb 1-1: Service connection timeout for: 256
+==================================================================
+BUG: KASAN: use-after-free in atomic_read
+include/asm-generic/atomic-instrumented.h:26 [inline]
+BUG: KASAN: use-after-free in refcount_read include/linux/refcount.h:134
+[inline]
+BUG: KASAN: use-after-free in skb_unref include/linux/skbuff.h:1042
+[inline]
+BUG: KASAN: use-after-free in kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+Read of size 4 at addr ffff8881d0957994 by task kworker/1:2/83
+
+Call Trace:
+kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+htc_connect_service.cold+0xa9/0x109
+drivers/net/wireless/ath/ath9k/htc_hst.c:282
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Allocated by task 83:
+kmem_cache_alloc_node+0xdc/0x330 mm/slub.c:2814
+__alloc_skb+0xba/0x5a0 net/core/skbuff.c:198
+alloc_skb include/linux/skbuff.h:1081 [inline]
+htc_connect_service+0x2cc/0x840
+drivers/net/wireless/ath/ath9k/htc_hst.c:257
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Freed by task 0:
+kfree_skb+0x102/0x3d0 net/core/skbuff.c:690
+ath9k_htc_txcompletion_cb+0x1f8/0x2b0
+drivers/net/wireless/ath/ath9k/htc_hst.c:356
+hif_usb_regout_cb+0x10b/0x1b0
+drivers/net/wireless/ath/ath9k/hif_usb.c:90
+__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+__do_softirq+0x21e/0x950 kernel/softirq.c:292
+
+Reported-and-tested-by: syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-2-hqjagain@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/edac/i10nm_base.c |    2 +-
- drivers/edac/skx_base.c   |   20 ++++++++------------
- drivers/edac/skx_common.c |    6 +++---
- drivers/edac/skx_common.h |    2 +-
- 4 files changed, 13 insertions(+), 17 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc_hst.c |    3 ---
+ drivers/net/wireless/ath/ath9k/wmi.c     |    1 -
+ 2 files changed, 4 deletions(-)
 
---- a/drivers/edac/i10nm_base.c
-+++ b/drivers/edac/i10nm_base.c
-@@ -161,7 +161,7 @@ static int i10nm_get_dimm_config(struct
- 				 mtr, mcddrtcfg, imc->mc, i, j);
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -170,7 +170,6 @@ static int htc_config_pipe_credits(struc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- 			if (IS_DIMM_PRESENT(mtr))
--				ndimms += skx_get_dimm_info(mtr, 0, dimm,
-+				ndimms += skx_get_dimm_info(mtr, 0, 0, dimm,
- 							    imc, i, j);
- 			else if (IS_NVDIMM_PRESENT(mcddrtcfg, j))
- 				ndimms += skx_get_nvdimm_info(dimm, imc, i, j,
---- a/drivers/edac/skx_base.c
-+++ b/drivers/edac/skx_base.c
-@@ -163,27 +163,23 @@ static const struct x86_cpu_id skx_cpuid
- };
- MODULE_DEVICE_TABLE(x86cpu, skx_cpuids);
+@@ -206,7 +205,6 @@ static int htc_setup_complete(struct htc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
--#define SKX_GET_MTMTR(dev, reg) \
--	pci_read_config_dword((dev), 0x87c, &(reg))
--
--static bool skx_check_ecc(struct pci_dev *pdev)
-+static bool skx_check_ecc(u32 mcmtr)
- {
--	u32 mtmtr;
--
--	SKX_GET_MTMTR(pdev, mtmtr);
--
--	return !!GET_BITFIELD(mtmtr, 2, 2);
-+	return !!GET_BITFIELD(mcmtr, 2, 2);
- }
+@@ -279,7 +277,6 @@ int htc_connect_service(struct htc_targe
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
- static int skx_get_dimm_config(struct mem_ctl_info *mci)
- {
- 	struct skx_pvt *pvt = mci->pvt_info;
-+	u32 mtr, mcmtr, amap, mcddrtcfg;
- 	struct skx_imc *imc = pvt->imc;
--	u32 mtr, amap, mcddrtcfg;
- 	struct dimm_info *dimm;
- 	int i, j;
- 	int ndimms;
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -336,7 +336,6 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum
+ 		ath_dbg(common, WMI, "Timeout waiting for WMI command: %s\n",
+ 			wmi_cmd_to_name(cmd_id));
+ 		mutex_unlock(&wmi->op_mutex);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
  
-+	/* Only the mcmtr on the first channel is effective */
-+	pci_read_config_dword(imc->chan[0].cdev, 0x87c, &mcmtr);
-+
- 	for (i = 0; i < SKX_NUM_CHANNELS; i++) {
- 		ndimms = 0;
- 		pci_read_config_dword(imc->chan[i].cdev, 0x8C, &amap);
-@@ -193,14 +189,14 @@ static int skx_get_dimm_config(struct me
- 			pci_read_config_dword(imc->chan[i].cdev,
- 					      0x80 + 4 * j, &mtr);
- 			if (IS_DIMM_PRESENT(mtr)) {
--				ndimms += skx_get_dimm_info(mtr, amap, dimm, imc, i, j);
-+				ndimms += skx_get_dimm_info(mtr, mcmtr, amap, dimm, imc, i, j);
- 			} else if (IS_NVDIMM_PRESENT(mcddrtcfg, j)) {
- 				ndimms += skx_get_nvdimm_info(dimm, imc, i, j,
- 							      EDAC_MOD_STR);
- 				nvdimm_count++;
- 			}
- 		}
--		if (ndimms && !skx_check_ecc(imc->chan[0].cdev)) {
-+		if (ndimms && !skx_check_ecc(mcmtr)) {
- 			skx_printk(KERN_ERR, "ECC is disabled on imc %d\n", imc->mc);
- 			return -ENODEV;
- 		}
---- a/drivers/edac/skx_common.c
-+++ b/drivers/edac/skx_common.c
-@@ -304,7 +304,7 @@ static int skx_get_dimm_attr(u32 reg, in
- #define numrow(reg)	skx_get_dimm_attr(reg, 2, 4, 12, 1, 6, "rows")
- #define numcol(reg)	skx_get_dimm_attr(reg, 0, 1, 10, 0, 2, "cols")
- 
--int skx_get_dimm_info(u32 mtr, u32 amap, struct dimm_info *dimm,
-+int skx_get_dimm_info(u32 mtr, u32 mcmtr, u32 amap, struct dimm_info *dimm,
- 		      struct skx_imc *imc, int chan, int dimmno)
- {
- 	int  banks = 16, ranks, rows, cols, npages;
-@@ -324,8 +324,8 @@ int skx_get_dimm_info(u32 mtr, u32 amap,
- 		 imc->mc, chan, dimmno, size, npages,
- 		 banks, 1 << ranks, rows, cols);
- 
--	imc->chan[chan].dimms[dimmno].close_pg = GET_BITFIELD(mtr, 0, 0);
--	imc->chan[chan].dimms[dimmno].bank_xor_enable = GET_BITFIELD(mtr, 9, 9);
-+	imc->chan[chan].dimms[dimmno].close_pg = GET_BITFIELD(mcmtr, 0, 0);
-+	imc->chan[chan].dimms[dimmno].bank_xor_enable = GET_BITFIELD(mcmtr, 9, 9);
- 	imc->chan[chan].dimms[dimmno].fine_grain_bank = GET_BITFIELD(amap, 0, 0);
- 	imc->chan[chan].dimms[dimmno].rowbits = rows;
- 	imc->chan[chan].dimms[dimmno].colbits = cols;
---- a/drivers/edac/skx_common.h
-+++ b/drivers/edac/skx_common.h
-@@ -128,7 +128,7 @@ int skx_get_all_bus_mappings(unsigned in
- 
- int skx_get_hi_lo(unsigned int did, int off[], u64 *tolm, u64 *tohm);
- 
--int skx_get_dimm_info(u32 mtr, u32 amap, struct dimm_info *dimm,
-+int skx_get_dimm_info(u32 mtr, u32 mcmtr, u32 amap, struct dimm_info *dimm,
- 		      struct skx_imc *imc, int chan, int dimmno);
- 
- int skx_get_nvdimm_info(struct dimm_info *dimm, struct skx_imc *imc,
 
 
