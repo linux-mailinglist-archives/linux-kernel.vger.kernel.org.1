@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153511FB6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A80E1FB8E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730283AbgFPPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56598 "EHLO mail.kernel.org"
+        id S1732188AbgFPP7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:59:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731386AbgFPPlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:12 -0400
+        id S1731326AbgFPPxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 902AA208D5;
-        Tue, 16 Jun 2020 15:41:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10008208D5;
+        Tue, 16 Jun 2020 15:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322071;
-        bh=xYS3Tx+6c+n0PX+mjHLsEGNYvp72fAS6iv1Z56pfdd0=;
+        s=default; t=1592322828;
+        bh=jPK7r6XngKm+9s3k8RkKbP+GQdmiG3cPPA1jpmH2QwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZM7fyOealrVx2KTC3P0hMJjkdrAPuB2I2+klrGWXfs+Sk0axpYNcORMxqFIpwhDf
-         qfU7LBV66ZUpkz06VgzQ1CQSTJJRTBV11xPVhKZi46vBpVMGb9eBxWl2rQjN717845
-         LwVVYvod7bNcrMKxt5xI+mQJlQn4CR1cpz1WHPqw=
+        b=ReFib/ryGVGrpzGnwdecTVP4vx0ei3P/IUAfywBFw6/QGknwHq8WwtR4HOOgkpjtV
+         sitXxewYR0TM8sqAp/vEZ7+fFZhvOQSjj99Qqpcg3hvbcCyMc57q6tdyuM0kYfd4l8
+         qxdZOXaBH123ZN88yZ/vq2GsiPYVTemaCtg/sUQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ludovic Barre <ludovic.barre@st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 125/134] mmc: mmci_sdmmc: fix DMA API warning overlapping mappings
+        stable@vger.kernel.org, Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 5.6 119/161] remoteproc: Fix and restore the parenting hierarchy for vdev
 Date:   Tue, 16 Jun 2020 17:35:09 +0200
-Message-Id: <20200616153106.774510947@linuxfoundation.org>
+Message-Id: <20200616153112.025804793@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ludovic Barre <ludovic.barre@st.com>
+From: Suman Anna <s-anna@ti.com>
 
-commit fe8d33bd33d527dee3155d2bccd714a655f37334 upstream.
+commit c774ad010873bb89dcc0cdcb1e96aef6664d8caf upstream.
 
-Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
-WARNING: CPU: 1 PID: 20 at kernel/dma/debug.c:500 add_dma_entry+0x16c/0x17c
-DMA-API: exceeded 7 overlapping mappings of cacheline 0x031d2645
-Modules linked in:
-CPU: 1 PID: 20 Comm: kworker/1:1 Not tainted 5.5.0-rc2-00021-gdeda30999c2b-dirty #49
-Hardware name: STM32 (Device Tree Support)
-Workqueue: events_freezable mmc_rescan
-[<c03138c0>] (unwind_backtrace) from [<c030d760>] (show_stack+0x10/0x14)
-[<c030d760>] (show_stack) from [<c0f2eb28>] (dump_stack+0xc0/0xd4)
-[<c0f2eb28>] (dump_stack) from [<c034a14c>] (__warn+0xd0/0xf8)
-[<c034a14c>] (__warn) from [<c034a530>] (warn_slowpath_fmt+0x94/0xb8)
-[<c034a530>] (warn_slowpath_fmt) from [<c03bca0c>] (add_dma_entry+0x16c/0x17c)
-[<c03bca0c>] (add_dma_entry) from [<c03bdf54>] (debug_dma_map_sg+0xe4/0x3d4)
-[<c03bdf54>] (debug_dma_map_sg) from [<c0d09244>] (sdmmc_idma_prep_data+0x94/0xf8)
-[<c0d09244>] (sdmmc_idma_prep_data) from [<c0d05a2c>] (mmci_prep_data+0x2c/0xb0)
-[<c0d05a2c>] (mmci_prep_data) from [<c0d073ec>] (mmci_start_data+0x134/0x2f0)
-[<c0d073ec>] (mmci_start_data) from [<c0d078d0>] (mmci_request+0xe8/0x154)
-[<c0d078d0>] (mmci_request) from [<c0cecb44>] (mmc_start_request+0x94/0xbc)
+The commit 086d08725d34 ("remoteproc: create vdev subdevice with specific
+dma memory pool") has introduced a new vdev subdevice for each vdev
+declared in the firmware resource table and made it as the parent for the
+created virtio rpmsg devices instead of the previous remoteproc device.
+This changed the overall parenting hierarchy for the rpmsg devices, which
+were children of virtio devices, and does not allow the corresponding
+rpmsg drivers to retrieve the parent rproc device through the
+rproc_get_by_child() API.
 
-DMA api debug brings to light leaking dma-mappings, dma_map_sg and
-dma_unmap_sg are not correctly balanced.
+Fix this by restoring the remoteproc device as the parent. The new vdev
+subdevice can continue to inherit the DMA attributes from the remoteproc's
+parent device (actual platform device).
 
-If a request is prepared, the dma_map/unmap are done in asynchronous call
-pre_req (prep_data) and post_req (unprep_data). In this case the
-dma-mapping is right balanced.
-
-But if the request was not prepared, the data->host_cookie is define to
-zero and the dma_map/unmap must be done in the request.  The dma_map is
-called by mmci_dma_start (prep_data), but there is no dma_unmap in this
-case.
-
-This patch adds dma_unmap_sg when the dma is finalized and the data cookie
-is zero (request not prepared).
-
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-Link: https://lore.kernel.org/r/20200526155103.12514-2-ludovic.barre@st.com
-Fixes: 46b723dd867d ("mmc: mmci: add stm32 sdmmc variant")
 Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
+Signed-off-by: Suman Anna <s-anna@ti.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Link: https://lore.kernel.org/r/20200420160600.10467-3-s-anna@ti.com
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/mmci_stm32_sdmmc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/remoteproc/remoteproc_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-+++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -162,6 +162,9 @@ static int sdmmc_idma_start(struct mmci_
- static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
- {
- 	writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-+
-+	if (!data->host_cookie)
-+		sdmmc_idma_unprep_data(host, data, 0);
- }
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -510,7 +510,7 @@ static int rproc_handle_vdev(struct rpro
  
- static void mmci_sdmmc_set_clkreg(struct mmci_host *host, unsigned int desired)
+ 	/* Initialise vdev subdevice */
+ 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+-	rvdev->dev.parent = rproc->dev.parent;
++	rvdev->dev.parent = &rproc->dev;
+ 	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
+ 	rvdev->dev.release = rproc_rvdev_release;
+ 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
 
 
