@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1BE1FBBBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A9B1FBBAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgFPQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:29:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20480 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729167AbgFPQ3c (ORCPT
+        id S1730088AbgFPQ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728919AbgFPQ2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:29:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592324971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=ERS+2jm6G8eP/qULDs3m7N2SVMVdN3wgBEZ1bGF0bCo=;
-        b=GJwhOaQikhXtysH/NS7mbXP9OfTntFuj1SJnUQRfI4GDpXUxFW8wMghEkv/mtyEXMbnkW6
-        XQHY2uBiYm1NgD4YpTjR6giU8bP//agf6gouM9YjV0kggyqLi8RFOSpkSFTJy70jTJzGMK
-        YyQssgs5enAo+J2EPi3v4z6l+6d2K8Y=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-zNuL0vdFNUqbkyb_V-IyEA-1; Tue, 16 Jun 2020 12:29:28 -0400
-X-MC-Unique: zNuL0vdFNUqbkyb_V-IyEA-1
-Received: by mail-qk1-f199.google.com with SMTP id a6so17229786qka.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:29:28 -0700 (PDT)
+        Tue, 16 Jun 2020 12:28:07 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BE5C061573;
+        Tue, 16 Jun 2020 09:28:06 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so4517442lfb.0;
+        Tue, 16 Jun 2020 09:28:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fz7QOfXyJipF4uPMWTiiiIMpfVcAu9truFSnZP6SMHA=;
+        b=O13eBNxCDggJZ36IU7Z5sO+UB7U2zGxNvOjWGmlpFdTP3vv2OOzgh3602YgQe9YuG9
+         zTulN+glqa8njOEtBmMzO5odsDFqh9cuoWMWxyONan4m/9mWMF9GluzxwEPo3pk9EQ+U
+         CdvmjjvzHljrIjk5JA47NztKx2OvSNRSCq8Xutc948dlw/moGy1YsC27mbKmzaqiK9wx
+         VBBoEiMnZ+SZK4Ipbv+j3uyo/HSb5XBSD7ChgwY7dqrl6o0LK0O1EYHz2z0KNczBuS4V
+         VrbXV2PUs0EYvFHBjkrG+9Gfn9LS8P5Tb/Mc6KOMRIs2YGOKuzDgsblQyA/p5NUhwEW1
+         RCxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ERS+2jm6G8eP/qULDs3m7N2SVMVdN3wgBEZ1bGF0bCo=;
-        b=Ht1updz+t5OkFY3Wg7VvZGvBpL25TU4uF1KQZnz+9t61ujY5v7rFVVc6X9OmisJ2qd
-         KPQHcU0Z/5NA3yjVs+0AIs+56qkDxvOm4isOzAxS7qL0XhU/IbPWGluggd8As9ehhmmT
-         74w62XOZTElnRNzm7FN4AdxUPAsfSXqDa0LcVdRAtWmErW3Mll5r34eqKag31IrDsMG3
-         4tLDaVDs8W00NHfO6ZtCcmJ5apXK6mpfLlGqw/8dOrV1dyPCzZr2jDo0WOdd/WfvHKxZ
-         uvqL46usTgTNHV93y/qbgNH/tEecUDPijTvbklg66TSWvVNJoIJHB/2aW7R4VsLdIIQE
-         2DKA==
-X-Gm-Message-State: AOAM533lkGrqzHf7seZHvkbQ+Zlj0LwMXcs+41ZtUhhXXI7doTrL/Mp0
-        Si/bgdchkovYeicoYU+DXnbsmDJEKKjMlZd7YVMbO4HdstTkDpGWVW1DsNyr9yvuky7zlCoUMa9
-        l0BkZe9z6EdQJZ3DWT7DDfPCp
-X-Received: by 2002:a0c:8d46:: with SMTP id s6mr3143588qvb.241.1592324968288;
-        Tue, 16 Jun 2020 09:29:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPiCjs+KhSMorb/vjtXy68V8lc6ZAVuWB3rMp3H4SFEqGWmHFi/pfLbhMXeynTHXZQduXSUA==
-X-Received: by 2002:a0c:8d46:: with SMTP id s6mr3143579qvb.241.1592324968089;
-        Tue, 16 Jun 2020 09:29:28 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s42sm16386942qtk.14.2020.06.16.09.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 09:29:27 -0700 (PDT)
-From:   trix@redhat.com
-To:     hirofumi@mail.parknet.co.jp
-Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] fat: add a check to fat_add_new_entries
-Date:   Tue, 16 Jun 2020 09:29:22 -0700
-Message-Id: <20200616162922.26168-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fz7QOfXyJipF4uPMWTiiiIMpfVcAu9truFSnZP6SMHA=;
+        b=H84s65mhofmmFkb2sj9GAg3oM0UeylREAmJ9NEQuZun6YIFJyEu/pR8vZzVkalqVhG
+         wuSUrU05XUKPCZKqKAZfwY1WxixkqhC6+Ob/hhyayEXe2jGKIboh5xi0ec6Qjk2Nb+kz
+         q30v4SDHiZk91QYJHlCqemyyqpHA5GiePpkDqGkY/cE0uLkQK3Z7cQYKNUA/vzMwppGb
+         m8fPV9e/wjurf3IXMJWCyCjKoildnNkrTty6UzoMbjySmSOduLU5Q7byDQJ2ir/1QbFP
+         8/QhNb5Aku6Ui0T1MJpx0PA3CyymahnT8jlxu1EZdd4PlZYT8Q2vQj+JD0BAr/qhXz8I
+         MZAw==
+X-Gm-Message-State: AOAM5316nZTGSIQPH5FSmxU3/Zinr4wKxYWfpWoR+vOEZHOIjqrIADOp
+        GqQi2mLlh89vpr+SUXifOB+5J0QXHBLriGoHZIM=
+X-Google-Smtp-Source: ABdhPJwysUnpOO/sfxEQHGqcErwxCDyiLkhinlHUlxDfZcgMD8/A+HanYqVR8QKPaDnJOiGMV1AXPMXAC2aGh9FA5/4=
+X-Received: by 2002:ac2:494f:: with SMTP id o15mr1611759lfi.140.1592324885439;
+ Tue, 16 Jun 2020 09:28:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200615154114.13184-1-mayflowerera@gmail.com>
+ <20200615.182343.221546986577273426.davem@davemloft.net> <CAMdQvKvJ7MXihELmPW2LC3PAgXMK2OG6bJjPNJkCgE6eZftDVw@mail.gmail.com>
+In-Reply-To: <CAMdQvKvJ7MXihELmPW2LC3PAgXMK2OG6bJjPNJkCgE6eZftDVw@mail.gmail.com>
+From:   Era Mayflower <mayflowerera@gmail.com>
+Date:   Wed, 17 Jun 2020 01:32:02 +0900
+Message-ID: <CAMdQvKtrzFtg9PwZhyMQ96S48ZLG5gAu3gk8m=k+tFVMHeshXQ@mail.gmail.com>
+Subject: Re: [PATCH] macsec: Support 32bit PN netlink attribute for XPN links
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, Jun 17, 2020 at 10:02 AM Era Mayflower <mayflowerera@gmail.com> wrote:
+>
+> On Tue, Jun 16, 2020 at 1:23 AM David Miller <davem@davemloft.net> wrote:
+> >
+> > From: Era Mayflower <mayflowerera@gmail.com>
+> > Date: Tue, 16 Jun 2020 00:41:14 +0900
+> >
+> > > +     if (tb_sa[MACSEC_SA_ATTR_PN]) {
+> >
+> > validate_add_rxsa() requires that MACSET_SA_ATTR_PN be non-NULL, so
+> > you don't need to add this check here.
+> >
+>
+> validate_add_rxsa() did not originally contain that requirement.
+> It does exist in validate_add_txsa(), which means that providing a PN
+> is necessary only when creating TXSA.
+> When creating an RXSA without providing a PN it will be set to 1
+> (init_rx_sa+15).
+> This is the original behavior which of course can be changed.
+>
+> - Era.
 
-Clang static analysis reports a possible null pointer dereference
-
-fs/fat/dir.c:1255:9: warning: Dereference of undefined pointer value [core.NullDereference]
-        memset(bhs[n]->b_data + copy, 0, sb->s_blocksize - copy);
-               ^~~~~~~~~~~~~~
-
-This is because setting of bhs[n] depends on the inner loop executing.
-
-So add a check that the inner loop will be executed.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- fs/fat/dir.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/fat/dir.c b/fs/fat/dir.c
-index b4ddf48fa444..3eea540486cb 100644
---- a/fs/fat/dir.c
-+++ b/fs/fat/dir.c
-@@ -1228,6 +1228,13 @@ static int fat_add_new_entries(struct inode *dir, void *slots, int nr_slots,
- 	do {
- 		start_blknr = blknr = fat_clus_to_blknr(sbi, cluster[i]);
- 		last_blknr = start_blknr + sbi->sec_per_clus;
-+
-+		/* overflow */
-+		if (unlikely(last_blknr <= start_blknr)) {
-+			err = -ENOMEM;
-+			goto error_nomem;
-+		}
-+
- 		while (blknr < last_blknr) {
- 			bhs[n] = sb_getblk(sb, blknr);
- 			if (!bhs[n]) {
--- 
-2.18.1
-
+Sorry for the time issues, just noticed I sent the previous mail with
+future time.
+Fixed it permanently on my computer.
