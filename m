@@ -2,182 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0929C1FBA16
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F211FBA3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732005AbgFPQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:08:45 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54363 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732166AbgFPQIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:08:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592323719; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=MD92WfPRgR/jkFLJAG2o5YhCjEHFWsLDGTiEaMXk+O4=; b=m7xJtfd6CQazK7aMdgGAyfgDAeg/zKIYR4v4vPKc/QANRL8xvMCSW7qETLU4O2latcdIUlcC
- 2zIjl4H6sm4IFpCkS1SeEmndSpnlJ2LyXgSvjIsz5ooRe3Urz7TWW4G/yYrYLTacpzc9/rAb
- phNejYiJyzdf0QOP6GOioUkZH04=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5ee8ee75bfb34e631cae2c64 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Jun 2020 16:08:21
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D9B68C433AD; Tue, 16 Jun 2020 16:08:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: ilina)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2594BC433CA;
-        Tue, 16 Jun 2020 16:08:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2594BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=ilina@codeaurora.org
-Date:   Tue, 16 Jun 2020 10:08:18 -0600
-From:   Lina Iyer <ilina@codeaurora.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
+        id S1732967AbgFPQJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732839AbgFPQJc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 12:09:32 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1E0C0613EE
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:09:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b201so9737555pfb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Qr6LU5AJyvXIew1juXMAoqiI4cF7kmvmZdA39adClnc=;
+        b=Rkw9rZaVLXXtIQ0m20+mYgJQ4gcuayp8YvWp0pVNnyS2Ud5bvdUdx69IRXMW08dI+y
+         pzV/H7bWfkwsJ9crKNCDPM1q0WUffbNtBokPP+PZDWzzEdUIZWHq9M86Wqe0z1bOibJL
+         0kj7zDc/gs1pT2s4SL4bLi137RE65s/ZSVNpo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Qr6LU5AJyvXIew1juXMAoqiI4cF7kmvmZdA39adClnc=;
+        b=I4H/sc//ZKvrG2obVO9D9PbDcSYrsVWUapTeRh5hqU/Itx1jJF6q7BlMB2/AtOZOBr
+         sYOzQxdaHyIWsmhAQ4d+5eQSxDtaRr6HpfdkKRQYg0t6UJcZJnfo6Gq2gbgb5TR/bezP
+         dBSph09Hd2ZKBBnGY5e9qNBpKPxKylw2Znfu11DeG8U+hOfQxKUA/ylNZFn5T66yZ4DJ
+         G1k6JLqfXxin5lm9O3dYd3hNsV2r/0tCggMNop7R5JMvBYzmN+5dJQbSY2dg/AxHNLB5
+         RnhQuP/uqIu/dvkoQgTKw9QB3UhUbyxGyBE9Zfhr22baAETPuevkTSqlZnStnQyxnnRJ
+         1ATA==
+X-Gm-Message-State: AOAM531AukYqid84b/dPQITRprMPYKx6WNsRSAkvQby2sRrexUYo7ufH
+        I+pfJ0odZEgiBlWBXzmNHPaUYA==
+X-Google-Smtp-Source: ABdhPJw0IGP4wrEgB7iuDlwGXE4MMae76XZ2NoGZ/467ZGcMrf6sY2DenPwGzgjt24xH+kDh+E9WqA==
+X-Received: by 2002:a62:9242:: with SMTP id o63mr2821188pfd.310.1592323771469;
+        Tue, 16 Jun 2020 09:09:31 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id p8sm14999992pgs.29.2020.06.16.09.09.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 09:09:30 -0700 (PDT)
+Subject: Re: [PATCH v9 1/8] fs: introduce kernel_pread_file* support
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [RFC][PATCH 3/5] irqchip: Allow QCOM_PDC to be loadable as a
- perment module
-Message-ID: <20200616160818.GD12942@codeaurora.org>
-References: <20200616061338.109499-1-john.stultz@linaro.org>
- <20200616061338.109499-4-john.stultz@linaro.org>
- <55e5982a-1e73-7013-e02d-5d1d30815fba@codeaurora.org>
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200615194151.7011-1-scott.branden@broadcom.com>
+ <20200615194151.7011-2-scott.branden@broadcom.com>
+ <20200616073423.GC30385@infradead.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <b89a3f0f-51b9-7705-3a23-26196ae7716e@broadcom.com>
+Date:   Tue, 16 Jun 2020 09:09:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <55e5982a-1e73-7013-e02d-5d1d30815fba@codeaurora.org>
+In-Reply-To: <20200616073423.GC30385@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16 2020 at 05:30 -0600, Maulik Shah wrote:
->Hi,
->
->On 6/16/2020 11:43 AM, John Stultz wrote:
->>Allows qcom-pdc driver to be loaded as a permenent module
->
->typo: permanent
->
->>Also, due to the fact that IRQCHIP_DECLARE becomes a no-op when
->>building as a module, we have to add the platform driver hooks
->>explicitly.
->>
->>Thanks to Saravana for his help on pointing out the
->>IRQCHIP_DECLARE issue and guidance on a solution.
->>
->>Cc: Andy Gross <agross@kernel.org>
->>Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->>Cc: Joerg Roedel <joro@8bytes.org>
->>Cc: Thomas Gleixner <tglx@linutronix.de>
->>Cc: Jason Cooper <jason@lakedaemon.net>
->>Cc: Marc Zyngier <maz@kernel.org>
->>Cc: Linus Walleij <linus.walleij@linaro.org>
->>Cc: Lina Iyer <ilina@codeaurora.org>
->>Cc: Saravana Kannan <saravanak@google.com>
->>Cc: Todd Kjos <tkjos@google.com>
->>Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>Cc: linux-arm-msm@vger.kernel.org
->>Cc: iommu@lists.linux-foundation.org
->>Cc: linux-gpio@vger.kernel.org
->>Signed-off-by: John Stultz <john.stultz@linaro.org>
->>---
->>  drivers/irqchip/Kconfig    |  2 +-
->>  drivers/irqchip/qcom-pdc.c | 30 ++++++++++++++++++++++++++++++
->>  2 files changed, 31 insertions(+), 1 deletion(-)
->>
->>diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
->>index 29fead208cad..12765bed08f9 100644
->>--- a/drivers/irqchip/Kconfig
->>+++ b/drivers/irqchip/Kconfig
->>@@ -425,7 +425,7 @@ config GOLDFISH_PIC
->>           for Goldfish based virtual platforms.
->>  config QCOM_PDC
->>-	bool "QCOM PDC"
->>+	tristate "QCOM PDC"
->>  	depends on ARCH_QCOM
->>  	select IRQ_DOMAIN_HIERARCHY
->>  	help
->>diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
->>index 6ae9e1f0819d..98d74160afcd 100644
->>--- a/drivers/irqchip/qcom-pdc.c
->>+++ b/drivers/irqchip/qcom-pdc.c
->>@@ -11,7 +11,9 @@
->>  #include <linux/irqdomain.h>
->>  #include <linux/io.h>
->>  #include <linux/kernel.h>
->>+#include <linux/module.h>
->>  #include <linux/of.h>
->>+#include <linux/of_irq.h>
->please move this include in order after of_device.h
->>  #include <linux/of_address.h>
->>  #include <linux/of_device.h>
->>  #include <linux/soc/qcom/irq.h>
->>@@ -430,4 +432,32 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
->>  	return ret;
->>  }
->>+#ifdef MODULE
->>+static int qcom_pdc_probe(struct platform_device *pdev)
->>+{
->>+	struct device_node *np = pdev->dev.of_node;
->>+	struct device_node *parent = of_irq_find_parent(np);
->>+
->>+	return qcom_pdc_init(np, parent);
->>+}
->>+
->>+static const struct of_device_id qcom_pdc_match_table[] = {
->>+	{ .compatible = "qcom,pdc" },
->>+	{}
->>+};
->>+MODULE_DEVICE_TABLE(of, qcom_pdc_match_table);
->>+
->>+static struct platform_driver qcom_pdc_driver = {
->>+	.probe = qcom_pdc_probe,
->>+	.driver = {
->>+		.name = "qcom-pdc",
->>+		.of_match_table = qcom_pdc_match_table,
->
->can you please set .suppress_bind_attrs = true,
->
->This is to prevent bind/unbind using sysfs. Once irqchip driver module 
->is loaded, it shouldn't get unbind at runtime.
->
-That is a good point. We probably should do that to RPMH RSC driver as well.
+Hi Christoph,
 
->Thanks,
->Maulik
->>+	},
->>+};
->>+module_platform_driver(qcom_pdc_driver);
->>+#else
->>  IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
->>+#endif
->>+
->>+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
->>+MODULE_LICENSE("GPL v2");
->
->-- 
->QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
->
+On 2020-06-16 12:34 a.m., Christoph Hellwig wrote:
+> Seriously, no more additions to fs.h for this interface please.  As
+> requested before as the very first thing move it out of this header
+> used by just about every file in the kernel.  That is in addition
+> to all the other issues with the interface.
+I can add such to the start of this patch series. I'm guessing from:
+#define __kernel_read_file_id(id) \
+to
+extern int kernel_read_file_from_fd(int, void **, loff_t *, loff_t,
+                     enum kernel_read_file_id);
+
+
