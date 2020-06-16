@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A101FB83D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDE61FB77F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732989AbgFPPy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
+        id S1732242AbgFPPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731851AbgFPPyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:19 -0400
+        id S1732230AbgFPPqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:46:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42AA82168B;
-        Tue, 16 Jun 2020 15:54:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48C3220E65;
+        Tue, 16 Jun 2020 15:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322858;
-        bh=UtpzrUWtxuDXO/k89lCw+FMl8V09G3DoAeSu9Qgqq0Y=;
+        s=default; t=1592322409;
+        bh=nGMpzdufhyG1R9GMDA0h4SH+Am4sZjqYSzjxJP4ZUdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xEQKFWy90NuPcMtmkk/doxtysE1nXg1gLLUs5RNy8utNDdkxiWvFmUBE20jVPNOfm
-         UcpC7kPSoyEhTURnNw6aRGKrhipo65tl/OiGFPY/nXyCvjT5Xk1FHmHYseghfE24F/
-         ftBWYldq01CzVZR1+jFDFgGI1FEJgqWZUvKcj5d4=
+        b=mJxBrgi3M+FLLbhAOqEcqUVeiGujDV0FO2iIPNBzCnbQihngpvfcYvXrLpm4vsUbe
+         d8rCF5D79A7p7Y63u+6WBzlramjrOCieaYLgFrSnIpgNt9zl19GgQ83sEvGWmxbyo+
+         otzip3+4uBbZHCsOAuL9hlH0Sub1eQoe/61wGj+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 102/161] io_uring: fix flush req->refs underflow
-Date:   Tue, 16 Jun 2020 17:34:52 +0200
-Message-Id: <20200616153111.218747874@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.7 119/163] proc: Use new_inode not new_inode_pseudo
+Date:   Tue, 16 Jun 2020 17:34:53 +0200
+Message-Id: <20200616153112.507267988@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 4518a3cc273cf82efdd36522fb1f13baad173c70 upstream.
+commit ef1548adada51a2f32ed7faef50aa465e1b4c5da upstream.
 
-In io_uring_cancel_files(), after refcount_sub_and_test() leaves 0
-req->refs, it calls io_put_req(), which would also put a ref. Call
-io_free_req() instead.
+Recently syzbot reported that unmounting proc when there is an ongoing
+inotify watch on the root directory of proc could result in a use
+after free when the watch is removed after the unmount of proc
+when the watcher exits.
+
+Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
+of proc") made it easier to unmount proc and allowed syzbot to see the
+problem, but looking at the code it has been around for a long time.
+
+Looking at the code the fsnotify watch should have been removed by
+fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
+was allocated with new_inode_pseudo instead of new_inode so the inode
+was not on the sb->s_inodes list.  Which prevented
+fsnotify_unmount_inodes from finding the inode and removing the watch
+as well as made it so the "VFS: Busy inodes after unmount" warning
+could not find the inodes to warn about them.
+
+Make all of the inodes in proc visible to generic_shutdown_super,
+and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
+The only functional difference is that new_inode places the inodes
+on the sb->s_inodes list.
+
+I wrote a small test program and I can verify that without changes it
+can trigger this issue, and by replacing new_inode_pseudo with
+new_inode the issues goes away.
 
 Cc: stable@vger.kernel.org
-Fixes: 2ca10259b418 ("io_uring: prune request from overflow list on flush")
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
+Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
+Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
+Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
+Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/proc/inode.c       |    2 +-
+ fs/proc/self.c        |    2 +-
+ fs/proc/thread_self.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6529,7 +6529,7 @@ static void io_uring_cancel_files(struct
- 			 * all we had, then we're done with this request.
- 			 */
- 			if (refcount_sub_and_test(2, &cancel_req->refs)) {
--				io_put_req(cancel_req);
-+				io_free_req(cancel_req);
- 				finish_wait(&ctx->inflight_wait, &wait);
- 				continue;
- 			}
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -599,7 +599,7 @@ const struct inode_operations proc_link_
+ 
+ struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
+ {
+-	struct inode *inode = new_inode_pseudo(sb);
++	struct inode *inode = new_inode(sb);
+ 
+ 	if (inode) {
+ 		inode->i_ino = de->low_ino;
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -43,7 +43,7 @@ int proc_setup_self(struct super_block *
+ 	inode_lock(root_inode);
+ 	self = d_alloc_name(s->s_root, "self");
+ 	if (self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+--- a/fs/proc/thread_self.c
++++ b/fs/proc/thread_self.c
+@@ -43,7 +43,7 @@ int proc_setup_thread_self(struct super_
+ 	inode_lock(root_inode);
+ 	thread_self = d_alloc_name(s->s_root, "thread-self");
+ 	if (thread_self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = thread_self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
 
 
