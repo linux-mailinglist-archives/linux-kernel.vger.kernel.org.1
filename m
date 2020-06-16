@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B6F1FB7C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD60C1FB73C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732492AbgFPPtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
+        id S1731959AbgFPPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732239AbgFPPtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:07 -0400
+        id S1731954AbgFPPoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:44:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E2D82071A;
-        Tue, 16 Jun 2020 15:49:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F63521475;
+        Tue, 16 Jun 2020 15:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322547;
-        bh=iI/BZKi97QLx0JPtrtFK7ox1FG7npbhQVMDwhtTaRYU=;
+        s=default; t=1592322249;
+        bh=rBWiZvWqsDNBGLOZcEsUl4b/4HinwzVnrDOhaM190ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orGxxcIqeisw8vPeXV0vd/2TOz9AM9sevoofGtlA3BNz7icEouOwhSPQz7ZAfSULl
-         bDPNkHVS+vLxlHVR7l8CVtKHjFZKxIrJ8sGl8lD9pJhxjAPEw1AidGFS6uxSVe7vJY
-         Cnd4MnfMgMrEKmqK1x+Dtqd0yQqZYwFD6mvlSMS0=
+        b=qtPWNpKORFLFNd4wfOInM2JOu8MFfZooSDf+pUUiue1s+ljoswU2ti0yLAMVjmzZf
+         +BPGSNYY4qLg7eYbpHexoGCuz2H0Jay6Gkiww8E8sii7g0PqLb4ue3CMojR6h0JUZ1
+         9HoAQkG8aUnAj+o1E3yenfE63hiMxXwLdGSQybJ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+8eac6d030e7807c21d32@syzkaller.appspotmail.com,
-        Jon Maloy <jmaloy@redhat.com>,
-        Tuong Lien <tuong.t.lien@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 011/161] tipc: fix NULL pointer dereference in streaming
-Date:   Tue, 16 Jun 2020 17:33:21 +0200
-Message-Id: <20200616153106.955581775@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 028/163] x86/cpu/amd: Make erratum #1054 a legacy erratum
+Date:   Tue, 16 Jun 2020 17:33:22 +0200
+Message-Id: <20200616153108.230470188@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,91 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuong Lien <tuong.t.lien@dektech.com.au>
+From: Kim Phillips <kim.phillips@amd.com>
 
-[ Upstream commit 5e9eeccc58f3e6bcc99b929670665d2ce047e9c9 ]
+[ Upstream commit e2abfc0448a46d8a137505aa180caf14070ec535 ]
 
-syzbot found the following crash:
+Commit
 
-general protection fault, probably for non-canonical address 0xdffffc0000000019: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
-CPU: 1 PID: 7060 Comm: syz-executor394 Not tainted 5.7.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__tipc_sendstream+0xbde/0x11f0 net/tipc/socket.c:1591
-Code: 00 00 00 00 48 39 5c 24 28 48 0f 44 d8 e8 fa 3e db f9 48 b8 00 00 00 00 00 fc ff df 48 8d bb c8 00 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 e2 04 00 00 48 8b 9b c8 00 00 00 48 b8 00 00 00
-RSP: 0018:ffffc90003ef7818 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8797fd9d
-RDX: 0000000000000019 RSI: ffffffff8797fde6 RDI: 00000000000000c8
-RBP: ffff888099848040 R08: ffff88809a5f6440 R09: fffffbfff1860b4c
-R10: ffffffff8c305a5f R11: fffffbfff1860b4b R12: ffff88809984857e
-R13: 0000000000000000 R14: ffff888086aa4000 R15: 0000000000000000
-FS:  00000000009b4880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000140 CR3: 00000000a7fdf000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tipc_sendstream+0x4c/0x70 net/tipc/socket.c:1533
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x32f/0x810 net/socket.c:2352
- ___sys_sendmsg+0x100/0x170 net/socket.c:2406
- __sys_sendmmsg+0x195/0x480 net/socket.c:2496
- __do_sys_sendmmsg net/socket.c:2525 [inline]
- __se_sys_sendmmsg net/socket.c:2522 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2522
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x440199
-...
+  21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired
+		 counter IRPERF")
 
-This bug was bisected to commit 0a3e060f340d ("tipc: add test for Nagle
-algorithm effectiveness"). However, it is not the case, the trouble was
-from the base in the case of zero data length message sending, we would
-unexpectedly make an empty 'txq' queue after the 'tipc_msg_append()' in
-Nagle mode.
+mistakenly added erratum #1054 as an OS Visible Workaround (OSVW) ID 0.
+Erratum #1054 is not OSVW ID 0 [1], so make it a legacy erratum.
 
-A similar crash can be generated even without the bisected patch but at
-the link layer when it accesses the empty queue.
+There would never have been a false positive on older hardware that
+has OSVW bit 0 set, since the IRPERF feature was not available.
 
-We solve the issues by building at least one buffer to go with socket's
-header and an optional data section that may be empty like what we had
-with the 'tipc_msg_build()'.
+However, save a couple of RDMSR executions per thread, on modern
+system configurations that correctly set non-zero values in their
+OSVW_ID_Length MSRs.
 
-Note: the previous commit 4c21daae3dbc ("tipc: Fix NULL pointer
-dereference in __tipc_sendstream()") is obsoleted by this one since the
-'txq' will be never empty and the check of 'skb != NULL' is unnecessary
-but it is safe anyway.
+[1] Revision Guide for AMD Family 17h Models 00h-0Fh Processors. The
+revision guide is available from the bugzilla link below.
 
-Reported-by: syzbot+8eac6d030e7807c21d32@syzkaller.appspotmail.com
-Fixes: c0bceb97db9e ("tipc: add smart nagle feature")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Tuong Lien <tuong.t.lien@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired counter IRPERF")
+Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200417143356.26054-1-kim.phillips@amd.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/msg.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/amd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -221,7 +221,7 @@ int tipc_msg_append(struct tipc_msg *_hd
- 	accounted = skb ? msg_blocks(buf_msg(skb)) : 0;
- 	total = accounted;
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 547ad7bbf0e0..8a1bdda895a4 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1142,8 +1142,7 @@ static const int amd_erratum_383[] =
  
--	while (rem) {
-+	do {
- 		if (!skb || skb->len >= mss) {
- 			prev = skb;
- 			skb = tipc_buf_acquire(mss, GFP_KERNEL);
-@@ -249,7 +249,7 @@ int tipc_msg_append(struct tipc_msg *_hd
- 		skb_put(skb, cpy);
- 		rem -= cpy;
- 		total += msg_blocks(hdr) - curr;
--	}
-+	} while (rem);
- 	return total - accounted;
- }
+ /* #1054: Instructions Retired Performance Counter May Be Inaccurate */
+ static const int amd_erratum_1054[] =
+-	AMD_OSVW_ERRATUM(0, AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+-
++	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
  
+ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
+ {
+-- 
+2.25.1
+
 
 
