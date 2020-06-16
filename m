@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9961FC11D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04461FC127
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726064AbgFPVr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 17:47:58 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:36142 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgFPVr5 (ORCPT
+        id S1726408AbgFPVtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 17:49:18 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:23152 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726296AbgFPVtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 17:47:57 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 75ABEF9;
-        Tue, 16 Jun 2020 23:47:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1592344075;
-        bh=7zS+t+AfxuVeGBr5sbILnhIldXeY6ocnNF8IQEghTYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Un6dIIgiw/jT8P/Kb1KkDWEaDh6FY7x6vUVLMflCxQJ+bzBR/DrVZKXFANKDmo7Jo
-         sorX9pLMiQrNScw/1Md/zog+jIrsxSMmz6bXZ78Gg4cEHMMtUOgnRwYgMb8NIPTD/G
-         trljgxNPrmeozMb3sYl/NSCdVBKLZH3dX8zmcCIA=
-Date:   Wed, 17 Jun 2020 00:47:32 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Venkateshwar Rao Gannavarapu <VGANNAVA@xilinx.com>
-Cc:     Hyun Kwon <hyunk@xilinx.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sandip Kothari <sandipk@xilinx.com>,
-        Vishal Sagar <vsagar@xilinx.com>
-Subject: Re: [RFC PATCH 2/2] drm: xlnx: driver for Xilinx DSI TX Subsystem
-Message-ID: <20200616214732.GH913@pendragon.ideasonboard.com>
-References: <1587417656-48078-1-git-send-email-venkateshwar.rao.gannavarapu@xilinx.com>
- <1587417656-48078-3-git-send-email-venkateshwar.rao.gannavarapu@xilinx.com>
- <20200504184348.GA3095@smtp.xilinx.com>
- <20200524030813.GF6026@pendragon.ideasonboard.com>
- <CY4PR02MB2790B791578160F257049FEAB18D0@CY4PR02MB2790.namprd02.prod.outlook.com>
- <20200607022518.GA7339@pendragon.ideasonboard.com>
- <CY4PR02MB27908C70E9D66DA91868FF35B1820@CY4PR02MB2790.namprd02.prod.outlook.com>
+        Tue, 16 Jun 2020 17:49:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592344154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uv780jpNQSYzquFkmBB1m3mWJ1oYSVcoXMxNLu+Q8MQ=;
+        b=Rg9C1Stka9T5KHBzH1e0vJi5ep0klrGSWjHxzpapBn87iQ9N8k8n2bMPbhU+LgNxfUSBlS
+        ++ZiA61XnjsCNWNwh/KLiqYSusbLc/mDg75JC1H/L6+S2cNi15/p9OrTVcxCJZapxnAraF
+        0XakA0vcFblYcZRNGnqOaAXrjPuzqik=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-E7zfeKlANEm4BKAq4l_3xQ-1; Tue, 16 Jun 2020 17:49:11 -0400
+X-MC-Unique: E7zfeKlANEm4BKAq4l_3xQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7A0C872FF2;
+        Tue, 16 Jun 2020 21:49:09 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-132.rdu2.redhat.com [10.10.114.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E62360BE2;
+        Tue, 16 Jun 2020 21:49:03 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C17E522363A; Tue, 16 Jun 2020 17:49:02 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     virtio-fs@redhat.com, miklos@szeredi.hu, stefanha@redhat.com,
+        dgilbert@redhat.com, vgoyal@redhat.com, vkuznets@redhat.com,
+        pbonzini@redhat.com, wanpengli@tencent.com,
+        sean.j.christopherson@intel.com
+Subject: [RFC PATCH 0/3] kvm,x86: Improve kvm page fault error handling
+Date:   Tue, 16 Jun 2020 17:48:44 -0400
+Message-Id: <20200616214847.24482-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CY4PR02MB27908C70E9D66DA91868FF35B1820@CY4PR02MB2790.namprd02.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi GVRao,
+Hi,
 
-Sorry for the delayed reply.
+This is an RFC patch series to improve error handling. Compiled and
+tested only on x86. Have not tested or thought about nested
+configuration yet.
 
-On Tue, Jun 09, 2020 at 02:48:25AM +0000, Venkateshwar Rao Gannavarapu wrote:
-> Hi Laurent,
-> 
-> Thanks for the review. 
-> Please see my comments about D-PHY and bridge driver implementation.
-> 
-> On Sunday, June 7, 2020 7:55 AM, Laurent Pinchart wrote:
-> > On Sun, May 31, 2020 at 05:41:50PM +0000, Venkateshwar Rao Gannavarapu wrote:
-> >> On Sunday, May 24, 2020 8:38 AM, Laurent Pinchart wrote:
-> >>> On Mon, May 04, 2020 at 11:43:48AM -0700, Hyun Kwon wrote:
-> >>>> On Mon, 2020-04-20 at 14:20:56 -0700, Venkateshwar Rao Gannavarapu wrote:
-> >>>>> The Xilinx MIPI DSI Tx Subsystem soft IP is used to display video
-> >>>>> data from AXI-4 stream interface.
-> >>>>>
-> >>>>> It supports upto 4 lanes, optional register interface for the
-> >>>>> DPHY,
-> >>>>
-> >>>> I don't see the register interface for dphy support.
-> >>>
-> >>> I think the D-PHY should be supported through a PHY driver, as it
-> >>> seems to be shared between different subsystems.
-> >>
-> >> IP has the provision to read DPHY register for debug purpose only.
-> >> No programming of DPHY is required in subsystem.
-> >
-> > Do you know if this is the same D-PHY as used in the CSI2-RX subsystem ?
->  
-> Same D-PHY core has been used in MIPI CSI2 RXSS, but with different configuration.
->
-> >>>>> multiple RGB color formats, command mode and video mode.
-> >>>>> This is a MIPI-DSI host driver and provides DSI bus for panels.
-> >>>>> This driver also helps to communicate with its panel using panel
-> >>>>> framework.
-> >>>>>
-> >>>>> Signed-off-by: Venkateshwar Rao Gannavarapu
-> >>>>> <venkateshwar.rao.gannavarapu@xilinx.com>
-> >>>>> ---
-> >>>>>  drivers/gpu/drm/xlnx/Kconfig    |  11 +
-> >>>>>  drivers/gpu/drm/xlnx/Makefile   |   2 +
-> >>>>>  drivers/gpu/drm/xlnx/xlnx_dsi.c | 755 ++++++++++++++++++++++++++++++++++++++++
-> >>>
-> >>> Daniel Vetter has recently expressed his opiion that bridge drivers
-> >>> should go to drivers/gpu/drm/bridge/. It would then be
-> >>> drivers/gpu/drm/bridge/xlnx/. I don't have a strong opinion myself.
-> 
-> The DSI-TX subsystem IP block is not a bridge driver.
-> The DSI-TX subsystem IP block itself contains all the drm encoder/connector
-> functionality and it’s the last node in display pipe line.
+This is built on top of Vitaly's patches sending "page ready" events
+using interrupts. But it has not been rebased on top of recent
+interrupt rework yet. Patches are also available here.
 
-The DSI-TX subsystem IP block is indeed an encoder from a hardware point
-of view, but it's not necessarily the last block in the display
-pipeline. While the output of the IP core goes of the the SoC, tt would
-be entirely feasible to connect it to a DP to HDMI bridge on the board,
-such as the ANX7737 ([1]) for instance. This is why we're pushing for
-all encoder (from a hardware point of view) drivers to be implemented as
-DRM bridge, in order to make them usable in different display pipelines,
-without hardcoding the assumption they will be the last encoder in the
-pipeline.
+https://github.com/rhvgoyal/linux/commits/asyncpf-error-v1
 
-> I didn't see any hard
-> requirement to implement it into bridge driver and I see many DSI drivers are
-> implemented as encoder drivers.
-> Xilinx PL DRM encoder drivers are implemented in modular approach so that
-> they can work with any CRTC driver which handles the DMA calls.
-> So, at this stage we want to upstream as encoder driver only.
->
-> >>>>>  3 files changed, 768 insertions(+)  create mode 100644
-> >>>>> drivers/gpu/drm/xlnx/xlnx_dsi.c
+Problem
+=======
+Currently kvm page fault error handling seems very unpredictable. If
+a page fault fails and kvm decided not to do async page fault, then
+upon error, we exit to user space and qemu prints
+"error: kvm run failed Bad address" and associated cpu state and VM
+freezes.
 
-[1] https://www.analogix.com/en/products/convertersbridges/anx7737
+But if kvm decided to async page fault, then async_pf_execute() simply
+ignores the error code (-EFAULT) returned by get_user_pages_remote()
+and injects "page ready" event into guest. Guest retries the faulting
+instruction and takes exit again and kvm again retries async page
+fault and this cycle continues and forms an infinite loop.
+
+I can reproduce this -EFAULT situation easily. Created a file
+(nvdimm.img) and exported it to guest as nvdimm device. Inside the guest
+created ext4 filesystem on device and mounted with dax enabled. Now mmap a
+file (/mnt/pmem0/foo.txt) and load from it one page at a time. Also
+truncate nvdimm.img on host. So when guest tries to load from nvdimm,
+its not mapped in page tables anymore (due to truncation) and we take
+exit and try to fault in the page. Now we either exit to user space
+with bad address or and get into infinite loop depending on state of
+filesystem in guest whether at the time of exit we were in kernel mode
+or user space mode.
+
+I am implementing DAX support in virtiofs (which is very close to what
+nvdimm will do) and I have scenarios where a DAX mapped file in guest
+can get truncated on host and page fault errors can happen. I need to
+do better error handling instead of guest and host spinning infinitely.
+It otherwise sort of creates an attack vector where a kata container
+has to mount virtiofs using DAX, mmap a file, and then truncate that
+file on host and then access it inside guest and we can hog kvm on
+host in this infinite loop of trying to fault in page.
+
+Proposed Solution
+=================
+So first idea is that how about we make the error behavior uniform. That
+is when an error is encountered, we exit to qemu which prints the
+error message and VM freezes. That will end the discrepancy in the
+behavior of sync/async page fault. First patch of the series does
+that.
+
+Second idea is that if we are doing async page fault and if guest is
+in a state so that we can inject "page not present" and "page ready"
+events, then instead of exiting to user space, send error back to
+guest as part of "page ready" event. This will allow guest to do
+finer grained error handling. For example, send SIGBUS to offending
+process. And whole of the VM does not have to go down. Second patch
+implemented it.
+
+Third idea is that find a way to inject error even when async page
+fault can't be injected. Now if we disabled any kind of async page
+fault delivery if guest is in kernel mode because this was racy.
+Once we figure out a race free way  to be able to inject page
+fault in guest (using #VE?), then use that to report errors back
+to guest even when it is in kernel mode. And that will allow
+guest to call fixup_exception() and possibly recover from situation
+otherwise panic(). This can only be implemented once we have a
+way race free way to inject an async page event into guest. So this
+is a future TBD item. For now, if we took exit and guest is in kernel
+mode and error happened, we will vcpu_run() will fail and exit
+to user space.  
+
+I have only compiled and tested this series on x86. Before I refine
+it further, wanted to post it for some feedback and see if this
+the right direction or not.
+
+Any feedback or comments are welcome.
+
+Thanks
+Vivek 
+
+Vivek Goyal (3):
+  kvm,x86: Force sync fault if previous attempts failed
+  kvm: Add capability to be able to report async pf error to guest
+  kvm, async_pf: Use FOLL_WRITE only for write faults
+
+ Documentation/virt/kvm/cpuid.rst     |  4 +++
+ Documentation/virt/kvm/msr.rst       | 10 +++---
+ arch/x86/include/asm/kvm_host.h      |  4 +++
+ arch/x86/include/asm/kvm_para.h      |  8 ++---
+ arch/x86/include/uapi/asm/kvm_para.h | 10 ++++--
+ arch/x86/kernel/kvm.c                | 34 +++++++++++++++----
+ arch/x86/kvm/cpuid.c                 |  3 +-
+ arch/x86/kvm/mmu.h                   |  2 +-
+ arch/x86/kvm/mmu/mmu.c               | 11 ++++---
+ arch/x86/kvm/x86.c                   | 49 +++++++++++++++++++++++-----
+ include/linux/kvm_host.h             |  5 ++-
+ virt/kvm/async_pf.c                  | 15 +++++++--
+ 12 files changed, 119 insertions(+), 36 deletions(-)
 
 -- 
-Regards,
+2.25.4
 
-Laurent Pinchart
