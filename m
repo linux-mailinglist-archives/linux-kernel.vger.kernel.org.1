@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196931FB09B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637731FB09D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgFPMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgFPMYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:24:48 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACEFC08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:24:47 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id i1so4747741vkp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=iTW4NrGfh0PDdjhRgJzlTzwDB7I200l97XzsQrj8pClLbC973AOYMs+UgrDQBnmQHn
-         sbVNP0m+RsXTBn5vGi+Ym3PGfgn/NKCAD3c3hTQn/jG32ti9GUeXEIC4HGlX5rBV8evH
-         PkZyYSPSPFa0K5MQTfqref6nYfrq01ZzxeJlyRmG3swsZAgNWpXYYrEeVzLb+d7n6r27
-         2C+PW5k+eYvEbw85FmH6aTZ13OJV26qXGoP7Vb+nLLKd0EdSACzT9anGbrYaVz9cV2Tx
-         9bdS7WAdpj2T4ZWCr4qmvbfaZ5FvIgU1upx2IDvh/a9IsbPzSAiGK5WUUYBakuZq0HiK
-         QGfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=L3E9RSdeZJUdl68x+LVbOH+WoBSm2wJbQ0rpwTgABJwk6stLimKOrJYxcZwNKitI/U
-         jjENnl4+ObqVx0oTbRl2evkcYHOC9bxO+sg68+YZsULApKBTcUVsUg1rwvfPJU8F3ghv
-         7zR/HDv66MyvgvfbTMLRoXilIUkA1OD4LxroWsUCpTFQgnI4Hrs2Lio+NBP+5XkWlLGu
-         O26V1QkmXToyCqGTSyloGQvE1h7izKKOCt2rdjHWxEQNBuozZFBJd3Xhy5TDgO946fBz
-         WF10wfNtuOylTcPEvSVqxf62EnlhXtIJ8bgnqoO/Xuo0mRDX7so64UXMrHZVEI4VgaKl
-         Rwug==
-X-Gm-Message-State: AOAM532EpYpCI/OkZyN3k5eHOIqjocOFccHhKnLI96jvM7mN4IM0LISd
-        xq6pUkuruTEo7mjUJfN8tpZRGcT6XSDqNarZ2mk=
-X-Google-Smtp-Source: ABdhPJyerXcvP+ggjhPvcEHsfGMG/N9M3k2poNZRxE20pvCN29MA9NMfcAgHoxYBIcG69v1P7wnYH6w1IVNh1zNhYZ8=
-X-Received: by 2002:a1f:1696:: with SMTP id 144mr1280787vkw.84.1592310286191;
- Tue, 16 Jun 2020 05:24:46 -0700 (PDT)
+        id S1728900AbgFPMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:25:12 -0400
+Received: from mga04.intel.com ([192.55.52.120]:7700 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725901AbgFPMZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 08:25:12 -0400
+IronPort-SDR: +W2YBVb6ABaB5AD70t65jubEUjv7D3hWOg6HXX7F7PJEwZvjAeae9B56QibNNKwwdRuFXnotI1
+ WN+exJfBjhYQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 05:25:11 -0700
+IronPort-SDR: 1bnQa6Z+nx5XOwk5MnWgETija5ju7Fp+hma9kfl2w+TDxXx95LW9d6xXMsLUpbhdFU57t3uwr/
+ QXMrUFRb4DOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,518,1583222400"; 
+   d="scan'208";a="476444896"
+Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.3])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Jun 2020 05:25:10 -0700
+Date:   Tue, 16 Jun 2020 20:24:52 +0800
+From:   Rong Chen <rong.a.chen@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ltp@lists.linux.it
+Subject: Re: [LKP] Re: [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+Message-ID: <20200616122451.GQ5653@shao2-debian>
+References: <20200616075533.GL5653@shao2-debian>
+ <87y2onbdtb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a9f:240c:0:0:0:0:0 with HTTP; Tue, 16 Jun 2020 05:24:45
- -0700 (PDT)
-Reply-To: idrisomar259@gmail.com
-From:   idris omar <revpreciousugwu@gmail.com>
-Date:   Tue, 16 Jun 2020 05:24:45 -0700
-Message-ID: <CAKzv419XuG8a2-LfC=w_q8=3Nk4Q0xZpK3m-_ExCrt+Snb-KZg@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Sir / Madam,
+On Tue, Jun 16, 2020 at 10:44:00AM +0200, Thomas Gleixner wrote:
+> kernel test robot <rong.a.chen@intel.com> writes:
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> Is the head of linux.git exposing the same problem or is this an
+> intermittent failure, which only affects bisectability?
+> 
 
-Hi Friend I am the accountant and auditing manager of the
-International Finance Bank Plc bf I want to transfer an abandoned sum
-of 10.5 millions USD  to your account.50% will be for you. No risk
-involved.
+Hi Thomas,
 
-Contact me for more details.
+The problem still exists in v5.8-rc1:
 
-Kindly reply me back to my alternative email address (
-idrisomar259@gmail.com  )
+9f58fdde95c9509a  2bbc68f8373c0631ebf137f376                    v5.8-rc1  testcase/testparams/testbox
+----------------  --------------------------  --------------------------  ---------------------------
+       fail:runs  %reproduction    fail:runs  %reproduction    fail:runs
+           |             |             |             |             |    
+           :12          92%          11:12         100%          13:13    ltp/1HDD-xfs-syscalls_part4/vm-snb
+           :12          92%          11:12         100%          13:13    TOTAL ltp.ptrace08.fail
 
-Thanks,
-
-Mr Idris Omar
+Best Regards,
+Rong Chen
