@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC331FB75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9AD1FB81A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732100AbgFPPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
+        id S1732208AbgFPPxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732082AbgFPPpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:24 -0400
+        id S1732832AbgFPPxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E39A20776;
-        Tue, 16 Jun 2020 15:45:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 783FC21527;
+        Tue, 16 Jun 2020 15:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322324;
-        bh=ImD1zoy+Fx0CsZrmk+QIEfgyjaPXOBH8d6zBqOiEGqI=;
+        s=default; t=1592322781;
+        bh=xUyXfkQdON4UZ0F/07NZKKPngMjnfR4FTYVv2FmUUpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CpOqgXczEyrgSR+fRvZF2iIVWZcsbMWwjTQ3QUX/GEZyovB3KxuO4GtYCFKz0aGo3
-         Y/utlnCl9dFUpkkY22TlUsyoiKVgVMC3mNf7klEvQhynyftQ35O/+P6gVb2VjfaZNF
-         uH+RnCvCeFs010TMf97kKHUqxwXna4fje9SZXITk=
+        b=NSh2OAf4rPPuB1+GByW3ygzOAv1G0QZiUZGvKdrSMrKjzgW7TRAoh638/IJqfBtjm
+         7VkaUycFEdZzbTH5op0FxbUMSvUwvr926InMgpWGj5i0uLm/nd7RSaR8ZEgtOwDfi8
+         hRsFJSCcxdem9581KxZgWw6LtCZzDdLRp3L7xiks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 086/163] spi: bcm-qspi: Handle clock probe deferral
-Date:   Tue, 16 Jun 2020 17:34:20 +0200
-Message-Id: <20200616153110.964339018@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 071/161] ALSA: fireface: start IR context immediately
+Date:   Tue, 16 Jun 2020 17:34:21 +0200
+Message-Id: <20200616153109.760871527@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit 0392727c261bab65a35cd4f82ee9459bc237591d upstream.
+commit f4588cc425beb62e355bc2a5de5d5c83e26a74ca upstream.
 
-The clock provider may not be ready by the time spi-bcm-qspi gets
-probed, handle probe deferral using devm_clk_get_optional().
+In the latter models of RME Fireface series, device start to transfer
+packets several dozens of milliseconds. On the other hand, ALSA fireface
+driver starts IR context 2 milliseconds after the start. This results
+in loss to handle incoming packets on the context.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200420190853.45614-2-kdasu.kdev@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This commit changes to start IR context immediately instead of
+postponement. For Fireface 800, this affects nothing because the device
+transfer packets 100 milliseconds or so after the start and this is
+within wait timeout.
+
+Cc: <stable@vger.kernel.org>
+Fixes: acfedcbe1ce4 ("ALSA: firewire-lib: postpone to start IR context")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200510074301.116224-3-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-bcm-qspi.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/firewire/fireface/ff-stream.c |   10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -1222,6 +1222,11 @@ int bcm_qspi_probe(struct platform_devic
- 	}
+--- a/sound/firewire/fireface/ff-stream.c
++++ b/sound/firewire/fireface/ff-stream.c
+@@ -184,7 +184,6 @@ int snd_ff_stream_start_duplex(struct sn
+ 	 */
+ 	if (!amdtp_stream_running(&ff->rx_stream)) {
+ 		int spd = fw_parent_device(ff->unit)->max_speed;
+-		unsigned int ir_delay_cycle;
  
- 	qspi = spi_master_get_devdata(master);
-+
-+	qspi->clk = devm_clk_get_optional(&pdev->dev, NULL);
-+	if (IS_ERR(qspi->clk))
-+		return PTR_ERR(qspi->clk);
-+
- 	qspi->pdev = pdev;
- 	qspi->trans_pos.trans = NULL;
- 	qspi->trans_pos.byte = 0;
-@@ -1335,13 +1340,6 @@ int bcm_qspi_probe(struct platform_devic
- 		qspi->soc_intc = NULL;
- 	}
+ 		err = ff->spec->protocol->begin_session(ff, rate);
+ 		if (err < 0)
+@@ -200,14 +199,7 @@ int snd_ff_stream_start_duplex(struct sn
+ 		if (err < 0)
+ 			goto error;
  
--	qspi->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(qspi->clk)) {
--		dev_warn(dev, "unable to get clock\n");
--		ret = PTR_ERR(qspi->clk);
--		goto qspi_probe_err;
--	}
+-		// The device postpones start of transmission mostly for several
+-		// cycles after receiving packets firstly.
+-		if (ff->spec->protocol == &snd_ff_protocol_ff800)
+-			ir_delay_cycle = 800;	// = 100 msec
+-		else
+-			ir_delay_cycle = 16;	// = 2 msec
 -
- 	ret = clk_prepare_enable(qspi->clk);
- 	if (ret) {
- 		dev_err(dev, "failed to prepare clock\n");
+-		err = amdtp_domain_start(&ff->domain, ir_delay_cycle);
++		err = amdtp_domain_start(&ff->domain, 0);
+ 		if (err < 0)
+ 			goto error;
+ 
 
 
