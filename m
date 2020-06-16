@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543BA1FB7B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742051FB842
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbgFPPso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:48:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1733009AbgFPPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732136AbgFPPsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:48:31 -0400
+        id S1732604AbgFPPyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E562321473;
-        Tue, 16 Jun 2020 15:48:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5A20207C4;
+        Tue, 16 Jun 2020 15:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322511;
-        bh=wp0rcAhpJU+WeyQCP+o8UIgnJUzlGRDEjFTTePh84Iw=;
+        s=default; t=1592322874;
+        bh=24ofpfUOvGV2D+ipJB4zYSjP/GGm7wxY4Ps53nNY6OQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RpXGwtBqRTKs8fifQm9wSNNGBDjwa6wuZplZ0+wgNUZzA8EJYhfAySsdmUXoHngL7
-         M/B0ez3nCKDEro4Ptis7+LBJD4skaqBsVf07DmMAGbEBnepnNjv0ZWpxAUPz+ABlFb
-         1zC30w457/uXgSFSf1hqmLKuk4OxVjQC08CSEXQQ=
+        b=zq4Exr9UR6UHBkdC0UrKOz2/8aZIy7qnkrzH627swmV75530OJ2cUwsN/KZHWVSrg
+         LQ6RpP7KZG1T5ODuUtvVOGLhr61m+VoA5+3BOTGZ9M7sZ56d/QaJeWkey8R8C5kJ26
+         I37JXcDPEDeZgMzFNrGY9eSEotScrxOjdUdNBfH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.7 153/163] mmc: tmio: Further fixup runtime PM management at remove
-Date:   Tue, 16 Jun 2020 17:35:27 +0200
-Message-Id: <20200616153114.134292425@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com
+Subject: [PATCH 5.6 138/161] ath9k: Fix use-after-free Read in ath9k_wmi_ctrl_rx
+Date:   Tue, 16 Jun 2020 17:35:28 +0200
+Message-Id: <20200616153112.935951671@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +44,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 4bd784411aca022622e484eb262f5a0540ae732c upstream.
+commit abeaa85054ff8cfe8b99aafc5c70ea067e5d0908 upstream.
 
-Before calling tmio_mmc_host_probe(), the caller is required to enable
-clocks for its device, as to make it accessible when reading/writing
-registers during probe.
+Free wmi later after cmd urb has been killed, as urb cb will access wmi.
 
-Therefore, the responsibility to disable these clocks, in the error path of
-->probe() and during ->remove(), is better managed outside
-tmio_mmc_host_remove(). As a matter of fact, callers of
-tmio_mmc_host_remove() already expects this to be the behaviour.
+the case reported by syzbot:
+https://lore.kernel.org/linux-usb/0000000000000002fc05a1d61a68@google.com
+BUG: KASAN: use-after-free in ath9k_wmi_ctrl_rx+0x416/0x500
+drivers/net/wireless/ath/ath9k/wmi.c:215
+Read of size 1 at addr ffff8881cef1417c by task swapper/1/0
 
-However, there's a problem with tmio_mmc_host_remove() when the Kconfig
-option, CONFIG_PM, is set. More precisely, tmio_mmc_host_remove() may then
-disable the clock via runtime PM, which leads to clock enable/disable
-imbalance problems, when the caller of tmio_mmc_host_remove() also tries to
-disable the same clocks.
+Call Trace:
+<IRQ>
+ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:215
+ath9k_htc_rx_msg+0x2da/0xaf0
+drivers/net/wireless/ath/ath9k/htc_hst.c:459
+ath9k_hif_usb_reg_in_cb+0x1ba/0x630
+drivers/net/wireless/ath/ath9k/hif_usb.c:718
+__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
 
-To solve the problem, let's make sure tmio_mmc_host_remove() leaves the
-device with clocks enabled, but also make sure to disable the IRQs, as we
-normally do at ->runtime_suspend().
-
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200519152434.6867-1-ulf.hansson@linaro.org
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reported-and-tested-by: syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-3-hqjagain@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/tmio_mmc_core.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/hif_usb.c      |    5 +++--
+ drivers/net/wireless/ath/ath9k/hif_usb.h      |    1 +
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c |   10 +++++++---
+ drivers/net/wireless/ath/ath9k/wmi.c          |    5 ++++-
+ drivers/net/wireless/ath/ath9k/wmi.h          |    3 ++-
+ 5 files changed, 17 insertions(+), 7 deletions(-)
 
---- a/drivers/mmc/host/tmio_mmc_core.c
-+++ b/drivers/mmc/host/tmio_mmc_core.c
-@@ -1231,12 +1231,14 @@ void tmio_mmc_host_remove(struct tmio_mm
- 	cancel_work_sync(&host->done);
- 	cancel_delayed_work_sync(&host->delayed_reset_work);
- 	tmio_mmc_release_dma(host);
-+	tmio_mmc_disable_mmc_irqs(host, TMIO_MASK_ALL);
- 
--	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	if (host->native_hotplug)
- 		pm_runtime_put_noidle(&pdev->dev);
--	pm_runtime_put_sync(&pdev->dev);
-+
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -973,7 +973,7 @@ err:
+ 	return -ENOMEM;
  }
- EXPORT_SYMBOL_GPL(tmio_mmc_host_remove);
  
+-static void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev)
++void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev)
+ {
+ 	usb_kill_anchored_urbs(&hif_dev->regout_submitted);
+ 	ath9k_hif_usb_dealloc_reg_in_urbs(hif_dev);
+@@ -1341,8 +1341,9 @@ static void ath9k_hif_usb_disconnect(str
+ 
+ 	if (hif_dev->flags & HIF_USB_READY) {
+ 		ath9k_htc_hw_deinit(hif_dev->htc_handle, unplugged);
+-		ath9k_htc_hw_free(hif_dev->htc_handle);
+ 		ath9k_hif_usb_dev_deinit(hif_dev);
++		ath9k_destoy_wmi(hif_dev->htc_handle->drv_priv);
++		ath9k_htc_hw_free(hif_dev->htc_handle);
+ 	}
+ 
+ 	usb_set_intfdata(interface, NULL);
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.h
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.h
+@@ -133,5 +133,6 @@ struct hif_device_usb {
+ 
+ int ath9k_hif_usb_init(void);
+ void ath9k_hif_usb_exit(void);
++void ath9k_hif_usb_dealloc_urbs(struct hif_device_usb *hif_dev);
+ 
+ #endif /* HTC_USB_H */
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+@@ -931,8 +931,9 @@ err_init:
+ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+ 			   u16 devid, char *product, u32 drv_info)
+ {
+-	struct ieee80211_hw *hw;
++	struct hif_device_usb *hif_dev;
+ 	struct ath9k_htc_priv *priv;
++	struct ieee80211_hw *hw;
+ 	int ret;
+ 
+ 	hw = ieee80211_alloc_hw(sizeof(struct ath9k_htc_priv), &ath9k_htc_ops);
+@@ -967,7 +968,10 @@ int ath9k_htc_probe_device(struct htc_ta
+ 	return 0;
+ 
+ err_init:
+-	ath9k_deinit_wmi(priv);
++	ath9k_stop_wmi(priv);
++	hif_dev = (struct hif_device_usb *)htc_handle->hif_dev;
++	ath9k_hif_usb_dealloc_urbs(hif_dev);
++	ath9k_destoy_wmi(priv);
+ err_free:
+ 	ieee80211_free_hw(hw);
+ 	return ret;
+@@ -982,7 +986,7 @@ void ath9k_htc_disconnect_device(struct
+ 			htc_handle->drv_priv->ah->ah_flags |= AH_UNPLUGGED;
+ 
+ 		ath9k_deinit_device(htc_handle->drv_priv);
+-		ath9k_deinit_wmi(htc_handle->drv_priv);
++		ath9k_stop_wmi(htc_handle->drv_priv);
+ 		ieee80211_free_hw(htc_handle->drv_priv->hw);
+ 	}
+ }
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -112,14 +112,17 @@ struct wmi *ath9k_init_wmi(struct ath9k_
+ 	return wmi;
+ }
+ 
+-void ath9k_deinit_wmi(struct ath9k_htc_priv *priv)
++void ath9k_stop_wmi(struct ath9k_htc_priv *priv)
+ {
+ 	struct wmi *wmi = priv->wmi;
+ 
+ 	mutex_lock(&wmi->op_mutex);
+ 	wmi->stopped = true;
+ 	mutex_unlock(&wmi->op_mutex);
++}
+ 
++void ath9k_destoy_wmi(struct ath9k_htc_priv *priv)
++{
+ 	kfree(priv->wmi);
+ }
+ 
+--- a/drivers/net/wireless/ath/ath9k/wmi.h
++++ b/drivers/net/wireless/ath/ath9k/wmi.h
+@@ -179,7 +179,6 @@ struct wmi {
+ };
+ 
+ struct wmi *ath9k_init_wmi(struct ath9k_htc_priv *priv);
+-void ath9k_deinit_wmi(struct ath9k_htc_priv *priv);
+ int ath9k_wmi_connect(struct htc_target *htc, struct wmi *wmi,
+ 		      enum htc_endpoint_id *wmi_ctrl_epid);
+ int ath9k_wmi_cmd(struct wmi *wmi, enum wmi_cmd_id cmd_id,
+@@ -189,6 +188,8 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum
+ void ath9k_wmi_event_tasklet(unsigned long data);
+ void ath9k_fatal_work(struct work_struct *work);
+ void ath9k_wmi_event_drain(struct ath9k_htc_priv *priv);
++void ath9k_stop_wmi(struct ath9k_htc_priv *priv);
++void ath9k_destoy_wmi(struct ath9k_htc_priv *priv);
+ 
+ #define WMI_CMD(_wmi_cmd)						\
+ 	do {								\
 
 
