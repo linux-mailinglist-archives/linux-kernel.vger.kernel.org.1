@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309251FB806
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD721FB80E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732750AbgFPPwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48570 "EHLO mail.kernel.org"
+        id S1732536AbgFPPwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:52:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732348AbgFPPvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:44 -0400
+        id S1732759AbgFPPwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0E63208D5;
-        Tue, 16 Jun 2020 15:51:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66FB0207C4;
+        Tue, 16 Jun 2020 15:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322704;
-        bh=Cr9wItrBq3+Al+3gT3NuDin3SYtLYQU5JW7Cxo29wXQ=;
+        s=default; t=1592322732;
+        bh=aeJVDlEjSdLDLdlvppBsDFafIzMahO0CTxavjubEvs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FR2ipdvhBFpO8iFX1jzoko/7f+bxnplnslOpqqN1vdLSthOL+pQTCITrDSNCsT0RM
-         uSYl7lX8z/G207wWNwsS9Ib3lGveoE/iW5MznhaxUPdhMCoWofbFhV6YwplwuQNYH4
-         hjtMZ35bpbnQocYRnadasT0SvJFVeue/cfODOfHk=
+        b=VT2QgVsPIZJYYzprm8rVRCtlG6/5m1ebPmZ61sQC0RzE74Lvacxg8hZRvEZWJGrxu
+         k2U9Za7ulPjcvl9J36hpWN/aHnXrOgAhqwujtZTniVHqZsD3qN/jK6xPmwRBUIhX6x
+         iaNe64r4d6mAH3t9OhV1d78RuCjmpUC89to/G3ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.6 064/161] smb3: fix incorrect number of credits when ioctl MaxOutputResponse > 64K
-Date:   Tue, 16 Jun 2020 17:34:14 +0200
-Message-Id: <20200616153109.426741059@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Steve French <smfrench@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.6 065/161] smb3: add indatalen that can be a non-zero value to calculation of credit charge in smb2 ioctl
+Date:   Tue, 16 Jun 2020 17:34:15 +0200
+Message-Id: <20200616153109.474849450@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
 References: <20200616153106.402291280@linuxfoundation.org>
@@ -43,33 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Namjae Jeon <namjae.jeon@samsung.com>
 
-commit e80ddeb2f70ebd0786aa7cdba3e58bc931fa0bb5 upstream.
+commit ebf57440ec59a36e1fc5fe91e31d66ae0d1662d0 upstream.
 
-We were not checking to see if ioctl requests asked for more than
-64K (ie when CIFSMaxBufSize was > 64K) so when setting larger
-CIFSMaxBufSize then ioctls would fail with invalid parameter errors.
-When requests ask for more than 64K in MaxOutputResponse then we
-need to ask for more than 1 credit.
+Some of tests in xfstests failed with cifsd kernel server since commit
+e80ddeb2f70e. cifsd kernel server validates credit charge from client
+by calculating it base on max((InputCount + OutputCount) and
+(MaxInputResponse + MaxOutputResponse)) according to specification.
 
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
+MS-SMB2 specification describe credit charge calculation of smb2 ioctl :
+
+If Connection.SupportsMultiCredit is TRUE, the server MUST validate
+CreditCharge based on the maximum of (InputCount + OutputCount) and
+(MaxInputResponse + MaxOutputResponse), as specified in section 3.3.5.2.5.
+If the validation fails, it MUST fail the IOCTL request with
+STATUS_INVALID_PARAMETER.
+
+This patch add indatalen that can be a non-zero value to calculation of
+credit charge in SMB2_ioctl_init().
+
+Fixes: e80ddeb2f70e ("smb3: fix incorrect number of credits when ioctl
+MaxOutputResponse > 64K")
+Cc: Stable <stable@vger.kernel.org>
 Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Cc: Steve French <smfrench@gmail.com>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2pdu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/cifs/smb2pdu.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 --- a/fs/cifs/smb2pdu.c
 +++ b/fs/cifs/smb2pdu.c
-@@ -2868,7 +2868,7 @@ SMB2_ioctl_init(struct cifs_tcon *tcon,
+@@ -2868,7 +2868,9 @@ SMB2_ioctl_init(struct cifs_tcon *tcon,
  	 * response size smaller.
  	 */
  	req->MaxOutputResponse = cpu_to_le32(max_response_size);
--
-+	req->sync_hdr.CreditCharge = cpu_to_le16(DIV_ROUND_UP(max_response_size, SMB2_MAX_BUFFER_SIZE));
+-	req->sync_hdr.CreditCharge = cpu_to_le16(DIV_ROUND_UP(max_response_size, SMB2_MAX_BUFFER_SIZE));
++	req->sync_hdr.CreditCharge =
++		cpu_to_le16(DIV_ROUND_UP(max(indatalen, max_response_size),
++					 SMB2_MAX_BUFFER_SIZE));
  	if (is_fsctl)
  		req->Flags = cpu_to_le32(SMB2_0_IOCTL_IS_FSCTL);
  	else
