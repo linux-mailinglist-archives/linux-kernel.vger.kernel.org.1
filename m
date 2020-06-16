@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6A11FB8D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FD51FB7B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732861AbgFPPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
+        id S1732420AbgFPPsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732645AbgFPPxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:20 -0400
+        id S1732402AbgFPPsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:48:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9BAE208D5;
-        Tue, 16 Jun 2020 15:53:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 122C321475;
+        Tue, 16 Jun 2020 15:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322799;
-        bh=1BASumY08X9jKYnZYYImwDQRIC3ADcK3JVDtXC4Sdrs=;
+        s=default; t=1592322498;
+        bh=31K/xXAjmx9ivj+GVlLUEC+9mIQeg4WPdAZ970qHfUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFYmauMiTEefEUyMKbvGTon7lfblF/S0zqQ6hp+2QKjFRLn1j3saz/06lFuZrdTNp
-         eNQKOnS+ylbtFQpgMJKHhC0mUXVrqyD90hTYu75Cm6g1J68WlbIsmJ1he2A9/xQGYJ
-         Ih49ERhcU6zchyJrKqlMren3Gndngvv4Wi4/W18s=
+        b=BUwaG9AGeRVmtBZg112eP7ekZpt05tEr/Kc7tgHrPKzqFbyqnQ1i+983zoMzzSbUx
+         bk+tow5QfDvZxUW4Rh/6ID17lQNYI0feiXAmTEOWDpwtk24fqiztgXKb4Xrm6ExX2H
+         1p9/8AyOFu9mCmhXkxd6Ok27iYSLiBNz88QguD2U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shay Drory <shayd@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.6 109/161] net/mlx5: drain health workqueue in case of driver load error
-Date:   Tue, 16 Jun 2020 17:34:59 +0200
-Message-Id: <20200616153111.550361331@linuxfoundation.org>
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.7 126/163] media: videobuf2-dma-contig: fix bad kfree in vb2_dma_contig_clear_max_seg_size
+Date:   Tue, 16 Jun 2020 17:35:00 +0200
+Message-Id: <20200616153112.850479071@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,104 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Drory <shayd@mellanox.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-[ Upstream commit 42ea9f1b5c625fad225d4ac96a7e757dd4199d9c ]
+commit 0d9668721311607353d4861e6c32afeb272813dc upstream.
 
-In case there is a work in the health WQ when we teardown the driver,
-in driver load error flow, the health work will try to read dev->iseg,
-which was already unmap in mlx5_pci_close().
-Fix it by draining the health workqueue first thing in mlx5_pci_close().
+Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
+Initialize dma_parms for platform devices") in v5.7-rc5 causes
+vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
+allocated by vb2_dma_contig_set_max_seg_size().
 
-Trace of the error:
-BUG: unable to handle page fault for address: ffffb5b141c18014
-PF: supervisor read access in kernel mode
-PF: error_code(0x0000) - not-present page
-PGD 1fe95d067 P4D 1fe95d067 PUD 1fe95e067 PMD 1b7823067 PTE 0
-Oops: 0000 [#1] SMP PTI
-CPU: 3 PID: 6755 Comm: kworker/u128:2 Not tainted 5.2.0-net-next-mlx5-hv_stats-over-last-worked-hyperv #1
-Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090006  04/28/2016
-Workqueue: mlx5_healtha050:00:02.0 mlx5_fw_fatal_reporter_err_work [mlx5_core]
-RIP: 0010:ioread32be+0x30/0x40
-Code: 00 77 27 48 81 ff 00 00 01 00 76 07 0f b7 d7 ed 0f c8 c3 55 48 c7 c6 3b ee d5 9f 48 89 e5 e8 67 fc ff ff b8 ff ff ff ff 5d c3 <8b> 07 0f c8 c3 66 66 2e 0f 1f 84 00 00 00 00 00 48 81 fe ff ff 03
-RSP: 0018:ffffb5b14c56fd78 EFLAGS: 00010292
-RAX: ffffb5b141c18000 RBX: ffff8e9f78a801c0 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffff8e9f7ecd7628 RDI: ffffb5b141c18014
-RBP: ffffb5b14c56fd90 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff8e9f372a2c30 R11: ffff8e9f87f4bc40 R12: ffff8e9f372a1fc0
-R13: ffff8e9f78a80000 R14: ffffffffc07136a0 R15: ffff8e9f78ae6f20
-FS:  0000000000000000(0000) GS:ffff8e9f7ecc0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffb5b141c18014 CR3: 00000001c8f82006 CR4: 00000000003606e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ? mlx5_health_try_recover+0x4d/0x270 [mlx5_core]
- mlx5_fw_fatal_reporter_recover+0x16/0x20 [mlx5_core]
- devlink_health_reporter_recover+0x1c/0x50
- devlink_health_report+0xfb/0x240
- mlx5_fw_fatal_reporter_err_work+0x65/0xd0 [mlx5_core]
- process_one_work+0x1fb/0x4e0
- ? process_one_work+0x16b/0x4e0
- worker_thread+0x4f/0x3d0
- kthread+0x10d/0x140
- ? process_one_work+0x4e0/0x4e0
- ? kthread_cancel_delayed_work_sync+0x20/0x20
- ret_from_fork+0x1f/0x30
-Modules linked in: nfsv3 rpcsec_gss_krb5 nfsv4 nfs fscache 8021q garp mrp stp llc ipmi_devintf ipmi_msghandler rpcrdma rdma_ucm ib_iser rdma_cm ib_umad iw_cm ib_ipoib libiscsi scsi_transport_iscsi ib_cm mlx5_ib ib_uverbs ib_core mlx5_core sb_edac crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel aes_x86_64 mlxfw crypto_simd cryptd glue_helper input_leds hyperv_fb intel_rapl_perf joydev serio_raw pci_hyperv pci_hyperv_mini mac_hid hv_balloon nfsd auth_rpcgss nfs_acl lockd grace sunrpc sch_fq_codel ip_tables x_tables autofs4 hv_utils hid_generic hv_storvsc ptp hid_hyperv hid hv_netvsc hyperv_keyboard pps_core scsi_transport_fc psmouse hv_vmbus i2c_piix4 floppy pata_acpi
-CR2: ffffb5b141c18014
----[ end trace b12c5503157cad24 ]---
-RIP: 0010:ioread32be+0x30/0x40
-Code: 00 77 27 48 81 ff 00 00 01 00 76 07 0f b7 d7 ed 0f c8 c3 55 48 c7 c6 3b ee d5 9f 48 89 e5 e8 67 fc ff ff b8 ff ff ff ff 5d c3 <8b> 07 0f c8 c3 66 66 2e 0f 1f 84 00 00 00 00 00 48 81 fe ff ff 03
-RSP: 0018:ffffb5b14c56fd78 EFLAGS: 00010292
-RAX: ffffb5b141c18000 RBX: ffff8e9f78a801c0 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffff8e9f7ecd7628 RDI: ffffb5b141c18014
-RBP: ffffb5b14c56fd90 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff8e9f372a2c30 R11: ffff8e9f87f4bc40 R12: ffff8e9f372a1fc0
-R13: ffff8e9f78a80000 R14: ffffffffc07136a0 R15: ffff8e9f78ae6f20
-FS:  0000000000000000(0000) GS:ffff8e9f7ecc0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffb5b141c18014 CR3: 00000001c8f82006 CR4: 00000000003606e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-BUG: sleeping function called from invalid context at ./include/linux/percpu-rwsem.h:38
-in_atomic(): 0, irqs_disabled(): 1, pid: 6755, name: kworker/u128:2
-INFO: lockdep is turned off.
-CPU: 3 PID: 6755 Comm: kworker/u128:2 Tainted: G      D           5.2.0-net-next-mlx5-hv_stats-over-last-worked-hyperv #1
-Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090006  04/28/2016
-Workqueue: mlx5_healtha050:00:02.0 mlx5_fw_fatal_reporter_err_work [mlx5_core]
-Call Trace:
- dump_stack+0x63/0x88
- ___might_sleep+0x10a/0x130
- __might_sleep+0x4a/0x80
- exit_signals+0x33/0x230
- ? blocking_notifier_call_chain+0x16/0x20
- do_exit+0xb1/0xc30
- ? kthread+0x10d/0x140
- ? process_one_work+0x4e0/0x4e0
+The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
+dev->dma_parms is always NULL when the driver is probed, and the case
+where dev->dma_parms has bee initialized by someone else than the driver
+(by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
 
-Fixes: 52c368dc3da7 ("net/mlx5: Move health and page alloc init to mdev_init")
-Signed-off-by: Shay Drory <shayd@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+All the current users of these functions are platform devices, which now
+always have dma_parms set by the driver core. To fix the issue for v5.7,
+make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
+NULL to be on the safe side, and remove the kfree code from
+vb2_dma_contig_clear_max_seg_size().
+
+For v5.8 we should remove the two functions and move the
+dma_set_max_seg_size() calls into the drivers.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
+Cc: stable@vger.kernel.org
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/main.c |    5 +++++
- 1 file changed, 5 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -794,6 +794,11 @@ err_disable:
- 
- static void mlx5_pci_close(struct mlx5_core_dev *dev)
+---
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c |   20 +-----------------
+ include/media/videobuf2-dma-contig.h                  |    2 -
+ 2 files changed, 3 insertions(+), 19 deletions(-)
+
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -726,9 +726,8 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_memops)
+ int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size)
  {
-+	/* health work might still be active, and it needs pci bar in
-+	 * order to know the NIC state. Therefore, drain the health WQ
-+	 * before removing the pci bars
-+	 */
-+	mlx5_drain_health_wq(dev);
- 	iounmap(dev->iseg);
- 	pci_clear_master(dev->pdev);
- 	release_bar(dev->pdev);
+ 	if (!dev->dma_parms) {
+-		dev->dma_parms = kzalloc(sizeof(*dev->dma_parms), GFP_KERNEL);
+-		if (!dev->dma_parms)
+-			return -ENOMEM;
++		dev_err(dev, "Failed to set max_seg_size: dma_parms is NULL\n");
++		return -ENODEV;
+ 	}
+ 	if (dma_get_max_seg_size(dev) < size)
+ 		return dma_set_max_seg_size(dev, size);
+@@ -737,21 +736,6 @@ int vb2_dma_contig_set_max_seg_size(stru
+ }
+ EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+ 
+-/*
+- * vb2_dma_contig_clear_max_seg_size() - release resources for DMA parameters
+- * @dev:	device for configuring DMA parameters
+- *
+- * This function releases resources allocated to configure DMA parameters
+- * (see vb2_dma_contig_set_max_seg_size() function). It should be called from
+- * device drivers on driver remove.
+- */
+-void vb2_dma_contig_clear_max_seg_size(struct device *dev)
+-{
+-	kfree(dev->dma_parms);
+-	dev->dma_parms = NULL;
+-}
+-EXPORT_SYMBOL_GPL(vb2_dma_contig_clear_max_seg_size);
+-
+ MODULE_DESCRIPTION("DMA-contig memory handling routines for videobuf2");
+ MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+ MODULE_LICENSE("GPL");
+--- a/include/media/videobuf2-dma-contig.h
++++ b/include/media/videobuf2-dma-contig.h
+@@ -25,7 +25,7 @@ vb2_dma_contig_plane_dma_addr(struct vb2
+ }
+ 
+ int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size);
+-void vb2_dma_contig_clear_max_seg_size(struct device *dev);
++static inline void vb2_dma_contig_clear_max_seg_size(struct device *dev) { }
+ 
+ extern const struct vb2_mem_ops vb2_dma_contig_memops;
+ 
 
 
