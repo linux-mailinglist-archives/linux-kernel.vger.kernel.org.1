@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662021FAEAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40BC1FAEB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 12:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgFPKxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 06:53:39 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53670 "EHLO
+        id S1728494AbgFPKyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 06:54:41 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53754 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgFPKxi (ORCPT
+        with ESMTP id S1725901AbgFPKyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 06:53:38 -0400
+        Tue, 16 Jun 2020 06:54:39 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9C73E1C0BD2; Tue, 16 Jun 2020 12:53:36 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 12:53:25 +0200
+        id A00DE1C0BD2; Tue, 16 Jun 2020 12:54:38 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 12:54:29 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     rui.zhang@intel.com, ulf.hansson@linaro.org,
-        daniel.lezcano@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, robh@kernel.org, amit.kucheria@verdurent.com,
-        mark.rutland@arm.com, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/6] Introduce Power domain based warming device driver
-Message-ID: <20200616105325.GH1718@bug>
-References: <20200604015317.31389-1-thara.gopinath@linaro.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     jacek.anaszewski@gmail.com, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v27 03/15] leds: multicolor: Introduce a multicolor class
+ definition
+Message-ID: <20200616105429.GI1718@bug>
+References: <20200608193917.13084-1-dmurphy@ti.com>
+ <20200608193917.13084-4-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200604015317.31389-1-thara.gopinath@linaro.org>
+In-Reply-To: <20200608193917.13084-4-dmurphy@ti.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -38,19 +36,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-> Certain resources modeled as a generic power domain in linux kernel can be
-> used to warm up the SoC (mx power domain on sdm845) if the temperature
-> falls below certain threshold. These power domains can be considered as
-> thermal warming devices.  (opposite of thermal cooling devices).
+> +static ssize_t multi_intensity_show(struct device *dev,
+> +			      struct device_attribute *intensity_attr,
+> +			      char *buf)
+> +{
+> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+> +	struct led_classdev_mc *mcled_cdev = lcdev_to_mccdev(led_cdev);
+> +	int len = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < mcled_cdev->num_colors; i++) {
+> +		len += sprintf(buf + len, "%d",
+> +			       mcled_cdev->subled_info[i].intensity);
+> +		if (i < mcled_cdev->num_colors)
+> +			len += sprintf(buf + len, " ");
 
-Would you explain when this is needed?
-
-I'd normally expect "too low" temperature to be a problem during power-on, but at
-that time Linux is not running so it can not provide the heating...
-
-Best regards,
+Always false, AFAICT.
 
 									Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
