@@ -2,107 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790411FBF16
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4651FBF19
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730746AbgFPTjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 15:39:15 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:32992 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728518AbgFPTjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:39:14 -0400
-Received: by mail-il1-f197.google.com with SMTP id c11so15335541ilq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 12:39:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xhWTXz6SmpEnhzfxWd+ix6TSZuz6ykxq9UiT0D4oYAs=;
-        b=c0pyTyouSa81/h/wgHo0Lnl+tObQ0C4jncrvsB7Sbo1fC1WKsbXSyl2iy/z4NPTZuD
-         StUQsRI7sEiz1RJSDaOkdEK+Nc0JLiKoFDHG5AUu7jdMDpC8ZIo0lxA5PkJh1FksKL1I
-         7Yf/IUhPvuV0H7k+BnPQ1Ch5IsTivjk5T54BoCOb8UTk4zuqh14rg6wBfEBTEUpEbOrb
-         mM+JHmyNvvCMPMDl8YDQIyJa/v0u7glDO9NhCPzX+a6UpWFbvRqyRNuEMp9qq5aYtlFD
-         /PPc2oeyB2Pb9xyRyLhgv5OHdher3Dj85DqbfTRMZlgJHC2bCJIzJPWBxQEBdxhYw9FZ
-         MfQg==
-X-Gm-Message-State: AOAM532Q9+pvtQyBxN6iiwd6lTBLUmT4peuo0Rd3SP2G3GeVzWnqKe77
-        hA2VFKHTPt3UFfHqfCkgpveWqkf70Hn3MzDX1kNxJdGtqWPC
-X-Google-Smtp-Source: ABdhPJybcNcAP46lIRGqhcmL2DWu9VS8dbLVuupp560V+LfqLzVSt4u+Oi1giUa6whiX5ml9Qf1TlhPyzYCQlwGoOFEDK7jfloWj
+        id S1731043AbgFPTjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:39:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730301AbgFPTjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:39:44 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.162.131.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4CEF20810;
+        Tue, 16 Jun 2020 19:39:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592336383;
+        bh=U9o4JDxYO4HNf8D/oWmzZNEgJEBeZ4ggZ5aIabFuHsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JlZPYrjxwuNUPfBD7BnE1pGI/HjWxnIw4AKtYf7U3LvsTm0AIA3DSR5AKdYCDJhgP
+         iB+OHlswRoUXtmkAQvtq0FxN3xsu20kr78qzfpjgP3Ry1QWOsWlsZpyfxwM3jQe01z
+         4O6C3m0OgIfstvfu6AK8CJ/TW1KhmkPZJDnmjPVU=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0C94940AFD; Tue, 16 Jun 2020 16:39:41 -0300 (-03)
+Date:   Tue, 16 Jun 2020 16:39:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] tools build: Check libasan and libubsan in
+ Makefile.feature
+Message-ID: <20200616193941.GD6393@kernel.org>
+References: <1591164604-20806-1-git-send-email-yangtiezhu@loongson.cn>
+ <20200603113228.GV31795@kernel.org>
+ <7bbd7c0c-7e09-7eaf-5a54-602e70e36112@loongson.cn>
 MIME-Version: 1.0
-X-Received: by 2002:a92:2907:: with SMTP id l7mr4878547ilg.48.1592336353676;
- Tue, 16 Jun 2020 12:39:13 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 12:39:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b953d805a838b240@google.com>
-Subject: KASAN: user-memory-access Read in sync_vmcs02_to_vmcs12
-From:   syzbot <syzbot+961278f56598a876c889@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bbd7c0c-7e09-7eaf-5a54-602e70e36112@loongson.cn>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Mon, Jun 15, 2020 at 10:20:10AM +0800, Tiezhu Yang escreveu:
+> On 06/03/2020 07:32 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Jun 03, 2020 at 02:10:04PM +0800, Tiezhu Yang escreveu:
+> > > When build perf with ASan or UBSan, if libasan or libubsan can not find,
+> > > the feature-glibc is 0 and there exists the following error log which is
+> > > wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
+> > > is also installed.
+> > > [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
+> > >    BUILD:   Doing 'make -j4' parallel build
+> > >    HOSTCC   fixdep.o
+> > >    HOSTLD   fixdep-in.o
+> > >    LINK     fixdep
+> > > <stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
+> > > <stdin>:1:0: warning: -fsanitize=address not supported for this target
+> > > Auto-detecting system features:
+> > > ...                         dwarf: [ OFF ]
+> > > ...            dwarf_getlocations: [ OFF ]
+> > > ...                         glibc: [ OFF ]
+> > > ...                          gtk2: [ OFF ]
+> > > ...                      libaudit: [ OFF ]
+> > > ...                        libbfd: [ OFF ]
+> > > ...                        libcap: [ OFF ]
+> > > ...                        libelf: [ OFF ]
+> > > ...                       libnuma: [ OFF ]
+> > > ...        numa_num_possible_cpus: [ OFF ]
+> > > ...                       libperl: [ OFF ]
+> > > ...                     libpython: [ OFF ]
+> > > ...                     libcrypto: [ OFF ]
+> > > ...                     libunwind: [ OFF ]
+> > > ...            libdw-dwarf-unwind: [ OFF ]
+> > > ...                          zlib: [ OFF ]
+> > > ...                          lzma: [ OFF ]
+> > > ...                     get_cpuid: [ OFF ]
+> > > ...                           bpf: [ OFF ]
+> > > ...                        libaio: [ OFF ]
+> > > ...                       libzstd: [ OFF ]
+> > > ...        disassembler-four-args: [ OFF ]
+> > > 
+> > > Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
+> > > Makefile.perf:224: recipe for target 'sub-make' failed
+> > > make[1]: *** [sub-make] Error 2
+> > > Makefile:69: recipe for target 'all' failed
+> > > make: *** [all] Error 2
+> > > [yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
+> > > /usr/include/gnu/libc-version.h
+> > > 
+> > > After install libasan and libubsan, the feature-glibc is 1 and the build
+> > > process is success, so the cause is related with libasan or libubsan, we
+> > > should check them and print an error log to reflect the reality.
+> > > 
+> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > > ---
+> > > 
+> > > v2:
+> > >    - Check libasan and libubsan in tools/build/Makefile.feature
+> > >    - Modify the patch subject
+> > > 
+> > >   tools/build/Makefile.feature | 7 +++++++
+> > >   1 file changed, 7 insertions(+)
+> > > 
+> > > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> > > index 3abd431..e147c17 100644
+> > > --- a/tools/build/Makefile.feature
+> > > +++ b/tools/build/Makefile.feature
+> > > @@ -252,3 +252,10 @@ ifeq ($(feature_verbose),1)
+> > >     $(foreach feat,$(TMP),$(call feature_print_status,$(feat),))
+> > >     $(info )
+> > >   endif
+> > > +
+> > > +ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
+> > > +  msg := $(error No libasan found, please install libasan);
+> > > +endif
+> > > +ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
+> > > +  msg := $(error No libubsan found, please install libubsan);
+> > > +endif
+> > Hey, we need to only do that if -fsanitize=address is in EXTRA_CFLAGS,
+> > right?
+> 
+> Sorry for the late reply.
+> Maybe -fsanitize=undefined is also needed.
+> Please reference tools/perf/Documentation/Build.txt
 
-syzbot found the following crash on:
+Can you send an updated patch then?
+ 
+> > 
+> > I applied it and got:
+> > 
+> >    $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf
+> >    $ make O=/tmp/build/perf -C tools/perf install-bin
+> >    make: Entering directory '/home/acme/git/perf/tools/perf'
+> >      BUILD:   Doing 'make -j8' parallel build
+> >      HOSTCC   /tmp/build/perf/fixdep.o
+> >      HOSTLD   /tmp/build/perf/fixdep-in.o
+> >      LINK     /tmp/build/perf/fixdep
+> >    Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest version at 'tools/lib/bpf/hashmap.h'
+> >    diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+> >    Warning: Kernel ABI header at 'tools/perf/util/hashmap.c' differs from latest version at 'tools/lib/bpf/hashmap.c'
+> >    diff -u tools/perf/util/hashmap.c tools/lib/bpf/hashmap.c
+> >    Auto-detecting system features:
+> >    ...                         dwarf: [ on  ]
+> >    ...            dwarf_getlocations: [ on  ]
+> >    ...                         glibc: [ on  ]
+> >    ...                          gtk2: [ on  ]
+> >    ...                        libbfd: [ on  ]
+> >    ...                        libcap: [ on  ]
+> >    ...                        libelf: [ on  ]
+> >    ...                       libnuma: [ on  ]
+> >    ...        numa_num_possible_cpus: [ on  ]
+> >    ...                       libperl: [ on  ]
+> >    ...                     libpython: [ on  ]
+> >    ...                     libcrypto: [ on  ]
+> >    ...                     libunwind: [ on  ]
+> >    ...            libdw-dwarf-unwind: [ on  ]
+> >    ...                          zlib: [ on  ]
+> >    ...                          lzma: [ on  ]
+> >    ...                     get_cpuid: [ on  ]
+> >    ...                           bpf: [ on  ]
+> >    ...                        libaio: [ on  ]
+> >    ...                       libzstd: [ on  ]
+> >    ...        disassembler-four-args: [ on  ]
+> >    /home/acme/git/perf/tools/build/Makefile.feature:255: *** No libasan found, please install libasan.  Stop.
+> >    make[1]: *** [Makefile.perf:231: sub-make] Error 2
+> >    make: *** [Makefile:110: install-bin] Error 2
+> >    make: Leaving directory '/home/acme/git/perf/tools/perf'
+> >    $
+> > 
+> > Something enclosed in:
+> > 
+> > 	ifneq ($(filter s% -fsanitize=address%,$(EXTRA_CFLAGS),),)
+> > 
+> > Right Jiri?
+> > 
+> > - Arnaldo
+> 
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f70989100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
-dashboard link: https://syzkaller.appspot.com/bug?extid=961278f56598a876c889
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+-- 
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+961278f56598a876c889@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: user-memory-access in vmcs12_guest_cr0 arch/x86/kvm/vmx/nested.c:3545 [inline]
-BUG: KASAN: user-memory-access in sync_vmcs02_to_vmcs12+0x16fb/0x1a40 arch/x86/kvm/vmx/nested.c:3960
-Read of size 18446744071694194346 at addr 0000000001617928 by task systemd-udevd/3877
-
-CPU: 1 PID: 3877 Comm: systemd-udevd Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:517 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
- vmcs12_guest_cr0 arch/x86/kvm/vmx/nested.c:3545 [inline]
- sync_vmcs02_to_vmcs12+0x16fb/0x1a40 arch/x86/kvm/vmx/nested.c:3960
- </IRQ>
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 3877 Comm: systemd-udevd Tainted: G    B             5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- end_report+0x4d/0x53 mm/kasan/report.c:104
- __kasan_report mm/kasan/report.c:520 [inline]
- kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
- vmcs12_guest_cr0 arch/x86/kvm/vmx/nested.c:3545 [inline]
- sync_vmcs02_to_vmcs12+0x16fb/0x1a40 arch/x86/kvm/vmx/nested.c:3960
- </IRQ>
-Shutting down cpus with NMI
-Kernel Offset: disabled
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Arnaldo
