@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629AE1FB6FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5081FB657
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731663AbgFPPmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:42:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58692 "EHLO mail.kernel.org"
+        id S1729922AbgFPPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731635AbgFPPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:42:14 -0400
+        id S1729893AbgFPPgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:36:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8154E214DB;
-        Tue, 16 Jun 2020 15:42:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35DC62098B;
+        Tue, 16 Jun 2020 15:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322134;
-        bh=djLqvwOIRLMfyQA3QMmRQ5njsQ6BvC6f0GfJ1VSuINc=;
+        s=default; t=1592321776;
+        bh=oI8bt8FHuEyhhxFsFd+uUjYBPVSPisKrstaA3CDzgjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xn7Ktcl/aUw2au+U95jtXDBIjucxuLttWyvDJD0ThUKreQH/U2iAD18PsQEhaNHAb
-         IKoKJig8o/YRYlvNmfdrkJXDdRft1dQ+a7EQtbKpAYHhh1ExrvqdiHiPg5c6MYjGTP
-         Pgp/nHMDBgQEdJkAg9bL6eILcDr3D6hkUewzmbGw=
+        b=POMFAjWwPmnO0ffv2Y/3mLQXIJ5yvzU+cosLSygCGvzA1o5dVLUoR06DPSGWjnDwf
+         xehTOu7VVHiufJO2cS2hcxjvI8xluIf7xuL54R/z5Co8aHY+PiaMiu3JLaMkMA9l6l
+         g3ywtppX232JN+YEr2qoPC7tOe/0ssSQQ+/l53Jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 014/163] staging: mt7621-pci: properly power off dual-ported pcie phy
+        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 004/134] tun: correct header offsets in napi frags mode
 Date:   Tue, 16 Jun 2020 17:33:08 +0200
-Message-Id: <20200616153107.558370601@linuxfoundation.org>
+Message-Id: <20200616153100.866996132@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 5fcded5e857cf66c9592e4be28c4dab4520c9177 ]
+[ Upstream commit 96aa1b22bd6bb9fccf62f6261f390ed6f3e7967f ]
 
-Pcie phy for pcie0 and pcie1 is shared using a dual ported
-one. Current code was assuming that if nothing is connected
-in pcie0 it won't be also nothing connected in pcie1. This
-assumtion is wrong for some devices such us 'Mikrotik rbm33g'
-and 'ZyXEL LTE3301-PLUS' where only connecting a card to the
-second bus on the phy is possible. For such devices kernel
-hangs in the same point because of the wrong poweroff of the
-phy getting the following trace:
+Tun in IFF_NAPI_FRAGS mode calls napi_gro_frags. Unlike netif_rx and
+netif_gro_receive, this expects skb->data to point to the mac layer.
 
-mt7621-pci-phy 1e149000.pcie-phy: PHY for 0xbe149000 (dual port = 1)
-mt7621-pci-phy 1e14a000.pcie-phy: PHY for 0xbe14a000 (dual port = 0)
-mt7621-pci-phy 1e149000.pcie-phy: Xtal is 40MHz
-mt7621-pci-phy 1e14a000.pcie-phy: Xtal is 40MHz
-mt7621-pci 1e140000.pcie: pcie0 no card, disable it (RST & CLK)
-[hangs]
+But skb_probe_transport_header, __skb_get_hash_symmetric, and
+xdp_do_generic in tun_get_user need skb->data to point to the network
+header. Flow dissection also needs skb->protocol set, so
+eth_type_trans has to be called.
 
-The wrong assumption is located in the 'mt7621_pcie_init_ports'
-function where we are just making a power off of the phy for
-slots 0 and 2 if nothing is connected in them. Hence, only
-poweroff the phy if nothing is connected in both slot 0 and
-slot 1 avoiding the kernel to hang.
+Ensure the link layer header lies in linear as eth_type_trans pulls
+ETH_HLEN. Then take the same code paths for frags as for not frags.
+Push the link layer header back just before calling napi_gro_frags.
 
-Fixes: 5737cfe87a9c ("staging: mt7621-pci: avoid to poweroff the phy for slot one")
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Link: https://lore.kernel.org/r/20200409111652.30964-1-sergio.paracuellos@gmail.com
+By pulling up to ETH_HLEN from frag0 into linear, this disables the
+frag0 optimization in the special case when IFF_NAPI_FRAGS is used
+with zero length iov[0] (and thus empty skb->linear).
+
+Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Petar Penkov <ppenkov@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/mt7621-pci/pci-mt7621.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/net/tun.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
-index f58e3a51fc71..b9d460a9c041 100644
---- a/drivers/staging/mt7621-pci/pci-mt7621.c
-+++ b/drivers/staging/mt7621-pci/pci-mt7621.c
-@@ -502,17 +502,25 @@ static void mt7621_pcie_init_ports(struct mt7621_pcie *pcie)
- 
- 	mt7621_pcie_reset_ep_deassert(pcie);
- 
-+	tmp = NULL;
- 	list_for_each_entry(port, &pcie->ports, list) {
- 		u32 slot = port->slot;
- 
- 		if (!mt7621_pcie_port_is_linkup(port)) {
- 			dev_err(dev, "pcie%d no card, disable it (RST & CLK)\n",
- 				slot);
--			if (slot != 1)
--				phy_power_off(port->phy);
- 			mt7621_control_assert(port);
- 			mt7621_pcie_port_clk_disable(port);
- 			port->enabled = false;
-+
-+			if (slot == 0) {
-+				tmp = port;
-+				continue;
-+			}
-+
-+			if (slot == 1 && tmp && !tmp->enabled)
-+				phy_power_off(tmp->phy);
-+
- 		}
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1908,8 +1908,11 @@ drop:
+ 		skb->dev = tun->dev;
+ 		break;
+ 	case IFF_TAP:
+-		if (!frags)
+-			skb->protocol = eth_type_trans(skb, tun->dev);
++		if (frags && !pskb_may_pull(skb, ETH_HLEN)) {
++			err = -ENOMEM;
++			goto drop;
++		}
++		skb->protocol = eth_type_trans(skb, tun->dev);
+ 		break;
  	}
- }
--- 
-2.25.1
-
+ 
+@@ -1966,9 +1969,12 @@ drop:
+ 	}
+ 
+ 	if (frags) {
++		u32 headlen;
++
+ 		/* Exercise flow dissector code path. */
+-		u32 headlen = eth_get_headlen(tun->dev, skb->data,
+-					      skb_headlen(skb));
++		skb_push(skb, ETH_HLEN);
++		headlen = eth_get_headlen(tun->dev, skb->data,
++					  skb_headlen(skb));
+ 
+ 		if (unlikely(headlen > skb_headlen(skb))) {
+ 			this_cpu_inc(tun->pcpu_stats->rx_dropped);
 
 
