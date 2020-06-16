@@ -2,404 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385CB1FB3C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8027E1FB3D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729607AbgFPOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S1729327AbgFPOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgFPOKa (ORCPT
+        with ESMTP id S1726606AbgFPOMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:10:30 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F83C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:10:30 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m2so15999145otr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:10:30 -0700 (PDT)
+        Tue, 16 Jun 2020 10:12:12 -0400
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (mail-co1nam04on060f.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe4d::60f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF97C061573;
+        Tue, 16 Jun 2020 07:12:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YYbs7WbaqcgOHowwTAFIOYPW4eEQEU82XDIEbiNd1g0lj5GckgC+wBSMCDTDtYj7ygft/UaTlDX+25rjCCu9E/Fom6pldOwB622iqbJdzR8VzKGIA5DjuhfQN+litakTsvkjnH1qXc0DxR6rLQifGKiLVXxoDvxQIXswaybkoxJeNOY1dDDAtbjr0vRIfdM+PGRO39U6dJIAKO1isKrATkfDSvhW76PoIdDPBr3+I5ktUkask+CmOXdHSbMPjMFv9l0Kxh341NRXpVYbAftOI5XEOO8y3xPuRoYvP/zTDIlE9k45DkEmP+qxOha21PGHjlz4f32ZClFtnHLQVWH6KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2rWjLFAz6hSEhrToELMwJOaMgwtLNS1qpS3Rq9tn3fA=;
+ b=JtMm190/ooIKvCrmZmgzI2liqWe2zJkNl+t9yrxm7P1auhCDq9w/nOVkF2vCnnPkey4sJ4iqJvmFftJJpwSZNHsr/pc8NHtSXbvJmyAFygERAkeo/Zm8YwS+37PoUUnwm0gpcc+r6mSmD/kQ/FEvX4hksAjqz4NQ5cciyHovE6hYWNcCgUnYILfEUBLeMM5GpyXqtuoD53pFcbhxQ75gdHDZYoQtiIXtt5tMjx6nTlQ7K6koclzyWEwW8W0UJvFu5xWGLEB7Xr7ErWK1OhhPc0Pg+PogI2DehbyvhqL35VJAou5o7OArWtzhZp7AKMWrJ3uTTbjFe8r0JmE7SBaiog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=trGOg5UBBYYL7rUCjbNWbKu0eAZYMEFOByjiF7r4U4Y=;
-        b=Mn2tXoP683XxX2HPt17iFXCiTrCWPtwbVZtJU0oc1tVKr0oNEb35PYSH1vaChXt7tk
-         CCeK/Ddt11v6jywgu0p3vRN+SOYMQ5JWXWac6IbJpJ8dFbAHk/1jRNyxTXn8WEscoznv
-         DLuWhxlqpMBfAf5ghfeTdg1O8sojjVuroocwy3YQFcVBl2x3B1mujemX5ajh2/Hd1xX3
-         oVxWTa5o6D10VhKN7H1io9/HnRYc4SA4xXB0o6bLyCblgCfTcl9XQieua3Bc0vtXI6pO
-         FleNaVGCGYT/KArsIc/vFTV5TIwOMBQlyZDqMnhTRbph1BJX2Ve/SS+xTmShX44P+zwV
-         xhcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=trGOg5UBBYYL7rUCjbNWbKu0eAZYMEFOByjiF7r4U4Y=;
-        b=QUu16Kn6nOJl9kZ+5dyP5eLlkMK9IG+3cvCtP9OZp5tmaCsKqRiRxn204s78ZpVXkt
-         u4xglXvEFG15fNhZ+2vcHxavEu6Kn3BQG2pf4VGPDGFRRfqIF933JWMjMhMYchbwc8CR
-         RpGZbhmy48sUe3uDxTopZkx9aYEqC+Jb0f/pETi2XxubJkba/YDFPZvhhU1zydm+9yhx
-         JUDcmLiausRWNNp4hR6pWKIUgtJ1oLnuL4MUJqxI7CmZv9BjTnrJR+7trAt5FmtKuKY3
-         qZUxlpdENSosbxzEtt+I4f4x6DEUD2gxh6BlB4xJOQ/qeUVFqKawlha0v1iR+5gIu4Tf
-         uj3g==
-X-Gm-Message-State: AOAM533pRaOwC3sTL+gVhiFhM8YRMvkHl/ny4f7QXE+YsU6fLc9q9yb2
-        FcXMi7l74KKh9uq0J2mHtJopie5t9u7nQofmKyWjlOq6DIU=
-X-Google-Smtp-Source: ABdhPJxTI+38rRBKV16KM9ntW+34w6soJ7TmOAPg4p9wO1+NSKATdME0T5nQpvAD0XRNJjRKwofSyzqIfDpVOIN6cTU=
-X-Received: by 2002:a9d:4b90:: with SMTP id k16mr2461901otf.69.1592316629231;
- Tue, 16 Jun 2020 07:10:29 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2rWjLFAz6hSEhrToELMwJOaMgwtLNS1qpS3Rq9tn3fA=;
+ b=2MCb+1GD7b1twn0emi4rU8aQI0ExgYyTi9Lq4CTQUxL1juI/nfq5sVbldZ6+Pb1rHXvP6CeqR8JUTel5+6fDY+YA3+FQd8/18158u/J5pi2a97X61xlVE79MlJd5Via9nmkfWJgfjxnOx9ZFRPcGzkY4c2SzES6c/mCB0/sBJN0=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR1201MB0209.namprd12.prod.outlook.com (2603:10b6:405:4d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Tue, 16 Jun
+ 2020 14:12:06 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::2c67:480d:4505:5314]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::2c67:480d:4505:5314%3]) with mapi id 15.20.3109.021; Tue, 16 Jun 2020
+ 14:12:06 +0000
+Date:   Tue, 16 Jun 2020 09:11:59 -0500
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jacky Hu <hengqing.hu@gmail.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Subject: Re: [PATCH 0/2] MCA and EDAC updates for AMD Family 17h, Model 60h
+Message-ID: <20200616141159.GA3963646@yaz-nikka.amd.com>
+References: <20200607043709.48178-1-hengqing.hu@gmail.com>
+ <20200615115950.GG14668@zn.tnic>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200615115950.GG14668@zn.tnic>
+X-ClientProxiedBy: DM3PR11CA0021.namprd11.prod.outlook.com
+ (2603:10b6:0:54::31) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <CGME20200616080413epcas1p4c8ff98e9a79c59fd9a43db6a9d507417@epcas1p4.samsung.com>
- <20200617020550.23159-1-jaewon31.kim@samsung.com> <8f809f31-47bb-9f48-1b7d-e0a3ae14e6b9@suse.cz>
-In-Reply-To: <8f809f31-47bb-9f48-1b7d-e0a3ae14e6b9@suse.cz>
-From:   Jaewon Kim <jaewon31.kim@gmail.com>
-Date:   Tue, 16 Jun 2020 23:10:15 +0900
-Message-ID: <CAJrd-UsQRyu91Z5J-03FGQYFXu222qr-no_8+tv1GZP0vivgaA@mail.gmail.com>
-Subject: Re: [PATCH v3] page_alloc: consider highatomic reserve in wmartermark fast
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Jaewon Kim <jaewon31.kim@samsung.com>, Baoquan He <bhe@redhat.com>,
-        mgorman@techsingularity.net, minchan@kernel.org, mgorman@suse.de,
-        hannes@cmpxchg.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        ytk.lee@samsung.com, cmlaika.kim@samsung.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.77.1) by DM3PR11CA0021.namprd11.prod.outlook.com (2603:10b6:0:54::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.21 via Frontend Transport; Tue, 16 Jun 2020 14:12:05 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d7b44a5f-e426-416f-d141-08d811ff400f
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0209:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB0209B6E60025CF1A1E7E73D8F89D0@BN6PR1201MB0209.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:663;
+X-Forefront-PRVS: 04362AC73B
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ueqhyWaaY0n/TSFhPQ74BQBnRuOREfqv3nRZGfJm1KcgC/q9mPoFxrX01od/mz0ta1hH5LxLNh+i3Xof4Jby+jNvw8lEdAUc2CvHD1SggrsaL5vbzAwi54JsKXwmiwJ4aUcg+8JzEOgFo37CDU/y0yu2szh1XkWe6DOAgs5dS7kkJqCURwwbJ/oOb49H2ipHuEkiygChQC0yvk1+ZlBu+C0RXW1B9TVd8XCRmwsH+W2Urn1t8iu1CSh0TNlA+FZsMVhvybDd8hneqEN0ZnbrV85ILpHlFcXvMwkRCwk5WCECjY93aWjqkzmdAggDJHIivh3/ItbQ2LTk3QaEkbnOEw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(376002)(366004)(396003)(54906003)(956004)(186003)(86362001)(26005)(4744005)(44832011)(8936002)(5660300002)(66556008)(66946007)(6916009)(66476007)(478600001)(2906002)(16526019)(7696005)(52116002)(33656002)(4326008)(55016002)(6666004)(8676002)(316002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ImeaO1LG4sdVz6f0X3ocThl3gGMqxI9LYPl8wf0mTJOA703cpF6f0Aqjvu0BgnpKXpb/Pj66g2jfZodadxsdxKELXKUjJL3dsUQkQMGMssE1NrvrKAZSqMFQSa8ZnaHzO6YbfSLAdwfKkq7iKyGj8c8si47rbZ1lawfeRJ6Dayh6smIfkujm+d6B3cEa6BtvjCftkUejWPnw4FC4JABLpyWY21JExBYQzS613sq/FS+yDn6pbzMaBKhjZNE3mc/dTiCMOT8VRTYtUx2FiG9qQlwWIiYBMpQdWbD5O83nIJknsItMhW5QTGL3iaYPLzdWQTGyqjys/EsQGaBlwd3UC07boF0nzteBFYDE4+CmhbUuiMA8tSEOoqvcylqCP7VqIPjNJXkG26iWXnjljmdFoxic42sCSOWnoZtA3lqnbTQRQrA3Ik5Wp874/YXTuZ82V1TflM9SM/CnTUooapnMwkXWVyc6f5mRyVO+/WIrygY=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7b44a5f-e426-416f-d141-08d811ff400f
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 14:12:06.3965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IhMNsnr5nDc13NRjVf5EL2B4OVv05A9uDN4UXG6RG8tZzFTxq4Qkm7uxDt1/GDKqqxUxWCXO6gP/fT9NL/GFdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0209
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 6=EC=9B=94 16=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 7:21, V=
-lastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 6/17/20 4:05 AM, Jaewon Kim wrote:
->
-> Please fix typo "wmartermark" in subject.
-Oops
-Let me fix typo in next version as watermark
->
-> > zone_watermark_fast was introduced by commit 48ee5f3696f6 ("mm,
-> > page_alloc: shortcut watermark checks for order-0 pages"). The commit
-> > simply checks if free pages is bigger than watermark without additional
-> > calculation such like reducing watermark.
+On Mon, Jun 15, 2020 at 07:59:50AM -0400, Borislav Petkov wrote:
+> + Yazen and linux-hwmon.
+> 
+> On Sun, Jun 07, 2020 at 12:37:07PM +0800, Jacky Hu wrote:
+> > This patchset adds MCA and EDAC support for AMD Family 17h, Model 60h.
+> > 
+> > Also k10temp works with 4800h
+> > 
+> > k10temp-pci-00c3
+> > Adapter: PCI adapter
+> > Vcore:         1.55 V
+> > Vsoc:          1.55 V
+> > Tctl:         +49.6°C
+> > Tdie:         +49.6°C
+> > Icore:         0.00 A
+> > Isoc:          0.00 A
+> > 
+> > Jacky Hu (2):
+> >   x86/amd_nb: Add Family 17h, Model 60h PCI IDs
+> >   EDAC/amd64: Add family ops for Family 17h Models 60h-6Fh
+> > 
+> >  arch/x86/kernel/amd_nb.c  |  5 +++++
+> >  drivers/edac/amd64_edac.c | 14 ++++++++++++++
+> >  drivers/edac/amd64_edac.h |  3 +++
+> >  drivers/hwmon/k10temp.c   |  2 ++
+> >  include/linux/pci_ids.h   |  1 +
+> >  5 files changed, 25 insertions(+)
 > >
-> > It considered free cma pages but it did not consider highatomic
-> > reserved. This may incur exhaustion of free pages except high order
-> > atomic free pages.
-> >
-> > Assume that reserved_highatomic pageblock is bigger than watermark min,
-> > and there are only few free pages except high order atomic free. Becaus=
-e
-> > zone_watermark_fast passes the allocation without considering high orde=
-r
-> > atomic free, normal reclaimable allocation like GFP_HIGHUSER will
-> > consume all the free pages. Then finally order-0 atomic allocation may
-> > fail on allocation.
-> >
-> > This means watermark min is not protected against non-atomic allocation=
-.
-> > The order-0 atomic allocation with ALLOC_HARDER unwantedly can be
-> > failed. Additionally the __GFP_MEMALLOC allocation with
-> > ALLOC_NO_WATERMARKS also can be failed.
-> >
-> > To avoid the problem, zone_watermark_fast should consider highatomic
-> > reserve. If the actual size of high atomic free is counted accurately
-> > like cma free, we may use it. On this patch just use
-> > nr_reserved_highatomic. Additionally introduce
-> > __zone_watermark_unusable_free to factor out common parts between
-> > zone_watermark_fast and __zone_watermark_ok.
-> >
-> > This is an example of ALLOC_HARDER allocation failure using v4.19 based
-> > kernel.
-> >
-> > <4>[ 6207.637280]  [3:  Binder:9343_3:22875] Binder:9343_3: page alloca=
-tion failure: order:0, mode:0x480020(GFP_ATOMIC), nodemask=3D(null)
-> > <4>[ 6207.637311]  [3:  Binder:9343_3:22875] Call trace:
-> > <4>[ 6207.637346]  [3:  Binder:9343_3:22875] [<ffffff8008f40f8c>] dump_=
-stack+0xb8/0xf0
-> > <4>[ 6207.637356]  [3:  Binder:9343_3:22875] [<ffffff8008223320>] warn_=
-alloc+0xd8/0x12c
-> > <4>[ 6207.637365]  [3:  Binder:9343_3:22875] [<ffffff80082245e4>] __all=
-oc_pages_nodemask+0x120c/0x1250
-> > <4>[ 6207.637374]  [3:  Binder:9343_3:22875] [<ffffff800827f6e8>] new_s=
-lab+0x128/0x604
-> > <4>[ 6207.637381]  [3:  Binder:9343_3:22875] [<ffffff800827b0cc>] ___sl=
-ab_alloc+0x508/0x670
-> > <4>[ 6207.637387]  [3:  Binder:9343_3:22875] [<ffffff800827ba00>] __kma=
-lloc+0x2f8/0x310
-> > <4>[ 6207.637396]  [3:  Binder:9343_3:22875] [<ffffff80084ac3e0>] conte=
-xt_struct_to_string+0x104/0x1cc
-> > <4>[ 6207.637404]  [3:  Binder:9343_3:22875] [<ffffff80084ad8fc>] secur=
-ity_sid_to_context_core+0x74/0x144
-> > <4>[ 6207.637412]  [3:  Binder:9343_3:22875] [<ffffff80084ad880>] secur=
-ity_sid_to_context+0x10/0x18
-> > <4>[ 6207.637421]  [3:  Binder:9343_3:22875] [<ffffff800849bd80>] selin=
-ux_secid_to_secctx+0x20/0x28
-> > <4>[ 6207.637430]  [3:  Binder:9343_3:22875] [<ffffff800849109c>] secur=
-ity_secid_to_secctx+0x3c/0x70
-> > <4>[ 6207.637442]  [3:  Binder:9343_3:22875] [<ffffff8008bfe118>] binde=
-r_transaction+0xe68/0x454c
-> > <4>[ 6207.637569]  [3:  Binder:9343_3:22875] Mem-Info:
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875] active_anon:102061 inactiv=
-e_anon:81551 isolated_anon:0
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875]  active_file:59102 inactiv=
-e_file:68924 isolated_file:64
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875]  unevictable:611 dirty:63 =
-writeback:0 unstable:0
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875]  slab_reclaimable:13324 sl=
-ab_unreclaimable:44354
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875]  mapped:83015 shmem:4858 p=
-agetables:26316 bounce:0
-> > <4>[ 6207.637595]  [3:  Binder:9343_3:22875]  free:2727 free_pcp:1035 f=
-ree_cma:178
-> > <4>[ 6207.637616]  [3:  Binder:9343_3:22875] Node 0 active_anon:408244k=
-B inactive_anon:326204kB active_file:236408kB inactive_file:275696kB unevic=
-table:2444kB isolated(anon):0kB isolated(file):256kB mapped:332060kB dirty:=
-252kB writeback:0kB shmem:19432kB writeback_tmp:0kB unstable:0kB all_unrecl=
-aimable? no
-> > <4>[ 6207.637627]  [3:  Binder:9343_3:22875] Normal free:10908kB min:61=
-92kB low:44388kB high:47060kB active_anon:409160kB inactive_anon:325924kB a=
-ctive_file:235820kB inactive_file:276628kB unevictable:2444kB writepending:=
-252kB present:3076096kB managed:2673676kB mlocked:2444kB kernel_stack:62512=
-kB pagetables:105264kB bounce:0kB free_pcp:4140kB local_pcp:40kB free_cma:7=
-12kB
-> > <4>[ 6207.637632]  [3:  Binder:9343_3:22875] lowmem_reserve[]: 0 0
-> > <4>[ 6207.637637]  [3:  Binder:9343_3:22875] Normal: 505*4kB (H) 357*8k=
-B (H) 201*16kB (H) 65*32kB (H) 1*64kB (H) 0*128kB 0*256kB 0*512kB 0*1024kB =
-0*2048kB 0*4096kB =3D 10236kB
-> > <4>[ 6207.637655]  [3:  Binder:9343_3:22875] 138826 total pagecache pag=
-es
-> > <4>[ 6207.637663]  [3:  Binder:9343_3:22875] 5460 pages in swap cache
-> > <4>[ 6207.637668]  [3:  Binder:9343_3:22875] Swap cache stats: add 8273=
-090, delete 8267506, find 1004381/4060142
->
-> These are better to read after removing the timestamp and process info pa=
-rt,
-> i.e. "<4>[ 6207.637668]  [3:  Binder:9343_3:22875]" (also in the other ex=
-amples
-> below).
->
-Good comment
-Let me remove those timestamp and process info.
-> > This is an example of ALLOC_NO_WATERMARKS allocation failure using v4.1=
-4
-> > based kernel.
-> >
-> > [ 4738.329298] kswapd0: page allocation failure: order:0, mode:0x140000=
-a(GFP_NOIO|__GFP_HIGHMEM|__GFP_MOVABLE), nodemask=3D(null)
-> > [ 4738.329325] kswapd0 cpuset=3D/ mems_allowed=3D0
-> > [ 4738.329339] CPU: 4 PID: 1221 Comm: kswapd0 Not tainted 4.14.113-1877=
-0262-userdebug #1
-> > [ 4738.329350] Call trace:
-> > [ 4738.329366] [<0000000000000000>] dump_backtrace+0x0/0x248
-> > [ 4738.329377] [<0000000000000000>] show_stack+0x18/0x20
-> > [ 4738.329390] [<0000000000000000>] __dump_stack+0x20/0x28
-> > [ 4738.329398] [<0000000000000000>] dump_stack+0x68/0x90
-> > [ 4738.329409] [<0000000000000000>] warn_alloc+0x104/0x198
-> > [ 4738.329417] [<0000000000000000>] __alloc_pages_nodemask+0xdc0/0xdf0
-> > [ 4738.329427] [<0000000000000000>] zs_malloc+0x148/0x3d0
-> > [ 4738.329438] [<0000000000000000>] zram_bvec_rw+0x410/0x798
-> > [ 4738.329446] [<0000000000000000>] zram_rw_page+0x88/0xdc
-> > [ 4738.329455] [<0000000000000000>] bdev_write_page+0x70/0xbc
-> > [ 4738.329463] [<0000000000000000>] __swap_writepage+0x58/0x37c
-> > [ 4738.329469] [<0000000000000000>] swap_writepage+0x40/0x4c
-> > [ 4738.329478] [<0000000000000000>] shrink_page_list+0xc30/0xf48
-> > [ 4738.329486] [<0000000000000000>] shrink_inactive_list+0x2b0/0x61c
-> > [ 4738.329494] [<0000000000000000>] shrink_node_memcg+0x23c/0x618
-> > [ 4738.329501] [<0000000000000000>] shrink_node+0x1c8/0x304
-> > [ 4738.329509] [<0000000000000000>] kswapd+0x680/0x7c4
-> > [ 4738.329518] [<0000000000000000>] kthread+0x110/0x120
-> > [ 4738.329527] [<0000000000000000>] ret_from_fork+0x10/0x18
-> > [ 4738.329538] Mem-Info:
-> > [ 4738.329574] active_anon:111826 inactive_anon:65557 isolated_anon:0\x=
-0a active_file:44260 inactive_file:83422 isolated_file:0\x0a unevictable:41=
-58 dirty:117 writeback:0 unstable:0\x0a            slab_reclaimable:13943 s=
-lab_unreclaimable:43315\x0a mapped:102511 shmem:3299 pagetables:19566 bounc=
-e:0\x0a free:3510 free_pcp:553 free_cma:0
-> > [ 4738.329593] Node 0 active_anon:447304kB inactive_anon:262228kB activ=
-e_file:177040kB inactive_file:333688kB unevictable:16632kB isolated(anon):0=
-kB isolated(file):0kB mapped:410044kB d irty:468kB writeback:0kB shmem:1319=
-6kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
-> > [ 4738.329603] Normal free:14040kB min:7440kB low:94500kB high:98136kB =
-reserved_highatomic:32768KB active_anon:447336kB inactive_anon:261668kB act=
-ive_file:177572kB inactive_file:333768k           B unevictable:16632kB wri=
-tepending:480kB present:4081664kB managed:3637088kB mlocked:16632kB kernel_=
-stack:47072kB pagetables:78264kB bounce:0kB free_pcp:2280kB local_pcp:720kB=
- free_cma:0kB        [ 4738.329607] lowmem_reserve[]: 0 0
-> > [ 4738.329615] Normal: 860*4kB (H) 453*8kB (H) 180*16kB (H) 26*32kB (H)=
- 34*64kB (H) 6*128kB (H) 2*256kB (H) 0*512kB 0*1024kB 0*2048kB 0*4096kB =3D=
- 14232kB
-> >
-> > This is trace log which shows GFP_HIGHUSER consumes free pages right
-> > before ALLOC_NO_WATERMARKS.
-> >
-> >   <...>-22275 [006] ....   889.213383: mm_page_alloc: page=3D00000000d2=
-be5665 pfn=3D970744 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213385: mm_page_alloc: page=3D000000004b=
-2335c2 pfn=3D970745 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213387: mm_page_alloc: page=3D0000000001=
-7272e1 pfn=3D970278 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213389: mm_page_alloc: page=3D00000000c4=
-be79fb pfn=3D970279 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213391: mm_page_alloc: page=3D00000000f8=
-a51d4f pfn=3D970260 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213393: mm_page_alloc: page=3D000000006b=
-a8f5ac pfn=3D970261 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213395: mm_page_alloc: page=3D0000000081=
-9f1cd3 pfn=3D970196 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> >   <...>-22275 [006] ....   889.213396: mm_page_alloc: page=3D00000000f6=
-b72a64 pfn=3D970197 order=3D0 migratetype=3D0 nr_free=3D3650 gfp_flags=3DGF=
-P_HIGHUSER|__GFP_ZERO
-> > kswapd0-1207  [005] ...1   889.213398: mm_page_alloc: page=3D (null) pf=
-n=3D0 order=3D0 migratetype=3D1 nr_free=3D3650 gfp_flags=3DGFP_NOWAIT|__GFP=
-_HIGHMEM|__GFP_NOWARN|__GFP_MOVABLE
-> >
-> > Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> > Suggested-by: Minchan Kim <minchan@kernel.org>
-> > Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Thank you for the Acked-by, let me add your Acked-by in next version.
->
-> > ---
-> > v3: change log in description to one having reserved_highatomic
-> >     change comment in code
-> > v2: factor out common part
-> > v1: consider highatomic reserve
-> > ---
-> >  mm/page_alloc.c | 66 +++++++++++++++++++++++++++----------------------
-> >  1 file changed, 36 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 48eb0f1410d4..fe83f88ce188 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3487,6 +3487,29 @@ static noinline bool should_fail_alloc_page(gfp_=
-t gfp_mask, unsigned int order)
-> >  }
-> >  ALLOW_ERROR_INJECTION(should_fail_alloc_page, TRUE);
-> >
-> > +static inline long __zone_watermark_unusable_free(struct zone *z,
-> > +                             unsigned int order, unsigned int alloc_fl=
-ags)
-> > +{
-> > +     const bool alloc_harder =3D (alloc_flags & (ALLOC_HARDER|ALLOC_OO=
-M));
-> > +     long unusable_free =3D (1 << order) - 1;
-> > +
-> > +     /*
-> > +      * If the caller does not have rights to ALLOC_HARDER then subtra=
-ct
-> > +      * the high-atomic reserves. This will over-estimate the size of =
-the
-> > +      * atomic reserve but it avoids a search.
-> > +      */
-> > +     if (likely(!alloc_harder))
-> > +             unusable_free +=3D z->nr_reserved_highatomic;
-> > +
-> > +#ifdef CONFIG_CMA
-> > +     /* If allocation can't use CMA areas don't use free CMA pages */
-> > +     if (!(alloc_flags & ALLOC_CMA))
-> > +             unusable_free +=3D zone_page_state(z, NR_FREE_CMA_PAGES);
-> > +#endif
-> > +
-> > +     return unusable_free;
-> > +}
-> > +
-> >  /*
-> >   * Return true if free base pages are above 'mark'. For high-order che=
-cks it
-> >   * will return true of the order-0 watermark is reached and there is a=
-t least
-> > @@ -3502,19 +3525,12 @@ bool __zone_watermark_ok(struct zone *z, unsign=
-ed int order, unsigned long mark,
-> >       const bool alloc_harder =3D (alloc_flags & (ALLOC_HARDER|ALLOC_OO=
-M));
-> >
-> >       /* free_pages may go negative - that's OK */
-> > -     free_pages -=3D (1 << order) - 1;
-> > +     free_pages -=3D __zone_watermark_unusable_free(z, order, alloc_fl=
-ags);
-> >
-> >       if (alloc_flags & ALLOC_HIGH)
-> >               min -=3D min / 2;
-> >
-> > -     /*
-> > -      * If the caller does not have rights to ALLOC_HARDER then subtra=
-ct
-> > -      * the high-atomic reserves. This will over-estimate the size of =
-the
-> > -      * atomic reserve but it avoids a search.
-> > -      */
-> > -     if (likely(!alloc_harder)) {
-> > -             free_pages -=3D z->nr_reserved_highatomic;
-> > -     } else {
-> > +     if (unlikely(alloc_harder)) {
-> >               /*
-> >                * OOM victims can try even harder than normal ALLOC_HARD=
-ER
-> >                * users on the grounds that it's definitely going to be =
-in
-> > @@ -3527,13 +3543,6 @@ bool __zone_watermark_ok(struct zone *z, unsigne=
-d int order, unsigned long mark,
-> >                       min -=3D min / 4;
-> >       }
-> >
-> > -
-> > -#ifdef CONFIG_CMA
-> > -     /* If allocation can't use CMA areas don't use free CMA pages */
-> > -     if (!(alloc_flags & ALLOC_CMA))
-> > -             free_pages -=3D zone_page_state(z, NR_FREE_CMA_PAGES);
-> > -#endif
-> > -
-> >       /*
-> >        * Check watermarks for an order-0 allocation request. If these
-> >        * are not met, then a high-order request also cannot go ahead
-> > @@ -3582,25 +3591,22 @@ static inline bool zone_watermark_fast(struct z=
-one *z, unsigned int order,
-> >                               unsigned long mark, int highest_zoneidx,
-> >                               unsigned int alloc_flags)
-> >  {
-> > -     long free_pages =3D zone_page_state(z, NR_FREE_PAGES);
-> > -     long cma_pages =3D 0;
-> > +     long free_pages;
-> > +     long unusable_free;
-> >
-> > -#ifdef CONFIG_CMA
-> > -     /* If allocation can't use CMA areas don't use free CMA pages */
-> > -     if (!(alloc_flags & ALLOC_CMA))
-> > -             cma_pages =3D zone_page_state(z, NR_FREE_CMA_PAGES);
-> > -#endif
-> > +     free_pages =3D zone_page_state(z, NR_FREE_PAGES);
-> > +     unusable_free =3D __zone_watermark_unusable_free(z, order, alloc_=
-flags);
-> >
-> >       /*
-> >        * Fast check for order-0 only. If this fails then the reserves
-> > -      * need to be calculated. There is a corner case where the check
-> > -      * passes but only the high-order atomic reserve are free. If
-> > -      * the caller is !atomic then it'll uselessly search the free
-> > -      * list. That corner case is then slower but it is harmless.
-> > +      * need to be calculated.
-> >        */
-> > -     if (!order && (free_pages - cma_pages) >
-> > -                             mark + z->lowmem_reserve[highest_zoneidx]=
-)
-> > -             return true;
-> > +     if (!order) {
-> > +             long fast_free =3D free_pages - unusable_free;
-> > +
-> > +             if (fast_free > mark + z->lowmem_reserve[highest_zoneidx]=
-)
-> > +                     return true;
-> > +     }
-> >
-> >       return __zone_watermark_ok(z, order, mark, highest_zoneidx, alloc=
-_flags,
-> >                                       free_pages);
-> >
->
+PCI IDs and EDAC look good to me.
+
+Acked-by: Yazen Ghannam <yazen.ghannam@amd.com>
+
+Thanks,
+Yazen
