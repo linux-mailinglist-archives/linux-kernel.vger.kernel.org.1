@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A135F1FB826
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BAC1FB6D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732889AbgFPPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51760 "EHLO mail.kernel.org"
+        id S1731358AbgFPPlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729166AbgFPPxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:30 -0400
+        id S1731338AbgFPPk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:40:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81579208D5;
-        Tue, 16 Jun 2020 15:53:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6AFD21531;
+        Tue, 16 Jun 2020 15:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322810;
-        bh=WnTyGsaaTwpglz9AY7FVbY8tX7Y+mXaO6yC61jXM2eM=;
+        s=default; t=1592322058;
+        bh=mubmbuiDOXcWalU1TUhEBw7MU27CWb53kL0rpKji7d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nvKYFsrQ4WOaYKDMxTyvnLK7mk6LgvgnfNglGoPh3yM7c5ZaumshuS0V3sWV55GYK
-         J58a06867tOsH5My262TEHNiT0Icf/Wp3VHbECO55kz1/RZFfK8Mt09MhKc9IBquNK
-         rjUpHwi45nnRQ5XLyyIl72uzhO+WPZC+brkZiUlo=
+        b=me/RlDvvyOnFq2VzMDJ8rug0MCmr3t/penNGlnCSBGhQke7/I2Qiijm3Mi8wBlG+d
+         deLEXrfXEiiHH2jhDkpRJMp2vS/urHgKBgIAdM3tpCmfd9QLBPHEk1b0d+VtYHxP8E
+         4Sz+xeBD+bjLib3AOdpqOcoe15DV7kKiDDEwfi0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 113/161] net: macb: Only disable NAPI on the actual error path
-Date:   Tue, 16 Jun 2020 17:35:03 +0200
-Message-Id: <20200616153111.738712796@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 120/134] mm/slub: fix a memory leak in sysfs_slab_add()
+Date:   Tue, 16 Jun 2020 17:35:04 +0200
+Message-Id: <20200616153106.532769297@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +49,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 939a5bf7c9b7a1ad9c5d3481c93766a522773531 ]
+commit dde3c6b72a16c2db826f54b2d49bdea26c3534a2 upstream.
 
-A recent change added a disable to NAPI into macb_open, this was
-intended to only happen on the error path but accidentally applies
-to all paths. This causes NAPI to be disabled on the success path, which
-leads to the network to no longer functioning.
+syzkaller reports for memory leak when kobject_init_and_add() returns an
+error in the function sysfs_slab_add() [1]
 
-Fixes: 014406babc1f ("net: cadence: macb: disable NAPI on error")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When this happened, the function kobject_put() is not called for the
+corresponding kobject, which potentially leads to memory leak.
+
+This patch fixes the issue by calling kobject_put() even if
+kobject_init_and_add() fails.
+
+[1]
+  BUG: memory leak
+  unreferenced object 0xffff8880a6d4be88 (size 8):
+  comm "syz-executor.3", pid 946, jiffies 4295772514 (age 18.396s)
+  hex dump (first 8 bytes):
+    70 69 64 5f 33 00 ff ff                          pid_3...
+  backtrace:
+     kstrdup+0x35/0x70 mm/util.c:60
+     kstrdup_const+0x3d/0x50 mm/util.c:82
+     kvasprintf_const+0x112/0x170 lib/kasprintf.c:48
+     kobject_set_name_vargs+0x55/0x130 lib/kobject.c:289
+     kobject_add_varg lib/kobject.c:384 [inline]
+     kobject_init_and_add+0xd8/0x170 lib/kobject.c:473
+     sysfs_slab_add+0x1d8/0x290 mm/slub.c:5811
+     __kmem_cache_create+0x50a/0x570 mm/slub.c:4384
+     create_cache+0x113/0x1e0 mm/slab_common.c:407
+     kmem_cache_create_usercopy+0x1a1/0x260 mm/slab_common.c:505
+     kmem_cache_create+0xd/0x10 mm/slab_common.c:564
+     create_pid_cachep kernel/pid_namespace.c:54 [inline]
+     create_pid_namespace kernel/pid_namespace.c:96 [inline]
+     copy_pid_ns+0x77c/0x8f0 kernel/pid_namespace.c:148
+     create_new_namespaces+0x26b/0xa30 kernel/nsproxy.c:95
+     unshare_nsproxy_namespaces+0xa7/0x1e0 kernel/nsproxy.c:229
+     ksys_unshare+0x3d2/0x770 kernel/fork.c:2969
+     __do_sys_unshare kernel/fork.c:3037 [inline]
+     __se_sys_unshare kernel/fork.c:3035 [inline]
+     __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3035
+     do_syscall_64+0xa1/0x530 arch/x86/entry/common.c:295
+
+Fixes: 80da026a8e5d ("mm/slub: fix slab double-free in case of duplicate sysfs filename")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Link: http://lkml.kernel.org/r/20200602115033.1054-1-wanghai38@huawei.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/cadence/macb_main.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2552,15 +2552,14 @@ static int macb_open(struct net_device *
- 	if (bp->ptp_info)
- 		bp->ptp_info->ptp_init(dev);
+---
+ mm/slub.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5776,8 +5776,10 @@ static int sysfs_slab_add(struct kmem_ca
  
-+	return 0;
-+
- napi_exit:
- 	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue)
- 		napi_disable(&queue->napi);
- pm_exit:
--	if (err) {
--		pm_runtime_put_sync(&bp->pdev->dev);
--		return err;
--	}
--	return 0;
-+	pm_runtime_put_sync(&bp->pdev->dev);
-+	return err;
- }
+ 	s->kobj.kset = kset;
+ 	err = kobject_init_and_add(&s->kobj, &slab_ktype, NULL, "%s", name);
+-	if (err)
++	if (err) {
++		kobject_put(&s->kobj);
+ 		goto out;
++	}
  
- static int macb_close(struct net_device *dev)
+ 	err = sysfs_create_group(&s->kobj, &slab_attr_group);
+ 	if (err)
 
 
