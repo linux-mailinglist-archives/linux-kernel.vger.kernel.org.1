@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D26E1FB694
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EAD1FB7FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730701AbgFPPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:38:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
+        id S1732673AbgFPPva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730676AbgFPPic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:38:32 -0400
+        id S1732653AbgFPPvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:51:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7643E214F1;
-        Tue, 16 Jun 2020 15:38:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3BF4214DB;
+        Tue, 16 Jun 2020 15:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321912;
-        bh=S6WExwVSGNJ/dpy97J+ZO2L8QMT/TxVuJmTZabPgTMg=;
+        s=default; t=1592322671;
+        bh=zpYShMOZpswtC64OW2r7Dp1omfS1QSaZmPRDUdLIA9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZeihOGU6e8DKdhoteihN+yKKf7ibHCEXt3Xy/EqChU3iteItoEnn8bE4LpLu779y7
-         nQt9PT+jw5zXqsy0giW24GlZCHDsEbT0/cyf7h/IgfQXd8mi7DO6IbsoJLJFhmJtzH
-         QYAvGu3FBKRR8MxX4wNppgcXKvSdSqUUO9y2Cf50=
+        b=DCmMYwYCcA1wD3Rk+1cplRGw7tmXHbXNQVBPOEARFXaH41YT6wnz0QX6WVq3dzw1n
+         JIKwbJfKqo9i0T1EIPqI/vPs+gTtSv5u5LKnEs9+PvQ+Lp7MpE+mi8lNgEBBLoI/Hg
+         7o2LJQjzIfdF5dJ4FhMb0lrCXMvu33mrLvWPhYRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 063/134] ACPI: CPPC: Fix reference count leak in acpi_cppc_processor_probe()
-Date:   Tue, 16 Jun 2020 17:34:07 +0200
-Message-Id: <20200616153103.789300486@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Franciosi <felipe@nutanix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.6 058/161] KVM: x86: respect singlestep when emulating instruction
+Date:   Tue, 16 Jun 2020 17:34:08 +0200
+Message-Id: <20200616153109.142280020@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Felipe Franciosi <felipe@nutanix.com>
 
-commit 4d8be4bc94f74bb7d096e1c2e44457b530d5a170 upstream.
+commit 384dea1c9183880be183cfaae161d99aafd16df6 upstream.
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Previous
-commit "b8eb718348b8" fixed a similar problem.
+When userspace configures KVM_GUESTDBG_SINGLESTEP, KVM will manage the
+presence of X86_EFLAGS_TF via kvm_set/get_rflags on vcpus. The actual
+rflag bit is therefore hidden from callers.
 
-Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+That includes init_emulate_ctxt() which uses the value returned from
+kvm_get_flags() to set ctxt->tf. As a result, x86_emulate_instruction()
+will skip a single step, leaving singlestep_rip stale and not returning
+to userspace.
+
+This resolves the issue by observing the vcpu guest_debug configuration
+alongside ctxt->tf in x86_emulate_instruction(), performing the single
+step if set.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Felipe Franciosi <felipe@nutanix.com>
+Message-Id: <20200519081048.8204-1-felipe@nutanix.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/cppc_acpi.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/x86.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -865,6 +865,7 @@ int acpi_cppc_processor_probe(struct acp
- 			"acpi_cppc");
- 	if (ret) {
- 		per_cpu(cpc_desc_ptr, pr->id) = NULL;
-+		kobject_put(&cpc_ptr->kobj);
- 		goto out_free;
- 	}
- 
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6908,7 +6908,7 @@ restart:
+ 		if (!ctxt->have_exception ||
+ 		    exception_type(ctxt->exception.vector) == EXCPT_TRAP) {
+ 			kvm_rip_write(vcpu, ctxt->eip);
+-			if (r && ctxt->tf)
++			if (r && (ctxt->tf || (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)))
+ 				r = kvm_vcpu_do_singlestep(vcpu);
+ 			if (kvm_x86_ops->update_emulated_instruction)
+ 				kvm_x86_ops->update_emulated_instruction(vcpu);
 
 
