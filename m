@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBCB1FB6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEF51FB83A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731473AbgFPPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57260 "EHLO mail.kernel.org"
+        id S1732968AbgFPPyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731455AbgFPPla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:30 -0400
+        id S1732939AbgFPPyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 880BF207C4;
-        Tue, 16 Jun 2020 15:41:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EAA021527;
+        Tue, 16 Jun 2020 15:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322090;
-        bh=HYWquZViGbGdIcbesak3htJvfn2PAB/KpqgGhH9wMTg=;
+        s=default; t=1592322843;
+        bh=D9yr1XlJJZE4sCwWQfGJZumeH5LuhoRdpZObk6ppYp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OBwjvy4kp6nlS02TSlLoWSEI9bLSibWoPWczE9AF/AyvAWWZzMVZDnj2e9D0OX/9R
-         2MwgGf8fysEVe1jM89Qqu+3ShbR0swawjV0Dm0vxucQH4VNYGlRJB7WlvxhqoFuIz2
-         xqNoekOj/qdrtYHW+YtHLXfrNsuTGEvRo/OEOQfE=
+        b=s0bPNesk/21qLRn5V2iLB6ZNlzuBenxoA7Zvd5EDwzinNhbWUDs7MoPCKf6/sOeHF
+         OP+RFWfntxgKFFwIS40O+B7DhAbf+p0LSP4gyTh0m/ERdErwaBzkA7HfL5zcrVcyWd
+         lreqOVqZJ0Lv6du7tCIIgCWMp5fjq9n6cYDmBMSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.cz>,
-        Jiri Kosina <jkosina@suse.cz>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 131/134] block/floppy: fix contended case in floppy_queue_rq()
+        stable@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.6 125/161] KVM: nVMX: Skip IBPB when switching between vmcs01 and vmcs02
 Date:   Tue, 16 Jun 2020 17:35:15 +0200
-Message-Id: <20200616153107.061913864@linuxfoundation.org>
+Message-Id: <20200616153112.316849879@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +45,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 263c61581a38d0a5ad1f5f4a9143b27d68caeffd upstream.
+commit 5c911beff20aa8639e7a1f28988736c13e03ed54 upstream.
 
-Since the switch of floppy driver to blk-mq, the contended (fdc_busy) case
-in floppy_queue_rq() is not handled correctly.
+Skip the Indirect Branch Prediction Barrier that is triggered on a VMCS
+switch when running with spectre_v2_user=on/auto if the switch is
+between two VMCSes in the same guest, i.e. between vmcs01 and vmcs02.
+The IBPB is intended to prevent one guest from attacking another, which
+is unnecessary in the nested case as it's the same guest from KVM's
+perspective.
 
-In case we reach floppy_queue_rq() with fdc_busy set (i.e. with the floppy
-locked due to another request still being in-flight), we put the request
-on the list of requests and return BLK_STS_OK to the block core, without
-actually scheduling delayed work / doing further processing of the
-request. This means that processing of this request is postponed until
-another request comes and passess uncontended.
+This all but eliminates the overhead observed for nested VMX transitions
+when running with CONFIG_RETPOLINE=y and spectre_v2_user=on/auto, which
+can be significant, e.g. roughly 3x on current systems.
 
-Which in some cases might actually never happen and we keep waiting
-indefinitely. The simple testcase is
-
-	for i in `seq 1 2000`; do echo -en $i '\r'; blkid --info /dev/fd0 2> /dev/null; done
-
-run in quemu. That reliably causes blkid eventually indefinitely hanging
-in __floppy_read_block_0() waiting for completion, as the BIO callback
-never happens, and no further IO is ever submitted on the (non-existent)
-floppy device. This was observed reliably on qemu-emulated device.
-
-Fix that by not queuing the request in the contended case, and return
-BLK_STS_RESOURCE instead, so that blk core handles the request
-rescheduling and let it pass properly non-contended later.
-
-Fixes: a9f38e1dec107a ("floppy: convert to blk-mq")
+Reported-by: Alexander Graf <graf@amazon.com>
+Cc: KarimAllah Raslan <karahmed@amazon.de>
 Cc: stable@vger.kernel.org
-Tested-by: Libor Pechacek <lpechacek@suse.cz>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 15d45071523d ("KVM/x86: Add IBPB support")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200501163117.4655-1-sean.j.christopherson@intel.com>
+[Invert direction of bool argument. - Paolo]
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/block/floppy.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kvm/vmx/nested.c |    2 +-
+ arch/x86/kvm/vmx/vmx.c    |   18 ++++++++++++++----
+ arch/x86/kvm/vmx/vmx.h    |    3 ++-
+ 3 files changed, 17 insertions(+), 6 deletions(-)
 
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -2902,17 +2902,17 @@ static blk_status_t floppy_queue_rq(stru
- 		 (unsigned long long) current_req->cmd_flags))
- 		return BLK_STS_IOERR;
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -303,7 +303,7 @@ static void vmx_switch_vmcs(struct kvm_v
+ 	cpu = get_cpu();
+ 	prev = vmx->loaded_vmcs;
+ 	vmx->loaded_vmcs = vmcs;
+-	vmx_vcpu_load_vmcs(vcpu, cpu);
++	vmx_vcpu_load_vmcs(vcpu, cpu, prev);
+ 	vmx_sync_vmcs_host_state(vmx, prev);
+ 	put_cpu();
  
--	spin_lock_irq(&floppy_lock);
--	list_add_tail(&bd->rq->queuelist, &floppy_reqs);
--	spin_unlock_irq(&floppy_lock);
--
- 	if (test_and_set_bit(0, &fdc_busy)) {
- 		/* fdc busy, this new request will be treated when the
- 		   current one is done */
- 		is_alive(__func__, "old request running");
--		return BLK_STS_OK;
-+		return BLK_STS_RESOURCE;
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1314,10 +1314,12 @@ after_clear_sn:
+ 		pi_set_on(pi_desc);
+ }
+ 
+-void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
++void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
++			struct loaded_vmcs *buddy)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	bool already_loaded = vmx->loaded_vmcs->cpu == cpu;
++	struct vmcs *prev;
+ 
+ 	if (!already_loaded) {
+ 		loaded_vmcs_clear(vmx->loaded_vmcs);
+@@ -1336,10 +1338,18 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu
+ 		local_irq_enable();
  	}
  
-+	spin_lock_irq(&floppy_lock);
-+	list_add_tail(&bd->rq->queuelist, &floppy_reqs);
-+	spin_unlock_irq(&floppy_lock);
+-	if (per_cpu(current_vmcs, cpu) != vmx->loaded_vmcs->vmcs) {
++	prev = per_cpu(current_vmcs, cpu);
++	if (prev != vmx->loaded_vmcs->vmcs) {
+ 		per_cpu(current_vmcs, cpu) = vmx->loaded_vmcs->vmcs;
+ 		vmcs_load(vmx->loaded_vmcs->vmcs);
+-		indirect_branch_prediction_barrier();
 +
- 	command_status = FD_COMMAND_NONE;
- 	__reschedule_timeout(MAXTIMEOUT, "fd_request");
- 	set_fdc(0);
++		/*
++		 * No indirect branch prediction barrier needed when switching
++		 * the active VMCS within a guest, e.g. on nested VM-Enter.
++		 * The L1 VMM can protect itself with retpolines, IBPB or IBRS.
++		 */
++		if (!buddy || WARN_ON_ONCE(buddy->vmcs != prev))
++			indirect_branch_prediction_barrier();
+ 	}
+ 
+ 	if (!already_loaded) {
+@@ -1376,7 +1386,7 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 
+-	vmx_vcpu_load_vmcs(vcpu, cpu);
++	vmx_vcpu_load_vmcs(vcpu, cpu, NULL);
+ 
+ 	vmx_vcpu_pi_load(vcpu, cpu);
+ 
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -320,7 +320,8 @@ struct kvm_vmx {
+ };
+ 
+ bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
+-void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu);
++void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
++			struct loaded_vmcs *buddy);
+ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
+ int allocate_vpid(void);
+ void free_vpid(int vpid);
 
 
