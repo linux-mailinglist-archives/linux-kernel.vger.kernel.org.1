@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324161FB833
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3971FB836
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732938AbgFPPyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
+        id S1732944AbgFPPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732922AbgFPPx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:59 -0400
+        id S1732932AbgFPPyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19AC7215A4;
-        Tue, 16 Jun 2020 15:53:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAB07208D5;
+        Tue, 16 Jun 2020 15:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322838;
-        bh=KERNEO/I/JhTJOE7gZeiLLtKqNd+wcWeZV80AwRWTDw=;
+        s=default; t=1592322841;
+        bh=31K/xXAjmx9ivj+GVlLUEC+9mIQeg4WPdAZ970qHfUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ijuv+L+CnBmyHLjiebI1O5hAv/MHDrNFfHSLNKm6nAUrRJqYsIYEEhGvcAvIYXO3m
-         R7kt5wYhZ39iZPKxa/pw1XNh670XO6+AisC9mDbegrzmTEnE/FIYHghCbx+HDFucuR
-         XjfrWSxofVz7uBlm1SiUkzEDjbnSr2O9cucVpYf4=
+        b=OqvE5NXRjZMgJci0GPLe5pAKNw8VJvTJd5UttoloAA6mEGg14DYOh8evC3Ln5wn5t
+         d+NRq8Xb5IxfrOOu8s8VKXHug1r1wmiEU1X1TOHBIVrTh6gNvlV1NTf25+yxfFcDzG
+         PS+EtHWSTfN+Oq/jzFp1Xx8njy6bSvOO3JZnzByQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Richard Purdie <rpurdie@rpsys.net>,
-        Antonino Daplas <adaplas@pol.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH 5.6 123/161] video: fbdev: w100fb: Fix a potential double free.
-Date:   Tue, 16 Jun 2020 17:35:13 +0200
-Message-Id: <20200616153112.220930130@linuxfoundation.org>
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.6 124/161] media: videobuf2-dma-contig: fix bad kfree in vb2_dma_contig_clear_max_seg_size
+Date:   Tue, 16 Jun 2020 17:35:14 +0200
+Message-Id: <20200616153112.270244216@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
 References: <20200616153106.402291280@linuxfoundation.org>
@@ -46,50 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-commit 18722d48a6bb9c2e8d046214c0a5fd19d0a7c9f6 upstream.
+commit 0d9668721311607353d4861e6c32afeb272813dc upstream.
 
-Some memory is vmalloc'ed in the 'w100fb_save_vidmem' function and freed in
-the 'w100fb_restore_vidmem' function. (these functions are called
-respectively from the 'suspend' and the 'resume' functions)
+Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
+Initialize dma_parms for platform devices") in v5.7-rc5 causes
+vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
+allocated by vb2_dma_contig_set_max_seg_size().
 
-However, it is also freed in the 'remove' function.
+The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
+dev->dma_parms is always NULL when the driver is probed, and the case
+where dev->dma_parms has bee initialized by someone else than the driver
+(by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
 
-In order to avoid a potential double free, set the corresponding pointer
-to NULL once freed in the 'w100fb_restore_vidmem' function.
+All the current users of these functions are platform devices, which now
+always have dma_parms set by the driver core. To fix the issue for v5.7,
+make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
+NULL to be on the safe side, and remove the kfree code from
+vb2_dma_contig_clear_max_seg_size().
 
-Fixes: aac51f09d96a ("[PATCH] w100fb: Rewrite for platform independence")
-Cc: Richard Purdie <rpurdie@rpsys.net>
-Cc: Antonino Daplas <adaplas@pol.net>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: <stable@vger.kernel.org> # v2.6.14+
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200506181902.193290-1-christophe.jaillet@wanadoo.fr
+For v5.8 we should remove the two functions and move the
+dma_set_max_seg_size() calls into the drivers.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
+Cc: stable@vger.kernel.org
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/fbdev/w100fb.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c |   20 +-----------------
+ include/media/videobuf2-dma-contig.h                  |    2 -
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
---- a/drivers/video/fbdev/w100fb.c
-+++ b/drivers/video/fbdev/w100fb.c
-@@ -588,6 +588,7 @@ static void w100fb_restore_vidmem(struct
- 		memsize=par->mach->mem->size;
- 		memcpy_toio(remapped_fbuf + (W100_FB_BASE-MEM_WINDOW_BASE), par->saved_extmem, memsize);
- 		vfree(par->saved_extmem);
-+		par->saved_extmem = NULL;
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -726,9 +726,8 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_memops)
+ int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size)
+ {
+ 	if (!dev->dma_parms) {
+-		dev->dma_parms = kzalloc(sizeof(*dev->dma_parms), GFP_KERNEL);
+-		if (!dev->dma_parms)
+-			return -ENOMEM;
++		dev_err(dev, "Failed to set max_seg_size: dma_parms is NULL\n");
++		return -ENODEV;
  	}
- 	if (par->saved_intmem) {
- 		memsize=MEM_INT_SIZE;
-@@ -596,6 +597,7 @@ static void w100fb_restore_vidmem(struct
- 		else
- 			memcpy_toio(remapped_fbuf + (W100_FB_BASE-MEM_WINDOW_BASE), par->saved_intmem, memsize);
- 		vfree(par->saved_intmem);
-+		par->saved_intmem = NULL;
- 	}
+ 	if (dma_get_max_seg_size(dev) < size)
+ 		return dma_set_max_seg_size(dev, size);
+@@ -737,21 +736,6 @@ int vb2_dma_contig_set_max_seg_size(stru
  }
+ EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+ 
+-/*
+- * vb2_dma_contig_clear_max_seg_size() - release resources for DMA parameters
+- * @dev:	device for configuring DMA parameters
+- *
+- * This function releases resources allocated to configure DMA parameters
+- * (see vb2_dma_contig_set_max_seg_size() function). It should be called from
+- * device drivers on driver remove.
+- */
+-void vb2_dma_contig_clear_max_seg_size(struct device *dev)
+-{
+-	kfree(dev->dma_parms);
+-	dev->dma_parms = NULL;
+-}
+-EXPORT_SYMBOL_GPL(vb2_dma_contig_clear_max_seg_size);
+-
+ MODULE_DESCRIPTION("DMA-contig memory handling routines for videobuf2");
+ MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+ MODULE_LICENSE("GPL");
+--- a/include/media/videobuf2-dma-contig.h
++++ b/include/media/videobuf2-dma-contig.h
+@@ -25,7 +25,7 @@ vb2_dma_contig_plane_dma_addr(struct vb2
+ }
+ 
+ int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size);
+-void vb2_dma_contig_clear_max_seg_size(struct device *dev);
++static inline void vb2_dma_contig_clear_max_seg_size(struct device *dev) { }
+ 
+ extern const struct vb2_mem_ops vb2_dma_contig_memops;
  
 
 
