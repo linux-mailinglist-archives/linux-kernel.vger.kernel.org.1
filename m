@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE911FB832
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DAD1FB79E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732930AbgFPPyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
+        id S1732028AbgFPPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730565AbgFPPx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:53:56 -0400
+        id S1731796AbgFPPrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:47:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7611C21532;
-        Tue, 16 Jun 2020 15:53:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7451E2071A;
+        Tue, 16 Jun 2020 15:47:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322836;
-        bh=gGUmW2DrTIls4lFdQDuM1ToOLsMmr9KRvqtR7zLRIM4=;
+        s=default; t=1592322456;
+        bh=LWiefAQnaU3ygsFB7gOSKpm+9Fax1oNFwgGN2tI46bI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=teoIW4z3S/o6yJzjT6OVwCllLfLzWqE4jeGmppAi8dskA8XFUq1mcGuJKsSlEsVn/
-         kQAOPNvi9Wy4guFcxvOccvdikFerHR4B3KCGRtzsu+F4yiecHrscmED0oog0ilMRSd
-         TbTfFJvHEk11MYY+E4Fz98SUyEnmpMAU0r1c5o20=
+        b=Xr99wH9tvf9OCI/xqKouT+aUDFRq264XRHlEGj4DRXE7rQdJk4ec40U4jvMut+XKW
+         2HDdrSVsDq+T7FGg9B7+xZ3gEjipMZAnVMDO520Wgq2ya34rpOGTwYSlKUQ6x8nM0u
+         XVFrYd6YJfzD0w44KzezhNyBdwOYF6egRUczKyD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        kbuild test robot <lkp@intel.com>,
-        Alexey Charkov <alchark@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH 5.6 122/161] video: vt8500lcdfb: fix fallthrough warning
-Date:   Tue, 16 Jun 2020 17:35:12 +0200
-Message-Id: <20200616153112.171028150@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Subject: [PATCH 5.7 139/163] ath9k: Fix use-after-free Read in htc_connect_service
+Date:   Tue, 16 Jun 2020 17:35:13 +0200
+Message-Id: <20200616153113.468668078@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +44,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sam Ravnborg <sam@ravnborg.org>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 1c49f35e9e9156273124a0cfd38b57f7a7d4828f upstream.
+commit ced21a4c726bdc60b1680c050a284b08803bc64c upstream.
 
-Fix following warning:
-vt8500lcdfb.c: In function 'vt8500lcd_blank':
-vt8500lcdfb.c:229:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-      if (info->fix.visual == FB_VISUAL_PSEUDOCOLOR ||
-         ^
-vt8500lcdfb.c:233:2: note: here
-     case FB_BLANK_UNBLANK:
-     ^~~~
+The skb is consumed by htc_send_epid, so it needn't release again.
 
-Adding a simple "fallthrough;" fixed the warning.
-The fix was build tested.
+The case reported by syzbot:
 
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Reported-by: kbuild test robot <lkp@intel.com>
-Fixes: e41f1a989408 ("fbdev: Implement simple blanking in pseudocolor modes for vt8500lcdfb")
-Cc: Alexey Charkov <alchark@gmail.com>
-Cc: Paul Mundt <lethal@linux-sh.org>
-Cc: <stable@vger.kernel.org> # v2.6.38+
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200412202143.GA26948@ravnborg.org
+https://lore.kernel.org/linux-usb/000000000000590f6b05a1c05d15@google.com
+usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size:
+51008
+usb 1-1: Service connection timeout for: 256
+==================================================================
+BUG: KASAN: use-after-free in atomic_read
+include/asm-generic/atomic-instrumented.h:26 [inline]
+BUG: KASAN: use-after-free in refcount_read include/linux/refcount.h:134
+[inline]
+BUG: KASAN: use-after-free in skb_unref include/linux/skbuff.h:1042
+[inline]
+BUG: KASAN: use-after-free in kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+Read of size 4 at addr ffff8881d0957994 by task kworker/1:2/83
+
+Call Trace:
+kfree_skb+0x32/0x3d0 net/core/skbuff.c:692
+htc_connect_service.cold+0xa9/0x109
+drivers/net/wireless/ath/ath9k/htc_hst.c:282
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Allocated by task 83:
+kmem_cache_alloc_node+0xdc/0x330 mm/slub.c:2814
+__alloc_skb+0xba/0x5a0 net/core/skbuff.c:198
+alloc_skb include/linux/skbuff.h:1081 [inline]
+htc_connect_service+0x2cc/0x840
+drivers/net/wireless/ath/ath9k/htc_hst.c:257
+ath9k_wmi_connect+0xd2/0x1a0 drivers/net/wireless/ath/ath9k/wmi.c:265
+ath9k_init_htc_services.constprop.0+0xb4/0x650
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:146
+ath9k_htc_probe_device+0x25a/0x1d80
+drivers/net/wireless/ath/ath9k/htc_drv_init.c:959
+ath9k_htc_hw_init+0x31/0x60
+drivers/net/wireless/ath/ath9k/htc_hst.c:501
+ath9k_hif_usb_firmware_cb+0x26b/0x500
+drivers/net/wireless/ath/ath9k/hif_usb.c:1187
+request_firmware_work_func+0x126/0x242
+drivers/base/firmware_loader/main.c:976
+process_one_work+0x94b/0x1620 kernel/workqueue.c:2264
+worker_thread+0x96/0xe20 kernel/workqueue.c:2410
+kthread+0x318/0x420 kernel/kthread.c:255
+ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Freed by task 0:
+kfree_skb+0x102/0x3d0 net/core/skbuff.c:690
+ath9k_htc_txcompletion_cb+0x1f8/0x2b0
+drivers/net/wireless/ath/ath9k/htc_hst.c:356
+hif_usb_regout_cb+0x10b/0x1b0
+drivers/net/wireless/ath/ath9k/hif_usb.c:90
+__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+__do_softirq+0x21e/0x950 kernel/softirq.c:292
+
+Reported-and-tested-by: syzbot+9505af1ae303dabdc646@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-2-hqjagain@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/fbdev/vt8500lcdfb.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath9k/htc_hst.c |    3 ---
+ drivers/net/wireless/ath/ath9k/wmi.c     |    1 -
+ 2 files changed, 4 deletions(-)
 
---- a/drivers/video/fbdev/vt8500lcdfb.c
-+++ b/drivers/video/fbdev/vt8500lcdfb.c
-@@ -230,6 +230,7 @@ static int vt8500lcd_blank(int blank, st
- 		    info->fix.visual == FB_VISUAL_STATIC_PSEUDOCOLOR)
- 			for (i = 0; i < 256; i++)
- 				vt8500lcd_setcolreg(i, 0, 0, 0, 0, info);
-+		fallthrough;
- 	case FB_BLANK_UNBLANK:
- 		if (info->fix.visual == FB_VISUAL_PSEUDOCOLOR ||
- 		    info->fix.visual == FB_VISUAL_STATIC_PSEUDOCOLOR)
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -170,7 +170,6 @@ static int htc_config_pipe_credits(struc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC credit config timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -206,7 +205,6 @@ static int htc_setup_complete(struct htc
+ 	time_left = wait_for_completion_timeout(&target->cmd_wait, HZ);
+ 	if (!time_left) {
+ 		dev_err(target->dev, "HTC start timeout\n");
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -279,7 +277,6 @@ int htc_connect_service(struct htc_targe
+ 	if (!time_left) {
+ 		dev_err(target->dev, "Service connection timeout for: %d\n",
+ 			service_connreq->service_id);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -336,7 +336,6 @@ int ath9k_wmi_cmd(struct wmi *wmi, enum
+ 		ath_dbg(common, WMI, "Timeout waiting for WMI command: %s\n",
+ 			wmi_cmd_to_name(cmd_id));
+ 		mutex_unlock(&wmi->op_mutex);
+-		kfree_skb(skb);
+ 		return -ETIMEDOUT;
+ 	}
+ 
 
 
