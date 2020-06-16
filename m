@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF9E1FB75D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80391FB8F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731534AbgFPPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:45:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36620 "EHLO mail.kernel.org"
+        id S1733040AbgFPQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:00:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732079AbgFPPpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:45:21 -0400
+        id S1731804AbgFPPw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7FC520C09;
-        Tue, 16 Jun 2020 15:45:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FB99208D5;
+        Tue, 16 Jun 2020 15:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322321;
-        bh=yJiFaOZloGB2NSKpB3spvtmWAhuXPh/vE7PAJDTvQoQ=;
+        s=default; t=1592322778;
+        bh=8oOdO8G5uDNdbKO90o2ZU39T1Bp6Ti8hqZkMXc9pX6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYQoVmrYo8yfoLcAE0r/UyWkPpexsXb4EpWgRw5zboMAB2j0Rt2WytpxbYQydSADX
-         1vdsWfkobUq3EaMCb0Vx5qq0NEPbVCQOhgGRNK8nYajidNVdhTwLo7iXnRWr2J8tQi
-         NmeSunHlnCnq40R9cp3CfS+0NylJjViWQ6iiUvq0=
+        b=FeDG7ke8Bh7tmkLlahGfBUbKgiokZkHX/6DQIc0Sm/0R7mXhzjQ28Y7OSpWsG7Nbk
+         8pGoWj3fZvsbOrTyDJoDZiAzw2ZUXzRpgUTgzJ8OP3ZU0Ad2Wv/6uZJ0IzT0zA7Zuz
+         JCfJdz60GY0lzHpkv31j1yFlChc2iwzqtj44fVjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 085/163] spi: bcm2835aux: Fix controller unregister order
-Date:   Tue, 16 Jun 2020 17:34:19 +0200
-Message-Id: <20200616153110.915590804@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 070/161] ALSA: fireface: fix configuration error for nominal sampling transfer frequency
+Date:   Tue, 16 Jun 2020 17:34:20 +0200
+Message-Id: <20200616153109.713755288@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit b9dd3f6d417258ad0beeb292a1bc74200149f15d upstream.
+commit bbd6aac3ae15bef762af03bf62e35ace5c4292bd upstream.
 
-The BCM2835aux SPI driver uses devm_spi_register_master() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-bcm2835aux_spi_remove() before unregistering the SPI controller via
-devres_release_all().
+128000 and 192000 are congruence modulo 32000, thus it's wrong to
+distinguish them as multiple of 32000 and 48000 by modulo 32000 at
+first.
 
-This order is incorrect:  bcm2835aux_spi_remove() turns off the SPI
-controller, including its interrupts and clock.  The SPI controller
-is thus no longer usable.
+Additionally, used condition statement to detect quadruple speed can
+cause missing bit flag.
 
-When the SPI controller is subsequently unregistered, it unbinds all
-its slave devices.  If their drivers need to access the SPI bus,
-e.g. to quiesce their interrupts, unbinding will fail.
+Furthermore, counter to ensure the configuration is wrong and it
+causes false positive.
 
-As a rule, devm_spi_register_master() must not be used if the
-->remove() hook performs teardown steps which shall be performed
-after unbinding of slaves.
+This commit fixes the above three bugs.
 
-Fix by using the non-devm variant spi_register_master().  Note that the
-struct spi_master as well as the driver-private data are not freed until
-after bcm2835aux_spi_remove() has finished, so accessing them is safe.
-
-Fixes: 1ea29b39f4c8 ("spi: bcm2835aux: add bcm2835 auxiliary spi device driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v4.4+
-Cc: Martin Sperl <kernel@martin.sperl.org>
-Link: https://lore.kernel.org/r/32f27f4d8242e4d75f9a53f7e8f1f77483b08669.1589557526.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 60aec494b389 ("ALSA: fireface: support allocate_resources operation in latter protocol")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200510074301.116224-2-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-bcm2835aux.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/firewire/fireface/ff-protocol-latter.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -569,7 +569,7 @@ static int bcm2835aux_spi_probe(struct p
- 		goto out_clk_disable;
+--- a/sound/firewire/fireface/ff-protocol-latter.c
++++ b/sound/firewire/fireface/ff-protocol-latter.c
+@@ -107,18 +107,18 @@ static int latter_allocate_resources(str
+ 	int err;
+ 
+ 	// Set the number of data blocks transferred in a second.
+-	if (rate % 32000 == 0)
+-		code = 0x00;
++	if (rate % 48000 == 0)
++		code = 0x04;
+ 	else if (rate % 44100 == 0)
+ 		code = 0x02;
+-	else if (rate % 48000 == 0)
+-		code = 0x04;
++	else if (rate % 32000 == 0)
++		code = 0x00;
+ 	else
+ 		return -EINVAL;
+ 
+ 	if (rate >= 64000 && rate < 128000)
+ 		code |= 0x08;
+-	else if (rate >= 128000 && rate < 192000)
++	else if (rate >= 128000)
+ 		code |= 0x10;
+ 
+ 	reg = cpu_to_le32(code);
+@@ -140,7 +140,7 @@ static int latter_allocate_resources(str
+ 		if (curr_rate == rate)
+ 			break;
  	}
+-	if (count == 10)
++	if (count > 10)
+ 		return -ETIMEDOUT;
  
--	err = devm_spi_register_master(&pdev->dev, master);
-+	err = spi_register_master(master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
- 		goto out_clk_disable;
-@@ -593,6 +593,8 @@ static int bcm2835aux_spi_remove(struct
- 
- 	bcm2835aux_debugfs_remove(bs);
- 
-+	spi_unregister_master(master);
-+
- 	bcm2835aux_spi_reset_hw(bs);
- 
- 	/* disable the HW block by releasing the clock */
+ 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); ++i) {
 
 
