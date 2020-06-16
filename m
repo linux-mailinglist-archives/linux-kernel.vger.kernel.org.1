@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F691FB6F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2141D1FB64E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731634AbgFPPmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58570 "EHLO mail.kernel.org"
+        id S1729875AbgFPPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731623AbgFPPmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:42:09 -0400
+        id S1728917AbgFPPgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:36:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AA80214DB;
-        Tue, 16 Jun 2020 15:42:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AF9520C09;
+        Tue, 16 Jun 2020 15:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322128;
-        bh=iI/BZKi97QLx0JPtrtFK7ox1FG7npbhQVMDwhtTaRYU=;
+        s=default; t=1592321771;
+        bh=mlbf5webgelWXh1c2w76bsMcqMr/gV9ShhQ99iTpZc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GeWOlSO8zPXAeJgKIbdUgI16cio2151cOlDmhnKgi1q2xKzFrMtYIX5oQNN5TnU8Y
-         bbXJKY8VRhlWLpoiDFEwoo1cb8UJkDs/oESM2qIie5GkEwFw2OU8BVAucvBIskWDUN
-         EoR1/4nPr+Y4cxXjtDyryAUXTlo5lY7ETcrwfLOM=
+        b=U7UKEG3Na5OmN1Ob+g3pTEOoCUTAiFMhre9QJPa/gWFko2d/z7/YcrysWt5h+dsJu
+         noWbiWTFEFK0IEmCLytBCdAHEVmBWRINNgWs4bRnYLLUebAVg8glEiedjxyHg7dMKI
+         l2JxRJxf5ME5MykWKT78/w6dsR4US3YOdSL2y6XI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+8eac6d030e7807c21d32@syzkaller.appspotmail.com,
-        Jon Maloy <jmaloy@redhat.com>,
-        Tuong Lien <tuong.t.lien@dektech.com.au>,
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.7 012/163] tipc: fix NULL pointer dereference in streaming
+Subject: [PATCH 5.4 002/134] mlxsw: core: Use different get_trend() callbacks for different thermal zones
 Date:   Tue, 16 Jun 2020 17:33:06 +0200
-Message-Id: <20200616153107.461137968@linuxfoundation.org>
+Message-Id: <20200616153100.765876058@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,91 +45,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuong Lien <tuong.t.lien@dektech.com.au>
+From: Vadim Pasternak <vadimp@mellanox.com>
 
-[ Upstream commit 5e9eeccc58f3e6bcc99b929670665d2ce047e9c9 ]
+[ Upstream commit 2dc2f760052da4925482ecdcdc5c94d4a599153c ]
 
-syzbot found the following crash:
+The driver registers three different types of thermal zones: For the
+ASIC itself, for port modules and for gearboxes.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000019: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
-CPU: 1 PID: 7060 Comm: syz-executor394 Not tainted 5.7.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__tipc_sendstream+0xbde/0x11f0 net/tipc/socket.c:1591
-Code: 00 00 00 00 48 39 5c 24 28 48 0f 44 d8 e8 fa 3e db f9 48 b8 00 00 00 00 00 fc ff df 48 8d bb c8 00 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 e2 04 00 00 48 8b 9b c8 00 00 00 48 b8 00 00 00
-RSP: 0018:ffffc90003ef7818 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8797fd9d
-RDX: 0000000000000019 RSI: ffffffff8797fde6 RDI: 00000000000000c8
-RBP: ffff888099848040 R08: ffff88809a5f6440 R09: fffffbfff1860b4c
-R10: ffffffff8c305a5f R11: fffffbfff1860b4b R12: ffff88809984857e
-R13: 0000000000000000 R14: ffff888086aa4000 R15: 0000000000000000
-FS:  00000000009b4880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000140 CR3: 00000000a7fdf000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tipc_sendstream+0x4c/0x70 net/tipc/socket.c:1533
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x32f/0x810 net/socket.c:2352
- ___sys_sendmsg+0x100/0x170 net/socket.c:2406
- __sys_sendmmsg+0x195/0x480 net/socket.c:2496
- __do_sys_sendmmsg net/socket.c:2525 [inline]
- __se_sys_sendmmsg net/socket.c:2522 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2522
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x440199
-...
+Currently, all three types use the same get_trend() callback which does
+not work correctly for the ASIC thermal zone. The callback assumes that
+the device data is of type 'struct mlxsw_thermal_module', whereas for
+the ASIC thermal zone 'struct mlxsw_thermal' is passed as device data.
 
-This bug was bisected to commit 0a3e060f340d ("tipc: add test for Nagle
-algorithm effectiveness"). However, it is not the case, the trouble was
-from the base in the case of zero data length message sending, we would
-unexpectedly make an empty 'txq' queue after the 'tipc_msg_append()' in
-Nagle mode.
+Fix this by using one get_trend() callback for the ASIC thermal zone and
+another for the other two types.
 
-A similar crash can be generated even without the bisected patch but at
-the link layer when it accesses the empty queue.
-
-We solve the issues by building at least one buffer to go with socket's
-header and an optional data section that may be empty like what we had
-with the 'tipc_msg_build()'.
-
-Note: the previous commit 4c21daae3dbc ("tipc: Fix NULL pointer
-dereference in __tipc_sendstream()") is obsoleted by this one since the
-'txq' will be never empty and the check of 'skb != NULL' is unnecessary
-but it is safe anyway.
-
-Reported-by: syzbot+8eac6d030e7807c21d32@syzkaller.appspotmail.com
-Fixes: c0bceb97db9e ("tipc: add smart nagle feature")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Tuong Lien <tuong.t.lien@dektech.com.au>
+Fixes: 6f73862fabd9 ("mlxsw: core: Add the hottest thermal zone detection")
+Signed-off-by: Vadim Pasternak <vadimp@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/core_thermal.c |   23 +++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -221,7 +221,7 @@ int tipc_msg_append(struct tipc_msg *_hd
- 	accounted = skb ? msg_blocks(buf_msg(skb)) : 0;
- 	total = accounted;
+--- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
+@@ -390,8 +390,7 @@ static int mlxsw_thermal_set_trip_hyst(s
+ static int mlxsw_thermal_trend_get(struct thermal_zone_device *tzdev,
+ 				   int trip, enum thermal_trend *trend)
+ {
+-	struct mlxsw_thermal_module *tz = tzdev->devdata;
+-	struct mlxsw_thermal *thermal = tz->parent;
++	struct mlxsw_thermal *thermal = tzdev->devdata;
  
--	while (rem) {
-+	do {
- 		if (!skb || skb->len >= mss) {
- 			prev = skb;
- 			skb = tipc_buf_acquire(mss, GFP_KERNEL);
-@@ -249,7 +249,7 @@ int tipc_msg_append(struct tipc_msg *_hd
- 		skb_put(skb, cpy);
- 		rem -= cpy;
- 		total += msg_blocks(hdr) - curr;
--	}
-+	} while (rem);
- 	return total - accounted;
+ 	if (trip < 0 || trip >= MLXSW_THERMAL_NUM_TRIPS)
+ 		return -EINVAL;
+@@ -592,6 +591,22 @@ mlxsw_thermal_module_trip_hyst_set(struc
+ 	return 0;
  }
  
++static int mlxsw_thermal_module_trend_get(struct thermal_zone_device *tzdev,
++					  int trip, enum thermal_trend *trend)
++{
++	struct mlxsw_thermal_module *tz = tzdev->devdata;
++	struct mlxsw_thermal *thermal = tz->parent;
++
++	if (trip < 0 || trip >= MLXSW_THERMAL_NUM_TRIPS)
++		return -EINVAL;
++
++	if (tzdev == thermal->tz_highest_dev)
++		return 1;
++
++	*trend = THERMAL_TREND_STABLE;
++	return 0;
++}
++
+ static struct thermal_zone_device_ops mlxsw_thermal_module_ops = {
+ 	.bind		= mlxsw_thermal_module_bind,
+ 	.unbind		= mlxsw_thermal_module_unbind,
+@@ -603,7 +618,7 @@ static struct thermal_zone_device_ops ml
+ 	.set_trip_temp	= mlxsw_thermal_module_trip_temp_set,
+ 	.get_trip_hyst	= mlxsw_thermal_module_trip_hyst_get,
+ 	.set_trip_hyst	= mlxsw_thermal_module_trip_hyst_set,
+-	.get_trend	= mlxsw_thermal_trend_get,
++	.get_trend	= mlxsw_thermal_module_trend_get,
+ };
+ 
+ static int mlxsw_thermal_gearbox_temp_get(struct thermal_zone_device *tzdev,
+@@ -642,7 +657,7 @@ static struct thermal_zone_device_ops ml
+ 	.set_trip_temp	= mlxsw_thermal_module_trip_temp_set,
+ 	.get_trip_hyst	= mlxsw_thermal_module_trip_hyst_get,
+ 	.set_trip_hyst	= mlxsw_thermal_module_trip_hyst_set,
+-	.get_trend	= mlxsw_thermal_trend_get,
++	.get_trend	= mlxsw_thermal_module_trend_get,
+ };
+ 
+ static int mlxsw_thermal_get_max_state(struct thermal_cooling_device *cdev,
 
 
