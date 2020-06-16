@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8027E1FB3D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605491FB3E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgFPOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgFPOMM (ORCPT
+        id S1729196AbgFPOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:14:00 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:38436 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgFPON7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:12:12 -0400
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (mail-co1nam04on060f.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe4d::60f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF97C061573;
-        Tue, 16 Jun 2020 07:12:12 -0700 (PDT)
+        Tue, 16 Jun 2020 10:13:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1592316839; x=1623852839;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=5ru8INMLguJmSGjgKHqEdPjyXEvO+zybcMK9YmIq9xk=;
+  b=HbVTefFiYH3zHgGHysAR0U8L+2DbyzDzFG+X/zN05XorUMnMUdln2df4
+   gBbH7SfPX+W/qF5do0c5btMqoJt5uogFEyR4q64w2zFyy2HCdlfMk7qbK
+   BOdgFD4irhVFnf5Zb+xN187tOHjigCXCRTdpzXdUubRqOp3S9HjYO/AOF
+   4HH1ewRe+GZfd2xmQ3lm+8KrJ23h8xKQBhGJDgMDvdoeufVWFobRvT58b
+   YCj3kbmKeiB+sSfbiA5TZmSE3SFmkN1l+e8ZsCd+Dqbf9HSdoUfOrsnqu
+   id2E+KrVEvghy4+FcVVhAiOxlCOgnV80P6zuBIrGBRYandkpyRvmcj2eg
+   Q==;
+IronPort-SDR: eb1TYldMd1Mnu88G0cqZmXiReI1uNw3O7v0HvCjGcJM4k3RT3jhTf9RkwjYCRYiyoRxEF+Ezlo
+ TfvQGLaIpLZ0q0c5Cos75Ns/pf52eWH6yIRo41Gz6hWgwJtrL1b8LTQUJo5MyxsFdgFzCBgwLb
+ eQLhXYiCRP77sx5GMCauDe+Y7SSK/SXou6TUyIW6rVBCE6UjDZTHfNfo7cwPgXGo3ADAMQCK2Y
+ 6Rf33CgQH4RixLHY5UInSiDZ+Eo9ClEKrMv643A1Zd/z2JrrXN8aiVNVKizSnB0rD1iTpLD8ui
+ e6w=
+X-IronPort-AV: E=Sophos;i="5.73,518,1583164800"; 
+   d="scan'208";a="140131335"
+Received: from mail-dm6nam11lp2170.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.170])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Jun 2020 22:13:57 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YYbs7WbaqcgOHowwTAFIOYPW4eEQEU82XDIEbiNd1g0lj5GckgC+wBSMCDTDtYj7ygft/UaTlDX+25rjCCu9E/Fom6pldOwB622iqbJdzR8VzKGIA5DjuhfQN+litakTsvkjnH1qXc0DxR6rLQifGKiLVXxoDvxQIXswaybkoxJeNOY1dDDAtbjr0vRIfdM+PGRO39U6dJIAKO1isKrATkfDSvhW76PoIdDPBr3+I5ktUkask+CmOXdHSbMPjMFv9l0Kxh341NRXpVYbAftOI5XEOO8y3xPuRoYvP/zTDIlE9k45DkEmP+qxOha21PGHjlz4f32ZClFtnHLQVWH6KQ==
+ b=S1BL/xPG/PeVHvec0QZJ/uY5lGpQnNwwd6+mo7XvXeOkOdYK3MwJ+SSMdeooMkIg6Cf8NXJlCaUe9vdzHYmYmleFb50nUDk9V4nuusduq+aV+n7i8MieWHC7ZI1xWDk4teMBTJmaGIhda68kTVWWCYnBFjPkaqoEKrktLvKYe3UwaHGv2t373hLI/Q0Q846v4wOCxeZdhc9mRHVXn8TcwkLgaEkzIyT8hRWIOoYQIX+5aq7j8ccQbt4yvVgOl0LsKsQszDb0Lq8fxtG/6whhPHl1uFp9Ra5uolAdan/2IHpzN80ltBXgyUi7biKpAXgBqCxuKAuV4fpokdHDVBOMDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2rWjLFAz6hSEhrToELMwJOaMgwtLNS1qpS3Rq9tn3fA=;
- b=JtMm190/ooIKvCrmZmgzI2liqWe2zJkNl+t9yrxm7P1auhCDq9w/nOVkF2vCnnPkey4sJ4iqJvmFftJJpwSZNHsr/pc8NHtSXbvJmyAFygERAkeo/Zm8YwS+37PoUUnwm0gpcc+r6mSmD/kQ/FEvX4hksAjqz4NQ5cciyHovE6hYWNcCgUnYILfEUBLeMM5GpyXqtuoD53pFcbhxQ75gdHDZYoQtiIXtt5tMjx6nTlQ7K6koclzyWEwW8W0UJvFu5xWGLEB7Xr7ErWK1OhhPc0Pg+PogI2DehbyvhqL35VJAou5o7OArWtzhZp7AKMWrJ3uTTbjFe8r0JmE7SBaiog==
+ bh=N1ADHNg3PJ8+F4rqdl0gQ3PQ436o5b5tv/CbEdwgCQI=;
+ b=CEbVripfhKgISVX0M/QdgE8Mg9S+fjHmlH0Sbb01xAShIdPSQNbHYrZU8rXSyEz0LupXPv38eV+kR1VW5Kp0Z1WpwZ7N0B286aCntnqTgefhFgQBkhvoU6NCjiQw6sEdj/WsWizEEmxig9RKvmXwJby1Vmxd42h7owd+5KJcOsqper1oBHUKpajI9nYH1henVOCteiWrQI4sBFg51Fuih21NZXCluYZ3mQi7pvapFY9JFOM7GB/5ieHYGkHyJ1ate+Z8g/Ugaicf09nZ34ZchgZmLc++IwweF2yA3w32VrV36mnVrJO0SG3XmFlDDuZ6zRT/QEysWPGtBjtjR8E7mw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2rWjLFAz6hSEhrToELMwJOaMgwtLNS1qpS3Rq9tn3fA=;
- b=2MCb+1GD7b1twn0emi4rU8aQI0ExgYyTi9Lq4CTQUxL1juI/nfq5sVbldZ6+Pb1rHXvP6CeqR8JUTel5+6fDY+YA3+FQd8/18158u/J5pi2a97X61xlVE79MlJd5Via9nmkfWJgfjxnOx9ZFRPcGzkY4c2SzES6c/mCB0/sBJN0=
-Authentication-Results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR1201MB0209.namprd12.prod.outlook.com (2603:10b6:405:4d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Tue, 16 Jun
- 2020 14:12:06 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::2c67:480d:4505:5314]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::2c67:480d:4505:5314%3]) with mapi id 15.20.3109.021; Tue, 16 Jun 2020
- 14:12:06 +0000
-Date:   Tue, 16 Jun 2020 09:11:59 -0500
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jacky Hu <hengqing.hu@gmail.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+ bh=N1ADHNg3PJ8+F4rqdl0gQ3PQ436o5b5tv/CbEdwgCQI=;
+ b=He+5c+JduqYVwDgoZLzLVAVFpWnnCKAeguaXri55yYn8dZ4stgpyo5ZOBFJZTB5yVZkrtuJSlnIxMfhHrzSvj95GGD3SjGw0jykEWOLKrfc2KTB+kXzcev9cRurv5YaaLYC69gmCP+FomngMbbgLUSX4KqRFFus3gKBA+RasdTs=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4046.namprd04.prod.outlook.com
+ (2603:10b6:805:4a::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Tue, 16 Jun
+ 2020 14:13:54 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3088.028; Tue, 16 Jun 2020
+ 14:13:54 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Chris Boot <bootc@boo.tc>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux1394-devel@lists.sourceforge.net" 
+        <linux1394-devel@lists.sourceforge.net>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Subject: Re: [PATCH 0/2] MCA and EDAC updates for AMD Family 17h, Model 60h
-Message-ID: <20200616141159.GA3963646@yaz-nikka.amd.com>
-References: <20200607043709.48178-1-hengqing.hu@gmail.com>
- <20200615115950.GG14668@zn.tnic>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200615115950.GG14668@zn.tnic>
-X-ClientProxiedBy: DM3PR11CA0021.namprd11.prod.outlook.com
- (2603:10b6:0:54::31) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        Chuhong Yuan <hslester96@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+Thread-Topic: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+Thread-Index: AQHWQd9L9CW+VqfbYUW2am9N2FcWXg==
+Date:   Tue, 16 Jun 2020 14:13:54 +0000
+Message-ID: <SN4PR0401MB35982D889857E3C03E96E49D9B9D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
+ <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
+ <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>
+ <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
+ <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>
+ <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>
+ <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f4b67696-eab0-46ae-3391-08d811ff808d
+x-ms-traffictypediagnostic: SN6PR04MB4046:
+x-microsoft-antispam-prvs: <SN6PR04MB4046EA5A9CBA518F7A07276F9B9D0@SN6PR04MB4046.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 04362AC73B
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YUSiJ8Hwm5WME7OmxRDuxyB71Y3IvMKlMBomEvN3y9i/j8mSnTwJNagsNBfHhvpYxwsHTGRsozO8eZT27nP27ZLLlLo7RRk87/U+INkW4F5o2H9kdKYlb1V52crQuvA8zfbgta6hLo2oBEPTUTIGsUpQ5cSYhgLn4AWbpYC5B7Ar1h06FlQM+AQOW+1JtR6yDcaMe7sFqYkMTYwoqPx4K3R70DbjngaT5iANnwAx4B4eNP6AyFXRGz2ilpJzaX76f7IMquOTGz0Lf3PZeFWjRT2mNRdLaDQa7J1M89gjeW180NABk4wYwIvl/vIX0H4ML5vzA+4d+dQO2osmaLnUFQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(52536014)(2906002)(9686003)(26005)(55016002)(498600001)(5660300002)(6506007)(4326008)(53546011)(4744005)(86362001)(8936002)(110136005)(7696005)(7416002)(66946007)(76116006)(186003)(91956017)(33656002)(66476007)(66556008)(64756008)(66446008)(71200400001)(54906003)(8676002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: dZrsZbRzUHnP4XBXwlFVJemPGBxUFP38bAC/JG522uMsZ6cxXI/i+92j/xcIXqn79I1MJxQwWr7al9YZknqvbv9ROOyvhma9mkRn7LcCl+BVsYwbJ6unDv+XBVSNU0UPmVscvalEiUhEjA2o44yYoXwwLieaPHgiBTeUPXTxIFmQGYZ+XksrrQKHeIbcswOSeCiiYKWDknUwhMBzIB5E6c5IqNXJAST5NKF88BX/yCUqddOLUFhnCv8Yk/qzOQbmCFLEYJxlon5Cf9M60IQgCDP9pbxLCwFRLRd0FpcM4bPApph/9FsTTcIDMD+hj0IKdEf/SKJM653mHaLR23jTtx71mvX83Xc14OEKBoc9xfviqQ81G5LLE21opmDH+jq7ZnRQ9koeqMt3UsaXPCg6icYiYsp2TyhIuutbXQMJDNbLRVi//jIKZ56IpPHH8raZU9lcewMQMfki5XtGGQwWNIAlsaA6v5Br4Hi10u6Sim/DiCJ4CN9uvaJTJJMAg01i
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-nikka.amd.com (165.204.77.1) by DM3PR11CA0021.namprd11.prod.outlook.com (2603:10b6:0:54::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.21 via Frontend Transport; Tue, 16 Jun 2020 14:12:05 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d7b44a5f-e426-416f-d141-08d811ff400f
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0209:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB0209B6E60025CF1A1E7E73D8F89D0@BN6PR1201MB0209.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:663;
-X-Forefront-PRVS: 04362AC73B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ueqhyWaaY0n/TSFhPQ74BQBnRuOREfqv3nRZGfJm1KcgC/q9mPoFxrX01od/mz0ta1hH5LxLNh+i3Xof4Jby+jNvw8lEdAUc2CvHD1SggrsaL5vbzAwi54JsKXwmiwJ4aUcg+8JzEOgFo37CDU/y0yu2szh1XkWe6DOAgs5dS7kkJqCURwwbJ/oOb49H2ipHuEkiygChQC0yvk1+ZlBu+C0RXW1B9TVd8XCRmwsH+W2Urn1t8iu1CSh0TNlA+FZsMVhvybDd8hneqEN0ZnbrV85ILpHlFcXvMwkRCwk5WCECjY93aWjqkzmdAggDJHIivh3/ItbQ2LTk3QaEkbnOEw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(376002)(366004)(396003)(54906003)(956004)(186003)(86362001)(26005)(4744005)(44832011)(8936002)(5660300002)(66556008)(66946007)(6916009)(66476007)(478600001)(2906002)(16526019)(7696005)(52116002)(33656002)(4326008)(55016002)(6666004)(8676002)(316002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ImeaO1LG4sdVz6f0X3ocThl3gGMqxI9LYPl8wf0mTJOA703cpF6f0Aqjvu0BgnpKXpb/Pj66g2jfZodadxsdxKELXKUjJL3dsUQkQMGMssE1NrvrKAZSqMFQSa8ZnaHzO6YbfSLAdwfKkq7iKyGj8c8si47rbZ1lawfeRJ6Dayh6smIfkujm+d6B3cEa6BtvjCftkUejWPnw4FC4JABLpyWY21JExBYQzS613sq/FS+yDn6pbzMaBKhjZNE3mc/dTiCMOT8VRTYtUx2FiG9qQlwWIiYBMpQdWbD5O83nIJknsItMhW5QTGL3iaYPLzdWQTGyqjys/EsQGaBlwd3UC07boF0nzteBFYDE4+CmhbUuiMA8tSEOoqvcylqCP7VqIPjNJXkG26iWXnjljmdFoxic42sCSOWnoZtA3lqnbTQRQrA3Ik5Wp874/YXTuZ82V1TflM9SM/CnTUooapnMwkXWVyc6f5mRyVO+/WIrygY=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7b44a5f-e426-416f-d141-08d811ff400f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 14:12:06.3965
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4b67696-eab0-46ae-3391-08d811ff808d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2020 14:13:54.2486
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IhMNsnr5nDc13NRjVf5EL2B4OVv05A9uDN4UXG6RG8tZzFTxq4Qkm7uxDt1/GDKqqxUxWCXO6gP/fT9NL/GFdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0209
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D0cCNG3TTt5CBTr4ejKQQmhSKY5P9ZXep4z+lTTVW87qxHFI4DQ2bul+90jMIcZgur/xgnaRMG3ZsJO70aPsvYzUw2KpsYc/PcNyMUoXngY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 07:59:50AM -0400, Borislav Petkov wrote:
-> + Yazen and linux-hwmon.
-> 
-> On Sun, Jun 07, 2020 at 12:37:07PM +0800, Jacky Hu wrote:
-> > This patchset adds MCA and EDAC support for AMD Family 17h, Model 60h.
-> > 
-> > Also k10temp works with 4800h
-> > 
-> > k10temp-pci-00c3
-> > Adapter: PCI adapter
-> > Vcore:         1.55 V
-> > Vsoc:          1.55 V
-> > Tctl:         +49.6°C
-> > Tdie:         +49.6°C
-> > Icore:         0.00 A
-> > Isoc:          0.00 A
-> > 
-> > Jacky Hu (2):
-> >   x86/amd_nb: Add Family 17h, Model 60h PCI IDs
-> >   EDAC/amd64: Add family ops for Family 17h Models 60h-6Fh
-> > 
-> >  arch/x86/kernel/amd_nb.c  |  5 +++++
-> >  drivers/edac/amd64_edac.c | 14 ++++++++++++++
-> >  drivers/edac/amd64_edac.h |  3 +++
-> >  drivers/hwmon/k10temp.c   |  2 ++
-> >  include/linux/pci_ids.h   |  1 +
-> >  5 files changed, 25 insertions(+)
-> >
-
-PCI IDs and EDAC look good to me.
-
-Acked-by: Yazen Ghannam <yazen.ghannam@amd.com>
-
-Thanks,
-Yazen
+On 16/06/2020 16:09, Bart Van Assche wrote:=0A=
+> On 2020-06-16 02:42, Finn Thain wrote:=0A=
+>> Martin said, "I'd appreciate a patch to remove it"=0A=
+>>=0A=
+>> And Bart said, "do you want to keep this driver in the kernel tree?"=0A=
+>>=0A=
+>> AFAICT both comments are quite ambiguous. I don't see an actionable =0A=
+>> request, just an expression of interest from people doing their jobs.=0A=
+>>=0A=
+>> Note well: there is no pay check associated with having a MAINTAINERS fi=
+le =0A=
+>> entry.=0A=
+> =0A=
+> Hi Finn,=0A=
+> =0A=
+> As far as I know the sbp driver only has had one user ever and that user=
+=0A=
+> is no longer user the sbp driver. So why to keep it in the kernel tree?=
+=0A=
+> Restoring a kernel driver can be easy - the first step is a "git revert".=
+=0A=
+=0A=
+Why not move the driver to drivers/staging for 2 or 3 kernel releases and i=
+f=0A=
+noone steps up, delete it?=0A=
+=0A=
+Just my 2 Cents,=0A=
+	Johannes=0A=
