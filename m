@@ -2,174 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5D31FC181
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 00:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F271FC16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 00:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgFPWXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 18:23:21 -0400
-Received: from gateway22.websitewelcome.com ([192.185.47.79]:35225 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725790AbgFPWXU (ORCPT
+        id S1726335AbgFPWGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 18:06:24 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59285 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgFPWGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 18:23:20 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 374837411
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 17:00:42 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id lJdKjP4NuSxZVlJdKjaUgn; Tue, 16 Jun 2020 17:00:42 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=M//+e5AaelqD0K7p3qkqb5RiPbrH7/FuzLzZ0Y78NoU=; b=kxPh27C5xcY4pPn9vM9ZNffsRa
-        9ZnaI+uoUqjKdGJpDLkJNcKBNU49ma20XsGU2yGQmi8HM4+zvn0dWb+eA18K0i7PzQpJlJV820t61
-        ThSMgjiyseuUr8ttI/LZte+YEZdwwa6n8cfuOWoA81NWcwie8ERPNC1DTo0XnfudH/9XjdFq2+HMb
-        WubkVpjhXddgyfuQG6MTESIkVVW3P+7/sDIU8N2geaRYWKGydoRBsY6UDje/QcRREvz2pbCNVE1Pz
-        Vcq97koj18Kd/zGvJbWlxVqsidSu8sp9zOUW1MC8PSkoY6hXPx33or3TNQdgOZ1IXLX4w4M3RzBwU
-        mJXgg69Q==;
-Received: from [189.207.59.248] (port=43120 helo=[192.168.15.7])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jlJdJ-003Liw-T9; Tue, 16 Jun 2020 17:00:41 -0500
-Subject: Re: [PATCH] dm ioctl: Use struct_size() helper
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20190828183825.GA4216@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <885e7ea3-b29a-eba0-569e-64760102016e@embeddedor.com>
-Date:   Tue, 16 Jun 2020 17:06:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 16 Jun 2020 18:06:23 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id F1EFE5C00E1;
+        Tue, 16 Jun 2020 18:06:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 16 Jun 2020 18:06:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tobin.cc; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=z4kbQiA7fXENz+uZ3GRIQm70e5a
+        yJQmVi7soJQmblS4=; b=jjazcBnAGDUnOov5LjcFA98QDaCxEg6mCDvlkh+0FSR
+        rCur5LrrhmympWEZyCGhqWamzptP1IY5p83vnG19dXds4jkw5YEDxZ6/4qScJDv/
+        pdHJebk6vhRs4bCQAtOPcSfVvy3RD7/P6duGH8ueubZvM6irUgovhZbVg5s91FKc
+        L0+iMsjnOZnqGic+FXzvUPp08x247VpXdUsqUHL/WvjTiTjOr32jAy8ZGQpaAJkq
+        ibC/RcQsfKAzkUjcPyFWkATHi5/CS/fcYL2xb8aruLzwboJHuvwzlCJ0KLi3mNE5
+        b1dlXcHDD3Z/8Qm0QSqpd2jBn8xo3xgsEANKmzZ9l3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=z4kbQi
+        A7fXENz+uZ3GRIQm70e5ayJQmVi7soJQmblS4=; b=If9QaZWcO7Epc3XUEDb7Y0
+        AviwdUFnMKi5DeaoWbDq8TKlwyO0D4S8Eal2/pmeINtKBtfMdKdLVS6vbobJ9Bzg
+        8mnDCzVaHK0G/ShowHLl+z6JghleAhQ7QCK6GblR0U7k27Vxlax8GnS7UdOmVM4T
+        XSs7jyxmL7Fi1u1w4GnTd+8a8+/nrXmwJR49aK0QNf75f3RTz+W0hfjjYRcN+P0+
+        ZukCkGSM0ru9AjIUTwMzmLVvbJ7gQFU49NO7/yKgs7xEpKZAerNTO0Ig2HTGJ4o5
+        Ev3iHweED+Z2rCXCqgsMUdQsIPQfcEAO/dIYaun1MA4qiHWMndT02IkI/umeKSAQ
+        ==
+X-ME-Sender: <xms:XULpXgoVnyhEMBsZ3Dw_jQLjC3N3_TuKBvJoZnCKOyuPkdlps0CRIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudejuddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdludehmdenucfjughrpeffhffvuffkfhggtggujgfofgesghdtreer
+    ofervdenucfhrhhomhepfdfvohgsihhnucevrdcujfgrrhguihhnghdfuceomhgvsehtoh
+    gsihhnrdgttgeqnecuggftrfgrthhtvghrnhephfeiuefhtdefudetteelgfffheekffdu
+    feelteekleehhfdtieevkeegfeekgeehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrgh
+    enucfkphepvddvtddrvdefhedrudegrdefgeenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesthhosghinhdrtggt
+X-ME-Proxy: <xmx:XULpXmoN0ZFng3HlxLyhbgH8vonwucUv9dG6smJ8wbEkrQGPKBG4vg>
+    <xmx:XULpXlNKKCkYmOaKh5SQ7426baJ99TOfd0K9h7m4hTIeGFURiVj2cw>
+    <xmx:XULpXn6jVXwl1DBQ8Sr9rU9JduwRldY24qwEkHFt28O-f63lVm6hgQ>
+    <xmx:XULpXoXDXdnvzqBEHTqDg9QXD85mNgAlBNZ31lq3DHmq2v-yL8Tyxg>
+Received: from localhost (220-235-14-34.dyn.iinet.net.au [220.235.14.34])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A756A3280068;
+        Tue, 16 Jun 2020 18:06:20 -0400 (EDT)
+Date:   Wed, 17 Jun 2020 08:06:17 +1000
+From:   "Tobin C. Harding" <me@tobin.cc>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: removal of the leaks tree
+Message-ID: <20200616220617.GA25096@ares>
+References: <20200616145333.40ddbce5@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20190828183825.GA4216@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.207.59.248
-X-Source-L: No
-X-Exim-ID: 1jlJdJ-003Liw-T9
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.7]) [189.207.59.248]:43120
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <20200616145333.40ddbce5@canb.auug.org.au>
+X-Mailer: Mutt 1.9.4 (2018-02-28)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-Friendly ping: who can take this?
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's been almost a year... and I just noticed there was a problem
-with the email addresses back then...
+On Tue, Jun 16, 2020 at 02:53:33PM +1000, Stephen Rothwell wrote:
+> Hi,
+>
+> I have removed the leaks tree
+> (https://git.kernel.org/pub/scm/linux/kernel/git/tobin/leaks.git#leaks-next)
+> from linux-next because it has not been updated in more than a year.
+> If you would like it reinstated, please just reply and let me know.
 
-I just fixed the issue and this patch should now appear on
-dm-devel@redhat.com and LKML.
+No worries Steven, thanks for letting me know.
 
-Thanks
---
-Gustavo
 
-On 8/28/19 13:38, Gustavo A. R. Silva wrote:
-> One of the more common cases of allocation size calculations is finding
-> the size of a structure that has a zero-sized array at the end, along
-> with memory for some number of elements for that array. For example:
-> 
-> struct dm_target_deps {
-> 	...
->         __u64 dev[0];   /* out */
-> };
-> 
-> Make use of the struct_size() helper instead of an open-coded version
-> in order to avoid any potential type mistakes.
-> 
-> So, replace the following form:
-> 
-> sizeof(*deps) + (sizeof(*deps->dev) * count)
-> 
-> with:
-> 
-> struct_size(deps, dev, count)
-> 
-> This code was detected with the help of Coccinelle.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->  drivers/md/dm-ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-> index fb6f8fb1f13d..b2d52cec70d4 100644
-> --- a/drivers/md/dm-ioctl.c
-> +++ b/drivers/md/dm-ioctl.c
-> @@ -1446,7 +1446,7 @@ static void retrieve_deps(struct dm_table *table,
->  	/*
->  	 * Check we have enough space.
->  	 */
-> -	needed = sizeof(*deps) + (sizeof(*deps->dev) * count);
-> +	needed = struct_size(deps, dev, count);
->  	if (len < needed) {
->  		param->flags |= DM_BUFFER_FULL_FLAG;
->  		return;
-> 
+        Tobin
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEc/+jpUAIMPwyplf8QL+eTCadZgcFAl7pQlQACgkQQL+eTCad
+Zgcv3BAAgGIXSOHMmnitua54lQLw1uhkgeS5IvqBkZn9+fSKpGpaRPYxC4bugpgZ
+LMtt+uhaKaXu3PTgzBBnzEuYy5/FCs15fWdXJIiMQG4wOs490n3V8K4aGh2Wqx7x
+pE26E65oFBQp8GROZhbecKDLI77ng0xDCKutRrGXf9JnKotNgGY2dRUe8leVe5cE
+OoDKpTuGro4iGf9stJ5TCyKPZNsNqRSzXCjTrrPyj7lDbKRfesVIUeQ7qfYSsgR3
++iWH5enSK+PKr2PtgNfJsSmH7UMLKwzmxqkP5O8T3t2blJ2CdP9lfvAaC83xxHyQ
++7nrPs+oxoe6eiteg0CJE5k1m86p445FXDE95asBSfdR29mF3iqwmwiNrANWtzgC
+mmHxqUQ34Rcd8IIaLScO27BFJx9lL7nR2kyMVdhx/isYso1wJr7g0kyOjU81SO9o
+3vc8eAif+JBn+goaUH50opmgW0cQg6Zb7SXTZNpCFDI6wsZwQvkfx1rU15fE0O4r
+M/Y7wzIIRH5Ef8R5YIHXVEiZ9py0jN0vHYiYeT/8Ns388fdEk/fAnmQwr864qQAd
+ECTKEHKkyTm0EQxuYHV5I1d5weOLmUDJ8EmOHTz349fDXRbLA5QCUToHp4XLrY2m
+IKOX3guBL28Q81/fnvb1mCocxeHSDLYKsDOikl17tLkNp3SOR8k=
+=CJCr
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
