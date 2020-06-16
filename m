@@ -2,172 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB2F1FBB26
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A90B1FBA93
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732430AbgFPQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730320AbgFPPjq (ORCPT
+        id S1729885AbgFPQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:12:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49432 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731875AbgFPPn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:39:46 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15085C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 08:39:46 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id u15so4902616vkk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 08:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OpIcNKoBWA32ZKSTXaPec3bskXiFI5FMVqf556OuUa0=;
-        b=d+5q6fsa3R7M8XLtKaS7HovoRpMgQG3JaLFBzKFpkgMdpWIQNxahgs7ClZDzZb7k38
-         BumsnzjNb5pv6Sua2mhhj083fF/4QDJWZha9MvspLatp/YzjekRwRBScURCqOMKApAUC
-         utzZ0I4TMfH0NiRDynsdJb/Hve8w2PKkCe2QYH1XkAFhB+vPU51WB3qM+H0sR/3awu6V
-         b/F4p1AbJvFtEZ9Uiw4e/HJsNJz6+9sx7qImlkh2OLPwcMdrRZSdgt4AJWdKzVAVjgKX
-         NWkFw11rdoKBEDOkNiqcjbOyacSJAb8VCzX7as9fQL/jEWSnmEIN9gnCq5ulbatUr1T1
-         H1UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OpIcNKoBWA32ZKSTXaPec3bskXiFI5FMVqf556OuUa0=;
-        b=V6eAvLr70aZ/GHnt33Gd+FU6+fxtgEnPECOdUKJa8ysuU0cjfJGBKMROt9A5GrP7sX
-         PjFCb2ATU8iqjP8XCJbfIjg3mVvYndMsHbwsdc8WlG1jycZF+UuPoGWbLZaYq1Y+Pe8O
-         n4yR5hx37WBmQ0sdnScP2y0WKJCSa5s7VyFC7yDPmb/tR7UOPAYX1ovYzEQ4hw8+sTWh
-         fnQ5PMRGjXjrqMwe/yvTYlaHQbS1GqMqFjGG0gFJ4uKYCvQsQ3+u6AtjvdA8YR560KTw
-         6Dl3G3Lm1N6SWegDro9MIo3oXnJcli0qz+Fzw8irLzA/fss6HXbJJCMUhjQ72D+wQJ74
-         XnVA==
-X-Gm-Message-State: AOAM532YCIr/bhWV3LUF8d45JJsM10VddFHxKrAYmXUIekOkZKZSbIi7
-        Dqa/CjFpUtIvR+WLtrr425ntaYh+pHw2neS5KoZVUw==
-X-Google-Smtp-Source: ABdhPJynNTSeftCC3/9Fn4eMnqHfujT6xn5kgc80WYjLXr1ID7DkYRFsjizJxUBmnTnusWqiT2jKctEgttJmO93Ow4k=
-X-Received: by 2002:a1f:2b43:: with SMTP id r64mr2264638vkr.5.1592321984533;
- Tue, 16 Jun 2020 08:39:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200528195442.190116-1-surenb@google.com> <20200604131215.GB4117@hirez.programming.kicks-ass.net>
- <CAJuCfpHNfOCRks_Ftbk7tEXsXs7AjPVUuxevKOtQWp9DCE4+8A@mail.gmail.com> <CAJuCfpGKsAs44AsRUF71E=Q-QyFbdH+05358BxhbQ-dAoz59YQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpGKsAs44AsRUF71E=Q-QyFbdH+05358BxhbQ-dAoz59YQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 16 Jun 2020 08:39:33 -0700
-Message-ID: <CAJuCfpEAW0PvO26cO8Dor+PY9PNetdqiTySkFFfocskdhUCvQg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] psi: eliminate kthread_worker from psi trigger
- scheduling mechanism
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        Tue, 16 Jun 2020 11:43:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592322235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=n2vgEtySMMJw+Y6/Iz7yVj4GHK2o/g3YD4HMOMKMGxw=;
+        b=Kr0cwc+HRVHnmnKsYYV3UqzW3PHTGjd/Qb4fvvXrY9gxrA+fC4zPWzeE+63uGE7zkOtHoK
+        GfgiIfEKFyYdyuToX7/lqNCnV935c+cFQyZ7ZlZ2ZbVwnemwqwS/BOZQ2ttPGADs80G1Lz
+        Xl+sF7Gm/o42WUYge8t/5umo2Zca46c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-iVwDnxGCNeS1_dm-BMJ-EQ-1; Tue, 16 Jun 2020 11:43:51 -0400
+X-MC-Unique: iVwDnxGCNeS1_dm-BMJ-EQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A261EC1A2;
+        Tue, 16 Jun 2020 15:43:45 +0000 (UTC)
+Received: from llong.com (ovpn-114-156.rdu2.redhat.com [10.10.114.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 68C6460C47;
+        Tue, 16 Jun 2020 15:43:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        ecryptfs@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-bluetooth@vger.kernel.org, linux-wpan@vger.kernel.org,
+        linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v5 0/2] mm, treewide: Rename kzfree() to kfree_sensitive()
+Date:   Tue, 16 Jun 2020 11:43:09 -0400
+Message-Id: <20200616154311.12314-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 7:56 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Thu, Jun 4, 2020 at 12:20 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > On Thu, Jun 4, 2020 at 6:12 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, May 28, 2020 at 12:54:42PM -0700, Suren Baghdasaryan wrote:
-> > > > Each psi group requires a dedicated kthread_delayed_work and
-> > > > kthread_worker. Since no other work can be performed using psi_group's
-> > > > kthread_worker, the same result can be obtained using a task_struct and
-> > > > a timer directly. This makes psi triggering simpler by removing lists
-> > > > and locks involved with kthread_worker usage and eliminates the need for
-> > > > poll_scheduled atomic use in the hot path.
-> > > >
-> > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > > ---
-> > > > This patch is meant to address Peter's request in [1] to pull
-> > > > kthread_queue_delayed_work() out from under rq->lock. This should also address
-> > > > the lockdep warning about possibility of a circular dependency described in [2]
-> > >
-> > > I think you could've just fixed kthread_queue_delayed_work(), that code
-> > > is sub-optimal.
->
-> After some more staring into kthread code I think I understand what
-> Peter's comment meant about delayed_work_list.
-> worker->delayed_work_list seems to be unnecessary because each
-> kthread_delayed_work has its own timer which will add the work into
-> worker->work_list when the time comes. So there is no need to store
-> the delayed work in an intermediate worker->delayed_work_list.
-> However I think kthread_destroy_worker() has an issue if it's called
-> while worker->delayed_work_list is non-empty. The issue is that
-> kthread_destroy_worker() does not stop all the
-> kthread_delayed_work->timers scheduled on the
-> worker->delayed_work_list. So if such a timer fires after a call to
-> kthread_destroy_worker(), timer's handler will dereference the already
-> destroyed worker.
->
-> If I'm right and this is indeed an issue then I think we do need
-> worker->delayed_work_list to cancel all the scheduled timers. The
-> issue can be avoided if we assume that the caller will alway call
-> kthread_cancel_delayed_work_sync() for each delayed_work scheduled on
-> worker->delayed_work_list before calling kthread_destroy_worker(). If
-> that's what we expect I think this expectation should be reflected in
-> the comments and a WARN_ON(!list_empty(&worker->delayed_work_list)) be
-> added in kthread_destroy_worker(). WDYT?
->
-> >
-> > Ok, let me look into it some more. My understanding was that the
-> > worker->lock in kthread_queue_delayed_work() was needed to synchronize
-> > worker->delayed_work_list access. But maybe I'm missing something... I
-> > assume you are talking about optimizing this beyond what
-> > https://lkml.org/lkml/2020/5/4/1148 was doing?
-> >
-> > BTW, any objections against taking https://lkml.org/lkml/2020/5/4/1148
-> > ? It's not the ultimate fix but it is an improvement since it gets
-> > some of the operations that were unnecessarily under worker->lock out
-> > of it.
-> >
-> > >
-> > > But I suppose this works too.
-> >
-> > In PSI's case there is always one work for each worker, so the
-> > delayed_work_list and work_list are not needed and therefore I can
-> > replace kthread_worker machinery with a task and a timer.
-> > I think I can simplify this a bit further. For example
-> > group->poll_wakeup doesn't have to be an atomic. Originally I wanted
-> > to avoid a possibility of a race when poll_timer_fn sets it and
-> > psi_poll_worker resets it and as a result misses a wakeup, however if
-> > psi_poll_worker resets it before calling psi_poll_work then there is
-> > no harm in missing a wakeup because we called psi_poll_work and did
-> > the required work anyway.
-> >
-> > One question about this patch I'm not sure about and wanted to ask you
-> > Peter is whether it's ok to call mod_timer from within a hotpath
-> > (while holding rq->lock). As I described in the additional comment,
-> > there is a possibility of a race between when I check timer_pending
-> > and the call to mod_timer, so it's possible that mod_timer might be
-> > called both from psi_poll_work (psi poll work handler) and from
-> > psi_task_change (hotpath under rq->lock). I see that mod_timer takes
-> > base->lock spinlock, and IIUC such a race might block the hotpath and
-> > therefore is unacceptable. If this is true I'll need to revive the
-> > poll_scheduled atomic to close this race and then I can change
-> > mod_timer into add_timer.
-> > WDYT? And sorry for my ignorance if this is a trivial question. I'm
-> > not sure about the rules when it comes to rq->locks.
+ v5:
+  - Break the btrfs patch out as a separate patch to be processed
+    independently.
+  - Update the commit log of patch 1 to make it less scary.
+  - Add a kzfree backward compatibility macro in patch 2.
 
-Thanks for taking this patch, Peter. I just wanted to double-check if
-you considered the race I mentioned in the above paragraph and decided
-it's a non-issue. If it is an issue I can send a small follow-up patch
-to close the race or I can send a new version of the whole patch with
-the fix if that's preferable. Please LMK.
+ v4:
+  - Break out the memzero_explicit() change as suggested by Dan Carpenter
+    so that it can be backported to stable.
+  - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
+    now as there can be a bit more discussion on what is best. It will be
+    introduced as a separate patch later on after this one is merged.
 
-> >
-> > Thanks,
-> > Suren.
-> >
-> > >
-> > > --
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> > >
+This patchset makes a global rename of the kzfree() to kfree_sensitive()
+to highlight the fact buffer clearing is only needed if the data objects
+contain sensitive information like encrpytion key. The fact that kzfree()
+uses memset() to do the clearing isn't totally safe either as compiler
+may compile out the clearing in their optimizer especially if LTO is
+used. Instead, the new kfree_sensitive() uses memzero_explicit() which
+won't get compiled out.
+
+
+Waiman Long (2):
+  mm/slab: Use memzero_explicit() in kzfree()
+  mm, treewide: Rename kzfree() to kfree_sensitive()
+
+ arch/s390/crypto/prng.c                       |  4 +--
+ arch/x86/power/hibernate.c                    |  2 +-
+ crypto/adiantum.c                             |  2 +-
+ crypto/ahash.c                                |  4 +--
+ crypto/api.c                                  |  2 +-
+ crypto/asymmetric_keys/verify_pefile.c        |  4 +--
+ crypto/deflate.c                              |  2 +-
+ crypto/drbg.c                                 | 10 +++---
+ crypto/ecc.c                                  |  8 ++---
+ crypto/ecdh.c                                 |  2 +-
+ crypto/gcm.c                                  |  2 +-
+ crypto/gf128mul.c                             |  4 +--
+ crypto/jitterentropy-kcapi.c                  |  2 +-
+ crypto/rng.c                                  |  2 +-
+ crypto/rsa-pkcs1pad.c                         |  6 ++--
+ crypto/seqiv.c                                |  2 +-
+ crypto/shash.c                                |  2 +-
+ crypto/skcipher.c                             |  2 +-
+ crypto/testmgr.c                              |  6 ++--
+ crypto/zstd.c                                 |  2 +-
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  2 +-
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |  2 +-
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c   |  4 +--
+ drivers/crypto/atmel-ecc.c                    |  2 +-
+ drivers/crypto/caam/caampkc.c                 | 28 +++++++--------
+ drivers/crypto/cavium/cpt/cptvf_main.c        |  6 ++--
+ drivers/crypto/cavium/cpt/cptvf_reqmanager.c  | 12 +++----
+ drivers/crypto/cavium/nitrox/nitrox_lib.c     |  4 +--
+ drivers/crypto/cavium/zip/zip_crypto.c        |  6 ++--
+ drivers/crypto/ccp/ccp-crypto-rsa.c           |  6 ++--
+ drivers/crypto/ccree/cc_aead.c                |  4 +--
+ drivers/crypto/ccree/cc_buffer_mgr.c          |  4 +--
+ drivers/crypto/ccree/cc_cipher.c              |  6 ++--
+ drivers/crypto/ccree/cc_hash.c                |  8 ++---
+ drivers/crypto/ccree/cc_request_mgr.c         |  2 +-
+ drivers/crypto/marvell/cesa/hash.c            |  2 +-
+ .../crypto/marvell/octeontx/otx_cptvf_main.c  |  6 ++--
+ .../marvell/octeontx/otx_cptvf_reqmgr.h       |  2 +-
+ drivers/crypto/mediatek/mtk-aes.c             |  2 +-
+ drivers/crypto/nx/nx.c                        |  4 +--
+ drivers/crypto/virtio/virtio_crypto_algs.c    | 12 +++----
+ drivers/crypto/virtio/virtio_crypto_core.c    |  2 +-
+ drivers/md/dm-crypt.c                         | 32 ++++++++---------
+ drivers/md/dm-integrity.c                     |  6 ++--
+ drivers/misc/ibmvmc.c                         |  6 ++--
+ .../hisilicon/hns3/hns3pf/hclge_mbx.c         |  2 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_ipsec.c    |  6 ++--
+ drivers/net/ppp/ppp_mppe.c                    |  6 ++--
+ drivers/net/wireguard/noise.c                 |  4 +--
+ drivers/net/wireguard/peer.c                  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c  |  2 +-
+ .../net/wireless/intel/iwlwifi/pcie/tx-gen2.c |  6 ++--
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c  |  6 ++--
+ drivers/net/wireless/intersil/orinoco/wext.c  |  4 +--
+ drivers/s390/crypto/ap_bus.h                  |  4 +--
+ drivers/staging/ks7010/ks_hostif.c            |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_security.c |  2 +-
+ drivers/staging/wlan-ng/p80211netdev.c        |  2 +-
+ drivers/target/iscsi/iscsi_target_auth.c      |  2 +-
+ fs/cifs/cifsencrypt.c                         |  2 +-
+ fs/cifs/connect.c                             | 10 +++---
+ fs/cifs/dfs_cache.c                           |  2 +-
+ fs/cifs/misc.c                                |  8 ++---
+ fs/crypto/keyring.c                           |  6 ++--
+ fs/crypto/keysetup_v1.c                       |  4 +--
+ fs/ecryptfs/keystore.c                        |  4 +--
+ fs/ecryptfs/messaging.c                       |  2 +-
+ include/crypto/aead.h                         |  2 +-
+ include/crypto/akcipher.h                     |  2 +-
+ include/crypto/gf128mul.h                     |  2 +-
+ include/crypto/hash.h                         |  2 +-
+ include/crypto/internal/acompress.h           |  2 +-
+ include/crypto/kpp.h                          |  2 +-
+ include/crypto/skcipher.h                     |  2 +-
+ include/linux/slab.h                          |  4 ++-
+ lib/mpi/mpiutil.c                             |  6 ++--
+ lib/test_kasan.c                              |  6 ++--
+ mm/slab_common.c                              | 10 +++---
+ net/atm/mpoa_caches.c                         |  4 +--
+ net/bluetooth/ecdh_helper.c                   |  6 ++--
+ net/bluetooth/smp.c                           | 24 ++++++-------
+ net/core/sock.c                               |  2 +-
+ net/ipv4/tcp_fastopen.c                       |  2 +-
+ net/mac80211/aead_api.c                       |  4 +--
+ net/mac80211/aes_gmac.c                       |  2 +-
+ net/mac80211/key.c                            |  2 +-
+ net/mac802154/llsec.c                         | 20 +++++------
+ net/sctp/auth.c                               |  2 +-
+ net/sctp/socket.c                             |  2 +-
+ net/sunrpc/auth_gss/gss_krb5_crypto.c         |  4 +--
+ net/sunrpc/auth_gss/gss_krb5_keys.c           |  6 ++--
+ net/sunrpc/auth_gss/gss_krb5_mech.c           |  2 +-
+ net/tipc/crypto.c                             | 10 +++---
+ net/wireless/core.c                           |  2 +-
+ net/wireless/ibss.c                           |  4 +--
+ net/wireless/lib80211_crypt_tkip.c            |  2 +-
+ net/wireless/lib80211_crypt_wep.c             |  2 +-
+ net/wireless/nl80211.c                        | 24 ++++++-------
+ net/wireless/sme.c                            |  6 ++--
+ net/wireless/util.c                           |  2 +-
+ net/wireless/wext-sme.c                       |  2 +-
+ scripts/coccinelle/free/devm_free.cocci       |  4 +--
+ scripts/coccinelle/free/ifnullfree.cocci      |  4 +--
+ scripts/coccinelle/free/kfree.cocci           |  6 ++--
+ scripts/coccinelle/free/kfreeaddr.cocci       |  2 +-
+ security/apparmor/domain.c                    |  4 +--
+ security/apparmor/include/file.h              |  2 +-
+ security/apparmor/policy.c                    | 24 ++++++-------
+ security/apparmor/policy_ns.c                 |  6 ++--
+ security/apparmor/policy_unpack.c             | 14 ++++----
+ security/keys/big_key.c                       |  6 ++--
+ security/keys/dh.c                            | 14 ++++----
+ security/keys/encrypted-keys/encrypted.c      | 14 ++++----
+ security/keys/trusted-keys/trusted_tpm1.c     | 34 +++++++++----------
+ security/keys/user_defined.c                  |  6 ++--
+ 115 files changed, 323 insertions(+), 321 deletions(-)
+
+-- 
+2.18.1
+
