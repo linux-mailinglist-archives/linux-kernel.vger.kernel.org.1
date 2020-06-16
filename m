@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF8A1FB86F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942EC1FB863
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733125AbgFPP4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56060 "EHLO mail.kernel.org"
+        id S1733127AbgFPPzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:55:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730949AbgFPPzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:55:48 -0400
+        id S1733123AbgFPPzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:55:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31BFF207C4;
-        Tue, 16 Jun 2020 15:55:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EEB520882;
+        Tue, 16 Jun 2020 15:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322947;
-        bh=lz0QmYUpdiPvamXMQCfnRLqqLSzc8DlZx7YXj9CHO6g=;
+        s=default; t=1592322950;
+        bh=PXQbYePEv5IhWEvTGJrooq3Lpy51SLgKHXT4N5t/O6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C5S+A5U8J9rB5USbo6PNAY4zut07Btd2rteMjA3yzn9NghhH69Vcuyz29cBNL49Lr
-         QBz4jGYJ/lz3bTlwIXnn+pxt2asn7JDQhCfghlYTdzqEFhUf7fc0RX4oTjSz/O+vgm
-         M9nFeOtgiQKR5vLgMFGcRn2JfhNUacYR5FIu2NEE=
+        b=clDrvsN6H7I5E77CsTZV8AFAgZjzZ3X8oZYqFL22QcjV+av/OqVjv8G0cM/HQwkfJ
+         szN6o3uKDtLEDxS+JQcqQ6iVIIZwIhGY3os4WFc2DBX2ibe3Cg19CV/i8EbSfB0d5d
+         lDHoK2om8XFGhogcvkvvCZq1xEvMTEvTLtVa2YpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.6 135/161] scsi: megaraid_sas: Replace undefined MFI_BIG_ENDIAN macro with __BIG_ENDIAN_BITFIELD macro
-Date:   Tue, 16 Jun 2020 17:35:25 +0200
-Message-Id: <20200616153112.793384651@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.6 136/161] selftests/ftrace: Return unsupported if no error_log file
+Date:   Tue, 16 Jun 2020 17:35:26 +0200
+Message-Id: <20200616153112.840261515@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
 References: <20200616153106.402291280@linuxfoundation.org>
@@ -45,76 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit b9d5e3e7f370a817c742fb089ac1a86dfe8947dc upstream.
+commit 619ee76f5c9f6a1d601d1a056a454d62bf676ae4 upstream.
 
-MFI_BIG_ENDIAN macro used in drivers structure bitfield to check the CPU
-big endianness is undefined which would break the code on big endian
-machine. __BIG_ENDIAN_BITFIELD kernel macro should be used in places of
-MFI_BIG_ENDIAN macro.
+Check whether error_log file exists in tracing/error_log testcase
+and return UNSUPPORTED if no error_log file.
 
-Link: https://lore.kernel.org/r/20200508085130.23339-1-chandrakanth.patil@broadcom.com
-Fixes: a7faf81d7858 ("scsi: megaraid_sas: Set no_write_same only for Virtual Disk")
-Cc: <stable@vger.kernel.org> # v5.6+
-Signed-off-by: Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
-Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+This can happen if we run the ftracetest on the older stable
+kernel.
+
+Fixes: 4eab1cc461a6 ("selftests/ftrace: Add tracing/error_log testcase")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/megaraid/megaraid_sas.h        |    4 ++--
- drivers/scsi/megaraid/megaraid_sas_fusion.h |    6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/scsi/megaraid/megaraid_sas.h
-+++ b/drivers/scsi/megaraid/megaraid_sas.h
-@@ -511,7 +511,7 @@ union MR_PROGRESS {
-  */
- struct MR_PD_PROGRESS {
- 	struct {
--#ifndef MFI_BIG_ENDIAN
-+#ifndef __BIG_ENDIAN_BITFIELD
- 		u32     rbld:1;
- 		u32     patrol:1;
- 		u32     clear:1;
-@@ -537,7 +537,7 @@ struct MR_PD_PROGRESS {
- 	};
+--- a/tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc
++++ b/tools/testing/selftests/ftrace/test.d/ftrace/tracing-error-log.tc
+@@ -14,6 +14,8 @@ if [ ! -f set_event ]; then
+     exit_unsupported
+ fi
  
- 	struct {
--#ifndef MFI_BIG_ENDIAN
-+#ifndef __BIG_ENDIAN_BITFIELD
- 		u32     rbld:1;
- 		u32     patrol:1;
- 		u32     clear:1;
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.h
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.h
-@@ -774,7 +774,7 @@ struct MR_SPAN_BLOCK_INFO {
- struct MR_CPU_AFFINITY_MASK {
- 	union {
- 		struct {
--#ifndef MFI_BIG_ENDIAN
-+#ifndef __BIG_ENDIAN_BITFIELD
- 		u8 hw_path:1;
- 		u8 cpu0:1;
- 		u8 cpu1:1;
-@@ -866,7 +866,7 @@ struct MR_LD_RAID {
- 	__le16     seqNum;
++[ -f error_log ] || exit_unsupported
++
+ ftrace_errlog_check 'event filter parse error' '((sig >= 10 && sig < 15) || dsig ^== 17) && comm != bash' 'events/signal/signal_generate/filter'
  
- struct {
--#ifndef MFI_BIG_ENDIAN
-+#ifndef __BIG_ENDIAN_BITFIELD
- 	u32 ldSyncRequired:1;
- 	u32 regTypeReqOnReadIsValid:1;
- 	u32 isEPD:1;
-@@ -889,7 +889,7 @@ struct {
- 	/* 0x30 - 0x33, Logical block size for the LD */
- 	u32 logical_block_length;
- 	struct {
--#ifndef MFI_BIG_ENDIAN
-+#ifndef __BIG_ENDIAN_BITFIELD
- 	/* 0x34, P_I_EXPONENT from READ CAPACITY 16 */
- 	u32 ld_pi_exp:4;
- 	/* 0x34, LOGICAL BLOCKS PER PHYSICAL
+ exit 0
 
 
