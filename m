@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E441FB8E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B081FB8ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732499AbgFPP72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:59:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54443 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733059AbgFPP7X (ORCPT
+        id S1731451AbgFPP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:59:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52486 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732382AbgFPP7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:59:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592323162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Gc0Dg29WyIqBxMjGZGdoDeYitc04zw+8Uk/3lb0oUU=;
-        b=V5Vs4PyXpbdsRVxmf1xJlkr7RMs258mWsXbhL4IZc8wiLgOytxlqs/ytaKu5Y9zHaWtK7x
-        lk4l1t2a3rKgh1097PbMNvWJGj531cHF91F1SM4e91cCFstBdiDuutOrJ8QaAu89hs84gx
-        d38LQhRTydvyURfz5d8Oq8h3wOT83ZM=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-Ydg-R64OOJSvgKoAD65adw-1; Tue, 16 Jun 2020 11:59:18 -0400
-X-MC-Unique: Ydg-R64OOJSvgKoAD65adw-1
-Received: by mail-qk1-f200.google.com with SMTP id q82so2474855qke.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 08:59:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5Gc0Dg29WyIqBxMjGZGdoDeYitc04zw+8Uk/3lb0oUU=;
-        b=ncIrsoJgtcReaQH7PWCCuwsZCG3RQVlsnHkVjYijD80zscR+0bdZjH0/4cM55k7Rcl
-         Yiw5V/zNYpj5WRV3cByi169i2YVpWMg7kN7uoLSMk+tT4GHOe6cekJaIQrEuhxqS2kSD
-         Ok8P1IVGxJWFylWCYGOQbRjYDX2pBG7SWRB4FeVHemdfF7om0iZ/mWyqLQV1mP/JMQGd
-         tKXgmB4U1IfsU7/69fGy8VXorUsKvxOOOVGLyfQsgqM58iNUygPSRW+dekQRrK5+WtHN
-         QhnQPhi+lRzSnWIN4FaXfgYdD2RVtYX475WQJrhgP/8DZJcEqQv84d2DEbTTlMsHkz0f
-         VHAQ==
-X-Gm-Message-State: AOAM533PgT/8ZIjgrc4Cdo4wIZKeuof7b3MzhMDBLavhEKaJl+S27O7J
-        GbV7OlAQrHjNJBqpg125L6Z8KJIUe5feOpIO+lcV1iUmkjv695sktayloDB9LHp3Ec1hiQZg2ns
-        bFArCd7tNhACYtczeLliynuSf
-X-Received: by 2002:a37:6f02:: with SMTP id k2mr20702247qkc.129.1592323157178;
-        Tue, 16 Jun 2020 08:59:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+CJxAHuYkrcTeCwjCPlS1h0Nvk5LsJIDdZuRwaKtc+dpfMVU5ZGkZ12CkR4olUnzdv9Abeg==
-X-Received: by 2002:a37:6f02:: with SMTP id k2mr20702225qkc.129.1592323156891;
-        Tue, 16 Jun 2020 08:59:16 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id 123sm154267qkj.56.2020.06.16.08.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 08:59:15 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 11:59:14 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Will Deacon <will@kernel.org>
+        Tue, 16 Jun 2020 11:59:42 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GFxHG0023277;
+        Tue, 16 Jun 2020 11:59:42 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31pux0bwar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Jun 2020 11:59:41 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05GFxZIv025182;
+        Tue, 16 Jun 2020 11:59:41 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31pux0bw9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Jun 2020 11:59:41 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05GFvCiP005113;
+        Tue, 16 Jun 2020 15:59:38 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 31mpe7t9b8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Jun 2020 15:59:38 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05GFxZdT8520138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jun 2020 15:59:35 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0CBA11C058;
+        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4956C11C054;
+        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.3.58])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 16 Jun 2020 15:59:35 +0000 (GMT)
+Date:   Tue, 16 Jun 2020 17:59:33 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Peter Xu <peterx@redhat.com>
 Cc:     linux-kernel@vger.kernel.org,
         Gerald Schaefer <gerald.schaefer@de.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/25] mm/arm64: Use mm_fault_accounting()
-Message-ID: <20200616155914.GB11838@xz-x1>
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 19/25] mm/s390: Use mm_fault_accounting()
+Message-ID: <20200616155933.GA12897@oc3871087118.ibm.com>
 References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615221607.7764-7-peterx@redhat.com>
- <20200616074307.GA1637@willie-the-truck>
+ <20200615222302.8452-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616074307.GA1637@willie-the-truck>
+In-Reply-To: <20200615222302.8452-1-peterx@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ cotscore=-2147483648 lowpriorityscore=0 spamscore=0 suspectscore=0
+ malwarescore=0 clxscore=1011 adultscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006160108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Will,
+On Mon, Jun 15, 2020 at 06:23:02PM -0400, Peter Xu wrote:
+> Use the new mm_fault_accounting() helper for page fault accounting.
+> 
+> Avoid doing page fault accounting multiple times if the page fault is retried.
+> 
+> CC: Heiko Carstens <heiko.carstens@de.ibm.com>
+> CC: Vasily Gorbik <gor@linux.ibm.com>
+> CC: Christian Borntraeger <borntraeger@de.ibm.com>
+> CC: linux-s390@vger.kernel.org
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  arch/s390/mm/fault.c | 21 +++++----------------
+>  1 file changed, 5 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index dedc28be27ab..8ca207635b59 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -392,7 +392,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	unsigned long trans_exc_code;
+>  	unsigned long address;
+>  	unsigned int flags;
+> -	vm_fault_t fault;
+> +	vm_fault_t fault, major = 0;
+> 
+>  	tsk = current;
+>  	/*
+> @@ -428,7 +428,6 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	}
+> 
+>  	address = trans_exc_code & __FAIL_ADDR_MASK;
+> -	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>  	flags = FAULT_FLAG_DEFAULT;
+>  	if (user_mode(regs))
+>  		flags |= FAULT_FLAG_USER;
+> @@ -480,6 +479,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	 * the fault.
+>  	 */
+>  	fault = handle_mm_fault(vma, address, flags);
+> +	major |= fault & VM_FAULT_MAJOR;
+>  	if (fault_signal_pending(fault, regs)) {
+>  		fault = VM_FAULT_SIGNAL;
+>  		if (flags & FAULT_FLAG_RETRY_NOWAIT)
+> @@ -489,21 +489,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  	if (unlikely(fault & VM_FAULT_ERROR))
+>  		goto out_up;
+> 
+> -	/*
+> -	 * Major/minor page fault accounting is only done on the
+> -	 * initial attempt. If we go through a retry, it is extremely
+> -	 * likely that the page will be found in page cache at that point.
+> -	 */
+>  	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+> -		if (fault & VM_FAULT_MAJOR) {
+> -			tsk->maj_flt++;
+> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
+> -				      regs, address);
+> -		} else {
+> -			tsk->min_flt++;
+> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
+> -				      regs, address);
+> -		}
+>  		if (fault & VM_FAULT_RETRY) {
+>  			if (IS_ENABLED(CONFIG_PGSTE) && gmap &&
+>  			    (flags & FAULT_FLAG_RETRY_NOWAIT)) {
 
-On Tue, Jun 16, 2020 at 08:43:08AM +0100, Will Deacon wrote:
-> Please can you explain why it's ok to move the PERF_COUNT_SW_PAGE_FAULTS
-> update like this? Seems like a user-visible change to me, so some
-> justification would really help.
+Seems like the call to mm_fault_accounting() will be missed if
+we entered here with FAULT_FLAG_RETRY_NOWAIT flag set, since it
+jumps to "out_up"...
 
-Indeed this could be a functional change for PERF_COUNT_SW_PAGE_FAULTS on some
-archs, e.g., for arm64, PERF_COUNT_SW_PAGE_FAULTS previously will also contain
-accounting of severe errors where we go into the "no_context" path.  However if
-you see the other archs, it's not always true, for example, the xtensa arch
-only accounts the correctly handled faults (arch/xtensa/mm/fault.c).
-
-After I thought about this, I don't think it's extremely useful (or please
-correct me if I missed something important) to use PERF_COUNT_SW_PAGE_FAULTS
-for fatal error accountings among all those correct ones.  After all they are
-really extremely rare cases, and even if we got a sigbus for a process, we'll
-normally got something dumped in dmesg so if we really want to capture the
-error cases there should always be a better way (because by following things
-like dmesg we can not only know how many error faults triggered, but also on
-the details of the errors).
-
-IOW, my understanding of users of PERF_COUNT_SW_PAGE_FAULTS is that they want
-to trap normal/correct page faults, not really care about rare errors.
-
-Then when I went back to think PERF_COUNT_SW_PAGE_FAULTS, it's really about:
-
-  A=PERF_COUNT_SW_PAGE_FAULTS 
-  B=PERF_COUNT_SW_PAGE_FAULTS_MAJ
-  C=PERF_COUNT_SW_PAGE_FAULTS_MIN
-
-And:
-
-  A=B+C
-
-If that's the case (which is simple and clear), it's really helpful too that we
-unify this definition across all the architectures, then it'll also be easier
-for us to provide some helper like mm_fault_accounting() so that the accounting
-can be managed in the general code rather than in arch-specific ways.
-
-Thanks,
-
--- 
-Peter Xu
-
+> @@ -519,6 +505,9 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  			goto retry;
+>  		}
+>  	}
+> +
+> +	mm_fault_accounting(tsk, regs, address, major);
+> +
+>  	if (IS_ENABLED(CONFIG_PGSTE) && gmap) {
+>  		address =  __gmap_link(gmap, current->thread.gmap_addr,
+>  				       address);
+> -- 
+> 2.26.2
+> 
