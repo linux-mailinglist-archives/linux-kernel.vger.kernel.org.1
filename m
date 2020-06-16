@@ -2,157 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFEA1FB9B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9F71FBB7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733157AbgFPQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732424AbgFPPse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:48:34 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6ADB42071A;
-        Tue, 16 Jun 2020 15:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322514;
-        bh=c8FPKtKGsiW0bgNFC/qpG1K4VgQa8dRthdNncmZDIVM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TkGvuK5ZvMIFU3A56oOiea/y1nwU1VTYeJkhjE4QJrT2rVLN4Zuc9Jcjxnf1MXOg9
-         TMIcPooCR2lY7f/ZtBTfWCZRwxf2xSNhfZIbVf1GRVXKKE46nAWv35dclB1AJXR18Q
-         C9w1erGsvVSrYVNcqEVk3mhvlM+L+umeITqAT8rI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.7 162/163] KVM: arm64: Save the hosts PtrAuth keys in non-preemptible context
-Date:   Tue, 16 Jun 2020 17:35:36 +0200
-Message-Id: <20200616153114.566088892@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1731158AbgFPQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:19:15 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:42744 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730312AbgFPPhc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:32 -0400
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2020 21:06:55 +0530
+Received: from vbadigan-linux.qualcomm.com ([10.206.24.109])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Jun 2020 21:06:47 +0530
+Received: by vbadigan-linux.qualcomm.com (Postfix, from userid 76677)
+        id 7EE834C6C; Tue, 16 Jun 2020 21:06:46 +0530 (IST)
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Vijay Viswanath <vviswana@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Subject: [PATCH V4 1/2] mmc: sdhci: Allow platform controlled voltage switching
+Date:   Tue, 16 Jun 2020 21:06:18 +0530
+Message-Id: <1592321779-28556-2-git-send-email-vbadigan@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1592321779-28556-1-git-send-email-vbadigan@codeaurora.org>
+References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
+ <1592321779-28556-1-git-send-email-vbadigan@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Vijay Viswanath <vviswana@codeaurora.org>
 
-commit ef3e40a7ea8dbe2abd0a345032cd7d5023b9684f upstream.
+If vendor platform drivers are controlling whole logic of voltage
+switching, then sdhci driver no need control vqmmc regulator.
+So skip enabling/disable vqmmc from SDHC driver.
 
-When using the PtrAuth feature in a guest, we need to save the host's
-keys before allowing the guest to program them. For that, we dump
-them in a per-CPU data structure (the so called host context).
-
-But both call sites that do this are in preemptible context,
-which may end up in disaster should the vcpu thread get preempted
-before reentering the guest.
-
-Instead, save the keys eagerly on each vcpu_load(). This has an
-increased overhead, but is at least safe.
-
-Cc: stable@vger.kernel.org
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/arm64/include/asm/kvm_emulate.h |    6 ------
- arch/arm64/kvm/handle_exit.c         |   19 ++-----------------
- virt/kvm/arm/arm.c                   |   18 +++++++++++++++++-
- 3 files changed, 19 insertions(+), 24 deletions(-)
+ drivers/mmc/host/sdhci.c | 32 +++++++++++++++++++-------------
+ drivers/mmc/host/sdhci.h |  1 +
+ 2 files changed, 20 insertions(+), 13 deletions(-)
 
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -112,12 +112,6 @@ static inline void vcpu_ptrauth_disable(
- 	vcpu->arch.hcr_el2 &= ~(HCR_API | HCR_APK);
- }
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 37b1158c1c0c..e6275c2202b0 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -4105,6 +4105,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+ 	unsigned int override_timeout_clk;
+ 	u32 max_clk;
+ 	int ret;
++	bool enable_vqmmc = false;
  
--static inline void vcpu_ptrauth_setup_lazy(struct kvm_vcpu *vcpu)
--{
--	if (vcpu_has_ptrauth(vcpu))
--		vcpu_ptrauth_disable(vcpu);
--}
--
- static inline unsigned long vcpu_get_vsesr(struct kvm_vcpu *vcpu)
- {
- 	return vcpu->arch.vsesr_el2;
---- a/arch/arm64/kvm/handle_exit.c
-+++ b/arch/arm64/kvm/handle_exit.c
-@@ -162,31 +162,16 @@ static int handle_sve(struct kvm_vcpu *v
- 	return 1;
- }
- 
--#define __ptrauth_save_key(regs, key)						\
--({										\
--	regs[key ## KEYLO_EL1] = read_sysreg_s(SYS_ ## key ## KEYLO_EL1);	\
--	regs[key ## KEYHI_EL1] = read_sysreg_s(SYS_ ## key ## KEYHI_EL1);	\
--})
--
- /*
-  * Handle the guest trying to use a ptrauth instruction, or trying to access a
-  * ptrauth register.
-  */
- void kvm_arm_vcpu_ptrauth_trap(struct kvm_vcpu *vcpu)
- {
--	struct kvm_cpu_context *ctxt;
--
--	if (vcpu_has_ptrauth(vcpu)) {
-+	if (vcpu_has_ptrauth(vcpu))
- 		vcpu_ptrauth_enable(vcpu);
--		ctxt = vcpu->arch.host_cpu_context;
--		__ptrauth_save_key(ctxt->sys_regs, APIA);
--		__ptrauth_save_key(ctxt->sys_regs, APIB);
--		__ptrauth_save_key(ctxt->sys_regs, APDA);
--		__ptrauth_save_key(ctxt->sys_regs, APDB);
--		__ptrauth_save_key(ctxt->sys_regs, APGA);
--	} else {
-+	else
- 		kvm_inject_undefined(vcpu);
--	}
- }
- 
- /*
---- a/virt/kvm/arm/arm.c
-+++ b/virt/kvm/arm/arm.c
-@@ -332,6 +332,12 @@ void kvm_arch_vcpu_unblocking(struct kvm
- 	preempt_enable();
- }
- 
-+#define __ptrauth_save_key(regs, key)						\
-+({										\
-+	regs[key ## KEYLO_EL1] = read_sysreg_s(SYS_ ## key ## KEYLO_EL1);	\
-+	regs[key ## KEYHI_EL1] = read_sysreg_s(SYS_ ## key ## KEYHI_EL1);	\
-+})
-+
- void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
- 	int *last_ran;
-@@ -365,7 +371,17 @@ void kvm_arch_vcpu_load(struct kvm_vcpu
- 	else
- 		vcpu_set_wfx_traps(vcpu);
- 
--	vcpu_ptrauth_setup_lazy(vcpu);
-+	if (vcpu_has_ptrauth(vcpu)) {
-+		struct kvm_cpu_context *ctxt = vcpu->arch.host_cpu_context;
-+
-+		__ptrauth_save_key(ctxt->sys_regs, APIA);
-+		__ptrauth_save_key(ctxt->sys_regs, APIB);
-+		__ptrauth_save_key(ctxt->sys_regs, APDA);
-+		__ptrauth_save_key(ctxt->sys_regs, APDB);
-+		__ptrauth_save_key(ctxt->sys_regs, APGA);
-+
-+		vcpu_ptrauth_disable(vcpu);
+ 	WARN_ON(host == NULL);
+ 	if (host == NULL)
+@@ -4118,9 +4119,12 @@ int sdhci_setup_host(struct sdhci_host *host)
+ 	 * the host can take the appropriate action if regulators are not
+ 	 * available.
+ 	 */
+-	ret = mmc_regulator_get_supply(mmc);
+-	if (ret)
+-		return ret;
++	if (!mmc->supply.vqmmc) {
++		ret = mmc_regulator_get_supply(mmc);
++		if (ret)
++			return ret;
++		enable_vqmmc  = true;
 +	}
- }
  
- void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
-
+ 	DBG("Version:   0x%08x | Present:  0x%08x\n",
+ 	    sdhci_readw(host, SDHCI_HOST_VERSION),
+@@ -4377,7 +4381,15 @@ int sdhci_setup_host(struct sdhci_host *host)
+ 		mmc->caps |= MMC_CAP_NEEDS_POLL;
+ 
+ 	if (!IS_ERR(mmc->supply.vqmmc)) {
+-		ret = regulator_enable(mmc->supply.vqmmc);
++		if (enable_vqmmc) {
++			ret = regulator_enable(mmc->supply.vqmmc);
++			if (ret) {
++				pr_warn("%s: Failed to enable vqmmc regulator: %d\n",
++					mmc_hostname(mmc), ret);
++				mmc->supply.vqmmc = ERR_PTR(-EINVAL);
++			}
++			host->sdhci_core_to_disable_vqmmc = !ret;
++		}
+ 
+ 		/* If vqmmc provides no 1.8V signalling, then there's no UHS */
+ 		if (!regulator_is_supported_voltage(mmc->supply.vqmmc, 1700000,
+@@ -4390,12 +4402,6 @@ int sdhci_setup_host(struct sdhci_host *host)
+ 		if (!regulator_is_supported_voltage(mmc->supply.vqmmc, 2700000,
+ 						    3600000))
+ 			host->flags &= ~SDHCI_SIGNALING_330;
+-
+-		if (ret) {
+-			pr_warn("%s: Failed to enable vqmmc regulator: %d\n",
+-				mmc_hostname(mmc), ret);
+-			mmc->supply.vqmmc = ERR_PTR(-EINVAL);
+-		}
+ 	}
+ 
+ 	if (host->quirks2 & SDHCI_QUIRK2_NO_1_8_V) {
+@@ -4626,7 +4632,7 @@ int sdhci_setup_host(struct sdhci_host *host)
+ 	return 0;
+ 
+ unreg:
+-	if (!IS_ERR(mmc->supply.vqmmc))
++	if (host->sdhci_core_to_disable_vqmmc)
+ 		regulator_disable(mmc->supply.vqmmc);
+ undma:
+ 	if (host->align_buffer)
+@@ -4644,7 +4650,7 @@ void sdhci_cleanup_host(struct sdhci_host *host)
+ {
+ 	struct mmc_host *mmc = host->mmc;
+ 
+-	if (!IS_ERR(mmc->supply.vqmmc))
++	if (host->sdhci_core_to_disable_vqmmc)
+ 		regulator_disable(mmc->supply.vqmmc);
+ 
+ 	if (host->align_buffer)
+@@ -4787,7 +4793,7 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
+ 
+ 	destroy_workqueue(host->complete_wq);
+ 
+-	if (!IS_ERR(mmc->supply.vqmmc))
++	if (host->sdhci_core_to_disable_vqmmc)
+ 		regulator_disable(mmc->supply.vqmmc);
+ 
+ 	if (host->align_buffer)
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index 0008bbd27127..0770c036e2ff 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -567,6 +567,7 @@ struct sdhci_host {
+ 	u32 caps1;		/* CAPABILITY_1 */
+ 	bool read_caps;		/* Capability flags have been read */
+ 
++	bool sdhci_core_to_disable_vqmmc;  /* sdhci core can disable vqmmc */
+ 	unsigned int            ocr_avail_sdio;	/* OCR bit masks */
+ 	unsigned int            ocr_avail_sd;
+ 	unsigned int            ocr_avail_mmc;
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
 
