@@ -2,47 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088DC1FBF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5B81FBF14
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731088AbgFPTkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 15:40:40 -0400
-Received: from ec2-34-208-57-251.us-west-2.compute.amazonaws.com ([34.208.57.251]:43768
-        "EHLO ip-172-31-12-36.us-west-2.compute.internal"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731054AbgFPTkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:40:40 -0400
-X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Jun 2020 15:40:39 EDT
-Received: by ip-172-31-12-36.us-west-2.compute.internal (Postfix, from userid 1001)
-        id 0E40640777; Tue, 16 Jun 2020 12:34:54 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 12:34:54 -0700
-From:   Daniel Walker <dwalker@fifo99.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: removal of the cisco tree
-Message-ID: <20200616193453.GP16291@fifo99.com>
-References: <20200616150009.6b9b1140@canb.auug.org.au>
+        id S1730621AbgFPTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728518AbgFPTgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 15:36:06 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9E6C061573;
+        Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id k18so11364629ybm.13;
+        Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Cwin4rM90xx7A90ILpx9q05b/HkXQADpjPRgjfWeDlU=;
+        b=XaZNJMpllLj9SgsmtZ+lqJUHo0KXy6kSs0NyKpsgQhW+hObxXQQUda1CGW+ukeBVGk
+         pIaSQEz9nrZ9vqpJDHOEwB5alQ0foiAVpjoqjYt0eubQ7Kr2hH6HxHEpnlgr3o+lAFl3
+         gQt0ZrAjAccGGrwhv51mg7bi2B8a8HdyqI8zl4V7FxNcZWy79rErOatULjQHFLChSbN7
+         wJ7eFFY3DJPYE8knqr39kovYupgdSF5nBjWbM4AXC8LrH7pzhG3Lj5QXkfnYQ2dD2GQr
+         Gp2MsNkNABLpCD3a6kCe+gO4TzoONLKukdJlCkWzsI+Mw0cih3CvpOyI3C2Ye04aTGef
+         h4HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cwin4rM90xx7A90ILpx9q05b/HkXQADpjPRgjfWeDlU=;
+        b=d0fiSBHPewzAlcwCaLcbDnRwgT1cYu8LmIJzzJsyoNaLSSR0+8KEPqfP1eZjHdeH6k
+         b68zXH9fYMLELbZ9e5NGA+A9SC6DpyrzviAImeIP96S2cIqMVHcxMcTMMIg/k+HlZ9pE
+         arVLg8VfGDGiNpBVLAl6EUFDHPtQuWwtiuCY9VV2bLNLtv60kdEmowL+UQWAIaVP+UC4
+         dFjQ1o8xA99KvGeAsJdDvV+2eWBgF+ysoTcB/6FMNi45KowbvgYLhWBE5GA/8ERNUesx
+         2yNB5Bh4s9jnx1bt+DbAQYXKPNWMObTdJBkDg4mEgq3toXjT81ArRgi+rMaoKEH3l0Ty
+         h4AA==
+X-Gm-Message-State: AOAM533AoaZ01ZbQSny7zCbjIC26PjvGlpI2KWo8+3rhp8H4LsRt1zA1
+        x4W59avg/nlZMF6togGqO0k17SRWVaRe5Hf10uE=
+X-Google-Smtp-Source: ABdhPJzy8V0OHeGIv8WGHsfj6rOnMpwaHYCmQPuFrMNmYNU7wJrsNguRNRgcXkXB0pGgipkGkrGWa/W/Ab0RhmC9Cb0=
+X-Received: by 2002:a25:bc81:: with SMTP id e1mr6573459ybk.375.1592336165086;
+ Tue, 16 Jun 2020 12:36:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616150009.6b9b1140@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200615224112.GA12307@embeddedor> <875zbri7k8.fsf@suse.com>
+In-Reply-To: <875zbri7k8.fsf@suse.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 16 Jun 2020 14:35:54 -0500
+Message-ID: <CAH2r5mt-SYkFcq=73ES8eNi0LYKNctPFPe28x0SmBdf3gEwt5A@mail.gmail.com>
+Subject: Re: [PATCH] cifs: misc: Use array_size() in if-statement controlling expression
+To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 03:00:09PM +1000, Stephen Rothwell wrote:
-> Hi,
-> 
-> I have removed the cisco tree
-> (https://github.com/daniel-walker/cisco-linux.git#for-next)
-> from linux-next because it has not been updated in more than a year.
-> If you would like it reinstated, please just reply and let me know.
+Added the two reviewed-bys and merged into cifs-2.6.git for-next
 
-I'll likely request it be added at a later date, but not at this time.
+On Tue, Jun 16, 2020 at 6:17 AM Aur=C3=A9lien Aptel via samba-technical
+<samba-technical@lists.samba.org> wrote:
+>
+> Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+>
+> Cheers,
+> --
+> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
+ DE
+> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
+=BCnchen)
+>
 
-Thanks for notification.
 
-Daniel
+--=20
+Thanks,
+
+Steve
