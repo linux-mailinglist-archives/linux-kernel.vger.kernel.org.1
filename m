@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA6D1FB6DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183F1FB82A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbgFPPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
+        id S1732903AbgFPPxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730535AbgFPPlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:41:05 -0400
+        id S1731326AbgFPPxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:53:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53D90208D5;
-        Tue, 16 Jun 2020 15:41:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4FAD21527;
+        Tue, 16 Jun 2020 15:53:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322064;
-        bh=hZp3Mldm+3jkW42Y6cDhDCLhzps582Vypb3ZdBx/WTs=;
+        s=default; t=1592322823;
+        bh=CMRK0YGa62R+ERoa35vn8G2WswH6HGAdKOZ5PGYl8x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z+5W7LCpbOPbO9nljaFAvYoU+aJObuDO7y8QVjBt43Ygeetr1bDDK+caMTlNtpyOa
-         KfFAdym0O602tIB/nZFssjwf78ZRJ386IaN41fFv5UtvKGjl2suDohkd7SvfaI9Qoc
-         ShK/2ZJsOYO3owG98Ve6vVo3KDw8uSLyiMlG3LDo=
+        b=rpRubnhJu8LiErzLnsgGxWHU7vjQgPslZdrIa1NB+vsf60tXic7g+eIRSLu0YI+pV
+         aZe8IYg6tK+LF3vFUk5AHhthaqRb9aVX53CAbKzsMk1vtTie9YQRQNTGMIu5rXPtv8
+         0EY343mU8LG9DOsBH2fHbMGLCcJtTyWBgbERXIs8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com,
-        Barret Rhoden <brho@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 122/134] perf: Add cond_resched() to task_function_call()
-Date:   Tue, 16 Jun 2020 17:35:06 +0200
-Message-Id: <20200616153106.631067401@linuxfoundation.org>
+        syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.6 117/161] proc: Use new_inode not new_inode_pseudo
+Date:   Tue, 16 Jun 2020 17:35:07 +0200
+Message-Id: <20200616153111.931452699@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barret Rhoden <brho@google.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 2ed6edd33a214bca02bd2b45e3fc3038a059436b upstream.
+commit ef1548adada51a2f32ed7faef50aa465e1b4c5da upstream.
 
-Under rare circumstances, task_function_call() can repeatedly fail and
-cause a soft lockup.
+Recently syzbot reported that unmounting proc when there is an ongoing
+inotify watch on the root directory of proc could result in a use
+after free when the watch is removed after the unmount of proc
+when the watcher exits.
 
-There is a slight race where the process is no longer running on the cpu
-we targeted by the time remote_function() runs.  The code will simply
-try again.  If we are very unlucky, this will continue to fail, until a
-watchdog fires.  This can happen in a heavily loaded, multi-core virtual
-machine.
+Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
+of proc") made it easier to unmount proc and allowed syzbot to see the
+problem, but looking at the code it has been around for a long time.
 
-Reported-by: syzbot+bb4935a5c09b5ff79940@syzkaller.appspotmail.com
-Signed-off-by: Barret Rhoden <brho@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200414222920.121401-1-brho@google.com
+Looking at the code the fsnotify watch should have been removed by
+fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
+was allocated with new_inode_pseudo instead of new_inode so the inode
+was not on the sb->s_inodes list.  Which prevented
+fsnotify_unmount_inodes from finding the inode and removing the watch
+as well as made it so the "VFS: Busy inodes after unmount" warning
+could not find the inodes to warn about them.
+
+Make all of the inodes in proc visible to generic_shutdown_super,
+and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
+The only functional difference is that new_inode places the inodes
+on the sb->s_inodes list.
+
+I wrote a small test program and I can verify that without changes it
+can trigger this issue, and by replacing new_inode_pseudo with
+new_inode the issues goes away.
+
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
+Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
+Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
+Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
+Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/events/core.c |   23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ fs/proc/inode.c       |    2 +-
+ fs/proc/self.c        |    2 +-
+ fs/proc/thread_self.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -93,11 +93,11 @@ static void remote_function(void *data)
-  * @info:	the function call argument
-  *
-  * Calls the function @func when the task is currently running. This might
-- * be on the current CPU, which just calls the function directly
-+ * be on the current CPU, which just calls the function directly.  This will
-+ * retry due to any failures in smp_call_function_single(), such as if the
-+ * task_cpu() goes offline concurrently.
-  *
-- * returns: @func return value, or
-- *	    -ESRCH  - when the process isn't running
-- *	    -EAGAIN - when the process moved away
-+ * returns @func return value or -ESRCH when the process isn't running
-  */
- static int
- task_function_call(struct task_struct *p, remote_function_f func, void *info)
-@@ -110,11 +110,16 @@ task_function_call(struct task_struct *p
- 	};
- 	int ret;
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -448,7 +448,7 @@ const struct inode_operations proc_link_
  
--	do {
--		ret = smp_call_function_single(task_cpu(p), remote_function, &data, 1);
--		if (!ret)
--			ret = data.ret;
--	} while (ret == -EAGAIN);
-+	for (;;) {
-+		ret = smp_call_function_single(task_cpu(p), remote_function,
-+					       &data, 1);
-+		ret = !ret ? data.ret : -EAGAIN;
-+
-+		if (ret != -EAGAIN)
-+			break;
-+
-+		cond_resched();
-+	}
+ struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
+ {
+-	struct inode *inode = new_inode_pseudo(sb);
++	struct inode *inode = new_inode(sb);
  
- 	return ret;
- }
+ 	if (inode) {
+ 		inode->i_ino = de->low_ino;
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -43,7 +43,7 @@ int proc_setup_self(struct super_block *
+ 	inode_lock(root_inode);
+ 	self = d_alloc_name(s->s_root, "self");
+ 	if (self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+--- a/fs/proc/thread_self.c
++++ b/fs/proc/thread_self.c
+@@ -43,7 +43,7 @@ int proc_setup_thread_self(struct super_
+ 	inode_lock(root_inode);
+ 	thread_self = d_alloc_name(s->s_root, "thread-self");
+ 	if (thread_self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = thread_self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
 
 
