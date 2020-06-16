@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D581FB80D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2C51FB6B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgFPPw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:52:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49220 "EHLO mail.kernel.org"
+        id S1730982AbgFPPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732754AbgFPPwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:52:08 -0400
+        id S1729937AbgFPPjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:39:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5507321534;
-        Tue, 16 Jun 2020 15:52:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C348620B1F;
+        Tue, 16 Jun 2020 15:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322727;
-        bh=qPXtMOTdflutZMIJ3Kxe+EfHyqUsxZqyhk7CaUbd0Do=;
+        s=default; t=1592321972;
+        bh=QmE2oagzGzBT6yjswqscQUYQAHfcNAFmEQ61WuPLDRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XmKHDL6qNNsELrXIC1SUIYi639P6tcGLaWejb8f8J3NRwLwMdeLoWyOGnnZjtE74o
-         J5JwYorXyGtmf1q2sxcnkPAOfmFTOScen9mEJ5MZ5mLWnJmjBy+s9yBk3KVxt5nQGf
-         H7mLfha/n4s/VayBotdpWQElT3ytIInMlmXboo50=
+        b=TO1uIuc/ZGhxXv4SX/h8/UeCXw6N3la0I3NH6nJfsGs/GaL4FhCwjfNj/S0lZMkwz
+         fZb7B7d/g3Q155ckaALlSq9vRmxQDERaHPi3+MAJRSZMvYIa5vkVscn/zxsd9NMceu
+         Gxa4RTpI6Gf9KTn62OL36gUN3vaM9FLCTJTPb218=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.6 081/161] arm64: acpi: fix UBSAN warning
+        stable@vger.kernel.org, LABBE Corentin <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        Gonglei <arei.gonglei@huawei.com>,
+        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 087/134] crypto: virtio: Fix src/dst scatterlist calculation in __virtio_crypto_skcipher_do_req()
 Date:   Tue, 16 Jun 2020 17:34:31 +0200
-Message-Id: <20200616153110.235892960@linuxfoundation.org>
+Message-Id: <20200616153104.949860321@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,76 +50,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Longpeng(Mike) <longpeng2@huawei.com>
 
-commit a194c33f45f83068ef13bf1d16e26d4ca3ecc098 upstream.
+[ Upstream commit b02989f37fc5e865ceeee9070907e4493b3a21e2 ]
 
-Will reported a UBSAN warning:
+The system will crash when the users insmod crypto/tcrypt.ko with mode=38
+( testing "cts(cbc(aes))" ).
 
-UBSAN: null-ptr-deref in arch/arm64/kernel/smp.c:596:6
-member access within null pointer of type 'struct acpi_madt_generic_interrupt'
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-rc6-00124-g96bc42ff0a82 #1
-Call trace:
- dump_backtrace+0x0/0x384
- show_stack+0x28/0x38
- dump_stack+0xec/0x174
- handle_null_ptr_deref+0x134/0x174
- __ubsan_handle_type_mismatch_v1+0x84/0xa4
- acpi_parse_gic_cpu_interface+0x60/0xe8
- acpi_parse_entries_array+0x288/0x498
- acpi_table_parse_entries_array+0x178/0x1b4
- acpi_table_parse_madt+0xa4/0x110
- acpi_parse_and_init_cpus+0x38/0x100
- smp_init_cpus+0x74/0x258
- setup_arch+0x350/0x3ec
- start_kernel+0x98/0x6f4
+Usually the next entry of one sg will be @sg@ + 1, but if this sg element
+is part of a chained scatterlist, it could jump to the start of a new
+scatterlist array. Fix it by sg_next() on calculation of src/dst
+scatterlist.
 
-This is from the use of the ACPI_OFFSET in
-arch/arm64/include/asm/acpi.h. Replace its use with offsetof from
-include/linux/stddef.h which should implement the same logic using
-__builtin_offsetof, so that UBSAN wont warn.
-
-Reported-by: Will Deacon <will@kernel.org>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
-Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
+Reported-by: LABBE Corentin <clabbe@baylibre.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/lkml/20200521100952.GA5360@willie-the-truck/
-Link: https://lore.kernel.org/r/20200608203818.189423-1-ndesaulniers@google.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200123101000.GB24255@Red
+Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200602070501.2023-2-longpeng2@huawei.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/acpi.h |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/crypto/virtio/virtio_crypto_algs.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -12,6 +12,7 @@
- #include <linux/efi.h>
- #include <linux/memblock.h>
- #include <linux/psci.h>
-+#include <linux/stddef.h>
+diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
+index fea55b5da8b5..3b37d0150814 100644
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -353,13 +353,18 @@ __virtio_crypto_ablkcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
+ 	int err;
+ 	unsigned long flags;
+ 	struct scatterlist outhdr, iv_sg, status_sg, **sgs;
+-	int i;
+ 	u64 dst_len;
+ 	unsigned int num_out = 0, num_in = 0;
+ 	int sg_total;
+ 	uint8_t *iv;
++	struct scatterlist *sg;
  
- #include <asm/cputype.h>
- #include <asm/io.h>
-@@ -31,14 +32,14 @@
-  * is therefore used to delimit the MADT GICC structure minimum length
-  * appropriately.
-  */
--#define ACPI_MADT_GICC_MIN_LENGTH   ACPI_OFFSET(  \
-+#define ACPI_MADT_GICC_MIN_LENGTH   offsetof(  \
- 	struct acpi_madt_generic_interrupt, efficiency_class)
+ 	src_nents = sg_nents_for_len(req->src, req->nbytes);
++	if (src_nents < 0) {
++		pr_err("Invalid number of src SG.\n");
++		return src_nents;
++	}
++
+ 	dst_nents = sg_nents(req->dst);
  
- #define BAD_MADT_GICC_ENTRY(entry, end)					\
- 	(!(entry) || (entry)->header.length < ACPI_MADT_GICC_MIN_LENGTH || \
- 	(unsigned long)(entry) + (entry)->header.length > (end))
+ 	pr_debug("virtio_crypto: Number of sgs (src_nents: %d, dst_nents: %d)\n",
+@@ -445,12 +450,12 @@ __virtio_crypto_ablkcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
+ 	vc_sym_req->iv = iv;
  
--#define ACPI_MADT_GICC_SPE  (ACPI_OFFSET(struct acpi_madt_generic_interrupt, \
-+#define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	spe_interrupt) + sizeof(u16))
+ 	/* Source data */
+-	for (i = 0; i < src_nents; i++)
+-		sgs[num_out++] = &req->src[i];
++	for (sg = req->src; src_nents; sg = sg_next(sg), src_nents--)
++		sgs[num_out++] = sg;
  
- /* Basic configuration for ACPI */
+ 	/* Destination data */
+-	for (i = 0; i < dst_nents; i++)
+-		sgs[num_out + num_in++] = &req->dst[i];
++	for (sg = req->dst; sg; sg = sg_next(sg))
++		sgs[num_out + num_in++] = sg;
+ 
+ 	/* Status */
+ 	sg_init_one(&status_sg, &vc_req->status, sizeof(vc_req->status));
+-- 
+2.25.1
+
 
 
