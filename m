@@ -2,207 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B071FAC0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28F01FAC13
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 11:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgFPJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 05:13:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38522 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725896AbgFPJM6 (ORCPT
+        id S1728134AbgFPJNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 05:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728114AbgFPJNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 05:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592298776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KpFMwGKnCWLslGz1ShbrW/qNgT9EYfVeEgEKH929dV8=;
-        b=XyNypN9lLlgnPFGZfwmo0Fl6xJHxq+iBo+VsniagHJgm0FwB6Ri0pTP7MRmu3X1MAP3bb6
-        XsFI21yZpiM9+YFrC/PduMI/UQoSJCHb72qZPxKshgdWAUJhd5o303BzXWFHe0KtmF0uC8
-        J5XZr7/ra74rTfJxEARplOuiMZfhLRQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-SUgPsaCDPIiCf3CXpMpYfA-1; Tue, 16 Jun 2020 05:12:53 -0400
-X-MC-Unique: SUgPsaCDPIiCf3CXpMpYfA-1
-Received: by mail-wr1-f72.google.com with SMTP id l18so8102350wrm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 02:12:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KpFMwGKnCWLslGz1ShbrW/qNgT9EYfVeEgEKH929dV8=;
-        b=gOQ+2pDvWZm5cM/RPRHESg/91y7xkTQsInLCuuwmin/5dE9/jSOjQL/90k55hQXZPy
-         VU8AlzUiHCWnqsRZ6DTJkZzab/+U78tm7iSt/0J22lLR2W+Vy9GyWYhdYFsUkXzBooxk
-         ukhpCJT0MA9QbQf5arTcy/Bx9Oadh0dpmqn25u4LDRVn8IgqaChV7SGadcHr+e325vXp
-         CnCoA7E6X16bNpHGwDqN2CvPny0bt+5aBmdgmL8Sj+s7a7uvbg1oHXOpdt3Tkbity4wF
-         IxLKWDv7hG0lDjwCVEWQ9/16iMS6OxST27e6LjSeb1DuKTeYVOnCi22TtYTprhVIWBnd
-         Wezw==
-X-Gm-Message-State: AOAM531SzT/DQfZQJdp6QfYuwD+xgmPVvRYHxITpQYah8KelyQZRXYM4
-        1eN5ACVcgDqYWd/i9Bq4Pt9zES7JCxl/+jGqr4yyQaDtPgezWuDAVQ00PTz4Lk6/r3N7RkXOSax
-        6Ew7oXiBVZYeg6IyMG58ZyzJT
-X-Received: by 2002:adf:ff83:: with SMTP id j3mr1991783wrr.264.1592298772685;
-        Tue, 16 Jun 2020 02:12:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvcIpIFWszxHkde+5PP2e7SeEMAmFeepnBsxqv+e10s0vJo2qksi76vif4CocolLtCn1yXTA==
-X-Received: by 2002:adf:ff83:: with SMTP id j3mr1991750wrr.264.1592298772376;
-        Tue, 16 Jun 2020 02:12:52 -0700 (PDT)
-Received: from steredhat ([5.180.207.22])
-        by smtp.gmail.com with ESMTPSA id u7sm28820594wrm.23.2020.06.16.02.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 02:12:51 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 11:12:47 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>, Jann Horn <jannh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <asarai@suse.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        io-uring <io-uring@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: [RFC] io_uring: add restrictions to support untrusted
- applications and guests
-Message-ID: <20200616091247.hdmxcrnlrrxih7my@steredhat>
-References: <20200609142406.upuwpfmgqjeji4lc@steredhat>
- <CAG48ez3kdNKjif==MbX36cKNYDpZwEPMZaJQ1rrpXZZjGZwbKw@mail.gmail.com>
- <20200615133310.qwdmnctrir5zgube@steredhat>
- <f7f2841e-3dbb-377f-f8f8-826506a938a6@kernel.dk>
+        Tue, 16 Jun 2020 05:13:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB040C05BD43
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 02:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BMgjJ+FUF3BJuXtsz4OtJLb5FBjhC81wWLgGsI5KxOU=; b=i3xEcQ3V+wliLmPApOwIwoyGSr
+        ZINPVulDpPEjeMl6ksFfrI6mzduJ7A9IcTg1vvXWGMLyJ7AkyjdZ4Pm/1pZP6am/vAHjXEJ5Kt8Mq
+        XWGuPwHp/oxVhx14rUHgLp+fYUs6jsaDel34xiWxYarIjnNRwDohOO2kaDZ8wsS8mmV3hr5UbHfl9
+        +8GEGU7wVOzf1iyiYS+8vm7nogeCVmRCihKR77zEnurG/eco15ia07vPBKnF8zeAAxD+pre6+U7Pd
+        MwNyGR/JpKPKec/9ZlfpbzKpqBtd+3Wo6GGONDkmpN2FBI1zkcRi+57OKqgOWpNDUJkXOrOKAwBsY
+        Phu07o8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jl7eK-0001cI-19; Tue, 16 Jun 2020 09:12:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0EB32301A32;
+        Tue, 16 Jun 2020 11:12:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DCBF5201CB859; Tue, 16 Jun 2020 11:12:53 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 11:12:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
+        elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
+        mhelsley@vmware.com, rostedt@goodmis.org, jthierry@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 2/3] objtool: Provide elf_write_{insn,reloc}()
+Message-ID: <20200616091253.GN2531@hirez.programming.kicks-ass.net>
+References: <20200612143034.933422660@infradead.org>
+ <20200612143554.012293047@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f7f2841e-3dbb-377f-f8f8-826506a938a6@kernel.dk>
+In-Reply-To: <20200612143554.012293047@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 11:00:25AM -0600, Jens Axboe wrote:
-> On 6/15/20 7:33 AM, Stefano Garzarella wrote:
-> > On Mon, Jun 15, 2020 at 11:04:06AM +0200, Jann Horn wrote:
-> >> +Kees, Christian, Sargun, Aleksa, kernel-hardening for their opinions
-> >> on seccomp-related aspects
-> >>
-> >> On Tue, Jun 9, 2020 at 4:24 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
-> >>> Hi Jens,
-> >>> Stefan and I have a proposal to share with io_uring community.
-> >>> Before implementing it we would like to discuss it to receive feedbacks and
-> >>> to see if it could be accepted:
-> >>>
-> >>> Adding restrictions to io_uring
-> >>> =====================================
-> >>> The io_uring API provides submission and completion queues for performing
-> >>> asynchronous I/O operations. The queues are located in memory that is
-> >>> accessible to both the host userspace application and the kernel, making it
-> >>> possible to monitor for activity through polling instead of system calls. This
-> >>> design offers good performance and this makes exposing io_uring to guests an
-> >>> attractive idea for improving I/O performance in virtualization.
-> >> [...]
-> >>> Restrictions
-> >>> ------------
-> >>> This document proposes io_uring API changes that safely allow untrusted
-> >>> applications or guests to use io_uring. io_uring's existing security model is
-> >>> that of kernel system call handler code. It is designed to reject invalid
-> >>> inputs from host userspace applications. Supporting guests as io_uring API
-> >>> clients adds a new trust domain with access to even fewer resources than host
-> >>> userspace applications.
-> >>>
-> >>> Guests do not have direct access to host userspace application file descriptors
-> >>> or memory. The host userspace application, a Virtual Machine Monitor (VMM) such
-> >>> as QEMU, grants access to a subset of its file descriptors and memory. The
-> >>> allowed file descriptors are typically the disk image files belonging to the
-> >>> guest. The memory is typically the virtual machine's RAM that the VMM has
-> >>> allocated on behalf of the guest.
-> >>>
-> >>> The following extensions to the io_uring API allow the host application to
-> >>> grant access to some of its file descriptors.
-> >>>
-> >>> These extensions are designed to be applicable to other use cases besides
-> >>> untrusted guests and are not virtualization-specific. For example, the
-> >>> restrictions can be used to allow only a subset of sqe operations available to
-> >>> an application similar to seccomp syscall whitelisting.
-> >>>
-> >>> An address translation and memory restriction mechanism would also be
-> >>> necessary, but we can discuss this later.
-> >>>
-> >>> The IOURING_REGISTER_RESTRICTIONS opcode
-> >>> ----------------------------------------
-> >>> The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode permanently
-> >>> installs a feature whitelist on an io_ring_ctx. The io_ring_ctx can then be
-> >>> passed to untrusted code with the knowledge that only operations present in the
-> >>> whitelist can be executed.
-> >>
-> >> This approach of first creating a normal io_uring instance and then
-> >> installing restrictions separately in a second syscall means that it
-> >> won't be possible to use seccomp to restrict newly created io_uring
-> >> instances; code that should be subject to seccomp restrictions and
-> >> uring restrictions would only be able to use preexisting io_uring
-> >> instances that have already been configured by trusted code.
-> >>
-> >> So I think that from the seccomp perspective, it might be preferable
-> >> to set up these restrictions in the io_uring_setup() syscall. It might
-> >> also be a bit nicer from a code cleanliness perspective, since you
-> >> won't have to worry about concurrently changing restrictions.
-> >>
-> > 
-> > Thank you for these details!
-> > 
-> > It seems feasible to include the restrictions during io_uring_setup().
-> > 
-> > The only doubt concerns the possibility of allowing the trusted code to
-> > do some operations, before passing queues to the untrusted code, for
-> > example registering file descriptors, buffers, eventfds, etc.
-> > 
-> > To avoid this, I should include these operations in io_uring_setup(),
-> > adding some code that I wanted to avoid by reusing io_uring_register().
-> > 
-> > If I add restrictions in io_uring_setup() and then add an operation to
-> > go into safe mode (e.g. a flag in io_uring_enter()), we would have the same
-> > problem, right?
-> > 
-> > Just to be clear, I mean something like this:
-> > 
-> >     /* params will include restrictions */
-> >     fd = io_uring_setup(entries, params);
-> > 
-> >     /* trusted code */
-> >     io_uring_register_files(fd, ...);
-> >     io_uring_register_buffers(fd, ...);
-> >     io_uring_register_eventfd(fd, ...);
-> > 
-> >     /* enable safe mode */
-> >     io_uring_enter(fd, ..., IORING_ENTER_ENABLE_RESTRICTIONS);
-> > 
-> > 
-> > Anyway, including a list of things to register in the 'params', passed
-> > to io_uring_setup(), should be feasible, if Jens agree :-)
-> 
-> I wonder how best to deal with this, in terms of ring visibility vs
-> registering restrictions. We could potentially start the ring in a
-> disabled mode, if asked to. It'd still be visible in terms of having
-> the fd installed, but it'd just error requests. That'd leave you with
-> time to do the various setup routines needed before then flagging it
-> as enabled. My only worry on that would be adding overhead for doing
-> that. It'd be cheap enough to check for IORING_SETUP_DISABLED in
-> ctx->flags in io_uring_enter(), and return -EBADFD or something if
-> that's the case. That doesn't cover the SQPOLL case though, but maybe we
-> just don't start the sq thread if IORING_SETUP_DISABLED is set.
+On Fri, Jun 12, 2020 at 04:30:36PM +0200, Peter Zijlstra wrote:
+> +int elf_write_insn(struct elf *elf, struct section *sec,
+> +		   unsigned long offset, unsigned int len,
+> +		   const char *insn)
+> +{
+> +	Elf_Data *data = sec->data;
+> +
+> +	if (data->d_type != ELF_T_BYTE || data->d_off) {
+> +		WARN("write to unexpected data for section: %s", sec->name);
+> +		return -1;
+> +	}
+> +
+> +	memcpy(data->d_buf + offset, insn, len);
+> +	elf_flagdata(data, ELF_C_SET, ELF_F_DIRTY);
+> +
+> +	sec->changed = true;
+> +	elf->changed = true;
+> +
+> +	return 0;
+> +}
+> +
+> +int elf_write_reloc(struct elf *elf, struct reloc *reloc)
+> +{
+> +	struct section *sec = reloc->sec;
+> +
+> +	if (sec->sh.sh_type == SHT_REL) {
+> +		reloc->rel.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
+> +		reloc->rel.r_offset = reloc->offset;
+> +
+> +		if (!gelf_update_rel(sec->data, reloc->idx, &reloc->rel)) {
+> +			WARN_ELF("gelf_update_rel");
+> +			return -1;
+> +		}
+> +	} else {
+> +		reloc->rela.r_info = GELF_R_INFO(reloc->sym->idx, reloc->type);
+> +		reloc->rela.r_addend = reloc->addend;
+> +		reloc->rela.r_offset = reloc->offset;
+> +
+> +		if (!gelf_update_rela(sec->data, reloc->idx, &reloc->rela)) {
+> +			WARN_ELF("gelf_update_rela");
+> +			return -1;
+> +		}
+> +	}
+> +
+> +	sec->changed = true;
+> +	elf->changed = true;
+> +
+> +	return 0;
+> +}
 
-It seems to me a very good approach and easy to implement. In this way
-we can reuse io_uring_register() without having to modify too much
-io_uring_setup().
-
-> 
-> We'd need a way to clear IORING_SETUP_DISABLED through
-> io_uring_register(). When clearing, that could then start the sq thread
-> as well, when SQPOLL is set.
-
-Could we do it using io_uring_enter() since we have a flag field or
-do you think it's semantically incorrect?
-
-@Jann, do you think this could work with seccomp?
-
-Thanks,
-Stefano
-
+Doing the change Matt asked for #1, I realized that sec->changed is only
+required if we need to rewrite the section header, neither of these two
+changes requires that, they already mark the elf data dirty so
+elf_update() DTRT.
