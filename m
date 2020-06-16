@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7478F1FC0DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B681FC0DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 23:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgFPVRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 17:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgFPVRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 17:17:37 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEEEC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:17:36 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d27so8054536lfq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 14:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rZrMRZK+NBwpqKVitehAL9xTIrDppW8h8HoB5F49GD8=;
-        b=I+zYwfyHsGog+tXrkHOqqd0wp1mrc7LjZI96FBTEItv/JdmTmyIVxOfdGNBUdzRt5E
-         H3mFXYpMNKfZiK+suf6+097zwNshCg6hFbqmAa25Mk4N5dYseZXLwpTQc9h5C8k3Y1Sg
-         w9q2bLvXdEFqsTV1iw89KDEpbHvHIAqymqIr+nSeT3xmCO+M51z167uq9/e4h3iBHfip
-         a5cC/kzPJzae6hPwp2RDEZLp7ApMXVzqILgbtWOJ4ndLudPrG31eLec8eMTUwyfOgLLJ
-         grnpc3dVbqVthl3kgOgf8su5Vk2zv0acKvNt9P5/Al1zU4XK/e4AFkyLQTmq+Fj8pYpZ
-         Dn4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rZrMRZK+NBwpqKVitehAL9xTIrDppW8h8HoB5F49GD8=;
-        b=EyDTwGdijxrrWNDdhJRBt07UfajH/hDB7th7kgYBl/CAUY5ReFbf5UZKUsO7JLmgRF
-         IlmEoFdznRHJFqEkEzfD4QP4lJ4yK4yhPsAlfCC2lP3m2S/q98IULKeHJsI0L3AMVgFw
-         yurLOmRgfsl/Eg7D5th+1r4f5OCjf8gDEedaQylQ5nytb5KBYaFlvy4cx5N2c9XvU0BB
-         pNXXxtdGgWIcAbHonlidq252rBCj5e4st6DvEvxhDvhTj4KXzPlQrc4m4sCP8jJwBFrE
-         9kDl3SZW4xHgPkjL0LauFE9ohiBHtCIe3feUewrgl4+ikwDB+i6FPAr02WjacAN3IwO0
-         61KQ==
-X-Gm-Message-State: AOAM53004SOD754/H26DOdl5Q9biGmwbv0mccjQeVsJHnjuIWOLABSIq
-        2BlVIERJQ/A375XGMu//qfPFHWzndWm4AhzSCg8NQsmKcw==
-X-Google-Smtp-Source: ABdhPJxpHQleWXov1W9//pLAITKlL504+pe7hMIseUIRwP0OPd5cxY2+wZK9l4cjgQ4u2DkW4L4id+X8Ub28k9c8oSE=
-X-Received: by 2002:a19:4945:: with SMTP id l5mr2740737lfj.12.1592342255315;
- Tue, 16 Jun 2020 14:17:35 -0700 (PDT)
+        id S1726417AbgFPVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 17:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725967AbgFPVRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 17:17:14 -0400
+Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BE502085B;
+        Tue, 16 Jun 2020 21:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592342233;
+        bh=djiXrU2UPs1VBTk8L8oL0srNfH1ZR8zahiqBoVs5Upc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=a+tDMaEm6a4kfqMC1/7x10y7SE1HmbTW08nc4ko60pujKNkpY630kwdrIJAv7+JEu
+         bgl+ed9bLJ4cS7+QiHCabve3wfLL/SzcGetnrF4VniXIUSDUirCRPrLfuHWbogfZLm
+         QAxqzGcW6hprLyp4+g0rBOsntCFdQVJ73ckv50RI=
+Date:   Tue, 16 Jun 2020 16:17:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     svarbanov@mm-sol.com, bjorn.andersson@linaro.org, vkoul@kernel.org,
+        sanm@codeaurora.org, mgautam@codeaurora.org, agross@kernel.org,
+        bhelgaas@google.com, robh@kernel.org, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Disable power management for uPD720201 USB3
+ controller
+Message-ID: <20200616211711.GA1981914@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CAHk-=whfuea587g8rh2DeLFFGYxiVuh-bzq22osJwz3q4SOfmA@mail.gmail.com>
- <CAEJqkgi3w+zvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com> <20200616203352.GA1815527@rani.riverdale.lan>
-In-Reply-To: <20200616203352.GA1815527@rani.riverdale.lan>
-From:   Gabriel C <nix.or.die@googlemail.com>
-Date:   Tue, 16 Jun 2020 23:17:08 +0200
-Message-ID: <CAEJqkghzD_6F2N=M65uYHzpOOJ8bvMw18JCfwsiQoH-kToPKLQ@mail.gmail.com>
-Subject: Re: Linux 5.8-rc1
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615182413.15649-1-georgi.djakov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Di., 16. Juni 2020 um 22:33 Uhr schrieb Arvind Sankar
-<nivedita@alum.mit.edu>:
->
-> On Tue, Jun 16, 2020 at 10:11:46PM +0200, Gabriel C wrote:
-> > * Am So., 14. Juni 2020 um 22:44 Uhr schrieb Linus Torvalds
-> > <torvalds@linux-foundation.org>:
-> >
-> > Hello,
-> >
-> > > So I didn't really expect this, but 5.8 looks to be one of our biggest
-> > > releases of all time.
-> > >
-> >
-> > I hit a compiler error caused by e4160b2e4b02377c67f8ecd05786811598f39acd.
-> >
-> > x86/purgatory: Fail the build if purgatory.ro has missing symbols
-> >
-> > Having CONFIG_STACKPROTECTOR* & CONFIG_KEXEC_FILE enabled always
-> > results in a linking error like this:
-> >
-> > LD      arch/x86/purgatory/purgatory.chk
-> > ld: arch/x86/purgatory/purgatory.ro: in function `verify_sha256_digest':
-> > purgatory.c:(.text+0x108): undefined reference to `__stack_chk_fail'
-> > ld: arch/x86/purgatory/purgatory.ro: in function `sha256_transform':
-> > sha256.c:(.text+0x1c74): undefined reference to `__stack_chk_fail'
-> > ld: arch/x86/purgatory/purgatory.ro: in function `__sha256_final':
-> > sha256.c:(.text+0x1e65): undefined reference to `__stack_chk_fail'
-> > ld: arch/x86/purgatory/purgatory.ro: in function `_kstrtoull':
-> > string.c:(.text+0x2107): undefined reference to `__stack_chk_fail'
-> >
-> > I didn't look closer at that but from the error, it seems to be,
-> > some missing -fstack-protector* vs -fno-stack-protector* checks
-> > somewhere.
-> >
-> >
-> > Best Regards,
-> >
-> > Gabriel C
->
-> Can you attach the output of gcc -dumpspecs and gcc -v? I suspect your
-> compiler enables stack protector by default. My distro compiler does
-> that too, but not if -ffreestanding is enabled (which it is for the
-> purgatory).
->
+[+cc Rafael, linux-pm]
 
-Files including config uploaded to there:
+On Mon, Jun 15, 2020 at 09:24:13PM +0300, Georgi Djakov wrote:
+> The uPD720201 USB3 host controller (connected to PCIe) on the Dragonboard
+> 845c is often failing during suspend and resume. The following messages
+> are seen over the console:
+> 
+>   PM: suspend entry (s2idle)
+>   Filesystems sync: 0.000 seconds
+>   Freezing user space processes ... (elapsed 0.001 seconds) done.
+>   OOM killer disabled.
+>   Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+>   printk: Suspending console(s) (use no_console_suspend to debug)
+>   dwc3-qcom a8f8800.usb: HS-PHY not in L2
+>   dwc3-qcom a6f8800.usb: HS-PHY not in L2
+>   xhci_hcd 0000:01:00.0: can't change power state from D3hot to D0 (config
+>   space inaccessible)
+>   xhci_hcd 0000:01:00.0: can't change power state from D3hot to D0 (config
+>   space inaccessible)
+>   xhci_hcd 0000:01:00.0: Controller not ready at resume -19
+>   xhci_hcd 0000:01:00.0: PCI post-resume error -19!
+>   xhci_hcd 0000:01:00.0: HC died; cleaning up
+> 
+> Then the USB devices are not functional anymore. Let's disable the PM of
+> the controller for now, as this will at least keep USB devices working
+> even after suspend and resume.
 
-http://crazy.dev.frugalware.org/kernel/
+This seems like we're just covering up a deeper problem here.  I think
+it would be better to fix the underlying problem.
 
-> Does this patch help?
->
+The quirk you're adding is specific to the Renesas 0x0014 device.  Is
+there some reason to think the problem is specific to that device, or
+might other devices have the same problem?
 
-I'll test in a bit and let you know.
+Maybe we're missing something in pcie-qcom.c?  Is there any
+suspend/resume support required in that driver?  It doesn't look like
+it has anything except that it calls pm_runtime_enable().
 
-> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-> index b04e6e72a592..088bd764e0b7 100644
-> --- a/arch/x86/purgatory/Makefile
-> +++ b/arch/x86/purgatory/Makefile
-> @@ -34,6 +34,7 @@ KCOV_INSTRUMENT := n
->  PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
->  PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
->  PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
-> +PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
->
->  # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
->  # in turn leaves some undefined symbols like __fentry__ in purgatory and not
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 138e1a2d21cc..c1f502682a19 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1439,6 +1439,13 @@ static void qcom_fixup_class(struct pci_dev *dev)
+>  {
+>  	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
+>  }
+> +
+> +static void qcom_fixup_nopm(struct pci_dev *dev)
+> +{
+> +	dev->pm_cap = 0;
+> +	dev_info(&dev->dev, "Disabling PCI power management\n");
+> +}
+> +
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0101, qcom_fixup_class);
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0104, qcom_fixup_class);
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0106, qcom_fixup_class);
+> @@ -1446,6 +1453,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0107, qcom_fixup_class);
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0302, qcom_fixup_class);
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1000, qcom_fixup_class);
+>  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1001, qcom_fixup_class);
+> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_RENESAS, 0x0014, qcom_fixup_nopm);
 
-Thx.
+The convention is that DECLARE_PCI_FIXUP_*() comes immediately after
+the quirk function itself, so the whole patch would be a single diff
+hunk.  See drivers/pci/quirks.c for many examples.
+
+>  static struct platform_driver qcom_pcie_driver = {
+>  	.probe = qcom_pcie_probe,
