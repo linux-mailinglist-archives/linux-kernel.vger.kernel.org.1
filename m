@@ -2,62 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5261FA577
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2110A1FA582
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 03:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgFPBPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 21:15:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6327 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726492AbgFPBPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 21:15:25 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E3EE5EBAA934826ECE6D;
-        Tue, 16 Jun 2020 09:15:22 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 16 Jun 2020 09:15:13 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH v2] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
-Date:   Tue, 16 Jun 2020 09:17:15 +0800
-Message-ID: <20200616011715.140197-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1726664AbgFPBRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 21:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgFPBRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Jun 2020 21:17:48 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB434C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:17:46 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u186so23254820ybf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Jun 2020 18:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ARkZyYO+o9Di+xsnEpjaN82yE8rF9UgQLsZZ67rguNs=;
+        b=G7acUJ568cBMg8YbpPxn1//6Y1axOcfCkurGlhPRtytoeRGnUnrJnOVKYNQK9wMx/P
+         tweKatsnheJOeE/6qt8OuWzkrkWHAtciku31vTe/RiadXg+t4hXV98zcTFPwDJ9Y0lEs
+         DPDKxBJBG5Kvy9MdD894Cm9Zh1fHfi1xr4Mfi3g/puo6yeU4tFq0K8aMGar2/9ZiwG9N
+         4IDgrrr0jyhiHAgGDSTYrF58oOp1B/v0HrA9U2lv6t4qGKwj1tUB+BF63vePjNp3l87C
+         j5QzLRMuTDUgQ6znL8rrieX9L8BaAHpBXwjZdy3TxiDx6p2H8G1/QW9GUgiyg1mLHbn4
+         XJzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ARkZyYO+o9Di+xsnEpjaN82yE8rF9UgQLsZZ67rguNs=;
+        b=eKhNmz0sCwldZfqTlMOk0Xq8S6l4B2dNbQ+2tDGHqgTUgAQC9v6GAF+NaOYoKQBjQR
+         b3OTD3Vd8uKu9wKQd7w9aIyCUN/JwZzmy1FYdryWvaDW0mKdlyYX9tcmdjE+pZ7d6RSu
+         +EXja5+kaaaOUb2F2sTD2OUmFH8oTsu6Et2F5wkit2FJaZdraf/Fz6or68ZCjWhAloiU
+         iOYtgtIIgEUIf5ZVUg2nbM7JfncWkt14JXqa5ELC7U2d7wUztB3/AMPmtJYGJ4jvIiRm
+         IvkhnhUvRlHqOowFIeXKBWKtchuPljHwCndfsTyF6QZHlyfjIzDwr/IxUNEYHkzini/C
+         bn2w==
+X-Gm-Message-State: AOAM533qYI045FoZsv1/GEwf/T9b84DHVHcJnghl8Q4Mf0MMWesC+Dm3
+        YbUBS7mj4f81OQ2vf17fKu+ayiNkVWi9
+X-Google-Smtp-Source: ABdhPJybcIF+tiZIKkl4H0LQjdd0GtwdJx/kkGSMA/T7KGNofz3k8iTUUAzgVf+Ss+MziR1K4JlCo0opnS9r
+X-Received: by 2002:a25:cf44:: with SMTP id f65mr500058ybg.368.1592270266200;
+ Mon, 15 Jun 2020 18:17:46 -0700 (PDT)
+Date:   Mon, 15 Jun 2020 18:17:39 -0700
+Message-Id: <20200616011742.138975-1-rajatja@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+Subject: [PATCH 1/4] pci: Keep the ACS capability offset in device
+From:   Rajat Jain <rajatja@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Raj Ashok <ashok.raj@intel.com>,
+        lalithambika.krishnakumar@intel.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        oohall@gmail.com
+Cc:     Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's easy to show that sdev and req are always valid,
-so we remove unnecessary WARN_ON.
+Currently this is being looked up at a number of places. Read
+and store it once at bootup so that it can be used by all later.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Rajat Jain <rajatja@google.com>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/pci/p2pdma.c |  2 +-
+ drivers/pci/pci.c    | 21 +++++++++++++++++----
+ drivers/pci/pci.h    |  2 +-
+ drivers/pci/probe.c  |  2 +-
+ drivers/pci/quirks.c |  8 ++++----
+ include/linux/pci.h  |  1 +
+ 6 files changed, 25 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index ef7fcd3..0fa65c6 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2156,9 +2156,6 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+index e8e444eeb1cd2..f29a48f8fa594 100644
+--- a/drivers/pci/p2pdma.c
++++ b/drivers/pci/p2pdma.c
+@@ -253,7 +253,7 @@ static int pci_bridge_has_acs_redir(struct pci_dev *pdev)
+ 	int pos;
+ 	u16 ctrl;
  
- 	WARN_ON_ONCE(irqs_disabled());
+-	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_ACS);
++	pos = pdev->acs_cap;
+ 	if (!pos)
+ 		return 0;
  
--	if (WARN_ON(!sdev || !req))
--		return -EINVAL;
--
- 	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index ce096272f52b1..d2ff987585855 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -51,6 +51,7 @@ EXPORT_SYMBOL(pci_pci_problems);
  
- 	pr_info("Received SRP_LOGIN_REQ with i_port_id %pI6, t_port_id %pI6 and it_iu_len %d on port %d (guid=%pI6); pkey %#04x\n",
+ unsigned int pci_pm_d3_delay;
+ 
++static void pci_enable_acs(struct pci_dev *dev);
+ static void pci_pme_list_scan(struct work_struct *work);
+ 
+ static LIST_HEAD(pci_pme_list);
+@@ -3284,7 +3285,7 @@ static void pci_disable_acs_redir(struct pci_dev *dev)
+ 	if (!pci_dev_specific_disable_acs_redir(dev))
+ 		return;
+ 
+-	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++	pos = dev->acs_cap;
+ 	if (!pos) {
+ 		pci_warn(dev, "cannot disable ACS redirect for this hardware as it does not have ACS capabilities\n");
+ 		return;
+@@ -3310,7 +3311,7 @@ static void pci_std_enable_acs(struct pci_dev *dev)
+ 	u16 cap;
+ 	u16 ctrl;
+ 
+-	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++	pos = dev->acs_cap;
+ 	if (!pos)
+ 		return;
+ 
+@@ -3336,7 +3337,7 @@ static void pci_std_enable_acs(struct pci_dev *dev)
+  * pci_enable_acs - enable ACS if hardware support it
+  * @dev: the PCI device
+  */
+-void pci_enable_acs(struct pci_dev *dev)
++static void pci_enable_acs(struct pci_dev *dev)
+ {
+ 	if (!pci_acs_enable)
+ 		goto disable_acs_redir;
+@@ -3362,7 +3363,7 @@ static bool pci_acs_flags_enabled(struct pci_dev *pdev, u16 acs_flags)
+ 	int pos;
+ 	u16 cap, ctrl;
+ 
+-	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_ACS);
++	pos = pdev->acs_cap;
+ 	if (!pos)
+ 		return false;
+ 
+@@ -3487,6 +3488,18 @@ bool pci_acs_path_enabled(struct pci_dev *start,
+ 	return true;
+ }
+ 
++/**
++ * pci_acs_init - Initialize if hardware supports it
++ * @dev: the PCI device
++ */
++void pci_acs_init(struct pci_dev *dev)
++{
++	dev->acs_cap = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++
++	if (dev->acs_cap)
++		pci_enable_acs(dev);
++}
++
+ /**
+  * pci_rebar_find_pos - find position of resize ctrl reg for BAR
+  * @pdev: PCI device
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 6d3f758671064..12fb79fbe29d3 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -532,7 +532,7 @@ static inline resource_size_t pci_resource_alignment(struct pci_dev *dev,
+ 	return resource_alignment(res);
+ }
+ 
+-void pci_enable_acs(struct pci_dev *dev);
++void pci_acs_init(struct pci_dev *dev);
+ #ifdef CONFIG_PCI_QUIRKS
+ int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags);
+ int pci_dev_specific_enable_acs(struct pci_dev *dev);
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 2f66988cea257..6d87066a5ecc5 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2390,7 +2390,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
+ 	pci_ats_init(dev);		/* Address Translation Services */
+ 	pci_pri_init(dev);		/* Page Request Interface */
+ 	pci_pasid_init(dev);		/* Process Address Space ID */
+-	pci_enable_acs(dev);		/* Enable ACS P2P upstream forwarding */
++	pci_acs_init(dev);		/* Access Control Services */
+ 	pci_ptm_init(dev);		/* Precision Time Measurement */
+ 	pci_aer_init(dev);		/* Advanced Error Reporting */
+ 	pci_dpc_init(dev);		/* Downstream Port Containment */
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 812bfc32ecb82..b341628e47527 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4653,7 +4653,7 @@ static int pci_quirk_intel_spt_pch_acs(struct pci_dev *dev, u16 acs_flags)
+ 	if (!pci_quirk_intel_spt_pch_acs_match(dev))
+ 		return -ENOTTY;
+ 
+-	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++	pos = dev->acs_cap;
+ 	if (!pos)
+ 		return -ENOTTY;
+ 
+@@ -4961,7 +4961,7 @@ static int pci_quirk_enable_intel_spt_pch_acs(struct pci_dev *dev)
+ 	if (!pci_quirk_intel_spt_pch_acs_match(dev))
+ 		return -ENOTTY;
+ 
+-	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++	pos = dev->acs_cap;
+ 	if (!pos)
+ 		return -ENOTTY;
+ 
+@@ -4988,7 +4988,7 @@ static int pci_quirk_disable_intel_spt_pch_acs_redir(struct pci_dev *dev)
+ 	if (!pci_quirk_intel_spt_pch_acs_match(dev))
+ 		return -ENOTTY;
+ 
+-	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS);
++	pos = dev->acs_cap;
+ 	if (!pos)
+ 		return -ENOTTY;
+ 
+@@ -5355,7 +5355,7 @@ int pci_idt_bus_quirk(struct pci_bus *bus, int devfn, u32 *l, int timeout)
+ 	bool found;
+ 	struct pci_dev *bridge = bus->self;
+ 
+-	pos = pci_find_ext_capability(bridge, PCI_EXT_CAP_ID_ACS);
++	pos = bridge->acs_cap;
+ 
+ 	/* Disable ACS SV before initial config reads */
+ 	if (pos) {
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index c79d83304e529..a26be5332bba6 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -486,6 +486,7 @@ struct pci_dev {
+ #ifdef CONFIG_PCI_P2PDMA
+ 	struct pci_p2pdma *p2pdma;
+ #endif
++	u16		acs_cap;	/* ACS Capability offset */
+ 	phys_addr_t	rom;		/* Physical address if not from BAR */
+ 	size_t		romlen;		/* Length if not from BAR */
+ 	char		*driver_override; /* Driver name to force a match */
 -- 
-1.8.3.1
+2.27.0.290.gba653c62da-goog
 
