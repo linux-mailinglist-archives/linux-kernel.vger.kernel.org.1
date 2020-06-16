@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8581FAAFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83661FAAF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgFPIUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgFPIUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:20:46 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C7FC05BD43
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v6Kvrp5YxuyE3OJwdnbigwu/+C45nCnzYkGt6Fojw88=; b=baBP6LaRRx2Up9n+9WmJ8N8s8s
-        2KtsEvci5rCKwB48U7G2BX757UAP2/Xg9OYvJMvMmx3quRdEe2OTW3e8eUUIWokI74WT8dGRd9wtZ
-        5e+oH8qXbV4YA3YS7LenFNzN1vJSPblLYQWDGvxmHJJWQ7C74v12CNZrsUQCRV5hb8ZtcwwUWVkR5
-        XgVhleAlugPl4S3Eef/1p/3tEuQV+QMcXqVQsvcI8pbfYdhNm5ONU50EQZGzSJsK7Bk8snfh9+Obr
-        LEfceChZaWqed0rqt+E/GkvORRDGE/r0q2xqWVm0AwJIvHzdiRXgYZOpISvkRp8D7wstNp90qpboA
-        3Anv67+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jl6pE-0003eU-4Z; Tue, 16 Jun 2020 08:20:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D734430018A;
-        Tue, 16 Jun 2020 10:20:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 672A72B9CA588; Tue, 16 Jun 2020 10:20:03 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 10:20:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        luca abeni <luca.abeni@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+119ba87189432ead09b4@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: WARNING in enqueue_task_dl
-Message-ID: <20200616082003.GM2531@hirez.programming.kicks-ass.net>
-References: <000000000000b5e346057af4da06@google.com>
- <alpine.DEB.2.21.1811190921190.9459@nanos.tec.linutronix.de>
- <20181119130718.69eddf46@luca64>
- <20181119125241.GC9761@hirez.programming.kicks-ass.net>
- <20181119134349.GA2119@localhost.localdomain>
- <20181119153201.GB2119@localhost.localdomain>
- <a9d18394-250b-98e4-e66d-57622dbaf247@redhat.com>
- <CACT4Y+bcug1SpLS6RfpJ8gTVm0vXm_S_1s_BG9n=zrEVdaffFw@mail.gmail.com>
- <20190724044516.GA643@sol.localdomain>
- <20200616065359.ugoismxzpkkkkwjp@beryllium.lan>
+        id S1726965AbgFPIUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:20:42 -0400
+Received: from v6.sk ([167.172.42.174]:47516 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgFPIUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:20:42 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 0150061626;
+        Tue, 16 Jun 2020 08:20:09 +0000 (UTC)
+Date:   Tue, 16 Jun 2020 10:20:05 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 15/29] dt: fix reference to olpc,xo1.75-ec.txt
+Message-ID: <20200616082005.GA931489@furthur.local>
+References: <cover.1592203542.git.mchehab+huawei@kernel.org>
+ <d0262854582ee754e4b8bd80677d96b3e098ea5c.1592203542.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616065359.ugoismxzpkkkkwjp@beryllium.lan>
+In-Reply-To: <d0262854582ee754e4b8bd80677d96b3e098ea5c.1592203542.git.mchehab+huawei@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 08:53:59AM +0200, Daniel Wagner wrote:
-> I've tested this patch against 5.8-rc1. Without the fix, after around 2 hours
-> the warning was triggered by the reproducer. With the patch, it survived
-> roughly 12 hours without the warning.
+On Mon, Jun 15, 2020 at 08:46:54AM +0200, Mauro Carvalho Chehab wrote:
+> This file was converted and renamed.
 > 
-> Tested-by: Daniel Wagner <dwagner@suse.de>
+> Fixes: 7882d822b3f9 ("dt-bindings: spi: Convert spi-pxa2xx to json-schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Thanks, have it now.
+Thank you,
+
+Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+
+I'm wondering -- which tree is this targetted for? I may end up
+converting the XO-1.75 EC docs to YAML for 5.9, and I suppose I'd need
+to base it on this and send it in the same direction.
+
+Lubo
+
+
+> ---
+>  Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
+> index 8c4d649cdd8f..2d7cdf19a0d0 100644
+> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
+> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.txt
+> @@ -8,7 +8,7 @@ The embedded controller requires the SPI controller driver to signal readiness
+>  to receive a transfer (that is, when TX FIFO contains the response data) by
+>  strobing the ACK pin with the ready signal. See the "ready-gpios" property of the
+>  SSP binding as documented in:
+> -<Documentation/devicetree/bindings/spi/spi-pxa2xx.txt>.
+> +<Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml>.
+>  
+>  Example:
+>  	&ssp3 {
+> -- 
+> 2.26.2
+> 
