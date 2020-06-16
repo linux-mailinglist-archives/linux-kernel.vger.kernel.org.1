@@ -2,79 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D871FBDC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C701FBDDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 20:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgFPSPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 14:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727083AbgFPSPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 14:15:22 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5328B2080D;
-        Tue, 16 Jun 2020 18:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592331321;
-        bh=U6SVQrYdpf3H64Y1wEHug/hOhG566b3UUfUaO0UkwUM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z22lz4ucpDlx7104ED8yFNClfc/DJZRnYjbrC5Vj8nauicrfTbNM9QL/BXVFiL0e3
-         Fqm68PHlBHdabTZmLxzQdAMi6nUjWLofIOFUaWDfPZXf5r47bNxkShSkN+kD6X5DU9
-         8LYJ/7toJJhqY6QhwM85MoMDeurzMmoo+O5LeozA=
-Date:   Tue, 16 Jun 2020 13:20:41 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Eric Biederman <ebiederm@xmission.com>
-Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] kexec_file: Use array_size() helper in memcpy()
-Message-ID: <20200616182041.GA30841@embeddedor>
+        id S1729090AbgFPSVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 14:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgFPSVH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 14:21:07 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05483C061573;
+        Tue, 16 Jun 2020 11:21:07 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e18so9577277pgn.7;
+        Tue, 16 Jun 2020 11:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g7lLlvEoTvgmLjDaNGJohAzTK6L4QW2JMDxy1R2U07I=;
+        b=k1C+nc35mNiDzLc/LR34YvTox6ks1agGzn3W6Mj5a+xMvsZRhmcQVBKTdMXEwY9isp
+         Oq7x2OsRGhqzGg3aCF+C6fKTs+1TI8y9CRFzM9KECTe2gf/+GJnh2VS4D7z1qxqgpnE4
+         0NgwtMTMmNI/+LaX7OKJkBdV2QQlobyMvxcleQoPivBhGIvxGAt6/FaU2GWUPQou2yHn
+         iGmDg7/cvoq893LJDlgdy/t60Gu3Bb4t7xNW6uKi3ODg2ArtvjIr33HmKZA7rQohZmpd
+         P5rdPOB8ooD52gH24Z8Tl8O/PE7GNjdTQslApgkPPltBDVNgqkmyGAgkLn84IbbvI6Qr
+         Y/3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g7lLlvEoTvgmLjDaNGJohAzTK6L4QW2JMDxy1R2U07I=;
+        b=ej4f0KTLsPVHzkAztKEI8TknGTRjmm3WodRMIyhuD2jYU18GZTDvKyWr3b+3eWHy5Y
+         Huw/hK4XXK781dYSdNwQqov5n9qbFR9/8pawUV3TBeGJBtjoqPPucPozPkpEgrzRQ+/4
+         Ci88RZIUqD7ZqR8X2vk6wXIXLEXjwJYjc932Yw5lkpsBTcmMSb723dYU5g9ZWLKRWOwA
+         FtdaoX5Lrxs7JyVqVsaQu4poFFaj8VP/5g/7HzUgDLxbgAsO/kvJJVvQXHLAoBjNvDxB
+         WkKVxmvY6IovSMP/QtGcaH0fivTrxDY3ZyCwcLPuMz9zVyuNPcyDeqQAX30uLbawdQS+
+         Yz5w==
+X-Gm-Message-State: AOAM533XhCPRqQFPMDGQCFy6gS8VqWLCuKFStBTGSjJ1WOSr30KtRH5e
+        blKO4hcEQ1Uw2tcz3ufMeVQ=
+X-Google-Smtp-Source: ABdhPJwmv2dcMN86tGUhvu18FNgfqKb/uMjls5HdgtO6rxzlCQDlrniJZ7XxJTydspog+2ArpjAXkg==
+X-Received: by 2002:a62:4e91:: with SMTP id c139mr3347199pfb.18.1592331666423;
+        Tue, 16 Jun 2020 11:21:06 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id c9sm18385998pfr.72.2020.06.16.11.21.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 11:21:05 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     simon@fire.lp0.eu, Jonas Gorski <jonas.gorski@gmail.com>,
+        kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>, krzk@kernel.org,
+        gregkh@linuxfoundation.org, alcooperx@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200616083408.3426435-1-noltari@gmail.com>
+ <20200616083408.3426435-2-noltari@gmail.com>
+ <2cc00ff1-f411-1c2d-d2ce-4cc0bfc2ccb5@gmail.com>
+ <7E21D795-8D20-4EB1-9758-D2B5BD389F1F@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e011e0f4-d503-e9fe-8615-69678dd9bdca@gmail.com>
+Date:   Tue, 16 Jun 2020 11:21:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <7E21D795-8D20-4EB1-9758-D2B5BD389F1F@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use array_size() instead of the open-coded version in memcpy(). These
-sorts of multiplication factors need to be wrapped in array_size().
 
-Also, while there, use the preferred form for passing a size of a struct.
-The alternative form where struct name is spelled out hurts readability
-and introduces an opportunity for a bug when the pointer variable type is
-changed but the corresponding sizeof that is passed as argument is not.
 
-This issue was found with the help of Coccinelle and, audited and fixed
-manually.
+On 6/16/2020 11:10 AM, Álvaro Fernández Rojas wrote:
+> Hello Florian,
+> 
+>> El 16 jun 2020, a las 19:17, Florian Fainelli <f.fainelli@gmail.com> escribió:
+>>
+>>
+>>
+>> On 6/16/2020 1:34 AM, Álvaro Fernández Rojas wrote:
+>>> Document BCM63xx USBH PHY bindings.
+>>>
+>>> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+>>> ---
+>>> .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 72 +++++++++++++++++++
+>>> 1 file changed, 72 insertions(+)
+>>> create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+>>> new file mode 100644
+>>> index 000000000000..3e7c97799b91
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+>>> @@ -0,0 +1,72 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: "http://devicetree.org/schemas/phy/brcm,bcm63xx-usbh-phy.yaml#"
+>>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>>> +
+>>> +title: BCM63xx USBH PHY
+>>> +
+>>> +maintainers:
+>>> +  - Álvaro Fernández Rojas <noltari@gmail.com>
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - brcm,bcm6318-usbh-phy
+>>> +      - brcm,bcm6328-usbh-phy
+>>> +      - brcm,bcm6358-usbh-phy
+>>> +      - brcm,bcm6362-usbh-phy
+>>> +      - brcm,bcm6368-usbh-phy
+>>> +      - brcm,bcm63268-usbh-phy
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  clocks:
+>>> +    maxItems: 2
+>>> +
+>>> +  clock-names:
+>>> +    items:
+>>> +      - const: usbh
+>>> +      - const: usb_ref
+>>> +
+>>> +  resets:
+>>> +    maxItems: 1
+>>> +
+>>> +  "#phy-cells":
+>>> +    const: 0
+>>
+>> On 6328, the same register space allows the controlling of the USB PHY
+>> in either host or device mode, so I believe you would need to add a
+>> #phy-cells = 1 in order to distinguish the consumer (host versus device)
+>> if we get to the point where drivers/usb/gadget/udc/bcm63xx_udc.c
+>> becomes DT aware.
+> 
+> I’m not really sure about how I should do this because there’s no definition for device phy mode in dt-bindings/phy/phy.h:
+> https://github.com/torvalds/linux/blob/master/include/dt-bindings/phy/phy.h#L13
+> 
+> Which value should I use for device mode and which one for host?
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- kernel/kexec_file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+0 for the host, which would be equivalent to not specifying the
+property, and 1 for the device.
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index bb05fd52de85..2bbb001cd505 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -910,11 +910,11 @@ static int kexec_purgatory_setup_sechdrs(struct purgatory_info *pi,
- 	 * The section headers in kexec_purgatory are read-only. In order to
- 	 * have them modifiable make a temporary copy.
- 	 */
--	sechdrs = vzalloc(array_size(sizeof(Elf_Shdr), pi->ehdr->e_shnum));
-+	sechdrs = vzalloc(array_size(sizeof(*sechdrs), pi->ehdr->e_shnum));
- 	if (!sechdrs)
- 		return -ENOMEM;
- 	memcpy(sechdrs, (void *)pi->ehdr + pi->ehdr->e_shoff,
--	       pi->ehdr->e_shnum * sizeof(Elf_Shdr));
-+	       array_size(sizeof(*sechdrs), pi->ehdr->e_shnum));
- 	pi->sechdrs = sechdrs;
- 
- 	offset = 0;
+> Should I support both modes at the same time or are they exclusive?
+
+This is an OTG controller so you need to be able to dynamically
+re-configure the PHY to be in either device or host mode (see comment
+about bcm63xx_select_phy_mode), but there would not be both at the same
+time.
 -- 
-2.27.0
-
+Florian
