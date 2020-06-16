@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1D21FBB12
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891BA1FB8FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgFPQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:16:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
+        id S1731014AbgFPPwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731211AbgFPPkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:35 -0400
+        id S1730410AbgFPPvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:51:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A62A207C4;
-        Tue, 16 Jun 2020 15:40:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17FB0207C4;
+        Tue, 16 Jun 2020 15:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322034;
-        bh=kWkYnOgyIZpYVEMaZD7avyMdh028gxcHAOd0VE+Y3yE=;
+        s=default; t=1592322714;
+        bh=LHf8gDm6CCyZh1htR8UAvbQLFNdi/dqQI5P0jwFwD2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QYOC+kHAqq1ElWfMIpHrGbNo/HeVJN2sM6hVv75myxeSKEZv6jC+aj91aChqqEg/o
-         GOrbNjP1aelEHvVcSLat3jWr9S5+o2mMLhlDriOYt5UFvc1C7sgn/Sv8qQ5atDMu8v
-         lY256uonTYXUWnmP8386WjZRbXppe0QuJq0EtOSA=
+        b=U1wCZXvym1ic6Z0j0ra3OVQR59EdwAEETHzDOWASsJ1W6zc1m2HI6M+/oOevzW3yW
+         4hhoUohRoWNlkslE9GlGU+Oc4ku/W9T1RhVXt6FA28BAgLV9Qr1o0DD/BycizhlkJr
+         hsgYuZRWksHttdS0lEyyfMAyO2SHDuHjuyPWcArw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 081/134] crypto: drbg - fix error return code in drbg_alloc_state()
-Date:   Tue, 16 Jun 2020 17:34:25 +0200
-Message-Id: <20200616153104.658751337@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 076/161] ALSA: usb-audio: Add vendor, product and profile name for HP Thunderbolt Dock
+Date:   Tue, 16 Jun 2020 17:34:26 +0200
+Message-Id: <20200616153110.000851184@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit e0664ebcea6ac5e16da703409fb4bd61f8cd37d9 upstream.
+commit 0c5086f5699906ec8e31ea6509239489f060f2dc upstream.
 
-Fix to return negative error code -ENOMEM from the kzalloc error handling
-case instead of 0, as done elsewhere in this function.
+The HP Thunderbolt Dock has two separate USB devices, one is for speaker
+and one is for headset. Add names for them so userspace can apply UCM
+settings.
 
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Fixes: db07cd26ac6a ("crypto: drbg - add FIPS 140-2 CTRNG for noise source")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Stephan Mueller <smueller@chronox.de>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lore.kernel.org/r/20200608062630.10806-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/drbg.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/usb/quirks-table.h |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -1294,8 +1294,10 @@ static inline int drbg_alloc_state(struc
- 	if (IS_ENABLED(CONFIG_CRYPTO_FIPS)) {
- 		drbg->prev = kzalloc(drbg_sec_strength(drbg->core->flags),
- 				     GFP_KERNEL);
--		if (!drbg->prev)
-+		if (!drbg->prev) {
-+			ret = -ENOMEM;
- 			goto fini;
-+		}
- 		drbg->fips_primed = false;
- 	}
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -25,6 +25,26 @@
+ 	.idProduct = prod, \
+ 	.bInterfaceClass = USB_CLASS_VENDOR_SPEC
  
++/* HP Thunderbolt Dock Audio Headset */
++{
++	USB_DEVICE(0x03f0, 0x0269),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "HP",
++		.product_name = "Thunderbolt Dock Audio Headset",
++		.profile_name = "HP-Thunderbolt-Dock-Audio-Headset",
++		.ifnum = QUIRK_NO_INTERFACE
++	}
++},
++/* HP Thunderbolt Dock Audio Module */
++{
++	USB_DEVICE(0x03f0, 0x0567),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "HP",
++		.product_name = "Thunderbolt Dock Audio Module",
++		.profile_name = "HP-Thunderbolt-Dock-Audio-Module",
++		.ifnum = QUIRK_NO_INTERFACE
++	}
++},
+ /* FTDI devices */
+ {
+ 	USB_DEVICE(0x0403, 0xb8d8),
 
 
