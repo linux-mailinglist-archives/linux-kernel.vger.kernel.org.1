@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AED1FB6C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637511FB775
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgFPPkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:40:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54014 "EHLO mail.kernel.org"
+        id S1730268AbgFPPqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731069AbgFPPj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:39:58 -0400
+        id S1730270AbgFPPqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:46:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C53E821475;
-        Tue, 16 Jun 2020 15:39:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9387B2098B;
+        Tue, 16 Jun 2020 15:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321998;
-        bh=rslNjUeVlj97qpEPQRjAVmForQmuPgw5erM9aaqm87g=;
+        s=default; t=1592322376;
+        bh=C+AlfpWbyak2yWW6+lQ1jB1oFqNZLgmBcfOSY7J/CkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mHCQOzofcOskyBdKz1V9ZtPwOVJdSCbsS2wyXDO8Hgm5G2AHHzyVXi9JdGGbluDFJ
-         ycit4+VHvKPvYTfLfGUnaCJH0XFg3GVrVpms3TWApFcv176KPnxyP4bNHcIf9jsZOh
-         iycz8KkkwxWBmBk1LAUFFABpkxFp1qN2IP/VswFk=
+        b=dzdu/9WfDhYa/7Z9pLESRBz8kJAK2Mnfni/QpWB39S+iu42OvrePcB/WzthF82R4J
+         7W/vXakFQksVTLI4qDmjzy6adeezgGRpjyuJ5/fuesGfQ7qS1XK327yTmjJ+XkmWoD
+         RkWDfIHfumgzlcXVUzsnTczGEIwMr2TO0ydJGpsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Tero Kristo <t-kristo@ti.com>, Suman Anna <s-anna@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 096/134] remoteproc: Fall back to using parent memory pool if no dedicated available
-Date:   Tue, 16 Jun 2020 17:34:40 +0200
-Message-Id: <20200616153105.380956788@linuxfoundation.org>
+        stable@vger.kernel.org, Parav Pandit <parav@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.7 107/163] net/mlx5: Disable reload while removing the device
+Date:   Tue, 16 Jun 2020 17:34:41 +0200
+Message-Id: <20200616153111.941332665@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+From: Parav Pandit <parav@mellanox.com>
 
-commit db9178a4f8c4e523f824892cb8bab00961b07385 upstream.
+[ Upstream commit 60904cd349abc98cb888fc28d1ca55a8e2cf87b3 ]
 
-In some cases, like with OMAP remoteproc, we are not creating dedicated
-memory pool for the virtio device. Instead, we use the same memory pool
-for all shared memories. The current virtio memory pool handling forces
-a split between these two, as a separate device is created for it,
-causing memory to be allocated from bad location if the dedicated pool
-is not available. Fix this by falling back to using the parent device
-memory pool if dedicated is not available.
+While unregistration is in progress, user might be reloading the
+interface.
+This can race with unregistration in below flow which uses the
+resources which are getting disabled by reload flow.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Link: https://lore.kernel.org/r/20200420160600.10467-2-s-anna@ti.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Hence, disable the devlink reloading first when removing the device.
+
+     CPU0                                   CPU1
+     ----                                   ----
+local_pci_remove()                  devlink_mutex
+  remove_one()                       devlink_nl_cmd_reload()
+    mlx5_unregister_device()           devlink_reload()
+                                       ops->reload_down()
+                                         mlx5_unload_one()
+
+Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/remoteproc/remoteproc_virtio.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c |    2 --
+ drivers/net/ethernet/mellanox/mlx5/core/main.c    |    2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -375,6 +375,18 @@ int rproc_add_virtio_dev(struct rproc_vd
- 				goto out;
- 			}
- 		}
-+	} else {
-+		struct device_node *np = rproc->dev.parent->of_node;
-+
-+		/*
-+		 * If we don't have dedicated buffer, just attempt to re-assign
-+		 * the reserved memory from our parent. A default memory-region
-+		 * at index 0 from the parent's memory-regions is assigned for
-+		 * the rvdev dev to allocate from. Failure is non-critical and
-+		 * the allocations will fall back to global pools, so don't
-+		 * check return value either.
-+		 */
-+		of_reserved_mem_device_init_by_idx(dev, np, 0);
- 	}
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -283,7 +283,6 @@ int mlx5_devlink_register(struct devlink
+ 		goto params_reg_err;
+ 	mlx5_devlink_set_params_init_values(devlink);
+ 	devlink_params_publish(devlink);
+-	devlink_reload_enable(devlink);
+ 	return 0;
  
- 	/* Allocate virtio device */
+ params_reg_err:
+@@ -293,7 +292,6 @@ params_reg_err:
+ 
+ void mlx5_devlink_unregister(struct devlink *devlink)
+ {
+-	devlink_reload_disable(devlink);
+ 	devlink_params_unregister(devlink, mlx5_devlink_params,
+ 				  ARRAY_SIZE(mlx5_devlink_params));
+ 	devlink_unregister(devlink);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1373,6 +1373,7 @@ static int init_one(struct pci_dev *pdev
+ 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
+ 
+ 	pci_save_state(pdev);
++	devlink_reload_enable(devlink);
+ 	return 0;
+ 
+ err_load_one:
+@@ -1390,6 +1391,7 @@ static void remove_one(struct pci_dev *p
+ 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
+ 	struct devlink *devlink = priv_to_devlink(dev);
+ 
++	devlink_reload_disable(devlink);
+ 	mlx5_crdump_disable(dev);
+ 	mlx5_devlink_unregister(devlink);
+ 
 
 
