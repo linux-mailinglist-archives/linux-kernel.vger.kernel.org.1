@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949C61FC010
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498431FC017
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731666AbgFPUd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 16:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        id S1731746AbgFPUh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 16:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgFPUd4 (ORCPT
+        with ESMTP id S1726428AbgFPUhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 16:33:56 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1256CC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 13:33:56 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id j32so16620693qte.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 13:33:55 -0700 (PDT)
+        Tue, 16 Jun 2020 16:37:24 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F5C061573;
+        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so123989ljm.9;
+        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AfiZlqjHsZkjAu5fvsg6fR8prjnrKc4GQvwb6nf23ac=;
-        b=ggxB+wKvfbpbc7+0S9cO2GzWftu4wdCC+ifypfCRSdq+hOcg5t9ByanyZAGVsbJMXG
-         3V4wpwT3ILuw4S8NPLW/1hl2xSzccumZJnb8W71hii99cWtgtQ7P0Qw/oXP9YzE2yF4u
-         GV7y11CkqFRJxd1W697jS66bSL3Cxhvx/Pad1GGzHJxWoY/ard6xlfrswgjWagTgzpAC
-         FTK2t1WkDQim4QLrJXAmCd2o/QL7B7b5oojZmd27NFGvZkBnxrYA6YQl4Kuko5Wf4rUq
-         +kb3ITxcppTBQBZhNPxna4zrWJBIn0YNLRQnoPHYBv5uXGMRhnKDPk6IIx+R+tRmpDUq
-         o0ag==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
+        b=pyXB6lOygv7d3fpovp/hfSOGjPv5ee22Kh91pmpyuPkSH3cPe3xSSoKSv3zqwVnXx5
+         +hhuHw8IAeyT6YN+YmeJ8SISZmCPqA8fh5VAgYKlNwFqozX8D6KxPnyN0eqUlSB4iFjy
+         0H9mr/YUYfncmuJd4v0jGbf+5gecaMKPZpgz/EwdlODlfHSUFP3c36q+sN12qIfRSTDc
+         9XvqhgIfIAJ3h5l+xUN6yALuo9i/u+p6vm4CfhHzmRPyRrib0DNg9SrFIynm1eDiW+fz
+         a5WjoU7rKP3KdkSRkTyfBDEWwObdz/xvMkdbgkD/hVLLtcLk5LAtPzC1lrDPU//KAnpI
+         ENvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AfiZlqjHsZkjAu5fvsg6fR8prjnrKc4GQvwb6nf23ac=;
-        b=E/1Xq6dlfRxOd1SVUdnunsIQiTQfVgm8HgO/iq0Oo7J/UgRUmeZtRgISsE/pmsu5X8
-         vsFgV6y4hK3CSBE4ZkSUS1HnGpRU1X3cTYb92QBmI+PPi9aC5hmtrjpO4UeABYYeDWuR
-         1JlJP1OHfkjHL5kS95JHz1k3n5aSUYN7sViEE8DMeRQQWbeYMog7rHYVMcjy+Ibdc4rZ
-         2IJilnS746vSEg+e1Tq2qGoXtrQOFLJW1QSj8Uhn+4EkYPxyW+/Jiem0j+5lEBsR3LKq
-         4xOmIICDt734+G4zM9/ILSh7eJTaohSHW5b55AzAG0VwXQAjk43I7FbCmFv3jW7rAqQV
-         VTgQ==
-X-Gm-Message-State: AOAM530nR0e5ZWhM96J1qqcd6hkvMWwTZsOIHoM2VZS0p+ZYyYnRB7VY
-        q32FNJDm23sm/k+ii1xSe90=
-X-Google-Smtp-Source: ABdhPJzjbbGpm1SQXQMb539pPnMQSEbYLc9gcmjKqMNtCkSX6hO9X6mxcVhQj1jUMueefkQ0LDMO/A==
-X-Received: by 2002:ac8:3066:: with SMTP id g35mr22663700qte.193.1592339634780;
-        Tue, 16 Jun 2020 13:33:54 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id k188sm14318783qkb.23.2020.06.16.13.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 13:33:54 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 16 Jun 2020 16:33:52 -0400
-To:     Gabriel C <nix.or.die@googlemail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Linux 5.8-rc1
-Message-ID: <20200616203352.GA1815527@rani.riverdale.lan>
-References: <CAHk-=whfuea587g8rh2DeLFFGYxiVuh-bzq22osJwz3q4SOfmA@mail.gmail.com>
- <CAEJqkgi3w+zvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
+        b=rObWlGhHfsQITvObmKX8O7ZhbsJPwqDAl0r2llWXj6F1NK0P4JazhUNGqKTVUPFCpL
+         BaeIt1GfZyudkP6aAnt9GXDvOcT30TcGB/QenrOWOO5xbrBWI8T2CAHNEgRAZz/5sn1z
+         9bqHchEdngon6xgX+Exqgq4QjBuP+ddR54ubaFzvCFGUsOPZ+9aziwkrLO+JdzJVBOSz
+         /NTT3jtUwnadKCd1ltUVsshnM70CA/wjQL2W+2YeaXU2VP0R2CT+0YuDjzvqj23dUIuO
+         XYu8rNwMiaHTyaBwiBQ/Hz5y8OP0f5JVoiP6EUQt2qowV6DWQWy61eP3fdrb2G4T1SPo
+         n5eg==
+X-Gm-Message-State: AOAM53399Cyn5DCg2Uim0DwN/DovUOGwwOSrq79sM9jbNZUMcVyC9JLn
+        CabeBx9z99ASy/Mnf2uz0DXL+8ly/jYnLBclG8A=
+X-Google-Smtp-Source: ABdhPJwE2lMLvVUrdVYb5jqSp16Jt51lzYQ+YF39c3LoNZ6rdQE19vSQ2lSbpLa+BE9LdtTZnOw2WK0Z27HR99wUpn4=
+X-Received: by 2002:a2e:98d7:: with SMTP id s23mr2376050ljj.2.1592339842579;
+ Tue, 16 Jun 2020 13:37:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEJqkgi3w+zvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com>
+References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
+ <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
+ <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com> <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
+In-Reply-To: <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 16 Jun 2020 13:37:11 -0700
+Message-ID: <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:11:46PM +0200, Gabriel C wrote:
-> * Am So., 14. Juni 2020 um 22:44 Uhr schrieb Linus Torvalds
-> <torvalds@linux-foundation.org>:
-> 
-> Hello,
-> 
-> > So I didn't really expect this, but 5.8 looks to be one of our biggest
-> > releases of all time.
+On Tue, Jun 16, 2020 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> 
-> I hit a compiler error caused by e4160b2e4b02377c67f8ecd05786811598f39acd.
-> 
-> x86/purgatory: Fail the build if purgatory.ro has missing symbols
-> 
-> Having CONFIG_STACKPROTECTOR* & CONFIG_KEXEC_FILE enabled always
-> results in a linking error like this:
-> 
-> LD      arch/x86/purgatory/purgatory.chk
-> ld: arch/x86/purgatory/purgatory.ro: in function `verify_sha256_digest':
-> purgatory.c:(.text+0x108): undefined reference to `__stack_chk_fail'
-> ld: arch/x86/purgatory/purgatory.ro: in function `sha256_transform':
-> sha256.c:(.text+0x1c74): undefined reference to `__stack_chk_fail'
-> ld: arch/x86/purgatory/purgatory.ro: in function `__sha256_final':
-> sha256.c:(.text+0x1e65): undefined reference to `__stack_chk_fail'
-> ld: arch/x86/purgatory/purgatory.ro: in function `_kstrtoull':
-> string.c:(.text+0x2107): undefined reference to `__stack_chk_fail'
-> 
-> I didn't look closer at that but from the error, it seems to be,
-> some missing -fstack-protector* vs -fno-stack-protector* checks
-> somewhere.
-> 
-> 
-> Best Regards,
-> 
-> Gabriel C
+> > On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > > >
+> > > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
+> > > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
+> > > > >
+> > > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
+> > > > > ---
+> > > > >  kernel/bpf/net_namespace.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+> > > > > index 78cf061f8179..56133e78ae4f 100644
+> > > > > --- a/kernel/bpf/net_namespace.c
+> > > > > +++ b/kernel/bpf/net_namespace.c
+> > > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > > > >         struct net *net;
+> > > > >         int ret;
+> > > > >
+> > > > > +       if (attr->attach_flags || attr->target_fd)
+> > > > > +               return -EINVAL;
+> > > > > +
+> > > >
+> > > > In theory it makes sense, but how did you test it?
+> > >
+> > > Not properly it seems, sorry!
+> > >
+> > > > test_progs -t flow
+> > > > fails 5 tests.
+> > >
+> > > I spent today digging through this, and the issue is actually more annoying than
+> > > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
+> > > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
+> > > program being detached is actually what user space expects. We actually have
+> > > tests that set attach_bpf_fd for these to attach points, which tells
+> > > me that this is
+> > > an easy mistake to make.
+> > >
+> > > Unfortunately I can't come up with a good fix that seems backportable:
+> > > - Making sockmap and flow_dissector have the same semantics as cgroup
+> > >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
+> >
+> > making flow dissector pass prog_fd as cg and lirc is certainly my preference.
+> > Especially since tests are passing fd user code is likely doing the same,
+> > so breakage is unlikely. Also it wasn't done that long ago, so
+> > we can backport far enough.
+> > It will remove cap_net_admin ugly check in bpf_prog_detach()
+> > which is the only exception now in cap model.
+>
+> SGTM. What about sockmap though? The code for that has been around for ages.
 
-Can you attach the output of gcc -dumpspecs and gcc -v? I suspect your
-compiler enables stack protector by default. My distro compiler does
-that too, but not if -ffreestanding is enabled (which it is for the
-purgatory).
+you mean the second patch that enforces sock_map_get_from_fd doesn't
+use attach_flags?
+I think it didn't break anything, so enforcing is fine.
 
-Does this patch help?
+or the detach part that doesn't use prog_fd ?
+I'm not sure what's the best here.
+At least from cap perspective it's fine because map_fd is there.
 
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index b04e6e72a592..088bd764e0b7 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -34,6 +34,7 @@ KCOV_INSTRUMENT := n
- PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
- PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
- PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
-+PURGATORY_CFLAGS += $(call cc-option,-fno-stack-protector)
- 
- # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
- # in turn leaves some undefined symbols like __fentry__ in purgatory and not
+John, wdyt?
