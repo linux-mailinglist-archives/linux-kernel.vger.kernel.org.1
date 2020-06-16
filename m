@@ -2,120 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D27F1FBD0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8481FBD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 19:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731115AbgFPRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 13:32:58 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:40860 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730978AbgFPRc5 (ORCPT
+        id S1730600AbgFPRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 13:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728271AbgFPRck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 13:32:57 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id EE0E43C00BA;
-        Tue, 16 Jun 2020 19:32:54 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RkBGNM8CkM4J; Tue, 16 Jun 2020 19:32:48 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id EABF03C0022;
-        Tue, 16 Jun 2020 19:32:48 +0200 (CEST)
-Received: from vmlxhi-121.localdomain (10.72.92.132) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 16 Jun
- 2020 19:32:48 +0200
-From:   Michael Rodin <mrodin@de.adit-jv.com>
-To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Michael Rodin <mrodin@de.adit-jv.com>, <michael@rodin.online>,
-        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>,
-        Steve Longerbeam <steve_longerbeam@mentor.com>
-Subject: [PATCH] media: rcar-vin: Move media_device_register to async completion
-Date:   Tue, 16 Jun 2020 19:31:36 +0200
-Message-ID: <1592328696-84533-1-git-send-email-mrodin@de.adit-jv.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 16 Jun 2020 13:32:40 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F02C061573;
+        Tue, 16 Jun 2020 10:32:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id h5so21665664wrc.7;
+        Tue, 16 Jun 2020 10:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1/rWQhYqkKv3AA+tgURnEw8UDH0QpH1z730vDcNorC0=;
+        b=u/xL2YRB0FzdzPajA2xmnWxbOTOw2G3go/1daObGY0IJIUSScLcGbBdin4iNgSuX9e
+         Jva4FgeQ1lQJn6GMzSo4FRMjnl95o92wHKgTouK7wOUbuFZEeVauKhH+KhJQBO5fB/39
+         GpbAdv+IweWl2azYR/uQlzPlXMfjoes+jbuxv7rOWQtpPjypRf10RnuwJsUVUJ4aVUzu
+         j6VJBsr5DjJB76bl0s61OH8YfBZkYthVTnobJKNfxxMQi7cxqZCajszGy8jesnGi9rNK
+         Ui4FflTZQTtT+7CrC74aEoSy4AkYTZ6ryjENBQmSN7Fzt9FbwunIRNKZTaB1cD77b7rA
+         2jQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1/rWQhYqkKv3AA+tgURnEw8UDH0QpH1z730vDcNorC0=;
+        b=dc6Howsieh08+FxmmCBEcZZiRgCI4bfL5J7PdfJ1/a4/t+bDWX8f23kaArTQzJDTyQ
+         te82bx1+vaHQx753wcGnLa5UTIU9GuNMOe0qNUvjUKv6Tzj0u7NtRVGpN9t0puu81M1X
+         Hb38t+7DeDeLzLnb3MNImUjHD3QFxLitV/7blIvibz8/9Jxya4hGqgiC7zcmhaSm5vfg
+         D1nLssyDHcclYyTZRT4JOiGE54GOwX/UNt3uK9qSRCZlM6BkXJnxk0Bk71ruYxIEVF64
+         ph0ULEv0yvdeUKeFHR/HWRajks1c8yPinVLHMLjfKcmFxfUPG6wUnMOd6J3YhLcj4eMr
+         RYwg==
+X-Gm-Message-State: AOAM532SsT2KbvMJ87bCK7cU7ZeGwN0KLRkHSzHvUJIyrQwrPm2XqiIb
+        Od+zlSFFX5hZ3myhAqOrExoFR7HuPVE=
+X-Google-Smtp-Source: ABdhPJyLeoPqvD4+LxPE8fop2SvP4lmtgPFmNzRCmlzyHx4LIzbvjTK3qbGPiobkMsX74O3NXPiqkA==
+X-Received: by 2002:adf:e84e:: with SMTP id d14mr4046243wrn.31.1592328758604;
+        Tue, 16 Jun 2020 10:32:38 -0700 (PDT)
+Received: from skynet.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
+        by smtp.gmail.com with ESMTPSA id f16sm5014402wmh.27.2020.06.16.10.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 10:32:38 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     broonie@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v4 0/2] spi: bcm63xx: add BMIPS support
+Date:   Tue, 16 Jun 2020 19:32:33 +0200
+Message-Id: <20200616173235.3473149-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.92.132]
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve Longerbeam <steve_longerbeam@mentor.com>
+BCM63xx SPI and HSSPI controller are present on several BMIPS SoCs (BCM6318,
+BCM6328, BCM6358, BCM6362, BCM6368 and BCM63268).
 
-The media_device is registered during driver probe, before async
-completion, so it is possible for .link_notify to be called before
-all devices are bound.
+v4: simplify devm_reset_control_get_optional_exclusive return handling
+v3: use devm_reset_control_get_optional_exclusive
+v2: use devm_reset_control_get_exclusive
 
-Fix this by moving media_device_register() to rvin_group_notify_complete().
-This ensures that all devices are now bound (the rcar-csi2 subdevices and
-and video capture devices) before .link_notify can be called.
+Álvaro Fernández Rojas (2):
+  spi: bcm63xx-spi: add reset support
+  spi: bcm63xx-hsspi: add reset support
 
-Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
-Signed-off-by: Michael Rodin <mrodin@de.adit-jv.com>
----
- drivers/media/platform/rcar-vin/rcar-core.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/spi/spi-bcm63xx-hsspi.c | 12 ++++++++++++
+ drivers/spi/spi-bcm63xx.c       | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
-index 7440c89..e70f83b 100644
---- a/drivers/media/platform/rcar-vin/rcar-core.c
-+++ b/drivers/media/platform/rcar-vin/rcar-core.c
-@@ -253,7 +253,6 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
- 	struct media_device *mdev = &group->mdev;
- 	const struct of_device_id *match;
- 	struct device_node *np;
--	int ret;
- 
- 	mutex_init(&group->lock);
- 
-@@ -266,7 +265,6 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
- 	vin_dbg(vin, "found %u enabled VIN's in DT", group->count);
- 
- 	mdev->dev = vin->dev;
--	mdev->ops = &rvin_media_ops;
- 
- 	match = of_match_node(vin->dev->driver->of_match_table,
- 			      vin->dev->of_node);
-@@ -278,11 +276,7 @@ static int rvin_group_init(struct rvin_group *group, struct rvin_dev *vin)
- 
- 	media_device_init(mdev);
- 
--	ret = media_device_register(&group->mdev);
--	if (ret)
--		rvin_group_cleanup(group);
--
--	return ret;
-+	return 0;
- }
- 
- static void rvin_group_release(struct kref *kref)
-@@ -688,6 +682,8 @@ static int rvin_group_notify_complete(struct v4l2_async_notifier *notifier)
- 		return ret;
- 	}
- 
-+	vin->group->mdev.ops = &rvin_media_ops;
-+
- 	/* Register all video nodes for the group. */
- 	for (i = 0; i < RCAR_VIN_NUM; i++) {
- 		if (vin->group->vin[i] &&
-@@ -736,8 +732,10 @@ static int rvin_group_notify_complete(struct v4l2_async_notifier *notifier)
- 		}
- 	}
- 	mutex_unlock(&vin->group->lock);
-+	if (ret)
-+		return ret;
- 
--	return ret;
-+	return media_device_register(&vin->group->mdev);
- }
- 
- static void rvin_group_notify_unbind(struct v4l2_async_notifier *notifier,
 -- 
-2.7.4
+2.27.0
 
