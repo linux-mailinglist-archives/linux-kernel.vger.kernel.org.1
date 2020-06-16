@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDE61FB77F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F3E1FB83F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732242AbgFPPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
+        id S1732723AbgFPPyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732230AbgFPPqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:50 -0400
+        id S1732976AbgFPPyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:54:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48C3220E65;
-        Tue, 16 Jun 2020 15:46:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF59B21527;
+        Tue, 16 Jun 2020 15:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322409;
-        bh=nGMpzdufhyG1R9GMDA0h4SH+Am4sZjqYSzjxJP4ZUdg=;
+        s=default; t=1592322861;
+        bh=YR/fSLWDjp0B1QXPz2q4LAXzdeAvXobe2DK1zXxuYRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mJxBrgi3M+FLLbhAOqEcqUVeiGujDV0FO2iIPNBzCnbQihngpvfcYvXrLpm4vsUbe
-         d8rCF5D79A7p7Y63u+6WBzlramjrOCieaYLgFrSnIpgNt9zl19GgQ83sEvGWmxbyo+
-         otzip3+4uBbZHCsOAuL9hlH0Sub1eQoe/61wGj+g=
+        b=zfU1Gy3sELiJ1rZ77uZRpWLZLmkROD2IxxX99o7gSbSTT6RwK6QGzrkmVyUKFUa/N
+         uYuf7uTnVhOvCTOen6A5Hp1i3SpD3rDkip6Jcpa046kSE/N9MZiWPG9H4yN2lq4Mfl
+         KEMgDau4KD/nQf5mlhx1h14kM+6EiwLrcrFkpO2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.7 119/163] proc: Use new_inode not new_inode_pseudo
+        stable@vger.kernel.org, Jue Wang <juew@google.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.6 103/161] x86/{mce,mm}: Unmap the entire page if the whole page is affected and poisoned
 Date:   Tue, 16 Jun 2020 17:34:53 +0200
-Message-Id: <20200616153112.507267988@linuxfoundation.org>
+Message-Id: <20200616153111.265371886@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,83 +44,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Tony Luck <tony.luck@intel.com>
 
-commit ef1548adada51a2f32ed7faef50aa465e1b4c5da upstream.
+commit 17fae1294ad9d711b2c3dd0edef479d40c76a5e8 upstream.
 
-Recently syzbot reported that unmounting proc when there is an ongoing
-inotify watch on the root directory of proc could result in a use
-after free when the watch is removed after the unmount of proc
-when the watcher exits.
+An interesting thing happened when a guest Linux instance took a machine
+check. The VMM unmapped the bad page from guest physical space and
+passed the machine check to the guest.
 
-Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
-of proc") made it easier to unmount proc and allowed syzbot to see the
-problem, but looking at the code it has been around for a long time.
+Linux took all the normal actions to offline the page from the process
+that was using it. But then guest Linux crashed because it said there
+was a second machine check inside the kernel with this stack trace:
 
-Looking at the code the fsnotify watch should have been removed by
-fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
-was allocated with new_inode_pseudo instead of new_inode so the inode
-was not on the sb->s_inodes list.  Which prevented
-fsnotify_unmount_inodes from finding the inode and removing the watch
-as well as made it so the "VFS: Busy inodes after unmount" warning
-could not find the inodes to warn about them.
+do_memory_failure
+    set_mce_nospec
+         set_memory_uc
+              _set_memory_uc
+                   change_page_attr_set_clr
+                        cpa_flush
+                             clflush_cache_range_opt
 
-Make all of the inodes in proc visible to generic_shutdown_super,
-and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
-The only functional difference is that new_inode places the inodes
-on the sb->s_inodes list.
+This was odd, because a CLFLUSH instruction shouldn't raise a machine
+check (it isn't consuming the data). Further investigation showed that
+the VMM had passed in another machine check because is appeared that the
+guest was accessing the bad page.
 
-I wrote a small test program and I can verify that without changes it
-can trigger this issue, and by replacing new_inode_pseudo with
-new_inode the issues goes away.
+Fix is to check the scope of the poison by checking the MCi_MISC register.
+If the entire page is affected, then unmap the page. If only part of the
+page is affected, then mark the page as uncacheable.
 
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
-Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
-Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
-Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
-Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+This assumes that VMMs will do the logical thing and pass in the "whole
+page scope" via the MCi_MISC register (since they unmapped the entire
+page).
+
+  [ bp: Adjust to x86/entry changes. ]
+
+Fixes: 284ce4011ba6 ("x86/memory_failure: Introduce {set, clear}_mce_nospec()")
+Reported-by: Jue Wang <juew@google.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Jue Wang <juew@google.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200520163546.GA7977@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/proc/inode.c       |    2 +-
- fs/proc/self.c        |    2 +-
- fs/proc/thread_self.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/set_memory.h |   19 +++++++++++++------
+ arch/x86/kernel/cpu/mce/core.c    |   11 +++++++++--
+ include/linux/set_memory.h        |    2 +-
+ 3 files changed, 23 insertions(+), 9 deletions(-)
 
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -599,7 +599,7 @@ const struct inode_operations proc_link_
+--- a/arch/x86/include/asm/set_memory.h
++++ b/arch/x86/include/asm/set_memory.h
+@@ -83,28 +83,35 @@ int set_direct_map_default_noflush(struc
+ extern int kernel_set_to_readonly;
  
- struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
+ #ifdef CONFIG_X86_64
+-static inline int set_mce_nospec(unsigned long pfn)
++/*
++ * Prevent speculative access to the page by either unmapping
++ * it (if we do not require access to any part of the page) or
++ * marking it uncacheable (if we want to try to retrieve data
++ * from non-poisoned lines in the page).
++ */
++static inline int set_mce_nospec(unsigned long pfn, bool unmap)
  {
--	struct inode *inode = new_inode_pseudo(sb);
-+	struct inode *inode = new_inode(sb);
+ 	unsigned long decoy_addr;
+ 	int rc;
  
- 	if (inode) {
- 		inode->i_ino = de->low_ino;
---- a/fs/proc/self.c
-+++ b/fs/proc/self.c
-@@ -43,7 +43,7 @@ int proc_setup_self(struct super_block *
- 	inode_lock(root_inode);
- 	self = d_alloc_name(s->s_root, "self");
- 	if (self) {
--		struct inode *inode = new_inode_pseudo(s);
-+		struct inode *inode = new_inode(s);
- 		if (inode) {
- 			inode->i_ino = self_inum;
- 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
---- a/fs/proc/thread_self.c
-+++ b/fs/proc/thread_self.c
-@@ -43,7 +43,7 @@ int proc_setup_thread_self(struct super_
- 	inode_lock(root_inode);
- 	thread_self = d_alloc_name(s->s_root, "thread-self");
- 	if (thread_self) {
--		struct inode *inode = new_inode_pseudo(s);
-+		struct inode *inode = new_inode(s);
- 		if (inode) {
- 			inode->i_ino = thread_self_inum;
- 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+ 	/*
+-	 * Mark the linear address as UC to make sure we don't log more
+-	 * errors because of speculative access to the page.
+ 	 * We would like to just call:
+-	 *      set_memory_uc((unsigned long)pfn_to_kaddr(pfn), 1);
++	 *      set_memory_XX((unsigned long)pfn_to_kaddr(pfn), 1);
+ 	 * but doing that would radically increase the odds of a
+ 	 * speculative access to the poison page because we'd have
+ 	 * the virtual address of the kernel 1:1 mapping sitting
+ 	 * around in registers.
+ 	 * Instead we get tricky.  We create a non-canonical address
+ 	 * that looks just like the one we want, but has bit 63 flipped.
+-	 * This relies on set_memory_uc() properly sanitizing any __pa()
++	 * This relies on set_memory_XX() properly sanitizing any __pa()
+ 	 * results with __PHYSICAL_MASK or PTE_PFN_MASK.
+ 	 */
+ 	decoy_addr = (pfn << PAGE_SHIFT) + (PAGE_OFFSET ^ BIT(63));
+ 
+-	rc = set_memory_uc(decoy_addr, 1);
++	if (unmap)
++		rc = set_memory_np(decoy_addr, 1);
++	else
++		rc = set_memory_uc(decoy_addr, 1);
+ 	if (rc)
+ 		pr_warn("Could not invalidate pfn=0x%lx from 1:1 map\n", pfn);
+ 	return rc;
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -527,6 +527,13 @@ bool mce_is_memory_error(struct mce *m)
+ }
+ EXPORT_SYMBOL_GPL(mce_is_memory_error);
+ 
++static bool whole_page(struct mce *m)
++{
++	if (!mca_cfg.ser || !(m->status & MCI_STATUS_MISCV))
++		return true;
++	return MCI_MISC_ADDR_LSB(m->misc) >= PAGE_SHIFT;
++}
++
+ bool mce_is_correctable(struct mce *m)
+ {
+ 	if (m->cpuvendor == X86_VENDOR_AMD && m->status & MCI_STATUS_DEFERRED)
+@@ -598,7 +605,7 @@ static int uc_decode_notifier(struct not
+ 
+ 	pfn = mce->addr >> PAGE_SHIFT;
+ 	if (!memory_failure(pfn, 0))
+-		set_mce_nospec(pfn);
++		set_mce_nospec(pfn, whole_page(mce));
+ 
+ 	return NOTIFY_OK;
+ }
+@@ -1096,7 +1103,7 @@ static int do_memory_failure(struct mce
+ 	if (ret)
+ 		pr_err("Memory error not recovered");
+ 	else
+-		set_mce_nospec(m->addr >> PAGE_SHIFT);
++		set_mce_nospec(m->addr >> PAGE_SHIFT, whole_page(m));
+ 	return ret;
+ }
+ 
+--- a/include/linux/set_memory.h
++++ b/include/linux/set_memory.h
+@@ -26,7 +26,7 @@ static inline int set_direct_map_default
+ #endif
+ 
+ #ifndef set_mce_nospec
+-static inline int set_mce_nospec(unsigned long pfn)
++static inline int set_mce_nospec(unsigned long pfn, bool unmap)
+ {
+ 	return 0;
+ }
 
 
