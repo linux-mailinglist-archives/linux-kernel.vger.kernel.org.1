@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3206C1FBB15
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CDC1FB912
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732224AbgFPQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54102 "EHLO mail.kernel.org"
+        id S1732959AbgFPQA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730235AbgFPPkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:01 -0400
+        id S1732792AbgFPPwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:52:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64D5B2151B;
-        Tue, 16 Jun 2020 15:40:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37CBD207C4;
+        Tue, 16 Jun 2020 15:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322000;
-        bh=A9MywORo5DzhV7UiSGjj7qcOeGCCpNhsfllbrSIvsZ0=;
+        s=default; t=1592322758;
+        bh=lMiw6z8M6Tmg7XUhbTCh6hOdFxHhL1CBBaI7l7SKsZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xh/6mFD7vNZlXaxHhJwep49E7osEzDcJbjJYowdXO5TGhMSYvj9Pp2pO7B94OX6zz
-         PBcjpV5ysJJ1HSbqL2MImR8xa4Zz6sUNsseW3szdUn4oQYhT6Xx7ayBzPqSeJQxyUd
-         VD3Ml5T5tCw8mHvc4NbwDIK8xzKUlrDoXMukzyQU=
+        b=HEW1g9n2pix0dhXmy4ZZ9Em5zYDA6XzzxdVNjE6DeLrUOciBkdYsbT1i2VulpvPvi
+         +LOQLUtxWwToTNwihuDUknhYcn2Kt/hWySr5NrFLCKrgVZJBdYJUubnrn1ND65uNiI
+         BfvedPshWtkv9MUDx+MIVWaE3j4m998At8ThC3Ic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 097/134] remoteproc: Fix and restore the parenting hierarchy for vdev
-Date:   Tue, 16 Jun 2020 17:34:41 +0200
-Message-Id: <20200616153105.428551223@linuxfoundation.org>
+        stable@vger.kernel.org, Justin Chen <justinpopo6@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 092/161] spi: bcm-qspi: when tx/rx buffer is NULL set to 0
+Date:   Tue, 16 Jun 2020 17:34:42 +0200
+Message-Id: <20200616153110.760822504@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+From: Justin Chen <justinpopo6@gmail.com>
 
-commit c774ad010873bb89dcc0cdcb1e96aef6664d8caf upstream.
+commit 4df3bea7f9d2ddd9ac2c29ba945c7c4db2def29c upstream.
 
-The commit 086d08725d34 ("remoteproc: create vdev subdevice with specific
-dma memory pool") has introduced a new vdev subdevice for each vdev
-declared in the firmware resource table and made it as the parent for the
-created virtio rpmsg devices instead of the previous remoteproc device.
-This changed the overall parenting hierarchy for the rpmsg devices, which
-were children of virtio devices, and does not allow the corresponding
-rpmsg drivers to retrieve the parent rproc device through the
-rproc_get_by_child() API.
+Currently we set the tx/rx buffer to 0xff when NULL. This causes
+problems with some spi slaves where 0xff is a valid command. Looking
+at other drivers, the tx/rx buffer is usually set to 0x00 when NULL.
+Following this convention solves the issue.
 
-Fix this by restoring the remoteproc device as the parent. The new vdev
-subdevice can continue to inherit the DMA attributes from the remoteproc's
-parent device (actual platform device).
-
+Fixes: fa236a7ef240 ("spi: bcm-qspi: Add Broadcom MSPI driver")
+Signed-off-by: Justin Chen <justinpopo6@gmail.com>
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 Cc: stable@vger.kernel.org
-Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Link: https://lore.kernel.org/r/20200420160600.10467-3-s-anna@ti.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20200420190853.45614-6-kdasu.kdev@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/remoteproc_core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-bcm-qspi.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -511,7 +511,7 @@ static int rproc_handle_vdev(struct rpro
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -670,7 +670,7 @@ static void read_from_hw(struct bcm_qspi
+ 			if (buf)
+ 				buf[tp.byte] = read_rxram_slot_u8(qspi, slot);
+ 			dev_dbg(&qspi->pdev->dev, "RD %02x\n",
+-				buf ? buf[tp.byte] : 0xff);
++				buf ? buf[tp.byte] : 0x0);
+ 		} else {
+ 			u16 *buf = tp.trans->rx_buf;
  
- 	/* Initialise vdev subdevice */
- 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
--	rvdev->dev.parent = rproc->dev.parent;
-+	rvdev->dev.parent = &rproc->dev;
- 	rvdev->dev.dma_pfn_offset = rproc->dev.parent->dma_pfn_offset;
- 	rvdev->dev.release = rproc_rvdev_release;
- 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+@@ -678,7 +678,7 @@ static void read_from_hw(struct bcm_qspi
+ 				buf[tp.byte / 2] = read_rxram_slot_u16(qspi,
+ 								      slot);
+ 			dev_dbg(&qspi->pdev->dev, "RD %04x\n",
+-				buf ? buf[tp.byte] : 0xffff);
++				buf ? buf[tp.byte / 2] : 0x0);
+ 		}
+ 
+ 		update_qspi_trans_byte_count(qspi, &tp,
+@@ -733,13 +733,13 @@ static int write_to_hw(struct bcm_qspi *
+ 	while (!tstatus && slot < MSPI_NUM_CDRAM) {
+ 		if (tp.trans->bits_per_word <= 8) {
+ 			const u8 *buf = tp.trans->tx_buf;
+-			u8 val = buf ? buf[tp.byte] : 0xff;
++			u8 val = buf ? buf[tp.byte] : 0x00;
+ 
+ 			write_txram_slot_u8(qspi, slot, val);
+ 			dev_dbg(&qspi->pdev->dev, "WR %02x\n", val);
+ 		} else {
+ 			const u16 *buf = tp.trans->tx_buf;
+-			u16 val = buf ? buf[tp.byte / 2] : 0xffff;
++			u16 val = buf ? buf[tp.byte / 2] : 0x0000;
+ 
+ 			write_txram_slot_u16(qspi, slot, val);
+ 			dev_dbg(&qspi->pdev->dev, "WR %04x\n", val);
 
 
