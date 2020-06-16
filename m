@@ -2,259 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDA81FBEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E347E1FBF00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 21:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730783AbgFPTZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 15:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
+        id S1731019AbgFPT2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 15:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729989AbgFPTZd (ORCPT
+        with ESMTP id S1730955AbgFPT2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:25:33 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22A0C061573;
-        Tue, 16 Jun 2020 12:25:33 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n11so20361918qkn.8;
-        Tue, 16 Jun 2020 12:25:33 -0700 (PDT)
+        Tue, 16 Jun 2020 15:28:16 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EC0C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 12:28:15 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e4so24996908ljn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 12:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QqyZv/AEdfRFWYzawxZF77n0qsAqhj2SZG0Xirc3F4g=;
-        b=SlZMq6uWhZJNfx5IyN2PbbrAVNA3s239SAI5d9jkZdVUMarGb9AydgvqEup8B2A3Kv
-         6C2+fKosPUP9rnyCUmoQFLu2MQEukMr8xIoMNOpRjeSRX7d0t1k+tcbdjJ9ZI76Lyw66
-         yzMsuW2uGGoTEPe0X8KwFpbvbHxMa0fVIRgztMWFToTtXsAUveB4i+G+KCJY94hMLVzI
-         3WPRfyu6Zrkhi7RwDn69SEaPFst0t6In1AwSSEtcuFnppsf8GIzeEM5xZoo+58vj1LTG
-         +nPPpxzCCnszzda4rrwf7kzclvelK3IFhdJOpKqNpv8l5IaKfDpESlQehljuB/4Ot68L
-         L2og==
+        bh=G+QuAOUfD+yaHMOx7JS6V2Ec/laXvrlFy0R9vzQGqF4=;
+        b=QOMab6ZBai8eX39llL4QAiuIVWOQ0kfvL9ywteJNjgzhCzjyOqdlLEs34RuWRfNLLY
+         UBmJ+sjmxHSY9KClbzPYRcmHfIbDr3RgcQIUrbh/HgB4x65p5TjwXtES2J8FIy5PzqLb
+         qNhgVYP39gDxMPl9bQhhUq4S3zMv9UfF/pmETt8VJF4G41Qcz/1zK2PnlCpJF0fz/S6h
+         PxHy+BSAWFuylkqNZeMw7xFvJ8qR/7v1dKWfEPia1fKfpNNvfy691K7fCJ3W9iR5AH/V
+         gFeKsPsrdm5Ge3TmLS1y0qxW2m4XjgJOTWFoy9c831CRjVEIM34ATLROHfUGg4Z8jDHa
+         f9Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QqyZv/AEdfRFWYzawxZF77n0qsAqhj2SZG0Xirc3F4g=;
-        b=KODnZquGmr8AcX59yrwTziv7IK6PplZAoGHgctzYLrFrtxaWNlAPa8cpyTivS9K+gt
-         FVclpIF/8rg6WEIB9TyE3z78Bi3w9S+2RcxU+xTZx9VvzX5tcvdaRXXa65y2PVYu8ulW
-         HS6LdRlskFDRFWSILIk2OtcF4RSWo6stHDbZjBZ0e0TPAo1ClqUIsiQrcsVaYuYKHyIR
-         5j+x0teke2/eDR6j5qC7ilYTE2SLxDjWiQdbRRdnhNqwDNamfFh6bMEssfOSsNv0D+MQ
-         T8iTQT/EcMri5JPPvkaA6hymcU32yBKWZe9pb4tpm4vDVeu0GlELguZh1FOQ2giezOvA
-         TjXw==
-X-Gm-Message-State: AOAM5324Q1TyE/ztLfOgBB7ykonjFnsTrgb3GluCGszVI64WzKjDPKZT
-        alQAP+6KxokDGSqWdbZJmvvGSCPPGb0fqu/M1ueWRjVo
-X-Google-Smtp-Source: ABdhPJx5AGwWzB3aiMX4WTsIXceaI2A1twdPvo2n9uInGG+Q3VUgoPtIjaIzbEhof6k4y6WR3RS8wGMEdirPbReQ0HI=
-X-Received: by 2002:a37:d0b:: with SMTP id 11mr23186679qkn.449.1592335532792;
- Tue, 16 Jun 2020 12:25:32 -0700 (PDT)
+        bh=G+QuAOUfD+yaHMOx7JS6V2Ec/laXvrlFy0R9vzQGqF4=;
+        b=pYDCnw8GGlNNxayv6F1FnjFZdcT7FNw2N+eM47Tah7NFQ7/hY+tOam0gkC4xh/eMIh
+         7ngMzHOUOSkY/TYfLfgD0MF7jzdRRSAfwNNRmqU57sQiTmCiq5sbcvuHdvj/RDICowV8
+         j50oyWByaI4qKrPHbmp85O5dabPgolD1WBq+QtZCfm53ZAwz+AtXm6NJzGulEsU8Dq5R
+         6Jlr2Q3RyhfITW+SQqGgJgIT2Ua5CsMv50EgcAx7GkEBGMkdbaVpT1/jdvzSgxebeQmM
+         GkoPfayZZ1BEhMcZixMtbpvIDIe3MW1U3KW2MrRDV8aR8sgcIqjFfREagSBPq5veTg/R
+         R2kA==
+X-Gm-Message-State: AOAM533QZW8rjmNTMKFn1x1JZZ0c5hAv74n9P0+9FILA4quFSXPqCLak
+        KhGZ20ERNaimNzZ3nEFnOwKGfO5B2Rag8tXzhGVfkw==
+X-Google-Smtp-Source: ABdhPJx83rVoJ1GBvQYrxBN8PD8VfhKiX7Lt1xY67EOoosPeSf9MmyLDKhdSIeUD5mQ+yLl+8Gvp2zP5Y6zZkNEG/uk=
+X-Received: by 2002:a2e:908f:: with SMTP id l15mr1993656ljg.307.1592335693925;
+ Tue, 16 Jun 2020 12:28:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-5-kpsingh@chromium.org>
- <CAEf4BzY0=Hh3O6qeD=2sMWpQRpHpizxH+nEA0hD0khPf3VAbhA@mail.gmail.com> <20200616155433.GA11971@google.com>
-In-Reply-To: <20200616155433.GA11971@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Jun 2020 12:25:21 -0700
-Message-ID: <CAEf4BzZm86BQqhfVHfm7aKvwK-UXC7679DsJe8xQqYR8eUUwAQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] bpf: Add selftests for local_storage
-To:     KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
+References: <20200616011742.138975-1-rajatja@google.com> <20200616011742.138975-4-rajatja@google.com>
+ <20200616073249.GB30385@infradead.org>
+In-Reply-To: <20200616073249.GB30385@infradead.org>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 16 Jun 2020 12:27:35 -0700
+Message-ID: <CACK8Z6ELaM8KxbwPor=BUquWN7pALQmmHu5geSOc71P3KoJ1QA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] pci: export untrusted attribute in sysfs
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-acpi@vger.kernel.org, Raj Ashok <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 8:54 AM KP Singh <kpsingh@chromium.org> wrote:
+On Tue, Jun 16, 2020 at 12:32 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> On 01-Jun 13:29, Andrii Nakryiko wrote:
-> > On Tue, May 26, 2020 at 9:34 AM KP Singh <kpsingh@chromium.org> wrote:
-> > >
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > inode_local_storage:
-> > >
-> > > * Hook to the file_open and inode_unlink LSM hooks.
-> > > * Create and unlink a temporary file.
-> > > * Store some information in the inode's bpf_local_storage during
-> > >   file_open.
-> > > * Verify that this information exists when the file is unlinked.
-> > >
-> > > sk_local_storage:
-> > >
-> > > * Hook to the socket_post_create and socket_bind LSM hooks.
-> > > * Open and bind a socket and set the sk_storage in the
-> > >   socket_post_create hook using the start_server helper.
-> > > * Verify if the information is set in the socket_bind hook.
-> > >
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > > ---
-> > >  .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
-> > >  .../selftests/bpf/progs/local_storage.c       | 139 ++++++++++++++++++
-> > >  2 files changed, 199 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-> > >
-> >
-> > [...]
-> >
-> > > +struct dummy_storage {
-> > > +       __u32 value;
-> > > +};
-> > > +
-> > > +struct {
-> > > +       __uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-> > > +       __uint(map_flags, BPF_F_NO_PREALLOC);
-> > > +       __type(key, int);
-> > > +       __type(value, struct dummy_storage);
-> > > +} inode_storage_map SEC(".maps");
-> > > +
-> > > +struct {
-> > > +       __uint(type, BPF_MAP_TYPE_SK_STORAGE);
-> > > +       __uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-> > > +       __type(key, int);
-> > > +       __type(value, struct dummy_storage);
-> > > +} sk_storage_map SEC(".maps");
-> > > +
-> > > +/* Using vmlinux.h causes the generated BTF to be so big that the object
-> > > + * load fails at btf__load.
-> > > + */
-> >
-> > That's first time I hear about such issue. Do you have an error log
-> > from verifier?
+> On Mon, Jun 15, 2020 at 06:17:42PM -0700, Rajat Jain via iommu wrote:
+> > This is needed to allow the userspace to determine when an untrusted
+> > device has been added, and thus allowing it to bind the driver manually
+> > to it, if it so wishes. This is being done as part of the approach
+> > discussed at https://lkml.org/lkml/2020/6/9/1331
 >
-> Here's what I get when I do the following change.
->
-> --- a/tools/testing/selftests/bpf/progs/local_storage.c
-> +++ b/tools/testing/selftests/bpf/progs/local_storage.c
-> @@ -4,8 +4,8 @@
->   * Copyright 2020 Google LLC.
->   */
->
-> +#include "vmlinux.h"
->  #include <errno.h>
-> -#include <linux/bpf.h>
->  #include <stdbool.h>
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> @@ -37,24 +37,6 @@ struct {
->         __type(value, struct dummy_storage);
->  } sk_storage_map SEC(".maps");
->
-> -/* Using vmlinux.h causes the generated BTF to be so big that the object
-> - * load fails at btf__load.
-> - */
-> -struct sock {} __attribute__((preserve_access_index));
-> -struct sockaddr {} __attribute__((preserve_access_index));
-> -struct socket {
-> -       struct sock *sk;
-> -} __attribute__((preserve_access_index));
-> -
-> -struct inode {} __attribute__((preserve_access_index));
-> -struct dentry {
-> -       struct inode *d_inode;
-> -} __attribute__((preserve_access_index));
-> -struct file {
-> -       struct inode *f_inode;
-> -} __attribute__((preserve_access_index));
->
-> ./test_progs -t test_local_storage
-> libbpf: Error loading BTF: Invalid argument(22)
-> libbpf: magic: 0xeb9f
-> version: 1
-> flags: 0x0
-> hdr_len: 24
-> type_off: 0
-> type_len: 4488
-> str_off: 4488
-> str_len: 3012
-> btf_total_size: 7524
->
-> [1] STRUCT (anon) size=32 vlen=4
->         type type_id=2 bits_offset=0
->         map_flags type_id=6 bits_offset=64
->         key type_id=8 bits_offset=128
->         value type_id=9 bits_offset=192
-> [2] PTR (anon) type_id=4
-> [3] INT int size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> [4] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=28
-> [5] INT __ARRAY_SIZE_TYPE__ size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> [6] PTR (anon) type_id=7
-> [7] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=1
-> [8] PTR (anon) type_id=3
-> [9] PTR (anon) type_id=10
-> [10] STRUCT dummy_storage size=4 vlen=1
->         value type_id=11 bits_offset=0
-> [11] TYPEDEF __u32 type_id=12
->
->   [... More BTF Dump ...]
->
-> [91] TYPEDEF wait_queue_head_t type_id=175
->
->   [... More BTF Dump ...]
->
-> [173] FWD super_block struct
-> [174] FWD vfsmount struct
-> [175] FWD wait_queue_head struct
-> [106] STRUCT socket_wq size=128 vlen=4
->         wait type_id=91 bits_offset=0 Invalid member
->
-> libbpf: Error loading .BTF into kernel: -22.
-> libbpf: map 'inode_storage_map': failed to create: Invalid argument(-22)
-> libbpf: failed to load object 'local_storage'
-> libbpf: failed to load BPF skeleton 'local_storage': -22
-> test_test_local_storage:FAIL:skel_load lsm skeleton failed
-> #81 test_local_storage:FAIL
->
-> The failiure is in:
->
-> [106] STRUCT socket_wq size=128 vlen=4
->         wait type_id=91 bits_offset=0 Invalid member
->
-> >
-> > Clang is smart enough to trim down used types to only those that are
-> > actually necessary, so too big BTF shouldn't be a thing. But let's try
-> > to dig into this and fix whatever issue it is, before giving up :)
-> >
->
-> I was wrong about the size being an issue. The verifier thinks the BTF
-> is invalid and more specificially it thinks that the socket_wq's
-> member with type_id=91, i.e. typedef wait_queue_head_t is invalid. Am
-> I missing some toolchain patches?
->
+> Please move the attribute to struct device instead of further
+> entrenching it in PCIe.
 
-It is invalid BTF in the sense that we have a struct, embedding a
-struct, which is only defined as a forward declaration. There is not
-enough information and such situation would have caused compilation
-error, because it's impossible to determine the size of the outer
-struct.
+Need clarification. The flag "untrusted" is currently a part of
+pci_dev struct, and is populated within the PCI subsystem.
 
-Yonghong, it seems like Clang is pruning types too aggressively here?
-We should keep types that are embedded, even if they are not used
-directly by user code. Could you please take a look?
+1) Is your suggestion to move this flag as well as the attribute to
+device core (in "struct device")? This would allow other buses to
+populate/use this flag if they want. By default it'll be set to 0 for
+all devices (PCI subsystem will populate it based on platform info,
+like it does today).
 
+OR
 
+2) Are you suggesting to keep the "untrusted" flag within PCI, but
+attach the sysfs attribute to the base device? (&pci_dev->dev)?
 
-> - KP
->
->
-> > > +struct sock {} __attribute__((preserve_access_index));
-> > > +struct sockaddr {} __attribute__((preserve_access_index));
-> > > +struct socket {
-> > > +       struct sock *sk;
-> > > +} __attribute__((preserve_access_index));
-> > > +
-> > > +struct inode {} __attribute__((preserve_access_index));
-> > > +struct dentry {
-> > > +       struct inode *d_inode;
-> > > +} __attribute__((preserve_access_index));
-> > > +struct file {
-> > > +       struct inode *f_inode;
-> > > +} __attribute__((preserve_access_index));
-> > > +
-> > > +
-> >
-> > [...]
+Thanks,
+
+Rajat
+
+>  I'm starting to grow tired of saying this
+> every other week while you guys are all moving into the entirely
+> wrong direction.
