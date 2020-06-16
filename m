@@ -2,182 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6E31FB770
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CBE1FB80F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732178AbgFPPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:46:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5248 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732161AbgFPPqJ (ORCPT
+        id S1732781AbgFPPwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732589AbgFPPwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:09 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05GFjugD169906;
-        Tue, 16 Jun 2020 11:46:07 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31q0qj8mf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 11:46:06 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05GFk6n5170958;
-        Tue, 16 Jun 2020 11:46:06 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31q0qj8kwp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 11:46:04 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05GFLmTA022281;
-        Tue, 16 Jun 2020 15:45:20 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 31mpe7t92x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jun 2020 15:45:20 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05GFhx0458982700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jun 2020 15:44:00 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 478FC4204C;
-        Tue, 16 Jun 2020 15:45:17 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BAEA542042;
-        Tue, 16 Jun 2020 15:45:16 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.20.221])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Jun 2020 15:45:16 +0000 (GMT)
-Subject: Re: [PATCH v8 02/16] s390/vfio-ap: use new AP bus interface to search
- for queue devices
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com
-References: <20200605214004.14270-1-akrowiak@linux.ibm.com>
- <20200605214004.14270-3-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
- 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
- nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
-Message-ID: <93492fa3-31f1-a551-4b26-e46bc277e351@de.ibm.com>
-Date:   Tue, 16 Jun 2020 17:45:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 16 Jun 2020 11:52:17 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66E7C061573;
+        Tue, 16 Jun 2020 08:52:16 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id i1so4922679vkp.8;
+        Tue, 16 Jun 2020 08:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5tUwv8GZvt0tLegCth1XOp+6yS8yReQyRSOWrSBlQn4=;
+        b=fI4dElivqPDBIde5zHrPQYVfRHoecvaR5xo2tlpmaSvwEURd0T3CLTe89tX8Ov7VVD
+         pFh7Hu0POSS26z2glZ3JYCbowKhH5z7mjGkigZN/pcaPT2YYEurO7olee9W3e68oKtPx
+         nF5bVCcpSA+9cLGc6xJZ6b0221kLKp8a3gSIpJmBvM7lf34BvnKlD9UJMArax01JPeTd
+         rg2hy3AFr6C5NxGh/iBUQgibmY54+x5KUwnqUYHTXT3iuxvdOR4TRcoEil1s6Msr1bda
+         DnI2Fg9A4r/DFruzrO0GCxCU/5Lzs+ffQmEuQ/lcZ1GLu4UQQpv95sQqImrT5bt5+3fG
+         XXTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5tUwv8GZvt0tLegCth1XOp+6yS8yReQyRSOWrSBlQn4=;
+        b=GBVlB8hUcaTnkmMNSueXpOZ6Vo6JA3LBI60P3JbNFCfc3uYrlv2DHAnkX9Fi/zcmw2
+         BoJwdMWZl/X1vmPBJK/8MiMML3BchcvoxgCK6F88jsjpCSP9a65vzBufzm3pjUImNei0
+         xfs3q8nlhZ6TATxZzPzdmVZqNKd81xG5ZZnljYZn4DrZqmWx0QRS8QaNXkOgvI42F3QI
+         jvSjrmc8DBjEKJDMe1JhS3pbNSFqxzFiZcTun7HzqAhZcxEL7IueeGf+XVCTcK4geL+A
+         cevTZa2F6NPHaCImGWepNQWPrLe206H6gK4ZAYQQmq3E7ndwGzEQ8OjBu2MwgZ1Hvneg
+         saPQ==
+X-Gm-Message-State: AOAM533cZgM7LiRk3rMom2dRGZdz8VKDWnoBTOn26XR/H7avxJNGGJpM
+        5FItuwy0NDUY4st0tD6uMkRvIuI1gJEbo5i0I+I=
+X-Google-Smtp-Source: ABdhPJwHbzHiIoOeOqf88qGm635l6SYTNpkzRacF/MQtw+0fGQ+NRwhque+7rGZBn/dzalt7nyDZTCXKgzsXv6lYO+E=
+X-Received: by 2002:a1f:ee81:: with SMTP id m123mr2257220vkh.51.1592322735381;
+ Tue, 16 Jun 2020 08:52:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605214004.14270-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-16_04:2020-06-16,2020-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- suspectscore=0 mlxscore=0 cotscore=-2147483648 mlxlogscore=999
- adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006160108
+References: <20200614200121.14147-1-digetx@gmail.com> <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
+ <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
+In-Reply-To: <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 16 Jun 2020 16:48:34 +0100
+Message-ID: <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 16 Jun 2020 at 12:40, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 16.06.2020 01:26, Emil Velikov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Hi Dmitry,
+> >
+> > On Mon, 15 Jun 2020 at 08:28, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> Hello!
+> >>
+> >> This series adds 180=C2=B0 display plane rotation support to the NVIDI=
+A Tegra
+> >> DRM driver which is needed for devices that have display panel physica=
+lly
+> >> mounted upside-down, like Nexus 7 tablet device for example [1]. Since
+> >> DRM panel rotation is a new thing for a userspace, currently only
+> >> Opentegra Xorg driver handles the rotated display panel [2], but this
+> >> is good enough for the start.
+> >>
+> >> Note that later on it should be possible to implement a transparent 18=
+0=C2=B0
+> >> display rotation for Tegra DRM driver which will remove the need to ha=
+ve
+> >> a bleeding edge userspace that knows how to rotate display planes and =
+I'm
+> >> slowly working on it. For the starter we can go with the minimal rotat=
+ion
+> >> support, so it's not a blocker.
+> >>
+> >> This series is based on the work that was made by Derek Basehore for t=
+he
+> >> Mediatek driver [3], his patch is included into this patchset. I added
+> >> my tested-by tag to the Derek's patch.
+> >>
+> >> Please review and apply, thanks in advance!
+> >>
+> >> [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154=
+327.18589-3-digetx@gmail.com/
+> >> [2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20=
+a3959bbe5bc3a3b67e55977093fd5114ca
+> >> [3] https://lkml.org/lkml/2020/3/5/1119
+> >>
+> >> Changelog:
+> >>
+> >> v2: - Dropped "drm/panel: Set display info in panel attach" patch, whi=
+ch
+> >>       turned out to be obsolete now.
+> >>
+> >>     - Renamed the cover-latter, hopefully this will fix the bouncing e=
+mails.
+> >>
+> >> Derek Basehore (1):
+> >>   drm/panel: Add helper for reading DT rotation
+> >>
+> >> Dmitry Osipenko (4):
+> >>   drm/panel: lvds: Set up panel orientation
+> >
+> > IMHO it's perfectly reasonable to report the panel orientation to
+> > userspace, which can apply plane rotation as needed.
+> >
+> > Although I see that this series, alike Derek's, has a couple of issues:
+> >  - only a single panel driver is updated
+> >  - rotation is _not_ listed as supported property, in said panel
+> > driver device-tree bindings
+> >
+> > My personal inclination is that we should aim for a comprehensive solut=
+ion:
+> >  - wire all panel drivers, as currently documented (quick grep list bel=
+ow)
+> >  - document and wire-up the lvds and boe panels - as proposed by you
+> > and Derek respectively
+> >
+> > HTH
+> > Emil
+> >
+> > Documentation/devicetree/bindings/display/himax,hx8357d.txt:2
+> > Documentation/devicetree/bindings/display/ilitek,ili9225.txt:2
+> > Documentation/devicetree/bindings/display/ilitek,ili9341.txt:2
+> > Documentation/devicetree/bindings/display/ilitek,ili9486.yaml:2
+> > Documentation/devicetree/bindings/display/multi-inno,mi0283qt.txt:2
+> > Documentation/devicetree/bindings/display/panel/panel-common.yaml:2
+> > Documentation/devicetree/bindings/display/sitronix,st7586.txt:1
+> > Documentation/devicetree/bindings/display/sitronix,st7735r.yaml:2
+>
+> Rotation is a common DT panel property that is described in the
+> panel-common.yaml.
+The property was introduced almost exclusively for tiny drm panels.
+Those ones are a bit different from the rest (in panel/) -
+MIPI-DBI/SPI w/o (not connected at least) an actual GPU.
 
+To make it a bit better, the rotation is seemingly performed in the
+tiny driver itself ouch.
 
-On 05.06.20 23:39, Tony Krowiak wrote:
-> This patch refactor's the vfio_ap device driver to use the AP bus's
-> ap_get_qdev() function to retrieve the vfio_ap_queue struct containing
-> information about a queue that is bound to the vfio_ap device driver.
-> The bus's ap_get_qdev() function retrieves the queue device from a
-> hashtable keyed by APQN. This is much more efficient than looping over
-> the list of devices attached to the AP bus by several orders of
-> magnitude.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     | 27 ++-------
->  drivers/s390/crypto/vfio_ap_ops.c     | 82 +++++++++++++++------------
->  drivers/s390/crypto/vfio_ap_private.h |  8 ++-
->  3 files changed, 58 insertions(+), 59 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index be2520cc010b..59233cf7419d 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -51,15 +51,9 @@ MODULE_DEVICE_TABLE(vfio_ap, ap_queue_ids);
->   */
->  static int vfio_ap_queue_dev_probe(struct ap_device *apdev)
->  {
-> -	struct vfio_ap_queue *q;
-> -
-> -	q = kzalloc(sizeof(*q), GFP_KERNEL);
-> -	if (!q)
-> -		return -ENOMEM;
-> -	dev_set_drvdata(&apdev->device, q);
-> -	q->apqn = to_ap_queue(&apdev->device)->qid;
-> -	q->saved_isc = VFIO_AP_ISC_INVALID;
-> -	return 0;
-> +	struct ap_queue *queue = to_ap_queue(&apdev->device);
-> +
-> +	return vfio_ap_mdev_probe_queue(queue);
->  }
+> This property is supported by all panel bindings
+> because these bindings inherent the common properties from the
+> panel-common.yaml.
+>
+Seems like that was an unintentional change with the conversion to YAML.
+Beforehand only a few selected panels had rotation. Upon closer look -
+some panels do have follow-up fixes, to remove/limit the implicit
+inclusion.
 
-Here we did not hold a mutex in the old code 
-[...]
+Sam seems like you've done most of the YAML conversion. IMHO it would
+make sense to revisit the patches and inherit common properties only
+as applicable.
 
-> +int vfio_ap_mdev_probe_queue(struct ap_queue *queue)
-> +{
-> +	struct vfio_ap_queue *q;
-> +
-> +	q = kzalloc(sizeof(*q), GFP_KERNEL);
-> +	if (!q)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&matrix_dev->lock);
-> +	dev_set_drvdata(&queue->ap_dev.device, q);
-> +	q->apqn = queue->qid;
-> +	q->saved_isc = VFIO_AP_ISC_INVALID;
-> +	mutex_unlock(&matrix_dev->lock);
-> +
+> I don't think that it makes sense to wire up rotation property to all
+> panel drivers at once because those drivers will be untested, at least I
+> don't know anything about those other panels and can't test them. It
+> will be much better to support the rotation on by as-needed basis for
+> each panel driver individually.
 
-here we do. Why do we need the matrix_dev->lock here?
+How about CCing the author and reviewer asking them to test the patch?
+The only place where the patches might cause an issue is with tiny,
+although patches would still be appreciated.
 
+-Emil
