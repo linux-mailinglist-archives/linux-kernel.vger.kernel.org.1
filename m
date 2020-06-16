@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A508F1FB7C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1671FB73D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732498AbgFPPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:49:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43988 "EHLO mail.kernel.org"
+        id S1730030AbgFPPoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:44:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732481AbgFPPtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:11 -0400
+        id S1731339AbgFPPoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:44:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83E6520776;
-        Tue, 16 Jun 2020 15:49:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 611F8208E4;
+        Tue, 16 Jun 2020 15:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322550;
-        bh=KaCRS2M8YN6o5vmclDxj8oBD9KIeYDHwC6I+bpJEoBY=;
+        s=default; t=1592322251;
+        bh=u5N459dcvBlfL8RvNPYveLVl7hbu5p0YY7+pQOJb8UA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mOOWWtSgRVGOu1237C7NCBRTvZhvg4duMtkxVA7wHVDhZ1h5Rbp9xghB7ksuCP6WU
-         6MaCIunrWdn8MJDwW2Jgn7hKoKAn+sepDsUhjV3lzTz1PF5zowXwFRMxNYbSEt/yDO
-         rQKhIewwkaCJkTejnCIX+SRUEb2I0z9+xvicKLIY=
+        b=UC2p7BVeR45vWeRFhRalMVhQtXjauEIcoE5HivUXxgK0AYUr5Cba38yvSH5F+6n2a
+         wr/pIFanOCwb4GtmgY6R1KBHanRVD+y9gDVUeuMIedA3Whp+woQz7yM+GtjVK21vuN
+         gs/uQUTgwG1o0/9H5tjcW04QwmVviNOyOotbCbVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Maria Teguiani <teguiani@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.6 012/161] bpf: Support llvm-objcopy for vmlinux BTF
-Date:   Tue, 16 Jun 2020 17:33:22 +0200
-Message-Id: <20200616153106.997453469@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 029/163] RDMA/uverbs: Make the event_queue fds return POLLERR when disassociated
+Date:   Tue, 16 Jun 2020 17:33:23 +0200
+Message-Id: <20200616153108.278078972@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,213 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-commit 90ceddcb495008ac8ba7a3dce297841efcd7d584 upstream.
+[ Upstream commit eb356e6dc15a30af604f052cd0e170450193c254 ]
 
-Simplify gen_btf logic to make it work with llvm-objcopy. The existing
-'file format' and 'architecture' parsing logic is brittle and does not
-work with llvm-objcopy/llvm-objdump.
+If is_closed is set, and the event list is empty, then read() will return
+-EIO without blocking. After setting is_closed in
+ib_uverbs_free_event_queue(), we do trigger a wake_up on the poll_wait,
+but the fops->poll() function does not check it, so poll will continue to
+sleep on an empty list.
 
-'file format' output of llvm-objdump>=11 will match GNU objdump, but
-'architecture' (bfdarch) may not.
-
-.BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
-because it is part of vmlinux image used for introspection. C code
-can reference the section via linker script defined __start_BTF and
-__stop_BTF. This fixes a small problem that previous .BTF had the
-SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
-
-Additionally, `objcopy -I binary` synthesized symbols
-_binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
-used elsewhere) are replaced with more commonplace __start_BTF and
-__stop_BTF.
-
-Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
-"empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
-
-We use a dd command to change the e_type field in the ELF header from
-ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
-ET_EXEC as an input file is an extremely rare GNU ld feature that lld
-does not intend to support, because this is error-prone.
-
-The output section description .BTF in include/asm-generic/vmlinux.lds.h
-avoids potential subtle orphan section placement issues and suppresses
---orphan-handling=warn warnings.
-
-Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Stanislav Fomichev <sdf@google.com>
-Tested-by: Andrii Nakryiko <andriin@fb.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-Link: https://github.com/ClangBuiltLinux/linux/issues/871
-Link: https://lore.kernel.org/bpf/20200318222746.173648-1-maskray@google.com
-Signed-off-by: Maria Teguiani <teguiani@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
+Link: https://lore.kernel.org/r/0-v1-ace813388969+48859-uverbs_poll_fix%25jgg@mellanox.com
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vmlinux.lds.S |    6 ------
- include/asm-generic/vmlinux.lds.h |   15 +++++++++++++++
- kernel/bpf/btf.c                  |    9 ++++-----
- kernel/bpf/sysfs_btf.c            |   11 +++++------
- scripts/link-vmlinux.sh           |   24 ++++++++++--------------
- 5 files changed, 34 insertions(+), 31 deletions(-)
+ drivers/infiniband/core/uverbs_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -303,12 +303,6 @@ SECTIONS
- 		*(.branch_lt)
- 	}
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 1bab8de14757..b94572e9c24f 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -296,6 +296,8 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
+ 	spin_lock_irq(&ev_queue->lock);
+ 	if (!list_empty(&ev_queue->event_list))
+ 		pollflags = EPOLLIN | EPOLLRDNORM;
++	else if (ev_queue->is_closed)
++		pollflags = EPOLLERR;
+ 	spin_unlock_irq(&ev_queue->lock);
  
--#ifdef CONFIG_DEBUG_INFO_BTF
--	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
--		*(.BTF)
--	}
--#endif
--
- 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
- 		__start_opd = .;
- 		KEEP(*(.opd))
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -535,6 +535,7 @@
- 									\
- 	RO_EXCEPTION_TABLE						\
- 	NOTES								\
-+	BTF								\
- 									\
- 	. = ALIGN((align));						\
- 	__end_rodata = .;
-@@ -622,6 +623,20 @@
- 	}
- 
- /*
-+ * .BTF
-+ */
-+#ifdef CONFIG_DEBUG_INFO_BTF
-+#define BTF								\
-+	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
-+		__start_BTF = .;					\
-+		*(.BTF)							\
-+		__stop_BTF = .;						\
-+	}
-+#else
-+#define BTF
-+#endif
-+
-+/*
-  * Init task
-  */
- #define INIT_TASK_DATA_SECTION(align)					\
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3477,8 +3477,8 @@ errout:
- 	return ERR_PTR(err);
- }
- 
--extern char __weak _binary__btf_vmlinux_bin_start[];
--extern char __weak _binary__btf_vmlinux_bin_end[];
-+extern char __weak __start_BTF[];
-+extern char __weak __stop_BTF[];
- extern struct btf *btf_vmlinux;
- 
- #define BPF_MAP_TYPE(_id, _ops)
-@@ -3605,9 +3605,8 @@ struct btf *btf_parse_vmlinux(void)
- 	}
- 	env->btf = btf;
- 
--	btf->data = _binary__btf_vmlinux_bin_start;
--	btf->data_size = _binary__btf_vmlinux_bin_end -
--		_binary__btf_vmlinux_bin_start;
-+	btf->data = __start_BTF;
-+	btf->data_size = __stop_BTF - __start_BTF;
- 
- 	err = btf_parse_hdr(env);
- 	if (err)
---- a/kernel/bpf/sysfs_btf.c
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -9,15 +9,15 @@
- #include <linux/sysfs.h>
- 
- /* See scripts/link-vmlinux.sh, gen_btf() func for details */
--extern char __weak _binary__btf_vmlinux_bin_start[];
--extern char __weak _binary__btf_vmlinux_bin_end[];
-+extern char __weak __start_BTF[];
-+extern char __weak __stop_BTF[];
- 
- static ssize_t
- btf_vmlinux_read(struct file *file, struct kobject *kobj,
- 		 struct bin_attribute *bin_attr,
- 		 char *buf, loff_t off, size_t len)
- {
--	memcpy(buf, _binary__btf_vmlinux_bin_start + off, len);
-+	memcpy(buf, __start_BTF + off, len);
- 	return len;
- }
- 
-@@ -30,15 +30,14 @@ static struct kobject *btf_kobj;
- 
- static int __init btf_vmlinux_init(void)
- {
--	if (!_binary__btf_vmlinux_bin_start)
-+	if (!__start_BTF)
- 		return 0;
- 
- 	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
- 	if (!btf_kobj)
- 		return -ENOMEM;
- 
--	bin_attr_btf_vmlinux.size = _binary__btf_vmlinux_bin_end -
--				    _binary__btf_vmlinux_bin_start;
-+	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
- 
- 	return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
- }
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -113,9 +113,6 @@ vmlinux_link()
- gen_btf()
- {
- 	local pahole_ver
--	local bin_arch
--	local bin_format
--	local bin_file
- 
- 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
- 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-@@ -133,17 +130,16 @@ gen_btf()
- 	info "BTF" ${2}
- 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
- 
--	# dump .BTF section into raw binary file to link with final vmlinux
--	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
--		cut -d, -f1 | cut -d' ' -f2)
--	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
--		awk '{print $4}')
--	bin_file=.btf.vmlinux.bin
--	${OBJCOPY} --change-section-address .BTF=0 \
--		--set-section-flags .BTF=alloc -O binary \
--		--only-section=.BTF ${1} $bin_file
--	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
--		--rename-section .data=.BTF $bin_file ${2}
-+	# Create ${2} which contains just .BTF section but no symbols. Add
-+	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
-+	# deletes all symbols including __start_BTF and __stop_BTF, which will
-+	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
-+	# objcopy warnings: "empty loadable segment detected at ..."
-+	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-+		--strip-all ${1} ${2} 2>/dev/null
-+	# Change e_type to ET_REL so that it can be used to link final vmlinux.
-+	# Unlike GNU ld, lld does not allow an ET_EXEC input.
-+	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
- }
- 
- # Create ${2} .o file with all symbols from the ${1} object file
+ 	return pollflags;
+-- 
+2.25.1
+
 
 
