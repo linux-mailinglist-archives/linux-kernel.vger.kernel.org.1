@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52781FB803
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11A51FB6A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731580AbgFPPvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:51:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
+        id S1730869AbgFPPjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:39:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732649AbgFPPvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:51:37 -0400
+        id S1730800AbgFPPi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35E5521501;
-        Tue, 16 Jun 2020 15:51:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04EED214DB;
+        Tue, 16 Jun 2020 15:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322696;
-        bh=jgxcL1X6W2aAeM8W8i4kiLVRIxHvBOrwl3wrmQEKn/0=;
+        s=default; t=1592321935;
+        bh=hrPJaqBtBAC9t2XIQGFN01J5C4GBN6PhtjcTxc7Cm6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z7Gt90aOLj0KDOGSxXp6BSAVTceJeG3uxssDbb0li2saseV88jfDfkaFVGjb3eEZ1
-         pEOGBFgkc0opCv1PdVTtZEQjNNwB0FO13juhP8HYzVH7Gm5XkOeX8JQczxENY63oAI
-         Rqo/gR6anZshsDv6PhyrsouXZQch9D7TJ6/7D/9w=
+        b=KWhrxaH6G8DH4w5q5TRXjlTt+crlL7/ScURCsKlZZyw4kDcb+innCtm5BNBv/712E
+         ijeJ9R9KSfDIMNc5DoxxEkyfvOIFAvtP6cJxE2JYk9SLMwP9oQ2RzcgE0ClxuHjgRa
+         b53QjRWOVII5Z97gng4V/qaoEP0ZwCmOE+/jf6vA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 038/161] x86/cpu/amd: Make erratum #1054 a legacy erratum
-Date:   Tue, 16 Jun 2020 17:33:48 +0200
-Message-Id: <20200616153108.195884840@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 045/134] KVM: x86/mmu: Set mmio_value to 0 if reserved #PF cant be generated
+Date:   Tue, 16 Jun 2020 17:33:49 +0200
+Message-Id: <20200616153102.948427458@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-[ Upstream commit e2abfc0448a46d8a137505aa180caf14070ec535 ]
+commit 6129ed877d409037b79866327102c9dc59a302fe upstream.
 
-Commit
+Set the mmio_value to '0' instead of simply clearing the present bit to
+squash a benign warning in kvm_mmu_set_mmio_spte_mask() that complains
+about the mmio_value overlapping the lower GFN mask on systems with 52
+bits of PA space.
 
-  21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired
-		 counter IRPERF")
+Opportunistically clean up the code and comments.
 
-mistakenly added erratum #1054 as an OS Visible Workaround (OSVW) ID 0.
-Erratum #1054 is not OSVW ID 0 [1], so make it a legacy erratum.
+Cc: stable@vger.kernel.org
+Fixes: d43e2675e96fc ("KVM: x86: only do L1TF workaround on affected processors")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200527084909.23492-1-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-There would never have been a false positive on older hardware that
-has OSVW bit 0 set, since the IRPERF feature was not available.
-
-However, save a couple of RDMSR executions per thread, on modern
-system configurations that correctly set non-zero values in their
-OSVW_ID_Length MSRs.
-
-[1] Revision Guide for AMD Family 17h Models 00h-0Fh Processors. The
-revision guide is available from the bugzilla link below.
-
-Fixes: 21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired counter IRPERF")
-Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200417143356.26054-1-kim.phillips@amd.com
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/amd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/kvm/mmu.c |   27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 1f875fbe1384..f04cc01e629e 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1111,8 +1111,7 @@ static const int amd_erratum_383[] =
+--- a/arch/x86/kvm/mmu.c
++++ b/arch/x86/kvm/mmu.c
+@@ -6248,25 +6248,16 @@ static void kvm_set_mmio_spte_mask(void)
+ 	u64 mask;
  
- /* #1054: Instructions Retired Performance Counter May Be Inaccurate */
- static const int amd_erratum_1054[] =
--	AMD_OSVW_ERRATUM(0, AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+ 	/*
+-	 * Set the reserved bits and the present bit of an paging-structure
+-	 * entry to generate page fault with PFER.RSV = 1.
++	 * Set a reserved PA bit in MMIO SPTEs to generate page faults with
++	 * PFEC.RSVD=1 on MMIO accesses.  64-bit PTEs (PAE, x86-64, and EPT
++	 * paging) support a maximum of 52 bits of PA, i.e. if the CPU supports
++	 * 52-bit physical addresses then there are no reserved PA bits in the
++	 * PTEs and so the reserved PA approach must be disabled.
+ 	 */
 -
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+-	/*
+-	 * Mask the uppermost physical address bit, which would be reserved as
+-	 * long as the supported physical address width is less than 52.
+-	 */
+-	mask = 1ull << 51;
+-
+-	/* Set the present bit. */
+-	mask |= 1ull;
+-
+-	/*
+-	 * If reserved bit is not supported, clear the present bit to disable
+-	 * mmio page fault.
+-	 */
+-	if (shadow_phys_bits == 52)
+-		mask &= ~1ull;
++	if (shadow_phys_bits < 52)
++		mask = BIT_ULL(51) | PT_PRESENT_MASK;
++	else
++		mask = 0;
  
- static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
- {
--- 
-2.25.1
-
+ 	kvm_mmu_set_mmio_spte_mask(mask, mask, ACC_WRITE_MASK | ACC_USER_MASK);
+ }
 
 
