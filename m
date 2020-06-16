@@ -2,150 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311A71FB0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1258E1FB0B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbgFPMbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728889AbgFPMbl (ORCPT
+        id S1728483AbgFPMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:31:00 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:48764 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgFPMa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:31:41 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB2EC08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:31:41 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id s28so12037664edw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=AZqdoAEGz2z2dhDjwXWaMZ24wdl6oc5L+Rca1tEh8dc=;
-        b=QGi15kqWXZial5swvjRzFESRGm8P1uF/+daQjuuEcJHnP/4P0mWvGEyI3VbNHNcGuF
-         9gu8Riy/E81QVAiaoDQWksYKN3Jg6kE/91NmcK9fW8frd0xE4oYxEg/QBx9mPEPLU8E8
-         d48xQepzN+wqZd4elN8+ucSIW7sgmpa7afc1vcYVmFLivhMvQdj80HPyi2K2ochU8C0W
-         8e5uDgT0hCafWH3qnl0GURd4xzkZJKDmriloiEpAZ9rCvfOEyseeWLyq1fOu55ZyvJ1D
-         aj+e0nKrTarax2OXtmmEkrY21dZikHLNH2H9u4E5hd4R3L656iRjZt2wL3L+n9eeVMdU
-         Dq0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=AZqdoAEGz2z2dhDjwXWaMZ24wdl6oc5L+Rca1tEh8dc=;
-        b=AUgq6bZ+k4Yucjw2xOaKyi0FfshzDOceMcB2DxTc/x3kt+sAGLOF9OYXQ3VLGAoLeS
-         EnbiG4SE2FWEG7ztat/rl2gzxs8xdCPMOk0Qplo5gqcBooiGAUli7GuJ4yvL5I7Ww0Vx
-         nraHSqk2WLSXSXHqdtOtnbF0q7NItyTOwDo0DQlkbyK+Q6VoyPn+yvGU23FYqQ8iw3m1
-         NRMfbr5jlF14OvKM0/f8SHEWL1qT7bxlxKFVWiFfinXKSO3Y5A0ppdkll9pnCWNBi6XJ
-         l2mmL7NN1X09R2eNDCDzHa/I1u1gQSR5ngin/78EHb0SC8HsgcxNBgjKh8Dzix2pbrnp
-         riig==
-X-Gm-Message-State: AOAM531Q0AyXtpfqD6Vd40p40C6adFlmdT6IsO1wQgVzSbElZHGXThbr
-        gn3+qo7k/sVA14kfX6UNELLjdw==
-X-Google-Smtp-Source: ABdhPJynMFNvVmd+K4aC03wqQdfGmBOF+p561hBlcodxI+Rt0LMvos6uNRNjfOaw6xakOZJ/UVPhSA==
-X-Received: by 2002:a05:6402:1247:: with SMTP id l7mr2203095edw.61.1592310699774;
-        Tue, 16 Jun 2020 05:31:39 -0700 (PDT)
-Received: from localhost.localdomain (212-5-158-38.ip.btc-net.bg. [212.5.158.38])
-        by smtp.gmail.com with ESMTPSA id p6sm11071983ejb.71.2020.06.16.05.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 05:31:39 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 4/4] venus: vdec: Add support for decode intra frames only
-Date:   Tue, 16 Jun 2020 15:30:01 +0300
-Message-Id: <20200616123001.11321-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200616123001.11321-1-stanimir.varbanov@linaro.org>
-References: <20200616123001.11321-1-stanimir.varbanov@linaro.org>
+        Tue, 16 Jun 2020 08:30:59 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05GCUmVc063733;
+        Tue, 16 Jun 2020 07:30:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592310648;
+        bh=8Qx/5mQW/ObYotai4BueB40LH/bmL06FeT6kWL8joj4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hFT1xUBQp1Ur1V5JkzJqVwfO1OXTUz2gJaefj2439LQtzY37HZTA8N8EZK6JZEPcj
+         ZpOjvxyf3hMsunjCM/Pkf26TZoxTFxoaSQMrvzJJGXHyW67B9t4OFZSBl3pvls/cAr
+         V7iu73M05z3xXo+bVMpYfH35A/oPUQj0WNdfinyI=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05GCUm6W018956;
+        Tue, 16 Jun 2020 07:30:48 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 16
+ Jun 2020 07:30:47 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 16 Jun 2020 07:30:47 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05GCUjC9103134;
+        Tue, 16 Jun 2020 07:30:46 -0500
+Subject: Re: [PATCH] drm/panel-simple: fix connector type for LogicPD Type28
+ Display
+To:     Adam Ford <aford173@gmail.com>, Fabio Estevam <festevam@gmail.com>
+CC:     DRI mailing list <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        stable <stable@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+References: <20200615131934.12440-1-aford173@gmail.com>
+ <CAOMZO5Bw5qSDirAKBTRcu4_nDafDcfDGpuNRDyuLZs9Zc=HsQA@mail.gmail.com>
+ <CAHCN7x+=xjFTy6J4Ej61U2jXTez2rLrt=KtEOzbvV7Tzq6XoPQ@mail.gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <0df0bf28-dbf7-4d1e-06f0-d545df8dc2d5@ti.com>
+Date:   Tue, 16 Jun 2020 15:30:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAHCN7x+=xjFTy6J4Ej61U2jXTez2rLrt=KtEOzbvV7Tzq6XoPQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support in the decoder for intra frames only decode. The
-implementation in the Venus use HFI property for thumbnail
-generation to lower memory usage and when the control is enabled
-the number of decoder output buffers for progressive stream
-will be one (for interlace two). We assume that the client will
-queue on the decoder input intra frames only but this is not
-mandatory. If the client queue non-intra frames on decoder input
-they will be returned on decoder output with an error.
+On 15/06/2020 17:53, Adam Ford wrote:
+> On Mon, Jun 15, 2020 at 9:46 AM Fabio Estevam <festevam@gmail.com> wrote:
+>>
+>> On Mon, Jun 15, 2020 at 10:19 AM Adam Ford <aford173@gmail.com> wrote:
+>>>
+>>> The LogicPD Type28 display used by several Logic PD products has not
+>>> worked since v5.5.
+>>
+>> Maybe you could tell which commit exactly and then put a Fixes tag?
+> 
+> I honestly don't know.  I reached out to the omap mailing list,
+> because I noted this issue. Tomi V from TI responded with a link that
+> he posted which fixes this for another display.
+> 
+> https://www.mail-archive.com/dri-devel@lists.freedesktop.org/msg312208.html
+> 
+> I tested that patch and it worked for a different LCD, so I did the
+> same thing to the Logic PD Type 28 display as well.
+> 
+> My patch and commit message were modeled after his, and his commit
+> CC's stable with a note about being required for v5.5+
+> 
+> I added him to the CC list, so maybe he knows which hash needs to be
+> referenced from a fixes tag.  I was hoping to not have to go back and
+> bisect if it's not required, but I will if necessary.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h       | 1 +
- drivers/media/platform/qcom/venus/vdec.c       | 7 +++++++
- drivers/media/platform/qcom/venus/vdec_ctrls.c | 9 ++++++++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+No, I didn't check when exactly it broke. connector_type was added in v5.5, and my patch applies to 
+v5.5, so I set that as stable version. But the WARN comes from panel bridge. Possibly 
+89958b7cd9555a5d82556cc9a1f4c62fffda6f96 is the one that adds requirement to have connector_type.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 1bac30d4cf50..b9a3b9ca6ae1 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -191,6 +191,7 @@ struct vdec_controls {
- 	u32 post_loop_deb_mode;
- 	u32 profile;
- 	u32 level;
-+	bool intra_only;
- };
- 
- struct venc_controls {
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 7c4c483d5438..aa68cefcae96 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -625,6 +625,13 @@ static int vdec_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (ctr->intra_only) {
-+		ptype = HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE;
-+		ret = hfi_session_set_property(inst, ptype, &en);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 3a963cbd342a..96ca8d9dd22e 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -28,6 +28,9 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
- 		ctr->level = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_DECODE_INTRA_FRAMES_ONLY:
-+		ctr->intra_only = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -86,7 +89,7 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 7);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 8);
- 	if (ret)
- 		return ret;
- 
-@@ -141,6 +144,10 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	if (ctrl)
- 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DECODE_INTRA_FRAMES_ONLY,
-+			  0, 1, 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret) {
- 		v4l2_ctrl_handler_free(&inst->ctrl_handler);
+  Tomi
+
 -- 
-2.17.1
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
