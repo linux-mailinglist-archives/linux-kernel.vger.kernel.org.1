@@ -2,130 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD7C1FAB2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F4A1FAB37
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 10:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgFPI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 04:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
+        id S1727975AbgFPIaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 04:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727870AbgFPI3N (ORCPT
+        with ESMTP id S1726626AbgFPIaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:29:13 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E04C03E97C
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:29:12 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id 9so22430150ljv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:29:12 -0700 (PDT)
+        Tue, 16 Jun 2020 04:30:20 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980DCC05BD43
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:30:18 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m2so15299653otr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 01:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iUa26xbgXJeW35l3tPgw/qFl/EH6eao+CWqtytwfzpQ=;
-        b=iMCa5KT2ALytLHCboqE4ka0Vk2yBe2jHv5q9UFQVadNvRX3zx00OIPajzJCVE19Yft
-         NeN7/m9OMHOktHEjg4ng9Rgq+NvUIt1DxbCKPzNuvMctWuZ6RWKtXcxCp5LE2kIhwbzk
-         1BOutYp1/+XG6uSXw5UjGgRbXfnLdvJ3J+jL9zoo2aBgRHrQjh4S4jFjwS7ur6ydhC38
-         bhCOgGLsvhkV8PYh8xKJSsdhZy2EXyW7Cp+/EjD0irhb0/GBJo//2qP1Yq9AsS4UI3/n
-         b+fyFAzy5mzEU8RTsFITTmVbZMWJw/oWGoSg1oStrROaTzMkjmT27u1BV+nJ8tK7aeR9
-         EH9Q==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iFZu21anIecqeWnmtHDcKq9io7f3G/fD/2SgVahSB5o=;
+        b=xNw2XJ3W6+QRI42l+XFlKIs2oUp3ZMllemOdGovEuifvIF3kEWzDFTdYX+xBKVJZe0
+         XZ+aHBfFXcExTyTXZx2pwIo6GF3KWtHNfN0wD8alb7/4mqnwZMoxYoZfDZcDY6mRwH7X
+         1OI8kbUZYWXgNEdjExp8YSuk1HrapdVEoQ5v4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iUa26xbgXJeW35l3tPgw/qFl/EH6eao+CWqtytwfzpQ=;
-        b=E86JoHKdaYwKwqpM4SooCh2UfnQe7SEnzphaiFui+TtiJ2wy9swEwCHSFxvNKM93DT
-         YI2DcVHy77yYjIuPEAtHAkw/KzSWMwiaNsbIcyBTWlKFQGwTVbG2TwtpNLkZm9PpXBW4
-         uzgzs80H6UcLdUuYvLJbK3Lm3dCfasY5PrxvCakQR1V9QNWt4WR9FEtyfNk0voX2vIio
-         Sw6UM29bME+jAm9b1f5zrtmDiG2OcpksUnvbezoLR/vrBJb9Q+Y1Jh95QcGLXKre4O9E
-         PNrBvH6RxsV0dNppj/U60VTGMIeYkOe++TdD9eNh5F5tjg5XylAgalwuvgiR51VqtYad
-         JqvA==
-X-Gm-Message-State: AOAM5323S2vhHM8ie57c3rGooe6TekwS4xqvLzuzICqeqM72bZliGJtv
-        Faa2sf42gTljMJuFwtEGyC5qfA==
-X-Google-Smtp-Source: ABdhPJyxAvXQd0bbF0EOVrxP5P6EeKTwx53AuI93eQUjvSBO15+WDlfO8iO2KrF0+EN/zJdjr4qivw==
-X-Received: by 2002:a2e:45d6:: with SMTP id s205mr907846lja.101.1592296150212;
-        Tue, 16 Jun 2020 01:29:10 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id s9sm4247916ljc.43.2020.06.16.01.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 01:29:09 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 10:29:07 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        peterhuewe@gmx.de, Jason Gunthorpe <jgg@ziepe.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: Re: [PATCHv8 0/3] optee: register drivers on optee bus
-Message-ID: <20200616082907.GA2305431@jade>
-References: <20200604175851.758-1-maxim.uvarov@linaro.org>
- <CAD8XO3YTz=xN2k5h8HsrYsLUgmC6dD57XbBj63e+3_xFF1H0rw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iFZu21anIecqeWnmtHDcKq9io7f3G/fD/2SgVahSB5o=;
+        b=eMsmfLGCpEE7+NduH8dSJ48ScKggHpc7+uq7sDgi79Xs8souyYRdF9vZ1XOx1DndQe
+         sSjQtLqbGcgjuQPe7SjIfHYIsQPxjjIA/MI7jd5ckMS+9tSMQTc2e4PtLbUy2jLKtSdw
+         iz127bTJEoWJLZL1r0JGyvQPPwaXZk9Mqgfj1wXYrMHWVMqZOeyUAIimD0T5MooY8vP0
+         xlG7XY+SfpOp9Gr2WkJyO0YwrYCcKH79SPp6MBFEupvqnfzbog8PnrAyYJNudgWHIOsx
+         BxhTmGAeMKLhZT6VNNPwpOX852pxOjjefg7SNtZI9SpWzB8ogeBx2yxH8g6G7AesfvqF
+         XkOQ==
+X-Gm-Message-State: AOAM5323ygsDpEE0xN2ClSgejkf0ua1opJ6kSu0vyQyiNKsIn1H1utdv
+        R8+BMuWadVGxFcOZ/3Z2ATXHfrJplA88HLeowkY02g==
+X-Google-Smtp-Source: ABdhPJxrzvbJdzoHn4DvVnkgACjbZuigtgxQERvnRr4I09yrEvDM8GB18hU9JmN3mH7A3JSLwqB26+Qq3j6dQyXGWTc=
+X-Received: by 2002:a9d:5cc1:: with SMTP id r1mr1384294oti.147.1592296217878;
+ Tue, 16 Jun 2020 01:30:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD8XO3YTz=xN2k5h8HsrYsLUgmC6dD57XbBj63e+3_xFF1H0rw@mail.gmail.com>
+References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
+ <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com> <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
+In-Reply-To: <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 16 Jun 2020 09:30:06 +0100
+Message-ID: <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxim and Jarkko,
-
-On Mon, Jun 15, 2020 at 05:32:40PM +0300, Maxim Uvarov wrote:
-> ping.
-> Patchset was reviewed and all comments are codeverd. Optee-os patches
-> were merged. These kernel patches look like they are hanging
-> somewhere...
-
-I'm almost OK with this patchset, except that
-Documentation/ABI/testing/sysfs-bus-optee-devices needs to be updated
-for the new kernel version and TEE mailing list which we're changing right
-now.
-
-The last patch touches files I'm not maintainer of. That patch depends
-on the previous patches so it makes sense to keep them together.  If a
-TPM device driver maintainer would ack that patch I can take it via my
-tree. Or we can do it the other way around (with a v9 patchset),
-whichever is preferred.
-
-Cheers,
-Jens
-
-> 
-> Thanks,
-> Maxim.
-> 
-> On Thu, 4 Jun 2020 at 20:58, Maxim Uvarov <maxim.uvarov@linaro.org> wrote:
+On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > v8: - fix v7 check.
-> > v7: - check return value of dev_set_name() (Jarkko Sakkinen)
-> > v6: - description, comments, patches reorder and destroy workqueue (Sumit Garg)
-> > v5: - removed pr_err and fix typos in description (Jarkko Sakkinen)
-> >     - added missed kfree in optee_open()
-> > v4: - sysfs entry is optee-ta-uuid (Jerome Forissier, Sumit Garg)
-> >     - added Documentation/ABI/testing/sysfs-bus-optee-devices (Greg Kroah-Hartman)
-> > v3: - support tee-suppicant restart (Jens Wiklander)
-> >     - description and comments (Jarkko Sakkinen)
-> >     - do not name optee drivers by index in sysfs (Sumit Garg)
-> > v2: - write TEE with capital letters.
-> >     - declare __optee_enumerate_device() as static.
+> > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > >
+> > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
+> > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
+> > > >
+> > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
+> > > > ---
+> > > >  kernel/bpf/net_namespace.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+> > > > index 78cf061f8179..56133e78ae4f 100644
+> > > > --- a/kernel/bpf/net_namespace.c
+> > > > +++ b/kernel/bpf/net_namespace.c
+> > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > > >         struct net *net;
+> > > >         int ret;
+> > > >
+> > > > +       if (attr->attach_flags || attr->target_fd)
+> > > > +               return -EINVAL;
+> > > > +
+> > >
+> > > In theory it makes sense, but how did you test it?
 > >
-> > Maxim Uvarov (3):
-> >   optee: use uuid for sysfs driver entry
-> >   optee: enable support for multi-stage bus enumeration
-> >   tpm_ftpm_tee: register driver on TEE bus
+> > Not properly it seems, sorry!
 > >
-> >  .../ABI/testing/sysfs-bus-optee-devices       |  8 +++
-> >  MAINTAINERS                                   |  1 +
-> >  drivers/char/tpm/tpm_ftpm_tee.c               | 70 ++++++++++++++++---
-> >  drivers/tee/optee/core.c                      | 27 ++++++-
-> >  drivers/tee/optee/device.c                    | 38 +++++-----
-> >  drivers/tee/optee/optee_private.h             | 10 ++-
-> >  6 files changed, 119 insertions(+), 35 deletions(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
+> > > test_progs -t flow
+> > > fails 5 tests.
 > >
-> > --
-> > 2.17.1
+> > I spent today digging through this, and the issue is actually more annoying than
+> > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
+> > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
+> > program being detached is actually what user space expects. We actually have
+> > tests that set attach_bpf_fd for these to attach points, which tells
+> > me that this is
+> > an easy mistake to make.
 > >
+> > Unfortunately I can't come up with a good fix that seems backportable:
+> > - Making sockmap and flow_dissector have the same semantics as cgroup
+> >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
+>
+> making flow dissector pass prog_fd as cg and lirc is certainly my preference.
+> Especially since tests are passing fd user code is likely doing the same,
+> so breakage is unlikely. Also it wasn't done that long ago, so
+> we can backport far enough.
+> It will remove cap_net_admin ugly check in bpf_prog_detach()
+> which is the only exception now in cap model.
+
+SGTM. What about sockmap though? The code for that has been around for ages.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
