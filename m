@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A301FB94D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1AB1FB927
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732606AbgFPQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
+        id S1732630AbgFPPu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731004AbgFPPun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:50:43 -0400
+        id S1732618AbgFPPuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:50:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 447F0207C4;
-        Tue, 16 Jun 2020 15:50:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D664521508;
+        Tue, 16 Jun 2020 15:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322642;
-        bh=A2D6K0oos0DDXw1a6HDvkTrRQJbH9cUVN9kBOJHySpg=;
+        s=default; t=1592322645;
+        bh=/r3KO7PaVTlxx0ywqc9J+F4gfKLaD0dZKTHkI7KZUWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxgoRerSgHCHV33r4zzzql/XtCEmUp1mohoF5XJl0Fs22fxSokHGmfUQ+Tv4swTDa
-         MEUQyrat5ElrLGYMfgslGHvkyoVM9uBm2x+XEgd7F3ckvtwzR2LyA2Y6eHN+euyOPg
-         VNGzuPh6NbKM/7aoSRS7DQmr77RjFoS8N9zsbWJE=
+        b=cL32zkzQDEBN5WjgCNHNF3I9PUaqvmycTVvJAhW9T5oovlmEZGxENYU9VSE4+Ml3+
+         YsPK4TBP201fTN0MYqmPa3A5bYSBoVI6nG4mQQFbVPFE/jJXunuHlcN/fNJFqlAB4x
+         PCZrh7p5Oib6B+MbtxvFrIQ4mpSuGW1+sV/RKZwQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Alistair Delva <adelva@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Bob Haarman <inglorion@google.com>,
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Steven Price <steven.price@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qian Cai <cai@lca.pw>, Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH 5.6 048/161] x86_64: Fix jiffies ODR violation
-Date:   Tue, 16 Jun 2020 17:33:58 +0200
-Message-Id: <20200616153108.664888702@linuxfoundation.org>
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 049/161] x86: mm: ptdump: calculate effective permissions correctly
+Date:   Tue, 16 Jun 2020 17:33:59 +0200
+Message-Id: <20200616153108.713593706@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
 References: <20200616153106.402291280@linuxfoundation.org>
@@ -52,125 +51,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Haarman <inglorion@google.com>
+From: Steven Price <steven.price@arm.com>
 
-commit d8ad6d39c35d2b44b3d48b787df7f3359381dcbf upstream.
+commit 1494e0c38ee903e83aefb58caf54a9217273d49a upstream.
 
-'jiffies' and 'jiffies_64' are meant to alias (two different symbols that
-share the same address).  Most architectures make the symbols alias to the
-same address via a linker script assignment in their
-arch/<arch>/kernel/vmlinux.lds.S:
+Patch series "Fix W+X debug feature on x86"
 
-jiffies = jiffies_64;
+Jan alerted me[1] that the W+X detection debug feature was broken in x86
+by my change[2] to switch x86 to use the generic ptdump infrastructure.
 
-which is effectively a definition of jiffies.
+Fundamentally the approach of trying to move the calculation of
+effective permissions into note_page() was broken because note_page() is
+only called for 'leaf' entries and the effective permissions are passed
+down via the internal nodes of the page tree.  The solution I've taken
+here is to create a new (optional) callback which is called for all
+nodes of the page tree and therefore can calculate the effective
+permissions.
 
-jiffies and jiffies_64 are both forward declared for all architectures in
-include/linux/jiffies.h. jiffies_64 is defined in kernel/time/timer.c.
+Secondly on some configurations (32 bit with PAE) "unsigned long" is not
+large enough to store the table entries.  The fix here is simple - let's
+just use a u64.
 
-x86_64 was peculiar in that it wasn't doing the above linker script
-assignment, but rather was:
-1. defining jiffies in arch/x86/kernel/time.c instead via the linker script.
-2. overriding the symbol jiffies_64 from kernel/time/timer.c in
-arch/x86/kernel/vmlinux.lds.s via 'jiffies_64 = jiffies;'.
+[1] https://lore.kernel.org/lkml/d573dc7e-e742-84de-473d-f971142fa319@suse.com/
+[2] 2ae27137b2db ("x86: mm: convert dump_pagetables to use walk_page_range")
 
-As Fangrui notes:
+This patch (of 2):
 
-  In LLD, symbol assignments in linker scripts override definitions in
-  object files. GNU ld appears to have the same behavior. It would
-  probably make sense for LLD to error "duplicate symbol" but GNU ld
-  is unlikely to adopt for compatibility reasons.
+By switching the x86 page table dump code to use the generic code the
+effective permissions are no longer calculated correctly because the
+note_page() function is only called for *leaf* entries.  To calculate
+the actual effective permissions it is necessary to observe the full
+hierarchy of the page tree.
 
-This results in an ODR violation (UB), which seems to have survived
-thus far. Where it becomes harmful is when;
+Introduce a new callback for ptdump which is called for every entry and
+can therefore update the prot_levels array correctly.  note_page() can
+then simply access the appropriate element in the array.
 
-1. -fno-semantic-interposition is used:
-
-As Fangrui notes:
-
-  Clang after LLVM commit 5b22bcc2b70d
-  ("[X86][ELF] Prefer to lower MC_GlobalAddress operands to .Lfoo$local")
-  defaults to -fno-semantic-interposition similar semantics which help
-  -fpic/-fPIC code avoid GOT/PLT when the referenced symbol is defined
-  within the same translation unit. Unlike GCC
-  -fno-semantic-interposition, Clang emits such relocations referencing
-  local symbols for non-pic code as well.
-
-This causes references to jiffies to refer to '.Ljiffies$local' when
-jiffies is defined in the same translation unit. Likewise, references to
-jiffies_64 become references to '.Ljiffies_64$local' in translation units
-that define jiffies_64.  Because these differ from the names used in the
-linker script, they will not be rewritten to alias one another.
-
-2. Full LTO
-
-Full LTO effectively treats all source files as one translation
-unit, causing these local references to be produced everywhere.  When
-the linker processes the linker script, there are no longer any
-references to jiffies_64' anywhere to replace with 'jiffies'.  And
-thus '.Ljiffies$local' and '.Ljiffies_64$local' no longer alias
-at all.
-
-In the process of porting patches enabling Full LTO from arm64 to x86_64,
-spooky bugs have been observed where the kernel appeared to boot, but init
-doesn't get scheduled.
-
-Avoid the ODR violation by matching other architectures and define jiffies
-only by linker script.  For -fno-semantic-interposition + Full LTO, there
-is no longer a global definition of jiffies for the compiler to produce a
-local symbol which the linker script won't ensure aliases to jiffies_64.
-
-Fixes: 40747ffa5aa8 ("asmlinkage: Make jiffies visible")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reported-by: Alistair Delva <adelva@google.com>
-Debugged-by: Nick Desaulniers <ndesaulniers@google.com>
-Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Bob Haarman <inglorion@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # build+boot on
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/852
-Link: https://lkml.kernel.org/r/20200602193100.229287-1-inglorion@google.com
+[steven.price@arm.com: make the assignment conditional on val != 0]
+  Link: http://lkml.kernel.org/r/430c8ab4-e7cd-6933-dde6-087fac6db872@arm.com
+Fixes: 2ae27137b2db ("x86: mm: convert dump_pagetables to use walk_page_range")
+Reported-by: Jan Beulich <jbeulich@suse.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200521152308.33096-1-steven.price@arm.com
+Link: http://lkml.kernel.org/r/20200521152308.33096-2-steven.price@arm.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/time.c        |    4 ----
- arch/x86/kernel/vmlinux.lds.S |    4 ++--
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ arch/x86/mm/dump_pagetables.c |   33 ++++++++++++++++++++-------------
+ include/linux/ptdump.h        |    1 +
+ mm/ptdump.c                   |   17 ++++++++++++++++-
+ 3 files changed, 37 insertions(+), 14 deletions(-)
 
---- a/arch/x86/kernel/time.c
-+++ b/arch/x86/kernel/time.c
-@@ -25,10 +25,6 @@
- #include <asm/hpet.h>
- #include <asm/time.h>
+--- a/arch/x86/mm/dump_pagetables.c
++++ b/arch/x86/mm/dump_pagetables.c
+@@ -249,10 +249,22 @@ static void note_wx(struct pg_state *st,
+ 		  (void *)st->start_address);
+ }
  
--#ifdef CONFIG_X86_64
--__visible volatile unsigned long jiffies __cacheline_aligned_in_smp = INITIAL_JIFFIES;
--#endif
--
- unsigned long profile_pc(struct pt_regs *regs)
+-static inline pgprotval_t effective_prot(pgprotval_t prot1, pgprotval_t prot2)
++static void effective_prot(struct ptdump_state *pt_st, int level, u64 val)
  {
- 	unsigned long pc = instruction_pointer(regs);
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -39,13 +39,13 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
- #ifdef CONFIG_X86_32
- OUTPUT_ARCH(i386)
- ENTRY(phys_startup_32)
--jiffies = jiffies_64;
- #else
- OUTPUT_ARCH(i386:x86-64)
- ENTRY(phys_startup_64)
--jiffies_64 = jiffies;
+-	return (prot1 & prot2 & (_PAGE_USER | _PAGE_RW)) |
+-	       ((prot1 | prot2) & _PAGE_NX);
++	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
++	pgprotval_t prot = val & PTE_FLAGS_MASK;
++	pgprotval_t effective;
++
++	if (level > 0) {
++		pgprotval_t higher_prot = st->prot_levels[level - 1];
++
++		effective = (higher_prot & prot & (_PAGE_USER | _PAGE_RW)) |
++			    ((higher_prot | prot) & _PAGE_NX);
++	} else {
++		effective = prot;
++	}
++
++	st->prot_levels[level] = effective;
+ }
+ 
+ /*
+@@ -270,16 +282,10 @@ static void note_page(struct ptdump_stat
+ 	struct seq_file *m = st->seq;
+ 
+ 	new_prot = val & PTE_FLAGS_MASK;
+-
+-	if (level > 0) {
+-		new_eff = effective_prot(st->prot_levels[level - 1],
+-					 new_prot);
+-	} else {
+-		new_eff = new_prot;
+-	}
+-
+-	if (level >= 0)
+-		st->prot_levels[level] = new_eff;
++	if (!val)
++		new_eff = 0;
++	else
++		new_eff = st->prot_levels[level];
+ 
+ 	/*
+ 	 * If we have a "break" in the series, we need to flush the state that
+@@ -374,6 +380,7 @@ static void ptdump_walk_pgd_level_core(s
+ 	struct pg_state st = {
+ 		.ptdump = {
+ 			.note_page	= note_page,
++			.effective_prot = effective_prot,
+ 			.range		= ptdump_ranges
+ 		},
+ 		.level = -1,
+--- a/include/linux/ptdump.h
++++ b/include/linux/ptdump.h
+@@ -14,6 +14,7 @@ struct ptdump_state {
+ 	/* level is 0:PGD to 4:PTE, or -1 if unknown */
+ 	void (*note_page)(struct ptdump_state *st, unsigned long addr,
+ 			  int level, unsigned long val);
++	void (*effective_prot)(struct ptdump_state *st, int level, u64 val);
+ 	const struct ptdump_range *range;
+ };
+ 
+--- a/mm/ptdump.c
++++ b/mm/ptdump.c
+@@ -36,6 +36,9 @@ static int ptdump_pgd_entry(pgd_t *pgd,
+ 		return note_kasan_page_table(walk, addr);
  #endif
  
-+jiffies = jiffies_64;
++	if (st->effective_prot)
++		st->effective_prot(st, 0, pgd_val(val));
 +
- #if defined(CONFIG_X86_64)
- /*
-  * On 64-bit, align RODATA to 2MB so we retain large page mappings for
+ 	if (pgd_leaf(val))
+ 		st->note_page(st, addr, 0, pgd_val(val));
+ 
+@@ -53,6 +56,9 @@ static int ptdump_p4d_entry(p4d_t *p4d,
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+ 
++	if (st->effective_prot)
++		st->effective_prot(st, 1, p4d_val(val));
++
+ 	if (p4d_leaf(val))
+ 		st->note_page(st, addr, 1, p4d_val(val));
+ 
+@@ -70,6 +76,9 @@ static int ptdump_pud_entry(pud_t *pud,
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+ 
++	if (st->effective_prot)
++		st->effective_prot(st, 2, pud_val(val));
++
+ 	if (pud_leaf(val))
+ 		st->note_page(st, addr, 2, pud_val(val));
+ 
+@@ -87,6 +96,8 @@ static int ptdump_pmd_entry(pmd_t *pmd,
+ 		return note_kasan_page_table(walk, addr);
+ #endif
+ 
++	if (st->effective_prot)
++		st->effective_prot(st, 3, pmd_val(val));
+ 	if (pmd_leaf(val))
+ 		st->note_page(st, addr, 3, pmd_val(val));
+ 
+@@ -97,8 +108,12 @@ static int ptdump_pte_entry(pte_t *pte,
+ 			    unsigned long next, struct mm_walk *walk)
+ {
+ 	struct ptdump_state *st = walk->private;
++	pte_t val = READ_ONCE(*pte);
++
++	if (st->effective_prot)
++		st->effective_prot(st, 4, pte_val(val));
+ 
+-	st->note_page(st, addr, 4, pte_val(READ_ONCE(*pte)));
++	st->note_page(st, addr, 4, pte_val(val));
+ 
+ 	return 0;
+ }
 
 
