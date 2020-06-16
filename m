@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9484E1FBA99
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809B41FBB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731842AbgFPPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:43:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
+        id S1730013AbgFPPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731152AbgFPPnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:41 -0400
+        id S1729824AbgFPPh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6729421475;
-        Tue, 16 Jun 2020 15:43:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97A2D214F1;
+        Tue, 16 Jun 2020 15:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322221;
-        bh=jf1FBQnI/bPixSQ+NKyhPhPHwnkZyjW5PODZrSEkPNk=;
+        s=default; t=1592321845;
+        bh=+utZ7Z+nOSUxMZ2H/E3rSN3fEYGP+BDM+gAtwi9Zr48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QFqK/tYf/Or67KG4GfaNBOC4kWEGEuN7LlZwUqe6hSDddFOFyMPS6lmV6aUixjKHy
-         W73ggjOaOlP8tjVIJe6pHO97uFRL87gBf9Mry3eC2FRe63DAhbnpDjJ8VLlXBm9kTM
-         XNe7gMWdRwAw2XgcndTzafYu08EWZwRiRhs3lD+0=
+        b=n5M7sNbvONEp/K4VdHKgG1e4iMqlgkbSbO5zQAvKCs/cvK+segxuIbycMN1nIhrny
+         kAkoTTxWlkHbWqrNexuNLt8E9Z/L3Gu7a1ojWBu8IR8QR9JolyY7HAPZwIsNcFR6bj
+         JQoI9dyhD7zGd5P9EnIo1O3N1T211TzQihrBf2RY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.7 047/163] KVM: x86/mmu: Set mmio_value to 0 if reserved #PF cant be generated
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+cea71eec5d6de256d54d@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 037/134] sctp: fix refcount bug in sctp_wfree
 Date:   Tue, 16 Jun 2020 17:33:41 +0200
-Message-Id: <20200616153109.107992694@linuxfoundation.org>
+Message-Id: <20200616153102.562131944@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +46,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 6129ed877d409037b79866327102c9dc59a302fe upstream.
+[ Upstream commit 5c3e82fe159622e46e91458c1a6509c321a62820 ]
 
-Set the mmio_value to '0' instead of simply clearing the present bit to
-squash a benign warning in kvm_mmu_set_mmio_spte_mask() that complains
-about the mmio_value overlapping the lower GFN mask on systems with 52
-bits of PA space.
+We should iterate over the datamsgs to move
+all chunks(skbs) to newsk.
 
-Opportunistically clean up the code and comments.
+The following case cause the bug:
+for the trouble SKB, it was in outq->transmitted list
 
-Cc: stable@vger.kernel.org
-Fixes: d43e2675e96fc ("KVM: x86: only do L1TF workaround on affected processors")
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200527084909.23492-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+sctp_outq_sack
+        sctp_check_transmitted
+                SKB was moved to outq->sacked list
+        then throw away the sack queue
+                SKB was deleted from outq->sacked
+(but it was held by datamsg at sctp_datamsg_to_asoc
+So, sctp_wfree was not called here)
 
+then migrate happened
+
+        sctp_for_each_tx_datachunk(
+        sctp_clear_owner_w);
+        sctp_assoc_migrate();
+        sctp_for_each_tx_datachunk(
+        sctp_set_owner_w);
+SKB was not in the outq, and was not changed to newsk
+
+finally
+
+__sctp_outq_teardown
+        sctp_chunk_put (for another skb)
+                sctp_datamsg_put
+                        __kfree_skb(msg->frag_list)
+                                sctp_wfree (for SKB)
+	SKB->sk was still oldsk (skb->sk != asoc->base.sk).
+
+Reported-and-tested-by: syzbot+cea71eec5d6de256d54d@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/mmu.c |   27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+ net/sctp/socket.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6143,25 +6143,16 @@ static void kvm_set_mmio_spte_mask(void)
- 	u64 mask;
- 
- 	/*
--	 * Set the reserved bits and the present bit of an paging-structure
--	 * entry to generate page fault with PFER.RSV = 1.
-+	 * Set a reserved PA bit in MMIO SPTEs to generate page faults with
-+	 * PFEC.RSVD=1 on MMIO accesses.  64-bit PTEs (PAE, x86-64, and EPT
-+	 * paging) support a maximum of 52 bits of PA, i.e. if the CPU supports
-+	 * 52-bit physical addresses then there are no reserved PA bits in the
-+	 * PTEs and so the reserved PA approach must be disabled.
- 	 */
--
--	/*
--	 * Mask the uppermost physical address bit, which would be reserved as
--	 * long as the supported physical address width is less than 52.
--	 */
--	mask = 1ull << 51;
--
--	/* Set the present bit. */
--	mask |= 1ull;
--
--	/*
--	 * If reserved bit is not supported, clear the present bit to disable
--	 * mmio page fault.
--	 */
--	if (shadow_phys_bits == 52)
--		mask &= ~1ull;
-+	if (shadow_phys_bits < 52)
-+		mask = BIT_ULL(51) | PT_PRESENT_MASK;
-+	else
-+		mask = 0;
- 
- 	kvm_mmu_set_mmio_spte_mask(mask, mask, ACC_WRITE_MASK | ACC_USER_MASK);
+diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+index ffd3262b7a41..58fe6556cdf5 100644
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -147,29 +147,44 @@ static void sctp_clear_owner_w(struct sctp_chunk *chunk)
+ 	skb_orphan(chunk->skb);
  }
+ 
++#define traverse_and_process()	\
++do {				\
++	msg = chunk->msg;	\
++	if (msg == prev_msg)	\
++		continue;	\
++	list_for_each_entry(c, &msg->chunks, frag_list) {	\
++		if ((clear && asoc->base.sk == c->skb->sk) ||	\
++		    (!clear && asoc->base.sk != c->skb->sk))	\
++			cb(c);	\
++	}			\
++	prev_msg = msg;		\
++} while (0)
++
+ static void sctp_for_each_tx_datachunk(struct sctp_association *asoc,
++				       bool clear,
+ 				       void (*cb)(struct sctp_chunk *))
+ 
+ {
++	struct sctp_datamsg *msg, *prev_msg = NULL;
+ 	struct sctp_outq *q = &asoc->outqueue;
++	struct sctp_chunk *chunk, *c;
+ 	struct sctp_transport *t;
+-	struct sctp_chunk *chunk;
+ 
+ 	list_for_each_entry(t, &asoc->peer.transport_addr_list, transports)
+ 		list_for_each_entry(chunk, &t->transmitted, transmitted_list)
+-			cb(chunk);
++			traverse_and_process();
+ 
+ 	list_for_each_entry(chunk, &q->retransmit, transmitted_list)
+-		cb(chunk);
++		traverse_and_process();
+ 
+ 	list_for_each_entry(chunk, &q->sacked, transmitted_list)
+-		cb(chunk);
++		traverse_and_process();
+ 
+ 	list_for_each_entry(chunk, &q->abandoned, transmitted_list)
+-		cb(chunk);
++		traverse_and_process();
+ 
+ 	list_for_each_entry(chunk, &q->out_chunk_list, list)
+-		cb(chunk);
++		traverse_and_process();
+ }
+ 
+ static void sctp_for_each_rx_skb(struct sctp_association *asoc, struct sock *sk,
+@@ -9461,9 +9476,9 @@ static int sctp_sock_migrate(struct sock *oldsk, struct sock *newsk,
+ 	 * paths won't try to lock it and then oldsk.
+ 	 */
+ 	lock_sock_nested(newsk, SINGLE_DEPTH_NESTING);
+-	sctp_for_each_tx_datachunk(assoc, sctp_clear_owner_w);
++	sctp_for_each_tx_datachunk(assoc, true, sctp_clear_owner_w);
+ 	sctp_assoc_migrate(assoc, newsk);
+-	sctp_for_each_tx_datachunk(assoc, sctp_set_owner_w);
++	sctp_for_each_tx_datachunk(assoc, false, sctp_set_owner_w);
+ 
+ 	/* If the association on the newsk is already closed before accept()
+ 	 * is called, set RCV_SHUTDOWN flag.
+-- 
+2.25.1
+
 
 
