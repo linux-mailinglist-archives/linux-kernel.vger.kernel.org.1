@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243F11FB9FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E675F1FBB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbgFPPrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:47:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
+        id S1731886AbgFPQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:16:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731887AbgFPPqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:46:55 -0400
+        id S1731233AbgFPPki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:40:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59FCA21475;
-        Tue, 16 Jun 2020 15:46:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1A29208D5;
+        Tue, 16 Jun 2020 15:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322414;
-        bh=kWkYnOgyIZpYVEMaZD7avyMdh028gxcHAOd0VE+Y3yE=;
+        s=default; t=1592322037;
+        bh=SdzzXG4s6yY4CHJfKGLydERemZf4mxij13IJs8Ym4VU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MPawAMVgEpELnbQG78cNcwWancwPmk0hQdbcAh+BFN8v9w36u7Te6HyQEBp9CSnMb
-         UBh2Jh7KhgVDb4wwhl1mtwr+L++azzz9AfObqWtlfButu0Ffpps+EWwdNe4Mej2Io5
-         p14oNJFLxrUjqeoEZiLMfvnHsQEUB9YjpwFbP6y4=
+        b=ead7pApDjHac7A9nb/XZX5nTfLENOIM+WT5GU1fJKHWZCROG8GMWyHv7fCtAMXrK6
+         NCNqAVvbbyMwXHjnhlLNoX/Crsy6vUlV5XXh/3bt1PFVLmRTaF/HPB28XT8mzmuvNF
+         DgQP308s91y5YTmCTKa+m8vbPK4dNPLF7ErwmLpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.7 092/163] crypto: drbg - fix error return code in drbg_alloc_state()
+        stable@vger.kernel.org, Jue Wang <juew@google.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 082/134] x86/{mce,mm}: Unmap the entire page if the whole page is affected and poisoned
 Date:   Tue, 16 Jun 2020 17:34:26 +0200
-Message-Id: <20200616153111.242763285@linuxfoundation.org>
+Message-Id: <20200616153104.708626488@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +44,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Tony Luck <tony.luck@intel.com>
 
-commit e0664ebcea6ac5e16da703409fb4bd61f8cd37d9 upstream.
+commit 17fae1294ad9d711b2c3dd0edef479d40c76a5e8 upstream.
 
-Fix to return negative error code -ENOMEM from the kzalloc error handling
-case instead of 0, as done elsewhere in this function.
+An interesting thing happened when a guest Linux instance took a machine
+check. The VMM unmapped the bad page from guest physical space and
+passed the machine check to the guest.
 
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Fixes: db07cd26ac6a ("crypto: drbg - add FIPS 140-2 CTRNG for noise source")
+Linux took all the normal actions to offline the page from the process
+that was using it. But then guest Linux crashed because it said there
+was a second machine check inside the kernel with this stack trace:
+
+do_memory_failure
+    set_mce_nospec
+         set_memory_uc
+              _set_memory_uc
+                   change_page_attr_set_clr
+                        cpa_flush
+                             clflush_cache_range_opt
+
+This was odd, because a CLFLUSH instruction shouldn't raise a machine
+check (it isn't consuming the data). Further investigation showed that
+the VMM had passed in another machine check because is appeared that the
+guest was accessing the bad page.
+
+Fix is to check the scope of the poison by checking the MCi_MISC register.
+If the entire page is affected, then unmap the page. If only part of the
+page is affected, then mark the page as uncacheable.
+
+This assumes that VMMs will do the logical thing and pass in the "whole
+page scope" via the MCi_MISC register (since they unmapped the entire
+page).
+
+  [ bp: Adjust to x86/entry changes. ]
+
+Fixes: 284ce4011ba6 ("x86/memory_failure: Introduce {set, clear}_mce_nospec()")
+Reported-by: Jue Wang <juew@google.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Jue Wang <juew@google.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Stephan Mueller <smueller@chronox.de>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lkml.kernel.org/r/20200520163546.GA7977@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- crypto/drbg.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/crypto/drbg.c
-+++ b/crypto/drbg.c
-@@ -1294,8 +1294,10 @@ static inline int drbg_alloc_state(struc
- 	if (IS_ENABLED(CONFIG_CRYPTO_FIPS)) {
- 		drbg->prev = kzalloc(drbg_sec_strength(drbg->core->flags),
- 				     GFP_KERNEL);
--		if (!drbg->prev)
-+		if (!drbg->prev) {
-+			ret = -ENOMEM;
- 			goto fini;
-+		}
- 		drbg->fips_primed = false;
+---
+ arch/x86/include/asm/set_memory.h |   19 +++++++++++++------
+ arch/x86/kernel/cpu/mce/core.c    |   11 +++++++++--
+ include/linux/set_memory.h        |    2 +-
+ 3 files changed, 23 insertions(+), 9 deletions(-)
+
+--- a/arch/x86/include/asm/set_memory.h
++++ b/arch/x86/include/asm/set_memory.h
+@@ -85,28 +85,35 @@ void set_kernel_text_rw(void);
+ void set_kernel_text_ro(void);
+ 
+ #ifdef CONFIG_X86_64
+-static inline int set_mce_nospec(unsigned long pfn)
++/*
++ * Prevent speculative access to the page by either unmapping
++ * it (if we do not require access to any part of the page) or
++ * marking it uncacheable (if we want to try to retrieve data
++ * from non-poisoned lines in the page).
++ */
++static inline int set_mce_nospec(unsigned long pfn, bool unmap)
+ {
+ 	unsigned long decoy_addr;
+ 	int rc;
+ 
+ 	/*
+-	 * Mark the linear address as UC to make sure we don't log more
+-	 * errors because of speculative access to the page.
+ 	 * We would like to just call:
+-	 *      set_memory_uc((unsigned long)pfn_to_kaddr(pfn), 1);
++	 *      set_memory_XX((unsigned long)pfn_to_kaddr(pfn), 1);
+ 	 * but doing that would radically increase the odds of a
+ 	 * speculative access to the poison page because we'd have
+ 	 * the virtual address of the kernel 1:1 mapping sitting
+ 	 * around in registers.
+ 	 * Instead we get tricky.  We create a non-canonical address
+ 	 * that looks just like the one we want, but has bit 63 flipped.
+-	 * This relies on set_memory_uc() properly sanitizing any __pa()
++	 * This relies on set_memory_XX() properly sanitizing any __pa()
+ 	 * results with __PHYSICAL_MASK or PTE_PFN_MASK.
+ 	 */
+ 	decoy_addr = (pfn << PAGE_SHIFT) + (PAGE_OFFSET ^ BIT(63));
+ 
+-	rc = set_memory_uc(decoy_addr, 1);
++	if (unmap)
++		rc = set_memory_np(decoy_addr, 1);
++	else
++		rc = set_memory_uc(decoy_addr, 1);
+ 	if (rc)
+ 		pr_warn("Could not invalidate pfn=0x%lx from 1:1 map\n", pfn);
+ 	return rc;
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -533,6 +533,13 @@ bool mce_is_memory_error(struct mce *m)
+ }
+ EXPORT_SYMBOL_GPL(mce_is_memory_error);
+ 
++static bool whole_page(struct mce *m)
++{
++	if (!mca_cfg.ser || !(m->status & MCI_STATUS_MISCV))
++		return true;
++	return MCI_MISC_ADDR_LSB(m->misc) >= PAGE_SHIFT;
++}
++
+ bool mce_is_correctable(struct mce *m)
+ {
+ 	if (m->cpuvendor == X86_VENDOR_AMD && m->status & MCI_STATUS_DEFERRED)
+@@ -601,7 +608,7 @@ static int srao_decode_notifier(struct n
+ 	if (mce_usable_address(mce) && (mce->severity == MCE_AO_SEVERITY)) {
+ 		pfn = mce->addr >> PAGE_SHIFT;
+ 		if (!memory_failure(pfn, 0))
+-			set_mce_nospec(pfn);
++			set_mce_nospec(pfn, whole_page(mce));
  	}
  
+ 	return NOTIFY_OK;
+@@ -1103,7 +1110,7 @@ static int do_memory_failure(struct mce
+ 	if (ret)
+ 		pr_err("Memory error not recovered");
+ 	else
+-		set_mce_nospec(m->addr >> PAGE_SHIFT);
++		set_mce_nospec(m->addr >> PAGE_SHIFT, whole_page(m));
+ 	return ret;
+ }
+ 
+--- a/include/linux/set_memory.h
++++ b/include/linux/set_memory.h
+@@ -26,7 +26,7 @@ static inline int set_direct_map_default
+ #endif
+ 
+ #ifndef set_mce_nospec
+-static inline int set_mce_nospec(unsigned long pfn)
++static inline int set_mce_nospec(unsigned long pfn, bool unmap)
+ {
+ 	return 0;
+ }
 
 
