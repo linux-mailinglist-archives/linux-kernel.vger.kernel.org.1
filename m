@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F801FB716
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302721FB671
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731157AbgFPPnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:43:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32990 "EHLO mail.kernel.org"
+        id S1730295AbgFPPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:37:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731820AbgFPPng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:43:36 -0400
+        id S1730256AbgFPPhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:37:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D62D214DB;
-        Tue, 16 Jun 2020 15:43:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38F7F214D8;
+        Tue, 16 Jun 2020 15:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322216;
-        bh=sfnXnmZgiyRdrCage/CzeX/k/dTX96/ogyuFgEub200=;
+        s=default; t=1592321839;
+        bh=miSanMychqL6/nwJzCZNDHCk7vLzliy+zzKp7xC4FZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T4pYbZN5rcSUihtnW1z0Tcp9aeBTJ3I1XthVGQmKyc9e6jYzSuIiBMUXQOrO8vlKM
-         CqLdvH/1PpO5xxJ0IStBtlB8owLvFcqzEpBg2j2UscLvZofqv104tSCvIb251U94ME
-         WIFhN8AQrHukTxiPCcnQJaYiTp2Y/88TnNVdC9p0=
+        b=A8pGqeyfTLKM0FbhWuy2w/nz0v/8TQ5TY/osFxejg3u8EZCRCRcu/A0DfEnPWTW17
+         D290faLQsopBZ7/vpOz0PB4dImssRpJLEbDdbvJB3gPBYmbdAoi2juCsjeUeUjjrBq
+         76rvmFVxMfG9GnYmr+WNDk1uQG0MlKUov68POrvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Upton <oupton@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.7 045/163] KVM: x86: allow KVM_STATE_NESTED_MTF_PENDING in kvm_state flags
+        stable@vger.kernel.org, Stefan Sperling <stsp@stsp.name>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 035/134] iwlwifi: mvm: fix NVM check for 3168 devices
 Date:   Tue, 16 Jun 2020 17:33:39 +0200
-Message-Id: <20200616153109.018122346@linuxfoundation.org>
+Message-Id: <20200616153102.474482554@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-commit df2a69af85bef169ab6810cc57f6b6b943941e7e upstream.
+[ Upstream commit b3f20e098293892388d6a0491d6bbb2efb46fbff ]
 
-The migration functionality was left incomplete in commit 5ef8acbdd687
-("KVM: nVMX: Emulate MTF when performing instruction emulation", 2020-02-23),
-fix it.
+We had a check on !NVM_EXT and then a check for NVM_SDP in the else
+block of this if.  The else block, obviously, could only be reached if
+using NVM_EXT, so it would never be NVM_SDP.
 
-Fixes: 5ef8acbdd687 ("KVM: nVMX: Emulate MTF when performing instruction emulation")
-Cc: stable@vger.kernel.org
-Reviewed-by: Oliver Upton <oupton@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix that by checking whether the nvm_type is IWL_NVM instead of
+checking for !IWL_NVM_EXT to solve this issue.
 
+Reported-by: Stefan Sperling <stsp@stsp.name>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |    2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/nvm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4586,7 +4586,7 @@ long kvm_arch_vcpu_ioctl(struct file *fi
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/nvm.c b/drivers/net/wireless/intel/iwlwifi/mvm/nvm.c
+index ed367b0a185c..f49887379c43 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/nvm.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/nvm.c
+@@ -281,7 +281,7 @@ iwl_parse_nvm_sections(struct iwl_mvm *mvm)
+ 	int regulatory_type;
  
- 		if (kvm_state.flags &
- 		    ~(KVM_STATE_NESTED_RUN_PENDING | KVM_STATE_NESTED_GUEST_MODE
--		      | KVM_STATE_NESTED_EVMCS))
-+		      | KVM_STATE_NESTED_EVMCS | KVM_STATE_NESTED_MTF_PENDING))
- 			break;
- 
- 		/* nested_run_pending implies guest_mode.  */
+ 	/* Checking for required sections */
+-	if (mvm->trans->cfg->nvm_type != IWL_NVM_EXT) {
++	if (mvm->trans->cfg->nvm_type == IWL_NVM) {
+ 		if (!mvm->nvm_sections[NVM_SECTION_TYPE_SW].data ||
+ 		    !mvm->nvm_sections[mvm->cfg->nvm_hw_section_num].data) {
+ 			IWL_ERR(mvm, "Can't parse empty OTP/NVM sections\n");
+-- 
+2.25.1
+
 
 
