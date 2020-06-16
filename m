@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928EB1FB8C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45661FB8C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732975AbgFPP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:58:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59838 "EHLO mail.kernel.org"
+        id S1732150AbgFPP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731245AbgFPP6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:58:39 -0400
+        id S1732987AbgFPP6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:58:50 -0400
 Received: from localhost.localdomain (unknown [42.120.72.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C689A207C4;
-        Tue, 16 Jun 2020 15:58:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82A8921532;
+        Tue, 16 Jun 2020 15:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592323118;
-        bh=sgXwaomXepBCa/0fDyNfAVT1CtdQZ5euClhe+3TgUC4=;
+        s=default; t=1592323130;
+        bh=C4CZ/M9ITZrqQHLFJzKFmKmEbF1OrOch6eNdkBtZKo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pyl4GXoL86elhFybpnrMPN+eqqMnFaRQvaxnXf6fFPN2JVHWE8boWLKbrJaVWPby0
-         YDgBSkh8Wj3MSc+dkUFKsFUYmgprt6LBlgNxSrB5yfqjVE2uhJ6BIrIA3rdWJXq3vu
-         sshRBXlpUsosDv8ZtiU9Gl+LyjHMsNuhDMWO7wd8=
+        b=OHhYXXsUhHGHDykZTfCvAdGgbVkI7HvEcIZvSccWYS1yOEDsbXt0MjUosEgu2kIt4
+         24DQy+XHV035E7/Jov7mSVRbbU7YP8RoClK7lcj83D/w4l8X57NLRQESNvudXe3577
+         ErkyBquNey8XWFOa4or523Rwo31chDsDVemah7vI=
 From:   guoren@kernel.org
 To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
         anup@brainfault.org, zong.li@sifive.com, aou@eecs.berkeley.edu,
         tglx@linutronix.de, tycho@tycho.ws, nickhu@andestech.com
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 1/3] riscv: Fixup static_obj() fail
-Date:   Tue, 16 Jun 2020 15:56:59 +0000
-Message-Id: <1592323021-98541-2-git-send-email-guoren@kernel.org>
+Subject: [PATCH 2/3] riscv: Fixup lockdep_assert_held with wrong param cpu_running
+Date:   Tue, 16 Jun 2020 15:57:00 +0000
+Message-Id: <1592323021-98541-3-git-send-email-guoren@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1592323021-98541-1-git-send-email-guoren@kernel.org>
 References: <1592323021-98541-1-git-send-email-guoren@kernel.org>
@@ -40,73 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+From: Zong Li <zong.li@sifive.com>
 
-When enable LOCKDEP, static_obj() will cause error. Because some
-__initdata static variables is before _stext:
+The cpu_running is not a lock-class, it lacks the dep_map member in
+completion. It causes the error as follow:
 
-static int static_obj(const void *obj)
-{
-        unsigned long start = (unsigned long) &_stext,
-                      end   = (unsigned long) &_end,
-                      addr  = (unsigned long) obj;
+arch/riscv/kernel/smpboot.c: In function '__cpu_up':
+./include/linux/lockdep.h:364:52: error: 'struct completion' has no member named 'dep_map'
+  364 | #define lockdep_is_held(lock)  lock_is_held(&(lock)->dep_map)
+      |                                                    ^~
+./include/asm-generic/bug.h:113:25: note: in definition of macro 'WARN_ON'
+  113 |  int __ret_warn_on = !!(condition);    \
+      |                         ^~~~~~~~~
+./include/linux/lockdep.h:390:27: note: in expansion of macro 'lockdep_is_held'
+  390 |   WARN_ON(debug_locks && !lockdep_is_held(l)); \
+      |                           ^~~~~~~~~~~~~~~
+arch/riscv/kernel/smpboot.c:118:2: note: in expansion of macro 'lockdep_assert_held'
+  118 |  lockdep_assert_held(&cpu_running);
 
-        /*
-         * static variable?
-         */
-        if ((addr >= start) && (addr < end))
-                return 1;
+There are a lot of archs which use cpu_running in smpboot.c (arm,
+arm64, openrisc, xtensa, s390, x86, mips), but none of them try
+lockdep_assert_held(&cpu_running.wait.lock). So Just remove it.
 
-[    0.067192] INFO: trying to register non-static key.
-[    0.067325] the code is fine but needs lockdep annotation.
-[    0.067449] turning off the locking correctness validator.
-[    0.067718] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-dirty #44
-[    0.067945] Call Trace:
-[    0.068369] [<ffffffe00020323c>] walk_stackframe+0x0/0xa4
-[    0.068506] [<ffffffe000203422>] show_stack+0x2a/0x34
-[    0.068631] [<ffffffe000521e4e>] dump_stack+0x94/0xca
-[    0.068757] [<ffffffe000255a4e>] register_lock_class+0x5b8/0x5bc
-[    0.068969] [<ffffffe000255abe>] __lock_acquire+0x6c/0x1d5c
-[    0.069101] [<ffffffe0002550fe>] lock_acquire+0xae/0x312
-[    0.069228] [<ffffffe000989a8e>] _raw_spin_lock_irqsave+0x40/0x5a
-[    0.069357] [<ffffffe000247c64>] complete+0x1e/0x50
-[    0.069479] [<ffffffe000984c38>] rest_init+0x1b0/0x28a
-[    0.069660] [<ffffffe0000016a2>] 0xffffffe0000016a2
-[    0.069779] [<ffffffe000001b84>] 0xffffffe000001b84
-[    0.069953] [<ffffffe000001092>] 0xffffffe000001092
-
-static __initdata DECLARE_COMPLETION(kthreadd_done);
-
-noinline void __ref rest_init(void)
-{
-	...
-	complete(&kthreadd_done);
-
+Signed-off-by: Zong Li <zong.li@sifive.com>
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/riscv/kernel/vmlinux.lds.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/kernel/smpboot.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-index 0339b6b..bf3f34d 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -22,6 +22,7 @@ SECTIONS
- 	/* Beginning of code and text segment */
- 	. = LOAD_OFFSET;
- 	_start = .;
-+	_stext = .;
- 	HEAD_TEXT_SECTION
- 	. = ALIGN(PAGE_SIZE);
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 4e99227..defc4e1 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -121,7 +121,6 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
  
-@@ -49,7 +50,6 @@ SECTIONS
- 	. = ALIGN(SECTION_ALIGN);
- 	.text : {
- 		_text = .;
--		_stext = .;
- 		TEXT_TEXT
- 		SCHED_TEXT
- 		CPUIDLE_TEXT
+ 	ret = start_secondary_cpu(cpu, tidle);
+ 	if (!ret) {
+-		lockdep_assert_held(&cpu_running);
+ 		wait_for_completion_timeout(&cpu_running,
+ 					    msecs_to_jiffies(1000));
+ 
 -- 
 2.7.4
 
