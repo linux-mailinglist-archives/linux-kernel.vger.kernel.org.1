@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C311FBA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D081FBB31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730310AbgFPQK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
+        id S1730667AbgFPPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:38:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730973AbgFPPoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:44:38 -0400
+        id S1730627AbgFPPiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:38:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B148208E4;
-        Tue, 16 Jun 2020 15:44:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A4AF2151B;
+        Tue, 16 Jun 2020 15:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322277;
-        bh=VBXFl5rrap52PdCywCuGn06civukTsCW7RWhVdI6q34=;
+        s=default; t=1592321901;
+        bh=FuGQBmGQ4F0YGgEpB5iDhMawcVoD3mroGL2tX6fvNd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A6FQPWVLArjzwuvRDpyhN/F8oqNWU7izEOjEK7iND1yVaqDhiu2rZyX5+MWe0aDwU
-         EUJ8/7UP4MAAkdeE3YLu0Hegm5FGf1fhOiEuYtGAE7Qw+pgmYCs8pERYtb3/tlh+QO
-         1KaW6JACQPNGr11fJhDinK5+lzRlsEGavde1d/6c=
+        b=1p+YoJGki4hguhwS6nrxLEyaE9zC8Q3fi4pUon82CSgf/HiMC/dJXolcfV7JZe03O
+         s/A67BzBOJFJtQOrS4NilNysK9g45ZGm3ZVFB9kPVMphZqE3LwQfdDSWKgr/Dhh4Ds
+         7JZnUdbaMeZhqfJBovZZ4FyM90V1Jtqu+ylpuFpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Macpaul Lin <macpaul.lin@mediatek.com>
-Subject: [PATCH 5.7 070/163] ALSA: usb-audio: Fix inconsistent card PM state after resume
+Subject: [PATCH 5.4 060/134] ALSA: usb-audio: Fix inconsistent card PM state after resume
 Date:   Tue, 16 Jun 2020 17:34:04 +0200
-Message-Id: <20200616153110.199000277@linuxfoundation.org>
+Message-Id: <20200616153103.648953283@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -103,7 +103,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/usb/card.c
 +++ b/sound/usb/card.c
-@@ -843,9 +843,6 @@ static int usb_audio_suspend(struct usb_
+@@ -810,9 +810,6 @@ static int usb_audio_suspend(struct usb_
  	if (chip == (void *)-1L)
  		return 0;
  
@@ -113,7 +113,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	if (!chip->num_suspended_intf++) {
  		list_for_each_entry(as, &chip->pcm_list, list) {
  			snd_usb_pcm_suspend(as);
-@@ -858,6 +855,11 @@ static int usb_audio_suspend(struct usb_
+@@ -825,6 +822,11 @@ static int usb_audio_suspend(struct usb_
  			snd_usb_mixer_suspend(mixer);
  	}
  
@@ -125,7 +125,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	return 0;
  }
  
-@@ -871,10 +873,10 @@ static int __usb_audio_resume(struct usb
+@@ -838,10 +840,10 @@ static int __usb_audio_resume(struct usb
  
  	if (chip == (void *)-1L)
  		return 0;
@@ -138,7 +138,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	list_for_each_entry(as, &chip->pcm_list, list) {
  		err = snd_usb_pcm_resume(as);
-@@ -896,9 +898,12 @@ static int __usb_audio_resume(struct usb
+@@ -863,9 +865,12 @@ static int __usb_audio_resume(struct usb
  		snd_usbmidi_resume(p);
  	}
  
