@@ -2,156 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E0C1FB22D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 15:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C043A1FB232
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 15:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgFPNdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 09:33:37 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:40993 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726306AbgFPNdg (ORCPT
+        id S1728864AbgFPNea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 09:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbgFPNe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 09:33:36 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id F1457580249;
-        Tue, 16 Jun 2020 09:33:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 16 Jun 2020 09:33:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=5AzcztrmvMHt9dpsevcvnwdum17
-        Og9iuY36XBJsw02I=; b=F0f/vfFbL6PAifMRdAUl3EXYwI/G5Gk7yP3TRmlUbdD
-        9bw098IbIcV8vtgvNU7bT/Q9+/Ceu5yu56pDbl/r5OsuwjjZ0dih1qBAi8GKni4v
-        NwlNSF1qjfhgCUUGieu9zqpYbkEMHJny7tTwlU1sRA7WfF8QBa48p1LTPhseQ68M
-        Tr5FypisKi5l9tc2ehsHnLR768RdLE0sLoZcO4yMlKkRIZQXXscYoM66BqUkAG1j
-        a5bH8g7Nll4gjYQkxcaEo/qm+fY4rNDzadXhp/Jj9X2WShtcAmNfI8yVvQN/4w6D
-        58/9lk+AXsy8Io63P3eUv1lBCYBZ+Z0GdSfbqVog3Mg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5Azczt
-        rmvMHt9dpsevcvnwdum17Og9iuY36XBJsw02I=; b=Tca5GtDExYvwwzrDuU2kHd
-        Th8zeelhkyxx2cGc0CAhxf0+zy2ya49oyGC785I4jEZfX1r/hDF/KgrzzoohnU/8
-        86o/NLhlTb5KkH+52ppDJXHjByy0nrC1WAZgE/e2imA8zrEgxGUNQ+kjz4jEvlWk
-        qNYg5lfNLVsWoBj68qNG00aZmmCLg2TaPZd+N8RmcxJwj1d38a0e6Azemv+QzLY7
-        ji9WZ7FuNzo65ElAOzEPFKOvhbESTUvsTLABA45Oe42S5Vz21PJZSTrgTjOs474Y
-        jNRmL9WDnI6rCdG5IkDA5+k0pYlk019KKIG8iOiLJ1LwXcgrFoWgWf8sCXX2sH+Q
-        ==
-X-ME-Sender: <xms:LcroXlCCBfaNI0AAgdrprJwRWP5FV6ZGL4C_-TDjqWeWATHWssoEAA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudejtddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnheptdelieekgfegtedtgfevheduffdvfeehgeetiefgffehjefffeefffefvedt
-    geeinecuffhomhgrihhnpehpvghnghhuthhrohhnihigrdguvgenucfkphepledtrdekle
-    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:LcroXjh4In1jykQhV4cPF4ld8PuC9DBba7owZKeVJGOTjMqM8UjF8w>
-    <xmx:LcroXgnYr5qQ_TYtPWYA4F4qLfbGXViMNSSCXaMmSItJH4f3I3i6sg>
-    <xmx:LcroXvx9JhT7HWRV2GwylrsvwWGrjqYCmV6viyGfq4xI3OuCj5YVAg>
-    <xmx:LsroXtHUGCJXbfmJvuCI5KXuhKHS0ALuCEMsFpIzW59Q0I3uQ8YNcQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 77BD23280063;
-        Tue, 16 Jun 2020 09:33:33 -0400 (EDT)
-Date:   Tue, 16 Jun 2020 15:33:31 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] ARM: dts: bcm2711: Add HDMI DVP
-Message-ID: <20200616133331.xhrelfzu6tvjhdld@gilmour.lan>
-References: <cover.4c4625a8e076f3163b800b3d8986b282ee98d908.1591867332.git-series.maxime@cerno.tech>
- <e22222ca7f41b960e9bb1a31e0dd2de95b8c0cd1.1591867332.git-series.maxime@cerno.tech>
- <810816166d8ef554e1bb1f4a2b39ea0b8a1a3d5b.camel@suse.de>
- <20200616121641.jpoz237p43sbndg2@gilmour.lan>
- <706f56a20d318b841792ca19a6fe7135cb6c61e3.camel@pengutronix.de>
+        Tue, 16 Jun 2020 09:34:28 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C4C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 06:34:28 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x93so14267108ede.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 06:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UAci7iu9x7AuACkwyPspvtLfgfrwKch4Y/GzStjmjeY=;
+        b=E0Zi/jXUzZyzGLyIcWdXRQd84MOhCKAGFfN7znAr5/rt4+3/R66Metwl4buEQfC7aN
+         AdZgo1V+eDHH815vjjsqU/VBwowGuCUQFyvrZfvDxSZ/0K80giQV+IgwgJKSFQzaCCbD
+         RKUnSfuw9eYiaqh7vgWsoF0WhVkGS2GLl26xHNrCRp6zfLb1qDrTMPunUkH5rrwIl1Nf
+         qervC5pVTYGCpyAoU36WuoTM/tgdjZjECgxrZjN20FY4CeIJVUvaLNi0A/qazC3x1jy/
+         WjYw/sSFNJGMIkmKxeXQCQu2J654FEaZN7Q3g+rrxkyLYl+Cql3n4+v3tha6nbo1965u
+         iH7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UAci7iu9x7AuACkwyPspvtLfgfrwKch4Y/GzStjmjeY=;
+        b=Lpr2edhyiwjSXKV9h2UU1i5s1aOwSo0HBSZ4soAMYHnxtAkOmvfZ/PEZ3TOkX7Ysel
+         JToDyqKncqeN+Fe7yyETt0bLqmNmdpEzyjWzeu/KUo//IE7iX4SvP8nevUSDNilM9GjP
+         yAbba109+8Z+Yz1TclC6IDvze4Px5JrTfZvCxiZ/lpHYg64t7VaQCehK0D8SReoAZdgW
+         O4gRvSYGPZyehyhMdRONgD9r9hZaKIdb+6/i5sMgMbjXqdFHQIw8Srpa1CPdoaU3+l/r
+         KTuatqCyBBMP/TFBwhC0gk9dCNtP8qRGVn+fADi5sfKZcMEo3UPNI3Nnbg3ps+MoarcJ
+         /8kw==
+X-Gm-Message-State: AOAM531piGr2sWlsnfvr9df/lXQBCMEG7Rn8vb6rfrx2OUQwkJhobizu
+        oWzzwcJCTdE/BTKRz/vIA1XsQUGG23dDcBLA1tQYzQ==
+X-Google-Smtp-Source: ABdhPJxKr3cIPVxwUoBrHPpip3Va7+OcCXoSiS2elgmhtiC0qEoNsFfb+CW1j+Ni3sAnWwDzyHc+AFWj5tQ6aGTp/Qg=
+X-Received: by 2002:a05:6402:a42:: with SMTP id bt2mr2544456edb.42.1592314466851;
+ Tue, 16 Jun 2020 06:34:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="r7x7ebip5kixyu7n"
-Content-Disposition: inline
-In-Reply-To: <706f56a20d318b841792ca19a6fe7135cb6c61e3.camel@pengutronix.de>
+References: <CAMGffEmgLbd8mjEE4xM-U7MGCsWsdHEHCqs2erMdJ7+CUCFaCA@mail.gmail.com>
+ <20200616131555.GU2531@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200616131555.GU2531@hirez.programming.kicks-ass.net>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 16 Jun 2020 15:34:15 +0200
+Message-ID: <CAMGffEnevUWFQAaB9cvpCY0i0bnfiCSCBc8pWJaqMH3p-NC4xg@mail.gmail.com>
+Subject: Re: [BUG] divide error select_idle_sibling+0x36b
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
 
---r7x7ebip5kixyu7n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jun 16, 2020 at 3:15 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Jun 16, 2020 at 03:07:00PM +0200, Jinpu Wang wrote:
+>
+> > [7623813.970839] CPU: 10 PID: 46544 Comm: qemu-2.7 Tainted: G
+> >  O    4.14.154-1-pserver #4.14.154-1.1~deb9
+>
+> Please try on a kernel from this century.
+Thanks for quick reply, we are upgrading to 4.19.105 (release on Wed
+Feb 19 19:51:59 2020), do you maybe know if it is fixed in 4.19?
 
-On Tue, Jun 16, 2020 at 02:56:55PM +0200, Philipp Zabel wrote:
-> Hi Maxime,
->=20
-> On Tue, 2020-06-16 at 14:16 +0200, Maxime Ripard wrote:
-> > Hi Nicolas,
-> >=20
-> > On Mon, Jun 15, 2020 at 06:26:19PM +0200, Nicolas Saenz Julienne wrote:
-> > > On Thu, 2020-06-11 at 11:23 +0200, Maxime Ripard wrote:
-> > > > Now that we have a driver for the DVP, let's add its DT node.
-> > > >=20
-> > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > > ---
-> > >=20
-> > > I can take this patch, but I guess the rest should go trough the cloc=
-k tree.
-> > > Is it OK with you?
-> >=20
-> > We have a build dependency on the reset framework for that driver, so it
-> > should rather go through the reset tree (or Philipp should make an
-> > immutable branch that the clk maintainers can merge).
->=20
-> I've prepared an immutable branch that these patches could be based on
-> and that could be merged into the clk tree:
->=20
-> The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c74=
-07:
->=20
->   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
->=20
-> are available in the Git repository at:
->=20
->   git://git.pengutronix.de/git/pza/linux reset/simple
->=20
-> for you to fetch changes up to a9701376ed0fb61a5be4bb438daf26bd9cfa24b5:
->=20
->   reset: simple: Add reset callback (2020-06-16 14:19:57 +0200)
->=20
-> ----------------------------------------------------------------
-> Maxime Ripard (2):
->       reset: Move reset-simple header out of drivers/reset
->       reset: simple: Add reset callback
->=20
->  drivers/reset/reset-simple.c                    | 23 +++++++++++++++++++=
-++--
->  drivers/reset/reset-socfpga.c                   |  3 +--
->  drivers/reset/reset-sunxi.c                     |  3 +--
->  drivers/reset/reset-uniphier-glue.c             |  3 +--
->  {drivers =3D> include/linux}/reset/reset-simple.h |  7 +++++++
->  5 files changed, 31 insertions(+), 8 deletions(-)
->  rename {drivers =3D> include/linux}/reset/reset-simple.h (74%)
-
-Awesome, thanks!
-Maxime
-
---r7x7ebip5kixyu7n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXujKKwAKCRDj7w1vZxhR
-xV3OAQCkHU7+1ivZrwdMJyQYhSTjRSdayzi5Kco9mto6Q+aFgQEAxvAgtce/URjq
-/H97TMJbga30ORtpVIPOaxQdt9c/0Qs=
-=Txka
------END PGP SIGNATURE-----
-
---r7x7ebip5kixyu7n--
+Regards!
