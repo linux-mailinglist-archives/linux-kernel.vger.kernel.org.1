@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B441FB988
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852A81FBAC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732692AbgFPQEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44586 "EHLO mail.kernel.org"
+        id S1731915AbgFPQNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:13:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732520AbgFPPte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:49:34 -0400
+        id S1731749AbgFPPnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:43:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1EE821473;
-        Tue, 16 Jun 2020 15:49:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D795208D5;
+        Tue, 16 Jun 2020 15:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322573;
-        bh=VASNrqWw28hYBms+NUsXU/7SVcpOs3TperhQW5FRVcg=;
+        s=default; t=1592322193;
+        bh=bJ5vHl2H8/BvNDVhsIs4pfBDlyCaMBFtm0KMc8o1C+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2LAFXsJhBrKKI8TwrPTTFiOTB55yVel5GHF2F/PyPirYsB2hcDioJpQRv0CIBjUQ+
-         VgdRvTc838NLuvwZr81mZ/1TiDkcoj6a4mrklb61Yrl5CCWaLHg/6H1hjedZ/s8d5O
-         r4gPrH6lr/hXRGtpsUmYmuNkS5QrdeNIdOm2k8X0=
+        b=P5qUiL3prpt7LwhBRKUTI0isuplrW8z6CeSI7Q0brbhmX8ip/pHIHXydC+6RDX/6i
+         Ql+popdwz4GD0ZSdMQ4jnkVsUenci/hPVNrb0+esicmComqxkKQMF+djAdlLc6h0zi
+         U7cDCldwW0NjqX1tQo0d5VFy47OveJfC7SRxzp+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 020/161] gfs2: Even more gfs2_find_jhead fixes
-Date:   Tue, 16 Jun 2020 17:33:30 +0200
-Message-Id: <20200616153107.366133434@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaochun Lee <lixc17@lenovo.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.7 037/163] x86/PCI: Mark Intel C620 MROMs as having non-compliant BARs
+Date:   Tue, 16 Jun 2020 17:33:31 +0200
+Message-Id: <20200616153108.641325009@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,91 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Xiaochun Lee <lixc17@lenovo.com>
 
-[ Upstream commit 20be493b787cd581c9fffad7fcd6bfbe6af1050c ]
+commit 1574051e52cb4b5b7f7509cfd729b76ca1117808 upstream.
 
-Fix several issues in the previous gfs2_find_jhead fix:
-* When updating @blocks_submitted, @block refers to the first block block not
-  submitted yet, not the last block submitted, so fix an off-by-one error.
-* We want to ensure that @blocks_submitted is far enough ahead of @blocks_read
-  to guarantee that there is in-flight I/O.  Otherwise, we'll eventually end up
-  waiting for pages that haven't been submitted, yet.
-* It's much easier to compare the number of blocks added with the number of
-  blocks submitted to limit the maximum bio size.
-* Even with bio chaining, we can keep adding blocks until we reach the maximum
-  bio size, as long as we stop at a page boundary.  This simplifies the logic.
+The Intel C620 Platform Controller Hub has MROM functions that have non-PCI
+registers (undocumented in the public spec) where BAR 0 is supposed to be,
+which results in messages like this:
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Reviewed-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  pci 0000:00:11.0: [Firmware Bug]: reg 0x30: invalid BAR (can't size)
+
+Mark these MROM functions as having non-compliant BARs so we don't try to
+probe any of them.  There are no other BARs on these devices.
+
+See the Intel C620 Series Chipset Platform Controller Hub Datasheet,
+May 2019, Document Number 336067-007US, sec 2.1, 35.5, 35.6.
+
+[bhelgaas: commit log, add 0xa26d]
+Link: https://lore.kernel.org/r/1589513467-17070-1-git-send-email-lixiaochun.2888@163.com
+Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/gfs2/lops.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ arch/x86/pci/fixup.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index 3a020bdc358c..966ed37c9acd 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -505,12 +505,12 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 	unsigned int bsize = sdp->sd_sb.sb_bsize, off;
- 	unsigned int bsize_shift = sdp->sd_sb.sb_bsize_shift;
- 	unsigned int shift = PAGE_SHIFT - bsize_shift;
--	unsigned int max_bio_size = 2 * 1024 * 1024;
-+	unsigned int max_blocks = 2 * 1024 * 1024 >> bsize_shift;
- 	struct gfs2_journal_extent *je;
- 	int sz, ret = 0;
- 	struct bio *bio = NULL;
- 	struct page *page = NULL;
--	bool bio_chained = false, done = false;
-+	bool done = false;
- 	errseq_t since;
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -572,6 +572,10 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_IN
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6f60, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fa0, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fc0, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ec, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ed, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26c, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26d, pci_invalid_bar);
  
- 	memset(head, 0, sizeof(*head));
-@@ -533,10 +533,7 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 				off = 0;
- 			}
- 
--			if (!bio || (bio_chained && !off) ||
--			    bio->bi_iter.bi_size >= max_bio_size) {
--				/* start new bio */
--			} else {
-+			if (bio && (off || block < blocks_submitted + max_blocks)) {
- 				sector_t sector = dblock << sdp->sd_fsb2bb_shift;
- 
- 				if (bio_end_sector(bio) == sector) {
-@@ -549,19 +546,17 @@ int gfs2_find_jhead(struct gfs2_jdesc *jd, struct gfs2_log_header_host *head,
- 						(PAGE_SIZE - off) >> bsize_shift;
- 
- 					bio = gfs2_chain_bio(bio, blocks);
--					bio_chained = true;
- 					goto add_block_to_new_bio;
- 				}
- 			}
- 
- 			if (bio) {
--				blocks_submitted = block + 1;
-+				blocks_submitted = block;
- 				submit_bio(bio);
- 			}
- 
- 			bio = gfs2_log_alloc_bio(sdp, dblock, gfs2_end_log_read);
- 			bio->bi_opf = REQ_OP_READ;
--			bio_chained = false;
- add_block_to_new_bio:
- 			sz = bio_add_page(bio, page, bsize, off);
- 			BUG_ON(sz != bsize);
-@@ -569,7 +564,7 @@ block_added:
- 			off += bsize;
- 			if (off == PAGE_SIZE)
- 				page = NULL;
--			if (blocks_submitted < 2 * max_bio_size >> bsize_shift) {
-+			if (blocks_submitted <= blocks_read + max_blocks) {
- 				/* Keep at least one bio in flight */
- 				continue;
- 			}
--- 
-2.25.1
-
+ /*
+  * Device [1022:7808]
 
 
