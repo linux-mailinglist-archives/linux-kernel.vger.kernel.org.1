@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4381FB682
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA531FB719
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgFPPh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:37:57 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:42744 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730391AbgFPPhp (ORCPT
+        id S1731852AbgFPPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:43:47 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24891 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731827AbgFPPnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:45 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jun 2020 21:06:55 +0530
-Received: from vbadigan-linux.qualcomm.com ([10.206.24.109])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Jun 2020 21:06:43 +0530
-Received: by vbadigan-linux.qualcomm.com (Postfix, from userid 76677)
-        id 192564C6C; Tue, 16 Jun 2020 21:06:41 +0530 (IST)
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Subject: [PATCH V4 0/2] Internal voltage control for qcom SDHC
-Date:   Tue, 16 Jun 2020 21:06:17 +0530
-Message-Id: <1592321779-28556-1-git-send-email-vbadigan@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
+        Tue, 16 Jun 2020 11:43:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592322217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oKDGWEKwqPpKFVbswFpUDNbyYl/9csGc/AghQtdbXr0=;
+        b=KDGj9ezXb0MATsoFrINZS/KJ9YGE0IRYNuxPqefFDG0loeuHQ0mTUMQlbj21UcRLjKxhjv
+        62b+wbnLFk7COuSJPWNGsYeS4LBp4htdQ+LpYWoytZZ6sWljzIOU3wojamHfPwIFqTzTpF
+        IG4JgtXAbYLlhGpoOWCYbJmI0PF913I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-18RYIHL_PyO2hLSMA5unqA-1; Tue, 16 Jun 2020 11:43:36 -0400
+X-MC-Unique: 18RYIHL_PyO2hLSMA5unqA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5B1910AEA20;
+        Tue, 16 Jun 2020 15:43:34 +0000 (UTC)
+Received: from x2.localnet (ovpn-113-82.phx2.redhat.com [10.3.113.82])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 777BE1001B07;
+        Tue, 16 Jun 2020 15:43:28 +0000 (UTC)
+From:   Steve Grubb <sgrubb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        zohar@linux.ibm.com, rgb@redhat.com,
+        linux-integrity@vger.kernel.org, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] integrity: Add result field in audit message
+Date:   Tue, 16 Jun 2020 11:43:26 -0400
+Message-ID: <41911815.FMGa2a4QOz@x2>
+Organization: Red Hat
+In-Reply-To: <CAHC9VhTmShh8ggdjLKf_ciL6fDt3ZH59BXaXMAgd8LFzqVj6rQ@mail.gmail.com>
+References: <20200613022633.3129-1-nramas@linux.microsoft.com> <CAHC9VhTmShh8ggdjLKf_ciL6fDt3ZH59BXaXMAgd8LFzqVj6rQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On qcom SD host controllers voltage switching be done after the HW
-is ready for it. The HW informs its readiness through power irq.
-The voltage switching should happen only then.
+On Monday, June 15, 2020 6:51:22 PM EDT Paul Moore wrote:
+> On Fri, Jun 12, 2020 at 10:26 PM Lakshmi Ramasubramanian
+> 
+> <nramas@linux.microsoft.com> wrote:
+> > Result code is not included in the audit messages logged by
+> > the integrity subsystem. Add "result" field in the audit messages
+> > logged by the integrity subsystem and set the value to the result code
+> > passed to integrity_audit_msg() in the "result" parameter.
+> > 
+> > Sample audit message:
+> > 
+> > [    6.284329] audit: type=1804 audit(1591756723.627:2): pid=1 uid=0
+> > auid=4294967295 ses=4294967295 subj=kernel op=add_boot_aggregate
+> > cause=alloc_entry comm="swapper/0" name="boot_aggregate" res=0
+> > result=-12
+> > 
+> > [    8.085456] audit: type=1802 audit(1592005947.297:9): pid=1 uid=0
+> > auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0
+> > op=policy_update cause=completed comm="systemd" res=1 result=0
+> > 
+> > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > Suggested-by: Steve Grubb <sgrubb@redhat.com>
+> > ---
+> > 
+> >  security/integrity/integrity_audit.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> If we can't use "res=" to carry more than 0/1 then this seems reasonable.
 
-So added support to register voltage regulators from the msm driver
-and use them.
+Paul,
 
-This patchset was posted long back but not actively pursued
-https://lore.kernel.org/linux-arm-msm/1539004739-32060-1-git-send-email-vbadigan@codeaurora.org/
-So posting it as fresh patchset.  
+But we can't do this. The field name dictionary says this is used to convey 
+success/fail. It is hard coded in the field interpretation table to look for 
+0/1 and interpret that. Interpeting this field will now produce an error 
+message. And "result" is a searchable field.
 
-Changes since V3:	
-	- Dropped reading of regulator load values from device tree.
-	- Dropped documentaiton chagne.
-	- Since only Vqmmc supply of eMMC would be kept On during suspend,
-	  setting load only for this regulator so that it can go to LPM.
-	  And since this Load reamins same, load value is hard-coded in the driver.
+As I suggested a few emails back, let's just use errno or something not 
+already taken in the dictionary. NACK.
 
-Changes since V2:
-	- Removed redundant log from sdhci_msm_set_vmmc.
-	- Added the condition for skiping disabling of vqmmc for eMMC.
-	- Updated logic such that, setting load for vqmmc only if
-	  it is kept ON. 
-	- Retained ack by Adrian for second patch.
-	- Updated dt properties names as per Robs comments.
+-Steve
 
-Changes since V1:
-	- Removed setting load for Vmmc regulator while turning it on/off.
-	  Instead setting the active load once during probe.
-	- Simplified handlng of supplies for BUS_ON/OFF cases in shci_msm_handle_pwr_irq().
-	- Moved common code out of switch case in sdhci_msm_start_signal_voltage_switch().
-	- Updated variable name to sdhci_core_to_disable_vqmmc.
-	- Updated pr_err logs to dev_err logs.
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> 
+> > diff --git a/security/integrity/integrity_audit.c
+> > b/security/integrity/integrity_audit.c index 5109173839cc..84002d3d5a95
+> > 100644
+> > --- a/security/integrity/integrity_audit.c
+> > +++ b/security/integrity/integrity_audit.c
+> > @@ -53,6 +53,6 @@ void integrity_audit_msg(int audit_msgno, struct inode
+> > *inode,> 
+> >                 audit_log_untrustedstring(ab, inode->i_sb->s_id);
+> >                 audit_log_format(ab, " ino=%lu", inode->i_ino);
+> >         
+> >         }
+> > 
+> > -       audit_log_format(ab, " res=%d", !result);
+> > +       audit_log_format(ab, " res=%d result=%d", !result, result);
+> > 
+> >         audit_log_end(ab);
+> >  
+> >  }
+> > 
+> > --
+> > 2.27.0
 
-Veerabhadrarao Badiganti (2):
-  dt-bindings: mmc: Supply max load for mmc supplies
-  mmc: sdhci-msm: Use internal voltage control
 
-Vijay Viswanath (1):
-  mmc: sdhci: Allow platform controlled voltage switching
 
- drivers/mmc/host/sdhci-msm.c | 208 +++++++++++++++++++++++++++++++++++++++++--
- drivers/mmc/host/sdhci.c     |  32 ++++---
- drivers/mmc/host/sdhci.h     |   1 +
- 3 files changed, 219 insertions(+), 22 deletions(-)
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
 
