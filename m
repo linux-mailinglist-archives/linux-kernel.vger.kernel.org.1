@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E701FB0B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8433A1FB0BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgFPMaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:30:03 -0400
-Received: from mail-vi1eur05on2081.outbound.protection.outlook.com ([40.107.21.81]:6078
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726052AbgFPMaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:30:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W0m8UEHBgp3aj0ky4izuhQbbZYLArDkrEK1hfp7g7nwtE17xwomgjBBsdGdQphNSvOXCxWw13+5Bf2V9k6FTBj9eua8gXvnOQ0V0yOleFDmTNnM+8YILEck+hP0fXoTi+3nssqScTM56rA9uf6Tl54+6D+Dj4BsSygj6o5lLKwPPGXE8895DqxQfmlji3rBk3rHwLIqRB/sWoycUKSqrzayo0XIv9Lkuf4nfm1cJcqBRKlenFCqMIbVaxEYEsgN6SrltCNvLKi6v6+bA+YvcGWXX9PQCFPGNpSWaiKG2TjqpK3I15rtNb3eJLPE91/zExSD2RGk4fAZbLtpMaRad5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0sVxqG14Wz23Ve98PNOWs+hUDuulFT7sSBxtQCOvTBI=;
- b=b1EI6XqgNGREBN1IU2guzfL3/2prttrxq1shTNW4FKjTVuEAievoiw41PJy4HnGYp5/s7kKyb+mY/sRQCNqIck1BM8Ydyvq5Rftsu15+fSyCibW0bHUysg+PbDPJfDg/hengnHu9kBblHaJ6pYnEEd06TqQZiOn8/dtxhZ9ZLUSet00aLd+7DmF+VGR+lhHOmSr99qgoLEUGr1emeLpB3Naq7xO55uKbrgkKJiB6ngl2pnyfbPK8kzA6qoGdWADt1mZ278LR24DJBOjB6ZJbRnVnT2c9pnrYFlgBeQiCNETqFeUrfD3LXamxV0ntbxnHr4QGQ2p2iFuH1+SvpcvnQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0sVxqG14Wz23Ve98PNOWs+hUDuulFT7sSBxtQCOvTBI=;
- b=Ok+zdHUCj3sf5n0Ki5oPL7F4QXgOxkFp3V+yI82fUlSVix8LBUC9MdslQNBwvi92i6BnZkwK+IBLmp1sz6Y2ykNPcAWrs9r949FI03g+XK5SG82BBQskS3E5nlHDWtzA4tAqsOKyWixhgOYZheq6gWMQh7rqlPHrcs4P0ychRG4=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VE1PR04MB6509.eurprd04.prod.outlook.com (2603:10a6:803:125::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Tue, 16 Jun
- 2020 12:29:57 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3088.028; Tue, 16 Jun 2020
- 12:29:57 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "matthias.schiffer@ew.tq-group.com" 
-        <matthias.schiffer@ew.tq-group.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1 RFC 1/2] spi: introduce fallback to pio
-Thread-Topic: [PATCH v1 RFC 1/2] spi: introduce fallback to pio
-Thread-Index: AQHWP6z7CX2etPvPnk+oddH8JEW5FKjTbHIAgADDYUCAAJUwgIAACjoQgAA5dICAAOmA8IADsXmAgAANH1CAAASJgIAACZlAgAAGaACAAAKk4IAAAtQAgAC2bzCAAIkpAIAAAgdAgAAFkYCAAB+kcA==
-Date:   Tue, 16 Jun 2020 12:29:57 +0000
-Message-ID: <VE1PR04MB66381A584159BEF5450B4CCD899D0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <20200615123553.GP4447@sirena.org.uk>
- <VE1PR04MB6638C65257F41072C3D61583899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200615133905.GV4447@sirena.org.uk>
- <VE1PR04MB6638793C00742D5BA72F8AC2899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200615143622.GX4447@sirena.org.uk>
- <VE1PR04MB6638D0C9FE0289FFE13ABA49899C0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200615145556.GY4447@sirena.org.uk>
- <VE1PR04MB66380FD8FB7FCE79AF4B6CD4899D0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200616095948.GJ4447@sirena.org.uk>
- <VE1PR04MB66387499F9AF80A68F720529899D0@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <20200616102659.GK4447@sirena.org.uk>
-In-Reply-To: <20200616102659.GK4447@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8ae0c9ac-8def-4235-d4ed-08d811f0fb28
-x-ms-traffictypediagnostic: VE1PR04MB6509:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB65092A75F2428B61091A09B3899D0@VE1PR04MB6509.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-forefront-prvs: 04362AC73B
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8E1xpVG9oy3KT4LZIStHjaKOL6rGKB55gaNj/rvCKYgOp+nHpLggikJE7hj9Ak2hH4AR0cSA65UchE0eGDK0Mo1q0m9Ylne0oB3/9NySnXwXfJnjY8vI3eoK11a05Cq3ji8BmdJe/yR5GNtM9KW9CIg5wP7dZgoC400mOb6/jA97QX7r+1yh6Lz6tB8iJCvkdtyejWEqT4mujrqyPXy0xlK7Uym3z0Mohvod1CuU7F3jrR5DEROCmoKphu2BxjTV+onOExnSdUcOhGRrMtO3b7GIzeE4VOy2OPvLIXvu/ZAndMICTZe5abnOhAxNysPt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(7416002)(6506007)(7696005)(9686003)(71200400001)(33656002)(66556008)(64756008)(76116006)(54906003)(55016002)(86362001)(4744005)(6916009)(66476007)(66946007)(66446008)(186003)(52536014)(5660300002)(8676002)(83380400001)(4326008)(498600001)(2906002)(26005)(8936002)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: FoGBSC5YrHU2pEFKAno/aB7yV3Qz3NWuvrQ6zJTlAxS28majXcctRPgQWy1xDs5S7s1JJ2FhcS3DFFk3YuJAYnbiQ+gEReltXKFNy64xzLFLA9txV1KUFGiIn/Mx0lZa8O6ii60PYg5EeKJs6yoQpkhnDe5wZ2ACsmdLUqQSUEHVL9Nnab2yx6+ZXeRcmLeYjxT5r/RegH60/5vek/NEWc/ivL6KgK3eSEBWv8M5Qtbjg35cCScjvG/LzfQatj75vK0xKMd7h6zjfVsNU4aDZJdAIR65viV6GjWkkBuyq9e3ojtMqzlWcUwjBI34IqgiLgQvzarstzZ5Sy2CFgzfgDtlJFhX5f16efzc9WZHQUIuthz12YBPQLzR1AxSdgVZeJf/sGJpl+k4HHU+gSPziedB9pnwz1MRaSycs3luWNtCGqFZGaFRvy+ragZ0WbkduechhwGWGuY9xmPHHLl6Oo6OWd+23oiUoL4qR+DfyvtZRgTT8MMW2zWImzkgidaA
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ae0c9ac-8def-4235-d4ed-08d811f0fb28
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2020 12:29:57.2158
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HpA2Ue4y7Pkz2HbLjEd4LRDBGRg69ZoBNfDcWDwrHOUMUDEp1Pg5/zi3RLrfz18hb57eNNNNXBBd7TDvWMX6XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6509
+        id S1728760AbgFPMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgFPMbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 08:31:32 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3543C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:31:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id c35so14125468edf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 05:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/1r7CkWYB3PvqDAm7Ot1fK+BdMOnYVR/V3utAsyrDz0=;
+        b=aOuc3PNIXOscLHviWkmoerLaHV3t0vKE4OF+G+AsWn4rC9b6olH2lm6AItsGUbKi/e
+         Qzelbl0GduFV1NbJPGME4+loz08IxPVRkUH1xpD4JrgFlmHcaVGUwM2yAM3R52OLybtF
+         AJVq5Eiv9mPIPfNpHuY0o242bSrKMv7yzzPZyBqYTSQ/LApa/njqHNMD2JXQb4wlJN3+
+         aTLfGbnILz6HCmPbJtPqHK2We/agFZqzcbUkP7Y+Gyy9po2YGEDFCH8f9RPe3aG2Ak8H
+         oHX3AQbe7oQ/qyRukBnOKPINVdsAWs+xEbGe6RatIhDl69YPNnR4g1I3TY+BUWJxuJyJ
+         7wgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/1r7CkWYB3PvqDAm7Ot1fK+BdMOnYVR/V3utAsyrDz0=;
+        b=bNFQo2EtPo4fdCiK6Jbf15t+/j/dTVn4FVUEFnLlejQFsEYnNFFRAUBCzRvRhkVLJ/
+         CcGTu2AlO1E7GXu688KhnQaxsuiYS4d9hCZbTT3Rqdcb2+Is3jlB+5gGvsxXtl7KFZFs
+         Z81Yz3iZenzv2wO+7mipixhbcWhfhHBXdoMQm0AKRG1ffqCM0eJq7QUPBZHkY/6Bj6EY
+         sQYBWrB7xhyaJ04d8RiiaS44ftdzwUc2Px9ETs7meTrHTt3VLccfMlbgklA24DQzfBSN
+         bE2r0NhNuQCdpKAoCnFSVoOb5P0x4rNFDR6seX50n0x6jkc86QLR2j5LKGmiUPc0bJOY
+         JIAQ==
+X-Gm-Message-State: AOAM532WfEX0/BdkZCIR4Y5meCKagfd53aP4DDiTD2nxfNIadspFzaE9
+        A956Py6IIda1JnBVrCP8dWsaCQ==
+X-Google-Smtp-Source: ABdhPJzmX15Wn6UYFFsYF7DAkg/UYOnitBPHj6tHLVHQjeJ3Qti/lxHyPAuPlMdMfPP80Lw50X1wzQ==
+X-Received: by 2002:aa7:c6c7:: with SMTP id b7mr2324483eds.213.1592310690397;
+        Tue, 16 Jun 2020 05:31:30 -0700 (PDT)
+Received: from localhost.localdomain (212-5-158-38.ip.btc-net.bg. [212.5.158.38])
+        by smtp.gmail.com with ESMTPSA id p6sm11071983ejb.71.2020.06.16.05.31.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 05:31:29 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Maheshwar Ajja <majja@codeaurora.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH 0/4] Add two new v4l controls and implementation
+Date:   Tue, 16 Jun 2020 15:29:57 +0300
+Message-Id: <20200616123001.11321-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/06/16 18:27 Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Jun 16, 2020 at 10:13:08AM +0000, Robin Gong wrote:
-> > So rename to SPI_TRANS_DMA_FAIL? I think at least DMA is MUST for
-> > fallback case...
->=20
-> This is not purely for DMA, it's just about the failure having occurred b=
-efore the
-> transfer started.  How about _FAIL_NO_START?
-Okay, I'll use SPI_TRANS_FAIL_NO_START in v2. Thanks Mark for your kind sup=
-port :)
+Hello,
+
+Here we add two more v4l controls:
+ - V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY for encoders
+ - V4L2_CID_MPEG_VIDEO_DECODE_INTRA_FRAMES_ONLY for decoders
+
+and the implementations in Venus driver.
+
+The original patch for CQ from Maheshwar has been rebased on top of
+current media/master and the comment from Hans has been taken into
+account.
+
+Comments are welcome.
+
+regards,
+Stan
+
+Maheshwar Ajja (1):
+  media: v4l2-ctrls: Add encoder constant quality control
+
+Stanimir Varbanov (3):
+  venus: venc: Add support for constant quality control
+  v4l2-ctrl: Add control for intra only decode
+  venus: vdec: Add support for decode intra frames only
+
+ .../media/v4l/ext-ctrls-codec.rst             | 19 +++++++
+ drivers/media/platform/qcom/venus/core.h      |  2 +
+ drivers/media/platform/qcom/venus/hfi_cmds.c  | 49 ++++++++++++++++++-
+ .../media/platform/qcom/venus/hfi_helper.h    |  4 +-
+ drivers/media/platform/qcom/venus/vdec.c      |  7 +++
+ .../media/platform/qcom/venus/vdec_ctrls.c    |  9 +++-
+ drivers/media/platform/qcom/venus/venc.c      |  4 +-
+ .../media/platform/qcom/venus/venc_ctrls.c    |  6 +++
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  4 ++
+ include/uapi/linux/v4l2-controls.h            |  3 ++
+ 10 files changed, 103 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
