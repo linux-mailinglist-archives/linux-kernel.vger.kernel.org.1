@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A041FBB47
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B1F1FBB7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732580AbgFPQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
+        id S1732515AbgFPQTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 12:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731751AbgFPQSK (ORCPT
+        with ESMTP id S1731894AbgFPQTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:18:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7060AC06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:18:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b5so9726629pfp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:18:10 -0700 (PDT)
+        Tue, 16 Jun 2020 12:19:10 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF06C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:10 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n6so16409980otl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 09:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=VPiig07nxQc9lwVFwfYIH3T1ET4UEo+E1D0Wd8u+hBk=;
-        b=XjCEbPGQUfD9AjE8Hevx52b4HKLCh8oQsGbdC1PHF3Q3QbQn9Ygd51hLvkzVjxG3RX
-         UtN728e+HKmcQcP8keX/4Kwc+Ht/ZOiBd+tejEg6vDoXtD7HbPCgbRcKvY43gkmThxUy
-         bNcZxPwfyTV9TOAjM5Nf8FXt7R7jq7FXYA3UM=
+        bh=fiWLJlRK7hIrVJhqrA73kDSLrIv9Ym+IMHSkrLmFVXs=;
+        b=W/psw7rJjjj0igh5USfHJFwAvdGtWgwMOOIfoxPkytUdSSQAdFOH/bfQIqrUsIOuzv
+         a9Vl2sPr7U6gMv9WtD5uCoRamUoj0WIOZ/n0nICz5buDFIt1jLDFuvkvAOZuebZGPj4r
+         Jn2sggqqK9sb1MI3Um3GNHKq17xFRhWCG166HdQLYSHMEk2FY5ACBBZ5hN2lGun81Qyi
+         GJENDCD6oY3Wj4DPdEsHzNRbtcAkvwi4zjzLFGU1+ft+jy2FY0geCnqGSH6Q4MrxLAjz
+         HCQPdEi04N1sqR64Sbg1vccPjTualudux+UTkyybTF1we4OWenyu+uqGY2pczphBKFNF
+         WhEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VPiig07nxQc9lwVFwfYIH3T1ET4UEo+E1D0Wd8u+hBk=;
-        b=tjJx925ycNd2zbFp7d20NcU3d2MjrA7siT+GATRSqMZ7LTpUcma6l94bNuxTF8mgMt
-         2a2iMGyXG9PeLYDyFBXyfuMKug5XG8LtvmNn9radTCHZ4oosnHcUIK4UriuqQJkFRiPQ
-         73QLP2YQYZcZ5ombq50/Gy2X3WSvqYK48u4Bb087XoyeTpQ06EOTh9ncgpAwvDotTnB8
-         pqwyu78S5cSROL7IU9hAYzSK4e9xX3CfnhjDjcILLwNflp5TdNIpvrNjDaRk6G2ZMfsW
-         xINLYyTIT31oJu4Jrga1t3yx0dAibl/nTnUTj0bJ0zjNCS65cMQPtpPIlCDi5iEKG4MP
-         7gyw==
-X-Gm-Message-State: AOAM532Va5WamIcaUUPLHM6TofICHEqQ5aQ2I74l37kHmnecCIH1ymSH
-        ZQLGs2aE6wzeeSX5GuBDMbjd/Q==
-X-Google-Smtp-Source: ABdhPJyXAmJNtObOlU+rzC52vUgZGrV4mSFDLUt84VwfrotzrnZ8vPKhz8hCE9vZvCTtbLg7XCtYDQ==
-X-Received: by 2002:a65:484c:: with SMTP id i12mr2637328pgs.267.1592324290000;
-        Tue, 16 Jun 2020 09:18:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w6sm2996602pjy.15.2020.06.16.09.18.08
+        bh=fiWLJlRK7hIrVJhqrA73kDSLrIv9Ym+IMHSkrLmFVXs=;
+        b=aeS9eyuGxhiJZnDfKYll2MyBqkXk8vgoPaOe3qwiBcpmg/z4NBblFOcWaL4V0s+dDg
+         OOPpd0+Z8ckRxU0MHrUsv4/B6NQNr0YqZxi8GGSyLJzjAfNcl/HydoqvRD5yrZwsjrMg
+         JPX++UbmDlztCBlSN9H3Dd1ieXGP7OoNs3O+2KeCDe8V94Td4QJgwoxKGVF2YIRoKSPz
+         8NsPSwwLeQKeQ3r33qab321NMNXtqJTx3nZqykV24PhUyuciQEYM/3445oNBd4ymhQZe
+         rTdJ7pN8NjiokOhsxvGXS0L6FVaFxCWaCjhU4dIYf9qFtX7l4giYiGiYo1oVUIaS+nRZ
+         HrNw==
+X-Gm-Message-State: AOAM533AS+qJ3+Jgkr5e3Jb2eZdS1HoyO3ZhuwZMKlENe8y6DyW/VCS6
+        3OBW8MOuwV/NwtgqmqxM1sCM1h7TOABpxA==
+X-Google-Smtp-Source: ABdhPJwJLUo+s/3zvXyuzd5xR5zRDZ7iEWewkVzWg80Un1dA516CGEOvT/txqHhK+aWdjAw3vd97RA==
+X-Received: by 2002:a05:6830:1d1:: with SMTP id r17mr3101139ota.19.1592324348502;
+        Tue, 16 Jun 2020 09:19:08 -0700 (PDT)
+Received: from cisco ([2601:282:902:b340:f5b5:cc36:51c:a840])
+        by smtp.gmail.com with ESMTPSA id k84sm4256949oia.3.2020.06.16.09.19.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 09:18:08 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 09:18:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        James Morris <jmorris@namei.org>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] [RFC] security: allow using Clang's zero
- initialization for stack variables
-Message-ID: <202006160911.BD403B5@keescook>
-References: <20200616083435.223038-1-glider@google.com>
- <20200616100309.GA2614426@kroah.com>
- <CAG_fn=VYN6ynu2bnW96-p-QRi77NstHC6DXS+AN0r0bm5K2j7w@mail.gmail.com>
+        Tue, 16 Jun 2020 09:19:07 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 10:18:59 -0600
+From:   Tycho Andersen <tycho@tycho.ws>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 10/11] seccomp: Switch addfd to Extensible Argument
+ ioctl
+Message-ID: <20200616161859.GL2893648@cisco>
+References: <20200616032524.460144-1-keescook@chromium.org>
+ <20200616032524.460144-11-keescook@chromium.org>
+ <20200616145546.GH2893648@cisco>
+ <202006160904.A30F2C5B9E@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG_fn=VYN6ynu2bnW96-p-QRi77NstHC6DXS+AN0r0bm5K2j7w@mail.gmail.com>
+In-Reply-To: <202006160904.A30F2C5B9E@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:15:52PM +0200, Alexander Potapenko wrote:
-> > > +KBUILD_CFLAGS        += -ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
-> > > +endif
-> >
-> > Gotta love the name...
+On Tue, Jun 16, 2020 at 09:05:29AM -0700, Kees Cook wrote:
+> On Tue, Jun 16, 2020 at 08:55:46AM -0600, Tycho Andersen wrote:
+> > On Mon, Jun 15, 2020 at 08:25:23PM -0700, Kees Cook wrote:
+> > > This patch is based on discussions[1] with Sargun Dhillon, Christian
+> > > Brauner, and David Laight. Instead of building size into the addfd
+> > > structure, make it a function of the ioctl command (which is how sizes are
+> > > normally passed to ioctls). To support forward and backward compatibility,
+> > > just mask out the direction and size, and match everything. The size (and
+> > > any future direction) checks are done along with copy_struct_from_user()
+> > > logic. Also update the selftests to check size bounds.
+> > > 
+> > > [1] https://lore.kernel.org/lkml/20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal
+> > > 
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  include/uapi/linux/seccomp.h                  |  2 -
+> > >  kernel/seccomp.c                              | 21 ++++++----
+> > >  tools/testing/selftests/seccomp/seccomp_bpf.c | 40 ++++++++++++++++---
+> > >  3 files changed, 49 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> > > index c347160378e5..473a61695ac3 100644
+> > > --- a/include/uapi/linux/seccomp.h
+> > > +++ b/include/uapi/linux/seccomp.h
+> > > @@ -118,7 +118,6 @@ struct seccomp_notif_resp {
+> > >  
+> > >  /**
+> > >   * struct seccomp_notif_addfd
+> > > - * @size: The size of the seccomp_notif_addfd structure
+> > >   * @id: The ID of the seccomp notification
+> > >   * @flags: SECCOMP_ADDFD_FLAG_*
+> > >   * @srcfd: The local fd number
+> > > @@ -126,7 +125,6 @@ struct seccomp_notif_resp {
+> > >   * @newfd_flags: The O_* flags the remote FD should have applied
+> > >   */
+> > >  struct seccomp_notif_addfd {
+> > > -	__u64 size;
+> > 
+> > Huh? Won't this break builds?
 > 
-> This is basically the reason why we've been hesitating to add it to
-> the kernel from the very beginning.
-> 
-> > Anyway, if this is enabled, and clang changes the flag or drops it, does
-> > the build suddenly break?
-> 
-> My original intention (see v1 of this patch) was to make
-> zero-initialization a secondary option of INIT_STACK_ALL, so that
-> nothing changes for the existing users.
-> But I agree with Kees that these options should be made distinct, as
-> people may want to use them for different purposes (think debug vs.
-> release builds).
+> Only if they use addfd without this patch? :) Are you saying I should
+> collapse this patch into the main addfd and test patches?
 
-Yeah, and if the flag changes again, we can adapt. But at this point,
-it's getting used downstream, so we need to land the config in the
-kernel.
+Oh, derp, I see :) Yeah, maybe that would be good.
 
-> We could make INIT_STACK_ALL_ZERO fall back to INIT_STACK_ALL_PATTERN
-> if the compiler flag goes away - does this make sense?
-
-I don't like this idea -- I'm very hesitant to make security options do
-something different than what they document. It means the end user can't
-reason about how their kernel is built when looking at their CONFIGs.
-
-> > And does gcc have something like this as well, or does that have to come
-> > in a compiler plugin?
-> 
-> Kees mentioned someone's plans to implement that in GCC, but I don't
-> think they have done it already.
-
-I've had some GCC folks reach about about these features, but I haven't
-seen any public discussion yet.
-
--- 
-Kees Cook
+Tycho
