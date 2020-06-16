@@ -2,150 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11C51FBFCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C758F1FBFC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 22:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731719AbgFPUPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 16:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731679AbgFPUPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 16:15:45 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868B9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 13:15:43 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id m21so97276eds.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 13:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=AZqdoAEGz2z2dhDjwXWaMZ24wdl6oc5L+Rca1tEh8dc=;
-        b=gy3NOO0TVFbQO8JeVz50/yi9A6AS7UoNAvAWS0yUYYqBasL4KYmzd6LX0YSCcoYzih
-         WZAXIMLWxXdlpY/bvSoQGSycZqpuRHWIneQo9OcdzFjNUomCLSSqIOPp+mszgZqoPk58
-         11vlXMHdE8MlJ4HgS2M268UOIQg/vg94l2gEPrHYgzwAlfNPcT+aLo+uzZqgkLwSOejQ
-         7pTvUWtbeRhK8owv8gttck7ySAvgy2te3vvK1RRACY0AitSSke1l+HqJN1XmObrNj9pk
-         9Gt8EA3JTwxuKVwPRdbirVeQDhKiVXmFX2yjEqB5roJ5YX8jD5XeOYouqsyg4Mbq/taa
-         zXVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=AZqdoAEGz2z2dhDjwXWaMZ24wdl6oc5L+Rca1tEh8dc=;
-        b=raF3bcDrstnQ3CdA06cd0HoYELiKataWINYzKlYHszvWYTp+cQEzjpM0nfuG7zdGaQ
-         myFqr3ODFr/MBd1VwAXwB90XCRpPyWewj4qPnaM6i4yGy635aagORxPJq3rpsVMvAy2f
-         U4vbRYStVqaD2gJ4J3mA8ARmDR3vR352eooblEJbERNBV5lqpjaPJpHT2XMpdJQ80gO9
-         qM93NOgh2PWUF1y+tZiyc5vfqbIbjIEvpKz9bMgddB0iJWSPC0TMyjmS7CaLVeIHssGn
-         K91dgPgJU9WHMXNw3iKSS+JeBvpT32NI0RB5sOJpgpehc5HcMQwwqap6d+r1j90yAmWT
-         1f4w==
-X-Gm-Message-State: AOAM530qDJrV810O2Psmk0st9p6wmHtW2NYJSFp9bpGRJ6hFSL//rPdL
-        S5IyyHCn/+Bpc6u8Mmp7wRzf/0D+7yjM6Q==
-X-Google-Smtp-Source: ABdhPJxIsyuMwyfFK+YWY/8UN0ykI79Dmd+IfHF88uSKNdHy2vmbGNi43R1JVapD/sonJonUkmDEIg==
-X-Received: by 2002:aa7:da8c:: with SMTP id q12mr4234503eds.385.1592338542217;
-        Tue, 16 Jun 2020 13:15:42 -0700 (PDT)
-Received: from localhost.localdomain (212-5-158-38.ip.btc-net.bg. [212.5.158.38])
-        by smtp.gmail.com with ESMTPSA id b14sm11602658ejq.105.2020.06.16.13.15.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 13:15:41 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 4/4] venus: vdec: Add support for decode intra frames only
-Date:   Tue, 16 Jun 2020 23:14:46 +0300
-Message-Id: <20200616201446.15996-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200616201446.15996-1-stanimir.varbanov@linaro.org>
-References: <20200616201446.15996-1-stanimir.varbanov@linaro.org>
+        id S1731586AbgFPUPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 16:15:24 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29391 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729167AbgFPUPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 16:15:22 -0400
+IronPort-SDR: ro/oPz5sfyYuL1jgtLaBvYJ3STGcZcfYLP828TODfAiJQAgf47KXB3SdoP0WHwLoOCTpbPvqB5
+ N+9gyyduBLeA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 13:15:22 -0700
+IronPort-SDR: zO86BPN8dVZzX2AotBiXjLH8J1RX/cKdcwl78D/SOYO2HKS/TQ44iSrP4wLU+02s8jtfis94Mu
+ rCFFsjpeKCOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,519,1583222400"; 
+   d="scan'208";a="299035233"
+Received: from gosinald-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.36.106])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Jun 2020 13:15:17 -0700
+Date:   Tue, 16 Jun 2020 23:15:16 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        peterhuewe@gmx.de, Jason Gunthorpe <jgg@ziepe.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>
+Subject: Re: [PATCHv6 1/3] optee: use uuid for sysfs driver entry
+Message-ID: <20200616201516.GF10412@linux.intel.com>
+References: <20200601150645.13412-1-maxim.uvarov@linaro.org>
+ <20200601150645.13412-2-maxim.uvarov@linaro.org>
+ <20200604083655.GA4026@linux.intel.com>
+ <CAFA6WYMZx9goq4+yNH5UtrO-nO+R9ohE1dH6jTvKwvME+kKwoQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYMZx9goq4+yNH5UtrO-nO+R9ohE1dH6jTvKwvME+kKwoQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support in the decoder for intra frames only decode. The
-implementation in the Venus use HFI property for thumbnail
-generation to lower memory usage and when the control is enabled
-the number of decoder output buffers for progressive stream
-will be one (for interlace two). We assume that the client will
-queue on the decoder input intra frames only but this is not
-mandatory. If the client queue non-intra frames on decoder input
-they will be returned on decoder output with an error.
+On Thu, Jun 04, 2020 at 02:51:03PM +0530, Sumit Garg wrote:
+> On Thu, 4 Jun 2020 at 14:07, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > On Mon, Jun 01, 2020 at 06:06:43PM +0300, Maxim Uvarov wrote:
+> > > With the evolving use-cases for TEE bus, now it's required to support
+> > > multi-stage enumeration process. But using a simple index doesn't
+> > > suffice this requirement and instead leads to duplicate sysfs entries.
+> > > So instead switch to use more informative device UUID for sysfs entry
+> > > like:
+> > > /sys/bus/tee/devices/optee-ta-<uuid>
+> > >
+> > > Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
+> > > Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+> >
+> > Why do you mean by duplicate sysfs entries?
+> >
+> 
+> It's just about the device being added with the same name as of the
+> device which is already present on the TEE bus. So this leads to
+> duplicate sysfs entry error for device node which is created during
+> device_register() execution flow.
+> 
+> > > ---
+> > >  Documentation/ABI/testing/sysfs-bus-optee-devices | 8 ++++++++
+> > >  MAINTAINERS                                       | 1 +
+> > >  drivers/tee/optee/device.c                        | 6 +++---
+> > >  3 files changed, 12 insertions(+), 3 deletions(-)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-optee-devices b/Documentation/ABI/testing/sysfs-bus-optee-devices
+> > > new file mode 100644
+> > > index 000000000000..0ae04ae5374a
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-optee-devices
+> > > @@ -0,0 +1,8 @@
+> > > +What:                /sys/bus/tee/devices/optee-ta-<uuid>/
+> > > +Date:           May 2020
+> > > +KernelVersion   5.7
+> > > +Contact:        tee-dev@lists.linaro.org
+> > > +Description:
+> > > +             OP-TEE bus provides reference to registered drivers under this directory. The <uuid>
+> > > +             matches Trusted Application (TA) driver and corresponding TA in secure OS. Drivers
+> > > +             are free to create needed API under optee-ta-<uuid> directory.
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index ecc0749810b0..6717afef2de3 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -12516,6 +12516,7 @@ OP-TEE DRIVER
+> > >  M:   Jens Wiklander <jens.wiklander@linaro.org>
+> > >  L:   tee-dev@lists.linaro.org
+> > >  S:   Maintained
+> > > +F:   Documentation/ABI/testing/sysfs-bus-optee-devices
+> > >  F:   drivers/tee/optee/
+> > >
+> > >  OP-TEE RANDOM NUMBER GENERATOR (RNG) DRIVER
+> > > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
+> > > index e3a148521ec1..ed3d1ddfa52b 100644
+> > > --- a/drivers/tee/optee/device.c
+> > > +++ b/drivers/tee/optee/device.c
+> > > @@ -65,7 +65,7 @@ static int get_devices(struct tee_context *ctx, u32 session,
+> > >       return 0;
+> > >  }
+> > >
+> > > -static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
+> > > +static int optee_register_device(const uuid_t *device_uuid)
+> > >  {
+> > >       struct tee_client_device *optee_device = NULL;
+> > >       int rc;
+> > > @@ -75,7 +75,7 @@ static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
+> > >               return -ENOMEM;
+> > >
+> > >       optee_device->dev.bus = &tee_bus_type;
+> > > -     dev_set_name(&optee_device->dev, "optee-clnt%u", device_id);
+> > > +     dev_set_name(&optee_device->dev, "optee-ta-%pUl", device_uuid);
+> >
+> > This code is and already was broken. If dev_set_name() returns -ENOMEM,
+> > the name will be a null pointer.
+> 
+> Is this an expected error scenario? dev_set_name() is invoked at
+> numerous places in the kernel without any error check.
+> 
+> >
+> > Also, I don't get how you can just swap the name without potentially
+> > breaking the backwards compatiblity towards the user space.
+> 
+> As of now, there isn't any compatibility concerns with user space as
+> these TEE devices are meant to be used by kernel drivers only. TEE
+> user-space interface is quite separate (see: Documentation/tee.txt).
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h       | 1 +
- drivers/media/platform/qcom/venus/vdec.c       | 7 +++++++
- drivers/media/platform/qcom/venus/vdec_ctrls.c | 9 ++++++++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+OK, probably would make sense to have this in the commit message as a
+remark.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 1bac30d4cf50..b9a3b9ca6ae1 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -191,6 +191,7 @@ struct vdec_controls {
- 	u32 post_loop_deb_mode;
- 	u32 profile;
- 	u32 level;
-+	bool intra_only;
- };
- 
- struct venc_controls {
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 7c4c483d5438..aa68cefcae96 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -625,6 +625,13 @@ static int vdec_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (ctr->intra_only) {
-+		ptype = HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE;
-+		ret = hfi_session_set_property(inst, ptype, &en);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 3a963cbd342a..96ca8d9dd22e 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -28,6 +28,9 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
- 		ctr->level = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_DECODE_INTRA_FRAMES_ONLY:
-+		ctr->intra_only = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -86,7 +89,7 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 7);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 8);
- 	if (ret)
- 		return ret;
- 
-@@ -141,6 +144,10 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	if (ctrl)
- 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DECODE_INTRA_FRAMES_ONLY,
-+			  0, 1, 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret) {
- 		v4l2_ctrl_handler_free(&inst->ctrl_handler);
--- 
-2.17.1
-
+/Jarkko
