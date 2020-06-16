@@ -2,210 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F8E1FB4CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6271FB4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgFPOph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:45:37 -0400
-Received: from mail-bn8nam12on2048.outbound.protection.outlook.com ([40.107.237.48]:6254
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728183AbgFPOpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:45:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLcuR5EB2OL7dyxosu655tuNn77aZ+3IWj3WZQUHuqA2H8XkJv+QPPuurcPzw3xO8oiz0ajAeccX/mXFZ5tozLIus+aA6bFM84BnfGZ74fJg/98GL9zuLj0XUWb3aFqC0796YP9IzqJBSsC6EA1DBM8wVtUCHgwODzPp5gtug/rO6a+bVmAcoNiKc59wOH1OaaEon1UsEb0xjvK9MzbYIk4L4MeDPnyjlhoox+m5/JJOUo9B2p2ntCgvHe3VnriUG8V2md6TO+CJlK6Pg/3nP1l/UsLk9CWu6O2vVa7+5A6qslW0dVAHRjUFOzgYKWF1YST6/chq7cAs2jRBrV5l1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NYrsnbDZNDdGBgjs2xWWepP+KRBIhDw3zJrDd7hV2QQ=;
- b=k2HffWQ4ZK9lDKd31aagpMScR8ajQjv57crZw+9NBZ6LjqXYA+i+Uik9kThiTv2qmgSBrn9bHK/MFznS30Wm1uI3a+/28f8/CZE9ib10kBs9jPWIwcMAxbcB5lQfqHEQr2jf3+01PDRBlFaRC092GsHsC8f1dwLA60qpRXBcExSv9otbygSiY/pP3tLz/STrbgk9E4KhLqcHsNghFmrKx+2C0w6U/h4Cec8KSmh+jsWPo1USLICfr7MmjvGNLAFnULeZ3Vtx0IsoyjE2+1L1Alxiatncp2bjypLz/3SmfctrILCtvGW4IFHxll4ch2zkPKF66H2myz+gefU7Em6IJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1729208AbgFPOqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgFPOqJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:46:09 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83065C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:46:09 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 205so19360681qkg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 07:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NYrsnbDZNDdGBgjs2xWWepP+KRBIhDw3zJrDd7hV2QQ=;
- b=ERZt4uRTp3e1rfBws1Deau6xjlbbShbgBJNbQiGhTpT2mQR4Q3Z6j55SPYPEMtHu9hRJWpibwAC35dkkcIH/uhagx+3IjCuKoMqOIjgf2Sfy5vt69oEQq1ilVuOj8R1lnYCyDUX1hDM8dW0WjNHTKNaogvL71R0SY/OQU4xWTTM=
-Received: from MN2PR01CA0061.prod.exchangelabs.com (2603:10b6:208:23f::30) by
- BN6PR02MB3249.namprd02.prod.outlook.com (2603:10b6:405:64::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3088.25; Tue, 16 Jun 2020 14:45:32 +0000
-Received: from BL2NAM02FT041.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:23f:cafe::e6) by MN2PR01CA0061.outlook.office365.com
- (2603:10b6:208:23f::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend
- Transport; Tue, 16 Jun 2020 14:45:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT041.mail.protection.outlook.com (10.152.77.122) with Microsoft SMTP
- Server id 15.20.3088.18 via Frontend Transport; Tue, 16 Jun 2020 14:45:32
- +0000
-Received: from [149.199.38.66] (port=34005 helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1jlCpA-0002fd-WF; Tue, 16 Jun 2020 07:44:29 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1jlCqC-0001L9-5A; Tue, 16 Jun 2020 07:45:32 -0700
-Received: from xsj-pvapsmtp01 (mailhub.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 05GEjNCm027530;
-        Tue, 16 Jun 2020 07:45:24 -0700
-Received: from [172.30.17.109]
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <michals@xilinx.com>)
-        id 1jlCq3-0001E7-FD; Tue, 16 Jun 2020 07:45:23 -0700
-Subject: Re: [PATCH v5 01/13] powerpc: Remove Xilinx PPC405/PPC440 support
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, michal.simek@xilinx.com,
-        arnd@arndb.de, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <cover.1590079968.git.christophe.leroy@csgroup.eu>
- <8c593895e2cb57d232d85ce4d8c3a1aa7f0869cc.1590079968.git.christophe.leroy@csgroup.eu>
- <20200616002720.GA1307277@ubuntu-n2-xlarge-x86>
-From:   Michal Simek <michal.simek@xilinx.com>
-Autocrypt: addr=michals@xilinx.com; keydata=
- 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
- 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
-Message-ID: <68503e5e-7456-b81c-e43d-27cb331a4b72@xilinx.com>
-Date:   Tue, 16 Jun 2020 16:45:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=t1VECONrgvLF/rC+9HfQqT0MTH5om676p3k8XrFKigY=;
+        b=cQZFlTLvtuF9gPEzR6HpLQGd2IU8Wj+oV3QtmZponI7HM9Tl5abQo8a/m7AxGmmbyw
+         z1lybO+SpJ7NUG90S5qoILZYLXg4+SMKfVacqnQJ7qv/xQRYf2WdoTES29JdPqtWn11S
+         IUcqyRhn2kQU3Ao9zoADJzHItnHUZOqvTirEvaNjuavKxFskjsygpmBPjn9DtD2W80Ii
+         cUL+3tmpHUTanCgr+XUmxTTkaOxqdelHjM+vRy7FrHraZ0Kqs4HjLboqUKelwGgwR44R
+         lS/0/YkoiibDGn26FoWhM8vItoMeC3nUGpqj2UZhjasWIRGWn9Tu2D3KHHgFQ+7OB58i
+         9WwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t1VECONrgvLF/rC+9HfQqT0MTH5om676p3k8XrFKigY=;
+        b=eloVZaQ3RuOI3beQqZCty7wMVi7JS/uagowRzxLurcJ6hc4liGg5MvEZ1N2AiRh8M6
+         epCTi8+xqgadXr7Qc14ueia9qMR4cR1YvYvI8Rcq1UCHzlv97eXtCBzqqgyt7mOsDXzT
+         1ysNjUzhyJHH3yyEXrWgKMiBm7uWUcWLno1qvEgGYWzH+LQ5GxHmPO3W7FHhvWZbbF7J
+         K0DcVukw3BpcjTsg0IA+zSsilAhFf6sM3BYB4u4CCnYIlV472f8F35ljOqFe3xYm8fEr
+         9HkLamQha85kCBS+0MXbfo/9L9KFxOGbsd3Gp2TP4HASKq+GH4aptU6LtT3Aiv1Cm3Cd
+         rV9A==
+X-Gm-Message-State: AOAM532r9xhV+OzYNccymNtMQoBRqwNXROVErNDSInCLdwr5DvOAA9Ny
+        eSHmoem2ZDC1CxJbbBLOcZoDSQ==
+X-Google-Smtp-Source: ABdhPJz1+TkYAWMBsaEvvw5YqLgqJjMYa+cx1eVc3nJTvdQTCokEkOByu3DOK4xlHS9SBtoBG/0sBg==
+X-Received: by 2002:a05:620a:1407:: with SMTP id d7mr19233358qkj.89.1592318768164;
+        Tue, 16 Jun 2020 07:46:08 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id d140sm14715406qkc.22.2020.06.16.07.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 07:46:07 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 10:45:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [mm] 1431d4d11a: vm-scalability.throughput -11.5% regression
+Message-ID: <20200616144529.GA616830@cmpxchg.org>
+References: <20200616075750.GM5653@shao2-debian>
 MIME-Version: 1.0
-In-Reply-To: <20200616002720.GA1307277@ubuntu-n2-xlarge-x86>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39860400002)(396003)(46966005)(8936002)(356005)(26005)(2616005)(8676002)(31696002)(186003)(36756003)(31686004)(9786002)(44832011)(81166007)(82310400002)(478600001)(82740400003)(426003)(2906002)(5660300002)(47076004)(316002)(70586007)(70206006)(110136005)(54906003)(83380400001)(336012)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ddf18013-62d5-4563-dbb6-08d81203ebd6
-X-MS-TrafficTypeDiagnostic: BN6PR02MB3249:
-X-Microsoft-Antispam-PRVS: <BN6PR02MB324953E0D9B05FAAD0C37D76C69D0@BN6PR02MB3249.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-Forefront-PRVS: 04362AC73B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3/pw+YmyGQJWR1Bx8Hed0/lDCQHam4EHheiUBVDlNhVg59gaherbp3S2rKDUErpPUXSa58FbKzTWwLjBBTUQ9r86zNf+72JhEjTm/MQHIDIZpUfLD/1nKoil1cELGXwtYqVPP/hKX0a26EI9MnysUD0udjaRDU+b9BATmziYBaA7jRzbCb3g3grjIDn3c8wC8KT6i/eoH+p02DIy850iRIDY/0HRHKFp1cRjI9i0d4VrxDo5tjXMYyu9TMTtsaar5IMoD7TTe2OOPZteJG9hJHDalK1BXXH3nDAbTxozbVX4EzKWIZB4xvOb6KCrNqj0jy0+egw0vvAzFYd6vWDSNJPWbyM3oHjvU/Yhfhrhia7hitDy32nlzIJ+kVFvworvg5u7StK3U5tuvz9dj6Khpa72jFv3tOws3YmiD02HpGOf57ST64leU247FuXJBNTV
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 14:45:32.3713
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddf18013-62d5-4563-dbb6-08d81203ebd6
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB3249
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200616075750.GM5653@shao2-debian>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 16. 06. 20 2:27, Nathan Chancellor wrote:
-> On Thu, May 21, 2020 at 04:55:52PM +0000, Christophe Leroy wrote:
->> From: Michal Simek <michal.simek@xilinx.com>
->>
->> The latest Xilinx design tools called ISE and EDK has been released in
->> October 2013. New tool doesn't support any PPC405/PPC440 new designs.
->> These platforms are no longer supported and tested.
->>
->> PowerPC 405/440 port is orphan from 2013 by
->> commit cdeb89943bfc ("MAINTAINERS: Fix incorrect status tag") and
->> commit 19624236cce1 ("MAINTAINERS: Update Grant's email address and maintainership")
->> that's why it is time to remove the support fot these platforms.
->>
->> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->> Acked-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Tue, Jun 16, 2020 at 03:57:50PM +0800, kernel test robot wrote:
+> Greeting,
 > 
-> This patch causes qemu-system-ppc to fail to load ppc44x_defconfig:
+> FYI, we noticed a -11.5% regression of vm-scalability.throughput due to commit:
 > 
-> $ make -skj"$(nproc)" ARCH=powerpc CROSS_COMPILE=powerpc-linux- O=out/ppc distclean ppc44x_defconfig zImage
 > 
-> $ timeout --foreground 30s unbuffer \
-> qemu-system-ppc \
-> -machine bamboo \
+> commit: 1431d4d11abb265e79cd44bed2f5ea93f1bcc57b ("mm: base LRU balancing on an explicit cost model")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-Did you bisect it that you found that this patch is causing problem for
-you on any bamboo machine?
+That's a really curious result.
 
-Or this was caused by the whole series?
+An bit of an increase in system time is expected in the series as a
+whole:
 
-Thanks,
-Michal
+1. When thrashing is detected in the file cache, it intentionally
+makes more effort to find reclaimable anon pages than before - in an
+effort to converge on a stable state that has *neither* page reclaim
+nor refault IO.
+
+2. There are a couple of XXX about unrealized lock batching
+opportunities. Those weren't/aren't expected to have too much of a
+practical impact, and require a bit more infrastructure work that
+would have interferred with other ongoing work in the area.
+
+However, this patch in particular doesn't add any locked sections (it
+adds a function call to an existing one, I guess?), and the workload
+is doing streaming mmapped IO and shouldn't experience any thrashing.
+
+In addition, we shouldn't even scan anon pages - from below:
+
+> swap_partitions: 
+> rootfs_partition: "/dev/disk/by-id/wwn-0x5000c50067b47753-part1"
+
+Does that mean that no swap space (not even a file) is configured?
+
+> in testcase: vm-scalability
+> on test machine: 160 threads Intel(R) Xeon(R) CPU E7-8890 v4 @ 2.20GHz with 256G memory
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	test: lru-file-mmap-read
+> 	cpufreq_governor: performance
+> 	ucode: 0xb000038
+> 
+> test-description: The motivation behind this suite is to exercise functions and regions of the mm/ of the Linux kernel which are of interest to us.
+> test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability.git/
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> 
+> Details are as below:
+> -------------------------------------------------------------------------------------------------->
+> 
+> 
+> To reproduce:
+> 
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         bin/lkp install job.yaml  # job file is attached in this email
+>         bin/lkp run     job.yaml
+> 
+> =========================================================================================
+> compiler/cpufreq_governor/kconfig/rootfs/runtime/tbox_group/test/testcase/ucode:
+>   gcc-9/performance/x86_64-rhel-7.6/debian-x86_64-20191114.cgz/300s/lkp-bdw-ex2/lru-file-mmap-read/vm-scalability/0xb000038
+> 
+> commit: 
+>   a4fe1631f3 ("mm: vmscan: drop unnecessary div0 avoidance rounding in get_scan_count()")
+>   1431d4d11a ("mm: base LRU balancing on an explicit cost model")
+> 
+> a4fe1631f313f75c 1431d4d11abb265e79cd44bed2f 
+> ---------------- --------------------------- 
+>          %stddev     %change         %stddev
+>              \          |                \  
+>       0.23 ±  2%     +11.7%       0.26        vm-scalability.free_time
+
+What's free_time?
+
+>     103991           -11.6%      91935        vm-scalability.median
+>   20717269           -11.5%   18336098        vm-scalability.throughput
+>     376.47            +8.3%     407.78        vm-scalability.time.elapsed_time
+>     376.47            +8.3%     407.78        vm-scalability.time.elapsed_time.max
+>     392226            +7.2%     420612        vm-scalability.time.involuntary_context_switches
+>      11731            +4.4%      12247        vm-scalability.time.percent_of_cpu_this_job_got
+>      41005           +14.5%      46936        vm-scalability.time.system_time
+>       3156            -4.8%       3005        vm-scalability.time.user_time
+>   52662860 ±  5%     -14.0%   45266760 ±  5%  meminfo.DirectMap2M
+>       4.43            -0.5        3.90 ±  2%  mpstat.cpu.all.usr%
+>       1442 ±  5%     -14.9%       1227 ± 10%  slabinfo.kmalloc-rcl-96.active_objs
+>       1442 ±  5%     -14.9%       1227 ± 10%  slabinfo.kmalloc-rcl-96.num_objs
+>      37.50 ±  2%      -7.3%      34.75        vmstat.cpu.id
+>      57.25            +5.2%      60.25        vmstat.cpu.sy
+>      54428 ± 60%     -96.5%       1895 ±173%  numa-meminfo.node1.AnonHugePages
+>     116516 ± 48%     -88.2%      13709 ± 26%  numa-meminfo.node1.AnonPages
+>     132303 ± 84%     -88.9%      14731 ± 61%  numa-meminfo.node3.Inactive(anon)
+
+These counters capture present state, not history. Are these averages
+or snapshots? If snapshots, when are they taken during the test?
+
+>     311.75 ±  8%     +16.0%     361.75 ±  2%  numa-vmstat.node0.nr_isolated_file
+>      29136 ± 48%     -88.4%       3367 ± 24%  numa-vmstat.node1.nr_anon_pages
+>   35935841 ±  6%     -17.0%   29839972 ±  6%  numa-vmstat.node2.numa_foreign
+>      33046 ± 84%     -89.1%       3595 ± 61%  numa-vmstat.node3.nr_inactive_anon
+>      33046 ± 84%     -89.1%       3596 ± 61%  numa-vmstat.node3.nr_zone_inactive_anon
+>      21.43 ± 15%     +79.4%      38.44 ± 54%  sched_debug.cfs_rq:/.load_avg.avg
+>      95.92 ±  9%     +96.7%     188.64 ± 67%  sched_debug.cfs_rq:/.load_avg.stddev
+>      36.18 ±  7%     +13.6%      41.10 ±  4%  sched_debug.cfs_rq:/.nr_spread_over.avg
+>    1075687 ±102%    +233.3%    3585792 ± 70%  sched_debug.cfs_rq:/.spread0.avg
+>    2865813 ± 41%     +87.3%    5367329 ± 42%  sched_debug.cfs_rq:/.spread0.max
+>   -6253423           -61.1%   -2430118        sched_debug.cfs_rq:/.spread0.min
+>     351.68 ±  8%     -14.8%     299.58 ±  6%  sched_debug.cpu.sched_goidle.avg
+>       9441 ± 11%     -21.9%       7376 ±  7%  sched_debug.cpu.sched_goidle.max
+>      54.46 ±  5%     -19.5%      43.82 ±  6%  sched_debug.cpu.sched_goidle.min
+>     873.06 ±  8%     -19.2%     705.36 ±  4%  sched_debug.cpu.sched_goidle.stddev
+>     898.25 ± 10%     -15.5%     759.25 ± 12%  proc-vmstat.kswapd_low_wmark_hit_quickly
+>     108483            +4.0%     112790        proc-vmstat.nr_active_anon
+>       1006 ±  4%      +9.3%       1099 ±  2%  proc-vmstat.nr_isolated_file
+>   72985192            +4.5%   76275208        proc-vmstat.nr_mapped
+>     634868            +5.0%     666703 ±  2%  proc-vmstat.nr_page_table_pages
+>     106506            +3.6%     110328        proc-vmstat.nr_shmem
+>     108486            +4.0%     112792        proc-vmstat.nr_zone_active_anon
+>       7453 ± 42%     +67.4%      12474 ± 12%  proc-vmstat.numa_hint_faults
+>       1597 ±  5%      -8.8%       1457 ±  6%  proc-vmstat.pageoutrun
+>      55272            +3.6%      57288        proc-vmstat.pgactivate
+>  1.603e+09            -2.7%   1.56e+09        proc-vmstat.pgscan_direct
+>  2.935e+08 ±  3%     +13.1%   3.32e+08 ±  2%  proc-vmstat.pgscan_kswapd
+
+More scan activity. The patch can affect the scan ratio between anon
+and file, so this only makes sense when there is swap space configured
+and anon pages are actually scanned.
+
+Would it be possible to capture deltas of the new pgscan_anon &
+pgscan_file vmstat counters? As well as the workingset_* ones?
+
+Thanks!
