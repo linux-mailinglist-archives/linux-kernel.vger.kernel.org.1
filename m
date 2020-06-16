@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECC01FB07C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BEA1FB075
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 14:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729283AbgFPMXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 08:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
+        id S1729219AbgFPMWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 08:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729067AbgFPMWO (ORCPT
+        with ESMTP id S1728991AbgFPMWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 08:22:14 -0400
+        Tue, 16 Jun 2020 08:22:10 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9DC08C5C2;
-        Tue, 16 Jun 2020 05:22:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A171C08C5C5;
+        Tue, 16 Jun 2020 05:22:10 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jlAbR-0004mO-TR; Tue, 16 Jun 2020 14:22:10 +0200
+        id 1jlAbO-0004ln-4u; Tue, 16 Jun 2020 14:22:06 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D80271C0857;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3F8531C07B4;
         Tue, 16 Jun 2020 14:21:56 +0200 (CEST)
 Date:   Tue, 16 Jun 2020 12:21:56 -0000
 From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/pelt: Remove redundant cap_scale() definition
+Subject: [tip: sched/core] sched/idle,stop: Remove .get_rr_interval from sched_class
 Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200603080304.16548-2-dietmar.eggemann@arm.com>
-References: <20200603080304.16548-2-dietmar.eggemann@arm.com>
+In-Reply-To: <20200603080304.16548-4-dietmar.eggemann@arm.com>
+References: <20200603080304.16548-4-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Message-ID: <159231011668.16989.7990284675684399097.tip-bot2@tip-bot2>
+Message-ID: <159231011604.16989.9736333462235066498.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,38 +50,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     844eb6458facb09d4871a480d8bda06550927a80
-Gitweb:        https://git.kernel.org/tip/844eb6458facb09d4871a480d8bda06550927a80
+Commit-ID:     e3e76a6a04114ec95b0969cd026e8904c67b431b
+Gitweb:        https://git.kernel.org/tip/e3e76a6a04114ec95b0969cd026e8904c67b431b
 Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
-AuthorDate:    Wed, 03 Jun 2020 10:03:01 +02:00
+AuthorDate:    Wed, 03 Jun 2020 10:03:03 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Mon, 15 Jun 2020 14:10:01 +02:00
 
-sched/pelt: Remove redundant cap_scale() definition
+sched/idle,stop: Remove .get_rr_interval from sched_class
 
-Besides in PELT cap_scale() is used in the Deadline scheduler class for
-scale-invariant bandwidth enforcement.
-Remove the cap_scale() definition in kernel/sched/pelt.c and keep the
-one in kernel/sched/sched.h.
+The idle task and stop task sched_classes return 0 in this function.
+
+The single call site in sched_rr_get_interval() calls
+p->sched_class->get_rr_interval() only conditional in case it is
+defined. Otherwise time_slice=0 will be used.
+
+The deadline sched class does not define it. Commit a57beec5d427
+("sched: Make sched_class::get_rr_interval() optional") introduced
+the default time-slice=0 for sched classes which do not provide this
+function.
+
+So .get_rr_interval for idle and stop sched_class can be removed to
+shrink the code a little.
 
 Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20200603080304.16548-2-dietmar.eggemann@arm.com
+Link: https://lkml.kernel.org/r/20200603080304.16548-4-dietmar.eggemann@arm.com
 ---
- kernel/sched/pelt.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/sched/idle.c      | 7 -------
+ kernel/sched/stop_task.c | 8 --------
+ 2 files changed, 15 deletions(-)
 
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index b4b1ff9..dea5567 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -83,8 +83,6 @@ static u32 __accumulate_pelt_segments(u64 periods, u32 d1, u32 d3)
- 	return c1 + c2 + c3;
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 05deb81..8d75ca2 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -446,11 +446,6 @@ prio_changed_idle(struct rq *rq, struct task_struct *p, int oldprio)
+ 	BUG();
  }
  
--#define cap_scale(v, s) ((v)*(s) >> SCHED_CAPACITY_SHIFT)
+-static unsigned int get_rr_interval_idle(struct rq *rq, struct task_struct *task)
+-{
+-	return 0;
+-}
 -
- /*
-  * Accumulate the three separate parts of the sum; d1 the remainder
-  * of the last (incomplete) period, d2 the span of full periods and d3
+ static void update_curr_idle(struct rq *rq)
+ {
+ }
+@@ -479,8 +474,6 @@ const struct sched_class idle_sched_class = {
+ 
+ 	.task_tick		= task_tick_idle,
+ 
+-	.get_rr_interval	= get_rr_interval_idle,
+-
+ 	.prio_changed		= prio_changed_idle,
+ 	.switched_to		= switched_to_idle,
+ 	.update_curr		= update_curr_idle,
+diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
+index 4c9e997..3e50a6a 100644
+--- a/kernel/sched/stop_task.c
++++ b/kernel/sched/stop_task.c
+@@ -102,12 +102,6 @@ prio_changed_stop(struct rq *rq, struct task_struct *p, int oldprio)
+ 	BUG(); /* how!?, what priority? */
+ }
+ 
+-static unsigned int
+-get_rr_interval_stop(struct rq *rq, struct task_struct *task)
+-{
+-	return 0;
+-}
+-
+ static void update_curr_stop(struct rq *rq)
+ {
+ }
+@@ -136,8 +130,6 @@ const struct sched_class stop_sched_class = {
+ 
+ 	.task_tick		= task_tick_stop,
+ 
+-	.get_rr_interval	= get_rr_interval_stop,
+-
+ 	.prio_changed		= prio_changed_stop,
+ 	.switched_to		= switched_to_stop,
+ 	.update_curr		= update_curr_stop,
