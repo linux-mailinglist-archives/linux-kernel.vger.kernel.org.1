@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D12A1FB50E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6821FB4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 16:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbgFPOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 10:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729005AbgFPOxs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:53:48 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD08C061573;
-        Tue, 16 Jun 2020 07:53:47 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id m2so1705119pjv.2;
-        Tue, 16 Jun 2020 07:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UoptLBBgAk/std92D5cqMRyl+scwvvQ9fYGAtvKkiyI=;
-        b=R71t+nJNQ2Dd7ooQZUTFArV6914oWMKXYFLPE0IrHug8N99lM+lc8etWGAsw8eo0gG
-         aUToVkUwR+VGxgmLsqmv78tDmENaxd04BJhlFIRmMmGVDTzbpnp9w0JefmoHmtqXIzyd
-         Ts7sOaaWNUDNtNsXhwvHO8MV/AajsYtowQuCs6KM89/ryIUBmXOCA0tgf7biBfbrhCOj
-         QFK/Lmh46KICRF8vdR/i+VHEbUE5Zul0J/PMj9Fkr+N2NluK7UMn5LX1t1Cs70+leqev
-         YDSn5MwYjVtygxIUruou1uuo8FapWO3WJPxb12sLrY/PPdgWUCfKNrm7paDl+9lVzUIk
-         vmkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UoptLBBgAk/std92D5cqMRyl+scwvvQ9fYGAtvKkiyI=;
-        b=Bmz1gePnzKB8uU/zpBnaIKpOoI5cwZX35m26mpLRGcQ0LVnfvKW4aiySK0urJOHkdt
-         XlvRMvYhMosH9AzTkulKDn/kgaCajAXDHe9FGBhvRAxq0HrtondJvM8JP4eoHATVxYv6
-         zcNfuqqJI5w+1gRhR2LZJTw9rFHwRRVKE/NlOho0SB7uZzkInKrJ09KR6uBqUc5BoZYQ
-         mBxWJbB4tYX8tGjwJzuJkPcUxuGm/u48CjrvIbk42ZXmuVy8BwYYiIXEcOLFAxOHTFO/
-         VbkjV2zuQAweXhJDAqg7Mz0MiIQfW94Rlp5+FiG/jlmnHe5uDa0+F+qT4f0f6EgvkzuV
-         P3Tg==
-X-Gm-Message-State: AOAM5328LxAqycsZtqV677qW4n5w2oQm1VMSv97usKGLZEUEpA6VeiGn
-        UittSuv2R4Kfwf1mE9YK5cY8py1E
-X-Google-Smtp-Source: ABdhPJycihT/ot/1nv31K2gqbVmj4sNnebfZ9RGjX+AIgMRHoaH3+MHJzTrk/ETFMJ0oTxejXtDACg==
-X-Received: by 2002:a17:90a:39ce:: with SMTP id k14mr3184517pjf.39.1592319226546;
-        Tue, 16 Jun 2020 07:53:46 -0700 (PDT)
-Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id b5sm2850077pjz.34.2020.06.16.07.53.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 07:53:45 -0700 (PDT)
-Subject: Re: [PATCH] e1000e: add ifdef to avoid dead code
-To:     Greg Thelen <gthelen@google.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vitaly Lifshits <vitaly.lifshits@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200614061122.35928-1-gthelen@google.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <b88dc544-9f1b-75af-244e-9967ffeacf0e@gmail.com>
-Date:   Tue, 16 Jun 2020 07:53:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729431AbgFPOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 10:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728515AbgFPOtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:49:33 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82ED0208B3;
+        Tue, 16 Jun 2020 14:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592318973;
+        bh=ovSysk6kOqKTv082hockt1TpSKGLzWO2f3kVdMiM78o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=loYJF9f7xfeyaBWVBmiXz3O8oEAEuwPE8LD1LEc01/05HTs9EHi54G2MNShbF+4x6
+         GzSFw2VZCxY5rpp+mqH0wnwRznSKF8IqqQP5JC2g7fzuum4louloudFhn08jJevpDG
+         Vel8U2AphFpDC2kHy71bI/PtRONOMefkJYCBStKs=
+Date:   Tue, 16 Jun 2020 09:54:52 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] drm/i915/selftests: Fix inconsistent IS_ERR and PTR_ERR
+Message-ID: <20200616145452.GA25291@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200614061122.35928-1-gthelen@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix inconsistent IS_ERR and PTR_ERR in live_timeslice_nopreempt().
 
+The proper pointer to be passed as argument to PTR_ERR() is ce.
 
-On 6/13/20 11:11 PM, Greg Thelen wrote:
-> Commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME
-> systems") added e1000e_check_me() but it's only called from
-> CONFIG_PM_SLEEP protected code.  Thus builds without CONFIG_PM_SLEEP
-> see:
->   drivers/net/ethernet/intel/e1000e/netdev.c:137:13: warning: 'e1000e_check_me' defined but not used [-Wunused-function]
-> 
-> Add CONFIG_PM_SLEEP ifdef guard to avoid dead code.
-> 
-> Fixes: e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
-> Signed-off-by: Greg Thelen <gthelen@google.com>
-> ---
->  drivers/net/ethernet/intel/e1000e/netdev.c | 2 ++
->  1 file changed, 2 insertions(+)
+This bug was detected with the help of Coccinelle.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Fixes: b72f02d78e4f ("drm/i915/gt: Prevent timeslicing into unpreemptable requests")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/gpu/drm/i915/gt/selftest_lrc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks Greg
+diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+index 91543494f595..393339de0910 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
++++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+@@ -1337,7 +1337,7 @@ static int live_timeslice_nopreempt(void *arg)
+ 
+ 		ce = intel_context_create(engine);
+ 		if (IS_ERR(ce)) {
+-			err = PTR_ERR(rq);
++			err = PTR_ERR(ce);
+ 			goto out_spin;
+ 		}
+ 
+-- 
+2.27.0
+
