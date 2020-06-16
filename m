@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4895C1FB74D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5675B1FB7DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731401AbgFPPox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:44:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        id S1732130AbgFPPud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730574AbgFPPos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:44:48 -0400
+        id S1732392AbgFPPuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:50:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F89721475;
-        Tue, 16 Jun 2020 15:44:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E882720776;
+        Tue, 16 Jun 2020 15:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322287;
-        bh=2Em7vKIpKvy+bDt4TkT/4BokSyQ2joH3t0jkwKrZN50=;
+        s=default; t=1592322624;
+        bh=oXxrqKU3RYuFHlbwhWmrhjiO0p/+PyjSyNfifVE7cVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=da2vr+9ejQjZTWvMebsnKeBtv4aYwODm+ZaUEMtuQywC84XkNd5jAHZc4xf7GDJaz
-         MCxrxb3v+9IuOS6g7DKaKrOfbD59Upk/1WsTKd0urn9NCpFz3ZD3OgCEBVvAc2YMyq
-         3mfKGXt40YowL4dzTnBTMFduKe3QoZ4EVp6Uz4M0=
+        b=iryt4ZX8sO4ZKPeDKNeQB1Quf2irXnvhbS/KfHgN1zWPHOydQ1GRxyL514frc75uV
+         5eZm6eJc0WjW/69sFGDdMFU+YVSFDPvUNM/KFEnarwEX/OlLMM1D0o36TGg4vOPgj+
+         NLvXwhYnMSrUPDnPqw8+tovHlyrgGn602DF5bMD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 056/163] io_uring: allow O_NONBLOCK async retry
-Date:   Tue, 16 Jun 2020 17:33:50 +0200
-Message-Id: <20200616153109.528537455@linuxfoundation.org>
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 041/161] kobject: Make sure the parent does not get released before its children
+Date:   Tue, 16 Jun 2020 17:33:51 +0200
+Message-Id: <20200616153108.333633206@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +49,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit c5b856255cbc3b664d686a83fa9397a835e063de upstream.
+[ Upstream commit 4ef12f7198023c09ad6d25b652bd8748c965c7fa ]
 
-We can assume that O_NONBLOCK is always honored, even if we don't
-have a ->read/write_iter() for the file type. Also unify the read/write
-checking for allowing async punt, having the write side factoring in the
-REQ_F_NOWAIT flag as well.
+In the function kobject_cleanup(), kobject_del(kobj) is
+called before the kobj->release(). That makes it possible to
+release the parent of the kobject before the kobject itself.
 
-Cc: stable@vger.kernel.org
-Fixes: 490e89676a52 ("io_uring: only force async punt if poll based retry can't handle it")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+To fix that, adding function __kboject_del() that does
+everything that kobject_del() does except release the parent
+reference. kobject_cleanup() then calls __kobject_del()
+instead of kobject_del(), and separately decrements the
+reference count of the parent kobject after kobj->release()
+has been called.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20200513151840.36400-1-heikki.krogerus@linux.intel.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ lib/kobject.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2038,6 +2038,10 @@ static bool io_file_supports_async(struc
- 	if (S_ISREG(mode) && file->f_op != &io_uring_fops)
- 		return true;
+diff --git a/lib/kobject.c b/lib/kobject.c
+index 83198cb37d8d..2bd631460e18 100644
+--- a/lib/kobject.c
++++ b/lib/kobject.c
+@@ -599,14 +599,7 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
+ }
+ EXPORT_SYMBOL_GPL(kobject_move);
  
-+	/* any ->read/write should understand O_NONBLOCK */
-+	if (file->f_flags & O_NONBLOCK)
-+		return true;
+-/**
+- * kobject_del() - Unlink kobject from hierarchy.
+- * @kobj: object.
+- *
+- * This is the function that should be called to delete an object
+- * successfully added via kobject_add().
+- */
+-void kobject_del(struct kobject *kobj)
++static void __kobject_del(struct kobject *kobj)
+ {
+ 	struct kernfs_node *sd;
+ 	const struct kobj_type *ktype;
+@@ -625,9 +618,23 @@ void kobject_del(struct kobject *kobj)
+ 
+ 	kobj->state_in_sysfs = 0;
+ 	kobj_kset_leave(kobj);
+-	kobject_put(kobj->parent);
+ 	kobj->parent = NULL;
+ }
 +
- 	if (!(file->f_mode & FMODE_NOWAIT))
- 		return false;
++/**
++ * kobject_del() - Unlink kobject from hierarchy.
++ * @kobj: object.
++ *
++ * This is the function that should be called to delete an object
++ * successfully added via kobject_add().
++ */
++void kobject_del(struct kobject *kobj)
++{
++	struct kobject *parent = kobj->parent;
++
++	__kobject_del(kobj);
++	kobject_put(parent);
++}
+ EXPORT_SYMBOL(kobject_del);
  
-@@ -2080,8 +2084,7 @@ static int io_prep_rw(struct io_kiocb *r
- 		kiocb->ki_ioprio = get_current_ioprio();
+ /**
+@@ -663,6 +670,7 @@ EXPORT_SYMBOL(kobject_get_unless_zero);
+  */
+ static void kobject_cleanup(struct kobject *kobj)
+ {
++	struct kobject *parent = kobj->parent;
+ 	struct kobj_type *t = get_ktype(kobj);
+ 	const char *name = kobj->name;
  
- 	/* don't allow async punt if RWF_NOWAIT was requested */
--	if ((kiocb->ki_flags & IOCB_NOWAIT) ||
--	    (req->file->f_flags & O_NONBLOCK))
-+	if (kiocb->ki_flags & IOCB_NOWAIT)
- 		req->flags |= REQ_F_NOWAIT;
+@@ -684,7 +692,7 @@ static void kobject_cleanup(struct kobject *kobj)
+ 	if (kobj->state_in_sysfs) {
+ 		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+ 			 kobject_name(kobj), kobj);
+-		kobject_del(kobj);
++		__kobject_del(kobj);
+ 	}
  
- 	if (force_nonblock)
-@@ -2722,7 +2725,8 @@ copy_iov:
- 			if (ret)
- 				goto out_free;
- 			/* any defer here is final, must blocking retry */
--			if (!file_can_poll(req->file))
-+			if (!(req->flags & REQ_F_NOWAIT) &&
-+			    !file_can_poll(req->file))
- 				req->flags |= REQ_F_MUST_PUNT;
- 			return -EAGAIN;
- 		}
+ 	if (t && t->release) {
+@@ -698,6 +706,8 @@ static void kobject_cleanup(struct kobject *kobj)
+ 		pr_debug("kobject: '%s': free name\n", name);
+ 		kfree_const(name);
+ 	}
++
++	kobject_put(parent);
+ }
+ 
+ #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+-- 
+2.25.1
+
 
 
