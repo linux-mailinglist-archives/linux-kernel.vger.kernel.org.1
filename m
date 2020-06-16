@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B264E1FB6C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB251FB777
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731106AbgFPPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54190 "EHLO mail.kernel.org"
+        id S1732204AbgFPPqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:46:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730247AbgFPPkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:40:04 -0400
+        id S1732163AbgFPPqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:46:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECE1B21475;
-        Tue, 16 Jun 2020 15:40:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F5C72071A;
+        Tue, 16 Jun 2020 15:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322003;
-        bh=YpiDX//DCZyndsHiTNDCXemrMW/Ng3bYPltKA4HZ0As=;
+        s=default; t=1592322378;
+        bh=H2+Cp8gjTj/jO87CDcmTBryoXX5RnUkQjR6CJ67DnkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmFkT8IqM5xcIxKS0RUm1FJsyQChqZsDsYh6TPKLISCdEtETbHt8PPfxLkQMStgVj
-         em63ev9P89wpDZV7c16B4caDLG8AGW8WSNW93VN8aYxsstOntS+b9ZP7/ZGpmZUtDW
-         65qsvfy5APIiI5Gkt/Z+T80cNQKvhzURSGv1GEoU=
+        b=KbcvxLudGEwSL7EMwNp8XU+14xNv9rnE62PhIJEIIx0CKcBw8s66S1qyOR6uJ7Rdw
+         yEQjOMbPD3MVgL9A8RIl26NX03gVBjcKLP7XW8p/39O9fs0iPT/4wpHgOM7BCgxDW+
+         kOau2yI2aW1RI72WWzuzh9tFqhsflepS9uL+NRc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 098/134] cpufreq: Fix up cpufreq_boost_set_sw()
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.7 108/163] mptcp: dont leak msk in token container
 Date:   Tue, 16 Jun 2020 17:34:42 +0200
-Message-Id: <20200616153105.476609204@linuxfoundation.org>
+Message-Id: <20200616153111.982041311@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
+References: <20200616153106.849127260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,66 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit 552abb884e97d26589964e5a8c7e736f852f95f0 upstream.
+[ Upstream commit 4b5af44129d0653a4df44e5511c7d480c61c8f3c ]
 
-After commit 18c49926c4bf ("cpufreq: Add QoS requests for userspace
-constraints") the return value of freq_qos_update_request(), that can
-be 1, passed by cpufreq_boost_set_sw() to its caller sometimes
-confuses the latter, which only expects to see 0 or negative error
-codes, so notice that cpufreq_boost_set_sw() can return an error code
-(which should not be -EINVAL for that matter) as soon as the first
-policy without a frequency table is found (because either all policies
-have a frequency table or none of them have it) and rework it to meet
-its caller's expectations.
+If a listening MPTCP socket has unaccepted sockets at close
+time, the related msks are freed via mptcp_sock_destruct(),
+which in turn does not invoke the proto->destroy() method
+nor the mptcp_token_destroy() function.
 
-Fixes: 18c49926c4bf ("cpufreq: Add QoS requests for userspace constraints")
-Reported-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Due to the above, the child msk socket is not removed from
+the token container, leading to later UaF.
+
+Address the issue explicitly removing the token even in the
+above error path.
+
+Fixes: 79c0949e9a09 ("mptcp: Add key generation and token tree")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/cpufreq/cpufreq.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/mptcp/subflow.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -2507,26 +2507,27 @@ EXPORT_SYMBOL_GPL(cpufreq_update_limits)
- static int cpufreq_boost_set_sw(int state)
- {
- 	struct cpufreq_policy *policy;
--	int ret = -EINVAL;
- 
- 	for_each_active_policy(policy) {
-+		int ret;
-+
- 		if (!policy->freq_table)
--			continue;
-+			return -ENXIO;
- 
- 		ret = cpufreq_frequency_table_cpuinfo(policy,
- 						      policy->freq_table);
- 		if (ret) {
- 			pr_err("%s: Policy frequency update failed\n",
- 			       __func__);
--			break;
-+			return ret;
- 		}
- 
- 		ret = freq_qos_update_request(policy->max_freq_req, policy->max);
- 		if (ret < 0)
--			break;
-+			return ret;
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -393,6 +393,7 @@ static void mptcp_sock_destruct(struct s
+ 		sock_orphan(sk);
  	}
  
--	return ret;
-+	return 0;
++	mptcp_token_destroy(mptcp_sk(sk)->token);
+ 	inet_sock_destruct(sk);
  }
  
- int cpufreq_boost_trigger_state(int state)
 
 
