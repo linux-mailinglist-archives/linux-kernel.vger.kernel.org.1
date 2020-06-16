@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3971FB836
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBCB1FB6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732944AbgFPPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52848 "EHLO mail.kernel.org"
+        id S1731473AbgFPPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732932AbgFPPyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:54:01 -0400
+        id S1731455AbgFPPla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAB07208D5;
-        Tue, 16 Jun 2020 15:54:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 880BF207C4;
+        Tue, 16 Jun 2020 15:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322841;
-        bh=31K/xXAjmx9ivj+GVlLUEC+9mIQeg4WPdAZ970qHfUE=;
+        s=default; t=1592322090;
+        bh=HYWquZViGbGdIcbesak3htJvfn2PAB/KpqgGhH9wMTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OqvE5NXRjZMgJci0GPLe5pAKNw8VJvTJd5UttoloAA6mEGg14DYOh8evC3Ln5wn5t
-         d+NRq8Xb5IxfrOOu8s8VKXHug1r1wmiEU1X1TOHBIVrTh6gNvlV1NTf25+yxfFcDzG
-         PS+EtHWSTfN+Oq/jzFp1Xx8njy6bSvOO3JZnzByQ=
+        b=OBwjvy4kp6nlS02TSlLoWSEI9bLSibWoPWczE9AF/AyvAWWZzMVZDnj2e9D0OX/9R
+         2MwgGf8fysEVe1jM89Qqu+3ShbR0swawjV0Dm0vxucQH4VNYGlRJB7WlvxhqoFuIz2
+         xqNoekOj/qdrtYHW+YtHLXfrNsuTGEvRo/OEOQfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.6 124/161] media: videobuf2-dma-contig: fix bad kfree in vb2_dma_contig_clear_max_seg_size
-Date:   Tue, 16 Jun 2020 17:35:14 +0200
-Message-Id: <20200616153112.270244216@linuxfoundation.org>
+        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.cz>,
+        Jiri Kosina <jkosina@suse.cz>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 131/134] block/floppy: fix contended case in floppy_queue_rq()
+Date:   Tue, 16 Jun 2020 17:35:15 +0200
+Message-Id: <20200616153107.061913864@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
-References: <20200616153106.402291280@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,89 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+From: Jiri Kosina <jkosina@suse.cz>
 
-commit 0d9668721311607353d4861e6c32afeb272813dc upstream.
+commit 263c61581a38d0a5ad1f5f4a9143b27d68caeffd upstream.
 
-Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
-Initialize dma_parms for platform devices") in v5.7-rc5 causes
-vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
-allocated by vb2_dma_contig_set_max_seg_size().
+Since the switch of floppy driver to blk-mq, the contended (fdc_busy) case
+in floppy_queue_rq() is not handled correctly.
 
-The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
-dev->dma_parms is always NULL when the driver is probed, and the case
-where dev->dma_parms has bee initialized by someone else than the driver
-(by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
+In case we reach floppy_queue_rq() with fdc_busy set (i.e. with the floppy
+locked due to another request still being in-flight), we put the request
+on the list of requests and return BLK_STS_OK to the block core, without
+actually scheduling delayed work / doing further processing of the
+request. This means that processing of this request is postponed until
+another request comes and passess uncontended.
 
-All the current users of these functions are platform devices, which now
-always have dma_parms set by the driver core. To fix the issue for v5.7,
-make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
-NULL to be on the safe side, and remove the kfree code from
-vb2_dma_contig_clear_max_seg_size().
+Which in some cases might actually never happen and we keep waiting
+indefinitely. The simple testcase is
 
-For v5.8 we should remove the two functions and move the
-dma_set_max_seg_size() calls into the drivers.
+	for i in `seq 1 2000`; do echo -en $i '\r'; blkid --info /dev/fd0 2> /dev/null; done
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
+run in quemu. That reliably causes blkid eventually indefinitely hanging
+in __floppy_read_block_0() waiting for completion, as the BIO callback
+never happens, and no further IO is ever submitted on the (non-existent)
+floppy device. This was observed reliably on qemu-emulated device.
+
+Fix that by not queuing the request in the contended case, and return
+BLK_STS_RESOURCE instead, so that blk core handles the request
+rescheduling and let it pass properly non-contended later.
+
+Fixes: a9f38e1dec107a ("floppy: convert to blk-mq")
 Cc: stable@vger.kernel.org
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Tested-by: Libor Pechacek <lpechacek@suse.cz>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/common/videobuf2/videobuf2-dma-contig.c |   20 +-----------------
- include/media/videobuf2-dma-contig.h                  |    2 -
- 2 files changed, 3 insertions(+), 19 deletions(-)
+ drivers/block/floppy.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -726,9 +726,8 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_memops)
- int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size)
- {
- 	if (!dev->dma_parms) {
--		dev->dma_parms = kzalloc(sizeof(*dev->dma_parms), GFP_KERNEL);
--		if (!dev->dma_parms)
--			return -ENOMEM;
-+		dev_err(dev, "Failed to set max_seg_size: dma_parms is NULL\n");
-+		return -ENODEV;
- 	}
- 	if (dma_get_max_seg_size(dev) < size)
- 		return dma_set_max_seg_size(dev, size);
-@@ -737,21 +736,6 @@ int vb2_dma_contig_set_max_seg_size(stru
- }
- EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -2902,17 +2902,17 @@ static blk_status_t floppy_queue_rq(stru
+ 		 (unsigned long long) current_req->cmd_flags))
+ 		return BLK_STS_IOERR;
  
--/*
-- * vb2_dma_contig_clear_max_seg_size() - release resources for DMA parameters
-- * @dev:	device for configuring DMA parameters
-- *
-- * This function releases resources allocated to configure DMA parameters
-- * (see vb2_dma_contig_set_max_seg_size() function). It should be called from
-- * device drivers on driver remove.
-- */
--void vb2_dma_contig_clear_max_seg_size(struct device *dev)
--{
--	kfree(dev->dma_parms);
--	dev->dma_parms = NULL;
--}
--EXPORT_SYMBOL_GPL(vb2_dma_contig_clear_max_seg_size);
+-	spin_lock_irq(&floppy_lock);
+-	list_add_tail(&bd->rq->queuelist, &floppy_reqs);
+-	spin_unlock_irq(&floppy_lock);
 -
- MODULE_DESCRIPTION("DMA-contig memory handling routines for videobuf2");
- MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
- MODULE_LICENSE("GPL");
---- a/include/media/videobuf2-dma-contig.h
-+++ b/include/media/videobuf2-dma-contig.h
-@@ -25,7 +25,7 @@ vb2_dma_contig_plane_dma_addr(struct vb2
- }
+ 	if (test_and_set_bit(0, &fdc_busy)) {
+ 		/* fdc busy, this new request will be treated when the
+ 		   current one is done */
+ 		is_alive(__func__, "old request running");
+-		return BLK_STS_OK;
++		return BLK_STS_RESOURCE;
+ 	}
  
- int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size);
--void vb2_dma_contig_clear_max_seg_size(struct device *dev);
-+static inline void vb2_dma_contig_clear_max_seg_size(struct device *dev) { }
- 
- extern const struct vb2_mem_ops vb2_dma_contig_memops;
- 
++	spin_lock_irq(&floppy_lock);
++	list_add_tail(&bd->rq->queuelist, &floppy_reqs);
++	spin_unlock_irq(&floppy_lock);
++
+ 	command_status = FD_COMMAND_NONE;
+ 	__reschedule_timeout(MAXTIMEOUT, "fd_request");
+ 	set_fdc(0);
 
 
