@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4E31FB66F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC091FB7D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgFPPhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
+        id S1732557AbgFPPtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:49:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730256AbgFPPhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:37:15 -0400
+        id S1732014AbgFPPtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:49:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB7A9214D8;
-        Tue, 16 Jun 2020 15:37:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C7702071A;
+        Tue, 16 Jun 2020 15:49:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592321834;
-        bh=6qGzqDRgQtxS+q1RhS4XN3NgSBMUArCOh0uuf57KmI4=;
+        s=default; t=1592322591;
+        bh=9gmy1HztA2mjnSIrbqEUjMiWyJe09lRlOSUFVNxX+Kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r3d6zbW4UYMckZA2aUWyGXflJ6q+8NmKg+h1H27jDr8cNL2MTel6e8ypbyAhA6j4L
-         w6FTM5nhalbYg/zp83erNb0107tpZJt1AYCe9tJpaZkI+dQJ5i+5TJezLUqui5iQTo
-         egwuaAdltY4Rm1LdaqSCT4Awpx4tM5msogCLLYJo=
+        b=apgcXrXKD7Eb0pGt/Y5XIfu5mTsTdr0GIFp5dIJhpY1WslKbbBBBH9/aYm9rwt/0Y
+         xu4MNb4/JqxB6Ph7dzsHCt4kDOYr9tQkjIZFbemqeuqW54O28rxitn/+DO/+on7Pfl
+         vZiskPWGBi5ofWWsVvFrdiC+ec4PIr25sadZGd5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avi Kivity <avi@scylladb.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.4 033/134] aio: fix async fsync creds
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 027/161] fanotify: fix ignore mask logic for events on child and on dir
 Date:   Tue, 16 Jun 2020 17:33:37 +0200
-Message-Id: <20200616153102.370182378@linuxfoundation.org>
+Message-Id: <20200616153107.691857095@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
-References: <20200616153100.633279950@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Amir Goldstein <amir73il@gmail.com>
 
-commit 530f32fc370fd1431ea9802dbc53ab5601dfccdb upstream.
+[ Upstream commit 2f02fd3fa13e51713b630164f8a8e5b42de8283b ]
 
-Avi Kivity reports that on fuse filesystems running in a user namespace
-asyncronous fsync fails with EOVERFLOW.
+The comments in fanotify_group_event_mask() say:
 
-The reason is that f_ops->fsync() is called with the creds of the kthread
-performing aio work instead of the creds of the process originally
-submitting IOCB_CMD_FSYNC.
+  "If the event is on dir/child and this mark doesn't care about
+   events on dir/child, don't send it!"
 
-Fuse sends the creds of the caller in the request header and it needs to
-translate the uid and gid into the server's user namespace.  Since the
-kthread is running in init_user_ns, the translation will fail and the
-operation returns an error.
+Specifically, mount and filesystem marks do not care about events
+on child, but they can still specify an ignore mask for those events.
+For example, a group that has:
+- A mount mark with mask 0 and ignore_mask FAN_OPEN
+- An inode mark on a directory with mask FAN_OPEN | FAN_OPEN_EXEC
+  with flag FAN_EVENT_ON_CHILD
 
-It can be argued that fsync doesn't actually need any creds, but just
-zeroing out those fields in the header (as with requests that currently
-don't take creds) is a backward compatibility risk.
+A child file open for exec would be reported to group with the FAN_OPEN
+event despite the fact that FAN_OPEN is in ignore mask of mount mark,
+because the mark iteration loop skips over non-inode marks for events
+on child when calculating the ignore mask.
 
-Instead of working around this issue in fuse, solve the core of the problem
-by calling the filesystem with the proper creds.
+Move ignore mask calculation to the top of the iteration loop block
+before excluding marks for events on dir/child.
 
-Reported-by: Avi Kivity <avi@scylladb.com>
-Tested-by: Giuseppe Scrivano <gscrivan@redhat.com>
-Fixes: c9582eb0ff7d ("fuse: Fail all requests with invalid uids or gids")
-Cc: stable@vger.kernel.org  # 4.18+
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200524072441.18258-1-amir73il@gmail.com
+Reported-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/linux-fsdevel/20200521162443.GA26052@quack2.suse.cz/
+Fixes: 55bf882c7f13 "fanotify: fix merging marks masks with FAN_ONDIR"
+Fixes: b469e7e47c8a "fanotify: fix handling of events on child..."
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/aio.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/notify/fanotify/fanotify.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -176,6 +176,7 @@ struct fsync_iocb {
- 	struct file		*file;
- 	struct work_struct	work;
- 	bool			datasync;
-+	struct cred		*creds;
- };
- 
- struct poll_iocb {
-@@ -1589,8 +1590,11 @@ static int aio_write(struct kiocb *req,
- static void aio_fsync_work(struct work_struct *work)
- {
- 	struct aio_kiocb *iocb = container_of(work, struct aio_kiocb, fsync.work);
-+	const struct cred *old_cred = override_creds(iocb->fsync.creds);
- 
- 	iocb->ki_res.res = vfs_fsync(iocb->fsync.file, iocb->fsync.datasync);
-+	revert_creds(old_cred);
-+	put_cred(iocb->fsync.creds);
- 	iocb_put(iocb);
- }
- 
-@@ -1604,6 +1608,10 @@ static int aio_fsync(struct fsync_iocb *
- 	if (unlikely(!req->file->f_op->fsync))
- 		return -EINVAL;
- 
-+	req->creds = prepare_creds();
-+	if (!req->creds)
-+		return -ENOMEM;
+diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+index deb13f0a0f7d..d24548ed31b9 100644
+--- a/fs/notify/fanotify/fanotify.c
++++ b/fs/notify/fanotify/fanotify.c
+@@ -171,6 +171,10 @@ static u32 fanotify_group_event_mask(struct fsnotify_group *group,
+ 		if (!fsnotify_iter_should_report_type(iter_info, type))
+ 			continue;
+ 		mark = iter_info->marks[type];
 +
- 	req->datasync = datasync;
- 	INIT_WORK(&req->work, aio_fsync_work);
- 	schedule_work(&req->work);
++		/* Apply ignore mask regardless of ISDIR and ON_CHILD flags */
++		marks_ignored_mask |= mark->ignored_mask;
++
+ 		/*
+ 		 * If the event is on dir and this mark doesn't care about
+ 		 * events on dir, don't send it!
+@@ -188,7 +192,6 @@ static u32 fanotify_group_event_mask(struct fsnotify_group *group,
+ 			continue;
+ 
+ 		marks_mask |= mark->mask;
+-		marks_ignored_mask |= mark->ignored_mask;
+ 	}
+ 
+ 	test_mask = event_mask & marks_mask & ~marks_ignored_mask;
+-- 
+2.25.1
+
 
 
