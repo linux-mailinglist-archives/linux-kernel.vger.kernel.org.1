@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521D41FA684
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D60B1FA67D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 04:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgFPCuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Jun 2020 22:50:05 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:36935 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgFPCuF (ORCPT
+        id S1726447AbgFPCjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Jun 2020 22:39:01 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:59286 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725978AbgFPCjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Jun 2020 22:50:05 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200616025002epoutp030d27f06d18f43e7c4a1b033ea227bb55~Y5mgLeJf31007610076epoutp036
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 02:50:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200616025002epoutp030d27f06d18f43e7c4a1b033ea227bb55~Y5mgLeJf31007610076epoutp036
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592275802;
-        bh=spjKI7Hru4Soqaq2x2p1K2V9p9tJZfIMpDHOwwXNFcA=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=U4e6codZVmWZ22i7/tu3fli/Uh/Q9Erp9DVyY7/11FWR7tTliaLmyw4A8BOf6krCK
-         zJ4MElA551XoAjOgGAAsGLoqtgKJguRhatyjQ5ht3MDA80f0G3xGhZwA4sMWrZNGRQ
-         mlEImivGZJYQtb9sW4kKolnIvOOCcXP/OZxtCTH0=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p3.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200616025002epcas1p316c0cf1052a1a6976a1405c3b6eb54ce~Y5mf0vEjn1669816698epcas1p38;
-        Tue, 16 Jun 2020 02:50:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: Re: [RFC PATCH v2 2/5] scsi: ufs: Add UFS-feature layer
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <47dcc56312229fc8f25f39c2beeb3a8ba811f3e9.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1210830415.21592275802431.JavaMail.epsvc@epcpadp1>
-Date:   Tue, 16 Jun 2020 10:18:42 +0900
-X-CMS-MailID: 20200616011842epcms2p627921d294e8fea0348036e1d9eb5f2c1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
-References: <47dcc56312229fc8f25f39c2beeb3a8ba811f3e9.camel@gmail.com>
-        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
-        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
-        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p6>
+        Mon, 15 Jun 2020 22:39:01 -0400
+Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8CF88761207;
+        Tue, 16 Jun 2020 12:38:57 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jl1V2-0002F3-Dd; Tue, 16 Jun 2020 12:38:56 +1000
+Date:   Tue, 16 Jun 2020 12:38:56 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] xfs: fix use-after-free on CIL context on shutdown
+Message-ID: <20200616023856.GD2005@dread.disaster.area>
+References: <20200611013952.2589997-1-yukuai3@huawei.com>
+ <20200611022848.GQ2040@dread.disaster.area>
+ <20200611024503.GR2040@dread.disaster.area>
+ <9d13cb34-5625-ed84-71f5-ad48204589a1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d13cb34-5625-ed84-71f5-ad48204589a1@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
+        a=4gZMuf7uG7p2KhJwSLEA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bean
+On Tue, Jun 16, 2020 at 09:16:09AM +0800, yukuai (C) wrote:
+> On 2020/6/11 10:45, Dave Chinner wrote:
+> > 
+> > From: Dave Chinner <dchinner@redhat.com>
+> > 
+> > xlog_wait() on the CIL context can reference a freed context if the
+> > waiter doesn't get scheduled before the CIL context is freed. This
+> > can happen when a task is on the hard throttle and the CIL push
+> > aborts due to a shutdown. This was detected by generic/019:
+> > 
+> > thread 1			thread 2
+> > 
+> > __xfs_trans_commit
+> >   xfs_log_commit_cil
+> >    <CIL size over hard throttle limit>
+> >    xlog_wait
+> >     schedule
+> > 				xlog_cil_push_work
+> > 				wake_up_all
+> > 				<shutdown aborts commit>
+> > 				xlog_cil_committed
+> > 				kmem_free
+> > 
+> >     remove_wait_queue
+> >      spin_lock_irqsave --> UAF
+> > 
+> > Fix it by moving the wait queue to the CIL rather than keeping it in
+> > in the CIL context that gets freed on push completion. Because the
+> > wait queue is now independent of the CIL context and we might have
+> > multiple contexts in flight at once, only wake the waiters on the
+> > push throttle when the context we are pushing is over the hard
+> > throttle size threshold.
 > 
-> On Mon, 2020-06-15 at 16:23 +0900, Daejun Park wrote:
-> > +void ufsf_scan_features(struct ufs_hba *hba)
-> > +{
-> > +       int ret;
-> > +
-> > +       init_waitqueue_head(&hba->ufsf.sdev_wait);
-> > +       atomic_set(&hba->ufsf.slave_conf_cnt, 0);
-> > +
-> > +       if (hba->dev_info.wspecversion >= HPB_SUPPORTED_VERSION &&
-> > +           (hba->dev_info.b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) 
+> Hi, Dave,
 > 
-> How about removing this check "(hba->dev_info.wspecversion >=
-> HPB_SUPPORTED_VERSION" since ufs with lower version than v3.1 can add
-> HPB feature by FFU, 
-> if (hba->dev_info.b_ufs_feature_sup  &UFS_FEATURE_SUPPORT_HPB_BIT) is
-> enough.
-OK, changing it seems no problem. But I want to know what other people think
-about this version checking code.
+> How do you think about the following fix:
+> 
+> 1. use autoremove_wake_func(), and remove remove_wait_queue() to
+> avoid UAF.
+> 2. add finish_wait().
+> 
+> @@ -576,12 +576,13 @@ xlog_wait(
+>                 __releases(lock)
+>  {
+>         DECLARE_WAITQUEUE(wait, current);
+> +       wait.func = autoremove_wake_function;
+> 
+>         add_wait_queue_exclusive(wq, &wait);
+>         __set_current_state(TASK_UNINTERRUPTIBLE);
+>         spin_unlock(lock);
+>         schedule();
+> -       remove_wait_queue(wq, &wait);
+> +       finish_wait(wq, &wait);
+>  }
 
-Thanks,
-Daejun
+Yes, that would address this specific symptom of the problem, but it
+doesn't fix the problem root cause: that the wq can be freed while
+this function sleeps. IMO, this sort of change leaves a trap for
+future modifications - all the code calling xlog_wait() assumes the
+embedded wq the task is sleeping on still exists after waiting so we
+really should be fixing the problem the incorrect existence
+guarantee in the CIL code that you tripped over.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
