@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816461FB9CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018BF1FBAEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 18:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732411AbgFPQGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 12:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41284 "EHLO mail.kernel.org"
+        id S1730695AbgFPPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:41:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732035AbgFPPro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:47:44 -0400
+        id S1731476AbgFPPlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:41:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4299420E65;
-        Tue, 16 Jun 2020 15:47:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1FD9207C4;
+        Tue, 16 Jun 2020 15:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322463;
-        bh=dRzrmPTneQJ2RejTL0DG0atWQiNUcoX1ztdDbR2Xwcg=;
+        s=default; t=1592322095;
+        bh=QE52FG2xOUXV33Cg5XUI/t3yU+pakCPIncMqd6LhEz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ux3UA9nPnmU1Upqx9Syd66QO4FMGAYoiFPp4G9qBZEg762LM/ag86GbSOaWc95prh
-         ppZFEavr7skrydJy3v1Hr5ZArihS09HZS4U/xgTL8UmdHp5voelks856WaSJ1dd+fl
-         SijtFGxBG71xHdsKI1/5VDU19CKjfux3UaLd9CM0=
+        b=BUM98tTfisAxlRSuj9kTprkRM3XML6EpJB+HYyuuCibRzw8NZFACQddfJ3W/b2n8g
+         gE+zIBTC1VeSNxu84jloEopo7yG8tMFfMlq+Ahlu2KF9N/KiBJTtTcTS25JT7WN2HU
+         i0rVVujDyucAZmZ4RIMpU5gQsvWZH+sbOeSre+94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
-Subject: [PATCH 5.7 141/163] ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
-Date:   Tue, 16 Jun 2020 17:35:15 +0200
-Message-Id: <20200616153113.563383851@linuxfoundation.org>
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 133/134] KVM: arm64: Synchronize sysreg state on injecting an AArch32 exception
+Date:   Tue, 16 Jun 2020 17:35:17 +0200
+Message-Id: <20200616153107.157813635@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153100.633279950@linuxfoundation.org>
+References: <20200616153100.633279950@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit e4ff08a4d727146bb6717a39a8d399d834654345 upstream.
+commit 0370964dd3ff7d3d406f292cb443a927952cbd05 upstream.
 
-Write out of slab bounds. We should check epid.
+On a VHE system, the EL1 state is left in the CPU most of the time,
+and only syncronized back to memory when vcpu_put() is called (most
+of the time on preemption).
 
-The case reported by syzbot:
-https://lore.kernel.org/linux-usb/0000000000006ac55b05a1c05d72@google.com
-BUG: KASAN: use-after-free in htc_process_conn_rsp
-drivers/net/wireless/ath/ath9k/htc_hst.c:131 [inline]
-BUG: KASAN: use-after-free in ath9k_htc_rx_msg+0xa25/0xaf0
-drivers/net/wireless/ath/ath9k/htc_hst.c:443
-Write of size 2 at addr ffff8881cea291f0 by task swapper/1/0
+Which means that when injecting an exception, we'd better have a way
+to either:
+(1) write directly to the EL1 sysregs
+(2) synchronize the state back to memory, and do the changes there
 
-Call Trace:
- htc_process_conn_rsp drivers/net/wireless/ath/ath9k/htc_hst.c:131
-[inline]
-ath9k_htc_rx_msg+0xa25/0xaf0
-drivers/net/wireless/ath/ath9k/htc_hst.c:443
-ath9k_hif_usb_reg_in_cb+0x1ba/0x630
-drivers/net/wireless/ath/ath9k/hif_usb.c:718
-__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
-usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
-dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
-call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
-expire_timers kernel/time/timer.c:1449 [inline]
-__run_timers kernel/time/timer.c:1773 [inline]
-__run_timers kernel/time/timer.c:1740 [inline]
-run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+For an AArch64, we already do (1), so we are safe. Unfortunately,
+doing the same thing for AArch32 would be pretty invasive. Instead,
+we can easily implement (2) by calling the put/load architectural
+backends, and keep preemption disabled. We can then reload the
+state back into EL1.
 
-Reported-and-tested-by: syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200404041838.10426-4-hqjagain@gmail.com
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/ath/ath9k/htc_hst.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/include/asm/kvm_host.h   |    2 ++
+ arch/arm64/include/asm/kvm_host.h |    2 ++
+ virt/kvm/arm/aarch32.c            |   28 ++++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+)
 
---- a/drivers/net/wireless/ath/ath9k/htc_hst.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
-@@ -113,6 +113,9 @@ static void htc_process_conn_rsp(struct
+--- a/arch/arm/include/asm/kvm_host.h
++++ b/arch/arm/include/asm/kvm_host.h
+@@ -421,4 +421,6 @@ static inline bool kvm_arm_vcpu_is_final
+ 	return true;
+ }
  
- 	if (svc_rspmsg->status == HTC_SERVICE_SUCCESS) {
- 		epid = svc_rspmsg->endpoint_id;
-+		if (epid < 0 || epid >= ENDPOINT_MAX)
-+			return;
++#define kvm_arm_vcpu_loaded(vcpu)	(false)
 +
- 		service_id = be16_to_cpu(svc_rspmsg->service_id);
- 		max_msglen = be16_to_cpu(svc_rspmsg->max_msg_len);
- 		endpoint = &target->endpoint[epid];
+ #endif /* __ARM_KVM_HOST_H__ */
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -679,4 +679,6 @@ bool kvm_arm_vcpu_is_finalized(struct kv
+ #define kvm_arm_vcpu_sve_finalized(vcpu) \
+ 	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+ 
++#define kvm_arm_vcpu_loaded(vcpu)	((vcpu)->arch.sysregs_loaded_on_cpu)
++
+ #endif /* __ARM64_KVM_HOST_H__ */
+--- a/virt/kvm/arm/aarch32.c
++++ b/virt/kvm/arm/aarch32.c
+@@ -33,6 +33,26 @@ static const u8 return_offsets[8][2] = {
+ 	[7] = { 4, 4 },		/* FIQ, unused */
+ };
+ 
++static bool pre_fault_synchronize(struct kvm_vcpu *vcpu)
++{
++	preempt_disable();
++	if (kvm_arm_vcpu_loaded(vcpu)) {
++		kvm_arch_vcpu_put(vcpu);
++		return true;
++	}
++
++	preempt_enable();
++	return false;
++}
++
++static void post_fault_synchronize(struct kvm_vcpu *vcpu, bool loaded)
++{
++	if (loaded) {
++		kvm_arch_vcpu_load(vcpu, smp_processor_id());
++		preempt_enable();
++	}
++}
++
+ /*
+  * When an exception is taken, most CPSR fields are left unchanged in the
+  * handler. However, some are explicitly overridden (e.g. M[4:0]).
+@@ -155,7 +175,10 @@ static void prepare_fault32(struct kvm_v
+ 
+ void kvm_inject_undef32(struct kvm_vcpu *vcpu)
+ {
++	bool loaded = pre_fault_synchronize(vcpu);
++
+ 	prepare_fault32(vcpu, PSR_AA32_MODE_UND, 4);
++	post_fault_synchronize(vcpu, loaded);
+ }
+ 
+ /*
+@@ -168,6 +191,9 @@ static void inject_abt32(struct kvm_vcpu
+ 	u32 vect_offset;
+ 	u32 *far, *fsr;
+ 	bool is_lpae;
++	bool loaded;
++
++	loaded = pre_fault_synchronize(vcpu);
+ 
+ 	if (is_pabt) {
+ 		vect_offset = 12;
+@@ -191,6 +217,8 @@ static void inject_abt32(struct kvm_vcpu
+ 		/* no need to shuffle FS[4] into DFSR[10] as its 0 */
+ 		*fsr = DFSR_FSC_EXTABT_nLPAE;
+ 	}
++
++	post_fault_synchronize(vcpu, loaded);
+ }
+ 
+ void kvm_inject_dabt32(struct kvm_vcpu *vcpu, unsigned long addr)
 
 
