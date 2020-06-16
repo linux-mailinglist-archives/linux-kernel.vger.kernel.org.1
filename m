@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5EA1FA811
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 07:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384191FA818
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 07:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgFPFAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 01:00:13 -0400
-Received: from ozlabs.org ([203.11.71.1]:60245 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgFPFAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 01:00:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49mGGf58zDz9sRK;
-        Tue, 16 Jun 2020 15:00:10 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592283610;
-        bh=0FZZfdCvghpA2NAn9J3ijYSyzDVy7NxN0rv+87y7MWQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=puQejvygiN/lXeGNqf0WuFgh+gfI43yYxjC9pVScWVD/UpFPMycHkulWniWiLn9Jm
-         ylq40zbV18ngXZHk63mEkhU+Wp9Xqop8RVxOAtxpCRCFCyWmZnCnLVC6LyLCGp4bgw
-         V3oSEBkclHTzX9yyFJhqzmzHMBDYDR9SgxOI77HN8nCSMqHTkoGPAKPywoGRYUCad8
-         yJzvboL1FfFKBDbusSbKYdbSvqW2eC58o2nIT+o16Csdmqbfy5q0VYeRYbgFW1gbK+
-         /gtetBgWquNc2bwBDl5SkXvgCt2Vmjeii7cYLylNM62ZWWkLG5Xqiu5JP/+yAgjC6H
-         ueHF+hZWCh2iQ==
-Date:   Tue, 16 Jun 2020 15:00:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Walker <dwalker@fifo99.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: removal of the cisco tree
-Message-ID: <20200616150009.6b9b1140@canb.auug.org.au>
+        id S1726838AbgFPFF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 01:05:29 -0400
+Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:48522 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726052AbgFPFF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 01:05:28 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BC50112150A;
+        Tue, 16 Jun 2020 05:05:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2731:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:9025:9040:10004:10400:10848:10967:11232:11658:11914:12043:12297:12555:12740:12760:12895:13069:13311:13357:13439:13845:14181:14659:14721:21080:21627:21740:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bite75_290569326dfc
+X-Filterd-Recvd-Size: 1972
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 16 Jun 2020 05:05:26 +0000 (UTC)
+Message-ID: <ac93acd4f757f3286f7782ad7c8117a6ad224b5c.camel@perches.com>
+Subject: Re: [PATCH 1/4] proc/bootconfig: Fix to use correct quotes for value
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Mon, 15 Jun 2020 22:05:25 -0700
+In-Reply-To: <a3cbc2cf-7371-3e2b-e794-4fbfc52aaad9@infradead.org>
+References: <159197538852.80267.10091816844311950396.stgit@devnote2>
+         <159197539793.80267.10836787284189465765.stgit@devnote2>
+         <20200615151139.5cc223fc@oasis.local.home>
+         <7abefbc81fc6aaefed6bbd2117e7bc97b90babe9.camel@perches.com>
+         <20200615172123.1fe77f3c@oasis.local.home>
+         <ddb4adb9-bf01-abd4-38dd-d6d064569d6e@infradead.org>
+         <20200615184218.752a17fa@oasis.local.home>
+         <a3cbc2cf-7371-3e2b-e794-4fbfc52aaad9@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_hxU4qcOVi6e1Z9J_DUc5x9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_hxU4qcOVi6e1Z9J_DUc5x9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 2020-06-15 at 16:12 -0700, Randy Dunlap wrote:
+> On 6/15/20 3:42 PM, Steven Rostedt wrote:
+> > On Mon, 15 Jun 2020 15:30:41 -0700
+> > Randy Dunlap <rdunlap@infradead.org> wrote:
+> > 
+> > > > > Please don't infect kernel sources with that style oddity.  
+> > > > 
+> > > > What do you mean? It's already "infected" all over the kernel, (has
+> > > > been for years!)
 
-Hi,
+Not really.  For instance:
 
-I have removed the cisco tree
-(https://github.com/daniel-walker/cisco-linux.git#for-next)
-from linux-next because it has not been updated in more than a year.
-If you would like it reinstated, please just reply and let me know.
+$ git grep -A6 "^{" fs/proc/*.[ch]
 
---=20
-Cheers,
-Stephen Rothwell
+> But yes, we all have preferences. For data declaration, mine is more like
+> order of use or some grouping having to do with locality.
+> 
+> cheers.
 
---Sig_/_hxU4qcOVi6e1Z9J_DUc5x9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Mine too.
 
------BEGIN PGP SIGNATURE-----
+But a few years ago I submitted this:
+https://lore.kernel.org/patchwork/patch/732076/
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7oUdkACgkQAVBC80lX
-0GwhGAgAoYTj4W6jTnR1MmIFzJnXyWoyh1Rvu8m42dGaZhiz+WrsPeR2jnnpj1Ms
-guoL7nztKlZY/VFMUonJ6gi7IhyREWegnYD37sosU4nL/cnwf7YHAjEeR5aNF2lZ
-x4yM01eDQxRp5psP0wulgDJy6GbWfTloUSS2cToJlF+UF9iYPiq+M0FSjAXZTTa8
-ockaNcT0MiABahY/wbVJ7I5d6NcQmVmO+Mjxx6AorLv+oizHIP2Prw0pIUXKLa9e
-e3lL08wiy27fwUyF8wFtyTJcmmP69KbT7Lo5QgX/CZ9TQyc5poDRfvO8gF5cRMjF
-/br816gTIVI0kh2EDGr4qdhvYSze/w==
-=nt/s
------END PGP SIGNATURE-----
 
---Sig_/_hxU4qcOVi6e1Z9J_DUc5x9--
