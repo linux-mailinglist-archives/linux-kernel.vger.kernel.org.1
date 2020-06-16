@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1B11FB742
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B40E1FB7EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Jun 2020 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731984AbgFPPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 11:44:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34714 "EHLO mail.kernel.org"
+        id S1732240AbgFPPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 11:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731975AbgFPPo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:44:27 -0400
+        id S1732427AbgFPPuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:50:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E15E3208E4;
-        Tue, 16 Jun 2020 15:44:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B88A721501;
+        Tue, 16 Jun 2020 15:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592322267;
-        bh=xUyXfkQdON4UZ0F/07NZKKPngMjnfR4FTYVv2FmUUpw=;
+        s=default; t=1592322653;
+        bh=359WiajNBAifNn9/ynfRe69bcOYSGqm22DmtL7lD168=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAKUxfis0jS6bB8guFoQMHdBacrcr3koYdAZKBqXhdOv8tRrFCTM2PPiQQR5M+qvy
-         HOkENOQJzL7U7/uzgJq1pXIWr3YIE/rkSB//PpMpNEeaNqRPtWzKEiWICdWuQlCjfF
-         xD9MBPeRTF+8DUMCXb0hP6Wg+0MGLuoztyXu++tY=
+        b=UmcM/GFqZATsC46IWDmO4HtYP/UuiNrG1S1dhBSQiz44Lgu4XQpmpmElAn9B8K4Uh
+         CJvSKjt7yQGsHHEaP2968yasLM3+RrY5rvuR72zsHLJo+hzczUOs3hOyDnnebKgRvt
+         pNKNxlt8acsayNaIjdsMiwNg3aaA9kWY07pp8Bm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.7 066/163] ALSA: fireface: start IR context immediately
-Date:   Tue, 16 Jun 2020 17:34:00 +0200
-Message-Id: <20200616153110.005372708@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.6 051/161] x86/speculation: Prevent rogue cross-process SSBD shutdown
+Date:   Tue, 16 Jun 2020 17:34:01 +0200
+Message-Id: <20200616153108.808176983@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616153106.849127260@linuxfoundation.org>
-References: <20200616153106.849127260@linuxfoundation.org>
+In-Reply-To: <20200616153106.402291280@linuxfoundation.org>
+References: <20200616153106.402291280@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Anthony Steinhauser <asteinhauser@google.com>
 
-commit f4588cc425beb62e355bc2a5de5d5c83e26a74ca upstream.
+commit dbbe2ad02e9df26e372f38cc3e70dab9222c832e upstream.
 
-In the latter models of RME Fireface series, device start to transfer
-packets several dozens of milliseconds. On the other hand, ALSA fireface
-driver starts IR context 2 milliseconds after the start. This results
-in loss to handle incoming packets on the context.
+On context switch the change of TIF_SSBD and TIF_SPEC_IB are evaluated
+to adjust the mitigations accordingly. This is optimized to avoid the
+expensive MSR write if not needed.
 
-This commit changes to start IR context immediately instead of
-postponement. For Fireface 800, this affects nothing because the device
-transfer packets 100 milliseconds or so after the start and this is
-within wait timeout.
+This optimization is buggy and allows an attacker to shutdown the SSBD
+protection of a victim process.
 
-Cc: <stable@vger.kernel.org>
-Fixes: acfedcbe1ce4 ("ALSA: firewire-lib: postpone to start IR context")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20200510074301.116224-3-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The update logic reads the cached base value for the speculation control
+MSR which has neither the SSBD nor the STIBP bit set. It then OR's the
+SSBD bit only when TIF_SSBD is different and requests the MSR update.
+
+That means if TIF_SSBD of the previous and next task are the same, then
+the base value is not updated, even if TIF_SSBD is set. The MSR write is
+not requested.
+
+Subsequently if the TIF_STIBP bit differs then the STIBP bit is updated
+in the base value and the MSR is written with a wrong SSBD value.
+
+This was introduced when the per task/process conditional STIPB
+switching was added on top of the existing SSBD switching.
+
+It is exploitable if the attacker creates a process which enforces SSBD
+and has the contrary value of STIBP than the victim process (i.e. if the
+victim process enforces STIBP, the attacker process must not enforce it;
+if the victim process does not enforce STIBP, the attacker process must
+enforce it) and schedule it on the same core as the victim process. If
+the victim runs after the attacker the victim becomes vulnerable to
+Spectre V4.
+
+To fix this, update the MSR value independent of the TIF_SSBD difference
+and dependent on the SSBD mitigation method available. This ensures that
+a subsequent STIPB initiated MSR write has the correct state of SSBD.
+
+[ tglx: Handle X86_FEATURE_VIRT_SSBD & X86_FEATURE_VIRT_SSBD correctly
+        and massaged changelog ]
+
+Fixes: 5bfbe3ad5840 ("x86/speculation: Prepare for per task indirect branch speculation control")
+Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/firewire/fireface/ff-stream.c |   10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ arch/x86/kernel/process.c |   28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
 
---- a/sound/firewire/fireface/ff-stream.c
-+++ b/sound/firewire/fireface/ff-stream.c
-@@ -184,7 +184,6 @@ int snd_ff_stream_start_duplex(struct sn
- 	 */
- 	if (!amdtp_stream_running(&ff->rx_stream)) {
- 		int spd = fw_parent_device(ff->unit)->max_speed;
--		unsigned int ir_delay_cycle;
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -546,28 +546,20 @@ static __always_inline void __speculatio
  
- 		err = ff->spec->protocol->begin_session(ff, rate);
- 		if (err < 0)
-@@ -200,14 +199,7 @@ int snd_ff_stream_start_duplex(struct sn
- 		if (err < 0)
- 			goto error;
+ 	lockdep_assert_irqs_disabled();
  
--		// The device postpones start of transmission mostly for several
--		// cycles after receiving packets firstly.
--		if (ff->spec->protocol == &snd_ff_protocol_ff800)
--			ir_delay_cycle = 800;	// = 100 msec
--		else
--			ir_delay_cycle = 16;	// = 2 msec
--
--		err = amdtp_domain_start(&ff->domain, ir_delay_cycle);
-+		err = amdtp_domain_start(&ff->domain, 0);
- 		if (err < 0)
- 			goto error;
+-	/*
+-	 * If TIF_SSBD is different, select the proper mitigation
+-	 * method. Note that if SSBD mitigation is disabled or permanentely
+-	 * enabled this branch can't be taken because nothing can set
+-	 * TIF_SSBD.
+-	 */
+-	if (tif_diff & _TIF_SSBD) {
+-		if (static_cpu_has(X86_FEATURE_VIRT_SSBD)) {
++	/* Handle change of TIF_SSBD depending on the mitigation method. */
++	if (static_cpu_has(X86_FEATURE_VIRT_SSBD)) {
++		if (tif_diff & _TIF_SSBD)
+ 			amd_set_ssb_virt_state(tifn);
+-		} else if (static_cpu_has(X86_FEATURE_LS_CFG_SSBD)) {
++	} else if (static_cpu_has(X86_FEATURE_LS_CFG_SSBD)) {
++		if (tif_diff & _TIF_SSBD)
+ 			amd_set_core_ssb_state(tifn);
+-		} else if (static_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) ||
+-			   static_cpu_has(X86_FEATURE_AMD_SSBD)) {
+-			msr |= ssbd_tif_to_spec_ctrl(tifn);
+-			updmsr  = true;
+-		}
++	} else if (static_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) ||
++		   static_cpu_has(X86_FEATURE_AMD_SSBD)) {
++		updmsr |= !!(tif_diff & _TIF_SSBD);
++		msr |= ssbd_tif_to_spec_ctrl(tifn);
+ 	}
  
+-	/*
+-	 * Only evaluate TIF_SPEC_IB if conditional STIBP is enabled,
+-	 * otherwise avoid the MSR write.
+-	 */
++	/* Only evaluate TIF_SPEC_IB if conditional STIBP is enabled. */
+ 	if (IS_ENABLED(CONFIG_SMP) &&
+ 	    static_branch_unlikely(&switch_to_cond_stibp)) {
+ 		updmsr |= !!(tif_diff & _TIF_SPEC_IB);
 
 
