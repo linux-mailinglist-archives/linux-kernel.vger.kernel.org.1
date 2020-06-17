@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489491FC2C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C161FC2B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgFQAcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 20:32:17 -0400
-Received: from vps.xff.cz ([195.181.215.36]:44146 "EHLO vps.xff.cz"
+        id S1726627AbgFQAcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 20:32:18 -0400
+Received: from vps.xff.cz ([195.181.215.36]:44182 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726275AbgFQAcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726505AbgFQAcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Jun 2020 20:32:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1592353934; bh=V8lg3QrmlL/+ORB8+T8iagnNb4aO75aHpHs9Ov8wOuQ=;
+        t=1592353934; bh=AevVvrXCG/6msnRbOhEC/03tKHisk5y4PX4d+SPQkuw=;
         h=From:To:Cc:Subject:Date:References:From;
-        b=iFZWG7Jk4cGe0wnGo0yrSN6+U5rgFqkyH8eIktOW7n56R2p856nCoJ1v+VvwN+4I/
-         g/Z3xsN9cFb8Tkost21g70ouI4VdW5S1oU30IoY+uQIpVz2S+Qqp6CgcwrzPZGMvby
-         +RdEsQGjErwFbTBbDoTt0kbluFoYxx60oAPE1EI4=
+        b=o0vX8nMPVcUPUCHAfRZce4ecgwFJ6TrWo0+s5nAauhfo5cRU4lBnRswBWKaN7+twi
+         jMrKSPl5KnNaduv4d2ZsR385eh/NO1UYrmbyyBHzfSUNhwktJw0/6lE58rDi5V1YEd
+         RYuzuIoIQ3cYi2+4ZON79kX++pWVTsGYZ8Dk+MCc=
 From:   Ondrej Jirman <megous@megous.com>
 To:     linux-sunxi@googlegroups.com,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -35,9 +35,9 @@ Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         Bhushan Shah <bshah@kde.org>,
         Ondrej Jirman <megous@megous.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 1/5] dt-bindings: vendor-prefixes: Add Xingbangda
-Date:   Wed, 17 Jun 2020 02:32:05 +0200
-Message-Id: <20200617003209.670819-2-megous@megous.com>
+Subject: [PATCH v4 2/5] dt-bindings: panel: Add binding for Xingbangda XBD599 panel
+Date:   Wed, 17 Jun 2020 02:32:06 +0200
+Message-Id: <20200617003209.670819-3-megous@megous.com>
 In-Reply-To: <20200617003209.670819-1-megous@megous.com>
 References: <20200617003209.670819-1-megous@megous.com>
 MIME-Version: 1.0
@@ -49,31 +49,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Icenowy Zheng <icenowy@aosc.io>
 
-Shenzhen Xingbangda Display Technology Co., Ltd is a company which
-produces LCD modules. It supplies the LCD panels for the PinePhone.
+Xingbangda XBD599 is a 5.99" 720x1440 MIPI-DSI LCD panel. It is based on
+Sitronix ST7703 LCD controller.
 
-Add the vendor prefix of it.
+Add its device tree binding.
 
 Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 Signed-off-by: Ondrej Jirman <megous@megous.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../display/panel/sitronix,st7703.yaml        | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 9aeab66be85f..740b116b179f 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1157,6 +1157,8 @@ patternProperties:
-     description: Xiaomi Technology Co., Ltd.
-   "^xillybus,.*":
-     description: Xillybus Ltd.
-+  "^xingbangda,.*":
-+    description: Shenzhen Xingbangda Display Technology Co., Ltd
-   "^xinpeng,.*":
-     description: Shenzhen Xinpeng Technology Co., Ltd
-   "^xlnx,.*":
+diff --git a/Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml b/Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml
+new file mode 100644
+index 000000000000..6e1606db4ab4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/sitronix,st7703.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sitronix ST7703 MIPI DSI panel
++
++maintainers:
++  - Icenowy Zheng <icenowy@aosc.io>
++  - Ondrej Jirman <megous@megous.com>
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++        - xingbangda,xbd599
++      - const: sitronix,st7703
++
++  reg:
++    description: DSI virtual channel used by that screen
++    maxItems: 1
++
++  vcc-supply:
++    description: regulator that supplies the VCC voltage
++
++  iovcc-supply:
++    description: regulator that supplies the IOVCC voltage
++
++  reset-gpios: true
++
++  backlight: true
++
++required:
++  - compatible
++  - reg
++  - vcc-supply
++  - iovcc-supply
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "xingbangda,xbd599", "sitronix,st7703";
++            reg = <0>;
++            reset-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* LCD-RST: PD24 */
++            iovcc-supply = <&reg_dldo2>;
++            vcc-supply = <&reg_ldo_io0>;
++            backlight = <&backlight>;
++        };
++    };
++
 -- 
 2.27.0
 
