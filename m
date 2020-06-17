@@ -2,147 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EBC1FCC97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F5C1FCCB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgFQLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:38:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:56326 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbgFQLih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:38:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91C271045;
-        Wed, 17 Jun 2020 04:38:36 -0700 (PDT)
-Received: from monolith.arm.com (unknown [10.37.8.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D64B03F71F;
-        Wed, 17 Jun 2020 04:38:34 -0700 (PDT)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     maz@kernel.org, will@kernel.org, catalin.marinas@arm.com,
-        mark.rutland@arm.com, Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will.deacon@arm.com>
-Subject: [PATCH v5 7/7] arm_pmu: arm64: Use NMIs for PMU
-Date:   Wed, 17 Jun 2020 12:38:51 +0100
-Message-Id: <20200617113851.607706-8-alexandru.elisei@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200617113851.607706-1-alexandru.elisei@arm.com>
-References: <20200617113851.607706-1-alexandru.elisei@arm.com>
+        id S1726326AbgFQLmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQLmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:42:49 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C5DC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 04:42:47 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id k15so1336986otp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 04:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sKWtFIYfKFOwpbzZCQAzRyePUOEgW5s9rDZzhxjhDfs=;
+        b=HRikB7fKxjKifECDakHvZhGhna07GnY3Vo+B+n4UD42jyVrmgGAEnpY33CQV88Z62X
+         0udVcVTTcJXD3fta2FIoFmWcBlryJUq8A18kNMdYsAS3qdCPCVuXQO1FbijWHQJik08d
+         24RVBLLRVqJb+fwxyGxVmgQ5LRItdP4RDe5Qm0dW/6slkJAONs7YsU9wt5By3TyykOCW
+         jEw5GpBE73V4yFwVtHYdQiZLl39g4lYRBcNYc9p6qovoZe4KINyHYBMt1UwESvsCNtKL
+         +H7LYzsmp7NiURlkLx8i59a/vNsC2shRxVOCuoNlRhKHPzoYaMld8PK+FiIwYvqyGUF7
+         NM5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sKWtFIYfKFOwpbzZCQAzRyePUOEgW5s9rDZzhxjhDfs=;
+        b=b3k1i9d33/vBgB5hJI/L1Vk6ymMcQLcSz9qlML/6St2CbioFtcSfNzo2NzPPdpLM2I
+         WGzV7GF5B629csCrFNoiM4ZGAFaYwdz5KOyhcRBgMUJmhwCugJhBDXq0ySixANHctJuC
+         A4S3nB0sPVrzQACkBcyk3Sj7lOizG6yZaHfG3hlU5S01bOcUxMkAuhB8tg78wc63QB47
+         EqPmCWMA823DbZazpqPE/MDplSYmYWw79zll1b04DbTOHJ4BavtzXMc9MHlk6p2sadhM
+         Es7PGL95Vzjfpm2NVn+9Oy8pkw111gewWcVoVw2bOjAYyRmfYpiJp60pK298h2I0RMXd
+         RfQA==
+X-Gm-Message-State: AOAM531qUKiECZlc9OdIKtaxNqSxr4rJwRXQh5UGBt6nlKA/MsnlETsq
+        AgC2HgVXh+bPX2iDTv4YADJZeVwec2fhM30VQBee9w==
+X-Google-Smtp-Source: ABdhPJyEbofVby0G8kGXR+vvfNhB4AvAOrnZfTfD8U151zYCvlIkScVjZcclzby9MNu9D+uRKBmz+cSkXmck4VW5ams=
+X-Received: by 2002:a9d:6a85:: with SMTP id l5mr5361623otq.371.1592394167036;
+ Wed, 17 Jun 2020 04:42:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200602100924.26256-1-sumit.semwal@linaro.org>
+ <20200602100924.26256-5-sumit.semwal@linaro.org> <20200602113241.GE5684@sirena.org.uk>
+ <CAO_48GGgNUGosN2PiL=U5JkR3Bh5wNK3N4xYYML1UwmdfDPRww@mail.gmail.com> <20200602122554.GG5684@sirena.org.uk>
+In-Reply-To: <20200602122554.GG5684@sirena.org.uk>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Wed, 17 Jun 2020 17:12:35 +0530
+Message-ID: <CAO_48GFwEHBGmz0QvN+pXFSyHC9+7=0aoJLHF4uupGSx2TcSvA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] regulator: qcom: Add labibb driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        Nisha Kumari <nishakumari@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <julien.thierry@arm.com>
+Hello Mark,
 
-Add required PMU interrupt operations for NMIs. Request interrupt lines as
-NMIs when possible, otherwise fall back to normal interrupts.
+On Tue, 2 Jun 2020 at 17:55, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 02, 2020 at 05:40:45PM +0530, Sumit Semwal wrote:
+> > On Tue, 2 Jun 2020 at 17:02, Mark Brown <broonie@kernel.org> wrote:
+> > > On Tue, Jun 02, 2020 at 03:39:23PM +0530, Sumit Semwal wrote:
+>
+> > > This should be a get_status() callback...
+>
+> > From my (limited) understanding of downstream code, it seemed like for
+> > this set of regulators, the 'enabled' check is done via the
+> > 'REG_LABIBB_STATUS1 reg; for some reason, not via the same enable_reg
+> > / enable_mask ones.  That's why I used it as is_enabled() callback.
+> > I will try and check with the QC folks to clarify this point about
+> > their hardware.
+>
+> The way this is functioning at the minute the downstream code is just
+> buggy.
 
-NMIs are only supported on the arm64 architecture with a GICv3 irqchip.
+Apologies for the delay in responding - I pinged the QC folks, and was
+waiting for their reply but haven't got any response so far.
 
-Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Julien Thierry <julien.thierry@arm.com>
-[Added that NMIs only work on arm64 + GICv3]
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
----
- drivers/perf/arm_pmu.c | 62 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 56 insertions(+), 6 deletions(-)
+I tried your suggestion to use the ENABLE_CTL register for checking if
+the regulator is actually enabled. In my limited testing on the Poco,
+it seems like the STATUS1 register updates faster than the ENABLE_CTL
+register, so on the device, I see noticeable lag when I use ENABLE_CTL
+for is_enabled() check. [This is especially true for the IBB, which
+takes longer to become usable than the LAB regulator.]
 
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index 17e5952d21e4..dd9d7f61ee29 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -45,6 +45,17 @@ static const struct pmu_irq_ops pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_pmuirq
- };
- 
-+static void armpmu_free_pmunmi(unsigned int irq, int cpu, void __percpu *devid)
-+{
-+	free_nmi(irq, per_cpu_ptr(devid, cpu));
-+}
-+
-+static const struct pmu_irq_ops pmunmi_ops = {
-+	.enable_pmuirq = enable_nmi,
-+	.disable_pmuirq = disable_nmi_nosync,
-+	.free_pmuirq = armpmu_free_pmunmi
-+};
-+
- static void armpmu_enable_percpu_pmuirq(unsigned int irq)
- {
- 	enable_percpu_irq(irq, IRQ_TYPE_NONE);
-@@ -63,6 +74,31 @@ static const struct pmu_irq_ops percpu_pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_percpu_pmuirq
- };
- 
-+static void armpmu_enable_percpu_pmunmi(unsigned int irq)
-+{
-+	if (!prepare_percpu_nmi(irq))
-+		enable_percpu_nmi(irq, IRQ_TYPE_NONE);
-+}
-+
-+static void armpmu_disable_percpu_pmunmi(unsigned int irq)
-+{
-+	disable_percpu_nmi(irq);
-+	teardown_percpu_nmi(irq);
-+}
-+
-+static void armpmu_free_percpu_pmunmi(unsigned int irq, int cpu,
-+				      void __percpu *devid)
-+{
-+	if (armpmu_count_irq_users(irq) == 1)
-+		free_percpu_nmi(irq, devid);
-+}
-+
-+static const struct pmu_irq_ops percpu_pmunmi_ops = {
-+	.enable_pmuirq = armpmu_enable_percpu_pmunmi,
-+	.disable_pmuirq = armpmu_disable_percpu_pmunmi,
-+	.free_pmuirq = armpmu_free_percpu_pmunmi
-+};
-+
- static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
- static DEFINE_PER_CPU(int, cpu_irq);
- static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
-@@ -633,15 +669,29 @@ int armpmu_request_irq(int irq, int cpu)
- 			    IRQF_NO_THREAD;
- 
- 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+
-+		err = request_nmi(irq, handler, irq_flags, "arm-pmu",
- 				  per_cpu_ptr(&cpu_armpmu, cpu));
- 
--		irq_ops = &pmuirq_ops;
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+					  per_cpu_ptr(&cpu_armpmu, cpu));
-+			irq_ops = &pmuirq_ops;
-+		} else {
-+			irq_ops = &pmunmi_ops;
-+		}
- 	} else if (armpmu_count_irq_users(irq) == 0) {
--		err = request_percpu_irq(irq, handler, "arm-pmu",
--					 &cpu_armpmu);
--
--		irq_ops = &percpu_pmuirq_ops;
-+		err = request_percpu_nmi(irq, handler, "arm-pmu", &cpu_armpmu);
-+
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_percpu_irq(irq, handler, "arm-pmu",
-+						 &cpu_armpmu);
-+			irq_ops = &percpu_pmuirq_ops;
-+		} else {
-+			irq_ops = &percpu_pmunmi_ops;
-+		}
- 	} else {
- 		/* Per cpudevid irq was already requested by another CPU */
- 		irq_ops = armpmu_find_irq_ops(irq);
--- 
-2.27.0
+I understand from a pure regulators' correctness point of view,
+ENABLE_CTL should be the one checked there, so I can change the patch
+as you suggested, but there seems to be some performance penalty
+there.
 
+>
+> > > ...is_enabled() should just be regulator_is_enabled_regmap() and these
+> > > functions should just be removed entirely, you can use the regmap
+> > > operations directly as the ops without the wrapper.
+>
+> > The 2 wrappers are a precursor to the next patch, where we keep track
+> > of regulator's enable status to check during SC handling.
+>
+> Add the functions when they're useful, not before.  TBH if the register
+> is write only you're probably better off adding a register cache.
+
+Agreed, I will remove the wrappers from here, using the regmap
+functions, and add the wrappers with the SC handling patch.
+>
+> > > > +     match = of_match_device(qcom_labibb_match, &pdev->dev);
+> > > > +     if (!match)
+> > > > +             return -ENODEV;
+> > > > +
+> > > > +     for (reg_data = match->data; reg_data->name; reg_data++) {
+> > > > +             child = of_get_child_by_name(pdev->dev.of_node, reg_data->name);
+> > > > +
+> > > > +             if (WARN_ON(child == NULL))
+> > > > +                     return -EINVAL;
+> > >
+> > > This feels like the DT bindings are confused - why do we need to search
+> > > like this?
+>
+> > The WARN_ON? This was suggested by Bjorn to catch the case where the
+> > DT binding for a PMIC instantiates only one of the regulators.
+>
+> No, this whole loop - why this whole match and get child stuff?
+This loop mechanism is what I saw in the other qcom regulators
+upstream, so thought it was an acceptable way.
+For the two children nodes, do you recommend another mechanism to get
+and validate both nodes?
+
+Best,
+Sumit.
