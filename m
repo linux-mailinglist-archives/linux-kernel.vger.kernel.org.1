@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979711FC2B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489491FC2C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgFQAcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 20:32:18 -0400
-Received: from vps.xff.cz ([195.181.215.36]:44112 "EHLO vps.xff.cz"
+        id S1726595AbgFQAcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 20:32:17 -0400
+Received: from vps.xff.cz ([195.181.215.36]:44146 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgFQAcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726275AbgFQAcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Jun 2020 20:32:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1592353933; bh=3DltW7Xjb/ItNKdpuNJ0j4SFSJbomVCA6l+130ne/oQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TIuel8QmQBPWbMa5I/MdP4HRXX+hyBQg6/kjHEip4KK4sUL/lhZwT5ZgXEmPSFvJz
-         OqkBVhXwxewBCdd2r/qzfnEnyGw3SAalvQsDNvjIkBXxMe3jC7BEHcjnIHMEFHvCh7
-         NQcQPIbY8391ZxkBNH5B81PkUcuKGCex1xaO7fJs=
+        t=1592353934; bh=V8lg3QrmlL/+ORB8+T8iagnNb4aO75aHpHs9Ov8wOuQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=iFZWG7Jk4cGe0wnGo0yrSN6+U5rgFqkyH8eIktOW7n56R2p856nCoJ1v+VvwN+4I/
+         g/Z3xsN9cFb8Tkost21g70ouI4VdW5S1oU30IoY+uQIpVz2S+Qqp6CgcwrzPZGMvby
+         +RdEsQGjErwFbTBbDoTt0kbluFoYxx60oAPE1EI4=
 From:   Ondrej Jirman <megous@megous.com>
 To:     linux-sunxi@googlegroups.com,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -28,15 +28,18 @@ To:     linux-sunxi@googlegroups.com,
         Chen-Yu Tsai <wens@csie.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Icenowy Zheng <icenowy@aosc.io>
-Cc:     Ondrej Jirman <megous@megous.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Samuel Holland <samuel@sholland.org>,
         Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: [PATCH v4 0/5] Add support for PinePhone LCD panel
-Date:   Wed, 17 Jun 2020 02:32:04 +0200
-Message-Id: <20200617003209.670819-1-megous@megous.com>
+        Bhushan Shah <bshah@kde.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 1/5] dt-bindings: vendor-prefixes: Add Xingbangda
+Date:   Wed, 17 Jun 2020 02:32:05 +0200
+Message-Id: <20200617003209.670819-2-megous@megous.com>
+In-Reply-To: <20200617003209.670819-1-megous@megous.com>
+References: <20200617003209.670819-1-megous@megous.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,96 +47,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for the LCD panel of PinePhone.
+From: Icenowy Zheng <icenowy@aosc.io>
 
-The first 3 patches are for the panel itself, and the last 2 patches are
-for enabling it on PinePhone.
+Shenzhen Xingbangda Display Technology Co., Ltd is a company which
+produces LCD modules. It supplies the LCD panels for the PinePhone.
 
-I've tested this on PinePhone 1.0 and 1.2.
+Add the vendor prefix of it.
 
-Please take a look.
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thank you and regards,
-  Ondrej Jirman
-
-Changes in v4:
-- use ->type from the mode instead of hardcoding (Samuel)
-- move init_sequence to ->prepare (Samuel)
-- move anti-flicker delay to ->enable, explain it (Samuel)
-- add enter_sleep after display_off (Samuel)
-- drop ->disable (move code to ->unprepare)
-- add ID bytes dumping (Linus)
-  (I can't test it since allwinner DSI driver has a broken
-   dcs_read function, and I didn't manage to fix it.)
-- document magic bytes (Linus)
-- assert reset during powerup
-- cleanup powerup timings according to the datasheet
-
-Changes in v3:
-- Panel driver renamed to the name of the LCD controller
-- Re-organize the driver slightly to more easily support more panels
-  based on the same controller.
-- Add patch to enable the touchscreen to complete the LCD support
-  on PinePhone.
-- Dropped the "DSI fix" patch (the driver seems to work for me without it)
-- Improved brightness levels handling:
-  - PinePhone 1.0 uses default levels generated by the driver
-  - On PinePhone 1.1 duty cycles < 20% lead to black screen, so
-    default levels can't be used. Martijn Braam came up with a
-    list of duty cycle values that lead to perception of linear
-    brigtness level <-> light intensity on PinePhone 1.1
-- There was some feedback on v2 about this being similar to st7701.
-  It's only similar in name. Most of the "user commands" are different,
-  so I opted to keep this in a new driver instead of creating st770x.
-  
-  Anyone who likes to check the differences, here are datasheets:
-
-  - https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
-  - https://megous.com/dl/tmp/ST7701.pdf
-
-Changes in v2:
-- DT Example fix.
-- DT Format fix.
-- Raised copyright info to 2020.
-- Sort panel operation functions.
-- Sort inclusion.
-
-
--- For phone owners: --
-
-There's an open question on how to set the backlight brightness values
-on post 1.0 revision phone, since lower duty cycles (< 10-20%) lead
-to backlight being black. It would be nice if more people can test
-the various backlight levels on 1.1 and 1.2 revision with this change
-in dts:
-
-       brightness-levels = <0 1000>;
-       num-interpolated-steps = <1000>;
-
-and report at what brightness level the backlight turns on. So far it
-seems this has a wide range. Lowest useable duty cycle for me is ~7%
-on 1.2 and for Martijn ~20% on 1.1.
-
-Icenowy Zheng (4):
-  dt-bindings: vendor-prefixes: Add Xingbangda
-  dt-bindings: panel: Add binding for Xingbangda XBD599 panel
-  drm: panel: Add Xingbangda XBD599 panel (ST7703 controller)
-  arm64: dts: sun50i-a64-pinephone: Enable LCD support on PinePhone
-
-Ondrej Jirman (1):
-  arm64: dts: sun50i-a64-pinephone: Add touchscreen support
-
- .../display/panel/sitronix,st7703.yaml        |  63 +++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- .../allwinner/sun50i-a64-pinephone-1.1.dts    |  19 +
- .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  54 ++
- drivers/gpu/drm/panel/Kconfig                 |  10 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-sitronix-st7703.c | 535 ++++++++++++++++++
- 7 files changed, 684 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/sitronix,st7703.yaml
- create mode 100644 drivers/gpu/drm/panel/panel-sitronix-st7703.c
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 9aeab66be85f..740b116b179f 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1157,6 +1157,8 @@ patternProperties:
+     description: Xiaomi Technology Co., Ltd.
+   "^xillybus,.*":
+     description: Xillybus Ltd.
++  "^xingbangda,.*":
++    description: Shenzhen Xingbangda Display Technology Co., Ltd
+   "^xinpeng,.*":
+     description: Shenzhen Xinpeng Technology Co., Ltd
+   "^xlnx,.*":
 -- 
 2.27.0
 
