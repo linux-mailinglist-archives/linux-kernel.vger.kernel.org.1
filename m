@@ -2,153 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB881FD8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850ED1FD8EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgFQWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgFQWdC (ORCPT
+        id S1727048AbgFQWd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:33:27 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40748 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726864AbgFQWdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:33:02 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A43C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:33:01 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id x18so4887823lji.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:33:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=elMpiHvJWsjYoN8PlQbYu4ErKElFdKXtWgkUy15ZXZk=;
-        b=gVqy3KjhCAZKxJJIp7EGn1cJPoT+yzjHlMx5EffGgIfTktO7nC0K88SmU0eiypqG5R
-         NPZDvpEEsu8xUnG0hyC4UDrFL5+MDw0YKORoJVmUufM9R79D7WyJTz+TKGo/crxJjgGn
-         GVjWRuM0ahmxsUOLvbDtNNEaIqYkHNgWfl4T1Bi/gsSIuP8bnFhPga/XHV33ghwBIj2T
-         xCGQ5gMe93LCCQHV1xaB91Z8vpPpYokCZ7beroWrzLq5kw0sX3FvnNW6jMaJapQ7WYM7
-         HPAttOY/wPjRPGja29aEFzgtEE1lwDg9oUrn72KfqazoT6XAVZFJrzMjXJ12V1KEpbSA
-         UVwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=elMpiHvJWsjYoN8PlQbYu4ErKElFdKXtWgkUy15ZXZk=;
-        b=WmfK+Y/glRVcijHOBlIWrDcCYek5BSUXVfiMvMDh+cdeor5QX5JKftmNhajEhQQPQt
-         pJ0cy2G4dZx46kfMvBVoOs3xTl1EWTAZnpOl2o1vcrCY4MexyZpSkjSGR+Bqix7/ckAt
-         fBCBh4uNF+3L3h9DP42o780tzeHWc3GBzjW/GUvjFOmSsXkoV2ivX+8hQ2gh+Ua5vuId
-         oTsMyvd/fnd65rNFD7P1zbOUPx7/BYXDbMcHZcqBj688z1BFLnTwO05+nwDN72TFmfYt
-         8GCrk3ek2ElL2QQ2eH6YKVQM2th6eevJKlTuG9HKFGd5/7mR60h8Q5vVJA8yqFAq5uGo
-         m5xw==
-X-Gm-Message-State: AOAM531n4S/JSVdFl4FTQl97qQn0VYhKQWQId5fSJnCcm8T/eGA9WJ4Y
-        yZdsMAyVaVv8WDQ33vV67Uk=
-X-Google-Smtp-Source: ABdhPJy7a8w9Su6nTUzLVWfm2I09oqawqmOLV1R+ZS9Qd5m273T0pNUEoEiQJQJaQaPITjhDzqc4Tw==
-X-Received: by 2002:a2e:b8ce:: with SMTP id s14mr681249ljp.89.1592433180426;
-        Wed, 17 Jun 2020 15:33:00 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
-        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:32:59 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 5/5] regulator: max8997: Constify struct regulator_ops
-Date:   Thu, 18 Jun 2020 00:32:47 +0200
-Message-Id: <20200617223247.25566-6-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
-References: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+        Wed, 17 Jun 2020 18:33:24 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05HMXFhh126109;
+        Wed, 17 Jun 2020 17:33:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592433195;
+        bh=M9uG6vtJ96jC9QIOIsunVBE+D1533JFPVBWV9iLcPh8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=JPDbaA6XQK5HT9UK7o9ys+KaDNPzO7ROGUFR+hLcEPt41+lb4jYDbvTO0iMU4masi
+         pz8cYfK75NQRHk8Mr0a4YwWiy8ncd6zybxuWlkfZ2vlv68nBjql8ybV1B1ha8uDsm2
+         iUEReiNEf/8GEEMzDmZ/AeL46+PSdntZPjuzqsm0=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05HMXFQc095001
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Jun 2020 17:33:15 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 17
+ Jun 2020 17:33:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 17 Jun 2020 17:33:14 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05HMXE75127101;
+        Wed, 17 Jun 2020 17:33:14 -0500
+Subject: Re: [RESEND PATCH v27 11/15] leds: lp55xx: Add multicolor framework
+ support to lp55xx
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        kernel test robot <lkp@intel.com>, <pavel@ucw.cz>,
+        <robh@kernel.org>
+CC:     <kbuild-all@lists.01.org>, <devicetree@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200615201522.19677-12-dmurphy@ti.com>
+ <202006180032.JW0i39C6%lkp@intel.com>
+ <0a8a6f57-678d-b1b9-41e5-5e58c15cfe6b@ti.com>
+ <58ad7723-131f-6930-00d7-1144c993110c@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <fc1ae702-0734-973d-9e3c-22b8f8d5c873@ti.com>
+Date:   Wed, 17 Jun 2020 17:33:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <58ad7723-131f-6930-00d7-1144c993110c@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are not modified so make them const to allow the compiler to put
-them in read-only memory.
+Jacek
 
-Before:
-   text    data     bss     dec     hex filename
-  13114    8596       0   21710    54ce drivers/regulator/max8997-regulator.o
+On 6/17/20 4:41 PM, Jacek Anaszewski wrote:
+> Dan,
+>
+> On 6/17/20 9:22 PM, Dan Murphy wrote:
+>> Pavel/Jacek
+>>
+>> On 6/17/20 11:28 AM, kernel test robot wrote:
+>>> Hi Dan,
+>>>
+>>> I love your patch! Yet something to improve:
+>>>
+>>> [auto build test ERROR on pavel-linux-leds/for-next]
+>>> [cannot apply to j.anaszewski-leds/for-next]
+>>> [if your patch is applied to the wrong git tree, please drop us a 
+>>> note to help
+>>> improve the system. BTW, we also suggest to use '--base' option to 
+>>> specify the
+>>> base tree in git format-patch, please see 
+>>> https://stackoverflow.com/a/37406982]
+>>>
+>>> url: 
+>>> https://github.com/0day-ci/linux/commits/Dan-Murphy/Multicolor-Framework-v27/20200616-042217 
+>>>
+>>> base: 
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git 
+>>> for-next
+>>> config: ia64-randconfig-r015-20200617 (attached as .config)
+>>> compiler: ia64-linux-gcc (GCC) 9.3.0
+>>> reproduce (this is a W=1 build):
+>>>          wget 
+>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>>> -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
+>>> make.cross ARCH=ia64
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>>>
+>>> ia64-linux-ld: drivers/leds/leds-lp55xx-common.o: in function 
+>>> `lp55xx_set_mc_brightness':
+>>>>> drivers/leds/leds-lp55xx-common.c:146: undefined reference to 
+>>>>> `led_mc_calc_color_components'
+>>> ia64-linux-ld: drivers/leds/leds-lp55xx-common.o: in function 
+>>> `devm_led_classdev_multicolor_register':
+>>>>> include/linux/led-class-multicolor.h:74: undefined reference to 
+>>>>> `devm_led_classdev_multicolor_register_ext'
+>>> vim +146 drivers/leds/leds-lp55xx-common.c
+>>>
+>>>     138
+>>>     139    static int lp55xx_set_mc_brightness(struct led_classdev 
+>>> *cdev,
+>>>     140                        enum led_brightness brightness)
+>>>     141    {
+>>>     142        struct led_classdev_mc *mc_dev = lcdev_to_mccdev(cdev);
+>>>     143        struct lp55xx_led *led = mcled_cdev_to_led(mc_dev);
+>>>     144        struct lp55xx_device_config *cfg = led->chip->cfg;
+>>>     145
+>>>   > 146 led_mc_calc_color_components(&led->mc_cdev, brightness);
+>>>     147        return cfg->multicolor_brightness_fn(led);
+>>>     148
+>>
+>> Well this was a mess to figure out.
+>>
+>> The only fix I can figure out here is to remove the
+>>
+>>      depends on LEDS_CLASS_MULTI_COLOR || !LEDS_CLASS_MULTI_COLOR
+>>
+>> from each child device and add
+>>
+>>      select LEDS_CLASS_MULTI_COLOR
+>>
+>> to the LP55XX_COMMON
+>>
+>> This way the Multi color framework will inherit the symbol that was 
+>> set by the COMMON flag which is inherited by majority from the child 
+>> flags.
+>
+> Did you try this?
+>
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -398,6 +398,7 @@ config LEDS_LP50XX
+>  config LEDS_LP55XX_COMMON
+>         tristate "Common Driver for TI/National 
+> LP5521/5523/55231/5562/8501"
+>         depends on LEDS_LP5521 || LEDS_LP5523 || LEDS_LP5562 || 
+> LEDS_LP8501
+> +       depends on LEDS_CLASS_MULTI_COLOR || !LEDS_CLASS_MULTI_COLOR
+>         depends on OF
+>         select FW_LOADER
+>         select FW_LOADER_USER_HELPER
+>
+>
+Yes I did
 
-After:
-   text    data     bss     dec     hex filename
-  14038    7672       0   21710    54ce drivers/regulator/max8997-regulator.o
+That gave unmet dependencies.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/regulator/max8997-regulator.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/regulator/max8997-regulator.c b/drivers/regulator/max8997-regulator.c
-index 4d2487279a0a..ba47a5e2fbcb 100644
---- a/drivers/regulator/max8997-regulator.c
-+++ b/drivers/regulator/max8997-regulator.c
-@@ -732,7 +732,7 @@ static int max8997_reg_disable_suspend(struct regulator_dev *rdev)
- 	return max8997_update_reg(i2c, reg, ~pattern, mask);
- }
- 
--static struct regulator_ops max8997_ldo_ops = {
-+static const struct regulator_ops max8997_ldo_ops = {
- 	.list_voltage		= max8997_list_voltage,
- 	.is_enabled		= max8997_reg_is_enabled,
- 	.enable			= max8997_reg_enable,
-@@ -742,7 +742,7 @@ static struct regulator_ops max8997_ldo_ops = {
- 	.set_suspend_disable	= max8997_reg_disable_suspend,
- };
- 
--static struct regulator_ops max8997_buck_ops = {
-+static const struct regulator_ops max8997_buck_ops = {
- 	.list_voltage		= max8997_list_voltage,
- 	.is_enabled		= max8997_reg_is_enabled,
- 	.enable			= max8997_reg_enable,
-@@ -753,7 +753,7 @@ static struct regulator_ops max8997_buck_ops = {
- 	.set_suspend_disable	= max8997_reg_disable_suspend,
- };
- 
--static struct regulator_ops max8997_fixedvolt_ops = {
-+static const struct regulator_ops max8997_fixedvolt_ops = {
- 	.list_voltage		= max8997_list_voltage,
- 	.is_enabled		= max8997_reg_is_enabled,
- 	.enable			= max8997_reg_enable,
-@@ -761,7 +761,7 @@ static struct regulator_ops max8997_fixedvolt_ops = {
- 	.set_suspend_disable	= max8997_reg_disable_suspend,
- };
- 
--static struct regulator_ops max8997_safeout_ops = {
-+static const struct regulator_ops max8997_safeout_ops = {
- 	.list_voltage		= regulator_list_voltage_table,
- 	.is_enabled		= max8997_reg_is_enabled,
- 	.enable			= max8997_reg_enable,
-@@ -771,7 +771,7 @@ static struct regulator_ops max8997_safeout_ops = {
- 	.set_suspend_disable	= max8997_reg_disable_suspend,
- };
- 
--static struct regulator_ops max8997_fixedstate_ops = {
-+static const struct regulator_ops max8997_fixedstate_ops = {
- 	.list_voltage		= max8997_list_voltage_charger_cv,
- 	.get_voltage_sel	= max8997_get_voltage_sel,
- 	.set_voltage		= max8997_set_voltage_charger_cv,
-@@ -805,7 +805,7 @@ static int max8997_get_current_limit(struct regulator_dev *rdev)
- 	return max8997_list_voltage(rdev, sel);
- }
- 
--static struct regulator_ops max8997_charger_ops = {
-+static const struct regulator_ops max8997_charger_ops = {
- 	.is_enabled		= max8997_reg_is_enabled,
- 	.enable			= max8997_reg_enable,
- 	.disable		= max8997_reg_disable,
-@@ -813,7 +813,7 @@ static struct regulator_ops max8997_charger_ops = {
- 	.set_current_limit	= max8997_set_current_limit,
- };
- 
--static struct regulator_ops max8997_charger_fixedstate_ops = {
-+static const struct regulator_ops max8997_charger_fixedstate_ops = {
- 	.get_current_limit	= max8997_get_current_limit,
- 	.set_current_limit	= max8997_set_current_limit,
- };
--- 
-2.27.0
+WARNING: unmet direct dependencies detected for LEDS_LP55XX_COMMON
+   Depends on [m]: NEW_LEDS [=y] && (LEDS_LP5521 [=n] || LEDS_LP5523 
+[=m] || LEDS_LP5562 [=y] || LEDS_LP8501 [=y]) && (LEDS_CLASS_MULTI_COLOR 
+[=m] || !LEDS_CLASS_MULTI_COLOR [=m]) && OF [=y]
+   Selected by [y]:
+   - LEDS_LP5562 [=y] && NEW_LEDS [=y] && LEDS_CLASS [=y] && I2C [=y]
+   - LEDS_LP8501 [=y] && NEW_LEDS [=y] && LEDS_CLASS [=y] && I2C [=y]
+   Selected by [m]:
+   - LEDS_LP5523 [=m] && NEW_LEDS [=y] && LEDS_CLASS [=y] && I2C [=y] && 
+(LEDS_CLASS_MULTI_COLOR [=m] || !LEDS_CLASS_MULTI_COLOR [=m])
 
