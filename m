@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7ED31FD59C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2641FD5A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgFQTyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgFQTx4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:53:56 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF905C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:53:55 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id s23so1649427pfh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dVavS5ePbCYrK2z1L2wDQV1nTQ1HDrNhoLc61sG4Q5M=;
-        b=fjNF7THtjmalkLduwfjs6WAcXUJ8XrLQgh8AJX/PbmUoNRwB7NJXiEnIF4/WGEgshv
-         0Sc3PHTV8qK08Y1adWyY7RpUt61/9K8iqxsOWwrnN8OiquPeq+5Drr0hasoLXBo3LkL9
-         Qyi/sIH5I2ZUP4aCOZ0r4QvPuhCN7u5xakY94=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dVavS5ePbCYrK2z1L2wDQV1nTQ1HDrNhoLc61sG4Q5M=;
-        b=pFvr3A9rzsMy3D28M/OihdaJZuNfrvBc76fm8Try2O1lH4E3xlRWGRaMnMqTxN68WO
-         /XRykLA/x46+0+yMOPZiu8D5HiMLqiyBgB+uFKrqpUlA27Ft+bDl5PSVAUJg1wRncBpt
-         4jz41KlC0QaasXVzIzVvjb7I2SDc9FrXcoBUcn5Xyv2zYzxbg+de1ePz3TRa7cxZGMFV
-         KzjjqhFpwiY/qhIGct1jcqNqh3pBopvVFc1C0MGf9UUtSLIC7wBGQCD4PhZ7qGcgJ2n7
-         pHUVrch03XSeLIZNasU2mF+Uoli8f8HlzJE7GbGXWlGdLBoFoF4eCZ4fwtR+mQAqvtoP
-         mJ3g==
-X-Gm-Message-State: AOAM532DNXVkrwCZi3wuqyMIIa+lQ5zLQJMRIMi1xVkeqFORAHBr0fBY
-        2Fa7UHMH5eBfS/rsnrcJYTeEbQ==
-X-Google-Smtp-Source: ABdhPJwOg59bPWyGSiT3mjPppY6RygkG6jLQonyfdZ8GMgBRzj7URVeINwVlCe50tSbxuqAvoLP34w==
-X-Received: by 2002:a63:4562:: with SMTP id u34mr358332pgk.309.1592423635262;
-        Wed, 17 Jun 2020 12:53:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r4sm566043pgp.60.2020.06.17.12.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 12:53:53 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Christoph Lameter <cl@linux.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, vinmenon@codeaurora.org,
-        Matthew Garrett <mjg59@google.com>,
-        Jann Horn <jannh@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] slab: Add naive detection of double free
-Date:   Wed, 17 Jun 2020 12:53:49 -0700
-Message-Id: <20200617195349.3471794-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200617195349.3471794-1-keescook@chromium.org>
-References: <20200617195349.3471794-1-keescook@chromium.org>
+        id S1726853AbgFQT5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726496AbgFQT5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:57:53 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57B5E2089D
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592423872;
+        bh=6EOWrWAPKgFLB8ZGNw/bkhy+Y9laihybAO1W8FLLgE0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xaFHz/iozgWgycs5vkKMyLQhywn8LIE3m4thJ9lGfq/ft4mvHZp8Zw5f5pCL9xn6y
+         OItViZbot/baWh8iOwsng7TD4RkNT/wrwtmxpkuvcb4ss3L9Bhxhi5Sbnz/RSCxTze
+         1EUmCWL24KfJLS2lOEh6Vtau7NF1OyGZ4zODcKlU=
+Received: by mail-ot1-f47.google.com with SMTP id g5so2662208otg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:57:52 -0700 (PDT)
+X-Gm-Message-State: AOAM5326R5Z6UHhxwC5u1UNjREyMHp7pk/nQq134kwAIemMhtJTc8Zfx
+        ks6bTePkj0JKX4FekXygUGADZI1Vs3lqykfSJQ==
+X-Google-Smtp-Source: ABdhPJxYGD7ydPNempaQlxGwlY6okLDhzODVF+rKdYIQX8opUjKSSSQ82BnNVzZIgHkIo8WpU9K2CdFtcuufRw2uHTk=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr598307ots.192.1592423871739;
+ Wed, 17 Jun 2020 12:57:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200527200544.7849-1-krzk@kernel.org> <20200527204334.GA15485@kevin>
+ <20200617141547.GA30516@kozik-lap> <b41bfead-7b73-be78-c63f-79a0a7e23b2a@arm.com>
+In-Reply-To: <b41bfead-7b73-be78-c63f-79a0a7e23b2a@arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 17 Jun 2020 13:57:40 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLrFFOVQVR0dWbru6bJvz7sXs8v6Op-hiNgdMwH3N=2Fw@mail.gmail.com>
+Message-ID: <CAL_JsqLrFFOVQVR0dWbru6bJvz7sXs8v6Op-hiNgdMwH3N=2Fw@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/panfrost: Reduce the amount of logs on deferred probe
+To:     Steven Price <steven.price@arm.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit ce6fa91b9363 ("mm/slub.c: add a naive detection
-of double free or corruption"), add a very cheap double-free check
-for SLAB under CONFIG_SLAB_FREELIST_HARDENED. With this added, the
-"SLAB_FREE_DOUBLE" LKDTM test passes under SLAB:
+On Wed, Jun 17, 2020 at 8:36 AM Steven Price <steven.price@arm.com> wrote:
+>
+> On 17/06/2020 15:15, Krzysztof Kozlowski wrote:
+> > On Wed, May 27, 2020 at 04:43:34PM -0400, Alyssa Rosenzweig wrote:
+> >> Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+> >>
+> >> On Wed, May 27, 2020 at 10:05:44PM +0200, Krzysztof Kozlowski wrote:
+> >>> There is no point to print deferred probe (and its failures to get
+> >>> resources) as an error.  Also there is no need to print regulator errors
+> >>> twice.
+> >>>
+> >>> In case of multiple probe tries this would pollute the dmesg.
+> >>>
+> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >>> Reviewed-by: Steven Price <steven.price@arm.com>
+> >>>
+> >>> ---
+> >>>
+> >>> Changes since v2:
+> >>> 1. Rebase
+> >>> 2. Add Steven's review
+> >>>
+> >>> Changes since v1:
+> >>> 1. Remove second error message from calling panfrost_regulator_init()
+> >>> ---
+> >>>   drivers/gpu/drm/panfrost/panfrost_device.c | 8 ++++----
+> >>>   1 file changed, 4 insertions(+), 4 deletions(-)
+> >>>
+> >
+> > Hi Rob, Tomeu and Steven,
+> >
+> > You're listed as maintainers for panfrost. Is anyone going to pick this
+> > up?
+>
+> I'm only a reviewer so I've been leaving it for Rob or Tomeu, but I can
+> pick it up if Rob/Tomeu are happy for me to do that.
+>
+> > Maybe I sent it to wrong mailing list or forgot about anything?
+>
+> No, there's actually a few Panfrost commits waiting, it was on my todo
+> list to ask if Rob/Tomeu needed some help with merging patches.
 
-  lkdtm: Performing direct entry SLAB_FREE_DOUBLE
-  lkdtm: Attempting double slab free ...
-  ------------[ cut here ]------------
-  WARNING: CPU: 2 PID: 2193 at mm/slab.c:757 ___cache _free+0x325/0x390
+Please do, I haven't had the cycles for panfrost lately.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- mm/slab.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/mm/slab.c b/mm/slab.c
-index 9350062ffc1a..c4e3a194b271 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -749,6 +749,16 @@ static void drain_alien_cache(struct kmem_cache *cachep,
- 	}
- }
- 
-+/* &alien->lock must be held by alien callers. */
-+static __always_inline void __free_one(struct array_cache *ac, void *objp)
-+{
-+	/* Avoid trivial double-free. */
-+	if (IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
-+	    WARN_ON_ONCE(ac->avail > 0 && ac->entry[ac->avail - 1] == objp))
-+		return;
-+	ac->entry[ac->avail++] = objp;
-+}
-+
- static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 				int node, int page_node)
- {
-@@ -767,7 +777,7 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 			STATS_INC_ACOVERFLOW(cachep);
- 			__drain_alien_cache(cachep, ac, page_node, &list);
- 		}
--		ac->entry[ac->avail++] = objp;
-+		__free_one(ac, objp);
- 		spin_unlock(&alien->lock);
- 		slabs_destroy(cachep, &list);
- 	} else {
-@@ -3466,7 +3476,7 @@ void ___cache_free(struct kmem_cache *cachep, void *objp,
- 		}
- 	}
- 
--	ac->entry[ac->avail++] = objp;
-+	__free_one(ac, objp);
- }
- 
- /**
--- 
-2.25.1
-
+Rob
