@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9F41FD876
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B4A1FD87C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgFQWM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:12:26 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:40845 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgFQWMZ (ORCPT
+        id S1727829AbgFQWNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:13:33 -0400
+Received: from smtprelay0248.hostedemail.com ([216.40.44.248]:44702 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726835AbgFQWNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:12:25 -0400
-Received: by mail-io1-f68.google.com with SMTP id q8so4802196iow.7;
-        Wed, 17 Jun 2020 15:12:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=imxMvOvJlozmeqMR5QpW6XP7ULKOHGHjkDRkymH0VEA=;
-        b=k9KChIsdaE8N3DMYhJctaRblmTAv1MNh8dI26/QLnT6iijQW9USxrhty2nRRP1/OJb
-         t4I4ow+1IIgawdkeeqs/sVpAFxpIe1tH25OeDbT05eYXYjZwlZu9VgJoAzxZGF8oFaG+
-         fajpYhrb9NxULyF78kyKCM/3e3IAO1gHMt5xgO1MOOWH941qsCpYdsrye95VmgcRbpaE
-         XVYMRP3DhEj/mzRsHarqk+3w8BTdTLMVymcaaMIiDRJtoQsxIFar2AxYVA5pf/kDVl2/
-         XBkwLau0lsRP7zmPEGSdU7dC4bASxbCyfEeD7YaFjtKRR+kzJQ+tJZuwYhayGT4jjcwi
-         kGXw==
-X-Gm-Message-State: AOAM533f8T6orclNXiaxe1cn/MYhuyUtLkC+q0qluNK6/JaxCTtMFEVl
-        Eo4qilHBeF4RdQe5Ta2a9w==
-X-Google-Smtp-Source: ABdhPJzq2uOS8ulYcMFuDLYaROr9I4HefNgaPH6AZsSpm3ffnOhiZokFTfzTV7XJsIU87yka+xhY1Q==
-X-Received: by 2002:a05:6602:2fc1:: with SMTP id v1mr1700468iow.39.1592431943179;
-        Wed, 17 Jun 2020 15:12:23 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id p15sm492523ilj.15.2020.06.17.15.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:12:22 -0700 (PDT)
-Received: (nullmailer pid 2924800 invoked by uid 1000);
-        Wed, 17 Jun 2020 22:12:21 -0000
-Date:   Wed, 17 Jun 2020 16:12:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>
-Subject: Re: [PATCH v2 2/2] of: property: Improve cycle detection when one of
- the devices is never added
-Message-ID: <20200617221221.GA2923473@bogus>
-References: <20200610011934.49795-1-saravanak@google.com>
- <20200610011934.49795-3-saravanak@google.com>
+        Wed, 17 Jun 2020 18:13:32 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 816CB180905DE;
+        Wed, 17 Jun 2020 22:13:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2898:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3872:3873:4321:5007:6119:10004:10400:10848:11026:11232:11658:11914:12048:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14659:14721:21080:21220:21451:21627:21740:21795:21990:30012:30051:30054:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: boys91_3f16e1d26e0b
+X-Filterd-Recvd-Size: 2453
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 17 Jun 2020 22:13:29 +0000 (UTC)
+Message-ID: <dddfef643fc5bef1ff440f18c3dd12f586195a7c.camel@perches.com>
+Subject: Re: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and
+ filtering on flags
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        linux-kernel@vger.kernel.org, akpm@linuxfoundation.org,
+        gregkh@linuxfoundation.org
+Cc:     linux@rasmusvillemoes.dk, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org
+Date:   Wed, 17 Jun 2020 15:13:28 -0700
+In-Reply-To: <20200617162536.611386-23-jim.cromie@gmail.com>
+References: <20200617162536.611386-1-jim.cromie@gmail.com>
+         <20200617162536.611386-23-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610011934.49795-3-saravanak@google.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Jun 2020 18:19:34 -0700, Saravana Kannan wrote:
-> Consider this example where -> means LHS device is a consumer of RHS
-> device and indentation represents "child of" of the previous device.
+On Wed, 2020-06-17 at 10:25 -0600, Jim Cromie wrote:
+> 1. Add a user-flag [u] which works like the [pfmlt] flags, but has no
+> effect on callsite behavior; it allows incremental marking of
+> arbitrary sets of callsites.
 > 
-> Device A -> Device C
+> 2. Add [PFMLTU] flags, which negate their counterparts; P===!p etc.
+> And in ddebug_read_flags():
+>    current code does:	[pfmltu_] -> flags
+>    copy it to:		[PFMLTU_] -> mask
 > 
-> Device B -> Device A
-> 	Device C
+> also disallow both of a pair: ie no 'pP', no true & false.
 > 
-> Without this commit:
-> 1. Device A is added.
-> 2. Device A is added to waiting for supplier list (Device C)
-> 3. Device B is added
-> 4. Device B is linked as a consumer to Device A
-> 5. Device A doesn't probe because it's waiting for Device C to be added.
-> 6. Device B doesn't probe because Device A hasn't probed.
-> 7. Device C will never be added because it's parent hasn't probed.
+> 3. Add filtering ops into ddebug_change(), right after all the
+> callsite-property selections are complete.  These filter on the
+> callsite's current flagstate before applying modflags.
 > 
-> So, Device A, B and C will be in a probe/add deadlock.
+> Why ?
 > 
-> This commit detects this scenario and stops trying to create a device
-> link between Device A and Device C since doing so would create the
-> following cycle:
-> Device A -> Devic C -(parent)-> Device B -> Device A.
+> The u-flag & filter flags
 > 
-> With this commit:
-> 1. Device A is added.
-> 3. Device B is added
-> 4. Device B is linked as a consumer to Device A
-> 5. Device A probes.
-> 6. Device B probes because Device A has probed.
-> 7. Device C is added and probed.
+> The 'u' flag lets the user assemble an arbitary set of callsites.
+> Then using filter flags, user can activate the 'u' callsite set.
 > 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/of/property.c | 62 ++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 56 insertions(+), 6 deletions(-)
+>   #> echo 'file foo.c +u; file bar.c +u' > control   # and repeat
+>   #> echo 'u+p' > control
 > 
+> Of course, you can continue to just activate your set without ever
+> marking it 1st, but you could trivially add the markup as you go, then
+> be able to use it as a constraint later, to undo or modify your set.
 
-Both patches applied.
+Does this set selection also allow for selection by
+increasing decimal level?
 
-Rob
+Can sites be enabled for a value less than x?
+
+
