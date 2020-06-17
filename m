@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A837C1FCF5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD001FCF62
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgFQOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:20:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgFQOUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:20:39 -0400
-Received: from localhost (unknown [171.61.66.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 422B3206D8;
-        Wed, 17 Jun 2020 14:20:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592403639;
-        bh=es6gd2lpsks8Rqxa3Nt/7/Rb1b/bXmRiwKWOAkQ+yUE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ODe0yVNs1KAQ24D2fWezug19Zyymep+xR8TF1FcTpbNVqLUdjMgVBPdErhwB1PGVt
-         XoUp/nNr8I/FTob6H+IT1jdITFJTGr4F3NnlnibYRuUW2L0B0TqAQQfUlXcdcDGWL9
-         nQ3kRmTKdjptrjw5vaS87DWApeYOeRShztwnzsaA=
-Date:   Wed, 17 Jun 2020 19:50:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] dmaengine: tegra210-adma: Fix runtime PM imbalance
- on error
-Message-ID: <20200617142034.GW2324254@vkoul-mobl>
-References: <20200522114824.8554-1-dinghao.liu@zju.edu.cn>
+        id S1726941AbgFQOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:21:23 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:34336 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbgFQOVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:21:22 -0400
+Received: by mail-vs1-f65.google.com with SMTP id q2so1492092vsr.1;
+        Wed, 17 Jun 2020 07:21:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ERGqcQ7t8WT4ifOpQtED2cQLgSQqRg45Jtc+jpL/R/s=;
+        b=toAClvRvSBV0LPW/IdJ972hNRe3Kgela9tPIBMfcBd774zNapT/ua5FCA0vvI10bpP
+         jRbPiosS9NW6WSx48r48b431a2g9hqOQUluFGCeCa1tGRfdA/4bYZgj6eygGvTXmhtFt
+         pDSXmWH8GOhZtmafLy7K2cyQMqVCOzYFLiLcGBJnMtp5BIO28Mh8Ui3lIOyalYOpefB9
+         td+jceWWuTLm1Ompc2ngrs+aYeBaohhxAVcFD5/QAUBgwv1UAkq90/b6VEEB55WSh9C3
+         BKt82uDAwz/8oNKV5d80odkqjtkiBvQcEf9wcN9FLAGDGbAA48VzntJTIUwN30+xmFcj
+         J+5w==
+X-Gm-Message-State: AOAM530r41Dl7gaEL5PEpKT7IJvZXrs1CoHa37BBf12DGv1Mvi9+DFna
+        OtlLunI/tcxGbnpRDUWAlNIf7B5jZcrlYydNkDo=
+X-Google-Smtp-Source: ABdhPJxUB28eId7C069Z9yU5wnQSTxhlhjJBmlSA6lDeLgkW8xYFy5G701t2YSWHVSEGhHywz7FhjlBV+Vo9znzTuNM=
+X-Received: by 2002:a67:e90e:: with SMTP id c14mr6182478vso.185.1592403680997;
+ Wed, 17 Jun 2020 07:21:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522114824.8554-1-dinghao.liu@zju.edu.cn>
+References: <20200605162518.28099-1-florian.fainelli@broadcom.com>
+ <6b1f0668-572e-ae52-27e6-c897bab4204c@gmail.com> <0c0ba84e-4b2d-53ac-5092-40312ecba13b@gmail.com>
+In-Reply-To: <0c0ba84e-4b2d-53ac-5092-40312ecba13b@gmail.com>
+From:   Michael Ira Krufky <mkrufky@linuxtv.org>
+Date:   Wed, 17 Jun 2020 10:21:08 -0400
+Message-ID: <CAOcJUbxfa8tQbHa8r=vyGoaJK0+N6v8puufu8vVJKZ4NdbpWKA@mail.gmail.com>
+Subject: Re: [PATCH stable 4.9 00/21] Unbreak 32-bit DVB applications on
+ 64-bit kernels
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>,
+        Satendra Singh Thakur <satendra.t@samsung.com>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-05-20, 19:48, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
-> 
-> Changelog:
-> 
-> v2: - Merge two patches that fix runtime PM imbalance in
->       tegra_adma_probe() and tegra_adma_alloc_chan_resources()
->       respectively.
-> ---
->  drivers/dma/tegra210-adma.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-> index c4ce5dfb149b..2d6e419b6eac 100644
-> --- a/drivers/dma/tegra210-adma.c
-> +++ b/drivers/dma/tegra210-adma.c
-> @@ -658,6 +658,7 @@ static int tegra_adma_alloc_chan_resources(struct dma_chan *dc)
->  
->  	ret = pm_runtime_get_sync(tdc2dev(tdc));
->  	if (ret < 0) {
-> +		pm_runtime_put_sync(tdc2dev(tdc));
+Hey Florian,
 
-Pls dont use _sync() here
+Thank you for the time and effort that you put into this patch series.
+I was excited to see this, when I first saw it posted a few weeks ago.
+I have every intention of giving it a review, but just haven't found
+the time yet.  I'm sure that Mauro would say the same.
 
->  		free_irq(tdc->irq, tdc);
->  		return ret;
->  	}
-> @@ -870,7 +871,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
->  
->  	ret = pm_runtime_get_sync(&pdev->dev);
->  	if (ret < 0)
-> -		goto rpm_disable;
-> +		goto rpm_put;
->  
->  	ret = tegra_adma_init(tdma);
->  	if (ret)
-> @@ -921,7 +922,6 @@ static int tegra_adma_probe(struct platform_device *pdev)
->  	dma_async_device_unregister(&tdma->dma_dev);
->  rpm_put:
->  	pm_runtime_put_sync(&pdev->dev);
-> -rpm_disable:
->  	pm_runtime_disable(&pdev->dev);
->  irq_dispose:
->  	while (--i >= 0)
-> -- 
-> 2.17.1
+I'm sure that he and I both will find some time, hopefully over the
+next few weeks or sooner, to give this a thorough review and provide
+some feedback.
 
--- 
-~Vinod
+Hopefully we can put this on its way for merge soon.  Please bear with us..
+
+Thanks again for your contribution.
+
+-Mike Krufky
+
+On Wed, Jun 17, 2020 at 12:39 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 6/11/2020 9:45 PM, Florian Fainelli wrote:
+> >
+> >
+> > On 6/5/2020 9:24 AM, Florian Fainelli wrote:
+> >> Hi all,
+> >>
+> >> This long patch series was motivated by backporting Jaedon's changes
+> >> which add a proper ioctl compatibility layer for 32-bit applications
+> >> running on 64-bit kernels. We have a number of Android TV-based products
+> >> currently running on the 4.9 kernel and this was broken for them.
+> >>
+> >> Thanks to Robert McConnell for identifying and providing the patches in
+> >> their initial format.
+> >>
+> >> In order for Jaedon's patches to apply cleanly a number of changes were
+> >> applied to support those changes. If you deem the patch series too big
+> >> please let me know.
+> >
+> > Mauro, can you review this? I would prefer not to maintain those patches
+> > in our downstream 4.9 kernel as there are quite a few of them, and this
+> > is likely beneficial to other people.
+>
+> Hello? Anybody here?
+> --
+> Florian
