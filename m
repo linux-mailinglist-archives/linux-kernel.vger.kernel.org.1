@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CC41FD15C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7958A1FD15E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgFQPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 11:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgFQPzh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 11:55:37 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A86AC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:55:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id x18so3518536lji.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:55:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P+rzqdnz8r3FAqXWwD1gDVePdUHQDJi/4YgwPQMfMFA=;
-        b=SHDEFFc789vRYeW1su2Gaa8bZ+QIDqGELGMbXne2rOAla35jtL8FX73T2NXQHskY3h
-         6hc2UDPyaQ2YqQircog+cI4jNEOVGlVfGh6jrYWBEFkffTeAuWDll25swry/t778LTwU
-         GvpxSODR6Lbwfu4Ylt8yAW11JYZ0dGlw/M6PfBvOXk44Wl/zcBwDWA9K1O+JiCHMapnc
-         OexX/f6ORWFBGGXc1eZ36asCHwoMLiP0cHPsAmjirFOol94jug7hM4dixnP8T3gkNE1s
-         jCGXOeV8ZNheEOSjWn6y3RPlrEVDkVuxgbHIuz8zuRhVQNWpjMeMCLYn8Tp6qj4OMnal
-         8feg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P+rzqdnz8r3FAqXWwD1gDVePdUHQDJi/4YgwPQMfMFA=;
-        b=VIKWcUb5/A61vid1SsLb9N1pB6D+mUqVnr1y/qfX54AKF0j3KyMV3wht/sX+7dbB8M
-         N+ClKuGfJusIoSqYDdOWcIM74fHnKSSYoIlNjbcqt3OykS1BK9byG3kyO2Oyhh3gGlAc
-         9YENF3BZW3+gGf7xiY/kFapDDEt4LDY5f5Llrc/3VPWVsJmmbocRg7t43b6/3wfyCzuv
-         iFclHEsrJjFY/wq8PATQsFK3DHPXS0HJ9Hlv8T9RI09NlwIes7z6p8xuket/WgsVNyse
-         /vTME7egcsZSs1NFdDSTTXWqMgy98zrdb/rAYtjgzCx1nF8NZ0ssgh7pVwD4eHP1XVMG
-         nfgw==
-X-Gm-Message-State: AOAM5338GD3t9LME0fjBRbHlkmZA3gIXgJ1xbYYyaQGUCZUCfuVtP3Hk
-        TriAViUzJ+OJE1/UOwB4oVq2nHj9uXopdKcl3+h8/Q==
-X-Google-Smtp-Source: ABdhPJyFhfn2qdOtcu73QdZkHzTrokzYqN5wBiGecH2VRaWa2n9acLfwuRxjivsjawol+3dNCv3nZCVpDFATIMu2jDA=
-X-Received: by 2002:a2e:a58a:: with SMTP id m10mr4496325ljp.347.1592409333511;
- Wed, 17 Jun 2020 08:55:33 -0700 (PDT)
+        id S1726942AbgFQPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 11:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726494AbgFQPzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 11:55:45 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0AD1214DB;
+        Wed, 17 Jun 2020 15:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592409345;
+        bh=tcU+d+66c89RPrE5Yb8McFDq6KZnOf2wcySz0B2cMdM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bIcNkACRNrMoRISVfJe/GkcTz83/4jJlz8vF3XM7Ijeidra8UbGOXnzHMvkHrULYS
+         aT2cT9/UucUu0H7kFTX+bB+6E5Akpbpgrughnzqufg5zMKRNcm2ALjsQS9XHDOmHLn
+         U2w4K0gG++Naxr1SQVGggtKiY1CGEcaKe6h0WGkA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D5A7F3522653; Wed, 17 Jun 2020 08:55:44 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 08:55:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     dvyukov@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] kcsan: Minor cleanups
+Message-ID: <20200617155544.GA10347@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200616123625.188905-1-elver@google.com>
 MIME-Version: 1.0
-References: <20200608230654.828134-1-guro@fb.com> <20200608230654.828134-3-guro@fb.com>
-In-Reply-To: <20200608230654.828134-3-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 17 Jun 2020 08:55:22 -0700
-Message-ID: <CALvZod61ejfKiHRGNBQHKCyWbLr_DrRRzUQh7WVXJYSUu-098w@mail.gmail.com>
-Subject: Re: [PATCH v6 02/19] mm: memcg: prepare for byte-sized vmstat items
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616123625.188905-1-elver@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
->
-> To implement per-object slab memory accounting, we need to
-> convert slab vmstat counters to bytes. Actually, out of
-> 4 levels of counters: global, per-node, per-memcg and per-lruvec
-> only two last levels will require byte-sized counters.
-> It's because global and per-node counters will be counting the
-> number of slab pages, and per-memcg and per-lruvec will be
-> counting the amount of memory taken by charged slab objects.
->
-> Converting all vmstat counters to bytes or even all slab
-> counters to bytes would introduce an additional overhead.
-> So instead let's store global and per-node counters
-> in pages, and memcg and lruvec counters in bytes.
->
-> To make the API clean all access helpers (both on the read
-> and write sides) are dealing with bytes.
->
-> To avoid back-and-forth conversions a new flavor of read-side
-> helpers is introduced, which always returns values in pages:
-> node_page_state_pages() and global_node_page_state_pages().
->
-> Actually new helpers are just reading raw values. Old helpers are
-> simple wrappers, which will complain on an attempt to read
-> byte value, because at the moment no one actually needs bytes.
->
-> Thanks to Johannes Weiner for the idea of having the byte-sized API
-> on top of the page-sized internal storage.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On Tue, Jun 16, 2020 at 02:36:21PM +0200, Marco Elver wrote:
+> Minor KCSAN cleanups, none of which should affect functionality.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Hearing no objections, I have queued and pushed all four, thank you!
+
+						Thanx, Paul
+
+> Marco Elver (4):
+>   kcsan: Silence -Wmissing-prototypes warning with W=1
+>   kcsan: Rename test.c to selftest.c
+>   kcsan: Remove existing special atomic rules
+>   kcsan: Add jiffies test to test suite
+> 
+>  kernel/kcsan/Makefile               |  2 +-
+>  kernel/kcsan/atomic.h               |  6 ++----
+>  kernel/kcsan/core.c                 |  9 +++++++++
+>  kernel/kcsan/kcsan-test.c           | 23 +++++++++++++++++++++++
+>  kernel/kcsan/{test.c => selftest.c} |  0
+>  5 files changed, 35 insertions(+), 5 deletions(-)
+>  rename kernel/kcsan/{test.c => selftest.c} (100%)
+> 
+> -- 
+> 2.27.0.290.gba653c62da-goog
+> 
