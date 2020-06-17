@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225001FC449
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 05:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E931FC43E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgFQC7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        id S1726679AbgFQCwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgFQC7x (ORCPT
+        with ESMTP id S1726275AbgFQCwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:59:53 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606AEC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:59:53 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n23so990662ljh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:59:53 -0700 (PDT)
+        Tue, 16 Jun 2020 22:52:30 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2052C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id b5so541013pgm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9GfV+ZXZWePD6gD12mFz6es4uCAjN6eHVRqAeOqRsdY=;
-        b=RfewTiqWuglwR2QisfOQvMIk5qFFV8JrErSpa1Kp+mCpPw2sknAYvfoie+N+mJEBnw
-         dYc3fksFYaJjAaNrdHTwFzppGz3tzzH2cx9OrzmaE6+3jnvgerdlFddBM7D/oPf7lO5C
-         ADei0paNwpcqaoDOKCB0aJumCDTvyxaySEz10CTvLCDf5l7beANMeTW7rLJCq7/qbJK8
-         NbzffFoXynF2utqxWU0EdDL0dOWNYJXbBESPkC/EEPL0OVXZpalG99iriycULr1RGT6I
-         24fuPz3Nj0+7/63JJ3mYNcAiJDr0BALijCKtbh7oLVfA7bkXcoXdvN1TH4GMnzgH9ul7
-         /eQg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
+        b=n5J2jPv0QjR1DpKaibcKwRPYDoW3EUtqnpKVwjFeU46sdq31Q/JU+0aA/HjqUtW1JX
+         YMf1t7p7SMI6nYIiThHivqM92nSuLbitsrOi1K5mH+yAwaYgGf4Cer91FIhRJZug7pyi
+         HVDzf2nwcqMy3ojGvssk5x8pdQLdyHc8NGaCdWAGflV9qKL1o6RQqR0KRVxFYT2g+g3z
+         e/ZNfwzskvY92mgW3FnKGEraUWWJpG5Ef6IQoy4DCw0B5Ir3K5w9e0FrbsLeNs48fSk+
+         RIYZWLeQhrAhCzx/HIaQ1k43vzuBrXuX2Z45TE7g4wvtn21yolISdFskOxopBbKO72Br
+         DALQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9GfV+ZXZWePD6gD12mFz6es4uCAjN6eHVRqAeOqRsdY=;
-        b=dRafKSdvK4hfcOlTXwjBSu8lermH5+ER+MGZOWqZ8qwOEmRAGirNeVjC4maoMzboek
-         ZjqDi7R/CNJCJkd8IFiMAHzXodqBo6Jwm6tZ2ByxQ3GqIfRX1dPZg7aHbocgrmeycP8J
-         NNyOfYTxrnD9oASnqTGA2GeCFP8edIhfMkFSHkluUMpTV74Ey/yjjFFEQBqGmavmCDsT
-         dR/KHk5ct0wSeR71je7tWdxRFdLvB478nr2FBuJLpWyVY7yQiTwCO6q4//40qucb0hi3
-         zrbC3gUMpU36TrfKWAibcfy0Js+tphOYhgxyay6dl4jfNx30ukY1fGqftnlpYDbqRtQ+
-         AHhw==
-X-Gm-Message-State: AOAM530Vobg95j4bRNNxqLs+R64pUdgwx9ArCZhW+nYVAylfGyvyEdQM
-        ZqhjhDeRRgSJO6sWHxZjJZ4fPictrE9fExbeYoaE5g==
-X-Google-Smtp-Source: ABdhPJzh0ExlhSPOX4d0I4ToEKHqUmEelceXDff6dHdAACXsJe4MEttb5Th6rn0PQUr1sPC5FPSjGMt+1D8Vj3FA4DI=
-X-Received: by 2002:a2e:910c:: with SMTP id m12mr3005693ljg.332.1592362791622;
- Tue, 16 Jun 2020 19:59:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200608230654.828134-1-guro@fb.com> <20200608230654.828134-2-guro@fb.com>
- <CALvZod7yPUMuakhmaKV8Z0DVr0RO1pyw9vW7YOkmDH=oW3xyDA@mail.gmail.com> <20200617025014.GB10812@carbon.lan>
-In-Reply-To: <20200617025014.GB10812@carbon.lan>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Jun 2020 19:59:40 -0700
-Message-ID: <CALvZod5CiU8qKNCo7gjh5O=BSGkM8Hj3Jr9ppmoWq+YY7w19Nw@mail.gmail.com>
-Subject: Re: [PATCH v6 01/19] mm: memcg: factor out memcg- and lruvec-level
- changes out of __mod_lruvec_state()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
+        b=DeXmNPI3A9MwmLoyZNNpxivsmXUjMUFL7DHmDXCqGxNFIj5rdbgrnCscklZ/xH34B6
+         UY2cjJ4hoVRCcFcJceagP/WR7PmxNQfH5q31CTh8I6y9YAjEIq/Sq8KrYFEuug3lFCgj
+         yBUG8Ahu8C1mkOZyblnbqAWuFVF0nJ6FcPRivSM3Niw0dmm/lRnGuHVrtkzu5lMcYkdN
+         mvgoWh/Mbb5upTfThgs9ebyiLNZI9xmql6P87G+g3bWC2XiZG4yInEV4uiEoOND7nHHr
+         7B5x7y4+YGu1OnxeWWCqSFPSb/ic/A2DCiOnJlluCU5Kf8A+Et5b32LnPU858h2LOJcU
+         Hj0w==
+X-Gm-Message-State: AOAM533ycKIaSOGpZdJ+7tTc4j3xtlbdIpk1EBrgKeVUGukoridzrMlB
+        507+7JacY6m69UZnoEKJmeo=
+X-Google-Smtp-Source: ABdhPJwzxOYzToYoIj3XGjY8EqSVWtlMEr+xu4rePHVTiHAHMpTPcfxbw16yW8W/jaJOWaTXdRl5YA==
+X-Received: by 2002:a05:6a00:801:: with SMTP id m1mr4894316pfk.200.1592362350235;
+        Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.213.184])
+        by smtp.gmail.com with ESMTPSA id y10sm15822181pgi.54.2020.06.16.19.52.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jun 2020 19:52:29 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     jgg@ziepe.ca, dan.j.williams@intel.com, gregkh@linuxfoundation.org,
+        arnd@arndb.de, mchehab+samsung@kernel.org,
+        akpm@linux-foundation.org
+Cc:     dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
+Date:   Wed, 17 Jun 2020 08:30:39 +0530
+Message-Id: <1592362839-4050-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 7:50 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Jun 16, 2020 at 06:52:09PM -0700, Shakeel Butt wrote:
-> > On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > To convert memcg and lruvec slab counters to bytes there must be
-> > > a way to change these counters without touching node counters.
-> > > Factor out __mod_memcg_lruvec_state() out of __mod_lruvec_state().
-> > >
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> > > ---
-> > >  include/linux/memcontrol.h | 17 +++++++++++++++
-> > >  mm/memcontrol.c            | 43 +++++++++++++++++++++-----------------
-> > >  2 files changed, 41 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index bbf624a7f5a6..93dbc7f9d8b8 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -679,11 +679,23 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
-> > >         return x;
-> > >  }
-> > >
-> > > +void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> > > +                             int val);
-> > >  void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> > >                         int val);
-> > >  void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
-> > >  void mod_memcg_obj_state(void *p, int idx, int val);
-> > >
-> > > +static inline void mod_memcg_lruvec_state(struct lruvec *lruvec,
-> > > +                                         enum node_stat_item idx, int val)
-> >
-> > Is this function used in later patches? Any benefit introducing it
-> > here instead of in the patch where it is used for the first time?
->
-> Yes, it's used in "mm: memcg/slab: charge individual slab objects instead of pages".
->
-> It's a fairly large patchset with many internal dependencies, so there is
-> always a trade-off between putting everything into a single patch, which is
-> hard to review, and splitting out some changes, which make not much sense
-> without seeing the whole picture.
->
-> In this particular case splitting out a formal and easy-to-verify change makes
-> the actual non-trivial patch smaller and hopefully easier for a review.
->
-> But of course it's all subjective.
->
-> Thanks!
+First, when memory allocation for sg_list_unaligned failed, there
+is no point of calling put_pages() as we haven't pinned any pages.
 
-I am fine with that.
+Second, if get_user_pages_fast() failed we should unpinned num_pinned
+pages, no point of checking till num_pages.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+This will address both.
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+---
+v2:
+	Added review tag.
+
+ drivers/virt/fsl_hypervisor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+index 1b0b11b..ea344d7 100644
+--- a/drivers/virt/fsl_hypervisor.c
++++ b/drivers/virt/fsl_hypervisor.c
+@@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ 	unsigned int i;
+ 	long ret = 0;
+-	int num_pinned; /* return value from get_user_pages() */
++	int num_pinned = 0; /* return value from get_user_pages() */
+ 	phys_addr_t remote_paddr; /* The next address in the remote buffer */
+ 	uint32_t count; /* The number of bytes left to copy */
+ 
+@@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ exit:
+ 	if (pages) {
+-		for (i = 0; i < num_pages; i++)
++		for (i = 0; i < num_pinned; i++)
+ 			if (pages[i])
+ 				put_page(pages[i]);
+ 	}
+-- 
+1.9.1
+
