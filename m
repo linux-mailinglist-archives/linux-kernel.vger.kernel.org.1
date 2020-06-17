@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AEA1FD549
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C941FD556
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgFQTTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:19:39 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44847 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQTTi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:19:38 -0400
-Received: by mail-pg1-f193.google.com with SMTP id r18so1739563pgk.11;
-        Wed, 17 Jun 2020 12:19:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f3h8SA2NdNGnsgYyCV0RnrSZYYK839TG5VEFdmTv5UM=;
-        b=hUuN26eeAa1SRLYljtECfeoOYJsgxLmz2n1ktIp/9xTFA7DAeMTABGLOdZ1JqUrauX
-         F4Y4PYGJ6XhBpxCtYAiOOJ86QSZTjz/xNadBhuWhwxQZ4J46PjMPKndgM7gEt56WVFh9
-         vGXlX+Q7Xgcwu0VFAejz8UaSCUzpmOevdj/wNFcva7svkHMnAe3f3pxBzcPXsMB1pEpX
-         mGtLPPU3YtE5c2er5CsItTByTS3k48niXQNPmODaSmWdqRjVpylFA8uNJhDebXoVNFHs
-         AcPlSvnorsrs9n4X8yQNL01DNbd6Cqq6aYsDrS+7f962tPfNzwCsCrz2wo2pTLbAev5Q
-         OYcQ==
-X-Gm-Message-State: AOAM533BFPwyCdQqL3Nv/KFk98glgwVxUMQ3BBXzf3pjLGiYshawBdpM
-        CCp3ism2N3AiBDtIjddKiJjT1lVq
-X-Google-Smtp-Source: ABdhPJxUlIxL7BpcInfnVnxOEqROyTf0gLUF7n32Pevzzh4bj1Hdeo5AXR5iX263YifWTVZ2BIiy0A==
-X-Received: by 2002:a63:931b:: with SMTP id b27mr269564pge.135.1592421577475;
-        Wed, 17 Jun 2020 12:19:37 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id fv7sm310887pjb.41.2020.06.17.12.19.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 12:19:36 -0700 (PDT)
-Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
-To:     Simon Arlott <simon@octiron.net>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <b92ce48a-55d8-9377-f6c5-510d7e3beb1b@acm.org>
-Date:   Wed, 17 Jun 2020 12:19:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726971AbgFQTVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:21:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726597AbgFQTVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:21:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0E869ADC9;
+        Wed, 17 Jun 2020 19:21:38 +0000 (UTC)
+Message-ID: <9450f86c15ecd8435bcdbc395f8674172a975100.camel@suse.de>
+Subject: Re: [PATCH v3 4/9] ARM: dts: bcm2711: Add reset controller to xHCI
+ node
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, andy.shevchenko@gmail.com,
+        mathias.nyman@linux.intel.com, lorenzo.pieralisi@arm.com,
+        devicetree@vger.kernel.org, wahrenst@gmx.net,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Date:   Wed, 17 Jun 2020 21:21:31 +0200
+In-Reply-To: <20200612171334.26385-5-nsaenzjulienne@suse.de>
+References: <20200612171334.26385-1-nsaenzjulienne@suse.de>
+         <20200612171334.26385-5-nsaenzjulienne@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-lfIoWXagrdDHMww3Jq4T"
+User-Agent: Evolution 3.36.3 
 MIME-Version: 1.0
-In-Reply-To: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-17 11:49, Simon Arlott wrote:
-> @@ -3576,9 +3582,19 @@ static void sd_shutdown(struct device *dev)
->  		sd_sync_cache(sdkp, NULL);
->  	}
->  
-> -	if (system_state != SYSTEM_RESTART && sdkp->device->manage_start_stop) {
-> -		sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
-> -		sd_start_stop_device(sdkp, 0);
-> +	if (sdkp->device->manage_start_stop) {
-> +		bool stop_disk = (system_state != SYSTEM_RESTART);
+
+--=-lfIoWXagrdDHMww3Jq4T
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi All,
+
+On Fri, 2020-06-12 at 19:13 +0200, Nicolas Saenz Julienne wrote:
+> The chip is hardwired to the board's PCIe bus and needs to be properly
+> setup trough a firmware routine after a PCI fundamental reset. Pass the
+> reset controller phandle that takes care of triggering the
+> initialization to the relevant PCI device.
+>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+>
+> ---
+>
+> Changes since v2:
+>  - Use dt-bindings to access IDs
+>
+> Changes since v1:
+>  - Update to match new binding
+>
+>  arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+> b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+> index 0cef95058fb0..e20979013414 100644
+> --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+> +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+> @@ -4,6 +4,8 @@
+>  #include "bcm2835-rpi.dtsi"
+>  #include "bcm283x-rpi-usb-peripheral.dtsi"
+>
+> +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
 > +
-> +		if (stop_before_reboot > 1) { /* stop all disks */
-> +			stop_disk = true;
-> +		} else if (stop_before_reboot) { /* non-rotational only */
-> +			stop_disk |= blk_queue_nonrot(sdkp->disk->queue);
-> +		}
+>  / {
+>  	compatible =3D "raspberrypi,4-model-b", "brcm,bcm2711";
+>  	model =3D "Raspberry Pi 4 Model B";
+> @@ -207,6 +209,13 @@ phy1: ethernet-phy@1 {
+>  	};
+>  };
+>
+> +&pcie0 {
+> +	usb@1,0 {
+> +		reg =3D <0 0 0 0 0>;
+> +		resets =3D <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
+> +	};
+> +};
 > +
-> +		if (stop_disk) {
-> +			sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
-> +			sd_start_stop_device(sdkp, 0);
-> +		}
->  	}
->  }
 
-Is introduction of a new kernel module parameter essential? Or in other
-words, has it been considered to apply the new behavior to all SSDs?
+I'm now double-guessing this is correct. With this lspci -tv output:
 
-Thanks,
+[0000:00]---00.0-[01]----00.0  VIA Technologies, Inc. VL805 USB 3.0 Host Co=
+ntroller
 
-Bart.
+The DT patch should be more like this:
+
++&pcie0 {
++       pci@0 {
++               #address-cells =3D <3>;
++               #size-cells =3D <2>;
++               ranges;
++
++               reg =3D <0 0 0 0 0>;
++
++               usb@1,0 {
++                       reg =3D <0x10000 0 0 0 0>;
++                       resets =3D <&reset RASPBERRYPI_FIRMWARE_RESET_ID_US=
+B>;
++               };
++       };
++};
+
+Small details aside I'm pretty confident this is the way to go, but would
+appreciate some comments/validation.
+
+Regards,
+Nicolas
+
+
+--=-lfIoWXagrdDHMww3Jq4T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7qbTsACgkQlfZmHno8
+x/4CVggAn3Z1hf15FCwZBqJ5vtu95aPDbATL/d0KQ7jGrs66dTwaOP6aBJFw48YF
+0wKRsvMe9LukIRSOBh9HluSEszmQj7/hUGRYcsXaBgmHeOVs9PCXDbJb0/XtgBwF
+3EvokrD1MRS9bcpXwVOCKsMu+wjaGMlCiiJ6wmvD2ffybDPtYA19Xci86XF3Y2WT
+PTeuhEXh+/+wADvH/z0Gi4ivdIAh6FGLbdaSSVgEpf1JChHkSH0anKhw78keHGWK
+WXifnT/7XqG9VtvNNmFvQ1+q7MoyyJlzCn/NXfNuhjmBV+A6gxhefrVRq+P2yeb7
+LzlXGvG8m8RsQQgt1TlpTQwfAjB8KQ==
+=jUpw
+-----END PGP SIGNATURE-----
+
+--=-lfIoWXagrdDHMww3Jq4T--
+
