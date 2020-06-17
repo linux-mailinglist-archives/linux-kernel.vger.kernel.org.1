@@ -2,169 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D3B1FC6BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484F31FC695
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgFQHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:09:23 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:60778 "EHLO inva021.nxp.com"
+        id S1726025AbgFQHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:03:13 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43197 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726308AbgFQHJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:09:20 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9812C2008E7;
-        Wed, 17 Jun 2020 09:09:17 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2D74B2008F7;
-        Wed, 17 Jun 2020 09:09:12 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 67105402B1;
-        Wed, 17 Jun 2020 15:09:05 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] ASoC: fsl_spdif: Add support for imx6sx platform
-Date:   Wed, 17 Jun 2020 14:58:01 +0800
-Message-Id: <7a343edd5f8487abad248a0b862f45fd95067751.1592376770.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592376770.git.shengjiu.wang@nxp.com>
-References: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592376770.git.shengjiu.wang@nxp.com>
-In-Reply-To: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592376770.git.shengjiu.wang@nxp.com>
-References: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592376770.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725536AbgFQHDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 03:03:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49mwy44sBYz9sSc;
+        Wed, 17 Jun 2020 17:03:08 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592377391;
+        bh=GrjcWt65On8ptPVGkgLJTte3NXkx9HklLRUHmriiWTE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NH8Kf57H5XFN9+75JQ4RTRnSV80r8jFNzsf1pR+WMUsjiDDl1X9ZkGZpdJ0I2npgh
+         HaTtpseUxYG26zgx6KEHKl78LqI0cm2i2Ss3c/iqh7OrtReFKRCabmkk65zd9RTZZa
+         OvqSuqd/yrC9XhXjtdvZ5irrABE+tny5s6jkYnb+H4L8sFMJyHBc5CQhmv3z2AdAhw
+         LG12zvroCmFPk6BZE9hQtUMb8LewkSvPUVtEGvHSRIzFW4lFooPxYpvlwWiitQbkg/
+         GKxxydfLszEAycBAxz0qMyoAsCGtCDSEC5mb68qYZKK5ZmpDAt8a/2KO7/A5YMAKOQ
+         nDp0wGn51DWEA==
+Date:   Wed, 17 Jun 2020 17:03:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Emil Velikov <emil.velikov@collabora.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20200617170307.3c87be5a@canb.auug.org.au>
+In-Reply-To: <c82b9c52-d4e6-9eef-e37d-0a26ee9f1183@suse.de>
+References: <20200617105929.534edd34@canb.auug.org.au>
+        <c82b9c52-d4e6-9eef-e37d-0a26ee9f1183@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/CFuhTYCQOJWS.N4Fev1VXiA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The one difference on imx6sx platform is that the root clock
-is shared with ASRC module, so we add a new flags
-"shared_root_clock" which means the root clock is not independent,
-then we will not do the clk_set_rate and clk_round_rate to avoid
-impact ASRC module usage.
+--Sig_/CFuhTYCQOJWS.N4Fev1VXiA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As add a new flags, we include the soc specific data struct.
+Hi Thomas,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-changes in v3
-- refine some comments
-- add Reviewed-by: Nicolin Chen
+On Wed, 17 Jun 2020 08:33:24 +0200 Thomas Zimmermann <tzimmermann@suse.de> =
+wrote:
+>
+> We recently dropped the _unlock() suffix from drm_gem_object_put(). This
+> patch should be ok.
 
-changes in v2
-- use shared_root_clk instead ind_root_clk.
-- add fsl_spdif_can_set_clk_rate function.
+Yes, but what it shows is that the drm-misc tree is still based on
+v5.7-rc1 and v5.8-rc1 has about 16000 more commits for you to get
+conflicts against :-)
 
- sound/soc/fsl/fsl_spdif.c | 50 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 45 insertions(+), 5 deletions(-)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 1b2e516f9162..5bc0e4729341 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -42,6 +42,18 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
- 
- #define DEFAULT_RXCLK_SRC	1
- 
-+/**
-+ * struct fsl_spdif_soc_data: soc specific data
-+ *
-+ * @imx: for imx platform
-+ * @shared_root_clock: flag of sharing a clock source with others;
-+ *                     so the driver shouldn't set root clock rate
-+ */
-+struct fsl_spdif_soc_data {
-+	bool imx;
-+	bool shared_root_clock;
-+};
-+
- /*
-  * SPDIF control structure
-  * Defines channel status, subcode and Q sub
-@@ -89,6 +101,7 @@ struct spdif_mixer_control {
-  * @dma_params_rx: DMA parameters for receive channel
-  */
- struct fsl_spdif_priv {
-+	const struct fsl_spdif_soc_data *soc;
- 	struct spdif_mixer_control fsl_spdif_control;
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct platform_device *pdev;
-@@ -110,6 +123,27 @@ struct fsl_spdif_priv {
- 	u32 regcache_srpc;
- };
- 
-+static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
-+	.imx = false,
-+	.shared_root_clock = false,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx35 = {
-+	.imx = true,
-+	.shared_root_clock = false,
-+};
-+
-+static struct fsl_spdif_soc_data fsl_spdif_imx6sx = {
-+	.imx = true,
-+	.shared_root_clock = true,
-+};
-+
-+/* Check if clk is a root clock that does not share clock source with others */
-+static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
-+{
-+	return (clk == STC_TXCLK_SPDIF_ROOT) && !spdif->soc->shared_root_clock;
-+}
-+
- /* DPLL locked and lock loss interrupt handler */
- static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
- {
-@@ -420,8 +454,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 
- 	sysclk_df = spdif_priv->sysclk_df[rate];
- 
--	/* Don't mess up the clocks from other modules */
--	if (clk != STC_TXCLK_SPDIF_ROOT)
-+	if (!fsl_spdif_can_set_clk_rate(spdif_priv, clk))
- 		goto clk_set_bypass;
- 
- 	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
-@@ -1186,7 +1219,7 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			continue;
- 
- 		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
--					     i == STC_TXCLK_SPDIF_ROOT);
-+					     fsl_spdif_can_set_clk_rate(spdif_priv, i));
- 		if (savesub == ret)
- 			continue;
- 
-@@ -1230,6 +1263,12 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	spdif_priv->pdev = pdev;
- 
-+	spdif_priv->soc = of_device_get_match_data(&pdev->dev);
-+	if (!spdif_priv->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
-+
- 	/* Initialize this copy of the CPU DAI driver structure */
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
-@@ -1359,8 +1398,9 @@ static const struct dev_pm_ops fsl_spdif_pm = {
- };
- 
- static const struct of_device_id fsl_spdif_dt_ids[] = {
--	{ .compatible = "fsl,imx35-spdif", },
--	{ .compatible = "fsl,vf610-spdif", },
-+	{ .compatible = "fsl,imx35-spdif", .data = &fsl_spdif_imx35, },
-+	{ .compatible = "fsl,vf610-spdif", .data = &fsl_spdif_vf610, },
-+	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
--- 
-2.21.0
+--Sig_/CFuhTYCQOJWS.N4Fev1VXiA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7pwCsACgkQAVBC80lX
+0GxDGQf8CC2+Ktdz5dyuFmZlGHbsWC27PbUpPtzHBtyTU7lyG+622BZAGyeE5LYa
+kMsFA/a6lSE5IHC5z/8C+3g+MGjsLhl85AFPR1GRxCxNK4Y5UcBfxWxhKcOhM+Pd
+OcOjaSc3VRr3Dt2IG3DCdo63H5IN6xrIDPKiDzIMXlBZwaGf/33lXYap/dUsJF5U
+9wZwnGFpcpxkRqUHmuJjGCDZyzGryu2qiiTSclw3ys1OpIG9WVLqD5iqoxvOsnOV
+KQ6IyGoHyd+0hpSIQx7Ach0AbQ0n0bAE76F0dWCRj5ujykjWIcN5Px2aksXPvOj4
+fSKxyqpYyh+B3uhof+0hQ5HMyEGH5A==
+=zVg0
+-----END PGP SIGNATURE-----
+
+--Sig_/CFuhTYCQOJWS.N4Fev1VXiA--
