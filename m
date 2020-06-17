@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E641FD55A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9FB1FD57E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726976AbgFQTVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgFQTVn (ORCPT
+        id S1726931AbgFQTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:38:49 -0400
+Received: from djelibeybi.uuid.uk ([45.91.101.70]:57950 "EHLO
+        djelibeybi.uuid.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbgFQTis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:21:43 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4493C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:21:42 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id i27so4250888ljb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6zPV8zobDf9HXBdYcU6mVid6vbxVvMja1AcfqC3AhY=;
-        b=f9SMlyM/U0Pqzn1ZfwPovFVY6pZbMaVNMoLSufan6Hon09QmB+eZa9nTGXfGxBQyIe
-         PQULWwLtmklVkIMpg9pFaEPTNvi2LC9IcxyTkpI/nBKVXWG3U0wSSuyj8AbbZMKiq4EL
-         OwS61L9Q6Exu+JDkyDU+jwWBB4UHVz/IkhsdeBAJdL60GDpDSexutvvHvx7VHaAPNwb0
-         FnlqEr9i019s7c+rJ7WxAlpIIYFqrnAFs8U6vfs8J2tYfCZFlRTNQg6JB5oYjGsmP5Iz
-         rqP5WAiuJJNGDIoK/swk2D9TyycjNZRhwlFDD2mZ41qIct+Dy4I6wr1vYDthC2JvIh/L
-         vNVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6zPV8zobDf9HXBdYcU6mVid6vbxVvMja1AcfqC3AhY=;
-        b=rVqXJLNEFoWsH+RpLPMrIL9YCeaHcQgm+C5kjvQyTqAAg+L2ej2jIt14MzWXF0tEOE
-         jC035ZnxZP5coqE4i5AsySV6u9E13qoMaWJ5B+g38KMe5iX8EU3GiUvELEVRse+qNFBz
-         JGQBYU3Vk0v/qhi0W1lny9rvmpB7RZShpfBbm2e8W4WTsG0vVgMMpgQaD39A1d5rADLi
-         x5X4q2qNnhWOCMtZZZSGCm1v6PBZggIe1cqnPTfKsczseSWABMwSlrhbBZg3cqpRYmFm
-         05IROMXnOPOS5sBcMVuvGfJ5WY7E80ltugiISnRnjxvC9RtCm2U2ao0Dcye5sTCa36YF
-         286A==
-X-Gm-Message-State: AOAM531QRwqiP5LBdQjkE5CSYRwUH23czORXvHuR21yqDWBhwiHrhwb/
-        TILqRrta9MEFt3JZ6cI3avQMjKQpmq8zdIYff+8=
-X-Google-Smtp-Source: ABdhPJy/zgi6evi5V74dtl6A1Gnb2qzWqwv0aC2J/qtn2wVcoQui5pDVfUgL66fQBPwxEv0f/1kKdEbuFTWgUKo0FhA=
-X-Received: by 2002:a2e:7215:: with SMTP id n21mr333356ljc.315.1592421701149;
- Wed, 17 Jun 2020 12:21:41 -0700 (PDT)
+        Wed, 17 Jun 2020 15:38:48 -0400
+X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 15:38:46 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=CBFAg6s+vq5P374WzvzyZ5LF5sqRXWLUvi7gDQCysuQ=; b=s4niYvrhMPjKxPqwZfV/XTAR6X
+        iqawHB1UE2brS2dFuRjx2BU/xoVl7uZN77L6+lV00LVJkldfRno8zX0HrZ8wLzQdqfWS1RYGNUgEu
+        rfjfFsLmKcHLU3hTd5Diwj/dmRc8qPan8G0sp3/FftcuLt5Ba9RdqUkStAUskP6k0Kx/yDwP3Wb0b
+        XCllNmx+7J9zxkPSem743Ksy483GZJmUUgmMYghnHdRlEJB/iXU8KT10IWJeNkfI0tDnSHHVsB49/
+        IRKXRKuVWIyJCGM0wRLfS3VDQGu1ovwVtYT5QcfRPRUFDpo95gN0uE4Jjqh31rs3pD6tLCX+D3iQM
+        tYodPY3w==;
+Received: by djelibeybi.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <simon@octiron.net>)
+        id 1jldn9-0001NO-4a; Wed, 17 Jun 2020 20:32:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject;
+        bh=CBFAg6s+vq5P374WzvzyZ5LF5sqRXWLUvi7gDQCysuQ=; b=iNRgLuzImYOvm7B2xpgqc+VmTG
+        wSOj8XmLpCXMk8XZWAPtXq10UdhX85+0B0vNcO7HZS7RxhBYV60tW8QQ0G1zeuLYXnzFYf4MgO00K
+        dphadsBfZCgcLuk1U1LytGUTHTEz4bSPbumr0a8kRhAfRS4PeJm+7sfPW4kfv3J5QPlI1FDfZ08VT
+        jFBZOdQ3FM7D3Ah5tDYzMnAASIc2JR94Uq4v76bohe315pkXZ5Gqyrrevf48Sb2bftgKr98QEL8P3
+        njaYk/7yR6fHUz9GoQ9zq5EDv2Hj/t8KtGtMluUIwXM7Hl+7XiA3e4l3AQjNBT08bFnMYKgQUDt3u
+        43Jqp2ZA==;
+Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <simon@octiron.net>)
+        id 1jldn7-00062R-3q; Wed, 17 Jun 2020 20:32:09 +0100
+Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+ <b92ce48a-55d8-9377-f6c5-510d7e3beb1b@acm.org>
+From:   Simon Arlott <simon@octiron.net>
+Message-ID: <04bf3c02-85f4-3fbc-525a-4189aadf9241@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+Date:   Wed, 17 Jun 2020 20:32:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
- <1592360843-3440-2-git-send-email-jrdr.linux@gmail.com> <20200617111321.GP4282@kadam>
- <CAFqt6zYHXmoCrWLEru2FZsRnXptFERJv1qiDFPip=q_cZaZEBg@mail.gmail.com> <20200617175918.GO4151@kadam>
-In-Reply-To: <20200617175918.GO4151@kadam>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Thu, 18 Jun 2020 00:59:57 +0530
-Message-ID: <CAFqt6za2Npg147p=47_PKjGehKKP=s5dgtu1O=nrrPePxjXPkg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] staging: kpc2000: Unpin partial pinned pages
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Bharath Vedartham <linux.bhar@gmail.com>,
-        harshjain32@gmail.com, John Hubbard <jhubbard@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>, pakki001@umn.edu,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Simon_Sandstr=C3=B6m?= <simon@nikanor.nu>,
-        ldufour@linux.ibm.com, Michel Lespinasse <walken@google.com>,
-        jane.pnx9@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b92ce48a-55d8-9377-f6c5-510d7e3beb1b@acm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 11:29 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, Jun 17, 2020 at 11:13:32PM +0530, Souptick Joarder wrote:
-> > On Wed, Jun 17, 2020 at 4:43 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Wed, Jun 17, 2020 at 07:57:20AM +0530, Souptick Joarder wrote:
-> > > > There is a bug, when get_user_pages() failed but partially pinned
-> > > > pages are not unpinned. Fixed it.
-> > > >
-> > > > Also, int is more appropriate type for rv. Changed it.
-> > > >
-> > > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > > Cc: Bharath Vedartham <linux.bhar@gmail.com>
-> > > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > ---
-> > > >  drivers/staging/kpc2000/kpc_dma/fileops.c | 6 +++++-
-> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> > > > index 8975346..b136353 100644
-> > > > --- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-> > > > +++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> > > > @@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
-> > > >                           unsigned long iov_base, size_t iov_len)
-> > > >  {
-> > > >       unsigned int i = 0;
-> > > > -     long rv = 0;
-> > > > +     int rv = 0;
-> > > >       struct kpc_dma_device *ldev;
-> > > >       struct aio_cb_data *acd;
-> > > >       DECLARE_COMPLETION_ONSTACK(done);
-> > > > @@ -193,6 +193,10 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
-> > > >               put_page(acd->user_pages[i]);
-> > >                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > > >
-> > > >   err_get_user_pages:
-> > > > +     if (rv > 0) {
-> > > > +             for (i = 0; i < rv; i++)
-> > > > +                     put_pages(acd->user_pages[i])
-> > >                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > >
-> > > > +     }
-> > >
-> > > This isn't a complete fix.  "rv" is the negative error code but here we
-> > > are returning a positive value on this path.
-> >
-> > In case of error of get_user_pages(), it will return -errno, 0 and 3rd one is
-> > (rv > 0 && rv != acd->page_count). When rv is -errno or 0 there is no need
-> > to call put_pages() in error path. But for 3rd case partially mapped pages
-> > need to unpin.
-> >
-> > Correct me if I am missing anything.
-> >
->
->    182                  kfree(acd);
->    183          }
->    184          return rv;
->    185
->    186   err_descr_too_many:
->    187          unlock_engine(ldev);
->    188          dma_unmap_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
->    189          sg_free_table(&acd->sgt);
->    190   err_dma_map_sg:
->    191   err_alloc_sg_table:
->    192          for (i = 0 ; i < acd->page_count ; i++)
->    193                  put_page(acd->user_pages[i]);
->    194
->    195   err_get_user_pages:
->    196          if (rv > 0) {
->                     ^^^^^^
-> "rv" is positive.
->
->    197                  for (i = 0; i < rv; i++)
->    198                          put_pages(acd->user_pages[i])
->    199          }
->    200          kfree(acd->user_pages);
->    201   err_alloc_userpages:
->    202          kfree(acd);
->    203          dev_dbg(&priv->ldev->pldev->dev, "%s returning with error %ld\n", __func__, rv);
->    204          return rv;
->                        ^^
-> "rv" is still positive but it should be -EFAULT.
->
+On 17/06/2020 20:19, Bart Van Assche wrote:
+> On 2020-06-17 11:49, Simon Arlott wrote:
+>> @@ -3576,9 +3582,19 @@ static void sd_shutdown(struct device *dev)
+>>  		sd_sync_cache(sdkp, NULL);
+>>  	}
+>>  
+>> -	if (system_state != SYSTEM_RESTART && sdkp->device->manage_start_stop) {
+>> -		sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
+>> -		sd_start_stop_device(sdkp, 0);
+>> +	if (sdkp->device->manage_start_stop) {
+>> +		bool stop_disk = (system_state != SYSTEM_RESTART);
+>> +
+>> +		if (stop_before_reboot > 1) { /* stop all disks */
+>> +			stop_disk = true;
+>> +		} else if (stop_before_reboot) { /* non-rotational only */
+>> +			stop_disk |= blk_queue_nonrot(sdkp->disk->queue);
+>> +		}
+>> +
+>> +		if (stop_disk) {
+>> +			sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
+>> +			sd_start_stop_device(sdkp, 0);
+>> +		}
+>>  	}
+>>  }
+> 
+> Is introduction of a new kernel module parameter essential?
 
-Ahh,  my mistake. Will correct it in v2.
-Do other patches in the series looks good ?
+It is system-dependent whether or not a reboot is going to result in a
+loss of power, so it's required to be able to stop the HDDs too.
+
+They're already always stopped on shutdown where power is definitely
+going to be lost. I can't do that by default on a reboot because the
+usual convention is that the power stays on during a reboot and it would
+be expected that the HDDs keep spinning.
+
+> Or in other
+> words, has it been considered to apply the new behavior to all SSDs?
+
+The default value is 1, so it does apply to all SSDs. I want to be able
+to configure it to apply to HDDs too.
+
+-- 
+Simon Arlott
