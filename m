@@ -2,114 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C441FD349
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C941FD355
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgFQRRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:17:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39204 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726511AbgFQRRx (ORCPT
+        id S1726918AbgFQRVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgFQRVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:17:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592414271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=syoG//epP3bFi8zAl2b0mjdOvXOrZ7ZffbKVm7T0ZmA=;
-        b=HlflOshlo52J6ZhvX5Ck+yggWTJzKaAGY/BNndxwnCmnrTo4Y8d2H2F0Y/zy1bSwEE0gfT
-        TqP5pPbC2o4VhljDjhBiI3YTjRL2RE3P4kSenYlNR3TWUaKpjKGJCaaA9Lol5jRw1sJi3m
-        dV8gc/OGvYJY3TrnAEQwyOrr2BwKEgM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-LQZ-XmOuMq6KQxphfDbC4Q-1; Wed, 17 Jun 2020 13:17:48 -0400
-X-MC-Unique: LQZ-XmOuMq6KQxphfDbC4Q-1
-Received: by mail-wm1-f71.google.com with SMTP id r1so1502891wmh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:17:47 -0700 (PDT)
+        Wed, 17 Jun 2020 13:21:02 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC21C061755;
+        Wed, 17 Jun 2020 10:21:02 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id d5so748977vkb.12;
+        Wed, 17 Jun 2020 10:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=h4+kQBpcsw7AL0bB0KTWEGS4omPeS4od+scoObArtv4=;
+        b=vCMeek6pX8ft+4TPLuouef677C9IkED3okJfBDTsTF3mXlOo3gUQDSRmECG3rXUsZB
+         HbgH3gQcipcJ7YnpuwlucOaUGWP//vzqvvhLVyUZzHFbz0/lnpJGPW93xrMBYa77EU4x
+         AmoITbxLw+lP0qB6b93FriUgEEQQYXKfPtOfxv9yPqY1nDuesbC2hAGH3Uqth2tL2Aky
+         CQ/HZzZuJJbeE8IzM1lA6aqY7YmevxLKAzCXz3P9Ona/mT8iECbTB8jlypOYjAU4UpKv
+         Go0EKB0mfY8srPwTgkPwEtKZo1XqVF23JZAl3JhLMEn43LmiqRO7oFyaGRVbz8Zzdndg
+         8kwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=syoG//epP3bFi8zAl2b0mjdOvXOrZ7ZffbKVm7T0ZmA=;
-        b=famyAfVVZnuUqtva0EZ/9C0jUAIMX/n7FGz/hsgKQ0V0vr/t/D6ZdfVaH5/bXov0vK
-         DO8anvuml5jJsNKSqz112zdjmyHAZ73S0z4Smj7Fqj+Cxm/L2R6+etbL3ahT0AfnjxXe
-         GLHksfTdzsD8fePobNgSR6ZSP1JZa6dNFvIb+WkWwkiTxYyJNiJ9Ifemb0dpVZmZJHaM
-         +iUDlUrVBWXnQyv5Q+G1g+QwEZI0PL0jmopYFrQttLanJOMpqjujGBNQyUWXBSQRDwmr
-         anYZM9F8j5dn7WUbAX/aBqjnvZrjYF0VrOCFQFSvLdQE0wQoL5pK+O1DN8t1ppPs6qaL
-         MZMA==
-X-Gm-Message-State: AOAM532dn2R8bXDaOitu4Pwo7PjoEZ+2/ZAvy5Gx3Up0THhG4lizAHGC
-        KUmUU14s+MI2xWYXk/51ZkvfJ9NBmI0LcPNx5BZKl24bmAsi2sTs7DSLZeAmwKIQV2lcPT74wpC
-        y3z/ETXQRcOgGt12/Fa3ZxVTr
-X-Received: by 2002:a1c:e40a:: with SMTP id b10mr9258262wmh.41.1592414266555;
-        Wed, 17 Jun 2020 10:17:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLVxP68bp+s83lap0HNMsWZSZhomS98RZJPhW0GgtvOxsW+p3Qva87d7QFsCgkfzvuBpUIIw==
-X-Received: by 2002:a1c:e40a:: with SMTP id b10mr9258238wmh.41.1592414266343;
-        Wed, 17 Jun 2020 10:17:46 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:48a4:82f8:2ffd:ec67? ([2001:b07:6468:f312:48a4:82f8:2ffd:ec67])
-        by smtp.gmail.com with ESMTPSA id 23sm464714wmg.10.2020.06.17.10.17.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 10:17:45 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: drop MSR_IA32_PERF_CAPABILITIES from emulated
- MSRs
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200616161427.375651-1-vkuznets@redhat.com>
- <CALMp9eSWXGQkOOzSrALfZDMj5JHSH=CsK1wKfdj2x2jtV4XJsw@mail.gmail.com>
- <87366vhscx.fsf@vitty.brq.redhat.com>
- <CALMp9eQ1qe4w5FojzgsUHKpD=zXqen_D6bBg4-vfHa03BdomGA@mail.gmail.com>
- <87wo45hqhy.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <36ebc576-52c0-4164-1c83-e31146806b6b@redhat.com>
-Date:   Wed, 17 Jun 2020 19:17:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=h4+kQBpcsw7AL0bB0KTWEGS4omPeS4od+scoObArtv4=;
+        b=I8eugcgs4wVf8yKa609+pGj0wqAEV5k5EBbIEn6SZMkDpEp7uOgaloyNokvsLKZYWb
+         jJYQFLpjVbrk3Ajudaf2NB2w+7t10I6YzQnqY2QuqZepkf2qiambjxdQb+eoy28T3ozS
+         GXRA9RO8sQ+2p3balXE+UP3uBpKRs2+1+AlJJY1kwbyOufjgb5In3GDXmnQZrMn9uHS3
+         wO+vO2KbB/e9DIdfKpWCcpdmqUikNitxpziIMSAVrZwfGcSrXAyNFjx9y1rBOIAlr73U
+         mRyv9Rz9zgPJcUZQgsL+FUvQr2TW/88TNA2WdX+IMD6egcOceVyPVbKhz8PksOuTozZ8
+         n6Fw==
+X-Gm-Message-State: AOAM533YyNm2VTINRxScr+D9edTm0VXA8QNrmcefwToN/NucyrQQdwyx
+        UZZn7UDCkHjSSBNNltOcIT6VHKTVw1lWHIT4SRHbu/UO
+X-Google-Smtp-Source: ABdhPJyvWQn1qHMUj3921o1IlM3jAx+R+tQE1S9ifDLIpYEE1AZJzTawc1EEGAr7F2AazEGxLkPITIyZjbdFGBgZvSw=
+X-Received: by 2002:a1f:e8c4:: with SMTP id f187mr419884vkh.24.1592414459859;
+ Wed, 17 Jun 2020 10:20:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87wo45hqhy.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200617162746.3780660-1-boris@bur.io>
+In-Reply-To: <20200617162746.3780660-1-boris@bur.io>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 17 Jun 2020 18:20:48 +0100
+Message-ID: <CAL3q7H47P6E9zn3Zk9C2LX8-1g2QNiCGgbcRMDQDk+JBCoOhzg@mail.gmail.com>
+Subject: Re: [PATCH btrfs/for-next] btrfs: fix fatal extent_buffer readahead
+ vs releasepage race
+To:     Boris Burkov <boris@bur.io>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/20 13:38, Vitaly Kuznetsov wrote:
-> 
-> For KVM_GET_MSR_INDEX_LIST, the promise is "guest msrs that are
-> supported" and I'm not exactly sure what this means. Personally, I see
-> no point in returning MSRs which can't be read with KVM_GET_MSRS (as
-> this also means the guest can't read them) and KVM selftests seem to
-> rely on that (vcpu_save_state()) but this is not a documented feature.
+On Wed, Jun 17, 2020 at 5:32 PM Boris Burkov <boris@bur.io> wrote:
+>
+> Under somewhat convoluted conditions, it is possible to attempt to
+> release an extent_buffer that is under io, which triggers a BUG_ON in
+> btrfs_release_extent_buffer_pages.
+>
+> This relies on a few different factors. First, extent_buffer reads done
+> as readahead for searching use WAIT_NONE, so they free the local extent
+> buffer reference while the io is outstanding. However, they should still
+> be protected by TREE_REF. However, if the system is doing signficant
+> reclaim, and simultaneously heavily accessing the extent_buffers, it is
+> possible for releasepage to race with two concurrent readahead attempts
+> in a way that leaves TREE_REF unset when the readahead extent buffer is
+> released.
+>
+> Essentially, if two tasks race to allocate a new extent_buffer, but the
+> winner who attempts the first io is rebuffed by a page being locked
+> (likely by the reclaim itself) then the loser will still go ahead with
+> issuing the readahead. The loser's call to find_extent_buffer must also
+> race with the reclaim task reading the extent_buffer's refcount as 1 in
+> a way that allows the reclaim to re-clear the TREE_REF checked by
+> find_extent_buffer.
+>
+> The following represents an example execution demonstrating the race:
+>
+>             CPU0                                                         =
+CPU1                                           CPU2
+> reada_for_search                                            reada_for_sea=
+rch
+>   readahead_tree_block                                        readahead_t=
+ree_block
+>     find_create_tree_block                                      find_crea=
+te_tree_block
+>       alloc_extent_buffer                                         alloc_e=
+xtent_buffer
+>                                                                   find_ex=
+tent_buffer // not found
+>                                                                   allocat=
+es eb
+>                                                                   lock pa=
+ges
+>                                                                   associa=
+te pages to eb
+>                                                                   insert =
+eb into radix tree
+>                                                                   set TRE=
+E_REF, refs =3D=3D 2
+>                                                                   unlock =
+pages
+>                                                               read_extent=
+_buffer_pages // WAIT_NONE
+>                                                                 not uptod=
+ate (brand new eb)
+>                                                                          =
+                                   lock_page
+>                                                                 if !trylo=
+ck_page
+>                                                                   goto un=
+lock_exit // not an error
+>                                                               free_extent=
+_buffer
+>                                                                 release_e=
+xtent_buffer
+>                                                                   atomic_=
+dec_and_test refs to 1
+>         find_extent_buffer // found
+>                                                                          =
+                                   try_release_extent_buffer
+>                                                                          =
+                                     take refs_lock
+>                                                                          =
+                                     reads refs =3D=3D 1; no io
+>           atomic_inc_not_zero refs to 2
+>           mark_buffer_accessed
+>             check_buffer_tree_ref
+>               // not STALE, won't take refs_lock
+>               refs =3D=3D 2; TREE_REF set // no action
+>     read_extent_buffer_pages // WAIT_NONE
+>                                                                          =
+                                     clear TREE_REF
+>                                                                          =
+                                     release_extent_buffer
+>                                                                          =
+                                       atomic_dec_and_test refs to 1
+>                                                                          =
+                                       unlock_page
+>       still not uptodate (CPU1 read failed on trylock_page)
+>       locks pages
+>       set io_pages > 0
+>       submit io
+>       return
+>     release_extent_buffer
 
-Yes, this is intended.  KVM_GET_MSR_INDEX_LIST is not the full list of
-supported MSRs or KVM_GET_MSRS (especially PMU MSRs are missing) but it
-certainly should be a sufficient condition for KVM_GET_MSRS support.
+Small detail, missing the call to free_extent_buffer() from
+readahead_tree_block(), which is what ends calling
+release_extent_buffer().
 
-In this case your patch is sort-of correct because AMD machines won't
-have X86_FEATURE_PDCM.  However, even in that case there are two things
-we can do that are better:
+>       dec refs to 0
+>       delete from radix tree
+>       btrfs_release_extent_buffer_pages
+>         BUG_ON(io_pages > 0)!!!
+>
+> We observe this at a very low rate in production and were also able to
+> reproduce it in a test environment by introducing some spurious delays
+> and by introducing probabilistic trylock_page failures.
+>
+> To fix it, we apply check_tree_ref at a point where it could not
+> possibly be unset by a competing task: after io_pages has been
+> incremented. There is no race in write_one_eb, that we know of, but for
+> consistency, apply it there too. All the codepaths that clear TREE_REF
+> check for io, so they would not be able to clear it after this point.
+>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-1) force-set X86_FEATURE_PDCM in vmx_set_cpu_caps instead of having it
-in kvm_set_cpu_caps.  The latter is incorrect because if AMD for
-whatever reason added it we'd lack the support.  This would be basically
-a refined version of your patch.
+Btw, if you have a stack trace, it would be good to include it in the
+change log for grep-ability in case someone runs into the same
+problem.
 
-2) emulate the MSR on AMD too (returning zero) if somebody for whatever
-reason enables PDCM in there too: this would include returning it in
-KVM_GET_FEATURE_MSR_INDEX_LIST, and using kvm_get_msr_feature to set a
-default value in kvm_pmu_refresh.  The feature bit then would be
-force-set in kvm_set_cpu_caps.  This would be nicer since we have the
-value in vcpu->arch already instead of struct vcpu_vmx.
+> ---
+>  fs/btrfs/extent_io.c | 45 ++++++++++++++++++++++++++++----------------
+>  1 file changed, 29 insertions(+), 16 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index c59e07360083..f6758ebbb6a2 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3927,6 +3927,11 @@ static noinline_for_stack int write_one_eb(struct =
+extent_buffer *eb,
+>         clear_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags);
+>         num_pages =3D num_extent_pages(eb);
+>         atomic_set(&eb->io_pages, num_pages);
+> +       /*
+> +        * It is possible for releasepage to clear the TREE_REF bit befor=
+e we
+> +        * set io_pages. See check_buffer_tree_ref for a more detailed co=
+mment.
+> +        */
+> +       check_buffer_tree_ref(eb);
 
-Thanks,
+This is a whole different case from the one described in the
+changelog, as this is in the write path.
+Why do we need this one?
 
-Paolo
+At this point the eb pages are marked with the dirty bit, and
+btree_releasepage() returns 0 if the page is dirty and we don't end up
+calling try_release_extent_buffer().
+So I don't understand why this hunk is needed, what variant of the
+problem it's trying to solve.
 
+>
+>         /* set btree blocks beyond nritems with 0 to avoid stale content.=
+ */
+>         nritems =3D btrfs_header_nritems(eb);
+> @@ -5086,25 +5091,28 @@ struct extent_buffer *alloc_dummy_extent_buffer(s=
+truct btrfs_fs_info *fs_info,
+>  static void check_buffer_tree_ref(struct extent_buffer *eb)
+>  {
+>         int refs;
+> -       /* the ref bit is tricky.  We have to make sure it is set
+> -        * if we have the buffer dirty.   Otherwise the
+> -        * code to free a buffer can end up dropping a dirty
+> -        * page
+> +       /*
+> +        * The TREE_REF bit is first set when the extent_buffer is added
+> +        * to the radix tree. It is also reset, if unset, when a new refe=
+rence
+> +        * is created by find_extent_buffer.
+>          *
+> -        * Once the ref bit is set, it won't go away while the
+> -        * buffer is dirty or in writeback, and it also won't
+> -        * go away while we have the reference count on the
+> -        * eb bumped.
+> +        * It is only cleared in two cases: freeing the last non-tree
+> +        * reference to the extent_buffer when its STALE bit is set or
+> +        * calling releasepage when the tree reference is the only refere=
+nce.
+>          *
+> -        * We can't just set the ref bit without bumping the
+> -        * ref on the eb because free_extent_buffer might
+> -        * see the ref bit and try to clear it.  If this happens
+> -        * free_extent_buffer might end up dropping our original
+> -        * ref by mistake and freeing the page before we are able
+> -        * to add one more ref.
+> +        * In both cases, care is taken to ensure that the extent_buffer'=
+s
+> +        * pages are not under io. However, releasepage can be concurrent=
+ly
+> +        * called with creating new references, which is prone to race
+> +        * conditions between the calls to check_tree_ref in those codepa=
+ths
+> +        * and clearing TREE_REF in try_release_extent_buffer.
+>          *
+> -        * So bump the ref count first, then set the bit.  If someone
+> -        * beat us to it, drop the ref we added.
+> +        * The actual lifetime of the extent_buffer in the radix tree is
+> +        * adequately protected by the refcount, but the TREE_REF bit and
+> +        * its corresponding reference are not. To protect against this
+> +        * class of races, we call check_buffer_tree_ref from the codepat=
+hs
+> +        * which trigger io after they set eb->io_pages. Note that once i=
+o is
+> +        * initiated, TREE_REF can no longer be cleared, so that is the
+> +        * moment at which any such race is best fixed.
+>          */
+>         refs =3D atomic_read(&eb->refs);
+>         if (refs >=3D 2 && test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
+> @@ -5555,6 +5563,11 @@ int read_extent_buffer_pages(struct extent_buffer =
+*eb, int wait, int mirror_num)
+>         clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
+>         eb->read_mirror =3D 0;
+>         atomic_set(&eb->io_pages, num_reads);
+> +       /*
+> +        * It is possible for releasepage to clear the TREE_REF bit befor=
+e we
+> +        * set io_pages. See check_buffer_tree_ref for a more detailed co=
+mment.
+> +        */
+> +       check_buffer_tree_ref(eb);
+
+This is the hunk that fixes the problem described in the change log,
+and it looks good to me.
+
+Thanks.
+
+>         for (i =3D 0; i < num_pages; i++) {
+>                 page =3D eb->pages[i];
+>
+> --
+> 2.24.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
