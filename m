@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E2E1FCCDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9140E1FCCF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 14:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgFQL50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgFQL5Z (ORCPT
+        id S1726681AbgFQMAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 08:00:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56806 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725901AbgFQMAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:57:25 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E7CC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 04:57:24 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id a137so1521703oii.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 04:57:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/TAhtBD0JZB3OeqVg4Sg/t5NA/0YJ+SzdMDki1DJcps=;
-        b=hL6Rvzwasvh8JclW23b05+UHwnW8NXnEYh6K8YFuMwRssrzpSI8d711InpIaF8o3V9
-         Ln6kuk4PFZ7ujW3Nezxl3SkzV3Z1c0GLtwSQSDZxWbHp3SIL/haBQ4IKFpicUq78HWUV
-         MSu7BfIbtxs/18Dtx/4UpOw7o6ttX/Sr3TRkZHw7zsYtoPsoRuxy6WfZoBDDOtX5Gakg
-         KcO8q5HlWW2YWC43IFOx+6+Brv9my73D60JX0YxYB0m0CnWTGNLAyJFp5i/GqMYbDjo4
-         iWQc249KmUImK3L5VpIScQn+PzrRKnK4RkuKeo95onNnXtUVJmAQmSmr4umhAisyDpo2
-         O4tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/TAhtBD0JZB3OeqVg4Sg/t5NA/0YJ+SzdMDki1DJcps=;
-        b=QcP1rJNPrai5lDdzgNQ+Ncy3nUA1bTJ1P2kDHjM+sX9Iee/Twzst66xKp4US2hsfhF
-         TQJNRxRM8lDt0SK1EcsHiNIlGXHykx/QbaB7R3kkQG+BX/qml++hNO5vZBtC3PV8+bYl
-         5dnIAkLqb8dXRAD7fnEWD5/FjpEZ9Stjrx5tKiPj42qDBfVlaS5/2noQjw40Gwva7zSZ
-         S5hmtARBgyQa4niWj3we1qIrruNK3Ag9+1tNebatcxaGasZ2XBAp7v07zhbAQVP0fVo/
-         KxMz+RdVaxNORC6uy+5U6AFeyHvB3YAhn9tnZu9YwjkwsZJtq2pLgeyU+T/d41O+8VRd
-         3dwA==
-X-Gm-Message-State: AOAM533WIOF7eYqPk4FxXzySRjGlU7+lJShNsEc+i/Ev4KYlyDib0O9S
-        Km3s1ExgEaYdOO4P3oh3jkbIiTeNjZcZEq47eMsrzw==
-X-Google-Smtp-Source: ABdhPJyi4phMmweTWv3U8Zb8tbN3nMTf9bjdjul0rHspdSGtdhbOiqjUK3aUeI32cQLZPgZ2xIOZMMLiXTJn4sjP+00=
-X-Received: by 2002:aca:c391:: with SMTP id t139mr7342114oif.166.1592395043660;
- Wed, 17 Jun 2020 04:57:23 -0700 (PDT)
+        Wed, 17 Jun 2020 08:00:08 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HBViMW107449;
+        Wed, 17 Jun 2020 08:00:00 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31q6j9m327-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 08:00:00 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05HBVntA107921;
+        Wed, 17 Jun 2020 08:00:00 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31q6j9m31g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 08:00:00 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05HBuLVX025239;
+        Wed, 17 Jun 2020 11:59:58 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 31q6bs9091-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 11:59:58 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05HBxtxY9175400
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jun 2020 11:59:55 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D7D111C04C;
+        Wed, 17 Jun 2020 11:59:55 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9AE011C052;
+        Wed, 17 Jun 2020 11:59:54 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.186.32])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Jun 2020 11:59:54 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
+        jasowang@redhat.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com, gor@linux.ibm.com
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+ <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+ <20200617112222.GF4479@osiris>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <d85aa0cf-c158-a263-aeb2-c5817687275e@linux.ibm.com>
+Date:   Wed, 17 Jun 2020 13:59:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200602100924.26256-1-sumit.semwal@linaro.org>
- <20200602100924.26256-5-sumit.semwal@linaro.org> <20200602113241.GE5684@sirena.org.uk>
- <CAO_48GGgNUGosN2PiL=U5JkR3Bh5wNK3N4xYYML1UwmdfDPRww@mail.gmail.com>
- <20200602122554.GG5684@sirena.org.uk> <CAO_48GFwEHBGmz0QvN+pXFSyHC9+7=0aoJLHF4uupGSx2TcSvA@mail.gmail.com>
- <20200617114721.GD4613@sirena.org.uk>
-In-Reply-To: <20200617114721.GD4613@sirena.org.uk>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Wed, 17 Jun 2020 17:27:12 +0530
-Message-ID: <CAO_48GF9pKZCCof170TvB0ubOkecDzcGhtUUuY_Td78L1J338A@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] regulator: qcom: Add labibb driver
-To:     Mark Brown <broonie@kernel.org>
-Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        Nisha Kumari <nishakumari@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200617112222.GF4479@osiris>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_03:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ mlxlogscore=812 lowpriorityscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006170087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 at 17:17, Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Jun 17, 2020 at 05:12:35PM +0530, Sumit Semwal wrote:
->
-> > I understand from a pure regulators' correctness point of view,
-> > ENABLE_CTL should be the one checked there, so I can change the patch
-> > as you suggested, but there seems to be some performance penalty
-> > there.
->
-> I thought the goal was to have the performance penalty to ensure that
-> the regulator had actually started?
-IMHO, with the poll_enabled_time mechanism added, we would not need to
-wait for the full enabled_time time for the regulator to get enabled,
-but we could poll (and potentially know earlier) if the regulator is
-enabled.
-The performance penalty I was talking, is about how should we check if
-the regulator is really enabled or not - via reading the STATUS1
-register, which seems to tell the status a bit faster, or via reading
-the ENABLE_CTL register which we also use to enable/disable the
-regulator, but which seems to be slower in updating the status.
 
->
-> > > > The WARN_ON? This was suggested by Bjorn to catch the case where the
-> > > > DT binding for a PMIC instantiates only one of the regulators.
->
-> > > No, this whole loop - why this whole match and get child stuff?
->
-> > This loop mechanism is what I saw in the other qcom regulators
-> > upstream, so thought it was an acceptable way.
-> > For the two children nodes, do you recommend another mechanism to get
-> > and validate both nodes?
->
-> I don't understand what you mean by "two children nodes" here?
-The two 'lab' and 'ibb' regulator nodes that are part of the labibb node.
 
-Best,
-Sumit.
+On 2020-06-17 13:22, Heiko Carstens wrote:
+> On Wed, Jun 17, 2020 at 12:43:57PM +0200, Pierre Morel wrote:
+>> An architecture protecting the guest memory against unauthorized host
+>> access may want to enforce VIRTIO I/O device protection through the
+>> use of VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Let's give a chance to the architecture to accept or not devices
+>> without VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>> Acked-by: Jason Wang <jasowang@redhat.com>
+>> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>> ---
+>>   arch/s390/mm/init.c     |  6 ++++++
+>>   drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
+>>   include/linux/virtio.h  |  2 ++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+>> index 6dc7c3b60ef6..215070c03226 100644
+>> --- a/arch/s390/mm/init.c
+>> +++ b/arch/s390/mm/init.c
+>> @@ -45,6 +45,7 @@
+>>   #include <asm/kasan.h>
+>>   #include <asm/dma-mapping.h>
+>>   #include <asm/uv.h>
+>> +#include <linux/virtio.h>
+>>
+>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
+>>
+>> @@ -161,6 +162,11 @@ bool force_dma_unencrypted(struct device *dev)
+>>   	return is_prot_virt_guest();
+>>   }
+>>
+>> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev)
+>> +{
+>> +	return is_prot_virt_guest();
+>> +}
+>> +
+>>   /* protected virtualization */
+>>   static void pv_init(void)
+> 
+> Can we please stop dumping random code to arch/s390/mm/init.c?
+> 
+> All the protected virtualization functions should go into a separate
+> file (e.g. mem_encrypt.c like on x86), some of which could also be in
+> header files.
+> 
+> Please consider this a comment for the future.. just go ahead with
+> this patch as-is.
+> 
+
+OK, thanks Heiko,
+Pierre
+
+-- 
+Pierre Morel
+IBM Lab Boeblingen
