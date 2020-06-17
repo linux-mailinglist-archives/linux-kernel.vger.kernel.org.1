@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0EF1FCF60
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484821FCF6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgFQOU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:20:58 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56691 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726495AbgFQOU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:20:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49n6g82rTMz9sRR;
-        Thu, 18 Jun 2020 00:20:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1592403652;
-        bh=nT3jSQ10DdCeaRDuIzvG9LLp2BdupDQ+BbxCSWTl9i0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=lxdjEtyNE10rEnpgqyn+zSVpLONzbnqx1pRDsdksAsyo2Rx8gEhf0XljLdpg6KjCO
-         +66bPAJTtxOkdxUa6KHgOgYEiDz+W93amRTMOIk5Sm67SJxLod5dgevLZOLPbf5XSJ
-         e/Hk1VYT4oU0+OQ+lFZJt0LSHDtmI/xVxmuDULhX6ODWj+ii7ShLU0HHyBLi9LX8iW
-         gwnyPJMMX8T6aJYR0K4BFis9I3V7o+IY1ZPI7whFiGBp30gRFOROr4G/Jdu40VJoGi
-         UG5lUCwblNTFME+U+kFaZiBO8Ke8jwShBK3SUywjpEKRpe8tCiKqjD3CjcgrbWvCjz
-         sxAKyguruOPKw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] powerpc/8xx: Provide ptep_get() with 16k pages
-In-Reply-To: <20200615132244.GR2531@hirez.programming.kicks-ass.net>
-References: <cover.1592225557.git.christophe.leroy@csgroup.eu> <341688399c1b102756046d19ea6ce39db1ae4742.1592225558.git.christophe.leroy@csgroup.eu> <20200615132244.GR2531@hirez.programming.kicks-ass.net>
-Date:   Thu, 18 Jun 2020 00:21:22 +1000
-Message-ID: <87wo45db8d.fsf@mpe.ellerman.id.au>
+        id S1726868AbgFQOXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:23:10 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:43121 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbgFQOXI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:23:08 -0400
+Received: by mail-vs1-f65.google.com with SMTP id l10so1464089vsr.10;
+        Wed, 17 Jun 2020 07:23:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rysiege4ewceJPc3gwx3OHjg/Sz57CcfTXrTH8sNnQY=;
+        b=Jug4RjNoNO0MNSXvtchqM3USPVvIH08Dxp+rh6E0PrKuc3/mh3HkCcI8XOgVWnN8a1
+         jT7qka2D+vf54xLFxb5mcZNcSVsRwYlS0upfGpL5o0nKiR5876Z60MH1+IJzldiC69Ek
+         rBV2gkBjMhuD1/DOIWvt4ob9jDfCAmdMlWHgIANk+w/HnxdvlfHLp/3+oBYlXfvmlqPg
+         HdauIJ7MDqY7RgNKOvD7nODePFfEKkpWI5ZKdfNLzxH0krOZjfzFkyacp3uqVAlcmXLk
+         YcjgpSBIb7+AkK416XBc+FCmvh38vdwlhEVgCovS3SQtfjqtImafzVbgULnhjmBYHqv3
+         wAbg==
+X-Gm-Message-State: AOAM532UZhj+B2KmpjN0IioFrXmF6GB65oWbzomccLraPmTYpZLU89TD
+        C+i2S4ZrORTQ18FKH6TaRTEJi4qbmqLqabFiM1E=
+X-Google-Smtp-Source: ABdhPJzn/zfo5AEdsDaePxkqMiOapFfEhJdW/VmoDB4Nl2Rxkmmy/GNkNpeWH7q7VuhQ901+644Tsx5KfnoumGJm3+U=
+X-Received: by 2002:a67:79ce:: with SMTP id u197mr6191346vsc.17.1592403787157;
+ Wed, 17 Jun 2020 07:23:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200605162518.28099-1-florian.fainelli@broadcom.com>
+ <6b1f0668-572e-ae52-27e6-c897bab4204c@gmail.com> <0c0ba84e-4b2d-53ac-5092-40312ecba13b@gmail.com>
+In-Reply-To: <0c0ba84e-4b2d-53ac-5092-40312ecba13b@gmail.com>
+From:   Michael Ira Krufky <mkrufky@linuxtv.org>
+Date:   Wed, 17 Jun 2020 10:22:55 -0400
+Message-ID: <CAOcJUbx7t=G7QTQDXQ_Ni9nD=UDMh291g936VWVpyEfHaKuiBQ@mail.gmail.com>
+Subject: Re: [PATCH stable 4.9 00/21] Unbreak 32-bit DVB applications on
+ 64-bit kernels
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>,
+        Satendra Singh Thakur <satendra.t@samsung.com>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Mon, Jun 15, 2020 at 12:57:59PM +0000, Christophe Leroy wrote:
->> READ_ONCE() now enforces atomic read, which leads to:
+On Wed, Jun 17, 2020 at 12:39 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
->> Fixes: 2ab3a0a02905 ("READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses")
->> Cc: Will Deacon <will@kernel.org>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>  arch/powerpc/include/asm/nohash/32/pgtable.h | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->> 
->> diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
->> index b56f14160ae5..77addb599ce7 100644
->> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
->> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
->> @@ -286,6 +286,16 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
->>  	return __pte(pte_update(mm, addr, ptep, ~0, 0, 0));
->>  }
->>  
->> +#if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
->> +#define __HAVE_ARCH_PTEP_GET
->> +static inline pte_t ptep_get(pte_t *ptep)
->> +{
->> +	pte_t pte = {READ_ONCE(ptep->pte), 0, 0, 0};
->> +
->> +	return pte;
->> +}
->> +#endif
 >
-> Would it make sense to have a comment with this magic? The casual reader
-> might wonder WTH just happened when he stumbles on this :-)
+>
+> On 6/11/2020 9:45 PM, Florian Fainelli wrote:
+> >
+> >
+> > On 6/5/2020 9:24 AM, Florian Fainelli wrote:
+> >> Hi all,
+> >>
+> >> This long patch series was motivated by backporting Jaedon's changes
+> >> which add a proper ioctl compatibility layer for 32-bit applications
+> >> running on 64-bit kernels. We have a number of Android TV-based products
+> >> currently running on the 4.9 kernel and this was broken for them.
+> >>
+> >> Thanks to Robert McConnell for identifying and providing the patches in
+> >> their initial format.
+> >>
+> >> In order for Jaedon's patches to apply cleanly a number of changes were
+> >> applied to support those changes. If you deem the patch series too big
+> >> please let me know.
+> >
+> > Mauro, can you review this? I would prefer not to maintain those patches
+> > in our downstream 4.9 kernel as there are quite a few of them, and this
+> > is likely beneficial to other people.
+>
+> Hello? Anybody here?
+> --
+> Florian
 
-I tried writing a helpful comment but it's too late for my brain to form
-sensible sentences.
+Ouch.  I top-posted - oops!  Please reply on this email rather than
+the previous.
 
-Christophe can you send a follow-up with a comment explaining it? In
-particular the zero entries stand out, it's kind of subtle that those
-entries are only populated with the right value when we write to the
-page table.
 
-cheers
+Hey Florian,
+
+Thank you for the time and effort that you put into this patch series.
+I was excited to see this, when I first saw it posted a few weeks ago.
+I have every intention of giving it a review, but just haven't found
+the time yet.  I'm sure that Mauro would say the same.
+
+I'm sure that he and I both will find some time, hopefully over the
+next few weeks or sooner, to give this a thorough review and provide
+some feedback.
+
+Hopefully we can put this on its way for merge soon.  Please bear with us..
+
+Thanks again for your contribution.
+
+-Mike Krufky
