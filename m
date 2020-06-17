@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402581FC42E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A2D1FC434
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgFQCgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:36:15 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36204 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgFQCgO (ORCPT
+        id S1726693AbgFQCiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:38:51 -0400
+Received: from m17617.mail.qiye.163.com ([59.111.176.17]:41008 "EHLO
+        m17617.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgFQCiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:36:14 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05H2Qpea164602;
-        Wed, 17 Jun 2020 02:35:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=qvgZnLOIIfJf/ujxLoAp3CI8oYpCJxkhQIhjpeCqggY=;
- b=rqkC4UCaHQsCrL17aAfWVUhKGjEhhkeuEZBr6OGmRA9x0eqMKnyaMSpQFhHbr2cT9Lun
- BbeAkVeUcyXXnfSFC5N879/COopxmwFJpkqGamCb08iTE655BsVdxIJVy5B/TkEyPUBE
- 6rQ/qEizSgx0LZMbVOv6trUwHr6nRPqL8BrwhE5lPaWdyaiNz1WUalX9FhB9p1rXgnTq
- /DX6im6iM/9T3jtuRWfhE0UrMy1dvwPcha91lgkvo3QQYC/09i2QH6OCTkgdfREnArpI
- /FBrQTdMQFl6X7Lk4YmZvfBSXJtz3k0W3W4mcW3QZaZ6OnwqMbBkHFzCoUKhMEfy2Lm4 gw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 31q65jrphw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Jun 2020 02:35:37 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05H2X59R126602;
-        Wed, 17 Jun 2020 02:35:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 31q66mew15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jun 2020 02:35:36 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05H2ZLF9004679;
-        Wed, 17 Jun 2020 02:35:26 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jun 2020 19:35:21 -0700
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Chris Boot <bootc@bootc.net>, linuxppc-dev@lists.ozlabs.org,
-        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq18sgml9ds.fsf@ca-mkp.ca.oracle.com>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>
-        <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>
-Date:   Tue, 16 Jun 2020 22:35:18 -0400
-In-Reply-To: <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet> (Finn
-        Thain's message of "Sun, 14 Jun 2020 10:03:31 +1000 (AEST)")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006170019
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 malwarescore=0 cotscore=-2147483648 suspectscore=1
- bulkscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0 priorityscore=1501
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006170018
+        Tue, 16 Jun 2020 22:38:50 -0400
+Received: from njvxl5505.vivo.xyz (unknown [157.0.31.125])
+        by m17617.mail.qiye.163.com (Hmail) with ESMTPA id 65297261496;
+        Wed, 17 Jun 2020 10:38:47 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] gpu/drm: remove drm_modeset_lock protection for drm_error
+Date:   Wed, 17 Jun 2020 10:38:40 +0800
+Message-Id: <20200617023840.11637-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGhhDHkhOSU0fSBlMVkpOQklITUpOSUxOQ0NVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MyI6Tgw4CzgyMw4sM00VSxcM
+        FxhPCUlVSlVKTkJJSE1KTklDS0pIVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU5ZV1kIAVlBSUtCSjcG
+X-HM-Tid: 0a72c024a8f19375kuws65297261496
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In function drm_atomic_helper_shutdown, maybe there is no need
+to protect DRM_ERROR log in DRM_MODESET_LOCK_ALL_BEGIN &
+DRM_MODESET_LOCK_ALL_END. This change is to make code run a bit
+fast.
 
-Finn,
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/drm_atomic_helper.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> I haven't used this driver for a long time, but I still own PowerMacs
-> with firewire, and I know I'm not the only one.
-
-I also have old 1394 hardware kicking around in the basement. But having
-worked with FireWire shared storage targets in the past, I have zero
-desire to ever touch any of that again.
-
-I could understand an objection if we were to entertain removing
-sbp2. But really, how many people are setting up FireWire targets?
-
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index 85d163f16801..8902fd6316fc 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -3100,12 +3100,10 @@ void drm_atomic_helper_shutdown(struct drm_device *dev)
+ 	int ret;
+ 
+ 	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+-
+ 	ret = drm_atomic_helper_disable_all(dev, &ctx);
++	DRM_MODESET_LOCK_ALL_END(ctx, ret);
+ 	if (ret)
+ 		DRM_ERROR("Disabling all crtc's during unload failed with %i\n", ret);
+-
+-	DRM_MODESET_LOCK_ALL_END(ctx, ret);
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_shutdown);
+ 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
