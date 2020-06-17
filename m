@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B0F1FD57B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7AB1FD581
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726879AbgFQThc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:37:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
+        id S1726942AbgFQTjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:39:46 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52522 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgFQThc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:37:32 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F4C82073E;
-        Wed, 17 Jun 2020 19:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592422651;
-        bh=MmQpNycHMc+CvYJVky1PDDcVkBa9imkx5orsNbgASoE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b3Th9T2SGaIyOvzLlpMjuoNQNJ0zBrBNSlo3mWaDNKJWd+iDi7X5yEfqXKi7xGfFc
-         3BdLKznyEOdOe/MHQcBu42lX0p271ow9uSkR6pRuC4Cri6Vnu2LZi0Vqeq4sTR5Lmy
-         Z4/uNda7jlXD4LRp6IV5JV5R3s4v8pLokrYfRYjc=
-Date:   Wed, 17 Jun 2020 12:37:31 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Lianbo Jiang <lijiang@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        ebiederm@xmission.com, jbohac@suse.cz, jmorris@namei.org,
-        mjg59@google.com, dyoung@redhat.com, bhe@redhat.com
-Subject: Re: [PATCH v2] kexec: Do not verify the signature without the
- lockdown or mandatory signature
-Message-Id: <20200617123731.0dbb039a053a2ef610af59fb@linux-foundation.org>
-In-Reply-To: <20200602045952.27487-1-lijiang@redhat.com>
-References: <20200602045952.27487-1-lijiang@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726558AbgFQTjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:39:45 -0400
+IronPort-SDR: wS7tIFarexy0u+Xai9N0UFpJqNPYfGSUT0f/mB8oJikfhiaWgUXBn9qQn6cGa7+5gqdDfWNFJM
+ EW18WHN9QlVA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 12:39:45 -0700
+IronPort-SDR: XlOkZWuUqUJIMX3YBJ641L9Zny0vHQ3jjFJ0lLYzgPZoGdYYh0V+M5UafI1dtz9Eglt47VJwI7
+ 0sv5dlw7OpgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
+   d="scan'208";a="476968932"
+Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Jun 2020 12:39:44 -0700
+Received: from orsmsx115.amr.corp.intel.com ([169.254.4.56]) by
+ ORSMSX107.amr.corp.intel.com ([169.254.1.92]) with mapi id 14.03.0439.000;
+ Wed, 17 Jun 2020 12:39:43 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradeed.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>
+Subject: RE: [PATCH v3 01/13] iommu: Change type of pasid to unsigned int
+Thread-Topic: [PATCH v3 01/13] iommu: Change type of pasid to unsigned int
+Thread-Index: AQHWRNSCgq6s3Eb3TUCTrKgNEKKtfajdqISA//+LkWA=
+Date:   Wed, 17 Jun 2020 19:39:43 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F67216A@ORSMSX115.amr.corp.intel.com>
+References: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
+ <1592418233-17762-2-git-send-email-fenghua.yu@intel.com>
+ <CALCETrXFHa_05-sGAy5M9YGJWUfTn9MfM-ZYk+hp12tqHNJA0Q@mail.gmail.com>
+In-Reply-To: <CALCETrXFHa_05-sGAy5M9YGJWUfTn9MfM-ZYk+hp12tqHNJA0Q@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  2 Jun 2020 12:59:52 +0800 Lianbo Jiang <lijiang@redhat.com> wrote:
-
-> Signature verification is an important security feature, to protect
-> system from being attacked with a kernel of unknown origin. Kexec
-> rebooting is a way to replace the running kernel, hence need be
-> secured carefully.
-
-I'm finding this changelog quite hard to understand,
-
-> In the current code of handling signature verification of kexec kernel,
-> the logic is very twisted. It mixes signature verification, IMA signature
-> appraising and kexec lockdown.
-> 
-> If there is no KEXEC_SIG_FORCE, kexec kernel image doesn't have one of
-> signature, the supported crypto, and key, we don't think this is wrong,
-
-I think this is saying that in the absence of KEXEC_SIG_FORCE and if
-the signature/crypto/key are all incorrect, the kexec still succeeds,
-but it should not.
-
-> Unless kexec lockdown is executed. IMA is considered as another kind of
-> signature appraising method.
-> 
-> If kexec kernel image has signature/crypto/key, it has to go through the
-> signature verification and pass. Otherwise it's seen as verification
-> failure, and won't be loaded.
-
-I don't know if this is describing the current situation or the
-post-patch situation.
-
-> Seems kexec kernel image with an unqualified signature is even worse than
-> those w/o signature at all, this sounds very unreasonable. E.g. If people
-> get a unsigned kernel to load, or a kernel signed with expired key, which
-> one is more dangerous?
-> 
-> So, here, let's simplify the logic to improve code readability. If the
-> KEXEC_SIG_FORCE enabled or kexec lockdown enabled, signature verification
-> is mandated. Otherwise, we lift the bar for any kernel image.
-
-I think the whole thing needs a rewrite.  Start out by fully describing
-the current situation.  THen describe what is wrong with it, and why. 
-Then describe the proposed change.  Or something along these lines.
-
-The changelog should also make clear the end-user impact of the patch. 
-In sufficient detail for others to decide which kernel version(s)
-should be patched.  Your recommendations will also be valuable - which
-kernel version(s) do you think should be patched, and why?
+PiBJcyBQQVNJRCBpbiB0aGUgdWFwaSBhdCBhbGw/DQoNCg0KJCBncmVwIHBhc2lkIGluY2x1ZGUv
+dWFwaS9saW51eC9pb21tdS5oDQoqIEBwYXNpZDogUHJvY2VzcyBBZGRyZXNzIFNwYWNlIElEDQog
+ICAgICAgIF9fdTMyICAgcGFzaWQ7DQogKiBAcGFzaWQ6IFByb2Nlc3MgQWRkcmVzcyBTcGFjZSBJ
+RA0KICAgICAgICBfX3UzMiAgIHBhc2lkOw0KICogQHBhc2lkOiBQcm9jZXNzIEFkZHJlc3MgU3Bh
+Y2UgSUQNCiAgICAgICAgX191MzIgICBwYXNpZDsNCiAqIC0gSWYgdGhlIFBBU0lEIGJpdCBpcyBz
+ZXQsIHRoZSBAcGFzaWQgZmllbGQgaXMgcG9wdWxhdGVkIGFuZCB0aGUgaW52YWxpZGF0aW9uDQog
+KiBAcGFzaWQ6IHByb2Nlc3MgYWRkcmVzcyBzcGFjZSBJRA0KICAgICAgICBfX3U2NCAgIHBhc2lk
+Ow0KICogc3RydWN0IGlvbW11X2ludl9wYXNpZF9pbmZvIC0gUEFTSUQgU2VsZWN0aXZlIEludmFs
+aWRhdGlvbiBTdHJ1Y3R1cmUNCiAqIC0gSWYgdGhlIFBBU0lEIGJpdCBpcyBzZXQsIHRoZSBAcGFz
+aWQgZmllbGQgaXMgcG9wdWxhdGVkIGFuZCB0aGUgaW52YWxpZGF0aW9uDQogKiBAcGFzaWQ6IHBy
+b2Nlc3MgYWRkcmVzcyBzcGFjZSBJRA0Kc3RydWN0IGlvbW11X2ludl9wYXNpZF9pbmZvIHsNCiAg
+ICAgICAgX191NjQgICBwYXNpZDsNCiAqIEBwYXNpZF9pbmZvOiBpbnZhbGlkYXRpb24gZGF0YSB3
+aGVuIEBncmFudWxhcml0eSBpcyAlSU9NTVVfSU5WX0dSQU5VX1BBU0lEDQogICAgICAgICAgICAg
+ICAgc3RydWN0IGlvbW11X2ludl9wYXNpZF9pbmZvIHBhc2lkX2luZm87DQogKiBzdHJ1Y3QgaW9t
+bXVfZ3Bhc2lkX2JpbmRfZGF0YV92dGQgLSBJbnRlbCBWVC1kIHNwZWNpZmljIGRhdGEgb24gZGV2
+aWNlIGFuZCBndWVzdA0Kc3RydWN0IGlvbW11X2dwYXNpZF9iaW5kX2RhdGFfdnRkIHsNCiAqIHN0
+cnVjdCBpb21tdV9ncGFzaWRfYmluZF9kYXRhIC0gSW5mb3JtYXRpb24gYWJvdXQgZGV2aWNlIGFu
+ZCBndWVzdCBQQVNJRCBiaW5kaW5nDQogKiBAaHBhc2lkOiAgICAgUHJvY2VzcyBhZGRyZXNzIHNw
+YWNlIElEIHVzZWQgZm9yIHRoZSBndWVzdCBtbSBpbiBob3N0IElPTU1VDQogKiBAZ3Bhc2lkOiAg
+ICAgUHJvY2VzcyBhZGRyZXNzIHNwYWNlIElEIHVzZWQgZm9yIHRoZSBndWVzdCBtbSBpbiBndWVz
+dCBJT01NVQ0Kc3RydWN0IGlvbW11X2dwYXNpZF9iaW5kX2RhdGEgew0KICAgICAgICBfX3U2NCBo
+cGFzaWQ7DQogICAgICAgIF9fdTY0IGdwYXNpZDsNCiAgICAgICAgICAgICAgICBzdHJ1Y3QgaW9t
+bXVfZ3Bhc2lkX2JpbmRfZGF0YV92dGQgdnRkOw0K
