@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7821FD220
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6C31FD1FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbgFQQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
+        id S1726809AbgFQQ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbgFQQ0E (ORCPT
+        with ESMTP id S1726851AbgFQQ0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:04 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C558DC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:03 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g5so2098719otg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:03 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:05 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8339EC06174E;
+        Wed, 17 Jun 2020 09:26:05 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id b8so2313439oic.1;
+        Wed, 17 Jun 2020 09:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=s3HECr+XRw8l7R9dXLwTey4aQmeyYxab5E3F+GzM5HU=;
-        b=GeCZWfXaToyGmpVYuDKpZ9LZu/pUAthihBIsiBwJbCw7nVL5AP59h8isByyC9KtntI
-         qCmmz9tuA8zu/4q9Dtg2L+CnsANthsixl9LnRLid5PLElao/VYrvzb8xmVP3X0mC72c0
-         QUD7Z4PHTxKmhAs43DyVdqViu3DFrvVJxE2eJWXEneiExoD5tODv15lGDuVZd4ZkkZ3J
-         1YaxOWIyebSFJl2WkXwtKVQDcaZERpuHHDup5TSBSqeX0E2tS79ibXskcOfmLFEvmRcw
-         aMM4J+l9PB91LQkPxdQ/u9JQ6v5KJy1szttaLLStAUyvC//JMNYWVIKAh5oRKdQM+8EF
-         W9Dw==
+        bh=ZQmp7gjRdqQPcbV8CCSihis/262QMxzCnfpTGRwmu4Q=;
+        b=uiDtIXjjmBpFojnUcnGR1sLOhBU2ecL/WSLSRvJM6vohDcrOPpBSmPSwkMxNFymPcc
+         BE4q7aQ+U4YQ6KZ6BkHNzi4KjQsLEkP4JkcuSFdkJ91t/AEVo59P7rQOnOw1RN1OXOzr
+         bgGm9dfQM0+l5rqugAb4aUqkUeCCHW/7K6td4BXrXiPVV37Fuw1ETACOAh9pjS0TIAkz
+         9qeJT+CYRSXzcVVAy6gun1yv0x8bCt0re1UQbwN1Gv3DTxeCq+Cfx28lZToPd5C8oF2S
+         TweWRQABZn452mSqLupUWYROMUkQmk9c/3nickGpitMb4MjdgVH3DFQK90yY1p1d3Jbp
+         r6PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=s3HECr+XRw8l7R9dXLwTey4aQmeyYxab5E3F+GzM5HU=;
-        b=m2uaUE2hB/fyQ9Ri8L4RPlsm8AnmbOFHKiZeCR4ugQrl1uXERcjGx29UPqsC0ADmj8
-         ti4r6q+uC+TPBHOc5CAp9h9vpfbYu3BTfxlNYBmrKT/e3+OoZBv1kSjJXfmJ1W46oNtU
-         wjLF45WmQw0FS1fLejGjSqdp9CmYa9AHKmgcCHTJhqjrToO6mhCunUuNn+4eUyFpxq0N
-         +sCoCqs7npSprGeb9zqGxiaLVr01dCSI6kFUfuoUlTviI6HddPuCZ0Ixn//UcQqYU4Ja
-         h3kO6XtGSc9dUCAX5qLD/30mv5RL16+VXhuekPqItqrCD31aSuGnllnkUgNX/l0KIKB7
-         5N5Q==
-X-Gm-Message-State: AOAM5311Brjacn+9NxIvvVxdgX3z8nmsnfvKMHvuYBslqhZ1zk4+vP6B
-        3OMN27jJLGs3PEtGIVsnCw8=
-X-Google-Smtp-Source: ABdhPJyxIrkjxgNOPmU+BV1TTGlxWMzxvgMBpCpbBlJo7zS00PF/38bNJ0xx6TBF3hTGp/qCgVjQ/Q==
-X-Received: by 2002:a9d:d24:: with SMTP id 33mr7235275oti.26.1592411163180;
-        Wed, 17 Jun 2020 09:26:03 -0700 (PDT)
+        bh=ZQmp7gjRdqQPcbV8CCSihis/262QMxzCnfpTGRwmu4Q=;
+        b=k4eAtG30NwJwuyjNTLCB/W5lC01F6WfnXQVafrJ76zH1x/amG4AoaCnulZ6JAD/FnX
+         sXc3LVPR16RQ4bBe5F3RWR6G+H2PetbNdBFREg6+XF3syH05hpl//XkCurJZ0lFKp57L
+         ypKkEJeEirzD33h5hw4ELAMECIdfLIPAuKX2ja8FCi4r5s199P/zAJSVnMizbDePlKeF
+         tAQgpQuDfjHvHw8X6bGfyEgUCvfzIimV7g6qwMXi+BeCw6iX7lhyCT/IPvQlypOT0if+
+         jftpXWZddcQQb1Q1rVK2hvJWD4H5nrsiFy+SAnwSG1r8BMHINrGx1aLPM9ZmZ4fLIvW0
+         6uVw==
+X-Gm-Message-State: AOAM5333Z9D+SWXfSc50itEe+U8In6c40jDFiwHvnPlObvqQy/TKBbJU
+        L8kCJGfFTECplncp8NStKOM=
+X-Google-Smtp-Source: ABdhPJy8rsLKjvCBpZfOlGdk4H93Q1gp58liGpZPvjvk7TXmUHBmFggMdC+Iwhqi5rc1/sTQZhRR+w==
+X-Received: by 2002:aca:48d8:: with SMTP id v207mr5953154oia.81.1592411164921;
+        Wed, 17 Jun 2020 09:26:04 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.02
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:02 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:04 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 04/21] dyndbg: refine debug verbosity; 1 is basic, 2 more chatty
-Date:   Wed, 17 Jun 2020 10:25:17 -0600
-Message-Id: <20200617162536.611386-5-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v3 05/21] dyndbg: rename __verbose section to __dyndbg
+Date:   Wed, 17 Jun 2020 10:25:18 -0600
+Message-Id: <20200617162536.611386-6-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -65,114 +67,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The verbose/debug logging done for `cat $MNT/dynamic_debug/control` is
-voluminous (2 per control file entry + 2 per PAGE).  Moreover, it just
-prints pointer and sequence, which is not useful to a dyndbg user.
-So just drop them.
+dyndbg populates its callsite info into __verbose section, change that
+to a more specific and descriptive name, __dyndbg.
 
-Also require verbose>=2 for several other debug printks that are a bit
-too chatty for typical needs;
+Also, per checkpatch:
+  simplify __attribute(..) to __section(__dyndbg) declaration.
 
-ddebug_change() prints changes, once per modified callsite.  Since
-queries like "+p" will enable ~2300 callsites in a typical laptop, a
-user probably doesnt need to see them often.  ddebug_exec_queries()
-still summarizes with verbose=1.
-
-ddebug_(add|remove)_module() also print 1 line per action on a module,
-not needed by typical modprobe user.
-
-This leaves verbose=1 better focussed on the >control parsing process.
+and 1 spelling fix, decriptor
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ include/asm-generic/vmlinux.lds.h |  6 +++---
+ include/linux/dynamic_debug.h     |  4 ++--
+ kernel/module.c                   |  2 +-
+ lib/dynamic_debug.c               | 12 ++++++------
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index db600ef218d7..05af5cef1ad6 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -320,9 +320,9 @@
+ 	*(__tracepoints)						\
+ 	/* implement dynamic printk debug */				\
+ 	. = ALIGN(8);							\
+-	__start___verbose = .;						\
+-	KEEP(*(__verbose))                                              \
+-	__stop___verbose = .;						\
++	__start___dyndbg = .;						\
++	KEEP(*(__dyndbg))						\
++	__stop___dyndbg = .;						\
+ 	LIKELY_PROFILE()		       				\
+ 	BRANCH_PROFILE()						\
+ 	TRACE_PRINTKS()							\
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index abcd5fde30eb..aa9ff9e1c0b3 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -80,7 +80,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+ 
+ #define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)		\
+ 	static struct _ddebug  __aligned(8)			\
+-	__attribute__((section("__verbose"))) name = {		\
++	__section(__dyndbg) name = {				\
+ 		.modname = KBUILD_MODNAME,			\
+ 		.function = __func__,				\
+ 		.filename = __FILE__,				\
+@@ -133,7 +133,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+ 
+ /*
+  * "Factory macro" for generating a call to func, guarded by a
+- * DYNAMIC_DEBUG_BRANCH. The dynamic debug decriptor will be
++ * DYNAMIC_DEBUG_BRANCH. The dynamic debug descriptor will be
+  * initialized using the fmt argument. The function will be called with
+  * the address of the descriptor as first argument, followed by all
+  * the varargs. Note that fmt is repeated in invocations of this
+diff --git a/kernel/module.c b/kernel/module.c
+index e8a198588f26..1fb493167b9c 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3232,7 +3232,7 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+ 	if (section_addr(info, "__obsparm"))
+ 		pr_warn("%s: Ignoring obsolete parameters\n", mod->name);
+ 
+-	info->debug = section_objs(info, "__verbose",
++	info->debug = section_objs(info, "__dyndbg",
+ 				   sizeof(*info->debug), &info->num_debug);
+ 
+ 	return 0;
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 2989a590ce9a..c97872cffc8e 100644
+index c97872cffc8e..66c0bdf06ce7 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -105,12 +105,15 @@ static char *ddebug_describe_flags(struct _ddebug *dp, char *buf,
- 	return buf;
- }
+@@ -39,8 +39,8 @@
  
--#define vpr_info(fmt, ...)					\
-+#define vnpr_info(lvl, fmt, ...)				\
- do {								\
--	if (verbose)						\
-+	if (verbose >= lvl)					\
- 		pr_info(fmt, ##__VA_ARGS__);			\
- } while (0)
+ #include <rdma/ib_verbs.h>
  
-+#define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
-+#define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
-+
- static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
- {
- 	/* trim any trailing newlines */
-@@ -198,7 +201,7 @@ static int ddebug_change(const struct ddebug_query *query,
- 				static_branch_enable(&dp->key.dd_key_true);
- #endif
- 			dp->flags = newflags;
--			vpr_info("changed %s:%d [%s]%s =%s\n",
-+			v2pr_info("changed %s:%d [%s]%s =%s\n",
- 				 trim_prefix(dp->filename), dp->lineno,
- 				 dt->mod_name, dp->function,
- 				 ddebug_describe_flags(dp, flagbuf,
-@@ -771,8 +774,6 @@ static void *ddebug_proc_start(struct seq_file *m, loff_t *pos)
- 	struct _ddebug *dp;
- 	int n = *pos;
+-extern struct _ddebug __start___verbose[];
+-extern struct _ddebug __stop___verbose[];
++extern struct _ddebug __start___dyndbg[];
++extern struct _ddebug __stop___dyndbg[];
  
--	vpr_info("called m=%p *pos=%lld\n", m, (unsigned long long)*pos);
--
- 	mutex_lock(&ddebug_lock);
+ struct ddebug_table {
+ 	struct list_head link;
+@@ -1019,7 +1019,7 @@ static int __init dynamic_debug_init(void)
+ 	int n = 0, entries = 0, modct = 0;
+ 	int verbose_bytes = 0;
  
- 	if (!n)
-@@ -795,9 +796,6 @@ static void *ddebug_proc_next(struct seq_file *m, void *p, loff_t *pos)
- 	struct ddebug_iter *iter = m->private;
- 	struct _ddebug *dp;
+-	if (&__start___verbose == &__stop___verbose) {
++	if (&__start___dyndbg == &__stop___dyndbg) {
+ 		if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
+ 			pr_warn("_ddebug table is empty in a CONFIG_DYNAMIC_DEBUG build\n");
+ 			return 1;
+@@ -1028,10 +1028,10 @@ static int __init dynamic_debug_init(void)
+ 		ddebug_init_success = 1;
+ 		return 0;
+ 	}
+-	iter = __start___verbose;
++	iter = __start___dyndbg;
+ 	modname = iter->modname;
+ 	iter_start = iter;
+-	for (; iter < __stop___verbose; iter++) {
++	for (; iter < __stop___dyndbg; iter++) {
+ 		entries++;
+ 		verbose_bytes += strlen(iter->modname) + strlen(iter->function)
+ 			+ strlen(iter->filename) + strlen(iter->format);
+@@ -1054,7 +1054,7 @@ static int __init dynamic_debug_init(void)
+ 	ddebug_init_success = 1;
+ 	vpr_info("%d modules, %d entries and %d bytes in ddebug tables, %d bytes in (readonly) verbose section\n",
+ 		 modct, entries, (int)(modct * sizeof(struct ddebug_table)),
+-		 verbose_bytes + (int)(__stop___verbose - __start___verbose));
++		 verbose_bytes + (int)(__stop___dyndbg - __start___dyndbg));
  
--	vpr_info("called m=%p p=%p *pos=%lld\n",
--		 m, p, (unsigned long long)*pos);
--
- 	if (p == SEQ_START_TOKEN)
- 		dp = ddebug_iter_first(iter);
- 	else
-@@ -818,8 +816,6 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
- 	struct _ddebug *dp = p;
- 	char flagsbuf[10];
- 
--	vpr_info("called m=%p p=%p\n", m, p);
--
- 	if (p == SEQ_START_TOKEN) {
- 		seq_puts(m,
- 			 "# filename:lineno [module]function flags format\n");
-@@ -842,7 +838,6 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
-  */
- static void ddebug_proc_stop(struct seq_file *m, void *p)
- {
--	vpr_info("called m=%p p=%p\n", m, p);
- 	mutex_unlock(&ddebug_lock);
- }
- 
-@@ -905,7 +900,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
- 	list_add_tail(&dt->link, &ddebug_tables);
- 	mutex_unlock(&ddebug_lock);
- 
--	vpr_info("%u debug prints in module %s\n", n, dt->mod_name);
-+	v2pr_info("%u debug prints in module %s\n", n, dt->mod_name);
- 	return 0;
- }
- 
-@@ -964,7 +959,7 @@ int ddebug_remove_module(const char *mod_name)
- 	struct ddebug_table *dt, *nextdt;
- 	int ret = -ENOENT;
- 
--	vpr_info("removing module \"%s\"\n", mod_name);
-+	v2pr_info("removing module \"%s\"\n", mod_name);
- 
- 	mutex_lock(&ddebug_lock);
- 	list_for_each_entry_safe(dt, nextdt, &ddebug_tables, link) {
+ 	/* apply ddebug_query boot param, dont unload tables on err */
+ 	if (ddebug_setup_string[0] != '\0') {
 -- 
 2.26.2
 
