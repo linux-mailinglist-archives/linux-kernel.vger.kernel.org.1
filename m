@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DFE1FD205
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC9E1FD218
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgFQQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S1727856AbgFQQ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgFQQ0W (ORCPT
+        with ESMTP id S1727051AbgFQQ0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:22 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DB8C06174E;
-        Wed, 17 Jun 2020 09:26:22 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id e8so519021ooi.11;
-        Wed, 17 Jun 2020 09:26:22 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:25 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB192C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id d4so2110576otk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6W/W/8iMgyKSSCNjDIAMf5k7Ck/OYV5ckFmptQp2ydo=;
-        b=SO2JywzrwXv4GNIXn+00sBgyqL1118djI9ahQ1RbuDjnyvlsLdpPmIyHfFKR5qHjEv
-         36n9IoVyVGXXk0FpezkeKPSoe3GvpZdLIBGItCO88tkC81FxDJ2WcDv+2ErDuPu7Xaye
-         oPSERMipc7u1sM1Cyv2wsxjrZlKQY0iiOTnc78konDQrr3/T4HOUEmFJN2Nlc8FLtqs+
-         6LHj1E1GBLRXY5gsL2eF604HQuTWeq8vHoFKQkq/GV2HF1X4cBnDT1Mtn8RBPOYxo4td
-         wSmEbrojRFNHzxUtc/jorQhmAUd6LJy/OZqgbtJhVXg87/P+AuA0KSSrLEk3S80R5YwV
-         UCFA==
+        bh=aGiIl0rQxYfmn8bMryy/aSMpkb7Wg+3sE7ap1XGmfzA=;
+        b=KMkVrdLzteWT7WIakPBGjF9XrXlIdbE+kSJlSNLdMsbGTsZfRBfd6+UkjcNNWqvIig
+         k09v8Al8X7XsPiWVBLyKVV5C8xVQhbqVhnMJDROcTFNxXYDnrPKaAHWbbwWhlC29IQoq
+         96o1zL5iI1Q3xhw2+ns7KyZqaf4vQqCDfjabTDzvGXdgXpE7k5b+6BDzIi+ETmAn0pIw
+         71qWhMy9Hl20DjN4qOzRqLgPhk1K4F7p3E7u7mJp+BzQIZ1Wd+2dFeGLvLwM++qbK2XJ
+         7kt+MQUaOPK1F7qB79qPitKQHyW3Tg7Zz80gidAKAHkw3xIwuRuqxOafLjXgyOhE54o7
+         4+uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6W/W/8iMgyKSSCNjDIAMf5k7Ck/OYV5ckFmptQp2ydo=;
-        b=PWW6AfU2A3JbqZIA1H88imTEC+kD+jtDp/gFZMc/l8wXIhMA7/uDajN1ITs2uJIbdg
-         +HMqMKd/MDI+eZb95ebYOgB2/ATpsMCkE2zG4tVZT8aeyXHtOZYgBO7q7FRpxYOwiWDF
-         LomzLkaNJS1OWkmh+HF63IerkK85k43rvPQraZvJ6o1ixN0IX4U9mRwlI8/vlNfoMhdd
-         f/8QV6Oep4H4O83/PPvB1w+H2onBzp1KNLgyQ1if7/77Pee5+d+93BtiAWGtZco9BQZP
-         M76XvMhH49SIuHEv3JDG850qxB2ywUGWLesuhj8XcN9TqNKXQZQmM5nB+eSz9H3oTQ+Q
-         ijXg==
-X-Gm-Message-State: AOAM532top7wDBp1uYlR/z1vYclOutCFOaImL/a4uEp1Y3Lvk8tlaIsA
-        azBlDzfHueeQOPZ71vYfiRg=
-X-Google-Smtp-Source: ABdhPJzGNolf97KQxjF9nsqYYW7HJfwm5X3hTHPmEJtL22DVcbb0b0PCYnmzWAexgGE6fcCGSigSOg==
-X-Received: by 2002:a4a:dcc4:: with SMTP id h4mr213583oou.0.1592411181740;
-        Wed, 17 Jun 2020 09:26:21 -0700 (PDT)
+        bh=aGiIl0rQxYfmn8bMryy/aSMpkb7Wg+3sE7ap1XGmfzA=;
+        b=NHHMzr0c3HJGOcwpRWYDYU57Nmg+42TOFqTd4xkEDdOjTftR7FtyEXNJuWwqdTdhVi
+         MQBgk3E/GG2qyVCK7uShQsHb4B6e4R6JOXAnKRysXTN05+jubMh+bXS8ttF7Mzg2OfVC
+         P/Pw5a/bcHok4DGeFv8RaKHOWXnPIlQQJRpQXzifg7B5xgY4lcPknb+LXuKg8I6X3Bpa
+         dHIfD1krpsXBTZStuPHwsCucY5BHpF1OfKCFfCE5gPb9ZGYvpjbOpTCm8FJS3goyk8HZ
+         gP7sD57RMRtD4kMj/j46CA2AiUrkM7APRXwfiI2NoE2UpVbe2+6Ni7IRo/Ncy4hToMlI
+         MOAA==
+X-Gm-Message-State: AOAM530+ntM8Dz7qLKmkczBS3Be3T/T8edU2e1sNyMi3ANArYeYOHvTr
+        uHrPKjJ5gEbCGN2jhpmjU2Q=
+X-Google-Smtp-Source: ABdhPJydTHrB/kgKnrJwTBPuS57S71B7VH9fTRn48kaFFZ2JadOYpWPU5kek0LDGzDM66wfBy0gwqQ==
+X-Received: by 2002:a9d:3b86:: with SMTP id k6mr7205902otc.106.1592411184039;
+        Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.20
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:21 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:23 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v3 14/21] dyndbg: accept query terms like file=bar and module=foo
-Date:   Wed, 17 Jun 2020 10:25:27 -0600
-Message-Id: <20200617162536.611386-15-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v3 14/21] dyndbg: accept query terms like file=bar module=foo
+Date:   Wed, 17 Jun 2020 10:25:28 -0600
+Message-Id: <20200617162536.611386-16-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -79,22 +74,9 @@ word[i], word[i+1]
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../admin-guide/dynamic-debug-howto.rst       |  1 +
- lib/dynamic_debug.c                           | 51 ++++++++++++-------
- 2 files changed, 33 insertions(+), 19 deletions(-)
+ lib/dynamic_debug.c | 51 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 32 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 6c04aea8f4cd..e5a8def45f3f 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -156,6 +156,7 @@ against.  Possible keywords are:::
-   ``line-range`` cannot contain space, e.g.
-   "1-30" is valid range but "1 - 30" is not.
- 
-+  ``module=foo`` combined keyword=value form is interchangably accepted
- 
- The meanings of each keyword are:
- 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
 index 7eb963b1bd11..e1dd96178f18 100644
 --- a/lib/dynamic_debug.c
