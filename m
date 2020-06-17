@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411811FD992
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C83C1FD989
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgFQXUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
+        id S1726974AbgFQXUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726941AbgFQXUU (ORCPT
+        with ESMTP id S1726833AbgFQXUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:20:20 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAFBC06174E;
-        Wed, 17 Jun 2020 16:20:17 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id t74so2363058lff.2;
-        Wed, 17 Jun 2020 16:20:17 -0700 (PDT)
+        Wed, 17 Jun 2020 19:20:19 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7D1C061755;
+        Wed, 17 Jun 2020 16:20:18 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i3so4994486ljg.3;
+        Wed, 17 Jun 2020 16:20:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8a80cd6rsqQPYsCUSUM1tVHpjysV4lBd8Pl7EvdCM6E=;
-        b=FoJaxzrFflE6LaxOfQk0IXXpNw1TcB02BfpukudUJvvz0sjvCgMY8OmLJaKiwz6XDx
-         C/gDE3IRJKA2HqRaebAbdKt3EM4L0NCotHTWYsjSM/Mo+wvbvRSzwV0vKZdqaEs8YHHw
-         Q4yN2ni8w97tvCST897K2FmpQWGITAxaGsNkGnZQ7dP/MXpaR1zkfQgG7yVdgXBq1hvS
-         4tNNMXJAeC5nwzeVdBpl+XLE3E9umAlbP515ioqawoagpNJMgNrwWNiUMTOaqpJQI95M
-         eweugxKOUmR8JXv6E2amCZgwBBDFAaS/mlBa79sH6in53tIFz2lVaVJEMD1AGdg95Jy+
-         RPoA==
+        bh=cpCBAuxLIibpWTrEfnZ4pOnO24Bo4VASqlc3TYxbEqA=;
+        b=YWp4V8jl4qNCfkH09ImPEg/X26d+XB7NXB0OmvxCehmOoqyI+rVejTY8WifV7InUUq
+         QkgGFYEemD4osjkVU1bByc0u2A+3nUiZzY0JNph9iVtYoY92hpcAPVVJpVGXckxJ5oPa
+         1W9A4T6fctWq1rjEuBd53ew0n9zGPf2uWnkIvRWu1SWd7+Afck1GfhPsJJCXLqDL9Pqs
+         m+DJ1EqPiZvF8bD7mvze+DNK9Kgi4kUfzCYY7YQ10cIAbie5wFyzDd/ptBRaXpXcVgxU
+         uLEIU7TqsCNKYdLJapIfLKge5eh3KX80nQ5oJ/Jen/YM0INukDi8k9KV7F+R3AtVHcqS
+         glzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8a80cd6rsqQPYsCUSUM1tVHpjysV4lBd8Pl7EvdCM6E=;
-        b=MCjHZMwQgF8scFJgpWJL6Ct2LY0ddkOeWpFcMDOI26Vn3RHyl0nU/L77sCx6+H69sE
-         MJGrVTr9vMzeljy9EDaqOuYRCdNnnwi4xc2kG3VoyAZG5xIoGyr7CjB0EEOZf3cGtgJ/
-         Kv+V3+n9za9W2FhA1A/HWEpYUZf0+1YCpC/Cqq30YC/I7u4OZJqDWYbuvVdjFtXUPeLN
-         IZjvVpmJxiyxrjQiZhF5bhvatR1EXptRq9c70kiwVPQCxXe4zFPcBhX40VNcpB7KHA1e
-         UMZtELCkkOBtVjrUviJTnqLCS9O7Q3KyR1moUSRlRMIyrG3RqL5rfiuiMFt88hKKCubP
-         bH5w==
-X-Gm-Message-State: AOAM5329NW3Xy6IDNlayhMVvr0x6enJpZNZ7TtjskU0qjkSwxb2zBxmI
-        n6zVXRZq23UvWxLJwzg9y/o=
-X-Google-Smtp-Source: ABdhPJyQaSu56OgPGPclXqeIRJpQaUDkKkpFcF+C8Dt6uF1baj+c8borYAv8N0iz6g9JAlKh/k/ULw==
-X-Received: by 2002:ac2:560f:: with SMTP id v15mr704327lfd.160.1592436015981;
-        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
+        bh=cpCBAuxLIibpWTrEfnZ4pOnO24Bo4VASqlc3TYxbEqA=;
+        b=aSG+STANQjl5XvIwMQomxkm727JgJE67Osjp833jx9H4+gII3iKPvWulTX1HiKZqwz
+         PMZqqspH3iayxispqcIPIZ34SahdWqtA3MUdQJDn9VJsKAYIwun0K0Me/pfUK1/CMNLq
+         OEySB2mtyhCaavU2CYkfO/ziykX/tSQbsqxp6wR72Vwv7v6R5BNWJv7A724jDsWVKqlC
+         f+P9Pl9m1PVDejAtTBKNzzTFjMGp5p+/IqcujR0XIlE36o+K0IPiDPDKcM5Fgl2msk2E
+         Bdec1jXRJTyXB4vheBK7ZyhddccWVJo9Z62PB9yDPt2XaXsbkW9JBIojJAfu1qY9EvlL
+         xOyA==
+X-Gm-Message-State: AOAM532MxxKQw17KyJZTXtBFaQcyM3icGmQenuGvBFV7qtTzG1UwhRBX
+        GUUjpwzlMjloJqitsIaSgBo=
+X-Google-Smtp-Source: ABdhPJw86GF1deCwvykUE9oiRjzFg8hcTUyO2I001jtlm7SREpb4mqoGvWD8uzGQ/IAZGl+tkwwkFg==
+X-Received: by 2002:a2e:6a05:: with SMTP id f5mr830817ljc.272.1592436017044;
+        Wed, 17 Jun 2020 16:20:17 -0700 (PDT)
 Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id x3sm235100ljc.82.2020.06.17.16.20.15
+        by smtp.gmail.com with ESMTPSA id x3sm235100ljc.82.2020.06.17.16.20.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
+        Wed, 17 Jun 2020 16:20:16 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
@@ -61,9 +61,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Daniel Stone <daniel@fooishbar.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v11 2/4] drm/panel: Read panel orientation for BOE TV101WUM-NL6
-Date:   Thu, 18 Jun 2020 02:18:40 +0300
-Message-Id: <20200617231842.30671-3-digetx@gmail.com>
+Subject: [PATCH v11 3/4] drm/panel: lvds: Read panel orientation
+Date:   Thu, 18 Jun 2020 02:18:41 +0300
+Message-Id: <20200617231842.30671-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200617231842.30671-1-digetx@gmail.com>
 References: <20200617231842.30671-1-digetx@gmail.com>
@@ -74,55 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Derek Basehore <dbasehore@chromium.org>
+The panel orientation needs to parsed from a device-tree and assigned to
+the panel's connector in order to make orientation property available to
+userspace. That's what this patch does for the generic LVDS panel.
 
-This reads the DT setting for the panel rotation to set the panel
-orientation in the get_modes callback.
-
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Derek Basehore <dbasehore@chromium.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/panel/panel-lvds.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-index db5b866357f2..4bd9397972e8 100644
---- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-+++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-@@ -11,6 +11,7 @@
- #include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
+diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
+index 5ce3f4a2b7a1..f62227059090 100644
+--- a/drivers/gpu/drm/panel/panel-lvds.c
++++ b/drivers/gpu/drm/panel/panel-lvds.c
+@@ -37,6 +37,8 @@ struct panel_lvds {
  
-+#include <drm/drm_connector.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_panel.h>
-@@ -43,6 +44,7 @@ struct boe_panel {
- 
- 	const struct panel_desc *desc;
- 
+ 	struct gpio_desc *enable_gpio;
+ 	struct gpio_desc *reset_gpio;
++
 +	enum drm_panel_orientation orientation;
- 	struct regulator *pp1800;
- 	struct regulator *avee;
- 	struct regulator *avdd;
-@@ -740,6 +742,7 @@ static int boe_panel_get_modes(struct drm_panel *panel,
- 	connector->display_info.width_mm = boe->desc->size.width_mm;
- 	connector->display_info.height_mm = boe->desc->size.height_mm;
- 	connector->display_info.bpc = boe->desc->bpc;
-+	drm_connector_set_panel_orientation(connector, boe->orientation);
+ };
+ 
+ static inline struct panel_lvds *to_panel_lvds(struct drm_panel *panel)
+@@ -99,6 +101,7 @@ static int panel_lvds_get_modes(struct drm_panel *panel,
+ 	connector->display_info.bus_flags = lvds->data_mirror
+ 					  ? DRM_BUS_FLAG_DATA_LSB_TO_MSB
+ 					  : DRM_BUS_FLAG_DATA_MSB_TO_LSB;
++	drm_connector_set_panel_orientation(connector, lvds->orientation);
  
  	return 1;
  }
-@@ -779,6 +782,9 @@ static int boe_panel_add(struct boe_panel *boe)
+@@ -116,6 +119,13 @@ static int panel_lvds_parse_dt(struct panel_lvds *lvds)
+ 	const char *mapping;
+ 	int ret;
  
- 	drm_panel_init(&boe->base, dev, &boe_panel_funcs,
- 		       DRM_MODE_CONNECTOR_DSI);
-+	err = of_drm_get_panel_orientation(dev->of_node, &boe->orientation);
-+	if (err < 0)
-+		return err;
- 
- 	err = drm_panel_of_backlight(&boe->base);
- 	if (err)
++	ret = of_drm_get_panel_orientation(np, &lvds->orientation);
++	if (ret < 0) {
++		dev_err(lvds->dev, "%pOF: problems parsing rotation (%d)\n",
++			np, ret);
++		return ret;
++	}
++
+ 	ret = of_get_display_timing(np, "panel-timing", &timing);
+ 	if (ret < 0) {
+ 		dev_err(lvds->dev, "%pOF: problems parsing panel-timing (%d)\n",
 -- 
 2.26.0
 
