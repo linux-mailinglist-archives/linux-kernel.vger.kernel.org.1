@@ -2,110 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED95A1FD641
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63A41FD649
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgFQUoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 16:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S1727023AbgFQUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 16:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbgFQUo3 (ORCPT
+        with ESMTP id S1726879AbgFQUoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 16:44:29 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A044C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:44:29 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a6so1845657wrm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:44:29 -0700 (PDT)
+        Wed, 17 Jun 2020 16:44:46 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E365C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:44:46 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id s18so4576105ioe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=izNQ/AUBePYNQ9lFfRhkbYFYOvim7jrWfUSC8PuNm50=;
-        b=IXuESxTW1GDtdZdcUhaUxCMmqR0alOzlFYEBB6cNiOWNqNKga8hTG5Hpk8e+jPgfs7
-         gKRbcrFHT/bWqDDjWW1Tu0YTxMUPgU3/zaO7ZYFVAB7sZ5/odoojGtjQaAjqQcISTIRV
-         21JjuFUVAp2SULD0ievL+VDKAIV4k3A7ZvwkkUpYlqJyABsW/fENnkF9JkHDsmSI8BPu
-         lTx1kIP34vOyLqlII9KESAAKJppWEmMCqsPsjTAr9hgHKVBogXM1wNRzyliJEEMpb4Fs
-         wM9VKEIlU+zdEi8dgAC6gR4OOYEJEiqf/0YobEdxc2vAIUU4tWPB0ACvaZ+E1SxG3EjY
-         tp8Q==
+         :cc:content-transfer-encoding;
+        bh=GZigFg+AvbWNujGJsMBiFE6h4YqhrsYxylqkiIvxC6Y=;
+        b=X1vjpckcErcYZOFBeD3lD0I46BbRjMolG6a7xKjeBT7bfg8dOkaADUjJAYsV9y4ZTJ
+         HHnZ+fFtWYBxGbN0O+ZovP7PJpvb46/5sUBGtjLMfdUNVkCqZY5dYUEfMP5wQ5qBI9iV
+         WCV/8hzXs++H8qExT8KcBLIHOI+5qAzxLG1glOqayRJbgDST0aGjH0qzQLksm+xH8/jP
+         pKq7oWQaKMJAbK+Esvg0GnqrKZn73WJs03GLA9FyU9EEoJooP9erSIaJ6oh62pgpKS6H
+         xoXJntHSfXQTI+OUVJjadEup7wGIPyFOyCiOGDPRY4IC+jwQY3lXpN3CGwMN2QUqM/9K
+         bUEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=izNQ/AUBePYNQ9lFfRhkbYFYOvim7jrWfUSC8PuNm50=;
-        b=LVXffu3/dx7HvUi2R5avxOuYGcbP93s0ugxvj6nkG8ZjDW7JGCo5stN1KXe5MNkxRv
-         YnfABmegUDqodB8/oHNa+0i4wj6U7FmobQa+Ygge/iNJ5eLfUgCXuCCazC8Dh+kqwWXT
-         eg+r+VXXmAU+s5t5B1Q/z3psfW3z6ncQbaIJ5z/CcAsMqxjj7q0jx1GurSscsXUaHZ75
-         /4cBCV0YdWHMcoyt642AD17AS3Tle2sD08VxD11Q4VZMfIN5+Jx8bcYD/LZP+6D1GxCr
-         WYmiueDAsD/Geb9guikVr6sRvsBfj8hp7+oX5JUZyheCFAcSJ7T7I3dnCXs+6fk+OBM2
-         DROA==
-X-Gm-Message-State: AOAM533SN9+FY/fqR+5gb/9qqZsCoKZMsxCne+5Qe5Vml3giyGhZp/E2
-        R9AwOhd+6PSGS4toGxwmQBtBRG7964qztyhuKEYf2w==
-X-Google-Smtp-Source: ABdhPJx4KYJD9wjC9cWcd4dSFsQSQGMcDhbMVkYCssEzFcqvWczHJXD0Mb1mQo4LGh5tn1IdBmBvR3RzvVWXmaZ51kw=
-X-Received: by 2002:adf:9c12:: with SMTP id f18mr1114248wrc.105.1592426668016;
- Wed, 17 Jun 2020 13:44:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GZigFg+AvbWNujGJsMBiFE6h4YqhrsYxylqkiIvxC6Y=;
+        b=Yd+SzljhD5DfubuPdWwxuBEQEhQ/AlG/vPTSuCnOUn3ueQRDVuDlGjyaXlxXObfnTZ
+         rVSgZX2NFSnjYQ1n9IQapz3LPCr8Tx01ZNvrNMy8RQ6TN967tORUGEv4Tfik/V6EMdte
+         K81B44uZaUsWuK+EhTVkql93BEFleU6lxHZPGvJ5DvPSTVbU43v/DbymPEfXOUfzKTgX
+         keBDWYIY065sKETJDrcYikZFy7w0/eghYxnXXLcNh3HDGIrGeoCkWVleC/BZ7I3Og1wX
+         eDd0JgaD4RjRTQm5CZ+R71nY9L8nlYdKkj9TpDDmpS3DKLzHtobQYRrH1j/pnW+5RGt0
+         Ys3g==
+X-Gm-Message-State: AOAM533xP5QRITtJ5iDensdV2ep7JfjszEyrsFZzkKJ3KJn/usksNa7+
+        n2FUimKEd+KP5jd6TKhfhelqv6D6N48nxNeDS1X/rQ==
+X-Google-Smtp-Source: ABdhPJxU/fCZ3oq1s10ZJ/1fRogcbiXb+m3PjfautY889daNcE2+6CQEmHdwVQ5oYQEm7VevVWhiWrYkB4edNtNHwUI=
+X-Received: by 2002:a02:390b:: with SMTP id l11mr1175011jaa.54.1592426685256;
+ Wed, 17 Jun 2020 13:44:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200617180801.158331-1-helen.koike@collabora.com>
-In-Reply-To: <20200617180801.158331-1-helen.koike@collabora.com>
-From:   Tomasz Figa <tfiga@google.com>
-Date:   Wed, 17 Jun 2020 22:44:16 +0200
-Message-ID: <CAAFQd5ACgNJLzWSYW9_=vDxoUhO8gUjz0_+ntfVsRsRJbceA0A@mail.gmail.com>
-Subject: Re: [PATCH] media: staging: rkisp1: rsz: fix resolution limitation on
- sink pad
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>, kernel@collabora.com
+References: <159234483706.6230.13753828995249423191.stgit@bmoger-ubuntu>
+ <159234502394.6230.5169466123693241678.stgit@bmoger-ubuntu>
+ <CALMp9eTxs5nb9Ay0ELVa71cmA9VPzaMSuGgW_iM2tmAVvXs4Pg@mail.gmail.com>
+ <0b271987-3168-969d-5f96-ad99e31978fb@amd.com> <9063259c-d87e-4c6e-11d0-d561a1a88989@amd.com>
+In-Reply-To: <9063259c-d87e-4c6e-11d0-d561a1a88989@amd.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 17 Jun 2020 13:44:34 -0700
+Message-ID: <CALMp9eRdHNKnXh3h6+GzYKaS1gOoZ0DeZxB75foo+Oz_hDw=qg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] KVM:SVM: Add extended intercept support
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>, Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 8:08 PM Helen Koike <helen.koike@collabora.com> wrote:
+On Wed, Jun 17, 2020 at 11:11 AM Babu Moger <babu.moger@amd.com> wrote:
 >
-> Resizer sink pad is limited by what the ISP can generate.
-> The configurations describes what the resizer can produce.
+> Jim,
 >
-> This was tested on a Scarlet device with ChromiumOs, where the selfpath
-> receives 2592x1944 and produces 1600x1200 (which isn't possible without
-> this fix).
+> > -----Original Message-----
+> > From: kvm-owner@vger.kernel.org <kvm-owner@vger.kernel.org> On Behalf
+> > Of Babu Moger
+> > Sent: Wednesday, June 17, 2020 9:31 AM
+> > To: Jim Mattson <jmattson@google.com>
+> > Cc: Wanpeng Li <wanpengli@tencent.com>; Joerg Roedel <joro@8bytes.org>;
+> > the arch/x86 maintainers <x86@kernel.org>; Sean Christopherson
+> > <sean.j.christopherson@intel.com>; Ingo Molnar <mingo@redhat.com>;
+> > Borislav Petkov <bp@alien8.de>; H . Peter Anvin <hpa@zytor.com>; Paolo
+> > Bonzini <pbonzini@redhat.com>; Vitaly Kuznetsov <vkuznets@redhat.com>;
+> > Thomas Gleixner <tglx@linutronix.de>; LKML <linux-kernel@vger.kernel.or=
+g>;
+> > kvm list <kvm@vger.kernel.org>
+> > Subject: RE: [PATCH v2 2/3] KVM:SVM: Add extended intercept support
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: Jim Mattson <jmattson@google.com>
+> > > Sent: Tuesday, June 16, 2020 6:17 PM
+> > > To: Moger, Babu <Babu.Moger@amd.com>
+> > > Cc: Wanpeng Li <wanpengli@tencent.com>; Joerg Roedel <joro@8bytes.org=
+>;
+> > > the arch/x86 maintainers <x86@kernel.org>; Sean Christopherson
+> > > <sean.j.christopherson@intel.com>; Ingo Molnar <mingo@redhat.com>;
+> > > Borislav Petkov <bp@alien8.de>; H . Peter Anvin <hpa@zytor.com>; Paol=
+o
+> > > Bonzini <pbonzini@redhat.com>; Vitaly Kuznetsov <vkuznets@redhat.com>=
+;
+> > > Thomas Gleixner <tglx@linutronix.de>; LKML <linux-kernel@vger.kernel.=
+org>;
+> > > kvm list <kvm@vger.kernel.org>
+> > > Subject: Re: [PATCH v2 2/3] KVM:SVM: Add extended intercept support
+> > >
+> > > On Tue, Jun 16, 2020 at 3:03 PM Babu Moger <babu.moger@amd.com>
+> > wrote:
+> > > >
+> > > > The new intercept bits have been added in vmcb control
+> > > > area to support the interception of INVPCID instruction.
+> > > >
+> > > > The following bit is added to the VMCB layout control area
+> > > > to control intercept of INVPCID:
+> > > >
+> > > > Byte Offset     Bit(s)          Function
+> > > > 14h             2               intercept INVPCID
+> > > >
+> > > > Add the interfaces to support these extended interception.
+> > > > Also update the tracing for extended intercepts.
+> > > >
+> > > > AMD documentation for INVPCID feature is available at "AMD64
+> > > > Architecture Programmer=E2=80=99s Manual Volume 2: System Programmi=
+ng,
+> > > > Pub. 24593 Rev. 3.34(or later)"
+> > > >
+> > > > The documentation can be obtained at the links below:
+> > > > Link:
+> > >
+> > https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
+.a
+> > >
+> > md.com%2Fsystem%2Ffiles%2FTechDocs%2F24593.pdf&amp;data=3D02%7C01%7
+> > >
+> > Cbabu.moger%40amd.com%7C4cedcb3567194883601e08d8124b6be7%7C3dd8
+> > >
+> > 961fe4884e608e11a82d994e183d%7C0%7C0%7C637279463210520563&amp;s
+> > >
+> > data=3DoRQq0hj0O43A4lnl8JEb%2BHt8oCFHWxcqvLaA1%2BacTJc%3D&amp;reser
+> > > ved=3D0
+> > > > Link:
+> > >
+> > https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fbug=
+zilla.
+> > >
+> > kernel.org%2Fshow_bug.cgi%3Fid%3D206537&amp;data=3D02%7C01%7Cbabu.m
+> > >
+> > oger%40amd.com%7C4cedcb3567194883601e08d8124b6be7%7C3dd8961fe48
+> > >
+> > 84e608e11a82d994e183d%7C0%7C0%7C637279463210520563&amp;sdata=3DEtA
+> > > rCUBB8etloN%2B%2Blx42RZqai12QFvtJefnxBn1ryMQ%3D&amp;reserved=3D0
+> > >
+> > > Not your change, but this documentation is terrible. There is no
+> > > INVLPCID instruction, nor is there a PCID instruction.
+> >
+> > Sorry about that. I will bring this to their notice.
+> >
+> > >
+> > > > Signed-off-by: Babu Moger <babu.moger@amd.com>
+> > > > ---
+> > > >  arch/x86/include/asm/svm.h |    3 ++-
+> > > >  arch/x86/kvm/svm/nested.c  |    6 +++++-
+> > > >  arch/x86/kvm/svm/svm.c     |    1 +
+> > > >  arch/x86/kvm/svm/svm.h     |   18 ++++++++++++++++++
+> > > >  arch/x86/kvm/trace.h       |   12 ++++++++----
+> > > >  5 files changed, 34 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.=
+h
+> > > > index 8a1f5382a4ea..62649fba8908 100644
+> > > > --- a/arch/x86/include/asm/svm.h
+> > > > +++ b/arch/x86/include/asm/svm.h
+> > > > @@ -61,7 +61,8 @@ struct __attribute__ ((__packed__))
+> > vmcb_control_area {
+> > > >         u32 intercept_dr;
+> > > >         u32 intercept_exceptions;
+> > > >         u64 intercept;
+> > > > -       u8 reserved_1[40];
+> > > > +       u32 intercept_extended;
+> > > > +       u8 reserved_1[36];
+> > >
+> > > It seems like a more straightforward implementation would simply
+> > > change 'u64 intercept' to 'u32 intercept[3].'
+> >
+> > Sure. Will change it.
 >
-> Fixes: 56e3b29f9f6b2 ("media: staging: rkisp1: add streaming paths")
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> This involves much more changes than I originally thought.  All these
+> following code needs to be modified. Here is my cscope output for the C
+> symbol intercept.
 >
-> ---
+> 0 nested.c recalc_intercepts                123 c->intercept =3D h->inter=
+cept;
+> 1 nested.c recalc_intercepts                135 c->intercept &=3D ~(1ULL =
+<<
+> INTERCEPT_VINTR);
+> 2 nested.c recalc_intercepts                139 c->intercept &=3D ~(1ULL =
+<<
+> INTERCEPT_VMMCALL);
+> 3 nested.c recalc_intercepts                144 c->intercept |=3D g->inte=
+rcept;
+> 4 nested.c copy_vmcb_control_area           153 dst->intercept =3D
+> from->intercept;
+> 5 nested.c nested_svm_vmrun_msrpm           186 if
+> (!(svm->nested.ctl.intercept & (1ULL << INTERCEPT_MSR_PROT)))
+> 6 nested.c nested_vmcb_check_controls 212 if ((control->intercept & (1ULL
+> << INTERCEPT_VMRUN)) =3D=3D 0)NIT));
+> 7 nested.c nested_svm_vmrun                 436
+> nested_vmcb->control.intercept);
+> 8 nested.c nested_svm_exit_handled_msr      648 if
+> (!(svm->nested.ctl.intercept & (1ULL << INTERCEPT_MSR_PROT)))
+> 9 nested.c nested_svm_intercept_ioio        675 if
+> (!(svm->nested.ctl.intercept & (1ULL << INTERCEPT_IOIO_PROT)))
+> a nested.c nested_svm_intercept             732 if
+> (svm->nested.ctl.intercept & exit_bits)
+> b nested.c nested_exit_on_init              840 return
+> (svm->nested.ctl.intercept & (1ULL << INTERCEPT_INIT));
+> c svm.c    check_selective_cr0_intercepted 2205 u64 intercept;
+> d svm.c    check_selective_cr0_intercepted 2207 intercept =3D
+> svm->nested.ctl.intercept;
+> e svm.c    check_selective_cr0_intercepted 2210 (!(intercept & (1ULL <<
+> INTERCEPT_SELECTIVE_CR0))))
+> f svm.c    dump_vmcb                       2803 pr_err("%-20s%016llx\n",
+> "intercepts:", control->intercept);
+> m svm.c    svm_check_intercept             3687 intercept =3D
+> svm->nested.ctl.intercept;
+> n svm.c    svm_check_intercept             3689 if (!(intercept & (1ULL <=
+<
+> INTERCEPT_SELECTIVE_CR0)))
+> 6 svm.c    svm_apic_init_signal_blocked    3948
+> (svm->vmcb->control.intercept & (1ULL << INTERCEPT_INIT));
+> 7 svm.h    set_intercept                    300 vmcb->control.intercept |=
+=3D
+> (1ULL << bit);
+> 8 svm.h    clr_intercept                    309 vmcb->control.intercept &=
+=3D
+> ~(1ULL << bit);
+> 9 svm.h    is_intercept tercept_ioio        316 return
+> (svm->vmcb->control.intercept & (1ULL << bit)) !=3D 0;
+> a svm.h    nested_exit_on_smi               377 return
+> (svm->nested.ctl.intercept & (1ULL << INTERCEPT_SMI));
+> b svm.h    nested_exit_on_intr              382 return
+> (svm->nested.ctl.intercept & (1ULL << INTERCEPT_INTR));
+> c svm.h    nested_exit_on_nmi               387 return
+> (svm->nested.ctl.intercept & (1ULL << INTERCEPT_NMI));
 >
->  drivers/staging/media/rkisp1/rkisp1-resizer.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/staging/media/rkisp1/rkisp1-resizer.c b/drivers/staging/media/rkisp1/rkisp1-resizer.c
-> index d049374413dcf..0d41f43b5339f 100644
-> --- a/drivers/staging/media/rkisp1/rkisp1-resizer.c
-> +++ b/drivers/staging/media/rkisp1/rkisp1-resizer.c
-> @@ -553,11 +553,11 @@ static void rkisp1_rsz_set_sink_fmt(struct rkisp1_resizer *rsz,
->         src_fmt->code = sink_fmt->code;
->
->         sink_fmt->width = clamp_t(u32, format->width,
-> -                                 rsz->config->min_rsz_width,
-> -                                 rsz->config->max_rsz_width);
-> +                                 RKISP1_ISP_MIN_WIDTH,
-> +                                 RKISP1_ISP_MAX_WIDTH);
->         sink_fmt->height = clamp_t(u32, format->height,
-> -                                  rsz->config->min_rsz_height,
-> -                                  rsz->config->max_rsz_height);
-> +                                 RKISP1_ISP_MIN_HEIGHT,
-> +                                 RKISP1_ISP_MAX_HEIGHT);
->
->         *format = *sink_fmt;
->
-> --
-> 2.26.0
->
+> I will have to test extensively if I go ahead with these changes.  What d=
+o
+> you think?
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-
-Best regards,
-Tomasz
+I see a lot of open-coding of the nested version of is_intercept(),
+which would be a good preparatory cleanup.  It also looks like it
+might be useful to introduce __set_intercept() and __clr_intercept()
+which do the same thing as set_intercept() and clr_intercept(),
+without calling recalc_intercepts(), for use *in* recalc_intercepts.
+This code needs a little love. While your original proposal is more
+expedient, taking the time to fix up the existing mess will be more
+beneficial in the long run.
