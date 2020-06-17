@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0341FD82D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33331FD84C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgFQWDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        id S1727867AbgFQWEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727811AbgFQWDq (ORCPT
+        with ESMTP id S1726927AbgFQWEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:03:46 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ECDC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:03:45 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ne5so1604493pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FxWBzqH20Ldut/ncbfepnMWFG7FF0MXXG+/ZQ1Q/k20=;
-        b=Q8L/mum3I/Hjh9d+oNtQ/w09JtOl4ahKeV0h2TqgLkmhSyQ0mUf4EwhseOmSA3Kt47
-         oRGdFqyRqOS3w00z7fjchxraFVbvK5caeXqNwRhwaZbR5lKuA6XMnx3BGvZ/91G9e5BW
-         r7WpLacvYI3YIeR1zbACg4BQtwVGgMhWTN0r3h/wiFJcHKPNep8SgrvjOfin44XQXoxx
-         Ngw9EcQ3/Jp/u7dp+kYjK6SH3I8kKCb7zKvZm4Hwh98+zX1MjAIBVbNUsvDKeSI2vlvY
-         +lbfI7/eNNJklE+c2SOgIw/nfyE/seqM40xxsiwi/VPpCZF06UjdDzI3F5d9xxL4hAGi
-         GGEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FxWBzqH20Ldut/ncbfepnMWFG7FF0MXXG+/ZQ1Q/k20=;
-        b=iSOTJfokol7uVRywBv4vfJU9g2xVaj4ThANrSlM324Wx1TaQAj5J3AScEqtDBcqGZe
-         yohOoUetABbqU++n0VomedpCArph9Kmf7gztbjduiLbLToiuaLuR5uZs+xtWS0eUc+1o
-         3NCPvrNGvtpCmHTWETsBIZxJdrRZM3V/a96X1/37ecRjo6b7KuxYjtbpqmyJiUGJg7fo
-         s7K2gRB/umTYGMnJg+ySvRqFxCfOFEogS//ojODjON2kVic/AVy2N5b6W1TXMpwufq4R
-         2V+3K4amuea1CndCZM39Ni//R+3D4ErzvfYURMhc0glETXg+gERa1F/gGEM7XZ96czYR
-         P4FQ==
-X-Gm-Message-State: AOAM53029FSM6eo78e7XDxnHOnU5PMI+eVaEJNXJXckwZ2+X2WSCiWhI
-        UxKCLIc4N1EvzMBLTDKqlhM=
-X-Google-Smtp-Source: ABdhPJytA/fm6+Sl/XlT8Ovsoq9qBn/cy71kg2hsfEpLahwJljbs66yJm9Fn8uiKl5Pw8GYrfcQgSA==
-X-Received: by 2002:a17:90a:b384:: with SMTP id e4mr1049797pjr.1.1592431424672;
-        Wed, 17 Jun 2020 15:03:44 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j6sm745499pfi.183.2020.06.17.15.03.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 15:03:43 -0700 (PDT)
-Subject: Re: [GIT PULL 1/1] bcm2835-drivers-fixes-2020-0-17
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200617111453.23345-1-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7979468c-3781-ea2f-ec36-1f949a14e807@gmail.com>
-Date:   Wed, 17 Jun 2020 15:03:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200617111453.23345-1-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Wed, 17 Jun 2020 18:04:32 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DB3C06174E;
+        Wed, 17 Jun 2020 15:04:32 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id C4E661297CA0E;
+        Wed, 17 Jun 2020 15:04:31 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 15:04:30 -0700 (PDT)
+Message-Id: <20200617.150430.707659814683399868.davem@davemloft.net>
+To:     gustavoars@kernel.org
+Cc:     dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+Subject: Re: [PATCH] liquidio: Replace vmalloc_node + memset with
+ vzalloc_node and use array_size
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200615211855.GA32663@embeddedor>
+References: <20200615211855.GA32663@embeddedor>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 17 Jun 2020 15:04:32 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Date: Mon, 15 Jun 2020 16:18:55 -0500
 
+> Use vzalloc/vzalloc_node instead of the vmalloc/vzalloc_node and memset.
+> 
+> Also, notice that vzalloc_node() function has no 2-factor argument form
+> to calculate the size for the allocation, so multiplication factors need
+> to be wrapped in array_size().
+> 
+> This issue was found with the help of Coccinelle and, audited and fixed
+> manually.
+> 
+> Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-On 6/17/2020 4:14 AM, Nicolas Saenz Julienne wrote:
-> Hi Florian,
-> 
-> The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
-> 
->   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-drivers-fixes-2020-0-17
-> 
-> for you to fetch changes up to da785a87787c97823d12107a4f0ec7adcc2a78d9:
-> 
->   ARM: bcm2835: Fix integer overflow in rpi_firmware_print_firmware_revision() (2020-06-17 12:51:45 +0200)
-> 
-> ----------------------------------------------------------------
-> Fixes raspberry pi firmware version output
-> 
-> ----------------------------------------------------------------
-> Andy Shevchenko (1):
->       ARM: bcm2835: Fix integer overflow in rpi_firmware_print_firmware_revision()
-
-Merged into drivers/fixes, thanks!
--- 
-Florian
+Applied to net-next, thanks.
