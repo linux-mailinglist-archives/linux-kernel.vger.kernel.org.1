@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9F81FD332
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0D91FD30A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgFQRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:11:53 -0400
-Received: from relay-b02.edpnet.be ([212.71.1.222]:50193 "EHLO
-        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgFQRLw (ORCPT
+        id S1726945AbgFQRAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:00:54 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:38993 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgFQRAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:11:52 -0400
-X-Greylist: delayed 754 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 13:11:51 EDT
-X-ASG-Debug-ID: 1592413155-0a7b8d5f421573b30001-xx1T2L
-Received: from zotac.vandijck-laurijssen.be ([213.219.130.186]) by relay-b02.edpnet.be with ESMTP id 6FAs6WMCRd9eJOIK; Wed, 17 Jun 2020 18:59:15 +0200 (CEST)
-X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
-X-Barracuda-Effective-Source-IP: UNKNOWN[213.219.130.186]
-X-Barracuda-Apparent-Source-IP: 213.219.130.186
-Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
-        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 9D7CFF5FA5D;
-        Wed, 17 Jun 2020 18:59:08 +0200 (CEST)
-Date:   Wed, 17 Jun 2020 18:59:02 +0200
-From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        wg@grandegger.com, kernel@martin.sperl.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Message-ID: <20200617165902.GB14228@x1.vandijck-laurijssen.be>
-X-ASG-Orig-Subj: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-Mail-Followup-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        wg@grandegger.com, kernel@martin.sperl.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
- <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
+        Wed, 17 Jun 2020 13:00:53 -0400
+Received: by mail-il1-f196.google.com with SMTP id p5so2887164ile.6;
+        Wed, 17 Jun 2020 10:00:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iHARdombLlcAcKc9BvTzg31LsiHLp+VSmuiTEXi8TqE=;
+        b=mQ+t3UdUYak3ZcigpjEWvFyV1g0sDILfxiU55WzBic3KyxUglGi4U3bWq2ARhLDsJU
+         vt5gLuiUWBIAcgYFd9upDGpE4cL4mGwGK+HvgWxZj/HqTTzpGk8K6KM6Py4t9ZxZ476Q
+         cC/fJxTLWADE7TGFvVIqFG4yh5NkQvRqpPTu463cNRv5xt2Y+M9OhekcvLpw7K2lSrtK
+         6nYbA8dsaPM+V1HkqgvsFSbp4r+MLNsTFyBPqihAg9LhdDJt7xQzxxX/QttzoNUR7i94
+         eHYl8Tg7hz0mkeDshDxE1uZaHfpe1Z2DG0rPBmT12Z1ciPJR1tvKRODfjZhSzg6JXLn/
+         LeOQ==
+X-Gm-Message-State: AOAM533XHLMD4iIZ4A/NEEs0Ya0HGPE12kJ4ZwVEbwGVxd9YeWF0GT+/
+        r6p+EjAbaKuzAnSkD5Qy+Q==
+X-Google-Smtp-Source: ABdhPJwtWwzz4EpNf5TPGNmFr6G7s6TFe37pZYgCZV+kvAqL/KT9PQQ5xQQKPUaApsS1CUlGt7VQXA==
+X-Received: by 2002:a92:c941:: with SMTP id i1mr8652392ilq.94.1592413252645;
+        Wed, 17 Jun 2020 10:00:52 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id s71sm113785ili.44.2020.06.17.10.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 10:00:51 -0700 (PDT)
+Received: (nullmailer pid 2304140 invoked by uid 1000);
+        Wed, 17 Jun 2020 17:00:49 -0000
+Date:   Wed, 17 Jun 2020 11:00:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     vkoul@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        simon@fire.lp0.eu, robh+dt@kernel.org, kishon@ti.com,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        alcooperx@gmail.com, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
+Message-ID: <20200617170049.GA2303867@bogus>
+References: <20200616083408.3426435-1-noltari@gmail.com>
+ <20200616083408.3426435-2-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
-User-Agent: Mutt/1.5.22 (2013-10-16)
-X-Barracuda-Connect: UNKNOWN[213.219.130.186]
-X-Barracuda-Start-Time: 1592413155
-X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 2219
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.5260 1.0000 0.7500
-X-Barracuda-Spam-Score: 0.75
-X-Barracuda-Spam-Status: No, SCORE=0.75 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.82618
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200616083408.3426435-2-noltari@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On do, 11 jun 2020 18:26:19 +0200, Marc Kleine-Budde wrote:
-> On 6/10/20 9:44 AM, Manivannan Sadhasivam wrote:
-> > Hello,
-> > 
-> > This series adds CAN network driver support for Microchip MCP25XXFD CAN
-> > Controller with MCP2517FD as the target controller version. This series is
-> > mostly inspired (or taken) from the previous iterations posted by Martin Sperl.
-> > I've trimmed down the parts which are not necessary for the initial version
-> > to ease review. Still the series is relatively huge but I hope to get some
-> > reviews (post -rcX ofc!).
-> > 
-> > Link to the origial series posted by Martin:
-> > https://www.spinics.net/lists/devicetree/msg284462.html
-> > 
-> > I've not changed the functionality much but done some considerable amount of
-> > cleanups and also preserved the authorship of Martin for all the patches he has
-> > posted earlier. This series has been tested on 96Boards RB3 platform by myself
-> > and Martin has tested the previous version on Rpi3 with external MCP2517FD
-> > controller.
+On Tue, 16 Jun 2020 10:34:07 +0200, Álvaro Fernández Rojas wrote:
+> Document BCM63xx USBH PHY bindings.
 > 
-> I initially started looking at Martin's driver and it was not using several
-> modern CAN driver infrastructures. I then posted some cleanup patches but Martin
-> was not working on the driver any more. Then I decided to rewrite the driver,
-> that is the one I'm hoping to mainline soon.
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
 > 
-> Can you give it a try?
-> 
-> https://github.com/marckleinebudde/linux/commits/v5.6-rpi/mcp25xxfd-20200607-41
 
-Hi Marc,
 
-I'm in the process of getting a Variscite imx8m mini SOM online, with
-MCP2517FD. The 4.19 kernel that comes with it, has a driver that is
-clearly inspired by the one of Martin Sperl (not investigated too much
-yet). I have problems of probing the chip when the bus is under full
-load (under not full load, the probing only occasionally fails) due to
-the modeswitch test.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Is there a real difference in yours between the rpi and sunxi branches?
-Is there much evolution since -36 or would you mind to backport your
-latest -42 to 4.19?
+Error: Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.example.dts:22.33-34 syntax error
+FATAL ERROR: Unable to parse input tree
+scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.example.dt.yaml' failed
+make[1]: *** [Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Makefile:1347: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
-I will work on this the upcoming days. I can't do extensive tests, but
-rather a works-for-me test that includes bitrate probe.
-I only have 1 such board right now, and no other FD hardware.
 
-Kurt
-> 
-> Marc
+See https://patchwork.ozlabs.org/patch/1310130
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
