@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3D01FD8E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB771FD8E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgFQWc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727833AbgFQWc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Jun 2020 18:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgFQWc5 (ORCPT
+        with ESMTP id S1727801AbgFQWc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Jun 2020 18:32:57 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01D8C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:55 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n23so4867208ljh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:55 -0700 (PDT)
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B99C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:57 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so2315189lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xn0hiQ3wOKNLF/so5eHDNbh4ekPAxqF2ZShnXBOeCAY=;
-        b=MTGU0GETtPXN8nsCqz6Dv6hA7VLMbwgkdjohHcLvZm9NkUncY6UgZuHQ0NUhFl0/Bc
-         yFQ+euftunyoIw45xk8SjxOUSV0o6t0SG1Kut+KsA8kqrDBJ2HtjY0t+FBXquc96lZqS
-         VqTsm42x25rJ7GmpMA7VC51JgW4ZWfgxFDezSlf96LlBq2uBPZK5fYpfViF1lhTpPncG
-         IrRjqugK6gIxgxfx6dSmqHFVoYBNDPb0PKjSx+96L8Qqm1iUK1C2ECM//66emrtCCDOz
-         HNiCi29opDIbRj2wmOU0jQY8kdDBiZu7jrrAef0/atc562vJEhuSGLTg4DoMYEbuwwhB
-         7P1A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8xpYgegvJlAfjA6nhvAqU8scim9MLLJ1/B+p2ezgRb8=;
+        b=Ugb4AiwNaOytECIaRMhREomTX8cIvwSNDBSUVO8CUgX+0QwXkEP9sruc44k2mjbkN+
+         QCNH5cMU2JEcHFOtuUlYreQcrUtldoHl7f+siQClTzFqH/3MHutm77bbHhhcCFfKJkqj
+         kHCP06s78lI6ObJc7EV7Hf6T+YkdIMtxsTPPRCSgogzuais3bXSGL/SAwmv7MNAqXVgX
+         i/U+irnsVgLBhQ6YHtjrK0KwI+vVTemVCqBT7BKItE3yofdRG9nAouX0X4fLo8VhxDWq
+         nY4C3z/XhJx071Ifq4mGsMFR6NQzXbiX+hg/TMFlyPDcAXmIEoIHN7urdFGjwjs5bwqq
+         Xv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xn0hiQ3wOKNLF/so5eHDNbh4ekPAxqF2ZShnXBOeCAY=;
-        b=ZOoBAwA3aEpNcgrwCstlhutEKRnHDj+EKhLfXNEYcrnYGyjam99vgr+QMuyIYg4Kbe
-         SHVNi/wFd4b6gCkpoIC4QM0bhE/L61f4OPIRFCEN2/N9TNfnXIyovjXh8mdz+YcWBjAu
-         VLlTer8eZLq26FJaPLCk0OvpXVeAVwXfvr8Pyu09CD0F6xgLFUGnuUjUWJ3Ux+mnaTYq
-         pA7NDf6CZ8RLld6cB75o4n2Lw7lhzY6mRsKf3KDP0r5WPQtgGKEueF1JTyckYodfRjRO
-         W3d4dV6rgyhMMM8uLW4u6yypUubALR82ZdKEcfHtgOX9+1foozj0aT5kTPtCcy0G2iR/
-         E9iA==
-X-Gm-Message-State: AOAM531QbxBu1mEL0kDTyU4y0tzS/wUyN4592GqdBnX0bVotib2yrhnK
-        Lj4g2PFnadKXB6H9Ei/Y0IU=
-X-Google-Smtp-Source: ABdhPJzV/Kjo7Q6UVTeRF8pxqJwGYjI/doG085L6jvkZMXWt3CIGY3FhRSy83dnjZnkFQt6jfE3BBg==
-X-Received: by 2002:a2e:8110:: with SMTP id d16mr761904ljg.12.1592433174511;
-        Wed, 17 Jun 2020 15:32:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8xpYgegvJlAfjA6nhvAqU8scim9MLLJ1/B+p2ezgRb8=;
+        b=AYj7UMkemfc5HNZOr+iBS2OPEzOmp58oUYAtqTuqSjliHsCo2Hd4RCXoHD8uKzNRuA
+         4ZcfmoLhM7CSFjhecEXqJTnZaFtWNduHZYlb6bZV447wNVmdR3iJmx8xwPIAECJxNXY8
+         9YA4A0xUhD+GX8Pr4VYrXtMDNX9iLpixvzv6xTE8kU4BzxxHsL3bfoJEViBVhLIOLD4O
+         6Zd+eO4rMbzMmOIafw1pRR2Jr8kXzeLhl/EwnrGjEFIocFcba2WWMaVBkrpzFJkT1YyF
+         BG0i4Sc3mInUY/QDF4Zv1z2ZPiLyllDh74M0+bcjFZE7AOdf+LNZqen5wwXYUWcaJsdQ
+         I9jQ==
+X-Gm-Message-State: AOAM533Y4NXXBzZd2KMH9EOZLhGfVySu07GYrqL80tMbz1LBaJlytHLD
+        liA0+2CKowLSSj7VEb16iZc=
+X-Google-Smtp-Source: ABdhPJySw7w9OLtF/+imkVAxU0WWTxK79DPWVFP+yMGy1OTwuXZMZbkXvbpFUQF88/kiQhiZFa4TOQ==
+X-Received: by 2002:a19:381a:: with SMTP id f26mr615295lfa.110.1592433175518;
+        Wed, 17 Jun 2020 15:32:55 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
-        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.53
+        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:32:53 -0700 (PDT)
+        Wed, 17 Jun 2020 15:32:54 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 Cc:     lgirdwood@gmail.com, broonie@kernel.org,
         linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 0/5] regulator: Constify some static struct variables
-Date:   Thu, 18 Jun 2020 00:32:42 +0200
-Message-Id: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+Subject: [PATCH 1/5] regulator: anatop: Constify anatop_core_rops
+Date:   Thu, 18 Jun 2020 00:32:43 +0200
+Message-Id: <20200617223247.25566-2-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+References: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -64,25 +66,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Constify some static struct variables to allow the compiler to put them
-in read-only memory. There are more of these, but I figured I could
-start small. Also, is one patch per driver a good resolution or too
-fine-grained?
+anatop_core_rops is not modified and can therefore be made const which
+allows the compiler to put it in read-only memory.
 
-Rikard Falkeborn (5):
-  regulator: anatop: Constify anatop_core_rops
-  regulator: cpcap: Constify cpcap_regulator_ops
-  regulator: ltc3676: Constify ltc3676_regulators
-  regulator: max8907: Constify static structs
-  regulator: max8997: Constify struct regulator_ops
+Before:
+   text    data     bss     dec     hex filename
+   4502     412       0    4914    1332 drivers/regulator/anatop-regulator.o
 
- drivers/regulator/anatop-regulator.c  |  2 +-
- drivers/regulator/cpcap-regulator.c   |  2 +-
- drivers/regulator/ltc3676.c           |  2 +-
- drivers/regulator/max8907-regulator.c |  6 +++---
- drivers/regulator/max8997-regulator.c | 14 +++++++-------
- 5 files changed, 13 insertions(+), 13 deletions(-)
+After:
+   text    data     bss     dec     hex filename
+   4634     280       0    4914    1332 drivers/regulator/anatop-regulator.o
 
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/regulator/anatop-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/anatop-regulator.c b/drivers/regulator/anatop-regulator.c
+index ca92b3de0e9c..f9856d4e295f 100644
+--- a/drivers/regulator/anatop-regulator.c
++++ b/drivers/regulator/anatop-regulator.c
+@@ -139,7 +139,7 @@ static struct regulator_ops anatop_rops = {
+ 	.map_voltage = regulator_map_voltage_linear,
+ };
+ 
+-static struct regulator_ops anatop_core_rops = {
++static const struct regulator_ops anatop_core_rops = {
+ 	.enable = anatop_regmap_enable,
+ 	.disable = anatop_regmap_disable,
+ 	.is_enabled = anatop_regmap_is_enabled,
 -- 
 2.27.0
 
