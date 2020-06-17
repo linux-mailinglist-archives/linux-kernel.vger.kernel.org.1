@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF211FD47C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77131FD484
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgFQSYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        id S1727769AbgFQS0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727964AbgFQSYf (ORCPT
+        with ESMTP id S1726926AbgFQS0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:24:35 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C781C06174E;
-        Wed, 17 Jun 2020 11:24:34 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dr13so3546780ejc.3;
-        Wed, 17 Jun 2020 11:24:34 -0700 (PDT)
+        Wed, 17 Jun 2020 14:26:39 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F112C06174E;
+        Wed, 17 Jun 2020 11:26:39 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id u15so809886vkk.6;
+        Wed, 17 Jun 2020 11:26:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j4LtBP0fxQmoKYyM4aJqiDdfJzw3PknGwyZ6hajQswg=;
-        b=GLJfDoTNRo7p5CZV7Xhw2JsFxvzMFmXqTNqRfNbQwgRm5wrJmbWKiyPALGC7z96Slh
-         kZBXvDkazfy+RMomrzztHMcaNtGCnhf5QiYUQQB24w3GU+xJCdx/iOgN/IQhopY2ukue
-         ZhwLbFzjFWeypMxBfXqRqrFlqI+Ocb41ZIZun7GeTTZuIcIACtK1XztmKr2ixCOgNJPx
-         V7NVQ2GVcc5A4zzLONKyQZJdonAIXJjFDYnmWzEqeEd4xxLeh0uuUIio0+IJ8DNvh4DG
-         ybGjVGtMPO9OEWmitIqxrwowc7ZgB3AZcvR4Pb0cuU0nqDiyTDiZ4cmBaSvwDwK31dFh
-         5nUg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=zbw5pHB4aa6KZyY8LuNglIK8PBRnGceAc1YUqLNwsOI=;
+        b=Ysrv7po1s/74ZcgNjAO+mAgOY+MJeSc0i8E8BJeFQQryHAKjQePpY1ihTijBzs+YYi
+         XERuPGeHf/lmyG9hMF5gkLdZ8HT020QOeTdXQGK6kCS50srJiFocd5izGjRbnEvsYEUZ
+         KiQgoX4aHZTamjG2GdM77rWVR0vSviMXUpZXxtvHO6JUSkI4IHp4d1+EH8nd11sGnvRF
+         W2tOLLkQ6S71dhwLs4Sy6XDET3wNjJ2dCM32zRGbWEvqphEWIO9rmGKrxTxIV+A68NY+
+         brwgjwmC3tNrbEOuD3wniYBVIhSCUoerqBEVgHJWb7Vo5Ej+nwaBNRPAJzziinZm+Fyn
+         f+5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j4LtBP0fxQmoKYyM4aJqiDdfJzw3PknGwyZ6hajQswg=;
-        b=lgaB6ketQs+cqe0PTdiTP/jnBdysVH0pX9EtEm0Ml9iTnZ82YPcmbJwE3Q3oUd6I+1
-         y2CSNl6GWEXbKxeQL80xIc77STTZh87EssiNih9UJFWKW+S2sJ6yJq6AduklB8lHvbgF
-         eP5Kswx3aRWBX/ZIidi4CiwH6przkOqN1ZUAbbsx4OzUyRQlmAQAes8qSqcr766gIJx9
-         bnrtr0pLCLrrdIOLyHncXIwJWUFLAx6eWZRbi6fvPzXOoJ3mZmHMtWxxJQHCuzCkiuxG
-         RTE7DiPYLsvjhFdI/RSmjr6paUPkSQ0J4/x2UZadeoEMQteFtbTmkmzpezVdsaCF36yI
-         l74A==
-X-Gm-Message-State: AOAM532qry4rUFb1CiCDQiCxIGOK9P2eAkBj0EF1iV6jZOWDwWZAxJ/O
-        AAM7AfVse/gHqLpLov7h1VA=
-X-Google-Smtp-Source: ABdhPJwu+29N47SWaovTqJG0CwrI+HDlalsmvqqUvokJw9accwzYiNKbC2FwNnooKlKfAp+SIH/rgQ==
-X-Received: by 2002:a17:906:3b44:: with SMTP id h4mr401730ejf.463.1592418273392;
-        Wed, 17 Jun 2020 11:24:33 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:b90f:903c:e489:2676:2097:fdba])
-        by smtp.googlemail.com with ESMTPSA id me8sm504598ejb.28.2020.06.17.11.24.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 11:24:32 -0700 (PDT)
-Message-ID: <3d5748ce4481c789000979f9831a5ae681cd9d34.camel@gmail.com>
-Subject: Re: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Avri Altman <Avri.Altman@wdc.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Wed, 17 Jun 2020 20:24:18 +0200
-In-Reply-To: <231786897.01592395081831.JavaMail.epsvc@epcpadp2>
-References: <SN6PR04MB46405EC52240E00F5D634E2AFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-         <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
-         <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
-         <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
-         <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p5>
-         <231786897.01592395081831.JavaMail.epsvc@epcpadp2>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=zbw5pHB4aa6KZyY8LuNglIK8PBRnGceAc1YUqLNwsOI=;
+        b=RFq4GlRR+MgNWHmLHwt2m7m8uKMInZ1fQHn2YJorqHDNeaR7KOht8SKmyirz+LZpjh
+         A9jidV2KCIOYxzvbucDHU3WztQBhZeyKqymVB1AhEqY8eYP2Fz1KkjVmDJgTR4mTmBLa
+         WK7oZwUgqBzJ4dEDvPxxxlL1ILiB8MXfsmq0+ESwZGrQsjsqBTOREnLrwCUrx21+4OPV
+         X8GBZ2todFcZXOspPreKfkMx7YX7O0ysIyACcUZSis1RmIBkEmavhtBnY/oWhB7z6w+E
+         +fhHfTdS1H0KwW11/2AOZmOATU1cQwsqLGfoacFl9zXKwzgvBHcil0aoglcQBoPZPfIS
+         sqPA==
+X-Gm-Message-State: AOAM530p4F4LNg6M58gOM1Gny007NuPjQXOCc7I4ZnfCt3YUZZ2TrSRz
+        Dhrn2CqgSWj4QimJ19fMZUAaxtud29GU0BlXe+k=
+X-Google-Smtp-Source: ABdhPJyYSJRIVuArMT/e6ZjcZOy5AgqF7XGfKrhc3eYg6qu20j5dyYj/KdjVzQtDpOza54IFvOFMDUSaVo42My+DaKc=
+X-Received: by 2002:a1f:de43:: with SMTP id v64mr645681vkg.13.1592418398476;
+ Wed, 17 Jun 2020 11:26:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200617162746.3780660-1-boris@bur.io> <CAL3q7H47P6E9zn3Zk9C2LX8-1g2QNiCGgbcRMDQDk+JBCoOhzg@mail.gmail.com>
+ <ADB20899-1E88-4546-BEB5-4F2165386184@fb.com> <CAL3q7H5q1ocLa6HjSfiXgVJ67kyfqNBDhcwMqeRVDfbiyr5-tg@mail.gmail.com>
+ <1fdc19e9-8517-efb3-78c7-6f4d0152d87f@toxicpanda.com>
+In-Reply-To: <1fdc19e9-8517-efb3-78c7-6f4d0152d87f@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 17 Jun 2020 19:26:27 +0100
+Message-ID: <CAL3q7H4GqjcesWir69PULr4a9rSi2cVQ366y5bAEU23wS6xJkA@mail.gmail.com>
+Subject: Re: [PATCH btrfs/for-next] btrfs: fix fatal extent_buffer readahead
+ vs releasepage race
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Chris Mason <clm@fb.com>, Boris Burkov <boris@bur.io>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-17 at 19:30 +0900, Daejun Park wrote:
-> > > implemented
-> > > as a module parameter, so that it can be configurable by the
-> > > user.
-> > > 
-> > > To gurantee a minimum memory pool size of 4MB:
-> > > $ insmod ufshpb.ko ufshpb_host_map_kbytes=4096
-> > 
-> > You are going through a lot of troubles to make it a loadable
-> > module.
-> > What are, in your opinion, the pros and cons of this design
-> > decision?
-> 
-> In my opinion...
-> 
-> pros:
-> 1. A user can unload an unnecessary module when there is an
-> insufficient
-> memory situation (HPB case).
-> 2. Since each UFS vendor has a different way of implementing UFS
-> features,
-> it can be supported as a separate module. Otherwise, many quirks must
-> be attached to module, which is not desirable way.
-> 3. It is possible to distinguish parts that are not necessary for
-> essential
-> ufs operation.
-> 4. It is advantageous to implement the latest functions according to
-> the
-> development speed of UFS.
-> 
-> cons:
-> 1. It is difficult work to be implemented as a module.
-> 2. Modifying "ufsfeature.c" is required to implement the feature that
-> can
-> not supported by the exsiting "ufsf_operation".
-> 
-> Thanks,
-> Daejun
+On Wed, Jun 17, 2020 at 7:19 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On 6/17/20 2:11 PM, Filipe Manana wrote:
+> > On Wed, Jun 17, 2020 at 6:43 PM Chris Mason <clm@fb.com> wrote:
+> >>
+> >> On 17 Jun 2020, at 13:20, Filipe Manana wrote:
+> >>
+> >>> On Wed, Jun 17, 2020 at 5:32 PM Boris Burkov <boris@bur.io> wrote:
+> >>>
+> >>>> ---
+> >>>>   fs/btrfs/extent_io.c | 45
+> >>>> ++++++++++++++++++++++++++++----------------
+> >>>>   1 file changed, 29 insertions(+), 16 deletions(-)
+> >>>>
+> >>>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> >>>> index c59e07360083..f6758ebbb6a2 100644
+> >>>> --- a/fs/btrfs/extent_io.c
+> >>>> +++ b/fs/btrfs/extent_io.c
+> >>>> @@ -3927,6 +3927,11 @@ static noinline_for_stack int
+> >>>> write_one_eb(struct extent_buffer *eb,
+> >>>>          clear_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags);
+> >>>>          num_pages =3D num_extent_pages(eb);
+> >>>>          atomic_set(&eb->io_pages, num_pages);
+> >>>> +       /*
+> >>>> +        * It is possible for releasepage to clear the TREE_REF bit
+> >>>> before we
+> >>>> +        * set io_pages. See check_buffer_tree_ref for a more
+> >>>> detailed comment.
+> >>>> +        */
+> >>>> +       check_buffer_tree_ref(eb);
+> >>>
+> >>> This is a whole different case from the one described in the
+> >>> changelog, as this is in the write path.
+> >>> Why do we need this one?
+> >>
+> >> This was Josef=E2=80=99s idea, but I really like the symmetry.  You se=
+t
+> >> io_pages, you do the tree_ref dance.  Everyone fiddling with the write
+> >> back bit right now correctly clears writeback after doing the atomic_d=
+ec
+> >> on io_pages, but the race is tiny and prone to getting exposed again b=
+y
+> >> shifting code around.  Tree ref checks around io_pages are the most
+> >> reliable way to prevent this bug from coming back again later.
+> >
+> > Ok, but that still doesn't answer my question.
+> > Is there an actual race/problem this hunk solves?
+> >
+> > Before calling write_one_eb() we increment the ref on the eb and we
+> > also call lock_extent_buffer_for_io(),
+> > which clears the dirty bit and sets the writeback bit on the eb while
+> > holding its ref_locks spin_lock.
+> >
+> > Even if we get to try_release_extent_buffer, it calls
+> > extent_buffer_under_io(eb) while holding the ref_locks spin_lock,
+> > so at any time it should return true, as either the dirty or the
+> > writeback bit is set.
+> >
+> > Is this purely a safety guard that is being introduced?
+> >
+> > Can we at least describe in the changelog why we are adding this hunk
+> > in the write path?
+> > All it mentions is a race between reading and releasing pages, there's
+> > nothing mentioned about races with writeback.
+> >
+>
+> I think maybe we make that bit a separate patch, and leave the panic fix =
+on it's
+> own.  I suggested this because I have lofty ideas of killing the refs_loc=
+k, and
+> this would at least keep us consistent in our usage TREE_REF to save us f=
+rom
+> freeing stuff that may be currently under IO.
+>
+> I'm super not happy with our reference handling coupled with releasepage,=
+ but
+> these are the kind of hoops we're going to have to jump through until we =
+have
+> some better infrastructure in place to handle metadata.  Thanks,
 
-Dear Avri, Daejun, Bart
+Ok, so it's just a safety guard then.
+Yes, either a separate patch or at the very least mention why we are
+adding that in the change log.
 
-It is true that it is very difficult to make everyone happy.
-We now have three HPB drivers in the patchwork, but I still didn't see
-a final agreement. Please tell me which one do you want to focus on?
+Thanks.
 
-Bean
+>
+> Josef
 
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
