@@ -2,141 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A496A1FCBF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B951FCC1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgFQLNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:13:52 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33854 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgFQLNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:13:51 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05HBD7dx118817;
-        Wed, 17 Jun 2020 11:13:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=cuNGorMCGRL2h1N6XRNC1GY6mItog4OtrSLpqxId5mo=;
- b=A2dLbOXcLXjWH4ngUp9sSdKtQGnN8HjUtHi+IMOBdN/OfpbMrsLVjiYgts+NbLwfFU+r
- veJcPV3EuoS9iaVbn30dR8uAufSE8s0GTKYgVmPUqpMz3rXFGjtcQpvVWOrMjCuUp/uY
- CpAKRY1wUnhDkXiYtQGMk7YhhxYgRGJom65xHxZxFcFlmt2N/V2Mn8egOo6a5HceycSl
- Lwj2SxwFKhZtrdV+O3J7unD1OM/g8vU7A3bxLPkqHeoBRHpvyZQJ/JlHi0QdbI+wib5p
- r3z3270/Pb3GfMF18+aOJlOOZbMo1dYeC9PK0DXJAn2MUZQUQApWf4aadd3YLw48Xv6B Vw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31qecks591-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Jun 2020 11:13:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05HBD8Ds161596;
-        Wed, 17 Jun 2020 11:13:38 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 31q66nr3r8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jun 2020 11:13:38 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05HBDUql031357;
-        Wed, 17 Jun 2020 11:13:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 17 Jun 2020 04:13:29 -0700
-Date:   Wed, 17 Jun 2020 14:13:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, jane.pnx9@gmail.com, pakki001@umn.edu,
-        ldufour@linux.ibm.com, harshjain32@gmail.com, simon@nikanor.nu,
-        walken@google.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
-        Bharath Vedartham <linux.bhar@gmail.com>
-Subject: Re: [PATCH 1/4] staging: kpc2000: Unpin partial pinned pages
-Message-ID: <20200617111321.GP4282@kadam>
-References: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
- <1592360843-3440-2-git-send-email-jrdr.linux@gmail.com>
+        id S1727028AbgFQLRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:17:42 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35916 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727012AbgFQLRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:17:38 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jlW4P-0006Ho-02; Wed, 17 Jun 2020 13:17:29 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 43C36C06C3; Wed, 17 Jun 2020 13:14:04 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 13:14:03 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     maobibo <maobibo@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
+Message-ID: <20200617111403.GC9940@alpha.franken.de>
+References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
+ <20200615101443.GA10075@alpha.franken.de>
+ <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592360843-3440-2-git-send-email-jrdr.linux@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 adultscore=0 phishscore=0 suspectscore=2 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006170088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9654 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 malwarescore=0
- clxscore=1011 adultscore=0 suspectscore=2 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006170088
+In-Reply-To: <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:57:20AM +0530, Souptick Joarder wrote:
-> There is a bug, when get_user_pages() failed but partially pinned
-> pages are not unpinned. Fixed it.
+On Tue, Jun 16, 2020 at 06:34:21PM +0800, maobibo wrote:
 > 
-> Also, int is more appropriate type for rv. Changed it.
 > 
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Bharath Vedartham <linux.bhar@gmail.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/staging/kpc2000/kpc_dma/fileops.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> index 8975346..b136353 100644
-> --- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-> +++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-> @@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
->  			    unsigned long iov_base, size_t iov_len)
->  {
->  	unsigned int i = 0;
-> -	long rv = 0;
-> +	int rv = 0;
->  	struct kpc_dma_device *ldev;
->  	struct aio_cb_data *acd;
->  	DECLARE_COMPLETION_ONSTACK(done);
-> @@ -193,6 +193,10 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
->  		put_page(acd->user_pages[i]);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->  
->   err_get_user_pages:
-> +	if (rv > 0) {
-> +		for (i = 0; i < rv; i++)
-> +			put_pages(acd->user_pages[i])
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> On 06/15/2020 06:14 PM, Thomas Bogendoerfer wrote:
+> > On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
+> >> Function set_pmd_at is to set pmd entry, if tlb entry need to
+> >> be flushed, there exists pmdp_huge_clear_flush alike function
+> >> before set_pmd_at is called. So it is not necessary to call
+> >> flush_tlb_all in this function.
+> > 
+> > have you checked all set_pmd_at() calls ? I found a few case where
+> > it's not clear to me, if tlb flushing is done... If you think this
+> > is still the right thing to do, please change arch/mips/mm/pgtable-32.c
+> > as well.
+> well, I will double check this and do more testing about thp and hugepage.
 
-> +	}
+I was more concerned about
 
-This isn't a complete fix.  "rv" is the negative error code but here we
-are returning a positive value on this path.  Also it's ugly to have
-same put_page() loop repeated twice.
+fs/dax.c
+fs/proc/task_mmu.c
+mm/rmap.c
 
-It would be better to write it like this:
+Thomas.
 
-	rv = get_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE | FOLL_GET, acd->user_pages, NULL);
-	mmap_read_unlock(current->mm);        /*  release the semaphore */
-	if (rv < 0)
-		goto free_pages;
-	if (rv != acd->page_count) {
-		acd->page_count = rv;
-		rv = -EFAULT;
-		goto put_pages;
-	}
-
-	...
-
-put_pages:
-	for (i = 0 ; i < acd->page_count ; i++)
-		put_pages(acd->user_pages[i]);
-free_pages:
-	kfree(acd->user_pages);
-
-regards,
-dan carpenter
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
