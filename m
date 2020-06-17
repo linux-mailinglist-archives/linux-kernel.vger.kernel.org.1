@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30CF1FD2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3901FD2B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgFQQtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
+        id S1727822AbgFQQsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727101AbgFQQs0 (ORCPT
+        with ESMTP id S1726496AbgFQQs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:48:26 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FDBC06174E;
-        Wed, 17 Jun 2020 09:48:25 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id t21so2476417edr.12;
-        Wed, 17 Jun 2020 09:48:25 -0700 (PDT)
+        Wed, 17 Jun 2020 12:48:28 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0207C061755;
+        Wed, 17 Jun 2020 09:48:26 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id l27so3159184ejc.1;
+        Wed, 17 Jun 2020 09:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fOhYKXX9hi+9MVHQhHY4sI0Y8sLNLyLXejCOvgcKKQA=;
-        b=HUcUY14XiOkgINSgtEcMP6dwMeU1iUCpAavOYpWWvcVsh9XJTa5DtQjSFtnFPZZkj0
-         Oa7QNVwBIslc9t6Nh6P7i0srtKtpqD24pR8l2nFKt31ELaSdZj/Ycbe8cxhUKr9HKmpN
-         vOqvXiQOrmtlRHg3DWzvmyaSzf0bGKG7L1sDV0331ySBiCYWFWW4YNFQBe49jpYqxObU
-         mwEynxqcr8CHDGWoUwuDv/hijrkEjuULX/FaIeUoz5pu7o7TMksFy/jGDs4Uy66kQ5Wk
-         okV7lrH0CSJwnz9J3uMVyNBlawa+8iQwV9grYTcYJiVEXWU9fEkj73bl+9Ouk4dcS/y4
-         bgbg==
+        bh=q6IFxg4j69ZkwCCMUppVQGAEtuDflNuWjwBqcXu4yWc=;
+        b=Hd+jjA0qiCgPyGwq/YKCmOsq95TdCgNwNFdjCuMzvPQTq/LyAna+naHoNlOATqTcP0
+         LldVbflE35vwb66LKkudHfCX1ExzUEjmHLXKqMWgRIR56dwKfT4e0DELMkt0uTwM1cH7
+         Vck0R3qkeOx/esfrzVwRc9bPq0NbBWQGYQ1U1DYdWww62ZKWKlfdCrmti6hbuigUfxlZ
+         0fsdrYQfXv8F8ZYI1bP9KsMSuick6wwCBtwNC5fjSgizvx7HtncmwYJkqPFqAm1oJNYS
+         vS9MYfkiOuEdQgMjNXiSjrPVePovMCQRNhig4FaKr9fpXHIXrRedwLvZwO9AhkBDtKjf
+         mD8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fOhYKXX9hi+9MVHQhHY4sI0Y8sLNLyLXejCOvgcKKQA=;
-        b=CCA34oMwKRpCfuKjWNuoKNZXcuImQfVL6dlDG1dNKo434C1i34rwwtdEu+K4PL3DzI
-         XFstM+6Dy5yHaJEL/lYn/Y9Ocmru2o55WQQpHYxGDJ595IGcyN2Ejyerog812p5asx4d
-         pjHisF634IhiolAYd4Mkai3ws/UEooGiws7xEMEN6syGhtAKbq9yh/PGJN5H2PZPk1gG
-         lQqjociZ31T+go97qGsQ4DZazQ36SChjBu29eymD+u2xFuwFnEs6wn33StQbcBVXXSM8
-         P8PqSI0Y3JZFeZyIzk5DZC/NbrZr1vcF0Cc2T6bfQMPEP5liZTp9+YdL5VZoJG+XFY7D
-         hJgA==
-X-Gm-Message-State: AOAM530EeRXzaVj84yM5BzGCn5RIIGLabGk9cdT6HtmI/R5gjv/OEm3a
-        YEt4O/xNGLaD/Tdz1YhrrcE=
-X-Google-Smtp-Source: ABdhPJwGHl1xZxgFACdA/VlCPqa/bNkM9owgM5dNiTwaSed9JoosVOhxU8MsEZ5Dh2Qw0s1ywW03nw==
-X-Received: by 2002:a50:fc0d:: with SMTP id i13mr87504edr.260.1592412504023;
-        Wed, 17 Jun 2020 09:48:24 -0700 (PDT)
+        bh=q6IFxg4j69ZkwCCMUppVQGAEtuDflNuWjwBqcXu4yWc=;
+        b=SFlfpRcdx/0eXILdw99J17l98T91CV/7ZAdejwp9P+LdOvPWrmtcAVt/fGp9CRSWqz
+         DcWJDMAL8zl5Z3ByG0BdQbbraBgvMRPPaQFvrVUpnEoX7mL2dgulw94ntVSSOL3Jfs3J
+         uFn0BkmnfRCXi3Q4/V+0svR+Bcbea7MAtTo6HfPxEmwEnDxthwCgyTZAWo+nCzpf+rr/
+         SqtoeivfUf1x6858Ho5ruxsYCUU84C0SY+nIhZlNnNrQEY1fF1xrkYjpiUwfIdUT/Gdv
+         IX7y/+726YRbLyL6KMtZ61sVLRNtSyj4sluVZDBvJPdTceTgw1nDHTwUnk+t7jAYsMCT
+         KIFA==
+X-Gm-Message-State: AOAM532FtL+ZwfAxbe1L93AEIiHvFlOOUQbIsNsS7F6UTNoPqyKWCtPq
+        Oqi0T91/fk2PBD89Un3jOc0=
+X-Google-Smtp-Source: ABdhPJwdWbseXtvFP2fS4kLllfvqMBsrS/h//UWaCxJEWMISfQiPA6Y12StFp/40WvC6xV7yjZOueQ==
+X-Received: by 2002:a17:906:f913:: with SMTP id lc19mr79340ejb.286.1592412505425;
+        Wed, 17 Jun 2020 09:48:25 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.22
+        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:48:23 -0700 (PDT)
+        Wed, 17 Jun 2020 09:48:25 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/11] arm: dts: owl-s500: Add DMA controller
-Date:   Wed, 17 Jun 2020 19:48:07 +0300
-Message-Id: <5b942daad7854c50faabbc9ce8e24c2ade74f641.1592407030.git.cristian.ciocaltea@gmail.com>
+To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-actions@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH 08/11] dt-bindings: reset: Add binding constants for Actions S500 RMU
+Date:   Wed, 17 Jun 2020 19:48:08 +0300
+Message-Id: <064369c282f06f1e114eb4d7a832e65376680a59.1592407030.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
@@ -67,37 +68,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DMA controller node for Actions Semi S500 SoC.
+Add device tree binding constants for Actions Semi S500 SoC Reset
+Management Unit (RMU).
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ .../dt-bindings/reset/actions,s500-reset.h    | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 include/dt-bindings/reset/actions,s500-reset.h
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index ac3d04c75dd5..0f4fc5487dad 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -205,5 +205,19 @@ sps: power-controller@b01b0100 {
- 			reg = <0xb01b0100 0x100>;
- 			#power-domain-cells = <1>;
- 		};
+diff --git a/include/dt-bindings/reset/actions,s500-reset.h b/include/dt-bindings/reset/actions,s500-reset.h
+new file mode 100644
+index 000000000000..f5d94176d10b
+--- /dev/null
++++ b/include/dt-bindings/reset/actions,s500-reset.h
+@@ -0,0 +1,67 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Device Tree binding constants for Actions Semi S500 Reset Management Unit
++ *
++ * Copyright (c) 2014 Actions Semi Inc.
++ * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
++ */
 +
-+		dma: dma-controller@b0260000 {
-+			compatible = "actions,s900-dma";
-+			reg = <0xb0260000 0xd00>;
-+			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			dma-channels = <12>;
-+			dma-requests = <46>;
-+			clocks = <&cmu CLK_DMAC>;
-+			power-domains = <&sps S500_PD_DMA>;
-+		};
- 	};
- };
++#ifndef __DT_BINDINGS_ACTIONS_S500_RESET_H
++#define __DT_BINDINGS_ACTIONS_S500_RESET_H
++
++#define RESET_DMAC				0
++#define RESET_NORIF				1
++#define RESET_DDR				2
++#define RESET_NANDC				3
++#define RESET_SD0				4
++#define RESET_SD1				5
++#define RESET_PCM1				6
++#define RESET_DE				7
++#define RESET_LCD				8
++#define RESET_SD2				9
++#define RESET_DSI				10
++#define RESET_CSI				11
++#define RESET_BISP				12
++#define RESET_KEY				13
++#define RESET_GPIO				14
++#define RESET_AUDIO				15
++#define RESET_PCM0				16
++#define RESET_VDE				17
++#define RESET_VCE				18
++#define RESET_GPU3D				19
++#define RESET_NIC301				20
++#define RESET_LENS				21
++#define RESET_PERIPHRESET			22
++#define RESET_USB2_0				23
++#define RESET_TVOUT				24
++#define RESET_HDMI				25
++#define RESET_HDCP2TX				26
++#define RESET_UART6				27
++#define RESET_UART0				28
++#define RESET_UART1				29
++#define RESET_UART2				30
++#define RESET_SPI0				31
++#define RESET_SPI1				32
++#define RESET_SPI2				33
++#define RESET_SPI3				34
++#define RESET_I2C0				35
++#define RESET_I2C1				36
++#define RESET_USB3				37
++#define RESET_UART3				38
++#define RESET_UART4				39
++#define RESET_UART5				40
++#define RESET_I2C2				41
++#define RESET_I2C3				42
++#define RESET_ETHERNET				43
++#define RESET_CHIPID				44
++#define RESET_USB2_1				45
++#define RESET_WD0RESET				46
++#define RESET_WD1RESET				47
++#define RESET_WD2RESET				48
++#define RESET_WD3RESET				49
++#define RESET_DBG0RESET				50
++#define RESET_DBG1RESET				51
++#define RESET_DBG2RESET				52
++#define RESET_DBG3RESET				53
++
++#endif /* __DT_BINDINGS_ACTIONS_S500_RESET_H */
 -- 
 2.27.0
 
