@@ -2,132 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191031FCF23
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B2B1FCF2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgFQOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:12:01 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:36874 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgFQOMA (ORCPT
+        id S1726931AbgFQOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:12:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2628 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726328AbgFQOM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:12:00 -0400
-Received: by mail-ed1-f66.google.com with SMTP id k8so2068282edq.4;
-        Wed, 17 Jun 2020 07:11:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FnLVx3mpNTRNn979KEIujDpuBEHdqJ/b/LKxqUKjo5U=;
-        b=R1VwMYEBBKcjm0+0e/VVQ6zthOJ9S/V7pWUvq8piWXdull4CjVyFS3wIHZyAx9ktTp
-         3qXgTYQZK3KS/Yp3eAY87y4OaCVI3QLMQBjTwdBwvyhNQuJgdLMV9cXOu/G6waPtd7QM
-         +6xuSQ7EHERKPcphHO8zudCohvDq7QEdI3J66W0sDsgre7xuDAeAUA9JiAzuRSNDP2m9
-         RIGiUMwHSv3lTliPg/jWsHR+ya7zvpVRs9ZHnt8x+gmGxKY5U6ToQiVaxqwYKfjcxIBd
-         PpLOs9ScVvFe+AhBB2Zs5L2HdhznT3D9s0Uu4wFapfGf4vpmNVZUjNR3q3soYBkQJxnh
-         ZAIQ==
-X-Gm-Message-State: AOAM530hzvjJjL5hbl/tc1l2ZDqwbcd280/86/8hIdcRRF9r/3auBwFC
-        ia6i23OeDyhu+wlNx22AMj4=
-X-Google-Smtp-Source: ABdhPJznS9MRNi7kFBPyQ0SPfnXV06mWSgLUfdEwyE6fs7gLQFQsvZDC9Kqw5DW5z+Zxjo6sXkZecQ==
-X-Received: by 2002:a05:6402:6cc:: with SMTP id n12mr7166151edy.266.1592403118087;
-        Wed, 17 Jun 2020 07:11:58 -0700 (PDT)
-Received: from localhost (ip-37-188-158-19.eurotel.cz. [37.188.158.19])
-        by smtp.gmail.com with ESMTPSA id z20sm34596ejb.68.2020.06.17.07.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 07:11:57 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 16:11:55 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-Message-ID: <20200617141155.GQ9499@dhcp22.suse.cz>
-References: <20200519075213.GF32497@dhcp22.suse.cz>
- <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz>
- <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name>
- <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz>
- <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
- <20200617135758.GA548179@chrisdown.name>
+        Wed, 17 Jun 2020 10:12:56 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HE6Tjk135905;
+        Wed, 17 Jun 2020 10:12:48 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31q6hdr6du-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 10:12:48 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05HE7P0c146770;
+        Wed, 17 Jun 2020 10:12:48 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31q6hdr6cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 10:12:48 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05HEBHtQ000389;
+        Wed, 17 Jun 2020 14:12:46 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 31q6c90fef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 14:12:46 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05HEChCu14614638
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jun 2020 14:12:43 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46F6D11C058;
+        Wed, 17 Jun 2020 14:12:43 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A6AC11C050;
+        Wed, 17 Jun 2020 14:12:42 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.186.32])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Jun 2020 14:12:42 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
+ IOMMU feature
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
+ <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
+ <e5204218-6e93-8713-6056-2a62531c310e@amd.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <64544f14-eecf-6dda-d232-0bceeb2840ff@linux.ibm.com>
+Date:   Wed, 17 Jun 2020 16:12:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617135758.GA548179@chrisdown.name>
+In-Reply-To: <e5204218-6e93-8713-6056-2a62531c310e@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_04:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 cotscore=-2147483648 malwarescore=0
+ suspectscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 impostorscore=0 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006170105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Our emails have crossed]
 
-On Wed 17-06-20 14:57:58, Chris Down wrote:
-> Naresh Kamboju writes:
-> > mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
-> > mke2fs 1.43.8 (1-Jan-2018)
-> > Creating filesystem with 244190646 4k blocks and 61054976 inodes
-> > Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
-> > Superblock backups stored on blocks:
-> > 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-> > 4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
-> > 102400000, 214990848
-> > Allocating group tables:    0/7453 done
-> > Writing inode tables:    0/7453 done
-> > Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
-> > [   51.845304] under min:0 emin:0
-> > [   51.848738] under min:0 emin:0
-> > [   51.858147] under min:0 emin:0
-> > [   51.861333] under min:0 emin:0
-> > [   51.862034] under min:0 emin:0
-> > [   51.862442] under min:0 emin:0
-> > [   51.862763] under min:0 emin:0
+
+On 2020-06-17 15:36, Tom Lendacky wrote:
+> On 6/17/20 5:43 AM, Pierre Morel wrote:
+>> An architecture protecting the guest memory against unauthorized host
+>> access may want to enforce VIRTIO I/O device protection through the
+>> use of VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Let's give a chance to the architecture to accept or not devices
+>> without VIRTIO_F_IOMMU_PLATFORM.
+>>
+>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>> Acked-by: Jason Wang <jasowang@redhat.com>
+>> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>> ---
+>>   arch/s390/mm/init.c     |  6 ++++++
+>>   drivers/virtio/virtio.c | 22 ++++++++++++++++++++++
+>>   include/linux/virtio.h  |  2 ++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+>> index 6dc7c3b60ef6..215070c03226 100644
+>> --- a/arch/s390/mm/init.c
+>> +++ b/arch/s390/mm/init.c
+>> @@ -45,6 +45,7 @@
+>>   #include <asm/kasan.h>
+>>   #include <asm/dma-mapping.h>
+>>   #include <asm/uv.h>
+>> +#include <linux/virtio.h>
+>>   
+>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
+>>   
+>> @@ -161,6 +162,11 @@ bool force_dma_unencrypted(struct device *dev)
+>>   	return is_prot_virt_guest();
+>>   }
+>>   
+>> +int arch_needs_virtio_iommu_platform(struct virtio_device *dev)
+>> +{
+>> +	return is_prot_virt_guest();
+>> +}
+>> +
+>>   /* protected virtualization */
+>>   static void pv_init(void)
+>>   {
+>> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> index a977e32a88f2..aa8e01104f86 100644
+>> --- a/drivers/virtio/virtio.c
+>> +++ b/drivers/virtio/virtio.c
+>> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
+>>   }
+>>   EXPORT_SYMBOL_GPL(virtio_add_status);
+>>   
+>> +/*
+>> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
+>> + *				      features for VIRTIO device dev
+>> + * @dev: the VIRTIO device being added
+>> + *
+>> + * Permits the platform to provide architecture specific functionality when
+>> + * devices features are finalized. This is the default implementation.
+>> + * Architecture implementations can override this.
+>> + */
+>> +
+>> +int __weak arch_needs_virtio_iommu_platform(struct virtio_device *dev)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>>   int virtio_finalize_features(struct virtio_device *dev)
+>>   {
+>>   	int ret = dev->config->finalize_features(dev);
+>> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
+>>   	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
+>>   		return 0;
+>>   
+>> +	if (arch_needs_virtio_iommu_platform(dev) &&
+>> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
 > 
-> Thanks, this helps a lot. Somehow we're entering mem_cgroup_below_min even
-> when min/emin is 0 (which should indeed be the case if you haven't set them
-> in the hierarchy).
+> Just a style nit, but the "!virtio..." should be directly under the
+> "arch_...", not tabbed out.
+
+Oh right, thanks!
+
+Pierre
+
 > 
-> My guess is that page_counter_read(&memcg->memory) is 0, which means
-> mem_cgroup_below_min will return 1.
+> Thanks,
+> Tom
+> 
 
-Yes this is the case because this is likely the root memcg which skips
-all charges.
-
-> However, I don't know for sure why that should then result in the OOM killer
-> coming along. My guess is that since this memcg has 0 pages to scan anyway,
-> we enter premature OOM under some conditions. I don't know why we wouldn't
-> have hit that with the old version of mem_cgroup_protected that returned
-> MEMCG_PROT_* members, though.
-
-Not really. There is likely no other memcg to reclaim from and assuming
-min limit protection will result in no reclaimable memory and thus the
-OOM killer.
-
-> Can you please try the patch with the `>=` checks in mem_cgroup_below_min
-> and mem_cgroup_below_low changed to `>`? If that fixes it, then that gives a
-> strong hint about what's going on here.
-
-This would work but I believe an explicit check for the root memcg would
-be easier to spot the reasoning.
+...snip...
 
 -- 
-Michal Hocko
-SUSE Labs
+Pierre Morel
+IBM Lab Boeblingen
