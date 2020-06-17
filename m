@@ -2,161 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875F1FD8BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A181FD89B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgFQW2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgFQW2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:28:03 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CADC06174E;
-        Wed, 17 Jun 2020 15:28:03 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y11so4847894ljm.9;
-        Wed, 17 Jun 2020 15:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IKFzNibCd7jzC+wKme/62sVxJsUZsrptVvulkctN6fc=;
-        b=sogBx8KF5qXKU6uIzglmpLtOwdnq8arZ4/R7HdxFWl9vEyg25TbvzNbcUG5pA7PTxu
-         +Y21qITF5l2IeoGbX8+uDtgy295BPargj9NdUoojpbkgn1HjN2SCkttS5sEeV73w6saM
-         lQut9MIEPs+qRJyP3MahcOMs7ZdAGaGGGpixTEHQfzJoUjI8IPCu6T/6Apst2DmMOBy/
-         KUO8dzCcRhMPS2jxwmOYrUeLehzEENLkwHe15tzosdjPEL44iaqVVBabhJPAmHrJMz4M
-         83Q694VYVrE3UFGfqvgWshqUx5wEp6r2E6qeGiZ5eA67Iax9eZVlDzkJJ/iD0iL2vq96
-         QKyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IKFzNibCd7jzC+wKme/62sVxJsUZsrptVvulkctN6fc=;
-        b=Rn7kc1PjAgXC846sVcmyjgVYZF3JR0tJY1gkxFfky6IoYPFa43QSs43JZvq9UzNcG7
-         fp55WhiFP3DsYFo+BZElnL6Z0dH/kaWik2fN/uk5/gKVcOQR7DWyjeB6Jjjwru2hBDyj
-         aKYEQxu5Q5JtnkvdVaVVefclGOVTtf8gzTMQfESeRJDnHRX10Dbkl1/nUsn8YpaflATz
-         lXjTfvpxAZ20hIQEDX6/u+GkkX1uk0TYzfLkLA6DbcpdW8Uvvr/UaRv74yshhpxBJC7a
-         YFhTEyQbifOsfPmhe4EXVUcNeVRLxYBZZLnaGS8pC2ciCPjW6DaYjLAQYexdWIZbhTtr
-         qJJQ==
-X-Gm-Message-State: AOAM533ZIQK2mSLH6Y0z9nDu+LjGIw36+/cOUvzUaozZ34tqnmFsSpK2
-        NjoSJs8F2mPtk8ObX4qBTzY=
-X-Google-Smtp-Source: ABdhPJwcUfeogdH2fdQoZn2uStj+lMY3N6d4lTg2ozcjT5sN41K76ccpr8S5r0ZJF0Z0vAo7B1CP+A==
-X-Received: by 2002:a2e:9810:: with SMTP id a16mr648149ljj.157.1592432881697;
-        Wed, 17 Jun 2020 15:28:01 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id a1sm210378ljk.133.2020.06.17.15.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:28:01 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 7/7] drm/panel-simple: Add missing connector type for some panels
-Date:   Thu, 18 Jun 2020 01:27:03 +0300
-Message-Id: <20200617222703.17080-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200617222703.17080-1-digetx@gmail.com>
-References: <20200617222703.17080-1-digetx@gmail.com>
+        id S1726959AbgFQWWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726909AbgFQWWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 18:22:13 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6DF02083B;
+        Wed, 17 Jun 2020 22:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592432533;
+        bh=IXfRB1ln79N+EByGvcDZLtyLTc8uIB4owydFsSPvdn4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uQ/seVr9NqlnoEZpYrrDnKyihLCV1NpDqkPfISGAoZYQOTULsJr86NzD2lqElXJ7T
+         2Zum6blhRm7Y1SwcwF+vGdvbCjkqpQpOnrtSCdSNI5lgm/cCnzT8DhJXg8sI4G9oaN
+         UgcFLJ7dfXMXROnRC88wxorAfsDSYFZELCBNot38=
+Date:   Wed, 17 Jun 2020 17:27:33 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] bcache: Use struct_size() in kzalloc()
+Message-ID: <20200617222733.GA24156@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DRM panel bridge core requires connector type to be set up properly,
-otherwise it rejects the panel. The missing connector type problem popped
-up while I was trying to wrap CLAA070WP03XG panel into a DRM bridge in
-order to test whether panel's rotation property work properly using
-panel-simple driver on NVIDIA Tegra30 Nexus 7 tablet device, which uses
-CLAA070WP03XG display panel.
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-The NVIDIA Tegra DRM driver recently gained DRM bridges support for the
-RGB output and now driver wraps directly-connected panels into DRM bridge.
-Hence all panels should have connector type set properly now, otherwise
-the panel's wrapping fails.
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-This patch adds missing connector types for the LVDS panels that are found
-on NVIDIA Tegra devices:
-
-  1. AUO B101AW03
-  2. Chunghwa CLAA070WP03XG
-  3. Chunghwa CLAA101WA01A
-  4. Chunghwa CLAA101WB01
-  5. EDT ET057090DHU
-  6. Innolux N156BGE L21
-  7. Samsung LTN101NT05
-
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/md/bcache/writeback.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 6764ac630e22..9eb2dbb7bfa6 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -687,6 +687,7 @@ static const struct panel_desc auo_b101aw03 = {
- 		.width = 223,
- 		.height = 125,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
+diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+index 1cf1e5016cb9..c0db3c860179 100644
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -459,10 +459,8 @@ static void read_dirty(struct cached_dev *dc)
+ 		for (i = 0; i < nk; i++) {
+ 			w = keys[i];
  
- static const struct display_timing auo_b101ean01_timing = {
-@@ -1340,6 +1341,7 @@ static const struct panel_desc chunghwa_claa070wp03xg = {
- 		.width = 94,
- 		.height = 150,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode chunghwa_claa101wa01a_mode = {
-@@ -1362,6 +1364,7 @@ static const struct panel_desc chunghwa_claa101wa01a = {
- 		.width = 220,
- 		.height = 120,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode chunghwa_claa101wb01_mode = {
-@@ -1384,6 +1387,7 @@ static const struct panel_desc chunghwa_claa101wb01 = {
- 		.width = 223,
- 		.height = 125,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode dataimage_scf0700c48ggu18_mode = {
-@@ -1573,6 +1577,7 @@ static const struct panel_desc edt_et057090dhu = {
- 	},
- 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
- 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode edt_etm0700g0dh6_mode = {
-@@ -2055,6 +2060,7 @@ static const struct panel_desc innolux_n156bge_l21 = {
- 		.width = 344,
- 		.height = 193,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode innolux_p120zdg_bf1_mode = {
-@@ -3001,6 +3007,7 @@ static const struct panel_desc samsung_ltn101nt05 = {
- 		.width = 223,
- 		.height = 125,
- 	},
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
- static const struct drm_display_mode samsung_ltn140at29_301_mode = {
+-			io = kzalloc(sizeof(struct dirty_io) +
+-				     sizeof(struct bio_vec) *
+-				     DIV_ROUND_UP(KEY_SIZE(&w->key),
+-						  PAGE_SECTORS),
++			io = kzalloc(struct_size(io, bio.bi_inline_vecs,
++						DIV_ROUND_UP(KEY_SIZE(&w->key), PAGE_SECTORS)),
+ 				     GFP_KERNEL);
+ 			if (!io)
+ 				goto err;
 -- 
-2.26.0
+2.27.0
 
