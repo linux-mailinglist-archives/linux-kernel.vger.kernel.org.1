@@ -2,199 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290251FD9C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10E01FD9CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgFQXlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:41:02 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57890 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgFQXkt (ORCPT
+        id S1726919AbgFQXlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727804AbgFQXlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:40:49 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 106BE8040A69;
-        Wed, 17 Jun 2020 23:40:44 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xGs9u6t1x5Rs; Thu, 18 Jun 2020 02:40:43 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 9/9] dmaengine: dw: Introduce max burst length hw config
-Date:   Thu, 18 Jun 2020 02:40:28 +0300
-Message-ID: <20200617234028.25808-10-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru>
+        Wed, 17 Jun 2020 19:41:04 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7D2C06174E;
+        Wed, 17 Jun 2020 16:41:02 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i27so4961534ljb.12;
+        Wed, 17 Jun 2020 16:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OcOqz11XDX1GFeXdHeD+rrzTbKQ6O43sVtDhODmNqc0=;
+        b=I4EL+9xSGNrxK6Z2hdF8hp2JFC0Q71MdVSv9gkIsSfmBiXE3tO953ygNuEyhWzWq/Y
+         kt5sgsr0FU2tTuUPnCvyEy7uo41zYwtq/dc73J6ghXA2pAHLwbp5yDmdG5/9Lj7ZsKVB
+         e95PwhYCe6jdiPXV9LN4hyWDXJXW7lEadkgGY1uzMk4kXxOOVB6yJQDhIC+MAszjYRK0
+         HzWexz6TTLOMQLkNeq0V64kYu3nwoGtyZKNUAtmX+v9HIHye607uCpTMNtke6/agA4AN
+         aHu0CkuCGO4alJutuER72zo7mtz4yAcvRq0eFLnDx7ATn2lh86AUYnSifHlgJcewZFde
+         Y+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OcOqz11XDX1GFeXdHeD+rrzTbKQ6O43sVtDhODmNqc0=;
+        b=WBh6dcj6lkRnh6ykFoxl4uUcRhokulMkdv3uh8yq05dQL+FEDUjhsah6B6juYFiySo
+         egspPZWr+cjdQTR0khSXwe94dg/XC/+BEhMVkhMiPcUqbAD94TVGgg6jxCC6G7NPOTTt
+         t0Tkgac2Ucv3VtkshqTrV1g0R/5yND0/sBS8nbQTwdBLyWb+YOeQXlkTFjRpdKFbg86u
+         F0VsDVCw8SVseOr/6F7Y8ov59XsFcEEBujYeJID55p53kyECWl4Xp5OLrr1ODABqZcyR
+         e3YHc6dji1hT/nozaoORzrl2UneoIB8TrUme7ERQdUL7mPTxlLE5UfeouZyDVUGUqZjx
+         FlvA==
+X-Gm-Message-State: AOAM533djdn2TYs/ydB5Ud/GPusded6ceF7flvi8TZqZIkWHF8y2vS23
+        EUVM2834hXsv+Es92wtyDbo=
+X-Google-Smtp-Source: ABdhPJzwtCosDXfqxKV938U918086QPW2Y3T4a+nySVKa/edKjWK6dOc4Uodf6FWGzHT3zqti2DCHg==
+X-Received: by 2002:a2e:9b8f:: with SMTP id z15mr879391lji.185.1592437260890;
+        Wed, 17 Jun 2020 16:41:00 -0700 (PDT)
+Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.gmail.com with ESMTPSA id c8sm287871lfc.46.2020.06.17.16.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 16:41:00 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Daniel Stone <daniel@fooishbar.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] 180 degrees rotation support for NVIDIA Tegra DRM
+Date:   Thu, 18 Jun 2020 02:40:37 +0300
+Message-Id: <20200617234040.1094-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IP core of the DW DMA controller may be synthesized with different
-max burst length of the transfers per each channel. According to Synopsis
-having the fixed maximum burst transactions length may provide some
-performance gain. At the same time setting up the source and destination
-multi size exceeding the max burst length limitation may cause a serious
-problems. In our case the DMA transaction just hangs up. In order to fix
-this lets introduce the max burst length platform config of the DW DMA
-controller device and don't let the DMA channels configuration code
-exceed the burst length hardware limitation.
+Hello!
 
-Note the maximum burst length parameter can be detected either in runtime
-from the DWC parameter registers or from the dedicated DT property.
-Depending on the IP core configuration the maximum value can vary from
-channel to channel so by overriding the channel slave max_burst capability
-we make sure a DMA consumer will get the channel-specific max burst
-length.
+This series adds 180° display plane rotation support to the NVIDIA Tegra
+DRM driver which is needed for devices that have display panel physically
+mounted upside-down, like Nexus 7 tablet device for example [1]. Since
+DRM panel rotation is a new thing for a userspace, currently only
+Opentegra Xorg driver [2] and a recent Weston [3] have support for the
+rotated display panels, but this is more than good enough for the starter.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+[1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154327.18589-3-digetx@gmail.com/
+[2] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20a3959bbe5bc3a3b67e55977093fd5114ca
+[3] https://gitlab.freedesktop.org/wayland/weston/-/merge_requests/315
 
----
+Changelog:
 
-Changelog v2:
-- Rearrange SoBs.
-- Discard dwc_get_maxburst() accessor. It's enough to have a clamping
-  guard against exceeding the hardware max burst limitation.
+v3: - Factored out the panel patches into standalone series [4] because
+      this series doesn't have hard dependency on the panel patches and it
+      should be nicer to review and apply the properly grouped patches.
 
-Changelog v3:
-- Override the slave channel max_burst capability instead of calculating
-  the minimum value of max burst lengths and setting the DMA-device
-  generic capability.
+    - The DRM_MODE_ROTATE_180 now isn't passed to drm_rotation_simplify(),
+      like it was suggested by Ville Syrjälä in the comment to v2.
 
-Changelog v5:
-- Clamp the dst and src burst lengths in the generic dwc_config() method
-  instead of doing that in the encode_maxburst() callback.
-- Define max_burst with u32 type in struct dw_dma_platform_data.
-- Perform of_property_read_u32_array() directly into the platform data
-  max_burst member.
+    - Added clarifying comment for the tegra_fb_is_bottom_up() in the code.
 
-Changelog v6:
-- Move DW_DMA_MAX_BURST macro definition to the previous patch.
----
- drivers/dma/dw/core.c                | 10 ++++++++++
- drivers/dma/dw/of.c                  |  5 +++++
- drivers/dma/dw/regs.h                |  2 ++
- include/linux/platform_data/dma-dw.h |  3 +++
- 4 files changed, 20 insertions(+)
+[4] https://lore.kernel.org/lkml/20200617231842.30671-1-digetx@gmail.com/T/#t
 
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 4887aa2fc73c..588b9bae827c 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -791,6 +791,11 @@ static int dwc_config(struct dma_chan *chan, struct dma_slave_config *sconfig)
- 
- 	memcpy(&dwc->dma_sconfig, sconfig, sizeof(*sconfig));
- 
-+	dwc->dma_sconfig.src_maxburst =
-+		clamp(dwc->dma_sconfig.src_maxburst, 0U, dwc->max_burst);
-+	dwc->dma_sconfig.dst_maxburst =
-+		clamp(dwc->dma_sconfig.dst_maxburst, 0U, dwc->max_burst);
-+
- 	dw->encode_maxburst(dwc, &dwc->dma_sconfig.src_maxburst);
- 	dw->encode_maxburst(dwc, &dwc->dma_sconfig.dst_maxburst);
- 
-@@ -1051,7 +1056,9 @@ static void dwc_free_chan_resources(struct dma_chan *chan)
- 
- static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- {
-+	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
- 
-+	caps->max_burst = dwc->max_burst;
- }
- 
- int do_dma_probe(struct dw_dma_chip *chip)
-@@ -1194,9 +1201,12 @@ int do_dma_probe(struct dw_dma_chip *chip)
- 			dwc->nollp =
- 				(dwc_params >> DWC_PARAMS_MBLK_EN & 0x1) == 0 ||
- 				(dwc_params >> DWC_PARAMS_HC_LLP & 0x1) == 1;
-+			dwc->max_burst =
-+				(0x4 << (dwc_params >> DWC_PARAMS_MSIZE & 0x7));
- 		} else {
- 			dwc->block_size = pdata->block_size;
- 			dwc->nollp = !pdata->multi_block[i];
-+			dwc->max_burst = pdata->max_burst[i] ?: DW_DMA_MAX_BURST;
- 		}
- 	}
- 
-diff --git a/drivers/dma/dw/of.c b/drivers/dma/dw/of.c
-index 9e27831dee32..1474b3817ef4 100644
---- a/drivers/dma/dw/of.c
-+++ b/drivers/dma/dw/of.c
-@@ -98,6 +98,11 @@ struct dw_dma_platform_data *dw_dma_parse_dt(struct platform_device *pdev)
- 			pdata->multi_block[tmp] = 1;
- 	}
- 
-+	if (of_property_read_u32_array(np, "snps,max-burst-len", pdata->max_burst,
-+				       nr_channels)) {
-+		memset32(pdata->max_burst, DW_DMA_MAX_BURST, nr_channels);
-+	}
-+
- 	if (!of_property_read_u32(np, "snps,dma-protection-control", &tmp)) {
- 		if (tmp > CHAN_PROTCTL_MASK)
- 			return NULL;
-diff --git a/drivers/dma/dw/regs.h b/drivers/dma/dw/regs.h
-index 1ab840b06e79..76654bd13c1a 100644
---- a/drivers/dma/dw/regs.h
-+++ b/drivers/dma/dw/regs.h
-@@ -126,6 +126,7 @@ struct dw_dma_regs {
- /* Bitfields in DWC_PARAMS */
- #define DWC_PARAMS_MBLK_EN	11		/* multi block transfer */
- #define DWC_PARAMS_HC_LLP	13		/* set LLP register to zero */
-+#define DWC_PARAMS_MSIZE	16		/* max group transaction size */
- 
- /* bursts size */
- enum dw_dma_msize {
-@@ -284,6 +285,7 @@ struct dw_dma_chan {
- 	/* hardware configuration */
- 	unsigned int		block_size;
- 	bool			nollp;
-+	u32			max_burst;
- 
- 	/* custom slave configuration */
- 	struct dw_dma_slave	dws;
-diff --git a/include/linux/platform_data/dma-dw.h b/include/linux/platform_data/dma-dw.h
-index 369e41e9dcc9..4f681df85c27 100644
---- a/include/linux/platform_data/dma-dw.h
-+++ b/include/linux/platform_data/dma-dw.h
-@@ -44,6 +44,8 @@ struct dw_dma_slave {
-  * @data_width: Maximum data width supported by hardware per AHB master
-  *		(in bytes, power of 2)
-  * @multi_block: Multi block transfers supported by hardware per channel.
-+ * @max_burst: Maximum value of burst transaction size supported by hardware
-+ *	       per channel (in units of CTL.SRC_TR_WIDTH/CTL.DST_TR_WIDTH).
-  * @protctl: Protection control signals setting per channel.
-  */
- struct dw_dma_platform_data {
-@@ -58,6 +60,7 @@ struct dw_dma_platform_data {
- 	unsigned char	nr_masters;
- 	unsigned char	data_width[DW_DMA_MAX_NR_MASTERS];
- 	unsigned char	multi_block[DW_DMA_MAX_NR_CHANNELS];
-+	u32		max_burst[DW_DMA_MAX_NR_CHANNELS];
- #define CHAN_PROTCTL_PRIVILEGED		BIT(0)
- #define CHAN_PROTCTL_BUFFERABLE		BIT(1)
- #define CHAN_PROTCTL_CACHEABLE		BIT(2)
+Dmitry Osipenko (3):
+  drm/tegra: plane: Rename bottom_up to reflect_y
+  drm/tegra: plane: Support horizontal reflection
+  drm/tegra: plane: Support 180° rotation
+
+ drivers/gpu/drm/tegra/dc.c    | 46 ++++++++++++++++++++++++++++-------
+ drivers/gpu/drm/tegra/dc.h    |  3 ++-
+ drivers/gpu/drm/tegra/plane.c |  3 ++-
+ drivers/gpu/drm/tegra/plane.h |  3 ++-
+ 4 files changed, 43 insertions(+), 12 deletions(-)
+
 -- 
-2.26.2
+2.26.0
 
