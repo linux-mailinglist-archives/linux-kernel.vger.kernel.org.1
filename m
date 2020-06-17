@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E511FD0D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6DE1FD0DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgFQPZU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Jun 2020 11:25:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44638 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgFQPZS (ORCPT
+        id S1726982AbgFQPZs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Jun 2020 11:25:48 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56302 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726960AbgFQPZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 11:25:18 -0400
-Received: from mail-pf1-f197.google.com ([209.85.210.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jlZwB-0001eJ-Cp
-        for linux-kernel@vger.kernel.org; Wed, 17 Jun 2020 15:25:15 +0000
-Received: by mail-pf1-f197.google.com with SMTP id 137so2029686pfw.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:25:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=qyyiMmv9qYUSuKaCbblPmkDJA2AJx3BvYMLY89xY8b4=;
-        b=rQRBPuWzCFLJjNA9NtqnsQQsm+bIH7PRFHbaoKFGgKTDwQeJ+UlwZX07ouGpSdLbSP
-         bfxHxCe5u8ZUSobVd3in/e8zBavH85Us/JOTSBn9FDwm62LAVixitgEAKAzVeQk+GZWk
-         LPHM9g6/n30Sac8i4+CUeOSCCdBN/P3nL8xWjClWphodhfQiANHF8xUnwI09wbiJx8IF
-         yhfzJeB3rptQXzd+iUDpCd7py3lIyZQXHoExeuJmoYK/gV97XvIS3jAzfE9EfovvlgD9
-         azuP/G1gdSzoPIZQZcjr85ldIbt3NMSOdVvNrZhBFoSaObNtHHECeP5YooS82eeRJR3T
-         hNww==
-X-Gm-Message-State: AOAM531fYGftfUr3gidivcLGtSVGek092NfUN4XzNxZLzzoLTR+HYZiq
-        wx4t5wx4ltH47qB9NEof0Q4U8tXLJZ/aUoOsDaU54G51WaFbiZGWykkR4ivx5aJYImLe0aAvbkj
-        olmnKEI7/7aC6RBqXKnIPnTXpJsOsMe2BYfZah+QuCA==
-X-Received: by 2002:a65:594b:: with SMTP id g11mr365411pgu.168.1592407514031;
-        Wed, 17 Jun 2020 08:25:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxyAnJqzykyq6Qh4y8k+2SiK49GevfzYs41NQ2z60sL/wWRIIaLoTPE/TH4irNzfB/JqLYESQ==
-X-Received: by 2002:a65:594b:: with SMTP id g11mr365379pgu.168.1592407513540;
-        Wed, 17 Jun 2020 08:25:13 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id l3sm203953pgm.59.2020.06.17.08.25.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Jun 2020 08:25:13 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v3 2/2] ALSA: hda/realtek: Add mute LED and micmute LED
- support for HP systems
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hbllhzz2m.wl-tiwai@suse.de>
-Date:   Wed, 17 Jun 2020 23:25:10 +0800
-Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
-        Kailang Yang <kailang@realtek.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Jian-Hong Pan <jian-hong@endlessm.com>,
-        Tomas Espeleta <tomas.espeleta@gmail.com>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Wed, 17 Jun 2020 11:25:46 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-25-eup2Bh-aNyW7TJye3x3ncg-1; Wed, 17 Jun 2020 16:25:42 +0100
+X-MC-Unique: eup2Bh-aNyW7TJye3x3ncg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 17 Jun 2020 16:25:41 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 17 Jun 2020 16:25:41 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Christoph Hellwig" <hch@lst.de>, Tycho Andersen <tycho@tycho.ws>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH v4 02/11] fs: Move __scm_install_fd() to
+ __fd_install_received()
+Thread-Topic: [PATCH v4 02/11] fs: Move __scm_install_fd() to
+ __fd_install_received()
+Thread-Index: AQHWQ43M27/IXY9H5E6A6toMY/N8aajc78uQ
+Date:   Wed, 17 Jun 2020 15:25:41 +0000
+Message-ID: <b58ef9a368214b69a86c7a78b67f84d5@AcuMS.aculab.com>
+References: <20200616032524.460144-1-keescook@chromium.org>
+ <20200616032524.460144-3-keescook@chromium.org>
+In-Reply-To: <20200616032524.460144-3-keescook@chromium.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Message-Id: <486196C0-891B-47BA-8A5A-A9B65D27E7E5@canonical.com>
-References: <20200617102906.16156-1-kai.heng.feng@canonical.com>
- <20200617102906.16156-2-kai.heng.feng@canonical.com>
- <s5hbllhzz2m.wl-tiwai@suse.de>
-To:     Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kees Cook
+> Sent: 16 June 2020 04:25
+ 
+> In preparation for users of the "install a received file" logic outside
+> of net/ (pidfd and seccomp), relocate and rename __scm_install_fd() from
+> net/core/scm.c to __fd_install_received() in fs/file.c, and provide a
+> wrapper named fd_install_received_user(), as future patches will change
+> the interface to __fd_install_received().
 
+Any reason for the leading __ ??
 
-> On Jun 17, 2020, at 19:55, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> On Wed, 17 Jun 2020 12:29:02 +0200,
-> Kai-Heng Feng wrote:
->> 
->> There are two more HP systems control mute LED from HDA codec and need
->> to expose micmute led class so SoF can control micmute LED.
->> 
->> Add quirks to support them.
->> 
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> I guess this can be applied independently from the patch#1?
-> If so, I'll queue this for for-linus branch.
+	David
 
-Yes please. Thanks!
-
-Kai-Heng
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> ---
->> v3:
->> - No change.
->> v2:
->> - Wording.
->> 
->> sound/pci/hda/patch_realtek.c | 2 ++
->> 1 file changed, 2 insertions(+)
->> 
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index 0587d1e96b19..cd1a3619806a 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -7473,6 +7473,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->> 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
->> 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
->> 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
->> +	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
->> +	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
->> 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
->> 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
->> 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
->> -- 
->> 2.17.1
->> 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
