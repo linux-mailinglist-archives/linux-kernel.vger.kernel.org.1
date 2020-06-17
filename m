@@ -2,98 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE64E1FD45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3B71FD472
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgFQSXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726835AbgFQSXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:23:02 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADB9C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 11:23:02 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id i4so1477332pjd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 11:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yx0AFE8bnkOZ+0HVx0qf6qzKz6YFaE2RtkaHNSdil4Q=;
-        b=Rl+zBYdfFS3UwL0fHb2iZoQ9Mc0+vQWPd3YXCCRD1mPlxoeRAcVPDQkxKV8SJrTMw1
-         0uVOGChTPPkRXt2gXmGHyHS7MuBR5lINpp+c1q8L4VIrLfva85BsqCqe0Q/lQ6hbyqYw
-         M7z8dS62N0oA81W8wwi5f7w6ypjp5Ha/apnbNJhYccBZOhTAqA5kI0oP6iXrQ7mxM750
-         SGxtVl3LOsDfWu/N65yyLkiqgaRtHKfbRCBnpX3duQtiXd7vSgu08C/cyqK6onmC38Eg
-         sLrjq65a14O+OqVEnlAbCOB1wrQV40nEhY+n3uw1YZ6HvsxfohLyT56332gWPtq2F8fT
-         1r+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yx0AFE8bnkOZ+0HVx0qf6qzKz6YFaE2RtkaHNSdil4Q=;
-        b=Vrjdilu2wMbbRlHQupLij4pfJTwUyGGThJZVY+XofjqGr7JNppJx0r9rQBDNhdOji0
-         gy7vJxiSOpxgeQ/8+Jrm3IRog5cg8BdZpgYtCcfOQcmBMsi2fFjLZAJInMs2lpgo9dlE
-         n8L3iNPIMQ7f6wcXFj4jSGOGaE7XBaZ5ErZs9JPUD1v4rMNh/0ZRirfTaAC1/ike1S9Z
-         kJOAgM+n8iaU7/B65mNwFppBL8UgvLjxeDULVfmAjiqG8EEtZAU5a0ZAarE8DuKQkG8+
-         xH5QNQC7jSTFlQ/UajbdosDD+CgEhP+WBSyKYpdS7tLqmfxhxAmpUVfVLhAgAZU8TL0d
-         mHiA==
-X-Gm-Message-State: AOAM530dYA/mCaHIDaBoiR9XY5ha5LNzVmi9dg15X2sekNhPMj8o5yVK
-        KF3Wn5zdZhpUwUJ1Ui0dcr4xCQ==
-X-Google-Smtp-Source: ABdhPJw15kXy8cl4re5NSa1ZgN8/0tpd5wuHfQ34K+X7a+RmU4ua2X9k8+4MCLa7CIrMdOVgxb3ZWg==
-X-Received: by 2002:a17:90b:307:: with SMTP id ay7mr370815pjb.48.1592418181918;
-        Wed, 17 Jun 2020 11:23:01 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id b1sm525823pfr.89.2020.06.17.11.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 11:23:01 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jlciC-009iIR-1W; Wed, 17 Jun 2020 15:23:00 -0300
-Date:   Wed, 17 Jun 2020 15:23:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Divya Indi <divya.indi@oracle.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
-Message-ID: <20200617182300.GJ6578@ziepe.ca>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <1591627576-920-2-git-send-email-divya.indi@oracle.com>
- <20200609070026.GJ164174@unreal>
- <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
- <20200614064156.GB2132762@unreal>
- <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
- <20200617051739.GH2383158@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617051739.GH2383158@unreal>
+        id S1727859AbgFQSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:24:15 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18900 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726835AbgFQSYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 14:24:14 -0400
+IronPort-SDR: 3orirbTAiPf/jWFgCNx4Oej7KDbKxb2I2vZvnTmkkxQ6GP6UbwWTv3IAFDGVpbOtkQsE9kRQ8h
+ 9iL9zhkBk3bw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 11:24:14 -0700
+IronPort-SDR: /sI/GfEtqqZ/B9JgpPbEjk1lT4UmMwoSchUHT2J1Ejgx4fk6ZznhfwqsbzWyVGFz5i/s71TA7M
+ hzFJXZMzZZlw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
+   d="scan'208";a="308874134"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2020 11:24:13 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "H Peter Anvin" <hpa@zytor.com>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        "Christoph Hellwig" <hch@infradeed.org>,
+        "Ashok Raj" <ashok.raj@intel.com>,
+        "Jacob Jun Pan" <jacob.jun.pan@intel.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH v3 00/13] x86: tag application address space for devices
+Date:   Wed, 17 Jun 2020 11:23:40 -0700
+Message-Id: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.5.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 08:17:39AM +0300, Leon Romanovsky wrote:
-> 
-> My thoughts that everything here hints me that state machine and
-> locking are implemented wrongly. In ideal world, the expectation
-> is that REQ message will have a state in it (PREPARED, SENT, ACK
-> e.t.c.) and list manipulations are done accordingly with proper
-> locks, while rdma_nl_multicast() is done outside of the locks.
+Typical hardware devices require a driver stack to translate application
+buffers to hardware addresses, and a kernel-user transition to notify the
+hardware of new work. What if both the translation and transition overhead
+could be eliminated? This is what Shared Virtual Address (SVA) and ENQCMD
+enabled hardware like Data Streaming Accelerator (DSA) aims to achieve.
+Applications map portals in their local-address-space and directly submit
+work to them using a new instruction.
 
-It can't be done outside the lock without creating races - once
-rdma_nl_multicast happens it is possible for the other leg of the
-operation to begin processing. 
+This series enables ENQCMD and associated management of the new MSR
+(MSR_IA32_PASID). This new MSR allows an application address space to be
+associated with what the PCIe spec calls a Process Address Space ID (PASID).
+This PASID tag is carried along with all requests between applications and
+devices and allows devices to interact with the process address space.
 
-The list must be updated before this happens.
+SVA and ENQCMD enabled device drivers need this series. The phase 2 DSA
+patches with SVA and ENQCMD support was released on the top of this series:
+https://lore.kernel.org/patchwork/cover/1244060/
 
-What is missing here is refcounting - the lifetime model of this data
-is too implicit, but it is not worth adding I think
+This series only provides simple and basic support for ENQCMD and the MSR:
+1. Clean up type definitions (patch 1-3). These patches can be in a
+   separate series.
+   - Define "pasid" as "unsigned int" consistently (patch 1 and 2).
+   - Define "flags" as "unsigned int"
+2. Explain different various technical terms used in the series (patch 4).
+3. Enumerate support for ENQCMD in the processor (patch 5).
+4. Handle FPU PASID state and the MSR during context switch (patches 6-7).
+5. Define "pasid" in mm_struct (patch 8).
+5. Clear PASID state for new mm and forked and cloned thread (patch 9-10).
+6. Allocate and free PASID for a process (patch 11).
+7. Fix up the PASID MSR in #GP handler when one thread in a process
+   executes ENQCMD for the first time (patches 12-13).
 
-Jason
+This patch series and the DSA phase 2 series are in
+https://github.com/intel/idxd-driver/tree/idxd-stage2
+
+References:
+1. Detailed information on the ENQCMD/ENQCMDS instructions and the
+IA32_PASID MSR can be found in Intel Architecture Instruction Set
+Extensions and Future Features Programming Reference:
+https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+
+2. Detailed information on DSA can be found in DSA specification:
+https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification
+
+Chang log:
+v3:
+- Change names of bind_mm() and unbind_mm() to match to new APIs in
+  patch 4 (Baolu)
+- Change CONFIG_PCI_PASID to CONFIG_IOMMU_SUPPORT because non-PCI device
+  can have PASID in ARM in patch 8 (Jean)
+- Add a few sanity checks in __free_pasid() and alloc_pasid() in
+  patch 11 (Baolu)
+- Add patch 12 to define a new flag "has_valid_pasid" for a task and
+  use the flag to identify if the task has a valid PASID MSR (PeterZ)
+- Add fpu__pasid_write() to update the MSR in fixup() in patch 13
+- Check if mm->pasid can be found in fixup() in patch 13
+
+v2:
+- Add patches 1-3 to define "pasid" and "flags" as "unsigned int"
+  consistently (Thomas)
+  (these 3 patches could be in a separate patch set)
+- Add patch 8 to move "pasid" to generic mm_struct (Christoph).
+  Jean-Philippe Brucker released a virtually same patch. Upstream only
+  needs one of the two.
+- Add patch 9 to initialize PASID in a new mm.
+- Plus other changes described in each patch (Thomas)
+
+Ashok Raj (1):
+  docs: x86: Add documentation for SVA (Shared Virtual Addressing)
+
+Fenghua Yu (10):
+  iommu: Change type of pasid to unsigned int
+  ocxl: Change type of pasid to unsigned int
+  iommu/vt-d: Change flags type to unsigned int in binding mm
+  x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
+  x86/msr-index: Define IA32_PASID MSR
+  mm: Define pasid in mm
+  fork: Clear PASID for new mm
+  x86/process: Clear PASID state for a newly forked/cloned thread
+  x86/mmu: Allocate/free PASID
+  x86/traps: Fix up invalid PASID
+
+Peter Zijlstra (1):
+  sched: Define and initialize a flag to identify valid PASID in the
+    task
+
+Yu-cheng Yu (1):
+  x86/fpu/xstate: Add supervisor PASID state for ENQCMD feature
+
+ Documentation/x86/index.rst            |   1 +
+ Documentation/x86/sva.rst              | 287 +++++++++++++++++++++++++
+ arch/x86/include/asm/cpufeatures.h     |   1 +
+ arch/x86/include/asm/fpu/types.h       |  10 +
+ arch/x86/include/asm/fpu/xstate.h      |   2 +-
+ arch/x86/include/asm/iommu.h           |   3 +
+ arch/x86/include/asm/mmu_context.h     |  14 ++
+ arch/x86/include/asm/msr-index.h       |   3 +
+ arch/x86/kernel/cpu/cpuid-deps.c       |   1 +
+ arch/x86/kernel/fpu/xstate.c           |   4 +
+ arch/x86/kernel/process.c              |  18 ++
+ arch/x86/kernel/traps.c                |  14 ++
+ drivers/gpu/drm/amd/amdkfd/kfd_iommu.c |   5 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h  |   2 +-
+ drivers/iommu/amd/amd_iommu.h          |  13 +-
+ drivers/iommu/amd/amd_iommu_types.h    |  12 +-
+ drivers/iommu/amd/init.c               |   4 +-
+ drivers/iommu/amd/iommu.c              |  41 ++--
+ drivers/iommu/amd/iommu_v2.c           |  22 +-
+ drivers/iommu/intel/debugfs.c          |   2 +-
+ drivers/iommu/intel/dmar.c             |  13 +-
+ drivers/iommu/intel/intel-pasid.h      |  21 +-
+ drivers/iommu/intel/iommu.c            |   4 +-
+ drivers/iommu/intel/pasid.c            |  36 ++--
+ drivers/iommu/intel/svm.c              | 225 +++++++++++++++++--
+ drivers/iommu/iommu.c                  |   2 +-
+ drivers/misc/ocxl/config.c             |   3 +-
+ drivers/misc/ocxl/link.c               |   6 +-
+ drivers/misc/ocxl/ocxl_internal.h      |   6 +-
+ drivers/misc/ocxl/pasid.c              |   2 +-
+ drivers/misc/ocxl/trace.h              |  20 +-
+ drivers/misc/uacce/uacce.c             |   2 +-
+ include/linux/amd-iommu.h              |   9 +-
+ include/linux/intel-iommu.h            |  20 +-
+ include/linux/intel-svm.h              |   2 +-
+ include/linux/iommu.h                  |   8 +-
+ include/linux/mm_types.h               |   6 +
+ include/linux/sched.h                  |   3 +
+ include/linux/uacce.h                  |   2 +-
+ include/misc/ocxl.h                    |   6 +-
+ kernel/fork.c                          |  12 ++
+ 41 files changed, 720 insertions(+), 147 deletions(-)
+ create mode 100644 Documentation/x86/sva.rst
+
+-- 
+2.19.1
+
