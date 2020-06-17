@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716DD1FCA96
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8252E1FCAA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgFQKQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
+        id S1726565AbgFQKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 06:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgFQKQV (ORCPT
+        with ESMTP id S1725554AbgFQKSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:16:21 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65424C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 03:16:21 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49n1Dw45gvz9sSg;
-        Wed, 17 Jun 2020 20:16:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1592388978;
-        bh=VpnojUfZvzc1jD45rNjZmQOrHUNS3Ez8W1Vr9svA5gs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rVePF/SNLlw42VJ/FE8J8DFyaHW4QhbXRnFyFXRqXS63pbbSJDo6VqHs+2MIMVsHE
-         ep7Pe0HPaC2DsqRxhK766JjJBFDXIabDUSDyJXNHNzFphcG96FfppS7JZkh6edam7U
-         EPmYWcTP+j9VK89dBFP32gCxKZa1mE75MTtJ5TdkLxf4rj4HCmTrM32BkQ12RovoGM
-         aZBlTysJvKS/kLOUlC/7lFILCgW8eE+FUdY3fL9Ij1ftnTxqszHIv5tUoaBFDvozKb
-         ZxKQAMVV6GwgktrqBt8jGVwliMUYV6/qiASqbGX91gPSCv5YqGMehYIM+gsUlu7IQe
-         UOkENCnwGe5Mw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, arnd@arndb.de,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v5 01/13] powerpc: Remove Xilinx PPC405/PPC440 support
-In-Reply-To: <50fb2dd6-4e8f-a550-6eda-073beb86f2ff@xilinx.com>
-References: <cover.1590079968.git.christophe.leroy@csgroup.eu> <8c593895e2cb57d232d85ce4d8c3a1aa7f0869cc.1590079968.git.christophe.leroy@csgroup.eu> <20200616002720.GA1307277@ubuntu-n2-xlarge-x86> <68503e5e-7456-b81c-e43d-27cb331a4b72@xilinx.com> <20200616181630.GA3403678@ubuntu-n2-xlarge-x86> <50fb2dd6-4e8f-a550-6eda-073beb86f2ff@xilinx.com>
-Date:   Wed, 17 Jun 2020 20:16:43 +1000
-Message-ID: <87bllidmk4.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 17 Jun 2020 06:18:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C874FC061573;
+        Wed, 17 Jun 2020 03:18:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 95B322A395D
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Barry Song <baohua@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Nick Dyer <nick@shmanahar.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Peter Hutterer <peter.hutterer@redhat.com>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        kernel@collabora.com
+Subject: [PATCH v2] Input: document inhibiting
+Date:   Wed, 17 Jun 2020 12:18:22 +0200
+Message-Id: <20200617101822.8558-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <f9007f37-c526-5fa4-3188-a554d2434177@redhat.com>
+References: <f9007f37-c526-5fa4-3188-a554d2434177@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Simek <michal.simek@xilinx.com> writes:
-> On 16. 06. 20 20:16, Nathan Chancellor wrote:
->> On Tue, Jun 16, 2020 at 04:45:20PM +0200, Michal Simek wrote:
->>> On 16. 06. 20 2:27, Nathan Chancellor wrote:
->>>> On Thu, May 21, 2020 at 04:55:52PM +0000, Christophe Leroy wrote:
->>>>> From: Michal Simek <michal.simek@xilinx.com>
->>>>>
->>>>> The latest Xilinx design tools called ISE and EDK has been released in
->>>>> October 2013. New tool doesn't support any PPC405/PPC440 new designs.
->>>>> These platforms are no longer supported and tested.
->>>>>
->>>>> PowerPC 405/440 port is orphan from 2013 by
->>>>> commit cdeb89943bfc ("MAINTAINERS: Fix incorrect status tag") and
->>>>> commit 19624236cce1 ("MAINTAINERS: Update Grant's email address and maintainership")
->>>>> that's why it is time to remove the support fot these platforms.
->>>>>
->>>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
->>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>>
->>>> This patch causes qemu-system-ppc to fail to load ppc44x_defconfig:
-<snip>
+Document inhibiting input devices and its relation to being
+a wakeup source.
 
-> I have took a look at it and was able to run qemu and also saw your
-> issue. What happened is that when xilinx platforms were removed zImage
-> is generated but it is not u-boot legacy image.
-> Don't know details about zImage/uImage in ppc world but if you dump
-> zImage you should see this.
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+---
+v1..v2:
 
-<snip>
+- Addressed editorial comments from Randy
+- Added a paragraph by Hans
 
-> It means only Xilinx platforms have been asking for uImage format and
-> bamboo doesn't require it. It also looks like that qemu expect uImage
-> format.
+ Documentation/input/input-programming.rst | 40 +++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-Yeah, prior to the patch the result of make ppc44x_defconfig contains
-CONFIG_DEFAULT_UIMAGE, afterward it doesn't.
+diff --git a/Documentation/input/input-programming.rst b/Documentation/input/input-programming.rst
+index 45a4c6e05e39..7432315cc829 100644
+--- a/Documentation/input/input-programming.rst
++++ b/Documentation/input/input-programming.rst
+@@ -164,6 +164,46 @@ disconnects. Calls to both callbacks are serialized.
+ The open() callback should return a 0 in case of success or any nonzero value
+ in case of failure. The close() callback (which is void) must always succeed.
+ 
++Inhibiting input devices
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++Inhibiting a device means ignoring input events from it. As such it is about maintaining
++relationships with input handlers - either already existing relationships, or relationships
++to be established while the device is in inhibited state.
++
++If a device is inhibited, no input handler will receive events from it.
++
++The fact that nobody wants events from the device is exploited further, by calling device's
++close() (if there are users) and open() (if there are users) on inhibit and uninhibit
++operations, respectively. Indeed, the meaning of close() is to stop providing events
++to the input core and that of open() is to start providing events to the input core.
++
++Calling the device's close() method on inhibit (if there are users) allows the driver
++to save power. Either by directly powering down the device or by releasing the
++runtime-pm reference it got in open() when the driver is using runtime-pm.
++
++Inhibiting and uninhibiting are orthogonal to opening and closing the device by input
++handlers. Userspace might want to inhibit a device in anticipation before any handler is
++positively matched against it.
++
++Inhibiting and uninhibiting are orthogonal to device's being a wakeup source, too. Being a
++wakeup source plays a role when the system is sleeping, not when the system is operating.
++How drivers should program their interaction between inhibiting, sleeping and being a wakeup
++source is driver-specific.
++
++Taking the analogy with the network devices - bringing a network interface down doesn't mean
++that it should be impossible be wake the system up on LAN through this interface. So, there
++may be input drivers which should be considered wakeup sources even when inhibited. Actually,
++in many I2C input devices their interrupt is declared a wakeup interrupt and its handling
++happens in driver's core, which is not aware of input-specific inhibit (nor should it be).
++Composite devices containing several interfaces can be inhibited on a per-interface basis and
++e.g. inhibiting one interface shouldn't affect the device's capability of being a wakeup source.
++
++If a device is to be considered a wakeup source while inhibited, special care must be taken when
++programming its suspend(), as it might need to call device's open(). Depending on what close()
++means for the device in question, not opening() it before going to sleep might make it
++impossible to provide any wakeup events. The device is going to sleep anyway.
++
+ Basic event types
+ ~~~~~~~~~~~~~~~~~
+ 
+-- 
+2.17.1
 
-That means previously arch/powerpc/boot/zImage was just a hardlink to
-the uImage:
-
-  $ ls -li build~/arch/powerpc/boot/{z,u}Image
-  7472 -rw-rw-r-- 2 michael michael 3073824 Jun 17 20:02 build~/arch/powerpc/boot/uImage
-  7472 -rw-rw-r-- 2 michael michael 3073824 Jun 17 20:02 build~/arch/powerpc/boot/zImage
-
-  $ file build~/arch/powerpc/boot/zImage
-  build~/arch/powerpc/boot/zImage: u-boot legacy uImage,
-  Linux-5.7.0-rc2-00247-g0bdad33d6\037\213\010, Linux/PowerPC, OS Kernel
-  Image (gzip), 3073760 bytes, Wed Jun 17 10:14:32 2020, Load Address:
-  0x00000000, Entry Point: 0x00000000, Header CRC: 0xF0283815, Data CRC:
-  0x5E5A4D98
-
-> You should know what format qemu expects.
-> Anyway if you build it by make uImage and then pass it to qemu you
-> should boot just fine.
-
-Yep so you can explicitly build the uImage with:
-
-$ make -skj"$(nproc)" ARCH=powerpc CROSS_COMPILE=powerpc-linux- O=out/ppc distclean ppc44x_defconfig uImage
-
-> Or if bamboo requires uImage to be built by default you can do it via
-> Kconfig.
->
-> diff --git a/arch/powerpc/platforms/44x/Kconfig
-> b/arch/powerpc/platforms/44x/Kconfig
-> index 39e93d23fb38..300864d7b8c9 100644
-> --- a/arch/powerpc/platforms/44x/Kconfig
-> +++ b/arch/powerpc/platforms/44x/Kconfig
-> @@ -13,6 +13,7 @@ config BAMBOO
->         select PPC44x_SIMPLE
->         select 440EP
->         select FORCE_PCI
-> +       select DEFAULT_UIMAGE
->         help
->           This option enables support for the IBM PPC440EP evaluation board.
-
-Who knows what the actual bamboo board used. But I'd be happy to take a
-SOB'ed patch to do the above, because these days the qemu emulation is
-much more likely to be used than the actual board.
-
-cheers
