@@ -2,74 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556AF1FD525
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8571FD51D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgFQTIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49450 "EHLO mail.kernel.org"
+        id S1727029AbgFQTF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:05:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:48989 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726906AbgFQTIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:08:01 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8348C212CC;
-        Wed, 17 Jun 2020 19:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592420880;
-        bh=e/5+Rb5G33cHdb0vaSQhP5UBxDZid2EqzR4REteNm0g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ijyw4jYzonC/TpUxkUJcYLfLFvoV/dmUA8cVBeRHaoHrHlBI7zK+yMx9+lllc15a/
-         WuEhuYKCU3ar0yPMOCqvBCBoGM3ojMuJYBnwdCzSXD0Lie1rzsM2M0s2x+/8tp4Z0i
-         8xRnltLkln8admHqJZo1pd6PJRKGyBPVv6kXccOE=
-Date:   Wed, 17 Jun 2020 21:07:55 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Brad Love <brad@nextdimension.cc>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, Sean Young <sean@mess.org>,
-        devel@driverdev.osuosl.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [RFC 0/4] Don't do tuning zigzag using the very same frequency
-Message-ID: <20200617210755.1138caa2@coco.lan>
-In-Reply-To: <cover.1592419750.git.mchehab+huawei@kernel.org>
-References: <cover.1592419750.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726511AbgFQTF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:05:26 -0400
+IronPort-SDR: rWOlf+KEPivNXjSJoSjQgPetUTvQJArbAH+Cu1LtRTozHUGKO2agV5xct5ZTp+Svr/ty8LwIgN
+ AK602w/AeZtA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 12:05:10 -0700
+IronPort-SDR: vJEpKL+AIa7KhEzPupD3WbOKuBWu+CYvk8p+IiV4ZdOZMRARIttvSmd3m0FmydNAtiba+osmr/
+ hjQT5dpQEtyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
+   d="scan'208";a="273609661"
+Received: from gza.jf.intel.com ([10.54.75.28])
+  by orsmga003.jf.intel.com with ESMTP; 17 Jun 2020 12:05:10 -0700
+From:   John Andersen <john.s.andersen@intel.com>
+To:     corbet@lwn.net, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        shuah@kernel.org, sean.j.christopherson@intel.com,
+        liran.alon@oracle.com, drjones@redhat.com,
+        rick.p.edgecombe@intel.com, kristen@linux.intel.com
+Cc:     vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, mchehab+huawei@kernel.org,
+        gregkh@linuxfoundation.org, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, jgross@suse.com,
+        mike.kravetz@oracle.com, oneukum@suse.com, luto@kernel.org,
+        peterz@infradead.org, fenghua.yu@intel.com,
+        reinette.chatre@intel.com, vineela.tummalapalli@intel.com,
+        dave.hansen@linux.intel.com, john.s.andersen@intel.com,
+        arjan@linux.intel.com, caoj.fnst@cn.fujitsu.com, bhe@redhat.com,
+        nivedita@alum.mit.edu, keescook@chromium.org,
+        dan.j.williams@intel.com, eric.auger@redhat.com,
+        aaronlewis@google.com, peterx@redhat.com,
+        makarandsonare@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH 3/4] selftests: kvm: add test for CR pinning with SMM
+Date:   Wed, 17 Jun 2020 12:07:56 -0700
+Message-Id: <20200617190757.27081-4-john.s.andersen@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200617190757.27081-1-john.s.andersen@intel.com>
+References: <20200617190757.27081-1-john.s.andersen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 17 Jun 2020 20:52:10 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Check that paravirtualized control register pinning blocks modifications
+of pinned CR values stored in SMRAM on exit from SMM.
 
-> Marc reported on IRC that the zigzag code is trying to tune several times using
-> the same frequency with si2168. Well, this is not how this would be supposed
-> to do: it should try with different frequencies each time.
-> 
-> Change the core to use the one-shot mode if the frontend doesn't report a
-> frequency step. This will default to the current behavior, except that tuning
-> should be faster.
-> 
-> Yet, probably the right thing to do is to implement a frequency shift at such
-> frontends, as otherwise  tuning may have problems. So, produce a warning
-> on such cases, in order for the FE driver to be fixed.
-> 
+Signed-off-by: John Andersen <john.s.andersen@intel.com>
+---
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/include/x86_64/processor.h  |  13 ++
+ .../selftests/kvm/x86_64/smm_cr_pin_test.c    | 207 ++++++++++++++++++
+ 4 files changed, 222 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/smm_cr_pin_test.c
 
+diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+index 452787152748..c0666c3efcbb 100644
+--- a/tools/testing/selftests/kvm/.gitignore
++++ b/tools/testing/selftests/kvm/.gitignore
+@@ -10,6 +10,7 @@
+ /x86_64/platform_info_test
+ /x86_64/set_sregs_test
+ /x86_64/smm_test
++/x86_64/smm_cr_pin_test
+ /x86_64/state_test
+ /x86_64/vmx_preemption_timer_test
+ /x86_64/svm_vmcall_test
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 4a166588d99f..c5c205637f38 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -45,6 +45,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/mmio_warning_test
+ TEST_GEN_PROGS_x86_64 += x86_64/platform_info_test
+ TEST_GEN_PROGS_x86_64 += x86_64/set_sregs_test
+ TEST_GEN_PROGS_x86_64 += x86_64/smm_test
++TEST_GEN_PROGS_x86_64 += x86_64/smm_cr_pin_test
+ TEST_GEN_PROGS_x86_64 += x86_64/state_test
+ TEST_GEN_PROGS_x86_64 += x86_64/vmx_preemption_timer_test
+ TEST_GEN_PROGS_x86_64 += x86_64/svm_vmcall_test
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index 82b7fe16a824..8a2da0449772 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -200,6 +200,11 @@ static inline uint64_t get_cr0(void)
+ 	return cr0;
+ }
+ 
++static inline void set_cr0(uint64_t val)
++{
++	__asm__ __volatile__("mov %0, %%cr0" : : "r" (val) : "memory");
++}
++
+ static inline uint64_t get_cr3(void)
+ {
+ 	uint64_t cr3;
+@@ -383,4 +388,12 @@ void kvm_get_cpu_address_width(unsigned int *pa_bits, unsigned int *va_bits);
+ /* VMX_EPT_VPID_CAP bits */
+ #define VMX_EPT_VPID_CAP_AD_BITS       (1ULL << 21)
+ 
++/* KVM MSRs */
++#define MSR_KVM_CR0_PIN_ALLOWED	0x4b564d08
++#define MSR_KVM_CR4_PIN_ALLOWED	0x4b564d09
++#define MSR_KVM_CR0_PINNED_LOW	0x4b564d0a
++#define MSR_KVM_CR0_PINNED_HIGH	0x4b564d0b
++#define MSR_KVM_CR4_PINNED_LOW	0x4b564d0c
++#define MSR_KVM_CR4_PINNED_HIGH	0x4b564d0d
++
+ #endif /* SELFTEST_KVM_PROCESSOR_H */
+diff --git a/tools/testing/selftests/kvm/x86_64/smm_cr_pin_test.c b/tools/testing/selftests/kvm/x86_64/smm_cr_pin_test.c
+new file mode 100644
+index 000000000000..a32f577ca1e5
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/smm_cr_pin_test.c
+@@ -0,0 +1,207 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Tests for control register pinning not being affected by SMRAM writes.
++ */
++#define _GNU_SOURCE /* for program_invocation_short_name */
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <linux/stringify.h>
++
++#include "test_util.h"
++
++#include "kvm_util.h"
++
++#include "processor.h"
++
++#define VCPU_ID	      1
++
++#define PAGE_SIZE  4096
++
++#define SMRAM_SIZE 65536
++#define SMRAM_MEMSLOT ((1 << 16) | 1)
++#define SMRAM_PAGES (SMRAM_SIZE / PAGE_SIZE)
++#define SMRAM_GPA 0x1000000
++#define SMRAM_STAGE_SUCCESS 0xfe
++#define SMRAM_STAGE_FAILURE 0xfd
++
++#define XSTR(s) __stringify(s)
++
++#define SYNC_PORT 0xe
++#define DONE 0xff
++
++#define CR0_PINNED X86_CR0_WP
++#define CR4_PINNED (X86_CR4_SMAP | X86_CR4_UMIP)
++#define CR4_ALL (CR4_PINNED | X86_CR4_SMEP)
++
++/*
++ * This is compiled as normal 64-bit code, however, SMI handler is executed
++ * in real-address mode. To stay simple we're limiting ourselves to a mode
++ * independent subset of asm here.
++ * SMI handler always report back fixed stage SMRAM_STAGE_SUCCESS.
++ */
++uint8_t smi_handler_success[] = {
++	0xb0, SMRAM_STAGE_SUCCESS,    /* mov $SMRAM_STAGE_SUCCESS, %al */
++	0xe4, SYNC_PORT,              /* in $SYNC_PORT, %al */
++	0x0f, 0xaa,                   /* rsm */
++};
++uint8_t smi_handler_fault[] = {
++	0xb0, SMRAM_STAGE_FAILURE,    /* mov $SMRAM_STAGE_FAILURE, %al */
++	0xe4, SYNC_PORT,              /* in $SYNC_PORT, %al */
++	0x0f, 0xaa,                   /* rsm */
++};
++
++/* We opt not to use GUEST_SYNC() here because we also have to make a sync call
++ * from SMM. As such, the address of the ucall struct we'd need to pass isn't
++ * something we can put into the above machine code in a maintainable way
++ */
++static inline void sync_with_host(uint64_t phase)
++{
++	asm volatile("in $" XSTR(SYNC_PORT)", %%al\n"
++		     : "+a" (phase));
++}
++
++void self_smi(void)
++{
++	wrmsr(APIC_BASE_MSR + (APIC_ICR >> 4),
++	      APIC_DEST_SELF | APIC_INT_ASSERT | APIC_DM_SMI);
++}
++
++void guest_code(void)
++{
++	uint64_t apicbase = rdmsr(MSR_IA32_APICBASE);
++
++	sync_with_host(1);
++
++	wrmsr(MSR_IA32_APICBASE, apicbase | X2APIC_ENABLE);
++
++	sync_with_host(2);
++
++	set_cr0(get_cr0() | CR0_PINNED);
++
++	wrmsr(MSR_KVM_CR0_PINNED_HIGH, CR0_PINNED);
++
++	sync_with_host(3);
++
++	set_cr4(get_cr4() | CR4_PINNED);
++
++	sync_with_host(4);
++
++	/* Pin SMEP low */
++	wrmsr(MSR_KVM_CR4_PINNED_HIGH, CR4_PINNED);
++
++	sync_with_host(5);
++
++	self_smi();
++
++	sync_with_host(DONE);
++}
++
++int main(int argc, char *argv[])
++{
++	struct kvm_regs regs;
++	struct kvm_sregs sregs;
++	struct kvm_vm *vm;
++	struct kvm_run *run;
++	struct kvm_x86_state *state;
++	int failure, stage, stage_reported;
++	u64 *cr;
++
++	for (failure = 0; failure <= 1; failure++) {
++		stage_reported = 0;
++
++		/* Create VM */
++		vm = vm_create_default(VCPU_ID, 0, guest_code);
++
++		vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
++
++		run = vcpu_state(vm, VCPU_ID);
++
++		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, SMRAM_GPA,
++					    SMRAM_MEMSLOT, SMRAM_PAGES, 0);
++		TEST_ASSERT(vm_phy_pages_alloc(vm, SMRAM_PAGES, SMRAM_GPA, SMRAM_MEMSLOT)
++			    == SMRAM_GPA, "could not allocate guest physical addresses?");
++
++		memset(addr_gpa2hva(vm, SMRAM_GPA), 0x0, SMRAM_SIZE);
++		if (failure) {
++			memcpy(addr_gpa2hva(vm, SMRAM_GPA) + 0x8000, smi_handler_fault,
++			       sizeof(smi_handler_fault));
++		} else {
++			memcpy(addr_gpa2hva(vm, SMRAM_GPA) + 0x8000, smi_handler_success,
++			       sizeof(smi_handler_success));
++		}
++		vcpu_set_msr(vm, VCPU_ID, MSR_IA32_SMBASE, SMRAM_GPA);
++
++		for (stage = 1;; stage++) {
++			_vcpu_run(vm, VCPU_ID);
++
++			memset(&regs, 0, sizeof(regs));
++			vcpu_regs_get(vm, VCPU_ID, &regs);
++
++			memset(&sregs, 0, sizeof(sregs));
++			vcpu_sregs_get(vm, VCPU_ID, &sregs);
++
++			/* stage_reported is currrently the last stage reported */
++			if (failure && stage_reported == SMRAM_STAGE_FAILURE) {
++				/* Ensure that we exit on smram modification of CR4 */
++				TEST_ASSERT(run->exit_reason == KVM_EXIT_INTERNAL_ERROR &&
++					    run->internal.suberror == KVM_INTERNAL_ERROR_EMULATION,
++					    "Stage %d: unexpected exit reason: %u, suberror: %u (%s),\n",
++					    stage, run->exit_reason, run->internal.suberror,
++					    exit_reason_str(run->exit_reason));
++				if (run->exit_reason == KVM_EXIT_INTERNAL_ERROR)
++					goto done;
++			} else {
++				TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
++					    "Stage %d: unexpected exit reason: %u (%s),\n",
++					    stage, run->exit_reason,
++					    exit_reason_str(run->exit_reason));
++			}
++
++			stage_reported = regs.rax & 0xff;
++
++			if (stage_reported == DONE) {
++				TEST_ASSERT((sregs.cr0 & CR0_PINNED) == CR0_PINNED,
++					    "Unexpected cr0. Bits missing: %llx",
++					    sregs.cr0 ^ (CR0_PINNED | sregs.cr0));
++				TEST_ASSERT((sregs.cr4 & CR4_ALL) == CR4_PINNED,
++					    "Unexpected cr4. Bits missing: %llx, cr4: %llx",
++					    sregs.cr4 ^ (CR4_ALL | sregs.cr4),
++					    sregs.cr4);
++				goto done;
++			}
++
++			TEST_ASSERT(stage_reported == stage ||
++				    stage_reported == SMRAM_STAGE_SUCCESS ||
++				    stage_reported == SMRAM_STAGE_FAILURE,
++				    "Unexpected stage: #%x, got %x",
++				    stage, stage_reported);
++
++			/* Within SMM modify CR0/4 to not contain pinned bits. */
++			if (stage_reported == SMRAM_STAGE_FAILURE) {
++				cr = (u64 *)(addr_gpa2hva(vm, SMRAM_GPA + 0x8000 + 0x7f58));
++				*cr &= ~CR0_PINNED;
++
++				cr = (u64 *)(addr_gpa2hva(vm, SMRAM_GPA + 0x8000 + 0x7f48));
++				/* Unset pinned, set one that was pinned low */
++				*cr &= ~CR4_PINNED;
++				*cr |= X86_CR4_SMEP;
++			}
++
++			state = vcpu_save_state(vm, VCPU_ID);
++			kvm_vm_release(vm);
++			kvm_vm_restart(vm, O_RDWR);
++			vm_vcpu_add(vm, VCPU_ID);
++			vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
++			vcpu_load_state(vm, VCPU_ID, state);
++			run = vcpu_state(vm, VCPU_ID);
++			free(state);
++		}
++
++done:
++		kvm_vm_free(vm);
++	}
++}
+-- 
+2.21.0
 
-> Mauro Carvalho Chehab (4):
->   media: atomisp: fix identation at I2C Kconfig menu
->   media: atomisp: fix help message for ISP2401 selection
-
-Those two patches are unrelated. Please ignore it on the context of this RFC.
-
-
-Thanks,
-Mauro
