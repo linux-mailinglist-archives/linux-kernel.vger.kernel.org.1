@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049AC1FC879
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C071FC886
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgFQIX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFQIXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:23:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7E5C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 01:23:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=a/IWE9tuWU/BmtPxRrORlx+aawbeDdwRRzSkJeb8s9Y=; b=rH0fZhhfvUQCC0iP8g+rroEKQ0
-        0PrTZ6CzBteWMOYTVz97ZF0m5GkXiXfGvqzzLRtoDSXm82VB7NmLzTi9ONiIM4AJhWMSObMCQ7qpO
-        ROOAPicz0WYEKAS1u8hdkfs/CfeKI0/OkZImdqs+mxh3t3brugjXum5h6jm/6QjY49r3JGEM+O+ut
-        MmkyqsE/bHVSQfy6W880QJFq3NwZy7Q33B7CJ19swFhyEjIE8TyxrGYoTDwXs3NjGVeh9hHmj8m0c
-        M1SNK0hmYXZWgYIgiuoSe9DmsQcGQclymLiZp+Ty1jhNI/v/XlVF23+dWa/G8vpf0SO28fw+ENiea
-        Tf0VtR1A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlTML-0000IQ-5W; Wed, 17 Jun 2020 08:23:49 +0000
-Date:   Wed, 17 Jun 2020 01:23:49 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, paulmck@kernel.org, frederic@kernel.org,
-        tsbogend@alpha.franken.de, axboe@kernel.dk, rjw@rjwysocki.net,
-        daniel.lezcano@linaro.org, dchickles@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, daniel.thompson@linaro.org,
-        gerald.schaefer@de.ibm.com
-Subject: Re: [PATCH 6/6] smp: Cleanup smp_call_function*()
-Message-ID: <20200617082349.GA19894@infradead.org>
-References: <20200615125654.678940605@infradead.org>
- <20200615131143.434079683@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615131143.434079683@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1726523AbgFQI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:26:18 -0400
+Received: from mga07.intel.com ([134.134.136.100]:62189 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725846AbgFQI0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 04:26:17 -0400
+IronPort-SDR: b03ebYzJCKEwVtyUb5q0ZLgQ5xsZNGE+oWUptTa1kaGdN+dyxk/RX5LbpMXC9arnu69fM1t/xV
+ c6jny6L4o4gA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 01:26:16 -0700
+IronPort-SDR: ClAgj9I4E/Zpn+F9GR6itX/rnw6INr5SQdLLl1eQalKV6+L1d4WJy+w7M8rd56H1uEBstktx0G
+ GHpO3Hj9hGIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,522,1583222400"; 
+   d="scan'208";a="421061631"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga004.jf.intel.com with ESMTP; 17 Jun 2020 01:26:13 -0700
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, malliamireddy009@gmail.com,
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>
+Subject: [PATCH v2 0/2] Add Intel LGM soc DMA support
+Date:   Wed, 17 Jun 2020 16:24:28 +0800
+Message-Id: <cover.1592381244.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -static DEFINE_PER_CPU(call_single_data_t, backtrace_csd);
-> +static DEFINE_PER_CPU(call_single_data_t, backtrace_csd) = CSD_INIT(handle_backtrace, NULL);
->  static struct cpumask backtrace_csd_busy;
+Add DMA controller driver for Lightning Mountain(LGM) family of SoCs.
 
-Besides the crazy long line: does assigning to a DEFINE_PER_CPU
-really work and initialize all the members?
+The main function of the DMA controller is the transfer of data from/to any
+DPlus compliant peripheral to/from the memory. A memory to memory copy
+capability can also be configured.
+This ldma driver is used for configure the device and channnels for data
+and control paths.
 
-> @@ -178,9 +178,7 @@ static void zpci_handle_fallback_irq(voi
->  		if (atomic_inc_return(&cpu_data->scheduled) > 1)
->  			continue;
->  
-> -		cpu_data->csd.func = zpci_handle_remote_irq;
-> -		cpu_data->csd.info = &cpu_data->scheduled;
-> -		cpu_data->csd.flags = 0;
-> +		cpu_data->csd = CSD_INIT(zpci_handle_remote_irq, &cpu_data->scheduled);
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP.
 
-This looks weird.  I'd much rather see an initialization ala INIT_WORK:
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
 
-		INIT_CSD(&cpu_data->csd, zpci_handle_remote_irq,
-			 &cpu_data->scheduled);
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for intel LGM SOC
+  Add Intel LGM soc DMA support.
 
-Also for many smp_call_function_* users it would be trivial and actually
-lead to nicer code if the data argument went away and we'd just use
-container_of to get to the containing structure.  For the remaining
-ones we can trivially general a container strucuture that has the
-extra data pointer.
+ .../devicetree/bindings/dma/intel,ldma.yaml        |  428 +++++
+ drivers/dma/Kconfig                                |    2 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/lgm/Kconfig                            |    9 +
+ drivers/dma/lgm/Makefile                           |    2 +
+ drivers/dma/lgm/lgm-dma.c                          | 1956 ++++++++++++++++++++
+ include/linux/dma/lgm_dma.h                        |   27 +
+ 7 files changed, 2425 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+ create mode 100644 include/linux/dma/lgm_dma.h
 
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -629,9 +629,7 @@ void blk_mq_force_complete_rq(struct req
->  		shared = cpus_share_cache(cpu, ctx->cpu);
->  
->  	if (cpu != ctx->cpu && !shared && cpu_online(ctx->cpu)) {
-> -		rq->csd.func = __blk_mq_complete_request_remote;
-> -		rq->csd.info = rq;
-> -		rq->csd.flags = 0;
-> +		rq->csd = CSD_INIT(__blk_mq_complete_request_remote, rq);
->  		smp_call_function_single_async(ctx->cpu, &rq->csd);
->  	} else {
->  		q->mq_ops->complete(rq);
-> --- a/block/blk-softirq.c
-> +++ b/block/blk-softirq.c
-> @@ -57,13 +57,8 @@ static void trigger_softirq(void *data)
->  static int raise_blk_irq(int cpu, struct request *rq)
->  {
->  	if (cpu_online(cpu)) {
-> -		call_single_data_t *data = &rq->csd;
-> -
-> -		data->func = trigger_softirq;
-> -		data->info = rq;
-> -		data->flags = 0;
-> -
-> -		smp_call_function_single_async(cpu, data);
-> +		rq->csd = CSD_INIT(trigger_softirq, rq);
-> +		smp_call_function_single_async(cpu, &rq->csd);
->  		return 0;
->  	}
 
-FYI, I rewrote much of the blk code in this series:
+base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
+-- 
+2.11.0
 
-https://lore.kernel.org/linux-block/20200611064452.12353-1-hch@lst.de/T/#t
-
-that you also were Cced on.
-
->  struct __call_single_data {
-> -	union {
-> -		struct __call_single_node node;
-> -		struct {
-> -			struct llist_node llist;
-> -			unsigned int flags;
-> -		};
-> -	};
-> +	struct __call_single_node node;
->  	smp_call_func_t func;
->  	void *info;
->  };
-
-Can we rename this to struct call_single_data without the __prefix
-and switch all the users you touch anyway away from the typedef?
