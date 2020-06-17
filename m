@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654121FD21A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE66D1FD224
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgFQQ10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S1727916AbgFQQ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727857AbgFQQ1W (ORCPT
+        with ESMTP id S1727894AbgFQQ1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:27:22 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70509C06174E;
-        Wed, 17 Jun 2020 09:27:22 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d27so1690911lfq.5;
-        Wed, 17 Jun 2020 09:27:22 -0700 (PDT)
+        Wed, 17 Jun 2020 12:27:48 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1349C0613EE
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:27:46 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id d15so2423101edm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tBdtd4BbSytzH+yn8Qia+tXk6Gs+WeAHP5EfpLtwsp8=;
-        b=X9G2VFwG+kypTS6e33cyAimN3ATS28yZLc7+RSukAtDpY5QYY5eBQglww7MLPaD83h
-         rIjriWkglL5vxCbr9qVzPqpgVokj4HScFR3NLVbSnJXCLhoTuTj9hjZnei3VFIo0eqdT
-         LDdAFXSb1RyMLiZvwWwcKSt7m2G/hqSM8WsK1nQImL+Lgc8EdmrtI9Zvmo64XBYkLspo
-         xTE3pCfFLaIOAqBCJsNxj7FNwkdMsZrASXddwxBKlVreXyld5TyYvyUtvfvplsRnZEIe
-         tKAUpR/W47SCAZ205IDRQmsy0dVteCso6LPZyUvfG+rAVyFXWxHSUIjXfKdtl+GpzcdF
-         gceg==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0PeE1nNOhO8NzBOTfY/pdL8QsrWSh7rT+swmugwtigI=;
+        b=sNqB/fFnXRRSizIysZQ/7bQPvN3dI1sAubAzmXPjlp5zADcg3mFHnEhj4KpzI4rlRT
+         b0rXBfv2Leyc1LO9lG4qxGitWmak6FKoBKT4g43POIBQG/++rpoKsKoTPII/fiiBPcZ4
+         nhol/ldhYskiBz7ksJBQ9W7X36Ud195pCyKhr2fxjwYok3HHb3JoLM6hol9DVu8c0XaT
+         IrDZVH8Ne9ZwHErbNev4dNa6sCLZnMKaiZAZ17jz65bE2z46/CEosSbP3MB0bkOMXt9X
+         jdY+AP4M7yuHGaMmy6BTlRgPH5WXxySI36LtxDl12eLIp0A97DJs8zhMYnEqbY8ZpY8F
+         M2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tBdtd4BbSytzH+yn8Qia+tXk6Gs+WeAHP5EfpLtwsp8=;
-        b=ADUEy6W/ZfBTc2MypJaRmIYSrHWp3Mjw90Lvdv6AJZdjbiEHHQzFpb7/6/o5S8MZEv
-         ad6fScbY/UKbTJTRfHCqsQR3W+SM/E+6gwW7PtzlH2PcZ3sQCzhTLhzxF3nb8EImiyUZ
-         G719tdhEwG7YTt4fXdkoDmBhZOD4n6mkJzjjh2HkvQaf8hq17vEtOJk00IyEDUjb62H/
-         l/cceZMFans6BvVGPKaYCuSyMFWLPyuZ/KTFAI3BTzR3N6vG0W9yyDUSpRGMRQ3x4Ci5
-         wSKjR1SkSJeVuReBc2+/SrFZ9HFlJ21vCfLepF6mKDNu+oGUAr2WIGhtSjs7Mxk10kcC
-         dTPQ==
-X-Gm-Message-State: AOAM531IFpsq5e2PGbkyUmokP8wjpp+uo7HAsemq/ZkGIJBJmP3iNfxz
-        hPr2i0E67zTfvdCOIv2orxk=
-X-Google-Smtp-Source: ABdhPJzdlve8SscpxQ5lGHRdQw8g0xXtnEZx4khfcDzoIbDFkaI6tCr5C/kFsj24d1QGCa4B73gq5w==
-X-Received: by 2002:a19:8389:: with SMTP id f131mr4963732lfd.16.1592411240453;
-        Wed, 17 Jun 2020 09:27:20 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id b25sm66852ljo.16.2020.06.17.09.27.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 09:27:19 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
-To:     Daniel Stone <daniel@fooishbar.org>
-Cc:     Emil Velikov <emil.l.velikov@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-References: <20200614200121.14147-1-digetx@gmail.com>
- <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
- <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com>
- <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
- <646b3f37-0f72-7f3b-388f-f71dbcdd5c84@gmail.com>
- <CACvgo50BFH5qsPyWx9a1aZ4k5bzjSN-3KTU0BvnZ-nG-hfzKOQ@mail.gmail.com>
- <fe845434-cbf6-29d4-eeb6-8868d628fd04@gmail.com>
- <CAPj87rPwwHWtYpuZfiTMyELvr3D+UAY8CVnH3v6+Lo1-UMRRVA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <36496bd6-b18a-de97-1afb-f2f8aeb3feaf@gmail.com>
-Date:   Wed, 17 Jun 2020 19:27:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0PeE1nNOhO8NzBOTfY/pdL8QsrWSh7rT+swmugwtigI=;
+        b=gvAqi4kgCxuRj+AXowpadDTrNXBexeZxpSI3gAouFiGgN6rSKXAMKYRqbza8dukUl/
+         EIxnfN9k+GbZVtfYXGx/Z8zcHcHtluuwiynS5EayXHIWRsfzvGZaXHKgQSGetXHiTmVt
+         zNzOpeXMtZZ27taAUtbY1gMvz3cCtcJ9eI+YBrU6Hq0ex5b6vfuk+WOUCB/pDiCq6SMv
+         PAJce2+XI9vj5aED8nJa1g2MIHXQc909BJOYjhZnH4LmUP/Fcz0cujX9Mxin3OoJGz46
+         m7J5YEWl3tyhGW6iqD/Y2mXz598wvOfuhV1V0DgbubtD56otvWkePanA5Ty3FIllsMga
+         NEEg==
+X-Gm-Message-State: AOAM530kROaSZ2BY+84K96Htahf1uYoYaQQyXUiLLKFbYd4FkqvApiAu
+        j1YpyTAZEGAfGs4L12LeU9Wk2g==
+X-Google-Smtp-Source: ABdhPJzcNlf5mAAzJmZXfW/N+4oUOHXbX6TDnTWRpql38l+PqLTIechB/LyMZ9YZXb3Wzr6JLXkDVA==
+X-Received: by 2002:aa7:df05:: with SMTP id c5mr25038edy.48.1592411265374;
+        Wed, 17 Jun 2020 09:27:45 -0700 (PDT)
+Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
+        by smtp.gmail.com with ESMTPSA id h9sm312336ejc.96.2020.06.17.09.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 09:27:44 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 18:27:40 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, jkridner@beagleboard.org,
+        robertcnelson@gmail.com
+Subject: Re: [PATCH] ARM: dts: AM33xx-l4: add gpio-ranges
+Message-ID: <20200617162740.GA4181112@x1>
+References: <20200602131428.GA496390@x1>
+ <803e2d78-28ba-0816-dbb5-d441d7659a91@ti.com>
+ <20200602135155.GE37466@atomide.com>
+ <20200602163458.GA847883@x1>
 MIME-Version: 1.0
-In-Reply-To: <CAPj87rPwwHWtYpuZfiTMyELvr3D+UAY8CVnH3v6+Lo1-UMRRVA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200602163458.GA847883@x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.06.2020 12:34, Daniel Stone пишет:
-> Hi,
+On Tue, Jun 02, 2020 at 06:34:58PM +0200, Drew Fustini wrote:
+> On Tue, Jun 02, 2020 at 06:51:55AM -0700, Tony Lindgren wrote:
+> > * Grygorii Strashko <grygorii.strashko@ti.com> [200602 13:44]:
+> > > 
+> > > 
+> > > On 02/06/2020 16:14, Drew Fustini wrote:
+> > > > Add gpio-ranges properties to the gpio controller nodes.
+> > > > 
+> > > > These gpio-ranges were created based on "Table 9-10. CONTROL_MODULE
+> > > > REGISTERS" in the  "AM335x Technical Reference Manual" [0] and "Table
+> > > > 4-2. Pin Attributes" in the "AM335x Sitara Processor datasheet" [1].
+> > > > A csv file with this data is available for reference [2].
+> > > 
+> > > It will be good if you can explain not only "what" is changed, but
+> > > also "why" it's needed in commit message.
+> > 
+> > Also, please check (again) that this is the same for all the am3
+> > variants. For omap3, we had different pad assignments even between
+> > SoC revisions. Different pad routings should be easy to deal with
+> > in the dts if needed though.
+> > 
+> > Regards,
+> > 
+> > Tony
 > 
-> On Tue, 16 Jun 2020 at 22:16, Dmitry Osipenko <digetx@gmail.com> wrote:
->> The panel's orientation could be parsed by any panel driver and then
->> assigned as the connector's property in order to allow userspace/FB-core
->> to decide what to do with the rotated display. Apparently upstream
->> kernel supports only that one Samsung device which has display panel
->> mounted upside-down and it already uses the custom DT properties for
->> achieving the 180 rotation. So I don't quite see any panel drivers that
->> instantly could benefit from using the rotation property. Perhaps I can
->> add the orientation support to the panel-simple driver, but will it be
->> useful to anyone?
+> It appears that the only usage of am33xx-l4.dtsi is for am335x for which
+> specific parts mentioned in those dtsi files are 3352, 3358, and 3359.
 > 
-> Yes, exposing it to userspace is helpful, since Weston at least will
-> parse the property and then apply the correct transform:
-> https://gitlab.freedesktop.org/wayland/weston/-/merge_requests/315
+> $ git grep am33xx-l4.dtsi 
+> arch/arm/boot/dts/am33xx.dtsi:#include "am33xx-l4.dtsi"
+> $ git grep -l '#include "am33xx.dtsi"' arch/ |wc -l
+> 27
+> $ git grep -l '#include "am33xx.dtsi"' arch/ |grep -v am335x |wc -l
+> 0
+> 
+> Also, it appears that the only AM33xx parts that actually exist are [0]:
+> 
+> AM3351, AM3352, AM3354, AM3356, AM3357, AM3358, AM3359
+> 
+> I clicked on the datasheet link for each product page and while the URL
+> has the specific part number in it [1], they all end up loading the
+> exact same PDF. The header states:
+> 
+> "AM3359, AM3358, AM3357, AM3356, AM3354, AM3352, AM3351
+> SPRS717L – OCTOBER 2011 – REVISED MARCH 2020"
+> 
+> Thus, I do believe all SoC's using am33xx-l4.dtsi would have the same
+> memory map for the pin control registers and the same relationshop from
+> pin to gpio line.  For example, GPMC_A0 has mode 7 and it is labeled
+> gpio1_16.  conf_gpmc_a0 is at offset 840h which makes it pin 16.
+> 
+> Maybe am33xx-l4.dtsi should have actually been named am335x-l4.dtsi?
+> 
+> Though I suppose there is no point in changing that now.
+> 
+> thanks,
+> drew
+> 
+> [0] http://www.ti.com/processors/sitara-arm/am335x-cortex-a8/overview.html
+> [1] https://www.ti.com/lit/ds/symlink/am3359.pdf
 
-Hello Daniel,
+Tony - 
 
-Thank you very much for the pointer! I missed that Weston now uses the
-panel's orientation. I gave a quick test to the recent Weston and indeed
-it applies the transform in accordance to the connector's orientation
-property.
+These gpio-ranges are correct for all the platforms that included
+am33xx-l4.dtsi.
+
+I think it makes sense to add gpio-ranges properties as they describe
+the relationship between a gpio line and pin control register that
+exists in the hardware.
+
+Are there changes you would like to see in this patch?
+
+Thanks,
+Drew
+
