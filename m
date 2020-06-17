@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CBC1FCD26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 14:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B111FCD15
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 14:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgFQMQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 08:16:04 -0400
-Received: from regular1.263xmail.com ([211.150.70.205]:33232 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgFQMQE (ORCPT
+        id S1726538AbgFQMJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 08:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgFQMJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 08:16:04 -0400
-X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 08:16:02 EDT
-Received: from localhost (unknown [192.168.167.13])
-        by regular1.263xmail.com (Postfix) with ESMTP id 727BF684;
-        Wed, 17 Jun 2020 20:07:42 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.76] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P25389T140143172253440S1592395661407272_;
-        Wed, 17 Jun 2020 20:07:42 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <2f2aa222071add7fb750d61c24ed6731>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_1/2=5d_drm=3a_drm=5ffourcc=3a_add_NV20_YUV?=
- =?UTF-8?B?IGZvcm1hdOOAkOivt+azqOaEj++8jOmCruS7tueUsWxpbnV4LXJvY2tjaGlwLWJv?=
- =?UTF-8?Q?unces+sandy=2ehuang=3drock-chips=2ecom=40lists=2einfradead=2eorg?=
- =?UTF-8?B?5Luj5Y+R44CR?=
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Ben Davis <ben.davis@arm.com>,
-        =?UTF-8?B?6Zer5a2d5Yab?= <andy.yan@rock-chips.com>
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200607202521.18438-2-jonas@kwiboo.se>
-From:   Huang Jiachai <hjc@rock-chips.com>
-Message-ID: <d503eed1-571f-3e37-858b-b5de04cb79f7@rock-chips.com>
-Date:   Wed, 17 Jun 2020 20:07:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 17 Jun 2020 08:09:39 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD7CC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 05:09:39 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g5so1405957otg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 05:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EL5BzCkoUmainZKjx09aIYd6iOrNTRRO+Rauv/GEwCw=;
+        b=hq3YTyLLtph2lK3ZOsv/FRvY6IybFEG5XMNJoQo9/tbRJh/5zXJv9sn4J1GOaldslH
+         UToI2dp985JV/UUOSTwd7vcMgiKyjd3pnmrhiUKBMCvVGczpn+p7inyYus9TfUumWFWv
+         WUnYsdUCIx3UL525CkkauewcjgNHg6uTOmOrwWqBbu6t4k1pIHzRrQnWjLQ065NG2hnJ
+         j5rt5yD7OSVeOlcLDzQ0xQQl3QB6tsm72lCIsGaY+WjyiLnu/8DJvitjBWSH7+0zx4MB
+         bB/mvE9jxBO8ZG1P2LvrER82G49JIt2XoleQe2trAXmA8po/Z7n0Jn6y+e7kKowfc/h7
+         qIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EL5BzCkoUmainZKjx09aIYd6iOrNTRRO+Rauv/GEwCw=;
+        b=dsnHQXXMPyz/zshOgNObfBy5oZlBeoqDGGOYPAx74eZCz+Bp9IKUCoIj49L25rDYmm
+         uvyUj+U9O2sauVoQdKlzHCOotMl0QIE3vLvfT3d3Kr4rmgWX8fl/12ve41DViYVzKwp5
+         Zoaql3mrW2CM9DSv669TbnsuGrVl+t1Xt3q0hJPHCLZca3NIG9vgdo7gND9CuIZ+ej2m
+         FtHSF3loy05MZiClIuA6dPy4jCU2tAFdUetrDnoojppzzi6aH691KuhTOgHjBpBztBpJ
+         tYerfhfdi4LqqtBkcT91axrT0kGtGWACA6k/O7oUWKR3s809OTcce03FjtzRo0Xsklcg
+         UzhA==
+X-Gm-Message-State: AOAM533iTdCaXA1jrgFhUPkrSqPiqaOykP5EoINjsq9iQD/ReTwtJEv8
+        enyIJdUT/g//ozqYzQZUpL5urYmV1YY9n2sw0RvDnA==
+X-Google-Smtp-Source: ABdhPJyzu9qonwnPgqE//5itrvCdVGd52+dCAY0ouYokic1FEWqYsrvz3AvZUZqJitY64qAGv5yTDWWR9z35abY/ByY=
+X-Received: by 2002:a9d:6a85:: with SMTP id l5mr5447118otq.371.1592395778151;
+ Wed, 17 Jun 2020 05:09:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200607202521.18438-2-jonas@kwiboo.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20200602100924.26256-1-sumit.semwal@linaro.org>
+ <20200602100924.26256-5-sumit.semwal@linaro.org> <20200602113241.GE5684@sirena.org.uk>
+ <CAO_48GGgNUGosN2PiL=U5JkR3Bh5wNK3N4xYYML1UwmdfDPRww@mail.gmail.com>
+ <20200602122554.GG5684@sirena.org.uk> <CAO_48GFwEHBGmz0QvN+pXFSyHC9+7=0aoJLHF4uupGSx2TcSvA@mail.gmail.com>
+ <20200617114721.GD4613@sirena.org.uk> <CAO_48GF9pKZCCof170TvB0ubOkecDzcGhtUUuY_Td78L1J338A@mail.gmail.com>
+ <20200617120601.GE4613@sirena.org.uk>
+In-Reply-To: <20200617120601.GE4613@sirena.org.uk>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Wed, 17 Jun 2020 17:39:26 +0530
+Message-ID: <CAO_48GGhX-AxjvvvPKRMc+LQ_Uws1s_b4Q+aHokVv2RxcpObQw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] regulator: qcom: Add labibb driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        Nisha Kumari <nishakumari@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas Karlman,
-
-     Is there an another yuv 10bit format with 4:4:4 sub-simpling but 
-has no padding?
-
-  Maybe we can call it DRM_FORMAT_NV30:
-
-{ .format = DRM_FORMAT_NV30,		.depth = 0,
-   .num_planes = 2, .char_per_block = { 5, 5, 0 },
-   .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
-   .vsub = 1, .is_yuv = true },
-
-this format can supported by rockchip rk3288/rk3399... platform, can you 
-add this format at this series patches?
-
-在 2020/6/8 4:25, Jonas Karlman 写道:
-> DRM_FORMAT_NV20 is a 2 plane format suitable for linear memory layout.
-> The format is similar to P210 with 4:2:2 sub-sampling but has no padding
-> between components. Instead, luminance and chrominance samples are grouped
-> into 4s so that each group is packed into an integer number of bytes:
+On Wed, 17 Jun 2020 at 17:36, Mark Brown <broonie@kernel.org> wrote:
 >
-> YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
+> On Wed, Jun 17, 2020 at 05:27:12PM +0530, Sumit Semwal wrote:
+> > On Wed, 17 Jun 2020 at 17:17, Mark Brown <broonie@kernel.org> wrote:
+> > > On Wed, Jun 17, 2020 at 05:12:35PM +0530, Sumit Semwal wrote:
 >
-> The '20' suffix refers to the optimum effective bits per pixel which is
-> achieved when the total number of luminance samples is a multiple of 4.
+> > > > I understand from a pure regulators' correctness point of view,
+> > > > ENABLE_CTL should be the one checked there, so I can change the patch
+> > > > as you suggested, but there seems to be some performance penalty
+> > > > there.
 >
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> ---
->   drivers/gpu/drm/drm_fourcc.c  | 4 ++++
->   include/uapi/drm/drm_fourcc.h | 1 +
->   2 files changed, 5 insertions(+)
+> > > I thought the goal was to have the performance penalty to ensure that
+> > > the regulator had actually started?
 >
-> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-> index 722c7ebe4e88..2a9c8ae719ed 100644
-> --- a/drivers/gpu/drm/drm_fourcc.c
-> +++ b/drivers/gpu/drm/drm_fourcc.c
-> @@ -278,6 +278,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
->   		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->   		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->   		  .vsub = 2, .is_yuv = true },
-> +		{ .format = DRM_FORMAT_NV20,		.depth = 0,
-> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
-> +		  .vsub = 1, .is_yuv = true },
->   		{ .format = DRM_FORMAT_Q410,		.depth = 0,
->   		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
->   		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index b5bf1c0e630e..244d32433a67 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -242,6 +242,7 @@ extern "C" {
->    * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
->    */
->   #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
-> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
->   
->   /*
->    * 2 plane YCbCr MSB aligned
+> > IMHO, with the poll_enabled_time mechanism added, we would not need to
+> > wait for the full enabled_time time for the regulator to get enabled,
+> > but we could poll (and potentially know earlier) if the regulator is
+> > enabled.
+> > The performance penalty I was talking, is about how should we check if
+> > the regulator is really enabled or not - via reading the STATUS1
+> > register, which seems to tell the status a bit faster, or via reading
+> > the ENABLE_CTL register which we also use to enable/disable the
+> > regulator, but which seems to be slower in updating the status.
+>
+> That seems...  interesting.  Are you sure the regulator has fully ramped
+> when STATUS1 starts flagging?
+On a consumer device, I am not sure I have any way of checking that,
+but if there's some way you'd like me to validate it, I'll be happy
+to.
+>
+> > > > > > The WARN_ON? This was suggested by Bjorn to catch the case where the
+> > > > > > DT binding for a PMIC instantiates only one of the regulators.
+>
+> > > > > No, this whole loop - why this whole match and get child stuff?
+>
+> > > > This loop mechanism is what I saw in the other qcom regulators
+> > > > upstream, so thought it was an acceptable way.
+> > > > For the two children nodes, do you recommend another mechanism to get
+> > > > and validate both nodes?
+>
+> > > I don't understand what you mean by "two children nodes" here?
+>
+> > The two 'lab' and 'ibb' regulator nodes that are part of the labibb node.
+>
+> Use of_match and regulators_node like other regulator drivers.
 
--- 
-Best Regard
+Ok, let me see what I can do with those; we still need to flag if some
+platform only instantiates one of the two lab/ibb regulators - I was
+given the impression they're 'both or none' case.
 
-黄家钗
-Sandy Huang
-Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
-       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
-Tel：+86 0591-87884919  8690
-E-mail：hjc@rock-chips.com
-
-
-
+Best,
+Sumit.
