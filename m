@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278731FD711
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3BC1FD71B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgFQVWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 17:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        id S1726993AbgFQVY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 17:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgFQVWS (ORCPT
+        with ESMTP id S1726758AbgFQVY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 17:22:18 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8755EC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:22:18 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d4so1903413pgk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:22:18 -0700 (PDT)
+        Wed, 17 Jun 2020 17:24:27 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D10C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:24:26 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id n9so1535758plk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=10p96XOHb93iqxdsMtM/iXJsZQXP+bBYNuuroRQsAf8=;
-        b=MWN8cZ9R5il23Sphk7/cpwDrjsrTR/+kkUhvqrDrigcLgNYhYnRJGvBWABWzskO8YK
-         +fVFuJalBPUahrMWh8uCBsyPDo8OkrkT409WrBkWm++NCgvhsa5DtrkOWHPCUY905Gwr
-         shxLSwAth2+Jg/yZQd8sSxszCwbxMiolkIV4E=
+        bh=S3t8HV5cD+UvKm/s6OAGKuC+RhY6EhAS3pG0wdNqFYM=;
+        b=JmhPPd6Ppf93jZyJoXCw/nFtnxT82g7g2KBVG7QjX29v9wZ6Es+KyR3H/cPvKEK9Rj
+         JQooftLg7gV5AKhy6cnR7XCHLKXNdD+lxlpUDPpxVG6Q7FjR87QDocuKzs5gg1MYjhvH
+         W7xXkqzHQXFd1oWQ1Lm3Kl4lQbPWmZcPYYB4E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=10p96XOHb93iqxdsMtM/iXJsZQXP+bBYNuuroRQsAf8=;
-        b=YllD8OME1q7pqWjcHfSNk/jGpia5t5Lh7GdlNO2DiMUasPsdkgEQYWNVTnebZUnGMw
-         uEjiJGG6vEbk6nqUZgpiyEBtJmkU/sTqu1KjGCb+835AIa6IYLCSe/tAkMVuTXdSVPqv
-         QxBSkJUPHAu38CQP+FXc/cgq5WLWv0a58DvgAk4BIffprXPxDYvJPhDFpOz2PHus3VL2
-         Ulq9mQG4pXZHbP2Y/hqrapr7/ir3ATos39+EZHLpAiNrtay7mGy88Hxwan8aGC4lVKgl
-         fH5Xt7q3bggt4lO4wobRwJLrT3BFts25KIYmiQ014zgKunar5O/7CehtNULFcy0IyPLa
-         sMkg==
-X-Gm-Message-State: AOAM530g63+ZzKBG+olluV/6tzfrF8n+hQkCIsaoIE2+MHSYHd0SNwED
-        tH26YwZgTjK6iFBVd+Vxvwuzrw==
-X-Google-Smtp-Source: ABdhPJwb0QaHkNQ9STjpEw8h7dMc5MOUm/3dIDlXV+GrpRIAApEV64zC+Lai+OzQFtbZUC4Z/eKcQg==
-X-Received: by 2002:a63:1617:: with SMTP id w23mr685649pgl.248.1592428938121;
-        Wed, 17 Jun 2020 14:22:18 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l134sm648777pga.50.2020.06.17.14.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 14:22:17 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 14:22:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, cyphar@cyphar.com, jannh@google.com,
-        jeffv@google.com, palmer@google.com, rsesek@google.com,
-        tycho@tycho.ws, Matt Denton <mpdenton@google.com>
-Subject: Re: [PATCH v3] seccomp: Add find_notification helper
-Message-ID: <202006171420.C8007EDCD8@keescook>
-References: <20200601112532.150158-1-sargun@sargun.me>
- <20200617200844.GA12976@Ryzen-9-3900X.localdomain>
+        bh=S3t8HV5cD+UvKm/s6OAGKuC+RhY6EhAS3pG0wdNqFYM=;
+        b=lZ0jRsj5MIg2rpnfGmJmgK0eVG9jUWEt2nctdQhiocQ/DuPVhRAonwaENrnqOVpwNt
+         inZoxQDQ/7XcdRbkSNLnOgeJgDfQZbLzlO3PsCXu/j6qv/1ynAbw1Uhuk1sPPV/wtWi8
+         ykVvCBBOdohi7Xr8Va8RNAN0ZQcxkQi6wDWyz8N5rAulNDM9R4osdf+8kN2bbHYvAatA
+         3Fe5kB1lTmY0kmjO+vkfun0WQ3i9RAGAXJc01tUSBpApST/3TdP8+HiMZafecrPS2RGy
+         N6Gm5UugYKxd341ZzFFDL1sg9V7RN37WCUnhsggMYL8kFTZTIGMbeUaQWUczB1Irkck2
+         SF8g==
+X-Gm-Message-State: AOAM531uPIXPyCpIZpO0yscj6Rz/cMm+il5Bur9rBle8wv4iXK79GIaS
+        IU9yhrmIt03Vrgf06tWB/3axGg==
+X-Google-Smtp-Source: ABdhPJzEopqKmH/ntr0d+5pOVr2pEeHy5ZAzJtZ4Umh282ew0jB41M9YvrfWbt8lQd6tE+A69Pcx+w==
+X-Received: by 2002:a17:902:bd88:: with SMTP id q8mr845105pls.296.1592429065579;
+        Wed, 17 Jun 2020 14:24:25 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id b24sm698787pfo.112.2020.06.17.14.24.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jun 2020 14:24:24 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 14:24:23 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] usb: dwc3: qcom: Make sure core device is fully
+ initialized before it is used
+Message-ID: <20200617212423.GB4525@google.com>
+References: <20200616133734.1.I1902d0d48e4f3d4c5b5f1a2008108a4cd3c5ddb5@changeid>
+ <159242335325.62212.8113067612959846891@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200617200844.GA12976@Ryzen-9-3900X.localdomain>
+In-Reply-To: <159242335325.62212.8113067612959846891@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:08:44PM -0700, Nathan Chancellor wrote:
-> On Mon, Jun 01, 2020 at 04:25:32AM -0700, Sargun Dhillon wrote:
-> > [...]
-> >  static long seccomp_notify_recv(struct seccomp_filter *filter,
-> >  				void __user *buf)
-> >  {
-> > -	struct seccomp_knotif *knotif = NULL, *cur;
-> > +	struct seccomp_knotif *knotif, *cur;
-> >  	struct seccomp_notif unotif;
-> >  	ssize_t ret;
+Hi Stephen,
+
+On Wed, Jun 17, 2020 at 12:49:13PM -0700, Stephen Boyd wrote:
+> Quoting Matthias Kaehlcke (2020-06-16 13:37:37)
+> > dwc3_qcom_of_register_core() uses of_platform_populate() to add
+> > the dwc3 core device. The driver core will try to probe the device,
+> > however this might fail (e.g. due to deferred probing) and
+> > of_platform_populate() would still return 0 if the device was
+> > successully added to the platform bus. Verify that the core device
+> > is actually bound to its driver before using it, defer probing of the
+> > dwc3_qcom device if the core device isn't ready (yet).
+> > 
+> > Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver").
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > depends on:
+> >   https://lore.kernel.org/patchwork/patch/1251661/ ("driver core:Export
+> >     the symbol device_is_bound")
+> > 
+> >  drivers/usb/dwc3/dwc3-qcom.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> > index 1dfd024cd06b..5a9036b050c6 100644
+> > --- a/drivers/usb/dwc3/dwc3-qcom.c
+> > +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> > @@ -537,6 +537,16 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+> >                 return -ENODEV;
+> >         }
 > >  
+> > +       /*
+> > +        * A successful return from of_platform_populate() only guarantees that
+> > +        * the core device was added to the platform bus, however it might not
+> > +        * be bound to its driver (e.g. due to deferred probing). This driver
+> > +        * requires the core device to be fully initialized, so defer probing
+> > +        * if it isn't ready (yet).
+> > +        */
+> > +       if (!device_is_bound(&qcom->dwc3->dev))
+> > +               return -EPROBE_DEFER;
 > 
-> I don't know that this should have been removed, clang now warns:
-> 
-> kernel/seccomp.c:1063:2: warning: variable 'knotif' is used uninitialized whenever 'for' loop exits because its condition is false [-Wsometimes-uninitialized]
->         list_for_each_entry(cur, &filter->notif->notifications, list) {
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/list.h:602:7: note: expanded from macro 'list_for_each_entry'
->              &pos->member != (head);                                    \
->              ^~~~~~~~~~~~~~~~~~~~~~
-> kernel/seccomp.c:1075:7: note: uninitialized use occurs here
->         if (!knotif) {
->              ^~~~~~
-> kernel/seccomp.c:1063:2: note: remove the condition if it is always true
->         list_for_each_entry(cur, &filter->notif->notifications, list) {
->         ^
-> include/linux/list.h:602:7: note: expanded from macro 'list_for_each_entry'
->              &pos->member != (head);                                    \
->              ^
-> kernel/seccomp.c:1045:31: note: initialize the variable 'knotif' to silence this warning
->         struct seccomp_knotif *knotif, *cur;
->                                      ^
->                                       = NULL
-> 1 warning generated.
+> Isn't this still broken? i.e. the dwc3 core driver may bind much later
+> and then device_is_bound() will return an error here and then we'll
+> return to the caller, dwc3_qcom_probe(), and that will depopulate the
+> device with of_platform_depopulate(). It seems like we need to run some
+> sort of wait for driver to be bound function instead of a one-shot check
+> for the driver being bound.
 
-Eek; yes, thank you! I've folded the fix into Sargun's patch.
+My understanding is that the probing is done synchronously and either done,
+failed or deferred when returning from of_platform_populate(). Ideally we
+would be able to differentiate between a failure and deferral, and not defer
+probing in case of an error, however I'm not aware of a way to do this with
+the current driver framework.
 
--- 
-Kees Cook
+The call flow is:
+
+  of_platform_populate
+    of_platform_bus_create
+      of_platform_device_create_pdata
+        of_device_add
+	  device_add
+	    bus_probe_device
+	      device_initial_probe
+	        __device_attach
+	          __device_attach_driver
+	            driver_probe_device
+                      really_probe
+                        ->probe()
+
+
+> Also, what about acpi? That has the same problem but it isn't covered by
+> the dwc3_qcom_of_register_core() function.
+
+I wouldn't be surprised if it had the same problem. I'm not familiar with ACPI
+though and don't have a device for testing, hence I limited the patch to the
+platform device.
