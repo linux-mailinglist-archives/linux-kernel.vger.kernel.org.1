@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8252E1FCAA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C759D1FCA9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgFQKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgFQKSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:18:35 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C874FC061573;
-        Wed, 17 Jun 2020 03:18:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 95B322A395D
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        kernel@collabora.com
-Subject: [PATCH v2] Input: document inhibiting
-Date:   Wed, 17 Jun 2020 12:18:22 +0200
-Message-Id: <20200617101822.8558-1-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <f9007f37-c526-5fa4-3188-a554d2434177@redhat.com>
-References: <f9007f37-c526-5fa4-3188-a554d2434177@redhat.com>
+        id S1726341AbgFQKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 06:18:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725554AbgFQKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 06:18:30 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66A1C208B8;
+        Wed, 17 Jun 2020 10:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592389110;
+        bh=t3O3UqUPbUfT6U+LwvmDhf8VfLM3fmdWGiN7u6Z4cqU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cTOqgPvE3c8CfIz5eGN+H1QWmhHhx4qZ+OBY53vIa2enZtatW6BqM01MylBKK03hc
+         xUemYqn0zAIhcnztlOTQh46+2RDBriTxkSiLc839HNanIu3LJCYD7uwQnbYqsaW7Rk
+         waEGqqsU7FVhnt5on9cwwAaNoUkeM0EySg/70Rek=
+Date:   Wed, 17 Jun 2020 11:18:25 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     catalin.marinas@arm.com, nsaenzjulienne@suse.de,
+        steve.capper@arm.com, rppt@linux.ibm.com,
+        akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH v2] arm64: mm: reserve hugetlb CMA after numa_init
+Message-ID: <20200617101824.GB3368@willie-the-truck>
+References: <20200616221924.74780-1-song.bao.hua@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616221924.74780-1-song.bao.hua@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document inhibiting input devices and its relation to being
-a wakeup source.
+On Wed, Jun 17, 2020 at 10:19:24AM +1200, Barry Song wrote:
+> hugetlb_cma_reserve() is called at the wrong place. numa_init has not been
+> done yet. so all reserved memory will be located at node0.
+> 
+> Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
-v1..v2:
+Damn, wasn't CC'd on that :/
 
-- Addressed editorial comments from Randy
-- Added a paragraph by Hans
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  -v2: add Fixes tag according to Matthias Brugger's comment
+> 
+>  arch/arm64/mm/init.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index e631e6425165..41914b483d54 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -404,11 +404,6 @@ void __init arm64_memblock_init(void)
+>  	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
+>  
+>  	dma_contiguous_reserve(arm64_dma32_phys_limit);
+> -
+> -#ifdef CONFIG_ARM64_4K_PAGES
+> -	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> -#endif
 
- Documentation/input/input-programming.rst | 40 +++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+Why is this dependent on CONFIG_ARM64_4K_PAGES? We unconditionally
+select ARCH_HAS_GIGANTIC_PAGE so this seems unnecessary.
 
-diff --git a/Documentation/input/input-programming.rst b/Documentation/input/input-programming.rst
-index 45a4c6e05e39..7432315cc829 100644
---- a/Documentation/input/input-programming.rst
-+++ b/Documentation/input/input-programming.rst
-@@ -164,6 +164,46 @@ disconnects. Calls to both callbacks are serialized.
- The open() callback should return a 0 in case of success or any nonzero value
- in case of failure. The close() callback (which is void) must always succeed.
- 
-+Inhibiting input devices
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Inhibiting a device means ignoring input events from it. As such it is about maintaining
-+relationships with input handlers - either already existing relationships, or relationships
-+to be established while the device is in inhibited state.
-+
-+If a device is inhibited, no input handler will receive events from it.
-+
-+The fact that nobody wants events from the device is exploited further, by calling device's
-+close() (if there are users) and open() (if there are users) on inhibit and uninhibit
-+operations, respectively. Indeed, the meaning of close() is to stop providing events
-+to the input core and that of open() is to start providing events to the input core.
-+
-+Calling the device's close() method on inhibit (if there are users) allows the driver
-+to save power. Either by directly powering down the device or by releasing the
-+runtime-pm reference it got in open() when the driver is using runtime-pm.
-+
-+Inhibiting and uninhibiting are orthogonal to opening and closing the device by input
-+handlers. Userspace might want to inhibit a device in anticipation before any handler is
-+positively matched against it.
-+
-+Inhibiting and uninhibiting are orthogonal to device's being a wakeup source, too. Being a
-+wakeup source plays a role when the system is sleeping, not when the system is operating.
-+How drivers should program their interaction between inhibiting, sleeping and being a wakeup
-+source is driver-specific.
-+
-+Taking the analogy with the network devices - bringing a network interface down doesn't mean
-+that it should be impossible be wake the system up on LAN through this interface. So, there
-+may be input drivers which should be considered wakeup sources even when inhibited. Actually,
-+in many I2C input devices their interrupt is declared a wakeup interrupt and its handling
-+happens in driver's core, which is not aware of input-specific inhibit (nor should it be).
-+Composite devices containing several interfaces can be inhibited on a per-interface basis and
-+e.g. inhibiting one interface shouldn't affect the device's capability of being a wakeup source.
-+
-+If a device is to be considered a wakeup source while inhibited, special care must be taken when
-+programming its suspend(), as it might need to call device's open(). Depending on what close()
-+means for the device in question, not opening() it before going to sleep might make it
-+impossible to provide any wakeup events. The device is going to sleep anyway.
-+
- Basic event types
- ~~~~~~~~~~~~~~~~~
- 
--- 
-2.17.1
+> -
+>  }
+>  
+>  void __init bootmem_init(void)
+> @@ -424,6 +419,11 @@ void __init bootmem_init(void)
+>  	min_low_pfn = min;
+>  
+>  	arm64_numa_init();
+> +
+> +#ifdef CONFIG_ARM64_4K_PAGES
+> +	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> +#endif
 
+A comment here wouldn't hurt, as it does look a lot more natural next
+to dma_contiguous_reserve().
+
+Will
