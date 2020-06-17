@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1371FD737
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5481FD73C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgFQV23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 17:28:29 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:50143 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQV22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 17:28:28 -0400
-X-Originating-IP: 86.202.110.81
-Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 0C41D240005;
-        Wed, 17 Jun 2020 21:28:19 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 23:28:19 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        claudiu.beznea@microchip.com
-Subject: Re: [PATCH 2/3] ARM: dts: at91: sam9x60ek: classd: pull-down the L1
- and L3 lines
-Message-ID: <20200617212819.GE3675@piout.net>
-References: <20200615095525.43414-1-codrin.ciubotariu@microchip.com>
- <20200615095525.43414-2-codrin.ciubotariu@microchip.com>
+        id S1727038AbgFQV3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 17:29:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:28951 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726496AbgFQV3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 17:29:17 -0400
+IronPort-SDR: uirFb1FVNIpZG5vOxlGAA5p5N05+WLw6+NwxWZBSKX2Mc3+2B2spUcut9wIlBjqCWa81Ybmmel
+ LxjWd7OXkSsQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 14:29:16 -0700
+IronPort-SDR: Nsquo/N3cnkdJ5ghBjTUKzDKBJJIKa3ETc5TpnnzUqDnGDJ2VzU1r8DM4MqnPEpLHl04z0NHNV
+ Ur6Wai7guEBw==
+X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
+   d="scan'208";a="273648327"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 14:29:16 -0700
+Date:   Wed, 17 Jun 2020 14:29:15 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH][next] x86/mce/dev-mcelog: Use struct_size() helper in
+ kzalloc()
+Message-ID: <20200617212915.GA4803@agluck-desk2.amr.corp.intel.com>
+References: <20200617211734.GA9636@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615095525.43414-2-codrin.ciubotariu@microchip.com>
+In-Reply-To: <20200617211734.GA9636@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2020 12:55:24+0300, Codrin Ciubotariu wrote:
-> The L1 and L3 lines drive NMOS transistors that are OFF with a low level.
-> On the SAM9X60 EK board, if the pins corresponding to L1 and L3
-> have pull-ups enabled, there is an extra 2 x 30uA power consumption.
-> Use pull-downs for these 2 lines to remove the unnecessary power
-> consumption.
+On Wed, Jun 17, 2020 at 04:17:34PM -0500, Gustavo A. R. Silva wrote:
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
 > 
-> Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
->  arch/arm/boot/dts/at91-sam9x60ek.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This code was detected with the help of Coccinelle and, audited and
+> fixed manually.
 > 
-Applied, thanks.
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Acked-by: Tony Luck <tony.luck@intel.com>
+
+> ---
+>  arch/x86/kernel/cpu/mce/dev-mcelog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/dev-mcelog.c b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+> index 43c466020ed5..03e51053592a 100644
+> --- a/arch/x86/kernel/cpu/mce/dev-mcelog.c
+> +++ b/arch/x86/kernel/cpu/mce/dev-mcelog.c
+> @@ -345,7 +345,7 @@ static __init int dev_mcelog_init_device(void)
+>  	int err;
+>  
+>  	mce_log_len = max(MCE_LOG_MIN_LEN, num_online_cpus());
+> -	mcelog = kzalloc(sizeof(*mcelog) + mce_log_len * sizeof(struct mce), GFP_KERNEL);
+> +	mcelog = kzalloc(struct_size(mcelog, entry, mce_log_len), GFP_KERNEL);
+>  	if (!mcelog)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.27.0
+> 
