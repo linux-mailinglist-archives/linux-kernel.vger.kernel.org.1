@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE591FD207
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356F21FD209
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgFQQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S1727781AbgFQQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbgFQQ02 (ORCPT
+        with ESMTP id S1727069AbgFQQ0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:28 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8E3C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:28 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id a3so2300553oid.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:28 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:31 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7BAC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:29 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id k15so2089885otp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OpKisUIrNDP4b7Le3VGwmmpBHcbUC4mhjuxLi316v8I=;
-        b=jgXTbxLw7ienGk2MzFo5c0wKoSn2H8CttyP3ZPskJYPeIeP1PPl70Le0PY4aN2EiEQ
-         iEDGqQJiiSq/Xq/eoEM3TsIkuZkKpdCNIPwS5QjaI8UH5QrxB27IddmRnrYl+EJz4VrH
-         d/vhhH7iR3tox52A37syuTUMeDqCSj0bodLOjh6OVketiv7/R6x+HIC5gRFZ6TN5xHO6
-         RpPcoovEohIVWTMIWqnWmW5zGXiKX3TUuBZTlo/rK/eu/gkrnkJkcbDF9zFKkLPYgsJY
-         4pvEhfCsG3BeO9nOzbqcLPRs7lzWb56nzn0jtAnBxZRHV8JH7u+LwWygbahWc11THy9R
-         tf8g==
+        bh=0hrRgLXuRhMeQ6slbSOKJC3oaC69Z2SF3rsc7qez2XE=;
+        b=HzvQe3XY2utflOg0HvS6MWNBANwSa7sL1NOqNtveiZ8KEicEUoKTea/M6qBwQgmgvu
+         rgz36hkD3lUzeBI9hDQalRU1CKozULtTN/Dw/m7j+Wc/uK7uea+FL+3WUUkIzDR3mj3t
+         lDcwWQhDImnve4Qex48kxHCxQ7L2kbXyM7aecvTcBUUVt44leDClTxIStN+q6SgzkTjv
+         xREsRTM9q2pZFeH5yITwDPZOf1z8VCIVaJKujiDwm3WxgSxrU0Bt/GYvnlDtaRZ7PXl1
+         4eNosi5+pJA9TXwUAHX9Oye56vwQS4xo/hQMh8HawaltAP7gySGlXLzX3+rtT26CWp1P
+         Dp+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OpKisUIrNDP4b7Le3VGwmmpBHcbUC4mhjuxLi316v8I=;
-        b=s/vBBm+bhEAxHbRQW6dWx+0Fc1mrUzvcBuf1viaxDX8Cl6X7IrbI3wF3ygXGNAwowk
-         VPqWiKL+NbEsBtw4pdJ49qBj1dmsV4G8BUZfMEC9aRi2EGad75pn86IYM8zud0Vj2yVT
-         ZTHRjyuDYuHn36b7gzLZyZ+EP+MTnjsAAMW2s+9gk3oA4NZGbCxquOXCPJxfYcoWrh+5
-         mFdFLXFhPdkqJk8fr6hbXiPCumD7Zkf2bvYdbgUoLdTbrAY5RzMrXDXckzQeGFPzSeDq
-         DCdy9aVMD13s2d66cvpiQOOUryvv7eFhI1V1L3pCpedLa+4E3pvcAyXCNMESZ+Q+Vmja
-         5b7Q==
-X-Gm-Message-State: AOAM5300mHRrfC1lXq0GOmfdTI4C4t8FVCkjbykHhhJ8MX0tB8IDlPOz
-        QbZNKzVl0vdQrpyYb29Zxiw=
-X-Google-Smtp-Source: ABdhPJyktbEeQ4lzo1ybzJxvOPN38vMwOJif3TWdAdUj+7nvB113kmYKbE4fme5DITZSwsfIpFMTRg==
-X-Received: by 2002:a05:6808:8ce:: with SMTP id k14mr5690052oij.141.1592411187727;
-        Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
+        bh=0hrRgLXuRhMeQ6slbSOKJC3oaC69Z2SF3rsc7qez2XE=;
+        b=jkEs9AnxiE9b9kyybSiMYRrCMSHfpCq8ZSovBjbqm/hv1iCDlgo9rjeb3n7Z5BHbzO
+         c0VYPCJbsPihGJKZYECO/HUBsLXmJXzSNFUlZMHMnQcbyASeDDbt7FrbVWBTwn2GaM9A
+         YAYXn0FlKKYH8GZUMds8SI1MRH+nR+JGe4Qpe44Mxzx8QR+TXvDd3TIeev0an1t9ZieS
+         kZ+u0sgUqLYPvXlMmAtZyIcKIUqaheYpCzc1/30IJFOfNRMTE8byB/CgI+q0tkH+iJHO
+         QLnzeTQMz3KLkXEYrO1/MtOq3eJDmc1QhBGf0h6ChSEtxG9D+LCzbnENlrG50sgsK7lQ
+         Cj+Q==
+X-Gm-Message-State: AOAM533UfGcw/JuyCmh2SRTz8hHMuj+KDqmdkaHfpd4bdxb10Wqta3rH
+        ZpfvOKD/Gvy+q5GBb1M6txM=
+X-Google-Smtp-Source: ABdhPJwRoYQ3cqC/VxFyhvWCwHvWxIvB8ZVqxOLtoPHUduYWXh+yujaxk+V5S7JmjdbT37oUewAseA==
+X-Received: by 2002:a9d:32f7:: with SMTP id u110mr7486878otb.217.1592411189081;
+        Wed, 17 Jun 2020 09:26:29 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.26
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:28 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 16/21] dyndbg: combine flags & mask into a struct, simplify with it
-Date:   Wed, 17 Jun 2020 10:25:31 -0600
-Message-Id: <20200617162536.611386-19-jim.cromie@gmail.com>
+Subject: [PATCH v3 17/21] dyndbg: refactor ddebug_read_flags out of ddebug_parse_flags
+Date:   Wed, 17 Jun 2020 10:25:32 -0600
+Message-Id: <20200617162536.611386-20-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -65,150 +65,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flags & mask are used together everywhere, and are passed around
-together between multiple functions; they belong together in a struct,
-call that struct flag_settings.
+Move flag-char reading and validating code to a separate function.
 
-Use struct flag_settings to rework 3 functions:
- - ddebug_exec_query - calls other 2
- - ddebug_parse_flags - fills flag_settings and returns
- - ddebug_change - test all callsites against query,
-   		   modify passing sites.
+This will allow later reuse to read 2 sets of flags:
 
-benefits:
- - bit-banging always needs flags & mask, best together.
- - simpler function signatures
- - 1 less parameter, less stack overhead
+  1- flags to set or clear (after the [=-+] Operator)
+  2- flags to require or prohibit before changing a callsite's flagstate
+
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ lib/dynamic_debug.c | 37 +++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index ff97938b5849..22335f7dbac1 100644
+index 22335f7dbac1..8400e4f90b67 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -62,6 +62,11 @@ struct ddebug_iter {
- 	unsigned int idx;
- };
- 
-+struct flag_settings {
-+	unsigned int flags;
-+	unsigned int mask;
-+};
-+
- static DEFINE_MUTEX(ddebug_lock);
- static LIST_HEAD(ddebug_tables);
- static int verbose;
-@@ -141,7 +146,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
-  * logs the changes.  Takes ddebug_lock.
-  */
- static int ddebug_change(const struct ddebug_query *query,
--			unsigned int flags, unsigned int mask)
-+			 struct flag_settings *modifiers)
- {
- 	int i;
- 	struct ddebug_table *dt;
-@@ -190,14 +195,14 @@ static int ddebug_change(const struct ddebug_query *query,
- 
- 			nfound++;
- 
--			newflags = (dp->flags & mask) | flags;
-+			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
- 			if (newflags == dp->flags)
- 				continue;
- #ifdef CONFIG_JUMP_LABEL
- 			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
--				if (!(flags & _DPRINTK_FLAGS_PRINT))
-+				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
- 					static_branch_disable(&dp->key.dd_key_true);
--			} else if (flags & _DPRINTK_FLAGS_PRINT)
-+			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
- 				static_branch_enable(&dp->key.dd_key_true);
- #endif
- 			dp->flags = newflags;
-@@ -431,11 +436,9 @@ static int ddebug_parse_query(char *words[], int nwords,
-  * flags fields of matched _ddebug's.  Returns 0 on success
-  * or <0 on error.
-  */
--static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
--			       unsigned int *maskp)
-+static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- {
--	unsigned flags = 0;
--	int op = '=', i;
-+	int op, i;
- 
- 	switch (*str) {
- 	case '+':
-@@ -452,7 +455,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
- 	for (; *str ; ++str) {
- 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
- 			if (*str == opt_array[i].opt_char) {
--				flags |= opt_array[i].flag;
-+				modifiers->flags |= opt_array[i].flag;
- 				break;
- 			}
- 		}
-@@ -461,30 +464,30 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
- 			return -EINVAL;
- 		}
- 	}
--	vpr_info("flags=0x%x\n", flags);
-+	vpr_info("flags=0x%x\n", modifiers->flags);
- 
--	/* calculate final *flagsp, *maskp according to mask and op */
-+	/* calculate final flags, mask based upon op */
- 	switch (op) {
- 	case '=':
--		*maskp = 0;
--		*flagsp = flags;
-+		/* modifiers->flags already set */
-+		modifiers->mask = 0;
- 		break;
- 	case '+':
--		*maskp = ~0U;
--		*flagsp = flags;
-+		modifiers->mask = ~0U;
- 		break;
- 	case '-':
--		*maskp = ~flags;
--		*flagsp = 0;
-+		modifiers->mask = ~modifiers->flags;
-+		modifiers->flags = 0;
- 		break;
- 	}
--	vpr_info("*flagsp=0x%x *maskp=0x%x\n", *flagsp, *maskp);
-+	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
-+
+@@ -430,6 +430,26 @@ static int ddebug_parse_query(char *words[], int nwords,
  	return 0;
  }
  
- static int ddebug_exec_query(char *query_string, const char *modname)
++static int ddebug_read_flags(const char *str, struct flag_settings *modifiers)
++{
++	int i;
++
++	for (; *str ; ++str) {
++		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
++			if (*str == opt_array[i].opt_char) {
++				modifiers->flags |= opt_array[i].flag;
++				break;
++			}
++		}
++		if (i < 0) {
++			pr_err("unknown flag '%c'\n", *str);
++			return -EINVAL;
++		}
++	}
++	vpr_info("flags=0x%x\n", modifiers->flags);
++	return 0;
++}
++
+ /*
+  * Parse `str' as a flags specification, format [-+=][p]+.
+  * Sets up *maskp and *flagsp to be used when changing the
+@@ -438,7 +458,7 @@ static int ddebug_parse_query(char *words[], int nwords,
+  */
+ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
  {
--	unsigned int flags = 0, mask = 0;
-+	struct flag_settings modifiers = {};
- 	struct ddebug_query query = {};
- #define MAXWORDS 9
- 	int nwords, nfound;
-@@ -496,7 +499,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* check flags 1st (last arg) so query is pairs of spec,val */
--	if (ddebug_parse_flags(words[nwords-1], &flags, &mask)) {
-+	if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
- 		pr_err("flags parse failed\n");
- 		return -EINVAL;
- 	}
-@@ -505,7 +508,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* actually go and implement the change */
--	nfound = ddebug_change(&query, flags, mask);
-+	nfound = ddebug_change(&query, &modifiers);
- 	vpr_info_dq(&query, nfound ? "applied" : "no-match");
+-	int op, i;
++	int op;
  
- 	return nfound;
+ 	switch (*str) {
+ 	case '+':
+@@ -452,19 +472,8 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 	}
+ 	vpr_info("op='%c'\n", op);
+ 
+-	for (; *str ; ++str) {
+-		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
+-			if (*str == opt_array[i].opt_char) {
+-				modifiers->flags |= opt_array[i].flag;
+-				break;
+-			}
+-		}
+-		if (i < 0) {
+-			pr_err("unknown flag '%c'\n", *str);
+-			return -EINVAL;
+-		}
+-	}
+-	vpr_info("flags=0x%x\n", modifiers->flags);
++	if (ddebug_read_flags(str, modifiers))
++		return -EINVAL;
+ 
+ 	/* calculate final flags, mask based upon op */
+ 	switch (op) {
 -- 
 2.26.2
 
