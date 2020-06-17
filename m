@@ -2,104 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF391FC76F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF731FC781
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgFQHbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:31:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:34903 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgFQHbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:31:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49mxZH1WKhz9sSS;
-        Wed, 17 Jun 2020 17:31:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592379063;
-        bh=klSOmXdAG8xbHCOGkPZTgzGSr4iiKcDXqoKHVPsc3Fw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ctloyEHszdh4z5LULWzCov1inIK4hyGBfUxx02PhD3zLXNAwkELd0xbJSdm/jJSMR
-         mkUPcFEYgt8b5UMiwq12Bhj2WIfAJ2BinDiNBKW1pASjkQTuy1tAprPf5YTSqZvv3x
-         zR+QTSA1kIp7qHnF7s0Q5CqCchH9OuvmL6G0MS0wi3lLnr41NNqPH5KS9ZmZswZ8Zg
-         QIo/dFqcykV2nzaAlb7F30BIKFgwp3Ok2wqWL0vNd8vyGDdw24yD5PQ68jP+xvi2sm
-         E9ggrURFJbyPuFDG9z3YZ1VPE+EVQ4LvnQY/9oUKAOMtoTXmW/yNrBXPLJeNQkLNP8
-         ZnEy5FGNMQthQ==
-Date:   Wed, 17 Jun 2020 17:31:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Subject: Re: linux-next: build failures after merge of the vfs tree
-Message-ID: <20200617173102.2b91c32d@canb.auug.org.au>
-In-Reply-To: <20200617070316.GA30348@gondor.apana.org.au>
-References: <20200616103330.2df51a58@canb.auug.org.au>
-        <20200616103440.35a80b4b@canb.auug.org.au>
-        <20200616010502.GA28834@gondor.apana.org.au>
-        <20200616033849.GL23230@ZenIV.linux.org.uk>
-        <20200616143807.GA1359@gondor.apana.org.au>
-        <20200617165715.577aa76d@canb.auug.org.au>
-        <20200617070316.GA30348@gondor.apana.org.au>
+        id S1726280AbgFQHev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQHeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 03:34:50 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF888C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:34:48 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q25so877621wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:34:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fwngVWkjY9fLUGwy3ivvNT4X5Xvq6DSDUdpByq/8Ym4=;
+        b=dbNJ1iHZuhQ+KrxrQ57v93tTtorXC26arOGU1ZaPPFFFaaG0teuhLyDWIXJPGLAjh4
+         feWSRbSxsJ4CL+QUgOaEFCJTfL160TYhRjvwn5OZuvuBs824bOd2fF8tsgkFf5XUwWS9
+         sSepUeOHSQh/2elEzN8RkF4NAFTgvGfIau9To=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fwngVWkjY9fLUGwy3ivvNT4X5Xvq6DSDUdpByq/8Ym4=;
+        b=RV4+8XcbkyDVX/oThqm092vwdvM+X/zQdf+LECQa8/pXIvKJi1VIh20rsnW1+ebfyi
+         /giTEWRiL901rYhF8218W1BVJ+5tHI3UW0CNYkEY0RNdhOMQc1/eE6I/FFE/jyqXQ2u7
+         L7t8gWjbsxOEeFO+3cVs4cpFD3bwFumyQdkHP5JGis9qf0I0p/mt15CnaXxir0R0lKaR
+         ZLf5Qn9ptSWAyv1RlqQtGxB17hOvs3sIeQSeuRJR+XR53WuTir8XO4NNJQfng7YXzoNC
+         +mpfk1NtMCfGnZ+gEKHs0ZR10tu8YskD7uUFwq0ZEjMnkg69mZP6vonvcv7xJdcJODXu
+         /VbA==
+X-Gm-Message-State: AOAM533Jrb1WF3dG+9j7q1PmG7JrlwtmSvb4jMxUDpRNCtJuQM/Q8Dj6
+        r+IXrnipfcrHT25eaJRPqEuSM25RSESdCx/Ayb8a
+X-Google-Smtp-Source: ABdhPJyGJa9kRlJPnXVr4b2Z/d3r29W3OQ5lMNq2+wIIXKD0swRKDv0pYf5f0nWusXRDmmDZUj/VlmT89ROLCtNOtPU=
+X-Received: by 2002:a1c:2e0e:: with SMTP id u14mr7119944wmu.55.1592379287504;
+ Wed, 17 Jun 2020 00:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iy7rzYSZF1PbC4yRJ1Z80v6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200616045108.GP75760@lianli.shorne-pla.net> <mhng-b86477b3-4134-4023-968e-532ca0b33125@palmerdabbelt-glaptop1>
+ <CANN689GkUUfpTn+fkjsC-a=RwGsxVwsg-QXKDnVe6zXLjvuZWA@mail.gmail.com>
+ <20200616191943.GA1401039@lianli.shorne-pla.net> <CAOnJCUL52Ch3QHikik=DYJYciFE0e8zhrSL-AgaZPensXyZqyg@mail.gmail.com>
+ <CANN689Ek3szVSVC4H0NKpkdZes82VW_Xvs4+GLTGCWES7A-ySQ@mail.gmail.com>
+ <20200617053539.GB1401039@lianli.shorne-pla.net> <20200617060734.GC1401039@lianli.shorne-pla.net>
+ <CANN689F=LKGprNx9_Wb5HOvT-Fvv8WUR_T2DJPhy0u2HeT-A7g@mail.gmail.com>
+In-Reply-To: <CANN689F=LKGprNx9_Wb5HOvT-Fvv8WUR_T2DJPhy0u2HeT-A7g@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 17 Jun 2020 00:34:36 -0700
+Message-ID: <CAOnJCUKgZcY2G+3ADZ5aJy4sXb8mhmkDczULQUbPDpra3vLkaw@mail.gmail.com>
+Subject: Re: mm lock issue while booting Linux on 5.8-rc1 for RISC-V
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Stafford Horne <shorne@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Topel <bjorn.topel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iy7rzYSZF1PbC4yRJ1Z80v6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Herbert,
-
-On Wed, 17 Jun 2020 17:03:17 +1000 Herbert Xu <herbert@gondor.apana.org.au>=
- wrote:
+On Tue, Jun 16, 2020 at 11:30 PM Michel Lespinasse <walken@google.com> wrote:
 >
-> On Wed, Jun 17, 2020 at 04:57:15PM +1000, Stephen Rothwell wrote:
-> >=20
-> > Presumably another include needed:
-> >=20
-> > arch/s390/lib/test_unwind.c:49:2: error: implicit declaration of functi=
-on 'kmalloc' [-Werror=3Dimplicit-function-declaration]
-> > arch/s390/lib/test_unwind.c:99:2: error: implicit declaration of functi=
-on 'kfree' [-Werror=3Dimplicit-function-declaration] =20
->=20
+> On Tue, Jun 16, 2020 at 11:07 PM Stafford Horne <shorne@gmail.com> wrote:
+> > On Wed, Jun 17, 2020 at 02:35:39PM +0900, Stafford Horne wrote:
+> > > On Tue, Jun 16, 2020 at 01:47:24PM -0700, Michel Lespinasse wrote:
+> > > > This makes me wonder actually - maybe there is a latent bug that got
+> > > > exposed after my change added the rwsem_is_locked assertion to the
+> > > > lockdep_assert_held one. If that is the case, it may be helpful to
+> > > > bisect when that issue first appeared, by testing before my patchset
+> > > > with VM_BUG_ON(!rwsem_is_locked(&walk.mm->mmap_lock)) added to
+> > > > walk_page_range() / walk_page_range_novma() / walk_page_vma() ...
+> > >
+> > > Hello,
+> > >
+> > > I tried to bisect it, but I think this issue goes much further back.
+> > >
+> > > Just with the below patch booting fails all the way back to v5.7.
+> > >
+> > > What does this mean by they way, why would mmap_assert_locked() want to assert
+> > > that the rwsem_is_locked() is not true?
+>
+> It's the opposite - VM_BUG_ON(cond) triggers if cond is true, so in
+> other words it asserts that cond is false. Yeah, I agree it is kinda
+> confusing. But in our case, it asserts that the rwsem is locked, which
+> is what we want.
+>
+> > The openrisc code that was walking the page ranges was not locking mm. I have
+> > added the  below patch to v5.8-rc1 and it seems to work fine.  I will send a
+> > better patch in a bit.
+> >
+> > iff --git a/arch/openrisc/kernel/dma.c b/arch/openrisc/kernel/dma.c
+> > index c152a68811dd..bd5f05dd9174 100644
+> > --- a/arch/openrisc/kernel/dma.c
+> > +++ b/arch/openrisc/kernel/dma.c
+> > @@ -74,8 +74,10 @@ void *arch_dma_set_uncached(void *cpu_addr, size_t size)
+> >          * We need to iterate through the pages, clearing the dcache for
+> >          * them and setting the cache-inhibit bit.
+> >          */
+> > +       mmap_read_lock(&init_mm);
+> >         error = walk_page_range(&init_mm, va, va + size, &set_nocache_walk_ops,
+> >                         NULL);
+> > +       mmap_read_unlock(&init_mm);
+> >         if (error)
+> >                 return ERR_PTR(error);
+> >         return cpu_addr;
+> > @@ -85,9 +87,11 @@ void arch_dma_clear_uncached(void *cpu_addr, size_t size)
+> >  {
+> >         unsigned long va = (unsigned long)cpu_addr;
+> >
+> > +       mmap_read_lock(&init_mm);
+> >         /* walk_page_range shouldn't be able to fail here */
+> >         WARN_ON(walk_page_range(&init_mm, va, va + size,
+> >                         &clear_nocache_walk_ops, NULL));
+> > +       mmap_read_unlock(&init_mm);
+> >  }
+>
+> Thanks a lot for getting to the bottom of this. I think this is the proper fix.
 
-And more (these are coming from other's builds):
+A similar patch works for RISC-V as well. Thanks for debugging it.
+To sum it up, mm should be locked before walk_page_range and
+walk_page_range_novma.
 
-  drivers/remoteproc/qcom_q6v5_mss.c:772:3: error: implicit declaration of =
-function 'kfree' [-Werror,-Wimplicit-function-declaration]
-  drivers/remoteproc/qcom_q6v5_mss.c:808:2: error: implicit declaration of =
-function 'kfree' [-Werror,-Wimplicit-function-declaration]
-  drivers/remoteproc/qcom_q6v5_mss.c:1195:2: error: implicit declaration of=
- function 'kfree' [-Werror,-Wimplicit-function-declaration]
+Here is a diff that works for RISC-V. I will send the patch soon.
 
-They may have other causes as they are full linux-next builds (not just
-after the merge of the vfs tree), but the timing is suspicious.
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+index ec2c70f84994..289a9a5ea5b5 100644
+--- a/arch/riscv/mm/pageattr.c
++++ b/arch/riscv/mm/pageattr.c
+@@ -151,6 +151,7 @@ int set_memory_nx(unsigned long addr, int numpages)
 
---Sig_/iy7rzYSZF1PbC4yRJ1Z80v6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ int set_direct_map_invalid_noflush(struct page *page)
+ {
++       int ret;
+        unsigned long start = (unsigned long)page_address(page);
+        unsigned long end = start + PAGE_SIZE;
+        struct pageattr_masks masks = {
+@@ -158,11 +159,16 @@ int set_direct_map_invalid_noflush(struct page *page)
+                .clear_mask = __pgprot(_PAGE_PRESENT)
+        };
 
------BEGIN PGP SIGNATURE-----
+-       return walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
++       mmap_read_lock(&init_mm);
++       ret = walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
++       mmap_read_unlock(&init_mm);
++
++       return ret;
+ }
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7pxrYACgkQAVBC80lX
-0GxVjwf/fgDfnHpg2j8ykmXdJku5O9ABCw5fN759sVp+t0d7HDMEOB4R9diqU2lP
-2ZWPKYtzEnVwAI334hbCZ8WVk2sJJpnaplWpHP6wIpQGxNZ6ykxTuiJu1lwkgTi8
-lLu2iVRj6BUdTPD5ERnCk2upyM0s3GLVKxVIdHHQeCiK+1p+iC7yNUMFpQqJeE4z
-CFOASpaOv/otkbsVjOuvZZuFu6O/RASv70KmRsKrImpYztq4i8xv3DsSA8oYjlMf
-UiGBacdeu+O3R1uFmFAKodCCeV68VnXqc0USF8On/NQyVW1MLYytXLzMPu6n+jy1
-goMiTp0d9lF4MG+7NtrSfMNJfJwy8A==
-=p/Bi
------END PGP SIGNATURE-----
+ int set_direct_map_default_noflush(struct page *page)
+ {
++       int ret;
+        unsigned long start = (unsigned long)page_address(page);
+        unsigned long end = start + PAGE_SIZE;
+        struct pageattr_masks masks = {
+@@ -170,7 +176,11 @@ int set_direct_map_default_noflush(struct page *page)
+                .clear_mask = __pgprot(0)
+        };
 
---Sig_/iy7rzYSZF1PbC4yRJ1Z80v6--
+-       return walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
++       mmap_read_lock(&init_mm);
++       ret = walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
++       mmap_read_unlock(&init_mm);
++
++       return ret;
+ }
+
+
+
+-- 
+Regards,
+Atish
