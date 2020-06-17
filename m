@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466271FD7EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F0C1FD810
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgFQVvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 17:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgFQVvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 17:51:47 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DF01206E2;
-        Wed, 17 Jun 2020 21:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592430706;
-        bh=hrwO+kM2wjdv4ncpwZvo+b5b3WHUo+MGuqTylhXVPl0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=wOvVB9WRLIrXD8MQwrapjXinSs4LiDjJ7u55Xp+IoiyLP2GO8SLUdrW6D5I3MgKA1
-         LsJQNuCBi7vqBj//p7VGZfp22VxRulyVkV1e6ItN96ebmCyA0o8VCIbZZg4odtpM2s
-         cpnan2bw7kAgVz0oxEU9boM+CRm/i7ekGT8Ygcxs=
-Date:   Wed, 17 Jun 2020 16:57:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] drm/virtio: Use struct_size() helper in kmalloc()
-Message-ID: <20200617215707.GA16785@embeddedor>
+        id S1727047AbgFQWAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:00:14 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37450 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726758AbgFQWAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 18:00:14 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7632131C4F4978AC70FE;
+        Thu, 18 Jun 2020 06:00:12 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.200.210) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 18 Jun 2020 06:00:04 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <nsaenzjulienne@suse.de>, <steve.capper@arm.com>,
+        <rppt@linux.ibm.com>, <akpm@linux-foundation.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>
+Subject: [PATCH v3] arm64: mm: reserve hugetlb CMA after numa_init
+Date:   Thu, 18 Jun 2020 09:58:28 +1200
+Message-ID: <20200617215828.25296-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.200.210]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+hugetlb_cma_reserve() is called at the wrong place. numa_init has not been
+done yet. so all reserved memory will be located at node0.
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Will Deacon <will@kernel.org>
+Acked-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/gpu/drm/virtio/virtgpu_gem.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ -v3:
+ add review-by;
+ add comment according to Will's feedback
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_gem.c b/drivers/gpu/drm/virtio/virtgpu_gem.c
-index 24ffacac99e4..c30c75ee83fc 100644
---- a/drivers/gpu/drm/virtio/virtgpu_gem.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_gem.c
-@@ -154,9 +154,8 @@ void virtio_gpu_gem_object_close(struct drm_gem_object *obj,
- struct virtio_gpu_object_array *virtio_gpu_array_alloc(u32 nents)
- {
- 	struct virtio_gpu_object_array *objs;
--	size_t size = sizeof(*objs) + sizeof(objs->objs[0]) * nents;
+ arch/arm64/mm/init.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index e631e6425165..1e93cfc7c47a 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -404,11 +404,6 @@ void __init arm64_memblock_init(void)
+ 	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
  
--	objs = kmalloc(size, GFP_KERNEL);
-+	objs = kmalloc(struct_size(objs, objs, nents), GFP_KERNEL);
- 	if (!objs)
- 		return NULL;
+ 	dma_contiguous_reserve(arm64_dma32_phys_limit);
+-
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
+-
+ }
  
+ void __init bootmem_init(void)
+@@ -424,6 +419,16 @@ void __init bootmem_init(void)
+ 	min_low_pfn = min;
+ 
+ 	arm64_numa_init();
++
++	/*
++	 * must be done after arm64_numa_init() which calls numa_init() to
++	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
++	 * while allocating required CMA size across online nodes.
++	 */
++#ifdef CONFIG_ARM64_4K_PAGES
++	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++#endif
++
+ 	/*
+ 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+ 	 * done after the fixed reservations.
 -- 
-2.27.0
+2.23.0
+
 
