@@ -2,373 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C75C1FC4F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 06:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A181FC4F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 06:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgFQEAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 00:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgFQEAm (ORCPT
+        id S1726620AbgFQECy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 00:02:54 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:38745 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725808AbgFQECx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 00:00:42 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E90FC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 21:00:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r18so600700pgk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 21:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RsvMcHsmnffBvKI6AP/oNVNlaNqVVaqGHS4ozdYi5fw=;
-        b=OW5MxIYO5PxouZCFtAIJP06VTA/ZOoEp+j/7PsjxG/bPK8Q+52HF4q+GNYPfxdj7CJ
-         zpslw6D2LU6/PAHbqr3egVIP9w6C6wJkDhiE69IsrRNnjn5pxVmpHYJwa7Bz8a31gowr
-         d8F+zWGt7NoDeBLnBcUnUoQ4lkrNTOzaSfido=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RsvMcHsmnffBvKI6AP/oNVNlaNqVVaqGHS4ozdYi5fw=;
-        b=gJerzcSumv9C1r1TdEdceF/51jIcKVgqCe0H+uOC+/0mKqNd/rrdHD8XOgUN3gaXLM
-         IMubiXIRrUrgsT4YwJNbN0RUUSwpIMNxw37BtIGGb0G/r8umwP1k01JiQu2l3GJupFhN
-         3tW7qx48J5MjV9+D5I1SY82YCZ5ZyrYLQhD9ueslr5zHa0CRvVOQYqU95S4QNrDrp+ea
-         5AvXSKmq2I5aA6WRb6zyOHr/k43kDgSeCOBvgbcibdeqZXpTKvh+DLJ5ZFfWez1NPnKm
-         drTlL2UF+z1CM5koCDOBRzfSzK09FPTmbZtBgOYj1zzmtO+7YONsTWkoD9NZUee6muJD
-         aR9Q==
-X-Gm-Message-State: AOAM531BCiUME9w+jmsMMuKAJleqb2MBaL9MwkwbKl0VjBVEHVZ0ilww
-        RgC1o82luDLPXLW4XTX9wswCRQ==
-X-Google-Smtp-Source: ABdhPJwZ3TzSkhI6KAloL351yf0URoamj1q3VUbdzILd64s8LS3cwGkBzkWGczdOhsQWqeNSkf3Rug==
-X-Received: by 2002:a05:6a00:2c3:: with SMTP id b3mr5269044pft.20.1592366439710;
-        Tue, 16 Jun 2020 21:00:39 -0700 (PDT)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:e09a:8d06:a338:aafb])
-        by smtp.gmail.com with ESMTPSA id q1sm20013089pfk.132.2020.06.16.21.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 21:00:39 -0700 (PDT)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
-Cc:     alainm@chromium.org, chromeos-bluetooth-upstreaming@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4/4] Bluetooth: Add get/set device flags mgmt op
-Date:   Tue, 16 Jun 2020 21:00:22 -0700
-Message-Id: <20200616210008.4.If379101eba01fd9f0903e04cc817eb2c8e7f7d96@changeid>
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-In-Reply-To: <20200617040022.174448-1-abhishekpandit@chromium.org>
-References: <20200617040022.174448-1-abhishekpandit@chromium.org>
+        Wed, 17 Jun 2020 00:02:53 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9AE115C0050;
+        Wed, 17 Jun 2020 00:02:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 17 Jun 2020 00:02:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=YYfJzkXxS3bKe9mypfnLuAbDv5C
+        wQbW2dSJq5UHVJgA=; b=tMv/lU6rziRX8vMJK0RP3UNwwkzQPkkASC1azokuB7o
+        JzwZ/OAYXqJXmhqWWR8tFbguPhMBHC3+lsxBafWgCG5Z2RdvVOivcsR7nLfZenyX
+        9QdJj+qRHgEkklK1NfaGTRNPKlHH5k4h3WqNZZ7UWWEIXtOxrGrhF/C9TPWnlcT4
+        NBrOlSFHu0C802isDcUEV7ObyZXVAlGEDM4z1BA+i6EUoXSO41EtAtOTKL63nbz2
+        4HS6JTzZxiWFABZ2PUcxH3WOZG5Z8aS3xhIVAplV9rNdLqaTapFGQoi4xGq6ToBw
+        0v5zcsDcp5sUcJ9jggEX/ll/ULeZXy6taXIV4R/8OFw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=YYfJzk
+        XxS3bKe9mypfnLuAbDv5CwQbW2dSJq5UHVJgA=; b=iFTBANDef1uVZIASdwZtlV
+        KUMAApAWapczbvCdtT46CSwFOm70VvUCkHbVvOt5Uf0bCLqeozPIjDro9wjR0fq/
+        8iPQ9g622IKVwnnhaFZUnGTlVtZwm2G6smbmIsQI+lnEMq0f/IM36uRd9Lhs3iKZ
+        crHRBeQJhrTx3XOaS1z589gKDNtbfGQVGiscqmRS6WKMrRwN+iQ1TW+ZI3vmkAdJ
+        3uDus4PBJ9agxmvZ5uOikpv4S17G+bw3vDBgDiG9XLki6qseXjj6jborQaxsuu0U
+        4U81j6Oqko3QU+WPvjcl4CMPqN5M4s8LSg5WZr6aCUn/g1nu/8INdMwkmfyICZZQ
+        ==
+X-ME-Sender: <xms:65XpXhmyZslBjYMgPVcjxboYZt0CUejcs2VInyJ-fEMT9j22HPp0Bg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudejuddgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
+    tddtgeetjeekvdefgeefhfenucfkphepudektddrvdefhedrfedrheegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihes
+    shgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:65XpXs1mvilYNFFOcQtaq9yll2Tg90qliADAccjqNEYx3hihwMFDDA>
+    <xmx:65XpXnpLyljMgiaa4NQrPfCULRiHbwVjjzhnVVYFLBjTrWRsDOZBEw>
+    <xmx:65XpXhkrTTNZGkQY4OZDLUe9k_lXfp4t_X2iOE2Zsg4JIk75PlLHEw>
+    <xmx:7JXpXs-d4-1Pbnj-rTDLcUs9hCTiz1FPvDJEgNauHyqVZwV5dALKIA>
+Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp [180.235.3.54])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BAE9D3280060;
+        Wed, 17 Jun 2020 00:02:50 -0400 (EDT)
+Date:   Wed, 17 Jun 2020 13:02:48 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     JaeHun Jung <jh0801.jung@samsung.com>
+Cc:     tiwai@suse.de, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ANDROID: sound: usb: Add vendor's hooking interface
+Message-ID: <20200617040248.GA245386@workstation>
+Mail-Followup-To: JaeHun Jung <jh0801.jung@samsung.com>, tiwai@suse.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <CGME20200617022554epcas2p214a49f03a15e504d8faa28148e06e796@epcas2p2.samsung.com>
+ <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the get device flags and set device flags mgmt ops and the device
-flags changed event. Their behavior is described in detail in
-mgmt-api.txt in bluez.
+Hi,
 
-Sample btmon trace when a HID device is added (trimmed to 75 chars):
+On Wed, Jun 17, 2020 at 11:18:24AM +0900, JaeHun Jung wrote:
+> In mobile, a co-processor is used when using USB audio
+> to improve power consumption.
+> hooking is required for sync-up when operating
+> the co-processor. So register call-back function.
+> The main operation of the call-back function is as follows:
+> - Initialize the co-processor by transmitting data
+>   when initializing.
+> - Change the co-processor setting value through
+>   the interface function.
+> - Configure sampling rate
+> - pcm open/close
+> 
+> Bug: 156315379
+> 
+> Change-Id: I32e1dd408e64aaef68ee06c480c4b4d4c95546dc
+> Signed-off-by: JaeHun Jung <jh0801.jung@samsung.com>
+> ---
+>  sound/usb/card.c     | 16 ++++++++++++++++
+>  sound/usb/card.h     |  1 +
+>  sound/usb/clock.c    |  5 +++++
+>  sound/usb/pcm.c      | 33 +++++++++++++++++++++++++++++++++
+>  sound/usb/usbaudio.h | 30 ++++++++++++++++++++++++++++++
+>  5 files changed, 85 insertions(+)
 
-@ MGMT Command: Unknown (0x0050) plen 11        {0x0001} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00                 ...........
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0004} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0003} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0002} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Command Compl.. (0x0001) plen 10  {0x0001} [hci0] 18:06:14.98
-      Unknown (0x0050) plen 7
-        Status: Success (0x00)
-        90 c5 13 cd f3 cd 02                             .......
-@ MGMT Command: Add Device (0x0033) plen 8      {0x0001} [hci0] 18:06:14.98
-        LE Address: CD:F3:CD:13:C5:90 (Static)
-        Action: Auto-connect remote device (0x02)
-@ MGMT Event: Device Added (0x001a) plen 8      {0x0004} [hci0] 18:06:14.98
-        LE Address: CD:F3:CD:13:C5:90 (Static)
-        Action: Auto-connect remote device (0x02)
-@ MGMT Event: Device Added (0x001a) plen 8      {0x0003} [hci0] 18:06:14.98
-        LE Address: CD:F3:CD:13:C5:90 (Static)
-        Action: Auto-connect remote device (0x02)
-@ MGMT Event: Device Added (0x001a) plen 8      {0x0002} [hci0] 18:06:14.98
-        LE Address: CD:F3:CD:13:C5:90 (Static)
-        Action: Auto-connect remote device (0x02)
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0004} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0003} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0002} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
-@ MGMT Event: Unknown (0x002a) plen 15          {0x0001} [hci0] 18:06:14.98
-        90 c5 13 cd f3 cd 02 01 00 00 00 01 00 00 00     ...............
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index fd6fd17..2f3fa14 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -111,6 +111,7 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
+>  static DEFINE_MUTEX(register_mutex);
+>  static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
+>  static struct usb_driver usb_audio_driver;
+> +struct snd_usb_audio_vendor_ops *usb_audio_ops;
+>  
+>  /*
+>   * disconnect streams
+> @@ -210,6 +211,12 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+>  	return 0;
+>  }
+>  
+> +void snd_set_vender_interface(struct snd_usb_audio_vendor_ops *vendor_ops)
+> +{
+> +	usb_audio_ops = vendor_ops;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_set_vender_interface);
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
+I think the symbol name has typo; 'vender' against 'vendor'.
 
- include/net/bluetooth/hci.h  |   1 +
- include/net/bluetooth/mgmt.h |  28 ++++++++
- net/bluetooth/hci_sock.c     |   1 +
- net/bluetooth/mgmt.c         | 134 +++++++++++++++++++++++++++++++++++
- 4 files changed, 164 insertions(+)
+Anyway, this feature is not widely used at present. I suggest to add
+kernel configuration for the feature at kernel compilation time, IMO.
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index 16ab6ce8788341..5e03aac76ad47f 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -259,6 +259,7 @@ enum {
- 	HCI_MGMT_LOCAL_NAME_EVENTS,
- 	HCI_MGMT_OOB_DATA_EVENTS,
- 	HCI_MGMT_EXP_FEATURE_EVENTS,
-+	HCI_MGMT_DEVICE_FLAGS_EVENTS,
- };
- 
- /*
-diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-index e515288f328f47..8e47b0c5fe52bb 100644
---- a/include/net/bluetooth/mgmt.h
-+++ b/include/net/bluetooth/mgmt.h
-@@ -720,6 +720,27 @@ struct mgmt_rp_set_exp_feature {
- #define MGMT_OP_SET_DEF_RUNTIME_CONFIG	0x004e
- #define MGMT_SET_DEF_RUNTIME_CONFIG_SIZE	0
- 
-+#define MGMT_OP_GET_DEVICE_FLAGS	0x004F
-+#define MGMT_GET_DEVICE_FLAGS_SIZE	7
-+struct mgmt_cp_get_device_flags {
-+	struct mgmt_addr_info addr;
-+} __packed;
-+struct mgmt_rp_get_device_flags {
-+	struct mgmt_addr_info addr;
-+	__le32 supported_flags;
-+	__le32 current_flags;
-+} __packed;
-+
-+#define MGMT_OP_SET_DEVICE_FLAGS	0x0050
-+#define MGMT_SET_DEVICE_FLAGS_SIZE	11
-+struct mgmt_cp_set_device_flags {
-+	struct mgmt_addr_info addr;
-+	__le32 current_flags;
-+} __packed;
-+struct mgmt_rp_set_device_flags {
-+	struct mgmt_addr_info addr;
-+} __packed;
-+
- #define MGMT_EV_CMD_COMPLETE		0x0001
- struct mgmt_ev_cmd_complete {
- 	__le16	opcode;
-@@ -951,3 +972,10 @@ struct mgmt_ev_exp_feature_changed {
- 	__u8	uuid[16];
- 	__le32	flags;
- } __packed;
-+
-+#define MGMT_EV_DEVICE_FLAGS_CHANGED		0x002a
-+struct mgmt_ev_device_flags_changed {
-+	struct mgmt_addr_info addr;
-+	__le32 supported_flags;
-+	__le32 current_flags;
-+} __packed;
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index d5627967fc254f..a7903b6206620c 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -1354,6 +1354,7 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
- 			hci_sock_set_flag(sk, HCI_MGMT_SETTING_EVENTS);
- 			hci_sock_set_flag(sk, HCI_MGMT_DEV_CLASS_EVENTS);
- 			hci_sock_set_flag(sk, HCI_MGMT_LOCAL_NAME_EVENTS);
-+			hci_sock_set_flag(sk, HCI_MGMT_DEVICE_FLAGS_EVENTS);
- 		}
- 		break;
- 	}
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 6d996e5e5bcc2d..2805f662d85695 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -114,6 +114,8 @@ static const u16 mgmt_commands[] = {
- 	MGMT_OP_SET_EXP_FEATURE,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
- 	MGMT_OP_SET_DEF_SYSTEM_CONFIG,
-+	MGMT_OP_GET_DEVICE_FLAGS,
-+	MGMT_OP_SET_DEVICE_FLAGS,
- };
- 
- static const u16 mgmt_events[] = {
-@@ -154,6 +156,7 @@ static const u16 mgmt_events[] = {
- 	MGMT_EV_EXT_INFO_CHANGED,
- 	MGMT_EV_PHY_CONFIGURATION_CHANGED,
- 	MGMT_EV_EXP_FEATURE_CHANGED,
-+	MGMT_EV_DEVICE_FLAGS_CHANGED,
- };
- 
- static const u16 mgmt_untrusted_commands[] = {
-@@ -3853,6 +3856,122 @@ static int set_exp_feature(struct sock *sk, struct hci_dev *hdev,
- 			       MGMT_STATUS_NOT_SUPPORTED);
- }
- 
-+#define SUPPORTED_DEVICE_FLAGS() ((1U << HCI_CONN_FLAG_MAX) - 1)
-+
-+static int get_device_flags(struct sock *sk, struct hci_dev *hdev, void *data,
-+			    u16 data_len)
-+{
-+	struct mgmt_cp_get_device_flags *cp = data;
-+	struct mgmt_rp_get_device_flags rp;
-+	struct bdaddr_list_with_flags *br_params;
-+	struct hci_conn_params *params;
-+	u32 supported_flags = SUPPORTED_DEVICE_FLAGS();
-+	u32 current_flags = 0;
-+	u8 status = MGMT_STATUS_INVALID_PARAMS;
-+
-+	bt_dev_dbg(hdev, "Get device flags %pMR (type 0x%x)\n",
-+		   &cp->addr.bdaddr, cp->addr.type);
-+
-+	if (cp->addr.type == BDADDR_BREDR) {
-+		br_params = hci_bdaddr_list_lookup_with_flags(&hdev->whitelist,
-+							      &cp->addr.bdaddr,
-+							      cp->addr.type);
-+		if (!br_params)
-+			goto done;
-+
-+		current_flags = br_params->current_flags;
-+	} else {
-+		params = hci_conn_params_lookup(hdev, &cp->addr.bdaddr,
-+						le_addr_type(cp->addr.type));
-+
-+		if (!params)
-+			goto done;
-+
-+		current_flags = params->current_flags;
-+	}
-+
-+	bacpy(&rp.addr.bdaddr, &cp->addr.bdaddr);
-+	rp.addr.type = cp->addr.type;
-+	rp.supported_flags = cpu_to_le32(supported_flags);
-+	rp.current_flags = cpu_to_le32(current_flags);
-+
-+	status = MGMT_STATUS_SUCCESS;
-+
-+done:
-+	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_GET_DEVICE_FLAGS, status,
-+				&rp, sizeof(rp));
-+}
-+
-+static int device_flags_changed(struct hci_dev *hdev, bdaddr_t *bdaddr,
-+				u8 bdaddr_type, u32 supported_flags,
-+				u32 current_flags, struct sock *skip)
-+{
-+	struct mgmt_ev_device_flags_changed ev;
-+
-+	bacpy(&ev.addr.bdaddr, bdaddr);
-+	ev.addr.type = bdaddr_type;
-+	ev.supported_flags = cpu_to_le32(supported_flags);
-+	ev.current_flags = cpu_to_le32(current_flags);
-+
-+	return mgmt_limited_event(MGMT_EV_DEVICE_FLAGS_CHANGED, hdev, &ev,
-+				  sizeof(ev), HCI_MGMT_DEVICE_FLAGS_EVENTS,
-+				  skip);
-+}
-+
-+static int set_device_flags(struct sock *sk, struct hci_dev *hdev, void *data,
-+			    u16 len)
-+{
-+	struct mgmt_cp_set_device_flags *cp = data;
-+	struct bdaddr_list_with_flags *br_params;
-+	struct hci_conn_params *params;
-+	u8 status = MGMT_STATUS_INVALID_PARAMS;
-+	u32 supported_flags = SUPPORTED_DEVICE_FLAGS();
-+	u32 current_flags = __le32_to_cpu(cp->current_flags);
-+
-+	bt_dev_dbg(hdev, "Set device flags %pMR (type 0x%x) = 0x%x",
-+		   &cp->addr.bdaddr, cp->addr.type,
-+		   __le32_to_cpu(current_flags));
-+
-+	if ((supported_flags | current_flags) != supported_flags) {
-+		bt_dev_warn(hdev, "Bad flag given (0x%x) vs supported (0x%0x)",
-+			    current_flags, supported_flags);
-+		goto done;
-+	}
-+
-+	if (cp->addr.type == BDADDR_BREDR) {
-+		br_params = hci_bdaddr_list_lookup_with_flags(&hdev->whitelist,
-+							      &cp->addr.bdaddr,
-+							      cp->addr.type);
-+
-+		if (br_params) {
-+			br_params->current_flags = current_flags;
-+			status = MGMT_STATUS_SUCCESS;
-+		} else {
-+			bt_dev_warn(hdev, "No such BR/EDR device %pMR (0x%x)",
-+				    &cp->addr.bdaddr, cp->addr.type);
-+		}
-+	} else {
-+		params = hci_conn_params_lookup(hdev, &cp->addr.bdaddr,
-+						le_addr_type(cp->addr.type));
-+		if (params) {
-+			params->current_flags = current_flags;
-+			status = MGMT_STATUS_SUCCESS;
-+		} else {
-+			bt_dev_warn(hdev, "No such LE device %pMR (0x%x)",
-+				    &cp->addr.bdaddr,
-+				    le_addr_type(cp->addr.type));
-+		}
-+	}
-+
-+done:
-+	if (status == MGMT_STATUS_SUCCESS)
-+		device_flags_changed(hdev, &cp->addr.bdaddr, cp->addr.type,
-+				     supported_flags, current_flags, sk);
-+
-+	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_SET_DEVICE_FLAGS, status,
-+				 &cp->addr, sizeof(cp->addr));
-+}
-+
- static void read_local_oob_data_complete(struct hci_dev *hdev, u8 status,
- 				         u16 opcode, struct sk_buff *skb)
- {
-@@ -5970,7 +6089,9 @@ static int add_device(struct sock *sk, struct hci_dev *hdev,
- {
- 	struct mgmt_cp_add_device *cp = data;
- 	u8 auto_conn, addr_type;
-+	struct hci_conn_params *params;
- 	int err;
-+	u32 current_flags = 0;
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
- 
-@@ -6038,12 +6159,19 @@ static int add_device(struct sock *sk, struct hci_dev *hdev,
- 					MGMT_STATUS_FAILED, &cp->addr,
- 					sizeof(cp->addr));
- 		goto unlock;
-+	} else {
-+		params = hci_conn_params_lookup(hdev, &cp->addr.bdaddr,
-+						addr_type);
-+		if (params)
-+			current_flags = params->current_flags;
- 	}
- 
- 	hci_update_background_scan(hdev);
- 
- added:
- 	device_added(sk, hdev, &cp->addr.bdaddr, cp->addr.type, cp->action);
-+	device_flags_changed(hdev, &cp->addr.bdaddr, cp->addr.type,
-+			     SUPPORTED_DEVICE_FLAGS(), current_flags, NULL);
- 
- 	err = mgmt_cmd_complete(sk, hdev->id, MGMT_OP_ADD_DEVICE,
- 				MGMT_STATUS_SUCCESS, &cp->addr,
-@@ -7306,6 +7434,12 @@ static const struct hci_mgmt_handler mgmt_handlers[] = {
- 						HCI_MGMT_UNTRUSTED },
- 	{ set_def_system_config,   MGMT_SET_DEF_SYSTEM_CONFIG_SIZE,
- 						HCI_MGMT_VAR_LEN },
-+
-+	{ NULL }, /* Read default runtime config */
-+	{ NULL }, /* Set default runtime config */
-+
-+	{ get_device_flags,        MGMT_GET_DEVICE_FLAGS_SIZE },
-+	{ set_device_flags,        MGMT_SET_DEVICE_FLAGS_SIZE },
- };
- 
- void mgmt_index_added(struct hci_dev *hdev)
--- 
-2.27.0.290.gba653c62da-goog
 
+Regards
+
+Takashi Sakamoto
