@@ -2,162 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF4D1FD35B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441131FD369
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgFQRXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgFQRXN (ORCPT
+        id S1726959AbgFQR06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:26:58 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54181 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726845AbgFQR06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:23:13 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFCDC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:23:12 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id v6so1024238uam.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OnWnquHlT/ltYTFNOPUHSh/iGSUA1c4DqQQurVsebw8=;
-        b=Xh1zc5cvq0KeGeKe9/EMOtxNnm0G2z0Rf2LfQ7DfSbytlWYqX6TDlwuE81rzzG74qY
-         RbK/RQqrrCu8cQP/sDw3TD37jNJpQRTkRMSPvp7VMoEAnyyE/AQQx7GqQmatJJn3bPup
-         Es06CH2SxxxZMpdKRMBPxDYp7T/H/08kX2iMU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OnWnquHlT/ltYTFNOPUHSh/iGSUA1c4DqQQurVsebw8=;
-        b=lnu6vw4/a8Ks1HkCcvWbZ6zIhei8tyXh0KUfLWDa9c2pkOpaBc2LJ6+mzjEnjlYesK
-         TNQBvGlIWf4B4gBi5N/2EwSkzHJTw3KdZJh2BwKyZgi/nfeOHWqdevx2z6HlXK16eRuq
-         hqWgTz7IdrLq6iQYRzfUuKPgjmDaTDbxqkdkE23dWfKvoARaUD5vMxnP+nfx4j7hmawV
-         HXxkZ18WdJalGCrpCdog28XmVCHttPT+VzADoFRfh1RvHvRTuvuEcxkvy1cCEp4hbVGD
-         9ZQsYXXTb1lUYEkw3yXCG4qk7jT1CcshU6EXlN8gKt//DfH8GYIle2HI9FUiLFAxmSuz
-         7zVQ==
-X-Gm-Message-State: AOAM533jJtXpFmEfe5uMegsY3SojOSnS/nIDOw1VTwJRqv38hbw4vCBe
-        dh32dQw27Sa/6gCOfJ/lc05FHKIdTzA=
-X-Google-Smtp-Source: ABdhPJzqwLK8PFqha1YLFCXGH36EShV+kifswNDPITlCy/bhLU3MRb2Crmue3LfHr/94qBu5i9hwaQ==
-X-Received: by 2002:a9f:2581:: with SMTP id 1mr43353uaf.18.1592414591087;
-        Wed, 17 Jun 2020 10:23:11 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id s65sm49996vss.5.2020.06.17.10.23.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 10:23:10 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id u17so1850987vsu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:23:09 -0700 (PDT)
-X-Received: by 2002:a05:6102:20c8:: with SMTP id i8mr205487vsr.106.1592414588681;
- Wed, 17 Jun 2020 10:23:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200617145116.247432-1-dianders@chromium.org>
- <20200617074930.v3.2.I3b5c3bfaf5fb2d28d63f1b5ee92980900e3f8251@changeid> <254998b9-c45e-bd6b-bc9a-b5934c0fea8e@linaro.org>
-In-Reply-To: <254998b9-c45e-bd6b-bc9a-b5934c0fea8e@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 17 Jun 2020 10:22:57 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vec5FVrDVkmUQTfa6bP+1d3yOtj_FsgVAFdHLLbZ8VDA@mail.gmail.com>
-Message-ID: <CAD=FV=Vec5FVrDVkmUQTfa6bP+1d3yOtj_FsgVAFdHLLbZ8VDA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] dt-bindings: nvmem: Add properties needed for
- blowing fuses
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, dhavalp@codeaurora.org,
-        mturney@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        sparate@codeaurora.org, mkurumel@codeaurora.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 17 Jun 2020 13:26:58 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200617172654epoutp03ee7118da79f62a8ea323c472e6be3fa7~ZZNZWNdyu1001610016epoutp03L
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:26:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200617172654epoutp03ee7118da79f62a8ea323c472e6be3fa7~ZZNZWNdyu1001610016epoutp03L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592414815;
+        bh=quPbHKvd3t/tKAk2Vd44HQREZ4TCnzbl9br8Bua5p/U=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Ns/ECDWJPc4X81fFNtW7YRq8Gd/eMxlpBo+VlV8ayjCCInc1FJoAhH6/ZKvr8wFS4
+         6lH4XB9CKSpxxvUz27/JxNEqmEQAbGAXUL+foQ/84ZU+yFE0dapcUI4BMmr7WGRhef
+         PXqVJSfGGDswM3UOBRP+yFW3qdOKAWMCRkgb62dY=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200617172654epcas5p29bf502ec3f75e53e630e5ced45725658~ZZNYscZFV2352223522epcas5p2U;
+        Wed, 17 Jun 2020 17:26:54 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3D.66.09475.E525AEE5; Thu, 18 Jun 2020 02:26:54 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200617172653epcas5p488de50090415eb802e62acc0e23d8812~ZZNYDZtWv0132401324epcas5p4Y;
+        Wed, 17 Jun 2020 17:26:53 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200617172653epsmtrp19806cab50c6c159c2b00e4bbf421e4d9~ZZNYAp-BX1872618726epsmtrp1-;
+        Wed, 17 Jun 2020 17:26:53 +0000 (GMT)
+X-AuditID: b6c32a4b-389ff70000002503-21-5eea525e12d2
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        71.7E.08303.D525AEE5; Thu, 18 Jun 2020 02:26:53 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.110.206.5]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200617172651epsmtip1c8390df6b20117c9b29b6c11e6f54825~ZZNWEdhr61054210542epsmtip1D;
+        Wed, 17 Jun 2020 17:26:51 +0000 (GMT)
+From:   Kanchan Joshi <joshi.k@samsung.com>
+To:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, selvakuma.s1@samsung.com,
+        nj.shetty@samsung.com, javier.gonz@samsung.com,
+        Kanchan Joshi <joshi.k@samsung.com>
+Subject: [PATCH 0/3] zone-append support in aio and io-uring
+Date:   Wed, 17 Jun 2020 22:53:36 +0530
+Message-Id: <1592414619-5646-1-git-send-email-joshi.k@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFIsWRmVeSWpSXmKPExsWy7bCmum5c0Ks4gxcbuSxW3+1ns+j6t4XF
+        4l3rORaLx3c+s1sc/f+WzWLhxmVMFlOmNTFa7L2lbbFn70kWi8u75rBZbPs9n9niypRFzBav
+        f5xkszj/9zirA5/H5bOlHps+TWL36NuyitHj8yY5j01P3jIFsEZx2aSk5mSWpRbp2yVwZdyb
+        /IW54Ct7xdL//UwNjBPYuhg5OSQETCS+PtrECmILCexmlLhxqbiLkQvI/sQo8WfvCSYI5zOj
+        xOeDU1hhOi5suMcOkdjFKHHk0glGuKrmLTOB5nJwsAloSlyYXApiigjYSOxcogLSyyzQwCTx
+        /7sOiC0MFD7dvJQFpIRFQFVi6VsrkDCvgJPEl3/zmCFWyUncPNfJDDJdQuAeu0TvgcVQN7hI
+        LPq7CqpIWOLV8S3sELaUxMv+Nii7WOLXnaNQzR2MEtcbZrJAJOwlLu75ywSymBnozPW79CFu
+        45Po/f0ELCwhwCvR0SYEUa0ocW/SU6i14hIPZyyBsj0kJvW0MUICLlbiy7G57BMYZWYhDF3A
+        yLiKUTK1oDg3PbXYtMA4L7Vcrzgxt7g0L10vOT93EyM4OWh572B89OCD3iFGJg7GQ4wSHMxK
+        IrzOv1/ECfGmJFZWpRblxxeV5qQWH2KU5mBREudV+nEmTkggPbEkNTs1tSC1CCbLxMEp1cC0
+        UiJh2vxjEwVeePcYzLSUYjJeqvag+g7P3ulRc01L/OcmHrO0z1ivvkHug05FxMvcizJHpC9F
+        v/3O1r/Mp+mJ+bmT9lrZ5d7Xk9IXVn8JMnxv9ktR4UbWPTeWSUmL2RTeMM3okD/5J6N5Pm9w
+        0/kzttJPwjv9dH0aJizb8EB00kIJ3Xd8UxVO2ukYlK+aHiS1ZUct3+RTMhUH3f9OPdjUcI1x
+        XmKRKV9viNtrTt8ANf/puYnPXs7ZzPy62dXiykybJdt+73b/wFX9MGAKkx9HjEjTuRu+OlJ9
+        B7jsj9//E2p8X+Z1moZIz7t/ir28c5szxJi8jyl/VzVVvHKj6yvvC90La4NVVj3pv9zxw1SJ
+        pTgj0VCLuag4EQCZtNXMfQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHLMWRmVeSWpSXmKPExsWy7bCSnG5s0Ks4g6cXZSxW3+1ns+j6t4XF
+        4l3rORaLx3c+s1sc/f+WzWLhxmVMFlOmNTFa7L2lbbFn70kWi8u75rBZbPs9n9niypRFzBav
+        f5xkszj/9zirA5/H5bOlHps+TWL36NuyitHj8yY5j01P3jIFsEZx2aSk5mSWpRbp2yVwZdyb
+        /IW54Ct7xdL//UwNjBPYuhg5OSQETCQubLjHDmILCexglFjXGwYRF5dovvaDHcIWllj57zmQ
+        zQVU85FRoufXIqYuRg4ONgFNiQuTS0FqRAQcJLqOP2YCqWEW6GKSOHFzFxNIQljARuJ081IW
+        kHoWAVWJpW+tQMK8Ak4SX/7NY4aYLydx81wn8wRGngWMDKsYJVMLinPTc4sNC4zyUsv1ihNz
+        i0vz0vWS83M3MYKDUEtrB+OeVR/0DjEycTAeYpTgYFYS4XX+/SJOiDclsbIqtSg/vqg0J7X4
+        EKM0B4uSOO/XWQvjhATSE0tSs1NTC1KLYLJMHJxSDUyBX/V6+Riuvjygsub21p12rE9arr6/
+        Jslx8bzj7Zl93eIFz2fW8+/b8Ovni+aCokI/X6aP/bnqbmf9i1fdOR6zV+Wm/SXu+NsdRsUx
+        nCe4LvVmTXkQu7JTUtQlJXCaTn0xJ/eirY9VzOskrC7/mXYzk7tFzbmgQjeaq93wQFqssqNk
+        zal/0bzdJYyZRy3NPFV7ldZkbz9TL6QXpbJclLnon/BD4fun5ojHzZvBKH112pmVu/mW3bw3
+        /5ga80+L1Yof+cqMu/UmhNxi2+euK1SQtsr0M9/O6C5Ji4mPFl5ydCuQXyt5luVNYvzMzvW3
+        o1QesV84933lrHlR2W3nItYFNU18curnVsZkh9LodiWW4oxEQy3mouJEADL6srGxAgAA
+X-CMS-MailID: 20200617172653epcas5p488de50090415eb802e62acc0e23d8812
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200617172653epcas5p488de50090415eb802e62acc0e23d8812
+References: <CGME20200617172653epcas5p488de50090415eb802e62acc0e23d8812@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset enables issuing zone-append using aio and io-uring direct-io interface.
 
-On Wed, Jun 17, 2020 at 8:19 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 17/06/2020 15:51, Douglas Anderson wrote:
-> > From: Ravi Kumar Bokka <rbokka@codeaurora.org>
-> >
-> > On some systems it's possible to actually blow the fuses in the qfprom
-> > from the kernel.  Add properties to support that.
-> >
-> > NOTE: Whether this is possible depends on the BIOS settings and
-> > whether the kernel has permissions here, so not all boards will be
-> > able to blow fuses in the kernel.
-> >
-> > Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> >
-> > Changes in v3:
-> > - Add an extra reg range (at 0x6000 offset for SoCs checked)
-> > - Define two options for reg: 1 item or 4 items.
-> > - No reg-names.
-> > - Add "clocks" and "clock-names" to list of properties.
-> > - Clock is now "sec", not "secclk".
-> > - Add "vcc-supply" to list of properties.
-> > - Fixed up example.
-> >
-> >   .../bindings/nvmem/qcom,qfprom.yaml           | 45 ++++++++++++++++++-
-> >   1 file changed, 43 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > index 5efa5e7c4d81..b195212c6193 100644
-> > --- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > @@ -17,8 +17,27 @@ properties:
-> >       const: qcom,qfprom
-> >
-> >     reg:
-> > -    items:
-> > -      - description: The corrected region.
-> > +    # If the QFPROM is read-only OS image then only the corrected region
-> > +    # needs to be provided.  If the QFPROM is writable then all 4 regions
-> > +    # must be provided.
-> > +    oneOf:
-> > +      - items:
-> > +          - description: The corrected region.
-> > +      - items:
-> > +          - description: The corrected region.
-> > +          - description: The raw region.
-> > +          - description: The config region.
-> > +          - description: The security control region.
-> > +
-> > +  # Clock must be provided if QFPROM is writable from the OS image.
-> > +  clocks:
-> > +    maxItems: 1
->
->
-> > +  clock-names:
-> > +    const: sec
->
-> Do we need clock-names for just one clock here?
+For aio, this introduces opcode IOCB_CMD_ZONE_APPEND. Application uses start LBA
+of the zone to issue append. On completion 'res2' field is used to return
+zone-relative offset.
 
-I think technically you can get by without, but convention is that
-clock-names are always provided for clocks.  It's talked about in the
-same link I sent that talked about reg-names:
+For io-uring, this introduces three opcodes: IORING_OP_ZONE_APPEND/APPENDV/APPENDV_FIXED.
+Since io_uring does not have aio-like res2, cqe->flags are repurposed to return zone-relative offset
 
-https://lore.kernel.org/r/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
+Kanchan Joshi (1):
+  aio: add support for zone-append
 
-Specifically, Rob said:
+Selvakumar S (2):
+  fs,block: Introduce IOCB_ZONE_APPEND and direct-io handling
+  io_uring: add support for zone-append
 
-> That probably is because the clock binding has had clock-names from
-> the start (it may have been the first one). That was probably partly
-> due to the clock API also was mainly by name already if we want to
-> admit Linux influence on bindings
+ fs/aio.c                      |  8 +++++
+ fs/block_dev.c                | 19 +++++++++++-
+ fs/io_uring.c                 | 72 +++++++++++++++++++++++++++++++++++++++++--
+ include/linux/fs.h            |  1 +
+ include/uapi/linux/aio_abi.h  |  1 +
+ include/uapi/linux/io_uring.h |  8 ++++-
+ 6 files changed, 105 insertions(+), 4 deletions(-)
 
-Basically the standard way for getting clocks in Linux is
-clk_get(name).  With just one clock you can call clk_get(NULL) and I
-believe that works, but when you add the 2nd clock then you have to
-switch APIs to one of the less-commonly-used variants.
+-- 
+2.7.4
 
--Doug
