@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718FD1FD481
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF211FD47C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgFQSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S1728008AbgFQSYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727787AbgFQSYO (ORCPT
+        with ESMTP id S1727964AbgFQSYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:24:14 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ED4C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 11:24:14 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v24so1319957plo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 11:24:14 -0700 (PDT)
+        Wed, 17 Jun 2020 14:24:35 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C781C06174E;
+        Wed, 17 Jun 2020 11:24:34 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dr13so3546780ejc.3;
+        Wed, 17 Jun 2020 11:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xvbq06xb8rcHDasNPx3O6hTHbslpfoh+riHjhZc++Ks=;
-        b=WSLMCKM9ohtqSjMVQAbj8K1EAqWViQgK5qGsYkx3lqhl4SsxwYlRNFiMWoOk2e/+22
-         zbFaMYhRiSmM6eMiCRg8pVMnNvBNXK4RWHAEyeSxi1yul8/hoKqqDvYCbK4MJMaUDIp8
-         dPW7u7MTXphGIS/lQQK1TTO+1xUR9WezeUktbJn90euKvKx8q2ojaylC5nuI1hd4V9Vh
-         wtgE1cx4svZZDf92ll3QVr+I4cvK9FEfJ17p/5L/qNhvs9lrf33cvYerJdTG+R9G5cGw
-         v9PZqBGUocA8ZmLvw+z3PCKOn4YYh3CH80/GsBlNE3wl4MqQ/Wk7DLhl0/f5pMepE3sL
-         y2YQ==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=j4LtBP0fxQmoKYyM4aJqiDdfJzw3PknGwyZ6hajQswg=;
+        b=GLJfDoTNRo7p5CZV7Xhw2JsFxvzMFmXqTNqRfNbQwgRm5wrJmbWKiyPALGC7z96Slh
+         kZBXvDkazfy+RMomrzztHMcaNtGCnhf5QiYUQQB24w3GU+xJCdx/iOgN/IQhopY2ukue
+         ZhwLbFzjFWeypMxBfXqRqrFlqI+Ocb41ZIZun7GeTTZuIcIACtK1XztmKr2ixCOgNJPx
+         V7NVQ2GVcc5A4zzLONKyQZJdonAIXJjFDYnmWzEqeEd4xxLeh0uuUIio0+IJ8DNvh4DG
+         ybGjVGtMPO9OEWmitIqxrwowc7ZgB3AZcvR4Pb0cuU0nqDiyTDiZ4cmBaSvwDwK31dFh
+         5nUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xvbq06xb8rcHDasNPx3O6hTHbslpfoh+riHjhZc++Ks=;
-        b=WKBTKJKsKZbqr5dX4vnLr7/XZ+A1Fct+H3GhzQy0FIZb7NwIVk57NRLmrCtkxud7HP
-         hyNFgFUpx29LNw8JwqMbJggT2UwEJd8hjOEgJGBeARAj93yfLH04quY5nlfB9VE/G8wA
-         YZsrqjIDmVgYg1csaxbuk22brkVSUs3d566bVBNAYTFgq8jRzeTwt95EE7zrxKRXu5yk
-         QTCZfWvrcR/Fxl6yjtMXhepeOHhdC+X79JzEYu05EEhk11fWdBg8pYmFch0l/uXDYO2N
-         KPevswV3kCB0FZzGgji2qLzAop+0fmoffYIWePkQHkE2bRl8+Dbnx1rkWBUsGsJLgEtH
-         fQug==
-X-Gm-Message-State: AOAM532cmpotXuH03o+p7eA2Vf9trxhtLCw/ooqLyS/bwQzfa7fYh/3l
-        RMV049qu4WjOKD3dlxrJNEnScA==
-X-Google-Smtp-Source: ABdhPJx+VO5TVkCBs3OrjZcmKB/+bOvx9qgai2d0KOQdclTJeyiQZlq7//E9CmjSCqRbW8mzyMdeUA==
-X-Received: by 2002:a17:90a:df0c:: with SMTP id gp12mr363670pjb.148.1592418252950;
-        Wed, 17 Jun 2020 11:24:12 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id h8sm516409pfo.67.2020.06.17.11.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 11:24:12 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jlcjK-009iJG-KI; Wed, 17 Jun 2020 15:24:10 -0300
-Date:   Wed, 17 Jun 2020 15:24:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
-Message-ID: <20200617182410.GK6578@ziepe.ca>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <1591627576-920-2-git-send-email-divya.indi@oracle.com>
- <20200609070026.GJ164174@unreal>
- <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
- <20200614064156.GB2132762@unreal>
- <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=j4LtBP0fxQmoKYyM4aJqiDdfJzw3PknGwyZ6hajQswg=;
+        b=lgaB6ketQs+cqe0PTdiTP/jnBdysVH0pX9EtEm0Ml9iTnZ82YPcmbJwE3Q3oUd6I+1
+         y2CSNl6GWEXbKxeQL80xIc77STTZh87EssiNih9UJFWKW+S2sJ6yJq6AduklB8lHvbgF
+         eP5Kswx3aRWBX/ZIidi4CiwH6przkOqN1ZUAbbsx4OzUyRQlmAQAes8qSqcr766gIJx9
+         bnrtr0pLCLrrdIOLyHncXIwJWUFLAx6eWZRbi6fvPzXOoJ3mZmHMtWxxJQHCuzCkiuxG
+         RTE7DiPYLsvjhFdI/RSmjr6paUPkSQ0J4/x2UZadeoEMQteFtbTmkmzpezVdsaCF36yI
+         l74A==
+X-Gm-Message-State: AOAM532qry4rUFb1CiCDQiCxIGOK9P2eAkBj0EF1iV6jZOWDwWZAxJ/O
+        AAM7AfVse/gHqLpLov7h1VA=
+X-Google-Smtp-Source: ABdhPJwu+29N47SWaovTqJG0CwrI+HDlalsmvqqUvokJw9accwzYiNKbC2FwNnooKlKfAp+SIH/rgQ==
+X-Received: by 2002:a17:906:3b44:: with SMTP id h4mr401730ejf.463.1592418273392;
+        Wed, 17 Jun 2020 11:24:33 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b90f:903c:e489:2676:2097:fdba])
+        by smtp.googlemail.com with ESMTPSA id me8sm504598ejb.28.2020.06.17.11.24.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jun 2020 11:24:32 -0700 (PDT)
+Message-ID: <3d5748ce4481c789000979f9831a5ae681cd9d34.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Avri Altman <Avri.Altman@wdc.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Wed, 17 Jun 2020 20:24:18 +0200
+In-Reply-To: <231786897.01592395081831.JavaMail.epsvc@epcpadp2>
+References: <SN6PR04MB46405EC52240E00F5D634E2AFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+         <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+         <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+         <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
+         <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p5>
+         <231786897.01592395081831.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:56:53AM -0700, Divya Indi wrote:
-> The other option might be to use GFP_NOWAIT conditionally ie
-> (only use GFP_NOWAIT when GFP_ATOMIC is not specified in gfp_mask else
-> use GFP_ATOMIC). Eventual goal being to not have a blocking memory allocation.
+On Wed, 2020-06-17 at 19:30 +0900, Daejun Park wrote:
+> > > implemented
+> > > as a module parameter, so that it can be configurable by the
+> > > user.
+> > > 
+> > > To gurantee a minimum memory pool size of 4MB:
+> > > $ insmod ufshpb.ko ufshpb_host_map_kbytes=4096
+> > 
+> > You are going through a lot of troubles to make it a loadable
+> > module.
+> > What are, in your opinion, the pros and cons of this design
+> > decision?
+> 
+> In my opinion...
+> 
+> pros:
+> 1. A user can unload an unnecessary module when there is an
+> insufficient
+> memory situation (HPB case).
+> 2. Since each UFS vendor has a different way of implementing UFS
+> features,
+> it can be supported as a separate module. Otherwise, many quirks must
+> be attached to module, which is not desirable way.
+> 3. It is possible to distinguish parts that are not necessary for
+> essential
+> ufs operation.
+> 4. It is advantageous to implement the latest functions according to
+> the
+> development speed of UFS.
+> 
+> cons:
+> 1. It is difficult work to be implemented as a module.
+> 2. Modifying "ufsfeature.c" is required to implement the feature that
+> can
+> not supported by the exsiting "ufsf_operation".
+> 
+> Thanks,
+> Daejun
 
-This is probably safest for now, unless you can audit all callers and
-see if they can switch to GFP_NOWAIT as well
+Dear Avri, Daejun, Bart
 
-Jason
+It is true that it is very difficult to make everyone happy.
+We now have three HPB drivers in the patchwork, but I still didn't see
+a final agreement. Please tell me which one do you want to focus on?
+
+Bean
+
