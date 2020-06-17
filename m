@@ -2,62 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B051FC59A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 07:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163491FC5AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 07:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgFQF0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 01:26:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgFQF0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 01:26:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4022207E8;
-        Wed, 17 Jun 2020 05:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592371599;
-        bh=79DzjT3Wyf8IFb34qS9prqoal958fCGONTbZiSKFSOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rhxoiszNvEdttqcF/zrnRIJzXcBDo/rLz9ZT5v38k4slmW526WEJGtwK/1F4PjEMT
-         CepUk8nl9ooUHOwQlnO+NnBkH0prif+4Lv3lJ6DGJoO5nImGx95QlnL7A7yGjswijX
-         +qs9XiUJ1nkweH7GtPnT9C+YHxuuRWnCWtriTwE8=
-Date:   Wed, 17 Jun 2020 07:26:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH] fs: move kernel_read_file* to its own include file
-Message-ID: <20200617052633.GA1351336@kroah.com>
-References: <20200617033152.16883-1-scott.branden@broadcom.com>
+        id S1726891AbgFQF2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 01:28:38 -0400
+Received: from mailgate-2.ics.forth.gr ([139.91.1.5]:44432 "EHLO
+        mailgate-2.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgFQF2h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 01:28:37 -0400
+Received: from av3.ics.forth.gr (av3in [139.91.1.77])
+        by mailgate-2.ics.forth.gr (8.14.4/ICS-FORTH/V10-1.8-GATE) with ESMTP id 05H5SIbw014773;
+        Wed, 17 Jun 2020 05:28:20 GMT
+X-AuditID: 8b5b014d-257ff700000045c5-8c-5ee9a9f1b299
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id B3.12.17861.1F9A9EE5; Wed, 17 Jun 2020 08:28:18 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617033152.16883-1-scott.branden@broadcom.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 17 Jun 2020 08:28:17 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] riscv: Support CONFIG_STRICT_DEVMEM
+Organization: FORTH
+In-Reply-To: <CANXhq0pMutK0+hHchQPOaZLqm9B-=MTKv8Xig4hM71_B=5+2bg@mail.gmail.com>
+References: <cover.1592292685.git.zong.li@sifive.com>
+ <7faa60aa4a606b5c5c1ae374d82a7eee6c764b38.1592292685.git.zong.li@sifive.com>
+ <29425dbf7d54bab2733d28480d3adb61@mailhost.ics.forth.gr>
+ <CANXhq0pMutK0+hHchQPOaZLqm9B-=MTKv8Xig4hM71_B=5+2bg@mail.gmail.com>
+Message-ID: <6e6cf39ae6ed91bbe086adbade5786cb@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.9
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHLMWRmVeSWpSXmKPExsXSHT1dWffTypdxBvsOMVlc3jWHzWLb5xY2
+        i+Z359gtXl7uYbZom8Vv8eHubDYHNo83L1+yeDzcdInJY/OSeo9LzdfZPT5vkgtgjeKySUnN
+        ySxLLdK3S+DKWP3yJVvBA7mK2d0z2RoY34p3MXJwSAiYSNy7nNTFyMUhJHCUUWLXxk1MXYyc
+        QHFTidl7OxlBbF4BQYmTM5+wgNjMAhYSU6/sZ4Sw5SWat85mBrFZBFQl9h15ARZnE9CUmH/p
+        IFi9iICCxJUlG1lAFjALTGaSWN9/hBUkISxgI/HrxQqwIn4BYYlPdy+yghzEKRAo0f9ZAeKg
+        NiaJ47dvMEMc4SKxfPdRdojjVCQ+/H4AZosKKEvcPPycfQKj4Cwkt85CcussJLcuYGRexSiQ
+        WGasl5lcrJeWX1SSoZdetIkRHOSMvjsYb29+q3eIkYmD8RCjBAezkgiv8+8XcUK8KYmVValF
+        +fFFpTmpxYcYpTlYlMR587iXxwoJpCeWpGanphakFsFkmTg4pRqYMmVKsrVfCJZure/K92j8
+        8nr7Xr0XzDO43eZ8m7FPI1ZdR9H/u2ebGK/446k7pt/SODwr1PH+H73VBfk3zjIv4rv548Pf
+        OoM1R5dePSOpl89/u9h53jzLvQWCl2YYlbe/LVd4q54SP/3fmoJV5XseXfy0pqJ+2kf53Kq6
+        4LlFEivbMmqP7EhZZnhAWPHgnjkXIg7nuOz13nz7yZ6ICXerfG2kyy4sXpdT5V4sp/G4Qvq/
+        3Fk3SbcDR6tFe2uuP7vZe2375eNfdTdzH49QiZrq5+HO8Zlb8MpLnXPPYzr6pzN3CXx84L7z
+        xM25ctWiXDVe7w5G87AERUSvPLYovMTRXexH7/HzTG9r/7Aw89xYp8RSnJFoqMVcVJwIAHwp
+        EdrhAgAA
+X-Greylist: inspected by milter-greylist-4.6.2 (mailgate-2.ics.forth.gr [139.91.1.5]); Wed, 17 Jun 2020 05:28:20 +0000 (GMT) for IP:'139.91.1.77' DOMAIN:'av3in' HELO:'av3.ics.forth.gr' FROM:'mick@ics.forth.gr' RCPT:''
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mailgate-2.ics.forth.gr [139.91.1.5]); Wed, 17 Jun 2020 05:28:20 +0000 (GMT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 08:31:52PM -0700, Scott Branden wrote:
-> Move kernel_read_file* to it own kernel_read_file.h include file.
+Στις 2020-06-17 04:56, Zong Li έγραψε:
+> On Tue, Jun 16, 2020 at 8:27 PM Nick Kossifidis <mick@ics.forth.gr> 
+> wrote:
+>> 
+>> Στις 2020-06-16 10:45, Zong Li έγραψε:
+>> > Implement the 'devmem_is_allowed()' interface for RISC-V, like some of
+>> > other architectures have done. It will be called from
+>> > range_is_allowed()
+>> > when userpsace attempts to access /dev/mem.
+>> >
+>> > Access to exclusive IOMEM and kernel RAM is denied unless
+>> > CONFIG_STRICT_DEVMEM is set to 'n'.
+>> >
+>> > Test it by devmem, the result as follows:
+>> >
+>> >  - CONFIG_STRICT_DEVMEM=y
+>> >       $ devmem 0x10010000
+>> >       0x00000000
+>> >       $ devmem 0x80200000
+>> >       0x0000106F
+>> >
+>> >  - CONFIG_STRICT_DEVMEM is not set
+>> >       $ devmem 0x10010000
+>> >       devmem: mmap: Operation not permitted
+>> >       $ devmem 0x80200000
+>> >       devmem: mmap: Operation not permitted
+>> >
+>> > Signed-off-by: Zong Li <zong.li@sifive.com>
+>> > ---
+>> >  arch/riscv/Kconfig          |  1 +
+>> >  arch/riscv/include/asm/io.h |  2 ++
+>> >  arch/riscv/mm/init.c        | 19 +++++++++++++++++++
+>> >  3 files changed, 22 insertions(+)
+>> >
+>> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> > index 128192e14ff2..ffd7841ede4c 100644
+>> > --- a/arch/riscv/Kconfig
+>> > +++ b/arch/riscv/Kconfig
+>> > @@ -16,6 +16,7 @@ config RISCV
+>> >       select ARCH_HAS_BINFMT_FLAT
+>> >       select ARCH_HAS_DEBUG_VIRTUAL if MMU
+>> >       select ARCH_HAS_DEBUG_WX
+>> > +     select ARCH_HAS_DEVMEM_IS_ALLOWED
+>> >       select ARCH_HAS_GCOV_PROFILE_ALL
+>> >       select ARCH_HAS_GIGANTIC_PAGE
+>> >       select ARCH_HAS_MMIOWB
+>> > diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
+>> > index 3835c3295dc5..04ac65ab93ce 100644
+>> > --- a/arch/riscv/include/asm/io.h
+>> > +++ b/arch/riscv/include/asm/io.h
+>> > @@ -147,4 +147,6 @@ __io_writes_outs(outs, u64, q, __io_pbr(),
+>> > __io_paw())
+>> >
+>> >  #include <asm-generic/io.h>
+>> >
+>> > +extern int devmem_is_allowed(unsigned long pfn);
+>> > +
+>> >  #endif /* _ASM_RISCV_IO_H */
+>> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> > index bbe816e03b2f..5e7e61519acc 100644
+>> > --- a/arch/riscv/mm/init.c
+>> > +++ b/arch/riscv/mm/init.c
+>> > @@ -517,6 +517,25 @@ void mark_rodata_ro(void)
+>> >  }
+>> >  #endif
+>> >
+>> > +#ifdef CONFIG_STRICT_DEVMEM
+>> > +#include <linux/ioport.h>
+>> > +/*
+>> > + * devmem_is_allowed() checks to see if /dev/mem access to a certain
+>> > address
+>> > + * is valid. The argument is a physical page number.
+>> > + *
+>> > + * Disallow access to system RAM as well as device-exclusive MMIO
+>> > regions.
+>> > + * This effectively disable read()/write() on /dev/mem.
+>> > + */
+>> > +int devmem_is_allowed(unsigned long pfn)
+>> > +{
+>> > +     if (iomem_is_exclusive(pfn << PAGE_SHIFT))
+>> > +             return 0;
+>> > +     if (!page_is_ram(pfn))
+>> > +             return 1;
+>> > +     return 0;
+>> > +}
+>> > +#endif
+>> > +
+>> >  void __init resource_init(void)
+>> >  {
+>> >       struct memblock_region *region;
+>> 
+>> This shouldn't be part of /mm/init.c, it has nothing to do with memory
+>> initialization, I suggest we move it to another file like mmap.c on
+> 
+> Let me move it, thanks.
+> 
+>> arm/arm64. Also before using iomem_is_exclusive we should probably 
+>> also
+>> mark any reserved regions with the no-map attribute as busy|exclusive,
+>> reserved-memory regions are not necessarily part of the main memory so
+>> the page_is_ram check may pass and iomem_is_exclusive won't do any 
+>> good.
+> 
+> What do you think if we mark the reserved region in
+> kdump_resource_init, and change the kdump_resource_init to a more
+> generic name for initializing resources?
 
-That says what you did, but not _why_ you are doing it :(
-
+Sounds good to me, I'll work on this within the week. Do you agree with 
+marking the no-map reserved-memory regions as exclusive ?
