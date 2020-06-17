@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C951FC43C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B771FC444
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgFQCur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:50:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12524 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726275AbgFQCuq (ORCPT
+        id S1726663AbgFQC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgFQC6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:50:46 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05H2oWnf026248;
-        Tue, 16 Jun 2020 19:50:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=MPBpPPcveZImgozmzCasG+SyQqsovUXFzgXv6m5vth0=;
- b=VCn539PB/4/IOKDb7Mdp+O7um5m/ZBL7VOaDwUteXsmwhKctO229chsXhtS3d87r8sIG
- b25yrqyt7G+KRUJPUeyD62I9OuCdJhtlpUOuqB7aU2ssHyqKTIJy77AQPKXKInRIgeST
- xSQZmhj1ra4EacM14ikqbXE6PvjeJmrOgrU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 31q65k12kf-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 16 Jun 2020 19:50:34 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 16 Jun 2020 19:50:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PxDl5o2yIUHI1DxUT7l66Bpi2o5jtL287eMiisP4ZoX4K+Js7UhMp3xhh8k8hdrtRXDs9Nsq2vjijiKXp7d4r0KwJ9uZQY1ALS+tL94WoYAJL2nCp8WTRaMMquwVqiMIrELC/ZSpxtVYrKtQOw0xmKsU4YGNXlCjgwev3GL+WTdB50cZi9ap1YCOMYs3HjwW8yv4EhclMM5/djYmwqF8LCAeG81UwJZF9d2xFrkFuBsHLWTKwghKAm3nTfCjz+gp/XfTqCCEsjgF3I49CObmN6gCsojQVYP/9tBRNpaFihl6GuiznNA7843bk16+hQxR9onyqyNKnzQhYmGow3Bl4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MPBpPPcveZImgozmzCasG+SyQqsovUXFzgXv6m5vth0=;
- b=AQ/GoaJCcfuEitglZJpEhlbIbdsYOD3adaJG87YYyUtAPck74lsTjIqByn2PhOengNwwu+nJaVQ8gcrd7l22Q0JN1ykfVaq8dtXY9a3W1WmG8m1EP18ornfB1v79OxCe0FzZ13Vf5Gpm6asqKh120c5zDg+JU/+qWx36bzT+ZDv4aVj+LpW8jpUTDpuaTzCwXDk5tmaS1rUS7NHF9+4Rcg9qm6pE9+UabU091di0PGMaPerGqh11ifFKM20dhpJjiNYMN+u5CETaFyxbH4FDCn4cW5XTEhsKle9jxRyEx3aR1AeaI/PX6ULoaVMzMoZvBCRze1iGSagKwk5E5SNgaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MPBpPPcveZImgozmzCasG+SyQqsovUXFzgXv6m5vth0=;
- b=Ue6WDDMFL02yCoVYZF4lg0/AGT8Ej7B4JqoLc7/KBnFdrmTGD8fUq5JCh0mSnT0F2LXvSwTKj7tTrTyI+8nuhvrZilp1NkchajRMxv826q0IaKW+u0yTzuQhjnJS6Ct19jdYKRgdAiYAPJRKFIBmUKEGkg1hg0BpMApniRveCOY=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2215.namprd15.prod.outlook.com (2603:10b6:a02:89::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.22; Wed, 17 Jun
- 2020 02:50:17 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3088.029; Wed, 17 Jun 2020
- 02:50:17 +0000
-Date:   Tue, 16 Jun 2020 19:50:14 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Tue, 16 Jun 2020 22:58:08 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FFFC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:58:07 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so976751ljm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w0iLmDwGkwJdY6xXNUfSksH8/GBYhs2+eI9Ld/xQ1Es=;
+        b=e3JiYK2+sSY2tORGWVkPE0YcQQR8gcGNAV18A10wNtrgMdf06eEc/seQggIvvg/bqV
+         n3amATKjFquRwsWWXIDQRrZ0xM1neyRqlandS8iYxx+1m/h0v3oZ3W+yT8jmPPHaqjq8
+         CGGc4IzevDLj0yOV8vEUuAEZmn6vEYIpJurcXbyAQsoEuUFkPtayKfzApxXhgrtUARs6
+         GyVWPAj1B8x7zmgVgalRh/A8dfmFarn+ziy1slglVixNl9fNm2jtwq7YF0FrzifgvyTX
+         tvHLpmzmXf5Dg6ZyKvKzNM00amfis/CEu2FB1iBh8KxEiEtmy0RBgbRNvmXjuPnaw3d4
+         K/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w0iLmDwGkwJdY6xXNUfSksH8/GBYhs2+eI9Ld/xQ1Es=;
+        b=OCx2sfvx0lxOIkadEJheURIBI9k0UfrND0u2g7lOdVxxBzmCDNsW3I2Cf51dYfpx1n
+         /MQ3zvuRi1iKOXup7I9/hWQDgPdIYLevixXnwHS1vxO7e5ZEc2qitfpPqBFrKdQMrZJG
+         HKDu0GFbJ9tGi2jnk5nGSrhHKM0x8TN8tGH1imHexq3btV3hjC1diukxLGT/3+BZvHXI
+         FmqGwFqgAFYw6i0KAGLZqZHBcxtwS/Y0J84zTf1aR/syhueMFv13Gf/n8STdz+WttrmT
+         aMoDr28jo5Fi+EoiKHkJu2rHKY7t0KUvXgEsabjYFGF9LkDfs5+VGgovOUJAjY7/vvb5
+         c0Rw==
+X-Gm-Message-State: AOAM530pEk1HWFQs/KyJbW3SduwhfuDxD5hOG9y6fsfvPsg0cJI34Dpv
+        NUcMOlfFnJQFjK7et+jue/RLgw+Zu4SRgBdD6wr3ow==
+X-Google-Smtp-Source: ABdhPJx9o3orf/QdjPJQGACW46Ai5aYZtCTE+RoEG0L0RrKNoRBOrmlQB+trxEMIxnkADI4icH+AqZjMahEpFJOXVo0=
+X-Received: by 2002:a2e:960b:: with SMTP id v11mr2860722ljh.77.1592362685133;
+ Tue, 16 Jun 2020 19:58:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200608230654.828134-1-guro@fb.com> <20200608230654.828134-3-guro@fb.com>
+In-Reply-To: <20200608230654.828134-3-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 16 Jun 2020 19:57:54 -0700
+Message-ID: <CALvZod7B9NFtAZS_cd8pPt0=BUB0sL4WuDtbOhvfMhroGs9PMg@mail.gmail.com>
+Subject: Re: [PATCH v6 02/19] mm: memcg: prepare for byte-sized vmstat items
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -66,104 +60,284 @@ CC:     Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Kernel Team <kernel-team@fb.com>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 01/19] mm: memcg: factor out memcg- and lruvec-level
- changes out of __mod_lruvec_state()
-Message-ID: <20200617025014.GB10812@carbon.lan>
-References: <20200608230654.828134-1-guro@fb.com>
- <20200608230654.828134-2-guro@fb.com>
- <CALvZod7yPUMuakhmaKV8Z0DVr0RO1pyw9vW7YOkmDH=oW3xyDA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7yPUMuakhmaKV8Z0DVr0RO1pyw9vW7YOkmDH=oW3xyDA@mail.gmail.com>
-X-ClientProxiedBy: BYAPR02CA0071.namprd02.prod.outlook.com
- (2603:10b6:a03:54::48) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:818f) by BYAPR02CA0071.namprd02.prod.outlook.com (2603:10b6:a03:54::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.21 via Frontend Transport; Wed, 17 Jun 2020 02:50:16 +0000
-X-Originating-IP: [2620:10d:c090:400::5:818f]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b11cd400-9968-4685-a4dd-08d812692a94
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2215:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB22154CC8F365A72FCD050B06BE9A0@BYAPR15MB2215.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 04371797A5
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ATKia8MlD+vSNuIPcDAewNkThyxpaMOT1vxa5sojNKvm77HMiRJQh9g/hDFfpHIp4nL3UGJzUhycdMgQIrcvjJAE0RYrefMSXvshxNYdeXRVTTsSTkXK6ETe+mpOhyuaL9E+JqWEuef48lSSoupCGtu23+/S7wexf0PwcGAWtFIIVbrUpVceLbqGWceaIyx0V/OWtLcrK7zxwj/8xeb7BbS/7rVNMHPv03hnoNxRg0gUoNmu8LuRrLyx9zAVgHFJNU/pPPs6+RRaMzZ+wU9xDA+PAb9AMwGjzhCpjQU1/4HJWJ2dwFFC2K2hJbU5bfDystivuVC7x/ulP4u/NkxOAg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(376002)(136003)(366004)(396003)(346002)(8886007)(478600001)(9686003)(66476007)(186003)(55016002)(16526019)(66946007)(5660300002)(54906003)(66556008)(33656002)(53546011)(6916009)(4326008)(6506007)(8936002)(1076003)(316002)(8676002)(83380400001)(86362001)(36756003)(7696005)(52116002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 9yMOi4IEZ/Nrjp+Sx0zV6jzBJGpkMEoLMby326xAY4jFXIgJtzIBuqVUk+E3D792WJ82C7x232/uxA4Fxmqc3gn4/MYnG5ngMwHM50Cs5Yq4RGII+EpMZovyhnzxgHg9o/IqiUYkTnjyu3geJppb6i4MfyCV1Ar1yJklJ/xpk08Q4WRzAHrXGPj8rQTTaB4LhGj6rj5X9JcP2sOXfic68S8tFLr0NNwAvQgBO73zK/1zU6Xi6xryPmCZzTeT3TpDTzieauFz+VqCRmnmQnXXiCHCSp3MJSGLEsqInV+ElyZEZB8m/pKmDJF2fjylat9JpgeMIpcCUz0TUM0kyt0rizqwhyLfGKbafQYWZUzIbBSKK+q1fQeS5s+r94zJW42IJScWDch4fx6CiXiPpIrHaTxwGJcHZJs+kFRdZPmga3j/JEE97tpaAkpaHwUayPUWV0M3qpGn7n9IDGj26kqMydeSsHt+9dyij4pZGd1IrDSU/RINS1TV19wYnTpXh2rpXizOp4UmP4jLCDnsY+1V0g==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b11cd400-9968-4685-a4dd-08d812692a94
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2020 02:50:17.0264
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6jqlPLJCabaTy8MtDVRnPmcP6JV1401gkL1iXLmQP2G0RCecHCSplLYMNLIUrWkq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2215
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-16_13:2020-06-16,2020-06-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- cotscore=-2147483648 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- mlxscore=0 phishscore=0 adultscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 spamscore=0 suspectscore=1 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006170022
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 06:52:09PM -0700, Shakeel Butt wrote:
-> On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > To convert memcg and lruvec slab counters to bytes there must be
-> > a way to change these counters without touching node counters.
-> > Factor out __mod_memcg_lruvec_state() out of __mod_lruvec_state().
-> >
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> > ---
-> >  include/linux/memcontrol.h | 17 +++++++++++++++
-> >  mm/memcontrol.c            | 43 +++++++++++++++++++++-----------------
-> >  2 files changed, 41 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index bbf624a7f5a6..93dbc7f9d8b8 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -679,11 +679,23 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
-> >         return x;
-> >  }
-> >
-> > +void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> > +                             int val);
-> >  void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> >                         int val);
-> >  void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
-> >  void mod_memcg_obj_state(void *p, int idx, int val);
-> >
-> > +static inline void mod_memcg_lruvec_state(struct lruvec *lruvec,
-> > +                                         enum node_stat_item idx, int val)
-> 
-> Is this function used in later patches? Any benefit introducing it
-> here instead of in the patch where it is used for the first time?
+On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> To implement per-object slab memory accounting, we need to
+> convert slab vmstat counters to bytes. Actually, out of
+> 4 levels of counters: global, per-node, per-memcg and per-lruvec
+> only two last levels will require byte-sized counters.
+> It's because global and per-node counters will be counting the
+> number of slab pages, and per-memcg and per-lruvec will be
+> counting the amount of memory taken by charged slab objects.
+>
+> Converting all vmstat counters to bytes or even all slab
+> counters to bytes would introduce an additional overhead.
+> So instead let's store global and per-node counters
+> in pages, and memcg and lruvec counters in bytes.
+>
+> To make the API clean all access helpers (both on the read
+> and write sides) are dealing with bytes.
+>
 
-Yes, it's used in "mm: memcg/slab: charge individual slab objects instead of pages".
+The "dealing with bytes" is only for slab stats or all vmstat stats?
 
-It's a fairly large patchset with many internal dependencies, so there is
-always a trade-off between putting everything into a single patch, which is
-hard to review, and splitting out some changes, which make not much sense
-without seeing the whole picture.
+> To avoid back-and-forth conversions a new flavor of read-side
+> helpers is introduced, which always returns values in pages:
+> node_page_state_pages() and global_node_page_state_pages().
+>
+> Actually new helpers are just reading raw values. Old helpers are
+> simple wrappers, which will complain on an attempt to read
+> byte value, because at the moment no one actually needs bytes.
+>
+> Thanks to Johannes Weiner for the idea of having the byte-sized API
+> on top of the page-sized internal storage.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  drivers/base/node.c    |  2 +-
+>  include/linux/mmzone.h | 10 ++++++++++
+>  include/linux/vmstat.h | 14 +++++++++++++-
+>  mm/memcontrol.c        | 14 ++++++++++----
+>  mm/vmstat.c            | 30 ++++++++++++++++++++++++++----
+>  5 files changed, 60 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 5b02f69769e8..e21e31359297 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -513,7 +513,7 @@ static ssize_t node_read_vmstat(struct device *dev,
+>
+>         for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+>                 n += sprintf(buf+n, "%s %lu\n", node_stat_name(i),
+> -                            node_page_state(pgdat, i));
+> +                            node_page_state_pages(pgdat, i));
+>
+>         return n;
+>  }
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index c4c37fd12104..fa8eb49d9898 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -206,6 +206,16 @@ enum node_stat_item {
+>         NR_VM_NODE_STAT_ITEMS
+>  };
+>
+> +/*
+> + * Returns true if the value is measured in bytes (most vmstat values are
+> + * measured in pages). This defines the API part, the internal representation
+> + * might be different.
+> + */
+> +static __always_inline bool vmstat_item_in_bytes(enum node_stat_item item)
+> +{
+> +       return false;
+> +}
+> +
+>  /*
+>   * We do arithmetic on the LRU lists in various places in the code,
+>   * so it is important to keep the active lists LRU_ACTIVE higher in
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index aa961088c551..91220ace31da 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/vm_event_item.h>
+>  #include <linux/atomic.h>
+>  #include <linux/static_key.h>
+> +#include <linux/mmdebug.h>
+>
+>  extern int sysctl_stat_interval;
+>
+> @@ -192,7 +193,8 @@ static inline unsigned long global_zone_page_state(enum zone_stat_item item)
+>         return x;
+>  }
+>
+> -static inline unsigned long global_node_page_state(enum node_stat_item item)
+> +static inline
+> +unsigned long global_node_page_state_pages(enum node_stat_item item)
+>  {
+>         long x = atomic_long_read(&vm_node_stat[item]);
+>  #ifdef CONFIG_SMP
+> @@ -202,6 +204,13 @@ static inline unsigned long global_node_page_state(enum node_stat_item item)
+>         return x;
+>  }
+>
+> +static inline unsigned long global_node_page_state(enum node_stat_item item)
+> +{
+> +       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> +
+> +       return global_node_page_state_pages(item);
+> +}
+> +
+>  static inline unsigned long zone_page_state(struct zone *zone,
+>                                         enum zone_stat_item item)
+>  {
+> @@ -242,9 +251,12 @@ extern unsigned long sum_zone_node_page_state(int node,
+>  extern unsigned long sum_zone_numa_state(int node, enum numa_stat_item item);
+>  extern unsigned long node_page_state(struct pglist_data *pgdat,
+>                                                 enum node_stat_item item);
+> +extern unsigned long node_page_state_pages(struct pglist_data *pgdat,
+> +                                          enum node_stat_item item);
+>  #else
+>  #define sum_zone_node_page_state(node, item) global_zone_page_state(item)
+>  #define node_page_state(node, item) global_node_page_state(item)
+> +#define node_page_state_pages(node, item) global_node_page_state_pages(item)
+>  #endif /* CONFIG_NUMA */
+>
+>  #ifdef CONFIG_SMP
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e8a91e98556b..07d02e61a73e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -681,13 +681,16 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+>   */
+>  void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+>  {
+> -       long x;
+> +       long x, threshold = MEMCG_CHARGE_BATCH;
+>
+>         if (mem_cgroup_disabled())
+>                 return;
+>
+> +       if (vmstat_item_in_bytes(idx))
+> +               threshold <<= PAGE_SHIFT;
+> +
 
-In this particular case splitting out a formal and easy-to-verify change makes
-the actual non-trivial patch smaller and hopefully easier for a review.
+From the above am I understanding correctly that even after moving to
+byte-level accounting, we can still see stats with potential error
+limited by (BATCH-1)*PAGE_SIZE*nr_cpus?
 
-But of course it's all subjective.
+>         x = val + __this_cpu_read(memcg->vmstats_percpu->stat[idx]);
+> -       if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+> +       if (unlikely(abs(x) > threshold)) {
+>                 struct mem_cgroup *mi;
+>
+>                 /*
+> @@ -718,7 +721,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>  {
+>         struct mem_cgroup_per_node *pn;
+>         struct mem_cgroup *memcg;
+> -       long x;
+> +       long x, threshold = MEMCG_CHARGE_BATCH;
+>
+>         pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+>         memcg = pn->memcg;
+> @@ -729,8 +732,11 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>         /* Update lruvec */
+>         __this_cpu_add(pn->lruvec_stat_local->count[idx], val);
+>
+> +       if (vmstat_item_in_bytes(idx))
+> +               threshold <<= PAGE_SHIFT;
+> +
+>         x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
+> -       if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+> +       if (unlikely(abs(x) > threshold)) {
+>                 pg_data_t *pgdat = lruvec_pgdat(lruvec);
+>                 struct mem_cgroup_per_node *pi;
+>
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 80c9b6221535..f1c321e1d6d3 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -341,6 +341,11 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+>         long x;
+>         long t;
+>
+> +       if (vmstat_item_in_bytes(item)) {
+> +               VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> +               delta >>= PAGE_SHIFT;
+> +       }
+> +
+>         x = delta + __this_cpu_read(*p);
+>
+>         t = __this_cpu_read(pcp->stat_threshold);
+> @@ -398,6 +403,8 @@ void __inc_node_state(struct pglist_data *pgdat, enum node_stat_item item)
+>         s8 __percpu *p = pcp->vm_node_stat_diff + item;
+>         s8 v, t;
+>
+> +       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> +
+>         v = __this_cpu_inc_return(*p);
+>         t = __this_cpu_read(pcp->stat_threshold);
+>         if (unlikely(v > t)) {
+> @@ -442,6 +449,8 @@ void __dec_node_state(struct pglist_data *pgdat, enum node_stat_item item)
+>         s8 __percpu *p = pcp->vm_node_stat_diff + item;
+>         s8 v, t;
+>
+> +       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> +
+>         v = __this_cpu_dec_return(*p);
+>         t = __this_cpu_read(pcp->stat_threshold);
+>         if (unlikely(v < - t)) {
+> @@ -541,6 +550,11 @@ static inline void mod_node_state(struct pglist_data *pgdat,
+>         s8 __percpu *p = pcp->vm_node_stat_diff + item;
+>         long o, n, t, z;
+>
+> +       if (vmstat_item_in_bytes(item)) {
+> +               VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> +               delta >>= PAGE_SHIFT;
+> +       }
+> +
+>         do {
+>                 z = 0;  /* overflow to node counters */
+>
+> @@ -989,8 +1003,8 @@ unsigned long sum_zone_numa_state(int node,
+>  /*
+>   * Determine the per node value of a stat item.
+>   */
+> -unsigned long node_page_state(struct pglist_data *pgdat,
+> -                               enum node_stat_item item)
+> +unsigned long node_page_state_pages(struct pglist_data *pgdat,
+> +                                   enum node_stat_item item)
+>  {
+>         long x = atomic_long_read(&pgdat->vm_stat[item]);
+>  #ifdef CONFIG_SMP
+> @@ -999,6 +1013,14 @@ unsigned long node_page_state(struct pglist_data *pgdat,
+>  #endif
+>         return x;
+>  }
+> +
+> +unsigned long node_page_state(struct pglist_data *pgdat,
+> +                             enum node_stat_item item)
+> +{
+> +       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> +
+> +       return node_page_state_pages(pgdat, item);
+> +}
 
-Thanks!
+So, for non-slab, node_page_state and node_page_state_pages will be
+the same but different for slab vmstats. However we should not be
+calling node_page_state with slab vmstats because we don't need it,
+right?
+
+>  #endif
+>
+>  #ifdef CONFIG_COMPACTION
+> @@ -1581,7 +1603,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+>                 seq_printf(m, "\n  per-node stats");
+>                 for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+>                         seq_printf(m, "\n      %-12s %lu", node_stat_name(i),
+> -                                  node_page_state(pgdat, i));
+> +                                  node_page_state_pages(pgdat, i));
+>                 }
+>         }
+>         seq_printf(m,
+> @@ -1702,7 +1724,7 @@ static void *vmstat_start(struct seq_file *m, loff_t *pos)
+>  #endif
+>
+>         for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+> -               v[i] = global_node_page_state(i);
+> +               v[i] = global_node_page_state_pages(i);
+>         v += NR_VM_NODE_STAT_ITEMS;
+>
+>         global_dirty_limits(v + NR_DIRTY_BG_THRESHOLD,
+> --
+> 2.25.4
+>
