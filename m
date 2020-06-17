@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41291FC40A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7C21FC40B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgFQCTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S1726653AbgFQCTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgFQCTZ (ORCPT
+        with ESMTP id S1726253AbgFQCTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:19:25 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6F5C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:19:24 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d66so380571pfd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:19:24 -0700 (PDT)
+        Tue, 16 Jun 2020 22:19:42 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A506C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:19:41 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y18so236466plr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Tm2OIAC2wPHIu+J0I11lcX2FQUkFHhPNaZd+SgdUmOc=;
-        b=ILtTzXAiow+nG+MFZnQxYWUg0LNfix/Aw1/05PPUVjdMuFqOGCxjCh3sm63ghEyZ1v
-         36776c6ULt26LiAbw+qWf/O48btNGUIzyqiHlR+9X9TRaDqUspIX9mIXjlOjzMPdXjfO
-         L4EDGYqTtFvGqBnRb0nBPLw1ZsCm3/z7A0EzqdCBMw9fy1IVHPfilrmKgM5ojiY4EBAI
-         XXdklcC9hRxhLUYvxAcYOzddiBR/zLp4VGscS7p8wJQ2okzR0DEiWTh/mriR5UoHq7id
-         9txgG2P+OSe1swKbcFdfNG+PdO5xkrKX4H2DlILHrrBU9QySckTsyFQyTE08nlkwUsSd
-         1HpQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=axDMTPhYiD/Km+IVh4JuAqAJaHHRrVK+kCUNoDRVkdg=;
+        b=BH3W9Rvs8Dc8HKreJFfrADu/RgfYcpyxxj9qaBcIdNA/JmLD58BMdZg867nSZ3ezA1
+         OcFY1FsfXwQJNolEWDL7pt+ALNdHYGe/0vRd7VsAb5JVVxTuxNg/UW5EMQpKRFDlAShs
+         yLBJnGSsQTWqPCdZhXr3ROLP2upT3q5Obn/50IWtzZqyfmBWXolC4WV753kxeg+SUTn3
+         Zp0QHaeqW7wIcYykTBkOBksnfFByV01U2ngOD/yD8RPfxna66ZzWtpp7+DRMvJSGH/Yc
+         0otSL1t9kWbLt/lRAFRRAoehETgx1jbQPYhqYjbfskP316uqP+X/jW1sr42Wtr93Xuc4
+         v2rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Tm2OIAC2wPHIu+J0I11lcX2FQUkFHhPNaZd+SgdUmOc=;
-        b=Lga1pcAdZvTBavO+WLsmPL0diuO825QCzqQi7e5ngl5KZ8T4iyf84UTFyWCP1e0mFo
-         KBNoeVUvHIi9FzZ2H/Bud0YJXIWlaijuw7hSeMBtv826fxGDxl3P+optNd469VzG0m5D
-         GyMb3/LYV6M3iLzO60UhhFlqHa/4ri8S1NoGU57xqa9Ty3v7bU6B+iaV9s+xzS37cE4Q
-         hnfeOvCp3zUKJI9fKxvCNBVKO8n0rLyqA3es7IV2rAEa8lI2EEpg2w6ZomhwdKPemu5F
-         vpFdUESfeQ+MAMLcQO3g3dRayOmBoPGy7ikEEm1b67FOFlcGe8DnW09BHutYC3AXheYH
-         /H6Q==
-X-Gm-Message-State: AOAM533EM03Tq8t7XtIGKGm1iAKtaA9H/2swmz3ehyugRcudSg5U5e6m
-        G1+HlOkmTQktbSWc29XQCHg=
-X-Google-Smtp-Source: ABdhPJyupGoqunIqWLgfQKt3nF8HlXkYClkFyrB5g8cPk2QdQYtD7/lKzqzLythjC071dea+D5OJPQ==
-X-Received: by 2002:a62:75cc:: with SMTP id q195mr4677936pfc.256.1592360363283;
-        Tue, 16 Jun 2020 19:19:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=axDMTPhYiD/Km+IVh4JuAqAJaHHRrVK+kCUNoDRVkdg=;
+        b=a1l895qV9QzsypGEpo0/qeF4sXnrDNHItxwd2VGIA2bz8zlL576iN+D8teybXZwF4M
+         6Nlmyp9JeomJCoCx8LGQh/d4dAnmPdpFSq2T18MR5m7xJ+Nt5pW00vr6XhPthqA2gykx
+         aE757OVI9v8sM5Ihx0iwIzhtTb1bhiu1RMIZHD7Fra4KuNmEidiNX+g2vnEUBBk+dYLC
+         3YmkSVeGK9A9St/oQ1ulxN5Ydq/duAy8Wiuy9jMrDbWiwNkSHLusOO0XqUe+r4CoAcaH
+         DS4gNy5by7CxE14baimuJO+fqlAWK6k1pbAz/DUlOlathEKQwuEM3to/PNV9NT5s3u1v
+         Jwfw==
+X-Gm-Message-State: AOAM530GUJWHzQH6mRXHDvr155vHrXB9Khp3/0fTaCgYA0aCokwlZl9a
+        QHkK4mBAlg1quBwFRjty8po=
+X-Google-Smtp-Source: ABdhPJwANyk83r6EG1MGw311BijTTXggESe0AcQ+zO8izI/aRQP6hz6MrWjIVANJBBTuOZ1YqFUxJw==
+X-Received: by 2002:a17:90a:ea18:: with SMTP id w24mr5533713pjy.42.1592360381007;
+        Tue, 16 Jun 2020 19:19:41 -0700 (PDT)
 Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.213.184])
-        by smtp.gmail.com with ESMTPSA id h9sm1203208pfe.32.2020.06.16.19.19.19
+        by smtp.gmail.com with ESMTPSA id h9sm1203208pfe.32.2020.06.16.19.19.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jun 2020 19:19:22 -0700 (PDT)
+        Tue, 16 Jun 2020 19:19:40 -0700 (PDT)
 From:   Souptick Joarder <jrdr.linux@gmail.com>
 To:     gregkh@linuxfoundation.org, jane.pnx9@gmail.com, pakki001@umn.edu,
         ldufour@linux.ibm.com, harshjain32@gmail.com, simon@nikanor.nu,
         walken@google.com
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH 0/4] staging: kpc2000: kpc_dma: Few clean up and Convert to pin_user_pages()
-Date:   Wed, 17 Jun 2020 07:57:19 +0530
-Message-Id: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bharath Vedartham <linux.bhar@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 1/4] staging: kpc2000: Unpin partial pinned pages
+Date:   Wed, 17 Jun 2020 07:57:20 +0530
+Message-Id: <1592360843-3440-2-git-send-email-jrdr.linux@gmail.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
+References: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains few clean up, minor bug fixes and
-Convert get_user_pages() to pin_user_pages().
+There is a bug, when get_user_pages() failed but partially pinned
+pages are not unpinned. Fixed it.
 
-I'm compile tested this, but unable to run-time test,
-so any testing help is much appriciated.
+Also, int is more appropriate type for rv. Changed it.
 
-Souptick Joarder (4):
-  staging: kpc2000: Unpin partial pinned pages
-  staging: kpc2000: kpc_dma: Convert set_page_dirty() -->    
-    set_page_dirty_lock()
-  staging: kpc2000: kpc_dma: Convert get_user_pages() -->
-    pin_user_pages()
-  staging: kpc2000: kpc_dma: Remove excess goto statement
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Bharath Vedartham <linux.bhar@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/staging/kpc2000/kpc_dma/fileops.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- drivers/staging/kpc2000/kpc_dma/fileops.c | 33 ++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
+index 8975346..b136353 100644
+--- a/drivers/staging/kpc2000/kpc_dma/fileops.c
++++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
+@@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
+ 			    unsigned long iov_base, size_t iov_len)
+ {
+ 	unsigned int i = 0;
+-	long rv = 0;
++	int rv = 0;
+ 	struct kpc_dma_device *ldev;
+ 	struct aio_cb_data *acd;
+ 	DECLARE_COMPLETION_ONSTACK(done);
+@@ -193,6 +193,10 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
+ 		put_page(acd->user_pages[i]);
+ 
+  err_get_user_pages:
++	if (rv > 0) {
++		for (i = 0; i < rv; i++)
++			put_pages(acd->user_pages[i])
++	}
+ 	kfree(acd->user_pages);
+  err_alloc_userpages:
+ 	kfree(acd);
 -- 
 1.9.1
 
