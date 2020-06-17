@@ -2,110 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4911FD33D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08331FD34B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgFQRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:15:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47948 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgFQRPi (ORCPT
+        id S1726981AbgFQRSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:18:14 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34902 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbgFQRSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:15:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jlbex-0001c9-Ts; Wed, 17 Jun 2020 17:15:35 +0000
-To:     Ido Schimmel <idosch@mellanox.com>
-Cc:     Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Petr Machata <petrm@mellanox.com>, netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
- 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
-Subject: re: mlxsw: spectrum: Adjust headroom buffers for 8x ports
-Message-ID: <bae3b4f6-3e9b-bdde-72b0-b8f1e7575fd4@canonical.com>
-Date:   Wed, 17 Jun 2020 18:15:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 17 Jun 2020 13:18:13 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05HHHmcZ103922;
+        Wed, 17 Jun 2020 17:17:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=9VQqTPZpR0kzjjfzvsdc4Cd29YvF0dcmDmbQ6puPfZE=;
+ b=WkhgoKnEal4c9PClFZzLziJhMWKcbyIeQUkNxg7Qso6eH8O9emFNz5Yxyn80BZRLSz6q
+ +YgycPyZ+vfek55tD//ARjQCfv9w2jKX0ln7oZX06tsBb7B1pfRCTtLxs4Ova+2nhHxd
+ ukCTajQ4fUmm4HjcdFXx0OK1NUiK8w7UBM97bjqI8coEjQM+bMlEBIaJge8yY5pLDNwB
+ gpBp8atNBQgx818Es5Bagq/yfskFLGaS/F9sHbA+G3aSiCbG7a+XkfOKaOUKBO9Mx1PO
+ 1cNgg2RPzBTk2TXBhe7JW4fAiqXYeptpaqcVA5skwU61al7p/63LNcan8tHYeuDtnGyy XQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 31q65yvmda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Jun 2020 17:17:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05HHDADm140357;
+        Wed, 17 Jun 2020 17:15:58 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 31q66netxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jun 2020 17:15:58 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05HHFuNR021623;
+        Wed, 17 Jun 2020 17:15:57 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 17 Jun 2020 10:15:56 -0700
+Date:   Wed, 17 Jun 2020 20:15:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] coresight: cti: Fix error handling in probe
+Message-ID: <20200617171549.GA9686@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ9a7Vjn-1gvOY0h5eiffXgqiNu4rz=Z18hgV33WExGnLEV-nA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006170136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0 impostorscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006170137
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+There were a couple problems with error handling in the probe function:
+1)  If the "drvdata" allocation failed then it lead to a NULL
+    dereference.
+2)  On several error paths we decremented "nr_cti_cpu" before it was
+    incremented which lead to a reference counting bug.
 
-Static analysis with Coverity has detected an issue that relies on the
-machine endianness to work. The commit in question is:
+There were also some parts of the error handling which were not bugs but
+were messy.  The error handling was confusing to read.  It printed some
+unnecessary error messages.
 
-commit 60833d54d56c21e7538296eb2e00e104768fd047
-Author: Ido Schimmel <idosch@mellanox.com>
-Date:   Tue Jun 16 10:14:58 2020 +0300
+The simplest way to fix these problems was to create a cti_pm_setup()
+function that did all the power management setup in one go.  That way
+when we call cti_pm_release() we don't have to deal with the
+complications of a partially configured power management config.
 
-    mlxsw: spectrum: Adjust headroom buffers for 8x ports
+I reversed the "if (drvdata->ctidev.cpu >= 0)" condition in cti_pm_release()
+so that it mirros the new cti_pm_setup() function.
 
-in line:
-    mlxsw_sp_port_headroom_8x_adjust(mlxsw_sp_port, (u16 *) &buffsize);
+Fixes: 6a0953ce7de9 ("coresight: cti: Add CPU idle pm notifer to CTI devices")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: I accidentally introduced a bug in cti_pm_release() in v1.
 
+ drivers/hwtracing/coresight/coresight-cti.c | 96 ++++++++++++---------
+ 1 file changed, 54 insertions(+), 42 deletions(-)
 
-The cast of the u32 buffsize to (u16 *) to scale buffsize in the call to
-to mlxsw_sp_port_headroom_8x_adjust() will behave differently on big
-endian architectures to that of little endian architectures.  I'm not
-sure if this is intentional or not.
-
-One solution is to either make buffsize a u16, but I am concerned this
-may be incorrect as the buffsize is assigned from the call
-mlxsw_sp_span_buffsize_get() and this returns a u32 so we may have
-overflow issues. Probably better to make
-mlxsw_sp_port_headroom_8x_adjust handle u32 integers and to return the
-adjusted value rather than modifying it by pass-by-reference.
-
-Colin
-
+diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
+index 40387d58c8e7..d2da5bf9f552 100644
+--- a/drivers/hwtracing/coresight/coresight-cti.c
++++ b/drivers/hwtracing/coresight/coresight-cti.c
+@@ -747,17 +747,50 @@ static int cti_dying_cpu(unsigned int cpu)
+ 	return 0;
+ }
+ 
++static int cti_pm_setup(struct cti_drvdata *drvdata)
++{
++	int ret;
++
++	if (drvdata->ctidev.cpu == -1)
++		return 0;
++
++	if (nr_cti_cpu)
++		goto done;
++
++	cpus_read_lock();
++	ret = cpuhp_setup_state_nocalls_cpuslocked(
++			CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
++			"arm/coresight_cti:starting",
++			cti_starting_cpu, cti_dying_cpu);
++	if (ret) {
++		cpus_read_unlock();
++		return ret;
++	}
++
++	ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
++	cpus_read_unlock();
++	if (ret) {
++		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
++		return ret;
++	}
++
++done:
++	nr_cti_cpu++;
++	cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
++
++	return 0;
++}
++
+ /* release PM registrations */
+ static void cti_pm_release(struct cti_drvdata *drvdata)
+ {
+-	if (drvdata->ctidev.cpu >= 0) {
+-		if (--nr_cti_cpu == 0) {
+-			cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
++	if (drvdata->ctidev.cpu == -1)
++		return;
+ 
+-			cpuhp_remove_state_nocalls(
+-				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
+-		}
+-		cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
++	cti_cpu_drvdata[drvdata->ctidev.cpu] = NULL;
++	if (--nr_cti_cpu == 0) {
++		cpu_pm_unregister_notifier(&cti_cpu_pm_nb);
++		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_CTI_STARTING);
+ 	}
+ }
+ 
+@@ -823,19 +856,14 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+ 
+ 	/* driver data*/
+ 	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+-	if (!drvdata) {
+-		ret = -ENOMEM;
+-		dev_info(dev, "%s, mem err\n", __func__);
+-		goto err_out;
+-	}
++	if (!drvdata)
++		return -ENOMEM;
+ 
+ 	/* Validity for the resource is already checked by the AMBA core */
+ 	base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(base)) {
+-		ret = PTR_ERR(base);
+-		dev_err(dev, "%s, remap err\n", __func__);
+-		goto err_out;
+-	}
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
+ 	drvdata->base = base;
+ 
+ 	dev_set_drvdata(dev, drvdata);
+@@ -854,8 +882,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+ 	pdata = coresight_cti_get_platform_data(dev);
+ 	if (IS_ERR(pdata)) {
+ 		dev_err(dev, "coresight_cti_get_platform_data err\n");
+-		ret =  PTR_ERR(pdata);
+-		goto err_out;
++		return  PTR_ERR(pdata);
+ 	}
+ 
+ 	/* default to powered - could change on PM notifications */
+@@ -867,35 +894,20 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+ 					       drvdata->ctidev.cpu);
+ 	else
+ 		cti_desc.name = coresight_alloc_device_name(&cti_sys_devs, dev);
+-	if (!cti_desc.name) {
+-		ret = -ENOMEM;
+-		goto err_out;
+-	}
++	if (!cti_desc.name)
++		return -ENOMEM;
+ 
+ 	/* setup CPU power management handling for CPU bound CTI devices. */
+-	if (drvdata->ctidev.cpu >= 0) {
+-		cti_cpu_drvdata[drvdata->ctidev.cpu] = drvdata;
+-		if (!nr_cti_cpu++) {
+-			cpus_read_lock();
+-			ret = cpuhp_setup_state_nocalls_cpuslocked(
+-				CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
+-				"arm/coresight_cti:starting",
+-				cti_starting_cpu, cti_dying_cpu);
+-
+-			if (!ret)
+-				ret = cpu_pm_register_notifier(&cti_cpu_pm_nb);
+-			cpus_read_unlock();
+-			if (ret)
+-				goto err_out;
+-		}
+-	}
++	ret = cti_pm_setup(drvdata);
++	if (ret)
++		return ret;
+ 
+ 	/* create dynamic attributes for connections */
+ 	ret = cti_create_cons_sysfs(dev, drvdata);
+ 	if (ret) {
+ 		dev_err(dev, "%s: create dynamic sysfs entries failed\n",
+ 			cti_desc.name);
+-		goto err_out;
++		goto pm_release;
+ 	}
+ 
+ 	/* set up coresight component description */
+@@ -908,7 +920,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+ 	drvdata->csdev = coresight_register(&cti_desc);
+ 	if (IS_ERR(drvdata->csdev)) {
+ 		ret = PTR_ERR(drvdata->csdev);
+-		goto err_out;
++		goto pm_release;
+ 	}
+ 
+ 	/* add to list of CTI devices */
+@@ -927,7 +939,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+ 	dev_info(&drvdata->csdev->dev, "CTI initialized\n");
+ 	return 0;
+ 
+-err_out:
++pm_release:
+ 	cti_pm_release(drvdata);
+ 	return ret;
+ }
+-- 
+2.27.0
