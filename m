@@ -2,170 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2121FC6B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240881FC6BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgFQHIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:08:38 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:55459 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgFQHIh (ORCPT
+        id S1726698AbgFQHJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:09:36 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39965 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725929AbgFQHJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:08:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1592377716; x=1623913716;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=h23FZx+/16V7+S8slzI/m9JM+HZR6ANCdKpAcj+WB9A=;
-  b=Vga+cXFfScv/WS/185Rci2O6Dle4X+ifTrGz+5Blzn8hg3SD5xdBG8ZC
-   /IRtIa+cTSV0AKrgMuSmS2MNB0hbmBNQ9E9Lor57cDqkCpIyViYUuEGWT
-   Ctfki1yDlGWJf1nZtmfY0VRrGA99m2P2QVG4FM0DxqC+fSypS9RiT0yIF
-   kwEioPlPlGGi888dvUIcQVFuBqVMgfc953fvsd0m3MhckSeOJD4ZwC8Sk
-   lyrBm2GMwKornrkkGijwaPNKQLDvfnDXiTcv1Yo5ASdASlKljP8z/6fAH
-   SDObwzvqH2fAEC7djc/pAqXoR18FNGN0xg2nU3GHLV5fRslQWBabjeEnX
-   g==;
-IronPort-SDR: 4Z/PIsqnj9E2jmh39QSOcWWWui192qDDhElwNP5cJAlgGRsxpNbn762KFP7qIF3pZpjpRNM+d6
- 4LUyWZGRbdR6ghLDTmc28GCzyXuzP/ZaVFTz+zXBnFvSFmV+hZFzkoKfBG/3WYIGait4rdVSYv
- eNU0jI4CfFPjmkSAvjE0y19WXvhWyPSppG/gZ3yNZs+3HX6M1w+CGXV8bnt0J25YXj9NvO4Rml
- xQYDJrwwShVOcuRgn3Hdu23ehIZIW50/xf+frf7lopT9CpJyBRZvUZgHVOlZPc9IJBGip9sDM8
- Vos=
-X-IronPort-AV: E=Sophos;i="5.73,521,1583164800"; 
-   d="scan'208";a="249375658"
-Received: from mail-mw2nam12lp2047.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.47])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jun 2020 15:08:34 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Exa+DfMQG4knA787yTdrqUF2yj2vx82yUfc8vb4cY8zK8q/qaX3tfPs6hGqoiCK7AGVpH9Hqm7x9dte1/1T3VLFEGVrwr3a09gkm/tbKM/dpernYNghhCaOcNwYsNRGt1r0p1zr1Iwevbn8APySzjmfMIrnEejbRcF66GUpQzQc3srHoGeK6D3HvNoFAVnfRZovgFOXvgkJF4X1IaHaenu+/jvuJmuUdiocJGXnUXHkuIZHtpj5PJRMM77OXPZPH2BS/4oUZLjL4JY3/k5zIGXJSTb2Kfj6bGo6AdHWvHB9vX4KiaJmXfoW+1YgL9lnxEhNsFT3vEWwWQKWsloMOSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h23FZx+/16V7+S8slzI/m9JM+HZR6ANCdKpAcj+WB9A=;
- b=KpE+5eE3UOassWfZ6HVkQOKyoiMTyaTMamVH/AVr+eS7Vs960KrlWVV1NchPhNPUUg11yefi/IXSKB3CfvVyFt0VOUe3ZQnn8BGHGAVuewR528/HKk92mMxeYYwvuSbTvaUgFU2GkfkW7wkQHNE3I572GfV/UKI8dRyMjHVIBQY/7x4tKOSHPRMz2KAqwVCCIpnDhVgYCkJXqsjQP8T/ky2O7/EZvdr9LJCieWF36JNOvBSno4twq+ERawYvWbNMX6taeHA3D+Wl8i4YotRfJjtQwO6fWdpdyK3IyqUDcdpQEiIBnpyd3ItaPht07A4609DguapWLn5a/cpSOmtYtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h23FZx+/16V7+S8slzI/m9JM+HZR6ANCdKpAcj+WB9A=;
- b=xjiVVBfBt04DiJlPJLFelKQ3WMfi/XfqYSoOC8VbBQ2oCRXfuykS0RHcj0GUeAvLZAhIv52rNFxPxgh8twEFFPCxy/L8CeA1gIwzg04/X3/p0xFYwDRjIzTmZ1fnHvi/9f6gYDc7/pz84QAAeOFZfSga7SVq+KZUqTPjsLZkjLQ=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB4719.namprd04.prod.outlook.com (2603:10b6:805:ab::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.20; Wed, 17 Jun
- 2020 07:08:33 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3109.021; Wed, 17 Jun 2020
- 07:08:33 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: RE: [RFC PATCH v2 2/5] scsi: ufs: Add UFS-feature layer
-Thread-Topic: [RFC PATCH v2 2/5] scsi: ufs: Add UFS-feature layer
-Thread-Index: AQHWQvR/8YSWnZ32kE23vYUZ7mTDy6jcZWcQ
-Date:   Wed, 17 Jun 2020 07:08:33 +0000
-Message-ID: <SN6PR04MB46402D067BE2BFE003170FB8FC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
-        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
-        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p8>
- <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-In-Reply-To: <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f672f931-59ae-4c5f-64bf-08d8128d3f31
-x-ms-traffictypediagnostic: SN6PR04MB4719:
-x-microsoft-antispam-prvs: <SN6PR04MB47199DC513D4263ED0C5B245FC9A0@SN6PR04MB4719.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 04371797A5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TdftJEQM+YkyoRHnTFciBEm79VxsJYrl7VK/Hcfbv5DPnViYefVvNpmYo48IP+YHGMJzz8s4qJ8ct+vCXVo5fDheSx52H6EFILkP3WexGEizH2lSbdbBbqCaclzS+TuDkH6yDyKeAQjJJ4W/iOQyaZ7xcSNwSNt0R6lVdlc4sI4EL83otUT6ddanhepBfwwJr5dzKq8jGjbQHJiLY8EEJbK7oaiSWC7bjLgDhetrhnkraehjz19VF21hQ+/e9mB97uXH6KGOu8pnHzb1qXpu+2H6y1EcdW3rtdYKa7P24EzaM8avt6MyMALYrjgkPfx34RsQBafdLRCvdfgoCNEOcJ7ZURHABP9YN57LHJkEfWu1Laepb8ZhE1KTiWg/oMVY
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(5660300002)(64756008)(186003)(66476007)(8936002)(66946007)(76116006)(66446008)(316002)(71200400001)(2906002)(8676002)(110136005)(66556008)(54906003)(33656002)(26005)(4326008)(478600001)(52536014)(7696005)(7416002)(83380400001)(6506007)(55016002)(9686003)(86362001)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: T/prS48r+0DsSwftrFa//dXabV0SEnjrJJ50dy8n4tU+v6SfsERxgBXRMwOKfhaUhqJ2q2yUcpfzZX2U0NoQonnKDYKLkmXbWckzsoyJYks6sl2mf4d6yVuyHPp4PNOJdJqtCHcuRidUyAn73cmUDqzErQzcveTWNOBV8gBehCWZrNklPDPsXG+32fOm1dLLI98SDBYz4/utecZtZSxlHX78q84dOm6/pqCVw8ngz3RC60dvcy6tRw+/od5yMPhB/0i6SMCXr2Ecb4gzODp0mdySF1f/NNXnBcwXQWdTSvAjKoE9gKw5XB1aKXsCfK2qug4SUxGkPdJifapRJat1oYk5p+ur4h4ZV1oWO9RmrvT854WW+Wg1nC0qQ21gUnyJu93cdzTN3x1Gijs6h2FUdCICu2WqVBY4QNPl44NcLJrs8KF+p+Cb38CYamZh486WSmKoFkLs91DP5kBvg2elU3vqwcrUMtNnVCHI/9uauBQ=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 17 Jun 2020 03:09:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592377773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=+lfu25UVw1kNos/TAIW6y2+umnyx7y252djEAO7uls4=;
+        b=M6pe4cRfMqH5ny9gu7V0Y21gxBJAOZd4rrcANxWePBv01ve9W0EToeDtCdMJm0e6j4myod
+        hO1zAFYwfbAXZRGYzrEJFzTfrVvrRXoVkF5hdHpmjLpuJt68aLCLvrJ3bpVzsD03Jsnxkg
+        6beqTKyOyJBhcPb1dMhJn8Y6tYmK8Jo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-LH9COtv6PO-CxtyoBdljAQ-1; Wed, 17 Jun 2020 03:09:29 -0400
+X-MC-Unique: LH9COtv6PO-CxtyoBdljAQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 456B28C31EB;
+        Wed, 17 Jun 2020 07:09:28 +0000 (UTC)
+Received: from [10.36.114.31] (ovpn-114-31.ams2.redhat.com [10.36.114.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96B5660CC0;
+        Wed, 17 Jun 2020 07:09:25 +0000 (UTC)
+Subject: Re: [PATCH] mm: ksize() should silently accept a NULL pointer
+To:     William Kucharski <william.kucharski@oracle.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200616225409.4670-1-william.kucharski@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <bee16e8c-2ec9-7a17-1f5d-82cc4891603b@redhat.com>
+Date:   Wed, 17 Jun 2020 09:09:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f672f931-59ae-4c5f-64bf-08d8128d3f31
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2020 07:08:33.1316
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Zx2y7hsnsMY1vWXyzrPWDWX0xEI7tIsWGU4oAYakHs53iFNW0pU0VB0/BjsBw2/LqV7n9RU26MX/b+Z11MWsuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4719
+In-Reply-To: <20200616225409.4670-1-william.kucharski@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiANCj4gVGhpcyBwYXRjaCBpcyBhZGRpbmcgVUZTIGZlYXR1cmUgbGF5ZXIgdG8gVUZTIGNv
-cmUgZHJpdmVyLg0KPiANCj4gVUZTIERyaXZlciBkYXRhIHN0cnVjdHVyZSAoc3RydWN0IHVmc19o
-YmEpDQo+ICAgICAgICAg4pSCDQo+IOKUjC0tLS0tLS0tLS0tLS0t4pSQDQo+IOKUgiBVRlMgZmVh
-dHVyZSAg4pSCIDwtLSBIUEIgbW9kdWxlDQo+IOKUgiAgICBsYXllciAgICAg4pSCIDwtLSBvdGhl
-ciBleHRlbmRlZCBmZWF0dXJlIG1vZHVsZQ0KPiDilJQtLS0tLS0tLS0tLS0tLeKUmA0KPiBFYWNo
-IGV4dGVuZGVkIFVGUy1GZWF0dXJlIG1vZHVsZSBoYXMgYSBidXMgb2YgdWZzLWV4dCBmZWF0dXJl
-IHR5cGUuDQo+IFRoZSBVRlMgZmVhdHVyZSBsYXllciBtYW5hZ2VzIGNvbW1vbiBBUElzIHVzZWQg
-YnkgZWFjaCBleHRlbmRlZCBmZWF0dXJlDQo+IG1vZHVsZS4gVGhlIEFQSXMgYXJlIHNldCBvZiBV
-RlMgUXVlcnkgcmVxdWVzdHMgYW5kIFVGUyBWZW5kb3IgY29tbWFuZHMNCj4gcmVsYXRlZCB0byBl
-YWNoIGV4dGVuZGVkIGZlYXR1cmUgbW9kdWxlLg0KPiANCj4gT3RoZXIgZXh0ZW5kZWQgZmVhdHVy
-ZXMgY2FuIGFsc28gYmUgaW1wbGVtZW50ZWQgdXNpbmcgdGhlIHByb3Bvc2VkIEFQSXMuDQo+IEZv
-ciBleGFtcGxlLCBpbiBXcml0ZSBCb29zdGVyLCAicHJlcF9mbiIgY2FuIGJlIHVzZWQgdG8gZ3Vh
-cmFudGVlIHRoZQ0KPiBsaWZldGltZSBvZiBVRlMgYnkgdXBkYXRpbmcgdGhlIGFtb3VudCBvZiB3
-cml0ZSBJTy4NCj4gQW5kIHJlc2V0L3Jlc2V0X2hvc3Qvc3VzcGVuZC9yZXN1bWUgY2FuIGJlIHVz
-ZWQgdG8gbWFuYWdlIHRoZSBrZXJuZWwgdGFzaw0KPiBmb3IgY2hlY2tpbmcgbGlmZXRpbWUgb2Yg
-VUZTLg0KPiANCj4gVGhlIGZvbGxvd2luZyA2IGNhbGxiYWNrIGZ1bmN0aW9ucyBoYXZlIGJlZW4g
-YWRkZWQgdG8gInVmc2hjZC5jIi4NCj4gcHJlcF9mbjogY2FsbGVkIGFmdGVyIGNvbnN0cnVjdCB1
-cGl1IHN0cnVjdHVyZQ0KPiByZXNldDogY2FsbGVkIGFmdGVyIHByb3ZpbmcgaGJhDQo+IHJlc2V0
-X2hvc3Q6IGNhbGxlZCBiZWZvcmUgdWZzaGNkX2hvc3RfcmVzZXRfYW5kX3Jlc3RvcmUNCj4gc3Vz
-cGVuZDogY2FsbGVkIGJlZm9yZSB1ZnNoY2Rfc3VzcGVuZA0KPiByZXN1bWU6IGNhbGxlZCBhZnRl
-ciB1ZnNoY2RfcmVzdW1lDQo+IHJzcF91cGl1OiBjYWxsZWQgaW4gdWZzaGNkX3RyYW5zZmVyX3Jz
-cF9zdGF0dXMgd2l0aCBTQU1fU1RBVF9HT09EIHN0YXRlDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBE
-YWVqdW4gUGFyayA8ZGFlanVuNy5wYXJrQHNhbXN1bmcuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMv
-c2NzaS91ZnMvTWFrZWZpbGUgICAgIHwgICAyICstDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2Zl
-YXR1cmUuYyB8IDE0OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICBkcml2
-ZXJzL3Njc2kvdWZzL3Vmc2ZlYXR1cmUuaCB8ICA2OSArKysrKysrKysrKysrKysrDQo+ICBkcml2
-ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jICAgICB8ICAxNyArKysrDQo+ICBkcml2ZXJzL3Njc2kvdWZz
-L3Vmc2hjZC5oICAgICB8ICAgMyArDQo+ICA1IGZpbGVzIGNoYW5nZWQsIDIzOCBpbnNlcnRpb25z
-KCspLCAxIGRlbGV0aW9uKC0pDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zY3NpL3Vm
-cy91ZnNmZWF0dXJlLmMNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3Njc2kvdWZzL3Vm
-c2ZlYXR1cmUuaA0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvTWFrZWZpbGUg
-Yi9kcml2ZXJzL3Njc2kvdWZzL01ha2VmaWxlDQo+IGluZGV4IDk0YzZjNWQ3MzM0Yi4uZmUzYTky
-YjA2Yzg3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL01ha2VmaWxlDQo+ICsrKyBi
-L2RyaXZlcnMvc2NzaS91ZnMvTWFrZWZpbGUNCj4gQEAgLTUsNyArNSw3IEBAIG9iai0kKENPTkZJ
-R19TQ1NJX1VGU19EV0NfVENfUExBVEZPUk0pICs9IHRjLWR3Yy0NCj4gZzIxMC1wbHRmcm0ubyB1
-ZnNoY2QtZHdjLm8gdGMtZA0KPiAgb2JqLSQoQ09ORklHX1NDU0lfVUZTX0NETlNfUExBVEZPUk0p
-ICs9IGNkbnMtcGx0ZnJtLm8NCj4gIG9iai0kKENPTkZJR19TQ1NJX1VGU19RQ09NKSArPSB1ZnMt
-cWNvbS5vDQo+ICBvYmotJChDT05GSUdfU0NTSV9VRlNIQ0QpICs9IHVmc2hjZC1jb3JlLm8NCj4g
-LXVmc2hjZC1jb3JlLXkgICAgICAgICAgICAgICAgICAgICAgICAgICs9IHVmc2hjZC5vIHVmcy1z
-eXNmcy5vDQo+ICt1ZnNoY2QtY29yZS15ICAgICAgICAgICAgICAgICAgICAgICAgICArPSB1ZnNo
-Y2QubyB1ZnMtc3lzZnMubyB1ZnNmZWF0dXJlLm8NCkhvdyBhYm91dCBtYWtpbmcgaXQNCj4gIHVm
-c2hjZC1jb3JlLSQoQ09ORklHX1VGU19GRUFUVVJFUykgICAgICs9IHVmc2ZlYXR1cmUubw0KU28g
-dGhhdCB5b3Ugd29uJ3QgY2hlY2sgbm9uZS1ocGIgZHJpdmVyIG9uIGV2ZXJ5IHJlc3BvbnNlIGV0
-Yy4NCg0K
+On 17.06.20 00:54, William Kucharski wrote:
+> Other mm routines such as kfree() and kzfree() silently do the right
+> thing if passed a NULL pointer, so ksize() should do the same.
+> 
+> Signed-off-by: William Kucharski <william.kucharski@oracle.com>
+> ---
+>  mm/slab_common.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 9e72ba224175..2bff01ad94d8 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1660,10 +1660,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+>  					   gfp_t flags)
+>  {
+>  	void *ret;
+> -	size_t ks = 0;
+> +	size_t ks;
+>  
+> -	if (p)
+> -		ks = ksize(p);
+> +	ks = ksize(p);
+>  
+>  	if (ks >= new_size) {
+>  		p = kasan_krealloc((void *)p, new_size, flags);
+> @@ -1723,10 +1722,9 @@ void kzfree(const void *p)
+>  	size_t ks;
+>  	void *mem = (void *)p;
+>  
+> -	if (unlikely(ZERO_OR_NULL_PTR(mem)))
+> -		return;
+>  	ks = ksize(mem);
+> -	memset(mem, 0, ks);
+> +	if (ks)
+> +		memset(mem, 0, ks);
+>  	kfree(mem);
+>  }
+>  EXPORT_SYMBOL(kzfree);
+> @@ -1749,8 +1747,6 @@ size_t ksize(const void *objp)
+>  {
+>  	size_t size;
+>  
+> -	if (WARN_ON_ONCE(!objp))
+> -		return 0;
+>  	/*
+>  	 * We need to check that the pointed to object is valid, and only then
+>  	 * unpoison the shadow memory below. We use __kasan_check_read(), to
+> @@ -1764,7 +1760,7 @@ size_t ksize(const void *objp)
+>  	 * We want to perform the check before __ksize(), to avoid potentially
+>  	 * crashing in __ksize() due to accessing invalid metadata.
+>  	 */
+> -	if (unlikely(objp == ZERO_SIZE_PTR) || !__kasan_check_read(objp, 1))
+> +	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !__kasan_check_read(objp, 1))
+>  		return 0;
+>  
+>  	size = __ksize(objp);
+> 
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
