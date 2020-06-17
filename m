@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D94A1FD69B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5081FD6AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgFQVDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 17:03:10 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:35573 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQVDK (ORCPT
+        id S1726976AbgFQVG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 17:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgFQVGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 17:03:10 -0400
-Received: by mail-il1-f194.google.com with SMTP id l6so3747302ilo.2;
-        Wed, 17 Jun 2020 14:03:09 -0700 (PDT)
+        Wed, 17 Jun 2020 17:06:24 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B265C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:06:24 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id s7so4042416ybg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 14:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=d0+Tzz9YePJeli6i74FfEPDYMLFJV/dTb97VxgPARRM=;
+        b=s65S27c/KhuLOWAdWfLs8FLqZHfP5cSau7W+PswhE2Jr9spEw3hA0lbGxcJUfsJDgL
+         mAg1ZrtF5oypvB0HM5sogq1N0s+ug/nOQ7/yvOxlCJKtbxguewHBg5KloSP4CbqEmOo/
+         CCfvgxIrTsbIgLi7app8Hb6phNzgxKWbo4yQaEraDSljNMKaz1NJi3vx1Inw0SLHgTkj
+         Ydvhkhn5cNvUjUH0z+DbN8O+kgn6bq/RF3WHmr0EpT4CuGQ0tZEY8j6N5T+4VDqMnsQ/
+         qIPbR2yOvnBShQupKjFVRYYp3QPIG7dYj6mR2rfqMkjJqxnBtGoebDFB75f69nfKfNnR
+         NHPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y2pWRJW3ir9zz84FjRUTFElmgVjVrrix+gOBZgLc5ak=;
-        b=deX4f500Rwh/XuhNDlS+bqey4KgYyk6yYwIoH1FaSV0SMOTHc0IO0QY842RG6+s7VJ
-         OMmDGbgRYGqLt7NflHweC9Ttgu4BElTyubyXGabpBzBiROy1KSQ0DrEJVC8NtWh6IdHT
-         fwCoDSWg1Rk22LgoJZ5jhPbfOriW/qmYHfQuylsSG1BNHXd3qYvVfn4Iot7AIr1mXnKL
-         kwmID9tSPFj931ADb06NVqMNYTIGcmoPD6xKWcJc5Oe4cieShYbo4ktybWG/GcePA0FL
-         sVRua2QRjcUS9A5fMnPGdTqaOHnsBlenWZ3VMbo+z0NL5FndHiYp3VU5nIuucYJxP8Jk
-         jUgw==
-X-Gm-Message-State: AOAM530EcWIidXJvb20lBqVMED29erwxdugDE8SHo1FDpCWgH3Ers78n
-        FFOP8HkGY3aNbsY33k+gvg==
-X-Google-Smtp-Source: ABdhPJzrVkrg6HOgMPJQb6/9AIoRaUc6RAJteP/WGGSlsJCUz6rlkyKSdDN7y1fo4MKb171bLHlrvw==
-X-Received: by 2002:a92:dacf:: with SMTP id o15mr792880ilq.36.1592427789367;
-        Wed, 17 Jun 2020 14:03:09 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id p22sm538722iob.29.2020.06.17.14.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 14:03:08 -0700 (PDT)
-Received: (nullmailer pid 2810706 invoked by uid 1000);
-        Wed, 17 Jun 2020 21:03:06 -0000
-Date:   Wed, 17 Jun 2020 15:03:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Amit Kucheria <amit.kucheria@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Rui <rui.zhang@intel.com>, sibis@codeaurora.org,
-        dmitry.baryshkov@linaro.org, linux-pm@vger.kernel.org,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH 1/3] dt-bindings: thermal: qcom-tsens: Add compatible for
- sm8150, sm8250
-Message-ID: <20200617210306.GA2810638@bogus>
-References: <cover.1591684754.git.amit.kucheria@linaro.org>
- <c3361043e66139812bd4cd85b917659d85e1564f.1591684754.git.amit.kucheria@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3361043e66139812bd4cd85b917659d85e1564f.1591684754.git.amit.kucheria@linaro.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=d0+Tzz9YePJeli6i74FfEPDYMLFJV/dTb97VxgPARRM=;
+        b=Mfnq/+Iicl4FFt71DqM2JVzHJSbnO8zBTakXqU2impG2bpINSlV4cxcaBP0/WBjDY0
+         fuAP/Z3SXB61PNQOq+ckBesWIIy/NlSIqW3/+HD12b+0zL0ehVjjKRvvF+7SvwUy+Wjo
+         hrQRlxAoLy3XBfvbvXYqVw4yvlloBgMsYWEiMUA0jx2GSHzvutEbsqnNn5vSWDtznPJf
+         Rrg794bRx5G+MvsjT7yJ0WSd0hHDoFcws0CupagHJKL0aLI5UgSatmSJDrxvmjBeX88T
+         uG9HECy1rNQQvyt6nNqk2vWte2R+bWr5l+HZHdyM595Xa12eN9wHROoz+PQ7g+ZI1Szn
+         GNnQ==
+X-Gm-Message-State: AOAM532UT+MeYY2XcW0wIXQbPRCWUpW7r3bEs573YRwEEph/4Cggcn7O
+        NcgDqXPrUHokoH9H9x9kTjZPclfz7LJVdsJiCHI=
+X-Google-Smtp-Source: ABdhPJz3iUzXFbAwSyuVvZKrE5dzrRwvPcbwlwoM2ZlgX9XqOxcOVvPsjbnvuxuVNelpg9On3Hff/YteVPpHN7/XyRA=
+X-Received: by 2002:a25:7086:: with SMTP id l128mr1423806ybc.34.1592427983669;
+ Wed, 17 Jun 2020 14:06:23 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 14:06:13 -0700
+Message-Id: <20200617210613.95432-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+Subject: [PATCH] vmlinux.lds: consider .text.{hot|unlikely}.* part of .text too
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     clang-built-linux@googlegroups.com,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org, Jian Cai <jiancai@google.com>,
+        Luis Lozano <llozano@google.com>,
+        "=?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?=" <maskray@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Jun 2020 12:14:54 +0530, Amit Kucheria wrote:
-> Added tsens bindings for sm8150 and sm8250
-> 
-> Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
-> ---
->  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+ld.bfd's internal linker script considers .text.hot AND .text.hot.* to
+be part of .text, as well as .text.unlikely and .text.unlikely.*. ld.lld
+will produce .text.hot.*/.text.unlikely.* sections. Make sure to group
+these together.  Otherwise these orphan sections may be placed outside
+of the the _stext/_etext boundaries.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommitdiff;h=3Da=
+dd44f8d5c5c05e08b11e033127a744d61c26aee
+Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommitdiff;h=3D1=
+de778ed23ce7492c523d5850c6c6dbb34152655
+Link: https://reviews.llvm.org/D79600
+Reported-by: Jian Cai <jiancai@google.com>
+Debugged-by: Luis Lozano <llozano@google.com>
+Suggested-by: F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google.com>
+Tested-by: Luis Lozano <llozano@google.com>
+Tested-by: Manoj Gupta <manojgupta@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ include/asm-generic/vmlinux.lds.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinu=
+x.lds.h
+index d7c7c7f36c4a..fe5aaef169e3 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -560,7 +560,9 @@
+  */
+ #define TEXT_TEXT							\
+ 		ALIGN_FUNCTION();					\
+-		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely)	\
++		*(.text.hot .text.hot.*)				\
++		*(TEXT_MAIN .text.fixup)				\
++		*(.text.unlikely .text.unlikely.*)			\
+ 		NOINSTR_TEXT						\
+ 		*(.text..refcount)					\
+ 		*(.ref.text)						\
+--=20
+2.27.0.290.gba653c62da-goog
+
