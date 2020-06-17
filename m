@@ -2,59 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2EE1FD208
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A5E1FD214
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgFQQ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+        id S1727839AbgFQQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727075AbgFQQ0c (ORCPT
+        with ESMTP id S1727088AbgFQQ0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:32 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E405BC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:31 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id k15so2090014otp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:31 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:35 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDE8C06174E;
+        Wed, 17 Jun 2020 09:26:35 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id s13so2092377otd.7;
+        Wed, 17 Jun 2020 09:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xMISypJy5HssmY7ZOHD++0rXBYTP+eiNwEA2VO5Y7fo=;
-        b=DMsK/ch1ZVFLSVaVqEe8saDhSxQGphh7kCvpt4pHA7jr5VHD3USoHwSfkYqcyNvYEC
-         JL24Rpx94JXU0ZL+H16UqKShCXvc5zljcp9S0N8b2U6ZYoBPd/JJ7LN91b9HiY8XZ/1A
-         ZhVl8eyTrmXnP2FhVC2+JVxW54BfPDpK8UncRSs784yW+8R5H6N/dw0XAdUBKISw/f4X
-         uQoiDksVLh5Bw+ui4mIMzgp2rYzytFqh+7gmfuJxzgp/pMhZFpKF5ijgGZMQ4ldzolKY
-         hY1Mn9PA+4dR+ZMSxWZR7xi+65pwSWRtROCgBzZhG69XOhNuksywVyekuzrzJAId6Yeq
-         vh2g==
+        bh=DtbCt4lXWAsz7/FyFOawXtgiyr7YGkyvVZTRxQCf5d4=;
+        b=pNglAxY2ycX605y2jzji57ed8Op7lxOb3lc1yCuCT7cwDvqYUDmz1x84j76wEkz/+U
+         0LeQyM0X9mM5lvWeFfJ7WjPrItNKfJiBlHFgTThb10kw+vs6EQFAzI0UZxQcVhcba1lE
+         0zJ4Stp5KThf+bflvsmxK4NWDDAV/BVNiFRp4QIwbSgPsUaMrSS9B9OqBmFzOzvkp2SI
+         aK5eOOksrf6YBFZOOhN4z/hzQE4H2182N/0AOf0UNffepyi9uWgy2XszKC4R+vqyrtqF
+         cBldMZgbzvdQN/qJcf9DLpoR44jMuI54PHPiO1z249i/IXengOo1jponEi3ESwXsle/N
+         zUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xMISypJy5HssmY7ZOHD++0rXBYTP+eiNwEA2VO5Y7fo=;
-        b=DrEWj098TLeUfotERYlBMetCVtEGNLoAe9scqC5Lna7yJNs7BRCpuuuqS2MY8DlYWR
-         0rGWJij+tKYiTnLaD2aEmzqtUinUep0di3K0dR9mRSThwAhjVgfnbAiR3ncmaRR4MStQ
-         Eqyjcqp2BRPHum5eKmOlYt3d40yWtvDdfDcFbyYwZezhes0yv/q92jGM8mt3iLlXn6wS
-         zKaf3CIlb+X+40OpkTlvRrV4rr2x02t9XJ8pAeOFnC+RdvYaBrhueaUp+obTyMDCiI5y
-         aednwYvh+z+ZohAu0zxT+4X1604g8D4cAfJDwm43PfTZ5COYe4QvfJM9uteiWLMg1suW
-         UtbQ==
-X-Gm-Message-State: AOAM530JpxNyoPppsPFu2+kvbrdL9NDFq41vpL1OOizmlLBq6vuah/gQ
-        qoYNgNXAHbJNuI8u2X8aysjUTlQfxWA=
-X-Google-Smtp-Source: ABdhPJx1FK6LDfNFTimwSOF+3L4oo/oOEwjS5v8+Bmm8IBqc6oaVuLC3QPSoqGPLNgnmhtxuKThyxQ==
-X-Received: by 2002:a9d:d24:: with SMTP id 33mr7237069oti.26.1592411191292;
-        Wed, 17 Jun 2020 09:26:31 -0700 (PDT)
+        bh=DtbCt4lXWAsz7/FyFOawXtgiyr7YGkyvVZTRxQCf5d4=;
+        b=fBCOS++ekdTKc0kOGznfVlLfKnPvNclWz9Z9uMQmo2d9fODqUuBo5Yv5uE+0i1ecAC
+         /zKQXAgN5o6V3S8OltQjsBr4jSfWJOO8weRJrg346Z3WTdZekwFAmIjefa9uAOPg7bDY
+         hyHGir45hE/0oP7Q7pWjX8zq5YrCFokVvBRoCuVrFQZfnu7vvD67bktDptsG156Fn3VV
+         +JlcoUOMloSOf54RXTG36gq9geKzAlPC2/dc/jdfpj83uSvrhAZW8PDK8scdVfAkCOQ6
+         02y4Ibhy7L6AT2tJwyrFaqZeEYHGpn2EQvDSNntGICkxJYcXtQ67QWmnEI3IvCrZtb6t
+         ihCA==
+X-Gm-Message-State: AOAM530sefpQ71uPYCPBtwCkMCmvn+2GFrkXqLw2/HaXgRNxpIfMnTMY
+        aqDjJ3AEBZ0jv5CfgZOYV0c=
+X-Google-Smtp-Source: ABdhPJwHlRqkjC8/GZ7Wa363TGIpU8xB0IfHK5jXMv5FOhQjohFvR7XgirJIbCmqx/x4X2H8BPcrUA==
+X-Received: by 2002:a05:6830:1218:: with SMTP id r24mr5323482otp.247.1592411194459;
+        Wed, 17 Jun 2020 09:26:34 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.29
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:30 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:33 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 18/21] dyndbg: add filter channel to the internals
-Date:   Wed, 17 Jun 2020 10:25:33 -0600
-Message-Id: <20200617162536.611386-21-jim.cromie@gmail.com>
+Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Will Deacon <will@kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
+Subject: [PATCH v3 19/21] dyndbg: extend ddebug_parse_flags to accept optional leading filter-flags
+Date:   Wed, 17 Jun 2020 10:25:34 -0600
+Message-Id: <20200617162536.611386-22-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -65,89 +69,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once again, adjust the interface between 3 static functions:
+Change ddebug_parse_flags to accept optional filterflags before the
+required operator [-+=].  Read the flags into the filter_flags
+parameter added in the previous patch.  So this now supplies the
+filterflags to ddebug_exec_query.
 
- - ddebug_exec_query calls ..
-   - ddebug_parse_query - unchanged here, mentioned for context
-   - ddebug_parse_flags, to read the modifying flags
-   - ddebug_change, to apply mods to callsites that match the query
+filterflags work like query terms, they constrain what callsites get
+matched before theyre modified.  So like a query, they can be empty.
 
-This time, add a 2nd flag_settings variable int ddebug_exec_query(),
-to specify a secondary constraint on callsites which match the query,
-and which are therefore about to be modified.
+Filterflags let you read callsite's flagstate, including results of
+previous modifications, and require that certain flags are set, before
+modifying the callsite further.
 
-Here, we only add the channel; ddebug_parse_flags doesnt fill the
-filter, and ddebug_change doesnt act upon it.
+So you can build up sets of callsites by marking them with a
+particular flagstate, for example 'fmlt', then enable that set in a
+batch.
 
-Also, ddebug_change doesn't alter any of its arguments, including its 2
-new ones; mods, filter.  Say so by adding const modifier to them.
+  echo fmlt+p >control
+
+Naturally you can use almost any combo of flags you want for marking,
+and can mark several different sets with different patterns.  And then
+you can activate them in a bunch:
+
+  echo 'ft+p; mt+p; lt+p;' >control
+
+You just can't prohibit true flags.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ .../admin-guide/dynamic-debug-howto.rst       | 18 ++++++++----
+ lib/dynamic_debug.c                           | 29 ++++++++++---------
+ 2 files changed, 28 insertions(+), 19 deletions(-)
 
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index e5a8def45f3f..e1ea0c307fcf 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -218,13 +218,19 @@ line
+ 	line -1605          // the 1605 lines from line 1 to line 1605
+ 	line 1600-          // all lines from line 1600 to the end of the file
+ 
+-The flags specification comprises a change operation followed
+-by one or more flag characters.  The change operation is one
+-of the characters::
++Flags Specification::
+ 
+-  -    remove the given flags
+-  +    add the given flags
+-  =    set the flags to the given flags
++  flagspec	::= filterflags? OP modflags
++  filterflags	::= flagset
++  modflags	::= flagset
++  flagset	::= ([pfmltu_] | [PFMLTU_])+	# also cant have pP etc
++  OP		::= [-+=]
++
++OP: modify callsites per following flagset::
++
++  -    remove the following flags
++  +    add the following flags
++  =    set the flags to the following flags
+ 
+ The flags are::
+ 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 8400e4f90b67..0fcc688789f4 100644
+index 0fcc688789f4..cf3379b40483 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -146,7 +146,8 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
-  * logs the changes.  Takes ddebug_lock.
+@@ -452,33 +452,36 @@ static int ddebug_read_flags(const char *str, struct flag_settings *modifiers)
+ }
+ 
+ /*
+- * Parse `str' as a flags specification, format [-+=][p]+.
+- * Sets up *maskp and *flagsp to be used when changing the
+- * flags fields of matched _ddebug's.  Returns 0 on success
+- * or <0 on error.
++ * Parse `str' as a flags-spec, ie: [pfmlt_]*[-+=][pfmlt_]+
++ * Fills flagsettings provided.  Returns 0 on success or <0 on error.
   */
- static int ddebug_change(const struct ddebug_query *query,
--			 struct flag_settings *modifiers)
-+			 const struct flag_settings *modifiers,
-+			 const struct flag_settings *filter)
- {
- 	int i;
- 	struct ddebug_table *dt;
-@@ -456,7 +457,9 @@ static int ddebug_read_flags(const char *str, struct flag_settings *modifiers)
-  * flags fields of matched _ddebug's.  Returns 0 on success
-  * or <0 on error.
-  */
--static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
-+static int ddebug_parse_flags(const char *str,
-+			      struct flag_settings *modifiers,
-+			      struct flag_settings *filter)
+ static int ddebug_parse_flags(const char *str,
+ 			      struct flag_settings *modifiers,
+ 			      struct flag_settings *filter)
  {
  	int op;
++	char *opp = strpbrk(str, "-+=");
  
-@@ -489,7 +492,8 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- 		modifiers->flags = 0;
- 		break;
- 	}
--	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
-+	vpr_info("mods:flags=0x%x,mask=0x%x filter:flags=0x%x,mask=0x%x\n",
-+		 modifiers->flags, modifiers->mask, filter->flags, filter->mask);
- 
- 	return 0;
- }
-@@ -498,6 +502,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- {
- 	struct flag_settings modifiers = {};
- 	struct ddebug_query query = {};
-+	struct flag_settings filter = {};
- #define MAXWORDS 9
- 	int nwords, nfound;
- 	char *words[MAXWORDS];
-@@ -508,7 +513,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+-	switch (*str) {
+-	case '+':
+-	case '-':
+-	case '=':
+-		op = *str++;
+-		break;
+-	default:
+-		pr_err("bad flag-op %c, at start of %s\n", *str, str);
++	if (!opp) {
++		pr_err("no OP given in %s\n", str);
  		return -EINVAL;
  	}
- 	/* check flags 1st (last arg) so query is pairs of spec,val */
--	if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
-+	if (ddebug_parse_flags(words[nwords-1], &modifiers, &filter)) {
- 		pr_err("flags parse failed\n");
- 		return -EINVAL;
- 	}
-@@ -517,7 +522,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* actually go and implement the change */
--	nfound = ddebug_change(&query, &modifiers);
-+	nfound = ddebug_change(&query, &modifiers, &filter);
- 	vpr_info_dq(&query, nfound ? "applied" : "no-match");
++	op = *opp;
+ 	vpr_info("op='%c'\n", op);
  
- 	return nfound;
++	if (opp != str) {
++		/* filterflags precedes OP, grab it */
++		*opp++ = '\0';
++		if (ddebug_read_flags(str, filter))
++			return -EINVAL;
++		str = opp;
++	} else
++		str++;
++
+ 	if (ddebug_read_flags(str, modifiers))
+ 		return -EINVAL;
+ 
+-	/* calculate final flags, mask based upon op */
++	/* calculate final mods: flags, mask based upon op */
+ 	switch (op) {
+ 	case '=':
+ 		/* modifiers->flags already set */
 -- 
 2.26.2
 
