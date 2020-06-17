@@ -2,276 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44641FD932
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAAD1FD93B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgFQWsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:48:46 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57554 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgFQWsn (ORCPT
+        id S1727774AbgFQWt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:49:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50196 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726909AbgFQWt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:48:43 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 21D52803202D;
-        Wed, 17 Jun 2020 22:48:40 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mHykUjSJcNSr; Thu, 18 Jun 2020 01:48:39 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 3/3] serial: 8250_dw: Fix common clocks usage race condition
-Date:   Thu, 18 Jun 2020 01:48:13 +0300
-Message-ID: <20200617224813.23853-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200617224813.23853-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200617224813.23853-1-Sergey.Semin@baikalelectronics.ru>
+        Wed, 17 Jun 2020 18:49:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592434197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=orWx+/3XMb05Rqs5NYz0sIWDOdOQGOdIAEzCS5djo9E=;
+        b=IOIRCA/+0CP3fAJCQ1lbEo/TiqppwUdzhM5pkJ7fSf9zqZy5oRag5zD32EG+ClHjN/7YPi
+        aa2WKF4m+X4zzkw5B63fnQMQmmaNkhcLPf0IHFG4yRJTEGadEVeaGdpLpNPZKxFg9yNscy
+        jo+TRyeIte3RAh2k9LF179I1EhWc0z4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-kidHweHCNA6cszRyDcFJqg-1; Wed, 17 Jun 2020 18:49:55 -0400
+X-MC-Unique: kidHweHCNA6cszRyDcFJqg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFAF78005AD;
+        Wed, 17 Jun 2020 22:49:53 +0000 (UTC)
+Received: from ovpn-112-150.phx2.redhat.com (ovpn-112-150.phx2.redhat.com [10.3.112.150])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 70EB85D9D3;
+        Wed, 17 Jun 2020 22:49:49 +0000 (UTC)
+Message-ID: <696309d91635fa965ad8436388e7ae7d098420a1.camel@redhat.com>
+Subject: Re: [PATCH] sched: __set_cpus_allowed_ptr(): Check cpus_mask, not
+ cpus_ptr
+From:   Scott Wood <swood@redhat.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Wed, 17 Jun 2020 17:49:48 -0500
+In-Reply-To: <jhjmu51eq2k.mognet@arm.com>
+References: <20200617121742.cpxppyi7twxmpin7@linutronix.de>
+         <jhjmu51eq2k.mognet@arm.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The race condition may happen if the UART reference clock is shared with
-some other device (on Baikal-T1 SoC it's another DW UART port). In this
-case if that device changes the clock rate while serial console is using
-it the DW 8250 UART port might not only end up with an invalid uartclk
-value saved, but may also experience a distorted output data since
-baud-clock could have been changed. In order to fix this lets at least
-try to adjust the 8250 port setting like UART clock rate in case if the
-reference clock rate change is discovered. The driver will call the new
-method to update 8250 UART port clock rate settings. It's done by means of
-the clock event notifier registered at the port startup and unregistered
-in the shutdown callback method.
+On Wed, 2020-06-17 at 15:15 +0100, Valentin Schneider wrote:
+> On 17/06/20 13:17, Sebastian Andrzej Siewior wrote:
+> > From: Scott Wood <swood@redhat.com>
+> > 
+> > This function is concerned with the long-term cpu mask, not the
+> > transitory mask the task might have while migrate disabled.  Before
+> > this patch, if a task was migrate disabled at the time
+> > __set_cpus_allowed_ptr() was called, and the new mask happened to be
+> > equal to the cpu that the task was running on, then the mask update
+> > would be lost.
+> > 
+> > Signed-off-by: Scott Wood <swood@redhat.com>
+> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > ---
+> >  kernel/sched/core.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -1637,7 +1637,7 @@ static int __set_cpus_allowed_ptr(struct
+> >               goto out;
+> >       }
+> > 
+> > -	if (cpumask_equal(p->cpus_ptr, new_mask))
+> > +	if (cpumask_equal(&p->cpus_mask, new_mask))
+> >               goto out;
+> > 
+> >       /*
+> 
+> Makes sense, but what about the rest of the checks? Further down there is
+> 
+>         /* Can the task run on the task's current CPU? If so, we're done
+> */
+>         if (cpumask_test_cpu(task_cpu(p), new_mask))
+>                 goto out;
+> 
+> If the task is currently migrate disabled and for some stupid reason it
+> gets affined elsewhere, we could try to move it out - which AFAICT we
+> don't
+> want to do because migrate disabled. So I suppose you'd want an extra
+> bailout condition here when the task is migrate disabled.
+> 
+> ISTR in RT you do re-check the affinity and potentially move the task away
+> when re-enabling migration, so that should work out all fine.
 
-Note 1. In order to avoid deadlocks we had to execute the UART port update
-method in a dedicated deferred work. This is due to (in my opinion
-redundant) the clock update implemented in the dw8250_set_termios()
-method.
-Note 2. Before the ref clock is manually changed by the custom
-set_termios() function we swap the port uartclk value with new rate
-adjusted to be suitable for the requested baud. It is necessary in
-order to effectively disable a functionality of the ref clock events
-handler for the current UART port, since uartclk update will be done
-a bit further in the generic serial8250_do_set_termios() function.
+On RT the above test is:
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
+        /* Can the task run on the task's current CPU? If so, we're done */
+        if (cpumask_test_cpu(task_cpu(p), new_mask) ||
+            p->cpus_ptr != &p->cpus_mask)
+                goto out;
 
----
+...so we do bail out if we're migrate disabled.
 
-Changelog v2:
-- Move exclusive ref clock lock/unlock precudures to the 8250 port
-  startup/shutdown methods.
-- The changelog message has also been slightly modified due to the
-  alteration.
-- Remove Alexey' SoB tag.
-- Cc someone from ARM who might be concerned regarding this change.
-- Cc someone from Clocks Framework to get their comments on this patch.
+-Scott
 
-Changelog v3:
-- Refactor the original patch to adjust the UART port divisor instead of
-  requesting an exclusive ref clock utilization.
-
-Changelog v5:
-- Refactor dw8250_clk_work_cb() function cheking the clk_get_rate()
-  return value for being erroneous and exit if it is.
-- Don't update p->uartclk on the port startup. It will be updated later in
-  the same procedure at the set_termios() function being invoked by the
-  serial_core anyway.
----
- drivers/tty/serial/8250/8250_dw.c | 105 +++++++++++++++++++++++++++++-
- 1 file changed, 102 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 12866083731d..fa59c026270f 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -19,6 +19,8 @@
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/workqueue.h>
-+#include <linux/notifier.h>
- #include <linux/slab.h>
- #include <linux/acpi.h>
- #include <linux/clk.h>
-@@ -43,6 +45,8 @@ struct dw8250_data {
- 	int			msr_mask_off;
- 	struct clk		*clk;
- 	struct clk		*pclk;
-+	struct notifier_block	clk_notifier;
-+	struct work_struct	clk_work;
- 	struct reset_control	*rst;
- 
- 	unsigned int		skip_autocfg:1;
-@@ -54,6 +58,16 @@ static inline struct dw8250_data *to_dw8250_data(struct dw8250_port_data *data)
- 	return container_of(data, struct dw8250_data, data);
- }
- 
-+static inline struct dw8250_data *clk_to_dw8250_data(struct notifier_block *nb)
-+{
-+	return container_of(nb, struct dw8250_data, clk_notifier);
-+}
-+
-+static inline struct dw8250_data *work_to_dw8250_data(struct work_struct *work)
-+{
-+	return container_of(work, struct dw8250_data, clk_work);
-+}
-+
- static inline int dw8250_modify_msr(struct uart_port *p, int offset, int value)
- {
- 	struct dw8250_data *d = to_dw8250_data(p->private_data);
-@@ -260,6 +274,46 @@ static int dw8250_handle_irq(struct uart_port *p)
- 	return 0;
- }
- 
-+static void dw8250_clk_work_cb(struct work_struct *work)
-+{
-+	struct dw8250_data *d = work_to_dw8250_data(work);
-+	struct uart_8250_port *up;
-+	unsigned long rate;
-+
-+	rate = clk_get_rate(d->clk);
-+	if (rate <= 0)
-+		return;
-+
-+	up = serial8250_get_port(d->data.line);
-+
-+	serial8250_update_uartclk(&up->port, rate);
-+}
-+
-+static int dw8250_clk_notifier_cb(struct notifier_block *nb,
-+				  unsigned long event, void *data)
-+{
-+	struct dw8250_data *d = clk_to_dw8250_data(nb);
-+
-+	/*
-+	 * We have no choice but to defer the uartclk update due to two
-+	 * deadlocks. First one is caused by a recursive mutex lock which
-+	 * happens when clk_set_rate() is called from dw8250_set_termios().
-+	 * Second deadlock is more tricky and is caused by an inverted order of
-+	 * the clk and tty-port mutexes lock. It happens if clock rate change
-+	 * is requested asynchronously while set_termios() is executed between
-+	 * tty-port mutex lock and clk_set_rate() function invocation and
-+	 * vise-versa. Anyway if we didn't have the reference clock alteration
-+	 * in the dw8250_set_termios() method we wouldn't have needed this
-+	 * deferred event handling complication.
-+	 */
-+	if (event == POST_RATE_CHANGE) {
-+		queue_work(system_unbound_wq, &d->clk_work);
-+		return NOTIFY_OK;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
- static void
- dw8250_do_pm(struct uart_port *port, unsigned int state, unsigned int old)
- {
-@@ -283,9 +337,16 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
- 	clk_disable_unprepare(d->clk);
- 	rate = clk_round_rate(d->clk, baud * 16);
- 	if (rate > 0) {
--		ret = clk_set_rate(d->clk, rate);
--		if (!ret)
--			p->uartclk = rate;
-+		/*
-+		 * Premilinary set the uartclk to the new clock rate so the
-+		 * clock update event handler caused by the clk_set_rate()
-+		 * calling wouldn't actually update the UART divisor since
-+		 * we about to do this anyway.
-+		 */
-+		swap(p->uartclk, rate);
-+		ret = clk_set_rate(d->clk, p->uartclk);
-+		if (ret)
-+			swap(p->uartclk, rate);
- 	}
- 	clk_prepare_enable(d->clk);
- 
-@@ -312,6 +373,39 @@ static void dw8250_set_ldisc(struct uart_port *p, struct ktermios *termios)
- 	serial8250_do_set_ldisc(p, termios);
- }
- 
-+static int dw8250_startup(struct uart_port *p)
-+{
-+	struct dw8250_data *d = to_dw8250_data(p->private_data);
-+	int ret;
-+
-+	/*
-+	 * Some platforms may provide a reference clock shared between several
-+	 * devices. In this case before using the serial port first we have to
-+	 * make sure that any clock state change is known to the UART port at
-+	 * least post factum.
-+	 */
-+	if (d->clk) {
-+		ret = clk_notifier_register(d->clk, &d->clk_notifier);
-+		if (ret)
-+			dev_warn(p->dev, "Failed to set the clock notifier\n");
-+	}
-+
-+	return serial8250_do_startup(p);
-+}
-+
-+static void dw8250_shutdown(struct uart_port *p)
-+{
-+	struct dw8250_data *d = to_dw8250_data(p->private_data);
-+
-+	serial8250_do_shutdown(p);
-+
-+	if (d->clk) {
-+		clk_notifier_unregister(d->clk, &d->clk_notifier);
-+
-+		flush_work(&d->clk_work);
-+	}
-+}
-+
- /*
-  * dw8250_fallback_dma_filter will prevent the UART from getting just any free
-  * channel on platforms that have DMA engines, but don't have any channels
-@@ -407,6 +501,8 @@ static int dw8250_probe(struct platform_device *pdev)
- 	p->serial_out	= dw8250_serial_out;
- 	p->set_ldisc	= dw8250_set_ldisc;
- 	p->set_termios	= dw8250_set_termios;
-+	p->startup	= dw8250_startup;
-+	p->shutdown	= dw8250_shutdown;
- 
- 	p->membase = devm_ioremap(dev, regs->start, resource_size(regs));
- 	if (!p->membase)
-@@ -468,6 +564,9 @@ static int dw8250_probe(struct platform_device *pdev)
- 	if (IS_ERR(data->clk))
- 		return PTR_ERR(data->clk);
- 
-+	INIT_WORK(&data->clk_work, dw8250_clk_work_cb);
-+	data->clk_notifier.notifier_call = dw8250_clk_notifier_cb;
-+
- 	err = clk_prepare_enable(data->clk);
- 	if (err)
- 		dev_warn(dev, "could not enable optional baudclk: %d\n", err);
--- 
-2.26.2
 
