@@ -2,76 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972901FCE0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094211FCE18
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgFQNEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 09:04:41 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43991 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725967AbgFQNEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:04:41 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49n4zB03pYz9sRf;
-        Wed, 17 Jun 2020 23:04:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1592399078;
-        bh=lMWVaP+IJqwxYXx0XCxsVq12dX+k4WTJuX55RHp3h1g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pOBB48QNNv+NWyG+uTcUl0oO3zQAIjTArOPfy/VLqEuTmAGX5fFF7C50tT8P+62Er
-         rGr/wuxLv+MsvwOdScWGvovUwgSJWKWf0Brmnr82YrLuq1MBQJhWzADu0Id83GqrmO
-         eJZCKgX3rCGFuz4Hmlh09Tq6EFKZSpG78NpgrW9Q0kGqFOsHigTTDxSBXAWMpDJHmG
-         zgLICJUjpfsu+8NpJ+rAbJWEUTxeDljV+Oti9Ds+DIRIy8f7yrNsQxpjy0khgVcP67
-         yT5gCbn6VB2VjjsvwWMCBksgkFJ9ZBVv/ET6ToZ29c6h0cD/nBS36rufuUldzrUrYa
-         GfmuXSQvkDwJg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH] powerpc/8xx: use pmd_off() to access a PMD entry in pte_update()
-In-Reply-To: <20200617041617.GA6571@kernel.org>
-References: <20200615092229.23142-1-rppt@kernel.org> <20200616124304.bbe36933fcd48c5f467f4be9@linux-foundation.org> <87o8piegvt.fsf@mpe.ellerman.id.au> <20200617041617.GA6571@kernel.org>
-Date:   Wed, 17 Jun 2020 23:05:04 +1000
-Message-ID: <875zbpetbz.fsf@mpe.ellerman.id.au>
+        id S1726558AbgFQNJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 09:09:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6356 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725929AbgFQNJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 09:09:10 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A73B09B147F80A4789FE;
+        Wed, 17 Jun 2020 21:09:06 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 17 Jun 2020 21:08:58 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <zhangshaokun@hisilicon.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <qiangqing.zhang@nxp.com>,
+        <jolsa@redhat.com>, <linuxarm@huawei.com>,
+        "John Garry" <john.garry@huawei.com>
+Subject: [PATCH] drivers/perf: hisi: Add identifier sysfs file
+Date:   Wed, 17 Jun 2020 21:05:11 +0800
+Message-ID: <1592399111-134786-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Rapoport <rppt@kernel.org> writes:
-> On Wed, Jun 17, 2020 at 09:21:42AM +1000, Michael Ellerman wrote:
->> Andrew Morton <akpm@linux-foundation.org> writes:
->> > On Mon, 15 Jun 2020 12:22:29 +0300 Mike Rapoport <rppt@kernel.org> wrote:
->> >
->> >> From: Mike Rapoport <rppt@linux.ibm.com>
->> >> 
->> >> The pte_update() implementation for PPC_8xx unfolds page table from the PGD
->> >> level to access a PMD entry. Since 8xx has only 2-level page table this can
->> >> be simplified with pmd_off() shortcut.
->> >> 
->> >> Replace explicit unfolding with pmd_off() and drop defines of pgd_index()
->> >> and pgd_offset() that are no longer needed.
->> >> 
->> >> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->> >> ---
->> >> 
->> >> I think it's powerpc material, but I won't mind if Andrew picks it up :)
->> >
->> > Via the powerpc tree would be better, please.
->> 
->> I'll take it into next for v5.9, unless there's a reason it needs to go
->> into v5.8.
->
-> I consider it a fixup for 5.8 merge window conflicts. Besides, mering it
-> now may avoid new conflicts in 5.9 ;-)
+To allow userspace to identify the specific implementation of the device,
+add an "identifier" sysfs file.
 
-OK, I'll pick it up for v5.8.
+Encoding is as follows:
+hi1620: 0x0	(aka hip08)
+hi1630: 0x30
 
-cheers
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
+index 15713faaa07e..a83d99f2662e 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
+@@ -33,6 +33,7 @@
+ #define DDRC_INT_MASK		0x6c8
+ #define DDRC_INT_STATUS		0x6cc
+ #define DDRC_INT_CLEAR		0x6d0
++#define DDRC_VERSION		0x710
+ 
+ /* DDRC has 8-counters */
+ #define DDRC_NR_COUNTERS	0x8
+@@ -267,6 +268,8 @@ static int hisi_ddrc_pmu_init_data(struct platform_device *pdev,
+ 		return PTR_ERR(ddrc_pmu->base);
+ 	}
+ 
++	ddrc_pmu->identifier = readl(ddrc_pmu->base + DDRC_VERSION);
++
+ 	return 0;
+ }
+ 
+@@ -308,10 +311,23 @@ static const struct attribute_group hisi_ddrc_pmu_cpumask_attr_group = {
+ 	.attrs = hisi_ddrc_pmu_cpumask_attrs,
+ };
+ 
++static struct device_attribute hisi_ddrc_pmu_identifier_attr =
++	__ATTR(identifier, 0444, hisi_uncore_pmu_identifier_attr_show, NULL);
++
++static struct attribute *hisi_ddrc_pmu_identifier_attrs[] = {
++	&hisi_ddrc_pmu_identifier_attr.attr,
++	NULL
++};
++
++static struct attribute_group hisi_ddrc_pmu_identifier_group = {
++	.attrs = hisi_ddrc_pmu_identifier_attrs,
++};
++
+ static const struct attribute_group *hisi_ddrc_pmu_attr_groups[] = {
+ 	&hisi_ddrc_pmu_format_group,
+ 	&hisi_ddrc_pmu_events_group,
+ 	&hisi_ddrc_pmu_cpumask_attr_group,
++	&hisi_ddrc_pmu_identifier_group,
+ 	NULL,
+ };
+ 
+diff --git a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
+index dcc5600788a9..4fdaf1d995be 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
+@@ -23,6 +23,7 @@
+ #define HHA_INT_MASK		0x0804
+ #define HHA_INT_STATUS		0x0808
+ #define HHA_INT_CLEAR		0x080C
++#define HHA_VERSION		0x1cf0
+ #define HHA_PERF_CTRL		0x1E00
+ #define HHA_EVENT_CTRL		0x1E04
+ #define HHA_EVENT_TYPE0		0x1E80
+@@ -261,6 +262,8 @@ static int hisi_hha_pmu_init_data(struct platform_device *pdev,
+ 		return PTR_ERR(hha_pmu->base);
+ 	}
+ 
++	hha_pmu->identifier = readl(hha_pmu->base + HHA_VERSION);
++
+ 	return 0;
+ }
+ 
+@@ -320,10 +323,23 @@ static const struct attribute_group hisi_hha_pmu_cpumask_attr_group = {
+ 	.attrs = hisi_hha_pmu_cpumask_attrs,
+ };
+ 
++static struct device_attribute hisi_hha_pmu_identifier_attr =
++	__ATTR(identifier, 0444, hisi_uncore_pmu_identifier_attr_show, NULL);
++
++static struct attribute *hisi_hha_pmu_identifier_attrs[] = {
++	&hisi_hha_pmu_identifier_attr.attr,
++	NULL
++};
++
++static struct attribute_group hisi_hha_pmu_identifier_group = {
++	.attrs = hisi_hha_pmu_identifier_attrs,
++};
++
+ static const struct attribute_group *hisi_hha_pmu_attr_groups[] = {
+ 	&hisi_hha_pmu_format_group,
+ 	&hisi_hha_pmu_events_group,
+ 	&hisi_hha_pmu_cpumask_attr_group,
++	&hisi_hha_pmu_identifier_group,
+ 	NULL,
+ };
+ 
+diff --git a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+index 7719ae4e2c56..0e7477220be1 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+@@ -25,6 +25,7 @@
+ #define L3C_INT_STATUS		0x0808
+ #define L3C_INT_CLEAR		0x080c
+ #define L3C_EVENT_CTRL	        0x1c00
++#define L3C_VERSION		0x1cf0
+ #define L3C_EVENT_TYPE0		0x1d00
+ /*
+  * Each counter is 48-bits and [48:63] are reserved
+@@ -264,6 +265,8 @@ static int hisi_l3c_pmu_init_data(struct platform_device *pdev,
+ 		return PTR_ERR(l3c_pmu->base);
+ 	}
+ 
++	l3c_pmu->identifier = readl(l3c_pmu->base + L3C_VERSION);
++
+ 	return 0;
+ }
+ 
+@@ -310,10 +313,23 @@ static const struct attribute_group hisi_l3c_pmu_cpumask_attr_group = {
+ 	.attrs = hisi_l3c_pmu_cpumask_attrs,
+ };
+ 
++static struct device_attribute hisi_l3c_pmu_identifier_attr =
++	__ATTR(identifier, 0444, hisi_uncore_pmu_identifier_attr_show, NULL);
++
++static struct attribute *hisi_l3c_pmu_identifier_attrs[] = {
++	&hisi_l3c_pmu_identifier_attr.attr,
++	NULL
++};
++
++static struct attribute_group hisi_l3c_pmu_identifier_group = {
++	.attrs = hisi_l3c_pmu_identifier_attrs,
++};
++
+ static const struct attribute_group *hisi_l3c_pmu_attr_groups[] = {
+ 	&hisi_l3c_pmu_format_group,
+ 	&hisi_l3c_pmu_events_group,
+ 	&hisi_l3c_pmu_cpumask_attr_group,
++	&hisi_l3c_pmu_identifier_group,
+ 	NULL,
+ };
+ 
+diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.c b/drivers/perf/hisilicon/hisi_uncore_pmu.c
+index 97aff877a4e7..023e247634db 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_pmu.c
+@@ -119,6 +119,16 @@ int hisi_uncore_pmu_get_event_idx(struct perf_event *event)
+ }
+ EXPORT_SYMBOL_GPL(hisi_uncore_pmu_get_event_idx);
+ 
++ssize_t hisi_uncore_pmu_identifier_attr_show(struct device *dev,
++					     struct device_attribute *attr,
++					     char *page)
++{
++	struct hisi_pmu *hisi_pmu = to_hisi_pmu(dev_get_drvdata(dev));
++
++	return sprintf(page, "0x%x\n", hisi_pmu->identifier);
++}
++EXPORT_SYMBOL_GPL(hisi_uncore_pmu_identifier_attr_show);
++
+ static void hisi_uncore_pmu_clear_event_idx(struct hisi_pmu *hisi_pmu, int idx)
+ {
+ 	if (!hisi_uncore_pmu_counter_valid(hisi_pmu, idx)) {
+diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.h b/drivers/perf/hisilicon/hisi_uncore_pmu.h
+index 25b0c97b3eb0..14ecaf763153 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_pmu.h
++++ b/drivers/perf/hisilicon/hisi_uncore_pmu.h
+@@ -74,6 +74,7 @@ struct hisi_pmu {
+ 	int counter_bits;
+ 	/* check event code range */
+ 	int check_event;
++	u32 identifier;
+ };
+ 
+ int hisi_uncore_pmu_counter_valid(struct hisi_pmu *hisi_pmu, int idx);
+@@ -96,4 +97,10 @@ ssize_t hisi_cpumask_sysfs_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf);
+ int hisi_uncore_pmu_online_cpu(unsigned int cpu, struct hlist_node *node);
+ int hisi_uncore_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node);
++
++ssize_t hisi_uncore_pmu_identifier_attr_show(struct device *dev,
++					     struct device_attribute *attr,
++					     char *page);
++
++
+ #endif /* __HISI_UNCORE_PMU_H__ */
+-- 
+2.26.2
+
