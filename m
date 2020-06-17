@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E931FC43E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858B91FC45E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 05:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgFQCwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgFQCwa (ORCPT
+        id S1726783AbgFQDBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 23:01:20 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:64752 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726568AbgFQDBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:52:30 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2052C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id b5so541013pgm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
-        b=n5J2jPv0QjR1DpKaibcKwRPYDoW3EUtqnpKVwjFeU46sdq31Q/JU+0aA/HjqUtW1JX
-         YMf1t7p7SMI6nYIiThHivqM92nSuLbitsrOi1K5mH+yAwaYgGf4Cer91FIhRJZug7pyi
-         HVDzf2nwcqMy3ojGvssk5x8pdQLdyHc8NGaCdWAGflV9qKL1o6RQqR0KRVxFYT2g+g3z
-         e/ZNfwzskvY92mgW3FnKGEraUWWJpG5Ef6IQoy4DCw0B5Ir3K5w9e0FrbsLeNs48fSk+
-         RIYZWLeQhrAhCzx/HIaQ1k43vzuBrXuX2Z45TE7g4wvtn21yolISdFskOxopBbKO72Br
-         DALQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
-        b=DeXmNPI3A9MwmLoyZNNpxivsmXUjMUFL7DHmDXCqGxNFIj5rdbgrnCscklZ/xH34B6
-         UY2cjJ4hoVRCcFcJceagP/WR7PmxNQfH5q31CTh8I6y9YAjEIq/Sq8KrYFEuug3lFCgj
-         yBUG8Ahu8C1mkOZyblnbqAWuFVF0nJ6FcPRivSM3Niw0dmm/lRnGuHVrtkzu5lMcYkdN
-         mvgoWh/Mbb5upTfThgs9ebyiLNZI9xmql6P87G+g3bWC2XiZG4yInEV4uiEoOND7nHHr
-         7B5x7y4+YGu1OnxeWWCqSFPSb/ic/A2DCiOnJlluCU5Kf8A+Et5b32LnPU858h2LOJcU
-         Hj0w==
-X-Gm-Message-State: AOAM533ycKIaSOGpZdJ+7tTc4j3xtlbdIpk1EBrgKeVUGukoridzrMlB
-        507+7JacY6m69UZnoEKJmeo=
-X-Google-Smtp-Source: ABdhPJwzxOYzToYoIj3XGjY8EqSVWtlMEr+xu4rePHVTiHAHMpTPcfxbw16yW8W/jaJOWaTXdRl5YA==
-X-Received: by 2002:a05:6a00:801:: with SMTP id m1mr4894316pfk.200.1592362350235;
-        Tue, 16 Jun 2020 19:52:30 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.213.184])
-        by smtp.gmail.com with ESMTPSA id y10sm15822181pgi.54.2020.06.16.19.52.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jun 2020 19:52:29 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     jgg@ziepe.ca, dan.j.williams@intel.com, gregkh@linuxfoundation.org,
-        arnd@arndb.de, mchehab+samsung@kernel.org,
-        akpm@linux-foundation.org
-Cc:     dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
-Date:   Wed, 17 Jun 2020 08:30:39 +0530
-Message-Id: <1592362839-4050-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 16 Jun 2020 23:01:07 -0400
+X-UUID: d02e977045d64f77a28e31b6a9db254d-20200617
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Wis5vDqsbbB93AdFA7XLcfdhnuaZidhnla8UOIBO0ek=;
+        b=Z0lZDMfuA73ttTRjNXk5cXsLpPy7lxeqDcRx9fGKBUDMHklFmQAbR+KGEzCw+bggY4Ik7696457hhpO40ruHPMXxLLBLPIiykfDihVXe/qt/qn6K322WXCFsYmbRinGvmWgbAJHOxKiN/KvakUy4aBGhHKUnGP6iE1Ft9gE7a2I=;
+X-UUID: d02e977045d64f77a28e31b6a9db254d-20200617
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <chao.hao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 404865493; Wed, 17 Jun 2020 11:01:02 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 17 Jun 2020 11:00:50 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 17 Jun 2020 11:00:48 +0800
+From:   Chao Hao <chao.hao@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>
+CC:     <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>, FY Yang <fy.yang@mediatek.com>,
+        Chao Hao <chao.hao@mediatek.com>
+Subject: [PATCH v4 00/07] MT6779 IOMMU SUPPORT
+Date:   Wed, 17 Jun 2020 11:00:22 +0800
+Message-ID: <20200617030029.4082-1-chao.hao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FB8C3C131B059E05A7015CC9206665E6513E2B80B0D5808ABDA7442D20A11FCC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First, when memory allocation for sg_list_unaligned failed, there
-is no point of calling put_pages() as we haven't pinned any pages.
-
-Second, if get_user_pages_fast() failed we should unpinned num_pinned
-pages, no point of checking till num_pages.
-
-This will address both.
-
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
----
-v2:
-	Added review tag.
-
- drivers/virt/fsl_hypervisor.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
-index 1b0b11b..ea344d7 100644
---- a/drivers/virt/fsl_hypervisor.c
-+++ b/drivers/virt/fsl_hypervisor.c
-@@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
- 
- 	unsigned int i;
- 	long ret = 0;
--	int num_pinned; /* return value from get_user_pages() */
-+	int num_pinned = 0; /* return value from get_user_pages() */
- 	phys_addr_t remote_paddr; /* The next address in the remote buffer */
- 	uint32_t count; /* The number of bytes left to copy */
- 
-@@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
- 
- exit:
- 	if (pages) {
--		for (i = 0; i < num_pages; i++)
-+		for (i = 0; i < num_pinned; i++)
- 			if (pages[i])
- 				put_page(pages[i]);
- 	}
--- 
-1.9.1
+VGhpcyBwYXRjaHNldCBhZGRzIG10Njc3OSBpb21tdSBzdXBwb3J0Lg0KbXQ2Nzc5IGhhcyB0d28g
+aW9tbXVzLCB0aGV5IGFyZSBNTV9JT01NVShNNFUpIGFuZCBBUFVfSU9NTVUgd2hpY2ggdXNlZCBB
+Uk0gU2hvcnQtRGVzY3JpcHRvciB0cmFuc2xhdGlvbiBmb3JtYXQuDQpUaGUgbXQ2Nzc5J3MgTU1f
+SU9NTVUtU01JIGFuZCBBUFVfSU9NTVUgSFcgZGlhZ3JhbSBpcyBhcyBiZWxvdywgaXQgaXMgb25s
+eSBhIGJyaWVmIGRpYWdyYW06DQoNCgkJICAgICAgIEVNSQ0KCQkgICAgICAgIHwNCiAgICAgLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgICAgfCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwNCiAgTU1fSU9NTVUgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgQVBVX0lPTU1VDQogICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8DQogIFNNSV9DT01NT00tLS0tLS0tLS0tLSAgICAgICAgICAgICAgICAgQVBVX0JVUw0KICAg
+ICB8ICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgfA0KICBTTUlfTEFSQigwfjEx
+KSAgICAgIHwgICAgICAgICAgICAgICAgICAgfA0KICAgICB8ICAgICAgICAgICAgICAgIHwgICAg
+ICAgICAgICAgICAgICAgfA0KICAgICB8ICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgLS0t
+LS0tLS0tLS0tLS0NCiAgICAgfCAgICAgICAgICAgICAgICB8ICAgICAgICAgICAgIHwgICAgIHwg
+ICAgICB8DQpNdWx0aW1lZGlhIGVuZ2luZSAgICAgIENDVSAgICAgICAgICAgVlBVICAgTURMQSAg
+IEVNREENCg0KQWxsIHRoZSBjb25uZWN0aW9ucyBhcmUgaGFyZHdhcmUgZml4ZWQsIHNvZnR3YXJl
+IGNhbiBub3QgYWRqdXN0IGl0Lg0KQ29tcGFyZWQgd2l0aCBtdDgxODMsIFNNSV9CVVNfSUQgd2lk
+dGggaGFzIGNoYW5nZWQgZnJvbSAxMCB0byAxMi4gU01JIExhcmIgbnVtYmVyIGlzIGRlc2NyaWJl
+ZCBpbiBiaXRbMTE6N10sDQpQb3J0IG51bWJlciBpcyBkZXNjcmliZWQgaW4gYml0WzY6Ml0uIElu
+IGFkZGl0aW9uLCB0aGVyZSBhcmUgc29tZSByZWdpc3RlcnMgaGFzIGNoYW5nZWQgaW4gbXQ2Nzc5
+LCBzbyB3ZSBuZWVkDQp0byByZWRlZmluZSBhbmQgcmV1c2UgdGhlbS4NCg0KVGhlIHBhdGNoc2V0
+IG9ubHkgdXNlZCBNTV9JT01NVSwgc28gd2Ugb25seSBhZGQgTU1fSU9NTVUgYmFzaWMgZnVuY3Rp
+b24sIHN1Y2ggYXMgc21pX2xhcmIgcG9ydCBkZWZpbml0aW9uLCByZWdpc3RlcnMNCmRlZmluaXRp
+b24gYW5kIGhhcmR3YXJlIGluaXRpYWxpemF0aW9uLg0KDQpjaGFuZ2Ugbm90ZXM6DQogdjQ6DQog
+ICAxLiBSZWJhc2Ugb24gdjUuOC1yYzEuDQogICAyLiBGaXggY29kaW5nIHN0eWxlLg0KICAgMy4g
+QWRkIEZfTU1VX0lOX0RSREVSX1dSX0VOIGRlZmluaXRpb24gaW4gTUlTQ19DVFJMIHRvIGltcHJv
+dmUgcGVyZm9ybWFuY2UuDQoNCiB2MzoNCiAgIDEuIFJlYmFzZSBvbiB2NS43LXJjMS4NCiAgIDIu
+IFJlbW92ZSB1bnVzZWQgcG9ydCBkZWZpbml0aW9uLGV4OkFQVSBhbmQgQ0NVIHBvcnQgaW4gbXQ2
+Nzc5LWxhcmItcG9ydC5oLg0KICAgMy4gUmVtb3ZlICJjaGFuZ2Ugc2luZ2xlIGRvbWFpbiB0byBt
+dWx0aXBsZSBkb21haW4iIHBhcnQoZnJvbSBQQVRDSCB2MiAwOS8xOSB0byBQQVRDSCB2MiAxOS8x
+OSkuDQogICA0LiBSZWRlc2lnbiBtdDY3NzkgYmFzaWMgcGFydA0KICAgICAgKDEpQWRkIHNvbWUg
+cmVnaXN0ZXIgZGVmaW5pdGlvbiBhbmQgcmV1c2UgdGhlbS4NCiAgICAgICgyKVJlZGVzaWduIHNt
+aSBsYXJiIGJ1cyBJRCB0byBhbmFseXplIElPTU1VIHRyYW5zbGF0aW9uIGZhdWx0Lg0KICAgICAg
+KDMpT25seSBpbml0IE1NX0lPTU1VIGFuZCBub3QgdXNlIEFQVV9JT01NVS4NCg0KIGh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tZWRpYXRlay8yMDIwLU1heS8wMjk4
+MTEuaHRtbA0KDQogdjI6DQogICAxLiBSZWJhc2Ugb24gdjUuNS1yYzEuDQogICAyLiBEZWxldGUg
+TTRVX1BPUlRfVU5LTk9XTiBkZWZpbmUgYmVjYXVzZSBvZiBub3QgdXNlIGl0Lg0KICAgMy4gQ29y
+cmVjdCBjb2RpbmcgZm9ybWF0Lg0KICAgNC4gUmVuYW1lIG9mZnNldD0weDQ4IHJlZ2lzdGVyLg0K
+ICAgNS4gU3BsaXQgImlvbW11L21lZGlhdGVrOiBBZGQgbXQ2Nzc5IElPTU1VIGJhc2ljIHN1cHBv
+cnQocGF0Y2ggdjEpIiB0byBzZXZlcmFsIHBhdGNoZXMocGF0Y2ggdjIpLg0KDQogaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW1lZGlhdGVrLzIwMjAtSmFudWFyeS8w
+MjYxMzEuaHRtbA0KDQogdjE6DQogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWls
+L2xpbnV4LW1lZGlhdGVrLzIwMTktTm92ZW1iZXIvMDI0NTY3Lmh0bWwNCg0KQ2hhbyBIYW8gKDcp
+Og0KICBkdC1iaW5kaW5nczogbWVkaWF0ZWs6IEFkZCBiaW5kaW5ncyBmb3IgTVQ2Nzc5DQogIGlv
+bW11L21lZGlhdGVrOiBSZW5hbWUgdGhlIHJlZ2lzdGVyIFNUQU5EQVJEX0FYSV9NT0RFKDB4NDgp
+IHRvDQogICAgICAgICAgICAgICAgICBNSVNDX0NUUkwNCiAgaW9tbXUvbWVkaWF0ZWs6IFNldCBN
+SVNDX0NUUkwgcmVnaXN0ZXINCiAgaW9tbXUvbWVkaWF0ZWs6IE1vdmUgaW52X3NlbF9yZWcgaW50
+byB0aGUgcGxhdF9kYXRhDQogIGlvbW11L21lZGlhdGVrOiBBZGQgc3ViX2NvbW0gaWQgaW4gdHJh
+bnNsYXRpb24gZmF1bHQNCiAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBSRUdfTU1VX1dSX0xFTiBkZWZp
+bml0aW9uIHByZXBhcmluZyBmb3IgbXQ2Nzc5DQogIGlvbW11L21lZGlhdGVrOiBBZGQgbXQ2Nzc5
+IGJhc2ljIHN1cHBvcnQNCg0KIC4uLi9iaW5kaW5ncy9pb21tdS9tZWRpYXRlayxpb21tdS50eHQg
+ICAgICAgICB8ICAgMiArDQogZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyAgICAgICAgICAgICAg
+ICAgICAgIHwgIDkyICsrKysrKy0tDQogZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaCAgICAgICAg
+ICAgICAgICAgICAgIHwgIDEwICstDQogaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXQ2Nzc5
+LWxhcmItcG9ydC5oIHwgMjA2ICsrKysrKysrKysrKysrKysrKw0KIDQgZmlsZXMgY2hhbmdlZCwg
+Mjg1IGluc2VydGlvbnMoKyksIDI1IGRlbGV0aW9ucygtKQ0KDQotLQ0KMi4xOC4wDQo=
 
