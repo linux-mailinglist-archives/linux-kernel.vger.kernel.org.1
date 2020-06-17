@@ -2,148 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158BF1FC50D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 06:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BB91FC554
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 06:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgFQEYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 00:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgFQEYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 00:24:02 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFB7C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 21:24:01 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q8so1237380iow.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 21:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=qnyhMMIEN0LrK0bROeu2AicdajFIxeITYjNsoHRgC8U=;
-        b=nufeHlQ+xs1/zH/m/xtBaDN2m0JgiiUl7Wu3rP4N8z3WkDzhLoj21XpHN2NG386Hsm
-         hmXxXQGLHDNFtUBZRgP2U/FAY3zrMGXf9gUI7N6wpsLwgTuaeCFAbO/4ctgt7XP7qXmT
-         MzONHz5hsVNIgP90DFzJCOoA05nCbJWYz2jIAwLCTvldLhFSbmF4+kr1QLdvJCuSiWfG
-         44pTap6vEFqEZo7RcDJirK6m8XuQydmfcFb+LpBOx5lCfr/yEqnTMGPUjYO2LYk0X5lJ
-         QmbaCHJspStHUqXAiu9+eHrK73JZA2PutbiE6LuG9NjKEKqKqAETNGx+FWJ5jXwDxDGb
-         49SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=qnyhMMIEN0LrK0bROeu2AicdajFIxeITYjNsoHRgC8U=;
-        b=PsrXxbb9W/lDM2qt/LHhIIq2+szd6PI8RkppQ5xf0dLb7jWtWpbzk+k3Rznx3O6Aj0
-         m/ywka4OfLxmAa8b5MG/iOid/PrnRsShR4UKjE/+SS9UfYUUJHt0oOjYy4G2fsL2vryw
-         95277ZYV2hCXEQTORZvYmlWlwvmAK+v6XnTEznolXvWTcDGaN4LeSCfUGwCG2XGFF4Qe
-         WA6CxpfR7rGl3Zdww7SeCiRrPJ+BmTghBdLBvuKBSHufuUO8Pv/S8eh35j7zMmYv8NqR
-         Ug5AK8groVLpcXEvhfE1EoNe3eH5EBB9naKxYgYjtaxGbjlBmwQzPHsq4Y08aC62RwIP
-         MKCg==
-X-Gm-Message-State: AOAM530S/m1WdNPP64mSN22Ff/H2zdFemOJywjfeBZITWIjJRhXFVriy
-        MUnWndpzm95mE8SPssMIhppma8MwYah5j1ZfFsI=
-X-Google-Smtp-Source: ABdhPJz/K2qXUqRHjBV/LroAG+ddFcf6lDuQMXgC6ECLEuTBBbDkmXm8wh92hdHPJtYTo1J8chzIQRHjdjVxqbq2di0=
-X-Received: by 2002:a05:6602:2c45:: with SMTP id x5mr6354932iov.80.1592367840047;
- Tue, 16 Jun 2020 21:24:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200616223633.73971-1-nhuck@google.com>
-In-Reply-To: <20200616223633.73971-1-nhuck@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 17 Jun 2020 06:23:48 +0200
-Message-ID: <CA+icZUW4Jv7589yCU55+C-P0=B0ztzvsOZ9TEMcTt4vKjFU1dA@mail.gmail.com>
-Subject: Re: [PATCH] Fix unwind_frame for clang-built kernels
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     linux@armlinux.org.uk, vincent.whitchurch@axis.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726812AbgFQEla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 00:41:30 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:36896 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbgFQEla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 00:41:30 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7F83C20089C;
+        Wed, 17 Jun 2020 06:41:28 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 441E22005F3;
+        Wed, 17 Jun 2020 06:41:23 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7199A402B1;
+        Wed, 17 Jun 2020 12:41:16 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ASoC: bindings: fsl_spdif: Add new compatible string for imx6sx
+Date:   Wed, 17 Jun 2020 12:30:16 +0800
+Message-Id: <feda3bb02296455d43aeebb7575918d9b28e1a3f.1592368322.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:36 AM 'Nathan Huckleberry' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> Since clang does not push pc and sp in function prologues, the current
-> implementation of unwind_frame does not work. By using the previous
-> frame's lr/fp instead of saved pc/sp we get valid unwinds on clang-built
-> kernels.
->
-> The bounds check on next frame pointer must be changed as well since
-> there are 8 less bytes between frames.
->
-> This fixes /proc/<pid>/stack.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/912
-> Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+Add new compatible string "fsl,imx6sx-spdif" in the binding document.
+And add compatible string "fsl,vf610-spdif" which was missed before.
 
-Just a small nit.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,spdif.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Please label your patch with: "arm/stacktrace: ..." or "arm: stacktrace: ..."
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+index 8b324f82a782..e1365b0ee1e9 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+@@ -6,7 +6,11 @@ a fibre cable.
+ 
+ Required properties:
+ 
+-  - compatible		: Compatible list, must contain "fsl,imx35-spdif".
++  - compatible		: Compatible list, should contain one of the following
++			  compatibles:
++			  "fsl,imx35-spdif",
++			  "fsl,vf610-spdif",
++			  "fsl,imx6sx-spdif",
+ 
+   - reg			: Offset and length of the register set for the device.
+ 
+-- 
+2.21.0
 
-git log --oneline arch/arm/kernel/stacktrace.c
-...is your friend :-).
-
-- Sedat -
-
-> ---
->  arch/arm/kernel/stacktrace.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-> index cc726afea023..76ea4178a55c 100644
-> --- a/arch/arm/kernel/stacktrace.c
-> +++ b/arch/arm/kernel/stacktrace.c
-> @@ -22,6 +22,19 @@
->   * A simple function epilogue looks like this:
->   *     ldm     sp, {fp, sp, pc}
->   *
-> + * When compiled with clang, pc and sp are not pushed. A simple function
-> + * prologue looks like this when built with clang:
-> + *
-> + *     stmdb   {..., fp, lr}
-> + *     add     fp, sp, #x
-> + *     sub     sp, sp, #y
-> + *
-> + * A simple function epilogue looks like this when built with clang:
-> + *
-> + *     sub     sp, fp, #x
-> + *     ldm     {..., fp, pc}
-> + *
-> + *
->   * Note that with framepointer enabled, even the leaf functions have the same
->   * prologue and epilogue, therefore we can ignore the LR value in this case.
->   */
-> @@ -34,6 +47,16 @@ int notrace unwind_frame(struct stackframe *frame)
->         low = frame->sp;
->         high = ALIGN(low, THREAD_SIZE);
->
-> +#ifdef CONFIG_CC_IS_CLANG
-> +       /* check current frame pointer is within bounds */
-> +       if (fp < low + 4 || fp > high - 4)
-> +               return -EINVAL;
-> +
-> +       frame->sp = frame->fp;
-> +       frame->fp = *(unsigned long *)(fp);
-> +       frame->pc = frame->lr;
-> +       frame->lr = *(unsigned long *)(fp + 4);
-> +#else
->         /* check current frame pointer is within bounds */
->         if (fp < low + 12 || fp > high - 4)
->                 return -EINVAL;
-> @@ -42,6 +65,7 @@ int notrace unwind_frame(struct stackframe *frame)
->         frame->fp = *(unsigned long *)(fp - 12);
->         frame->sp = *(unsigned long *)(fp - 8);
->         frame->pc = *(unsigned long *)(fp - 4);
-> +#endif
->
->         return 0;
->  }
-> --
-> 2.27.0.290.gba653c62da-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200616223633.73971-1-nhuck%40google.com.
