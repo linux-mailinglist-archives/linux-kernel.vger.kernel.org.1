@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4DD1FC7E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB4F1FC7F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgFQHwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:52:12 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:64730 "EHLO mxhk.zte.com.cn"
+        id S1726280AbgFQH4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:56:40 -0400
+Received: from verein.lst.de ([213.95.11.211]:42288 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgFQHwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:52:12 -0400
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id 4D4FFE0EC41DB517EA5B;
-        Wed, 17 Jun 2020 15:52:08 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id 05H7q6HC075292;
-        Wed, 17 Jun 2020 15:52:06 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020061715522698-3977654 ;
-          Wed, 17 Jun 2020 15:52:26 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     mingo@redhat.com
-Cc:     peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
-        Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: [PATCH] sched: Use kmem_cache_zalloc() instead of kmem_cache_alloc() with flag GFP_ZERO.
-Date:   Wed, 17 Jun 2020 15:54:40 +0800
-Message-Id: <1592380480-10548-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-06-17 15:52:27,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-06-17 15:52:09,
-        Serialize complete at 2020-06-17 15:52:09
-X-MAIL: mse-fl2.zte.com.cn 05H7q6HC075292
+        id S1725873AbgFQH4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 03:56:39 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1200968B05; Wed, 17 Jun 2020 09:56:37 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 09:56:36 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, hch@lst.de,
+        mm-commits@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [merged] exec-open-code-copy_string_kernel.patch removed from
+ -mm tree
+Message-ID: <20200617075636.GA13618@lst.de>
+References: <20200605201952.V2waw9dhw%akpm@linux-foundation.org> <079d08bb-f8de-e119-a427-4ff0274f4616@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <079d08bb-f8de-e119-a427-4ff0274f4616@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liao Pingfang <liao.pingfang@zte.com.cn>
+On Tue, Jun 16, 2020 at 03:14:44PM +0200, Vegard Nossum wrote:
+>
+> On 2020-06-05 22:19, akpm@linux-foundation.org wrote:
+>> The patch titled
+>>       Subject: exec: open code copy_string_kernel
+>> has been removed from the -mm tree.  Its filename was
+>>       exec-open-code-copy_string_kernel.patch
+>>
+>> This patch was dropped because it was merged into mainline or a subsystem tree
+>>
+>> ------------------------------------------------------
+>> From: Christoph Hellwig <hch@lst.de>
+>> Subject: exec: open code copy_string_kernel
+>>
+>> Currently copy_string_kernel is just a wrapper around copy_strings that
+>> simplifies the calling conventions and uses set_fs to allow passing a
+>> kernel pointer.  But due to the fact the we only need to handle a single
+>> kernel argument pointer, the logic can be sigificantly simplified while
+>> getting rid of the set_fs.
+>>
+>> Link: http://lkml.kernel.org/r/20200501104105.2621149-3-hch@lst.de
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>> ---
+>>
+>>   fs/exec.c |   45 +++++++++++++++++++++++++++++++++++----------
+>>   1 file changed, 35 insertions(+), 10 deletions(-)
+>>
+>> --- a/fs/exec.c~exec-open-code-copy_string_kernel
+>> +++ a/fs/exec.c
+>> @@ -592,17 +592,42 @@ out:
+>>    */
+>>   int copy_string_kernel(const char *arg, struct linux_binprm *bprm)
+>>   {
+>> -	int r;
+>> -	mm_segment_t oldfs = get_fs();
+>> -	struct user_arg_ptr argv = {
+>> -		.ptr.native = (const char __user *const  __user *)&arg,
+>> -	};
+>> -
+>> -	set_fs(KERNEL_DS);
+>> -	r = copy_strings(1, argv, bprm);
+>> -	set_fs(oldfs);
+>> +	int len = strnlen(arg, MAX_ARG_STRLEN) + 1 /* terminating NUL */;
+>> +	unsigned long pos = bprm->p;
+>>   -	return r;
+>> +	if (len == 0)
+>> +		return -EFAULT;
+>
+> Just a quick question, how can len ever be 0 here when len was set to
+> strnlen() + 1? Should the test be different?
+>
+> The old version (i.e. copy_strings()) seems to return -EFAULT when
+> strnlen() returns 0.
 
-Use kmem_cache_zalloc instead of calling kmem_cache_alloc
-with flag GFP_ZERO.
+So, the nasty part here is that strnlen_user has different semantics
+from strnlen:
 
-Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
----
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ - strlen excludes the terminating null byte and never returns error
+   codes
+ - strnlen_user includes the terminating null byte, and a 0 return
+   means it could not access the user address (a condition that can't
+   happen for strlen).
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8f36032..5aac3ca 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7024,7 +7024,7 @@ struct task_group *sched_create_group(struct task_group *parent)
- {
- 	struct task_group *tg;
- 
--	tg = kmem_cache_alloc(task_group_cache, GFP_KERNEL | __GFP_ZERO);
-+	tg = kmem_cache_zalloc(task_group_cache, GFP_KERNEL);
- 	if (!tg)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.9.5
-
+Now with that back to your original question:  I think then len == 0
+check can just be removed without replacement.
