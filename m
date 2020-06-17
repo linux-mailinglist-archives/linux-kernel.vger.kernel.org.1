@@ -2,146 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CCE1FD8C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451561FD8DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgFQWbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:31:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39446 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726496AbgFQWbB (ORCPT
+        id S1727115AbgFQWca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:32:30 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57302 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgFQWcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:31:01 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HM2Iv1045251;
-        Wed, 17 Jun 2020 18:30:54 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31q8njm80u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Jun 2020 18:30:53 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05HM3OvL049051;
-        Wed, 17 Jun 2020 18:30:53 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31q8njm800-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Jun 2020 18:30:53 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05HMPwHg005287;
-        Wed, 17 Jun 2020 22:30:50 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 31q6chrqav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Jun 2020 22:30:50 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05HMUllL12714452
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jun 2020 22:30:47 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B68B042045;
-        Wed, 17 Jun 2020 22:30:47 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F22A04203F;
-        Wed, 17 Jun 2020 22:30:46 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.74.214])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Jun 2020 22:30:46 +0000 (GMT)
-Date:   Thu, 18 Jun 2020 00:29:56 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, mst@redhat.com, jasowang@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v3 1/1] s390: virtio: let arch accept devices without
- IOMMU feature
-Message-ID: <20200618002956.5f179de4.pasic@linux.ibm.com>
-In-Reply-To: <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
-References: <1592390637-17441-1-git-send-email-pmorel@linux.ibm.com>
-        <1592390637-17441-2-git-send-email-pmorel@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Wed, 17 Jun 2020 18:32:19 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id A0A028040A69;
+        Wed, 17 Jun 2020 22:32:09 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1srfJNKUVNnX; Thu, 18 Jun 2020 01:32:07 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
+        <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v4 0/6] mips: Add DT bindings for MIPS CDMM and MIPS GIC
+Date:   Thu, 18 Jun 2020 01:31:54 +0300
+Message-ID: <20200617223201.23259-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-17_12:2020-06-17,2020-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 priorityscore=1501 mlxlogscore=560 mlxscore=0 bulkscore=0
- cotscore=-2147483648 lowpriorityscore=0 spamscore=0 malwarescore=0
- clxscore=1015 phishscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006170161
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 12:43:57 +0200
-Pierre Morel <pmorel@linux.ibm.com> wrote:
+Daniel, Rafael, Thomas (Gleixner), could you specifically take a look at
+the last patch in this series? If you are ok with that, please explicitly
+ack. We need at least one of your blessing to merge the series in, since
+the code and DT-related patches here have been mostly reviewed. We've
+missed the last merge window. It would be pity to miss the next one...
 
-> An architecture protecting the guest memory against unauthorized host
-> access may want to enforce VIRTIO I/O device protection through the
-> use of VIRTIO_F_IOMMU_PLATFORM.
-> 
-> Let's give a chance to the architecture to accept or not devices
-> without VIRTIO_F_IOMMU_PLATFORM.
-> 
-[..]
+Regarding this patchset origin. Recently I've submitted a series of
+patchset's which provided multiple fixes for the MIPS arch subsystem and
+the MIPS GIC and DW APB Timer drivers, which were required for the
+Baikal-T1 SoC correctly working with those drivers. Mostly those patchsets
+have been already merged into the corresponding subsystems, but several
+patches have been left floating since noone really responded for review
+except Rob provided his approval regarding DT bindings. Thus in this
+patchset I've collected all the leftovers so not to loose them in a pale
+of the maintainers email logs.
 
+The patchset includes the following updates: MIPS CPC and GIC DT bindings
+legacy text-based file are converted to the DT schema (Rob has already
+reviewed them), add MIPS CDMM DT node support to place the CDMM block at
+the platform-specific MMIO range, make sure MIPS CDMM is available for
+MIPS_R5 CPUs.
 
-I'm still not really satisfied with your commit message, furthermore
-I did some thinking about the abstraction you introduce here. I will
-give a short analysis of that, but first things first. Your patch does
-the job of preventing calamity, and the details can be changed any time,
-thus: 
+Seeing the series concerns the MIPS-related drivers it's better to merge
+it in through the MIPS repository:
+https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/
 
-Acked-by: Halil Pasic <pasic@linux.ibm.com>
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-Regarding the interaction of architecture specific code with virtio core,
-I believe we could have made the interface more generic.
+Suggestion.
+Since Paul isn't looking after the MIPS arch code anymore, Ralf hasn't
+been seen maintaining MIPS for a long time, Thomas is only responsible
+for the next part of it:
+	F:      Documentation/devicetree/bindings/mips/
+	F:      Documentation/mips/
+	F:      arch/mips/
+	F:      drivers/platform/mips/
+the MIPS-specific drivers like:
+	F:	drivers/bus/mips_cdmm.c
+	F:	drivers/irqchip/irq-mips-cpu.c
+	F:	drivers/irqchip/irq-mips-gic.c
+	F:	drivers/clocksource/mips-gic-timer.c
+	F:	drivers/cpuidle/cpuidle-cps.c
+seem to be left for the subsystems maintainers to support. So if you don't
+mind or unless there is a better alternative, I can help with looking
+after them to ease the maintainers review burden and since I'll be working
+on our MIPS-based SoC drivers integrating into the mainline kernel repo
+anyway. Thomas agreed to join in maintaining that drivers.
 
-One option is to introduce virtio_arch_finalize_features(), a hook that
-could reject any feature that is inappropriate.
+Previous patchsets:
+mips: Prepare MIPS-arch code for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-mips/20200306124807.3596F80307C2@mail.baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-mips/20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru
 
-Another option would be to find a common name for is_prot_virt_guest()
-(arch/s390) sev_active() (arch/x86) and is_secure_guest() (arch/powerpc)
-and use that instead of arch_needs_virtio_iommu_platform() and where-ever
-appropriate. Currently we seem to want this info in driver code only for
-virtio, but if the virtio driver has a legitimate need to know, other
-drivers may as well have a legitimate need to know. For example if we
-wanted to protect ourselves in ccw device drivers from somebody
-setting up a vfio-ccw device and attach it to the prot-virt guest (AFAICT
-we only lack guest enablement for this) such a function could be useful.
+clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC support:
+Link: https://lore.kernel.org/linux-rtc/20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-rtc/20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru
 
-But since this can be rewritten any time, let's go with the option
-people already agree with, instead of more discussion.
+Changelog prev:
+- Add yaml-based bindings file for MIPS CDMM dt-node.
+- Convert mti,mips-cpc to DT schema.
+- Use a shorter summary describing the bindings modification patches.
+- Rearrange the SoBs with adding Alexey' co-development tag.
+- Lowercase the hex numbers in the dt-bindings.
 
-Just another question. Do we want this backported? Do we need cc stable?
-[..]
+Changelog v2:
+- Resend.
 
+Link: https://lore.kernel.org/linux-mips/20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Keep F: MAINTAINERS section alphabetically ordered.
+- Add Thomas as the co-maintainer of the MIPS CPU and GIC IRQchip, MIPS
+  GIC timer and MIPS CPS CPUidle drivers.
 
->  int virtio_finalize_features(struct virtio_device *dev)
->  {
->  	int ret = dev->config->finalize_features(dev);
-> @@ -179,6 +194,13 @@ int virtio_finalize_features(struct virtio_device *dev)
->  	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
->  		return 0;
->  
-> +	if (arch_needs_virtio_iommu_platform(dev) &&
-> +		!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
-> +		dev_warn(&dev->dev,
-> +			 "virtio: device must provide VIRTIO_F_IOMMU_PLATFORM\n");
+Link: https://lore.kernel.org/linux-mips/20200602100921.1155-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Resend.
 
-I'm not sure, divulging the current Linux name of this feature bit is a
-good idea, but if everybody else is fine with this, I don't care that
-much. An alternative would be:
-"virtio: device falsely claims to have full access to the memory,
-aborting the device"
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
+Serge Semin (6):
+  dt-bindings: power: Convert mti,mips-cpc to DT schema
+  dt-bindings: interrupt-controller: Convert mti,gic to DT schema
+  dt-bindings: bus: Add MIPS CDMM controller
+  mips: cdmm: Add mti,mips-cdmm dtb node support
+  bus: cdmm: Add MIPS R5 arch support
+  MAINTAINERS: Add maintainers for MIPS core drivers
 
-Regards,
-Halil
+ .../bindings/bus/mti,mips-cdmm.yaml           |  35 +++++
+ .../interrupt-controller/mips-gic.txt         |  67 --------
+ .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+ .../bindings/power/mti,mips-cpc.txt           |   8 -
+ .../bindings/power/mti,mips-cpc.yaml          |  35 +++++
+ MAINTAINERS                                   |  11 ++
+ drivers/bus/Kconfig                           |   2 +-
+ drivers/bus/mips_cdmm.c                       |  15 ++
+ 8 files changed, 245 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+
+-- 
+2.26.2
+
