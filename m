@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D951FC325
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8355F1FC331
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgFQBCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 21:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
+        id S1726654AbgFQBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 21:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgFQBCr (ORCPT
+        with ESMTP id S1726594AbgFQBF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 21:02:47 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CDFC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:02:46 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id g12so144120pll.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:02:46 -0700 (PDT)
+        Tue, 16 Jun 2020 21:05:58 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD52C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:05:57 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id d12so283133qvn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g2a002H3vcNUYJWpyRwovtWUn/ajmAxDHx0MWs9PMJ4=;
-        b=Z++8msctdPpkpmbBjfmvMohChPXDgzSD9AtwZnDQEe3e0Kt9EMr3qi9KIGZNslsyXr
-         xLp79imR3/YKoOqFdVgGw7josD+eVR+1USuL/E7J/kUnmDwQEs9qVUwl8McnXnhPhSu1
-         eOpyIkmmOGW+GZ/SHwOmMCJdiTYyoAexK9/VkcLFKnV/if1DUlM1UlCVsU0rQau8XguM
-         xZeinGWLaDbq1+nxElAmljy04KGeOjSbHh4GZWX0EqeWCaJKlndXBWEsjkorOAEi8czE
-         RlzdUDPo84mfw9lgQ26Bq+WM1MW8+N+N2PlQjhcOyktUhvV39w8y4dFNL6bcFDzbpF0V
-         JvVw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UAhdUIBFcfxLt9sFJzxhprSyP67JedmRd0Onm3q0FHk=;
+        b=ZZxeQax/SaJoxCo6pUZJ33in8L39CXCkt0eDR5tj5YdXUYTVCFaeeZFF4i5fXcnhwe
+         hDV/8mWW/UVovdxmsdo7GvgBDTOkbCVqRxGngQkeO/jcFpjXNjJFawYmDdlL9DpfFizQ
+         AAP2hvZxZdDTE6SN7tgEZnwMWmw8mYMpsGeisELFhxC77Nuo+lWkBmdNqau9rb7dghBb
+         7f/vbDTSLyOsZ40O2KAZF/UP1RzF7CtdHxs2Cg5wPnJqCgqCrt7kbkvaw855f5NgIj1P
+         PIkiujuNB1oW2p2iwHC5BGZ9hEIBLBV+3gdbesU961asE5YzWeBvwZ0/sr4qzflTa0nq
+         4qRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g2a002H3vcNUYJWpyRwovtWUn/ajmAxDHx0MWs9PMJ4=;
-        b=VwgOxUCequkr8Jsq/Hqg07PAiK/ugnp2k5kuFQ51JLBTrLDQ0GpD4Sjdc10cT3lS/e
-         txv0W8/vfdrWuU5NOuGhwt4nXdzi01wElvvV727SiNCOn0wgWBoj0DRIYiYjJE4O2xH8
-         2hOG1QSlilUcaGX2A2eErHc5kWl4hAIqyoaOeLFJz645Tr3RwimnzHu0sW/0Pq4ErTum
-         eHuev4F/CdmkdhvNCjLbdieyUU1OfltkGyUHRqpv8JIoEez2U0PHXRvUtJthZvR62ZqC
-         pTHMHG1FQzBEnhCTK1I/aCNS8yii6OeDIw9ki6Kqukne1nGDht9LEb+iymw54JbcISEa
-         Hd5g==
-X-Gm-Message-State: AOAM531Pobs4lYLk/WMHd19VjnAnBJmEhUIIrCo1+tgSUh8qnl20rTiR
-        2PMcB9m8hfaK56hz558ayvhkljiIve4png==
-X-Google-Smtp-Source: ABdhPJywNMJ6KgTrIYao5oHl5pmyoYTV3NqSGTdY+bxKIgOQHt/ofYCsUFqaFWq+tUtpmk15FKde5Q==
-X-Received: by 2002:a17:90a:8089:: with SMTP id c9mr5862338pjn.126.1592355765913;
-        Tue, 16 Jun 2020 18:02:45 -0700 (PDT)
-Received: from Ryzen-9-3900X.localdomain ([89.46.114.134])
-        by smtp.gmail.com with ESMTPSA id fv7sm3563299pjb.41.2020.06.16.18.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 18:02:45 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Sia Jee Heng <jee.heng.sia@intel.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] ASoC: Intel: KeemBay: Fix header guard
-Date:   Tue, 16 Jun 2020 18:02:32 -0700
-Message-Id: <20200617010232.23222-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UAhdUIBFcfxLt9sFJzxhprSyP67JedmRd0Onm3q0FHk=;
+        b=Js8MbXGueb2HeZ3UuJjikHUqqjIKqfRFGeF8IuJAuMXSt+kjTtetvPLJRoUzNTKelj
+         XeQchtFBYKO97/9g4a+CB7vXndG7DlvPb+gbHSH/7/Nhk7CL6qz2EJKvWuGUrHQ610vl
+         aOhx8s4byTu/nC6qDsMJsRIqrYZeXmM7/uO59cGGYjIeeZjkzPBkse/8pW4XtgOtMeXU
+         yPm59CMuTZkJ7tER+peR5UYqZKS0nQQXXg23pohEZt3GfV7GdoXzELsafbP6gBsMnvM9
+         PqjUfW1zyHG8j/bJW5B1g1G9Gf81jW4wifba1glA9EP4d+POYqxcD1IqWv6OVIhGiuIT
+         YOTw==
+X-Gm-Message-State: AOAM530GRG9bU8vP/jwY80TX9kes7h0sny0XnW7GZJ8iPhZjpQHWx8i+
+        SGb8Exmym6Qe74fsB9nAE4L5+gYv7PCNXrfI5kA=
+X-Google-Smtp-Source: ABdhPJyAQrNTTPuae73r/tERJMjeuuTm8yNA3iMU2sH9EHBSRerAqeexk2fyVh6XPYSZbkEtf3CXKot+cWDL4G+FzbQ=
+X-Received: by 2002:a05:6214:1842:: with SMTP id d2mr5108616qvy.197.1592355956258;
+ Tue, 16 Jun 2020 18:05:56 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20200615221607.7764-1-peterx@redhat.com> <20200615221607.7764-14-peterx@redhat.com>
+In-Reply-To: <20200615221607.7764-14-peterx@redhat.com>
+From:   Greentime Hu <green.hu@gmail.com>
+Date:   Wed, 17 Jun 2020 09:05:18 +0800
+Message-ID: <CAEbi=3e7t+=q5x3Wogr+EuejFxxmyuQTHE7jpDW++2n6MB2OWQ@mail.gmail.com>
+Subject: Re: [PATCH 13/25] mm/nds32: Use mm_fault_accounting()
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+Peter Xu <peterx@redhat.com> =E6=96=BC 2020=E5=B9=B46=E6=9C=8816=E6=97=A5 =
+=E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=886:16=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Use the new mm_fault_accounting() helper for page fault accounting.
+>
+> Avoid doing page fault accounting multiple times if the page fault is ret=
+ried.
+> Since at it, move the accounting after releasing mmap_sem.
+>
+> CC: Nick Hu <nickhu@andestech.com>
+> CC: Greentime Hu <green.hu@gmail.com>
+> CC: Vincent Chen <deanbo422@gmail.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  arch/nds32/mm/fault.c | 19 +++----------------
+>  1 file changed, 3 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
+> index f331e533edc2..11537c03ab1d 100644
+> --- a/arch/nds32/mm/fault.c
+> +++ b/arch/nds32/mm/fault.c
+> @@ -78,7 +78,7 @@ void do_page_fault(unsigned long entry, unsigned long a=
+ddr,
+>         struct mm_struct *mm;
+>         struct vm_area_struct *vma;
+>         int si_code;
+> -       vm_fault_t fault;
+> +       vm_fault_t fault, major =3D 0;
+>         unsigned int mask =3D VM_ACCESS_FLAGS;
+>         unsigned int flags =3D FAULT_FLAG_DEFAULT;
+>
+> @@ -208,6 +208,7 @@ void do_page_fault(unsigned long entry, unsigned long=
+ addr,
+>          */
+>
+>         fault =3D handle_mm_fault(vma, addr, flags);
+> +       major |=3D fault & VM_FAULT_MAJOR;
+>
+>         /*
+>          * If we need to retry but a fatal signal is pending, handle the
+> @@ -229,22 +230,7 @@ void do_page_fault(unsigned long entry, unsigned lon=
+g addr,
+>                         goto bad_area;
+>         }
+>
+> -       /*
+> -        * Major/minor page fault accounting is only done on the initial
+> -        * attempt. If we go through a retry, it is extremely likely that=
+ the
+> -        * page will be found in page cache at that point.
+> -        */
+> -       perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+>         if (flags & FAULT_FLAG_ALLOW_RETRY) {
+> -               if (fault & VM_FAULT_MAJOR) {
+> -                       tsk->maj_flt++;
+> -                       perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
+> -                                     1, regs, addr);
+> -               } else {
+> -                       tsk->min_flt++;
+> -                       perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
+> -                                     1, regs, addr);
+> -               }
+>                 if (fault & VM_FAULT_RETRY) {
+>                         flags |=3D FAULT_FLAG_TRIED;
+>
+> @@ -257,6 +243,7 @@ void do_page_fault(unsigned long entry, unsigned long=
+ addr,
+>         }
+>
+>         up_read(&mm->mmap_sem);
+> +       mm_fault_accounting(tsk, regs, addr, major);
+>         return;
+>
+>         /*
+> --
+Hi Peter,
 
- In file included from sound/soc/intel/keembay/kmb_platform.c:14:
- sound/soc/intel/keembay/kmb_platform.h:9:9: warning: 'KMB_PLATFORM_H_'
- is used as a header guard here, followed by #define of a different
- macro [-Wheader-guard]
- #ifndef KMB_PLATFORM_H_
-         ^~~~~~~~~~~~~~~
- sound/soc/intel/keembay/kmb_platform.h:10:9: note: 'KMB_PLATFORMP_H_'
- is defined here; did you mean 'KMB_PLATFORM_H_'?
- #define KMB_PLATFORMP_H_
-         ^~~~~~~~~~~~~~~~
-         KMB_PLATFORM_H_
- 1 warning generated.
-
-Fix the typo so that the header guard works as intended.
-
-Fixes: c5477e966728 ("ASoC: Intel: Add KeemBay platform driver")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1053
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- sound/soc/intel/keembay/kmb_platform.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/keembay/kmb_platform.h b/sound/soc/intel/keembay/kmb_platform.h
-index 29600652d8f4..6bf221aa8fff 100644
---- a/sound/soc/intel/keembay/kmb_platform.h
-+++ b/sound/soc/intel/keembay/kmb_platform.h
-@@ -7,7 +7,7 @@
-  */
- 
- #ifndef KMB_PLATFORM_H_
--#define KMB_PLATFORMP_H_
-+#define KMB_PLATFORM_H_
- 
- #include <linux/bits.h>
- #include <linux/bitfield.h>
-
-base-commit: 27f70ec4fa0e0f419031f1b8d61b1a788244e313
--- 
-2.27.0
-
+Thank you. :)
+Acked-by: Greentime Hu <green.hu@gmail.com>
