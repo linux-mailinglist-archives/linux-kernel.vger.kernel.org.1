@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C461FCF35
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD0C1FCF38
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgFQONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:13:37 -0400
-Received: from ozlabs.org ([203.11.71.1]:41669 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgFQONh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:13:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49n6Vl166Tz9sSF;
-        Thu, 18 Jun 2020 00:13:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1592403215;
-        bh=yJ7IVrfjUL7bvgBlIpbHcEVKh7AcaV7LQqGjQYFZ0aU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WE0MqTxxT7dIxRLJ1twvDRMuwovW0/xLVJHQQjQ77nBMyuaW+4pKigwfQEwOPoqSg
-         SuL1eUB6O244tcxeQSyJG+pZLUwLacx+6JYcX89Oi5cuw5j3odJYTC9tzT3sEJFCSV
-         XUhvqflTg1ebHEyELsLH2TQPWFRos+vDbiRngKUmO4qdwqR5n/rnU+vZciKgvUN4vM
-         01dzSGX/L/TtPqQlMZL1wymLIahPaolbCzP1RatjHTPaaFBHt2NfhS5dr79EPzjAa9
-         +HaFiIkR5yUz9AKVVSGITnpMClbXpZwt6FmnU4angf2OZeBux5BdqzKSGQxy5ugWxj
-         +ZGCwIn3mfFwg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/3] mm/gup: Use huge_ptep_get() in gup_hugepte()
-In-Reply-To: <ffc3714334c3bfaca6f13788ad039e8759ae413f.1592225558.git.christophe.leroy@csgroup.eu>
-References: <cover.1592225557.git.christophe.leroy@csgroup.eu> <ffc3714334c3bfaca6f13788ad039e8759ae413f.1592225558.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 18 Jun 2020 00:14:05 +1000
-Message-ID: <87zh91dbki.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726996AbgFQOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgFQOOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:14:23 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A61BC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:14:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z63so1211210pfb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=3KiZ0hsFJ+V+TJvcKVSj6rh18GdO0J2gStEd7h7xqpg=;
+        b=opw6v2IfUvgqBueRp51a44SpADRCD96H75Z9wgZYxdRCL0z489mhKZdp3w6BhKGn7t
+         imuobN/052eagO4Plk+U+r6h27UBQyguV7j+LWeAHR7DlfPcUfmoByA/ZRxUxrLDo+nK
+         3Pn2KCCRYkLoFnLYxqD0b5hSOq2uH5dYv1b793wlErhDxR1+Gjvpu37adroL85qwURSz
+         D2wMbmnS6l5VZik962yZARVB+rBzk+j8osOK7H1sD2ZSSmy8dxEU2UUUnk0NubHrwrKX
+         L7EeKFqc/en249INHm9DrfYw5QtCmvFCJfOssPwdxi5ykozbb7s6yqXbpEEVpcazSVxk
+         oDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=3KiZ0hsFJ+V+TJvcKVSj6rh18GdO0J2gStEd7h7xqpg=;
+        b=Kbq18FcdIXCRGCLjgOhw9rY7+0Y0G0X34HViKRPer+nWcDFy6qI1lOClQEd3FDapu3
+         TzpxojiiqO02k1WXpLx3OoU1kxjWJCJhxQ4tscZjb53GPprdM9HSahAuZI3Jpsv/slrM
+         NzKbM+I4adkHaSJvotCr/g2Yy1SYTsNEyfLjpH8yfwIvp3N+Urn6Xr3O4LYIlFfcmb97
+         b0Sm42XaFJvxAcT8yuefrVC6vPFmG0gEeO43CQ2RnyFm5HP2k4fE2YwPBbbKfg8Ckpky
+         NH4BpqS7GsQadEoCh+HX8x9eM/goEgLcjX91CzHqPra+1YOlrxCftQc4LebV6NSP/MFq
+         JAhQ==
+X-Gm-Message-State: AOAM53010vR8uQwX/HajU9VycPQ8xL5R6q0sfiOiEDSpHdtzd9GR3AeA
+        Dtp9FcOajpA+YX7QqHjghTE=
+X-Google-Smtp-Source: ABdhPJzLuh+VgNQ2uDJCaxCsaAhu2mSppIYfZN9hPqQRVgrswIbvTNxTg1+ifHt2G84jaeCsPvWu2w==
+X-Received: by 2002:a62:1d8e:: with SMTP id d136mr6797346pfd.323.1592403261956;
+        Wed, 17 Jun 2020 07:14:21 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 67sm85375pga.44.2020.06.17.07.14.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jun 2020 07:14:20 -0700 (PDT)
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Mark Gross <mgross@linux.intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] cpu/speculation: Add prototype for cpu_show_srbds
+Date:   Wed, 17 Jun 2020 07:14:10 -0700
+Message-Id: <20200617141410.93338-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> gup_hugepte() reads hugepage table entries, it can't read
-> them directly, huge_ptep_get() must be used.
->
-> Fixes: 2ab3a0a02905 ("READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses")
+0-day is not happy that there is no prototype for cpu_show_srbds().
 
-I see that commit in older versions of linux-next but not in mainline.
+drivers/base/cpu.c:565:16: error:
+		no previous prototype for 'cpu_show_srbds'
 
-In mainline it seems to be: 9e343b467c70 ("READ_ONCE: Enforce atomicity for {READ,WRITE}_ONCE() memory accesses")
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 7e5b3c267d25 ("x86/speculation: Add Special Register Buffer Data Sampling (SRBDS) mitigation")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ include/linux/cpu.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-I guess it got rebased somewhere along the way.
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 52692587f7fe..8aa84c052fdf 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -64,6 +64,7 @@ extern ssize_t cpu_show_tsx_async_abort(struct device *dev,
+ 					char *buf);
+ extern ssize_t cpu_show_itlb_multihit(struct device *dev,
+ 				      struct device_attribute *attr, char *buf);
++extern ssize_t cpu_show_srbds(struct device *dev, struct device_attribute *attr, char *buf);
+ 
+ extern __printf(4, 5)
+ struct device *cpu_device_create(struct device *parent, void *drvdata,
+-- 
+2.17.1
 
-I fixed it up when applying, and the other two as well.
-
-cheers
-
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  mm/gup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/gup.c b/mm/gup.c
-> index de9e36262ccb..761df4944ef5 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2425,7 +2425,7 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
->  	if (pte_end < end)
->  		end = pte_end;
->  
-> -	pte = READ_ONCE(*ptep);
-> +	pte = huge_ptep_get(ptep);
->  
->  	if (!pte_access_permitted(pte, flags & FOLL_WRITE))
->  		return 0;
-> -- 
-> 2.25.0
