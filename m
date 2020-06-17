@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292DF1FC9DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A577E1FC9E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgFQJb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S1726698AbgFQJcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgFQJb6 (ORCPT
+        with ESMTP id S1726275AbgFQJc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:31:58 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9BAC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:31:58 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q25so1249865wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:31:57 -0700 (PDT)
+        Wed, 17 Jun 2020 05:32:29 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB9DC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:32:29 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o15so1540600ejm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jwXEf81LbR7teL/COdo9BlvOzBI0RFp1VoJeVoqc3Bc=;
-        b=dNfSFaxVlPuHbIwpxZUgoYEzJt6i6QbbvSZc6umkZmp0rVWhkxdR+oKDoskOX0e6l+
-         pXIc0w1ON/BN8+xrmv+6HB6abO79in+3pBwGps1/KcdfiDHNWaQn4tgDzXa/cZdUXYeM
-         sYgyTCa/4TDCKBrm9fLvF+brVklx7wRvf1mBtdfRxbzOmqUIwRs1JH7R2Q1zjhxo9koe
-         pWIKLxaRciCEESX0Pb/zVyscNf0fFYvdMfq7sjijzbqWyFADRmYdKwFjajP4sPqh1YlD
-         Ry/IlQT/1DJpwQu+0b0mDU+zXeyb+VWcs4JaUM5IlG93at7cf0qDsnlXcsr2VJDMdHw7
-         qvUg==
+        bh=cTmd5tX6YVYoIxY4tpUy+apEsuQqZLQPN2tP1qBmaWs=;
+        b=UbutnNHTQwhmHowciBnS6G2F8ot4diXcsL2QMDte9vC4ANIEyGGtivu1J6xAobtx0l
+         LG6+/q0CKuQhAUeehhOYn/ssnfAkMft+pGrNKiUyMcadMPsNf6SHPWMIqtqEReKqauwA
+         DBH5tL6/XGPuA+RqoWP6waLtpNQrn0YKnyJ5kAnkLAcT2G+540YKljKU7joTcoy6Zzds
+         K8p1U8PR88QXqO67erDw6E11SM42uV1S9b2OIwPyXK8ILyYP81IIrXi3mBJOoiVX7ksp
+         NoOewQ7GoqzZ40VrhkW9eU4r07QVk2amn6UFFZ6v07P2n9uwqktaBwI0sEkgCDEyfuPE
+         XtLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jwXEf81LbR7teL/COdo9BlvOzBI0RFp1VoJeVoqc3Bc=;
-        b=txw62uNfvQnj0AjzaRjvBN9DyoRt4tPIu7tMBnmc6JbpFspPk747bzsni6EoN/9lII
-         IdvTWVyARFCRg1l711DAla/8e2wta1N29UfgkOf7sda8cGZy6XD6ApXCnFDBMfVq/YdF
-         CgUqcPYLg913Acgx7SfTTMoJAUjJu5BGYp6lGlsLZ6vsvvr2XHyiWoeL2n6Ly0NkIdi3
-         NWV9gVFql2hFqrlqZhjDAFb/GFgGk23gdg8Gwuh0IN6JfQttONVPO0AwcExDuwovYl9j
-         jsHAxrFsh7qGYeKYbOgTPwr/m9W9VZo2C1udvU8dTVT7mrTaOLRMDh/2uEok/Z2A5Fmf
-         Imgg==
-X-Gm-Message-State: AOAM532UVDcwZ8x1cTVmnmZ/RbasSU247hBfaavHsujWx5eyqEhZmkWi
-        mb0zJZBMI+rtMG3+T4MpVc2q35/8VGE=
-X-Google-Smtp-Source: ABdhPJytcjCv29MSyVQJZ5w4lhGyyUY7cxDmnIDIi51vs3rAXuL+my8fvayQUHi/q2+I5LeKtp9Bdw==
-X-Received: by 2002:a1c:4954:: with SMTP id w81mr7807335wma.86.1592386316725;
-        Wed, 17 Jun 2020 02:31:56 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id y14sm7110485wma.25.2020.06.17.02.31.55
+        bh=cTmd5tX6YVYoIxY4tpUy+apEsuQqZLQPN2tP1qBmaWs=;
+        b=OGpZ5xwBFngn5JcMzzwwCOA9xIRsiIkL1IDbXKdIm5nxf4co6zQUvJqbpvu7v7NOEE
+         fGGY3vNe5MuBSFF3qsGlFyd7MBogWxiC2otrWfvH/xQPJ8vSuoxiYjI12l/34zZvehOH
+         XfUZJSj8sSgrvfX2GwBVeW9aaPXn0aoHlLBeFnifnGBgY4evvhLgGlxzG89MAt9ArQbr
+         beSHiSuHd5C5zdqo6PNzXrvX+u5ewuL677L91YgmK2EHBdQ4M/8LRax1xjamFzYrXWc/
+         OHXHV3DYmPs7VKCKfPIx7ZWIZefoQfW2WzSrkHrMC2ANvrk9PnbWiQTqk/9PdKaiMgtA
+         6Uww==
+X-Gm-Message-State: AOAM5301a47yufkzXMiXjXMaWDTQ5tg5YOui/OcNufqqbV5NREyrPDs9
+        wcur32VdOcfmRGGFlHsnaZ5KjA==
+X-Google-Smtp-Source: ABdhPJyklQPyHL2n4G1KEjImmjswHON24/eVFkuz53itdZaig2qjcx7EF/rtovwtXuJ6CEqXcbsiLg==
+X-Received: by 2002:a17:906:7693:: with SMTP id o19mr6318850ejm.295.1592386348039;
+        Wed, 17 Jun 2020 02:32:28 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id y12sm9380552edj.37.2020.06.17.02.32.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 02:31:56 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 10:31:54 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Petr Mladek <pmladek@suse.com>, Jim Cromie <jim.cromie@gmail.com>,
-        jbaron@akamai.com, linux-kernel@vger.kernel.org,
-        akpm@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v2 20/24] dyndbg: WIP towards debug-print-class based
- callsite controls
-Message-ID: <20200617093154.v7mf5355faa4c7ob@holly.lan>
-References: <20200613155738.2249399-1-jim.cromie@gmail.com>
- <20200613155738.2249399-21-jim.cromie@gmail.com>
- <20200616134507.GO31238@alley>
- <5b0fade06c46da0a469266738c684ba55d8e39f0.camel@perches.com>
+        Wed, 17 Jun 2020 02:32:27 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 11:32:17 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] uacce: remove uacce_vma_fault
+Message-ID: <20200617093217.GD871763@myrica>
+References: <1592229357-1904-1-git-send-email-zhangfei.gao@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b0fade06c46da0a469266738c684ba55d8e39f0.camel@perches.com>
+In-Reply-To: <1592229357-1904-1-git-send-email-zhangfei.gao@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:05:27PM -0700, Joe Perches wrote:
-> On Tue, 2020-06-16 at 15:45 +0200, Petr Mladek wrote:
-> > On Sat 2020-06-13 09:57:34, Jim Cromie wrote:
-> > > There are *lots* of ad-hoc debug printing solutions in kernel,
-> > > this is a 1st attempt at providing a common mechanism for many of them.
-> > 
-> > I agree that it might make sense to provide some common mechanism.
-> []
-> > My problem with this approach is that it is too generic. Each class
-> > would have different meaning in each subsystem.
-> > 
-> > It might help to replace any existing variants. But it would be hard
-> > for developers debugging the code. They would need to study/remember
-> > the meaning of these groups for particular subsystems. They would
-> > need to set different values for different messages.
-> > 
-> > Could you please provide more details about the potential users?
-> > Would be possible to find some common patterns and common
-> > meaning of the groups?
+On Mon, Jun 15, 2020 at 09:55:57PM +0800, Zhangfei Gao wrote:
+> Fix NULL pointer error if removing uacce's parent module during app's
+> running. SIGBUS is already reported by do_page_fault, so uacce_vma_fault
+> is not needed. If providing vma_fault, vmf->page has to be filled as well,
+> required by __do_fault.
 > 
-> I doubt the utility of common patterns.
-> Verbosity is common but groupings are not.
+> Reported-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+
+> ---
+>  drivers/misc/uacce/uacce.c | 9 ---------
+>  1 file changed, 9 deletions(-)
 > 
-> Look at the DRM patterns vs other groups.
-
-I've seen drm.debug mentioned a couple of times but the comments about
-it seem to only learn part of what is shows us.
-
-drm.debug is a form of common grouping but it acts at a sub-system level
-rather then whole system (and gives a whole sub-system enable/disable).
-This is where grouping makes most sense.
-
-The result is that drm.debug is easy to document, both in official
-kernel docs and in other resources (like the arch distro documentation).
-Having controls that are easy to document makes them easy to find and
-thus sub-system grouping leads directly to higher quality bug reports.
-
-
-Daniel.
+> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> index 107028e..aa91f69 100644
+> --- a/drivers/misc/uacce/uacce.c
+> +++ b/drivers/misc/uacce/uacce.c
+> @@ -179,14 +179,6 @@ static int uacce_fops_release(struct inode *inode, struct file *filep)
+>  	return 0;
+>  }
+>  
+> -static vm_fault_t uacce_vma_fault(struct vm_fault *vmf)
+> -{
+> -	if (vmf->flags & (FAULT_FLAG_MKWRITE | FAULT_FLAG_WRITE))
+> -		return VM_FAULT_SIGBUS;
+> -
+> -	return 0;
+> -}
+> -
+>  static void uacce_vma_close(struct vm_area_struct *vma)
+>  {
+>  	struct uacce_queue *q = vma->vm_private_data;
+> @@ -199,7 +191,6 @@ static void uacce_vma_close(struct vm_area_struct *vma)
+>  }
+>  
+>  static const struct vm_operations_struct uacce_vm_ops = {
+> -	.fault = uacce_vma_fault,
+>  	.close = uacce_vma_close,
+>  };
+>  
+> -- 
+> 2.7.4
+> 
