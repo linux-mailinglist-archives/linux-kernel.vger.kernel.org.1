@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D47F1FD2F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654B01FD304
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgFQQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:55:46 -0400
-Received: from muru.com ([72.249.23.125]:58134 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726959AbgFQQzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:55:45 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 7191880F3;
-        Wed, 17 Jun 2020 16:56:36 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 09:55:41 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, jkridner@beagleboard.org,
-        robertcnelson@gmail.com
-Subject: Re: [PATCH] ARM: dts: AM33xx-l4: add gpio-ranges
-Message-ID: <20200617165541.GH37466@atomide.com>
-References: <20200602131428.GA496390@x1>
- <803e2d78-28ba-0816-dbb5-d441d7659a91@ti.com>
- <20200602135155.GE37466@atomide.com>
- <20200602163458.GA847883@x1>
- <20200617162740.GA4181112@x1>
+        id S1726868AbgFQRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:00:28 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:45535 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgFQRA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 13:00:27 -0400
+Received: by mail-io1-f66.google.com with SMTP id y5so3539593iob.12;
+        Wed, 17 Jun 2020 10:00:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fki83yGjWsSUmt5apeBY0MavNHGcAOsj5zPBT6SYQlg=;
+        b=RxVko4lKqgYT404Yy2CS5s0faIFcm7r1ieELqICtaxQJmaKGqG2rMOMZ9WkuJ+jJw9
+         JcWCwcdW8YaN6kdSjwTuekW6BheUYHQkg1XEi9fckLxejf4uidJsqXapN0k6QKkQsd/J
+         YkI+R9J8CmixQL4YwNZJYi8FYR51V+AjHPNX/9izocWU2/HaMD548WCuJ0meaGeHIvym
+         fHKgnVaj6JfNt1AkN5TTfy8YBwvA9qRpsZ3WQ8tM5wkhDXaUKGmZqMJmJSRvbqT0InHh
+         GNodGE39l0BoSeoaJ/Ewwdu5MMiyXVKtjxcNSQJ52MTE0CqsAmJBwp2zEQEmSaiXXVJj
+         MAiw==
+X-Gm-Message-State: AOAM530grw4D4fhe7aQ4JX5uItWR4onxUXnCn1nk7/8zH1HmmVz2PyOA
+        YZUKmQq0gXMGtI2HboVY3A==
+X-Google-Smtp-Source: ABdhPJx+p0Qee6x37cKl8Eb4FOZ43dbLofGKP87bW/hSWuvOLKjm3DEF+vk9a5mWaReVwREnPvpVIQ==
+X-Received: by 2002:a6b:440d:: with SMTP id r13mr310698ioa.95.1592413226572;
+        Wed, 17 Jun 2020 10:00:26 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id n4sm246839ioc.8.2020.06.17.10.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 10:00:25 -0700 (PDT)
+Received: (nullmailer pid 2303368 invoked by uid 1000);
+        Wed, 17 Jun 2020 17:00:24 -0000
+Date:   Wed, 17 Jun 2020 11:00:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     shawnguo@kernel.org, ulf.hansson@linaro.org,
+        devicetree@vger.kernel.org, s.hauer@pengutronix.de,
+        Linux-imx@nxp.com, robh+dt@kernel.org, festevam@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH V3] dt-bindings: mmc: Convert imx esdhc to json-schema
+Message-ID: <20200617170024.GA2301944@bogus>
+References: <1592278549-32283-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617162740.GA4181112@x1>
+In-Reply-To: <1592278549-32283-1-git-send-email-Anson.Huang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [200617 16:28]:
-> These gpio-ranges are correct for all the platforms that included
-> am33xx-l4.dtsi.
+On Tue, 16 Jun 2020 11:35:49 +0800, Anson Huang wrote:
+> Convert the i.MX ESDHC binding to DT schema format using json-schema
 > 
-> I think it makes sense to add gpio-ranges properties as they describe
-> the relationship between a gpio line and pin control register that
-> exists in the hardware.
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> Changes since V2:
+> 	- fix typo of "dealy" to "delay";
+> 	- remove unused "Several ranges could be specified." in voltage-ranges which contradicts
+> 	  the min/max items.
+> ---
+>  .../devicetree/bindings/mmc/fsl-imx-esdhc.txt      |  67 -----------
+>  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     | 124 +++++++++++++++++++++
+>  2 files changed, 124 insertions(+), 67 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
+>  create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
 > 
-> Are there changes you would like to see in this patch?
 
-Looks good to me, will apply when I'm done with the fixes
-now that we have -rc1 out.
 
-Regards,
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Tony
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx35-clock.example.dt.yaml: esdhc@53fb4000: $nodename:0: 'esdhc@53fb4000' does not match '^mmc(@.*)?$'
+
+
+See https://patchwork.ozlabs.org/patch/1309972
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
