@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186991FD4A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4631FD494
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgFQSeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:34:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18900 "EHLO mga11.intel.com"
+        id S1727884AbgFQS2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:28:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18905 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727039AbgFQSeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:34:19 -0400
-IronPort-SDR: WS5OSw73foEC+K2mhH2vQmKD/CUka14cZ/ivXv47D2qx33kuNXihE+z9yKxW+AGvZOSH7MpMYb
- /P+oYtFfZHeA==
+        id S1727892AbgFQS2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 14:28:19 -0400
+IronPort-SDR: uVouwTRdnXBLjZWNwh9gi5k2B6f3ezNjv3yXgJDkd3x/RxKjQ+yujFBreQIYPO0hQ53R3+ba9O
+ Mv+aX2SASQ/Q==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 11:24:14 -0700
-IronPort-SDR: dB4y8dTS15XIMfcw/cn2ZcjgZ1e+RE5qqdu5nu0mECwHN63YJ98wfhksNX4Cm35ikX0uNQerGK
- JLb6og6cGIKQ==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 11:24:15 -0700
+IronPort-SDR: Ab65Fw9gvNInORh3ooypDAioQvf3MIBaXkBtJ3QXtqJcl6OBpzs99jqEwGC3rHi2JTVIHxgbhd
+ PHmreeRkGmHQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
-   d="scan'208";a="308874138"
+   d="scan'208";a="308874160"
 Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2020 11:24:13 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2020 11:24:15 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
 To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
@@ -43,9 +43,9 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v3 01/13] iommu: Change type of pasid to unsigned int
-Date:   Wed, 17 Jun 2020 11:23:41 -0700
-Message-Id: <1592418233-17762-2-git-send-email-fenghua.yu@intel.com>
+Subject: [PATCH v3 04/13] docs: x86: Add documentation for SVA (Shared Virtual Addressing)
+Date:   Wed, 17 Jun 2020 11:23:44 -0700
+Message-Id: <1592418233-17762-5-git-send-email-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.5.0
 In-Reply-To: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
 References: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
@@ -54,942 +54,333 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PASID is defined as a few different types in iommu including "int",
-"u32", and "unsigned int". To be consistent and to match with ioasid's
-type, define PASID and its variations (e.g. max PASID) as "unsigned int".
+From: Ashok Raj <ashok.raj@intel.com>
 
-No PASID type change in uapi.
+ENQCMD and Data Streaming Accelerator (DSA) and all of their associated
+features are a complicated stack with lots of interconnected pieces.
+This documentation provides a big picture overview for all of the
+features.
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
+v3:
+- Replace deprecated intel_svm_bind_mm() by iommu_sva_bind_mm() (Baolu)
+- Fix a couple of typos (Baolu)
+
 v2:
-- Create this new patch to define PASID as "unsigned int" consistently in
-  iommu (Thomas)
+- Fix the doc format and add the doc in toctree (Thomas)
+- Modify the doc for better description (Thomas, Tony, Dave)
 
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.c |  5 ++--
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h  |  2 +-
- drivers/iommu/amd/amd_iommu.h          | 13 ++++----
- drivers/iommu/amd/amd_iommu_types.h    | 12 ++++----
- drivers/iommu/amd/init.c               |  4 +--
- drivers/iommu/amd/iommu.c              | 41 ++++++++++++++------------
- drivers/iommu/amd/iommu_v2.c           | 22 +++++++-------
- drivers/iommu/intel/debugfs.c          |  2 +-
- drivers/iommu/intel/dmar.c             | 13 ++++----
- drivers/iommu/intel/intel-pasid.h      | 21 ++++++-------
- drivers/iommu/intel/iommu.c            |  4 +--
- drivers/iommu/intel/pasid.c            | 36 +++++++++++-----------
- drivers/iommu/intel/svm.c              | 12 ++++----
- drivers/iommu/iommu.c                  |  2 +-
- drivers/misc/uacce/uacce.c             |  2 +-
- include/linux/amd-iommu.h              |  9 +++---
- include/linux/intel-iommu.h            | 18 +++++------
- include/linux/intel-svm.h              |  2 +-
- include/linux/iommu.h                  |  8 ++---
- include/linux/uacce.h                  |  2 +-
- 20 files changed, 121 insertions(+), 109 deletions(-)
+ Documentation/x86/index.rst |   1 +
+ Documentation/x86/sva.rst   | 287 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 288 insertions(+)
+ create mode 100644 Documentation/x86/sva.rst
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-index 7c8786b9eb0a..703d23deca76 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-@@ -139,7 +139,8 @@ void kfd_iommu_unbind_process(struct kfd_process *p)
- }
- 
- /* Callback for process shutdown invoked by the IOMMU driver */
--static void iommu_pasid_shutdown_callback(struct pci_dev *pdev, int pasid)
-+static void iommu_pasid_shutdown_callback(struct pci_dev *pdev,
-+					  unsigned int pasid)
- {
- 	struct kfd_dev *dev = kfd_device_by_pci_dev(pdev);
- 	struct kfd_process *p;
-@@ -185,7 +186,7 @@ static void iommu_pasid_shutdown_callback(struct pci_dev *pdev, int pasid)
- }
- 
- /* This function called by IOMMU driver on PPR failure */
--static int iommu_invalid_ppr_cb(struct pci_dev *pdev, int pasid,
-+static int iommu_invalid_ppr_cb(struct pci_dev *pdev, unsigned int pasid,
- 		unsigned long address, u16 flags)
- {
- 	struct kfd_dev *dev;
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-index f0587d94294d..3c7d1f774afe 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@ -714,7 +714,7 @@ struct kfd_process {
- 	/* We want to receive a notification when the mm_struct is destroyed */
- 	struct mmu_notifier mmu_notifier;
- 
--	uint16_t pasid;
-+	unsigned int pasid;
- 	unsigned int doorbell_index;
- 
- 	/*
-diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
-index f892992c8744..0914b5b6f879 100644
---- a/drivers/iommu/amd/amd_iommu.h
-+++ b/drivers/iommu/amd/amd_iommu.h
-@@ -45,12 +45,13 @@ extern int amd_iommu_register_ppr_notifier(struct notifier_block *nb);
- extern int amd_iommu_unregister_ppr_notifier(struct notifier_block *nb);
- extern void amd_iommu_domain_direct_map(struct iommu_domain *dom);
- extern int amd_iommu_domain_enable_v2(struct iommu_domain *dom, int pasids);
--extern int amd_iommu_flush_page(struct iommu_domain *dom, int pasid,
-+extern int amd_iommu_flush_page(struct iommu_domain *dom, unsigned int pasid,
- 				u64 address);
--extern int amd_iommu_flush_tlb(struct iommu_domain *dom, int pasid);
--extern int amd_iommu_domain_set_gcr3(struct iommu_domain *dom, int pasid,
--				     unsigned long cr3);
--extern int amd_iommu_domain_clear_gcr3(struct iommu_domain *dom, int pasid);
-+extern int amd_iommu_flush_tlb(struct iommu_domain *dom, unsigned int pasid);
-+extern int amd_iommu_domain_set_gcr3(struct iommu_domain *dom,
-+				     unsigned int pasid, unsigned long cr3);
-+extern int amd_iommu_domain_clear_gcr3(struct iommu_domain *dom,
-+				       unsigned int pasid);
- extern struct iommu_domain *amd_iommu_get_v2_domain(struct pci_dev *pdev);
- 
- #ifdef CONFIG_IRQ_REMAP
-@@ -66,7 +67,7 @@ static inline int amd_iommu_create_irq_domain(struct amd_iommu *iommu)
- #define PPR_INVALID			0x1
- #define PPR_FAILURE			0xf
- 
--extern int amd_iommu_complete_ppr(struct pci_dev *pdev, int pasid,
-+extern int amd_iommu_complete_ppr(struct pci_dev *pdev, unsigned int pasid,
- 				  int status, int tag);
- 
- static inline bool is_rd890_iommu(struct pci_dev *pdev)
-diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index 30a5d412255a..d395931b2232 100644
---- a/drivers/iommu/amd/amd_iommu_types.h
-+++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -443,11 +443,11 @@ extern struct kmem_cache *amd_iommu_irq_cache;
-  * incoming PPR faults around.
-  */
- struct amd_iommu_fault {
--	u64 address;    /* IO virtual address of the fault*/
--	u32 pasid;      /* Address space identifier */
--	u16 device_id;  /* Originating PCI device id */
--	u16 tag;        /* PPR tag */
--	u16 flags;      /* Fault flags */
-+	u64 address;		/* IO virtual address of the fault*/
-+	unsigned int pasid;	/* Address space identifier */
-+	u16 device_id;		/* Originating PCI device id */
-+	u16 tag;		/* PPR tag */
-+	u16 flags;		/* Fault flags */
- 
- };
- 
-@@ -745,7 +745,7 @@ extern unsigned long *amd_iommu_pd_alloc_bitmap;
- extern bool amd_iommu_unmap_flush;
- 
- /* Smallest max PASID supported by any IOMMU in the system */
--extern u32 amd_iommu_max_pasid;
-+extern unsigned int amd_iommu_max_pasid;
- 
- extern bool amd_iommu_v2_present;
- 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 6ebd4825e320..fbf5dd1d3eab 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -172,7 +172,7 @@ static int amd_iommus_present;
- bool amd_iommu_np_cache __read_mostly;
- bool amd_iommu_iotlb_sup __read_mostly = true;
- 
--u32 amd_iommu_max_pasid __read_mostly = ~0;
-+unsigned int amd_iommu_max_pasid __read_mostly = ~0;
- 
- bool amd_iommu_v2_present __read_mostly;
- static bool amd_iommu_pc_present __read_mostly;
-@@ -1750,7 +1750,7 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
- 
- 	if (iommu_feature(iommu, FEATURE_GT)) {
- 		int glxval;
--		u32 max_pasid;
-+		unsigned int max_pasid;
- 		u64 pasmax;
- 
- 		pasmax = iommu->features & FEATURE_PASID_MASK;
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 74cca1757172..32999adbbd46 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -502,7 +502,8 @@ static void amd_iommu_report_page_fault(u16 devid, u16 domain_id,
- static void iommu_print_event(struct amd_iommu *iommu, void *__evt)
- {
- 	struct device *dev = iommu->iommu.dev;
--	int type, devid, pasid, flags, tag;
-+	int type, devid, flags, tag;
-+	unsigned int pasid;
- 	volatile u32 *event = __evt;
- 	int count = 0;
- 	u64 address;
-@@ -898,8 +899,8 @@ static void build_inv_iotlb_pages(struct iommu_cmd *cmd, u16 devid, int qdep,
- 		cmd->data[2] |= CMD_INV_IOMMU_PAGES_SIZE_MASK;
- }
- 
--static void build_inv_iommu_pasid(struct iommu_cmd *cmd, u16 domid, int pasid,
--				  u64 address, bool size)
-+static void build_inv_iommu_pasid(struct iommu_cmd *cmd, u16 domid,
-+				  unsigned int pasid, u64 address, bool size)
- {
- 	memset(cmd, 0, sizeof(*cmd));
- 
-@@ -916,8 +917,9 @@ static void build_inv_iommu_pasid(struct iommu_cmd *cmd, u16 domid, int pasid,
- 	CMD_SET_TYPE(cmd, CMD_INV_IOMMU_PAGES);
- }
- 
--static void build_inv_iotlb_pasid(struct iommu_cmd *cmd, u16 devid, int pasid,
--				  int qdep, u64 address, bool size)
-+static void build_inv_iotlb_pasid(struct iommu_cmd *cmd, u16 devid,
-+				  unsigned int pasid, int qdep, u64 address,
-+				  bool size)
- {
- 	memset(cmd, 0, sizeof(*cmd));
- 
-@@ -936,8 +938,8 @@ static void build_inv_iotlb_pasid(struct iommu_cmd *cmd, u16 devid, int pasid,
- 	CMD_SET_TYPE(cmd, CMD_INV_IOTLB_PAGES);
- }
- 
--static void build_complete_ppr(struct iommu_cmd *cmd, u16 devid, int pasid,
--			       int status, int tag, bool gn)
-+static void build_complete_ppr(struct iommu_cmd *cmd, u16 devid,
-+			       unsigned int pasid, int status, int tag, bool gn)
- {
- 	memset(cmd, 0, sizeof(*cmd));
- 
-@@ -2772,7 +2774,7 @@ int amd_iommu_domain_enable_v2(struct iommu_domain *dom, int pasids)
- }
- EXPORT_SYMBOL(amd_iommu_domain_enable_v2);
- 
--static int __flush_pasid(struct protection_domain *domain, int pasid,
-+static int __flush_pasid(struct protection_domain *domain, unsigned int pasid,
- 			 u64 address, bool size)
- {
- 	struct iommu_dev_data *dev_data;
-@@ -2833,13 +2835,13 @@ static int __flush_pasid(struct protection_domain *domain, int pasid,
- 	return ret;
- }
- 
--static int __amd_iommu_flush_page(struct protection_domain *domain, int pasid,
--				  u64 address)
-+static int __amd_iommu_flush_page(struct protection_domain *domain,
-+				  unsigned int pasid, u64 address)
- {
- 	return __flush_pasid(domain, pasid, address, false);
- }
- 
--int amd_iommu_flush_page(struct iommu_domain *dom, int pasid,
-+int amd_iommu_flush_page(struct iommu_domain *dom, unsigned int pasid,
- 			 u64 address)
- {
- 	struct protection_domain *domain = to_pdomain(dom);
-@@ -2854,13 +2856,14 @@ int amd_iommu_flush_page(struct iommu_domain *dom, int pasid,
- }
- EXPORT_SYMBOL(amd_iommu_flush_page);
- 
--static int __amd_iommu_flush_tlb(struct protection_domain *domain, int pasid)
-+static int __amd_iommu_flush_tlb(struct protection_domain *domain,
-+				 unsigned int pasid)
- {
- 	return __flush_pasid(domain, pasid, CMD_INV_IOMMU_ALL_PAGES_ADDRESS,
- 			     true);
- }
- 
--int amd_iommu_flush_tlb(struct iommu_domain *dom, int pasid)
-+int amd_iommu_flush_tlb(struct iommu_domain *dom, unsigned int pasid)
- {
- 	struct protection_domain *domain = to_pdomain(dom);
- 	unsigned long flags;
-@@ -2874,7 +2877,7 @@ int amd_iommu_flush_tlb(struct iommu_domain *dom, int pasid)
- }
- EXPORT_SYMBOL(amd_iommu_flush_tlb);
- 
--static u64 *__get_gcr3_pte(u64 *root, int level, int pasid, bool alloc)
-+static u64 *__get_gcr3_pte(u64 *root, int level, unsigned int pasid, bool alloc)
- {
- 	int index;
- 	u64 *pte;
-@@ -2906,7 +2909,7 @@ static u64 *__get_gcr3_pte(u64 *root, int level, int pasid, bool alloc)
- 	return pte;
- }
- 
--static int __set_gcr3(struct protection_domain *domain, int pasid,
-+static int __set_gcr3(struct protection_domain *domain, unsigned int pasid,
- 		      unsigned long cr3)
- {
- 	struct domain_pgtable pgtable;
-@@ -2925,7 +2928,7 @@ static int __set_gcr3(struct protection_domain *domain, int pasid,
- 	return __amd_iommu_flush_tlb(domain, pasid);
- }
- 
--static int __clear_gcr3(struct protection_domain *domain, int pasid)
-+static int __clear_gcr3(struct protection_domain *domain, unsigned int pasid)
- {
- 	struct domain_pgtable pgtable;
- 	u64 *pte;
-@@ -2943,7 +2946,7 @@ static int __clear_gcr3(struct protection_domain *domain, int pasid)
- 	return __amd_iommu_flush_tlb(domain, pasid);
- }
- 
--int amd_iommu_domain_set_gcr3(struct iommu_domain *dom, int pasid,
-+int amd_iommu_domain_set_gcr3(struct iommu_domain *dom, unsigned int pasid,
- 			      unsigned long cr3)
- {
- 	struct protection_domain *domain = to_pdomain(dom);
-@@ -2958,7 +2961,7 @@ int amd_iommu_domain_set_gcr3(struct iommu_domain *dom, int pasid,
- }
- EXPORT_SYMBOL(amd_iommu_domain_set_gcr3);
- 
--int amd_iommu_domain_clear_gcr3(struct iommu_domain *dom, int pasid)
-+int amd_iommu_domain_clear_gcr3(struct iommu_domain *dom, unsigned int pasid)
- {
- 	struct protection_domain *domain = to_pdomain(dom);
- 	unsigned long flags;
-@@ -2972,7 +2975,7 @@ int amd_iommu_domain_clear_gcr3(struct iommu_domain *dom, int pasid)
- }
- EXPORT_SYMBOL(amd_iommu_domain_clear_gcr3);
- 
--int amd_iommu_complete_ppr(struct pci_dev *pdev, int pasid,
-+int amd_iommu_complete_ppr(struct pci_dev *pdev, unsigned int pasid,
- 			   int status, int tag)
- {
- 	struct iommu_dev_data *dev_data;
-diff --git a/drivers/iommu/amd/iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
-index e4b025c5637c..21dd53054acb 100644
---- a/drivers/iommu/amd/iommu_v2.c
-+++ b/drivers/iommu/amd/iommu_v2.c
-@@ -40,7 +40,7 @@ struct pasid_state {
- 	struct mmu_notifier mn;                 /* mmu_notifier handle */
- 	struct pri_queue pri[PRI_QUEUE_SIZE];	/* PRI tag states */
- 	struct device_state *device_state;	/* Link to our device_state */
--	int pasid;				/* PASID index */
-+	unsigned int pasid;			/* PASID index */
- 	bool invalid;				/* Used during setup and
- 						   teardown of the pasid */
- 	spinlock_t lock;			/* Protect pri_queues and
-@@ -70,7 +70,7 @@ struct fault {
- 	struct mm_struct *mm;
- 	u64 address;
- 	u16 devid;
--	u16 pasid;
-+	unsigned int pasid;
- 	u16 tag;
- 	u16 finish;
- 	u16 flags;
-@@ -150,7 +150,8 @@ static void put_device_state(struct device_state *dev_state)
- 
- /* Must be called under dev_state->lock */
- static struct pasid_state **__get_pasid_state_ptr(struct device_state *dev_state,
--						  int pasid, bool alloc)
-+						  unsigned int pasid,
-+						  bool alloc)
- {
- 	struct pasid_state **root, **ptr;
- 	int level, index;
-@@ -184,7 +185,7 @@ static struct pasid_state **__get_pasid_state_ptr(struct device_state *dev_state
- 
- static int set_pasid_state(struct device_state *dev_state,
- 			   struct pasid_state *pasid_state,
--			   int pasid)
-+			   unsigned int pasid)
- {
- 	struct pasid_state **ptr;
- 	unsigned long flags;
-@@ -211,7 +212,8 @@ static int set_pasid_state(struct device_state *dev_state,
- 	return ret;
- }
- 
--static void clear_pasid_state(struct device_state *dev_state, int pasid)
-+static void clear_pasid_state(struct device_state *dev_state,
-+			      unsigned int pasid)
- {
- 	struct pasid_state **ptr;
- 	unsigned long flags;
-@@ -229,7 +231,7 @@ static void clear_pasid_state(struct device_state *dev_state, int pasid)
- }
- 
- static struct pasid_state *get_pasid_state(struct device_state *dev_state,
--					   int pasid)
-+					   unsigned int pasid)
- {
- 	struct pasid_state **ptr, *ret = NULL;
- 	unsigned long flags;
-@@ -594,7 +596,7 @@ static struct notifier_block ppr_nb = {
- 	.notifier_call = ppr_notifier,
- };
- 
--int amd_iommu_bind_pasid(struct pci_dev *pdev, int pasid,
-+int amd_iommu_bind_pasid(struct pci_dev *pdev, unsigned int pasid,
- 			 struct task_struct *task)
- {
- 	struct pasid_state *pasid_state;
-@@ -615,7 +617,7 @@ int amd_iommu_bind_pasid(struct pci_dev *pdev, int pasid,
- 		return -EINVAL;
- 
- 	ret = -EINVAL;
--	if (pasid < 0 || pasid >= dev_state->max_pasids)
-+	if (pasid >= dev_state->max_pasids)
- 		goto out;
- 
- 	ret = -ENOMEM;
-@@ -679,7 +681,7 @@ int amd_iommu_bind_pasid(struct pci_dev *pdev, int pasid,
- }
- EXPORT_SYMBOL(amd_iommu_bind_pasid);
- 
--void amd_iommu_unbind_pasid(struct pci_dev *pdev, int pasid)
-+void amd_iommu_unbind_pasid(struct pci_dev *pdev, unsigned int pasid)
- {
- 	struct pasid_state *pasid_state;
- 	struct device_state *dev_state;
-@@ -695,7 +697,7 @@ void amd_iommu_unbind_pasid(struct pci_dev *pdev, int pasid)
- 	if (dev_state == NULL)
- 		return;
- 
--	if (pasid < 0 || pasid >= dev_state->max_pasids)
-+	if (pasid >= dev_state->max_pasids)
- 		goto out;
- 
- 	pasid_state = get_pasid_state(dev_state, pasid);
-diff --git a/drivers/iommu/intel/debugfs.c b/drivers/iommu/intel/debugfs.c
-index cf1ebb98e418..f3b99ed8ee92 100644
---- a/drivers/iommu/intel/debugfs.c
-+++ b/drivers/iommu/intel/debugfs.c
-@@ -20,7 +20,7 @@
- struct tbl_walk {
- 	u16 bus;
- 	u16 devfn;
--	u32 pasid;
-+	unsigned int pasid;
- 	struct root_entry *rt_entry;
- 	struct context_entry *ctx_entry;
- 	struct pasid_entry *pasid_tbl_entry;
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index cc46dff98fa0..805c02584df5 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1395,8 +1395,8 @@ void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
- }
- 
- /* PASID-based IOTLB invalidation */
--void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
--		     unsigned long npages, bool ih)
-+void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, unsigned int pasid,
-+		     u64 addr, unsigned long npages, bool ih)
- {
- 	struct qi_desc desc = {.qw2 = 0, .qw3 = 0};
- 
-@@ -1437,7 +1437,7 @@ void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
- 
- /* PASID-based device IOTLB Invalidate */
- void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
--			      u32 pasid,  u16 qdep, u64 addr,
-+			      unsigned int pasid,  u16 qdep, u64 addr,
- 			      unsigned int size_order, u64 granu)
- {
- 	unsigned long mask = 1UL << (VTD_PAGE_SHIFT + size_order - 1);
-@@ -1465,7 +1465,7 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
- }
- 
- void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did,
--			  u64 granu, int pasid)
-+			  u64 granu, unsigned int pasid)
- {
- 	struct qi_desc desc = {.qw1 = 0, .qw2 = 0, .qw3 = 0};
- 
-@@ -1779,7 +1779,7 @@ void dmar_msi_read(int irq, struct msi_msg *msg)
- }
- 
- static int dmar_fault_do_one(struct intel_iommu *iommu, int type,
--		u8 fault_reason, int pasid, u16 source_id,
-+		u8 fault_reason, unsigned int pasid, u16 source_id,
- 		unsigned long long addr)
- {
- 	const char *reason;
-@@ -1826,10 +1826,11 @@ irqreturn_t dmar_fault(int irq, void *dev_id)
- 	while (1) {
- 		/* Disable printing, simply clear the fault when ratelimited */
- 		bool ratelimited = !__ratelimit(&rs);
-+		unsigned int pasid;
- 		u8 fault_reason;
- 		u16 source_id;
- 		u64 guest_addr;
--		int type, pasid;
-+		int type;
- 		u32 data;
- 		bool pasid_present;
- 
-diff --git a/drivers/iommu/intel/intel-pasid.h b/drivers/iommu/intel/intel-pasid.h
-index c5318d40e0fa..fe9e9ac3b97e 100644
---- a/drivers/iommu/intel/intel-pasid.h
-+++ b/drivers/iommu/intel/intel-pasid.h
-@@ -72,7 +72,7 @@ struct pasid_entry {
- struct pasid_table {
- 	void			*table;		/* pasid table pointer */
- 	int			order;		/* page order of pasid table */
--	int			max_pasid;	/* max pasid */
-+	unsigned int		max_pasid;	/* max pasid */
- 	struct list_head	dev;		/* device list */
- };
- 
-@@ -98,30 +98,31 @@ static inline bool pasid_pte_is_present(struct pasid_entry *pte)
- 	return READ_ONCE(pte->val[0]) & PASID_PTE_PRESENT;
- }
- 
--extern u32 intel_pasid_max_id;
-+extern unsigned int intel_pasid_max_id;
- int intel_pasid_alloc_id(void *ptr, int start, int end, gfp_t gfp);
--void intel_pasid_free_id(int pasid);
--void *intel_pasid_lookup_id(int pasid);
-+void intel_pasid_free_id(unsigned int pasid);
-+void *intel_pasid_lookup_id(unsigned int pasid);
- int intel_pasid_alloc_table(struct device *dev);
- void intel_pasid_free_table(struct device *dev);
- struct pasid_table *intel_pasid_get_table(struct device *dev);
- int intel_pasid_get_dev_max_id(struct device *dev);
--struct pasid_entry *intel_pasid_get_entry(struct device *dev, int pasid);
-+struct pasid_entry *intel_pasid_get_entry(struct device *dev,
-+					  unsigned int pasid);
- int intel_pasid_setup_first_level(struct intel_iommu *iommu,
- 				  struct device *dev, pgd_t *pgd,
--				  int pasid, u16 did, int flags);
-+				  unsigned int pasid, u16 did, int flags);
- int intel_pasid_setup_second_level(struct intel_iommu *iommu,
- 				   struct dmar_domain *domain,
--				   struct device *dev, int pasid);
-+				   struct device *dev, unsigned int pasid);
- int intel_pasid_setup_pass_through(struct intel_iommu *iommu,
- 				   struct dmar_domain *domain,
--				   struct device *dev, int pasid);
-+				   struct device *dev, unsigned int pasid);
- int intel_pasid_setup_nested(struct intel_iommu *iommu,
--			     struct device *dev, pgd_t *pgd, int pasid,
-+			     struct device *dev, pgd_t *pgd, unsigned int pasid,
- 			     struct iommu_gpasid_bind_data_vtd *pasid_data,
- 			     struct dmar_domain *domain, int addr_width);
- void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
--				 struct device *dev, int pasid,
-+				 struct device *dev, unsigned int pasid,
- 				 bool fault_ignore);
- int vcmd_alloc_pasid(struct intel_iommu *iommu, unsigned int *pasid);
- void vcmd_free_pasid(struct intel_iommu *iommu, unsigned int pasid);
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 9129663a7406..5a6f85d645c6 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2469,7 +2469,7 @@ dmar_search_domain_by_dev_info(int segment, int bus, int devfn)
- static int domain_setup_first_level(struct intel_iommu *iommu,
- 				    struct dmar_domain *domain,
- 				    struct device *dev,
--				    int pasid)
-+				    unsigned int pasid)
- {
- 	int flags = PASID_FLAG_SUPERVISOR_MODE;
- 	struct dma_pte *pgd = domain->pgd;
-@@ -5147,7 +5147,7 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
- 		return -ENODEV;
- 
- 	if (domain->default_pasid <= 0) {
--		int pasid;
-+		unsigned int pasid;
- 
- 		/* No private data needed for the default pasid */
- 		pasid = ioasid_alloc(NULL, PASID_MIN,
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index c81f0f17c6ba..8a98b68c1c87 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -25,7 +25,7 @@
-  * Intel IOMMU system wide PASID name space:
-  */
- static DEFINE_SPINLOCK(pasid_lock);
--u32 intel_pasid_max_id = PASID_MAX;
-+unsigned int intel_pasid_max_id = PASID_MAX;
- 
- int vcmd_alloc_pasid(struct intel_iommu *iommu, unsigned int *pasid)
- {
-@@ -146,7 +146,7 @@ int intel_pasid_alloc_table(struct device *dev)
- 	struct pasid_table *pasid_table;
- 	struct pasid_table_opaque data;
- 	struct page *pages;
--	int max_pasid = 0;
-+	unsigned int max_pasid = 0;
- 	int ret, order;
- 	int size;
- 
-@@ -168,7 +168,7 @@ int intel_pasid_alloc_table(struct device *dev)
- 	INIT_LIST_HEAD(&pasid_table->dev);
- 
- 	if (info->pasid_supported)
--		max_pasid = min_t(int, pci_max_pasids(to_pci_dev(dev)),
-+		max_pasid = min_t(unsigned int, pci_max_pasids(to_pci_dev(dev)),
- 				  intel_pasid_max_id);
- 
- 	size = max_pasid >> (PASID_PDE_SHIFT - 3);
-@@ -242,7 +242,8 @@ int intel_pasid_get_dev_max_id(struct device *dev)
- 	return info->pasid_table->max_pasid;
- }
- 
--struct pasid_entry *intel_pasid_get_entry(struct device *dev, int pasid)
-+struct pasid_entry *intel_pasid_get_entry(struct device *dev,
-+					  unsigned int pasid)
- {
- 	struct device_domain_info *info;
- 	struct pasid_table *pasid_table;
-@@ -251,8 +252,7 @@ struct pasid_entry *intel_pasid_get_entry(struct device *dev, int pasid)
- 	int dir_index, index;
- 
- 	pasid_table = intel_pasid_get_table(dev);
--	if (WARN_ON(!pasid_table || pasid < 0 ||
--		    pasid >= intel_pasid_get_dev_max_id(dev)))
-+	if (WARN_ON(!pasid_table || pasid >= intel_pasid_get_dev_max_id(dev)))
- 		return NULL;
- 
- 	dir = pasid_table->table;
-@@ -305,7 +305,8 @@ static inline void pasid_clear_entry_with_fpd(struct pasid_entry *pe)
- }
- 
- static void
--intel_pasid_clear_entry(struct device *dev, int pasid, bool fault_ignore)
-+intel_pasid_clear_entry(struct device *dev, unsigned int pasid,
-+			bool fault_ignore)
- {
- 	struct pasid_entry *pe;
- 
-@@ -444,7 +445,7 @@ pasid_set_eafe(struct pasid_entry *pe)
- 
- static void
- pasid_cache_invalidation_with_pasid(struct intel_iommu *iommu,
--				    u16 did, int pasid)
-+				    u16 did, unsigned int pasid)
- {
- 	struct qi_desc desc;
- 
-@@ -458,7 +459,8 @@ pasid_cache_invalidation_with_pasid(struct intel_iommu *iommu,
- }
- 
- static void
--iotlb_invalidation_with_pasid(struct intel_iommu *iommu, u16 did, u32 pasid)
-+iotlb_invalidation_with_pasid(struct intel_iommu *iommu, u16 did,
-+			      unsigned int pasid)
- {
- 	struct qi_desc desc;
- 
-@@ -473,7 +475,7 @@ iotlb_invalidation_with_pasid(struct intel_iommu *iommu, u16 did, u32 pasid)
- 
- static void
- devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
--			       struct device *dev, int pasid)
-+			       struct device *dev, unsigned int pasid)
- {
- 	struct device_domain_info *info;
- 	u16 sid, qdep, pfsid;
-@@ -490,7 +492,7 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- }
- 
- void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
--				 int pasid, bool fault_ignore)
-+				 unsigned int pasid, bool fault_ignore)
- {
- 	struct pasid_entry *pte;
- 	u16 did;
-@@ -514,8 +516,8 @@ void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
- }
- 
- static void pasid_flush_caches(struct intel_iommu *iommu,
--				struct pasid_entry *pte,
--				int pasid, u16 did)
-+			       struct pasid_entry *pte,
-+			       unsigned int pasid, u16 did)
- {
- 	if (!ecap_coherent(iommu->ecap))
- 		clflush_cache_range(pte, sizeof(*pte));
-@@ -534,7 +536,7 @@ static void pasid_flush_caches(struct intel_iommu *iommu,
-  */
- int intel_pasid_setup_first_level(struct intel_iommu *iommu,
- 				  struct device *dev, pgd_t *pgd,
--				  int pasid, u16 did, int flags)
-+				  unsigned int pasid, u16 did, int flags)
- {
- 	struct pasid_entry *pte;
- 
-@@ -607,7 +609,7 @@ static inline int iommu_skip_agaw(struct dmar_domain *domain,
-  */
- int intel_pasid_setup_second_level(struct intel_iommu *iommu,
- 				   struct dmar_domain *domain,
--				   struct device *dev, int pasid)
-+				   struct device *dev, unsigned int pasid)
- {
- 	struct pasid_entry *pte;
- 	struct dma_pte *pgd;
-@@ -665,7 +667,7 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
-  */
- int intel_pasid_setup_pass_through(struct intel_iommu *iommu,
- 				   struct dmar_domain *domain,
--				   struct device *dev, int pasid)
-+				   struct device *dev, unsigned int pasid)
- {
- 	u16 did = FLPT_DEFAULT_DID;
- 	struct pasid_entry *pte;
-@@ -751,7 +753,7 @@ intel_pasid_setup_bind_data(struct intel_iommu *iommu, struct pasid_entry *pte,
-  * @addr_width: Address width of the first level (guest)
-  */
- int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device *dev,
--			     pgd_t *gpgd, int pasid,
-+			     pgd_t *gpgd, unsigned int pasid,
- 			     struct iommu_gpasid_bind_data_vtd *pasid_data,
- 			     struct dmar_domain *domain, int addr_width)
- {
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 6c87c807a0ab..b5618341b4b1 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -23,7 +23,7 @@
- #include "intel-pasid.h"
- 
- static irqreturn_t prq_event_thread(int irq, void *d);
--static void intel_svm_drain_prq(struct device *dev, int pasid);
-+static void intel_svm_drain_prq(struct device *dev, unsigned int pasid);
- 
- #define PRQ_ORDER 0
- 
-@@ -371,7 +371,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	return ret;
- }
- 
--int intel_svm_unbind_gpasid(struct device *dev, int pasid)
-+int intel_svm_unbind_gpasid(struct device *dev, unsigned int pasid)
- {
- 	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
- 	struct intel_svm_dev *sdev;
-@@ -601,7 +601,7 @@ intel_svm_bind_mm(struct device *dev, int flags, struct svm_dev_ops *ops,
- }
- 
- /* Caller must hold pasid_mutex */
--static int intel_svm_unbind_mm(struct device *dev, int pasid)
-+static int intel_svm_unbind_mm(struct device *dev, unsigned int pasid)
- {
- 	struct intel_svm_dev *sdev;
- 	struct intel_iommu *iommu;
-@@ -728,7 +728,7 @@ static bool is_canonical_address(u64 addr)
-  * described in VT-d spec CH7.10 to drain all page requests and page
-  * responses pending in the hardware.
-  */
--static void intel_svm_drain_prq(struct device *dev, int pasid)
-+static void intel_svm_drain_prq(struct device *dev, unsigned int pasid)
- {
- 	struct device_domain_info *info;
- 	struct dmar_domain *domain;
-@@ -988,10 +988,10 @@ void intel_svm_unbind(struct iommu_sva *sva)
- 	mutex_unlock(&pasid_mutex);
- }
- 
--int intel_svm_get_pasid(struct iommu_sva *sva)
-+unsigned int intel_svm_get_pasid(struct iommu_sva *sva)
- {
- 	struct intel_svm_dev *sdev;
--	int pasid;
-+	unsigned int pasid;
- 
- 	mutex_lock(&pasid_mutex);
- 	sdev = to_intel_svm_dev(sva);
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d43120eb1dc5..aba136ac377d 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2828,7 +2828,7 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
- }
- EXPORT_SYMBOL_GPL(iommu_sva_unbind_device);
- 
--int iommu_sva_get_pasid(struct iommu_sva *handle)
-+unsigned int iommu_sva_get_pasid(struct iommu_sva *handle)
- {
- 	const struct iommu_ops *ops = handle->dev->bus->iommu_ops;
- 
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index 107028e77ca3..8a3686e689dc 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -92,7 +92,7 @@ static long uacce_fops_compat_ioctl(struct file *filep,
- 
- static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
- {
--	int pasid;
-+	unsigned int pasid;
- 	struct iommu_sva *handle;
- 
- 	if (!(uacce->flags & UACCE_DEV_SVA))
-diff --git a/include/linux/amd-iommu.h b/include/linux/amd-iommu.h
-index 21e950e4ab62..25387ab5a4f5 100644
---- a/include/linux/amd-iommu.h
-+++ b/include/linux/amd-iommu.h
-@@ -76,7 +76,7 @@ extern void amd_iommu_free_device(struct pci_dev *pdev);
-  *
-  * The function returns 0 on success or a negative value on error.
-  */
--extern int amd_iommu_bind_pasid(struct pci_dev *pdev, int pasid,
-+extern int amd_iommu_bind_pasid(struct pci_dev *pdev, unsigned int pasid,
- 				struct task_struct *task);
- 
- /**
-@@ -88,7 +88,7 @@ extern int amd_iommu_bind_pasid(struct pci_dev *pdev, int pasid,
-  * When this function returns the device is no longer using the PASID
-  * and the PASID is no longer bound to its task.
-  */
--extern void amd_iommu_unbind_pasid(struct pci_dev *pdev, int pasid);
-+extern void amd_iommu_unbind_pasid(struct pci_dev *pdev, unsigned int pasid);
- 
- /**
-  * amd_iommu_set_invalid_ppr_cb() - Register a call-back for failed
-@@ -114,7 +114,7 @@ extern void amd_iommu_unbind_pasid(struct pci_dev *pdev, int pasid);
- #define AMD_IOMMU_INV_PRI_RSP_FAIL	2
- 
- typedef int (*amd_iommu_invalid_ppr_cb)(struct pci_dev *pdev,
--					int pasid,
-+					unsigned int pasid,
- 					unsigned long address,
- 					u16);
- 
-@@ -166,7 +166,8 @@ extern int amd_iommu_device_info(struct pci_dev *pdev,
-  * @cb: The call-back function
-  */
- 
--typedef void (*amd_iommu_invalidate_ctx)(struct pci_dev *pdev, int pasid);
-+typedef void (*amd_iommu_invalidate_ctx)(struct pci_dev *pdev,
-+					 unsigned int pasid);
- 
- extern int amd_iommu_set_invalidate_ctx_cb(struct pci_dev *pdev,
- 					   amd_iommu_invalidate_ctx cb);
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 4100bd224f5c..44fa8879f829 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -549,7 +549,7 @@ struct dmar_domain {
- 					   2 == 1GiB, 3 == 512GiB, 4 == 1TiB */
- 	u64		max_addr;	/* maximum mapped address */
- 
--	int		default_pasid;	/*
-+	unsigned int	default_pasid;	/*
- 					 * The default pasid used for non-SVM
- 					 * traffic on mediated devices.
- 					 */
-@@ -699,14 +699,14 @@ extern void qi_flush_iotlb(struct intel_iommu *iommu, u16 did, u64 addr,
- extern void qi_flush_dev_iotlb(struct intel_iommu *iommu, u16 sid, u16 pfsid,
- 			u16 qdep, u64 addr, unsigned mask);
- 
--void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, u32 pasid, u64 addr,
--		     unsigned long npages, bool ih);
-+void qi_flush_piotlb(struct intel_iommu *iommu, u16 did, unsigned int pasid,
-+		     u64 addr, unsigned long npages, bool ih);
- 
- void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
--			      u32 pasid, u16 qdep, u64 addr,
-+			      unsigned int pasid, u16 qdep, u64 addr,
- 			      unsigned int size_order, u64 granu);
- void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did, u64 granu,
--			  int pasid);
-+			  unsigned int pasid);
- 
- int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
- 		   unsigned int count, unsigned long options);
-@@ -734,11 +734,11 @@ extern int intel_svm_enable_prq(struct intel_iommu *iommu);
- extern int intel_svm_finish_prq(struct intel_iommu *iommu);
- int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			  struct iommu_gpasid_bind_data *data);
--int intel_svm_unbind_gpasid(struct device *dev, int pasid);
-+int intel_svm_unbind_gpasid(struct device *dev, unsigned int pasid);
- struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct *mm,
- 				 void *drvdata);
- void intel_svm_unbind(struct iommu_sva *handle);
--int intel_svm_get_pasid(struct iommu_sva *handle);
-+unsigned int intel_svm_get_pasid(struct iommu_sva *handle);
- struct svm_dev_ops;
- 
- struct intel_svm_dev {
-@@ -747,7 +747,7 @@ struct intel_svm_dev {
- 	struct device *dev;
- 	struct svm_dev_ops *ops;
- 	struct iommu_sva sva;
--	int pasid;
-+	unsigned int pasid;
- 	int users;
- 	u16 did;
- 	u16 dev_iotlb:1;
-@@ -760,7 +760,7 @@ struct intel_svm {
- 
- 	struct intel_iommu *iommu;
- 	int flags;
--	int pasid;
-+	unsigned int pasid;
- 	int gpasid; /* In case that guest PASID is different from host PASID */
- 	struct list_head devs;
- 	struct list_head list;
-diff --git a/include/linux/intel-svm.h b/include/linux/intel-svm.h
-index c9e7e601950d..7ec24f19b7d3 100644
---- a/include/linux/intel-svm.h
-+++ b/include/linux/intel-svm.h
-@@ -11,7 +11,7 @@
- struct device;
- 
- struct svm_dev_ops {
--	void (*fault_cb)(struct device *dev, int pasid, u64 address,
-+	void (*fault_cb)(struct device *dev, unsigned int pasid, u64 address,
- 			 void *private, int rwxp, int response);
- };
- 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 5f0b7859d2eb..813961145679 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -292,7 +292,7 @@ struct iommu_ops {
- 	struct iommu_sva *(*sva_bind)(struct device *dev, struct mm_struct *mm,
- 				      void *drvdata);
- 	void (*sva_unbind)(struct iommu_sva *handle);
--	int (*sva_get_pasid)(struct iommu_sva *handle);
-+	unsigned int (*sva_get_pasid)(struct iommu_sva *handle);
- 
- 	int (*page_response)(struct device *dev,
- 			     struct iommu_fault_event *evt,
-@@ -302,7 +302,7 @@ struct iommu_ops {
- 	int (*sva_bind_gpasid)(struct iommu_domain *domain,
- 			struct device *dev, struct iommu_gpasid_bind_data *data);
- 
--	int (*sva_unbind_gpasid)(struct device *dev, int pasid);
-+	int (*sva_unbind_gpasid)(struct device *dev, unsigned int pasid);
- 
- 	int (*def_domain_type)(struct device *dev);
- 
-@@ -656,7 +656,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev,
- 					struct mm_struct *mm,
- 					void *drvdata);
- void iommu_sva_unbind_device(struct iommu_sva *handle);
--int iommu_sva_get_pasid(struct iommu_sva *handle);
-+unsigned int iommu_sva_get_pasid(struct iommu_sva *handle);
- 
- #else /* CONFIG_IOMMU_API */
- 
-@@ -1049,7 +1049,7 @@ static inline void iommu_sva_unbind_device(struct iommu_sva *handle)
- {
- }
- 
--static inline int iommu_sva_get_pasid(struct iommu_sva *handle)
-+static inline unsigned int iommu_sva_get_pasid(struct iommu_sva *handle)
- {
- 	return IOMMU_PASID_INVALID;
- }
-diff --git a/include/linux/uacce.h b/include/linux/uacce.h
-index 454c2f6672d7..667d7e691c0d 100644
---- a/include/linux/uacce.h
-+++ b/include/linux/uacce.h
-@@ -81,7 +81,7 @@ struct uacce_queue {
- 	struct list_head list;
- 	struct uacce_qfile_region *qfrs[UACCE_MAX_REGION];
- 	enum uacce_q_state state;
--	int pasid;
-+	unsigned int pasid;
- 	struct iommu_sva *handle;
- };
- 
+diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
+index 265d9e9a093b..e5d5ff096685 100644
+--- a/Documentation/x86/index.rst
++++ b/Documentation/x86/index.rst
+@@ -30,3 +30,4 @@ x86-specific Documentation
+    usb-legacy-support
+    i386/index
+    x86_64/index
++   sva
+diff --git a/Documentation/x86/sva.rst b/Documentation/x86/sva.rst
+new file mode 100644
+index 000000000000..7242a84169ef
+--- /dev/null
++++ b/Documentation/x86/sva.rst
+@@ -0,0 +1,287 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===========================================
++Shared Virtual Addressing (SVA) with ENQCMD
++===========================================
++
++Background
++==========
++
++Shared Virtual Addressing (SVA) allows the processor and device to use the
++same virtual addresses avoiding the need for software to translate virtual
++addresses to physical addresses. SVA is what PCIe calls Shared Virtual
++Memory (SVM)
++
++In addition to the convenience of using application virtual addresses
++by the device, it also doesn't require pinning pages for DMA.
++PCIe Address Translation Services (ATS) along with Page Request Interface
++(PRI) allow devices to function much the same way as the CPU handling
++application page-faults. For more information please refer to PCIe
++specification Chapter 10: ATS Specification.
++
++Use of SVA requires IOMMU support in the platform. IOMMU also is required
++to support PCIe features ATS and PRI. ATS allows devices to cache
++translations for the virtual address. IOMMU driver uses the mmu_notifier()
++support to keep the device tlb cache and the CPU cache in sync. PRI allows
++the device to request paging the virtual address before using if they are
++not paged in the CPU page tables.
++
++
++Shared Hardware Workqueues
++==========================
++
++Unlike Single Root I/O Virtualization (SRIOV), Scalable IOV (SIOV) permits
++the use of Shared Work Queues (SWQ) by both applications and Virtual
++Machines (VM's). This allows better hardware utilization vs. hard
++partitioning resources that could result in under utilization. In order to
++allow the hardware to distinguish the context for which work is being
++executed in the hardware by SWQ interface, SIOV uses Process Address Space
++ID (PASID), which is a 20bit number defined by the PCIe SIG.
++
++PASID value is encoded in all transactions from the device. This allows the
++IOMMU to track I/O on a per-PASID granularity in addition to using the PCIe
++Resource Identifier (RID) which is the Bus/Device/Function.
++
++
++ENQCMD
++======
++
++ENQCMD is a new instruction on Intel platforms that atomically submits a
++work descriptor to a device. The descriptor includes the operation to be
++performed, virtual addresses of all parameters, virtual address of a completion
++record, and the PASID (process address space ID) of the current process.
++
++ENQCMD works with non-posted semantics and carries a status back if the
++command was accepted by hardware. This allows the submitter to know if the
++submission needs to be retried or other device specific mechanisms to
++implement fairness or ensure forward progress can be made.
++
++ENQCMD is the glue that ensures applications can directly submit commands
++to the hardware and also permit hardware to be aware of application context
++to perform I/O operations via use of PASID.
++
++Process Address Space Tagging
++=============================
++
++A new thread scoped MSR (IA32_PASID) provides the connection between
++user processes and the rest of the hardware. When an application first
++accesses an SVA capable device this MSR is initialized with a newly
++allocated PASID. The driver for the device calls an IOMMU specific api
++that sets up the routing for DMA and page-requests.
++
++For example, the Intel Data Streaming Accelerator (DSA) uses
++iommu_sva_bind_device(), which will do the following.
++
++- Allocate the PASID, and program the process page-table (cr3) in the PASID
++  context entries.
++- Register for mmu_notifier() to track any page-table invalidations to keep
++  the device tlb in sync. For example, when a page-table entry is invalidated,
++  IOMMU propagates the invalidation to device tlb. This will force any
++  future access by the device to this virtual address to participate in
++  ATS. If the IOMMU responds with proper response that a page is not
++  present, the device would request the page to be paged in via the PCIe PRI
++  protocol before performing I/O.
++
++This MSR is managed with the XSAVE feature set as "supervisor state" to
++ensure the MSR is updated during context switch.
++
++PASID Management
++================
++
++The kernel must allocate a PASID on behalf of each process and program it
++into the new MSR to communicate the process identity to platform hardware.
++ENQCMD uses the PASID stored in this MSR to tag requests from this process.
++When a user submits a work descriptor to a device using the ENQCMD
++instruction, the PASID field in the descriptor is auto-filled with the
++value from MSR_IA32_PASID. Requests for DMA from the device are also tagged
++with the same PASID. The platform IOMMU uses the PASID in the transaction to
++perform address translation. The IOMMU api's setup the corresponding PASID
++entry in IOMMU with the process address used by the CPU (for e.g cr3 in x86).
++
++The MSR must be configured on each logical CPU before any application
++thread can interact with a device. Threads that belong to the same
++process share the same page tables, thus the same MSR value.
++
++PASID is cleared when a process is created. The PASID allocation and MSR
++programming may occur long after a process and its threads have been created.
++One thread must call bind() to allocate the PASID for the process. If a
++thread uses ENQCMD without the MSR first being populated, it will cause #GP.
++The kernel will fix up the #GP by writing the process-wide PASID into the
++thread that took the #GP. A single process PASID can be used simultaneously
++with multiple devices since they all share the same address space.
++
++New threads could inherit the MSR value from the parent. But this would
++involve additional state management for those threads which may never use
++ENQCMD. Clearing the MSR at thread creation permits all threads to have a
++consistent behavior; the PASID is only programmed when the thread calls
++the bind() api (iommu_sva_bind_device()()), or when a thread calls ENQCMD for
++the first time.
++
++PASID Lifecycle Management
++==========================
++
++Only processes that access SVA capable devices need to have a PASID
++allocated. This allocation happens when a process first opens an SVA
++capable device (subsequent opens of the same, or other devices will
++share the same PASID).
++
++Although the PASID is allocated to the process by opening a device,
++it is not active in any of the threads of that process. Activation is
++done lazily when a thread tries to submit a work descriptor to a device
++using the ENQCMD.
++
++That first access will trigger a #GP fault because the IA32_PASID MSR
++has not been initialized with the PASID value assigned to the process
++when the device was opened. The Linux #GP handler notes that a PASID as
++been allocated for the process, and so initializes the IA32_PASID MSR
++and returns so that the ENQCMD instruction is re-executed.
++
++On fork(2) or exec(2) the PASID is removed from the process as it no
++longer has the same address space that it had when the device was opened.
++
++On clone(2) the new task shares the same address space, so will be
++able to use the PASID allocated to the process. The IA32_PASID is not
++preemptively initialized as the kernel does not know whether this thread
++is going to access the device.
++
++On exit(2) the PASID is freed. The device driver ensures that any pending
++operations queued to the device are either completed or aborted before
++allowing the PASID to be reallocated.
++
++Relationships
++=============
++
++ * Each process has many threads, but only one PASID
++ * Devices have a limited number (~10's to 1000's) of hardware
++   workqueues and each portal maps down to a single workqueue.
++   The device driver manages allocating hardware workqueues.
++ * A single mmap() maps a single hardware workqueue as a "portal"
++ * For each device with which a process interacts, there must be
++   one or more mmap()'d portals.
++ * Many threads within a process can share a single portal to access
++   a single device.
++ * Multiple processes can separately mmap() the same portal, in
++   which case they still share one device hardware workqueue.
++ * The single process-wide PASID is used by all threads to interact
++   with all devices.  There is not, for instance, a PASID for each
++   thread or each thread<->device pair.
++
++FAQ
++===
++
++* What is SVA/SVM?
++
++Shared Virtual Addressing (SVA) permits I/O hardware and the processor to
++work in the same address space. In short, sharing the address space. Some
++call it Shared Virtual Memory (SVM), but Linux community wanted to avoid
++it with Posix Shared Memory and Secure Virtual Machines which were terms
++already in circulation.
++
++* What is a PASID?
++
++A Process Address Space ID (PASID) is a PCIe-defined TLP Prefix. A PASID is
++a 20 bit number allocated and managed by the OS. PASID is included in all
++transactions between the platform and the device.
++
++* How are shared work queues different?
++
++Traditionally to allow user space applications interact with hardware,
++there is a separate instance required per process. For example, consider
++doorbells as a mechanism of informing hardware about work to process. Each
++doorbell is required to be spaced 4k (or page-size) apart for process
++isolation. This requires hardware to provision that space and reserve in
++MMIO. This doesn't scale as the number of threads becomes quite large. The
++hardware also manages the queue depth for Shared Work Queues (SWQ), and
++consumers don't need to track queue depth. If there is no space to accept
++a command, the device will return an error indicating retry. Also
++submitting a command to an MMIO address that can't accept ENQCMD will
++return retry in response. In the new DMWr PCIe terminology, devices need to
++support DMWr completer capability. In addition it requires all switch ports
++to support DMWr routing and must be enabled by the PCIe subsystem, much
++like how PCIe Atomics() are managed for instance.
++
++SWQ allows hardware to provision just a single address in the device. When
++used with ENQCMD to submit work, the device can distinguish the process
++submitting the work since it will include the PASID assigned to that
++process. This decreases the pressure of hardware requiring to support
++hardware to scale to a large number of processes.
++
++* Is this the same as a user space device driver?
++
++Communicating with the device via the shared work queue is much simpler
++than a full blown user space driver. The kernel driver does all the
++initialization of the hardware. User space only needs to worry about
++submitting work and processing completions.
++
++* Is this the same as SR-IOV?
++
++Single Root I/O Virtualization (SR-IOV) focuses on providing independent
++hardware interfaces for virtualizing hardware. Hence its required to be
++almost fully functional interface to software supporting the traditional
++BAR's, space for interrupts via MSI-x, its own register layout.
++Virtual Functions (VFs) are assisted by the Physical Function (PF)
++driver.
++
++Scalable I/O Virtualization builds on the PASID concept to create device
++instances for virtualization. SIOV requires host software to assist in
++creating virtual devices, each virtual device is represented by a PASID
++along with the BDF of the device.  This allows device hardware to optimize
++device resource creation and can grow dynamically on demand. SR-IOV creation
++and management is very static in nature. Consult references below for more
++details.
++
++* Why not just create a virtual function for each app?
++
++Creating PCIe SRIOV type virtual functions (VF) are expensive. They create
++duplicated hardware for PCI config space requirements, Interrupts such as
++MSIx for instance. Resources such as interrupts have to be hard partitioned
++between VF's at creation time, and cannot scale dynamically on demand. The
++VF's are not completely independent from the Physical function (PF). Most
++VF's require some communication and assistance from the PF driver. SIOV
++creates a software defined device. Where all the configuration and control
++aspects are mediated via the slow path. The work submission and completion
++happen without any mediation.
++
++* Does this support virtualization?
++
++ENQCMD can be used from within a guest VM. In these cases the VMM helps
++with setting up a translation table to translate from Guest PASID to Host
++PASID. Please consult the ENQCMD instruction set reference for more
++details.
++
++* Does memory need to be pinned?
++
++When devices support SVA, along with platform hardware such as IOMMU
++supporting such devices, there is no need to pin memory for DMA purposes.
++Devices that support SVA also support other PCIe features that remove the
++pinning requirement for memory.
++
++Device TLB support - Device requests the IOMMU to lookup an address before
++use via Address Translation Service (ATS) requests.  If the mapping exists
++but there is no page allocated by the OS, IOMMU hardware returns that no
++mapping exists.
++
++Device requests that virtual address to be mapped via Page Request
++Interface (PRI). Once the OS has successfully completed  the mapping, it
++returns the response back to the device. The device continues again to
++request for a translation and continues.
++
++IOMMU works with the OS in managing consistency of page-tables with the
++device. When removing pages, it interacts with the device to remove any
++device-tlb that might have been cached before removing the mappings from
++the OS.
++
++References
++==========
++
++VT-D:
++https://01.org/blogs/ashokraj/2018/recent-enhancements-intel-virtualization-technology-directed-i/o-intel-vt-d
++
++SIOV:
++https://01.org/blogs/2019/assignable-interfaces-intel-scalable-i/o-virtualization-linux
++
++ENQCMD in ISE:
++https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
++
++DSA spec:
++https://software.intel.com/sites/default/files/341204-intel-data-streaming-accelerator-spec.pdf
 -- 
 2.19.1
 
