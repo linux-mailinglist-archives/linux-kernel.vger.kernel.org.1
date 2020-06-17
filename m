@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5779A1FCBD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14121FCC11
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgFQLIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgFQLIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:08:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E515C061573;
-        Wed, 17 Jun 2020 04:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6UMFO2TmbdpnJT0c5EXP2Aydp2MaQ5RYJc+GA8ZrxVg=; b=uEnXH1vpZaG2U8FFM/pYkfHc5Y
-        SeAjiiS0wb4uxVIyAse/Mlkd6U3qaJ4r4kEh9T7lE+/o5L5t1dNjJ28G/NIqVe0DWG/fV4/lQHo1o
-        QDwGZP0qomelniIocS0ybLZQjvlRxX/INLpmjUp5+LL4fh2HQo9F6qYCqhyg1imU2AHxFgkQk0jvm
-        8nOqGDFYb7CZcfryOG0jsO4VWYAKfvslQU5aBRvXZEAb7odmsPQzoqooHS6qL3UZV2AdZFQmkWhak
-        uKTLzMfmXR1ZbqokaLQoFEtbowD5zP+hhe/qVdQ+y0/QB4rOvsOqTW0JOhm+R3UUkEQZTtPszFNR9
-        vDBLz4ZQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlVvY-0007BQ-88; Wed, 17 Jun 2020 11:08:20 +0000
-Date:   Wed, 17 Jun 2020 04:08:20 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     dsterba@suse.cz, Joe Perches <joe@perches.com>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
-Message-ID: <20200617110820.GG8681@bombadil.infradead.org>
-References: <20200616015718.7812-1-longman@redhat.com>
- <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
- <20200616230130.GJ27795@twin.jikos.cz>
- <20200617003711.GD8681@bombadil.infradead.org>
- <20200617071212.GJ9499@dhcp22.suse.cz>
+        id S1726928AbgFQLRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:17:16 -0400
+Received: from mga03.intel.com ([134.134.136.65]:3305 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726271AbgFQLRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:17:13 -0400
+IronPort-SDR: 2cQ//fR0bK5LvEwzu1Raw+g02ODw0vSpQmj9Q3fmUMy8R2Zd/gmZ4Ip9wUN64OlkX6ELATDn0t
+ +3PvdgAnmD5g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 04:17:12 -0700
+IronPort-SDR: ZwzoQh8XRnqvgl1o/juzdSHL1P1Do1ViuL+y4pfrxO0BdJvUCb9Td4XuqI2Hiz3Tx4kbSczD3a
+ d2OxDRAazCdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,522,1583222400"; 
+   d="scan'208";a="261710413"
+Received: from mylly.fi.intel.com (HELO [10.237.72.153]) ([10.237.72.153])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Jun 2020 04:17:08 -0700
+Subject: Re: [PATCH v2] i2c: designware: Only check the first byte for SMBus
+ block read length
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+References: <9782f44e-4e01-4e5d-cc50-ab9e2219085c@linux.intel.com>
+ <20200616154328.2866-1-sultan@kerneltoast.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <791f22ae-e11a-047f-0a29-a9e27782b0fa@linux.intel.com>
+Date:   Wed, 17 Jun 2020 14:08:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617071212.GJ9499@dhcp22.suse.cz>
+In-Reply-To: <20200616154328.2866-1-sultan@kerneltoast.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 09:12:12AM +0200, Michal Hocko wrote:
-> On Tue 16-06-20 17:37:11, Matthew Wilcox wrote:
-> > Not just performance critical, but correctness critical.  Since kvfree()
-> > may allocate from the vmalloc allocator, I really think that kvfree()
-> > should assert that it's !in_atomic().  Otherwise we can get into trouble
-> > if we end up calling vfree() and have to take the mutex.
+On 6/16/20 6:43 PM, Sultan Alsawaf wrote:
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
 > 
-> FWIW __vfree already checks for atomic context and put the work into a
-> deferred context. So this should be safe. It should be used as a last
-> resort, though.
-
-Actually, it only checks for in_interrupt().  If you call vfree() under
-a spinlock, you're in trouble.  in_atomic() only knows if we hold a
-spinlock for CONFIG_PREEMPT, so it's not safe to check for in_atomic()
-in __vfree().  So we need the warning in order that preempt people can
-tell those without that there is a bug here.
+> SMBus block reads can be broken because the read function will just skip
+> over bytes it doesn't like until reaching a byte that conforms to the
+> length restrictions for block reads. This is problematic when it isn't
+> known if the incoming payload is indeed a conforming block read.
+> 
+> According to the SMBus specification, block reads will only send the
+> payload length in the first byte, so we can fix this by only considering
+> the first byte in a sequence for block read length purposes.
+> 
+> Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+>   drivers/i2c/busses/i2c-designware-master.c | 16 +++++++---------
+>   1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
