@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE401FCFB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFC51FCFC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgFQOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgFQOgv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:36:51 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755C4C061797
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:36:50 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:b57b:2191:a081:571d])
-        by andre.telenet-ops.be with bizsmtp
-        id sEcn220011Jlgh201EcnRF; Wed, 17 Jun 2020 16:36:47 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jlZBG-0007q5-U9; Wed, 17 Jun 2020 16:36:46 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jlZBG-0004mj-Sr; Wed, 17 Jun 2020 16:36:46 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 9/9] sh: machvec: Modernize printing of kernel messages
-Date:   Wed, 17 Jun 2020 16:36:39 +0200
-Message-Id: <20200617143639.18315-10-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200617143639.18315-1-geert+renesas@glider.be>
-References: <20200617143639.18315-1-geert+renesas@glider.be>
+        id S1726976AbgFQOiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:38:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:59000 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726708AbgFQOiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:38:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4EA4531B;
+        Wed, 17 Jun 2020 07:38:18 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D2CA3F73C;
+        Wed, 17 Jun 2020 07:38:16 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 15:38:10 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC PATCH 2/2] arm64: kvm: Introduce MTE VCPU feature
+Message-ID: <20200617143809.GF5388@gaia>
+References: <20200617123844.29960-1-steven.price@arm.com>
+ <20200617123844.29960-3-steven.price@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617123844.29960-3-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  - Convert from printk() to pr_*(),
-  - Add missing continuations.
+On Wed, Jun 17, 2020 at 01:38:44PM +0100, Steven Price wrote:
+> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+> index e3b9ee268823..040a7fffaa93 100644
+> --- a/virt/kvm/arm/mmu.c
+> +++ b/virt/kvm/arm/mmu.c
+> @@ -1783,6 +1783,17 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  			vma_pagesize = PMD_SIZE;
+>  	}
+>  
+> +	if (system_supports_mte() && kvm->arch.vcpu_has_mte) {
+> +		/*
+> +		 * VM will be able to see the page's tags, so we must ensure
+> +		 * they have been initialised.
+> +		 */
+> +		struct page *page = pfn_to_page(pfn);
+> +
+> +		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> +			mte_clear_page_tags(page_address(page), page_size(page));
+> +	}
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
----
-v2:
-  - Add Tested-by.
----
- arch/sh/kernel/machvec.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Are all the guest pages always mapped via a Stage 2 fault? It may be
+better if we did that via kvm_set_spte_hva().
 
-diff --git a/arch/sh/kernel/machvec.c b/arch/sh/kernel/machvec.c
-index beadbbdb44867759..0e9fa33a9b6ab38c 100644
---- a/arch/sh/kernel/machvec.c
-+++ b/arch/sh/kernel/machvec.c
-@@ -64,10 +64,10 @@ static int __init early_parse_mv(char *from)
- 
- 	mvp = get_mv_byname(mv_name);
- 	if (unlikely(!mvp)) {
--		printk("Available vectors:\n\n\t'%s', ", sh_mv.mv_name);
-+		pr_info("Available vectors:\n\n\t'%s', ", sh_mv.mv_name);
- 		for_each_mv(mvp)
--			printk("'%s', ", mvp->mv_name);
--		printk("\n\n");
-+			pr_cont("'%s', ", mvp->mv_name);
-+		pr_cont("\n\n");
- 		panic("Failed to select machvec '%s' -- halting.\n",
- 		      mv_name);
- 	} else
-@@ -104,7 +104,7 @@ void __init sh_mv_setup(void)
- 			sh_mv = *(struct sh_machine_vector *)&__machvec_start;
- 	}
- 
--	printk(KERN_NOTICE "Booting machvec: %s\n", get_system_type());
-+	pr_notice("Booting machvec: %s\n", get_system_type());
- 
- 	/*
- 	 * Manually walk the vec, fill in anything that the board hasn't yet
 -- 
-2.17.1
-
+Catalin
