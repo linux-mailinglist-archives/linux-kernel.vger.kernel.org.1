@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063541FD473
+	by mail.lfdr.de (Postfix) with ESMTP id 724B01FD474
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgFQSYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:24:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18905 "EHLO mga11.intel.com"
+        id S1727915AbgFQSYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:24:21 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18901 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727805AbgFQSYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:24:16 -0400
-IronPort-SDR: G3SRuyEoI31dlWJF/yHSAlj1q4XLUD9bB19np90+9NnYVhyNjfVMpqAJAPioSZvMfXgA+hbKAA
- vQ1AMChHDuag==
+        id S1726971AbgFQSYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 14:24:20 -0400
+IronPort-SDR: T2U6MNZ1qC+Fp8yDs4J8Zrzoad/ZfvIN7cW7PtZ48x8xYEIar082jO6ksRJazyHNZwCoSkypUw
+ Vtr5lcjaDwnw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 11:24:15 -0700
-IronPort-SDR: LcoPq0c48x17JS0rxsa8AWZ6uhU+zz4Hf4xIxQM+83snMxY+jAznwPlghheKk9kJ2oTiwgOKsZ
- TL97BHIxndvA==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 11:24:16 -0700
+IronPort-SDR: 8lsxdXyXajQg8+wIMyfa+OsDWCP8jFlIwYtxgDzWhkIo7iLH3a+meOP5qn9bRkzaDMkprVn827
+ ZPf1QMZaLkrg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
-   d="scan'208";a="308874153"
+   d="scan'208";a="308874164"
 Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2020 11:24:14 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Jun 2020 11:24:15 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
 To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
@@ -43,9 +43,9 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         "x86" <x86@kernel.org>, iommu@lists.linux-foundation.org,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v3 03/13] iommu/vt-d: Change flags type to unsigned int in binding mm
-Date:   Wed, 17 Jun 2020 11:23:43 -0700
-Message-Id: <1592418233-17762-4-git-send-email-fenghua.yu@intel.com>
+Subject: [PATCH v3 05/13] x86/cpufeatures: Enumerate ENQCMD and ENQCMDS instructions
+Date:   Wed, 17 Jun 2020 11:23:45 -0700
+Message-Id: <1592418233-17762-6-git-send-email-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.5.0
 In-Reply-To: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
 References: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
@@ -54,67 +54,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"flags" passed to intel_svm_bind_mm() is a bit mask and should be
-defined as "unsigned int" instead of "int".
+Work submission instruction comes in two flavors. ENQCMD can be called
+both in ring 3 and ring 0 and always uses the contents of PASID MSR when
+shipping the command to the device. ENQCMDS allows a kernel driver to
+submit commands on behalf of a user process. The driver supplies the
+PASID value in ENQCMDS. There isn't any usage of ENQCMD in the kernel
+as of now.
 
-Change its type to "unsigned int".
+The CPU feature flag is shown as "enqcmd" in /proc/cpuinfo.
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
 v2:
-- Add this new patch per Thomas' comment.
+- Re-write commit message (Thomas)
 
- drivers/iommu/intel/svm.c   | 7 ++++---
- include/linux/intel-iommu.h | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index b5618341b4b1..4e775e12ae52 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -427,7 +427,8 @@ int intel_svm_unbind_gpasid(struct device *dev, unsigned int pasid)
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 02dabc9e77b0..4469618c410f 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -351,6 +351,7 @@
+ #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
+ #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
+ #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
++#define X86_FEATURE_ENQCMD		(16*32+29) /* ENQCMD and ENQCMDS instructions */
  
- /* Caller must hold pasid_mutex, mm reference */
- static int
--intel_svm_bind_mm(struct device *dev, int flags, struct svm_dev_ops *ops,
-+intel_svm_bind_mm(struct device *dev, unsigned int flags,
-+		  struct svm_dev_ops *ops,
- 		  struct mm_struct *mm, struct intel_svm_dev **sd)
- {
- 	struct intel_iommu *iommu = intel_svm_device_to_iommu(dev);
-@@ -954,7 +955,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
- {
- 	struct iommu_sva *sva = ERR_PTR(-EINVAL);
- 	struct intel_svm_dev *sdev = NULL;
--	int flags = 0;
-+	unsigned int flags = 0;
- 	int ret;
+ /* AMD-defined CPU features, CPUID level 0x80000007 (EBX), word 17 */
+ #define X86_FEATURE_OVERFLOW_RECOV	(17*32+ 0) /* MCA overflow recovery support */
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index 3cbe24ca80ab..3a02707c1f4d 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -69,6 +69,7 @@ static const struct cpuid_dep cpuid_deps[] = {
+ 	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
+ 	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
+ 	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
++	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
+ 	{}
+ };
  
- 	/*
-@@ -963,7 +964,7 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
- 	 * and intel_svm etc.
- 	 */
- 	if (drvdata)
--		flags = *(int *)drvdata;
-+		flags = *(unsigned int *)drvdata;
- 	mutex_lock(&pasid_mutex);
- 	ret = intel_svm_bind_mm(dev, flags, NULL, mm, &sdev);
- 	if (ret)
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 44fa8879f829..9abc30cf10fc 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -759,7 +759,7 @@ struct intel_svm {
- 	struct mm_struct *mm;
- 
- 	struct intel_iommu *iommu;
--	int flags;
-+	unsigned int flags;
- 	unsigned int pasid;
- 	int gpasid; /* In case that guest PASID is different from host PASID */
- 	struct list_head devs;
 -- 
 2.19.1
 
