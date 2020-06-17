@@ -2,67 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA1C1FCC40
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D0C1FCCE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgFQL1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgFQL1V (ORCPT
+        id S1726758AbgFQL6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:58:05 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:41455 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgFQL6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:27:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E399C061573;
-        Wed, 17 Jun 2020 04:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EQDwNwkQqqmAjMVg8OwDjHllQ9nxS6lVeKEDqW17zmo=; b=p7IaWiaav60yVbFtaSc1bjCUwH
-        mFA9gM3zQFp2w+up707C7CKlNH3o8i6oo63lzENXh3EevGk9qVi51tzbdEHic7i7U8v4iRqhtmfy2
-        9IFrFesEIcCHLXBwWEW447ni/L2O7ZCF8Kl4xSrnuccWCZ10grBSkANEjSLDl1JEjVVI/pA8yNGui
-        UnhuAC4FVr7Q1JojsqU5G0gMs0e/gX2+QO2UlgqUqp0yZXSqljpKz/mDl5pzEjLcnvFtMwFXdJC1h
-        ekKChpDUAfQ9qfwyOmhLZyZlXo6CvO10Igh8zVt5FdQBkz0Dw1mJbrCW9EZT8gUuJ/J1CAXXZX1Cm
-        uXT2opkg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlWDw-0003Ue-Pa; Wed, 17 Jun 2020 11:27:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 44B9430604B;
-        Wed, 17 Jun 2020 13:27:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 35A80203EE204; Wed, 17 Jun 2020 13:27:19 +0200 (CEST)
-Date:   Wed, 17 Jun 2020 13:27:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] fs/namespace.c: use spinlock instead of busy loop
-Message-ID: <20200617112719.GI2531@hirez.programming.kicks-ass.net>
-References: <20200617104058.14902-1-john.ogness@linutronix.de>
- <20200617104058.14902-2-john.ogness@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617104058.14902-2-john.ogness@linutronix.de>
+        Wed, 17 Jun 2020 07:58:05 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200617115802epoutp02df9cf10dc139b0faddbb60fa974d91ac~ZUuP3jWFk1884718847epoutp02h
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 11:58:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200617115802epoutp02df9cf10dc139b0faddbb60fa974d91ac~ZUuP3jWFk1884718847epoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592395082;
+        bh=z/9+1ybUONTNPwmt/FJ5Ns8irr9TIstMcjxiQL4SBfs=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=slufTE79UrRN8v+yDmkRK3topjC8Hf/5shgSEEsphwCN1KA4YdiuoliavNZSLsbmu
+         UmE/euKltti7Q5bvm2YrdCofWQN27GXuayPOPQHgGFvqecPLAinKptXWoqvZ+g0RTK
+         3wtBh8KFPl7V7p16Ru6GK8lRtqP4a0nRvVvzQ5bs=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200617115801epcas1p37d5545b6b352dc1d5c44992d6260d0d1~ZUuPcSeQ01421314213epcas1p3R;
+        Wed, 17 Jun 2020 11:58:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB46405EC52240E00F5D634E2AFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592395081831.JavaMail.epsvc@epcpadp2>
+Date:   Wed, 17 Jun 2020 19:30:26 +0900
+X-CMS-MailID: 20200617103026epcms2p5ca0dd6f6d540bad48967d7777fa6a530
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <SN6PR04MB46405EC52240E00F5D634E2AFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+        <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
+        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:46:58PM +0206, John Ogness wrote:
-> The MNT_WRITE_HOLD flag is used to manually implement a per-cpu
-> optimized rwsem using busy waiting. This implementation is a problem
-> on PREEMPT_RT because write_seqlock() on @mount_lock (i.e. taking a
-> spinlock) does not disable preemption. This allows a writer to
-> preempt a task that has set MNT_WRITE_HOLD and thus that writer will
-> live lock in __mnt_want_write() due to busy looping with preemption
-> disabled.
 > 
+> > This is a patch for the HPB module.
+> > The HPB module queries UFS for device information during initialization.
+> > We added the export symbol to two functions in ufshcd.c to initialize
+> > the HPB module.
+> > 
+> > The HPB module can be loaded or built-in as needed.
+> > The mininum size of the memory pool used in the HPB module is
+> Typo minimum
+> 
+> > implemented
+> > as a module parameter, so that it can be configurable by the user.
+> > 
+> > To gurantee a minimum memory pool size of 4MB:
+> > $ insmod ufshpb.ko ufshpb_host_map_kbytes=4096
+> You are going through a lot of troubles to make it a loadable module.
+> What are, in your opinion, the pros and cons of this design decision?
 
-Why can't you use a regular percpu-rwsem for this?
+In my opinion...
+
+pros:
+1. A user can unload an unnecessary module when there is an insufficient
+memory situation (HPB case).
+2. Since each UFS vendor has a different way of implementing UFS features,
+it can be supported as a separate module. Otherwise, many quirks must
+be attached to module, which is not desirable way.
+3. It is possible to distinguish parts that are not necessary for essential
+ufs operation.
+4. It is advantageous to implement the latest functions according to the
+development speed of UFS.
+
+cons:
+1. It is difficult work to be implemented as a module.
+2. Modifying "ufsfeature.c" is required to implement the feature that can
+not supported by the exsiting "ufsf_operation".
+
+Thanks,
+Daejun
