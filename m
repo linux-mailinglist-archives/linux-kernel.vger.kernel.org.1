@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E467B1FC97E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C321FC985
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgFQJHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgFQJHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:07:19 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106F9C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:07:19 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z63so816934pfb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mnLnijT3kAKagUkRCUY6dPCloOW3fhO0MSYNzvoS/58=;
-        b=dzCIdKya9MvwLcA8MAjN9GvG7PIaY0dbuxpTthmyWJyrErNkbrpxgQLsCixAt+0hb/
-         gFk0MgUwcFDM5dKQFwBRfGi7rVbA4LLSNUrkPx0RF/EkXrORi4Jz0aR+59d26fJyP0Y3
-         SpszT+FqP/z0qZs88HreytHRbz9KWlfJBhKySXZKiMAOWP01mbzpRwKjDJhNqL8bwKke
-         WItWkXTyOjqHTPkIz3o7KbJ9RcZr7mXpcq25jEysd+FG5qQAiuIIF2MRjPNtB3tA+Fpr
-         P8TQ1Rgsx3Z7eBsneK8g3GqwLRi+GsObq4hXixrn95PLbabyepjJrBtBGiJsXV/l+IMY
-         dXJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mnLnijT3kAKagUkRCUY6dPCloOW3fhO0MSYNzvoS/58=;
-        b=OjTes/HGLQKECMuFpV9YA6d0aTSb2YaNdSCrVafppWYWLcj4yy2BSHfPMNiGfbTvIn
-         D5yJyhWzfqmGkfCYBtQqKO8W81W1e42BEeTZE1IVybEqu7+moxXO2NiWNqUFXNNkT2MD
-         GiynYjP5mjVpdKKHEjoClpNMCr8vRFRRXgFqipHeqAcBp8t1oQOsrKTRjWNeVoFc9gJu
-         NyoebB3e2pT4Jq4xIG4NioHgYWe2x1Z7ccB5FYxINmhTgkAobVsr4tCjoazfMuDHRYvf
-         +qVGA8QR9+958moBrCTj6czjfoKZiZG792rT+y11RdCT8N5RM4vx06Ss+zeeSjf1iR+c
-         WPUA==
-X-Gm-Message-State: AOAM531u2ikuYqXG8ysAV4lgr7ls3IFZyTCgRHkvwUbvTCTG302qrCQN
-        w5s+iLb3aH1+7BjcXLe78ZYT/MWUb38=
-X-Google-Smtp-Source: ABdhPJwDb3WnWhllQKssed+/Sv/xzTVMmYrYBlGYX345oLJ8rS5GEETlkUkL+/3H6ZtKq6VXqBoqKQ==
-X-Received: by 2002:a63:9e02:: with SMTP id s2mr5468301pgd.170.1592384838074;
-        Wed, 17 Jun 2020 02:07:18 -0700 (PDT)
-Received: from localhost (g228.115-65-196.ppp.wakwak.ne.jp. [115.65.196.228])
-        by smtp.gmail.com with ESMTPSA id j5sm10340697pgi.42.2020.06.17.02.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 02:07:17 -0700 (PDT)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Stafford Horne <shorne@gmail.com>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org
-Subject: [PATCH] openrisc: Fix oops caused when dumping stack
-Date:   Wed, 17 Jun 2020 18:07:01 +0900
-Message-Id: <20200617090702.1684812-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726698AbgFQJIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:08:53 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2545 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726480AbgFQJIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:08:52 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 18C4EEB1569EE67C1842;
+        Wed, 17 Jun 2020 17:08:49 +0800 (CST)
+Received: from DGGEMM424-HUB.china.huawei.com (10.1.198.41) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 17 Jun 2020 17:08:48 +0800
+Received: from DGGEMM528-MBS.china.huawei.com ([169.254.7.247]) by
+ dggemm424-hub.china.huawei.com ([10.1.198.41]) with mapi id 14.03.0487.000;
+ Wed, 17 Jun 2020 17:08:38 +0800
+From:   Chenweilong <chenweilong@huawei.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        Lizefan <lizefan@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dvyukov@google.com" <dvyukov@google.com>
+Subject: Re: [PATCH linux-next] kernel/fork.c: annotate data races for
+ copy_process
+Thread-Topic: [PATCH linux-next] kernel/fork.c: annotate data races for
+ copy_process
+Thread-Index: AdZEhqLwKSS2XuNPSEC3wK4+VeNb7w==
+Date:   Wed, 17 Jun 2020 09:08:38 +0000
+Message-ID: <AB5DF7CCD2A48B4A97860D5EDCA2B71D94AA8AEC@DGGEMM528-MBS.china.huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.166.213.91]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dumping a stack siwth 'cat /proc/1/stack' the kernel would oops.
-For example:
-
-    # cat /proc/690/stack
-    Unable to handle kernel access
-     at virtual address 0x7fc60f58
-
-    Oops#: 0000
-    CPU #: 0
-       PC: c00097fc    SR: 0000807f    SP: d6f09b9c
-    GPR00: 00000000 GPR01: d6f09b9c GPR02: d6f09bb8 GPR03: d6f09bc4
-    GPR04: 7fc60f5c GPR05: c00099b4 GPR06: 00000000 GPR07: d6f09ba3
-    GPR08: ffffff00 GPR09: c0009804 GPR10: d6f08000 GPR11: 00000000
-    GPR12: ffffe000 GPR13: dbb86000 GPR14: 00000001 GPR15: dbb86250
-    GPR16: 7fc60f63 GPR17: 00000f5c GPR18: d6f09bc4 GPR19: 00000000
-    GPR20: c00099b4 GPR21: ffffffc0 GPR22: 00000000 GPR23: 00000000
-    GPR24: 00000001 GPR25: 000002c6 GPR26: d78b6850 GPR27: 00000001
-    GPR28: 00000000 GPR29: dbb86000 GPR30: ffffffff GPR31: dbb862fc
-      RES: 00000000 oGPR11: ffffffff
-    Process cat (pid: 702, stackpage=d79d6000)
-
-    Stack:
-    Call trace:
-    [<598977f2>] save_stack_trace_tsk+0x40/0x74
-    [<95063f0e>] stack_trace_save_tsk+0x44/0x58
-    [<b557bfdd>] proc_pid_stack+0xd0/0x13c
-    [<a2df8eda>] proc_single_show+0x6c/0xf0
-    [<e5a737b7>] seq_read+0x1b4/0x688
-    [<2d6c7480>] do_iter_read+0x208/0x248
-    [<2182a2fb>] vfs_readv+0x64/0x90
-
-This was caused by the stack trace code in save_stack_trace_tsk using
-the wrong stack pointer.  It was using the user stack pointer instead of
-the kernel stack pointer.  Fix this by using the right stack.
-
-Also for good measure we add try_get_task_stack/put_task_stack to ensure
-the task is not lost while we are walking it's stack.
-
-Signed-off-by: Stafford Horne <shorne@gmail.com>
----
- arch/openrisc/kernel/stacktrace.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/openrisc/kernel/stacktrace.c b/arch/openrisc/kernel/stacktrace.c
-index 43f140a28bc7..ac91614509c8 100644
---- a/arch/openrisc/kernel/stacktrace.c
-+++ b/arch/openrisc/kernel/stacktrace.c
-@@ -13,6 +13,7 @@
- #include <linux/export.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
-+#include <linux/sched/task_stack.h>
- #include <linux/stacktrace.h>
- 
- #include <asm/processor.h>
-@@ -68,12 +69,17 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
- {
- 	unsigned long *sp = NULL;
- 
-+	if (!try_get_task_stack(tsk))
-+		return;
-+
- 	if (tsk == current)
- 		sp = (unsigned long *) &sp;
- 	else
--		sp = (unsigned long *) KSTK_ESP(tsk);
-+		sp = (unsigned long *) task_thread_info(tsk)->ksp;
- 
- 	unwind_stack(trace, sp, save_stack_address_nosched);
-+
-+	put_task_stack(tsk);
- }
- EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
- 
--- 
-2.26.2
-
+Pk9uIFR1ZSwgSnVuIDA5LCAyMDIwIGF0IDExOjA4OjAxQU0gKzA4MDAsIFdlaWxvbmcgQ2hlbiB3
+cm90ZToNCj4+IFRoZSBjaGVjayBpcyBvbmx5IHRoZXJlIHRvIHN0b3Agcm9vdCBmb3JrIGJvbWJz
+Lg0KPj4NCj4+IEJVRzogS0NTQU46IGRhdGEtcmFjZSBpbiBjb3B5X3Byb2Nlc3MgLyBjb3B5X3By
+b2Nlc3MNCj4+DQo+PiB3cml0ZSB0byAweGZmZmZmZmZmODZmODdkMjAgb2YgNCBieXRlcyBieSB0
+YXNrIDcxMjEgb24gY3B1IDU6DQo+PiAgY29weV9wcm9jZXNzKzB4MmUxYS8weDNhZjAga2VybmVs
+L2ZvcmsuYzoyMjg1DQo+PiAgX2RvX2ZvcmsrMHhmNy8weDc5MCBrZXJuZWwvZm9yay5jOjI0MzAN
+Cj4+ICBfX2RvX3N5c19jbG9uZSsweGY5LzB4MTMwIGtlcm5lbC9mb3JrLmM6MjU4NSAgX19zZV9z
+eXNfY2xvbmUNCj4+IGtlcm5lbC9mb3JrLmM6MjU2NiBbaW5saW5lXQ0KPj4gIF9feDY0X3N5c19j
+bG9uZSsweDZjLzB4ODAga2VybmVsL2ZvcmsuYzoyNTY2DQo+PiAgZG9fc3lzY2FsbF82NCsweGM3
+LzB4M2IwIGFyY2gveDg2L2VudHJ5L2NvbW1vbi5jOjI5NQ0KPj4gIGVudHJ5X1NZU0NBTExfNjRf
+YWZ0ZXJfaHdmcmFtZSsweDQ0LzB4YTkNCj4+DQo+PiByZWFkIHRvIDB4ZmZmZmZmZmY4NmY4N2Qy
+MCBvZiA0IGJ5dGVzIGJ5IHRhc2sgNzEyNSBvbiBjcHUgMzoNCj4+ICBjb3B5X3Byb2Nlc3MrMHg5
+ZWIvMHgzYWYwIGtlcm5lbC9mb3JrLmM6MTk2Nw0KPj4gIF9kb19mb3JrKzB4ZjcvMHg3OTAga2Vy
+bmVsL2ZvcmsuYzoyNDMwDQo+PiAgX19kb19zeXNfY2xvbmUrMHhmOS8weDEzMCBrZXJuZWwvZm9y
+ay5jOjI1ODUgIF9fc2Vfc3lzX2Nsb25lDQo+PiBrZXJuZWwvZm9yay5jOjI1NjYgW2lubGluZV0N
+Cj4+ICBfX3g2NF9zeXNfY2xvbmUrMHg2Yy8weDgwIGtlcm5lbC9mb3JrLmM6MjU2Ng0KPj4gIGRv
+X3N5c2NhbGxfNjQrMHhjNy8weDNiMCBhcmNoL3g4Ni9lbnRyeS9jb21tb24uYzoyOTUNCj4+ICBl
+bnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQo+Pg0KPj4gU2lnbmVkLW9m
+Zi1ieTogV2VpbG9uZyBDaGVuIDxjaGVud2VpbG9uZ0BodWF3ZWkuY29tPg0KPg0KPlBsdW1iaW5n
+IGRhdGFfcmFjZSgpIGluIHRoZXJlIGp1c3QgdG8gdGFwZXIgb3ZlciB0aGlzIHNlZW1zIHVnbHku
+DQo+QmVmb3JlIHdlIGRvIHRoYXQgd2Ugc2hvdWxkIHByb2JhYmx5IHNpbXBseSBtYWtlIG5yX3Ro
+cmVhZHMgYXRvbWljX3QuDQpXaWxsIHVzaW5nIGF0b21pY190IGNhdXNlIHBlcmZvcm1hbmNlIGRl
+Z3JhZGF0aW9uID8gSSBkb27igJl0IGtub3cgd2h5IGF0b21pYyB3YXMgbm90IHVzZWQgaW4gdGhl
+IGJlZ2lubmluZy4NCg0KPkFsc28sIHdoZXJlJ3MgdGhlIGxpbmsgdG8gdGhlIHN5emJvdC9rY3Nh
+biByZXBvcnQ/IE9yIGRpZCB5b3UgZ2V0IHRoaXMgcmVwb3J0IGZyb20gc29tZXdoZXJlIGVsc2U/
+DQpJIGdvdCB0aGlzIGZyb20gbG9jYWwgdGVzdC4NCj4NCj5kaWZmIC0tZ2l0IGEva2VybmVsL2V4
+aXQuYyBiL2tlcm5lbC9leGl0LmMgaW5kZXggYzMwMDI1M2E3YjhlLi40MmUxY2Y2NDBiMjAgMTAw
+NjQ0DQo+LS0tIGEva2VybmVsL2V4aXQuYw0KPisrKyBiL2tlcm5lbC9leGl0LmMNCj5AQCAtNzEs
+NyArNzEsNyBAQA0KPg0KPiBzdGF0aWMgdm9pZCBfX3VuaGFzaF9wcm9jZXNzKHN0cnVjdCB0YXNr
+X3N0cnVjdCAqcCwgYm9vbCBncm91cF9kZWFkKSAgew0KPi0gICAgICAgbnJfdGhyZWFkcy0tOw0K
+PisgICAgICAgYXRvbWljX2RlYygmbnJfdGhyZWFkcyk7DQo+ICAgICAgICBkZXRhY2hfcGlkKHAs
+IFBJRFRZUEVfUElEKTsNCj4gICAgICAgIGlmIChncm91cF9kZWFkKSB7DQo+ICAgICAgICAgICAg
+ICAgIGRldGFjaF9waWQocCwgUElEVFlQRV9UR0lEKTsgZGlmZiAtLWdpdCBhL2tlcm5lbC9mb3Jr
+LmMgYi9rZXJuZWwvZm9yay5jIGluZGV4IGNlZmU4NzQ1YzQ2ZS4uYzgzNTU0NDhkN2M2IDEwMDY0
+NA0KPi0tLSBhL2tlcm5lbC9mb3JrLmMNCj4rKysgYi9rZXJuZWwvZm9yay5jDQo+QEAgLTEyMiw3
+ICsxMjIsNyBAQA0KPiAgKiBQcm90ZWN0ZWQgY291bnRlcnMgYnkgd3JpdGVfbG9ja19pcnEoJnRh
+c2tsaXN0X2xvY2spDQo+ICAqLw0KPiB1bnNpZ25lZCBsb25nIHRvdGFsX2ZvcmtzOyAgICAgLyog
+SGFuZGxlIG5vcm1hbCBMaW51eCB1cHRpbWVzLiAqLw0KPi1pbnQgbnJfdGhyZWFkczsgICAgICAg
+ICAgICAgICAgICAgICAgICAvKiBUaGUgaWRsZSB0aHJlYWRzIGRvIG5vdCBjb3VudC4uICovDQo+
+K2F0b21pY190IG5yX3RocmVhZHM7ICAgICAgICAgICAvKiBUaGUgaWRsZSB0aHJlYWRzIGRvIG5v
+dCBjb3VudC4uICovDQo+DQo+IHN0YXRpYyBpbnQgbWF4X3RocmVhZHM7ICAgICAgICAgICAgICAg
+IC8qIHR1bmFibGUgbGltaXQgb24gbnJfdGhyZWFkcyAqLw0KPg0KPkBAIC0xOTc4LDcgKzE5Nzgs
+NyBAQCBzdGF0aWMgX19sYXRlbnRfZW50cm9weSBzdHJ1Y3QgdGFza19zdHJ1Y3QgKmNvcHlfcHJv
+Y2VzcygNCj4gICAgICAgICAqIHRvIHN0b3Agcm9vdCBmb3JrIGJvbWJzLg0KPiAgICAgICAgICov
+DQo+ICAgICAgICByZXR2YWwgPSAtRUFHQUlOOw0KPi0gICAgICAgaWYgKG5yX3RocmVhZHMgPj0g
+bWF4X3RocmVhZHMpDQo+KyAgICAgICBpZiAoYXRvbWljX3JlYWQoJm5yX3RocmVhZHMpID49IG1h
+eF90aHJlYWRzKQ0KPiAgICAgICAgICAgICAgICBnb3RvIGJhZF9mb3JrX2NsZWFudXBfY291bnQ7
+DQo+DQo+ICAgICAgICBkZWxheWFjY3RfdHNrX2luaXQocCk7ICAvKiBNdXN0IHJlbWFpbiBhZnRl
+ciBkdXBfdGFza19zdHJ1Y3QoKSAqLyBAQCAtMjI5Niw3ICsyMjk2LDcgQEAgc3RhdGljIF9fbGF0
+ZW50X2VudHJvcHkgc3RydWN0IHRhc2tfc3RydWN0ICpjb3B5X3Byb2Nlc3MoDQo+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJnAtPnNpZ25hbC0+dGhyZWFkX2hlYWQp
+Ow0KPiAgICAgICAgICAgICAgICB9DQo+ICAgICAgICAgICAgICAgIGF0dGFjaF9waWQocCwgUElE
+VFlQRV9QSUQpOw0KPi0gICAgICAgICAgICAgICBucl90aHJlYWRzKys7DQo+KyAgICAgICAgICAg
+ICAgIGF0b21pY19pbmMoJm5yX3RocmVhZHMpOw0KPiAgICAgICAgfQ0KPiAgICAgICAgdG90YWxf
+Zm9ya3MrKzsNCj4gICAgICAgIGhsaXN0X2RlbF9pbml0KCZkZWxheWVkLm5vZGUpOw0KPg0KPj4g
+LS0tDQo+PiAga2VybmVsL2ZvcmsuYyB8IDIgKy0NCj4+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
+cnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2Zvcmsu
+YyBiL2tlcm5lbC9mb3JrLmMgaW5kZXgNCj4+IDE0MmIyMzY0NWQ4Mi4uZWZjNTQ5MzIwM2FlIDEw
+MDY0NA0KPj4gLS0tIGEva2VybmVsL2ZvcmsuYw0KPj4gKysrIGIva2VybmVsL2ZvcmsuYw0KPj4g
+QEAgLTE5NzcsNyArMTk3Nyw3IEBAIHN0YXRpYyBfX2xhdGVudF9lbnRyb3B5IHN0cnVjdCB0YXNr
+X3N0cnVjdCAqY29weV9wcm9jZXNzKA0KPj4gICAgICAgKiB0byBzdG9wIHJvb3QgZm9yayBib21i
+cy4NCj4+ICAgICAgICovDQo+PiAgICAgIHJldHZhbCA9IC1FQUdBSU47DQo+PiAtICAgIGlmIChu
+cl90aHJlYWRzID49IG1heF90aHJlYWRzKQ0KPj4gKyAgICBpZiAoZGF0YV9yYWNlKG5yX3RocmVh
+ZHMgPj0gbWF4X3RocmVhZHMpKQ0KPj4gICAgICAgICAgICAgIGdvdG8gYmFkX2ZvcmtfY2xlYW51
+cF9jb3VudDsNCj4+DQo+PiAgICAgIGRlbGF5YWNjdF90c2tfaW5pdChwKTsgIC8qIE11c3QgcmVt
+YWluIGFmdGVyIGR1cF90YXNrX3N0cnVjdCgpICovDQo+PiAtLQ0KPj4gMi4xNy4xDQo+Pg0KPg0K
