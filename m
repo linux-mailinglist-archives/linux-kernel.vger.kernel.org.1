@@ -2,69 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56CF1FD95A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B201FD988
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgFQXKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:10:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgFQXKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:10:36 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D81F920734;
-        Wed, 17 Jun 2020 23:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592435436;
-        bh=iTeb2kX7xW5oxSvw8/1TZw92wiNZyuS3Q+0H+TGM910=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l6RrJcxukVy+IEcXGhwAhUOUvaBegt20gGWOi5dMiBQiFybwYJDjSjY2b9Ia31kBG
-         trEeegmcSRzMNG4hUL7ZtPmevX7JB/D1t9I+23sRtYZTnZvPo9OGQXGb886Py5S9s2
-         PcHb2JDprgx3zpoAILbgq8tvv0uRsuN22gYG4/P0=
-Date:   Wed, 17 Jun 2020 18:15:57 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Karsten Keil <isdn@linux-pingi.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] mISDN: hfcsusb: Use struct_size() helper
-Message-ID: <20200617231557.GA1539@embeddedor>
+        id S1726927AbgFQXUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgFQXUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 19:20:16 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C62C06174E;
+        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s1so5015814ljo.0;
+        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wYFXhzh5n3W0/+lsSdfHJjbCv4Q6beTMubTyt25bamU=;
+        b=Ok19fZx0y2mHLKiAFpRmandHU0EoDjRfBaaPQEgbhcBR5HFtheqTZFCu67x3oKJEOr
+         /u+YWV6c19XxE6Iha3+er0DYXVVlkgxVuYncg1OvFNYWz0oMDUd1TeUjNEA9QmqrY+Il
+         3xzE0DNI027haL3l9sHmKQNS8ek0ZJpcpDVIiWYtQPYGUuI2DqieNWdTBLpzpKICon+N
+         phAQFHbPaJI2VA2mFzM78W6f+qx1V6uKthNVC1uBSXbUlAThaFvTLCl3VEB/YHa5wKtG
+         s8Ck65117L+Wb6cI5MivXM7pfxMYg+R7joJESSDY9/GYgy2gCoMwWlR8ixr+a3igZyZu
+         ++8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wYFXhzh5n3W0/+lsSdfHJjbCv4Q6beTMubTyt25bamU=;
+        b=jG+Cw2VkghYr+5R/L++3+B6c13l6SYlU7xR+iJv6hflMl5WyasbqRz5LLxPQ8EFFqH
+         2VxBjrED5CGjjWc512zGPmDE9SY0ikRYufnQnlK3kkLAORcbaOUEQqSzRVqVX85VWWK/
+         YBqgjpl8fAWZBpyofY1nBqDLPrSLtmeSRQ4U0+r35SvhikH8Hwfu0H/WtuW6TpsM3+D6
+         RED3pB1OqN/gDm74i+8P3MgQAdbtv862TvBvHXwPMFUfVxMhNOloEHyG2lBwDK60F6fg
+         BKlokcs6xFJou+fBeNzRpCnFzQZL54mVfL6T+58F69t6gGFexsM1kRVmGduSEKbrVl04
+         Jb8w==
+X-Gm-Message-State: AOAM533mqlVE7+ZmvpHxKqgQ26nqCuAxhMx9G/3Jf+ORGhHb8Ipg77Fi
+        JEWEaExPEx6FuBAM2WwQ5f0=
+X-Google-Smtp-Source: ABdhPJy2asig9o4HQkeA6kr0/BZUFzr0Cw199sxDaJ65mXseg932jHDoFA0AVplbmsVwcK8/VX91vg==
+X-Received: by 2002:a2e:1412:: with SMTP id u18mr833931ljd.309.1592436013810;
+        Wed, 17 Jun 2020 16:20:13 -0700 (PDT)
+Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.gmail.com with ESMTPSA id x3sm235100ljc.82.2020.06.17.16.20.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 16:20:13 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Daniel Stone <daniel@fooishbar.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v11 0/4] Panel rotation patches
+Date:   Thu, 18 Jun 2020 02:18:38 +0300
+Message-Id: <20200617231842.30671-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+Hello!
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+This series adds support for display panel's DT rotation property. It's a
+continuation of the work that was initially started by Derek Basehore for
+the panel driver that is used by some Mediatek device [1]. I picked up the
+Derek's patches and added my t-b and r-b tags to them, I also added
+rotation support to the panel-lvds and panel-simple drivers.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/isdn/hardware/mISDN/hfcsusb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+We need the rotation support for the Nexus 7 tablet device which is pending
+to become supported by upstream kernel, the device has display panel mounted
+upside-down and it uses panel-lvds [2].
 
-diff --git a/drivers/isdn/hardware/mISDN/hfcsusb.c b/drivers/isdn/hardware/mISDN/hfcsusb.c
-index 621364bb6b12..4274906f8654 100644
---- a/drivers/isdn/hardware/mISDN/hfcsusb.c
-+++ b/drivers/isdn/hardware/mISDN/hfcsusb.c
-@@ -261,8 +261,7 @@ hfcsusb_ph_info(struct hfcsusb *hw)
- 		phi->bch[i].Flags = hw->bch[i].Flags;
- 	}
- 	_queue_data(&dch->dev.D, MPH_INFORMATION_IND, MISDN_ID_ANY,
--		    sizeof(struct ph_info_dch) + dch->dev.nrbchan *
--		    sizeof(struct ph_info_ch), phi, GFP_ATOMIC);
-+		    struct_size(phi, bch, dch->dev.nrbchan), phi, GFP_ATOMIC);
- 	kfree(phi);
- }
- 
+[1] https://lkml.org/lkml/2020/3/5/1119
+[2] https://patchwork.ozlabs.org/project/linux-tegra/patch/20200607154327.18589-3-digetx@gmail.com/
+
+Changelog:
+
+v11: - This series is factored out from this patchset [3] because these
+       patches do not have hard dependency on the Tegra DRM patches and
+       it should be nicer to review and apply the properly grouped patches.
+
+     - Initially [3] only touched the panel-lvds driver and Emil Velikov
+       suggested that it will be better to support more panels in the review
+       comments to [3]. So I included the Derek's patch for the BOE panel
+       and added rotation support to the panel-simple driver. I tested that
+       panel-lvds and panel-simple work properly with the rotated panel using
+       the Opentegra Xorg driver [4] and Wayland Weston [5].
+
+     - The panel-lvds driver now prints a error message if rotation property
+       fails to be parsed.
+
+[3] https://lore.kernel.org/lkml/20200614200121.14147-1-digetx@gmail.com/
+[4] https://github.com/grate-driver/xf86-video-opentegra/commit/28eb20a3959bbe5bc3a3b67e55977093fd5114ca
+[5] https://gitlab.freedesktop.org/wayland/weston/-/merge_requests/315
+
+Derek Basehore (2):
+  drm/panel: Add helper for reading DT rotation
+  drm/panel: Read panel orientation for BOE TV101WUM-NL6
+
+Dmitry Osipenko (2):
+  drm/panel: lvds: Read panel orientation
+  drm/panel-simple: Read panel orientation
+
+ drivers/gpu/drm/drm_panel.c                   | 43 +++++++++++++++++++
+ .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    |  6 +++
+ drivers/gpu/drm/panel/panel-lvds.c            | 10 +++++
+ drivers/gpu/drm/panel/panel-simple.c          | 11 +++++
+ include/drm/drm_panel.h                       |  9 ++++
+ 5 files changed, 79 insertions(+)
+
 -- 
-2.27.0
+2.26.0
 
