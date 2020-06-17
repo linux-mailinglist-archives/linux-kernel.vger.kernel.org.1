@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440DB1FD66C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B390F1FD675
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgFQUxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 16:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgFQUxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 16:53:13 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8E2B2073E;
-        Wed, 17 Jun 2020 20:53:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592427193;
-        bh=fn2yk/yFjARGWSEFsjLDcqp5WNIOynxfyeyLoNcKW+k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HjDClTRvr8xAI8oqRuscDf1288YkY+vBcA9xL8LlWBqGpFC63d80YZKXAwaGmhu1K
-         yGOghB/CWY2PlFivh46jtSNKt6QlJIjws2MSND/pfhsIvwOdqe4tW1IP4F5Hkv0qqi
-         3kZqLpHGln4q7kjDM/Ap/jAyMTb1W6Y2n8fXtibc=
-Date:   Wed, 17 Jun 2020 13:53:12 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nitin Gupta <nigupta@nvidia.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Oleksandr Natalenko <oleksandr@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Nitin Gupta <ngupta@nitingupta.dev>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH v8] mm: Proactive compaction
-Message-Id: <20200617135312.4f395479454c55a8d021b023@linux-foundation.org>
-In-Reply-To: <20200616204527.19185-1-nigupta@nvidia.com>
-References: <20200616204527.19185-1-nigupta@nvidia.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726955AbgFQUxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 16:53:52 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:44170 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgFQUxv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 16:53:51 -0400
+Received: by mail-il1-f194.google.com with SMTP id i1so3656650ils.11;
+        Wed, 17 Jun 2020 13:53:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=obA+GdDh49FILe8YYBu+Ke+2o3UKObx/roC/7+lZrtM=;
+        b=G/drJoP8IYFzq9MV4s9GeDTFZY7w4SVxHvwx51H7Ic5QEmW8nO50cMlTWTcQxSVJWH
+         YnbS/QQ/XXAvMCoDRlsSawp9LVmVuBHO0lWbnOmRUWu7V/nPQA0Lt5cBjZlo4c2PyVvp
+         4as2Qa9SvbUioHAnTP+dfVTYeMR0ZsC94Xp4X3E29xwP/emVegKUjtAKHVpCxhcrus/a
+         yMb57sBBRk+x4IBxCKOc1OdqNxy9z3rhyL8NTgwp/+22Xr2R9J+526LQP1InHk0SsHQZ
+         Z9iWlFd2LoLgayZUFEYGtGVczo+O0jXHdnbNwfHfcn2mwSlBiw6itlp61oE+OufcVf/W
+         nykw==
+X-Gm-Message-State: AOAM531Xf9VQNxwxse7k5rn2kxoFp9LHs81QM2l+NmukAFc1aIszjQib
+        eY0i6753P5O8d8AWPPR8qA==
+X-Google-Smtp-Source: ABdhPJy4YFqxchSXEFMNwKJ+5lIjVFOcC8wuZ/9147EWd0Mrx4JCmml+81agFcI2rPQoCvOzSDRx/A==
+X-Received: by 2002:a92:d188:: with SMTP id z8mr746318ilz.251.1592427229632;
+        Wed, 17 Jun 2020 13:53:49 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j63sm432326ilg.50.2020.06.17.13.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 13:53:49 -0700 (PDT)
+Received: (nullmailer pid 2790230 invoked by uid 1000);
+        Wed, 17 Jun 2020 20:53:48 -0000
+Date:   Wed, 17 Jun 2020 14:53:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        davem@davemloft.net, mchehab+huawei@kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jic23@kernel.org
+Subject: Re: [PATCH v3 12/13] dt-bindings: iio: imu: Add inv_icm42600
+ documentation
+Message-ID: <20200617205347.GA2790117@bogus>
+References: <20200608204250.3291-1-jmaneyrol@invensense.com>
+ <20200608204250.3291-13-jmaneyrol@invensense.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200608204250.3291-13-jmaneyrol@invensense.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 13:45:27 -0700 Nitin Gupta <nigupta@nvidia.com> wrote:
+On Mon, 08 Jun 2020 22:42:49 +0200, Jean-Baptiste Maneyrol wrote:
+> Document the ICM-426xxx devices devicetree bindings.
+> 
+> Signed-off-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+> ---
+>  .../bindings/iio/imu/invensense,icm42600.yaml | 90 +++++++++++++++++++
+>  1 file changed, 90 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
+> 
 
-> For some applications, we need to allocate almost all memory as
-> hugepages. However, on a running system, higher-order allocations can
-> fail if the memory is fragmented. Linux kernel currently does on-demand
-> compaction as we request more hugepages, but this style of compaction
-> incurs very high latency. Experiments with one-time full memory
-> compaction (followed by hugepage allocations) show that kernel is able
-> to restore a highly fragmented memory state to a fairly compacted memory
-> state within <1 sec for a 32G system. Such data suggests that a more
-> proactive compaction can help us allocate a large fraction of memory as
-> hugepages keeping allocation latencies low.
->
-> ...
->
-
-All looks straightforward to me and easy to disable if it goes wrong.
-
-All the hard-coded magic numbers are a worry, but such is life.
-
-One teeny complaint:
-
->
-> ...
->
-> @@ -2650,12 +2801,34 @@ static int kcompactd(void *p)
->  		unsigned long pflags;
->  
->  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
-> -		wait_event_freezable(pgdat->kcompactd_wait,
-> -				kcompactd_work_requested(pgdat));
-> +		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
-> +			kcompactd_work_requested(pgdat),
-> +			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
-> +
-> +			psi_memstall_enter(&pflags);
-> +			kcompactd_do_work(pgdat);
-> +			psi_memstall_leave(&pflags);
-> +			continue;
-> +		}
->  
-> -		psi_memstall_enter(&pflags);
-> -		kcompactd_do_work(pgdat);
-> -		psi_memstall_leave(&pflags);
-> +		/* kcompactd wait timeout */
-> +		if (should_proactive_compact_node(pgdat)) {
-> +			unsigned int prev_score, score;
-
-Everywhere else, scores have type `int'.  Here they are unsigned.  How come?
-
-Would it be better to make these unsigned throughout?  I don't think a
-score can ever be negative?
-
-> +			if (proactive_defer) {
-> +				proactive_defer--;
-> +				continue;
-> +			}
-> +			prev_score = fragmentation_score_node(pgdat);
-> +			proactive_compact_node(pgdat);
-> +			score = fragmentation_score_node(pgdat);
-> +			/*
-> +			 * Defer proactive compaction if the fragmentation
-> +			 * score did not go down i.e. no progress made.
-> +			 */
-> +			proactive_defer = score < prev_score ?
-> +					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
-> +		}
->  	}
-
+Reviewed-by: Rob Herring <robh@kernel.org>
