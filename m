@@ -2,112 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C8E1FC966
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4481FC976
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgFQJCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgFQJCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:02:07 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B997D207DD;
-        Wed, 17 Jun 2020 09:02:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592384526;
-        bh=MPSZ6N2p6Aa3SX2HTxDBxuLOHNXxyEpcY3Iy+6QVNpU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rAuIDXQlFGWl7gFPDU4znFh2dqMD47uIJuoVgXvi/Ciw4s+FpXtlOwBLQtTegCF3p
-         FMQsr/jkK0VSSblZBGkNsb+4Nr+sgjSv5OkzLSmO8gKHwXNlTk+ew7XO6oCEZ/H1XB
-         fr4qBuyDsDntIRVjBeJwNKZdIyywfzw2zBkVyEd0=
-Received: by mail-oi1-f178.google.com with SMTP id t25so1125660oij.7;
-        Wed, 17 Jun 2020 02:02:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533gmDBRy6FOHUN3pNLiRGMg56KFWaudQKcTfR0b/UDmzmdJVtFG
-        AqXB89AtGsUCjgW4MM6d6FYGxmBxj6M1ROgA/CQ=
-X-Google-Smtp-Source: ABdhPJxR1Ijvnfs7Ry+C5b6BcLJX5IK9RCHmTER5sipSJ1w2SVITb2URmm4SUNWUPPkSJOf/LX54yTF3sjDqFDs0z84=
-X-Received: by 2002:aca:b241:: with SMTP id b62mr6301244oif.47.1592384526109;
- Wed, 17 Jun 2020 02:02:06 -0700 (PDT)
+        id S1726838AbgFQJGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:06:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6272 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726271AbgFQJGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:06:20 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 16EB71A64CE3E46FD16E;
+        Wed, 17 Jun 2020 17:06:15 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 17 Jun 2020 17:06:07 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>
+CC:     <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linuxarm@huawei.com>, <irogers@google.com>, <ak@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 2/2] perf pmu: Improve CPU core PMU HW event list ordering
+Date:   Wed, 17 Jun 2020 17:01:54 +0800
+Message-ID: <1592384514-119954-3-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
+References: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-References: <20200615202408.2242614-1-pjones@redhat.com> <CAMj1kXGLwyk9ibSDXBfeu06HV4x4VtbWbKv20KNzkXpbTxBSXg@mail.gmail.com>
-In-Reply-To: <CAMj1kXGLwyk9ibSDXBfeu06HV4x4VtbWbKv20KNzkXpbTxBSXg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 17 Jun 2020 11:01:54 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFPCeYmnkksL=j2qWfY5q9QRcUhDf1qMK_OgCD9=XDK=A@mail.gmail.com>
-Message-ID: <CAMj1kXFPCeYmnkksL=j2qWfY5q9QRcUhDf1qMK_OgCD9=XDK=A@mail.gmail.com>
-Subject: Re: [PATCH] Make it possible to disable efivar_ssdt entirely
-To:     Peter Jones <pjones@redhat.com>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 at 00:47, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Mon, 15 Jun 2020 at 22:24, Peter Jones <pjones@redhat.com> wrote:
-> >
-> > In most cases, such as CONFIG_ACPI_CUSTOM_DSDT and
-> > CONFIG_ACPI_TABLE_UPGRADE, boot-time modifications to firmware tables
-> > are tied to specific Kconfig options.  Currently this is not the case
-> > for modifying the ACPI SSDT via the efivar_ssdt kernel command line
-> > option and associated EFI variable.
-> >
-> > This patch adds CONFIG_EFI_CUSTOM_SSDT_OVERLAYS, which defaults
-> > disabled, in order to allow enabling or disabling that feature during
-> > the build.
-> >
-> > Signed-off-by: Peter Jones <pjones@redhat.com>
->
-> Thanks Peter.
->
-> > ---
-> >  drivers/firmware/efi/efi.c   |  2 +-
-> >  drivers/firmware/efi/Kconfig | 11 +++++++++++
-> >  2 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> > index 48d0188936c..4b12a598ccf 100644
-> > --- a/drivers/firmware/efi/efi.c
-> > +++ b/drivers/firmware/efi/efi.c
-> > @@ -192,7 +192,7 @@ static void generic_ops_unregister(void)
-> >         efivars_unregister(&generic_efivars);
-> >  }
-> >
-> > -#if IS_ENABLED(CONFIG_ACPI)
-> > +#if IS_ENABLED(CONFIG_EFI_CUSTOM_SSDT_OVERLAYS)
-> >  #define EFIVAR_SSDT_NAME_MAX   16
-> >  static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
-> >  static int __init efivar_ssdt_setup(char *str)
-> > diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
-> > index 6b38f9e5d20..fe433f76b03 100644
-> > --- a/drivers/firmware/efi/Kconfig
-> > +++ b/drivers/firmware/efi/Kconfig
-> > @@ -278,3 +278,14 @@ config EFI_EARLYCON
-> >         depends on SERIAL_EARLYCON && !ARM && !IA64
-> >         select FONT_SUPPORT
-> >         select ARCH_USE_MEMREMAP_PROT
-> > +
-> > +config EFI_CUSTOM_SSDT_OVERLAYS
-> > +       bool "Load custom ACPI SSDT overlay from an EFI variable"
-> > +       depends on EFI_VARS
->
-> Shouldn't this depend on ACPI too?
->
+For perf list, the CPU core PMU HW event ordering is such that not all
+events may will be listed adjacent - consider this example:
 
-I'll pick this up as a fix (with the ACPI dependency added)
+$ tools/perf/perf list
 
-> > +       default ACPI_TABLE_UPGRADE
-> > +       help
-> > +         Allow loading of an ACPI SSDT overlay from an EFI variable specified
-> > +         by a kernel command line option.
-> > +
-> > +         See Documentation/admin-guide/acpi/ssdt-overlays.rst for more
-> > +         information.
-> > --
-> > 2.26.2
-> >
+List of pre-defined events (to be used in -e):
+
+  duration_time                                      [Tool event]
+
+  branch-instructions OR cpu/branch-instructions/    [Kernel PMU event]
+  branch-misses OR cpu/branch-misses/                [Kernel PMU event]
+  bus-cycles OR cpu/bus-cycles/                      [Kernel PMU event]
+  cache-misses OR cpu/cache-misses/                  [Kernel PMU event]
+  cache-references OR cpu/cache-references/          [Kernel PMU event]
+  cpu-cycles OR cpu/cpu-cycles/                      [Kernel PMU event]
+  cstate_core/c3-residency/                          [Kernel PMU event]
+  cstate_core/c6-residency/                          [Kernel PMU event]
+  cstate_core/c7-residency/                          [Kernel PMU event]
+  cstate_pkg/c2-residency/                           [Kernel PMU event]
+  cstate_pkg/c3-residency/                           [Kernel PMU event]
+  cstate_pkg/c6-residency/                           [Kernel PMU event]
+  cstate_pkg/c7-residency/                           [Kernel PMU event]
+  cycles-ct OR cpu/cycles-ct/                        [Kernel PMU event]
+  cycles-t OR cpu/cycles-t/                          [Kernel PMU event]
+  el-abort OR cpu/el-abort/                          [Kernel PMU event]
+  el-capacity OR cpu/el-capacity/                    [Kernel PMU event]
+
+Notice in the above example how the cstate_core PMU events are mixed in
+the middle of the CPU core events.
+
+For my arm64 platform, all the uncore events get mixed in, making the list
+very disorganised:
+ page-faults OR faults                              [Software event]
+  task-clock                                         [Software event]
+  duration_time                                      [Tool event]
+  L1-dcache-load-misses                              [Hardware cache event]
+  L1-dcache-loads                                    [Hardware cache event]
+  L1-icache-load-misses                              [Hardware cache event]
+  L1-icache-loads                                    [Hardware cache event]
+  branch-load-misses                                 [Hardware cache event]
+  branch-loads                                       [Hardware cache event]
+  dTLB-load-misses                                   [Hardware cache event]
+  dTLB-loads                                         [Hardware cache event]
+  iTLB-load-misses                                   [Hardware cache event]
+  iTLB-loads                                         [Hardware cache event]
+  br_mis_pred OR armv8_pmuv3_0/br_mis_pred/          [Kernel PMU event]
+  br_mis_pred_retired OR armv8_pmuv3_0/br_mis_pred_retired/ [Kernel PMU event]
+  br_pred OR armv8_pmuv3_0/br_pred/                  [Kernel PMU event]
+  br_retired OR armv8_pmuv3_0/br_retired/            [Kernel PMU event]
+  br_return_retired OR armv8_pmuv3_0/br_return_retired/ [Kernel PMU event]
+  bus_access OR armv8_pmuv3_0/bus_access/            [Kernel PMU event]
+  bus_cycles OR armv8_pmuv3_0/bus_cycles/            [Kernel PMU event]
+  cid_write_retired OR armv8_pmuv3_0/cid_write_retired/ [Kernel PMU event]
+  cpu_cycles OR armv8_pmuv3_0/cpu_cycles/            [Kernel PMU event]
+  dtlb_walk OR armv8_pmuv3_0/dtlb_walk/              [Kernel PMU event]
+  exc_return OR armv8_pmuv3_0/exc_return/            [Kernel PMU event]
+  exc_taken OR armv8_pmuv3_0/exc_taken/              [Kernel PMU event]
+  hisi_sccl1_ddrc0/act_cmd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_rcmd/                        [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_rd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_wcmd/                        [Kernel PMU event]
+  hisi_sccl1_ddrc0/flux_wr/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/pre_cmd/                          [Kernel PMU event]
+  hisi_sccl1_ddrc0/rnk_chg/                          [Kernel PMU event]
+
+...
+
+  hisi_sccl7_l3c21/wr_hit_cpipe/                     [Kernel PMU event]
+  hisi_sccl7_l3c21/wr_hit_spipe/                     [Kernel PMU event]
+  hisi_sccl7_l3c21/wr_spipe/                         [Kernel PMU event]
+  inst_retired OR armv8_pmuv3_0/inst_retired/        [Kernel PMU event]
+  inst_spec OR armv8_pmuv3_0/inst_spec/              [Kernel PMU event]
+  itlb_walk OR armv8_pmuv3_0/itlb_walk/              [Kernel PMU event]
+  l1d_cache OR armv8_pmuv3_0/l1d_cache/              [Kernel PMU event]
+  l1d_cache_refill OR armv8_pmuv3_0/l1d_cache_refill/ [Kernel PMU event]
+  l1d_cache_wb OR armv8_pmuv3_0/l1d_cache_wb/        [Kernel PMU event]
+  l1d_tlb OR armv8_pmuv3_0/l1d_tlb/                  [Kernel PMU event]
+  l1d_tlb_refill OR armv8_pmuv3_0/l1d_tlb_refill/    [Kernel PMU event]
+
+So the events are list alphabetically. However, CPU core event listing is
+special from commit dc098b35b56f ("perf list: List kernel supplied event
+aliases"), in that the alias and full event is shown (in that order).
+As such, the core events may become sparse.
+
+Improve this by grouping the CPU core events and ensure that they are
+listed first for kernel PMU events. For the first example, above, this
+now looks like:
+
+duration_time                                      [Tool event]
+  branch-instructions OR cpu/branch-instructions/    [Kernel PMU event]
+  branch-misses OR cpu/branch-misses/                [Kernel PMU event]
+  bus-cycles OR cpu/bus-cycles/                      [Kernel PMU event]
+  cache-misses OR cpu/cache-misses/                  [Kernel PMU event]
+  cache-references OR cpu/cache-references/          [Kernel PMU event]
+  cpu-cycles OR cpu/cpu-cycles/                      [Kernel PMU event]
+  cycles-ct OR cpu/cycles-ct/                        [Kernel PMU event]
+  cycles-t OR cpu/cycles-t/                          [Kernel PMU event]
+  el-abort OR cpu/el-abort/                          [Kernel PMU event]
+  el-capacity OR cpu/el-capacity/                    [Kernel PMU event]
+  el-commit OR cpu/el-commit/                        [Kernel PMU event]
+  el-conflict OR cpu/el-conflict/                    [Kernel PMU event]
+  el-start OR cpu/el-start/                          [Kernel PMU event]
+  instructions OR cpu/instructions/                  [Kernel PMU event]
+  mem-loads OR cpu/mem-loads/                        [Kernel PMU event]
+  mem-stores OR cpu/mem-stores/                      [Kernel PMU event]
+  ref-cycles OR cpu/ref-cycles/                      [Kernel PMU event]
+  topdown-fetch-bubbles OR cpu/topdown-fetch-bubbles/ [Kernel PMU event]
+  topdown-recovery-bubbles OR cpu/topdown-recovery-bubbles/ [Kernel PMU event]
+  topdown-slots-issued OR cpu/topdown-slots-issued/  [Kernel PMU event]
+  topdown-slots-retired OR cpu/topdown-slots-retired/ [Kernel PMU event]
+  topdown-total-slots OR cpu/topdown-total-slots/    [Kernel PMU event]
+  tx-abort OR cpu/tx-abort/                          [Kernel PMU event]
+  tx-capacity OR cpu/tx-capacity/                    [Kernel PMU event]
+  tx-commit OR cpu/tx-commit/                        [Kernel PMU event]
+  tx-conflict OR cpu/tx-conflict/                    [Kernel PMU event]
+  tx-start OR cpu/tx-start/                          [Kernel PMU event]
+  cstate_core/c3-residency/                          [Kernel PMU event]
+  cstate_core/c6-residency/                          [Kernel PMU event]
+  cstate_core/c7-residency/                          [Kernel PMU event]
+  cstate_pkg/c2-residency/                           [Kernel PMU event]
+  cstate_pkg/c3-residency/                           [Kernel PMU event]
+  cstate_pkg/c6-residency/                           [Kernel PMU event]
+  cstate_pkg/c7-residency/                           [Kernel PMU event]
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/util/pmu.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index a375364537cd..faa3e0619740 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1400,6 +1400,7 @@ struct sevent {
+ 	char *pmu;
+ 	char *metric_expr;
+ 	char *metric_name;
++	int is_cpu;
+ };
+ 
+ static int cmp_sevent(const void *a, const void *b)
+@@ -1416,6 +1417,11 @@ static int cmp_sevent(const void *a, const void *b)
+ 		if (n)
+ 			return n;
+ 	}
++
++	/* Order CPU core events to be first */
++	if (as->is_cpu != bs->is_cpu)
++		return bs->is_cpu - as->is_cpu;
++
+ 	return strcmp(as->name, bs->name);
+ }
+ 
+@@ -1507,6 +1513,7 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
+ 			aliases[j].pmu = pmu->name;
+ 			aliases[j].metric_expr = alias->metric_expr;
+ 			aliases[j].metric_name = alias->metric_name;
++			aliases[j].is_cpu = is_cpu;
+ 			j++;
+ 		}
+ 		if (pmu->selectable &&
+-- 
+2.26.2
+
