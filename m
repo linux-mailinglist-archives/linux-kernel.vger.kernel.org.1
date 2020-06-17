@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C941FD556
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DF11FD55F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgFQTVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:21:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34460 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgFQTVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:21:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0E869ADC9;
-        Wed, 17 Jun 2020 19:21:38 +0000 (UTC)
-Message-ID: <9450f86c15ecd8435bcdbc395f8674172a975100.camel@suse.de>
-Subject: Re: [PATCH v3 4/9] ARM: dts: bcm2711: Add reset controller to xHCI
- node
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org, andy.shevchenko@gmail.com,
-        mathias.nyman@linux.intel.com, lorenzo.pieralisi@arm.com,
-        devicetree@vger.kernel.org, wahrenst@gmx.net,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Date:   Wed, 17 Jun 2020 21:21:31 +0200
-In-Reply-To: <20200612171334.26385-5-nsaenzjulienne@suse.de>
-References: <20200612171334.26385-1-nsaenzjulienne@suse.de>
-         <20200612171334.26385-5-nsaenzjulienne@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-lfIoWXagrdDHMww3Jq4T"
-User-Agent: Evolution 3.36.3 
+        id S1726906AbgFQTWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:22:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45232 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726835AbgFQTWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:22:32 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05HJMJ0T074159;
+        Wed, 17 Jun 2020 14:22:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592421739;
+        bh=Bkn+lQ7tZTYAmQ+YAHSjbAZtH5GQl0iS1nrW8ZoWpTo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=P2cQuGD/oBIZXT7KVhuJSwqLsVKQT7n0b+rIdMBvgLV56NSUHJCUln3AI4NgOkioC
+         u3MsHavBkDxTnvb7TryTbVYZUTUr99SKLM+Wmj2uLOS2mM04d0R8R+2i2km3kHtSZ7
+         7l3YvvihLokfoeh5SRMlO6gQlrjP23xU3XLVt7mQ=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05HJMJUj075690
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 17 Jun 2020 14:22:19 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 17
+ Jun 2020 14:22:18 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 17 Jun 2020 14:22:18 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05HJMIGC110715;
+        Wed, 17 Jun 2020 14:22:18 -0500
+Subject: Re: [RESEND PATCH v27 11/15] leds: lp55xx: Add multicolor framework
+ support to lp55xx
+To:     kernel test robot <lkp@intel.com>, <jacek.anaszewski@gmail.com>,
+        <pavel@ucw.cz>, <robh@kernel.org>
+CC:     <kbuild-all@lists.01.org>, <devicetree@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200615201522.19677-12-dmurphy@ti.com>
+ <202006180032.JW0i39C6%lkp@intel.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <0a8a6f57-678d-b1b9-41e5-5e58c15cfe6b@ti.com>
+Date:   Wed, 17 Jun 2020 14:22:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <202006180032.JW0i39C6%lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pavel/Jacek
 
---=-lfIoWXagrdDHMww3Jq4T
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi All,
-
-On Fri, 2020-06-12 at 19:13 +0200, Nicolas Saenz Julienne wrote:
-> The chip is hardwired to the board's PCIe bus and needs to be properly
-> setup trough a firmware routine after a PCI fundamental reset. Pass the
-> reset controller phandle that takes care of triggering the
-> initialization to the relevant PCI device.
+On 6/17/20 11:28 AM, kernel test robot wrote:
+> Hi Dan,
 >
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> I love your patch! Yet something to improve:
 >
-> ---
+> [auto build test ERROR on pavel-linux-leds/for-next]
+> [cannot apply to j.anaszewski-leds/for-next]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 >
-> Changes since v2:
->  - Use dt-bindings to access IDs
+> url:    https://github.com/0day-ci/linux/commits/Dan-Murphy/Multicolor-Framework-v27/20200616-042217
+> base:   git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git for-next
+> config: ia64-randconfig-r015-20200617 (attached as .config)
+> compiler: ia64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64
 >
-> Changes since v1:
->  - Update to match new binding
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
->  arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
 >
-> diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> index 0cef95058fb0..e20979013414 100644
-> --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> @@ -4,6 +4,8 @@
->  #include "bcm2835-rpi.dtsi"
->  #include "bcm283x-rpi-usb-peripheral.dtsi"
+> ia64-linux-ld: drivers/leds/leds-lp55xx-common.o: in function `lp55xx_set_mc_brightness':
+>>> drivers/leds/leds-lp55xx-common.c:146: undefined reference to `led_mc_calc_color_components'
+> ia64-linux-ld: drivers/leds/leds-lp55xx-common.o: in function `devm_led_classdev_multicolor_register':
+>>> include/linux/led-class-multicolor.h:74: undefined reference to `devm_led_classdev_multicolor_register_ext'
+> vim +146 drivers/leds/leds-lp55xx-common.c
 >
-> +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
-> +
->  / {
->  	compatible =3D "raspberrypi,4-model-b", "brcm,bcm2711";
->  	model =3D "Raspberry Pi 4 Model B";
-> @@ -207,6 +209,13 @@ phy1: ethernet-phy@1 {
->  	};
->  };
->
-> +&pcie0 {
-> +	usb@1,0 {
-> +		reg =3D <0 0 0 0 0>;
-> +		resets =3D <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
-> +	};
-> +};
-> +
+>     138	
+>     139	static int lp55xx_set_mc_brightness(struct led_classdev *cdev,
+>     140					    enum led_brightness brightness)
+>     141	{
+>     142		struct led_classdev_mc *mc_dev = lcdev_to_mccdev(cdev);
+>     143		struct lp55xx_led *led = mcled_cdev_to_led(mc_dev);
+>     144		struct lp55xx_device_config *cfg = led->chip->cfg;
+>     145	
+>   > 146		led_mc_calc_color_components(&led->mc_cdev, brightness);
+>     147		return cfg->multicolor_brightness_fn(led);
+>     148	
 
-I'm now double-guessing this is correct. With this lspci -tv output:
+Well this was a mess to figure out.
 
-[0000:00]---00.0-[01]----00.0  VIA Technologies, Inc. VL805 USB 3.0 Host Co=
-ntroller
+The only fix I can figure out here is to remove the
 
-The DT patch should be more like this:
+     depends on LEDS_CLASS_MULTI_COLOR || !LEDS_CLASS_MULTI_COLOR
 
-+&pcie0 {
-+       pci@0 {
-+               #address-cells =3D <3>;
-+               #size-cells =3D <2>;
-+               ranges;
-+
-+               reg =3D <0 0 0 0 0>;
-+
-+               usb@1,0 {
-+                       reg =3D <0x10000 0 0 0 0>;
-+                       resets =3D <&reset RASPBERRYPI_FIRMWARE_RESET_ID_US=
-B>;
-+               };
-+       };
-+};
+from each child device and add
 
-Small details aside I'm pretty confident this is the way to go, but would
-appreciate some comments/validation.
+     select LEDS_CLASS_MULTI_COLOR
 
-Regards,
-Nicolas
+to the LP55XX_COMMON
 
+This way the Multi color framework will inherit the symbol that was set 
+by the COMMON flag which is inherited by majority from the child flags.
 
---=-lfIoWXagrdDHMww3Jq4T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7qbTsACgkQlfZmHno8
-x/4CVggAn3Z1hf15FCwZBqJ5vtu95aPDbATL/d0KQ7jGrs66dTwaOP6aBJFw48YF
-0wKRsvMe9LukIRSOBh9HluSEszmQj7/hUGRYcsXaBgmHeOVs9PCXDbJb0/XtgBwF
-3EvokrD1MRS9bcpXwVOCKsMu+wjaGMlCiiJ6wmvD2ffybDPtYA19Xci86XF3Y2WT
-PTeuhEXh+/+wADvH/z0Gi4ivdIAh6FGLbdaSSVgEpf1JChHkSH0anKhw78keHGWK
-WXifnT/7XqG9VtvNNmFvQ1+q7MoyyJlzCn/NXfNuhjmBV+A6gxhefrVRq+P2yeb7
-LzlXGvG8m8RsQQgt1TlpTQwfAjB8KQ==
-=jUpw
------END PGP SIGNATURE-----
-
---=-lfIoWXagrdDHMww3Jq4T--
+Dan
 
