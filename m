@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A36C1FD2A7
+	by mail.lfdr.de (Postfix) with ESMTP id 975671FD2A8
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgFQQsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        id S1727102AbgFQQs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgFQQsR (ORCPT
+        with ESMTP id S1727069AbgFQQsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:48:17 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64885C061755;
-        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dp18so3115888ejc.8;
-        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
+        Wed, 17 Jun 2020 12:48:19 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDD6C06174E;
+        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id w16so3130048ejj.5;
+        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jZZKUF07v/nlA1jyQTW7KSPjbPs9IKRSHg41mjIxwpk=;
-        b=sYQVXWaLgIeNiJ4w4XegGp1tVc+4eLMLhF+EeJsFwFeVs67vr90CoL+lnfw4FlgpHW
-         SpwY76GMZg6CvROrI2tEX45wgJoVzpHpG7gkBAMFtM/Swba7fYRXK4Zk3TKKGxRkhJo6
-         Ns0P2N02EpwsLIvzj+0SZr3gYVOSimhtb9/XNbRd6dAzBeLgIOYrhiuua1j3yIFHM4xK
-         kY99RKkidFqZv5TEp0vxHqYPtVFNFnq9Qlt02JuIYJAN/TwmfAzqw7k1YN+NS6c3LNn6
-         qEl9gLRkp7iVWdd+hWxQDEx7buzLAnf4PRcGhXPSMnrs6UGj6WnlCmEqAqpsR8jmtQrH
-         sQAg==
+        bh=HbW3NKNom8juXI2NoyDjAEEkKyRH9dumXigRxuvNwKY=;
+        b=E5U6u+FwDamT/5MzUtw3K/1BEM1ZTiyttyrXEl1+8zSQWpBSc0B5FR4bIUQ1tonPZh
+         tQ7Sq8engNniJfbizfbR8YisCx9Ora1eTcK48UUUNsPyrrmYz7ttfMJUyDIqWfREp4x0
+         LT8uHcaKqqvZF70IgYU99gHaQCxC2cfAXiDO8ImYxJjaG5GtJKZ3Hfb1Q6NlVdmDbaZ8
+         QDB11E5nYjm0cIK1jEV4D3ONYHyoB5X7seBi/J8PU31002wRNLpWLEKw0yPRy0NRsvSu
+         nNp3fHo+x13H8YaQjGCkZbkO7eOeT90xaWFXuPE4kus7VDD8rQXbpeNqcWSXDawp1WUA
+         c/ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jZZKUF07v/nlA1jyQTW7KSPjbPs9IKRSHg41mjIxwpk=;
-        b=hhAkK6yq+ENOqhhDxf01125o42SOkDqlvTq9CYbYqRoAaNIYH7/X1gP7fcy0h/4MrU
-         mUHcjFuD5jFWH6wHJXsxIhefYzFFnybwLEehp5dRRy6wImE0pAJX94szUVDZZH2KYL2T
-         q8S6hmdjE2vVFsvBEMevnJyCmcLwVdHHL/F7mO+G0uJVnuiV8X1J3uo/Kw/Rpj4SAWTo
-         WXIHMrM9dk1Spiv89fF5Jf3CWzRzwg6qWHRjppoP/oFpthiszoBXe3BmJxvMCXkpKyfq
-         ddu0beUgfMr0dR1c2OLPcKdiFMYOmV4wrFci5J1Dx/Rcuc+zlpnL64blrfoDIZiUyztu
-         nVcQ==
-X-Gm-Message-State: AOAM5323bwIiIm/HnNnu7HyWJ5CZ2Qa7TRt5ycuXXvJbwslniqB1arej
-        zDjje1Ip0VqRj2bhwuJ29iPpxGabw3k=
-X-Google-Smtp-Source: ABdhPJzkQ4XoHE0hXyWg9y7w5h3GyxnfvBxCnp283I3LuBNWtWnXUf8nbKu2nCHtLm2+3r0DEwd3xQ==
-X-Received: by 2002:a17:906:1116:: with SMTP id h22mr69349eja.350.1592412496144;
-        Wed, 17 Jun 2020 09:48:16 -0700 (PDT)
+        bh=HbW3NKNom8juXI2NoyDjAEEkKyRH9dumXigRxuvNwKY=;
+        b=kvFsVw+nUZj16udHUjUJQcdQj7VVgKeiC/Dx4tpTfwbpC0pqTtsQzlKdgI9cgixF4m
+         hcTDujOsGr8ZR2zTHHh3398jsoL9163S0Km7tEnpfdF4JtqgJJqoISOWDDdTg+HHfgvc
+         gbZplAPbOegMZSURZSCs6VjEQ0UNoj40S6lM6wjJx2ZquIT65MHr2KvhJnGm7jQvRY7R
+         BpZsOX6dD1jbrz8vcmoo0QONxHtuoj58zZzH1C5rWngPJzRHO7RZynidmnAbtl30TXBr
+         XXqMhUNvDfMeVTqBpz6Wktw8kzYOjnbM6auXDGaXrlRbkB/fEGq/uHShHmVuJqwiKrkZ
+         gF/w==
+X-Gm-Message-State: AOAM531KCndBkzLbbE6ecNNpDbwAnfHsmYO44mmNWTfYE4jH8Thdq+eA
+        cC+5qZ3ESjSp1+oFpcEKUTS8PJUccNw=
+X-Google-Smtp-Source: ABdhPJzPdiDhZzkiIEvfyQqMk9m00A48c6U0WPQZgrYyBMDstasrSBdif/z88ONABd5SplNm1UNgmA==
+X-Received: by 2002:a17:907:9484:: with SMTP id dm4mr106072ejc.56.1592412497436;
+        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.14
+        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:48:15 -0700 (PDT)
+        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-actions@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/11] clk: actions: Fix h_clk for Actions S500 SoC
-Date:   Wed, 17 Jun 2020 19:48:01 +0300
-Message-Id: <7b50d637e7c69e8c91e16354ca1ee0e91e516f3b.1592407030.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH 02/11] arm: dts: owl-s500: Add Clock Management Unit
+Date:   Wed, 17 Jun 2020 19:48:02 +0300
+Message-Id: <9dba1e4d779be27594859ea71131624bb20b1618.1592407030.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The h_clk clock in the Actions Semi S500 SoC clock driver has an
-invalid parent. Replace with the correct one.
+Add Clock Management Unit for Actions Semi S500 SoC.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- drivers/clk/actions/owl-s500.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/owl-s500.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-index e2007ac4d235..0eb83a0b70bc 100644
---- a/drivers/clk/actions/owl-s500.c
-+++ b/drivers/clk/actions/owl-s500.c
-@@ -183,7 +183,7 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
- static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
+diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
+index 1dbe4e8b38ac..5d5ad9db549b 100644
+--- a/arch/arm/boot/dts/owl-s500.dtsi
++++ b/arch/arm/boot/dts/owl-s500.dtsi
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2016-2017 Andreas Färber
+  */
  
- /* divider clocks */
--static OWL_DIVIDER(h_clk, "h_clk", "ahbprevdiv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
-+static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
- static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
++#include <dt-bindings/clock/actions,s500-cmu.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/power/owl-s500-powergate.h>
  
- /* factor clocks */
+@@ -70,6 +71,12 @@ hosc: hosc {
+ 		#clock-cells = <0>;
+ 	};
+ 
++	losc: losc {
++		compatible = "fixed-clock";
++		clock-frequency = <32768>;
++		#clock-cells = <0>;
++	};
++
+ 	soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -169,6 +176,13 @@ uart6: serial@b012c000 {
+ 			status = "disabled";
+ 		};
+ 
++		cmu: clock-controller@b0160000 {
++			compatible = "actions,s500-cmu";
++			reg = <0xb0160000 0x8000>;
++			clocks = <&hosc>, <&losc>;
++			#clock-cells = <1>;
++		};
++
+ 		timer: timer@b0168000 {
+ 			compatible = "actions,s500-timer";
+ 			reg = <0xb0168000 0x8000>;
 -- 
 2.27.0
 
