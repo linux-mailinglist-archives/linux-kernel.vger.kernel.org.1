@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D871FC412
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB7D1FC423
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgFQCUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S1726696AbgFQC1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgFQCUl (ORCPT
+        with ESMTP id S1726494AbgFQC1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:20:41 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8B9C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:20:41 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e18so511804pgn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 19:20:41 -0700 (PDT)
+        Tue, 16 Jun 2020 22:27:36 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C527AC061573;
+        Tue, 16 Jun 2020 19:27:35 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u13so956262iol.10;
+        Tue, 16 Jun 2020 19:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jlkXg/8cOfRCJwhgUdmNAqWeiDO0B4upmFZZOpihX9I=;
-        b=edvNWiJ+gkcqCHT7jn5Sx5Bppkph0xBg6PExMZ0ZPnaw4TGNXhwu0hbMLP+K0Vn10U
-         i63dPF1ZNJIgbArGNAUG6fauIcC59cJZfJdlSm7hucbaUnmtcqadgb1wK1NfjQIphV6H
-         Uww02kpaj2SNivtZBsvIs49JLRTsHscEfLaIEhpWmxM7le+7G+GtkCEnNsD4ZwTXhPtR
-         cOMHGXVzwIl9ViqBfvSaVRI96k5nB25X1oiv2ycfbJFEsU2+ysmqu9H7c5RkxGCB9jMG
-         RRoa90WwgsojE65qKCow6wrChWGBhvhUuV5sqFvEpabBTEkrotDExkhd7iRhNbfg//aN
-         QniQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=o+3+WHHJ8/T1Wxlro6VgUKACrLkQwhYAFXZ7kke0D9k=;
+        b=LTHdDJnDrNomSfUbM5PjQjTr9FrUwPmPariJdqPW2HFl+1wAomframy4GqUiajueTS
+         pmGBDsY6llA9/qL5AJSW/Oy5nPqNrBVt5BGlIll+tDOyI57H37kt921kx8hnm6on9OiQ
+         dOuVNJDsBkLtNxm0msEyp1Xn9SWJcmWGajWSaH6o1lYcpg83sr5bAusUKkSjUSR52SZE
+         PTSiXswF+GgMxxoRpHwaVda7kUC4HK0LS1aPxIZSvjhm902Av6i/EQXv5uX6O2B0F3Mf
+         EjzMIaXSnzEdd9171v8M+rpFKnohT4loOpaqu3rpgohdZINXfQWPp7QGgb/Z13dD6ZEr
+         Hrzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=jlkXg/8cOfRCJwhgUdmNAqWeiDO0B4upmFZZOpihX9I=;
-        b=W1tgrdUHSrsfYhgK9OaoO/hc5iPzvngYG820ZKeKrbuOBvdnnooZfjjfZotOQmwepf
-         03dPsB0CRELDIjZneNKLaOgPmsxeruJN2Uly0nixhKapM5aIoMGCS0Isdsu1lQVpDiFN
-         BdP4V8VgOyALI82l/5pJWbmHclhpx2rJJbYgUNJ67++Y+YtNjf01SYG48n3UVBkEW28u
-         FRF7xU+uiKKfG3LMBKxme0pB3AxG/RToOzBJPca3L6gdbyf/8rSL2/4MBDTt0M3afLKC
-         y5t28bXDazdzGRT8kQqhQryd+v6k5nsugEgBmCwOK0Mv+MyEqREL4ixJkw70jrcxcXr1
-         wX5w==
-X-Gm-Message-State: AOAM530RcRuYsjMEb1nNv3fzu8X8CJiI2v+DxQsUvgcnObu4s8UExPv9
-        JqpbvGEo1ojYoFbRAi1AhNY=
-X-Google-Smtp-Source: ABdhPJwSZgwKD4NqK2+PwKN2v4HkajjDh0kBp7FxB9eNSPs43n8r1gDRLRWvcReIlLpH0HRzHVZANw==
-X-Received: by 2002:aa7:93b4:: with SMTP id x20mr4968683pff.9.1592360441065;
-        Tue, 16 Jun 2020 19:20:41 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.213.184])
-        by smtp.gmail.com with ESMTPSA id h9sm1203208pfe.32.2020.06.16.19.20.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jun 2020 19:20:40 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     gregkh@linuxfoundation.org, jane.pnx9@gmail.com, pakki001@umn.edu,
-        ldufour@linux.ibm.com, harshjain32@gmail.com, simon@nikanor.nu,
-        walken@google.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 4/4] staging: kpc2000: kpc_dma: Remove excess goto statement
-Date:   Wed, 17 Jun 2020 07:57:23 +0530
-Message-Id: <1592360843-3440-5-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
-References: <1592360843-3440-1-git-send-email-jrdr.linux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o+3+WHHJ8/T1Wxlro6VgUKACrLkQwhYAFXZ7kke0D9k=;
+        b=hOXthZnwPa022geIyjN2WB8nTXkJy7BM3xFLIBzSlZ96QMWXJ8/NQ5QbN/ercmWf7t
+         MzbcFmflZuvd4bJbZKS4NAsJPI7B2rp1wnSQ3483MhakXOsc61Pq7sowpJSHlb3p5o63
+         gYMfZ6Qm6BMUHxJDFKAqJHN5RaRwZNwuhfml/GvuKAFJVf+yuxPDm14LvHpFCb5qNgMS
+         NDAiGrpTn4LtYy81xoYe3INq0jI9xr74UfsqzlJZ/5UMRahDiOhTV8R/+1zVf9fAST4O
+         Z0z82BiEp9ATJHEJYFm5P4GZH3k4vKzZyo8dEXCjikAX65AbTIvryLbmvQYe+/XZif8e
+         E+Cw==
+X-Gm-Message-State: AOAM530MWyO/wAwdWsDtife9gLY1GgHGia6IYmMTs8lg7m2a0oLafzMi
+        P7I/JSSHBxhcj8ZPlZ+vgfQkWRtlGlKRe/7fZEo=
+X-Google-Smtp-Source: ABdhPJzW2JLOEdfm5n2+1udufWR25HquV0/vCG85pUOkXhf8DeOdEIXFVfOOsjnFIDwFMHJUrRvnDUaBoy0wBiQVTY0=
+X-Received: by 2002:a05:6602:2e96:: with SMTP id m22mr5919832iow.165.1592360854942;
+ Tue, 16 Jun 2020 19:27:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <1592310884-4307-1-git-send-email-macpaul.lin@mediatek.com> <20200616140246.GA30975@rowland.harvard.edu>
+In-Reply-To: <20200616140246.GA30975@rowland.harvard.edu>
+From:   Macpaul Lin <macpaul@gmail.com>
+Date:   Wed, 17 Jun 2020 10:27:23 +0800
+Message-ID: <CACCg+XNdnzsn4RH+1OWJXNY6mVA9a6tpaUec3=P53WkywcWfkA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] usb: gadget: introduce flag for large request
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Sergey Organov <sorganov@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As 3 goto level referring to same common code, those can be
-accomodated with a single goto level and renameing it to
-unpin_user_pages.
+Alan Stern <stern@rowland.harvard.edu> =E6=96=BC 2020=E5=B9=B46=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:05=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> On Tue, Jun 16, 2020 at 08:34:43PM +0800, Macpaul Lin wrote:
+> > Some USB hardware like DMA engine can help to process (split) the data
+> > of each URB request into small packets. For example, the max packet siz=
+e
+> > of high speed is 512 bytes. These kinds of hardware can help to split
+> > the continue Tx/Rx data requests into packets just at the max packet
+> > size during transmission. Hence upper layer software can reduce some
+> > effort for queueing many requests back and forth for larger data.
+> >
+> > Here we introduce "can_exceed_maxp" flag in gadget when these kinds of
+> > hardware is ready to support these operations.
+>
+> This isn't needed.  All UDC drivers must be able to support requests that
+> are larger than the maxpacket size.
+>
+> Alan Stern
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
----
- drivers/staging/kpc2000/kpc_dma/fileops.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+Thanks for your reply, could we just modify the patch 2 (u_serial.c)
+for improving
+better performance? I'm not sure why there was a restriction about max pack=
+et.
+Isn't there any historical reason?
 
-diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c
-index 1f5ab81..b0fcde5 100644
---- a/drivers/staging/kpc2000/kpc_dma/fileops.c
-+++ b/drivers/staging/kpc2000/kpc_dma/fileops.c
-@@ -35,7 +35,7 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 			    unsigned long iov_base, size_t iov_len)
- {
- 	unsigned int i = 0;
--	int rv = 0;
-+	int rv = 0, nr_pages = 0;
- 	struct kpc_dma_device *ldev;
- 	struct aio_cb_data *acd;
- 	DECLARE_COMPLETION_ONSTACK(done);
-@@ -79,22 +79,23 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 	rv = pin_user_pages(iov_base, acd->page_count, FOLL_TOUCH | FOLL_WRITE, acd->user_pages, NULL);
- 	mmap_read_unlock(current->mm);        /*  release the semaphore */
- 	if (rv != acd->page_count) {
-+		nr_pages = rv;
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't pin_user_pages (%ld)\n", rv);
--		goto err_get_user_pages;
-+		goto unpin_user_pages;
- 	}
--
-+	nr_pages = acd->page_count;
- 	// Allocate and setup the sg_table (scatterlist entries)
- 	rv = sg_alloc_table_from_pages(&acd->sgt, acd->user_pages, acd->page_count, iov_base & (PAGE_SIZE - 1), iov_len, GFP_KERNEL);
- 	if (rv) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't alloc sg_table (%ld)\n", rv);
--		goto err_alloc_sg_table;
-+		goto unpin_user_pages;
- 	}
- 
- 	// Setup the DMA mapping for all the sg entries
- 	acd->mapped_entry_count = dma_map_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
- 	if (acd->mapped_entry_count <= 0) {
- 		dev_err(&priv->ldev->pldev->dev, "Couldn't dma_map_sg (%d)\n", acd->mapped_entry_count);
--		goto err_dma_map_sg;
-+		goto unpin_user_pages;
- 	}
- 
- 	// Calculate how many descriptors are actually needed for this transfer.
-@@ -187,13 +188,9 @@ static int kpc_dma_transfer(struct dev_private_data *priv,
- 	unlock_engine(ldev);
- 	dma_unmap_sg(&ldev->pldev->dev, acd->sgt.sgl, acd->sgt.nents, ldev->dir);
- 	sg_free_table(&acd->sgt);
-- err_dma_map_sg:
-- err_alloc_sg_table:
--	unpin_user_pages(acd->user_pages, acd->page_count);
--
-- err_get_user_pages:
--	if (rv > 0)
--		unpin_user_pages(acd->user_pages, rv);
-+ unpin_user_pages:
-+	if (nr_pages > 0)
-+		unpin_user_pages(acd->user_pages, nr_pages);
- 	kfree(acd->user_pages);
-  err_alloc_userpages:
- 	kfree(acd);
--- 
-1.9.1
-
+--=20
+Best regards,
+Macpaul Lin
