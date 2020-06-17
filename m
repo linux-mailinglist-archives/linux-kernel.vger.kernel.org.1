@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFCD1FD26F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B49F1FD276
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgFQQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:41:45 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:35561 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726496AbgFQQlo (ORCPT
+        id S1726879AbgFQQnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:43:40 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:25667 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726708AbgFQQnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:41:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592412103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/k/xClA9+2hYuzh1XXM/hvm+D0ZEKs/cLEa2dBU6DKY=;
-        b=dVH2ixxJ7Vp/uMnF5MoExqsWB1ODeMk8ByLxavudyH0xatiwlTQd/X7Zzi54bD+qLKXxn7
-        6n64C5b26Okh64HND/BgAZi5UEYG5mqqxc8mmj9d6ZcyCGDUN08I23uUtgFvqE43R2r2Lf
-        PDWNKemqQGmvPunQvBuWdePrlzF2ZtM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-fYJfJdjHNyCKNT-QaEcWbQ-1; Wed, 17 Jun 2020 12:41:39 -0400
-X-MC-Unique: fYJfJdjHNyCKNT-QaEcWbQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 17 Jun 2020 12:43:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592412219; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=D4RdphQ0R1rE6zlNQnweaxq4dFFlOZRlQvz+hdcu5Dk=;
+ b=d68b4iTK8iDx7nlgEVT3qIXgshjzLrQ6a78EAmBZJq6Cv6b6/VdQU4xpxrD8b2Sm/HMV0ilI
+ gA6usy771pw0iUUnhCyIW+CmxwgWC3eMwlkxj5KLVGcOKx2AQOySxRpfkW4jFLRcMvOi8s0w
+ EIJF3OcT+XIPRJ/PbwE30wbzsL0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-east-1.postgun.com with SMTP id
+ 5eea482abfb34e631c49cc0a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Jun 2020 16:43:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7188C433A0; Wed, 17 Jun 2020 16:43:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCCB0891C5B;
-        Wed, 17 Jun 2020 16:41:13 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E6C16EDBE;
-        Wed, 17 Jun 2020 16:41:10 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 12:41:09 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Huaisheng Ye <yehs2007@zoho.com>, agk@redhat.com,
-        dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Huaisheng Ye <yehs1@lenovo.com>
-Subject: Re: dm writecache: correct uncommitted_block when discarding
- uncommitted entry
-Message-ID: <20200617164108.GA12131@redhat.com>
-References: <20200612155911.96528-1-yehs2007@zoho.com>
- <alpine.LRH.2.02.2006130839480.27500@file01.intranet.prod.int.rdu2.redhat.com>
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 11054C433CA;
+        Wed, 17 Jun 2020 16:43:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2006130839480.27500@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Jun 2020 22:13:21 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, saravanak@google.com, nm@ti.com,
+        bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v6 4/5] cpufreq: qcom: Update the bandwidth levels on
+ frequency change
+In-Reply-To: <20200616221157.GA4525@google.com>
+References: <20200605213332.609-1-sibis@codeaurora.org>
+ <20200605213332.609-5-sibis@codeaurora.org>
+ <20200615172553.GU4525@google.com>
+ <e21f85d64d72ec637c10dae93e8323bb@codeaurora.org>
+ <20200616221157.GA4525@google.com>
+Message-ID: <8a6ea89f41a3341e9d00ed9aa66355d6@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 13 2020 at  8:40am -0400,
-Mikulas Patocka <mpatocka@redhat.com> wrote:
-
+On 2020-06-17 03:41, Matthias Kaehlcke wrote:
+> Hi Sibi,
 > 
+> after doing the review I noticed that Viresh replied on the cover 
+> letter
+> that he picked the series up for v5.9, so I'm not sure if it makes 
+> sense
+> to send a v7.
 > 
-> On Fri, 12 Jun 2020, Huaisheng Ye wrote:
+> On Wed, Jun 17, 2020 at 02:35:00AM +0530, Sibi Sankar wrote:
 > 
-> > From: Huaisheng Ye <yehs1@lenovo.com>
-> > 
-> > When uncommitted entry has been discarded, correct wc->uncommitted_block
-> > for getting the exact number.
-> > 
-> > Signed-off-by: Huaisheng Ye <yehs1@lenovo.com>
+>> > > @@ -112,7 +178,7 @@ static int qcom_cpufreq_hw_read_lut(struct
+>> > > device *cpu_dev,
+>> > >
+>> > >  		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
+>> > >  			table[i].frequency = freq;
+>> > > -			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
+>> > > +			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
+>> >
+>> > This is the cross-validation mentioned above, right? Shouldn't it
+>> > include
+>> > a check of the return value?
+>> 
+>> Yes, this is the cross-validation step,
+>> we adjust the voltage if opp-tables are
+>> present/added successfully and enable
+>> them, else we would just do a add opp.
+>> We don't want to exit early on a single
+>> opp failure. We will error out a bit
+>> later if the opp-count ends up to be
+>> zero.
 > 
-> Acked-by: Mikulas Patocka <mpatocka@redhat.com>
-> 
-> Also, add:
-> Cc: stable@vger.kernel.org
+> At least an error/warning message would seem convenient when 
+> adjusting/adding
+> an OPP fails, otherwise you would only notice by looking at the sysfs
+> attributes (if you'd even spot a single/few OPPs to be missing).
 
-I picked this up for 5.8 but I inverted the patch order because this
-stable@ fix was dependent on the prior patch to skip waiting if in pmem
-mode (due to locality of changes within same function).
+I did consider the case where adjust
+voltage fails and we do report the
+freq for which it fails for as well.
+If adding a OPP fails we will still
+it being listed in the sysfs cpufreq
+scaling_available_frequencies since
+it lists the freq_table in khz there
+instead.
 
-See:
-https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/commit/?h=dm-5.8&id=39495b12ef1cf602e6abd350dce2ef4199906531
-
-Mike
-
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
