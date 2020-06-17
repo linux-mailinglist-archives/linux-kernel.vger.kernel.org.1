@@ -2,145 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFEA1FCA06
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301211FCA0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgFQJlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:41:14 -0400
-Received: from mail-eopbgr50080.outbound.protection.outlook.com ([40.107.5.80]:14402
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725860AbgFQJlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:41:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LokqSsRmcEwZBLsMIpba2BkKZaHUCYyrzTFo1hMuYy0SOmu97KD5QtExQiyWUZhuBHwmvEmgi0EfAFdh2hAF52IrYsdlsHiai5CyN0P62sx4PLXbF92qZKVFp267Hd3+JjSPetpxtjwl15zTk3O0z3En+gop2T9JcQsCbNLqhg5U10x8ESa87jVDt6QyFQghcVPXCqSrN8PF6t8cOVB5JHa46PiGcIzjEFyLcxkbWO4BblTnawpSWclsWMiNBptY7w4+X9fmE1c90ugCAAUaB9dY/fdEqc33vjMEOR9Jdd4VqmR2GrA8Fq7SM69Mj6dvWFNaIcNvEsL7Dr8FAkVgDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RH4MLm/e69JsZpomYK9XFdBoK3kwAUbYMKwfVOPkP/Q=;
- b=W9+QCdlkoHITlOjBjXu4PyqdZ4nwT3XSyy3iC9IJ3s4JgvunAg5FJ/3t9YoG/HQcpY1Ca+HoDNsGjzLzaVHdoMfrxD+XwmEymsao3YYKuijzV5TP5gvDVljcQMurho+HCx/joRBkgfMlfjXQihihlyPFXBL/nS5Ivb2qmgOQHT/KO8uk/C2Vy0Oxjv2n8XoKSt5zXyVYmSj5nLD3T2EghVg6KAyF2T1I9sKzfZLJIgvOGsaewxl+Wyi0Fh+z0VjZkGP6Rgpk48mRQIFdLxeaOdxOnfkkYU7V9JA+dxe4cXp9rmIWMcZIp0VHOl7u5xE1jU/CzHm7whNDnQ0pUITmig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RH4MLm/e69JsZpomYK9XFdBoK3kwAUbYMKwfVOPkP/Q=;
- b=P4tiz9Tz6i/ZlwTHdRkUjS3905TIFF6LMBrr7CW3pELzheY3B1b4VqdN/gSiJ8A51ReFAp+SevxYg731HDpgx82DWUOD5A91Tc5jjd9NklOlCRdntLyvBbamy2PLaFL132/1yV9fIe45sxuQEBBpKpYvqZiXE+1mE6OoB3w6UMI=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3849.eurprd04.prod.outlook.com (2603:10a6:8:e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.24; Wed, 17 Jun
- 2020 09:41:09 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3109.021; Wed, 17 Jun 2020
- 09:41:09 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>, "arnd@arndb.de" <arnd@arndb.de>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] soc: imx-scu: Support module build
-Thread-Topic: [PATCH] soc: imx-scu: Support module build
-Thread-Index: AQHWRGTWiz8NXUZ+xUGFBcoJjUMmmqjccS8AgAAAf6CAABnooA==
-Date:   Wed, 17 Jun 2020 09:41:08 +0000
-Message-ID: <DB3PR0402MB39167727A8B7CEDAC531D94EF59A0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1592369623-10723-1-git-send-email-Anson.Huang@nxp.com>
- <AM6PR04MB49667E1B41DC2A77B3E2FEBF809A0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <AM6PR0402MB3911B852B49E194E5FE84505F59A0@AM6PR0402MB3911.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR0402MB3911B852B49E194E5FE84505F59A0@AM6PR0402MB3911.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 96edc783-f23e-4d64-9f7b-08d812a29079
-x-ms-traffictypediagnostic: DB3PR0402MB3849:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB3849CC1225E37535260F347CF59A0@DB3PR0402MB3849.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 04371797A5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pQ97wlO0/CpnSvPP6W7toINFo4+Kb2Z4NcFdF5qkTygidUd5N7YHvTB6L+KmMAVP4Fg0DfOlcdVZELMvwh7+Vt5JKtBcxq9zJs9mFXOfOS8bTN5xXBhYjUq3+/PYaz3NPmvq2lVdZLUHBLAUYImNIojAr5Z/xaZ7Cp/rt90rEPBHcMJqkMMnd7rpHWqyS4SvBV1gSgv+8JcjqRBLIJt7mRNSXuBQHsb78SRXLXKQqisrcmLMrNnLJMfeESv2RZRyJIyBEJLYQsqL+XN+gOZX6kDmEySGf5/NfKQ9J+MwR8h0f4d4ecoczvM8mH9DfvNtmmaR4M27/9xp00hPDyY0Wfegj5BLfOZbSWHJCuFDjRuTi2bPkroteYatRKZfIHrS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(396003)(136003)(376002)(346002)(316002)(33656002)(8676002)(186003)(44832011)(5660300002)(4326008)(83380400001)(6506007)(110136005)(55016002)(71200400001)(26005)(52536014)(9686003)(66476007)(478600001)(7696005)(76116006)(2906002)(64756008)(66946007)(86362001)(66556008)(8936002)(66446008)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 4EGvsl+XMev9iQ8lmqyDF1fyteaigcCkR72l/Vfr8oUg+LUWlMLulXH2AsHJ/X4fZy1Uogq1ZEto1RtJZBXFgFqQdD7nhJH7AxbXdW2nxkxXh1dKS1PF5TFLcMJdt/Zo2GDmgqIgpz7ZunYMuPJvQqXBKeRG9RqZD3gCXq6fvRINFh+2m0q9hs5/ZJG/zfL5LZhQAjH8bjTWzFd49sk7leYr99uMPwr0jPAkcARR1f+spDoofedG1VeyzGfdC3Au/w0uKQBPTm554WQ7cWV3Zy7bw+qGhuM2me9eYD+BeJk2QY+lyQXviu169rt2eEwLxhIH6T1yQCyfvLGkerJkeQgUYMozQwETTSmO5bbJhUAU/+yM8b5v8egLOhY7zqG7fdzjoAVvfH4du1/6EO+3fG0wG+aQUz7w1AP2a+tQKIZcFDN2nSltoqRrJs/5gDI781CDVP6JsdvSNiPokTHjYBEasMa/KyJGcPQchMJVnL0=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96edc783-f23e-4d64-9f7b-08d812a29079
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2020 09:41:09.0037
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oVEvdPJoMRepQwo9ipfeJHuLY8N4sxDrBrQvsyavVpT5UPuO4KNymSZv7gOozI51qYGQ+OCMoVHDI3x0klpqVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3849
+        id S1726628AbgFQJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgFQJmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:42:10 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23533C061573;
+        Wed, 17 Jun 2020 02:42:10 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e1so1604711wrt.5;
+        Wed, 17 Jun 2020 02:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=s5ozDVklybETfefE88F2sjZVkweD0ju+SZP/9NGLYa8=;
+        b=gyT2C3Ez7iMxPb7vqwPMGvcsX7VITaoe1qsg0YfpQqnm2CCBp28gq3zrZvTYcH50J1
+         gBRUdOnjlfqpJMEmW1O3AnemaiyJ6s4G0ENVj8F8nSrve7VBvurLcgbSW5xzp+5aC/ok
+         UBtdkAp3A3RP+qklRFcpE+yZ1trLHnBQInQxfeEWz2Lg42ZFM2v/SJevmp9iOHP87SPr
+         YKyDtaVzvzag0dOK7KuQEdEA69kNcDrXH9xacY7p5fXlLeq4XaLxDImZJJB4rfMiCe8/
+         2D9Xf2e6tP3jUerNtqXFucHxXPKmASKPI5dwZ5WbyHLS6c8eMHhC1Dk9SAC69d3U8IqC
+         jbbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=s5ozDVklybETfefE88F2sjZVkweD0ju+SZP/9NGLYa8=;
+        b=J1A1sZXwFAzSR7bgVgJ9TNOnlhSHzAblgRJJcCkl/EuYejTkw9pZg0GQUZv7kkjSEM
+         i8bPAZZNWlNHaZqjMIRdpaEOQKX/jErAJyxstZIGB6N+AhuorWRDKkQODv3FhvAfKEmJ
+         cUeuoEkhzhUGKQgBn5lT6cCXmbZzrePPsypzbo/9uoWFA5J+7QsLTqkumEwGFfrgXh0z
+         GR9UuZZXjhtIc6dDwSF6PnEUAGen6eFO4JouChCTst7MwE7u6vRbVvBx3qdzrW1TFx07
+         NYWXXL6cEfxEvJCPqo0N11objswqAW0dx4DeCmexUyN/Imd2qjrEYe22oxmCmtRka0/M
+         rDqg==
+X-Gm-Message-State: AOAM530AHMK76ojSMtZ2ID9OsV0nfeujmO2Kjx3zaKeALclXC0ZP6Vtg
+        V8w74au/j3grPzFbi5p9SQ0=
+X-Google-Smtp-Source: ABdhPJwiZyyd7uIDvCDc5BecdMAiRd3nIVHPLNrLM0imVFwPv2vZH8nW7KujQiVAbHAhd2mRY+vjxw==
+X-Received: by 2002:adf:a51a:: with SMTP id i26mr7395814wrb.406.1592386928901;
+        Wed, 17 Jun 2020 02:42:08 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:a011:30c:e489:2676:2097:fdba])
+        by smtp.googlemail.com with ESMTPSA id j4sm8101512wma.7.2020.06.17.02.42.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jun 2020 02:42:08 -0700 (PDT)
+Message-ID: <653426a77669eaced17e9e5aa87259ad57514c47.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 2/5] scsi: ufs: Add UFS-feature layer
+From:   Bean Huo <huobean@gmail.com>
+To:     Alim Akhtar <alim.akhtar@gmail.com>,
+        Avri Altman <Avri.Altman@wdc.com>
+Cc:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Wed, 17 Jun 2020 11:41:55 +0200
+In-Reply-To: <CAGOxZ50TUnvmmdspxr6dHWrpoxZqHtvR-1Wg6jAVH6k-w5LT2w@mail.gmail.com>
+References: <47dcc56312229fc8f25f39c2beeb3a8ba811f3e9.camel@gmail.com>
+         <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+         <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+         <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+         <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p6>
+         <1210830415.21592275802431.JavaMail.epsvc@epcpadp1>
+         <SN6PR04MB4640EE125CF504AF9362B23FFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <CAGOxZ50TUnvmmdspxr6dHWrpoxZqHtvR-1Wg6jAVH6k-w5LT2w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0hdIHNvYzogaW14LXNjdTogU3VwcG9ydCBtb2R1bGUgYnVp
-bGQNCj4gDQo+IA0KPiA+IFN1YmplY3Q6IFJFOiBbUEFUQ0hdIHNvYzogaW14LXNjdTogU3VwcG9y
-dCBtb2R1bGUgYnVpbGQNCj4gPg0KPiA+ID4gRnJvbTogQW5zb24gSHVhbmcgPEFuc29uLkh1YW5n
-QG54cC5jb20+DQo+ID4gPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMTcsIDIwMjAgMTI6NTQgUE0N
-Cj4gPiA+DQo+ID4gPiBDaGFuZ2UgdGhlIGNvbmZpZ3VyYXRpb24gdHlwZSB0byB0cmlzdGF0ZSwg
-YWRkIG1vZHVsZSBkZXNjcmlwdGlvbiwNCj4gPiA+IGF1dGhvciBhbmQgbGljZW5zZSB0byBzdXBw
-b3J0IG1vZHVsZSBidWlsZC4NCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbnNvbiBIdWFu
-ZyA8QW5zb24uSHVhbmdAbnhwLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvc29jL2lt
-eC9LY29uZmlnICAgICAgIHwgMiArLQ0KPiA+ID4gIGRyaXZlcnMvc29jL2lteC9zb2MtaW14LXNj
-dS5jIHwgNSArKysrKw0KPiA+ID4gIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAx
-IGRlbGV0aW9uKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL2lteC9L
-Y29uZmlnIGIvZHJpdmVycy9zb2MvaW14L0tjb25maWcgaW5kZXgNCj4gPiA+IGQ1MTVkMmMuLmMy
-NTVhY2IgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3NvYy9pbXgvS2NvbmZpZw0KPiA+ID4g
-KysrIGIvZHJpdmVycy9zb2MvaW14L0tjb25maWcNCj4gPiA+IEBAIC05LDcgKzksNyBAQCBjb25m
-aWcgSU1YX0dQQ1YyX1BNX0RPTUFJTlMNCj4gPiA+ICAJZGVmYXVsdCB5IGlmIFNPQ19JTVg3RA0K
-PiA+ID4NCj4gPiA+ICBjb25maWcgSU1YX1NDVV9TT0MNCj4gPiA+IC0JYm9vbCAiaS5NWCBTeXN0
-ZW0gQ29udHJvbGxlciBVbml0IFNvQyBpbmZvIHN1cHBvcnQiDQo+ID4gPiArCXRyaXN0YXRlICJp
-Lk1YIFN5c3RlbSBDb250cm9sbGVyIFVuaXQgU29DIGluZm8gc3VwcG9ydCINCj4gPiA+ICAJZGVw
-ZW5kcyBvbiBJTVhfU0NVDQo+ID4gPiAgCXNlbGVjdCBTT0NfQlVTDQo+ID4gPiAgCWhlbHANCj4g
-PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9pbXgvc29jLWlteC1zY3UuYw0KPiA+ID4gYi9k
-cml2ZXJzL3NvYy9pbXgvc29jLWlteC1zY3UuYyBpbmRleCAyMGQzN2VhLi5iZGQ0M2VkIDEwMDY0
-NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9zb2MvaW14L3NvYy1pbXgtc2N1LmMNCj4gPiA+ICsrKyBi
-L2RyaXZlcnMvc29jL2lteC9zb2MtaW14LXNjdS5jDQo+ID4gPiBAQCAtNSw2ICs1LDcgQEANCj4g
-PiA+DQo+ID4gPiAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Zpcm13YXJlL2lteC9yc3JjLmg+ICAj
-aW5jbHVkZQ0KPiA+ID4gPGxpbnV4L2Zpcm13YXJlL2lteC9zY2kuaD4NCj4gPiA+ICsjaW5jbHVk
-ZSA8bGludXgvbW9kdWxlLmg+DQo+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4NCj4gPiA+
-ICAjaW5jbHVkZSA8bGludXgvc3lzX3NvYy5oPg0KPiA+ID4gICNpbmNsdWRlIDxsaW51eC9wbGF0
-Zm9ybV9kZXZpY2UuaD4NCj4gPiA+IEBAIC0xODUsMyArMTg2LDcgQEAgc3RhdGljIGludCBfX2lu
-aXQgaW14X3NjdV9zb2NfaW5pdCh2b2lkKQ0KPiA+ID4gIAlyZXR1cm4gUFRSX0VSUl9PUl9aRVJP
-KHBkZXYpOw0KPiA+ID4gIH0NCj4gPiA+ICBkZXZpY2VfaW5pdGNhbGwoaW14X3NjdV9zb2NfaW5p
-dCk7DQo+ID4gPiArDQo+ID4gPiArTU9EVUxFX0FVVEhPUigiQW5zb24gSHVhbmcgPGFuc29uLmh1
-YW5nQG54cC5jb20+Iik7DQo+ID4gPiArTU9EVUxFX0RFU0NSSVBUSU9OKCJOWFAgaS5NWCBTQ1Ug
-U29DIGRyaXZlciIpOw0KPiA+IE1PRFVMRV9MSUNFTlNFKCJHUEwNCj4gPiA+ICt2MiIpOw0KPiA+
-DQo+ID4gSSdtIG9rIHdpdGggdGhlIGNoYW5nZS4gQnV0IEknbSBjdXJpb3VzIGhvdyBjYW4gdGhp
-cyBtb2R1bGUgYmUNCj4gPiBhdXRvbG9hZGVkIHdpdGhvdXQgTU9EVUxFX0RFVklDRV9UQUJMRS4N
-Cj4gPiBIYXZlIHlvdSB0ZXN0ZWQgaWYgaXQgY2FuIHdvcms/DQo+ID4NCj4gDQo+IEkgT05MWSB0
-ZXN0ZWQgdGhlIG1hbnVhbCBpbnNtb2QsIGlmIHdhbnQgdG8gc3VwcG9ydCBhdXRvIGxvYWQsIG1h
-eSBuZWVkDQo+IHNvbWUgbW9yZSBjaGFuZ2UsIHdpbGwgdHJ5IGl0IGxhdGVyIGFuZCBzZW5kIG91
-dCBhIFYyIGlmIG5lZWRlZC4NCg0KVGhlIGZ1cnRoZXIgY2hlY2sgc2hvd3MgdGhhdCwgaWYgd2Fu
-dCB0byBzdXBwb3J0IGF1dG8gbG9hZCwgdGhlIHBsYXRmb3JtIGRldmljZQ0KcmVnaXN0ZXIgbmVl
-ZHMgdG8gYmUgZG9uZSBpbiBzb21ld2hlcmUgZWxzZSB3aGljaCBpcyBidWlsdC1pbiAoaW4gbXkg
-dGVzdCwgSSBtb3ZlIGl0DQp0byBjbGstaW14OHF4cC5jJ3MgcHJvYmUpLCBhbmQgYWxzbyBuZWVk
-IHRvIGFkZCBiZWxvdyBtb2R1bGUgYWxpYXMgaW4gdGhpcyBkcml2ZXIsDQpiZWNhdXNlIGl0IGhh
-cyBubyBkZXZpY2Ugbm9kZSBpbiBEVCBhbmQgbm8gZGV2aWNlIHRhYmxlIGluIGRyaXZlci4NCg0K
-K01PRFVMRV9BTElBUygicGxhdGZvcm06aW14LXNjdS1zb2MiKTsNCg0KU2luY2UgdGhpcyBkcml2
-ZXIgaGFzIG5vIGRldmljZSBub2RlIGluIERULCBhbmQgdGhlIHRhcmdldCBpcyB0byBidWlsZCBh
-bGwgU29DIHNwZWNpZmljDQpkcml2ZXJzIGFzIG1vZHVsZSwgc28gdGhlIGJlc3Qgd2F5IGlzIHRv
-IGFkZCBhIHZpcnR1YWwgZGV2aWNlIG5vZGUgaW4gRFQgaW4gb3JkZXIgdG8gc3VwcG9ydA0KYXV0
-byBsb2FkPw0KDQpBbnNvbiANCg==
+On Wed, 2020-06-17 at 14:27 +0530, Alim Akhtar wrote:
+> > > > > +       init_waitqueue_head(&hba->ufsf.sdev_wait);
+> > > > > +       atomic_set(&hba->ufsf.slave_conf_cnt, 0);
+> > > > > +
+> > > > > +       if (hba->dev_info.wspecversion >=
+> > > > > HPB_SUPPORTED_VERSION &&
+> > > > > +           (hba->dev_info.b_ufs_feature_sup &
+> > > > > UFS_DEV_HPB_SUPPORT))
+> > > > 
+> > > > How about removing this check "(hba->dev_info.wspecversion >=
+> > > > HPB_SUPPORTED_VERSION" since ufs with lower version than v3.1
+> > > > can add
+> > > > HPB feature by FFU,
+> > > > if (hba->dev_info.b_ufs_feature_sup 
+> > > > &UFS_FEATURE_SUPPORT_HPB_BIT) is
+> > > > enough.
+> > > 
+> > > OK, changing it seems no problem. But I want to know what other
+> > > people
+> > > think
+> > > about this version checking code.
+> > 
+> > HPB1.0 isn't part of ufs3.1, but published only later.
+> > Allowing earlier versions will required to quirk the descriptor
+> > sizes.
+> > I see Bean's point here, but I vote for adding it in a single
+> > quirk, when the time comes.
+> > 
+> 
+> I second Avri here, older devices need a quirk to handle, let do that
+> as a separate patch.
+> > Thanks,
+> > Avri
+> 
+> 
+
+what is useful point of adding a quirk for this?
+
+From the customer side piont, they just get our FW image, and then do
+FFU. If adding a quirk here, that means they also need to change UFS
+driver. Also,  you expand the qurik structure.
+
+
+from cambridge dictionary: 
+Qurik: 
+	an unusual habit or part of someone's personality, or something
+	that
+is strange and unexpected.
+
+HPB feature is unexpected??
+
+
+please tell me the useful point of adding a Quirk.
+
+Bean
+> 
+
