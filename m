@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E981FD3DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210691FD3BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgFQR4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQR4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:56:44 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00CEC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:56:44 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d4so1660398pgk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wah6b+5ElzkXhQSXMpu6WP+aPTNfFYkvhbkHvAkhKGg=;
-        b=Gg//lxpFtcoeRTFSTUzVOxJMnX7aWTWzCrGG4vux8gR8wyyWdLJh9xPyFLuLZSYoyt
-         sLoOoC9Czq0XyiX+HKkry+vk+0A2+y3TFmHLM7dzXsLjtXwfhI8Ryr8jgw0VQQvpOL/s
-         U5UJOeITPqpeWC2NnNcRmwZ6WLh2uOnB2ddD4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wah6b+5ElzkXhQSXMpu6WP+aPTNfFYkvhbkHvAkhKGg=;
-        b=VBEvWhucCpx5MAgchVs3L2xagO02+6Q7z46wCgK2ngewNmKHlVE3i0rTmMahmupJpp
-         DW9n3zQvztytXw0udIgmF/NZA8r0pKEClNCjuLCcms8nwSbzpfoFpnUPqJmuC4o2SgET
-         /CA/Z7Xly63QMV3t0YmR5t1H2s8+PcyEMOlzQsb+Psv3mn03YkGylPEY0Ji5cpYOky5z
-         rjyNfklbKj4KqIHPB7WSWLrfBJkMee1mNXlAEIZIIqZVLycEFLoVnlgkGApxmMv2MleB
-         mNX+g4CC6srJXoC/kKW7N1tsgTX8q4I52Cf48CPKpKCheXSaLSBqi9tjSC1LDHxSgfeZ
-         RSSg==
-X-Gm-Message-State: AOAM533PmrD/cN/3aMMlPrIhL7Lp/BEeg76iDu7S+ZJzfgvDTuApmFbA
-        9x3Yegg10l11JZOsVzreyn+SIA==
-X-Google-Smtp-Source: ABdhPJwoRs2t9ywysSqyyKsH20UwIP5c2oKFuhH+rZ86gi/ru/XeeOa9CjITUhl6f1WA66aIvINaOA==
-X-Received: by 2002:a62:1849:: with SMTP id 70mr7521391pfy.227.1592416604312;
-        Wed, 17 Jun 2020 10:56:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w77sm513281pff.126.2020.06.17.10.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 10:56:43 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 10:56:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        vinmenon@codeaurora.org, Matthew Garrett <mjg59@google.com>,
-        Roman Gushchin <guro@fb.com>, Jann Horn <jannh@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>
-Subject: Re: [PATCH 7/9] mm, slub: introduce kmem_cache_debug_flags()
-Message-ID: <202006171055.64F6EB665@keescook>
-References: <20200610163135.17364-1-vbabka@suse.cz>
- <20200610163135.17364-8-vbabka@suse.cz>
+        id S1726934AbgFQRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgFQRv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 13:51:28 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6562421527;
+        Wed, 17 Jun 2020 17:51:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592416287;
+        bh=U94GeFraD01aVQEM8vl0Oh3vdf1LW+6sHme4vUAVTcs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HgiE+iQsxkKj1piB7LAgU1JiiOlZZ49+RlrRCXfbLUMEwSBpXPuZRtHNKTgCfLq3k
+         xLikeI01z5XBmS4nX02fm0hjslVKjpOWS8xFwuiLE7tr/UXhSC+DtI6QZN4f3+MmH+
+         mmuivD/x1ZkhF5iR0tCF+LK8sp+V/LjFmh8o6U5o=
+Date:   Wed, 17 Jun 2020 12:56:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] fbdev/fb.h: Use struct_size() helper in kzalloc()
+Message-ID: <20200617175647.GA26370@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200610163135.17364-8-vbabka@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 06:31:33PM +0200, Vlastimil Babka wrote:
-> There are few places that call kmem_cache_debug(s) (which tests if any of debug
-> flags are enabled for a cache) immediatelly followed by a test for a specific
-> flag. The compiler can probably eliminate the extra check, but we can make the
-> code nicer by introducing kmem_cache_debug_flags() that works like
-> kmem_cache_debug() (including the static key check) but tests for specifig
-> flag(s). The next patches will add more users.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 24d3e5f832aa..c8e8b4ae2451 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -122,18 +122,28 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
->  #endif
->  #endif
->  
-> -static inline int kmem_cache_debug(struct kmem_cache *s)
-> +/*
-> + * Returns true if any of the specified slub_debug flags is enabled for the
-> + * cache. Use only for flags parsed by setup_slub_debug() as it also enables
-> + * the static key.
-> + */
-> +static inline int kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-This should return slab_flag_t, yes?
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
->  {
->  #ifdef CONFIG_SLUB_DEBUG
->  	if (static_branch_unlikely(&slub_debug_enabled))
-> -		return s->flags & SLAB_DEBUG_FLAGS;
-> +		return s->flags & flags;
->  #endif
->  	return 0;
->  }
->  
-> +static inline int kmem_cache_debug(struct kmem_cache *s)
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ include/linux/fb.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-And this too, as long as we're making changes here.
-
+diff --git a/include/linux/fb.h b/include/linux/fb.h
+index 3b4b2f0c6994..2b530e6d86e4 100644
+--- a/include/linux/fb.h
++++ b/include/linux/fb.h
+@@ -506,8 +506,9 @@ struct fb_info {
+ };
+ 
+ static inline struct apertures_struct *alloc_apertures(unsigned int max_num) {
+-	struct apertures_struct *a = kzalloc(sizeof(struct apertures_struct)
+-			+ max_num * sizeof(struct aperture), GFP_KERNEL);
++	struct apertures_struct *a;
++
++	a = kzalloc(struct_size(a, ranges, max_num), GFP_KERNEL);
+ 	if (!a)
+ 		return NULL;
+ 	a->count = max_num;
 -- 
-Kees Cook
+2.27.0
+
