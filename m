@@ -2,72 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB701FD884
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ED01FD88A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgFQWOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:14:18 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:46042 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgFQWOQ (ORCPT
+        id S1727022AbgFQWPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgFQWPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:14:16 -0400
-Received: by mail-io1-f68.google.com with SMTP id y5so4738827iob.12;
-        Wed, 17 Jun 2020 15:14:15 -0700 (PDT)
+        Wed, 17 Jun 2020 18:15:48 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6365AC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:15:48 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id s88so1721459pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=utLyEazY0Lxy25RnigtP2rxCKLns71B2z42HG9ml/D4=;
+        b=WckloiLg0RFwJrJdmcKNlWXSNfZ/6MQx67MHZDFh8c+yAskzSA6l5RIBqs3zddQnm2
+         WzDiiiw1LhLzjc1n7L91A2p7Kxb2n33xRnOvq5adE7m++wo6DD9qe3TIAE0m9ByUu8be
+         zdLjcFokB4JAHoo/6w6q5FnZnghxo3w3kkkeI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DRXryslTGLkMJqQMxB14CHKUq6hyTDjdoN304utJi9Y=;
-        b=A86biCGZ7pKnsRQEEStEZdz59LmUrWX+8fti3y48EXk5NieYJgoOZwPz0+aUeZ3CI5
-         KD6NpsHz1v8LyLsGZ1N5YGJAHhiJzbUO6cnnoBHYSNOSQpNVuQCXfkzaQQjBeH5UTImY
-         p2rN+lJywhel8QhIpBNXmz0Hc37bJNPFHiLM5j4n8YrmGbir27yusQzTlnj04LLvUoXN
-         LJXcPSiYiMqct+CI0ogCwfNs709/T2Ehe7K1L9YldBL2emq9sIot8EJ8RObPlRdR7WL9
-         DZNwDlIJVnU27XPghZovC5UVMpEVyGX/bRvTHOHKdC5lIiCl7UI6Mycu9kjhcTeDtmuX
-         Nlpg==
-X-Gm-Message-State: AOAM532zcyyOqjEJ/MP0hZQ91tKgA8sb3rImTeDNXXpgEAfFScO+XMrR
-        2yegpUmVNZb0ha4PqTD65g==
-X-Google-Smtp-Source: ABdhPJz7QUutK4RE5S/N61ajEcfcIYnRVvw0B0Br3nuAULonfWSMZqjN0BZ4yZD6EFLd0+qnRQpNQQ==
-X-Received: by 2002:a05:6638:35d:: with SMTP id x29mr1434644jap.71.1592432054953;
-        Wed, 17 Jun 2020 15:14:14 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id f1sm494482ilh.17.2020.06.17.15.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:14:14 -0700 (PDT)
-Received: (nullmailer pid 2927550 invoked by uid 1000);
-        Wed, 17 Jun 2020 22:14:11 -0000
-Date:   Wed, 17 Jun 2020 16:14:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com,
-        digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [RFC PATCH v1 10/18] dt-bindings: tegra: Document VI and CSI
- port nodes
-Message-ID: <20200617221411.GB2923473@bogus>
-References: <1591768960-31648-1-git-send-email-skomatineni@nvidia.com>
- <1591768960-31648-11-git-send-email-skomatineni@nvidia.com>
+        bh=utLyEazY0Lxy25RnigtP2rxCKLns71B2z42HG9ml/D4=;
+        b=fICNu0wcP0xrDa5kUAL9MYtib3roVixeArMHYdyJWT1NA8ITFnEqHHkQIUdqiapioD
+         iGmL1wHs3T4BV1S/qSGRq0Ag0CHvqp8jK+UQLu8JxPxslqyNKPWd7SevICEOYNRpRrYb
+         ouGdgm9Myrk+VkEcYRkldqR4XQOwlcs/z/iqCyihlJY3jjQEbjFyK98Ipms+5KzIxxYo
+         ezg92bLi9MRhFratkewEc2ZmqhrcZB8IMoq80mXjx375pOPTRLrh7hat+GTH0kkpBJ/X
+         +Rk1LaC3uqkvmZSq6yTgBg8/MexdO1/UW4TTKIestuj2zee9QAnFxWuKQYAbLyeKKa8I
+         tUow==
+X-Gm-Message-State: AOAM531Ea+VDn3q1mATwC3UaNNVnS2XhIzGOMkdmbOro/fw0/+4rJ+IE
+        1/e4lgR+wXdAaWYDoYYF8lcYxQ==
+X-Google-Smtp-Source: ABdhPJxlTozeERdzOMihQqX1dEP3H+HnoPVAcG9HIrnzfmpQZGVKOE9LHSN9pSjhSEaGM204Pa8oQQ==
+X-Received: by 2002:a17:902:b206:: with SMTP id t6mr1058159plr.262.1592432147885;
+        Wed, 17 Jun 2020 15:15:47 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id z1sm776586pfr.88.2020.06.17.15.15.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jun 2020 15:15:47 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 15:15:46 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, robdclark@gmail.com,
+        robdclark@chromium.org, stanimir.varbanov@linaro.org,
+        viresh.kumar@linaro.org, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/6] DVFS for IO devices on sdm845 and sc7180
+Message-ID: <20200617221546.GC4525@google.com>
+References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1591768960-31648-11-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 11:02:32PM -0700, Sowjanya Komatineni wrote:
-> This patch documents Tegra VI and CSI port and endpoint nodes along
-> with the other required properties.
+What is the plan for landing these, it seems not all must/should
+go through the QCOM tree.
+
+My guesses:
+
+tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state
+spi: spi-geni-qcom: Use OPP API to set clk/perf state
+  QCOM tree due to shared dependency on change in include/linux/qcom-geni-se.h
+
+drm/msm/dpu: Use OPP API to set clk/perf state
+drm/msm: dsi: Use OPP API to set clk/perf state
+  drm/msm tree
+
+media: venus: core: Add support for opp tables/perf voting
+  venus tree
+
+spi: spi-qcom-qspi: Use OPP API to set clk/perf state
+  SPI tree
+
+
+Does this make sense or are there any dependencies I'm missing?
+
+Thanks
+
+Matthias
+
+On Mon, Jun 15, 2020 at 05:32:38PM +0530, Rajendra Nayak wrote:
+> Changes in v6:
+> 1. rebased on 5.8-rc1, no functional change. 
 > 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../display/tegra/nvidia,tegra20-host1x.txt        | 87 ++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
-
-This is getting converted to schema by Thierry.
-
-Rob
+> Changes in v5:
+> 1. Opp cleanup path fixed up across drivers
+> 
+> Changes in v4:
+> 1. Fixed all review feedback on v3
+> 2. Dropped the dts patches, will post as a seperate series once
+> driver changes are reviewed and merged.
+> The driver changes without DT updates to include OPP tables will
+> have zero functional change.
+> 3. Dropped the mmc/sdhc patch, which is a standalone patch. will
+> repost if needed seperately.
+> 
+> Changes in v3:
+> 1. Added better error handling for dev_pm_opp_of_add_table()
+> 2. Some minor changes and fixes in 'PATCH 12/17' as compared to v2
+> 3. Dropped the mmc patch picked up by Ulf [2]
+> 
+> Changes in v2:
+> 1. Added error handling for dev_pm_opp_set_clkname()
+> and dev_pm_opp_of_add_table()
+> 2. Used dev_pm_opp_put_clkname() in the cleanup path
+> 3. Dropped the OPP patch pulled in by Viresh [1]
+> 4. Dropped the UFS patches since they had some major rework
+> needed because of changes that were merged in the merge window
+> and I don't have a UFS device currently to validate the changes.
+> 
+> We have had support added in the OPP core for a while now to support
+> DVFS for IO devices, and this series uses that infrastructure to
+> add DVFS support for various IO devices in sdm845 and sc7180 SoCs.
+> 
+> [1] https://lkml.org/lkml/2020/4/14/98
+> [2] https://lore.kernel.org/patchwork/patch/1226381/
+> 
+> Rajendra Nayak (6):
+>   tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state
+>   spi: spi-geni-qcom: Use OPP API to set clk/perf state
+>   drm/msm/dpu: Use OPP API to set clk/perf state
+>   drm/msm: dsi: Use OPP API to set clk/perf state
+>   media: venus: core: Add support for opp tables/perf voting
+>   spi: spi-qcom-qspi: Use OPP API to set clk/perf state
+> 
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c  |  3 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c        | 26 +++++++++++-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h        |  4 ++
+>  drivers/gpu/drm/msm/dsi/dsi.h                  |  2 +
+>  drivers/gpu/drm/msm/dsi/dsi_cfg.c              |  4 +-
+>  drivers/gpu/drm/msm/dsi/dsi_host.c             | 58 ++++++++++++++++++++++++++
+>  drivers/media/platform/qcom/venus/core.c       | 43 ++++++++++++++++---
+>  drivers/media/platform/qcom/venus/core.h       |  5 +++
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 54 ++++++++++++++++++++++--
+>  drivers/spi/spi-geni-qcom.c                    | 26 ++++++++++--
+>  drivers/spi/spi-qcom-qspi.c                    | 28 ++++++++++++-
+>  drivers/tty/serial/qcom_geni_serial.c          | 34 ++++++++++++---
+>  include/linux/qcom-geni-se.h                   |  4 ++
+>  13 files changed, 268 insertions(+), 23 deletions(-)
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
