@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BE11FC810
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368321FC817
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgFQH6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgFQH6G (ORCPT
+        id S1726780AbgFQH7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:59:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49066 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725554AbgFQH7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:58:06 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F8CC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:58:06 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x202so968280oix.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X+Qtu+2ZAyZXkh/oo1Lz6E9/PFmVPHRpkYwfH9QQzoY=;
-        b=Rnq7BerEC1NJ+s3KJhsfuws9Kg+j4pWFkQJLmI518tzrC8znQHM1y1XOVL+e9QQvGC
-         mOcEQIpeKlQI3Ch0XEzDajgEy3Ss5YB513C5XhgrGC29v//2jcdDFh59xMl7mJC4egNc
-         wZOOJ+JmjjXVx9gZJsvcArI7aR28zLTWFwR6Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X+Qtu+2ZAyZXkh/oo1Lz6E9/PFmVPHRpkYwfH9QQzoY=;
-        b=bUcmR+7oi0tuUhYs7Y8oyugosFWLbot6h6fN/+FnVvwLGrFliwRsdOVjB8qMnfHGos
-         vtYqn1ieytESyYaXehDNx75cdAL46cPmK7qW0vVJXg29mxJNp5RGdkZvht3eo9+BwRBs
-         0UpUkW0JnFd9LyzGJnUEl+8VjYR3FuY71KXy3Aor0zVRmBsvti3z15RwiyA+9PhfNq0l
-         1Oig7qUr/0QzyHvT+1vvFuAldMfrPhij8XAm0CbLcGRPkmNpvLwmOCUdyzIv2Qm/UNfE
-         adwu7VEnf8AmtXecDvxE1iy1951/m3Oj/Nm3c5dClJP8Q5yzLPLJhkjzDPVhIRj8Icds
-         YwGQ==
-X-Gm-Message-State: AOAM533KO74SsxJEHCOyb5XCY+yAlFdCiTKHy+jphTQTQrmoqDyEzpp1
-        tU9qFR+uF4SIRB49EZcv6alCtqe3eF37nzId//J9fQ==
-X-Google-Smtp-Source: ABdhPJyg/qc6FJuRZYZqNNd5IMYVmnKGSrITOouFVSzC2Mh6TfEGJcQ4YwgOLOvW4cWrgZZvjXq69o3dCj+ez8idqyo=
-X-Received: by 2002:aca:ed42:: with SMTP id l63mr6006514oih.101.1592380685425;
- Wed, 17 Jun 2020 00:58:05 -0700 (PDT)
+        Wed, 17 Jun 2020 03:59:19 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05H7VgM3070389;
+        Wed, 17 Jun 2020 03:58:38 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31q6j9cvrv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 03:58:38 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05H7VnFr071046;
+        Wed, 17 Jun 2020 03:58:38 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31q6j9cvrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 03:58:38 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05H7ppgj005618;
+        Wed, 17 Jun 2020 07:58:36 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 31q6ch8mq5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 07:58:36 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05H7wXJP58785952
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jun 2020 07:58:33 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72B2E5204E;
+        Wed, 17 Jun 2020 07:58:33 +0000 (GMT)
+Received: from osiris (unknown [9.171.12.194])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 01F7852050;
+        Wed, 17 Jun 2020 07:58:32 +0000 (GMT)
+Date:   Wed, 17 Jun 2020 09:58:31 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [v3 PATCH 2/2] printk: Make linux/printk.h self-contained
+Message-ID: <20200617075831.GA4479@osiris>
+References: <20200617071524.GA3055@gondor.apana.org.au>
+ <E1jlSK1-0003hL-J3@fornost.hmeau.com>
 MIME-Version: 1.0
-References: <20200604081224.863494-1-daniel.vetter@ffwll.ch>
- <20200604081224.863494-5-daniel.vetter@ffwll.ch> <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org>
- <20200611083430.GD20149@phenom.ffwll.local> <20200611141515.GW6578@ziepe.ca>
- <20200616120719.GL20149@phenom.ffwll.local> <20200616145312.GC6578@ziepe.ca>
-In-Reply-To: <20200616145312.GC6578@ziepe.ca>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 17 Jun 2020 09:57:54 +0200
-Message-ID: <CAKMK7uER6ax1zr14xYLKqDfDZp+ycBsY9Yx7JaVkKQ849VfSPg@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep annotations
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1jlSK1-0003hL-J3@fornost.hmeau.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-16_13:2020-06-16,2020-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 spamscore=0 clxscore=1011 suspectscore=1
+ mlxlogscore=489 lowpriorityscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006170056
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 9:27 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jun 16, 2020 at 02:07:19PM +0200, Daniel Vetter wrote:
-> > > > I've pinged a bunch of armsoc gpu driver people and ask them how much this
-> > > > hurts, so that we have a clear answer. On x86 I don't think we have much
-> > > > of a choice on this, with userptr in amd and i915 and hmm work in nouveau
-> > > > (but nouveau I think doesn't use dma_fence in there).
-> > >
-> > > Right, nor will RDMA ODP.
-> >
-> > Hm, what's the context here? I thought RDMA side you really don't want
-> > dma_fence in mmu_notifiers, so not clear to me what you're agreeing on
-> > here.
->
-> rdma does not use dma_fence at all, and though it is hard to tell, I
-> didn't notice a dma_fence in the nouveau invalidation call path.
+On Wed, Jun 17, 2020 at 05:17:21PM +1000, Herbert Xu wrote:
+> As it stands if you include printk.h by itself it will fail to
+> compile because it requires definitions from ratelimit.h.  However,
+> simply including ratelimit.h from printk.h does not work due to
+> inclusion loops involving sched.h and kernel.h.
+> 
+> This patch solves this by moving bits from ratelimit.h into a new
+> header file which can then be included by printk.h without any
+> worries about header loops.
+> 
+> The build bot then revealed some intriguing failures arising out
+> of this patch.  On s390 there is an inclusion loop with asm/bug.h
+> and linux/kernel.h that triggers a compile failure, because kernel.h
+> will cause asm-generic/bug.h to be included before s390's own
+> asm/bug.h has finished processing.  This has been fixed by not
+> including kernel.h in arch/s390/include/asm/bug.h.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> 
+>  arch/s390/include/asm/bug.h     |    2 -
 
-Nouveau for compute has hw page faults. It doesn't have hw page faults
-for non-compute fixed function blocks afaik, so there's a hybrid model
-going on. But nouveau also doesn't support userspace memory (instead
-of driver-allocated buffer objects) for these fixed function blocks,
-so no need to have a dma_fence_wait in there.
+FWIW, feel free to add
 
-> At the very least I think there should be some big warning that
-> dma_fence in notifiers should be avoided.
+Acked-by: Heiko Carstens <heiko.carstens@de.ibm.com>
 
-Yeah I'm working on documentation, and also the notifiers here
-hopefully make it clear it's massive pain. I think we could even make
-a hard rule that dma_fence in mmu notifier outside of drivers/gpu is a
-bug/misfeature.
-
-Might be a good idea to add a MAINTAINERS entry with a K: regex
-pattern, so that you can catch such modifiers. We do already have such
-a pattern for dma-fence, to catch abuse. So if you want I could type
-up a documentation patch for this, get your and others acks and the
-dri-devel folks would enforce that the dma_fence_wait madness doesn't
-leak beyond drivers/gpu
-
-> Ie it is strange that the new totally-not-a-gpu drivers use dma_fence,
-> they surely don't have the same constraints as the existing GPU world,
-> and it would be annoying to see dma_fence notifiers spring up in them
-
-If you mean drivers/misc/habanalabs, that's going to get taken care of:
-
-
-commit ed65bfd9fd86dec3772570b0320ca85b9fb69f2e
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon May 11 11:11:42 2020 +0200
-
-    habanalabs: don't set default fence_ops->wait
-
-    It's the default.
-
-    Also so much for "we're not going to tell the graphics people how to
-    review their code", dma_fence is a pretty core piece of gpu driver
-    infrastructure. And it's very much uapi relevant, including piles of
-    corresponding userspace protocols and libraries for how to pass these
-    around.
-
-    Would be great if habanalabs would not use this (from a quick look
-    it's not needed at all), since open source the userspace and playing
-    by the usual rules isn't on the table. If that's not possible (because
-    it's actually using the uapi part of dma_fence to interact with gpu
-    drivers) then we have exactly what everyone promised we'd want to
-    avoid.
-
-    Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-    Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-    Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
-
-Oded has agreed to remove the dma-fence usage, since they really don't
-need it (and all the baggage that comes with it), plain old completion
-is enough for their use. This use is also why I added the regex to
-MAINTAINERS, so that in the future we can catch people who try to use
-dma_fence because it looks cute and useful, and are completely
-oblivious to all the pain and headaches involved.
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+for the s390 part.
