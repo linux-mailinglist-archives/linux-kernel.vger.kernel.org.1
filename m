@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8760B1FD882
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF401FD853
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgFQWOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:14:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:65255 "EHLO mga04.intel.com"
+        id S1727882AbgFQWFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgFQWOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:14:09 -0400
-IronPort-SDR: 5m4vH1jpzP6kV2PfiZ3HwbWc1/oGDOHghzdvvMHFqPfPxFhYdWu7zcjT568nDkHcU1Y7FKppmF
- 8ayWUh99jQeA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 15:14:08 -0700
-IronPort-SDR: YVAyGkH+SIUj2vgXWJWP/8aHrrgz+moYQGbtC0P7EIh0TRiqP8CMK24wH63PDEdJ8HaR0cFWGS
- JW4Ad0WAqwsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
-   d="scan'208";a="421288868"
-Received: from ysharon1-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.131])
-  by orsmga004.jf.intel.com with ESMTP; 17 Jun 2020 15:13:57 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        yaozhangx@google.com
-Subject: [PATCH v33 21/21] x86/sgx: Update MAINTAINERS
-Date:   Thu, 18 Jun 2020 01:08:43 +0300
-Message-Id: <20200617220844.57423-22-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+        id S1726864AbgFQWFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 18:05:19 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B32CF206F7;
+        Wed, 17 Jun 2020 22:05:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592431519;
+        bh=cvtMTkB4hmn7ysFCDP83MIFxOHZl/oXXu23w2BuLqh4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IGma0ImoEm26f9+Bxg+i9NvHEA81DYTAje110vZX2rDU1u0AsyoPZnR2hGfNjpNKo
+         5+jySRj2JtrrddUpcyGVUbbuSSdGv1IRRSZBkn/R5E22r/NMEK0n4lG4D5n/sXSe0Q
+         nD0bcNrzuWzZ7GUjQKyWUdS18XVdwMeyUNnC4Oeo=
+Date:   Wed, 17 Jun 2020 17:10:39 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] fpga: dfl: Use struct_size() in kzalloc()
+Message-ID: <20200617221039.GA21877@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the maintainer information for the SGX subsystem.
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes. Also, remove unnecessary
+function dfl_feature_platform_data_size().
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/fpga/dfl.c | 3 +--
+ drivers/fpga/dfl.h | 6 ------
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 301330e02bca..1cbdaba79797 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8968,6 +8968,17 @@ F:	Documentation/x86/intel_txt.rst
- F:	arch/x86/kernel/tboot.c
- F:	include/linux/tboot.h
+diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+index 990994874bf1..2dd13e036d45 100644
+--- a/drivers/fpga/dfl.c
++++ b/drivers/fpga/dfl.c
+@@ -487,8 +487,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
+ 	 * it will be automatically freed by device's release() callback,
+ 	 * platform_device_release().
+ 	 */
+-	pdata = kzalloc(dfl_feature_platform_data_size(binfo->feature_num),
+-			GFP_KERNEL);
++	pdata = kzalloc(struct_size(pdata, features, binfo->feature_num), GFP_KERNEL);
+ 	if (!pdata)
+ 		return -ENOMEM;
  
-+INTEL SGX
-+M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-+M:	Sean Christopherson <sean.j.christopherson@intel.com>
-+L:	linux-sgx@vger.kernel.org
-+S:	Maintained
-+Q:	https://patchwork.kernel.org/project/intel-sgx/list/
-+T:	git https://github.com/jsakkine-intel/linux-sgx.git
-+F:	arch/x86/include/uapi/asm/sgx.h
-+F:	arch/x86/kernel/cpu/sgx/*
-+K:	\bSGX_
-+
- INTERCONNECT API
- M:	Georgi Djakov <georgi.djakov@linaro.org>
- L:	linux-pm@vger.kernel.org
+diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+index 2f5d3052e36e..044b0e88e5a8 100644
+--- a/drivers/fpga/dfl.h
++++ b/drivers/fpga/dfl.h
+@@ -299,12 +299,6 @@ struct dfl_feature_ops {
+ #define DFL_FPGA_FEATURE_DEV_FME		"dfl-fme"
+ #define DFL_FPGA_FEATURE_DEV_PORT		"dfl-port"
+ 
+-static inline int dfl_feature_platform_data_size(const int num)
+-{
+-	return sizeof(struct dfl_feature_platform_data) +
+-		num * sizeof(struct dfl_feature);
+-}
+-
+ void dfl_fpga_dev_feature_uinit(struct platform_device *pdev);
+ int dfl_fpga_dev_feature_init(struct platform_device *pdev,
+ 			      struct dfl_feature_driver *feature_drvs);
 -- 
-2.25.1
+2.27.0
 
