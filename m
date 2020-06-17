@@ -2,386 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB2D1FC4C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 05:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7821FC4D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 05:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgFQDhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 23:37:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27990 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726497AbgFQDhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 23:37:40 -0400
-IronPort-SDR: uAlw7LI3jkXAmpmsI4KCunxK1n8X0Zl6w+REE2YweiUl41jHqrUBjcJsps7aY7MWXrdKc6Iloc
- UaO/dtZP4ljQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 20:37:38 -0700
-IronPort-SDR: ZbylSxN7rm20kO/rgvbRyoWIjReIZG+eEDDr5ytXeLp+Y/00v0ZlXWrssB08zYj055XjhGDn6v
- VGfZQtAlDe2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,521,1583222400"; 
-   d="scan'208";a="273377259"
-Received: from xpf-desktop.sh.intel.com ([10.239.13.107])
-  by orsmga003.jf.intel.com with ESMTP; 16 Jun 2020 20:37:36 -0700
-From:   Pengfei Xu <pengfei.xu@intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@intel.com>
-Cc:     Pengfei Xu <pengfei.xu@intel.com>, linux-kernel@vger.kernel.org,
-        Kai Svahn <kai.svahn@intel.com>
-Subject: [Linux] [PATCH] Kernel selftests: tpm2: upgrade tpm2 tests from python2 to python3
-Date:   Wed, 17 Jun 2020 11:47:31 +0800
-Message-Id: <20200617034731.3256-1-pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726718AbgFQDsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 23:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbgFQDsw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 23:48:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51698C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 20:48:51 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id h185so476948pfg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 20:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=epbODcoERc3hFGFakjGWOwHdqNCRuVQUeyHnJOTXzPA=;
+        b=GZ/SbfKWHWqn93rskoU6iDqEmLuYD7wcXDs8qwGTLGz0InjAQfp4P2V5awYwLho1jJ
+         wC/08oqamfwjeNhd791dSoxFwH+ONmytEBH5GYz7h2ba75LrnGrPs4Ra+hnFdbfpOd4d
+         w709Sr9Y6IKe+BJHN9VnsankSpY3FVZLbMhLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=epbODcoERc3hFGFakjGWOwHdqNCRuVQUeyHnJOTXzPA=;
+        b=F83AI7RnIdhHl5nzL/KP7PpPm26mTrqokAXMJbVWds36w5/iUDbvwdcnQ62WoQxBXb
+         4IK+JEz6GKcKMI7ao6cUYKzwyWuvC15gGVtCr1/ov3TFocGhXNrromphgJ50M2wWpvUM
+         IrUTw5rFpVkOEksB4pPRGkss9AdE59d/PdDWIKSmNb5vTOZmEUgxXpkEAS9NPFp7+0dz
+         cobOXnwDITb62ixbBoJqf5vWaJhX/trKRc8BgYbeFJiM+Ah6SPhQLpNGVSp0W1KqNkoq
+         uc+0mUalTPTT89iH5Skz/yc/P5AktBhIM+G+1dqN+jjUv0ggp1H0kQOaB7cc+jh+OkdP
+         uAvw==
+X-Gm-Message-State: AOAM531Jr9/EefgmB5fKYL9gA+8nUrHCKKYceL4RdcoNuwNi+DCN4P93
+        NJ9oe25cXT8qwb1H9Hr8BQKIpw==
+X-Google-Smtp-Source: ABdhPJxmlUZEnvgX0cxFedDt0HshokXCuNrNFj74FsnomMnbTWi9IBi/MKUweyDhci1oMDGtN1PQew==
+X-Received: by 2002:a62:8c15:: with SMTP id m21mr4746304pfd.182.1592365730767;
+        Tue, 16 Jun 2020 20:48:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p12sm18798935pfq.69.2020.06.16.20.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 20:48:49 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 20:48:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] overflow.h: Add flex_array_size() helper
+Message-ID: <202006162048.A22F1C14@keescook>
+References: <20200609012233.GA3371@embeddedor>
+ <202006101427.68A436C@keescook>
+ <fd198a2b-9a79-b7b7-3cee-5856cffc88af@embeddedor.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd198a2b-9a79-b7b7-3cee-5856cffc88af@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Linux OS will never support python2 anymore, so upgrade tpm2 selftests
-to python3.
+On Tue, Jun 16, 2020 at 03:48:51PM -0500, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 6/10/20 16:38, Kees Cook wrote:
+> 
+> >> -#define struct_size(p, member, n)					\
+> >> -	__ab_c_size(n,							\
+> >> +#define struct_size(p, member, count)					\
+> >> +	__ab_c_size(count,							\
+> >>  		    sizeof(*(p)->member) + __must_be_array((p)->member),\
+> >>  		    sizeof(*(p)))
+> > 
+> > I like the "count" change -- "n" can be seen as either count or bytes,
+> > so I like this being distinctly "count".
+> > 
+> 
+> Yep. :)
+> 
+> >>  
+> >> +/**
+> >> + * flex_array_size() - Calculate size, in bytes, of a flexible array member
+> >> + * within an enclosing structure. Read on for more details.
+> >> + *
+> >> + * @p: Pointer to the structure.
+> >> + * @member: Name of the flexible array member.
+> >> + * @count: Number of elements in the array.
+> >> + *
+> >> + * Calculates size, in bytes, of a flexible array @member of @count elements
+> >> + * within structure @p.
+> >> + *
+> >> + * Return: number of bytes needed or SIZE_MAX on overflow.
+> >> + */
+> >> +#define flex_array_size(p, member, count)					\
+> >> +	array_size(count,							\
+> >> +		    sizeof(*(p)->member) + __must_be_array((p)->member))
+> >> +
+> >>  #endif /* __LINUX_OVERFLOW_H */
+> > 
+> > I like it! You mentioned off-list that maybe this could be named
+> > sizeof_flex_array() (like sizeof_field(), etc), and that does seem
+> > attractive. As you also mentioned, it begs the question of renaming
+> > struct_size() to sizeof_struct().
+> > 
+> > Looking back through the thread[1], it seems the name came from Linus[2],
+> > and was more related to the existing array_size() helper.
+> > 
+> > So, how about this, as a convention we can use to make a choice:
+> > 
+> > For things that are strictly constant in size, we can use sizeof_*. For
+> > things that have a dynamic component, we'll use *_size(). So, this patch
+> > is correct as-is.
+> > 
+> 
+> I like the idea. I haven't thought it in terms of dynamic and constant size,
+> but it sounds sensible.
+> 
+> > Acked-by: Kees Cook <keescook@chromium.org>
+> > 
+> > (I wonder who's tree this should go via?)
+> > 
+> 
+> Yours? :)
 
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
----
- tools/testing/selftests/tpm2/test_smoke.sh |  4 +-
- tools/testing/selftests/tpm2/test_space.sh |  2 +-
- tools/testing/selftests/tpm2/tpm2.py       | 68 ++++++++++++++--------
- tools/testing/selftests/tpm2/tpm2_tests.py | 24 +++++---
- 4 files changed, 61 insertions(+), 37 deletions(-)
+Done; I'll see if Linus will take this for -rc2 so you'll be able to use
+it for v5.9 patches...
 
-diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
-index 663062701d5a..d05467f6d258 100755
---- a/tools/testing/selftests/tpm2/test_smoke.sh
-+++ b/tools/testing/selftests/tpm2/test_smoke.sh
-@@ -6,8 +6,8 @@ ksft_skip=4
- 
- [ -f /dev/tpm0 ] || exit $ksft_skip
- 
--python -m unittest -v tpm2_tests.SmokeTest
--python -m unittest -v tpm2_tests.AsyncTest
-+python3 -m unittest -v tpm2_tests.SmokeTest
-+python3 -m unittest -v tpm2_tests.AsyncTest
- 
- CLEAR_CMD=$(which tpm2_clear)
- if [ -n $CLEAR_CMD ]; then
-diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
-index 36c9d030a1c6..151c64e8ee9f 100755
---- a/tools/testing/selftests/tpm2/test_space.sh
-+++ b/tools/testing/selftests/tpm2/test_space.sh
-@@ -6,4 +6,4 @@ ksft_skip=4
- 
- [ -f /dev/tpmrm0 ] || exit $ksft_skip
- 
--python -m unittest -v tpm2_tests.SpaceTest
-+python3 -m unittest -v tpm2_tests.SpaceTest
-diff --git a/tools/testing/selftests/tpm2/tpm2.py b/tools/testing/selftests/tpm2/tpm2.py
-index d0fcb66a88a6..b0ccc1499c53 100644
---- a/tools/testing/selftests/tpm2/tpm2.py
-+++ b/tools/testing/selftests/tpm2/tpm2.py
-@@ -247,14 +247,18 @@ class ProtocolError(Exception):
- class AuthCommand(object):
-     """TPMS_AUTH_COMMAND"""
- 
--    def __init__(self, session_handle=TPM2_RS_PW, nonce='', session_attributes=0,
--                 hmac=''):
-+    def __init__(self, session_handle=TPM2_RS_PW, nonce=''.encode(),
-+                 session_attributes=0, hmac=''.encode()):
-+        if not isinstance(nonce, bytes):
-+            nonce = nonce.encode()
-+        if not isinstance(hmac, bytes):
-+            hmac = hmac.encode()
-         self.session_handle = session_handle
-         self.nonce = nonce
-         self.session_attributes = session_attributes
-         self.hmac = hmac
- 
--    def __str__(self):
-+    def __bytes__(self):
-         fmt = '>I H%us B H%us' % (len(self.nonce), len(self.hmac))
-         return struct.pack(fmt, self.session_handle, len(self.nonce),
-                            self.nonce, self.session_attributes, len(self.hmac),
-@@ -268,11 +272,15 @@ class AuthCommand(object):
- class SensitiveCreate(object):
-     """TPMS_SENSITIVE_CREATE"""
- 
--    def __init__(self, user_auth='', data=''):
-+    def __init__(self, user_auth=''.encode(), data=''.encode()):
-+        if not isinstance(user_auth, bytes):
-+            user_auth = user_auth.encode()
-+        if not isinstance(data, bytes):
-+            data = data.encode()
-         self.user_auth = user_auth
-         self.data = data
- 
--    def __str__(self):
-+    def __bytes__(self):
-         fmt = '>H%us H%us' % (len(self.user_auth), len(self.data))
-         return struct.pack(fmt, len(self.user_auth), self.user_auth,
-                            len(self.data), self.data)
-@@ -296,8 +304,15 @@ class Public(object):
-         return '>HHIH%us%usH%us' % \
-             (len(self.auth_policy), len(self.parameters), len(self.unique))
- 
--    def __init__(self, object_type, name_alg, object_attributes, auth_policy='',
--                 parameters='', unique=''):
-+    def __init__(self, object_type, name_alg, object_attributes,
-+                 auth_policy=''.encode(), parameters=''.encode(),
-+                 unique=''.encode()):
-+        if not isinstance(auth_policy, bytes):
-+            auth_policy = auth_policy.encode()
-+        if not isinstance(parameters, bytes):
-+            parameters = parameters.encode()
-+        if not isinstance(unique, bytes):
-+            unique = unique.encode()
-         self.object_type = object_type
-         self.name_alg = name_alg
-         self.object_attributes = object_attributes
-@@ -305,7 +320,7 @@ class Public(object):
-         self.parameters = parameters
-         self.unique = unique
- 
--    def __str__(self):
-+    def __bytes__(self):
-         return struct.pack(self.__fmt(),
-                            self.object_type,
-                            self.name_alg,
-@@ -343,7 +358,7 @@ def get_algorithm(name):
- 
- def hex_dump(d):
-     d = [format(ord(x), '02x') for x in d]
--    d = [d[i: i + 16] for i in xrange(0, len(d), 16)]
-+    d = [d[i: i + 16] for i in range(0, len(d), 16)]
-     d = [' '.join(x) for x in d]
-     d = os.linesep.join(d)
- 
-@@ -401,7 +416,7 @@ class Client:
-         pcrsel_len = max((i >> 3) + 1, 3)
-         pcrsel = [0] * pcrsel_len
-         pcrsel[i >> 3] = 1 << (i & 7)
--        pcrsel = ''.join(map(chr, pcrsel))
-+        pcrsel = ''.join(map(chr, pcrsel)).encode()
- 
-         fmt = '>HII IHB%us' % (pcrsel_len)
-         cmd = struct.pack(fmt,
-@@ -430,6 +445,8 @@ class Client:
-         return rsp
- 
-     def extend_pcr(self, i, dig, bank_alg = TPM2_ALG_SHA1):
-+        if not isinstance(dig, bytes):
-+            dig = dig.encode()
-         ds = get_digest_size(bank_alg)
-         assert(ds == len(dig))
- 
-@@ -443,7 +460,7 @@ class Client:
-             TPM2_CC_PCR_EXTEND,
-             i,
-             len(auth_cmd),
--            str(auth_cmd),
-+            bytes(auth_cmd),
-             1, bank_alg, dig)
- 
-         self.send_cmd(cmd)
-@@ -457,7 +474,7 @@ class Client:
-                           TPM2_RH_NULL,
-                           TPM2_RH_NULL,
-                           16,
--                          '\0' * 16,
-+                          ('\0' * 16).encode(),
-                           0,
-                           session_type,
-                           TPM2_ALG_NULL,
-@@ -472,7 +489,7 @@ class Client:
- 
-         for i in pcrs:
-             pcr = self.read_pcr(i, bank_alg)
--            if pcr == None:
-+            if pcr is None:
-                 return None
-             x += pcr
- 
-@@ -489,7 +506,7 @@ class Client:
-         pcrsel = [0] * pcrsel_len
-         for i in pcrs:
-             pcrsel[i >> 3] |= 1 << (i & 7)
--        pcrsel = ''.join(map(chr, pcrsel))
-+        pcrsel = ''.join(map(chr, pcrsel)).encode()
- 
-         fmt = '>HII IH%usIHB3s' % ds
-         cmd = struct.pack(fmt,
-@@ -497,7 +514,8 @@ class Client:
-                           struct.calcsize(fmt),
-                           TPM2_CC_POLICY_PCR,
-                           handle,
--                          len(dig), str(dig),
-+                          len(dig),
-+                          bytes(dig),
-                           1,
-                           bank_alg,
-                           pcrsel_len, pcrsel)
-@@ -570,11 +588,11 @@ class Client:
-             TPM2_CC_CREATE_PRIMARY,
-             TPM2_RH_OWNER,
-             len(auth_cmd),
--            str(auth_cmd),
-+            bytes(auth_cmd),
-             len(sensitive),
--            str(sensitive),
-+            bytes(sensitive),
-             len(public),
--            str(public),
-+            bytes(public),
-             0, 0)
- 
-         return struct.unpack('>I', self.send_cmd(cmd)[10:14])[0]
-@@ -608,11 +626,11 @@ class Client:
-             TPM2_CC_CREATE,
-             parent_key,
-             len(auth_cmd),
--            str(auth_cmd),
-+            bytes(auth_cmd),
-             len(sensitive),
--            str(sensitive),
-+            bytes(sensitive),
-             len(public),
--            str(public),
-+            bytes(public),
-             0, 0)
- 
-         rsp = self.send_cmd(cmd)
-@@ -635,7 +653,7 @@ class Client:
-             TPM2_CC_LOAD,
-             parent_key,
-             len(auth_cmd),
--            str(auth_cmd),
-+            bytes(auth_cmd),
-             blob)
- 
-         data_handle = struct.unpack('>I', self.send_cmd(cmd)[10:14])[0]
-@@ -653,7 +671,7 @@ class Client:
-             TPM2_CC_UNSEAL,
-             data_handle,
-             len(auth_cmd),
--            str(auth_cmd))
-+            bytes(auth_cmd))
- 
-         try:
-             rsp = self.send_cmd(cmd)
-@@ -675,7 +693,7 @@ class Client:
-             TPM2_CC_DICTIONARY_ATTACK_LOCK_RESET,
-             TPM2_RH_LOCKOUT,
-             len(auth_cmd),
--            str(auth_cmd))
-+            bytes(auth_cmd))
- 
-         self.send_cmd(cmd)
- 
-@@ -693,7 +711,7 @@ class Client:
-         more_data, cap, cnt = struct.unpack('>BII', rsp[:9])
-         rsp = rsp[9:]
- 
--        for i in xrange(0, cnt):
-+        for i in range(0, cnt):
-             handle = struct.unpack('>I', rsp[:4])[0]
-             handles.append(handle)
-             rsp = rsp[4:]
-diff --git a/tools/testing/selftests/tpm2/tpm2_tests.py b/tools/testing/selftests/tpm2/tpm2_tests.py
-index 728be7c69b76..e134033e6f67 100644
---- a/tools/testing/selftests/tpm2/tpm2_tests.py
-+++ b/tools/testing/selftests/tpm2/tpm2_tests.py
-@@ -25,7 +25,9 @@ class SmokeTest(unittest.TestCase):
- 
-         blob = self.client.seal(self.root_key, data, auth, None)
-         result = self.client.unseal(self.root_key, blob, auth, None)
--        self.assertEqual(data, result)
-+        if not isinstance(result, bytes):
-+            result = result.encode()
-+        self.assertEqual(data.encode(), result)
- 
-     def test_seal_with_policy(self):
-         handle = self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
-@@ -51,11 +53,13 @@ class SmokeTest(unittest.TestCase):
-             self.client.policy_password(handle)
- 
-             result = self.client.unseal(self.root_key, blob, auth, handle)
-+            if not isinstance(result, bytes):
-+                result = result.encode()
-         except:
-             self.client.flush_context(handle)
-             raise
- 
--        self.assertEqual(data, result)
-+        self.assertEqual(data.encode(), result)
- 
-     def test_unseal_with_wrong_auth(self):
-         data = 'X' * 64
-@@ -65,7 +69,7 @@ class SmokeTest(unittest.TestCase):
-         blob = self.client.seal(self.root_key, data, auth, None)
-         try:
-             result = self.client.unseal(self.root_key, blob, auth[:-1] + 'B', None)
--        except ProtocolError, e:
-+        except ProtocolError as e:
-             rc = e.rc
- 
-         self.assertEqual(rc, tpm2.TPM2_RC_AUTH_FAIL)
-@@ -100,11 +104,13 @@ class SmokeTest(unittest.TestCase):
-             self.client.policy_password(handle)
- 
-             result = self.client.unseal(self.root_key, blob, auth, handle)
-+            if not isinstance(result, bytes):
-+                result = result.encode()
-         except:
-             self.client.flush_context(handle)
-             raise
- 
--        self.assertEqual(data, result)
-+        self.assertEqual(data.encode(), result)
- 
-         # Then, extend a PCR that is part of the policy and try to unseal.
-         # This should fail.
-@@ -119,7 +125,7 @@ class SmokeTest(unittest.TestCase):
-             self.client.policy_password(handle)
- 
-             result = self.client.unseal(self.root_key, blob, auth, handle)
--        except ProtocolError, e:
-+        except ProtocolError as e:
-             rc = e.rc
-             self.client.flush_context(handle)
-         except:
-@@ -136,7 +142,7 @@ class SmokeTest(unittest.TestCase):
-         rc = 0
-         try:
-             blob = self.client.seal(self.root_key, data, auth, None)
--        except ProtocolError, e:
-+        except ProtocolError as e:
-             rc = e.rc
- 
-         self.assertEqual(rc, tpm2.TPM2_RC_SIZE)
-@@ -152,7 +158,7 @@ class SmokeTest(unittest.TestCase):
-                               0xDEADBEEF)
- 
-             self.client.send_cmd(cmd)
--        except IOError, e:
-+        except IOError as e:
-             rejected = True
-         except:
-             pass
-@@ -212,7 +218,7 @@ class SmokeTest(unittest.TestCase):
-             self.client.tpm.write(cmd)
-             rsp = self.client.tpm.read()
- 
--        except IOError, e:
-+        except IOError as e:
-             # read the response
-             rsp = self.client.tpm.read()
-             rejected = True
-@@ -283,7 +289,7 @@ class SpaceTest(unittest.TestCase):
-         rc = 0
-         try:
-             space1.send_cmd(cmd)
--        except ProtocolError, e:
-+        except ProtocolError as e:
-             rc = e.rc
- 
-         self.assertEqual(rc, tpm2.TPM2_RC_COMMAND_CODE |
+Thanks!
+
 -- 
-2.17.1
-
+Kees Cook
