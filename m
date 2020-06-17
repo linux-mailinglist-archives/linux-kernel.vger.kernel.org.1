@@ -2,304 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0CD1FCE85
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8A41FCE78
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgFQNf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 09:35:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:58028 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgFQNfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:35:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9093D31B;
-        Wed, 17 Jun 2020 06:35:54 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB6353F73C;
-        Wed, 17 Jun 2020 06:35:52 -0700 (PDT)
-Subject: Re: [PATCH v2] firmware: smccc: Add ARCH_SOC_ID support
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Rutland <Mark.Rutland@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Harb Abdulhamid (harb@amperecomputing.com)" 
-        <harb@amperecomputing.com>,
-        Francois Ozog <francois.ozog@linaro.org>,
-        Jose Marinho <Jose.Marinho@arm.com>,
-        Etienne Carriere <etienne.carriere@st.com>
-References: <20200617100559.55209-1-sudeep.holla@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <ccbbae8d-8ca8-4688-4cec-58ae9962d766@arm.com>
-Date:   Wed, 17 Jun 2020 14:34:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726913AbgFQNdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 09:33:02 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:21874 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726355AbgFQNdC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 09:33:02 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HDSVMJ029699;
+        Wed, 17 Jun 2020 09:33:00 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31q66c2jnt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Jun 2020 09:32:59 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 05HDWwtg028844
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 17 Jun 2020 09:32:58 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 17 Jun
+ 2020 06:32:56 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 17 Jun 2020 06:32:56 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05HDWtWN018768;
+        Wed, 17 Jun 2020 09:32:55 -0400
+From:   Darius Berghe <darius.berghe@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>
+Subject: [PATCH v1 1/3] iio:adc:ltc2471: add match table for existing devices
+Date:   Wed, 17 Jun 2020 16:35:21 +0300
+Message-ID: <20200617133523.58158-1-darius.berghe@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200617100559.55209-1-sudeep.holla@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_03:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=991 clxscore=1015
+ suspectscore=0 mlxscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 cotscore=-2147483648 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006170104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2020 11:05, Sudeep Holla wrote:
-> SMCCC v1.2 adds a new optional function SMCCC_ARCH_SOC_ID to obtain a
-> SiP defined SoC identification value. Add support for the same.
-> 
-> Also using the SoC bus infrastructure, let us expose the platform
-> specific SoC atrributes under sysfs.
-> 
-> There are various ways in which it can be represented in shortened form
-> for efficiency and ease of parsing for userspace. The chosen form is
-> described in the ABI document.
-> 
-> Cc: Steven Price <steven.price@arm.com>
-> Cc: Etienne Carriere <etienne.carriere@st.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->   Documentation/ABI/testing/sysfs-devices-soc |  30 ++++++
->   drivers/firmware/smccc/Kconfig              |   9 ++
->   drivers/firmware/smccc/Makefile             |   1 +
->   drivers/firmware/smccc/soc_id.c             | 114 ++++++++++++++++++++
->   include/linux/arm-smccc.h                   |   5 +
->   5 files changed, 159 insertions(+)
->   create mode 100644 drivers/firmware/smccc/soc_id.c
-> 
-> Changes from v1[1] -> v2:
-> 	- Dropped new jep106_id added to SoC infrastructure
-> 	- Dropped all the tags(acks/reviews) as there is change in the format
-> 	- Updated the format for SoC id to ensure there will be no
-> 	  conflict in the namespace
-> 
-> [1] https://lore.kernel.org/lkml/20200522124951.35776-1-sudeep.holla@arm.com/
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-soc b/Documentation/ABI/testing/sysfs-devices-soc
-> index ba3a3fac0ee1..50707f316ea9 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-soc
-> +++ b/Documentation/ABI/testing/sysfs-devices-soc
-> @@ -26,6 +26,30 @@ contact:	Lee Jones <lee.jones@linaro.org>
->   		Read-only attribute common to all SoCs. Contains SoC family name
->   		(e.g. DB8500).
->   
-> +		On many of ARM based silicon with SMCCC v1.2+ compliant firmware
-> +		this will contain the JEDEC JEP106 manufacturer’s identification
-> +		code. The format is "jep106:XXYY" where XX is identity code and
-> +		YY is continuation code.
-> +
-> +		This manufacturer’s identification code is defined by one
-> +		or more eight (8) bit fields, each consisting of seven (7)
-> +		data bits plus one (1) odd parity bit. It is a single field,
-> +		limiting the possible number of vendors to 126. To expand
-> +		the maximum number of identification codes, a continuation
-> +		scheme has been defined.
-> +
-> +		The specified mechanism is that an identity code of 0x7F
-> +		represents the "continuation code" and implies the presence
-> +		of an additional identity code field, and this mechanism
-> +		may be extended to multiple continuation codes followed
-> +		by the manufacturer's identity code.
-> +
-> +		For example, ARM has identity code 0x7F 0x7F 0x7F 0x7F 0x3B,
-> +		which is code 0x3B on the fifth 'page'. This can be shortened
+OF style match table is the proper way of matching device tree nodes
+with drivers and such table was missing, this commit adds it.
 
-NIT: s/can be/is/ - since the format always uses the short form.
+Signed-off-by: Darius Berghe <darius.berghe@analog.com>
+---
+ drivers/iio/adc/ltc2471.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> +		as JEP106 identity code of 0x3B and a continuation code of
-> +		0x4 to represent the four continuation codes preceding the
-> +		identity code.
-> +
->   What:		/sys/devices/socX/serial_number
->   Date:		January 2019
->   contact:	Bjorn Andersson <bjorn.andersson@linaro.org>
-> @@ -40,6 +64,12 @@ contact:	Lee Jones <lee.jones@linaro.org>
->   		Read-only attribute supported by most SoCs. In the case of
->   		ST-Ericsson's chips this contains the SoC serial number.
->   
-> +		On many of ARM based silicon with SMCCC v1.2+ compliant firmware
-> +		this will contain the SOC ID appended to the family attribute
-> +		to ensure there is no clash in this namespace across various
-> +		vendors. The format is "jep106:XXYY:ZZZZ" where XX is identity
-> +		code, YY is continuation code and ZZZZ is the SOC ID.
-> +
->   What:		/sys/devices/socX/revision
->   Date:		January 2012
->   contact:	Lee Jones <lee.jones@linaro.org>
-> diff --git a/drivers/firmware/smccc/Kconfig b/drivers/firmware/smccc/Kconfig
-> index 27b675d76235..15e7466179a6 100644
-> --- a/drivers/firmware/smccc/Kconfig
-> +++ b/drivers/firmware/smccc/Kconfig
-> @@ -14,3 +14,12 @@ config HAVE_ARM_SMCCC_DISCOVERY
->   	 to add SMCCC discovery mechanism though the PSCI firmware
->   	 implementation of PSCI_FEATURES(SMCCC_VERSION) which returns
->   	 success on firmware compliant to SMCCC v1.1 and above.
-> +
-> +config ARM_SMCCC_SOC_ID
-> +	bool "SoC bus device for the ARM SMCCC SOC_ID"
-> +	depends on HAVE_ARM_SMCCC_DISCOVERY
-> +	default y
-> +	select SOC_BUS
-> +	help
-> +	  Include support for the SoC bus on the ARM SMCCC firmware based
-> +	  platforms providing some sysfs information about the SoC variant.
-> diff --git a/drivers/firmware/smccc/Makefile b/drivers/firmware/smccc/Makefile
-> index 6f369fe3f0b9..72ab84042832 100644
-> --- a/drivers/firmware/smccc/Makefile
-> +++ b/drivers/firmware/smccc/Makefile
-> @@ -1,3 +1,4 @@
->   # SPDX-License-Identifier: GPL-2.0
->   #
->   obj-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)	+= smccc.o
-> +obj-$(CONFIG_ARM_SMCCC_SOC_ID)	+= soc_id.o
-> diff --git a/drivers/firmware/smccc/soc_id.c b/drivers/firmware/smccc/soc_id.c
-> new file mode 100644
-> index 000000000000..cf6888fd84aa
-> --- /dev/null
-> +++ b/drivers/firmware/smccc/soc_id.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2020 Arm Limited
-> + */
-> +
-> +#define pr_fmt(fmt) "SMCCC: SOC_ID: " fmt
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/slab.h>
-> +#include <linux/sys_soc.h>
-> +
-> +#define SMCCC_SOC_ID_JEP106_BANK_IDX_MASK	GENMASK(30, 24)
-> +/*
-> + * As per the SMC Calling Convention specification v1.2 (ARM DEN 0028C)
-> + * Section 7.4 SMCCC_ARCH_SOC_ID bits[23:16] are JEP-106 identification
-> + * code with parity bit for the SiP. We can drop the parity bit.
-> + */
-> +#define SMCCC_SOC_ID_JEP106_ID_CODE_MASK	GENMASK(22, 16)
-> +#define SMCCC_SOC_ID_IMP_DEF_SOC_ID_MASK	GENMASK(15, 0)
-> +
-> +#define JEP106_BANK_CONT_CODE(x)	\
-> +	(u8)(FIELD_GET(SMCCC_SOC_ID_JEP106_BANK_IDX_MASK, (x)))
-> +#define JEP106_ID_CODE(x)	\
-> +	(u8)(FIELD_GET(SMCCC_SOC_ID_JEP106_ID_CODE_MASK, (x)))
-> +#define IMP_DEF_SOC_ID(x)	\
-> +	(u16)(FIELD_GET(SMCCC_SOC_ID_IMP_DEF_SOC_ID_MASK, (x)))
-> +
-> +static struct soc_device *soc_dev;
-> +static struct soc_device_attribute *soc_dev_attr;
-> +
-> +static int __init smccc_soc_init(void)
-> +{
-> +	struct arm_smccc_res res;
-> +	int soc_id_rev, soc_id_version;
-> +	static char soc_id_str[16], soc_id_rev_str[12];
-> +	static char soc_id_jep106_id_str[12];
-> +
-> +	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_2)
-> +		return 0;
-> +
-> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE) {
-> +		pr_err("%s: invalid SMCCC conduit\n", __func__);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
-> +			     ARM_SMCCC_ARCH_SOC_ID, &res);
-> +
-> +	if (res.a0 == SMCCC_RET_NOT_SUPPORTED) {
-> +		pr_info("ARCH_SOC_ID not implemented, skipping ....\n");
-> +		return 0;
-> +	}
-> +
-> +	if ((int)res.a0 < 0) {
-> +		pr_info("ARCH_FEATURES(ARCH_SOC_ID) returned error: %lx\n",
-> +			res.a0);
-> +		return -EINVAL;
-> +	}
-> +
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 0, &res);
-> +	if ((int)res.a0 < 0) {
-> +		pr_err("ARCH_SOC_ID(0) returned error: %lx\n", res.a0);
-> +		return -EINVAL;
-> +	}
-> +
-> +	soc_id_version = res.a0;
-> +
-> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 1, &res);
-> +	if ((int)res.a0 < 0) {
-> +		pr_err("ARCH_SOC_ID(1) returned error: %lx\n", res.a0);
-> +		return -EINVAL;
-> +	}
-> +
-> +	soc_id_rev = res.a0;
-> +
-> +	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
-> +	if (!soc_dev_attr)
-> +		return -ENOMEM;
-> +
-> +	sprintf(soc_id_rev_str, "0x%08x", soc_id_rev);
-> +	sprintf(soc_id_jep106_id_str, "jep106:%02x%02x",
-> +		JEP106_BANK_CONT_CODE(soc_id_version),
-> +		JEP106_ID_CODE(soc_id_version));
-> +	sprintf(soc_id_str, "%s:%04x", soc_id_jep106_id_str,
-> +		IMP_DEF_SOC_ID(soc_id_version));
-
-My maths might be wrong, but I think this is one byte too long:
-
-soc_id_jep106_id_str can be 11 characters (without the NUL), then we 
-have a ':' byte followed by 4 hex digits and a trailing NUL: 11 + 1 + 4 
-+ 1 = 17, but the char array is 16 bytes long.
-
-With that fixed feel free to add my "Reviewed-by".
-
-Steve
-
-> +
-> +	soc_dev_attr->soc_id = soc_id_str;
-> +	soc_dev_attr->revision = soc_id_rev_str;
-> +	soc_dev_attr->family = soc_id_jep106_id_str;
-> +
-> +	soc_dev = soc_device_register(soc_dev_attr);
-> +	if (IS_ERR(soc_dev)) {
-> +		kfree(soc_dev_attr);
-> +		return PTR_ERR(soc_dev);
-> +	}
-> +
-> +	pr_info("ID = %s Revision = %s\n", soc_dev_attr->soc_id,
-> +		soc_dev_attr->revision);
-> +
-> +	return 0;
-> +}
-> +module_init(smccc_soc_init);
-> +
-> +static void __exit smccc_soc_exit(void)
-> +{
-> +	if (soc_dev)
-> +		soc_device_unregister(soc_dev);
-> +	kfree(soc_dev_attr);
-> +}
-> +module_exit(smccc_soc_exit);
-> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-> index 56d6a5c6e353..8254e11ea857 100644
-> --- a/include/linux/arm-smccc.h
-> +++ b/include/linux/arm-smccc.h
-> @@ -71,6 +71,11 @@
->   			   ARM_SMCCC_SMC_32,				\
->   			   0, 1)
->   
-> +#define ARM_SMCCC_ARCH_SOC_ID						\
-> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-> +			   ARM_SMCCC_SMC_32,				\
-> +			   0, 2)
-> +
->   #define ARM_SMCCC_ARCH_WORKAROUND_1					\
->   	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
->   			   ARM_SMCCC_SMC_32,				\
-> 
+diff --git a/drivers/iio/adc/ltc2471.c b/drivers/iio/adc/ltc2471.c
+index 55fab612843a..0e5cdb43a943 100644
+--- a/drivers/iio/adc/ltc2471.c
++++ b/drivers/iio/adc/ltc2471.c
+@@ -143,9 +143,17 @@ static const struct i2c_device_id ltc2471_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, ltc2471_i2c_id);
+ 
++static const struct of_device_id ltc2471_of_match[] = {
++	{ .compatible = "adi,ltc2471" },
++	{ .compatible = "adi,ltc2473" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, ltc2471_of_match);
++
+ static struct i2c_driver ltc2471_i2c_driver = {
+ 	.driver = {
+ 		.name = "ltc2471",
++		.of_match_table = of_match_ptr(ltc2471_of_match)
+ 	},
+ 	.probe    = ltc2471_i2c_probe,
+ 	.id_table = ltc2471_i2c_id,
+-- 
+2.26.2
 
