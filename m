@@ -2,206 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7E31FD27F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D881FD288
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgFQQo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:44:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44246 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726511AbgFQQoY (ORCPT
+        id S1726930AbgFQQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgFQQrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:44:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592412262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHqYGq8gMGijl7hrfFNPw6Y3ObzoMwmEvofgpNQ4KMA=;
-        b=WX2iCcGCxdH7rERbx43gnemGw6gKx2ejAz4s6fxbyJtc/E5cuJtrdYwh9dwseVYx3t0m0Q
-        wr7h7R9UeZhoodP1LoyPr1tuhsSfMTYwZZRwJi6jzsErIe/x6iAhk8JDIRIGBTLlvpb2q2
-        NrQOnTkog457t4fCpJjvU1LXkgLbMKs=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-DAkH77c_MSGlGs258zhLDw-1; Wed, 17 Jun 2020 12:44:17 -0400
-X-MC-Unique: DAkH77c_MSGlGs258zhLDw-1
-Received: by mail-qt1-f198.google.com with SMTP id y25so2169470qtb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:44:17 -0700 (PDT)
+        Wed, 17 Jun 2020 12:47:42 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E316EC06174E;
+        Wed, 17 Jun 2020 09:47:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c71so2514744wmd.5;
+        Wed, 17 Jun 2020 09:47:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EzP90zRfteOPiS50AHA0iyJn5jZaMdoAKPdTATIDAk0=;
+        b=Ro/jAlAGw4M2CS3G8RW2pmQS0ola4zCJwUlkGuTXUbDBGqMbBtSiYZteSps6NttKMp
+         HkMJAlwjxnEBSRTJV2G6IBclkeXtjnXJSOoqrpgPpVXg6tTucJZeM9bUzE28ibqFnCWh
+         ezG1UHM8ATn0fUhAMrrgThRsQwTlQQY+BeqbGrGZ12LttEPvvla9u+k/SgwwhKrU8/LP
+         5sIzGTxXn6aO6LM8RDLtZnyQL+9ciyarmbpEFMvNh0URuRLjNRZM8eHwEXJy+FF7uL5e
+         mbhzsZryWAE8hFF9rf8kb3kx4RWpM9d8sBvWiuNiOSbIfR+IEBLIqv43CCixMDkAjwMB
+         ugVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uHqYGq8gMGijl7hrfFNPw6Y3ObzoMwmEvofgpNQ4KMA=;
-        b=oAzEhEioXvOZ3sNvln17RWOS2VTcZ9eNKP0w4CPBcYMLM+YaJp/93FUHpJSNA+rdCx
-         6F9p7XZa0je5pjxDyohglKTejoTcFVUZSJhMOEEigm/rTmswi4D7rabY+LR23NdgnAv3
-         pma519dj5eKBfwmeATBxP7Fmq7dIOYtz1LzaJubOqlx+pFFL8rQ25Ia7IaXg98aaNCqT
-         WqOyq4qTBxK/DyqtCunAU5ADPJYimVW9ZGQQ5tfDA2nCMDNvxF75pzqjNQlNtJ+BFEiY
-         6N0b/BGL3qWzSrEjBw0d9Uq204las+RzfcOaVpdU4ksp7FLIYJ2AKmhPBf82mxNXnqe8
-         /aOQ==
-X-Gm-Message-State: AOAM533+yuMfdpALSu2Tou3vD2tpWzmXfD+0Ytos/SC5RXpSvRW5o6K/
-        IDEP+jH83xZo91w8CaJam5tSylrcCAKpvTnrU53f/x+FpQTy9BjpHl8qa2qGFmBLjPboS2G1wO7
-        U6jzgPAPcGRoJtY8kGWGIPu8D
-X-Received: by 2002:ac8:35fd:: with SMTP id l58mr27549715qtb.324.1592412256721;
-        Wed, 17 Jun 2020 09:44:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzlHNvNUfv10ny3GvWXjj+c+QD1W86k7S+sDSFqbWy+cGxtKmllCh4TQR/EJJQuXLGd22t+g==
-X-Received: by 2002:ac8:35fd:: with SMTP id l58mr27549692qtb.324.1592412256431;
-        Wed, 17 Jun 2020 09:44:16 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id m26sm380110qtm.73.2020.06.17.09.44.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EzP90zRfteOPiS50AHA0iyJn5jZaMdoAKPdTATIDAk0=;
+        b=R3hi57Kgkb0mjqiDhRpSTg08S5zcwkly11XksiFHmB5qSeBo8Bi3EyJuODDbC9hhQN
+         H0+/WPmyBQwsXucIdXVIrz7OFnHinTaSpdWztDfmZOAwAMpf6A4Gp1/3X30NcjWfDX28
+         VVi6JfH2HRAVigKAYnTKei8KTv+7kNn7yHDLrytNk+VhbdD81bR6gbbjEhTpYV+UIR1e
+         vw80rQNTXK+fDzuobbGaFUxL/ubkqd23Ghfq/+0CwXr5VFuzsGCMgQ6m1yeib5NcaW8B
+         /vRQlaVgEutbT0Bh327Zftat94rbTQzS0ZLMBm0qMPgUCnSY8uaclc2XRcWOlgrozdTw
+         xJ3A==
+X-Gm-Message-State: AOAM533j5D4StQDjqTyi01VaK14oEW4ugvnhjinxyBInujCTi/eQ7v2l
+        d6v8nf61quRQjZGbKsSAr8Y=
+X-Google-Smtp-Source: ABdhPJwz6NM2m53Nl29prWuICuKsCu4NxVmzz62srThpnPMfT5RbQ7t9ixisr3khn6OfyBYn1JD9Ng==
+X-Received: by 2002:a05:600c:21c2:: with SMTP id x2mr9532127wmj.33.1592412460358;
+        Wed, 17 Jun 2020 09:47:40 -0700 (PDT)
+Received: from localhost.localdomain (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
+        by smtp.gmail.com with ESMTPSA id g3sm199165wrb.46.2020.06.17.09.47.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:44:15 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 12:44:13 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 19/25] mm/s390: Use mm_fault_accounting()
-Message-ID: <20200617164413.GG76766@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615222302.8452-1-peterx@redhat.com>
- <20200616155933.GA12897@oc3871087118.ibm.com>
- <20200616163510.GD11838@xz-x1>
- <edb88596-6f2c-2648-748d-591a0b1e0131@de.ibm.com>
- <20200617160617.GD76766@xz-x1>
- <8bd8dcf6-f2f0-d44e-9bf8-6fd4fe299aa9@de.ibm.com>
+        Wed, 17 Jun 2020 09:47:39 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH 0/8] Drivers: hv: vmbus: Miscellaneous cleanups
+Date:   Wed, 17 Jun 2020 18:46:34 +0200
+Message-Id: <20200617164642.37393-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8bd8dcf6-f2f0-d44e-9bf8-6fd4fe299aa9@de.ibm.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 06:14:52PM +0200, Christian Borntraeger wrote:
-> 
-> 
-> On 17.06.20 18:06, Peter Xu wrote:
-> > Hi, Christian,
-> > 
-> > On Wed, Jun 17, 2020 at 08:19:29AM +0200, Christian Borntraeger wrote:
-> >>
-> >>
-> >> On 16.06.20 18:35, Peter Xu wrote:
-> >>> Hi, Alexander,
-> >>>
-> >>> On Tue, Jun 16, 2020 at 05:59:33PM +0200, Alexander Gordeev wrote:
-> >>>>> @@ -489,21 +489,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
-> >>>>>  	if (unlikely(fault & VM_FAULT_ERROR))
-> >>>>>  		goto out_up;
-> >>>>>
-> >>>>> -	/*
-> >>>>> -	 * Major/minor page fault accounting is only done on the
-> >>>>> -	 * initial attempt. If we go through a retry, it is extremely
-> >>>>> -	 * likely that the page will be found in page cache at that point.
-> >>>>> -	 */
-> >>>>>  	if (flags & FAULT_FLAG_ALLOW_RETRY) {
-> >>>>> -		if (fault & VM_FAULT_MAJOR) {
-> >>>>> -			tsk->maj_flt++;
-> >>>>> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
-> >>>>> -				      regs, address);
-> >>>>> -		} else {
-> >>>>> -			tsk->min_flt++;
-> >>>>> -			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
-> >>>>> -				      regs, address);
-> >>>>> -		}
-> >>>>>  		if (fault & VM_FAULT_RETRY) {
-> >>>>>  			if (IS_ENABLED(CONFIG_PGSTE) && gmap &&
-> >>>>>  			    (flags & FAULT_FLAG_RETRY_NOWAIT)) {
-> > 
-> > [1]
-> > 
-> >>>>
-> >>>> Seems like the call to mm_fault_accounting() will be missed if
-> >>>> we entered here with FAULT_FLAG_RETRY_NOWAIT flag set, since it
-> >>>> jumps to "out_up"...
-> >>>
-> >>> This is true as a functional change.  However that also means that we've got a
-> >>> VM_FAULT_RETRY, which hints that this fault has been requested to retry rather
-> >>> than handled correctly (for instance, due to some try_lock failed during the
-> >>> fault process).
-> >>>
-> >>> To me, that case should not be counted as a page fault at all?  Or we might get
-> >>> the same duplicated accounting when the page fault retried from a higher stack.
-> >>>
-> >>> Thanks
-> >>
-> >> This case below (the one with the gmap) is the KVM case for doing a so called
-> >> pseudo page fault to our guests. (we notify our guests about major host page
-> >> faults and let it reschedule to something else instead of halting the vcpu).
-> >> This is being resolved with either gup or fixup_user_fault asynchronously by
-> >> KVM code (this can also be sync when the guest does not match some conditions)
-> >> We do not change the counters in that code as far as I can tell so we should
-> >> continue to do it here.
-> >>
-> >> (see arch/s390/kvm/kvm-s390.c
-> >> static int vcpu_post_run(struct kvm_vcpu *vcpu, int exit_reason)
-> >> {
-> >> [...]
-> >>         } else if (current->thread.gmap_pfault) {
-> >>                 trace_kvm_s390_major_guest_pfault(vcpu);
-> >>                 current->thread.gmap_pfault = 0;
-> >>                 if (kvm_arch_setup_async_pf(vcpu))
-> >>                         return 0;
-> >>                 return kvm_arch_fault_in_page(vcpu, current->thread.gmap_addr, 1);
-> >>         }
-> > 
-> > Please correct me if I'm wrong... but I still think what this patch does is the
-> > right thing to do.
-> > 
-> > Note again that IMHO when reached [1] above it means the page fault is not
-> > handled correctly so we need to fallback to KVM async page fault, then we
-> > shouldn't increment the accountings until it's finally handled correctly. That
-> > final accounting should be done in the async pf path in gup code where the page
-> > fault is handled:
-> > 
-> >   kvm_arch_fault_in_page
-> >     gmap_fault
-> >       fixup_user_fault
-> > 
-> > Where in fixup_user_fault() we have:
-> > 
-> > 	if (tsk) {
-> > 		if (major)
-> > 			tsk->maj_flt++;
-> > 		else
-> > 			tsk->min_flt++;
-> > 	}
-> > 
-> 
-> Right that case does work. Its the case where we do not inject a pseudo pagefault and
-> instead fall back to synchronous fault-in.
-> What is about the other case:
-> 
-> kvm_setup_async_pf
-> 	->workqueue
-> 		async_pf_execute
-> 			get_user_pages_remote
-> 
-> Does get_user_pages_remote do the accounting as well? I cant see that.
-> 
+Hi all,
 
-It should, with:
+I went back to my "cleanup list" recently and I wrote these patches:
+here you can find, among other things,
 
-  get_user_pages_remote
-    __get_user_pages_remote
-      __get_user_pages_locked
-        __get_user_pages
-          faultin_page
+  1) the removal of the fields 'target_vp' and 'numa_node' from the
+     channel data structure, as suggested by Michael back in May;
 
-Where the accounting is done in faultin_page().
+  2) various cleanups for channel->lock, which is actually *removed
+     by the end of this series!  ;-)
 
-We probably need to also move the accounting in faultin_page() to be after the
-retry check too, but that should be irrelevant to this patch.
+I'm sure there is room for further "cleanups",  ;-) but let me check
+if these (relatively small) changes make sense first...
 
-Thanks!
+Thanks,
+  Andrea
+
+Andrea Parri (Microsoft) (8):
+  Drivers: hv: vmbus: Remove the target_vp field from the vmbus_channel
+    struct
+  Drivers: hv: vmbus: Remove the numa_node field from the vmbus_channel
+    struct
+  Drivers: hv: vmbus: Replace cpumask_test_cpu(, cpu_online_mask) with
+    cpu_online()
+  Drivers: hv: vmbus: Remove unnecessary channel->lock critical sections
+    (sc_list readers)
+  Drivers: hv: vmbus: Use channel_mutex in channel_vp_mapping_show()
+  Drivers: hv: vmbus: Remove unnecessary channel->lock critical sections
+    (sc_list updaters)
+  scsi: storvsc: Introduce the per-storvsc_device spinlock
+  Drivers: hv: vmbus: Remove the lock field from the vmbus_channel
+    struct
+
+ drivers/hv/channel.c       |  9 +++------
+ drivers/hv/channel_mgmt.c  | 31 ++++++-------------------------
+ drivers/hv/hv.c            |  3 ---
+ drivers/hv/vmbus_drv.c     | 17 +++++------------
+ drivers/scsi/storvsc_drv.c | 16 +++++++++++-----
+ include/linux/hyperv.h     | 22 +++++++---------------
+ 6 files changed, 32 insertions(+), 66 deletions(-)
 
 -- 
-Peter Xu
+2.25.1
 
