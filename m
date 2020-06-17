@@ -2,413 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCBF1FC9EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C21E1FC9F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgFQJe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        id S1726628AbgFQJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgFQJe5 (ORCPT
+        with ESMTP id S1725554AbgFQJgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:34:57 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ACAC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:34:56 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id m23so406679vko.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:34:56 -0700 (PDT)
+        Wed, 17 Jun 2020 05:36:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABD5C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:36:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j198so4061598wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=fooishbar-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GElPlr4lJptb9haWfXsqgG+Q3T74SPQGKuT2+25d/Nc=;
-        b=QgQpD47EWWGn3dViPCny8k+6WhHaILSZY0/MwFhsYwBOSJCjNtgNPRyTIXYTqc2mei
-         +iNnzZGquoFA7RaXy5sTjcEWTKtT1m/Ae9HmOrVdqf3t3rWnJlEgWQFaizBuCbNuzu5b
-         jaXfyL0Bwi5qZSa112rI6nvLcHcTIrhOkXbkZtFRa17t1bwDwMpCKSAoezKR23fAA7Hv
-         0ahaiB72cdyx1NKQWiB/G4cT2NXmVqXYAe4l/8jErtRqcF3y59xG6n0snbqSgKRyMnOA
-         xSWDAkrqU30dz+uAis99wVemzxgyP+OMkMFHAoEfRsMn1Fkvjqm5WrhAzn079Qj+wp7R
-         OwVA==
+        bh=kqV7b/dRGRsaYFJFTZmEAIxbxpemJlUlmyVmWunucJQ=;
+        b=a1jJ0h4Gh9g26ELV/twHuTjWpRiKFHPp8TLQgzONwinJq+v0ldA8u5Eup6Ntp0eQBq
+         nc1Lpg4kzTSI9EogHgUCu6Yr5o6TiGOdyYEUUCMjtBhKeBJkCdSzbL0uqikcMECQzOVp
+         Zqchdh7yOtiUOSFYENISzhvCiIXwq0wbd6SI3ndto2+BES4dRC4hLCUprwa87V2AsrtG
+         WqhBE2JM8omhJa4pmFycbSidghsV633Z49FM1+QGKfYNjHFDCxSOmXRnl7+h05r/tn6p
+         /DmqFKKV9v2dwcM9yR1IGCSbxzmt71MWIxNdkkqw6pfqLArKDMB6tJBJm/imJNvsP/oA
+         imzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GElPlr4lJptb9haWfXsqgG+Q3T74SPQGKuT2+25d/Nc=;
-        b=kmL1sa9QXEJFRw0zZ1aI6GpHrdueo+BK56YCZAm+3kpYhgCexVZGMSCanhk4nnxGgH
-         ZkSk/YyKUHHxhjsmUniGP29XHjslEbOasm45BO8FOdus5jaEw95N4qORjgQqVO6jr+Pk
-         P1KxnZoWTBSnEnLulWldMZNIbAdrV/PzphjfBtBHXqV9bryyU7y9adCSopymcVLx3+5A
-         /RyosoGWh58pI4n9QJ3KJCm9TG8zo0ZIrTZIPhJer411gP4PxmE6yUT1m+Ksks2s1KTt
-         1uj44eLhS9T8s8qdqbiNGH414azPkcnZAPF/eiHUgv2z7sXsxOLzwOBhbib5sfueTSfK
-         VUAQ==
-X-Gm-Message-State: AOAM530Jsx8ev3Jf7Hc8krAIqfqdiDPmJBo9MZptrQg13bBFdTSKvsyd
-        CwIXIPhCtyS3hiNleCCVCC7zRmUuUNhQy3qLGz7HlW62s2nWVA==
-X-Google-Smtp-Source: ABdhPJyWfY/1iZalb3biUwsuKAh8amAEWBGwJk3uxqggu/gWXUmxylnDmUw4zphUCGFtqET/Yy5v92yP81jRMfmlP0c=
-X-Received: by 2002:ac5:cc44:: with SMTP id l4mr4804956vkm.43.1592386495719;
- Wed, 17 Jun 2020 02:34:55 -0700 (PDT)
+        bh=kqV7b/dRGRsaYFJFTZmEAIxbxpemJlUlmyVmWunucJQ=;
+        b=m/LYA7YdqIRZCLDIeRIe9BuMsxkt+LM5uyPqeE6QbffEipxzSfLk86K7yf3Bx7g5Ak
+         275+CYAqas3MP6PbodRkpioWA1VGv6DVpiQ5BKYgZZ9qBxTtcgYPwytptjIMte1O/x7C
+         T8pWlJLapRFDlv3lBzFcYtsCqCrxeujBwqaMW3o7aMZ3pL4PJ23gYH7sk9e8/r6xt3km
+         jxACyuBBUW/R9KcA1ZPsOuPXLLXASBvDIfONEyE0GjYfN0xwv1vHUIGEyxa0Dqsjq9F5
+         vSDeYQbMUbla7TUiRrM+UeMrjbk8m8mYMs+U4RyiZRvcTvsNee0tV1SLyfBaCYrO7O5t
+         /UHA==
+X-Gm-Message-State: AOAM533rwtjqM72RXgooK+Oq/q69dd9zuaWS5yoZBBRvnbEe5cY2ZOJ2
+        foc8HENqgZoFT9WYC4mgldZz/oClM3/zPJKgRnRJBw==
+X-Google-Smtp-Source: ABdhPJyt/DSGWPMjUA/TqeAozgDqsIajAJ3rBCfT6Uxx5ItAbPuwx37kc6zO5bdEkyBLeZ+LenZ5E1u117tWg7+oIi0=
+X-Received: by 2002:a1c:bbd6:: with SMTP id l205mr7896275wmf.147.1592386608011;
+ Wed, 17 Jun 2020 02:36:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
- <1592321779-28556-1-git-send-email-vbadigan@codeaurora.org> <1592321779-28556-3-git-send-email-vbadigan@codeaurora.org>
-In-Reply-To: <1592321779-28556-3-git-send-email-vbadigan@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 17 Jun 2020 11:34:19 +0200
-Message-ID: <CAPDyKFrvvhQPio3FRQmoBgMm1Euvsma_dgGzxA=R8rm0aQgDMQ@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] mmc: sdhci-msm: Use internal voltage control
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Vijay Viswanath <vviswana@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
+References: <20200614200121.14147-1-digetx@gmail.com> <CACvgo51QuXMgWhFk4C=3rGvUZDX1_W0RZtVb5RtRPiHTpMebWQ@mail.gmail.com>
+ <8f789ef5-bebf-c869-784d-afda70fc1fb8@gmail.com> <CACvgo50oSMbgXw1vHwVT4hhGe6g3YzKQEohCLJdfDq+0UaN1jw@mail.gmail.com>
+ <646b3f37-0f72-7f3b-388f-f71dbcdd5c84@gmail.com> <CACvgo50BFH5qsPyWx9a1aZ4k5bzjSN-3KTU0BvnZ-nG-hfzKOQ@mail.gmail.com>
+ <fe845434-cbf6-29d4-eeb6-8868d628fd04@gmail.com>
+In-Reply-To: <fe845434-cbf6-29d4-eeb6-8868d628fd04@gmail.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Wed, 17 Jun 2020 10:34:41 +0100
+Message-ID: <CAPj87rPwwHWtYpuZfiTMyELvr3D+UAY8CVnH3v6+Lo1-UMRRVA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] 180 degrees rotation support for NVIDIA Tegra DRM
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Emil Velikov <emil.l.velikov@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sean Paul <sean@poorly.run>, linux-tegra@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 at 17:38, Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
-> On qcom SD host controllers voltage switching be done after the HW
-> is ready for it. The HW informs its readiness through power irq.
-> The voltage switching should happen only then.
->
-> Use the internal voltage switching and then control the voltage
-> switching using power irq.
->
-> IO-bus supply of eMMC would be kept always-on. So set the load
-> for this supply to configure it in LPM when eMMC is suspend state
->  and in HPM when eMMC is active.
->
-> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> Co-developed-by: Vijay Viswanath <vviswana@codeaurora.org>
-> Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
-> Co-developed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> ---
->  drivers/mmc/host/sdhci-msm.c | 208 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 199 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 15c42b059240..8297b2142748 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -37,7 +37,9 @@
->  #define CORE_PWRCTL_IO_LOW     BIT(2)
->  #define CORE_PWRCTL_IO_HIGH    BIT(3)
->  #define CORE_PWRCTL_BUS_SUCCESS BIT(0)
-> +#define CORE_PWRCTL_BUS_FAIL    BIT(1)
->  #define CORE_PWRCTL_IO_SUCCESS BIT(2)
-> +#define CORE_PWRCTL_IO_FAIL     BIT(3)
->  #define REQ_BUS_OFF            BIT(0)
->  #define REQ_BUS_ON             BIT(1)
->  #define REQ_IO_LOW             BIT(2)
-> @@ -127,6 +129,9 @@
->  /* Timeout value to avoid infinite waiting for pwr_irq */
->  #define MSM_PWR_IRQ_TIMEOUT_MS 5000
->
-> +/* Max load for eMMC Vdd-io supply */
-> +#define MMC_VQMMC_MAX_LOAD_UA  325000
-> +
->  #define msm_host_readl(msm_host, host, offset) \
->         msm_host->var_ops->msm_readl_relaxed(host, offset)
->
-> @@ -278,6 +283,7 @@ struct sdhci_msm_host {
->         bool uses_tassadar_dll;
->         u32 dll_config;
->         u32 ddr_config;
-> +       bool vqmmc_enabled;
->  };
->
->  static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
-> @@ -1346,6 +1352,88 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
->                 sdhci_msm_hs400(host, &mmc->ios);
->  }
->
-> +static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
-> +{
-> +       if (IS_ERR(mmc->supply.vmmc))
-> +               return 0;
-> +
-> +       return mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
-> +}
-> +
-> +static int msm_toggle_vqmmc(struct sdhci_msm_host *msm_host,
-> +                             struct mmc_host *mmc, bool level)
-> +{
-> +       int ret;
-> +       struct mmc_ios ios;
-> +
-> +       if (msm_host->vqmmc_enabled == level)
-> +               return 0;
-> +
-> +       if (level) {
-> +               /* Set the IO voltage regulator to default voltage level */
-> +               if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
-> +                       ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
-> +               else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
-> +                       ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
-> +
-> +               if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
-> +                       ret = mmc_regulator_set_vqmmc(mmc, &ios);
-> +                       if (ret < 0) {
-> +                               dev_err(mmc_dev(mmc), "%s: vqmmc set volgate failed: %d\n",
-> +                                       mmc_hostname(mmc), ret);
-> +                               goto out;
-> +                       }
-> +               }
-> +               ret = regulator_enable(mmc->supply.vqmmc);
-> +       } else {
-> +               ret = regulator_disable(mmc->supply.vqmmc);
-> +       }
-> +
-> +       if (ret)
-> +               dev_err(mmc_dev(mmc), "%s: vqmm %sable failed: %d\n",
-> +                       mmc_hostname(mmc), level ? "en":"dis", ret);
-> +       else
-> +               msm_host->vqmmc_enabled = level;
-> +out:
-> +       return ret;
-> +}
-> +
-> +static int msm_config_vqmmc_mode(struct sdhci_msm_host *msm_host,
-> +                             struct mmc_host *mmc, bool hpm)
-> +{
-> +       int load, ret;
-> +
-> +       load = hpm ? MMC_VQMMC_MAX_LOAD_UA : 0;
-> +       ret = regulator_set_load(mmc->supply.vqmmc, load);
-> +       if (ret)
-> +               dev_err(mmc_dev(mmc), "%s: vqmmc set load failed: %d\n",
-> +                       mmc_hostname(mmc), ret);
-> +       return ret;
-> +}
-> +
-> +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
-> +                             struct mmc_host *mmc, bool level)
-> +{
-> +       int ret;
-> +       bool always_on;
-> +
-> +       if (IS_ERR(mmc->supply.vqmmc)           ||
+Hi,
 
-White space.
+On Tue, 16 Jun 2020 at 22:16, Dmitry Osipenko <digetx@gmail.com> wrote:
+> The panel's orientation could be parsed by any panel driver and then
+> assigned as the connector's property in order to allow userspace/FB-core
+> to decide what to do with the rotated display. Apparently upstream
+> kernel supports only that one Samsung device which has display panel
+> mounted upside-down and it already uses the custom DT properties for
+> achieving the 180 rotation. So I don't quite see any panel drivers that
+> instantly could benefit from using the rotation property. Perhaps I can
+> add the orientation support to the panel-simple driver, but will it be
+> useful to anyone?
 
-> +           (mmc->ios.power_mode == MMC_POWER_UNDEFINED))
-> +               return 0;
-> +       /*
-> +        * For eMMC don't turn off Vqmmc, Instead just configure it in LPM
-> +        * and HPM modes by setting the right amonut of load.
+Yes, exposing it to userspace is helpful, since Weston at least will
+parse the property and then apply the correct transform:
+https://gitlab.freedesktop.org/wayland/weston/-/merge_requests/315
 
-/s/right amonut of load/corresponding load
-
-> +        */
-> +       always_on = mmc->card && mmc_card_mmc(mmc->card);
-> +
-> +       if (always_on)
-> +               ret = msm_config_vqmmc_mode(msm_host, mmc, level);
-> +       else
-> +               ret = msm_toggle_vqmmc(msm_host, mmc, level);
-
-I am worried that this isn't really doing what you think it does.
-always_on may not always be set for an eMMC.
-
-This is because the mmc->card doesn't get assigned until the
-initialization of the eMMC has been completed. In other words, way
-after VCC and VCCQ have been turned on and changed voltage levels.
-
-Moreover, mmc_card_mmc() is also about legacy MMC cards, not solely for eMMCs.
-
-If you want special treatment of an eMMC, I think it's better to use
-the DT bindings Documentation/devicetree/bindings/mmc/mmc-card.txt. If
-you have such a subnode, that indicates that there is an eMMC card
-attached.
-
-> +
-> +       return ret;
-> +}
-> +
->  static inline void sdhci_msm_init_pwr_irq_wait(struct sdhci_msm_host *msm_host)
->  {
->         init_waitqueue_head(&msm_host->pwr_irq_wait);
-> @@ -1449,8 +1537,9 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->  {
->         struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->         struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
-> +       struct mmc_host *mmc = host->mmc;
->         u32 irq_status, irq_ack = 0;
-> -       int retry = 10;
-> +       int retry = 10, ret;
->         u32 pwr_state = 0, io_level = 0;
->         u32 config;
->         const struct sdhci_msm_offset *msm_offset = msm_host->offset;
-> @@ -1488,21 +1577,42 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->         if (irq_status & CORE_PWRCTL_BUS_ON) {
->                 pwr_state = REQ_BUS_ON;
->                 io_level = REQ_IO_HIGH;
-> -               irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->         }
->         if (irq_status & CORE_PWRCTL_BUS_OFF) {
->                 pwr_state = REQ_BUS_OFF;
->                 io_level = REQ_IO_LOW;
-> -               irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->         }
-> +
-> +       if (pwr_state) {
-> +               ret = sdhci_msm_set_vmmc(mmc);
-> +               if (!ret)
-> +                       ret = sdhci_msm_set_vqmmc(msm_host, mmc,
-> +                                       pwr_state & REQ_BUS_ON);
-> +               if (!ret)
-> +                       irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
-> +               else
-> +                       irq_ack |= CORE_PWRCTL_BUS_FAIL;
-> +       }
-> +
->         /* Handle IO LOW/HIGH */
-> -       if (irq_status & CORE_PWRCTL_IO_LOW) {
-> +       if (irq_status & CORE_PWRCTL_IO_LOW)
->                 io_level = REQ_IO_LOW;
-> -               irq_ack |= CORE_PWRCTL_IO_SUCCESS;
-> -       }
-> -       if (irq_status & CORE_PWRCTL_IO_HIGH) {
-> +
-> +       if (irq_status & CORE_PWRCTL_IO_HIGH)
->                 io_level = REQ_IO_HIGH;
-> +
-> +       if (io_level)
->                 irq_ack |= CORE_PWRCTL_IO_SUCCESS;
-> +
-> +       if (io_level && !IS_ERR(mmc->supply.vqmmc) && !pwr_state) {
-> +               ret = mmc_regulator_set_vqmmc(mmc, &mmc->ios);
-> +               if (ret < 0) {
-> +                       dev_err(mmc_dev(mmc), "%s: IO_level setting failed(%d). signal_voltage: %d, vdd: %d irq_status: 0x%08x\n",
-> +                                       mmc_hostname(mmc), ret,
-> +                                       mmc->ios.signal_voltage, mmc->ios.vdd,
-> +                                       irq_status);
-> +                       irq_ack |= CORE_PWRCTL_IO_FAIL;
-> +               }
->         }
->
->         /*
-> @@ -1551,7 +1661,7 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->         if (io_level)
->                 msm_host->curr_io_level = io_level;
->
-> -       pr_debug("%s: %s: Handled IRQ(%d), irq_status=0x%x, ack=0x%x\n",
-> +       dev_dbg(mmc_dev(mmc), "%s: %s: Handled IRQ(%d), irq_status=0x%x, ack=0x%x\n",
->                 mmc_hostname(msm_host->mmc), __func__, irq, irq_status,
->                 irq_ack);
->  }
-> @@ -1881,6 +1991,80 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
->         sdhci_reset(host, mask);
->  }
->
-> +static int sdhci_msm_register_vreg(struct sdhci_msm_host *msm_host)
-> +{
-> +       int ret;
-> +       struct mmc_host *mmc = msm_host->mmc;
-> +
-> +       ret = mmc_regulator_get_supply(msm_host->mmc);
-> +       if (ret)
-> +               return ret;
-> +
-> +       sdhci_msm_set_regulator_caps(msm_host);
-> +       mmc->ios.power_mode = MMC_POWER_UNDEFINED;
-
-The mmc core already sets the initial "power_mode" to
-MMC_POWER_UNDEFINED in mmc_start_host().
-
-If I understand correctly, that may be too late for you. Then, let's
-move that to mmc_alloc_host() instead, rather than having this done
-here.
-
-> +
-> +       return 0;
-> +}
-> +
-> +static int sdhci_msm_start_signal_voltage_switch(struct mmc_host *mmc,
-> +                                     struct mmc_ios *ios)
-> +{
-> +       struct sdhci_host *host = mmc_priv(mmc);
-> +       u16 ctrl, status;
-> +
-> +       /*
-> +        * Signal Voltage Switching is only applicable for Host Controllers
-> +        * v3.00 and above.
-> +        */
-> +       if (host->version < SDHCI_SPEC_300)
-> +               return 0;
-> +
-> +       ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +
-> +       switch (ios->signal_voltage) {
-> +       case MMC_SIGNAL_VOLTAGE_330:
-> +               if (!(host->flags & SDHCI_SIGNALING_330))
-> +                       return -EINVAL;
-> +
-> +               /* Set 1.8V Signal Enable in the Host Control2 register to 0 */
-> +               ctrl &= ~SDHCI_CTRL_VDD_180;
-> +               break;
-> +       case MMC_SIGNAL_VOLTAGE_180:
-> +               if (!(host->flags & SDHCI_SIGNALING_180))
-> +                       return -EINVAL;
-> +
-> +               /*
-> +                * Enable 1.8V Signal Enable in the Host Control2
-> +                * register
-> +                */
-> +               ctrl |= SDHCI_CTRL_VDD_180;
-> +               break;
-> +       case MMC_SIGNAL_VOLTAGE_120:
-> +               if (!(host->flags & SDHCI_SIGNALING_120))
-> +                       return -EINVAL;
-> +               return 0;
-
-This looks weird. You probably want to return -EINVAL instead!?
-
-> +       default:
-> +               /* No signal voltage switch required */
-> +               return 0;
-
-This is an error and should not be treated as a valid case.
-I suggest you return -EINVAL here instead, then you may also skip the
-case for MMC_SIGNAL_VOLTAGE_120 above, as it gets covered in this
-part.
-
-> +       }
-> +
-> +       sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
-> +
-> +       /* Wait for 5ms */
-> +       usleep_range(5000, 5500);
-> +
-> +       /* regulator output should be stable within 5 ms */
-> +       status = ctrl & SDHCI_CTRL_VDD_180;
-> +       ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +       if ((ctrl & SDHCI_CTRL_VDD_180) == status)
-> +               return 0;
-> +
-> +       dev_warn(mmc_dev(mmc), "%s: Regulator output did not became stable\n",
-> +               mmc_hostname(mmc));
-> +
-> +       return -EAGAIN;
-> +}
-> +
->  #define DRIVER_NAME "sdhci_msm"
->  #define SDHCI_MSM_DUMP(f, x...) \
->         pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
-> @@ -1967,6 +2151,7 @@ void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
->         .write_b = sdhci_msm_writeb,
->         .irq    = sdhci_msm_cqe_irq,
->         .dump_vendor_regs = sdhci_msm_dump_vendor_regs,
-> +       .set_power = sdhci_set_power_noreg,
->  };
->
-
-[...]
-
-Kind regards
-Uffe
+Cheers,
+Daniel
