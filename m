@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D2A1FD98D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411811FD992
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgFQXUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S1727068AbgFQXUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgFQXUQ (ORCPT
+        with ESMTP id S1726941AbgFQXUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:20:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76398C061755;
-        Wed, 17 Jun 2020 16:20:16 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id w15so2329010lfe.11;
-        Wed, 17 Jun 2020 16:20:16 -0700 (PDT)
+        Wed, 17 Jun 2020 19:20:20 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAFBC06174E;
+        Wed, 17 Jun 2020 16:20:17 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id t74so2363058lff.2;
+        Wed, 17 Jun 2020 16:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9RXXDREzEvi9GJkz9Ew+kxIBw0+JCmn+dwyV4+Iogjo=;
-        b=DhL6Q+i9H1kTLhsx/jJL8lSuJaElavKhd6ST9db/CbXsuk6jwmsjgZ8MTjd/YRdQHS
-         SKta33F1AQVLw5b9TN66Y9hcba3AGfeV5ZPKOXhDqYXwex8bqtnbbZAxdzpaAXhILZed
-         /Kn9oJ+sFyuvJ7UvBz3MVt0FUOMGPIrziDbxhLup6Iy+p+04IZesaJaUqbeg/wDVdh2G
-         a8xPi+4E/rnOwFs85KQz2nlZzNckhUdRF0nnb4pT9rd8pQGWce1WsmD4fOcoBq+DAb7q
-         YmtirL6GsWZu5GJ9fTuAhTIKqBX9atSzwRZmGZe5QRKEI7Tdy9quNl7rTkBvhNx/72Oa
-         jXeA==
+        bh=8a80cd6rsqQPYsCUSUM1tVHpjysV4lBd8Pl7EvdCM6E=;
+        b=FoJaxzrFflE6LaxOfQk0IXXpNw1TcB02BfpukudUJvvz0sjvCgMY8OmLJaKiwz6XDx
+         C/gDE3IRJKA2HqRaebAbdKt3EM4L0NCotHTWYsjSM/Mo+wvbvRSzwV0vKZdqaEs8YHHw
+         Q4yN2ni8w97tvCST897K2FmpQWGITAxaGsNkGnZQ7dP/MXpaR1zkfQgG7yVdgXBq1hvS
+         4tNNMXJAeC5nwzeVdBpl+XLE3E9umAlbP515ioqawoagpNJMgNrwWNiUMTOaqpJQI95M
+         eweugxKOUmR8JXv6E2amCZgwBBDFAaS/mlBa79sH6in53tIFz2lVaVJEMD1AGdg95Jy+
+         RPoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9RXXDREzEvi9GJkz9Ew+kxIBw0+JCmn+dwyV4+Iogjo=;
-        b=k+AdL5ZGQFXKCQJQ6Ag5nVIl8tJsXSCp67zmoLk/9JVUN4q+1jjcbzWqXQElgGvfvu
-         mjKiY1aK5M85eq5Jxh4i8yqnVM8iQsnkUEZRZcFT6XitC00o9qDCjNTC01Ls4o5n1Mkc
-         9HS//9zDmp2cluFA+FsLiZ58XhHONG7mufDBcMPEhPxZNlh/J4fPIavLL5RFEo+D6VvH
-         g5QFeI86P1vBcoaRYn5xFOEd/5V44ouqZKqej/WnIAlPKrhWa4Rv1NG7J0SKQ6ypePnA
-         J0kYD54T76LzsyxsF54JrPZgHR83PuAV3590XzRj64YA0aAEVVOA9WrhvEhK/Q7R3gk8
-         sVIg==
-X-Gm-Message-State: AOAM531Eq33PfqRDzeOgEQG2h+9aB/YuqFNNyX13/PoqENK5UNm6RQ48
-        tMiNSO6L8gBbZrQXdGxZMYo=
-X-Google-Smtp-Source: ABdhPJwZXIhog4dfoVtf01rQeNtS3EPm83m3tQ88S1ioAOIyLA+qbTylfDrp24rpcDGN50czElcYXQ==
-X-Received: by 2002:a19:c797:: with SMTP id x145mr680536lff.143.1592436014944;
-        Wed, 17 Jun 2020 16:20:14 -0700 (PDT)
+        bh=8a80cd6rsqQPYsCUSUM1tVHpjysV4lBd8Pl7EvdCM6E=;
+        b=MCjHZMwQgF8scFJgpWJL6Ct2LY0ddkOeWpFcMDOI26Vn3RHyl0nU/L77sCx6+H69sE
+         MJGrVTr9vMzeljy9EDaqOuYRCdNnnwi4xc2kG3VoyAZG5xIoGyr7CjB0EEOZf3cGtgJ/
+         Kv+V3+n9za9W2FhA1A/HWEpYUZf0+1YCpC/Cqq30YC/I7u4OZJqDWYbuvVdjFtXUPeLN
+         IZjvVpmJxiyxrjQiZhF5bhvatR1EXptRq9c70kiwVPQCxXe4zFPcBhX40VNcpB7KHA1e
+         UMZtELCkkOBtVjrUviJTnqLCS9O7Q3KyR1moUSRlRMIyrG3RqL5rfiuiMFt88hKKCubP
+         bH5w==
+X-Gm-Message-State: AOAM5329NW3Xy6IDNlayhMVvr0x6enJpZNZ7TtjskU0qjkSwxb2zBxmI
+        n6zVXRZq23UvWxLJwzg9y/o=
+X-Google-Smtp-Source: ABdhPJyQaSu56OgPGPclXqeIRJpQaUDkKkpFcF+C8Dt6uF1baj+c8borYAv8N0iz6g9JAlKh/k/ULw==
+X-Received: by 2002:ac2:560f:: with SMTP id v15mr704327lfd.160.1592436015981;
+        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
 Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id x3sm235100ljc.82.2020.06.17.16.20.13
+        by smtp.gmail.com with ESMTPSA id x3sm235100ljc.82.2020.06.17.16.20.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 16:20:14 -0700 (PDT)
+        Wed, 17 Jun 2020 16:20:15 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
@@ -61,9 +61,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Daniel Stone <daniel@fooishbar.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v11 1/4] drm/panel: Add helper for reading DT rotation
-Date:   Thu, 18 Jun 2020 02:18:39 +0300
-Message-Id: <20200617231842.30671-2-digetx@gmail.com>
+Subject: [PATCH v11 2/4] drm/panel: Read panel orientation for BOE TV101WUM-NL6
+Date:   Thu, 18 Jun 2020 02:18:40 +0300
+Message-Id: <20200617231842.30671-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200617231842.30671-1-digetx@gmail.com>
 References: <20200617231842.30671-1-digetx@gmail.com>
@@ -76,102 +76,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Derek Basehore <dbasehore@chromium.org>
 
-This adds a helper function for reading the rotation (panel
-orientation) from the device tree.
+This reads the DT setting for the panel rotation to set the panel
+orientation in the get_modes callback.
 
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
 Signed-off-by: Derek Basehore <dbasehore@chromium.org>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 ---
- drivers/gpu/drm/drm_panel.c | 43 +++++++++++++++++++++++++++++++++++++
- include/drm/drm_panel.h     |  9 ++++++++
- 2 files changed, 52 insertions(+)
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index 8c7bac85a793..5557c75301f1 100644
---- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -300,6 +300,49 @@ struct drm_panel *of_drm_find_panel(const struct device_node *np)
- 	return ERR_PTR(-EPROBE_DEFER);
+diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+index db5b866357f2..4bd9397972e8 100644
+--- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
++++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+@@ -11,6 +11,7 @@
+ #include <linux/of_device.h>
+ #include <linux/regulator/consumer.h>
+ 
++#include <drm/drm_connector.h>
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_panel.h>
+@@ -43,6 +44,7 @@ struct boe_panel {
+ 
+ 	const struct panel_desc *desc;
+ 
++	enum drm_panel_orientation orientation;
+ 	struct regulator *pp1800;
+ 	struct regulator *avee;
+ 	struct regulator *avdd;
+@@ -740,6 +742,7 @@ static int boe_panel_get_modes(struct drm_panel *panel,
+ 	connector->display_info.width_mm = boe->desc->size.width_mm;
+ 	connector->display_info.height_mm = boe->desc->size.height_mm;
+ 	connector->display_info.bpc = boe->desc->bpc;
++	drm_connector_set_panel_orientation(connector, boe->orientation);
+ 
+ 	return 1;
  }
- EXPORT_SYMBOL(of_drm_find_panel);
-+
-+/**
-+ * of_drm_get_panel_orientation - look up the orientation of the panel through
-+ * the "rotation" binding from a device tree node
-+ * @np: device tree node of the panel
-+ * @orientation: orientation enum to be filled in
-+ *
-+ * Looks up the rotation of a panel in the device tree. The orientation of the
-+ * panel is expressed as a property name "rotation" in the device tree. The
-+ * rotation in the device tree is counter clockwise.
-+ *
-+ * Return: 0 when a valid rotation value (0, 90, 180, or 270) is read or the
-+ * rotation property doesn't exist. -EERROR otherwise.
-+ */
-+int of_drm_get_panel_orientation(const struct device_node *np,
-+				 enum drm_panel_orientation *orientation)
-+{
-+	int rotation, ret;
-+
-+	ret = of_property_read_u32(np, "rotation", &rotation);
-+	if (ret == -EINVAL) {
-+		/* Don't return an error if there's no rotation property. */
-+		*orientation = DRM_MODE_PANEL_ORIENTATION_UNKNOWN;
-+		return 0;
-+	}
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	if (rotation == 0)
-+		*orientation = DRM_MODE_PANEL_ORIENTATION_NORMAL;
-+	else if (rotation == 90)
-+		*orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP;
-+	else if (rotation == 180)
-+		*orientation = DRM_MODE_PANEL_ORIENTATION_BOTTOM_UP;
-+	else if (rotation == 270)
-+		*orientation = DRM_MODE_PANEL_ORIENTATION_LEFT_UP;
-+	else
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(of_drm_get_panel_orientation);
- #endif
+@@ -779,6 +782,9 @@ static int boe_panel_add(struct boe_panel *boe)
  
- #if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
-diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-index 6193cb555acc..781c735f0f9b 100644
---- a/include/drm/drm_panel.h
-+++ b/include/drm/drm_panel.h
-@@ -35,6 +35,8 @@ struct drm_device;
- struct drm_panel;
- struct display_timing;
+ 	drm_panel_init(&boe->base, dev, &boe_panel_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
++	err = of_drm_get_panel_orientation(dev->of_node, &boe->orientation);
++	if (err < 0)
++		return err;
  
-+enum drm_panel_orientation;
-+
- /**
-  * struct drm_panel_funcs - perform operations on a given panel
-  *
-@@ -191,11 +193,18 @@ int drm_panel_get_modes(struct drm_panel *panel, struct drm_connector *connector
- 
- #if defined(CONFIG_OF) && defined(CONFIG_DRM_PANEL)
- struct drm_panel *of_drm_find_panel(const struct device_node *np);
-+int of_drm_get_panel_orientation(const struct device_node *np,
-+				 enum drm_panel_orientation *orientation);
- #else
- static inline struct drm_panel *of_drm_find_panel(const struct device_node *np)
- {
- 	return ERR_PTR(-ENODEV);
- }
-+static inline int of_drm_get_panel_orientation(const struct device_node *np,
-+		enum drm_panel_orientation *orientation)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #if IS_ENABLED(CONFIG_DRM_PANEL) && (IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
+ 	err = drm_panel_of_backlight(&boe->base);
+ 	if (err)
 -- 
 2.26.0
 
