@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378701FC8BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AB31FC8D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgFQIcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgFQIcp (ORCPT
+        id S1726540AbgFQIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:34:41 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:49336 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726271AbgFQIel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:32:45 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A76C061573;
-        Wed, 17 Jun 2020 01:32:45 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id e1so1370488wrt.5;
-        Wed, 17 Jun 2020 01:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mtgh77EZDHTSl2OGlFXF6sIBzn5cvZZO6RG0XKaIYi4=;
-        b=cufRiZXrpvaLZE7sziT1epxNzsHpEMoSogP7HavYf2p16ud6XuPlKAu6v4jeW3OV2m
-         EaGIY0KprGt2BYcceqSTvPd8BlOqWFy9D1tQeOvzqRKPRSJXcXHY0Fpu3U+79lKXqt7s
-         ON+9SAGO1iNvahYc2OTcviHDl8B0ka+mJ+ixwBWOHKn0tYCMjDYsCa3jFg+34Lhnde+4
-         6KeWO2w+5NkkWZ9BQcXYoBNYz338S/LYjoGKvm5CTilkUIa0I9eqhtnX8F/BD69/qYqR
-         sT3si8FILYY4a+mGaEyDiN6Y1baj8BGEifCLMRZghJROMj22PKQnkmIMCX1Vhwsztb6A
-         OwXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mtgh77EZDHTSl2OGlFXF6sIBzn5cvZZO6RG0XKaIYi4=;
-        b=WrSR9+U8XtwEAbWv0VCd1A84qxqRKyyb3GoNYTcfuxQRIjOw5MnOh7D0qI/HURtDzu
-         TdxucPMNO++f0JKgte4+QkKp4Nw53KMP53IrTAYIaPr7nfVn1D0DewsRZJGtYAh6ZeMs
-         vnhATv1J/SrX4ZOwq1+C2UjIlntHxapRKQQ+DoyXt6HpGEkiovZ2C+7bP9mcGGXaLgFq
-         PsiuTwF66hXuPVkC9Xp//v5gptMU9bp8DG9SX9gHVZxGx2ZSYlyw1t1GU89ZqssLq4xM
-         5gRXtRmwPxPY+7LqRVFy1/97ycIoJI2EvZ++qN9oUJ/7BXc1FV1ROMcyEjNIUQ+gaFYL
-         YIgg==
-X-Gm-Message-State: AOAM533Gp2m3jquDS5UsfJrYFiFGJVAlWyYGJLKdg13KNpcFZYaUMyJP
-        49nYKaNGExiZeyXo7vC3igK5GtICFng=
-X-Google-Smtp-Source: ABdhPJxuZ1/18SupCjUYuSc+tfO4uiY+HDt9HkQWHLDdCBZ2aF8/PNzPoOtvSv/Ftj96XiIJC+vABA==
-X-Received: by 2002:adf:e604:: with SMTP id p4mr7069287wrm.212.1592382764007;
-        Wed, 17 Jun 2020 01:32:44 -0700 (PDT)
-Received: from skynet.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
-        by smtp.gmail.com with ESMTPSA id a16sm32596863wrx.8.2020.06.17.01.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 01:32:43 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Florian Fainelli <F.fainelli@gmail.com>
-Subject: [PATCH v6 9/9] mips: bmips: add BCM6318 reset controller definitions
-Date:   Wed, 17 Jun 2020 10:32:31 +0200
-Message-Id: <20200617083231.3699090-10-noltari@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200617083231.3699090-1-noltari@gmail.com>
-References: <20200617083231.3699090-1-noltari@gmail.com>
+        Wed, 17 Jun 2020 04:34:41 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 05H8XKSE019402;
+        Wed, 17 Jun 2020 17:33:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 05H8XKSE019402
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1592382803;
+        bh=jxFO2dBK4jUmn4oHU8teM5VIUfsl2fZ2h2BFztlUs+g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lSfD59NFqJWikQNmKtodYStw8vK91H6BSc70wS+wnUlB1l3QlBziO46MlAxL98fSs
+         8SgLwgbUO04lkUiCi19Pfuw+VtnMGMfbw6FsVydud3S9jE4sWR6sV+99tvHUpJcfXk
+         fBhPeidyCFCp6s5y0osBofVmJJV3rRBjUw8jRIJd6uIck9d2MFT4iyTa/o04bh++pf
+         69bS6ISGI49RpmcIIo8DDogXEn8XWNmMcDHBxSSwvv8UGacHeVwc1D/zfUyNpjoRAi
+         KB6CWwG+PP7oYbAtR4Mt0f6CLZr+5j57yo12xCQg6tGd3V0uzDwtgMrp8E/BjQqbC+
+         EMmY+byyVnKLg==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Rich Felker <dalias@libc.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] char: raw: do not leak CONFIG_MAX_RAW_DEVS to userspace
+Date:   Wed, 17 Jun 2020 17:33:13 +0900
+Message-Id: <20200617083313.183184-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM6318 SoCs have a reset controller for certain components.
+include/uapi/linux/raw.h leaks CONFIG_MAX_RAW_DEVS to userspace.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <F.fainelli@gmail.com>
+Userspace programs cannot use MAX_RAW_MINORS since CONFIG_MAX_RAW_DEVS
+is not available anyway.
+
+Remove the MAX_RAW_MINORS definition from the exported header, and use
+CONFIG_MAX_RAW_DEVS in drivers/char/raw.c
+
+While I was here, I converted printk(KERN_WARNING ...) to pr_warn(...)
+and stretched the warning message.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- v6: fix BCM6318_RST_HOSTMIPS value (12 vs 11).
- v5: no changes.
- v4: no changes.
- v3: add new path with BCM6318 reset controller definitions.
 
- include/dt-bindings/reset/bcm6318-reset.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
+ drivers/char/raw.c         | 8 ++++----
+ include/uapi/linux/raw.h   | 2 --
+ scripts/headers_install.sh | 1 -
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/include/dt-bindings/reset/bcm6318-reset.h b/include/dt-bindings/reset/bcm6318-reset.h
-new file mode 100644
-index 000000000000..f882662505ea
---- /dev/null
-+++ b/include/dt-bindings/reset/bcm6318-reset.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+
-+#ifndef __DT_BINDINGS_RESET_BCM6318_H
-+#define __DT_BINDINGS_RESET_BCM6318_H
-+
-+#define BCM6318_RST_SPI		0
-+#define BCM6318_RST_EPHY	1
-+#define BCM6318_RST_SAR		2
-+#define BCM6318_RST_ENETSW	3
-+#define BCM6318_RST_USBD	4
-+#define BCM6318_RST_USBH	5
-+#define BCM6318_RST_PCIE_CORE	6
-+#define BCM6318_RST_PCIE	7
-+#define BCM6318_RST_PCIE_EXT	8
-+#define BCM6318_RST_PCIE_HARD	9
-+#define BCM6318_RST_ADSL	10
-+#define BCM6318_RST_PHYMIPS	11
-+#define BCM6318_RST_HOSTMIPS	12
-+
-+#endif /* __DT_BINDINGS_RESET_BCM6318_H */
+diff --git a/drivers/char/raw.c b/drivers/char/raw.c
+index 3484e9145aea..380bf518338e 100644
+--- a/drivers/char/raw.c
++++ b/drivers/char/raw.c
+@@ -37,7 +37,7 @@ static struct raw_device_data *raw_devices;
+ static DEFINE_MUTEX(raw_mutex);
+ static const struct file_operations raw_ctl_fops; /* forward declaration */
+ 
+-static int max_raw_minors = MAX_RAW_MINORS;
++static int max_raw_minors = CONFIG_MAX_RAW_DEVS;
+ 
+ module_param(max_raw_minors, int, 0);
+ MODULE_PARM_DESC(max_raw_minors, "Maximum number of raw devices (1-65536)");
+@@ -317,9 +317,9 @@ static int __init raw_init(void)
+ 	int ret;
+ 
+ 	if (max_raw_minors < 1 || max_raw_minors > 65536) {
+-		printk(KERN_WARNING "raw: invalid max_raw_minors (must be"
+-			" between 1 and 65536), using %d\n", MAX_RAW_MINORS);
+-		max_raw_minors = MAX_RAW_MINORS;
++		pr_warn("raw: invalid max_raw_minors (must be between 1 and 65536), using %d\n",
++			CONFIG_MAX_RAW_DEVS);
++		max_raw_minors = CONFIG_MAX_RAW_DEVS;
+ 	}
+ 
+ 	raw_devices = vzalloc(array_size(max_raw_minors,
+diff --git a/include/uapi/linux/raw.h b/include/uapi/linux/raw.h
+index dc96dda479d6..47874919d0b9 100644
+--- a/include/uapi/linux/raw.h
++++ b/include/uapi/linux/raw.h
+@@ -14,6 +14,4 @@ struct raw_config_request
+ 	__u64	block_minor;
+ };
+ 
+-#define MAX_RAW_MINORS CONFIG_MAX_RAW_DEVS
+-
+ #endif /* __LINUX_RAW_H */
+diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+index 955cf3aedf21..84f89ff6efdd 100755
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -90,7 +90,6 @@ include/uapi/linux/elfcore.h:CONFIG_BINFMT_ELF_FDPIC
+ include/uapi/linux/eventpoll.h:CONFIG_PM_SLEEP
+ include/uapi/linux/hw_breakpoint.h:CONFIG_HAVE_MIXED_BREAKPOINTS_REGS
+ include/uapi/linux/pktcdvd.h:CONFIG_CDROM_PKTCDVD_WCACHE
+-include/uapi/linux/raw.h:CONFIG_MAX_RAW_DEVS
+ "
+ 
+ for c in $configs
 -- 
-2.27.0
+2.25.1
 
