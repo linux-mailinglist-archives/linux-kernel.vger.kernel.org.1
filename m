@@ -2,175 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996211FD0BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9254A1FD0C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 17:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgFQPTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 11:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
+        id S1726964AbgFQPT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 11:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726833AbgFQPTF (ORCPT
+        with ESMTP id S1726491AbgFQPT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 11:19:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B49BC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:19:05 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r9so2237316wmh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s8n+t7GKh3Gj29VbKmMJNzCidqU4PlfPQU8WVnQB0IA=;
-        b=I7REmT73IfDFvu63aqYDtJbNMihndgSlsHwxtwEaifjpmkJiPPPYmo/UmhKIreG01j
-         U1MCIyLANCzR3zsOFnAb4VdQiJHfPANnqXofkWP++8FiU/FRzt3hOP23SQkBB4zK8rVR
-         2EE7/0qNK2ZKCpEJ5F6q1Qaar/+q1Hc2wwwy0HBo9uw8F5lqHmvg+tesCc/zmASpcDQr
-         ef3BYwgN3Y6INjYRMHhdnusDXnEX9Xuscrabua6sBF7vlW22VYSKSSoj+06NUp51nl89
-         vfofMnX18zAFF4Uc80NV483Uf8oqUxadFMAzb66FwkvbAt1x34NFsY169zHLILCBMDT4
-         bHBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s8n+t7GKh3Gj29VbKmMJNzCidqU4PlfPQU8WVnQB0IA=;
-        b=O0GgqNCXsaD0s1Nd+xUb+ItJ+ylM2fEsJLlcbl1ZQuw+l9RaZ/mr13rAKB7QhQDerQ
-         kU+XXqtIle8Ez6carlRKLY3Rpkt6OeqvQkQcAf73jdokh5cWV4CsZKCooNdnRwA6AJLK
-         qswXfWtVDI+ObFi0gUEio4uLT4CIabg4VePiRQbbWeESSnIsEkR1ty8M84IbJ/7qSRwB
-         btqCxNcDnyzzgVhYzmM0g7hyazG+ofEvYqPEnmHNUrOfqS1h0uPPrPgrco8mM6HByK0J
-         BVqMfBfv4LrxYz8Lo4eItm2WhjLVuMRVdbr5H/h5wgP5HlHQ0xyG5wgyzSWi5vKBtrFG
-         4SWw==
-X-Gm-Message-State: AOAM531dWbgxnRh2PL7JVhFutLaPViGy56PBYUmmTaVl4Lyh88VvMEzA
-        75PTVRCQzkVfa/8m3CZJ2VGYb37sWc4=
-X-Google-Smtp-Source: ABdhPJwSJHXfP8SKdVG5+kRfmeZPSM3QIlEIPVrIYrhG2skOzNwr3S9gC6WwQGn/4TcLlQE8oJA2MA==
-X-Received: by 2002:a1c:4189:: with SMTP id o131mr8622246wma.183.1592407143164;
-        Wed, 17 Jun 2020 08:19:03 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id 89sm7171745wrg.56.2020.06.17.08.19.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Jun 2020 08:19:02 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] dt-bindings: nvmem: Add properties needed for
- blowing fuses
-To:     Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     dhavalp@codeaurora.org, mturney@codeaurora.org,
-        rnayak@codeaurora.org, Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, saiprakash.ranjan@codeaurora.org,
-        sparate@codeaurora.org, mkurumel@codeaurora.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200617145116.247432-1-dianders@chromium.org>
- <20200617074930.v3.2.I3b5c3bfaf5fb2d28d63f1b5ee92980900e3f8251@changeid>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <254998b9-c45e-bd6b-bc9a-b5934c0fea8e@linaro.org>
-Date:   Wed, 17 Jun 2020 16:19:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 17 Jun 2020 11:19:59 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499FAC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9xgWNrz/EjgA9082VEmXpJMV85vsTTWYygZBrxi4Mgg=; b=eOiyRfktcbd7m8heLEaqnQxZWe
+        ZvGIuBrWN6bL9I+RWtsFHpmsMTH0r/L8xuLwvz/pstcX/6q+WwZOLJiNU2QmBTbP8bO0tvExGMvH/
+        8zwpfwve/mBAmpMmvinNHLW33N7Tc9iCOt8XWeNVv8Jr18wCSJMRrCi3lfWuQMdGXvfHoThZPAo9f
+        +1HTAiYV4wT/v9gwqanDuH35MFPNPAeVpEhMjqpGkBCKtYyyuA1sA2Wdqo0cnbVIbh/2efmdWGSim
+        sRiIb7C+4DoDSxbkj0e+yi9rqMqgPxJKe3a3gY/EMINztbFcOnvhshvy7pw3zNBufLKljSXzaEfuH
+        b/jyx2YQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlZqd-0007cZ-05; Wed, 17 Jun 2020 15:19:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 42D57301DFC;
+        Wed, 17 Jun 2020 17:19:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2DDD220C227A8; Wed, 17 Jun 2020 17:19:28 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 17:19:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, ndesaulniers@google.com
+Subject: Re: [PATCH -tip v3 1/2] kcov: Make runtime functions
+ noinstr-compatible
+Message-ID: <20200617151928.GA577403@hirez.programming.kicks-ass.net>
+References: <CACT4Y+aKVKEp1yoBYSH0ebJxeqKj8TPR9MVtHC1Mh=jgX0ZvLw@mail.gmail.com>
+ <20200612114900.GA187027@google.com>
+ <CACT4Y+bBtCbEk2tg60gn5bgfBjARQFBgtqkQg8VnLLg5JwyL5g@mail.gmail.com>
+ <CANpmjNM+Tcn40MsfFKvKxNTtev-TXDsosN+z9ATL8hVJdK1yug@mail.gmail.com>
+ <20200615142949.GT2531@hirez.programming.kicks-ass.net>
+ <20200615145336.GA220132@google.com>
+ <20200615150327.GW2531@hirez.programming.kicks-ass.net>
+ <20200615152056.GF2554@hirez.programming.kicks-ass.net>
+ <20200617143208.GA56208@elver.google.com>
+ <20200617144949.GA576905@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200617074930.v3.2.I3b5c3bfaf5fb2d28d63f1b5ee92980900e3f8251@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617144949.GA576905@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 17, 2020 at 04:49:49PM +0200, Peter Zijlstra wrote:
+
+> I had the below, except of course that yields another objtool
+> complaint, and I was still looking at that.
+
+This cures it.
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 5fbb90a80d239..fe0d6f1b28d7c 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2746,7 +2746,7 @@ int check(const char *_objname, bool orc)
+ 
+ 	INIT_LIST_HEAD(&file.insn_list);
+ 	hash_init(file.insn_hash);
+-	file.c_file = find_section_by_name(file.elf, ".comment");
++	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
+ 	file.ignore_unreachables = no_unreachable;
+ 	file.hints = false;
 
 
-On 17/06/2020 15:51, Douglas Anderson wrote:
-> From: Ravi Kumar Bokka <rbokka@codeaurora.org>
-> 
-> On some systems it's possible to actually blow the fuses in the qfprom
-> from the kernel.  Add properties to support that.
-> 
-> NOTE: Whether this is possible depends on the BIOS settings and
-> whether the kernel has permissions here, so not all boards will be
-> able to blow fuses in the kernel.
-> 
-> Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v3:
-> - Add an extra reg range (at 0x6000 offset for SoCs checked)
-> - Define two options for reg: 1 item or 4 items.
-> - No reg-names.
-> - Add "clocks" and "clock-names" to list of properties.
-> - Clock is now "sec", not "secclk".
-> - Add "vcc-supply" to list of properties.
-> - Fixed up example.
-> 
->   .../bindings/nvmem/qcom,qfprom.yaml           | 45 ++++++++++++++++++-
->   1 file changed, 43 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> index 5efa5e7c4d81..b195212c6193 100644
-> --- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> @@ -17,8 +17,27 @@ properties:
->       const: qcom,qfprom
->   
->     reg:
-> -    items:
-> -      - description: The corrected region.
-> +    # If the QFPROM is read-only OS image then only the corrected region
-> +    # needs to be provided.  If the QFPROM is writable then all 4 regions
-> +    # must be provided.
-> +    oneOf:
-> +      - items:
-> +          - description: The corrected region.
-> +      - items:
-> +          - description: The corrected region.
-> +          - description: The raw region.
-> +          - description: The config region.
-> +          - description: The security control region.
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index af75109485c26..a7d1570905727 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -690,13 +690,13 @@ struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
+>  		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+>  
+>  	/* Copy the IRET target to the temporary storage. */
+> -	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
+> +	__memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
+>  
+>  	/* Copy the remainder of the stack from the current stack. */
+> -	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
+> +	__memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
+>  
+>  	/* Update the entry stack */
+> -	memcpy(new_stack, &tmp, sizeof(tmp));
+> +	__memcpy(new_stack, &tmp, sizeof(tmp));
+>  
+>  	BUG_ON(!user_mode(&new_stack->regs));
+>  	return new_stack;
+> diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
+> index 56b243b14c3a2..bbcc05bcefadb 100644
+> --- a/arch/x86/lib/memcpy_64.S
+> +++ b/arch/x86/lib/memcpy_64.S
+> @@ -8,6 +8,8 @@
+>  #include <asm/alternative-asm.h>
+>  #include <asm/export.h>
+>  
+> +.pushsection .noinstr.text, "ax"
 > +
-> +  # Clock must be provided if QFPROM is writable from the OS image.
-> +  clocks:
-> +    maxItems: 1
-
-
-> +  clock-names:
-> +    const: sec
-
-Do we need clock-names for just one clock here?
-
+>  /*
+>   * We build a jump to memcpy_orig by default which gets NOPped out on
+>   * the majority of x86 CPUs which set REP_GOOD. In addition, CPUs which
+> @@ -184,6 +186,8 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
+>  	retq
+>  SYM_FUNC_END(memcpy_orig)
+>  
+> +.popsection
 > +
-> +  # Supply reference must be provided if QFPROM is writable from the OS image.
-> +  vcc-supply:
-> +    description: Our power supply.
->   
->     # Needed if any child nodes are present.
->     "#address-cells":
-> @@ -31,6 +50,28 @@ required:
->      - reg
->   
->   examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
-> +
-> +    efuse@784000 {
-> +      compatible = "qcom,qfprom";
-> +      reg = <0 0x00784000 0 0x8ff>,
-> +            <0 0x00780000 0 0x7a0>,
-> +            <0 0x00782000 0 0x100>,
-> +            <0 0x00786000 0 0x1fff>;
-> +      clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-> +      clock-names = "sec";
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      vcc-supply = <&vreg_l11a_1p8>;
-> +
-> +      hstx-trim-primary@25b {
-> +        reg = <0x25b 0x1>;
-> +        bits = <1 3>;
-> +      };
-> +    };
-> +
->     - |
->       efuse@784000 {
->         compatible = "qcom,qfprom";
-> 
+>  #ifndef CONFIG_UML
+>  
+>  MCSAFE_TEST_CTL
