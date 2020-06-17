@@ -2,64 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6981FCF0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032E41FCF36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgFQOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:04:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:52724 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725894AbgFQOEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:04:47 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5B33BB4F90B46736D7A0;
-        Wed, 17 Jun 2020 22:04:44 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 17 Jun 2020 22:04:37 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
-Date:   Wed, 17 Jun 2020 22:08:03 +0800
-Message-ID: <20200617140803.181333-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726990AbgFQOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:14:04 -0400
+Received: from mailout2n.rrzn.uni-hannover.de ([130.75.2.113]:39520 "EHLO
+        mailout2n.rrzn.uni-hannover.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726495AbgFQOOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:14:03 -0400
+X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 10:14:02 EDT
+Received: from lab-pc01.sra.uni-hannover.de (lab.sra.uni-hannover.de [130.75.33.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailout2n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id D0C281F477;
+        Wed, 17 Jun 2020 16:08:26 +0200 (CEST)
+From:   Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, mingo@redhat.com,
+        linux-trace-devel@vger.kernel.org,
+        Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>,
+        linux-kernel@i4.cs.fau.de,
+        Maximilian Werner <maximilian.werner96@gmail.com>
+Subject: [PATCH] tracing/boottime: Fix kprobe multiple events
+Date:   Wed, 17 Jun 2020 16:08:17 +0200
+Message-Id: <20200617140817.17161-1-sascha.ortmann@stud.uni-hannover.de>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The callers pass the pointer '&req' or 'private_data' to
-srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
-'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
-sdev and req are always valid. So we remove unnecessary WARN_ON.
+Fix boottime kprobe events to add multiple events even if one fails
+and report probe generation failures.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+As an example, when we try to set multiprobe kprobe events in
+bootconfig like this:
+
+ftrace.event.kprobes.vfsevents {
+	probes = "vfs_read $arg1 $arg2,,
+                 !error! not reported;?", // leads to error
+		 "vfs_write $arg1 $arg2"
+}
+
+this will not work like expected. After commit
+da0f1f4167e3af69e1d8b32d6d65195ddd2bfb64 ("tracing/boottime:
+Fix kprobe event API usage"), the function
+trace_boot_add_kprobe_event will not produce any error message,
+aborting the function and stopping subsequent probes from getting
+installed when adding a probe fails at kprobe_event_gen_cmd_start.
+Furthermore, probes continue when kprobe_event_gen_cmd_end fails
+(and kprobe_event_gen_cmd_start did not fail). In this case the
+function even returns successfully when the last call to
+kprobe_event_gen_cmd_end is successful.
+
+The behaviour of reporting and aborting after failures is not
+consistent.
+
+The function trace_boot_add_kprobe_event now continues even when
+one of the multiple events fails. Each failure is now reported
+individually. Since the function can only return one result to the
+caller, the function returns now the last failure (or none, if
+nothing fails).
+
+Cc: linux-kernel@i4.cs.fau.de
+Signed-off-by: Maximilian Werner <maximilian.werner96@gmail.com>
+Signed-off-by: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ---
- 1 file changed, 3 deletions(-)
+ kernel/trace/trace_boot.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index ef7fcd3..0fa65c6 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2156,9 +2156,6 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 9de29bb45a27..dbb50184e060 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -95,18 +95,24 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
+ 	struct xbc_node *anode;
+ 	char buf[MAX_BUF_LEN];
+ 	const char *val;
++	int error = 0;
+ 	int ret = 0;
  
- 	WARN_ON_ONCE(irqs_disabled());
+ 	xbc_node_for_each_array_value(node, "probes", anode, val) {
+ 		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
  
--	if (WARN_ON(!sdev || !req))
--		return -EINVAL;
--
- 	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+-		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
+-		if (ret)
+-			break;
++		error = kprobe_event_gen_cmd_start(&cmd, event, val);
++		if (error) {
++			pr_err("Failed to generate probe: %s\n", buf);
++			ret = error;
++			continue;
++		}
  
- 	pr_info("Received SRP_LOGIN_REQ with i_port_id %pI6, t_port_id %pI6 and it_iu_len %d on port %d (guid=%pI6); pkey %#04x\n",
+-		ret = kprobe_event_gen_cmd_end(&cmd);
+-		if (ret)
++		error = kprobe_event_gen_cmd_end(&cmd);
++		if (error) {
+ 			pr_err("Failed to add probe: %s\n", buf);
++			ret = error;
++		}
+ 	}
+ 
+ 	return ret;
 -- 
-1.8.3.1
+2.17.1
 
