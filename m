@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0606E1FC975
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C8E1FC966
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgFQJGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:06:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6273 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726599AbgFQJGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:06:18 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0DB84318A4F0EC286102;
-        Wed, 17 Jun 2020 17:06:15 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 17 Jun 2020 17:06:07 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>
-CC:     <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linuxarm@huawei.com>, <irogers@google.com>, <ak@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 1/2] perf pmu: List kernel supplied event aliases for arm64
-Date:   Wed, 17 Jun 2020 17:01:53 +0800
-Message-ID: <1592384514-119954-2-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
-References: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
+        id S1726594AbgFQJCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725901AbgFQJCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:02:07 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B997D207DD;
+        Wed, 17 Jun 2020 09:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592384526;
+        bh=MPSZ6N2p6Aa3SX2HTxDBxuLOHNXxyEpcY3Iy+6QVNpU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rAuIDXQlFGWl7gFPDU4znFh2dqMD47uIJuoVgXvi/Ciw4s+FpXtlOwBLQtTegCF3p
+         FMQsr/jkK0VSSblZBGkNsb+4Nr+sgjSv5OkzLSmO8gKHwXNlTk+ew7XO6oCEZ/H1XB
+         fr4qBuyDsDntIRVjBeJwNKZdIyywfzw2zBkVyEd0=
+Received: by mail-oi1-f178.google.com with SMTP id t25so1125660oij.7;
+        Wed, 17 Jun 2020 02:02:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533gmDBRy6FOHUN3pNLiRGMg56KFWaudQKcTfR0b/UDmzmdJVtFG
+        AqXB89AtGsUCjgW4MM6d6FYGxmBxj6M1ROgA/CQ=
+X-Google-Smtp-Source: ABdhPJxR1Ijvnfs7Ry+C5b6BcLJX5IK9RCHmTER5sipSJ1w2SVITb2URmm4SUNWUPPkSJOf/LX54yTF3sjDqFDs0z84=
+X-Received: by 2002:aca:b241:: with SMTP id b62mr6301244oif.47.1592384526109;
+ Wed, 17 Jun 2020 02:02:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+References: <20200615202408.2242614-1-pjones@redhat.com> <CAMj1kXGLwyk9ibSDXBfeu06HV4x4VtbWbKv20KNzkXpbTxBSXg@mail.gmail.com>
+In-Reply-To: <CAMj1kXGLwyk9ibSDXBfeu06HV4x4VtbWbKv20KNzkXpbTxBSXg@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 17 Jun 2020 11:01:54 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFPCeYmnkksL=j2qWfY5q9QRcUhDf1qMK_OgCD9=XDK=A@mail.gmail.com>
+Message-ID: <CAMj1kXFPCeYmnkksL=j2qWfY5q9QRcUhDf1qMK_OgCD9=XDK=A@mail.gmail.com>
+Subject: Re: [PATCH] Make it possible to disable efivar_ssdt entirely
+To:     Peter Jones <pjones@redhat.com>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit dc098b35b56f ("perf list: List kernel supplied event aliases"),
-the aliases for events are supplied in addition to CPU event in perf list.
+On Tue, 16 Jun 2020 at 00:47, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 15 Jun 2020 at 22:24, Peter Jones <pjones@redhat.com> wrote:
+> >
+> > In most cases, such as CONFIG_ACPI_CUSTOM_DSDT and
+> > CONFIG_ACPI_TABLE_UPGRADE, boot-time modifications to firmware tables
+> > are tied to specific Kconfig options.  Currently this is not the case
+> > for modifying the ACPI SSDT via the efivar_ssdt kernel command line
+> > option and associated EFI variable.
+> >
+> > This patch adds CONFIG_EFI_CUSTOM_SSDT_OVERLAYS, which defaults
+> > disabled, in order to allow enabling or disabling that feature during
+> > the build.
+> >
+> > Signed-off-by: Peter Jones <pjones@redhat.com>
+>
+> Thanks Peter.
+>
+> > ---
+> >  drivers/firmware/efi/efi.c   |  2 +-
+> >  drivers/firmware/efi/Kconfig | 11 +++++++++++
+> >  2 files changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> > index 48d0188936c..4b12a598ccf 100644
+> > --- a/drivers/firmware/efi/efi.c
+> > +++ b/drivers/firmware/efi/efi.c
+> > @@ -192,7 +192,7 @@ static void generic_ops_unregister(void)
+> >         efivars_unregister(&generic_efivars);
+> >  }
+> >
+> > -#if IS_ENABLED(CONFIG_ACPI)
+> > +#if IS_ENABLED(CONFIG_EFI_CUSTOM_SSDT_OVERLAYS)
+> >  #define EFIVAR_SSDT_NAME_MAX   16
+> >  static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
+> >  static int __init efivar_ssdt_setup(char *str)
+> > diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
+> > index 6b38f9e5d20..fe433f76b03 100644
+> > --- a/drivers/firmware/efi/Kconfig
+> > +++ b/drivers/firmware/efi/Kconfig
+> > @@ -278,3 +278,14 @@ config EFI_EARLYCON
+> >         depends on SERIAL_EARLYCON && !ARM && !IA64
+> >         select FONT_SUPPORT
+> >         select ARCH_USE_MEMREMAP_PROT
+> > +
+> > +config EFI_CUSTOM_SSDT_OVERLAYS
+> > +       bool "Load custom ACPI SSDT overlay from an EFI variable"
+> > +       depends on EFI_VARS
+>
+> Shouldn't this depend on ACPI too?
+>
 
-This relies on the name of the core PMU being "cpu", which is not the case
-for arm64, so arm64 has always missed this. Use generic is_pmu_core()
-helper which takes account of arm64 to make this feature work for arm64
-(and possibly other archs).
+I'll pick this up as a fix (with the ACPI dependency added)
 
-Sample, before:
-  armv8_pmuv3_0/br_mis_pred/          [Kernel PMU event]
-after:
-  br_mis_pred OR armv8_pmuv3_0/br_mis_pred/          [Kernel PMU event]
-
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- tools/perf/util/pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 93fe72a9dc0b..a375364537cd 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1475,7 +1475,7 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
- 		list_for_each_entry(alias, &pmu->aliases, list) {
- 			char *name = alias->desc ? alias->name :
- 				format_alias(buf, sizeof(buf), pmu, alias);
--			bool is_cpu = !strcmp(pmu->name, "cpu");
-+			bool is_cpu = is_pmu_core(pmu->name);
- 
- 			if (alias->deprecated && !deprecated)
- 				continue;
--- 
-2.26.2
-
+> > +       default ACPI_TABLE_UPGRADE
+> > +       help
+> > +         Allow loading of an ACPI SSDT overlay from an EFI variable specified
+> > +         by a kernel command line option.
+> > +
+> > +         See Documentation/admin-guide/acpi/ssdt-overlays.rst for more
+> > +         information.
+> > --
+> > 2.26.2
+> >
