@@ -2,230 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109281FD4E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08021FD4CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgFQSwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
+        id S1727849AbgFQSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:47:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727039AbgFQSwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:52:19 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        id S1727015AbgFQSr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 14:47:57 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70AEE217D8;
-        Wed, 17 Jun 2020 18:52:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB3DC206DB;
+        Wed, 17 Jun 2020 18:47:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592419938;
-        bh=Ycs20U18UeBv/A9n4DRip4ZO+FTx+G0oEWD/A+0ZHiE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wxaNY2ti/AePGO0n8yEl9tG+fbWibf7lnASl3bclbRCNnoH4puCjavAcrb6sZaBT2
-         tl+/tXW/y1mPauMOdq1Lgq5dBN4oPWRFnk+Ced1bG3hQI+tpWxTr+k7N22p2H9fadf
-         F9x6xycnXmRDXtliIJSGBKoXY1mwVvuiColnzm+c=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jldAW-00C8At-2O; Wed, 17 Jun 2020 20:52:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Brad Love <brad@nextdimension.cc>, Sean Young <sean@mess.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [RFC 4/4] media: dvb_frontend: disable zigzag mode if not possible
-Date:   Wed, 17 Jun 2020 20:52:14 +0200
-Message-Id: <974065921c41fa0c97700196de1d921c95fafaaf.1592419750.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1592419750.git.mchehab+huawei@kernel.org>
-References: <cover.1592419750.git.mchehab+huawei@kernel.org>
+        s=default; t=1592419677;
+        bh=d7ylVfQ7C8f2oiLX16FaR4UvGdVUfh/XyCv910N2yMQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Oe3lqD5tc7ICJ0ZaE02Nynb15FVm8s2kKNBfgWHYI4crwrnNU5QtTFNXiQtTRro1L
+         48d81RfPM9qt5MLMGAkP+DgIWYaEI6CendR2lnGRBP+b071ivNt8pZszGY+J4Lxg4R
+         C4YNp14OmGBjB+7yNFngyvJxeZD3+k5LmUwrVFbo=
+Date:   Wed, 17 Jun 2020 13:53:17 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] enetc: Use struct_size() helper in kzalloc()
+Message-ID: <20200617185317.GA623@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the zigzag to work, the core needs to have a frequency
-shift. Without that, the zigzag code will just try re-tuning
-several times at the very same frequency, with seems wrong.
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-So, add a warning when this happens, and fall back to the
-single-shot mode.
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/media/dvb-core/dvb_frontend.c | 141 +++++++++++++++-----------
- 1 file changed, 79 insertions(+), 62 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/dvb-core/dvb_frontend.c b/drivers/media/dvb-core/dvb_frontend.c
-index ed85dc2a9183..cb577924121e 100644
---- a/drivers/media/dvb-core/dvb_frontend.c
-+++ b/drivers/media/dvb-core/dvb_frontend.c
-@@ -642,6 +642,9 @@ static void dvb_frontend_wakeup(struct dvb_frontend *fe)
- 	wake_up_interruptible(&fepriv->wait_queue);
- }
- 
-+static u32 dvb_frontend_get_stepsize(struct dvb_frontend *fe);
-+static void prepare_tuning_algo_parameters(struct dvb_frontend *fe);
-+
- static int dvb_frontend_thread(void *data)
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 298c55786fd9..61dbf19075fb 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1687,7 +1687,7 @@ int enetc_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
+ int enetc_alloc_msix(struct enetc_ndev_priv *priv)
  {
- 	struct dvb_frontend *fe = data;
-@@ -696,78 +699,92 @@ static int dvb_frontend_thread(void *data)
- 			fepriv->reinitialise = 0;
- 		}
+ 	struct pci_dev *pdev = priv->si->pdev;
+-	int size, v_tx_rings;
++	int v_tx_rings;
+ 	int i, n, err, nvec;
  
--		/* do an iteration of the tuning loop */
--		if (fe->ops.get_frontend_algo) {
-+		if (fe->ops.get_frontend_algo)
- 			algo = fe->ops.get_frontend_algo(fe);
--			switch (algo) {
--			case DVBFE_ALGO_HW:
--				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_HW\n", __func__);
-+		else
-+			algo = DVBFE_ALGO_SW;
+ 	nvec = ENETC_BDR_INT_BASE_IDX + priv->bdr_int_num;
+@@ -1702,15 +1702,13 @@ int enetc_alloc_msix(struct enetc_ndev_priv *priv)
  
--				if (fepriv->state & FESTATE_RETUNE) {
--					dev_dbg(fe->dvb->device, "%s: Retune requested, FESTATE_RETUNE\n", __func__);
--					re_tune = true;
--					fepriv->state = FESTATE_TUNED;
--				} else {
--					re_tune = false;
--				}
-+		/* do an iteration of the tuning loop */
-+		switch (algo) {
-+		case DVBFE_ALGO_SW:
-+			prepare_tuning_algo_parameters(fe);
+ 	/* # of tx rings per int vector */
+ 	v_tx_rings = priv->num_tx_rings / priv->bdr_int_num;
+-	size = sizeof(struct enetc_int_vector) +
+-	       sizeof(struct enetc_bdr) * v_tx_rings;
  
--				if (fe->ops.tune)
--					fe->ops.tune(fe, re_tune, fepriv->tune_mode_flags, &fepriv->delay, &s);
--
--				if (s != fepriv->status && !(fepriv->tune_mode_flags & FE_TUNE_MODE_ONESHOT)) {
--					dev_dbg(fe->dvb->device, "%s: state changed, adding current state\n", __func__);
--					dvb_frontend_add_event(fe, s);
--					fepriv->status = s;
--				}
--				break;
--			case DVBFE_ALGO_SW:
-+			if (fepriv->max_drift) {
- 				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_SW\n", __func__);
- 				dvb_frontend_swzigzag(fe);
- 				break;
--			case DVBFE_ALGO_CUSTOM:
--				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_CUSTOM, state=%d\n", __func__, fepriv->state);
--				if (fepriv->state & FESTATE_RETUNE) {
--					dev_dbg(fe->dvb->device, "%s: Retune requested, FESTAT_RETUNE\n", __func__);
--					fepriv->state = FESTATE_TUNED;
-+			}
-+
-+			/*
-+			 * See prepare_tuning_algo_parameters():
-+			 *   - Some standards may not use zigzag.
-+			 */
-+			if (!dvb_frontend_get_stepsize(fe))
-+				dev_warn(fe->dvb->device,
-+					"disabling sigzag, as frontend doesn't set frequency step size\n");
-+
-+			/* fall through */
-+		case DVBFE_ALGO_HW:
-+			dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_HW\n", __func__);
-+
-+			if (fepriv->state & FESTATE_RETUNE) {
-+				dev_dbg(fe->dvb->device, "%s: Retune requested, FESTATE_RETUNE\n", __func__);
-+				re_tune = true;
-+				fepriv->state = FESTATE_TUNED;
-+			} else {
-+				re_tune = false;
-+			}
-+
-+			if (fe->ops.tune)
-+				fe->ops.tune(fe, re_tune, fepriv->tune_mode_flags, &fepriv->delay, &s);
-+
-+			if (s != fepriv->status && !(fepriv->tune_mode_flags & FE_TUNE_MODE_ONESHOT)) {
-+				dev_dbg(fe->dvb->device, "%s: state changed, adding current state\n", __func__);
-+				dvb_frontend_add_event(fe, s);
-+				fepriv->status = s;
-+			}
-+			break;
-+		case DVBFE_ALGO_CUSTOM:
-+			dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_CUSTOM, state=%d\n", __func__, fepriv->state);
-+			if (fepriv->state & FESTATE_RETUNE) {
-+				dev_dbg(fe->dvb->device, "%s: Retune requested, FESTAT_RETUNE\n", __func__);
-+				fepriv->state = FESTATE_TUNED;
-+			}
-+			/* Case where we are going to search for a carrier
-+			    * User asked us to retune again for some reason, possibly
-+			    * requesting a search with a new set of parameters
-+			    */
-+			if (fepriv->algo_status & DVBFE_ALGO_SEARCH_AGAIN) {
-+				if (fe->ops.search) {
-+					fepriv->algo_status = fe->ops.search(fe);
-+					/* We did do a search as was requested, the flags are
-+					    * now unset as well and has the flags wrt to search.
-+					    */
-+				} else {
-+					fepriv->algo_status &= ~DVBFE_ALGO_SEARCH_AGAIN;
- 				}
--				/* Case where we are going to search for a carrier
--				 * User asked us to retune again for some reason, possibly
--				 * requesting a search with a new set of parameters
--				 */
--				if (fepriv->algo_status & DVBFE_ALGO_SEARCH_AGAIN) {
--					if (fe->ops.search) {
--						fepriv->algo_status = fe->ops.search(fe);
--						/* We did do a search as was requested, the flags are
--						 * now unset as well and has the flags wrt to search.
--						 */
--					} else {
--						fepriv->algo_status &= ~DVBFE_ALGO_SEARCH_AGAIN;
--					}
--				}
--				/* Track the carrier if the search was successful */
--				if (fepriv->algo_status != DVBFE_ALGO_SEARCH_SUCCESS) {
-+			}
-+			/* Track the carrier if the search was successful */
-+			if (fepriv->algo_status != DVBFE_ALGO_SEARCH_SUCCESS) {
-+				fepriv->algo_status |= DVBFE_ALGO_SEARCH_AGAIN;
-+				fepriv->delay = HZ / 2;
-+			}
-+			dtv_property_legacy_params_sync(fe, c, &fepriv->parameters_out);
-+			fe->ops.read_status(fe, &s);
-+			if (s != fepriv->status) {
-+				dvb_frontend_add_event(fe, s); /* update event list */
-+				fepriv->status = s;
-+				if (!(s & FE_HAS_LOCK)) {
-+					fepriv->delay = HZ / 10;
- 					fepriv->algo_status |= DVBFE_ALGO_SEARCH_AGAIN;
--					fepriv->delay = HZ / 2;
-+				} else {
-+					fepriv->delay = 60 * HZ;
- 				}
--				dtv_property_legacy_params_sync(fe, c, &fepriv->parameters_out);
--				fe->ops.read_status(fe, &s);
--				if (s != fepriv->status) {
--					dvb_frontend_add_event(fe, s); /* update event list */
--					fepriv->status = s;
--					if (!(s & FE_HAS_LOCK)) {
--						fepriv->delay = HZ / 10;
--						fepriv->algo_status |= DVBFE_ALGO_SEARCH_AGAIN;
--					} else {
--						fepriv->delay = 60 * HZ;
--					}
--				}
--				break;
--			default:
--				dev_dbg(fe->dvb->device, "%s: UNDEFINED ALGO !\n", __func__);
--				break;
- 			}
--		} else {
--			dvb_frontend_swzigzag(fe);
-+			break;
-+		default:
-+			dev_dbg(fe->dvb->device, "%s: UNDEFINED ALGO !\n", __func__);
-+			break;
- 		}
- 	}
+ 	for (i = 0; i < priv->bdr_int_num; i++) {
+ 		struct enetc_int_vector *v;
+ 		struct enetc_bdr *bdr;
+ 		int j;
  
+-		v = kzalloc(size, GFP_KERNEL);
++		v = kzalloc(struct_size(v, tx_ring, v_tx_rings), GFP_KERNEL);
+ 		if (!v) {
+ 			err = -ENOMEM;
+ 			goto fail;
 -- 
-2.26.2
+2.27.0
 
