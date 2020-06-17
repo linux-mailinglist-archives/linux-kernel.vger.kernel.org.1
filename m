@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950221FC843
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D91C1FC851
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgFQIFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:05:11 -0400
-Received: from mga04.intel.com ([192.55.52.120]:45286 "EHLO mga04.intel.com"
+        id S1726341AbgFQIJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:09:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49113 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgFQIFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:05:10 -0400
-IronPort-SDR: sA9pOT66jZvl989JwxbotRyfrbHLsI6Jbp0dM2XFqqKz94+7qLNOLwLYb83cS7VfRth3XhLIRt
- 9Jp1XHwIjlnA==
+        id S1726955AbgFQIJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 04:09:10 -0400
+IronPort-SDR: 2mcdRRpQDfSN7ra1Ux3CbzjKm8a7+2xpY46ymiGObq03JGKQQU5jk0wZTBDXYWchTKnFoj9lkA
+ iNYtDVFA9Y2g==
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 00:16:57 -0700
-IronPort-SDR: RJ9ecVvNpKfRIq43AB/nBKiP+7S2R/3jp1i4pGPEzhL4e//V/zx9f5pbkEHCt0YkeZOInGm7g1
- UrNz7ha/4Plg==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 00:39:02 -0700
+IronPort-SDR: oTTNnz+iyyAr7untanaxbJYjtXDrctmywl06NKFqo+VJz1aJIBqEmQA7/RAIlZ0SXZJKQ6f3Eo
+ M+ZMybmQ50Jg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,521,1583222400"; 
-   d="gz'50?scan'50,208,50";a="263235982"
+   d="gz'50?scan'50,208,50";a="309394053"
 Received: from lkp-server02.sh.intel.com (HELO 19cb4f8aa5d7) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Jun 2020 00:16:55 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 17 Jun 2020 00:39:00 -0700
 Received: from kbuild by 19cb4f8aa5d7 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jlSJb-00003V-0M; Wed, 17 Jun 2020 07:16:55 +0000
-Date:   Wed, 17 Jun 2020 15:16:01 +0800
+        id 1jlSex-00003w-6z; Wed, 17 Jun 2020 07:38:59 +0000
+Date:   Wed, 17 Jun 2020 15:38:26 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Nick Hu <nickhu@andestech.com>
 Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
         Palmer Dabbelt <palmerdabbelt@google.com>
 Subject: drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c:587:2:
  warning: 'strncpy' specified bound 8 equals destination size
-Message-ID: <202006171553.b3hpGxGf%lkp@intel.com>
+Message-ID: <202006171514.bMzv97nJ%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="cNdxnHkX5QqsyA0e"
+Content-Type: multipart/mixed; boundary="zhXaljGHf11kAtnf"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,7 +46,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---cNdxnHkX5QqsyA0e
+--zhXaljGHf11kAtnf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -74,6 +74,7 @@ drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h:786:1: warning: alignment
 786 | } __packed;
 | ^
 drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c: In function 'dma_attach':
+<<                  from drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c:26:
 >> drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c:587:2: warning: 'strncpy' specified bound 8 equals destination size [-Wstringop-truncation]
 587 |  strncpy(di->name, name, MAXNAMEL);
 |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,12 +259,12 @@ e041f65d5f0001 drivers/net/wireless/brcm80211/brcmsmac/dma.c Seth Forshee     20
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---cNdxnHkX5QqsyA0e
+--zhXaljGHf11kAtnf
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICA266V4AAy5jb25maWcAjFxdc9s21r7vr9CkN7uz065jO9p03/EFCIISKpJgCFCyfMNx
+H4sICEW56V4AAy5jb25maWcAjFxdc9s21r7vr9CkN7uz065jO9p03/EFCIISKpJgCFCyfMNx
 XCX11LEzttJt//17DviFA4ByMp0mfM4BCBzgfALUjz/8uGDfjk9fbo/3d7cPD38vPh8eD8+3
 x8Nvi0/3D4f/W6RqUSqzEKk0PwNzfv/47a9/P9+/3P25ePfzu5/Pfnq++89ic3h+PDws+NPj
 p/vP36D5/dPjDz/+AP/9COCXr9DT838XttXy8qcH7OOnz3d3i3+sOP/n4pefL34+A16uykyu
@@ -1408,4 +1409,4 @@ hb0ZDxcJWcUQ2SVmznBUG/pqJyQcX+YrG0Frmk2mlTS7jraKMJJjJK7O+rvmabTdP5Ynd/Nb
 XNGMkY9AMDWwNO5172sPJ9pQiVfjIskCC8LXkyCA2H1tX3w0CeOBMLJLAWlwFAD70HdyhXfe
 jHL7I32g04E38Olg5m+TWuL6f0C52Flt9gMA
 
---cNdxnHkX5QqsyA0e--
+--zhXaljGHf11kAtnf--
