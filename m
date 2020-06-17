@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A329A1FD8F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F761FD8FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgFQWg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:36:57 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50199 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726758AbgFQWgz (ORCPT
+        id S1726912AbgFQWif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbgFQWif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:36:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592433414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PqSlpxZ3YN58ZRJ/BXA2pFGBO/xB6CvZLuRPE0ix/fQ=;
-        b=VK86r/2sMvOxyXXnWT7Nd7cBr5q1FYTPMQ8/ojjkj5qF1enO0Z7NOzp9QycqXO6kgVLI0a
-        A3NYc6k+yPs9DgYYXO0B53pjmETs2YkEM4Gm0qKzK40Uq2zoryixvWsZGmLzNTbnUS7qwg
-        +dkPJZRw7eA6mB8SGGaGbBHyMuBIjrE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-XNWeQA5YO767oZg56rfV3A-1; Wed, 17 Jun 2020 18:36:51 -0400
-X-MC-Unique: XNWeQA5YO767oZg56rfV3A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21CC91800D42;
-        Wed, 17 Jun 2020 22:36:50 +0000 (UTC)
-Received: from x2.localnet (ovpn-114-52.phx2.redhat.com [10.3.114.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D25BD19931;
-        Wed, 17 Jun 2020 22:36:43 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, nayna@linux.ibm.com,
-        paul@paul-moore.com, rgb@redhat.com,
-        linux-integrity@vger.kernel.org, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] integrity: Add errno field in audit message
-Date:   Wed, 17 Jun 2020 18:36:43 -0400
-Message-ID: <3369897.H5lpGJDj0b@x2>
-Organization: Red Hat
-In-Reply-To: <20200617204436.2226-2-nramas@linux.microsoft.com>
-References: <20200617204436.2226-1-nramas@linux.microsoft.com> <20200617204436.2226-2-nramas@linux.microsoft.com>
+        Wed, 17 Jun 2020 18:38:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE63EC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:38:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t13so1612360wrs.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ksdKCiNSqKpBQCCzIoa9Zm0BTzeRhTDbhfLKEP0BAUY=;
+        b=rc66h/cGNlbBqPbQxp9i6cF+4/Ag1/j7xhrEBf9UM5Uco7GaSHRy6TkMrSiINNA40I
+         bb/W7p2GfUJYXD42R/ZF2VeOobkbPtiCUaOy0Yu0o6OapME73woykpdDhhO7odQal0Vq
+         OvnuDOAatD/mqFlkg2J3MObU9z735xLgks7lCsKz363q3PcgxEwFep1wh99W8VJIAKqd
+         /rFKtczPbVNmQdk5SmXAYHKtj4u7UoBbFELnn8KE7aRLjMYdLyBOOT1nxhLCUMuHCYBq
+         Oior5QcQ4xSsIw3CNxxagfMrKLRarORsSSMwuxwgkGRcqa5q2oJIlhTyLbK/2WQ4uPiy
+         THxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ksdKCiNSqKpBQCCzIoa9Zm0BTzeRhTDbhfLKEP0BAUY=;
+        b=MjI6sPtQRM3IVgiueL9/rTS3f4abs2MFP8Oar893SYdzjl/QIwoma0BvLHnN4PoigW
+         6rOTEZEUI+3gWdMnvedl1PvVl0FAtkMlVIU011Q3OTJFyq4XN3QQ3ALzGqWAhl5pszUs
+         kHFc6W5BxTDh77iV2Cf5yhxpgee2lWmAH2lgWI0rzsiJQDgL9aia/ZsM51PRmMUpBw4M
+         o1/63chPxs3dZu+eMLV0WKqxMpCkbuJbj/4n5O0ywi0w9hyt0O753cmPJvcgvP9ByLl2
+         c7ssuy4wI/tQqPV1+stJ+3epnA85Dil/sHkiD7FeahqG26EqEHjVCRjEnrnj5ZSV8b9W
+         oEtQ==
+X-Gm-Message-State: AOAM530wKSGT91UXudvTYmQYcAkAA6688GR/LcDi9UYsAwYGceA6fjp6
+        M6Ll8x3X6J4xYkSdNHvd3sjW5IV679sb9EJ3Yoo=
+X-Google-Smtp-Source: ABdhPJxXQuJmDB2lz1co6X9vPzIrNZb2X9lTCK8j7W/JHzNnQw5OtXC3Ne4QjAPfCqf5+J06ve8QBUg0bY9JPPOnJAo=
+X-Received: by 2002:adf:c6c5:: with SMTP id c5mr1336295wrh.13.1592433512542;
+ Wed, 17 Jun 2020 15:38:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by 2002:a5d:6407:0:0:0:0:0 with HTTP; Wed, 17 Jun 2020 15:38:32
+ -0700 (PDT)
+Reply-To: ericbell4109@gmail.com
+From:   "Mr Eric Bello." <miss.karenjackson11@gmail.com>
+Date:   Wed, 17 Jun 2020 23:38:32 +0100
+Message-ID: <CACAQ9J01r0wSiSYnNick6bUUEbUXBAfjX-Wu8tkJR=SDnwQWQQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, June 17, 2020 4:44:36 PM EDT Lakshmi Ramasubramanian wrote:
-> Error code is not included in the audit messages logged by
-> the integrity subsystem. Add "errno" field in the audit messages
-> logged by the integrity subsystem and set the value to the error code
-> passed to integrity_audit_msg() in the "result" parameter.
-> 
-> Sample audit messages:
-> 
-> [    6.284329] audit: type=1804 audit(1591756723.627:2): pid=1 uid=0
-> auid=4294967295 ses=4294967295 subj=kernel op=add_boot_aggregate
-> cause=alloc_entry comm="swapper/0" name="boot_aggregate" res=0 errno=-12
-> 
-> [    8.085456] audit: type=1802 audit(1592005947.297:9): pid=1 uid=0
-> auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0
-> op=policy_update cause=completed comm="systemd" res=1 errno=0
-> 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Steve Grubb <sgrubb@redhat.com>
+Dear Friend,
 
-Acked-by: Steve Grubb <sgrubb@redhat.com>
+I am Mr Eric Bello, Working with a reputable bank here in Burkina Faso
+as the manager in audit department. During our last banking audits we
+discovered an abandoned account belongs to one of our deceased
+customer, late Mr. Hamid Amine Razzaq, a billionaire businessman.
 
-> ---
->  security/integrity/integrity_audit.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/security/integrity/integrity_audit.c
-> b/security/integrity/integrity_audit.c index 5109173839cc..a265024f82f3
-> 100644
-> --- a/security/integrity/integrity_audit.c
-> +++ b/security/integrity/integrity_audit.c
-> @@ -53,6 +53,6 @@ void integrity_audit_msg(int audit_msgno, struct inode
-> *inode, audit_log_untrustedstring(ab, inode->i_sb->s_id);
->  		audit_log_format(ab, " ino=%lu", inode->i_ino);
->  	}
-> -	audit_log_format(ab, " res=%d", !result);
-> +	audit_log_format(ab, " res=%d errno=%d", !result, result);
->  	audit_log_end(ab);
->  }
+Meanwhile, before i contacted you i have done personal investigation
+in locating any of his relatives who knows about the account, but i
+came out unsuccessful. I am writing to request your assistance in
+transferring the sum of 15.500.000.00 (Fifteen million Five Hundred
+Thousand Dollars) into your account.
 
+I decided to contact you to act as his foreign business partner so
+that my bank will accord you the recognition and have the fund
+transfer into your account. More details information will be forwarded
+to you.
 
+However, i will give you full details on how the business will be
+executed and also note that you will have 40% of the above mentioned
+if you agree to handle this business with me while 50% will be for me
+and 10% for any expenses that may arise on the process .reply here:(
+ericbell4109@gmail.com )
 
-
+I am expecting to read from you soon.
+Best Regards
+Mr Eric Bello
