@@ -2,149 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B281FD397
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ECB1FD3A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgFQRgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:36:23 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:30648 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726511AbgFQRgX (ORCPT
+        id S1726861AbgFQRnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgFQRm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:36:23 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 17 Jun 2020 10:36:18 -0700
-Received: from localhost (unknown [10.200.193.92])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id A5EDE4006D;
-        Wed, 17 Jun 2020 10:36:20 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 10:36:20 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Subject: Re: [RFC][PATCH v4 18/32] objtool: mcount: Move nop_mcount()
-Message-ID: <20200617173620.GA89648@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-References: <cover.1591125127.git.mhelsley@vmware.com>
- <7109ceb239a88c2901eeb7f52c29f69cdb413cd3.1591125127.git.mhelsley@vmware.com>
- <20200612132656.GQ2531@hirez.programming.kicks-ass.net>
- <20200612160534.GD2554@hirez.programming.kicks-ass.net>
+        Wed, 17 Jun 2020 13:42:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAFDC06174E;
+        Wed, 17 Jun 2020 10:42:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CkyHJY+MLCHaDHdWKXst4+zbNAtcnZ7dwIww1fY+0cU=; b=KH9dEePlMHpTfpCpY97B0WgqzR
+        apq9Cwcf0HNGJgYj8xSCmuLWcRoCSO1GjCmpI7XH8KV1PJs+h9dHna54hr4ieZxHtcdOiO/BxiRnk
+        iYYte5LX7UYv4axoVDkT6leuq/+JjUrfGAdw5iI9WiLpGIlgblUJYoJoocdEpmABdv8viFl9rlnzh
+        RpdqTU2HxXWp6B4OILcwr1xt8hHLibbc68W7OYO8eRxoUPYXgvJmaDWL93CNinvE+nAOwj09QuL6s
+        f5p9UXq7aWLvGkgCTpRvuxwiHVrQiWHF/4WscBAK4USfRg4IRXu8oIpGFEEC3GadavRrw5TDs6OVo
+        LwH8EIyQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlc5J-0008QP-68; Wed, 17 Jun 2020 17:42:49 +0000
+Date:   Wed, 17 Jun 2020 10:42:49 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kanchan Joshi <joshi.k@samsung.com>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, selvakuma.s1@samsung.com,
+        nj.shetty@samsung.com, javier.gonz@samsung.com
+Subject: Re: [PATCH 0/3] zone-append support in aio and io-uring
+Message-ID: <20200617174249.GL8681@bombadil.infradead.org>
+References: <CGME20200617172653epcas5p488de50090415eb802e62acc0e23d8812@epcas5p4.samsung.com>
+ <1592414619-5646-1-git-send-email-joshi.k@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200612160534.GD2554@hirez.programming.kicks-ass.net>
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+In-Reply-To: <1592414619-5646-1-git-send-email-joshi.k@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 06:05:34PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 12, 2020 at 03:26:57PM +0200, Peter Zijlstra wrote:
-> > On Tue, Jun 02, 2020 at 12:50:11PM -0700, Matt Helsley wrote:
-> > > +static int nop_mcount(struct section * const rels,
-> > > +		      const char *const txtname)
-> > > +{
-> > > +	struct reloc *reloc;
-> > > +	struct section *txts = find_section_by_index(lf, rels->sh.sh_info);
-> > > +	unsigned mcountsym = 0;
-> > > +	int once = 0;
-> > > +
-> > > +	list_for_each_entry(reloc, &rels->reloc_list, list) {
-> > > +		int ret = -1;
-> > > +
-> > > +		if (!mcountsym)
-> > > +			mcountsym = get_mcountsym(reloc);
-> > > +
-> > > +		if (mcountsym == GELF_R_INFO(reloc->sym->idx, reloc->type) && !is_fake_mcount(reloc)) {
-> > 
-> > This makes no sense to me; why not have mcountsym be a 'struct symbol
-> > *' and have get_mcountsym() return one of those.
-> > 
-> > 	if (reloc->sym == mcountsym && ... )
-> > 
-> > is much nicer, no?
-
-(this is already incorporated in my unposted revisions but...)
-
+On Wed, Jun 17, 2020 at 10:53:36PM +0530, Kanchan Joshi wrote:
+> This patchset enables issuing zone-append using aio and io-uring direct-io interface.
 > 
-> On top of that, I suppose we can do something like the below.
-> 
-> Then you can simply write:
-> 
-> 	if (reloc->sym->class == SYM_MCOUNT && ..)
+> For aio, this introduces opcode IOCB_CMD_ZONE_APPEND. Application uses start LBA
+> of the zone to issue append. On completion 'res2' field is used to return
+> zone-relative offset.
 
-This looks like a good way to move towards a "single pass" through the ELF data
-for mcount.
-
-What order do you want to see this patch go in? Before this series (i.e. perhaps
-just a kcov SYM_ class to start)? Early or late in this series? After?
-
-Right now I'm thinking of putting this on the end of my series because
-I'm focusing on converting recordmcount in the series and this isn't
-strictly necessary but is definitely nicer.
-
-> 
-> ---
-> 
-> diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
-> index 45452facff3b..94e4b8fcf9c1 100644
-> --- a/kernel/locking/Makefile
-> +++ b/kernel/locking/Makefile
-> @@ -1,7 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  # Any varying coverage in these files is non-deterministic
->  # and is generally not a function of system call inputs.
-> -KCOV_INSTRUMENT		:= n
-> +# KCOV_INSTRUMENT		:= n
->  
->  obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
->  
-> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-> index 432417a83902..133c0c285be6 100644
-> --- a/tools/objtool/elf.c
-> +++ b/tools/objtool/elf.c
-> @@ -341,6 +341,24 @@ static int read_sections(struct elf *elf)
->  	return 0;
->  }
->  
-> +static bool is_mcount_symbol(const char *name)
-> +{
-> +	if (name[0] == '.')
-> +		name++;
-> +
-> +	if (name[0] == '_')
-> +		name++;
-> +
-> +	return !strcmp(name, "mcount", 6) ||
-
-Looks like you intended this to be a strncmp() but I don't see a reason to
-use strncmp(). Am I missing something?
-
-> +	       !strcmp(name, "_fentry__") ||
-> +	       !strcmp(name, "_gnu_mcount_nc");
-> +}
-
-This mashes all of the arch-specific mcount name checks together. I
-don't see a problem with that because I doubt there will be a collision
-with other functions. Just to be careful I looked through the Clang and
-GCC sources, though I only dug through the history of Clang's output --
-GCC's history with respect to mcount symbol names across architectures is
-much harder to trace so I only looked at the current sources.
-
-<snip> (the rest looks good)
-
-Cheers,
-    -Matt Helsley
+Maybe it's obvious to everyone working with zoned drives on a daily
+basis, but please explain in the commit message why you need to return
+the zone-relative offset to the application.
