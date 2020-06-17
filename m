@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5311FC2EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A0A1FC2F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgFQApD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 20:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgFQApD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 20:45:03 -0400
-Subject: Re: [GIT PULL] afs: Fixes for bugs found by xfstests
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592354702;
-        bh=5e0a5iVK0TowUVssPommYkc0TiKB/g2Al8oPNa9mwdY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=xmD6N+dN46UNILbjwMP2cHybDYG10PBuE8BXl69PdQU9/4tRZf/8DHgLvBqIhLynh
-         6udFqP56Zm80iivQhz7UWd+QI+bJ8MQKJUcHibFZztlT7pEgn4fvHudl135suydsMn
-         F5mD95K9IByHUZEQO4JDQP2yOV9AYp4uMooZ/154=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <930958.1592344306@warthog.procyon.org.uk>
-References: <930958.1592344306@warthog.procyon.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <930958.1592344306@warthog.procyon.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
- tags/afs-fixes-20200616
-X-PR-Tracked-Commit-Id: b6489a49f7b71964e37978d6f89bbdbdb263f6f5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 26c20ffcb5c86eb6a052e0d528396de5600c9710
-Message-Id: <159235470279.15875.12694874433794392475.pr-tracker-bot@kernel.org>
-Date:   Wed, 17 Jun 2020 00:45:02 +0000
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
-        marc.dionne@auristor.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1726687AbgFQAp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 20:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgFQApY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 20:45:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B23EC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 17:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3MBm7WMB0H7CjQ2iwLE0so+VVrKy1QQzygXiwshRKms=; b=H4VsMaXhl94mrmF1Esg6PoO8tD
+        CYFRqh7FzyMwKICyQruEqENp0EKzIzhYc0aGi0Y/gao6TL3sx4Wh0dmlDfjr/P+lCyd13S7x+1UDk
+        RYyEsRa7k4QhsPrs4Zj8VSBUJFuSqeVSyKE7wTgggJN/TWAAtZWG6BgGqJRKjwLgs9iB4oio2WD/U
+        gY9bcwg3QFj4UStMGNrMxmnMFo4jC/UOVlSBrNC42FEp5GIbAhm8V4sZYfdFhvOcZDhQGBZLU92xP
+        eQ9PY7MOdfcqGE7IA99wnoKTPL5kYVtCYxNol5D/gvZ7KvAxrlRmMwzGXPS8FwDuCYlsbtnbYUgba
+        QLZw6dUQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlMCf-0003h4-PY; Wed, 17 Jun 2020 00:45:21 +0000
+Date:   Tue, 16 Jun 2020 17:45:21 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     William Kucharski <william.kucharski@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm: ksize() should silently accept a NULL pointer
+Message-ID: <20200617004521.GE8681@bombadil.infradead.org>
+References: <20200616225409.4670-1-william.kucharski@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616225409.4670-1-william.kucharski@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 16 Jun 2020 22:51:46 +0100:
+On Tue, Jun 16, 2020 at 04:54:09PM -0600, William Kucharski wrote:
+> Other mm routines such as kfree() and kzfree() silently do the right
+> thing if passed a NULL pointer, so ksize() should do the same.
+> 
+> Signed-off-by: William Kucharski <william.kucharski@oracle.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/afs-fixes-20200616
+Nice simplification.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/26c20ffcb5c86eb6a052e0d528396de5600c9710
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
