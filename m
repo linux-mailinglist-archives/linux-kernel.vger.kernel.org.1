@@ -2,55 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D0D1FCA80
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622D91FCA8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgFQKHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:07:30 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43876 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgFQKH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:07:29 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jlUyb-0006xc-4j; Wed, 17 Jun 2020 12:07:25 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     linux-rockchip@lists.infradead.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
-        David Airlie <airlied@linux.ie>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] drm/rockchip: Add per-pixel alpha support for the PX30 VOP
-Date:   Wed, 17 Jun 2020 12:07:23 +0200
-Message-Id: <159238836640.1484955.4774492722376755146.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200416140526.262533-1-paul.kocialkowski@bootlin.com>
-References: <20200416140526.262533-1-paul.kocialkowski@bootlin.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726540AbgFQKNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 06:13:07 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:19964 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgFQKNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 06:13:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200617101302epoutp03d880921ae435d60757ce8d0eb463a57e~ZTSki7j292624126241epoutp03v
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 10:13:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200617101302epoutp03d880921ae435d60757ce8d0eb463a57e~ZTSki7j292624126241epoutp03v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592388782;
+        bh=V7Pmg8P23tSg6zHCQM++ZngYdQm25qEhVAfLSM6EzEg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=RDT6t/Gvuw/HuH+5T6OQH1Ame1TlSBkHdguRV2p5DeRVIWNOIIjJDhS+XYgNRF1kT
+         LXETGrheI+oRPRUVC68DDF0RL9rALgVLfJEXsiNB8sN6Dxppp2PjEx9jWEhns6U+P7
+         N2ZijzUoZLn1lv+Oox5F7I5U+JFUwBVJcnhQxgfE=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p3.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200617101301epcas1p387e3954fd36343176ec3e70dd70a8d45~ZTSkHiDTE1159011590epcas1p3_;
+        Wed, 17 Jun 2020 10:13:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [RFC PATCH v2 2/5] scsi: ufs: Add UFS-feature layer
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB46402D067BE2BFE003170FB8FC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592388781837.JavaMail.epsvc@epcpadp2>
+Date:   Wed, 17 Jun 2020 19:09:56 +0900
+X-CMS-MailID: 20200617100956epcms2p85d3c46ecb34bebe8c7d6c1c2b3e05589
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <SN6PR04MB46402D067BE2BFE003170FB8FC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p8>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 16:05:26 +0200, Paul Kocialkowski wrote:
-> Compared to its predecessors, the PX30 VOP has a different register layout
-> for enabling per-pixel alpha. Instead of src_alpha_ctl and dst_alpha_ctl,
-> there is a single alpha control register. This register takes some fields
-> from src_alpha_ctl, but with a different layout.
-> 
-> Add support for the required fields to the PX30 VOP window descriptions,
-> which makes per-pixel-alpha formats behave correctly.
+> > This patch is adding UFS feature layer to UFS core driver.
+> >=20
+> > UFS Driver data structure (struct ufs_hba)
+> >         =E2=94=82
+> > =E2=94=8C--------------=E2=94=90
+> > =E2=94=82 UFS feature  =E2=94=82 <-- HPB module
+> > =E2=94=82    layer     =E2=94=82 <-- other extended feature module
+> > =E2=94=94--------------=E2=94=98
+> > Each extended UFS-Feature module has a bus of ufs-ext feature type.
+> > The UFS feature layer manages common APIs used by each extended feature
+> > module. The APIs are set of UFS Query requests and UFS Vendor commands
+> > related to each extended feature module.
+> >=20
+> > Other extended features can also be implemented using the proposed APIs=
+.
+> > For example, in Write Booster, "prep_fn" can be used to guarantee the
+> > lifetime of UFS by updating the amount of write IO.
+> > And reset/reset_host/suspend/resume can be used to manage the kernel ta=
+sk
+> > for checking lifetime of UFS.
+> >=20
+> > The following 6 callback functions have been added to "ufshcd.c".
+> > prep_fn: called after construct upiu structure
+> > reset: called after proving hba
+> > reset_host: called before ufshcd_host_reset_and_restore
+> > suspend: called before ufshcd_suspend
+> > resume: called after ufshcd_resume
+> > rsp_upiu: called in ufshcd_transfer_rsp_status with SAM_STAT_GOOD state
+> >=20
+> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > ---
+> >  drivers/scsi/ufs/Makefile     |   2 +-
+> >  drivers/scsi/ufs/ufsfeature.c | 148 ++++++++++++++++++++++++++++++++++
+> >  drivers/scsi/ufs/ufsfeature.h |  69 ++++++++++++++++
+> >  drivers/scsi/ufs/ufshcd.c     |  17 ++++
+> >  drivers/scsi/ufs/ufshcd.h     |   3 +
+> >  5 files changed, 238 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/scsi/ufs/ufsfeature.c
+> >  create mode 100644 drivers/scsi/ufs/ufsfeature.h
+> >=20
+> > diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
+> > index 94c6c5d7334b..fe3a92b06c87 100644
+> > --- a/drivers/scsi/ufs/Makefile
+> > +++ b/drivers/scsi/ufs/Makefile
+> > @@ -5,7 +5,7 @@ obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) +=3D tc-dwc-
+> > g210-pltfrm.o ufshcd-dwc.o tc-d
+> >  obj-$(CONFIG_SCSI_UFS_CDNS_PLATFORM) +=3D cdns-pltfrm.o
+> >  obj-$(CONFIG_SCSI_UFS_QCOM) +=3D ufs-qcom.o
+> >  obj-$(CONFIG_SCSI_UFSHCD) +=3D ufshcd-core.o
+> > -ufshcd-core-y                          +=3D ufshcd.o ufs-sysfs.o
+> > +ufshcd-core-y                          +=3D ufshcd.o ufs-sysfs.o ufsfe=
+ature.o
+> How about making it
+> >  ufshcd-core-$(CONFIG_UFS_FEATURES)     +=3D ufsfeature.o
+> So that you won't check none-hpb driver on every response etc.
 
-Applied, thanks!
+It's not a big problem because it only needs a simple checking.
+In addition, I think that it is not necessary to separate them because the =
+UFS feature is enabled in most of the user cases.
 
-[1/1] drm/rockchip: Add per-pixel alpha support for the PX30 VOP
-      commit: 2aae8ed1f390a42ec752e4403ffca877fb3260e1
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+Thanks,
+Daejun
