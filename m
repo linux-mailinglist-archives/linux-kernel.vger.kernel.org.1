@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC9E1FD218
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D750D1FD206
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgFQQ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
+        id S1727107AbgFQQ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727051AbgFQQ0Z (ORCPT
+        with ESMTP id S1727052AbgFQQ00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:25 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB192C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id d4so2110576otk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:26 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9927C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:25 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 97so2103423otg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aGiIl0rQxYfmn8bMryy/aSMpkb7Wg+3sE7ap1XGmfzA=;
-        b=KMkVrdLzteWT7WIakPBGjF9XrXlIdbE+kSJlSNLdMsbGTsZfRBfd6+UkjcNNWqvIig
-         k09v8Al8X7XsPiWVBLyKVV5C8xVQhbqVhnMJDROcTFNxXYDnrPKaAHWbbwWhlC29IQoq
-         96o1zL5iI1Q3xhw2+ns7KyZqaf4vQqCDfjabTDzvGXdgXpE7k5b+6BDzIi+ETmAn0pIw
-         71qWhMy9Hl20DjN4qOzRqLgPhk1K4F7p3E7u7mJp+BzQIZ1Wd+2dFeGLvLwM++qbK2XJ
-         7kt+MQUaOPK1F7qB79qPitKQHyW3Tg7Zz80gidAKAHkw3xIwuRuqxOafLjXgyOhE54o7
-         4+uQ==
+        bh=3qCE4bmakEgzVeDumh3DEKOn8ICvfB2l2ErcWMgDYXM=;
+        b=HHFPT+gAUyYDcwZuvzJoTG4O5ndBukGxX3dxAwQDL+L2Hm1EEltMd/NYHv/U1Xersi
+         LOu43r6B9x+p7eOe0uf8kZpC5n67Lw2ApWna7rDlGc9o7wLRKxKIvwgud3D6NUO8RrlN
+         1UUNoj8ZP7RYcmGOU1gILdKHdkh0UiioSrUpJXr5WXFYrcyZzDmuU2W9VAw8IxEepf35
+         xPWedXtOvgbkwrVv8FsdMy2iNpbl/2L5kaEd2+5pdVN+221E2gmnjV65T2EXaM7WNdCF
+         U9Y0TrIMiwaOuUoa0btlTGbPchgEvl1yhcuQe0UGGbLaoEth8KcxT8X+yGfgSu2yB4pZ
+         O+kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aGiIl0rQxYfmn8bMryy/aSMpkb7Wg+3sE7ap1XGmfzA=;
-        b=NHHMzr0c3HJGOcwpRWYDYU57Nmg+42TOFqTd4xkEDdOjTftR7FtyEXNJuWwqdTdhVi
-         MQBgk3E/GG2qyVCK7uShQsHb4B6e4R6JOXAnKRysXTN05+jubMh+bXS8ttF7Mzg2OfVC
-         P/Pw5a/bcHok4DGeFv8RaKHOWXnPIlQQJRpQXzifg7B5xgY4lcPknb+LXuKg8I6X3Bpa
-         dHIfD1krpsXBTZStuPHwsCucY5BHpF1OfKCFfCE5gPb9ZGYvpjbOpTCm8FJS3goyk8HZ
-         gP7sD57RMRtD4kMj/j46CA2AiUrkM7APRXwfiI2NoE2UpVbe2+6Ni7IRo/Ncy4hToMlI
-         MOAA==
-X-Gm-Message-State: AOAM530+ntM8Dz7qLKmkczBS3Be3T/T8edU2e1sNyMi3ANArYeYOHvTr
-        uHrPKjJ5gEbCGN2jhpmjU2Q=
-X-Google-Smtp-Source: ABdhPJydTHrB/kgKnrJwTBPuS57S71B7VH9fTRn48kaFFZ2JadOYpWPU5kek0LDGzDM66wfBy0gwqQ==
-X-Received: by 2002:a9d:3b86:: with SMTP id k6mr7205902otc.106.1592411184039;
-        Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
+        bh=3qCE4bmakEgzVeDumh3DEKOn8ICvfB2l2ErcWMgDYXM=;
+        b=OJCX/TFLrAtudzwJOVMOijC4rrBgI9Vl05y0xXMTYBnlHOxq9+9SRvquTE0UG9UBSB
+         tXrilW0KP47Fej1NEsIeJN8yMVACyvj9GDvUuyHI2tXiLnnFU6yi36nm/Bfb4Yosabhd
+         sotnwT31MukC9DeF/x90VcJpAwj3aXpBNdSHN/9kpB9PurGPPl4x06z96g8ItlLsLjbU
+         m43GJgAnBZNNzAzrCurB+dgUfQP4wMJhNUIfVGhHuxJbDgKk3RYEEclmpTq6424NfzUH
+         vzIFyP0OLFbgw9u0O8YL7fVhN0LQwOULXFLrknBk5d3wUU9UIVudI5eK15FLT1IZYy9Q
+         nZLQ==
+X-Gm-Message-State: AOAM532VkmpD9/nIpjkx5XWwqjOfx3XkladAi3NMoZWkt2Gs8gSs3Mlb
+        15BUen2EmYoN0dwkJRr6rio=
+X-Google-Smtp-Source: ABdhPJxBGi5/+UTI7WCbRBdFi7Hep6nNVwtoSHPYMnL7ikg+1tA2cEUwOudTqjOeMd7i5qjnXhzn4Q==
+X-Received: by 2002:a05:6830:1df6:: with SMTP id b22mr7478054otj.98.1592411185225;
+        Wed, 17 Jun 2020 09:26:25 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.22
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:23 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:24 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 14/21] dyndbg: accept query terms like file=bar module=foo
-Date:   Wed, 17 Jun 2020 10:25:28 -0600
-Message-Id: <20200617162536.611386-16-jim.cromie@gmail.com>
+Subject: [PATCH v3 14/21] dyndbg: accept query terms like module:foo and file=bar
+Date:   Wed, 17 Jun 2020 10:25:29 -0600
+Message-Id: <20200617162536.611386-17-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -69,8 +69,8 @@ Current code expects "keyword" "arg" as 2 space separated words.
 Change to also accept "keyword=arg" form as well, and drop !(nwords%2)
 requirement.
 
-Then in rest of function, use new keyword, arg variables instead of
-word[i], word[i+1]
+Then in rest of function, use new keyword,arg variables instead of
+word[i],word[i+1]
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
