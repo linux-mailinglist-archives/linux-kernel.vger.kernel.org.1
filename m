@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378461FCC07
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9AB1FCC3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgFQLQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgFQLQi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:16:38 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EE2C061573;
-        Wed, 17 Jun 2020 04:16:37 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r7so1928379wro.1;
-        Wed, 17 Jun 2020 04:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NwwANDgxX4dH8O6rPRqOhoTERCt3DfmFlNR5UMYf758=;
-        b=BL1hO3Op+QBp8lH71zepc4iX03Z4R7n2mMn8zb5G7QIhV26mJblM+IUm67N01CqEmP
-         CvejAxdKOh3qk6kWgZERySMMqPk0njDkzwa1RRW8ReS39a6tFlYUAfcebKjGBvMkxkWF
-         5GyqEAKxV0UAahM8Fnfpu6mg8hn5yseiH0i1+v1+A1ca7R1UcbWlsqF59bnqnCl49PmV
-         fTr/WPn7Dbf/od2RgCEjFcYQpqLHq1YXKR6IhcSJ+A7PFvR/tDUyt2r69AlqVb19hIfl
-         bOqsrAAJ2FRKeorjbqy5nYsxHC4meOj1/9b5TPL6YJBRi9pYM1tOAqfAWgcTaWeiL/dA
-         VaIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NwwANDgxX4dH8O6rPRqOhoTERCt3DfmFlNR5UMYf758=;
-        b=k2elOc85ftJYGSkkGwGdKMG53xILLT4qtOiLcM2DfKEb24BAXBVrdN76qgnPTtAOFM
-         45g/OuO/JzlQQZoZeS1zapBWDnpLLKINqV2Lt1uum3aUURQeURO2p9V5e1/ldn7ilsGL
-         NczaHLG5WY8GP0/x5Aa3uLXBY5Vy5O/aUgvQf43/1Bku2Cjyrrhjdx62PgikvBl6NoqT
-         xn8hmAoUIGICeyVKUu81B35hEVZzJFvS6h810n0hkFh6OBvHt/Y4Zus7a5plo1tmYGnM
-         N3qiRClHuBKeHI3J8y7Azm1Kh9hDf55bZaB4aT3VogBiedvegaQ+P/oNY3AzEAYFu3ko
-         t3ow==
-X-Gm-Message-State: AOAM533msg4uA3tOzQF5HZOBy58AjnsenXm3aIZTGc2HiuvGUJ0SqOBi
-        UUELXrFuvYGI3NDREQpLMDk=
-X-Google-Smtp-Source: ABdhPJwqUA3U4GFIJDkU3eE+1XiMKRoFQ26XkN59MR/FARFOznjy9KoXpCB75Rh2GfTcaObpKKD39Q==
-X-Received: by 2002:adf:aa94:: with SMTP id h20mr7462127wrc.327.1592392596473;
-        Wed, 17 Jun 2020 04:16:36 -0700 (PDT)
-Received: from macbook-pro-alvaro-eth.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
-        by smtp.gmail.com with ESMTPSA id d28sm4242126wrc.50.2020.06.17.04.16.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Jun 2020 04:16:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <2cc00ff1-f411-1c2d-d2ce-4cc0bfc2ccb5@gmail.com>
-Date:   Wed, 17 Jun 2020 13:16:34 +0200
-Cc:     simon@fire.lp0.eu, Jonas Gorski <jonas.gorski@gmail.com>,
-        kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
-        krzk@kernel.org, gregkh@linuxfoundation.org, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F5FC8442-319A-48A7-BEEA-92C0EADE6BDA@gmail.com>
-References: <20200616083408.3426435-1-noltari@gmail.com>
- <20200616083408.3426435-2-noltari@gmail.com>
- <2cc00ff1-f411-1c2d-d2ce-4cc0bfc2ccb5@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1726629AbgFQL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:27:03 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4022 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbgFQL1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:27:02 -0400
+IronPort-SDR: l7jq627Ux9Yag1bT0UcwQRam8WGYqUOt9HDkQyN9pN6poDmZmL+jO+4ZEerlQvh9R+yUQu90rh
+ f8haxB1HyXWA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 04:27:01 -0700
+IronPort-SDR: BkgVvAArN+IaKNT1afXL7/zlb6HR0/Lb6xP/PQ7EfcA+OXVcDfzLjKLL0D5VLc6ybSumlsDK5d
+ EG9NiQ63CN4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,522,1583222400"; 
+   d="scan'208";a="263296609"
+Received: from mylly.fi.intel.com (HELO [10.237.72.153]) ([10.237.72.153])
+  by fmsmga008.fm.intel.com with ESMTP; 17 Jun 2020 04:26:58 -0700
+Subject: Re: [PATCH v2] HID: i2c-hid: Use block reads when possible to save
+ power
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org
+References: <c4373272-e656-773c-dfd2-0efc4c53c92d@linux.intel.com>
+ <20200616154951.3050-1-sultan@kerneltoast.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <37ceaf7a-3421-e305-4355-a6b40ae54843@linux.intel.com>
+Date:   Wed, 17 Jun 2020 14:17:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200616154951.3050-1-sultan@kerneltoast.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On 6/16/20 6:49 PM, Sultan Alsawaf wrote:
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
+> 
+> We have no way of knowing how large an incoming payload is going to be,
+> so the only strategy available up until now has been to always retrieve
+> the maximum possible report length over i2c, which can be quite
+> inefficient. For devices that send reports in block read format, the i2c
+> controller driver can read the payload length on the fly and terminate
+> the i2c transaction early, resulting in considerable power savings.
+> 
+> On a Dell Precision 15 5540 with an i9-9880H, resting my finger on the
+> touchpad causes psys power readings to go up by about 4W and hover there
+> until I remove my finger. With this patch, my psys readings go from 4.7W
+> down to 3.1W, yielding about 1.6W in savings. This is because my
+> touchpad's max report length is 60 bytes, but all of the regular reports
+> it sends for touch events are only 32 bytes, so the i2c transfer is
+> roughly halved for the common case.
+> 
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+> Jarkko, could you try this?
+>   drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 294c84e136d7..739dccfc57e1 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -472,11 +472,14 @@ static void i2c_hid_get_input(struct i2c_hid *ihid)
+>   	int ret;
+>   	u32 ret_size;
+>   	int size = le16_to_cpu(ihid->hdesc.wMaxInputLength);
+> +	u16 flags;
+>   
+>   	if (size > ihid->bufsize)
+>   		size = ihid->bufsize;
+>   
+> -	ret = i2c_master_recv(ihid->client, ihid->inbuf, size);
+> +	/* Try to do a block read if the size fits in one byte */
+> +	flags = size > 255 ? I2C_M_RD : I2C_M_RD | I2C_M_RECV_LEN;
+> +	ret = i2c_transfer_buffer_flags(ihid->client, ihid->inbuf, size, flags);
+>   	if (ret != size) {
+>   		if (ret < 0)
+>   			return;
 
-> El 16 jun 2020, a las 19:17, Florian Fainelli <f.fainelli@gmail.com> =
-escribi=C3=B3:
->=20
->=20
->=20
-> On 6/16/2020 1:34 AM, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
->> Document BCM63xx USBH PHY bindings.
->>=20
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> ---
->> .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 72 =
-+++++++++++++++++++
->> 1 file changed, 72 insertions(+)
->> create mode 100644 =
-Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
->>=20
->> diff --git =
-a/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml =
-b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
->> new file mode 100644
->> index 000000000000..3e7c97799b91
->> --- /dev/null
->> +++ =
-b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
->> @@ -0,0 +1,72 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/phy/brcm,bcm63xx-usbh-phy.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: BCM63xx USBH PHY
->> +
->> +maintainers:
->> +  - =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - brcm,bcm6318-usbh-phy
->> +      - brcm,bcm6328-usbh-phy
->> +      - brcm,bcm6358-usbh-phy
->> +      - brcm,bcm6362-usbh-phy
->> +      - brcm,bcm6368-usbh-phy
->> +      - brcm,bcm63268-usbh-phy
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 2
->> +
->> +  clock-names:
->> +    items:
->> +      - const: usbh
->> +      - const: usb_ref
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  "#phy-cells":
->> +    const: 0
->=20
-> On 6328, the same register space allows the controlling of the USB PHY
-> in either host or device mode, so I believe you would need to add a
-> #phy-cells =3D 1 in order to distinguish the consumer (host versus =
-device)
-> if we get to the point where drivers/usb/gadget/udc/bcm63xx_udc.c
-> becomes DT aware.
+This still causes a regression for me.
 
-I=E2=80=99ve just realized that I have implemented this wrong in v3, =
-because I implemented the SwapControl USB_DEVICE_SEL value, and you =
-meant the UTMIControl1 USB_DEVICE_MODE_SEL value.
-So I have a couple of questions about this, because I haven=E2=80=99t =
-got any bcm63xx with usb device configuration to test:
-- Is USB_DEVICE_SEL also needed in SwapControl or do we only need =
-USB_DEVICE_MODE_SEL in UTMIControl1?
-- Are the rest of the host values needed when configured in device mode? =
-Should I only set the device values when in device mode?
+[    9.457656] i2c_hid i2c-ELAN221D:00: Fetching the HID descriptor
+[    9.457663] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=01 00
+[    9.458591] i2c_hid i2c-ELAN221D:00: HID Descriptor: 1e 00 00 01 31 
+02 02 00 03 00 43 00 04 00 ff 00 05 00 06 00 f3 04 1d 22 10 56 00 00 00 00
+[    9.459519] i2c_hid i2c-ELAN221D:00: entering i2c_hid_parse
+[    9.459526] i2c_hid i2c-ELAN221D:00: i2c_hid_hwreset
+[    9.459576] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[    9.459591] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 08
+[    9.464070] i2c_hid i2c-ELAN221D:00: resetting...
+[    9.464078] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 01
+[    9.464346] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: waiting...
+[   10.497169] i2c_designware i2c_designware.3: controller timed out
+[   10.533940] i2c_designware i2c_designware.3: timeout in disabling adapter
+[   14.528677] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: finished.
+[   14.528695] i2c_hid i2c-ELAN221D:00: failed to reset device.
+[   14.536125] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[   14.536141] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 01 08
+[   14.556335] i2c_designware i2c_designware.3: timeout waiting for bus 
+ready
+[   14.565086] i2c_hid i2c-ELAN221D:00: failed to change power setting.
+[   15.584374] i2c_hid i2c-ELAN221D:00: i2c_hid_hwreset
+[   15.584395] i2c_hid i2c-ELAN221D:00: i2c_hid_set_power
+[   15.584410] i2c_hid i2c-ELAN221D:00: __i2c_hid_command: cmd=05 00 00 08
+[   15.605683] i2c_designware i2c_designware.3: timeout waiting for bus 
+ready
+[   15.614304] i2c_hid i2c-ELAN221D:00: failed to change power setting.
+...
 
->=20
-> Other than that, this looks good to me!
-> --=20
-> Florian
-
-Best regards,
-=C3=81lvaro.
-
+-- 
+Jarkko
