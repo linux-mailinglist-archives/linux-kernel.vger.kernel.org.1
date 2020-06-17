@@ -2,79 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736361FC8CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4554B1FC8D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgFQIdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S1726761AbgFQIex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFQIdX (ORCPT
+        with ESMTP id S1725979AbgFQIex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:33:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA10C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 01:33:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bb0009537e5b82667a549.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b000:9537:e5b8:2667:a549])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 42A401EC03E3;
-        Wed, 17 Jun 2020 10:33:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592382802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IZY6q1xLb46Qw2A0y/61CE7mLrcbuaJLnqA/2DXo42k=;
-        b=EepktTXRU8hLQXOmORsTXLXG5gkWlapk4a4Mv0/3VWR9m18DJ4wpejAdo2Gnj8rzdrYVHC
-        AFtQegr/Ru/HsI3Aq6G4UcuXAfjTZKffZd2gTQryrOcgSDnODy4zu8PHZFYERnkM7VSYmS
-        7QvNqgI/FSwHNjXpBtJgeQyQ431za1Q=
-Date:   Wed, 17 Jun 2020 10:33:14 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     x86-ml <x86@kernel.org>, jpa@kernelbug.mail.kapsi.fi,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/fpu: Reset MXCSR to default in kernel_fpu_begin()
-Message-ID: <20200617083314.GC10118@zn.tnic>
-References: <20200616180123.GL13515@zn.tnic>
- <1D569B6B-B8C3-497E-8A74-2E1A3D46299E@amacapital.net>
+        Wed, 17 Jun 2020 04:34:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680B2C061573;
+        Wed, 17 Jun 2020 01:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P9h4/lJWY5ar1P99gGNzdzvo8L/3FzSkbgpi/qstzS0=; b=X047MCRD9zFtWhe9wWozOU8dYR
+        R+C2KKBmpwd74/A0PeX/oLkzyLWz+DBG/l3tW1Qdz0jNxJDUxfCM/UO8Tp+L23mtZPVX3bGWYksp6
+        DUK7COc2UzL7g8zRxWYVRXMuoQsDSA5z3t5wDUxNKZ+YUr3eaPnHP4h+5JAI017GGt8i8QBR+UjGE
+        w+YZwm5IXuVuXVH6yzr7Gh4M+AqRNsEp/2V1NcH0VhyLCzSTAUCzEsjfetlr9OCTdUeSFxNwUxag9
+        5WmlGTK52iSsP/WzZMezm0yRjRtR/gDen38Lw6vUbrF3L00ZzlKnVqLLOH8eZDd2cjlBGPkeDC1Vk
+        2IQAANfg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlTX0-0006j9-EU; Wed, 17 Jun 2020 08:34:50 +0000
+Date:   Wed, 17 Jun 2020 01:34:50 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/7] Introduce KABIs to query UCONTEXT, PD and
+ MR properties
+Message-ID: <20200617083450.GA25700@infradead.org>
+References: <20200616105531.2428010-1-leon@kernel.org>
+ <20200617082916.GA13188@infradead.org>
+ <20200617083138.GI2383158@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1D569B6B-B8C3-497E-8A74-2E1A3D46299E@amacapital.net>
+In-Reply-To: <20200617083138.GI2383158@unreal>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 02:17:16PM -0700, Andy Lutomirski wrote:
-> We definitely need to sanitize MXCSR for kernel fpu if kernel fpu
-> means SSE2. If kernel fpu means x87, we need to fix the fpu control
-> word.
+On Wed, Jun 17, 2020 at 11:31:38AM +0300, Leon Romanovsky wrote:
+> On Wed, Jun 17, 2020 at 01:29:16AM -0700, Christoph Hellwig wrote:
+> > I think you are talking about UABIs (which in linux we actually call
+> > uapis).
+> 
+> Yes, I used Yishai's cover letter as is.
 
-Bah, there's no need to beat around the bush - let's just do:
-
-        if (boot_cpu_has(X86_FEATURE_XMM))
-                ldmxcsr(MXCSR_DEFAULT);
-
-        if (boot_cpu_has(X86_FEATURE_FPU))
-                asm volatile ("fninit");
-
-and be sure that kernel users get a squeaky-clean FPU.
-
-> On x86_64, I suspect the UEFI ABI technically requires a clean x87
-> control word too. If we’re willing to declare that the kernel proper
-> won’t use x87, then we could shove that into the UEFI code.
-
-Nah, we don't trust the firmware.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Why can't he just posted his patches himeself?  And if you forward it
+you could actually add value by fixing up obvious issues :)
