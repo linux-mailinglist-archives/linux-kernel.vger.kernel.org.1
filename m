@@ -2,151 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDD51FCADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F008A1FCAE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgFQK1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:27:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22056 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725554AbgFQK1k (ORCPT
+        id S1726541AbgFQK3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 06:29:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34739 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgFQK3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:27:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592389658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LXF7fTJru8h7pgEyfZIXazHv+wCxxWltNcswn5LLFbQ=;
-        b=b0kVm37J1ptDyw/3FD44/Avjcbnow8uJLUGDqBOxQgzfqGDVqtk+4VxF4KyjMCaKn/BgQH
-        Hy7P/iLP2f7Nv07ZpgNJndOegvqj3v/qWhpFumI5l1ntvF/c1Wp3Re45CqjR9EWTU3oMeA
-        9bQmE4Gj7tVpkn2napvdIsku60L4Cow=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-ZVpzVIsmNimK6YqvmMCAfg-1; Wed, 17 Jun 2020 06:27:34 -0400
-X-MC-Unique: ZVpzVIsmNimK6YqvmMCAfg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2BF61015DA2;
-        Wed, 17 Jun 2020 10:27:32 +0000 (UTC)
-Received: from krava (unknown [10.40.193.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id BF2357CAC1;
-        Wed, 17 Jun 2020 10:27:30 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 12:27:29 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3] tools build: Check libasan and libubsan in
- Makefile.feature
-Message-ID: <20200617102729.GC2210496@krava>
-References: <1592360821-2323-1-git-send-email-yangtiezhu@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592360821-2323-1-git-send-email-yangtiezhu@loongson.cn>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Wed, 17 Jun 2020 06:29:31 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jlVJf-0002xp-F9; Wed, 17 Jun 2020 10:29:12 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Wenwen Wang <wenwen@cs.uga.edu>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Hui Wang <hui.wang@canonical.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Tomas Espeleta <tomas.espeleta@gmail.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/2] ALSA: hda/realtek: Add COEF controlled micmute LED support
+Date:   Wed, 17 Jun 2020 18:29:01 +0800
+Message-Id: <20200617102906.16156-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 10:27:01AM +0800, Tiezhu Yang wrote:
-> When build perf with ASan or UBSan, if libasan or libubsan can not find,
-> the feature-glibc is 0 and there exists the following error log which is
-> wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
-> is also installed.
-> 
-> [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
->   BUILD:   Doing 'make -j4' parallel build
->   HOSTCC   fixdep.o
->   HOSTLD   fixdep-in.o
->   LINK     fixdep
-> <stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
-> <stdin>:1:0: warning: -fsanitize=address not supported for this target
-> 
-> Auto-detecting system features:
-> ...                         dwarf: [ OFF ]
-> ...            dwarf_getlocations: [ OFF ]
-> ...                         glibc: [ OFF ]
-> ...                          gtk2: [ OFF ]
-> ...                      libaudit: [ OFF ]
-> ...                        libbfd: [ OFF ]
-> ...                        libcap: [ OFF ]
-> ...                        libelf: [ OFF ]
-> ...                       libnuma: [ OFF ]
-> ...        numa_num_possible_cpus: [ OFF ]
-> ...                       libperl: [ OFF ]
-> ...                     libpython: [ OFF ]
-> ...                     libcrypto: [ OFF ]
-> ...                     libunwind: [ OFF ]
-> ...            libdw-dwarf-unwind: [ OFF ]
-> ...                          zlib: [ OFF ]
-> ...                          lzma: [ OFF ]
-> ...                     get_cpuid: [ OFF ]
-> ...                           bpf: [ OFF ]
-> ...                        libaio: [ OFF ]
-> ...                       libzstd: [ OFF ]
-> ...        disassembler-four-args: [ OFF ]
-> 
-> Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
-> Makefile.perf:224: recipe for target 'sub-make' failed
-> make[1]: *** [sub-make] Error 2
-> Makefile:69: recipe for target 'all' failed
-> make: *** [all] Error 2
-> [yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
-> /usr/include/gnu/libc-version.h
-> 
-> After install libasan and libubsan, the feature-glibc is 1 and the build
-> process is success, so the cause is related with libasan or libubsan, we
-> should check them and print an error log to reflect the reality.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
-> 
-> v2:
->   - Check libasan and libubsan in tools/build/Makefile.feature
->   - Modify the patch subject
-> 
-> v3:
->   - Check EXTRA_CFLAGS first
-> 
->  tools/build/Makefile.feature | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index cb15237..bc28dc9 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -250,3 +250,15 @@ ifeq ($(feature_verbose),1)
->    $(foreach feat,$(TMP),$(call feature_print_status,$(feat),))
->    $(info )
->  endif
-> +
-> +ifneq ($(filter s% -fsanitize=address%,$(EXTRA_CFLAGS),),)
-> +  ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
-> +    msg := $(error No libasan found, please install libasan);
-> +  endif
-> +endif
-> +
-> +ifneq ($(filter s% -fsanitize=undefined%,$(EXTRA_CFLAGS),),)
-> +  ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
-> +    msg := $(error No libubsan found, please install libubsan);
-> +  endif
-> +endif
+Currently, HDA codec LED class can only be used by GPIO controlled LED.
+However, there are some new systems that control LED via COEF instead of
+GPIO.
 
-sry, I made uninformed guess when I replied to your first patch,
-I checked on libasan/libubsan and they don't have devel headers
+In order to support those systems, create a new helper that can be
+facilitated by both COEF controlled and GPIO controlled LED.
 
-so I think the check above should be in Makefile.config together
-with the EXTRA_CFLAGS check for -fsanitize options as you have above
+In addition to that, add LED_CORE_SUSPENDRESUME flag since some systems
+don't restore the LED properly after suspend.
 
-thanks,
-jirka
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3:
+ - Wording.
+ - Properly prefix exported symbol.
+v2:
+ - Prevent platforms like Dell, Lenovoe and Huawei create double LED
+   class devices.
+ sound/pci/hda/hda_generic.c   |  7 ++++---
+ sound/pci/hda/hda_generic.h   |  1 +
+ sound/pci/hda/patch_realtek.c | 29 ++++++++++++++++-------------
+ 3 files changed, 21 insertions(+), 16 deletions(-)
+
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index f4e9d9445e18..e4f534e9a88c 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3897,7 +3897,7 @@ enum {
+ 	MICMUTE_LED_FOLLOW_MUTE,
+ };
+ 
+-static void call_micmute_led_update(struct hda_codec *codec)
++void snd_hda_gen_call_micmute_led_update(struct hda_codec *codec)
+ {
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	unsigned int val;
+@@ -3924,6 +3924,7 @@ static void call_micmute_led_update(struct hda_codec *codec)
+ 	if (spec->micmute_led.update)
+ 		spec->micmute_led.update(codec);
+ }
++EXPORT_SYMBOL_GPL(snd_hda_gen_call_micmute_led_update);
+ 
+ static void update_micmute_led(struct hda_codec *codec,
+ 			       struct snd_kcontrol *kcontrol,
+@@ -3945,7 +3946,7 @@ static void update_micmute_led(struct hda_codec *codec,
+ 			spec->micmute_led.capture |= mask;
+ 		else
+ 			spec->micmute_led.capture &= ~mask;
+-		call_micmute_led_update(codec);
++		snd_hda_gen_call_micmute_led_update(codec);
+ 	}
+ }
+ 
+@@ -3982,7 +3983,7 @@ static int micmute_led_mode_put(struct snd_kcontrol *kcontrol,
+ 	if (mode == spec->micmute_led.led_mode)
+ 		return 0;
+ 	spec->micmute_led.led_mode = mode;
+-	call_micmute_led_update(codec);
++	snd_hda_gen_call_micmute_led_update(codec);
+ 	return 1;
+ }
+ 
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index fb9f1a90238b..062be242339a 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -353,6 +353,7 @@ unsigned int snd_hda_gen_path_power_filter(struct hda_codec *codec,
+ void snd_hda_gen_stream_pm(struct hda_codec *codec, hda_nid_t nid, bool on);
+ int snd_hda_gen_fix_pin_power(struct hda_codec *codec, hda_nid_t pin);
+ 
++void snd_hda_gen_call_micmute_led_update(struct hda_codec *codec);
+ int snd_hda_gen_add_micmute_led(struct hda_codec *codec,
+ 				void (*hook)(struct hda_codec *));
+ void snd_hda_gen_fixup_micmute_led(struct hda_codec *codec,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6d73f8beadb6..0587d1e96b19 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4114,10 +4114,10 @@ static int micmute_led_set(struct led_classdev *led_cdev,
+ 			   enum led_brightness brightness)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
+-	struct alc_spec *spec = codec->spec;
++	struct hda_gen_spec *spec = codec->spec;
+ 
+-	alc_update_gpio_led(codec, spec->gpio_mic_led_mask,
+-			    spec->micmute_led_polarity, !!brightness);
++	spec->micmute_led.led_mode = !brightness;
++	snd_hda_gen_call_micmute_led_update(codec);
+ 	return 0;
+ }
+ 
+@@ -4126,7 +4126,17 @@ static struct led_classdev micmute_led_cdev = {
+ 	.max_brightness = 1,
+ 	.brightness_set_blocking = micmute_led_set,
+ 	.default_trigger = "audio-micmute",
++	.flags = LED_CORE_SUSPENDRESUME,
+ };
++
++static void alc_register_micmute_led(struct hda_codec *codec)
++{
++		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++		if (devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev))
++			codec_warn(codec, "failed to register micmute LED\n");
++}
++#else
++static inline void alc_register_micmute_led(struct hda_codec *codec) {}
+ #endif
+ 
+ /* setup mute and mic-mute GPIO bits, add hooks appropriately */
+@@ -4136,9 +4146,6 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				  unsigned int micmute_mask)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-	int err;
+-#endif
+ 
+ 	alc_fixup_gpio(codec, action, mute_mask | micmute_mask);
+ 
+@@ -4151,13 +4158,7 @@ static void alc_fixup_hp_gpio_led(struct hda_codec *codec,
+ 	if (micmute_mask) {
+ 		spec->gpio_mic_led_mask = micmute_mask;
+ 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
+-
+-#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
+-		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-		err = devm_led_classdev_register(&codec->core.dev, &micmute_led_cdev);
+-		if (err)
+-			codec_warn(codec, "failed to register micmute LED\n");
+-#endif
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
+@@ -4305,6 +4306,7 @@ static void alc285_fixup_hp_coef_micmute_led(struct hda_codec *codec,
+ 		spec->mic_led_coefbit_on = 1<<13;
+ 		spec->mic_led_coefbit_off = 0;
+ 		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
+@@ -4319,6 +4321,7 @@ static void alc236_fixup_hp_coef_micmute_led(struct hda_codec *codec,
+ 		spec->mic_led_coefbit_on = 2<<2;
+ 		spec->mic_led_coefbit_off = 1<<2;
+ 		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++		alc_register_micmute_led(codec);
+ 	}
+ }
+ 
+-- 
+2.17.1
 
