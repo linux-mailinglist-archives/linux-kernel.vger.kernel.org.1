@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7081FCAE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC041FCAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgFQKay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgFQKaw (ORCPT
+        id S1726491AbgFQKcC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Jun 2020 06:32:02 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:59193 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgFQKcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:30:52 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41236C061573;
-        Wed, 17 Jun 2020 03:30:52 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r7so1781559wro.1;
-        Wed, 17 Jun 2020 03:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=6cV4DHswB2EyeE07H4W7XCwzmJOtlP+W1W6yT4bg52g=;
-        b=C1Rqzc/japPum67ZTnuAVaiq2NPpCxTUZk2OOs7u92om/UHf8Ai1fJSa95yb+EikCj
-         FBZ1VOx2o/jL0/ss9n2sPgAJHTd3graTtuDv9BYwoKAb93VfJjObyyHcoutjcoGT8EOC
-         9hPIZjJSMZUyWOzmqJYxnHFdApHcEoxQYfIJd6h3fmQqZNcRqTmQ+WqPLNWgbLW0Q86p
-         TG4UxOrr2COtSPwxiPlsjpDusl8PVaBkUjxdYp+H9OkjEmKCu7Lq1Y+6hFmqe+Epn+Ht
-         wYEVI9ippMMUZlfY+0xSNPJ4TMZ0Cvy7Ac3jJJYc2Hs7T2I8mQ1tafjsm7vtC6fpfdal
-         t0tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=6cV4DHswB2EyeE07H4W7XCwzmJOtlP+W1W6yT4bg52g=;
-        b=XrmTVsgOpuLl1sxOPDvj6VkVWK4erBCWejzLLpcAbfj5UTmxjG0HFlLtN6r3jtareE
-         qVTyrkrccj3H9Eym+ogjaDvLsT4VYwyU0bwuMZX6Pafi+fVJ4Q8Uo1CquvVUzdpwf8vu
-         aFjejUMaqT/2amn67u5gor/3HE5bkRNatXssO7nyr20ngJqE9LopjQggX2R48CR8hGVi
-         Y8mB77tfuTiaJFiaeMi69YImPVIZb3T6ypc1er19NZwc4ETs+Hwiir2YcZtoJvSapUo/
-         gM0GdDpVqmeGv+V0sSo6qeekUCNxsrKwc2UCUTphKaMXn+B6K4s5Ntpwh2LMjWzNG3rj
-         Tz2Q==
-X-Gm-Message-State: AOAM530LtSkN8Iw3JvayCp0EXao6kmNKV2oFewer6GLvrPUSwLNOb1Eu
-        F97S0VaDKR2yU2R6BiA57FMofIrt5VW09//6Hxw=
-X-Google-Smtp-Source: ABdhPJyeQZRqJRgjSeusf9v5yBFBGvFjqIYCsu8BTeFkhrJ4QbR0F92kIGENOe/0gNpO5f5goNfGZYn7RWQvl6s5vns=
-X-Received: by 2002:adf:ecc8:: with SMTP id s8mr4518383wro.317.1592389850778;
- Wed, 17 Jun 2020 03:30:50 -0700 (PDT)
-MIME-Version: 1.0
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Wed, 17 Jun 2020 18:30:39 +0800
-Message-ID: <CACVXFVO5saamQXs0naLamTKJfXZMW+p446weeqJK=9+V34UM0g@mail.gmail.com>
-Subject: krobe: __blkdev_put probe is missed
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wed, 17 Jun 2020 06:32:01 -0400
+Received: from marcel-macbook.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 5B372CECD1;
+        Wed, 17 Jun 2020 12:41:50 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v5 1/7] Bluetooth: Add definitions for advertisement
+ monitor features
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200615172440.v5.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+Date:   Wed, 17 Jun 2020 12:31:57 +0200
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Yoni Shavit <yshavit@chromium.org>,
+        Michael Sun <michaelfsun@google.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-block <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <09444691-8D9E-4530-AFC9-5935D775C04C@holtmann.org>
+References: <20200615172440.v5.1.I636f906bf8122855dfd2ba636352bbdcb50c35ed@changeid>
+To:     Miao-chen Chou <mcchou@chromium.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Guys,
+Hi Miao-chen,
 
-I found probe on __blkdev_put is missed, which can be observed
-via bcc/perf reliably:
+> This adds support for Advertisement Monitor API. Here are the commands
+> and events added.
+> - Read Advertisement Monitor Feature command
+> - Add Advertisement Pattern Monitor command
+> - Remove Advertisement Monitor command
+> - Advertisement Monitor Added event
+> - Advertisement Monitor Removed event
+> 
+> Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+> ---
+> 
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3:
+> - Update command/event opcodes.
+> - Correct data types.
+> 
+> Changes in v2: None
+> 
+> include/net/bluetooth/mgmt.h | 49 ++++++++++++++++++++++++++++++++++++
+> 1 file changed, 49 insertions(+)
 
-1) start trace
-- perf probe __blkdev_put
-- perf trace -a  -e probe:__blkdev_put
+I have added all 7 patches to my local tree. I added minor style modifications and merged it together with the device flags support.
 
-or
+Regards
 
-/usr/share/bcc/tools/stackcount __blkdev_put
+Marcel
 
-2) run the following command:
-blockdev --getbsz /dev/sda1
-
-3) 'perf trace'  or stackcount just  dumps one trace event, and it
-should have been two
-__blkdev_put() traces, since one __blkdev_put() is called for
-partition(/dev/sda1),
-and another is for disk(/dev/sda). If trace_printk() is added in __blkdev_put(),
-two events will be captured from ftrace.
-
-The only special thing about __blkdev_put() is that the function will call into
-itself. However, no such issue on __blkdev_get() which calls itself too.
-
-
-Thanks,
-Ming Lei
