@@ -2,106 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232A01FC841
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C5E1FC845
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgFQIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39364 "EHLO mail.kernel.org"
+        id S1726599AbgFQIGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:06:20 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:47889 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgFQIEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:04:12 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725846AbgFQIGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 04:06:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91CE021475;
-        Wed, 17 Jun 2020 08:04:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592381051;
-        bh=MjCLvKpmywtlENNu3L8WcjVAZUYXfsV93TDu3ReXKuQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JTiufBj0BMszSpkVUzi+gNk/qprMzw2wYVoJRieWtNmkrCUlTJiL+eUPkxjEPJZ7D
-         Pl+CdboZUILER+bWki4NgM0L7KE262coRqRGnhsGEroSN9Uf1CdlIdoIHJwTchzbUV
-         5UjKXESI9ZrCTGdCfmJKt9pER0l8tsQDgS//NF2k=
-Date:   Wed, 17 Jun 2020 09:04:06 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49myLy0ZB8z9sRh;
+        Wed, 17 Jun 2020 18:06:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592381178;
+        bh=7cdmiAE9EG/i09Attx7Op+wfkId2lPt1WP3cvD+UbR4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ahiJhq8YWhdLlolVgIgr2bVuINbtdrU0meaOgbW+HWe4UhMGWK3uwoYo7xqFU/rsO
+         MRwG301TIXr8o3NmRkv+57aOMcPzgP2tKwyGGVz/t05ygTTJEmf0N1nL74A4rhCCG5
+         2740u1PBAi5uJuVGATq60CpxE5H3VfI0/xjwcklJ0unVThD7hhaGkrRzUS8v2BNV6G
+         FdtF73jcm6e6/UdxrpadiWLiVIaKJ6bNvEsUxtcb4sw2NyDHyJ9OLO30Jr66XSaMdD
+         NGHH8SVlNuyV74qERPOA/vCM6UCRTAY/qHPvx+PZ3ZJA/e3jznPO9GJJkTW/ziiXQH
+         rtBThJiMkSVOQ==
+Date:   Wed, 17 Jun 2020 18:06:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        openrisc@lists.librecores.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/25] mm: Page fault accounting cleanups
-Message-ID: <20200617080405.GA3208@willie-the-truck>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <CAHk-=wiTjaXHu+uxMi0xCZQOm4KVr0MucECAK=Zm4p4YZZ1XEg@mail.gmail.com>
- <87imfqecjx.fsf@mpe.ellerman.id.au>
+        netdev@vger.kernel.org
+Subject: Re: linux-next: build failures after merge of the vfs tree
+Message-ID: <20200617180617.59e61438@canb.auug.org.au>
+In-Reply-To: <20200617070316.GA30348@gondor.apana.org.au>
+References: <20200616103330.2df51a58@canb.auug.org.au>
+        <20200616103440.35a80b4b@canb.auug.org.au>
+        <20200616010502.GA28834@gondor.apana.org.au>
+        <20200616033849.GL23230@ZenIV.linux.org.uk>
+        <20200616143807.GA1359@gondor.apana.org.au>
+        <20200617165715.577aa76d@canb.auug.org.au>
+        <20200617070316.GA30348@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87imfqecjx.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/rzaLdUCb00LybZJ4xG9HvTL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 10:55:14AM +1000, Michael Ellerman wrote:
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
-> > On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
-> >> This series tries to address all of them by introducing mm_fault_accounting()
-> >> first, so that we move all the page fault accounting into the common code base,
-> >> then call it properly from arch pf handlers just like handle_mm_fault().
-> >
-> > Hmm.
-> >
-> > So having looked at this a bit more, I'd actually like to go even
-> > further, and just get rid of the per-architecture code _entirely_.
-> 
-> <snip>
-> 
-> > One detail worth noting: I do wonder if we should put the
-> >
-> >     perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-> >
-> > just in the arch code at the top of the fault handling, and consider
-> > it entirely unrelated to the major/minor fault handling. The
-> > major/minor faults fundamnetally are about successes. But the plain
-> > PERF_COUNT_SW_PAGE_FAULTS could be about things that fail, including
-> > things that never even get to this point at all.
-> 
-> Yeah I think we should keep it in the arch code at roughly the top.
+--Sig_/rzaLdUCb00LybZJ4xG9HvTL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I agree. It's a nice idea to consolidate the code, but I don't see that
-it's really possible for PERF_COUNT_SW_PAGE_FAULTS without significantly
-changing the semantics (and a potentially less useful way. Of course,
-moving more of do_page_fault() out of the arch code would be great, but
-that's a much bigger effort.
+Hi Herbert,
 
-> If it's moved to the end you could have a process spinning taking bad
-> page faults (and fixing them up), and see no sign of it from the perf
-> page fault counters.
+On Wed, 17 Jun 2020 17:03:17 +1000 Herbert Xu <herbert@gondor.apana.org.au>=
+ wrote:
+>
+> On Wed, Jun 17, 2020 at 04:57:15PM +1000, Stephen Rothwell wrote:
+> >=20
+> > Presumably another include needed:
+> >=20
+> > arch/s390/lib/test_unwind.c:49:2: error: implicit declaration of functi=
+on 'kmalloc' [-Werror=3Dimplicit-function-declaration]
+> > arch/s390/lib/test_unwind.c:99:2: error: implicit declaration of functi=
+on 'kfree' [-Werror=3Dimplicit-function-declaration] =20
+>=20
+> Hi Stephen:
+>=20
+> It's not clear how this file manages to include linux/uio.h but
 
-The current arm64 behaviour is that we record PERF_COUNT_SW_PAGE_FAULTS
-if _all_ of the following are true:
+arch/s390/lib/test_unwind.c
+arch/s390/include/asm/unwind.h
+include/linux/ftrace.h
+include/linux/kallsyms.h
+include/linux/module.h
+include/linux/elf.h
+arch/s390/include/asm/elf.h
+include/linux/compat.h
+include/linux/socket.h
+include/linux/uio.h
 
-  1. The fault isn't handled by kprobes
-  2. The pagefault handler is enabled
-  3. We have an mm (current->mm)
-  4. The fault isn't an unexpected kernel fault on a user address (we oops
-     and kill the task in this case)
+:-(
 
-Which loosely corresponds to "we took a fault on a user address that it
-looks like we can handle".
+--=20
+Cheers,
+Stephen Rothwell
 
-That said, I'm happy to tweak this if it brings us into line with other
-architectures.
+--Sig_/rzaLdUCb00LybZJ4xG9HvTL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Will
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7pzvkACgkQAVBC80lX
+0Gydsgf8C0QacF7ALL4x+Jgm45jOWTwR+kv83Hhyu8gOqoGOEhEAbtHtBJ9lwHIf
+mh7QdEzBLNAsomRZQox3GBUu4d4T9dhvHpftivmpprK7vWQl4whn9vZROwR1hOBA
+8t5I/5OkZCpbiqNhlptZc2JfqBcV148Obv3qDFz+PqaKmgwoIkP+0RTgkeIKVGRN
+cC/sswumVFgn4FcngB1HQFTtOPhj+UUshR5Qbm1FW4urzcyFNEQW+mY4OlvYtwoL
+l74akTRZ7cbZUJ2wFl8On8ecUf5IoSRvBxeKufth9psiMCKmnk04+pmB3rS+X1W8
+MVtSPS/ePn8r7F2mOchhptDGcgo2bA==
+=ZeYJ
+-----END PGP SIGNATURE-----
+
+--Sig_/rzaLdUCb00LybZJ4xG9HvTL--
