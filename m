@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0751FD005
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066851FCFFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgFQOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S1726928AbgFQOwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgFQOvx (ORCPT
+        with ESMTP id S1726868AbgFQOvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:51:53 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CFDC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:51:52 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 35so1054358ple.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:51:52 -0700 (PDT)
+        Wed, 17 Jun 2020 10:51:54 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23C7C0613EF
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:51:53 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id e18so1391481pgn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uQNrRwJqZFm26JwXJp03T56X5IKX8trjl7fZDLpzVTg=;
-        b=j5cilfo02OZyPiNli2fKchLTe4cDTPoKnc6RugN2HRfcGC+a6woONHl7YkwnSJvVmW
-         jGfznBcaPBTz+GX2L0FQF8hCHyIOjuCCScEsqECshm/MIEi7bKc6nk/h6NjLhzRqVgvw
-         NtknhjCZYdOsh1x++jO+LchBSlXayjShKJ2a4=
+        bh=3UqoEHyclqWTZ6o9P2bVTaRwTAG/SUOq+WEpN17DlXI=;
+        b=Y9OrDC9hmnaZiWZ03awQhEvSEjE+uRuTYpf6VJ3V4kdyWqzAzoewW0MqirwTRACtwb
+         Z8ydiqwUnj99tTs5JBdt4fcU5vXzr54yADGIOv/3pWK9zGlWl54589kDU9/bwNgm0JZw
+         ofNSDYACtqdkjl5eimB61JEWjAyg0eYOOH0jU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uQNrRwJqZFm26JwXJp03T56X5IKX8trjl7fZDLpzVTg=;
-        b=G+bgt3zC9wsE0jg2km7p0H1bAoT0wWVOB98c/Ty4g3mO36H/mjAPlSeeBir4qVjoJe
-         ODcxvjk/2NJswgawJJsvSP8L6kZQCj10f33GY1Ulj8BZzzfjo9ZbxDwhpTKhdBDJi74d
-         kPCUBtm8RrET2VaVEPfTrG3YMDQ966UE/jVEgWYqrPGRQG2ziUpIaa0AUGyenhYkxpY/
-         MlPdKmOwGej5IxG/r0MjRfWoinhXA1LlcFNWr3MbDBx7OQqTPZkjNMUiMVgG3VgxT8vk
-         vuwUGsIcN2MF6K2aMuyTEMxfY5Vy/FbnWrYtBi0Jyj4uYTqYXarkSQr3lc2jHZYCnB5h
-         ZN2A==
-X-Gm-Message-State: AOAM533Wp5jK22AXnm7xdIMsrrLPKUUtSXayNABIn0EjaHfIM8da3XCx
-        oTY0pTLFzNJ0/uCzoRqlh4oQMQ==
-X-Google-Smtp-Source: ABdhPJzvAKe+FEC96+3+A3FgPuJXrPvNuL6kGgmiv0tWmirzC3EusqI6ZRpN3aOnv3YcKJ5GBjDL6Q==
-X-Received: by 2002:a17:902:7c96:: with SMTP id y22mr6727849pll.293.1592405512013;
-        Wed, 17 Jun 2020 07:51:52 -0700 (PDT)
+        bh=3UqoEHyclqWTZ6o9P2bVTaRwTAG/SUOq+WEpN17DlXI=;
+        b=S4Ns8E01wZGJzjR3eamyp6s6pfTJ6AqclsLj3BM+l9R4NGeUFf3Y5xltTIrmCfepCe
+         rgHnV/F0Azwvfh5/8ANksv/ZMFfAjL/kVvZp+CUuXvHmqtbsMUHn5MkhFUMjWneloGnB
+         T96rgmUCe9hsNWYE72rZw2KlOmPurEEUB2AI4l1wS99KSPvbP4I5DFfx012BKgwUHTW9
+         cvIPMi/iHMlC5csLubh7aaRQtsbqAezzr8zIxV+gDuEzAwMbYXPhkVXsxhgF4c4/tP3b
+         KfpXjhZzlnDWXEi4SYiLDupjx3XCMRi/hmqWU+RS0nyXFBMaL0Wmk24U94wJi0mF2lZw
+         jaYg==
+X-Gm-Message-State: AOAM5333Rqjfa3NIgP1q0pT5ujH5dn0rI7WPWHaPo6O1Ld0TWgngUIlx
+        f5B9XtZpNbHGIIOrZz6o2QTJ+Q==
+X-Google-Smtp-Source: ABdhPJwZuUJa5t0PDpcdBoO4yQcCP6aoTAXHLpNeKnYlVkvVd6NZvxEFFbYGHs9XYEoQBDCvij/dug==
+X-Received: by 2002:a63:1b20:: with SMTP id b32mr6694782pgb.39.1592405513440;
+        Wed, 17 Jun 2020 07:51:53 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id k18sm147040pfp.208.2020.06.17.07.51.51
+        by smtp.gmail.com with ESMTPSA id k18sm147040pfp.208.2020.06.17.07.51.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 07:51:51 -0700 (PDT)
+        Wed, 17 Jun 2020 07:51:52 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,9 +56,9 @@ Cc:     dhavalp@codeaurora.org, mturney@codeaurora.org,
         sparate@codeaurora.org, mkurumel@codeaurora.org,
         Douglas Anderson <dianders@chromium.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/4] dt-bindings: nvmem: qfprom: Convert to yaml
-Date:   Wed, 17 Jun 2020 07:51:13 -0700
-Message-Id: <20200617074930.v3.1.Iea2704ec2cb40c00eca47781c310a6330ac5dd41@changeid>
+Subject: [PATCH v3 2/4] dt-bindings: nvmem: Add properties needed for blowing fuses
+Date:   Wed, 17 Jun 2020 07:51:14 -0700
+Message-Id: <20200617074930.v3.2.I3b5c3bfaf5fb2d28d63f1b5ee92980900e3f8251@changeid>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
 In-Reply-To: <20200617145116.247432-1-dianders@chromium.org>
 References: <20200617145116.247432-1-dianders@chromium.org>
@@ -71,117 +71,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ravi Kumar Bokka <rbokka@codeaurora.org>
 
-This switches the bindings over from txt to yaml.
+On some systems it's possible to actually blow the fuses in the qfprom
+from the kernel.  Add properties to support that.
+
+NOTE: Whether this is possible depends on the BIOS settings and
+whether the kernel has permissions here, so not all boards will be
+able to blow fuses in the kernel.
 
 Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
 Changes in v3:
-- Split conversion to yaml into separate patch new in v3.
-- Use 'const' for compatible instead of a 1-entry enum.
-- Changed filename to match compatible string.
-- Add #address-cells and #size-cells to list of properties.
+- Add an extra reg range (at 0x6000 offset for SoCs checked)
+- Define two options for reg: 1 item or 4 items.
+- No reg-names.
+- Add "clocks" and "clock-names" to list of properties.
+- Clock is now "sec", not "secclk".
+- Add "vcc-supply" to list of properties.
 - Fixed up example.
 
- .../bindings/nvmem/qcom,qfprom.yaml           | 45 +++++++++++++++++++
- .../devicetree/bindings/nvmem/qfprom.txt      | 35 ---------------
- 2 files changed, 45 insertions(+), 35 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
- delete mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.txt
+ .../bindings/nvmem/qcom,qfprom.yaml           | 45 ++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-new file mode 100644
-index 000000000000..5efa5e7c4d81
---- /dev/null
+index 5efa5e7c4d81..b195212c6193 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
 +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/qcom,qfprom.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -17,8 +17,27 @@ properties:
+     const: qcom,qfprom
+ 
+   reg:
+-    items:
+-      - description: The corrected region.
++    # If the QFPROM is read-only OS image then only the corrected region
++    # needs to be provided.  If the QFPROM is writable then all 4 regions
++    # must be provided.
++    oneOf:
++      - items:
++          - description: The corrected region.
++      - items:
++          - description: The corrected region.
++          - description: The raw region.
++          - description: The config region.
++          - description: The security control region.
 +
-+title: Qualcomm Technologies Inc, QFPROM Efuse bindings
++  # Clock must be provided if QFPROM is writable from the OS image.
++  clocks:
++    maxItems: 1
++  clock-names:
++    const: sec
 +
-+maintainers:
-+  - Ravi Kumar Bokka <rbokka@codeaurora.org>
-+
-+allOf:
-+  - $ref: "nvmem.yaml#"
-+
-+properties:
-+  compatible:
-+    const: qcom,qfprom
-+
-+  reg:
-+    items:
-+      - description: The corrected region.
-+
-+  # Needed if any child nodes are present.
-+  "#address-cells":
-+    const: 1
-+  "#size-cells":
-+    const: 1
-+
-+required:
-+   - compatible
-+   - reg
-+
-+examples:
++  # Supply reference must be provided if QFPROM is writable from the OS image.
++  vcc-supply:
++    description: Our power supply.
+ 
+   # Needed if any child nodes are present.
+   "#address-cells":
+@@ -31,6 +50,28 @@ required:
+    - reg
+ 
+ examples:
 +  - |
++    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
++
 +    efuse@784000 {
 +      compatible = "qcom,qfprom";
-+      reg = <0 0x00784000 0 0x8ff>;
++      reg = <0 0x00784000 0 0x8ff>,
++            <0 0x00780000 0 0x7a0>,
++            <0 0x00782000 0 0x100>,
++            <0 0x00786000 0 0x1fff>;
++      clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
++      clock-names = "sec";
 +      #address-cells = <1>;
 +      #size-cells = <1>;
 +
-+      hstx-trim-primary@1eb {
-+        reg = <0x1eb 0x1>;
-+        bits = <1 4>;
++      vcc-supply = <&vreg_l11a_1p8>;
++
++      hstx-trim-primary@25b {
++        reg = <0x25b 0x1>;
++        bits = <1 3>;
 +      };
 +    };
-diff --git a/Documentation/devicetree/bindings/nvmem/qfprom.txt b/Documentation/devicetree/bindings/nvmem/qfprom.txt
-deleted file mode 100644
-index 26fe878d5c86..000000000000
---- a/Documentation/devicetree/bindings/nvmem/qfprom.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--= Qualcomm QFPROM device tree bindings =
--
--This binding is intended to represent QFPROM which is found in most QCOM SOCs.
--
--Required properties:
--- compatible: should be "qcom,qfprom"
--- reg: Should contain registers location and length
--
--= Data cells =
--Are child nodes of qfprom, bindings of which as described in
--bindings/nvmem/nvmem.txt
--
--Example:
--
--	qfprom: qfprom@700000 {
--		compatible 	= "qcom,qfprom";
--		reg		= <0x00700000 0x8000>;
--		...
--		/* Data cells */
--		tsens_calibration: calib@404 {
--			reg = <0x4404 0x10>;
--		};
--	};
--
--
--= Data consumers =
--Are device nodes which consume nvmem data cells.
--
--For example:
--
--	tsens {
--		...
--		nvmem-cells = <&tsens_calibration>;
--		nvmem-cell-names = "calibration";
--	};
++
+   - |
+     efuse@784000 {
+       compatible = "qcom,qfprom";
 -- 
 2.27.0.290.gba653c62da-goog
 
