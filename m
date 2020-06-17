@@ -2,53 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C431E1FC3FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC931FC403
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgFQCI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:08:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58926 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgFQCI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:08:26 -0400
-IronPort-SDR: VTz8LHhMwF+aoLaRAW0kVxluKndXL/gXDImjuJJtEMnyl5i+/mXBMDOxJ8oKNOFp3sTve2TyiG
- ZepPPC9K3Egw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 19:08:25 -0700
-IronPort-SDR: VcFY5J6iZundJ9mS0cEP2C3HJq6cSvr1bLr79QEKN/SWBoJxBkD83eBjof+rTLFZ2pAzi7D70t
- Rbxc+Nth5f5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,520,1583222400"; 
-   d="scan'208";a="261597074"
-Received: from vchernon-mobl1.ccr.corp.intel.com (HELO localhost) ([10.252.50.149])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jun 2020 19:08:21 -0700
-Date:   Wed, 17 Jun 2020 05:08:20 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Frank Werner-Krippendorf <mail@hb9fxq.ch>
-Cc:     David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dh key: Missing a blank line after declarations
-Message-ID: <20200617020820.GB7215@linux.intel.com>
-References: <20200612203458.13517-1-mail@hb9fxq.ch>
+        id S1726685AbgFQCJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:09:10 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:45317 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgFQCJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 22:09:10 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 05H28kuZ011038;
+        Wed, 17 Jun 2020 11:08:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 05H28kuZ011038
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1592359726;
+        bh=YsC2dizDDFIdXocNJAZgxxZbCsXA6PM27sduaRcNgvQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Et+C+KBu6ku09Pc8YHyO1pgYEv8qgJbt0wRgw/0nj77iLHQyBnfsvuKI4aFkh0aOu
+         XGJfqJXU2vuSRl12SkscHPrltMxlioTzRWjP1PkxS0c+XGoKWZJ12cN5tYF5hhhriw
+         EZ5TgWClkScqneJPZcS012xjJj0VdK7UpRGHRJytVgQXsGEoLhQKrwEawQ/X1X2Bek
+         jtCdSIPTs1eT14C7U9G2efw5JUJECb6szc7Hey95KXC5u/sBNdJ0QVEDmmfDlJdJGR
+         nJsS0Lqumqnn1FqZ2biHCmDd6bsRM9xz5MKaSHNlW/xZt9z47O1QWOVzOBWNDa82g8
+         LLoVNkfEk+xiw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] samples: watch_queue: build sample program for target architecture
+Date:   Wed, 17 Jun 2020 11:08:38 +0900
+Message-Id: <20200617020838.22134-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612203458.13517-1-mail@hb9fxq.ch>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 10:34:58PM +0200, Frank Werner-Krippendorf wrote:
-> This patch fixes a "WARNING: Missing a blank line after declarations" issue found by checkpatch.pl
-> 
-> Signed-off-by: Frank Werner-Krippendorf <mail@hb9fxq.ch>
+This userspace program includes UAPI headers exported to usr/include/.
+'make headers' always works for the target architecture (i.e. the same
+architecture as the kernel), so the sample program should be built for
+the target as well. Kbuild now supports 'userprogs' for that.
 
-Umh for which patch?
+I also guarded the CONFIG option by 'depends on CC_CAN_LINK' because
+$(CC) may not provide libc.
 
-/Jarkko
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ samples/Kconfig              |  2 +-
+ samples/watch_queue/Makefile | 10 ++++------
+ 2 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/samples/Kconfig b/samples/Kconfig
+index f3ac549a53b0..0ed6e4d71d87 100644
+--- a/samples/Kconfig
++++ b/samples/Kconfig
+@@ -211,7 +211,7 @@ config SAMPLE_WATCHDOG
+ 
+ config SAMPLE_WATCH_QUEUE
+ 	bool "Build example /dev/watch_queue notification consumer"
+-	depends on HEADERS_INSTALL
++	depends on CC_CAN_LINK && HEADERS_INSTALL
+ 	help
+ 	  Build example userspace program to use the new mount_notify(),
+ 	  sb_notify() syscalls and the KEYCTL_WATCH_KEY keyctl() function.
+diff --git a/samples/watch_queue/Makefile b/samples/watch_queue/Makefile
+index 8511fb6c53d2..792b22f593cf 100644
+--- a/samples/watch_queue/Makefile
++++ b/samples/watch_queue/Makefile
+@@ -1,7 +1,5 @@
+-# List of programs to build
+-hostprogs := watch_test
++# SPDX-License-Identifier: GPL-2.0-only
++userprogs := watch_test
++always-y := $(userprogs)
+ 
+-# Tell kbuild to always build the programs
+-always-y := $(hostprogs)
+-
+-HOSTCFLAGS_watch_test.o += -I$(objtree)/usr/include
++userccflags += -I usr/include
+-- 
+2.25.1
+
