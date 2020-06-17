@@ -2,209 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4D01FC9F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C3B1FC9FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgFQJfl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Jun 2020 05:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgFQJfk (ORCPT
+        id S1726662AbgFQJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:37:40 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48307 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725964AbgFQJhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:35:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83089C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 02:35:40 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jlUTp-0006br-6s; Wed, 17 Jun 2020 11:35:37 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jlUTo-0002Xx-9t; Wed, 17 Jun 2020 11:35:36 +0200
-Message-ID: <409257e69ca434f5d5e90d2453fbdf8ae5d12b0f.camel@pengutronix.de>
-Subject: Re: [PATCH v6 3/9] reset: add BCM6345 reset controller driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     =?ISO-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-        robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Date:   Wed, 17 Jun 2020 11:35:36 +0200
-In-Reply-To: <20200617083231.3699090-4-noltari@gmail.com>
-References: <20200617083231.3699090-1-noltari@gmail.com>
-         <20200617083231.3699090-4-noltari@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 17 Jun 2020 05:37:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592386657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hQXnvUHXJXPvepBf7ywq9CRGBzneqKE9hf77vrkoSDo=;
+        b=XcfKnaO+qHnXVU78OfnIV/41TBq+NcrulBKR8UHzE1BUt0uxS/w3stftAn1b3gzAf1iTEB
+        VWcPYjmqbSp5oR0L4dZ/s6YvbCpcnHeYmVSERPCki0dgkA1XhXZI8617UYPeXesWm9wIlI
+        1PfSzRbPuPM4rIeW15rz92Svqauo2wE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-A6VUPTEaN4WkGTE4zq-pnQ-1; Wed, 17 Jun 2020 05:37:34 -0400
+X-MC-Unique: A6VUPTEaN4WkGTE4zq-pnQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEA641009618;
+        Wed, 17 Jun 2020 09:37:32 +0000 (UTC)
+Received: from localhost (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB4025C1C3;
+        Wed, 17 Jun 2020 09:37:26 +0000 (UTC)
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>, linux-pci@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [RFC 0/2] genirq: take device NUMA node into account for managed IRQs
+Date:   Wed, 17 Jun 2020 10:37:23 +0100
+Message-Id: <20200617093725.1725569-1-stefanha@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: base64
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Álvaro,
+RGV2aWNlcyB3aXRoIGEgc21hbGwgbnVtYmVyIG9mIG1hbmFnZWQgSVJRcyBkbyBub3QgYmVuZWZp
+dCBmcm9tIHNwcmVhZGluZw0KYWNyb3NzIGFsbCBDUFVzLiBJbnN0ZWFkIHRoZXkgYmVuZWZpdCBm
+cm9tIE5VTUEgbm9kZSBhZmZpbml0eSBzbyB0aGF0IElSUXMgYXJlDQpoYW5kbGVkIG9uIHRoZSBk
+ZXZpY2UncyBOVU1BIG5vZGUuDQoNCkZvciBleGFtcGxlLCBoZXJlIGlzIGEgbWFjaGluZSB3aXRo
+IGEgdmlydGlvLWJsayBQQ0kgZGV2aWNlIG9uIE5VTUEgbm9kZSAxOg0KDQogICMgbHN0b3BvLW5v
+LWdyYXBoaWNzDQogIE1hY2hpbmUgKDk1OE1CIHRvdGFsKQ0KICAgIFBhY2thZ2UgTCMwDQogICAg
+ICBOVU1BTm9kZSBMIzAgKFAjMCA0OTFNQikNCiAgICAgIEwzIEwjMCAoMTZNQikgKyBMMiBMIzAg
+KDQwOTZLQikgKyBMMWQgTCMwICgzMktCKSArIEwxaSBMIzAgKDMyS0IpICsgQ29yPQ0KZSBMIzAg
+KyBQVSBMIzAgKFAjMCkNCiAgICBQYWNrYWdlIEwjMQ0KICAgICAgTlVNQU5vZGUgTCMxIChQIzEg
+NDY2TUIpDQogICAgICBMMyBMIzEgKDE2TUIpICsgTDIgTCMxICg0MDk2S0IpICsgTDFkIEwjMSAo
+MzJLQikgKyBMMWkgTCMxICgzMktCKSArIENvcj0NCmUgTCMxICsgUFUgTCMxIChQIzEpDQogICAg
+ICBIb3N0QnJpZGdlDQogICAgICAgIFBDSUJyaWRnZQ0KICAgICAgICAgIFBDSSBjOTowMC4wIChT
+Q1NJKQ0KICAgICAgICAgICAgQmxvY2sgInZkYiINCiAgICBIb3N0QnJpZGdlDQogICAgICBQQ0lC
+cmlkZ2UNCiAgICAgICAgUENJIDAyOjAwLjAgKEV0aGVybmV0KQ0KICAgICAgICAgIE5ldCAiZW5w
+MnMwIg0KICAgICAgUENJQnJpZGdlDQogICAgICAgIFBDSSAwNTowMC4wIChTQ1NJKQ0KICAgICAg
+ICAgIEJsb2NrICJ2ZGEiDQogICAgICBQQ0kgMDA6MWYuMiAoU0FUQSkNCg0KQ3VycmVudGx5IHRo
+ZSB2aXJ0aW81LXJlcS4wIElSUSBmb3IgdGhlIHZkYiBkZXZpY2UgZ2V0cyBhc3NpZ25lZCB0byBD
+UFUgMDoNCg0KICAjIGNhdCAvcHJvYy9pbnRlcnJ1cHRzDQogICAgICAgICAgICAgQ1BVMCAgICAg
+ICBDUFUxDQogIC4uLg0KICAgMzY6ICAgICAgICAgIDAgICAgICAgICAgMCAgIFBDSS1NU0kgMTA1
+MzgxODg4LWVkZ2UgICAgICB2aXJ0aW81LWNvbmZpZw0KICAgMzc6ICAgICAgICAgODEgICAgICAg
+ICAgMCAgIFBDSS1NU0kgMTA1MzgxODg5LWVkZ2UgICAgICB2aXJ0aW81LXJlcS4wDQoNCklmIG1h
+bmFnZWQgSVJRIGFzc2lnbm1lbnQgdGFrZXMgdGhlIGRldmljZSdzIE5VTUEgbm9kZSBpbnRvIGFj
+Y291bnQgdGhlbiBDUFUgMQ0Kd2lsbCBiZSB1c2VkIGluc3RlYWQ6DQoNCiAgIyBjYXQgL3Byb2Mv
+aW50ZXJydXB0cw0KICAgICAgICAgICAgIENQVTAgICAgICAgQ1BVMQ0KICAuLi4NCiAgIDM2OiAg
+ICAgICAgICAwICAgICAgICAgIDAgICBQQ0ktTVNJIDEwNTM4MTg4OC1lZGdlICAgICAgdmlydGlv
+NS1jb25maWcNCiAgIDM3OiAgICAgICAgICAwICAgICAgICAgOTIgICBQQ0ktTVNJIDEwNTM4MTg4
+OS1lZGdlICAgICAgdmlydGlvNS1yZXEuMA0KDQpUaGUgZmlvIGJlbmNobWFyayB3aXRoIDRLQiBy
+YW5kb20gcmVhZCBydW5uaW5nIG9uIENQVSAxIGluY3JlYXNlcyBJT1BTIGJ5IDU4JToNCg0KICBO
+YW1lICAgICAgICAgICAgICBJT1BTICAgRXJyb3INCiAgQmVmb3JlICAgICAgICAyNjcyMC41OSA9
+QzI9QjEgMC4yOCUNCiAgQWZ0ZXIgICAgICAgICA0MjM3My43OSA9QzI9QjEgMC41NCUNCg0KTm93
+IG1vc3Qgb2YgdGhpcyBpbXByb3ZlbWVudCBpcyBub3QgZHVlIHRvIE5VTUEgYnV0IGp1c3QgYmVj
+YXVzZSB0aGUgcmVxdWVzdHMNCmNvbXBsZXRlIG9uIHRoZSBzYW1lIENQVSB3aGVyZSB0aGV5IHdl
+cmUgc3VibWl0dGVkLiBIb3dldmVyLCBpZiB0aGUgSVJRIGlzIG9uDQpDUFUgMCBhbmQgZmlvIGFs
+c28gcnVucyBvbiBDUFUgMCBvbmx5IDM5NjAwIElPUFMgaXMgYWNoaWV2ZWQsIG5vdCB0aGUgZnVs
+bA0KNDIzNzMgSU9QUyB0aGF0IHdlIGdldCB3aGVuIE5VTUEgYWZmaW5pdHkgaXMgaG9ub3JlZC4g
+U28gaXQgaXMgd29ydGggdGFraW5nDQpOVU1BIGludG8gYWNjb3VudCB0byBhY2hpZXZlIG1heGlt
+dW0gcGVyZm9ybWFuY2UuDQoNClRoZSBmb2xsb3dpbmcgcGF0Y2hlcyBhcmUgYSBoYWNrIHRoYXQg
+dXNlcyB0aGUgZGV2aWNlJ3MgTlVNQSBub2RlIHdoZW4NCmFzc2lnbmluZyBtYW5hZ2VkIElSUXMu
+IFRoZXkgYXJlIG5vdCBtZXJnZWFibGUgYnV0IEkgaG9wZSB0aGV5IHdpbGwgaGVscCBzdGFydA0K
+dGhlIGRpc2N1c3Npb24uIE9uZSBidWcgaXMgdGhhdCB0aGV5IGFmZmVjdCBhbGwgbWFuYWdlZCBJ
+UlFzLCBldmVuIGZvciBkZXZpY2VzDQp3aXRoIG1hbnkgSVJRcyB3aGVyZSBzcHJlYWRpbmcgYWNy
+b3NzIGFsbCBDUFVzIGlzIGEgZ29vZCBwb2xpY3kuDQoNClBsZWFzZSBsZXQgbWUga25vdyB3aGF0
+IHlvdSB0aGluazoNCg0KMS4gSXMgdGhlcmUgYSByZWFzb24gd2h5IG1hbmFnZWQgSVJRcyBzaG91
+bGQgKm5vdCogdGFrZSBOVU1BIGludG8gYWNjb3VudCB0aGF0DQogICBJJ3ZlIG1pc3NlZD8NCg0K
+Mi4gSXMgdGhlcmUgYSBiZXR0ZXIgcGxhY2UgdG8gaW1wbGVtZW50IHRoaXMgbG9naWM/IEZvciBl
+eGFtcGxlLA0KICAgcGNpX2FsbG9jX2lycV92ZWN0b3JzX2FmZmluaXR5KCkgd2hlcmUgdGhlIGNw
+dW1hc2tzIGFyZSBjYWxjdWxhdGVkLg0KDQpBbnkgc3VnZ2VzdGlvbnMgb24gaG93IHRvIHByb2Nl
+ZWQgd291bGQgYmUgYXBwcmVjaWF0ZWQuIFRoYW5rcyENCg0KU3RlZmFuIEhham5vY3ppICgyKToN
+CiAgZ2VuaXJxOiBob25vciBkZXZpY2UgTlVNQSBub2RlIHdoZW4gYWxsb2NhdGluZyBkZXNjcw0K
+ICBnZW5pcnEvbWF0cml4OiB0YWtlIE5VTUEgaW50byBhY2NvdW50IGZvciBtYW5hZ2VkIElSUXMN
+Cg0KIGluY2x1ZGUvbGludXgvaXJxLmggICAgICAgICAgIHwgIDIgKy0NCiBhcmNoL3g4Ni9rZXJu
+ZWwvYXBpYy92ZWN0b3IuYyB8ICAzICsrLQ0KIGtlcm5lbC9pcnEvaXJxZGVzYy5jICAgICAgICAg
+IHwgIDMgKystDQoga2VybmVsL2lycS9tYXRyaXguYyAgICAgICAgICAgfCAxNiArKysrKysrKysr
+KystLS0tDQogNCBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygt
+KQ0KDQotLT0yMA0KMi4yNi4yDQoNCg==
 
-thank you for the patch. A few comments below:
-
-On Wed, 2020-06-17 at 10:32 +0200, Álvaro Fernández Rojas wrote:
-> Add support for resetting blocks through the Linux reset controller
-> subsystem for BCM63xx SoCs.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Reviewed-by: Florian Fainelli <F.fainelli@gmail.com>
-> ---
->  v6: driver improvements:
->      - use devm_platform_ioremap_resource.
->      - simplify bcm6345_reset_probe return.
->      - introduce and use to_bcm6345_reset function.
->  v5: fix kbuild robot error (drop __init).
->  v4: no changes.
->  v3: using reset-simple isn't possible since sleeping after performing the
->      reset is also needed.
->  v2: add compatibility to reset-simple instead of adding a new driver.
-> 
->  drivers/reset/Kconfig         |   7 ++
->  drivers/reset/Makefile        |   1 +
->  drivers/reset/reset-bcm6345.c | 132 ++++++++++++++++++++++++++++++++++
->  3 files changed, 140 insertions(+)
->  create mode 100644 drivers/reset/reset-bcm6345.c
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index d9efbfd29646..9f1da978cef6 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -41,6 +41,13 @@ config RESET_BERLIN
->  	help
->  	  This enables the reset controller driver for Marvell Berlin SoCs.
->  
-> +config RESET_BCM6345
-> +	bool "BCM6345 Reset Controller"
-> +	depends on BMIPS_GENERIC || COMPILE_TEST
-> +	default BMIPS_GENERIC
-> +	help
-> +	  This enables the reset controller driver for BCM6345 SoCs.
-> +
-
-Please sort these alphabetically.
-
->  config RESET_BRCMSTB
->  	tristate "Broadcom STB reset controller"
->  	depends on ARCH_BRCMSTB || COMPILE_TEST
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 249ed357c997..e642aae42f0f 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_ARCH_TEGRA) += tegra/
->  obj-$(CONFIG_RESET_A10SR) += reset-a10sr.o
->  obj-$(CONFIG_RESET_ATH79) += reset-ath79.o
->  obj-$(CONFIG_RESET_AXS10X) += reset-axs10x.o
-> +obj-$(CONFIG_RESET_BCM6345) += reset-bcm6345.o
-
-This is the right place.
-
->  obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
->  obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
->  obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
-> diff --git a/drivers/reset/reset-bcm6345.c b/drivers/reset/reset-bcm6345.c
-> new file mode 100644
-> index 000000000000..3eedea226028
-> --- /dev/null
-> +++ b/drivers/reset/reset-bcm6345.c
-> @@ -0,0 +1,132 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * BCM6345 Reset Controller Driver
-> + *
-> + * Copyright (C) 2020 Álvaro Fernández Rojas <noltari@gmail.com>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/init.h>
-> +#include <linux/io.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/reset-controller.h>
-> +
-> +#define BCM6345_RESET_NUM		32
-> +#define BCM6345_RESET_SLEEP_MIN_US	10000
-> +#define BCM6345_RESET_SLEEP_MAX_US	20000
-> +
-> +struct bcm6345_reset {
-> +	struct reset_controller_dev rcdev;
-> +	void __iomem *base;
-> +	spinlock_t lock;
-> +};
-> +
-> +static inline struct bcm6345_reset *
-> +to_bcm6345_reset(struct reset_controller_dev *rcdev)
-> +{
-> +	return container_of(rcdev, struct bcm6345_reset, rcdev);
-> +}
-> +
-> +static void bcm6345_reset_update(struct reset_controller_dev *rcdev,
-> +				 unsigned long id, bool assert)
-> +{
-> +	struct bcm6345_reset *bcm6345_reset = to_bcm6345_reset(rcdev);
-> +	unsigned long flags;
-> +	uint32_t val;
-> +
-> +	spin_lock_irqsave(&bcm6345_reset->lock, flags);
-> +	val = __raw_readl(bcm6345_reset->base);
-> +	if (assert)
-> +		val &= ~BIT(id);
-> +	else
-> +		val |= BIT(id);
-> +	__raw_writel(val, bcm6345_reset->base);
-> +	spin_unlock_irqrestore(&bcm6345_reset->lock, flags);
-> +}
-> +
-> +static int bcm6345_reset_assert(struct reset_controller_dev *rcdev,
-> +				unsigned long id)
-> +{
-> +	bcm6345_reset_update(rcdev, id, true);
-> +
-> +	return 0;
-> +}
-> +
-> +static int bcm6345_reset_deassert(struct reset_controller_dev *rcdev,
-> +				  unsigned long id)
-> +{
-> +	bcm6345_reset_update(rcdev, id, false);
-> +
-> +	return 0;
-
-These two could be shortened if you let bcm6345_reset_update() return 0:
-
-	return bcm6345_reset_update(rcdev, id, false);
-
-> +}
-
-> +
-> +static int bcm6345_reset_reset(struct reset_controller_dev *rcdev,
-> +			       unsigned long id)
-> +{
-> +	bcm6345_reset_update(rcdev, id, true);
-> +	usleep_range(BCM6345_RESET_SLEEP_MIN_US,
-> +		     BCM6345_RESET_SLEEP_MAX_US);
-> +
-> +	bcm6345_reset_update(rcdev, id, false);
-
-This second sleep is unusual:
-
-> +	usleep_range(BCM6345_RESET_SLEEP_MIN_US,
-> +		     BCM6345_RESET_SLEEP_MAX_US);
-
-Could you add a comment describing why it is needed?
-
-Otherwise,
-
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-
-regards
-Philipp
