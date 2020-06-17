@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866881FCEA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D641FCE7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgFQNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 09:36:49 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:41173 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgFQNgi (ORCPT
+        id S1726975AbgFQNdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 09:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726369AbgFQNdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:36:38 -0400
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6702010000A;
-        Wed, 17 Jun 2020 13:36:35 +0000 (UTC)
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-To:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, richardcochran@gmail.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com,
-        foss@0leil.net, antoine.tenart@bootlin.com
-Subject: [PATCH net-next v2 8/8] MIPS: dts: ocelot: describe the load/save GPIO
-Date:   Wed, 17 Jun 2020 15:31:27 +0200
-Message-Id: <20200617133127.628454-9-antoine.tenart@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200617133127.628454-1-antoine.tenart@bootlin.com>
-References: <20200617133127.628454-1-antoine.tenart@bootlin.com>
+        Wed, 17 Jun 2020 09:33:11 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861E9C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 06:33:11 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id c1so1356619vsc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 06:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jTqaTkfBEJNdDtwOMT4r6+BJgXb7m5WLotnwfVqPg5s=;
+        b=CC4Q7nmJnWLQT7rqxXtQyAge6sKG3krsrNAsBWHV7qNTGiCt+PrvXW4Thhago31Yi8
+         mXAWyZp6VrjLO+lZO0Xiss4zOcctQwZ98Ob6iEVwK3NgVJEu6hXyaD4z8+0hIIVucvfs
+         Rb64c3hyuCYCNA2/WfE7y3VcoAxraae6uUTrqXQL8xfB29xUWuf1pkgyK9qDyxXZ1EWR
+         sVakhNpT1DdVTmfU+LxdEFlLl02FVAKeAZri6Ub1icjUbV4eUZq/bw9wYX7Nj6g1Y5+J
+         Mfez1mrnL43ahAFlfpcp5OD5bwc64e6y2xXMPiWc0GWo4wXioZOIzs+4yt1x8cr07Ot7
+         8xJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jTqaTkfBEJNdDtwOMT4r6+BJgXb7m5WLotnwfVqPg5s=;
+        b=dsan6Yyiluzcdnijromkr75zWxWerbjl5Z95cjgTENU7tnIIsKyzXdxO642IV56EEA
+         rlsiqkzhOJPbZtNo/X6/3XMFd9Cs68MFPkNyI5fQEP1CiQRVyrC9z9YJGnLarebKPr+K
+         Hcb3LDxTvpCmtJICdfupjmGqTgQGJpuPgop0vU8LuwKuZqSh16UeJ5sDD7Dgoh80WeUu
+         RH9oO6xXWTE5rJ+GNeHEHeBHFsbQwO4aEvngyM3VQbcLn6fsRST8LqEEIm/c8VvL8AvN
+         EtgmkgdjwL345IoN4Eh2q87EqdTwyozvUT6NqcmQFVlYYsIUchDkWGBUovXK2PoCKbO6
+         TyxA==
+X-Gm-Message-State: AOAM532Tq2ZPbwcA4TPkXKfGplY4kPdQRGVg9pUPqMDRzgiq1c0pTak0
+        dvn7zZRn5DXxHVgJ8BU3YAx2T8BkbBMjYizW54c=
+X-Google-Smtp-Source: ABdhPJzivxNua6clGrscDh3vqjap3QKsvaZI38ohEIdwMwu8lcy9aTNCQ4nrIJ9sUaQsvB4IMxNxg4Tcyr2fyjKbduc=
+X-Received: by 2002:a67:c511:: with SMTP id e17mr5514458vsk.210.1592400790301;
+ Wed, 17 Jun 2020 06:33:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200613155738.2249399-1-jim.cromie@gmail.com>
+ <20200613155738.2249399-20-jim.cromie@gmail.com> <20200616115727.GN31238@alley>
+ <CAJfuBxwmMNzt6ffQkYX7vU1qRa12=mCbO9T4SMzF7RXV5UwkYQ@mail.gmail.com> <20200617121156.GV31238@alley>
+In-Reply-To: <20200617121156.GV31238@alley>
+From:   jim.cromie@gmail.com
+Date:   Wed, 17 Jun 2020 07:32:44 -0600
+Message-ID: <CAJfuBxwip11Ps_0HYTDqOTNsjixFFP_yTPMV3ca8f7vak9AWqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 19/24] dyndbg: accept query terms like module:foo and file=bar
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Schulz <quentin.schulz@bootlin.com>
+hi Petr
 
-This patch adds a description of the load/save GPIN pin, used in the
-VSC8584 PHY for timestamping operations. The related pinctrl description
-is also added.
+> You made to do some research and I was wrong. For example, getopt()
+> operates with options and their arguments. So, 'keyword' and 'arg' names
+> look good after all.
+>
+> Well, I still think that only one syntax should be supported. And it
+> is better to distinguish keywords and arguments, so I prefer keyword=arg.
+>
 
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
----
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+hehe, Im gonna cite some RFC wisdom to convince you  ;-)
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index 33991fd209f5..897de5025d7f 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -3,6 +3,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/phy/phy-ocelot-serdes.h>
- #include "ocelot.dtsi"
-@@ -25,6 +26,11 @@ phy_int_pins: phy_int_pins {
- 		pins = "GPIO_4";
- 		function = "gpio";
- 	};
-+
-+	phy_load_save_pins: phy_load_save_pins {
-+		pins = "GPIO_10";
-+		function = "ptp2";
-+	};
- };
- 
- &mdio0 {
-@@ -34,27 +40,31 @@ &mdio0 {
- &mdio1 {
- 	status = "okay";
- 	pinctrl-names = "default";
--	pinctrl-0 = <&miim1>, <&phy_int_pins>;
-+	pinctrl-0 = <&miim1>, <&phy_int_pins>, <&phy_load_save_pins>;
- 
- 	phy7: ethernet-phy@0 {
- 		reg = <0>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy6: ethernet-phy@1 {
- 		reg = <1>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy5: ethernet-phy@2 {
- 		reg = <2>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy4: ethernet-phy@3 {
- 		reg = <3>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- };
- 
--- 
-2.26.2
+     Be strict in what you emit, and permissive in what you accept.
 
+I see no potential for real ambiguity that would override that bias.
+
+thanks
+jimc
