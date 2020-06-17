@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECD81FD8E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3D01FD8E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgFQWcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
+        id S1727824AbgFQWc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgFQWci (ORCPT
+        with ESMTP id S1727790AbgFQWc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:32:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6336CC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:38 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id f130so4269348yba.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:38 -0700 (PDT)
+        Wed, 17 Jun 2020 18:32:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01D8C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:55 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id n23so4867208ljh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dl8CpF2u3zjH2sdeNdfuapWfq9PffavQBlO7OcAgrZI=;
-        b=vKdUwab7uP+uz/ILCRIEQUWTw1y628cbUve5KPb0pU8jh01zB0o77mA5nagbMWOTSc
-         7OOwmSa0HgM1N5d2qYpqBxZ8X+9/CKPCT1I04mArfiOOHR/qZI6+6iy5xVqmsR9plMsS
-         bE6eVXckKiCki3ClaPCxsyQPigQ/nWS/d2H9mRrqEH75uYmmxx3QCGYHAUx6HjqAZh8g
-         Mhyw/prWu186TWslGG8SCdgJe47c5ED2M13op9MyZvNCrv0OcxuPMgclpMMPqO+tM475
-         iWVA8XbKP4MbrhyEkoFEU0GU8iqUk+TSFLAnT97+NN9kfOzfMEDqPh6wTipvvHQQ+2e5
-         O1Hw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xn0hiQ3wOKNLF/so5eHDNbh4ekPAxqF2ZShnXBOeCAY=;
+        b=MTGU0GETtPXN8nsCqz6Dv6hA7VLMbwgkdjohHcLvZm9NkUncY6UgZuHQ0NUhFl0/Bc
+         yFQ+euftunyoIw45xk8SjxOUSV0o6t0SG1Kut+KsA8kqrDBJ2HtjY0t+FBXquc96lZqS
+         VqTsm42x25rJ7GmpMA7VC51JgW4ZWfgxFDezSlf96LlBq2uBPZK5fYpfViF1lhTpPncG
+         IrRjqugK6gIxgxfx6dSmqHFVoYBNDPb0PKjSx+96L8Qqm1iUK1C2ECM//66emrtCCDOz
+         HNiCi29opDIbRj2wmOU0jQY8kdDBiZu7jrrAef0/atc562vJEhuSGLTg4DoMYEbuwwhB
+         7P1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dl8CpF2u3zjH2sdeNdfuapWfq9PffavQBlO7OcAgrZI=;
-        b=G74OwxMvx1OmEqm3xXm+a0ZbiPk82q+/OV4CftgYbxWxghIN2uGZmtWvNrdY7H17J7
-         4hcVELhCi51WRnJGm1XrIINby1AnlD09+mS2if2i4KEivGjI9ym+5OjDwPNx4dXh4dyI
-         f+yrVKkJ9PteQszt0wnSmfweuRLww7+JaDqmcgaB/5gWYIw7HjTvtELjucEGJODpHAAR
-         PSC/8smr0AffcqrSWLs2q4n5/jjSBYzlahBgfK02/Ygzc40vugsGfE5CXpn/vZjjvMaH
-         X0indRK6winmIjh3OT1nVXDvSt5hrwxn1erBfEcW6gpCovPL6LHGr5eD89TNK2Pq/vML
-         uiNg==
-X-Gm-Message-State: AOAM533B7QMrtSIQZlx+t1VxGjzlCCdYkx0VXkTKpxRUCt4UN6V2jwoT
-        rceVxhD21J4FzhIn1ZVINOqx5wfS4hAkrH4=
-X-Google-Smtp-Source: ABdhPJyeR4h0Me2Jqjjk5lMCpwfmgkUJ7m4BZVHZC7e5A3/e2NJJt9P6ANUw0qyp4w9dB87DwkgcWPw7kiZQu0o=
-X-Received: by 2002:a25:73c3:: with SMTP id o186mr1779854ybc.230.1592433157594;
- Wed, 17 Jun 2020 15:32:37 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 15:32:29 -0700
-Message-Id: <20200617223229.165040-1-zhangalex@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH] mm/memory.c: make remap_pfn_range() reject unaligned addr
-From:   Kaiyu Zhang <zhangalex@google.com>
-To:     Andrew Morton <apkm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alex Zhang <zhangalex@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xn0hiQ3wOKNLF/so5eHDNbh4ekPAxqF2ZShnXBOeCAY=;
+        b=ZOoBAwA3aEpNcgrwCstlhutEKRnHDj+EKhLfXNEYcrnYGyjam99vgr+QMuyIYg4Kbe
+         SHVNi/wFd4b6gCkpoIC4QM0bhE/L61f4OPIRFCEN2/N9TNfnXIyovjXh8mdz+YcWBjAu
+         VLlTer8eZLq26FJaPLCk0OvpXVeAVwXfvr8Pyu09CD0F6xgLFUGnuUjUWJ3Ux+mnaTYq
+         pA7NDf6CZ8RLld6cB75o4n2Lw7lhzY6mRsKf3KDP0r5WPQtgGKEueF1JTyckYodfRjRO
+         W3d4dV6rgyhMMM8uLW4u6yypUubALR82ZdKEcfHtgOX9+1foozj0aT5kTPtCcy0G2iR/
+         E9iA==
+X-Gm-Message-State: AOAM531QbxBu1mEL0kDTyU4y0tzS/wUyN4592GqdBnX0bVotib2yrhnK
+        Lj4g2PFnadKXB6H9Ei/Y0IU=
+X-Google-Smtp-Source: ABdhPJzV/Kjo7Q6UVTeRF8pxqJwGYjI/doG085L6jvkZMXWt3CIGY3FhRSy83dnjZnkFQt6jfE3BBg==
+X-Received: by 2002:a2e:8110:: with SMTP id d16mr761904ljg.12.1592433174511;
+        Wed, 17 Jun 2020 15:32:54 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
+        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 15:32:53 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/5] regulator: Constify some static struct variables
+Date:   Thu, 18 Jun 2020 00:32:42 +0200
+Message-Id: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Zhang <zhangalex@google.com>
+Constify some static struct variables to allow the compiler to put them
+in read-only memory. There are more of these, but I figured I could
+start small. Also, is one patch per driver a good resolution or too
+fine-grained?
 
-This function implicitly assumes that the addr passed in is page aligned.
-A non page aligned addr could ultimately cause a kernel bug in
-remap_pte_range as the exit condition in the logic loop may never be
-satisfied.  This patch documents the need for the requirement, as
-well as explicitly adding a check for it.
+Rikard Falkeborn (5):
+  regulator: anatop: Constify anatop_core_rops
+  regulator: cpcap: Constify cpcap_regulator_ops
+  regulator: ltc3676: Constify ltc3676_regulators
+  regulator: max8907: Constify static structs
+  regulator: max8997: Constify struct regulator_ops
 
-Signed-off-by: Alex Zhang <zhangalex@google.com>
+ drivers/regulator/anatop-regulator.c  |  2 +-
+ drivers/regulator/cpcap-regulator.c   |  2 +-
+ drivers/regulator/ltc3676.c           |  2 +-
+ drivers/regulator/max8907-regulator.c |  6 +++---
+ drivers/regulator/max8997-regulator.c | 14 +++++++-------
+ 5 files changed, 13 insertions(+), 13 deletions(-)
 
----
- mm/memory.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index dc7f3543b1fd..9cb0a75f1555 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2081,7 +2081,7 @@ static inline int remap_p4d_range(struct mm_struct *mm, pgd_t *pgd,
- /**
-  * remap_pfn_range - remap kernel memory to userspace
-  * @vma: user vma to map to
-- * @addr: target user address to start at
-+ * @addr: target page aligned user address to start at
-  * @pfn: page frame number of kernel physical memory address
-  * @size: size of mapping area
-  * @prot: page protection flags for this mapping
-@@ -2100,6 +2100,9 @@ int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr,
- 	unsigned long remap_pfn = pfn;
- 	int err;
- 
-+	if (!PAGE_ALIGN(addr))
-+		return -EINVAL;
-+
- 	/*
- 	 * Physically remapped pages are special. Tell the
- 	 * rest of the world about it:
 -- 
-2.27.0.290.gba653c62da-goog
+2.27.0
 
