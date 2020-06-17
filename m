@@ -2,226 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354691FD01F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E32D1FD024
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgFQOzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S1726858AbgFQO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgFQOzt (ORCPT
+        with ESMTP id S1725894AbgFQO53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:55:49 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4FFC06174E;
-        Wed, 17 Jun 2020 07:55:49 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d8so1033432plo.12;
-        Wed, 17 Jun 2020 07:55:49 -0700 (PDT)
+        Wed, 17 Jun 2020 10:57:29 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3319FC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:57:29 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l11so2701460wru.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:57:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lf2uuGCCs7Ea66ZjNOUY0M5i57X1v4PINNs6fwANlUk=;
-        b=EUpQACvGp+IXGJtTDN5gunvZ471jI3/ZlaClx9FOQfHejrOi9GqDWGgeeZ3wPayjvS
-         4Le/i1VCrz97/zq7LJ+BzY1B96KxG2MCaTSg7EoFUjyTuhc7iMXiOTzUjZtQzGMQWrbu
-         /V9eLPbYWg8ky5VNxoMpe8bgHj3+VfJiyoHT7suzaGM/XTz1OTAVZw5njCUDlEEEWaOk
-         59OLPbBbPOW+Q0/Rd3p6YQyd9KVRqUhPRyrFqVoWlmoVGusaOboxanKWJEjisFxsVzZs
-         s08rqGDKAioPGb1KVyUdcpRl1pzr467q10Sk3+67IG8pVTXoXlz6zSjMWmD56lw1XSez
-         g8fw==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=f8R6+zIKfV8EgYXJurZI4VMS7QzuJ/1BzAnXtO1t5b8=;
+        b=Solw5c3BRT8SvtzwHB56s5jNRJwxy64m/zVG3rJxC1mkoD9j1LgzC7cgAcfNlU+SG2
+         iSk+g2Lfz2qVyIExYUKjw1i3w4yzVcDSUB+PYijm6bgme04zMbR4yDvj7jnb2ZBNrigy
+         AfKmp9OWDhpkHtH0XoW+tBVXZbvJTwbMedswwpYtv2o9JVo3x9HmNI9aNTL/QWsK85ZJ
+         hL/AoSy+PwWZwtZ+LGIPiTHjCBneX6Q3UnX6eis5WtbFwDQOHrsYS/0wU9WwaRGWJOPq
+         xvKdmlPdp1NimHt6I0tzKpRuTlo9ZucdkSqaqV/7bQwg15CdOwDduR23HRK32HaaOeW7
+         pOmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lf2uuGCCs7Ea66ZjNOUY0M5i57X1v4PINNs6fwANlUk=;
-        b=myjEr7LBiCmKrBCZU4IsQOcWVhU53kXMbmkjE1dN7Tk+p9cOc9SmZjJr2HSsfcJcbY
-         5vHAIOOWkSj4IYaTRXqKYZWSO5kmUuNYZzGs4fzD70+RANEiFJHaH4RvfiEkDhCBVBgf
-         /Jk/jm/jxFwu7Eqe3uzILvwpPxoieWwoCqV3MQFXUfCnJVmI09pjOrPwqiYXCyXOHpYN
-         gCpTnXvUhFZSlSeMRFqkcPIfgYCVVUm2ftrj8G71PXyarhqe8Lz1+AxrDh8ZQl9dPh3V
-         E7yKKu0JoySdjhD4yRJQeZyu9aYi2lVWa0wqThVgIqppM+WwYM3eNxQhAGgrrQtvn51F
-         VMpg==
-X-Gm-Message-State: AOAM533k0X8tmTjN8eUw9w11PLkAmxA6xHE4tOOaTndAbWqb9HeojrQa
-        Yl18x4HqM8szN1wolNTpwg==
-X-Google-Smtp-Source: ABdhPJy0/3xYE9LTTXDbWq153s+TptXu9KTzRkK0GQGHQ/ZQwN3SuT3Ja0R8G+w0jKjDV8Naynkk9w==
-X-Received: by 2002:a17:902:b682:: with SMTP id c2mr6999926pls.313.1592405748504;
-        Wed, 17 Jun 2020 07:55:48 -0700 (PDT)
-Received: from localhost (98.86.92.34.bc.googleusercontent.com. [34.92.86.98])
-        by smtp.gmail.com with ESMTPSA id f14sm515714pjq.36.2020.06.17.07.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 07:55:48 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 22:55:45 +0800
-From:   Jacky Hu <hengqing.hu@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tony.luck@intel.com, x86@kernel.org,
-        yazen.ghannam@amd.com, bp@alien8.de, clemens@ladisch.de
-Subject: Re: [PATCH] hwmon: (k10temp) Add AMD family 17h model 60h probe
-Message-ID: <20200617145545.GA405542@i716>
-References: <20200616180940.GN13515@zn.tnic>
- <20200617013255.391975-1-hengqing.hu@gmail.com>
- <20200617034028.GA1614@roeck-us.net>
- <20200617071927.GA398128@i716>
- <20200617143342.GD93431@roeck-us.net>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=f8R6+zIKfV8EgYXJurZI4VMS7QzuJ/1BzAnXtO1t5b8=;
+        b=gQI9L7mmvAGtsRUd3GatdIYeNelJohGfFOcsZPaIjORRgTnE125Q8slr68cMiIdmto
+         MKPd36IgDTqaOUGKCinjtJQzNscONnHDfQq7J+60SRvyNwJlRQCHNlKhBCpXcwA9SiHZ
+         OSSg1g99oLXddspBTsCXXU+tlv69Y/pQEeudtRwhjk5/GxC2DD+vAdsmr44XOSGlkvpU
+         l0du46NsORf0dKcdjZkcqf2OB6A1pXUKLKBlHd4QOLDVVrzr7UUzZvCqSjxBYD6L5NPN
+         Db5GuqpNT31Wcnj4zYr+RiAhXJhk7iPNO1sgTAQTbyIL8MhusdG42JSW+9LWQW8ZMEf2
+         KmpA==
+X-Gm-Message-State: AOAM5301XN/XzBBRERZ/q2cCOpTcZuloJiotJSxt471t7JP4Sdjw/c2C
+        syrGWOhc+Jy3nYCMeLphF8tGbXrRkKA=
+X-Google-Smtp-Source: ABdhPJwpIHR1ZinNUmAfaJ8usaV4r/Q/TrhzXAzHjDfaXGo7qORWxdKFIEo35FjV1fiN8/DzhLGqNg==
+X-Received: by 2002:adf:a396:: with SMTP id l22mr8788665wrb.24.1592405847764;
+        Wed, 17 Jun 2020 07:57:27 -0700 (PDT)
+Received: from vingu-book (91-160-61-128.subs.proxad.net. [91.160.61.128])
+        by smtp.gmail.com with ESMTPSA id c68sm31143wmd.12.2020.06.17.07.57.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 17 Jun 2020 07:57:26 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 16:57:25 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [LKP] [sched/fair] 070f5e860e: reaim.jobs_per_min -10.5%
+ regression
+Message-ID: <20200617145725.GA12524@vingu-book>
+References: <20200319023819.GO11705@shao2-debian>
+ <20200612110616.20264-1-hdanton@sina.com>
+ <90f4036d-bb16-af67-8776-a2cbe67dfe7f@linux.intel.com>
+ <20200615081041.GA16990@vingu-book>
+ <d60343e9-b3a0-bdc7-84f4-e8c912f92c46@linux.intel.com>
+ <20200616065432.GA18401@vingu-book>
+ <3de4937b-1dcd-6d2e-836f-fed1c295dd7c@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200617143342.GD93431@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3de4937b-1dcd-6d2e-836f-fed1c295dd7c@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yep, here it is
-
-~> cat thm.idle
-0x059800: 29a00fef 017f1201 00012921 000f4240
-0x059810: 800000f9 00000000 00000000 00000000
-0x059820: 00000000 00000000 00000000 0fff0078
-0x059830: 00000000 002cecf9 002cecf9 002d2cfb
-0x059840: 002cccf8 002cacf7 002d2cfb 002cccf8
-0x059850: 002d2cfb 002c8cf6 002cccf8 002cacf7
-0x059860: 002cacf7 002cecf9 002c8cf6 002d0cfa
-0x059870: 002d2cfb 002d0cfa 002d0cfa 002cacf7
-0x059880: 002cecf9 002d0cfa 002cecf9 002cacf7
-0x059890: 002cccf8 002c6cf5 002d2cfb 002c8cf6
-0x0598a0: 002c8cf6 002cccf8 002cacf7 002cccf8
-0x0598b0: 002c8cf6 00000000 00002100 ffffffff
-0x0598c0: 00000000 00000000 00000000 00000000
-0x0598d0: 00000000 00000000 00000000 00000000
-0x0598e0: 00000000 00000000 00000000 00000000
-0x0598f0: 00000000 00000000 00000000 00000000
-0x059900: 00000000 00000000 00000000 00000000
-0x059910: 00000000 00000000 00000000 00000000
-0x059920: 00000000 00000000 00000000 00000000
-0x059930: 00000000 00000000 00000000 00000000
-0x059940: 00000000 00000000 00000000 00000000
-0x059950: 00000000 00000000 00000000 00000000
-0x059960: 00000000 00000000 00000000 00000000
-0x059970: 00000000 00000000 08400001 00005229
-0x059980: 00000053 a7800005 3118680e 00000000
-0x059990: 00000000 00000000 00000000 00000000
-0x0599a0: 00000000 00000000 00000000 00000000
-0x0599b0: 00000000 00000000 00000000 00000000
-0x0599c0: 00000000 00000000 00000000 00000000
-0x0599d0: 00000000 00003060 000002d4 00000019
-0x0599e0: 000002c6 00000008 00000000 00000000
-0x0599f0: 000002d4 00000019 00000000 00000000
-0x059a00: 00000001 0001000d 00000000 00000000
-0x059a10: 00000000 00000000 00000000 00000000
-0x059a20: 00000000 00000000 00000000 00000000
-0x059a30: 00000000 00000000 00000000 00000000
-0x059a40: 00000000 00000000 00000000 00000000
-0x059a50: 00000000 00000000 00000000 00000000
-0x059a60: 00000000 00000000 00000000 00000000
-0x059a70: 00000000 00000000 00000000 00000000
-0x059a80: 00000000 00000000 00000000 00000000
-0x059a90: 00000000 00000000 00000000 00000000
-0x059aa0: 00000000 00000000 00000000 00000000
-0x059ab0: 00000000 00000000 00000000 00000000
-0x059ac0: 00000000 00000000 00000000 00000000
-0x059ad0: 00000000 00000000 00000000 00000000
-0x059ae0: 00000000 00000000 00000000 00000000
-0x059af0: 00000000 00000000 00000000 00000000
-0x059b00: 00000000 00000000 00000000 00000000
-0x059b10: 0000000e 00000000 00000003 00000000
-0x059b20: 901f001a 00050003 00000000 00000000
-0x059b30: 00480001 00000000 00000000 00000000
-0x059b40: 00000000 00000000 00000010 0000ffff
-0x059b50: 00000000 00000000 00000000 00000000
-0x059b60: 00000000 00000000 00000000 00000000
-0x059b70: 00000000 00000000 00000000 00130082
-0x059b80: 0000067f 12110201 0003045a 00001303
-0x059b90: 00000000 028a4f5c 08036927 0021e548
-0x059ba0: 00000000 7fffffff 00000000 00000043
-0x059bb0: c00001c0 000000f9 00000000 00000000
-0x059bc0: 00000000 00000000 00000000 00000000
-0x059bd0: 00000000 00000000 00000000 00000000
-0x059be0: 00000000 00000000 00000000 00000000
-0x059bf0: 00000000 00000000 00000000 00000000
-
-~> cat thm.busy
-0x059800: 57800fef 017f1201 00012921 000f4240
-0x059810: 800000f9 00000000 00000000 00000000
-0x059820: 00000000 00000000 00000000 0fff0078
-0x059830: 00000000 00372d4d 0042edad 003f6d90
-0x059840: 00416da1 003e0d85 00392d5d 003bad72
-0x059850: 00394d5e 003acd6b 00382d55 00348d37
-0x059860: 0033ad30 0033cd31 0033cd31 00336d2e
-0x059870: 00338d2f 0043edb5 00402d97 00440db6
-0x059880: 0040ed9d 0039ed63 003c4d77 0039ed63
-0x059890: 003c2d76 003a0d65 00338d2f 00334d2d
-0x0598a0: 0033ad30 00342d34 00344d35 0037cd52
-0x0598b0: 0035ed43 00000000 00002100 ffffffff
-0x0598c0: 00000000 00000000 00000000 00000000
-0x0598d0: 00000000 00000000 00000000 00000000
-0x0598e0: 00000000 00000000 00000000 00000000
-0x0598f0: 00000000 00000000 00000000 00000000
-0x059900: 00000000 00000000 00000000 00000000
-0x059910: 00000000 00000000 00000000 00000000
-0x059920: 00000000 00000000 00000000 00000000
-0x059930: 00000000 00000000 00000000 00000000
-0x059940: 00000000 00000000 00000000 00000000
-0x059950: 00000000 00000000 00000000 00000000
-0x059960: 00000000 00000000 00000000 00000000
-0x059970: 00000000 00000000 08400001 0000ae57
-0x059980: 0000005b a7800005 3118680e 00000000
-0x059990: 00000000 00000000 00000000 00000000
-0x0599a0: 00000000 00000000 00000000 00000000
-0x0599b0: 00000000 00000000 00000000 00000000
-0x0599c0: 00000000 00000000 00000000 00000000
-0x0599d0: 00000000 00003060 00000440 00000012
-0x0599e0: 00000334 0000001a 00000000 00000000
-0x0599f0: 00000440 00000012 00000000 00000000
-0x059a00: 00000001 0001000d 00000000 00000000
-0x059a10: 00000000 00000000 00000000 00000000
-0x059a20: 00000000 00000000 00000000 00000000
-0x059a30: 00000000 00000000 00000000 00000000
-0x059a40: 00000000 00000000 00000000 00000000
-0x059a50: 00000000 00000000 00000000 00000000
-0x059a60: 00000000 00000000 00000000 00000000
-0x059a70: 00000000 00000000 00000000 00000000
-0x059a80: 00000000 00000000 00000000 00000000
-0x059a90: 00000000 00000000 00000000 00000000
-0x059aa0: 00000000 00000000 00000000 00000000
-0x059ab0: 00000000 00000000 00000000 00000000
-0x059ac0: 00000000 00000000 00000000 00000000
-0x059ad0: 00000000 00000000 00000000 00000000
-0x059ae0: 00000000 00000000 00000000 00000000
-0x059af0: 00000000 00000000 00000000 00000000
-0x059b00: 00000000 00000000 00000000 00000000
-0x059b10: 0000000e 00000000 00000003 00000000
-0x059b20: 901f001a 00050003 00000000 00000000
-0x059b30: 00480001 00000000 00000000 00000000
-0x059b40: 00000000 00000000 00000010 0000ffff
-0x059b50: 00000000 00000000 00000000 00000000
-0x059b60: 00000000 00000000 00000000 00000000
-0x059b70: 00000000 00000000 00000000 00130082
-0x059b80: 0000067f 12110201 0003045a 00001303
-0x059b90: 00000000 028a4f5c 08036927 0021e548
-0x059ba0: 00000000 7fffffff 00000000 00000043
-0x059bb0: c00001c0 000000f9 00000000 00000000
-0x059bc0: 00000000 00000000 00000000 00000000
-0x059bd0: 00000000 00000000 00000000 00000000
-0x059be0: 00000000 00000000 00000000 00000000
-0x059bf0: 00000000 00000000 00000000 00000000
-
-Jacky
-On Wed, Jun 17, 2020 at 07:33:42AM -0700, Guenter Roeck wrote:
-> On Wed, Jun 17, 2020 at 03:19:27PM +0800, Jacky Hu wrote:
-> > Hi Guenter,
+Le mercredi 17 juin 2020 à 08:30:21 (+0800), Xing Zhengjun a écrit :
+> 
+> 
+> On 6/16/2020 2:54 PM, Vincent Guittot wrote:
 > > 
-> > By increasing the regs count from 32 to 256 and looking into the output of `cat /sys/kernel/debug/k10temp-0000\:00\:18.3/svi`
-> > There is some data from 0x05a300 - 0x05a330
-> > Do you have any idea how we can guess the offset for this model?
+> > Hi Xing,
+> > 
+> > Le mardi 16 juin 2020 à 11:17:16 (+0800), Xing Zhengjun a écrit :
+> > > 
+> > > 
+> > > On 6/15/2020 4:10 PM, Vincent Guittot wrote:
+> > > > Hi Xing,
+> > > > 
+> > > > Le lundi 15 juin 2020 à 15:26:59 (+0800), Xing Zhengjun a écrit :
+> > > > > 
+> > > > > 
+> > > > > On 6/12/2020 7:06 PM, Hillf Danton wrote:
+> > > > > > 
+> > > > > > On Fri, 12 Jun 2020 14:36:49 +0800 Xing Zhengjun wrote:
+> > > > 
+> > 
+> > ...
+> > 
+> > > > 
+> > > 
+> > > I apply the patch based on v5.7, the test result is as the following:
+> > 
+> > TBH, I didn't expect that the results would still be bad, so i wonder if the threshold are
+> > the root problem.
+> > 
+> > Could you run tests with the patch below that removes condition with runnable_avg ?
+> > I just want to make sure that those 2 conditions are the root cause.
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index da3e5b54715b..f5774d0af059 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -8210,10 +8210,6 @@ group_has_capacity(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+> >          if (sgs->sum_nr_running < sgs->group_weight)
+> >                  return true;
+> > 
+> > -       if ((sgs->group_capacity * imbalance_pct) <
+> > -                       (sgs->group_runnable * 100))
+> > -               return false;
+> > -
+> >          if ((sgs->group_capacity * 100) >
+> >                          (sgs->group_util * imbalance_pct))
+> >                  return true;
+> > @@ -8239,10 +8235,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+> >                          (sgs->group_util * imbalance_pct))
+> >                  return true;
+> > 
+> > -       if ((sgs->group_capacity * imbalance_pct) <
+> > -                       (sgs->group_runnable * 100))
+> > -               return true;
+> > -
+> >          return false;
+> >   }
+> > 
+> > 
+> > 
+> > Thanks.
+> > Vincent
 > > 
 > 
-> For other chips, the upper 16 bits of the register reported the voltage
-> and the lower 16 bit reported the current. It might possibly be that the
-> data is now split into multiple registers, but that is impossible to
-> determine without datasheet and/or additional information. So, sorry,
-> no, I have no idea. We'll have to wait for someone to reverse engineer
-> it.
 > 
-> Can you send the contents of the "thm" file ? Maybe we can at least
-> find the new location of the ccd temperature registers.
+> I apply the patch based on v5.7, the test result is as the following:
 > 
-> Guenter
+> =========================================================================================
+> tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+> 
+> lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+> 
+> commit:
+>   9f68395333ad7f5bfe2f83473fed363d4229f11c
+>   070f5e860ee2bf588c99ef7b4c202451faa48236
+>   v5.7
+>   63a5d0fbb5ec62f5148c251c01e709b8358cd0ee (the test patch)
+> 
+> 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+> 63a5d0fbb5ec62f5148c251c01e
+> ---------------- --------------------------- ---------------------------
+> ---------------------------
+>          %stddev     %change         %stddev     %change %stddev     %change
+> %stddev
+>              \          |                \          |                \
+> |                \
+>       0.69           -10.3%       0.62            -9.1%       0.62
+> +1.0%       0.69        reaim.child_systime
+>       0.62            -1.0%       0.61            +0.5%       0.62
+> -0.1%       0.62        reaim.child_utime
+>      66870           -10.0%      60187            -7.6%      61787
+> +1.1%      67636        reaim.jobs_per_min
+>      16717           -10.0%      15046            -7.6%      15446
+> +1.1%      16909        reaim.jobs_per_min_child
+
+OK. So the regression disappears when the conditions on runnable_avg are removed.
+
+In the meantime, I have been able to understand more deeply what was happeningi
+for this bench and how it is impacted by
+  commit: 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
+
+This bench forks a new thread for each and every new step. But a newly forked
+threads start with a load_avg and a runnable_avg set to max whereas the threads
+are running shortly before exiting. This makes the CPU to be set overloaded in
+some case whereas it isn't.
+
+Could you try the patch below ?
+It fixes the problem on my setup (I have finally been able to reproduce the problem)
+
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 0aeffff62807..b33a4a9e1491 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -807,7 +807,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+ 		}
+ 	}
+ 
+-	sa->runnable_avg = cpu_scale;
++	sa->runnable_avg = sa->util_avg;
+ 
+ 	if (p->sched_class != &fair_sched_class) {
+ 		/*
+-- 
+2.17.1
+
+
+
+>      97.84            -1.1%      96.75            -0.4%      97.43
+> +0.3%      98.09        reaim.jti
+>      72000           -10.8%      64216            -8.3%      66000
+> +0.0%      72000        reaim.max_jobs_per_min
+>       0.36           +10.6%       0.40            +7.8%       0.39
+> -1.1%       0.36        reaim.parent_time
+>       1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+> -11.9%       1.39 ±  4%  reaim.std_dev_percent
+>       0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+> -27.3%       0.00 ± 15%  reaim.std_dev_time
+>      50800            -2.4%      49600            -1.6%      50000
+> +0.0%      50800        reaim.workload
+> 
+> 
+> > > 
+> > > =========================================================================================
+> > > tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+> > > 
+> > > lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+> > > 
+> > > commit:
+> > >    9f68395333ad7f5bfe2f83473fed363d4229f11c
+> > >    070f5e860ee2bf588c99ef7b4c202451faa48236
+> > >    v5.7
+> > >    3e1643da53f3fc7414cfa3ad2a16ab2a164b7f4d (the test patch)
+> > > 
+> > > 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+> > > 3e1643da53f3fc7414cfa3ad2a1
+> > > ---------------- --------------------------- ---------------------------
+> > > ---------------------------
+> > >           %stddev     %change         %stddev     %change %stddev     %change
+> > > %stddev
+> > >               \          |                \          |                \
+> > > |                \
+> > >        0.69           -10.3%       0.62            -9.1%       0.62
+> > > -7.1%       0.64        reaim.child_systime
+> > >        0.62            -1.0%       0.61            +0.5%       0.62
+> > > +1.3%       0.63        reaim.child_utime
+> > >       66870           -10.0%      60187            -7.6%      61787
+> > > -6.1%      62807        reaim.jobs_per_min
+> > >       16717           -10.0%      15046            -7.6%      15446
+> > > -6.1%      15701        reaim.jobs_per_min_child
+> > >       97.84            -1.1%      96.75            -0.4%      97.43
+> > > -0.5%      97.34        reaim.jti
+> > >       72000           -10.8%      64216            -8.3%      66000
+> > > -5.7%      67885        reaim.max_jobs_per_min
+> > >        0.36           +10.6%       0.40            +7.8%       0.39
+> > > +6.9%       0.38        reaim.parent_time
+> > >        1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+> > > +32.5%       2.09 ±  6%  reaim.std_dev_percent
+> > >        0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+> > > +61.7%       0.01 ±  8%  reaim.std_dev_time
+> > >       50800            -2.4%      49600            -1.6%      50000
+> > > -1.3%      50133        reaim.workload
+> > > 
+> > > 
+> > > > > 
+> > > > > =========================================================================================
+> > > > > tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+> > > > > 
+> > > > > lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+> > > > > 
+> > > > > commit:
+> > > > >     9f68395333ad7f5bfe2f83473fed363d4229f11c
+> > > > >     070f5e860ee2bf588c99ef7b4c202451faa48236
+> > > > >     v5.7
+> > > > >     6b33257768b8dd3982054885ea310871be2cfe0b (Hillf's patch)
+> > > > > 
+> > > > > 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+> > > > > 6b33257768b8dd3982054885ea3
+> > > > > ---------------- --------------------------- ---------------------------
+> > > > > ---------------------------
+> > > > >            %stddev     %change         %stddev     %change %stddev     %change
+> > > > > %stddev
+> > > > >                \          |                \          |                \
+> > > > > |                \
+> > > > >         0.69           -10.3%       0.62            -9.1%       0.62
+> > > > > -10.1%       0.62        reaim.child_systime
+> > > > >         0.62            -1.0%       0.61            +0.5%       0.62
+> > > > > +0.3%       0.62        reaim.child_utime
+> > > > >        66870           -10.0%      60187            -7.6%      61787
+> > > > > -8.3%      61305        reaim.jobs_per_min
+> > > > >        16717           -10.0%      15046            -7.6%      15446
+> > > > > -8.3%      15326        reaim.jobs_per_min_child
+> > > > >        97.84            -1.1%      96.75            -0.4%      97.43
+> > > > > -0.5%      97.37        reaim.jti
+> > > > >        72000           -10.8%      64216            -8.3%      66000
+> > > > > -8.3%      66000        reaim.max_jobs_per_min
+> > > > >         0.36           +10.6%       0.40            +7.8%       0.39
+> > > > > +9.4%       0.39        reaim.parent_time
+> > > > >         1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+> > > > > +33.2%       2.11        reaim.std_dev_percent
+> > > > >         0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+> > > > > +65.3%       0.01 ±  3%  reaim.std_dev_time
+> > > > >        50800            -2.4%      49600            -1.6%      50000
+> > > > > -1.8%      49866        reaim.workload
+> > > > > 
+> > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > Zhengjun Xing
+> > > 
+> > > -- 
+> > > Zhengjun Xing
+> 
+> -- 
+> Zhengjun Xing
