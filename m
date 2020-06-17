@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209CE1FD984
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56CF1FD95A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgFQXPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:15:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31378 "EHLO mga18.intel.com"
+        id S1726931AbgFQXKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:10:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726763AbgFQXPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:15:17 -0400
-IronPort-SDR: 3zg/nwdTIU9DPfM284luz3cuuoyHr6QSknvPiY/bc5g2G4qwlLPrm+Pdcdze8Oqx2WwiQX9iul
- TolbZ4NEE49w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 16:15:16 -0700
-IronPort-SDR: ++RGzALe2pOvo6KRUl91nb+Pw4i5g1dF+OoqX3mgvwaHvhwzHsTgAWVyL7uzmhOmu+jxxAHkN+
- JuU1oDXQqCOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,523,1583222400"; 
-   d="scan'208";a="421305721"
-Received: from kleeve-mobl.ger.corp.intel.com (HELO localhost) ([10.252.50.166])
-  by orsmga004.jf.intel.com with ESMTP; 17 Jun 2020 16:15:12 -0700
-Date:   Thu, 18 Jun 2020 02:15:11 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v2] Documentation: tee: Document TEE kernel interface
-Message-ID: <20200617231511.GE62794@linux.intel.com>
-References: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
- <20200615201907.GE5416@linux.intel.com>
- <CAFA6WYOpXmdabrpbyJqeknkwv1NeD4+tp95zP+si23SSXDwJdQ@mail.gmail.com>
+        id S1726761AbgFQXKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 19:10:36 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D81F920734;
+        Wed, 17 Jun 2020 23:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592435436;
+        bh=iTeb2kX7xW5oxSvw8/1TZw92wiNZyuS3Q+0H+TGM910=;
+        h=Date:From:To:Cc:Subject:From;
+        b=l6RrJcxukVy+IEcXGhwAhUOUvaBegt20gGWOi5dMiBQiFybwYJDjSjY2b9Ia31kBG
+         trEeegmcSRzMNG4hUL7ZtPmevX7JB/D1t9I+23sRtYZTnZvPo9OGQXGb886Py5S9s2
+         PcHb2JDprgx3zpoAILbgq8tvv0uRsuN22gYG4/P0=
+Date:   Wed, 17 Jun 2020 18:15:57 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Karsten Keil <isdn@linux-pingi.de>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] mISDN: hfcsusb: Use struct_size() helper
+Message-ID: <20200617231557.GA1539@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFA6WYOpXmdabrpbyJqeknkwv1NeD4+tp95zP+si23SSXDwJdQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 07:20:17PM +0530, Sumit Garg wrote:
-> On Tue, 16 Jun 2020 at 01:49, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > On Thu, Jun 04, 2020 at 12:29:39PM +0530, Sumit Garg wrote:
-> > > Update documentation with TEE bus infrastructure which provides an
-> > > interface for kernel client drivers to communicate with corresponding
-> > > Trusted Application.
-> > >
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >
-> > Please at least broadly describe the update in the commit message.
-> >
-> 
-> How about following additional info to the above commit description?
-> 
-> Brief description of changes:
-> - Add a section to describe TEE kernel interface along with a TEE
-> client driver example snippet.
-> - Add a sub-section for OP-TEE driver to describe OP-TEE specific
-> device enumeration.
-> 
-> -Sumit
-> 
-> > /Jarkko
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-WFM
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-/Jarkko
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/isdn/hardware/mISDN/hfcsusb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/isdn/hardware/mISDN/hfcsusb.c b/drivers/isdn/hardware/mISDN/hfcsusb.c
+index 621364bb6b12..4274906f8654 100644
+--- a/drivers/isdn/hardware/mISDN/hfcsusb.c
++++ b/drivers/isdn/hardware/mISDN/hfcsusb.c
+@@ -261,8 +261,7 @@ hfcsusb_ph_info(struct hfcsusb *hw)
+ 		phi->bch[i].Flags = hw->bch[i].Flags;
+ 	}
+ 	_queue_data(&dch->dev.D, MPH_INFORMATION_IND, MISDN_ID_ANY,
+-		    sizeof(struct ph_info_dch) + dch->dev.nrbchan *
+-		    sizeof(struct ph_info_ch), phi, GFP_ATOMIC);
++		    struct_size(phi, bch, dch->dev.nrbchan), phi, GFP_ATOMIC);
+ 	kfree(phi);
+ }
+ 
+-- 
+2.27.0
+
