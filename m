@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8511FD8E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F731FD8E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 00:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgFQWdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 18:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S1727876AbgFQWdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 18:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgFQWdA (ORCPT
+        with ESMTP id S1727854AbgFQWdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:33:00 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CC9C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:59 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id g2so2315247lfb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:32:59 -0700 (PDT)
+        Wed, 17 Jun 2020 18:33:02 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE907C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:33:00 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id x18so4887785lji.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 15:33:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5vsSuAzVaD0q/Cs/PzaYkTdpFOxrfzC0EanL9gUbc9c=;
-        b=uLLPmU6lZ4gHlew6t1yhko8J/l/IVc71wqg9aecuIyc9XDz+XujTus68h1c5OC8qjR
-         2dipMWuiavsTtXtVI0cu/+Yw0UGXqaUTBUakKXUp3u5zpG7+0C5huKD6xegTRz9xZMvy
-         lXLU+KfsSgHL0hgvivNhc+wUsiu5GAkk82KSLNjs7kxLR3S17BSa48Q854CjqpF6Ks9Y
-         fKhDKMJMdxiKk9xYXn4z9MI9YhjMPsB+IC9DOlegKCAExzOI+1AA85w4qbdnKgUHxBVA
-         llGKrOiBEdAqRk3v6uZcXbMiE1uR0TPo8ySspTJymjoUYs7fI1hAXDsESFHDBGmnyjVa
-         zJAg==
+        bh=DTnN1Qd9XL+Q3/Xzr6hJSAyMU91ZuAFYJQwbqBZtvcY=;
+        b=Q146FF/nq+MAfYccQR1kIs3GUWuAZhEsgx/HXcUtPrQMLg1Mg+RNA1fdwxHS5lAAfy
+         sOgFjmEORhNl/CAOWc2VoMk2jb7+G/ZZ+niOE3QFW59Tkhv28PrKnJdBMmqd+U4Y4Ls5
+         gOwUlgTH0vNGwifLM1MJ3DqN9LE34Hpsc1D1GOuTPnm66OBvduKxB5I1UJ5RtlUiWWal
+         hAZMNnJOBOx5/mgn2CqyT0efglskibG8HEv992ExsXGs+UpTO4EecVH6O2394mgNbXgW
+         p8iay6e/Pz3O2DrTynxTy2JlHHVpFnhHHJAt86iRJ/8zYWjlVUC0vN5CZEbRHKwlhgdb
+         pSnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5vsSuAzVaD0q/Cs/PzaYkTdpFOxrfzC0EanL9gUbc9c=;
-        b=UWfhavxRP3XvDvo0av3rqyGfOCtfgo/JEjMQZ7YHb3NDh/rQZYG4zV0YEpRbuObtqv
-         fgZzg6ISLzqancgjUj4QM2N4XLl4RhHDcVAwOVG/IZ4hW9MRdMom67A6BMb9iudckeq2
-         8l9k7u/icbOAyFYJ6nIe6Un8Lg0RfPsFu52L4D0Hlr1xg58dyw/EHJV+fWtUlJp9Cy6i
-         OtyqVqlCydv/Q/zl4uLGuU4GrHcgLaQArhlxvhJqugDFU3uzzx7I2Qug4XecYw/rnTyk
-         yS1rt4VhQrbm3gioJvq6Db5H3yGMY/Vs2CdcHBwTwDt1GVK5qqmn2k3pnYmK4OkI30U7
-         f5IQ==
-X-Gm-Message-State: AOAM531lbZe6hLEZDIzJTd5IJ9zgBhvBMYSInZ11JWm+7EXxWfncrawK
-        vUMEvqxp99I+hqJI3SZC7Yk=
-X-Google-Smtp-Source: ABdhPJy1MZ48+WKPFuKZxwECSEF1jQfKx4O5foSIoJjBMO4vhXjUwAVeCgs4K2QLDXmSS1xPWp8pxg==
-X-Received: by 2002:a19:4c57:: with SMTP id z84mr568760lfa.213.1592433178215;
-        Wed, 17 Jun 2020 15:32:58 -0700 (PDT)
+        bh=DTnN1Qd9XL+Q3/Xzr6hJSAyMU91ZuAFYJQwbqBZtvcY=;
+        b=SY5FxaSyS5Bp8X0/HHQ4pCZm0hmQbnft+P/T7lIcZsrgKfI20NEZJP7kriOyj+T4RI
+         4IAz5R9iuvGOoP74+TieKMPAmCKaSunyl51RlTCZU9pVGwBGkfmjU4B77hMNc9tkJix4
+         RADHJj74mOhzUc9ZB5Co9Hs9nonGGCp4pRYLoPw/g+OptsJqVsUKWOLBB0xo/VgRsXew
+         MDaXDEFmmd1GF6crN6cd0PzMtTJskT8UDP6lD6Z1qYo+HC2G8BKNXjlV1Izazua1R4mK
+         AtWE/IjtA+CQNDi7SLorQVSKi+xU9Ic1a+HEbwx4NXzaFTsJ0GaPCQU804vSQ/A6SB6w
+         H6lA==
+X-Gm-Message-State: AOAM5330A1wVjRsEFrT0hY0kLf6Xl/Wynsqpk9GRdUVYe73RlKbt+PIS
+        3Bu2sGiniLCNjCG/RMqryII=
+X-Google-Smtp-Source: ABdhPJwhdCwN/f8LHIFgMw6Cx073H+VGydeUleO2xclVyfEpe7ig5C+oVXkIvyVsSCcrLw3kJmNuyg==
+X-Received: by 2002:a2e:a16a:: with SMTP id u10mr697169ljl.222.1592433179424;
+        Wed, 17 Jun 2020 15:32:59 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
-        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.57
+        by smtp.gmail.com with ESMTPSA id 203sm226079lfh.19.2020.06.17.15.32.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 15:32:57 -0700 (PDT)
+        Wed, 17 Jun 2020 15:32:58 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 Cc:     lgirdwood@gmail.com, broonie@kernel.org,
         linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/5] regulator: ltc3676: Constify ltc3676_regulators
-Date:   Thu, 18 Jun 2020 00:32:45 +0200
-Message-Id: <20200617223247.25566-4-rikard.falkeborn@gmail.com>
+Subject: [PATCH 4/5] regulator: max8907: Constify static structs
+Date:   Thu, 18 Jun 2020 00:32:46 +0200
+Message-Id: <20200617223247.25566-5-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
 References: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
@@ -66,35 +66,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ltc3676_regulators is not modified and can be made const to allow the
-compiler to put it in read-only memory.
+These are not modified so make them const to allow the compiler to put
+them in read-only memory.
 
 Before:
    text    data     bss     dec     hex filename
-   4361    2064       8    6433    1921 drivers/regulator/ltc3676.o
+   2753    7328       0   10081    2761 drivers/regulator/max8907-regulator.o
 
 After:
    text    data     bss     dec     hex filename
-   6121     304       8    6433    1921 drivers/regulator/ltc3676.o
+   9405     684       0   10089    2769 drivers/regulator/max8907-regulator.o
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/regulator/ltc3676.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max8907-regulator.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/ltc3676.c b/drivers/regulator/ltc3676.c
-index e12e52c69e52..093b3e4a6303 100644
---- a/drivers/regulator/ltc3676.c
-+++ b/drivers/regulator/ltc3676.c
-@@ -221,7 +221,7 @@ static const struct regulator_ops ltc3676_fixed_regulator_ops = {
- #define LTC3676_FIXED_REG(_id, _name, _en_reg, _en_bit)                \
- 	LTC3676_REG(_id, _name, fixed, LTC3676_ ## _en_reg, _en_bit, 0, 0)
+diff --git a/drivers/regulator/max8907-regulator.c b/drivers/regulator/max8907-regulator.c
+index 96dc0eea7659..1a6fd68f3fb1 100644
+--- a/drivers/regulator/max8907-regulator.c
++++ b/drivers/regulator/max8907-regulator.c
+@@ -109,7 +109,7 @@ struct max8907_regulator {
+ static const struct regulator_ops max8907_mbatt_ops = {
+ };
  
--static struct regulator_desc ltc3676_regulators[LTC3676_NUM_REGULATORS] = {
-+static const struct regulator_desc ltc3676_regulators[LTC3676_NUM_REGULATORS] = {
- 	LTC3676_LINEAR_REG(SW1, sw1, BUCK1, DVB1A),
- 	LTC3676_LINEAR_REG(SW2, sw2, BUCK2, DVB2A),
- 	LTC3676_LINEAR_REG(SW3, sw3, BUCK3, DVB3A),
+-static struct regulator_ops max8907_ldo_ops = {
++static const struct regulator_ops max8907_ldo_ops = {
+ 	.list_voltage = regulator_list_voltage_linear,
+ 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+ 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+@@ -128,7 +128,7 @@ static const struct regulator_ops max8907_fixed_ops = {
+ 	.list_voltage = regulator_list_voltage_linear,
+ };
+ 
+-static struct regulator_ops max8907_out5v_ops = {
++static const struct regulator_ops max8907_out5v_ops = {
+ 	.list_voltage = regulator_list_voltage_linear,
+ 	.enable = regulator_enable_regmap,
+ 	.disable = regulator_disable_regmap,
+@@ -145,7 +145,7 @@ static const struct regulator_ops max8907_bbat_ops = {
+ 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+ };
+ 
+-static struct regulator_desc max8907_regulators[] = {
++static const struct regulator_desc max8907_regulators[] = {
+ 	REG_MBATT(),
+ 	REG_LDO(SD1, "in-v1", MAX8907_REG_SDCTL1, 650000, 2225000, 25000),
+ 	REG_LDO(SD2, "in-v2", MAX8907_REG_SDCTL2, 637500, 1425000, 12500),
 -- 
 2.27.0
 
