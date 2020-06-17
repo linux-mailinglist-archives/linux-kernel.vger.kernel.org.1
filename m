@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062D01FD1F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27951FD1F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgFQQZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S1726969AbgFQQ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgFQQZ6 (ORCPT
+        with ESMTP id S1726329AbgFQQ0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:25:58 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDB6C06174E;
-        Wed, 17 Jun 2020 09:25:57 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x202so2267635oix.11;
-        Wed, 17 Jun 2020 09:25:57 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:00 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF59C06174E;
+        Wed, 17 Jun 2020 09:26:00 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id u23so2079978otq.10;
+        Wed, 17 Jun 2020 09:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1agMer8C/ub57ZSY/mSuYbhra637qhXpKJjyRETn6zE=;
-        b=GAhdcyuLO4MtBinoRDqDmQ+c1qxYfXyf5bbwZHCyU2KK/WEVCFizQK2ocvbs1Mzm44
-         lpr8ru5wl/w/0BpNxAqBEH+GcgSL6F54htJzQ7D23e9lQkLL+frPZSF7CFVtPheA11mo
-         6eCQClZmZl7bIv5S3OWdEnyFMcCuwgNJTl6ITyTqtLqWYrbKgsJa5GjeKYE11P6yYLlI
-         hykp+BkPwdiLOEESbFvO4noeUcDHj1sPNspfht3AKl3ccTiOHMLZoHaIDcqvwtj/1rD1
-         qISvcLG5WAHomcL0ghGc32uW9olwRlaBUJWc5BED4TbZAFWxVn3DH07NAHRaLpomVei9
-         fTIQ==
+        bh=Ps1bO1kQHItdDmcSsrlnZa+L4139j2nCHXNY+hwPMZE=;
+        b=rY7aGYuyvGNoUcTS7ONAtIYM5RurX0RW/QQNDXRPImZ8Ns72rgQ+9lL89BY04XrgP8
+         NNsTigo+RUdiNYGJ3DKTqgVKZWlUI1F6mARW2PfatGc5JfNaJyTdpgIlqVG4MfBSW4/3
+         KYkPLhiJGh9qTplV+grMuX7YOwoVxqsE5xkw9Y2fE/G77K+JJKzFjqt9Xts7Q5JccKIG
+         P2NJ+t7LS60oBQzECRupva66jKa2HFQUVaswXz4J+4Gu6a+u9ItOkBolT8izkaKMaW9k
+         Mm3LhOtuS7tgqHnvQRYS5hJff6MAG+ihe+Nq8SkOi/RNVjPom0DaCE5ECGbigalUmueg
+         s9XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1agMer8C/ub57ZSY/mSuYbhra637qhXpKJjyRETn6zE=;
-        b=Nhk2bbl9ZYZ/D0utvgVmyuM0aJRG5H5/QaOHvNtUt2EARexDa9IEzOxZuq7g4TrO5H
-         mdjernw5K9KTQZ07jJ0HR6JIVQGmUqgmcFEyCoWsk8sHlZX1bhe3qokpOWzi11ZxmdcF
-         iTncgpShJLeyQg2xSQlhvOj7Lcbq0lZ5iXtyCzWSMBFpxboQy2oFrk+STj4V8A5tjlND
-         xxB0kYGgR+gOBiCwoXejSZWoWTI/F+v8OqfPwDEXbkqgQYVSZrCKznlmZVqyfrVopibI
-         Ybo0bxajzgdC41WVCHbO3NvtrotpztLfaCk8ewD/Ol0TQ8pMRkEqbZf5dLr2jWQRoh6K
-         yGbg==
-X-Gm-Message-State: AOAM53326K2S7iM5qhdUzLsbZvUeXEH3ANjkqWHTOdkyuw/JThi5WAys
-        8lqrqB2VvZJDfHYNEJYvOAE=
-X-Google-Smtp-Source: ABdhPJzHaPpZLtZAuUTt1Yg11Lw9NyLBth9teZObNxvtLaSExaCwzC6BbA8qcvrffrCb2nbtWYbq7Q==
-X-Received: by 2002:aca:f141:: with SMTP id p62mr8268942oih.136.1592411157077;
-        Wed, 17 Jun 2020 09:25:57 -0700 (PDT)
+        bh=Ps1bO1kQHItdDmcSsrlnZa+L4139j2nCHXNY+hwPMZE=;
+        b=fWbUqSV+pOtjI3qyncvSEIuJX2zbKL2L4PfiXfuM+vQWirddp4X+MYkU0PjNige+8E
+         4nh7uGLrOISqc/FAGQgBSOMpA6Wi/PLXcXDYX2ohwO29wR4hjuIuxOCNaGQmoLgpYrBU
+         cxf9w+5a5XYMny0UEcEySPNR4+Dt6wjToSuFfsRj2OZvmondKlZuAh7Hiv+K6/Zh7IT4
+         qQkDa7KXdp7SCbjmKzPkmSwh4DnUmBoxmKm602gbAiK9oEOMRfVthNZkNb4P6l3eHFHb
+         tswDltOAbghvo7aIQ5Ed0Ygh8pzuOBtzyXp74/JuN8Tb/fXL3c2080+GWL1G5b4ujXyR
+         A0QA==
+X-Gm-Message-State: AOAM532eS150PFGj53ZomHOldHgPN7jgogt7VS7Ib9R0ptqjkmzHsnNP
+        j8rJF1NYInqDa/iwW1GZgXY=
+X-Google-Smtp-Source: ABdhPJx06rIE7+OLPegglj+QtfIReATt29iqjezv+3U/G3UzLsUWDwl0LUmNk6PX8CsR4sqcS4bEcw==
+X-Received: by 2002:a9d:22aa:: with SMTP id y39mr7326189ota.76.1592411160154;
+        Wed, 17 Jun 2020 09:26:00 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.25.55
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.25.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:25:56 -0700 (PDT)
+        Wed, 17 Jun 2020 09:25:59 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Petr Mladek <pmladek@suse.com>,
+        Orson Zhai <orson.zhai@unisoc.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v3 01/21] dyndbg-docs: eschew file /full/path query in docs
-Date:   Wed, 17 Jun 2020 10:25:14 -0600
-Message-Id: <20200617162536.611386-2-jim.cromie@gmail.com>
+        Will Deacon <will@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v3 02/21] dyndbg-docs: initialization is done early, not arch
+Date:   Wed, 17 Jun 2020 10:25:15 -0600
+Message-Id: <20200617162536.611386-3-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -70,74 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regarding:
-commit 2b6783191da7 ("dynamic_debug: add trim_prefix() to provide source-root relative paths")
-commit a73619a845d5 ("kbuild: use -fmacro-prefix-map to make __FILE__ a relative path")
-
-2nd commit broke dynamic-debug's "file $fullpath" query form, but
-nobody noticed because 1st commit had trimmed prefixes from
-control-file output, so the click-copy-pasting of fullpaths into new
-queries had ceased; that query form became unused.
-
-Removing the function is cleanest, but it could be useful in
-old-compiler corner cases, where __FILE__ still has /full/path,
-and it safely does nothing otherwize.
-
-So instead, quietly deprecate "file /full/path" query form, by
-removing all /full/paths examples in the docs.  I skipped adding a
-back-compat note.
+since cf964976484 in 2012, initialization is done with early_initcall,
+update the Docs, which still say arch_initcall.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../admin-guide/dynamic-debug-howto.rst       | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ Documentation/admin-guide/dynamic-debug-howto.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 1012bd9305e9..57108f64afc8 100644
+index 57108f64afc8..1423af580bed 100644
 --- a/Documentation/admin-guide/dynamic-debug-howto.rst
 +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -70,10 +70,10 @@ statements via::
+@@ -250,8 +250,8 @@ the syntax described above, but must not exceed 1023 characters.  Your
+ bootloader may impose lower limits.
  
-   nullarbor:~ # cat <debugfs>/dynamic_debug/control
-   # filename:lineno [module]function flags format
--  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:323 [svcxprt_rdma]svc_rdma_cleanup =_ "SVCRDMA Module Removed, deregister RPC RDMA transport\012"
--  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:341 [svcxprt_rdma]svc_rdma_init =_ "\011max_inline       : %d\012"
--  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:340 [svcxprt_rdma]svc_rdma_init =_ "\011sq_depth         : %d\012"
--  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svc_rdma.c:338 [svcxprt_rdma]svc_rdma_init =_ "\011max_requests     : %d\012"
-+  net/sunrpc/svc_rdma.c:323 [svcxprt_rdma]svc_rdma_cleanup =_ "SVCRDMA Module Removed, deregister RPC RDMA transport\012"
-+  net/sunrpc/svc_rdma.c:341 [svcxprt_rdma]svc_rdma_init =_ "\011max_inline       : %d\012"
-+  net/sunrpc/svc_rdma.c:340 [svcxprt_rdma]svc_rdma_init =_ "\011sq_depth         : %d\012"
-+  net/sunrpc/svc_rdma.c:338 [svcxprt_rdma]svc_rdma_init =_ "\011max_requests     : %d\012"
-   ...
+ These ``dyndbg`` params are processed just after the ddebug tables are
+-processed, as part of the arch_initcall.  Thus you can enable debug
+-messages in all code run after this arch_initcall via this boot
++processed, as part of the early_initcall.  Thus you can enable debug
++messages in all code run after this early_initcall via this boot
+ parameter.
  
- 
-@@ -93,7 +93,7 @@ the debug statement callsites with any non-default flags::
- 
-   nullarbor:~ # awk '$3 != "=_"' <debugfs>/dynamic_debug/control
-   # filename:lineno [module]function flags format
--  /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svcsock.c:1603 [sunrpc]svc_send p "svc_process: st_sendto returned %d\012"
-+  net/sunrpc/svcsock.c:1603 [sunrpc]svc_send p "svc_process: st_sendto returned %d\012"
- 
- Command Language Reference
- ==========================
-@@ -166,13 +166,12 @@ func
- 	func svc_tcp_accept
- 
- file
--    The given string is compared against either the full pathname, the
--    src-root relative pathname, or the basename of the source file of
--    each callsite.  Examples::
-+    The given string is compared against either the src-root relative
-+    pathname, or the basename of the source file of each callsite.
-+    Examples::
- 
- 	file svcsock.c
--	file kernel/freezer.c
--	file /usr/src/packages/BUILD/sgi-enhancednfs-1.4/default/net/sunrpc/svcsock.c
-+	file kernel/freezer.c	# ie column 1 of control file
- 
- module
-     The given string is compared against the module name
+ On an x86 system for example ACPI enablement is a subsys_initcall and::
 -- 
 2.26.2
 
