@@ -2,140 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A56A1FC84D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262D61FC857
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 10:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgFQIHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 04:07:46 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:64552 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgFQIHp (ORCPT
+        id S1726845AbgFQIKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 04:10:39 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:62926 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgFQIKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 04:07:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1592381296; x=1623917296;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=jWtm7rVWa/Mms7Ls7jt24UAVodtoktsdeNsPftnrdJI=;
-  b=mTYsO/Ba38VxIzXA90s5QhpFwGXCpY6oY37gB9MoH2RiZ4OFVzErWeCa
-   QEenucMt/EdmxDN+FRI9wVM4D4g0dsA2GX0sPM2D7OPAjEUy3UOITu2+r
-   AYq/Xca4X6KLDoxw5FEby06174uFhxwfoR1c9/RfYGdai8vLDhy+upocr
-   JcDHNYzN+mXdBHaYMh/jn2mBwbyNYifsAcdEh0rsVEa2dmOwZXiHyQsNf
-   iuABr9d0KprtEsmbmwundkkzu6C8xRclkMm9wf/Rph6tdZZvfmSC/wRAe
-   CD+OLwNjLyoWQcHcVev8EJ8ptZRY3bqFQLizYPwclAGlf7x5341dtTaBI
-   g==;
-IronPort-SDR: m4xM9zZNJWYbxzieSTDEoulztNet5h1M9knotRz2TXHxlTD0IkupMzQjjoXYHmUZift/h7wHIz
- Xufc4sBZRRjWagw+OqBFg68rfmicTOcSuomZ9D31DVoVa4wCG3iAVInRW/fRMT0iA/tx0tuUAe
- WzuqAWLuE00Dc66sTOh76Hold5Z6QG/7xSntRvrsssELs/AYlvoZDXBiPj0VuF3XhdYJH6Dv9N
- wTRHla0kFymV+SnwjXY8ez3lDvI2jR3NtJ13reOLd5Z8+fuDXDYrtWFq0RwcSe8aO9LbRg7oLK
- CyQ=
-X-IronPort-AV: E=Sophos;i="5.73,522,1583164800"; 
-   d="scan'208";a="243155589"
-Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jun 2020 16:08:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J+8xB1ZfO6TAjxRCOSzGsw5IzDtPlCsLctNaX1TJrP33LWUtLVeaFRWbt67Iun+0L4pL1Ypj85KYha0snruU+90j0N6LbscCJAAKvUuisEgthClu2j7TSsTPpVT41GMZPHedMP9RRuXochQumW+ov7WISBrM6599Cf1SpnREK0V4t+KTKF1j8RzckwCOc6bFKVQMrbnPZzrLHFlduLiRCRZwnRYIovowO/2k9Ukqvfe5xtv2nkmS5kGPGsjH6fE7OUACvM/3/lA+jzXSqD5of4hb51IcGWxYvO2HyVeaDSVJ0atylaT8Ovb9snD/s3LZUWNZ/vfT4SYfVr6fV+F6MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jWtm7rVWa/Mms7Ls7jt24UAVodtoktsdeNsPftnrdJI=;
- b=fivAEg6Ee2zbfwMsnw4IJ3sNV7dG2cmyFBunvnrJxz46IkmboCNz6oADFC34HoueogJxjfdljntPb8Vz7Kw8tIpEka2Jq8v/7DWAfrPyycKvPvQBEEQisWHkPU91KuUrlYFGbDr9w1GYUBJSv7CZ1Hj4lrYRi11rfiSM9I1gBLNs99BKnnboya1XTUrtBwsWjrOJC5ceeVwjkcs90Tc8te+kFuma37z1EKnioG5EPtSkYluXkGiMqH1Kdk48oPXY87x8Fipw7c/kzgujUcJRjiF5M9ZfjjTLG/J2OGFFK6TzA+DBkOPanAINMrMmKbltJMu2wKKbfJbGh2FCYZAwUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jWtm7rVWa/Mms7Ls7jt24UAVodtoktsdeNsPftnrdJI=;
- b=xIbdLpTEaSdIEIVYXMdJJ/HjqHfw2IqYrHqsyO0XeEHjq+LbYh9Z4m0lMZM/4FNnfPmGyfkJBL5E4r1xgu2tq4nE3KamBpGON16ioFJ5+Jlym61Tdy6uzs4OXD8gQs32GdCM/lrKwGY2gAAebyBaV/PNkZ0gJZiMj8EYhFVOtTU=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB3998.namprd04.prod.outlook.com (2603:10b6:805:45::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.18; Wed, 17 Jun
- 2020 08:07:40 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3109.021; Wed, 17 Jun 2020
- 08:07:40 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: RE: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
-Thread-Topic: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
-Thread-Index: AQHWQvePZuXDGcRfX0mZaBS+6LSmD6jcdgAA
-Date:   Wed, 17 Jun 2020 08:07:40 +0000
-Message-ID: <SN6PR04MB46405EC52240E00F5D634E2AFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
-        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
-        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
-        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p4>
- <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
-In-Reply-To: <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8533f56b-b819-4e58-c8e7-08d81295819b
-x-ms-traffictypediagnostic: SN6PR04MB3998:
-x-microsoft-antispam-prvs: <SN6PR04MB399811A8905A1F9C5F638E2DFC9A0@SN6PR04MB3998.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 04371797A5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CXHS9N7OEvCEPHlDJgkLx0n8G+re6E1ZIZD1YzJSh627C6/wxJ1Ie6G7axgyrHcGgEewntsnBwnpKxTz/r6ou3lb+HiG1KiRABKG6a5hiJNJfsIdXUUSRqKLEjKu9CTXvinyAGjxA2xyb8By2KF43K2O47oBly5jNIluZNQ7yO6iQjdDUyM/QlFv0EfX6icx5aCEPoeXvAb7vmH0mVu/qYUqNGFn2TfKGER3b8OocmnbdRxTu7VDDeVMZVFN6RCizAygCAgq3m6+S/xYnHozNKmhjvs5tqqqOskktjyohCzQyeWHvVz8LcQS98HTsM/xkKjobKi1/WbLmDiME/4SrZqvyj2Xmdc5fCKUQfD37NTeSyVT4HmWk/0DOdzQxSGT
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(55016002)(4326008)(7416002)(66556008)(9686003)(71200400001)(66476007)(33656002)(52536014)(66946007)(76116006)(66446008)(64756008)(86362001)(2906002)(4744005)(54906003)(5660300002)(7696005)(316002)(26005)(8936002)(478600001)(6506007)(8676002)(110136005)(186003)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: prQ9PlF8By8r1XXJHTFz8d9hOy9mJErrKa2kSD/Ysj7K/+bJPz27ARp/U5Xev4k2yNIxOymfE8u40EGb+45lmfSlfX046eFroTrtZxi8m6HLf/PgZM+xF7fE+mqfA+P3SPMuPpSZlM2i5prhgRMb0QO33k/MA/GO+SQkCiuh0JGrz0DW7T6VPy85yGR33ko8PV+40Ie6xzGwLnJsL0r1RktRfHeJphmFSNXQz8S5cxVTDf7WspvSAV0PfO1zPHSjFQfIuxYBqN36wCJs7OjR1b9WMbuPSnX5y9h61sV4+Gp4QHHAe4Mv41BE17XtRYE3HUQwfTR6DQiSVbJ3PDAGYzQQF9A8Z8WshiUiUYBVF+scIi+zQ1+PaPVmlCUySOxkQjQ9o5yvdOblHGYWBHtbEhpF1HSJpMhGlaQ+UtdwRNDeIfTmYtPRg1KtDL04F/PzVKR+Wjq75CZ84pAJJRYE+g10xZGVDnnIvy/OVAI7wE4=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 17 Jun 2020 04:10:36 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200617081033epoutp048481312701c97cc9c75c7fe93b6c012e~ZRnoBqyyK1961119611epoutp04Y
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 08:10:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200617081033epoutp048481312701c97cc9c75c7fe93b6c012e~ZRnoBqyyK1961119611epoutp04Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592381433;
+        bh=6vBzU09E7w5ohkmbvcEsyaVQaTCwxwjlhZoB0mwElNw=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=qC3A3IiIjrTtLfQmzefJ/IVNwmsSodYJEV3LTQftYnS6+tK8vEeqm2L0MvrnTcBVb
+         xcTnAmL3WvIWxgljyoW5UTC+7KJpr0u0sdx/F/MGLd/7JS+ruhXQIoMdzGH7bQYQQm
+         d4UdUtHeQrOhcrmyrVxGttaIhSqKCrNcZwuxD9ig=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200617081032epcas1p1df60b68c9bddac884944dfae8bf306ff~ZRnnqeNU32850828508epcas1p1g;
+        Wed, 17 Jun 2020 08:10:32 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49myRq4PhLzMqYlp; Wed, 17 Jun
+        2020 08:10:31 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FC.48.28581.6FFC9EE5; Wed, 17 Jun 2020 17:10:30 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200617081029epcas1p40ea7f1a3c20c83191d8547edb71648a5~ZRnkeouBL1218912189epcas1p47;
+        Wed, 17 Jun 2020 08:10:29 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200617081029epsmtrp2d3f6269030e73b83a8e229e452a73e4f~ZRnkcwnH22839328393epsmtrp2k;
+        Wed, 17 Jun 2020 08:10:29 +0000 (GMT)
+X-AuditID: b6c32a38-2e3ff70000006fa5-c2-5ee9cff66040
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0F.DD.08382.5FFC9EE5; Wed, 17 Jun 2020 17:10:29 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200617081029epsmtip1788b93e9b8ce8991b83b76a39b4a9d20~ZRnkQPbMG2917829178epsmtip1d;
+        Wed, 17 Jun 2020 08:10:29 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Hyunchul Lee'" <hyc.lee@gmail.com>,
+        "'Namjae Jeon'" <namjae.jeon@samsung.com>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200616053445.18125-1-hyc.lee@gmail.com>
+Subject: RE: [PATCH v2] exfat: call sync_filesystem for read-only remount
+Date:   Wed, 17 Jun 2020 17:10:28 +0900
+Message-ID: <42fb01d6447e$c372d860$4a588920$@samsung.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8533f56b-b819-4e58-c8e7-08d81295819b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2020 08:07:40.5213
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WbZq+hy3c/N94smy/UfsuxmTa+uQ6Xh8gU+xfUvU4nJgA1GcpdkDIFFGKfOBEQhaJPZPCE7TWgheRurjcSElzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3998
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQJvI9IWjSo26kFx55d3RL5JRBWksAG87Uq/p5zOWdA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmge638y/jDBZtZLW4dv89u8WevSdZ
+        LC7vmsNm8WN6vQOLx85Zd9k9+rasYvT4vEkugDkqxyYjNTEltUghNS85PyUzL91WyTs43jne
+        1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaJmSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYp
+        tSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEnY8miH0wFO3kqFk+7wtbA+Jmzi5GTQ0LA
+        ROJm91FGEFtIYAejxK6uii5GLiD7E6PE6ldn2SGcb4wSreevsXQxcoB17JxfDhHfyygxc89z
+        NgjnJaPEj85/LCCj2AR0JZ7c+MkMYosIhEr0d00CW8Es4Cxx+MYpZpBBnALmEv0z80BMYQFP
+        iR8fYkAqWARUJXZPO8MEYvMKWEr8n7uKBcIWlDg58wkLxBR5ie1v5zBDPKAgsfvTUVaQMSIC
+        VhJzXkKViEjM7mxjBrlMQuAru0Tn2tMsEPUuEq3vu9ggbGGJV8e3sEPYUhKf3+2FitdL7F51
+        igWiuYFR4sijhVDNxhLzWxaCnc8soCmxfpc+RFhRYufvuVAf8km8+9rDCgkqXomONiGIEhWJ
+        7x92ssCsuvLjKtMERqVZSD6bheSzWUhemIWwbAEjyypGsdSC4tz01GLDAhPkmN7ECE6FWhY7
+        GOe+/aB3iJGJg/EQowQHs5IIr/PvF3FCvCmJlVWpRfnxRaU5qcWHGE2BYT2RWUo0OR+YjPNK
+        4g1NjYyNjS1MzMzNTI2VxHlPWl2IExJITyxJzU5NLUgtgulj4uCUamCy9A6V22j7fFbtRV82
+        7km7WEyfzZLbErdjyrpdmqdfRfxkWT7l6r2WjxrTXLXiX3OdTT/OfcfnoLGkncaz5I6dosIW
+        r7o11aLjJqdrzW4/XrsxyMLIRO6U/sY8s4bKmRcOM6W97nzY9v3hCvadVw4Z8Tu/LpzqahVZ
+        ov6sqenOr7PXjKb2SYrt1V/84unVh5dnbjTpzV35uaLQeOqd/kSn0OXrUiVKbJetvVSyYa7V
+        q0QOvYe8zjZ73uzIebTvPzd71L64TOfz3RYZDFpFDYybdkuusmc4cddP6MUyC/3tU8R3/r9m
+        lNgWzDQr9UZeVOOH9R3/H3Flhq1+tfvYzu3bjPQKtNf9e7LAVl058rW0EktxRqKhFnNRcSIA
+        OuOiBA4EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnO7X8y/jDDp72C2u3X/PbrFn70kW
+        i8u75rBZ/Jhe78DisXPWXXaPvi2rGD0+b5ILYI7isklJzcksSy3St0vgyliy6AdTwU6eisXT
+        rrA1MH7m7GLk4JAQMJHYOb+8i5GLQ0hgN6PE/pfvmSHiUhIH92lCmMIShw8XQ5Q8Z5Q48LyZ
+        qYuRk4NNQFfiyY2fzCC2iECoxKJPZ9hBbGYBV4n5z1ezQTR0MEpMmb+CBWQQp4C5RP/MPBBT
+        WMBT4seHGJByFgFVid3TzoCN5BWwlPg/dxULhC0ocXLmE7BOZgE9ibaNjBDT5SW2v50DtlVC
+        QEFi96ejrCAlIgJWEnNeskCUiEjM7mxjnsAoPAvJoFkIg2YhGTQLSccCRpZVjJKpBcW56bnF
+        hgWGeanlesWJucWleel6yfm5mxjB0aCluYNx+6oPeocYmTgYDzFKcDArifA6/34RJ8SbklhZ
+        lVqUH19UmpNafIhRmoNFSZz3RuHCOCGB9MSS1OzU1ILUIpgsEwenVAOTveFs9wPBPkZPCw2E
+        3z7859Ytus7ReVVYecK8/4d8eROX7xfi5jho3PBr5rqOKe+uPyg/vfxLgPjcxN+fsv6FOK5J
+        CduaxC69mtP8ryHLmZmPTv+YF/3tw6oGL2Opz+ZB2Taz5tgreBYGzfadqnRn02YfQS39321/
+        FmeUCL6d2pDS91d710bNrkfe7yKvGJnsPGzzVeDMx+j0vMWlO2f/OhrT8+HkJ87D7xKc98ca
+        LfmgtCfvm0er5+2+z/yv3ZjPnFdjXXZi9Z317bvOZl079nHvtqjPW+LuMLomzTMsWP74vfzq
+        y9dPW7xUFU1fvF3hL1uf0WExBwmF+l+TXh8N/vR5zuXPyd6azI9++3RpdCqxFGckGmoxFxUn
+        AgAnPX9/9QIAAA==
+X-CMS-MailID: 20200617081029epcas1p40ea7f1a3c20c83191d8547edb71648a5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200616053459epcas1p4e7a4908eda3785d6f5cbb71150cbe50b
+References: <CGME20200616053459epcas1p4e7a4908eda3785d6f5cbb71150cbe50b@epcas1p4.samsung.com>
+        <20200616053445.18125-1-hyc.lee@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiANCj4gVGhpcyBpcyBhIHBhdGNoIGZvciB0aGUgSFBCIG1vZHVsZS4NCj4gVGhlIEhQQiBt
-b2R1bGUgcXVlcmllcyBVRlMgZm9yIGRldmljZSBpbmZvcm1hdGlvbiBkdXJpbmcgaW5pdGlhbGl6
-YXRpb24uDQo+IFdlIGFkZGVkIHRoZSBleHBvcnQgc3ltYm9sIHRvIHR3byBmdW5jdGlvbnMgaW4g
-dWZzaGNkLmMgdG8gaW5pdGlhbGl6ZQ0KPiB0aGUgSFBCIG1vZHVsZS4NCj4gDQo+IFRoZSBIUEIg
-bW9kdWxlIGNhbiBiZSBsb2FkZWQgb3IgYnVpbHQtaW4gYXMgbmVlZGVkLg0KPiBUaGUgbWluaW51
-bSBzaXplIG9mIHRoZSBtZW1vcnkgcG9vbCB1c2VkIGluIHRoZSBIUEIgbW9kdWxlIGlzDQpUeXBv
-IG1pbmltdW0NCg0KPiBpbXBsZW1lbnRlZA0KPiBhcyBhIG1vZHVsZSBwYXJhbWV0ZXIsIHNvIHRo
-YXQgaXQgY2FuIGJlIGNvbmZpZ3VyYWJsZSBieSB0aGUgdXNlci4NCj4gDQo+IFRvIGd1cmFudGVl
-IGEgbWluaW11bSBtZW1vcnkgcG9vbCBzaXplIG9mIDRNQjoNCj4gJCBpbnNtb2QgdWZzaHBiLmtv
-IHVmc2hwYl9ob3N0X21hcF9rYnl0ZXM9NDA5Ng0KWW91IGFyZSBnb2luZyB0aHJvdWdoIGEgbG90
-IG9mIHRyb3VibGVzIHRvIG1ha2UgaXQgYSBsb2FkYWJsZSBtb2R1bGUuDQpXaGF0IGFyZSwgaW4g
-eW91ciBvcGluaW9uLCB0aGUgcHJvcyBhbmQgY29ucyBvZiB0aGlzIGRlc2lnbiBkZWNpc2lvbj8N
-Cg==
+> We need to commit dirty metadata and pages to disk before remounting exfat
+> as read-only.
+> 
+> This fixes a failure in xfstests generic/452
+> 
+> generic/452 does the following:
+> cp something <exfat>/
+> mount -o remount,ro <exfat>
+> 
+> the <exfat>/something is corrupted. because while exfat is remounted as
+> read-only, exfat doesn't have a chance to commit metadata and vfs
+> invalidates page caches in a block device.
+> 
+> Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
+
+Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+
+> ---
+> Changes from v1:
+> - Does not check the return value of sync_filesystem to
+>   allow to change from "rw" to "ro" even when this function
+>   fails.
+> - Add the detailed explanation why generic/452 fails
+> 
+>  fs/exfat/super.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/fs/exfat/super.c b/fs/exfat/super.c index
+> e650e65536f8..253a92460d52 100644
+> --- a/fs/exfat/super.c
+> +++ b/fs/exfat/super.c
+> @@ -693,10 +693,20 @@ static void exfat_free(struct fs_context *fc)
+>  	}
+>  }
+> 
+> +static int exfat_reconfigure(struct fs_context *fc) {
+> +	fc->sb_flags |= SB_NODIRATIME;
+> +
+> +	/* volume flag will be updated in exfat_sync_fs */
+> +	sync_filesystem(fc->root->d_sb);
+> +	return 0;
+> +}
+> +
+>  static const struct fs_context_operations exfat_context_ops = {
+>  	.parse_param	= exfat_parse_param,
+>  	.get_tree	= exfat_get_tree,
+>  	.free		= exfat_free,
+> +	.reconfigure	= exfat_reconfigure,
+>  };
+> 
+>  static int exfat_init_fs_context(struct fs_context *fc)
+> --
+> 2.17.1
+
+
