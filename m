@@ -2,146 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB8F1FC2A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABD1FC2A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 02:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgFQAPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 20:15:35 -0400
-Received: from mail-eopbgr1410099.outbound.protection.outlook.com ([40.107.141.99]:6320
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725894AbgFQAPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 20:15:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z3ZWcGKnVZOoJm0LkPwx92hGz7NzUtzCOul98BJdRekrBM8cicQEpaEcvDtXfNmRyaqK65uXmBTC/Vsa3Nyj+vRosO9O5GQwLAOxEnphjfQRrA84IUf+b2N9C5+BFAP6k/lOCxfiEnHUYiSJroXqztp8m5hraPffNRF5QNA9CAgJtihbLLas5nTP3AJ7M64KTm7LTf8kigxmUCdTYEZpSbNrY86a/kh3EexhbyDYddR/o4H4CJquQ/Erw8Vrbu+jDLLr2RSMRRmE3ssGlDNPNTZ9G6ZG03wdwQCRSNeXSr7Pv2tN0d6RQRAn7KlXHl7kU86Udal4z+KN8kT71VCAVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s7VqjXBouL0QsBle2LCVDmMjRtXjanxNMZi2XzINDps=;
- b=MoLtzC0USdC/Z+bAjfyk/8Ou2lSIctfo9vhD+CUwRPqJt8GZJRnNGtEtcaXk8u4FGle1jq4NMB/aOPd5C5krX4QtOXtkvsDBSKbjJ6TPZUkhTpbtIi9uSzMUvaxOLqitdgdTw+6jWopqoU3OU5LPaibDMSoyzKd1yi5Y4WuXAAbf2Unz52i5G6l3B+04ZdDmeEVcggKEZNfV8egdWcn9DXzgGUcL/HDZwyO/LXXptcAQMVvltm4hbXq4dmVmtxGMSJy+1R1ZtNdUmYRxXCVnJtcMgPvo9SrhlJfOsZ4V8sA2LD2G/LdjVk0E+xn+xlMrGYa4yfYSu2QhwQD837tcLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
- s=selector2-Sony-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s7VqjXBouL0QsBle2LCVDmMjRtXjanxNMZi2XzINDps=;
- b=K6LWcEU7bEl9Hf4538jr4hRsMNUYyVGkgMQNsXpxMLrb9z9JSacpLNtZ6LUVencQ+gGZwpfs6p5f0qzHAyvrpFJW934vRhW/js2GYjEK9viRFTTcy6fQ+r/Ett+BqK9tg2/FYxuLTXezfuuvC3U1WjhaeIw4U2zlPuXO/ZRmBe4=
-Received: from TYXPR01MB1503.jpnprd01.prod.outlook.com (2603:1096:403:e::12)
- by TYXPR01MB1630.jpnprd01.prod.outlook.com (2603:1096:403:c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Wed, 17 Jun
- 2020 00:15:15 +0000
-Received: from TYXPR01MB1503.jpnprd01.prod.outlook.com
- ([fe80::6508:8e66:164c:3dbe]) by TYXPR01MB1503.jpnprd01.prod.outlook.com
- ([fe80::6508:8e66:164c:3dbe%7]) with mapi id 15.20.3088.029; Wed, 17 Jun 2020
- 00:15:15 +0000
-From:   "Tada, Kenta (Sony)" <Kenta.Tada@sony.com>
-To:     Waiman Long <longman@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "pawan.kumar.gupta@linux.intel.com" 
-        <pawan.kumar.gupta@linux.intel.com>,
-        "asteinhauser@google.com" <asteinhauser@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>,
-        "Tada, Kenta (Sony)" <Kenta.Tada@sony.com>
-Subject: RE: [PATCH] x86/speculation: Check whether speculation is force
- disabled
-Thread-Topic: [PATCH] x86/speculation: Check whether speculation is force
- disabled
-Thread-Index: AdY5cwNjHOfD1WXzRFK+VbW3aFu0ZgASi0kAACClRRAAErYHAAApscfAAkJ7FbA=
-Date:   Wed, 17 Jun 2020 00:15:15 +0000
-Message-ID: <TYXPR01MB1503B0B707C7FB39E25D746AF59A0@TYXPR01MB1503.jpnprd01.prod.outlook.com>
-References: <TYXPR01MB150318D484EE220452A5085AF5880@TYXPR01MB1503.jpnprd01.prod.outlook.com>
- <d0356d0a-83dd-f3ae-c0ba-82089976c014@redhat.com>
- <TYXPR01MB1503D6F73C6356DED5D2C849F5890@TYXPR01MB1503.jpnprd01.prod.outlook.com>
- <b7242c5d-f667-1cdb-19ff-8f7ee06b9e7d@redhat.com>
- <TYXPR01MB150388D14E054374FDB760EDF5860@TYXPR01MB1503.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYXPR01MB150388D14E054374FDB760EDF5860@TYXPR01MB1503.jpnprd01.prod.outlook.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=sony.com;
-x-originating-ip: [211.125.130.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6c3dc858-15cb-4630-3fc8-08d8125382c5
-x-ms-traffictypediagnostic: TYXPR01MB1630:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYXPR01MB1630840B9C13F6898CAD35EEF59A0@TYXPR01MB1630.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 04371797A5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nYLxlKGmjBD6ZvsydHb4kWVF9Y22IP1lJcTpnbQW2xzrC78GBxc8sLjnSTLHzfud5B1wIxA9rbNDGYVCPqeQKHue3yj5AB3DrFy6I9+MWB136BssYb7L5LcSTPjoVpl0l3VW8RGAYh+q41Ip6THeMHD+Y/GVOs1gBEqZEXkM5Rm5Yh7CiLS0/vQD9cfOtyLsQhhVqxsnyogJhK5l4G9TjH6DYuCA0tMLg2g/OufYq0xuuGsl4fQTRXwl5bvAcv+YFZSBIBsnwqCMuUcph6upedDHNILG8AEUXdG+2qIM+5vU99BKxm+LqyVe/f0q4G3cL3ir9YBjtH6Z10fPhC74IDe2XK3vIqPw+jh2+YVMdeiJR49ZRz8w8SYN0CGKPzS0nqUyxm6Gl36IZTGaSUKkzdUrsA9qEJyurhtdLzrwzVeertMga9rp0kT5mO+BCeoH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYXPR01MB1503.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(66446008)(5660300002)(86362001)(53546011)(2906002)(33656002)(52536014)(26005)(7416002)(6506007)(186003)(64756008)(7696005)(71200400001)(8936002)(83380400001)(55016002)(107886003)(54906003)(8676002)(110136005)(966005)(4326008)(66946007)(66556008)(498600001)(76116006)(66476007)(9686003)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 0emMSvh3HjDFrzIIwYukqOy0IDO0+jzmW6cwYL9++vKTdcrbHsiYoMp52yoauE//XmyTgzgNHO2CsK3YqpFgyGmkdEdxp2NhlNaMOdeyw6uWMT+fick3YmthsWKe8n5L1RMGuLt4988/UGtOJzyv4n1td8BKpZCvDAi8l424sWWIaJt9T2H/zhjP46h3H1Znm31vmpLfoZuMZiuekMSXPAg/xzRs/e8N4kQRhpYNunDKOyHQDF555gx2ZztfGy7luPSf34xyJgo3A1nyRXFtEmjGObIssbGx9F2bSpGJBY09Krolc48f7+8CftKEOvqP++7ikT0MDeetn89r59Hv6PxFawQg5WY7/ePJ7v9GRjYvOn3Tn8cS2PbRKd8/8Sj2sQdPgBslx+1keXorglMOc5baa6tm7PFgdbzSlB4InieXdd5BvqxUs318u/muqLi5HDYyRzf50wj1dGd8+h0ImWkCfmxA+RAOwuq4HKmmuku9gK71IDvN2FXcZ/PRoQfG
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726536AbgFQA04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 20:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQA0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 20:26:55 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FD6C061573;
+        Tue, 16 Jun 2020 17:26:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so681265ljm.9;
+        Tue, 16 Jun 2020 17:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lEQf5F3W4qCJ4deQv/VzXA6SqhV/PIAqUDgAQqykNFY=;
+        b=VSGXubUjoC6aZ/GL8vLA/sgMXbyYw4sEdfiq1ah7ZlhmgzlXVJxXOy+r/uJTl7g5f9
+         /XTkUXXmPa0tuQ4HtcxIiYJbqHiZP1wm8qbefZaUr9+BNZvYHeqwBlnmrAlYEmYE6Sng
+         m6tspP73JYarWyLVeqmgW9q17WSsL3ef/90c1pieee4kREP+HUw0ZbEb2JPpr9peXSII
+         NU+2tXUS3bAvxXOl9bt9hB411bUtUIM1U/MNjj3WNVCcpknWg4xkTOI+JGKNKYk3bcNo
+         jETlezpNJ8dvzk8gusFXZMNiDGt5ZhhdGZWZb2JK4UUsG2dUQ5O21YkXpg17c7lD6ZJQ
+         SVbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lEQf5F3W4qCJ4deQv/VzXA6SqhV/PIAqUDgAQqykNFY=;
+        b=BlZZL9NvxywCFgRz8fugijRIO15Vnb+v15+IjknT4/kZmG/jc9v8l7t/fEDvvM6cD+
+         K5SBXV8dCayBjXpPxpLycOlO+XcMFvsW82DM8OjY6IlQ7Jp1Lj8aYrNPK2FXNU73SF6x
+         gX7fwEdCE9K68ZqpXLq+a2FHMMITXH0Qkcw9Lof3XAWKi6dcMBlyv5T0CNDL62OMwR0c
+         ePTfgjNlaHH/HMCZ3+fhUqNPt3oImfsf1XnaFKImjERZrXgsVZXdDo/3Qbycx7QkinLI
+         mmEIXXY6WZ8YgsEi0VA/ShNuWjuvmK+9BiephiSixC4Qn07HDk/dRJBn4s/ZM48EzaPi
+         w+/g==
+X-Gm-Message-State: AOAM530s97ikKA6OUEnKP2Lud4lDnEoswwuAlbRDx+qG/y87KxYfdxrV
+        cx8sWzQYYjvFPg/JKEa1Ljg=
+X-Google-Smtp-Source: ABdhPJx/61Qe73HXhles5hdVAZmzzp3ui4DiMBM3iBrfiV/5FEpgE9dF+dD+BR8yXqCBrXAXQRL+RQ==
+X-Received: by 2002:a2e:98d7:: with SMTP id s23mr2712729ljj.2.1592353612228;
+        Tue, 16 Jun 2020 17:26:52 -0700 (PDT)
+Received: from localhost (pool-109-191-188-200.is74.ru. [109.191.188.200])
+        by smtp.gmail.com with ESMTPSA id v24sm427080lfo.4.2020.06.16.17.26.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 17:26:51 -0700 (PDT)
+From:   Ivan Mironov <mironov.ivan@gmail.com>
+To:     amd-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Ivan Mironov <mironov.ivan@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] drm/amd/powerplay: Fix NULL dereference in lock_bus() on Vega20 w/o RAS
+Date:   Wed, 17 Jun 2020 05:26:13 +0500
+Message-Id: <20200617002613.67917-1-mironov.ivan@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c3dc858-15cb-4630-3fc8-08d8125382c5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2020 00:15:15.6436
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mAfxluGKiyqowulGei6Zmxno2p0AJxCn46kWAkalZ2eN6llYlh/fD39ve+dZ3hE5my61AsZ5WGlGIGh3s4uKkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYXPR01MB1630
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SSBjb25maXJtZWQgdGhhdCB0aGlzIGlzc3VlIHdhcyBmaXhlZCBpbiB0aGUgYmVsb3cgbmV3IHBh
-dGNoDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTI1Mzc5OS8NCg0K
-VGhhbmtzLg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVGFkYSwgS2VudGEg
-KFNvbnkpIA0KU2VudDogRnJpZGF5LCBKdW5lIDUsIDIwMjAgOTowNyBQTQ0KVG86IFdhaW1hbiBM
-b25nIDxsb25nbWFuQHJlZGhhdC5jb20+OyB4ODZAa2VybmVsLm9yZzsgdGdseEBsaW51dHJvbml4
-LmRlOyBtaW5nb0ByZWRoYXQuY29tOyBicEBhbGllbjguZGU7IGhwYUB6eXRvci5jb207IGpwb2lt
-Ym9lQHJlZGhhdC5jb207IHBldGVyekBpbmZyYWRlYWQub3JnOyB0b255Lmx1Y2tAaW50ZWwuY29t
-OyBwYXdhbi5rdW1hci5ndXB0YUBsaW51eC5pbnRlbC5jb20NCkNjOiBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSRTogW1BBVENIXSB4ODYvc3BlY3VsYXRpb246IENoZWNr
-IHdoZXRoZXIgc3BlY3VsYXRpb24gaXMgZm9yY2UgZGlzYWJsZWQNCg0KSSdtIHNvcnJ5IGJ1dCBJ
-IGNvdWxkIG5vdCBmaW5kIHRoZSByZWFzb24gb2YgYWJvdmUgY29tbWVudHMuDQpJIGludmVzdGln
-YXRlZCB0aGUgYmVsb3cgbG9nIGFuZCBJIHRob3VnaHQgaXQgd2FzIHVuaW50ZW50aW9uYWwgYW5k
-IHRoZSBqdXN0IGJ1ZyBhdCB0aGUgbW9tZW50Lg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGtt
-bC8yMDE4MTEyNTE4NTAwNS44NjY3ODA5OTZAbGludXRyb25peC5kZS8NCgkNCiNkZWZpbmUgUEZB
-X1NQRUNfSUJfRk9SQ0VfRElTQUJMRQk2CS8qIEluZGlyZWN0IGJyYW5jaCBzcGVjdWxhdGlvbiBw
-ZXJtYW5lbnRseSByZXN0cmljdGVkICovDQoNCkJ1dCB0aGUgY29tbWVudCBvZiBQRkFfU1BFQ19J
-Ql9GT1JDRV9ESVNBQkxFIGFwcGFyZW50bHkgZXhwbGFpbnMgdGhlIGV4cGVjdGVkIGJlaGF2aW9y
-Lg0KQW5kIGl0IGlzIG9ubHkgbmF0dXJhbCB0aGF0IHVzZXJzIGNhbiBmb3JjZSBkaXNhYmxlIHRo
-ZSBzcGVjdWxhdGlvbiBiZWNhdXNlIG9mIHNlY3VyaXR5Lg0KDQpJJ2xsIGludmVzdGlnYXRlIG1v
-cmUgdG8gZXhwbGFpbiB0aGlzIHBhdGNoIGlzIG5lZWRlZC4NClRoYW5rIHlvdSBmb3IgdGhlIHJl
-dmlldy4NCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogV2FpbWFuIExvbmcg
-PGxvbmdtYW5AcmVkaGF0LmNvbT4NClNlbnQ6IEZyaWRheSwgSnVuZSA1LCAyMDIwIDE6MTAgQU0N
-ClRvOiBUYWRhLCBLZW50YSAoU29ueSkgPEtlbnRhLlRhZGFAc29ueS5jb20+OyB4ODZAa2VybmVs
-Lm9yZzsgdGdseEBsaW51dHJvbml4LmRlOyBtaW5nb0ByZWRoYXQuY29tOyBicEBhbGllbjguZGU7
-IGhwYUB6eXRvci5jb207IGpwb2ltYm9lQHJlZGhhdC5jb207IHBldGVyekBpbmZyYWRlYWQub3Jn
-OyB0b255Lmx1Y2tAaW50ZWwuY29tOyBwYXdhbi5rdW1hci5ndXB0YUBsaW51eC5pbnRlbC5jb20N
-CkNjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTogW1BBVENIXSB4
-ODYvc3BlY3VsYXRpb246IENoZWNrIHdoZXRoZXIgc3BlY3VsYXRpb24gaXMgZm9yY2UgZGlzYWJs
-ZWQNCg0KT24gNi80LzIwIDM6MjkgQU0sIFRhZGEsIEtlbnRhIChTb255KSB3cm90ZToNCj4+IEl0
-IGNvbmZsaWN0cyB3aXRoIHlvdXIgbmV3IGNvZGUuIFdlIGNhbiBoYXZlIGFuIGFyZ3VtZW50IG9u
-IHdoZXRoZXIgDQo+PiBJQiBzaG91bGQgZm9sbG93IGhvdyBTU0IgaXMgYmVpbmcgaGFuZGxlZC4g
-QmVmb3JlIHRoYXQgaXMgc2V0dGxlZCwNCj4gVGhhbmsgeW91IGZvciB0aGUgaW5mb3JtYXRpb24u
-DQo+IEl0IGNvbmZsaWN0cyBidXQgSSB0aGluayB1c2VycyB3aG8gcmVhZCB0aGUgYmVsb3cgZG9j
-dW1lbnQgZ2V0IGNvbmZ1c2VkLg0KPiBEb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvc3BlY19j
-dHJsLnJzdC4NCj4NCj4gRXNwZWNpYWxseSwgc2VjY29tcCB1c2VycyBtdXN0IGtub3cgdGhlIGRp
-ZmZlcmVuY2Ugb2YgdGhpcyBpbXBsaWNpdCANCj4gc3BlY2lmaWNhdGlvbiBiZWNhdXNlIGJvdGgg
-SUIgYW5kIFNTQiBhcmUgZm9yY2UgZGlzYWJsZWQgDQo+IHNpbXVsdGFuZW91c2x5IHdoZW4gc2Vj
-Y29tcCBpcyBlbmFibGVkIHdpdGhvdXQgU0VDQ09NUF9GSUxURVJfRkxBR19TUEVDX0FMTE9XIG9u
-IHg4Ni4NCg0KV2hhdCBJIGFtIHNheWluZyBpcyB0aGF0IHlvdSBoYXZlIHRvIG1ha2UgdGhlIGFy
-Z3VtZW50IHdoeSB5b3VyIHBhdGNoIGlzIHRoZSByaWdodCB3YXkgdG8gZG8gdGhpbmcgYW5kIGFs
-c28gbWFrZSBzdXJlIHRoYXQgdGhlIGNvbW1lbnQgaXMgY29uc2lzdGVudC4gWW91ciBjdXJyZW50
-IHBhdGNoIGRvZXNuJ3QgZG8gdGhhdC4NCg0KQ2hlZXJzLA0KTG9uZ21hbg0KDQo=
+I updated my system with Radeon VII from kernel 5.6 to kernel 5.7, and
+following started to happen on each boot:
+
+	...
+	BUG: kernel NULL pointer dereference, address: 0000000000000128
+	...
+	CPU: 9 PID: 1940 Comm: modprobe Tainted: G            E     5.7.2-200.im0.fc32.x86_64 #1
+	Hardware name: System manufacturer System Product Name/PRIME X570-P, BIOS 1407 04/02/2020
+	RIP: 0010:lock_bus+0x42/0x60 [amdgpu]
+	...
+	Call Trace:
+	 i2c_smbus_xfer+0x3d/0xf0
+	 i2c_default_probe+0xf3/0x130
+	 i2c_detect.isra.0+0xfe/0x2b0
+	 ? kfree+0xa3/0x200
+	 ? kobject_uevent_env+0x11f/0x6a0
+	 ? i2c_detect.isra.0+0x2b0/0x2b0
+	 __process_new_driver+0x1b/0x20
+	 bus_for_each_dev+0x64/0x90
+	 ? 0xffffffffc0f34000
+	 i2c_register_driver+0x73/0xc0
+	 do_one_initcall+0x46/0x200
+	 ? _cond_resched+0x16/0x40
+	 ? kmem_cache_alloc_trace+0x167/0x220
+	 ? do_init_module+0x23/0x260
+	 do_init_module+0x5c/0x260
+	 __do_sys_init_module+0x14f/0x170
+	 do_syscall_64+0x5b/0xf0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	...
+
+Error appears when some i2c device driver tries to probe for devices
+using adapter registered by `smu_v11_0_i2c_eeprom_control_init()`.
+Code supporting this adapter requires `adev->psp.ras.ras` to be not
+NULL, which is true only when `amdgpu_ras_init()` detects HW support by
+calling `amdgpu_ras_check_supported()`.
+
+Before 9015d60c9ee1, adapter was registered by
+
+	-> amdgpu_device_ip_init()
+	  -> amdgpu_ras_recovery_init()
+	    -> amdgpu_ras_eeprom_init()
+	      -> smu_v11_0_i2c_eeprom_control_init()
+
+after verifying that `adev->psp.ras.ras` is not NULL in
+`amdgpu_ras_recovery_init()`. Currently it is registered
+unconditionally by
+
+	-> amdgpu_device_ip_init()
+	  -> pp_sw_init()
+	    -> hwmgr_sw_init()
+	      -> vega20_smu_init()
+	        -> smu_v11_0_i2c_eeprom_control_init()
+
+Fix simply adds HW support check (ras == NULL => no support) before
+calling `smu_v11_0_i2c_eeprom_control_{init,fini}()`.
+
+Please note that there is a chance that similar fix is also required for
+CHIP_ARCTURUS. I do not know whether any actual Arcturus hardware without
+RAS exist, and whether calling `smu_i2c_eeprom_init()` makes any sense
+when there is no HW support.
+
+Cc: stable@vger.kernel.org
+Fixes: 9015d60c9ee1 ("drm/amdgpu: Move EEPROM I2C adapter to amdgpu_device")
+Signed-off-by: Ivan Mironov <mironov.ivan@gmail.com>
+---
+ drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
+index 2fb97554134f..c2e0fbbccf56 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
+@@ -522,9 +522,11 @@ static int vega20_smu_init(struct pp_hwmgr *hwmgr)
+ 	priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].version = 0x01;
+ 	priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].size = sizeof(DpmActivityMonitorCoeffInt_t);
+ 
+-	ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
+-	if (ret)
+-		goto err4;
++	if (adev->psp.ras.ras) {
++		ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
++		if (ret)
++			goto err4;
++	}
+ 
+ 	return 0;
+ 
+@@ -560,7 +562,8 @@ static int vega20_smu_fini(struct pp_hwmgr *hwmgr)
+ 			(struct vega20_smumgr *)(hwmgr->smu_backend);
+ 	struct amdgpu_device *adev = hwmgr->adev;
+ 
+-	smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
++	if (adev->psp.ras.ras)
++		smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
+ 
+ 	if (priv) {
+ 		amdgpu_bo_free_kernel(&priv->smu_tables.entry[TABLE_PPTABLE].handle,
+-- 
+2.26.2
+
