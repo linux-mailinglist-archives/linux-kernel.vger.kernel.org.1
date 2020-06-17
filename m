@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FE31FCC03
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B141FCC16
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 13:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgFQLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 07:15:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40434 "EHLO mx2.suse.de"
+        id S1727006AbgFQLRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 07:17:36 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35899 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgFQLPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:15:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DB231AD2A;
-        Wed, 17 Jun 2020 11:15:27 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [GIT PULL 1/1] bcm2835-drivers-fixes-2020-0-17
-Date:   Wed, 17 Jun 2020 13:14:54 +0200
-Message-Id: <20200617111453.23345-1-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
+        id S1726565AbgFQLRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:17:31 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jlW4P-0006Ho-04; Wed, 17 Jun 2020 13:17:29 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 02B47C06C3; Wed, 17 Jun 2020 13:14:55 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 13:14:55 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: BCM63xx: add endif comments
+Message-ID: <20200617111455.GE9940@alpha.franken.de>
+References: <20200608101828.3383942-1-noltari@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200608101828.3383942-1-noltari@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Mon, Jun 08, 2020 at 12:18:28PM +0200, Álvaro Fernández Rojas wrote:
+> There are plenty of ifdefs in board_bcm963xx.c without endif comments.
+> Let's make the code easier to follow by adding proper comments.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  arch/mips/bcm63xx/boards/board_bcm963xx.c | 33 +++++++++++------------
+>  1 file changed, 15 insertions(+), 18 deletions(-)
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+applied to mips-next.
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+Thomas.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-drivers-fixes-2020-0-17
-
-for you to fetch changes up to da785a87787c97823d12107a4f0ec7adcc2a78d9:
-
-  ARM: bcm2835: Fix integer overflow in rpi_firmware_print_firmware_revision() (2020-06-17 12:51:45 +0200)
-
-----------------------------------------------------------------
-Fixes raspberry pi firmware version output
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      ARM: bcm2835: Fix integer overflow in rpi_firmware_print_firmware_revision()
-
- drivers/firmware/raspberrypi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
