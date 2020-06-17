@@ -2,212 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12641FC3DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C51FC3E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgFQBrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 21:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgFQBrL (ORCPT
+        id S1726656AbgFQBxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 21:53:10 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:45815 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726253AbgFQBxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 21:47:11 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2D5C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:47:10 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y11so842624ljm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CKJmGYErZ9H0ka158EMoPYekKFURMtA3vN2REMqWfV0=;
-        b=V2hPmbBtrX5NR4ylwcX16+HLpgroG9ByjyyN0A4ZGDfICDSqynbEVxpa3uAwA2fTmS
-         iVAscO+KX4/4/G5376kAhvNHV8aEeq7EqOIcFS+be1QexX35ighWK/Y5FHsbXZrYkkP6
-         5O2z2Yv72gSZbXjNPZqdqQKVDuQ1Oe/J3SvaaxaEwO+pdC4BMb+5nP4b7Gbb7EpJNYUH
-         XOIdgdiUqUR1Kz0IBT4gZcr0dTU3ExISwawYggM63BGNniLOOZhLeEAjNlY4mDbTBGkr
-         DLse923+PPANQ+IpWkfIs9X+F0VVsKc7m6x0YBvncIVqFLjkgL0xUf5aR0CzqetHnoN9
-         09hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CKJmGYErZ9H0ka158EMoPYekKFURMtA3vN2REMqWfV0=;
-        b=Dg9sCsVgwNp0QYYf/uTGKOsbd0cyrv04RN9Wa9ECQR/xiLZiW7Y2YbB8s0a+4+SXjD
-         NQCSRLBW0bTt40G3TFK+BnElW2ChbSWfafl9fYNVs9vensjmoMU878IRIWVT9KI3PYL7
-         eJimYyF9WauorZbqSW4g/St6YvxWBbQSqMzR5pS0DN2guzs3TxdPPhBq814jOuPYC8W7
-         C+ofavP/KpzDF0VCToEVGzErSuUoaPfLGG8/qjVAMzDAtjosw+Mz05W/8r4XSaTiB0rb
-         WrREilndOXbnZi5zTYATBVw0eb2WlTtFC/hjmS4Lh/VkeMDLknu9vfPm0yvEETHDkMQt
-         lIkw==
-X-Gm-Message-State: AOAM531JDa/WEXPpcW0Tqw+buMRlx5cl8eHl5MUeLOln5cfrY03DGvxe
-        sq2prGOFE0d6VaimjyYtcWbK8orRJXnz//jy6Nqbj7Sg
-X-Google-Smtp-Source: ABdhPJzfkOR0hqd4KmM3mVTahJf98MdbU/Q0ZuWYHAIiaj1EHeIpXX+s6iIqWx+BFnWQYcufptXU0WK3wXnBNucO5W0=
-X-Received: by 2002:a2e:8754:: with SMTP id q20mr2839836ljj.270.1592358428184;
- Tue, 16 Jun 2020 18:47:08 -0700 (PDT)
+        Tue, 16 Jun 2020 21:53:10 -0400
+X-UUID: ae6459fcebfc49bea1f3f01cd468911b-20200617
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=AHVzKhLaX2oKGkCZYazZw4xrXIbvh2oXu4tD1iY5vY0=;
+        b=bSnL6jozmOom2MRcFbEMkfOJGaw8QLxRFogdtM3jF7GIEaup+CRJgtJ2shVnfVIr0sxw3N/1QCcrR/+jVlwvSl78Dp1/uf6u5VgBEXZUZlgVa8u1jsqaLLZpINyW2HTbqFklAKpJQAOeDwDJWyHWl/8Iey3kVMiIYB/ooags7FA=;
+X-UUID: ae6459fcebfc49bea1f3f01cd468911b-20200617
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 50012595; Wed, 17 Jun 2020 09:53:05 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 17 Jun 2020 09:53:03 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 17 Jun 2020 09:52:57 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Subject: [PATCH 1/2] media: v4l UAPI: add V4L2_BUF_CAP_SUPPORTS_RO_REQUESTS
+Date:   Wed, 17 Jun 2020 09:49:27 +0800
+Message-ID: <20200617014928.4374-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20200608230654.828134-1-guro@fb.com>
-In-Reply-To: <20200608230654.828134-1-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Jun 2020 18:46:56 -0700
-Message-ID: <CALvZod7ThL=yMwxzCLvrTtq=+Dr5ooUSX-iFP8AhiAGURByFBA@mail.gmail.com>
-Subject: Re: [PATCH v6 00/19] The new cgroup slab memory controller
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: BA3C3E7F9A7679BEB34F77C5A76B6AB4D6C36B310217DF74FF99172E8D4ED8832000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
->
-> This is v6 of the slab cgroup controller rework.
->
-> The patchset moves the accounting from the page level to the object
-> level. It allows to share slab pages between memory cgroups.
-> This leads to a significant win in the slab utilization (up to 45%)
-> and the corresponding drop in the total kernel memory footprint.
+VGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgZm9yIHRoZSBWNEwyX0JVRl9DQVBfU1VQUE9SVFNfUk9f
+UkVRVUVTVFMNCmZsYWcuIFRoaXMgZmxhZyBpcyB1c2VkIGZvciBSTyBSZXF1ZXN0Lg0KDQpTaWdu
+ZWQtb2ZmLWJ5OiBZdW5mZWkgRG9uZyA8eXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQog
+RG9jdW1lbnRhdGlvbi91c2Vyc3BhY2UtYXBpL21lZGlhL3Y0bC92aWRpb2MtcmVxYnVmcy5yc3Qg
+fCA0ICsrKysNCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQg
+YS9Eb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvbWVkaWEvdjRsL3ZpZGlvYy1yZXFidWZzLnJz
+dCBiL0RvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9tZWRpYS92NGwvdmlkaW9jLXJlcWJ1ZnMu
+cnN0DQppbmRleCBiNmQ1MjA4MzcwN2IuLjdjNzQ1MTc3M2I4ZSAxMDA2NDQNCi0tLSBhL0RvY3Vt
+ZW50YXRpb24vdXNlcnNwYWNlLWFwaS9tZWRpYS92NGwvdmlkaW9jLXJlcWJ1ZnMucnN0DQorKysg
+Yi9Eb2N1bWVudGF0aW9uL3VzZXJzcGFjZS1hcGkvbWVkaWEvdjRsL3ZpZGlvYy1yZXFidWZzLnJz
+dA0KQEAgLTEyNiw2ICsxMjYsNyBAQCBhYm9ydGluZyBvciBmaW5pc2hpbmcgYW55IERNQSBpbiBw
+cm9ncmVzcywgYW4gaW1wbGljaXQNCiAuLiBfVjRMMi1CVUYtQ0FQLVNVUFBPUlRTLVJFUVVFU1RT
+Og0KIC4uIF9WNEwyLUJVRi1DQVAtU1VQUE9SVFMtT1JQSEFORUQtQlVGUzoNCiAuLiBfVjRMMi1C
+VUYtQ0FQLVNVUFBPUlRTLU0yTS1IT0xELUNBUFRVUkUtQlVGOg0KKy4uIF9WNEwyLUJVRi1DQVAt
+U1VQUE9SVFMtUk8tUkVRVUVTVFM6DQogDQogLi4gY3NzY2xhc3M6OiBsb25ndGFibGUNCiANCkBA
+IC0xNTYsNiArMTU3LDkgQEAgYWJvcnRpbmcgb3IgZmluaXNoaW5nIGFueSBETUEgaW4gcHJvZ3Jl
+c3MsIGFuIGltcGxpY2l0DQogICAgICAgLSBPbmx5IHZhbGlkIGZvciBzdGF0ZWxlc3MgZGVjb2Rl
+cnMuIElmIHNldCwgdGhlbiB1c2Vyc3BhY2UgY2FuIHNldCB0aGUNCiAgICAgICAgIGBgVjRMMl9C
+VUZfRkxBR19NMk1fSE9MRF9DQVBUVVJFX0JVRmBgIGZsYWcgdG8gaG9sZCBvZmYgb24gcmV0dXJu
+aW5nIHRoZQ0KIAljYXB0dXJlIGJ1ZmZlciB1bnRpbCB0aGUgT1VUUFVUIHRpbWVzdGFtcCBjaGFu
+Z2VzLg0KKyAgICAqIC0gYGBWNEwyX0JVRl9DQVBfU1VQUE9SVFNfUk9fUkVRVUVTVFNgYA0KKyAg
+ICAgIC0gMHgwMDAwMDA0MA0KKyAgICAgIC0gVGhpcyBidWZmZXIgdHlwZSBzdXBwb3J0cyA6cmVm
+OmByZXF1ZXN0cyA8bWVkaWEtcmVxdWVzdC1hcGk+YC4NCiANCiBSZXR1cm4gVmFsdWUNCiA9PT09
+PT09PT09PT0NCi0tIA0KMi4yNS4xDQo=
 
-Is this based on just SLUB or does this have a similar impact on SLAB as well?
-
-> The reduced number of unmovable slab pages should also have a positive
-> effect on the memory fragmentation.
-
-That would be awesome. We have seen fragmentation getting very bad on
-system (or node) level memory pressure. Is that the same for you?
-
->
-> The patchset makes the slab accounting code simpler: there is no more
-> need in the complicated dynamic creation and destruction of per-cgroup
-> slab caches, all memory cgroups use a global set of shared slab caches.
-> The lifetime of slab caches is not more connected to the lifetime
-> of memory cgroups.
->
-> The more precise accounting does require more CPU, however in practice
-> the difference seems to be negligible. We've been using the new slab
-> controller in Facebook production for several months with different
-> workloads and haven't seen any noticeable regressions. What we've seen
-> were memory savings in order of 1 GB per host (it varied heavily depending
-> on the actual workload, size of RAM, number of CPUs, memory pressure, etc).
->
-> The third version of the patchset added yet another step towards
-> the simplification of the code: sharing of slab caches between
-> accounted and non-accounted allocations. It comes with significant
-> upsides (most noticeable, a complete elimination of dynamic slab caches
-> creation) but not without some regression risks, so this change sits
-> on top of the patchset and is not completely merged in. So in the unlikely
-> event of a noticeable performance regression it can be reverted separately.
->
-
-Have you performed any [perf] testing on SLAB with this patchset?
-
-> v6:
->   1) rebased on top of the mm tree
->   2) removed a redundant check from cache_from_obj(), suggested by Vlastimil
->
-> v5:
->   1) fixed a build error, spotted by Vlastimil
->   2) added a comment about memcg->nr_charged_bytes, asked by Johannes
->   3) added missed acks and reviews
->
-> v4:
->   1) rebased on top of the mm tree, some fixes here and there
->   2) merged obj_to_index() with slab_index(), suggested by Vlastimil
->   3) changed objects_per_slab() to a better objects_per_slab_page(),
->      suggested by Vlastimil
->   4) other minor fixes and changes
->
-> v3:
->   1) added a patch that switches to a global single set of kmem_caches
->   2) kmem API clean up dropped, because if has been already merged
->   3) byte-sized slab vmstat API over page-sized global counters and
->      bytes-sized memcg/lruvec counters
->   3) obj_cgroup refcounting simplifications and other minor fixes
->   4) other minor changes
->
-> v2:
->   1) implemented re-layering and renaming suggested by Johannes,
->      added his patch to the set. Thanks!
->   2) fixed the issue discovered by Bharata B Rao. Thanks!
->   3) added kmem API clean up part
->   4) added slab/memcg follow-up clean up part
->   5) fixed a couple of issues discovered by internal testing on FB fleet.
->   6) added kselftests
->   7) included metadata into the charge calculation
->   8) refreshed commit logs, regrouped patches, rebased onto mm tree, etc
->
-> v1:
->   1) fixed a bug in zoneinfo_show_print()
->   2) added some comments to the subpage charging API, a minor fix
->   3) separated memory.kmem.slabinfo deprecation into a separate patch,
->      provided a drgn-based replacement
->   4) rebased on top of the current mm tree
->
-> RFC:
->   https://lwn.net/Articles/798605/
->
->
-> Johannes Weiner (1):
->   mm: memcontrol: decouple reference counting from page accounting
->
-> Roman Gushchin (18):
->   mm: memcg: factor out memcg- and lruvec-level changes out of
->     __mod_lruvec_state()
->   mm: memcg: prepare for byte-sized vmstat items
->   mm: memcg: convert vmstat slab counters to bytes
->   mm: slub: implement SLUB version of obj_to_index()
->   mm: memcg/slab: obj_cgroup API
->   mm: memcg/slab: allocate obj_cgroups for non-root slab pages
->   mm: memcg/slab: save obj_cgroup for non-root slab objects
->   mm: memcg/slab: charge individual slab objects instead of pages
->   mm: memcg/slab: deprecate memory.kmem.slabinfo
->   mm: memcg/slab: move memcg_kmem_bypass() to memcontrol.h
->   mm: memcg/slab: use a single set of kmem_caches for all accounted
->     allocations
->   mm: memcg/slab: simplify memcg cache creation
->   mm: memcg/slab: remove memcg_kmem_get_cache()
->   mm: memcg/slab: deprecate slab_root_caches
->   mm: memcg/slab: remove redundant check in memcg_accumulate_slabinfo()
->   mm: memcg/slab: use a single set of kmem_caches for all allocations
->   kselftests: cgroup: add kernel memory accounting tests
->   tools/cgroup: add memcg_slabinfo.py tool
->
->  drivers/base/node.c                        |   6 +-
->  fs/proc/meminfo.c                          |   4 +-
->  include/linux/memcontrol.h                 |  85 ++-
->  include/linux/mm_types.h                   |   5 +-
->  include/linux/mmzone.h                     |  24 +-
->  include/linux/slab.h                       |   5 -
->  include/linux/slab_def.h                   |   9 +-
->  include/linux/slub_def.h                   |  31 +-
->  include/linux/vmstat.h                     |  14 +-
->  kernel/power/snapshot.c                    |   2 +-
->  mm/memcontrol.c                            | 608 +++++++++++--------
->  mm/oom_kill.c                              |   2 +-
->  mm/page_alloc.c                            |   8 +-
->  mm/slab.c                                  |  70 +--
->  mm/slab.h                                  | 372 +++++-------
->  mm/slab_common.c                           | 643 +--------------------
->  mm/slob.c                                  |  12 +-
->  mm/slub.c                                  | 229 +-------
->  mm/vmscan.c                                |   3 +-
->  mm/vmstat.c                                |  30 +-
->  mm/workingset.c                            |   6 +-
->  tools/cgroup/memcg_slabinfo.py             | 226 ++++++++
->  tools/testing/selftests/cgroup/.gitignore  |   1 +
->  tools/testing/selftests/cgroup/Makefile    |   2 +
->  tools/testing/selftests/cgroup/test_kmem.c | 382 ++++++++++++
->  25 files changed, 1374 insertions(+), 1405 deletions(-)
->  create mode 100755 tools/cgroup/memcg_slabinfo.py
->  create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
->
-> --
-> 2.25.4
->
