@@ -2,118 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975671FD2A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C0E1FD2A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgFQQs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S1727114AbgFQQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgFQQsT (ORCPT
+        with ESMTP id S1727033AbgFQQsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:48:19 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDD6C06174E;
-        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id w16so3130048ejj.5;
-        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
+        Wed, 17 Jun 2020 12:48:20 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010C0C06174E;
+        Wed, 17 Jun 2020 09:48:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id q19so3125644eja.7;
+        Wed, 17 Jun 2020 09:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HbW3NKNom8juXI2NoyDjAEEkKyRH9dumXigRxuvNwKY=;
-        b=E5U6u+FwDamT/5MzUtw3K/1BEM1ZTiyttyrXEl1+8zSQWpBSc0B5FR4bIUQ1tonPZh
-         tQ7Sq8engNniJfbizfbR8YisCx9Ora1eTcK48UUUNsPyrrmYz7ttfMJUyDIqWfREp4x0
-         LT8uHcaKqqvZF70IgYU99gHaQCxC2cfAXiDO8ImYxJjaG5GtJKZ3Hfb1Q6NlVdmDbaZ8
-         QDB11E5nYjm0cIK1jEV4D3ONYHyoB5X7seBi/J8PU31002wRNLpWLEKw0yPRy0NRsvSu
-         nNp3fHo+x13H8YaQjGCkZbkO7eOeT90xaWFXuPE4kus7VDD8rQXbpeNqcWSXDawp1WUA
-         c/ZQ==
+        bh=WbtFhwo2fqQ8/gIQgNvQA6jb7MjlC2oHnaaRv7v1IUo=;
+        b=A07pKi2LYvpXZf86f3a4g7sReKjO1U7SOzTgDaNnc/97/L9D0FW47EJvtPHPstA309
+         2mIVuhTx3sOVsqo2afHlc+SVcwD8uYqdgBOjn3iRWrMODrsZZr/IyDt+/F1o/+5BgYbi
+         5kerLNuB7Kyo1xTxHuR/6ABuvfGG7qM7CkTh7wf9lTJNQIJmFvGnb/Mf+hOz0JsKAiPM
+         rGHLrX2dsO8GB0b57TVodqMtY773pdHL5UFR8SxTswSh5WAuvJ4/XGkv6reN5iXBuG8M
+         CYAnohV2Gsvt32oYF4MO612scOWHHNfAW45MnaoaqIFu9XbuOLNUmpyipMnDLQktP5RU
+         cTyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HbW3NKNom8juXI2NoyDjAEEkKyRH9dumXigRxuvNwKY=;
-        b=kvFsVw+nUZj16udHUjUJQcdQj7VVgKeiC/Dx4tpTfwbpC0pqTtsQzlKdgI9cgixF4m
-         hcTDujOsGr8ZR2zTHHh3398jsoL9163S0Km7tEnpfdF4JtqgJJqoISOWDDdTg+HHfgvc
-         gbZplAPbOegMZSURZSCs6VjEQ0UNoj40S6lM6wjJx2ZquIT65MHr2KvhJnGm7jQvRY7R
-         BpZsOX6dD1jbrz8vcmoo0QONxHtuoj58zZzH1C5rWngPJzRHO7RZynidmnAbtl30TXBr
-         XXqMhUNvDfMeVTqBpz6Wktw8kzYOjnbM6auXDGaXrlRbkB/fEGq/uHShHmVuJqwiKrkZ
-         gF/w==
-X-Gm-Message-State: AOAM531KCndBkzLbbE6ecNNpDbwAnfHsmYO44mmNWTfYE4jH8Thdq+eA
-        cC+5qZ3ESjSp1+oFpcEKUTS8PJUccNw=
-X-Google-Smtp-Source: ABdhPJzPdiDhZzkiIEvfyQqMk9m00A48c6U0WPQZgrYyBMDstasrSBdif/z88ONABd5SplNm1UNgmA==
-X-Received: by 2002:a17:907:9484:: with SMTP id dm4mr106072ejc.56.1592412497436;
-        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
+        bh=WbtFhwo2fqQ8/gIQgNvQA6jb7MjlC2oHnaaRv7v1IUo=;
+        b=fcGgs9vFpml6YAr1A7HyAFXkvnbFpcxK+aR17uuWkLypflYKfDEj0nJeYZ7c6VG5yR
+         IDu7O9IAeudhqb1Fp2GCSUK2eOsMVrwkszG3ib5qYee6itaAsTs2yiwNTz7ahdnPQrHL
+         DgHKjR6W8Q8GcinGl8s9p/ltnq5fcQDf4GbmJRePG3zCcpRciQQOZfMH35qf/tQzzCWL
+         1aJV8T/+JXpmn6tFzZgNaSz1C2PLG56kwHZb3SgDaKLK4dhDZkaZZOlxorxhHnSrgNNk
+         /WyKDj0nzZjuuQb4H+DJP9/jI8rtVwAjo4wDzlxK2/tGj4Tnny0QSfqFNo5v2EPkUkJl
+         c3vw==
+X-Gm-Message-State: AOAM5326MiHWDLJNfQU0rUgsPDtlAy+Rb6HrVu4rWWyqFXz0ZG83UliY
+        1oPYDszT+M3heD48LNh668c=
+X-Google-Smtp-Source: ABdhPJwpe09uu45N6nr4qcBknRYME+IG2U1ApAgHIb2wdtB6mfX4FJC13WILYduRAMnTW86xDre4wg==
+X-Received: by 2002:a17:906:148b:: with SMTP id x11mr85532ejc.282.1592412498710;
+        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.16
+        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:48:17 -0700 (PDT)
+        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/11] arm: dts: owl-s500: Add Clock Management Unit
-Date:   Wed, 17 Jun 2020 19:48:02 +0300
-Message-Id: <9dba1e4d779be27594859ea71131624bb20b1618.1592407030.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH 03/11] arm: dts: owl-s500: Set UART clock refs from CMU
+Date:   Wed, 17 Jun 2020 19:48:03 +0300
+Message-Id: <0dcd4186d4ecc420ce382977dd6624f6e63fefc7.1592407030.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Clock Management Unit for Actions Semi S500 SoC.
+Enable using Clock Management Unit clocks for every UART node
+of the Actions Semi S500 SoC.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/arm/boot/dts/owl-s500.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 1dbe4e8b38ac..5d5ad9db549b 100644
+index 5d5ad9db549b..ac3d04c75dd5 100644
 --- a/arch/arm/boot/dts/owl-s500.dtsi
 +++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2016-2017 Andreas Färber
-  */
- 
-+#include <dt-bindings/clock/actions,s500-cmu.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/owl-s500-powergate.h>
- 
-@@ -70,6 +71,12 @@ hosc: hosc {
- 		#clock-cells = <0>;
- 	};
- 
-+	losc: losc {
-+		compatible = "fixed-clock";
-+		clock-frequency = <32768>;
-+		#clock-cells = <0>;
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -169,6 +176,13 @@ uart6: serial@b012c000 {
+@@ -131,6 +131,7 @@ uart0: serial@b0120000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb0120000 0x2000>;
+ 			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART0>;
  			status = "disabled";
  		};
  
-+		cmu: clock-controller@b0160000 {
-+			compatible = "actions,s500-cmu";
-+			reg = <0xb0160000 0x8000>;
-+			clocks = <&hosc>, <&losc>;
-+			#clock-cells = <1>;
-+		};
-+
- 		timer: timer@b0168000 {
- 			compatible = "actions,s500-timer";
- 			reg = <0xb0168000 0x8000>;
+@@ -138,6 +139,7 @@ uart1: serial@b0122000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb0122000 0x2000>;
+ 			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART1>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -145,6 +147,7 @@ uart2: serial@b0124000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb0124000 0x2000>;
+ 			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART2>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -152,6 +155,7 @@ uart3: serial@b0126000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb0126000 0x2000>;
+ 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART3>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -159,6 +163,7 @@ uart4: serial@b0128000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb0128000 0x2000>;
+ 			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART4>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -166,6 +171,7 @@ uart5: serial@b012a000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb012a000 0x2000>;
+ 			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART5>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -173,6 +179,7 @@ uart6: serial@b012c000 {
+ 			compatible = "actions,s500-uart", "actions,owl-uart";
+ 			reg = <0xb012c000 0x2000>;
+ 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cmu CLK_UART6>;
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.27.0
 
