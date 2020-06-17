@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C261FC32F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86321FC333
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 03:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgFQBF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 21:05:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:3622 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgFQBF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 21:05:58 -0400
-IronPort-SDR: WnXuZpfr0F0rncc7t1hrc7P9wVgIfMvlhQ4Q1HqOj9IrW6ZYivFA79DVk/c5BpLSA61TjY+pTt
- LxsV4E8ktrjA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2020 18:05:57 -0700
-IronPort-SDR: MAkF63yb+K9N07U4j2cEULH3Hiur+Q7TSSFkmxQobO+NCSat8OsJpSg2vz/qYdwT7hIiUSIfVy
- SOgJXG7rrn3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,520,1583222400"; 
-   d="scan'208";a="262400302"
-Received: from carusoal-mobl.ger.corp.intel.com (HELO localhost) ([10.252.48.130])
-  by orsmga007.jf.intel.com with ESMTP; 16 Jun 2020 18:05:48 -0700
-Date:   Wed, 17 Jun 2020 04:05:46 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     amirmizi6@gmail.com
-Cc:     Eyal.Cohen@nuvoton.com, oshrialkoby85@gmail.com,
-        alexander.steffen@infineon.com, robh+dt@kernel.org,
-        peterhuewe@gmx.de, christophe-h.richard@st.com, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Benoit Houyere <benoit.houyere@st.com>
-Subject: Re: [PATCH v10 2/8] tpm: tpm_tis: Fix expected bit handling and send
- all bytes in one shot without last byte in exception
-Message-ID: <20200617010546.GB5100@linux.intel.com>
-References: <20200604134713.157951-1-amirmizi6@gmail.com>
- <20200604134713.157951-3-amirmizi6@gmail.com>
- <20200617010050.GA5100@linux.intel.com>
+        id S1726529AbgFQBI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 21:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQBIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 21:08:24 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B875DC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:08:23 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h10so423994pgq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 18:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wk2msqn1yrMOJAsun48ohMNZ78tQdb/SpUXLjd1X3f8=;
+        b=RwC4OoWnsiCxUnYf+dhHP4N4SlpOoIOwjfDf4SDo5kCk1S9Wisq3ODhtxkIemgfg1A
+         L/pzDHq+SenNrGKwPgnGDhr3uxkWM1tkIK5aPr77+yz+n7yNVmTyiHdgtqflRm1Edcew
+         rKZ1hAMNNI3W+AG2NP281/R13rtSCCcKYW/G3c+HsI1erOHm421VDtvomqs+gKp0RzKp
+         XCClpnhwQrhp6+DIPXuOKiK5zkruIAVGbTz3fr6gytQ6OusD/HBlkrP/feIPnAo4V4Fp
+         LlxukgjjZVhnt9ubUEmD1CLezkmXr62LYqInHq1w785bX/600pmmWodGkm7hYQtUkhVG
+         OveQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wk2msqn1yrMOJAsun48ohMNZ78tQdb/SpUXLjd1X3f8=;
+        b=QbCLxYY1ZM9FpuKjDRXvrjI40q07uoX1TNu7gleKy2fSt3p+jHxTDcAqiqbm7ejRKU
+         MRVwZWVPMGuAWEorG8/illbYN9mM+9Yw+ij/CvbQ0ZYfl8IXmjLW9qt+1iGecWG/Qlbo
+         0H5nC7UpFooHR8PyY6/hlBra/V0wPlxbCCiDGfAfer1XNHOjK+2s49eYn9fCmprvV/D3
+         5kIRuSnH46oSBUfp7UpkpbkO9f7orSqfK0HW0+HF2mE8qAWlOE9RYsAP0DWereGJ1JaT
+         hjlmeH1lgGnWzpV6i/fuWOU/HNdn5yGNhZZWdNAv6rVJ8bRaqNTmlqkCdk0kVq+7JALo
+         desQ==
+X-Gm-Message-State: AOAM530yEi9Q67QLtcozTOGOLAYKmoeXOORSQu3heySErSF7LLjuKDmb
+        fF04jWWjG/XZzWkWRet8YxE=
+X-Google-Smtp-Source: ABdhPJxkt9bONbo+sbVoqdYYhSEnY9iKl7kaDlxs9Z84TvDWSh8GD51obiJs+YbXnhysaaX+obMcpg==
+X-Received: by 2002:a63:368c:: with SMTP id d134mr4186312pga.393.1592356102613;
+        Tue, 16 Jun 2020 18:08:22 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id gp4sm3561962pjb.26.2020.06.16.18.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2020 18:08:21 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Wed, 17 Jun 2020 10:08:19 +0900
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH v1] ARM: bcm2835: Fix integer overflow in
+ rpi_firmware_print_firmware_revision()
+Message-ID: <20200617010819.GA1004177@jagdpanzerIV.localdomain>
+References: <20200616163139.4229-1-andriy.shevchenko@linux.intel.com>
+ <1e504c53d632b4f175f69782d1e38f0030dc9055.camel@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200617010050.GA5100@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1e504c53d632b4f175f69782d1e38f0030dc9055.camel@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 04:01:12AM +0300, Jarkko Sakkinen wrote:
-> On Thu, Jun 04, 2020 at 04:47:07PM +0300, amirmizi6@gmail.com wrote:
-> > From: Amir Mizinski <amirmizi6@gmail.com>
+On (20/06/16 18:42), Nicolas Saenz Julienne wrote:
+> On Tue, 2020-06-16 at 19:31 +0300, Andy Shevchenko wrote:
+> > time64_t is 64-bit width type, we are not supposed to supply lesser ones
+> > as in the case of rpi_firmware_print_firmware_revision() after the commit
+> > 4a60f58ee002 ("ARM: bcm2835: Switch to use %ptT"). Use temporary variable
+> > of time64_t type to correctly handle lesser types.
 > > 
-> > Detected the following incorrect implementation of the send command:
-> > polling on the TPM_STS.stsValid field followed by checking the
-> > TPM_STS.expect field only once. Since TPM_STS.stsValid represents the
-> > TPM_STS.expect validity, both fields should be polled at the same time.
-> > 
-> > This fix modifies the signature of wait_for_tpm_stat(), adding an
-> > additional "mask_result" parameter to its call. wait_for_tpm_stat() is now
-> > polling the TPM_STS with a mask and waits for the value in mask_result.
-> > The fix adds the ability to check if certain TPM_STS bits have been
-> > cleared.
-> > 
-> > This change is also aligned to verifying the CRC on I2C TPM. The CRC
-> > verification should be done after the TPM_STS.expect field is cleared
-> > (TPM received all expected command bytes and set the calculated CRC value
-> > in the register).
-> > 
-> > In addition, the send command was changed to comply with
-> > TCG_DesignPrinciples_TPM2p0Driver_vp24_pubrev.pdf as follows:
-> > - send all command bytes in one loop
-> > - remove special handling of the last byte
-> > 
-> > Suggested-by: Benoit Houyere <benoit.houyere@st.com>
-> > Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-> 
-> Just wondering how did you come up with that name since you are not
-> masking anything with 'mask_result'?
+> > Fixes: 4a60f58ee002 ("ARM: bcm2835: Switch to use %ptT")
+[..]
+>
+> If this doesn't fit the printk tree I don't mind taking it trough the rpi soc
+> tree.
 
-Maybe just rename it as 'stat'? That would make the whole thing a lot
-less confusing looking I think.
+I think, for this patch, SoC tree might be a better fit
+than printk tree, thanks.
 
-/Jarkko
+	-ss
