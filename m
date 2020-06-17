@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBEE1FC416
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2904B1FC421
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgFQCWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgFQCWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:22:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4507C061573;
-        Tue, 16 Jun 2020 19:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=BEusnUbR+/cmrBB9bk/xdvHCANKyUH/aAcSZAMuW5OE=; b=Pw7h6Zurn3kEfvE1eYLcuqezpS
-        6dv6YNzk6+f6NL9T5b1t5Q3S1oT5qqAMDEOxHE+1wGzAU1/UvkbHdNz07Ga1WaCWGzhKUCRSeZ6QZ
-        o0I5/jAy2zGLAu1G4S3MZdS3qCqGws/6WiA4NRqQjbA9SmyY+Nnm0QKGoSQJFNIHsS2xUI0I9Udce
-        qOHpLfYIPOR526dlzyvkD4gq0Xo6OO+YQA5h+uvfTaDDzfQbzfntE6t8KKL/bdGZugpf9j96kxyXi
-        uqj9bm92o25yQodA2+9jXT7MN6tTeGOpuEujbqml8NcV0guvi1GGbOd5RpsedFvm4bLu4W95FUUfR
-        YKCs+4uQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlNi9-0002wT-UP; Wed, 17 Jun 2020 02:21:57 +0000
-Date:   Tue, 16 Jun 2020 19:21:57 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel <cluster-devel@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
-        linux-btrfs@vger.kernel.org,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>
-Subject: Re: [Cluster-devel] [PATCH v11 16/25] fs: Convert mpage_readpages to
- mpage_readahead
-Message-ID: <20200617022157.GF8681@bombadil.infradead.org>
-References: <20200414150233.24495-1-willy@infradead.org>
- <20200414150233.24495-17-willy@infradead.org>
- <CAHc6FU4m1M7Tv4scX0UxSiVBqkL=Vcw_z-R7SufL8k7Bw=qPOw@mail.gmail.com>
- <20200617003216.GC8681@bombadil.infradead.org>
- <CAHpGcMK6Yu0p-FO8CciiySqh+qcWLG-t3hEaUg-rqJnS=2uhqg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMK6Yu0p-FO8CciiySqh+qcWLG-t3hEaUg-rqJnS=2uhqg@mail.gmail.com>
+        id S1726673AbgFQC1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:27:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:49932 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726494AbgFQC1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 22:27:12 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz2l1f+lePf1EAA--.9190S2;
+        Wed, 17 Jun 2020 10:27:02 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH v3] tools build: Check libasan and libubsan in Makefile.feature
+Date:   Wed, 17 Jun 2020 10:27:01 +0800
+Message-Id: <1592360821-2323-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxz2l1f+lePf1EAA--.9190S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFW7XF4fZw1DKw1kJw1kXwb_yoW5Xw47pw
+        4Skr4DtrWrXrWxZw18CF4rWr1rGFZ7tayjga98J3srArn5Gw42yr4Fya4YqFy7Jw18Xay7
+        ua4xGFWI9w4UAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
+        xVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VU1sYFtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 02:57:14AM +0200, Andreas Grünbacher wrote:
-> Am Mi., 17. Juni 2020 um 02:33 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
-> >
-> > On Wed, Jun 17, 2020 at 12:36:13AM +0200, Andreas Gruenbacher wrote:
-> > > Am Mi., 15. Apr. 2020 um 23:39 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
-> > > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > > >
-> > > > Implement the new readahead aop and convert all callers (block_dev,
-> > > > exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qnx6,
-> > > > reiserfs & udf).  The callers are all trivial except for GFS2 & OCFS2.
-> > >
-> > > This patch leads to an ABBA deadlock in xfstest generic/095 on gfs2.
-> > >
-> > > Our lock hierarchy is such that the inode cluster lock ("inode glock")
-> > > for an inode needs to be taken before any page locks in that inode's
-> > > address space.
-> >
-> > How does that work for ...
-> >
-> > writepage:              yes, unlocks (see below)
-> > readpage:               yes, unlocks
-> > invalidatepage:         yes
-> > releasepage:            yes
-> > freepage:               yes
-> > isolate_page:           yes
-> > migratepage:            yes (both)
-> > putback_page:           yes
-> > launder_page:           yes
-> > is_partially_uptodate:  yes
-> > error_remove_page:      yes
-> >
-> > Is there a reason that you don't take the glock in the higher level
-> > ops which are called before readhead gets called?  I'm looking at XFS,
-> > and it takes the xfs_ilock SHARED in xfs_file_buffered_aio_read()
-> > (called from xfs_file_read_iter).
-> 
-> Right, the approach from the following thread might fix this:
-> 
-> https://lore.kernel.org/linux-fsdevel/20191122235324.17245-1-agruenba@redhat.com/T/#t
+When build perf with ASan or UBSan, if libasan or libubsan can not find,
+the feature-glibc is 0 and there exists the following error log which is
+wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
+is also installed.
 
-In general, I think this is a sound approach.
+[yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
+  BUILD:   Doing 'make -j4' parallel build
+  HOSTCC   fixdep.o
+  HOSTLD   fixdep-in.o
+  LINK     fixdep
+<stdin>:1:0: warning: -fsanitize=address and -fsanitize=kernel-address are not supported for this target
+<stdin>:1:0: warning: -fsanitize=address not supported for this target
 
-Specifically, I think FAULT_FLAG_CACHED can go away.  map_pages()
-will bring in the pages which are in the page cache, so when we get to
-gfs2_fault(), we know there's a reason to acquire the glock.
+Auto-detecting system features:
+...                         dwarf: [ OFF ]
+...            dwarf_getlocations: [ OFF ]
+...                         glibc: [ OFF ]
+...                          gtk2: [ OFF ]
+...                      libaudit: [ OFF ]
+...                        libbfd: [ OFF ]
+...                        libcap: [ OFF ]
+...                        libelf: [ OFF ]
+...                       libnuma: [ OFF ]
+...        numa_num_possible_cpus: [ OFF ]
+...                       libperl: [ OFF ]
+...                     libpython: [ OFF ]
+...                     libcrypto: [ OFF ]
+...                     libunwind: [ OFF ]
+...            libdw-dwarf-unwind: [ OFF ]
+...                          zlib: [ OFF ]
+...                          lzma: [ OFF ]
+...                     get_cpuid: [ OFF ]
+...                           bpf: [ OFF ]
+...                        libaio: [ OFF ]
+...                       libzstd: [ OFF ]
+...        disassembler-four-args: [ OFF ]
+
+Makefile.config:393: *** No gnu/libc-version.h found, please install glibc-dev[el].  Stop.
+Makefile.perf:224: recipe for target 'sub-make' failed
+make[1]: *** [sub-make] Error 2
+Makefile:69: recipe for target 'all' failed
+make: *** [all] Error 2
+[yangtiezhu@linux perf]$ ls /usr/include/gnu/libc-version.h
+/usr/include/gnu/libc-version.h
+
+After install libasan and libubsan, the feature-glibc is 1 and the build
+process is success, so the cause is related with libasan or libubsan, we
+should check them and print an error log to reflect the reality.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+v2:
+  - Check libasan and libubsan in tools/build/Makefile.feature
+  - Modify the patch subject
+
+v3:
+  - Check EXTRA_CFLAGS first
+
+ tools/build/Makefile.feature | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index cb15237..bc28dc9 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -250,3 +250,15 @@ ifeq ($(feature_verbose),1)
+   $(foreach feat,$(TMP),$(call feature_print_status,$(feat),))
+   $(info )
+ endif
++
++ifneq ($(filter s% -fsanitize=address%,$(EXTRA_CFLAGS),),)
++  ifneq ($(shell ldconfig -p | grep libasan >/dev/null 2>&1; echo $$?), 0)
++    msg := $(error No libasan found, please install libasan);
++  endif
++endif
++
++ifneq ($(filter s% -fsanitize=undefined%,$(EXTRA_CFLAGS),),)
++  ifneq ($(shell ldconfig -p | grep libubsan >/dev/null 2>&1; echo $$?), 0)
++    msg := $(error No libubsan found, please install libubsan);
++  endif
++endif
+-- 
+2.1.0
 
