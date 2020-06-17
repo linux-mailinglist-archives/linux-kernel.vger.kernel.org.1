@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F821FCD24
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 14:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D7C1FCD29
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 14:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgFQMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 08:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgFQMPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 08:15:52 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F2DC20776;
-        Wed, 17 Jun 2020 12:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592396152;
-        bh=eTIu+JBzaERIp07e9iPTpVh8C+E7/qfsfgoKNKYyCHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bmrSdN7kohpP+c8wmW42SrPXtgpP5FlrWeaE588MMOVzmNHrh+LhhIZZO8JdKX2Vs
-         csyaTyJEYdBcti6Pe8FIMWm+fkJ8BLLY/b9qcoo7QA/Co2NLj0cW/jcqoOdbGNZU3V
-         B0DEUd/QS07Tcu/ZcB/PJ7U98ECYK41In425fryM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0597F40AFD; Wed, 17 Jun 2020 09:15:50 -0300 (-03)
-Date:   Wed, 17 Jun 2020 09:15:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     John Garry <john.garry@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] perf pmu: Improve CPU core PMU HW event list
- ordering
-Message-ID: <20200617121549.GA31085@kernel.org>
-References: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
- <1592384514-119954-3-git-send-email-john.garry@huawei.com>
- <CAM9d7cgqJzQJ7GfL6Q3VgARd1=rrkRYqOqSivZww-LOo+DvKFA@mail.gmail.com>
+        id S1726497AbgFQMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 08:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgFQMRW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 08:17:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98333C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 05:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RldClxLNf1hmXc0hhlCmSSdwgcV44W4PDkE7rUAE2fU=; b=P5WYbDs+GCsATNmQJKc2bzaDoc
+        vlrWZEbh0/JIdsel1YSi5xhiIkrItaHY70ygHRr3kh8KIgqhHmZInZ3wctEf5ElFP+LvNgwWn0qfy
+        zgf1jydSLWjaMr2VYXBznVgLV1dIr0W7XEFeplCTKg29iYC7WHmgL1LzsxXVR/X2tqjF4/mwr2yJ6
+        PoE/hZdDdMRocr9zLZAOTNVC5SLcwBBv9WqXiRtO1lUFTcIX0B5KZSuY1UoBaoFB+Kyuh5rQROXnL
+        V7pdNw1fs9pFegg1qzapS0Q9N7qpunCdBsO9PPsFpzdv+5+n1Qa/ZcmSXz/WJ8bJTWS1Vvx03i64W
+        FScdij6w==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlX0H-0002nH-8L; Wed, 17 Jun 2020 12:17:17 +0000
+Date:   Wed, 17 Jun 2020 05:17:17 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     js1304@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v6 4/6] mm/swapcache: support to handle the exceptional
+ entries in swapcache
+Message-ID: <20200617121717.GI8681@bombadil.infradead.org>
+References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1592371583-30672-5-git-send-email-iamjoonsoo.kim@lge.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cgqJzQJ7GfL6Q3VgARd1=rrkRYqOqSivZww-LOo+DvKFA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1592371583-30672-5-git-send-email-iamjoonsoo.kim@lge.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jun 17, 2020 at 08:31:02PM +0900, Namhyung Kim escreveu:
-> On Wed, Jun 17, 2020 at 6:06 PM John Garry <john.garry@huawei.com> wrote:
-> >
-> > For perf list, the CPU core PMU HW event ordering is such that not all
-> > events may will be listed adjacent - consider this example:
-> >   cstate_pkg/c6-residency/                           [Kernel PMU event]
-> >   cstate_pkg/c7-residency/                           [Kernel PMU event]
-> >
-> > Signed-off-by: John Garry <john.garry@huawei.com>
+On Wed, Jun 17, 2020 at 02:26:21PM +0900, js1304@gmail.com wrote:
+> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Swapcache doesn't handle the exceptional entries since there is no case
 
-Thanks a lot, applied.
+Don't call them exceptional entries.
 
-- Arnaldo
+The radix tree has/had the concecpt of exceptional entries.  The swapcache
+doesn't use the radix tree any more, it uses the XArray.  The XArray
+has value entries.
+
+But you shouldn't call them value entries either; that's an XArray
+concept.  The swap cache and indeed page cache use value entries to
+implement shadow entries (they're also used to implement dax entries and
+swap entries in the page cache).  So just call them shadow entries here.
+
+I know there are still places which use the term 'nrexceptional' in
+the kernel.  I just haven't got round to replacing them yet.  Please
+don't add more.
+
+> +void clear_shadow_from_swap_cache(int type, unsigned long begin,
+> +				unsigned long end)
+> +{
+> +	unsigned long curr;
+> +	void *old;
+> +	swp_entry_t entry = swp_entry(type, begin);
+> +	struct address_space *address_space = swap_address_space(entry);
+> +	XA_STATE(xas, &address_space->i_pages, begin);
+> +
+> +retry:
+> +	xa_lock_irq(&address_space->i_pages);
+> +	for (curr = begin; curr <= end; curr++) {
+> +		entry = swp_entry(type, curr);
+> +		if (swap_address_space(entry) != address_space) {
+> +			xa_unlock_irq(&address_space->i_pages);
+> +			address_space = swap_address_space(entry);
+> +			begin = curr;
+> +			xas_set(&xas, begin);
+> +			goto retry;
+> +		}
+> +
+> +		old = xas_load(&xas);
+> +		if (!xa_is_value(old))
+> +			continue;
+> +		xas_store(&xas, NULL);
+> +		address_space->nrexceptional--;
+> +		xas_next(&xas);
+> +	}
+> +	xa_unlock_irq(&address_space->i_pages);
+> +}
+
+This is a very clunky loop.  I'm not sure it's even right, given that
+you change address space without changing the xas's address space.  How
+about this?
+
+	for (;;) {
+		XA_STATE(xas, &address_space->i_pages, begin);
+		unsigned long nr_shadows = 0;
+
+		xas_lock_irq(&xas);
+		xas_for_each(&xas, entry, end) {
+			if (!xa_is_value(entry))
+				continue;
+			xas_store(&xas, NULL);
+			nr_shadows++;
+		}
+		address_space->nr_exceptionals -= nr_shadows;
+		xas_unlock_irq(&xas);
+
+		if (xas.xa_index >= end)
+			break;
+		entry = swp_entry(type, xas.xa_index);
+		address_space = swap_address_space(entry);
+	}
+
