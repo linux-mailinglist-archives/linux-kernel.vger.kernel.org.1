@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663B51FC6F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BF61FC6E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgFQHQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:16:10 -0400
-Received: from 167-179-156-38.a7b39c.bne.nbn.aussiebb.net ([167.179.156.38]:50157
-        "EHLO fornost.hmeau.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725860AbgFQHQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:16:10 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jlSI8-0003fc-W1; Wed, 17 Jun 2020 17:15:26 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 17 Jun 2020 17:15:24 +1000
-Date:   Wed, 17 Jun 2020 17:15:24 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: [v3 PATCH 0/2] Splitting ratelimit.h and lockdep.h
-Message-ID: <20200617071524.GA3055@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726538AbgFQHNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:13:25 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:34294 "EHLO mxhk.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725536AbgFQHNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 03:13:24 -0400
+Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
+        by Forcepoint Email with ESMTPS id 86EBB8D48A63CAD36D11;
+        Wed, 17 Jun 2020 15:13:22 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl2.zte.com.cn with ESMTP id 05H7DK4g028206;
+        Wed, 17 Jun 2020 15:13:20 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020061715134070-3975772 ;
+          Wed, 17 Jun 2020 15:13:40 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     cl@linux.com
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
+        wang.yi59@zte.com.cn, wang.liang82@zte.com.cn,
+        Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH] mm, slab: Use kmem_cache_zalloc() instead of kmem_cache_alloc() with flag GFP_ZERO.
+Date:   Wed, 17 Jun 2020 15:15:56 +0800
+Message-Id: <1592378156-7748-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-06-17 15:13:41,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-06-17 15:13:23,
+        Serialize complete at 2020-06-17 15:13:23
+X-MAIL: mse-fl2.zte.com.cn 05H7DK4g028206
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
+From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-v3
+Use kmem_cache_zalloc instead of manually calling kmem_cache_alloc
+with flag GFP_ZERO.
 
-Split into two patches.
+Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
+---
+ include/linux/slab.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---
-
-This patch series splits ratelimit.h and lockdep.h to avoid header
-loops involving kernel.h and printk.h.
-
-Cheers,
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 6d45488..1fa62d9 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -656,7 +656,7 @@ extern void *__kmalloc_node_track_caller(size_t, gfp_t, int, unsigned long);
+  */
+ static inline void *kmem_cache_zalloc(struct kmem_cache *k, gfp_t flags)
+ {
+-	return kmem_cache_alloc(k, flags | __GFP_ZERO);
++	return kmem_cache_zalloc(k, flags);
+ }
+ 
+ /**
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.9.5
+
