@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654B01FD304
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9F81FD332
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 19:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgFQRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 13:00:28 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45535 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQRA1 (ORCPT
+        id S1726930AbgFQRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 13:11:53 -0400
+Received: from relay-b02.edpnet.be ([212.71.1.222]:50193 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgFQRLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:00:27 -0400
-Received: by mail-io1-f66.google.com with SMTP id y5so3539593iob.12;
-        Wed, 17 Jun 2020 10:00:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fki83yGjWsSUmt5apeBY0MavNHGcAOsj5zPBT6SYQlg=;
-        b=RxVko4lKqgYT404Yy2CS5s0faIFcm7r1ieELqICtaxQJmaKGqG2rMOMZ9WkuJ+jJw9
-         JcWCwcdW8YaN6kdSjwTuekW6BheUYHQkg1XEi9fckLxejf4uidJsqXapN0k6QKkQsd/J
-         YkI+R9J8CmixQL4YwNZJYi8FYR51V+AjHPNX/9izocWU2/HaMD548WCuJ0meaGeHIvym
-         fHKgnVaj6JfNt1AkN5TTfy8YBwvA9qRpsZ3WQ8tM5wkhDXaUKGmZqMJmJSRvbqT0InHh
-         GNodGE39l0BoSeoaJ/Ewwdu5MMiyXVKtjxcNSQJ52MTE0CqsAmJBwp2zEQEmSaiXXVJj
-         MAiw==
-X-Gm-Message-State: AOAM530grw4D4fhe7aQ4JX5uItWR4onxUXnCn1nk7/8zH1HmmVz2PyOA
-        YZUKmQq0gXMGtI2HboVY3A==
-X-Google-Smtp-Source: ABdhPJx+p0Qee6x37cKl8Eb4FOZ43dbLofGKP87bW/hSWuvOLKjm3DEF+vk9a5mWaReVwREnPvpVIQ==
-X-Received: by 2002:a6b:440d:: with SMTP id r13mr310698ioa.95.1592413226572;
-        Wed, 17 Jun 2020 10:00:26 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id n4sm246839ioc.8.2020.06.17.10.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 10:00:25 -0700 (PDT)
-Received: (nullmailer pid 2303368 invoked by uid 1000);
-        Wed, 17 Jun 2020 17:00:24 -0000
-Date:   Wed, 17 Jun 2020 11:00:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     shawnguo@kernel.org, ulf.hansson@linaro.org,
-        devicetree@vger.kernel.org, s.hauer@pengutronix.de,
-        Linux-imx@nxp.com, robh+dt@kernel.org, festevam@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@pengutronix.de, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH V3] dt-bindings: mmc: Convert imx esdhc to json-schema
-Message-ID: <20200617170024.GA2301944@bogus>
-References: <1592278549-32283-1-git-send-email-Anson.Huang@nxp.com>
+        Wed, 17 Jun 2020 13:11:52 -0400
+X-Greylist: delayed 754 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 13:11:51 EDT
+X-ASG-Debug-ID: 1592413155-0a7b8d5f421573b30001-xx1T2L
+Received: from zotac.vandijck-laurijssen.be ([213.219.130.186]) by relay-b02.edpnet.be with ESMTP id 6FAs6WMCRd9eJOIK; Wed, 17 Jun 2020 18:59:15 +0200 (CEST)
+X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
+X-Barracuda-Effective-Source-IP: UNKNOWN[213.219.130.186]
+X-Barracuda-Apparent-Source-IP: 213.219.130.186
+Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
+        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 9D7CFF5FA5D;
+        Wed, 17 Jun 2020 18:59:08 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 18:59:02 +0200
+From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        wg@grandegger.com, kernel@martin.sperl.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
+Message-ID: <20200617165902.GB14228@x1.vandijck-laurijssen.be>
+X-ASG-Orig-Subj: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
+Mail-Followup-To: Marc Kleine-Budde <mkl@pengutronix.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        wg@grandegger.com, kernel@martin.sperl.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
+ <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1592278549-32283-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
+User-Agent: Mutt/1.5.22 (2013-10-16)
+X-Barracuda-Connect: UNKNOWN[213.219.130.186]
+X-Barracuda-Start-Time: 1592413155
+X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 2219
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.5260 1.0000 0.7500
+X-Barracuda-Spam-Score: 0.75
+X-Barracuda-Spam-Status: No, SCORE=0.75 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.82618
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 11:35:49 +0800, Anson Huang wrote:
-> Convert the i.MX ESDHC binding to DT schema format using json-schema
+On do, 11 jun 2020 18:26:19 +0200, Marc Kleine-Budde wrote:
+> On 6/10/20 9:44 AM, Manivannan Sadhasivam wrote:
+> > Hello,
+> > 
+> > This series adds CAN network driver support for Microchip MCP25XXFD CAN
+> > Controller with MCP2517FD as the target controller version. This series is
+> > mostly inspired (or taken) from the previous iterations posted by Martin Sperl.
+> > I've trimmed down the parts which are not necessary for the initial version
+> > to ease review. Still the series is relatively huge but I hope to get some
+> > reviews (post -rcX ofc!).
+> > 
+> > Link to the origial series posted by Martin:
+> > https://www.spinics.net/lists/devicetree/msg284462.html
+> > 
+> > I've not changed the functionality much but done some considerable amount of
+> > cleanups and also preserved the authorship of Martin for all the patches he has
+> > posted earlier. This series has been tested on 96Boards RB3 platform by myself
+> > and Martin has tested the previous version on Rpi3 with external MCP2517FD
+> > controller.
 > 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
-> Changes since V2:
-> 	- fix typo of "dealy" to "delay";
-> 	- remove unused "Several ranges could be specified." in voltage-ranges which contradicts
-> 	  the min/max items.
-> ---
->  .../devicetree/bindings/mmc/fsl-imx-esdhc.txt      |  67 -----------
->  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     | 124 +++++++++++++++++++++
->  2 files changed, 124 insertions(+), 67 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.txt
->  create mode 100644 Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> I initially started looking at Martin's driver and it was not using several
+> modern CAN driver infrastructures. I then posted some cleanup patches but Martin
+> was not working on the driver any more. Then I decided to rewrite the driver,
+> that is the one I'm hoping to mainline soon.
 > 
+> Can you give it a try?
+> 
+> https://github.com/marckleinebudde/linux/commits/v5.6-rpi/mcp25xxfd-20200607-41
 
+Hi Marc,
 
-My bot found errors running 'make dt_binding_check' on your patch:
+I'm in the process of getting a Variscite imx8m mini SOM online, with
+MCP2517FD. The 4.19 kernel that comes with it, has a driver that is
+clearly inspired by the one of Martin Sperl (not investigated too much
+yet). I have problems of probing the chip when the bus is under full
+load (under not full load, the probing only occasionally fails) due to
+the modeswitch test.
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml: mmc@5b010000: compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/imx35-clock.example.dt.yaml: esdhc@53fb4000: $nodename:0: 'esdhc@53fb4000' does not match '^mmc(@.*)?$'
+Is there a real difference in yours between the rpi and sunxi branches?
+Is there much evolution since -36 or would you mind to backport your
+latest -42 to 4.19?
 
+I will work on this the upcoming days. I can't do extensive tests, but
+rather a works-for-me test that includes bitrate probe.
+I only have 1 such board right now, and no other FD hardware.
 
-See https://patchwork.ozlabs.org/patch/1309972
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+Kurt
+> 
+> Marc
