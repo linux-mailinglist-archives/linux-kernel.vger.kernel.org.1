@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE6D1FD532
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0060A1FD523
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgFQTJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S1726883AbgFQTHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQTJ5 (ORCPT
+        with ESMTP id S1726594AbgFQTHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:09:57 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFF5C06174E;
-        Wed, 17 Jun 2020 12:09:56 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id i1so840668vkp.8;
-        Wed, 17 Jun 2020 12:09:56 -0700 (PDT)
+        Wed, 17 Jun 2020 15:07:21 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A13C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:07:21 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id q14so2433164qtr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eD4bw0lGQCfL/fgr6hV02m8eAYxz9GB1Zd0qbxDAQJ4=;
-        b=XRBe8Rr7OkveXmecDtX/Xwx/BpU5lBwhhcVbrpoalnm1bZ7zPj/mDE+sO9H1fjKm8S
-         0WK8Do11W4GOm/hBgpzdfMZkg1HQDYaNifUIEMvH0faExmBNgq9NVV5Vp3yaYGOig8j6
-         jvk4u1TeWqnEfqYKYEDLa09ph/KY4QVwdS33iJ0FUQZVnPEKW7vK1LLrwALdWnXjojAx
-         4AdUKLFEhhGVjdUxP7Snk/1AGy3g36NJSZK698jDayOsui7sEmAyQ3Z28PN54+hO0JK0
-         m6kr8SBA105mxFS2VHnpdRD5nkwMcWCliyVXfhjOY0hltcf+TkKCke2/dgGoamf7fbcb
-         AXpg==
+        bh=hExgXDZV3zpYGtiPY9jV9AWM1I/0OncMTJ8ouUg465o=;
+        b=Yq/UKsYvS0A5josQgPU+0t/qeW1UDwyO90aOpKP5PVYKTVQERWgvbxo7N6o4rLyGJV
+         jaouHK6XMXK4ToLxdbxpdYbs+FMmvt3Z4AyrWrXMOans4RMyzqar+6OvBPnP0VW9A7oP
+         lWU9WTEMPcH3OhvGA4Fdx4JuxoIj5K1Ll88ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eD4bw0lGQCfL/fgr6hV02m8eAYxz9GB1Zd0qbxDAQJ4=;
-        b=uXV9pG5S0raJ3R3QTzc190n+CS0wWvFRIlbUQY988JUNzBssDQNLc81NmT4fO6ARPI
-         6XLw4PvEhXJz2QjmmfuIXJ+mm57LifzHkBzI/91J2Md+viPryAtRbUbnRfz8pdDecFqP
-         kCdWAhIlRAsv8/nfHp0DVkVosLSb5LRC5OJo7uiqRt2pEros/AD8MEnKStgqsfBiChyz
-         Iw0w2tDDByUzcDH7h0u3qbVObS/7Uhjk6Lsu1ynP6YAwtJmIRNJRk7US2e7KzNwDUHzD
-         YPAOZXfVjyzAyj5B1Z+qrCzo7IClZv7LmYEb3XTC/O4Yn903zqS15SfaBcbg7NdPv8K5
-         wMdA==
-X-Gm-Message-State: AOAM531Z4/IEQsOse2158oZHn/f14dQb1PS8nFnGVK8zA2KxtMIBMNBq
-        vSzsw7lNTcqTF+rBsnl0RN7Z4YgeQbURw/qP+NIe8g==
-X-Google-Smtp-Source: ABdhPJwtoKeRVXvgQWYI0FGFEFUVIAQMF4l4PZuS7D/IV4AQqwOs6rxLY7l/5BGZ9tRfwoRr4V6z3VuB3DyHbXX5n8I=
-X-Received: by 2002:a1f:ee81:: with SMTP id m123mr762899vkh.51.1592420995496;
- Wed, 17 Jun 2020 12:09:55 -0700 (PDT)
+        bh=hExgXDZV3zpYGtiPY9jV9AWM1I/0OncMTJ8ouUg465o=;
+        b=OshCmK3GjvUuWQ1ep+rT5ALyb9BH+qsEzRKt47m/jokmSONZZyU+QU9nv8yatV1cDN
+         Rabae7sy5RSi35UqFwxw8Gqz/hd9MBzNfMbnYQUo3pU1x1tyJre+DP4EEgWpehAe5IXh
+         AXiks5mvscQxnrIbZTaJErTFKPshTQ14fkpdF1VMrOq8LGK5slhXzYLK7ExDZnTweaEf
+         tkZ2dyg9mLE/Z4Ky5jaU8ldmkoNqA0HByJ47yUugW7kjAGd3w6RzePb9BPTngPvf7XFn
+         RlMbtubFZu5lM8uqlEaFycnLGKY9upcD7cr5TufUXX0wjKdX6RIoPQkt4qQzEo3dk+JU
+         IUpg==
+X-Gm-Message-State: AOAM531+oPIdXfqTuwIexiURlNauVDpgPg8EN2xtqvLfsydb59Tjnz9z
+        WcyqwSoSwk4QQpIAFZtCWkN0jg1T8whNDjlhsHD8dg==
+X-Google-Smtp-Source: ABdhPJw2/X6M0huZ3wYR/5SR5uzm7PonmG3PRzsJ0BS0PeITaIZxz6pdiPRuA7pGlJKolACxFYkIkvqmU79DWDg14Qs=
+X-Received: by 2002:aed:3fa4:: with SMTP id s33mr663234qth.148.1592420840377;
+ Wed, 17 Jun 2020 12:07:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200617105929.534edd34@canb.auug.org.au> <c82b9c52-d4e6-9eef-e37d-0a26ee9f1183@suse.de>
- <20200617170307.3c87be5a@canb.auug.org.au>
-In-Reply-To: <20200617170307.3c87be5a@canb.auug.org.au>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Wed, 17 Jun 2020 20:06:11 +0100
-Message-ID: <CACvgo50Ke-7pGqpwEb8y0iYOKv7wep1qUMm8_KJvUp0fV-YHoQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Emil Velikov <emil.velikov@collabora.com>
+References: <20200615190119.382589-1-drc@linux.vnet.ibm.com> <20200617185117.732849-1-drc@linux.vnet.ibm.com>
+In-Reply-To: <20200617185117.732849-1-drc@linux.vnet.ibm.com>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Wed, 17 Jun 2020 12:07:08 -0700
+Message-ID: <CACKFLimXALz8LOPFiX7ar456CsucUf-wxmD4_KkJSmjXbZ-q+w@mail.gmail.com>
+Subject: Re: [PATCH v2] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
+To:     David Christensen <drc@linux.vnet.ibm.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Siva Reddy Kallam <siva.kallam@broadcom.com>,
+        Prashant Sreedharan <prashant@broadcom.com>,
+        Michael Chan <mchan@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Wed, 17 Jun 2020 at 08:03, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Jun 17, 2020 at 11:51 AM David Christensen
+<drc@linux.vnet.ibm.com> wrote:
 >
-> Hi Thomas,
+> The driver function tg3_io_error_detected() calls napi_disable twice,
+> without an intervening napi_enable, when the number of EEH errors exceeds
+> eeh_max_freezes, resulting in an indefinite sleep while holding rtnl_lock.
 >
-> On Wed, 17 Jun 2020 08:33:24 +0200 Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> >
-> > We recently dropped the _unlock() suffix from drm_gem_object_put(). This
-> > patch should be ok.
+> Add check for pcierr_recovery which skips code already executed for the
+> "Frozen" state.
 >
-> Yes, but what it shows is that the drm-misc tree is still based on
-> v5.7-rc1 and v5.8-rc1 has about 16000 more commits for you to get
-> conflicts against :-)
->
-Being the culprit here - thanks for the patience and report.
+> Signed-off-by: David Christensen <drc@linux.vnet.ibm.com>
 
-I believe that both AMD and drm-misc teams are aware of this lovely
-situation I've put them in.
-As you mentioned drm-misc is a bit special and doing the usual
-backmerge will be fun.
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 
-If you have any tips on how to minimise such issues, I'd gladly utilise them.
-
-Thanks again,
--Emil
+Thanks.
