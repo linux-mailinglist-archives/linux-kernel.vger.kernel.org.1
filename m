@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892A31FCF48
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A837C1FCF5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgFQOQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbgFQOQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:16:36 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B554C06174E;
-        Wed, 17 Jun 2020 07:16:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id v11so1343995pgb.6;
-        Wed, 17 Jun 2020 07:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1jrJ01mnojnEAomNxQCPzA0d3ZlyaYYOZjdx8HDbjY0=;
-        b=oC695+tt69/rbg8R+PgmEvpcRxEymrNxUf14pAnrGv7ecLMZUGP9E2dKy8WJdC7o20
-         wZiqu6B77EfZ/VxF1SLascVAA8E7iq0fgndPwGzE02dB4z1pVVDuQ5/zeXV0MsSgr8mf
-         +DJfXdIIS9U+72UA1V8SYQRrsSrmO0iRlf815sXB4p5ynzQlXloixBdsxZU9ZCr+2Abx
-         yID7rCt5OLgwxaSGS9jXXKvxxB+kzX8607BfLQJi79jTyjYFy/Ct7dcFO493oltFdhMx
-         UrdClzamiAs3p5TxgEAf+ijciv+4pLeT4G1B23GZYtBp4BPPAcvdCHyxU4xg57it6lq1
-         2GFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1jrJ01mnojnEAomNxQCPzA0d3ZlyaYYOZjdx8HDbjY0=;
-        b=AUI/9vUKaR5yEAGFClexx+nHtNi/xz+dTXaVTUyNRzppypD2VMctv+8fIp3mTtdCvy
-         Ii0F0pWWmx9TqFl7dnljRRu2kxIt8P9fNbc9yEx4sXokoJVVMjHyf6iMr/WHE2O+MNQA
-         Mi3vZ+WrOeIKHwrLGGMV9+/RP8CA/mP5gdbDGuGZKSgZKRqZgWK/11/9iUmYvmUA07mv
-         irSOARAuVL0eXvUho1Wn5VD1aJPZxPI3qaS1V/4P5wpU2AkFHA6+6rb6NE4nUrA+bGNC
-         GXCV+LP06Guy9xGPiZPvKPeRhj9snAzveH0onR76+geu/vptR7MTaEjVZywxOK3RkN3r
-         X7DQ==
-X-Gm-Message-State: AOAM533+jkW6fYZubiFpMJRW3G+kw3FkvpYTYGroBto1xjFFIKwaC+Cd
-        fyGHpofpkw5EY64c4OuRZUM=
-X-Google-Smtp-Source: ABdhPJxcgRI665YKaSXn7nuBYaeOQPDRKNGesy3yYUzqRmfZaFJ7VqHhnJY9mODQVN0ouYdGSxrZTQ==
-X-Received: by 2002:a63:7c5e:: with SMTP id l30mr6557476pgn.276.1592403396254;
-        Wed, 17 Jun 2020 07:16:36 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q92sm451288pjh.12.2020.06.17.07.16.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 07:16:35 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 07:16:34 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 000/162] 5.7.3-rc2 review
-Message-ID: <20200617141634.GC93431@roeck-us.net>
-References: <20200616172615.453746383@linuxfoundation.org>
+        id S1726886AbgFQOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbgFQOUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:20:39 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 422B3206D8;
+        Wed, 17 Jun 2020 14:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592403639;
+        bh=es6gd2lpsks8Rqxa3Nt/7/Rb1b/bXmRiwKWOAkQ+yUE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ODe0yVNs1KAQ24D2fWezug19Zyymep+xR8TF1FcTpbNVqLUdjMgVBPdErhwB1PGVt
+         XoUp/nNr8I/FTob6H+IT1jdITFJTGr4F3NnlnibYRuUW2L0B0TqAQQfUlXcdcDGWL9
+         nQ3kRmTKdjptrjw5vaS87DWApeYOeRShztwnzsaA=
+Date:   Wed, 17 Jun 2020 19:50:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] dmaengine: tegra210-adma: Fix runtime PM imbalance
+ on error
+Message-ID: <20200617142034.GW2324254@vkoul-mobl>
+References: <20200522114824.8554-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616172615.453746383@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200522114824.8554-1-dinghao.liu@zju.edu.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 07:27:11PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.7.3 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 22-05-20, 19:48, Dinghao Liu wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code. Thus a pairing decrement is needed on
+> the error handling path to keep the counter balanced.
 > 
-> Responses should be made by Thu, 18 Jun 2020 17:25:43 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
 > 
+> Changelog:
+> 
+> v2: - Merge two patches that fix runtime PM imbalance in
+>       tegra_adma_probe() and tegra_adma_alloc_chan_resources()
+>       respectively.
+> ---
+>  drivers/dma/tegra210-adma.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
+> index c4ce5dfb149b..2d6e419b6eac 100644
+> --- a/drivers/dma/tegra210-adma.c
+> +++ b/drivers/dma/tegra210-adma.c
+> @@ -658,6 +658,7 @@ static int tegra_adma_alloc_chan_resources(struct dma_chan *dc)
+>  
+>  	ret = pm_runtime_get_sync(tdc2dev(tdc));
+>  	if (ret < 0) {
+> +		pm_runtime_put_sync(tdc2dev(tdc));
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 431 pass: 431 fail: 0
+Pls dont use _sync() here
 
-Guenter
+>  		free_irq(tdc->irq, tdc);
+>  		return ret;
+>  	}
+> @@ -870,7 +871,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
+>  
+>  	ret = pm_runtime_get_sync(&pdev->dev);
+>  	if (ret < 0)
+> -		goto rpm_disable;
+> +		goto rpm_put;
+>  
+>  	ret = tegra_adma_init(tdma);
+>  	if (ret)
+> @@ -921,7 +922,6 @@ static int tegra_adma_probe(struct platform_device *pdev)
+>  	dma_async_device_unregister(&tdma->dma_dev);
+>  rpm_put:
+>  	pm_runtime_put_sync(&pdev->dev);
+> -rpm_disable:
+>  	pm_runtime_disable(&pdev->dev);
+>  irq_dispose:
+>  	while (--i >= 0)
+> -- 
+> 2.17.1
+
+-- 
+~Vinod
