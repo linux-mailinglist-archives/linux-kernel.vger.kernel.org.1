@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A47A1FD646
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE971FD64E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgFQUom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 16:44:42 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55578 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgFQUom (ORCPT
+        id S1726948AbgFQUpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 16:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgFQUpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 16:44:42 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B038B20B711C;
-        Wed, 17 Jun 2020 13:44:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B038B20B711C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1592426681;
-        bh=sd/3a2ymDFt3eq7MlVb5ASMA/r4IGCb1y6MMEDUE1Vk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJqbx0vsRC0+FJXa8A6paq6Cf2UfPWNLuf5ceC5mQx6Bu+X6o2cryjI/0jhPbWr7n
-         BUW6dYx4Ykbi9JY252skHMw1TyxCPsZcX9B3NMFmEBl4NPapTa0zlvfEjVIFWFt9D1
-         uBxCLj2zMq/ti0idqGfzqF8qqnB+ACrYJeZ6P0GI=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, nayna@linux.ibm.com,
-        sgrubb@redhat.com, paul@paul-moore.com
-Cc:     rgb@redhat.com, linux-integrity@vger.kernel.org,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] integrity: Add errno field in audit message
-Date:   Wed, 17 Jun 2020 13:44:36 -0700
-Message-Id: <20200617204436.2226-2-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200617204436.2226-1-nramas@linux.microsoft.com>
-References: <20200617204436.2226-1-nramas@linux.microsoft.com>
+        Wed, 17 Jun 2020 16:45:19 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD37C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:45:18 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l12so4032350ejn.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Oj0P5buG5a1bC8JEmblF7aFxCNxNLKAs2Jf9eLodu5c=;
+        b=PGJ54IIMItYvU8BgzV4do1AgGvK3kMUwpbfp+HE/gBOUTTGdTI3sG4A7GSR/3muroP
+         OHtnWvg/vtswpOB8tiD10WVHmMzr5+gY+QARHljXpqpbltEZVqRuCieZSlhZvatxf0A6
+         2tyh/4GYXrVwW7iKj+n0eiKo2nBI+CF0igqfCqL/UfmAR5O/9/JaeLi4uverQ5M3DijR
+         TGaueSiQ2oNc4wNJOI6Seh5+5JrFL3lEyNrZoEK0fP/I39Wbo6g33SVPLiZC+g5tYTJH
+         dqCjljUG0EFbeBpOlVH7o9dk6vcjP33Rr+8UhY1RNjSpSvxf+1Y8q4TDp0BcnWkIKZ+s
+         EK1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Oj0P5buG5a1bC8JEmblF7aFxCNxNLKAs2Jf9eLodu5c=;
+        b=jhArRQkIdmLlUP8Z2ekaGxj3HbsrV5292YuxH12MM1RWsBnqI/cvMT452Xkepndz9w
+         t/Ve8PhigpyAqY/yZhNT/p1VzuW/bZII2kHJI1648XEXT1/vHFzJVOO3ZRa255aO6jJ6
+         O4/njlopFGvev81gN/8nGcDfpyszNjV53t85ECiiZKyMjC9KRk4Pi+6x7NvBDJiG+XFP
+         YvL9k7Uzm7VUfXfXBJqPBEdRuPdTCMu7rNcMg+prnGRKVjO9Fs4vj1oWb/J27OwIgZsV
+         48jUzYFp/Hy49vI0jrM7A2ktvLK8gdqTbT3BenO2kbdSqpjrc1g0IbURxqhws/Wll9r7
+         L2QA==
+X-Gm-Message-State: AOAM530EMRPc3TN+KQcWjz8JZ5r3n/E19E4Tv46w451PzYLexmft4Dq7
+        Xq7wzYJTRFoPig6xe4FK0iw301Mt6+GxZl0ZqLKoC9g=
+X-Google-Smtp-Source: ABdhPJzw32d9FudDP8frZbB2vJBeBaF2R0077RjX1lAaOHcpgPSX6JRBm4RBGrfBH6KBQ91p8p6btsutMwMNtJFCSSc=
+X-Received: by 2002:a17:906:ecef:: with SMTP id qt15mr908152ejb.91.1592426717104;
+ Wed, 17 Jun 2020 13:45:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200524205238.GA17576@embeddedor> <CAHC9VhRcpqs6TGoqK_soTz8Jo5BCDfhq1kqKGGJeJpbXhWZRsg@mail.gmail.com>
+In-Reply-To: <CAHC9VhRcpqs6TGoqK_soTz8Jo5BCDfhq1kqKGGJeJpbXhWZRsg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Jun 2020 16:45:05 -0400
+Message-ID: <CAHC9VhSP6-eMHzZ3=-EX12fACMCSCddP9hN+58DuKNiOXMP-aw@mail.gmail.com>
+Subject: Re: [PATCH] audit: Use struct_size() helper in alloc_chunk
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Error code is not included in the audit messages logged by
-the integrity subsystem. Add "errno" field in the audit messages
-logged by the integrity subsystem and set the value to the error code
-passed to integrity_audit_msg() in the "result" parameter.
+On Mon, Jun 1, 2020 at 11:36 AM Paul Moore <paul@paul-moore.com> wrote:
+> On Sun, May 24, 2020 at 4:47 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> > One of the more common cases of allocation size calculations is finding
+> > the size of a structure that has a zero-sized array at the end, along
+> > with memory for some number of elements for that array. For example:
+> >
+> > struct audit_chunk {
+> >         ...
+> >         struct node {
+> >                 struct list_head list;
+> >                 struct audit_tree *owner;
+> >                 unsigned index;         /* index; upper bit indicates 'will prune' */
+> >         } owners[];
+> > };
+> >
+> > Make use of the struct_size() helper instead of an open-coded version
+> > in order to avoid any potential type mistakes.
+> >
+> > So, replace the following form:
+> >
+> > offsetof(struct audit_chunk, owners) + count * sizeof(struct node);
+> >
+> > with:
+> >
+> > struct_size(chunk, owners, count)
+> >
+> > This code was detected with the help of Coccinelle.
+> >
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  kernel/audit_tree.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> Thanks, this looks reasonable to me, but it came in too late for the
+> v5.8 merge window (I dislike taking changes past -rc5/6 unless
+> critical).  Once the merge window closes I'll merge this into
+> audit/next.
 
-Sample audit messages:
+FYI, I just merged this into audit/next.  Thanks!
 
-[    6.284329] audit: type=1804 audit(1591756723.627:2): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=kernel op=add_boot_aggregate cause=alloc_entry comm="swapper/0" name="boot_aggregate" res=0 errno=-12
-
-[    8.085456] audit: type=1802 audit(1592005947.297:9): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0 op=policy_update cause=completed comm="systemd" res=1 errno=0
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Steve Grubb <sgrubb@redhat.com>
----
- security/integrity/integrity_audit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/integrity/integrity_audit.c b/security/integrity/integrity_audit.c
-index 5109173839cc..a265024f82f3 100644
---- a/security/integrity/integrity_audit.c
-+++ b/security/integrity/integrity_audit.c
-@@ -53,6 +53,6 @@ void integrity_audit_msg(int audit_msgno, struct inode *inode,
- 		audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 		audit_log_format(ab, " ino=%lu", inode->i_ino);
- 	}
--	audit_log_format(ab, " res=%d", !result);
-+	audit_log_format(ab, " res=%d errno=%d", !result, result);
- 	audit_log_end(ab);
- }
 -- 
-2.27.0
-
+paul moore
+www.paul-moore.com
