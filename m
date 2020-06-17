@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102401FC795
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7792E1FC792
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgFQHiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        id S1726797AbgFQHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgFQHiE (ORCPT
+        with ESMTP id S1726629AbgFQHiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:38:04 -0400
+        Wed, 17 Jun 2020 03:38:06 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEDCC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:38:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71CFC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=JbUyEN9rQHlpfKmGSPmXjorW7ULQuj6JIuEla7Eyif8=; b=mJhHZKkFP8HZbDPzbxYkvyO3x7
-        rfv9OcazBctnUG5SH65uUVfVGmST9bYsVNXg5ncUpIMAzwSEoy/6DyLpZfOrvJ6O4sMcWSBogNMS9
-        Yo/vMoyq5pV8lUZWUcieswqu2w3iy3/87NTLpl4MnN/sSxPYNzsOGE31g/5c4DOrvycRdYEYjskxu
-        IVxCEGGIUzPJHvO3nfBUXfDbYKOu95BFZJ4noD1Th9SObijstgBrpIc3ymuj7fS4xgX+Lum0zBJ0R
-        f4QWZ/Zsohy4a/8e1gE3Yzl4FR9bKdpPQdKdA4lZNrLAXAh/riXrZj5VIpGi96seuHdgJhFB1JGM3
-        dhRupfaA==;
+        bh=UKlq6Qc43uh+OEpd24UsOoAS2Du46RrmeUqkvLlfT0w=; b=errYpsc/4wXxXF8fL+BKKxPuoP
+        Gg1cPIp2O2O08nsRFymxC1XNac0U0Zr6ChBuDnBhx8OwHCbUubbHSEgV5G4vU8Xc0VAIEb1zBUcm8
+        gjSG1kYDepcbyiCdhekBtfb0mq+ygVBImo2TSke31slrGfYffL34p/kUUCowONOTW1polZD811XX9
+        LkxYXe48sFhcTQI0ckYYmLShHZEEWTqr6IoxObrKk8yyv7z9BAs1o7zsBN2hE+ZjhQ4Fz5G45kemw
+        Flh85NbELWYAe/D6WWyZr8FQ2wufT3oPMvOzmsnQcVz+ayUW+vQ08UY/AijqIer6DL0AI4nikYhac
+        y4XNnbxA==;
 Received: from 195-192-102-148.dyn.cablelink.at ([195.192.102.148] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlSe3-0001YA-IN; Wed, 17 Jun 2020 07:38:03 +0000
+        id 1jlSe6-0001YG-AH; Wed, 17 Jun 2020 07:38:06 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] maccess: rename probe_user_{read,write} to copy_{from,to}_user_nofault
-Date:   Wed, 17 Jun 2020 09:37:54 +0200
-Message-Id: <20200617073755.8068-3-hch@lst.de>
+Subject: [PATCH 3/3] maccess: rename probe_kernel_address to get_kernel_nofault
+Date:   Wed, 17 Jun 2020 09:37:55 +0200
+Message-Id: <20200617073755.8068-4-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617073755.8068-1-hch@lst.de>
 References: <20200617073755.8068-1-hch@lst.de>
@@ -46,264 +46,419 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Better describe what these functions do.
+Better describe what this helper does, and match the naming of
+copy_from_kernel_nofault.
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/powerpc/kernel/process.c          |  3 ++-
- arch/powerpc/kvm/book3s_64_mmu_radix.c |  4 ++--
- arch/powerpc/lib/inst.c                |  6 +++---
- arch/powerpc/oprofile/backtrace.c      |  6 ++++--
- arch/powerpc/perf/callchain_32.c       |  2 +-
- arch/powerpc/perf/callchain_64.c       |  2 +-
- arch/powerpc/perf/core-book3s.c        |  3 ++-
- arch/powerpc/sysdev/fsl_pci.c          |  4 ++--
- include/linux/uaccess.h                |  4 ++--
- kernel/trace/bpf_trace.c               |  4 ++--
- kernel/trace/trace_kprobe.c            |  2 +-
- mm/maccess.c                           | 12 ++++++------
- 12 files changed, 28 insertions(+), 24 deletions(-)
+ arch/arm/kernel/traps.c             |  2 +-
+ arch/arm/mm/alignment.c             |  4 ++--
+ arch/arm64/kernel/traps.c           |  2 +-
+ arch/ia64/include/asm/sections.h    |  2 +-
+ arch/parisc/kernel/process.c        |  2 +-
+ arch/powerpc/include/asm/sections.h |  2 +-
+ arch/powerpc/kernel/kgdb.c          |  2 +-
+ arch/powerpc/kernel/kprobes.c       |  2 +-
+ arch/powerpc/kernel/process.c       |  2 +-
+ arch/powerpc/sysdev/fsl_pci.c       |  2 +-
+ arch/riscv/kernel/kgdb.c            |  4 ++--
+ arch/riscv/kernel/traps.c           |  4 ++--
+ arch/s390/mm/fault.c                |  2 +-
+ arch/sh/kernel/traps.c              |  2 +-
+ arch/x86/kernel/probe_roms.c        | 20 ++++++++++----------
+ arch/x86/kernel/traps.c             |  2 +-
+ arch/x86/mm/fault.c                 |  6 +++---
+ arch/x86/pci/pcbios.c               |  2 +-
+ include/linux/uaccess.h             |  4 ++--
+ lib/test_lockup.c                   |  6 +++---
+ 20 files changed, 37 insertions(+), 37 deletions(-)
 
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 7bb7faf84490ec..d4d0d10485003d 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1305,7 +1305,8 @@ void show_user_instructions(struct pt_regs *regs)
- 		for (i = 0; i < 8 && n; i++, n--, pc += sizeof(int)) {
- 			int instr;
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 65a3b1e7548023..605d304c8e1491 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -396,7 +396,7 @@ int is_valid_bugaddr(unsigned long pc)
+ 	u32 insn = __opcode_to_mem_arm(BUG_INSTR_VALUE);
+ #endif
  
--			if (probe_user_read(&instr, (void __user *)pc, sizeof(instr))) {
-+			if (copy_from_user_nofault(&instr, (void __user *)pc,
-+					sizeof(instr))) {
- 				seq_buf_printf(&s, "XXXXXXXX ");
- 				continue;
- 			}
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-index 3cb0c9843d01da..e738ea6521927f 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-@@ -64,9 +64,9 @@ unsigned long __kvmhv_copy_tofrom_guest_radix(int lpid, int pid,
- 	isync();
+-	if (probe_kernel_address((unsigned *)pc, bkpt))
++	if (get_kernel_nofault((unsigned *)pc, bkpt))
+ 		return 0;
  
- 	if (is_load)
--		ret = probe_user_read(to, (const void __user *)from, n);
-+		ret = copy_from_user_nofault(to, (const void __user *)from, n);
+ 	return bkpt == insn;
+diff --git a/arch/arm/mm/alignment.c b/arch/arm/mm/alignment.c
+index 84718eddae6039..236016f13bcd3c 100644
+--- a/arch/arm/mm/alignment.c
++++ b/arch/arm/mm/alignment.c
+@@ -774,7 +774,7 @@ static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
+ 	if (user_mode(regs))
+ 		fault = get_user(instr, ip);
  	else
--		ret = probe_user_write((void __user *)to, from, n);
-+		ret = copy_to_user_nofault((void __user *)to, from, n);
+-		fault = probe_kernel_address(ip, instr);
++		fault = get_kernel_nofault(ip, instr);
  
- 	/* switch the pid first to avoid running host with unallocated pid */
- 	if (quadrant == 1 && pid != old_pid)
-diff --git a/arch/powerpc/lib/inst.c b/arch/powerpc/lib/inst.c
-index 6c7a20af9fd673..9cc17eb62462a6 100644
---- a/arch/powerpc/lib/inst.c
-+++ b/arch/powerpc/lib/inst.c
-@@ -15,11 +15,11 @@ int probe_user_read_inst(struct ppc_inst *inst,
- 	unsigned int val, suffix;
- 	int err;
+ 	*inst = __mem_to_opcode_arm(instr);
  
--	err = probe_user_read(&val, nip, sizeof(val));
-+	err = copy_from_user_nofault(&val, nip, sizeof(val));
+@@ -789,7 +789,7 @@ static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
+ 	if (user_mode(regs))
+ 		fault = get_user(instr, ip);
+ 	else
+-		fault = probe_kernel_address(ip, instr);
++		fault = get_kernel_nofault(ip, instr);
+ 
+ 	*inst = __mem_to_opcode_thumb16(instr);
+ 
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 50cc30acf1064e..25f16b290f3820 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -376,7 +376,7 @@ static int call_undef_hook(struct pt_regs *regs)
+ 
+ 	if (!user_mode(regs)) {
+ 		__le32 instr_le;
+-		if (probe_kernel_address((__force __le32 *)pc, instr_le))
++		if (get_kernel_nofault((__force __le32 *)pc, instr_le))
+ 			goto exit;
+ 		instr = le32_to_cpu(instr_le);
+ 	} else if (compat_thumb_mode(regs)) {
+diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+index cea15f2dd38df7..ef03eec8666f8c 100644
+--- a/arch/ia64/include/asm/sections.h
++++ b/arch/ia64/include/asm/sections.h
+@@ -35,7 +35,7 @@ static inline void *dereference_function_descriptor(void *ptr)
+ 	struct fdesc *desc = ptr;
+ 	void *p;
+ 
+-	if (!probe_kernel_address(&desc->ip, p))
++	if (!get_kernel_nofault(&desc->ip, p))
+ 		ptr = p;
+ 	return ptr;
+ }
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 230a6422b99f36..c3b0f03bd0bf13 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -293,7 +293,7 @@ void *dereference_function_descriptor(void *ptr)
+ 	Elf64_Fdesc *desc = ptr;
+ 	void *p;
+ 
+-	if (!probe_kernel_address(&desc->addr, p))
++	if (!get_kernel_nofault(&desc->addr, p))
+ 		ptr = p;
+ 	return ptr;
+ }
+diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+index d19871763ed4aa..636bb1633de182 100644
+--- a/arch/powerpc/include/asm/sections.h
++++ b/arch/powerpc/include/asm/sections.h
+@@ -85,7 +85,7 @@ static inline void *dereference_function_descriptor(void *ptr)
+ 	struct ppc64_opd_entry *desc = ptr;
+ 	void *p;
+ 
+-	if (!probe_kernel_address(&desc->funcaddr, p))
++	if (!get_kernel_nofault(&desc->funcaddr, p))
+ 		ptr = p;
+ 	return ptr;
+ }
+diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
+index 652b2852bea307..b3d13495eb15c8 100644
+--- a/arch/powerpc/kernel/kgdb.c
++++ b/arch/powerpc/kernel/kgdb.c
+@@ -421,7 +421,7 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+ 	unsigned int instr;
+ 	struct ppc_inst *addr = (struct ppc_inst *)bpt->bpt_addr;
+ 
+-	err = probe_kernel_address(addr, instr);
++	err = get_kernel_nofault(addr, instr);
  	if (err)
  		return err;
- 	if (get_op(val) == OP_PREFIX) {
--		err = probe_user_read(&suffix, (void __user *)nip + 4, 4);
-+		err = copy_from_user_nofault(&suffix, (void __user *)nip + 4, 4);
- 		*inst = ppc_inst_prefix(val, suffix);
- 	} else {
- 		*inst = ppc_inst(val);
-@@ -51,7 +51,7 @@ int probe_user_read_inst(struct ppc_inst *inst,
- 	unsigned int val;
- 	int err;
  
--	err = probe_user_read(&val, nip, sizeof(val));
-+	err = copy_from_user_nofault(&val, nip, sizeof(val));
- 	if (!err)
- 		*inst = ppc_inst(val);
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index 6f96f65ebfe892..f933a576b2a4df 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -289,7 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
+ 	if (!p) {
+ 		unsigned int instr;
  
-diff --git a/arch/powerpc/oprofile/backtrace.c b/arch/powerpc/oprofile/backtrace.c
-index 6f347fa29f41ef..9db7ada79d10d4 100644
---- a/arch/powerpc/oprofile/backtrace.c
-+++ b/arch/powerpc/oprofile/backtrace.c
-@@ -33,7 +33,8 @@ static unsigned int user_getsp32(unsigned int sp, int is_first)
- 	 * which means that we've done all that we can do from
- 	 * interrupt context.
- 	 */
--	if (probe_user_read(stack_frame, (void __user *)p, sizeof(stack_frame)))
-+	if (copy_from_user_nofault(stack_frame, (void __user *)p,
-+			sizeof(stack_frame)))
- 		return 0;
+-		if (probe_kernel_address(addr, instr))
++		if (get_kernel_nofault(addr, instr))
+ 			goto no_kprobe;
  
- 	if (!is_first)
-@@ -51,7 +52,8 @@ static unsigned long user_getsp64(unsigned long sp, int is_first)
- {
- 	unsigned long stack_frame[3];
+ 		if (instr != BREAKPOINT_INSTRUCTION) {
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index d4d0d10485003d..52d6f430881385 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1271,7 +1271,7 @@ static void show_instructions(struct pt_regs *regs)
+ #endif
  
--	if (probe_user_read(stack_frame, (void __user *)sp, sizeof(stack_frame)))
-+	if (copy_from_user_nofault(stack_frame, (void __user *)sp,
-+			sizeof(stack_frame)))
- 		return 0;
- 
- 	if (!is_first)
-diff --git a/arch/powerpc/perf/callchain_32.c b/arch/powerpc/perf/callchain_32.c
-index f7d888d39cd3a9..542e68b8eae0b1 100644
---- a/arch/powerpc/perf/callchain_32.c
-+++ b/arch/powerpc/perf/callchain_32.c
-@@ -44,7 +44,7 @@ static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
- 	    ((unsigned long)ptr & 3))
- 		return -EFAULT;
- 
--	rc = probe_user_read(ret, ptr, sizeof(*ret));
-+	rc = copy_from_user_nofault(ret, ptr, sizeof(*ret));
- 
- 	if (IS_ENABLED(CONFIG_PPC64) && rc)
- 		return read_user_stack_slow(ptr, ret, 4);
-diff --git a/arch/powerpc/perf/callchain_64.c b/arch/powerpc/perf/callchain_64.c
-index 814d1c2c2b9cf0..fa2a1b83b9b0e7 100644
---- a/arch/powerpc/perf/callchain_64.c
-+++ b/arch/powerpc/perf/callchain_64.c
-@@ -50,7 +50,7 @@ static int read_user_stack_64(unsigned long __user *ptr, unsigned long *ret)
- 	    ((unsigned long)ptr & 7))
- 		return -EFAULT;
- 
--	if (!probe_user_read(ret, ptr, sizeof(*ret)))
-+	if (!copy_from_user_nofault(ret, ptr, sizeof(*ret)))
- 		return 0;
- 
- 	return read_user_stack_slow(ptr, ret, 8);
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index efe97ff82557d0..cd6a742ac6ef5d 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -426,7 +426,8 @@ static __u64 power_pmu_bhrb_to(u64 addr)
- 	}
- 
- 	/* Userspace: need copy instruction here then translate it */
--	if (probe_user_read(&instr, (unsigned int __user *)addr, sizeof(instr)))
-+	if (copy_from_user_nofault(&instr, (unsigned int __user *)addr,
-+			sizeof(instr)))
- 		return 0;
- 
- 	target = branch_target((struct ppc_inst *)&instr);
+ 		if (!__kernel_text_address(pc) ||
+-		    probe_kernel_address((const void *)pc, instr)) {
++		    get_kernel_nofault((const void *)pc, instr)) {
+ 			pr_cont("XXXXXXXX ");
+ 		} else {
+ 			if (regs->nip == pc)
 diff --git a/arch/powerpc/sysdev/fsl_pci.c b/arch/powerpc/sysdev/fsl_pci.c
-index 4a8874bc10574a..73fa37ca40ef95 100644
+index 73fa37ca40ef95..483412d5a1973c 100644
 --- a/arch/powerpc/sysdev/fsl_pci.c
 +++ b/arch/powerpc/sysdev/fsl_pci.c
-@@ -1066,8 +1066,8 @@ int fsl_pci_mcheck_exception(struct pt_regs *regs)
- 
- 	if (is_in_pci_mem_space(addr)) {
- 		if (user_mode(regs))
--			ret = probe_user_read(&inst, (void __user *)regs->nip,
--					      sizeof(inst));
-+			ret = copy_from_user_nofault(&inst,
-+					(void __user *)regs->nip, sizeof(inst));
+@@ -1069,7 +1069,7 @@ int fsl_pci_mcheck_exception(struct pt_regs *regs)
+ 			ret = copy_from_user_nofault(&inst,
+ 					(void __user *)regs->nip, sizeof(inst));
  		else
- 			ret = probe_kernel_address((void *)regs->nip, inst);
+-			ret = probe_kernel_address((void *)regs->nip, inst);
++			ret = get_kernel_nofault((void *)regs->nip, inst);
  
+ 		if (!ret && mcheck_handle_load(regs, inst)) {
+ 			regs->nip += 4;
+diff --git a/arch/riscv/kernel/kgdb.c b/arch/riscv/kernel/kgdb.c
+index a21fb21883e782..eed33d8cca970b 100644
+--- a/arch/riscv/kernel/kgdb.c
++++ b/arch/riscv/kernel/kgdb.c
+@@ -62,7 +62,7 @@ int get_step_address(struct pt_regs *regs, unsigned long *next_addr)
+ 	unsigned int rs1_num, rs2_num;
+ 	int op_code;
+ 
+-	if (probe_kernel_address((void *)pc, op_code))
++	if (get_kernel_nofault((void *)pc, op_code))
+ 		return -EINVAL;
+ 	if ((op_code & __INSN_LENGTH_MASK) != __INSN_LENGTH_GE_32) {
+ 		if (is_c_jalr_insn(op_code) || is_c_jr_insn(op_code)) {
+@@ -146,7 +146,7 @@ int do_single_step(struct pt_regs *regs)
+ 		return error;
+ 
+ 	/* Store the op code in the stepped address */
+-	error = probe_kernel_address((void *)addr, stepped_opcode);
++	error = get_kernel_nofault((void *)addr, stepped_opcode);
+ 	if (error)
+ 		return error;
+ 
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index ecec1778e3a424..1e45b9e22d199d 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -137,7 +137,7 @@ static inline unsigned long get_break_insn_length(unsigned long pc)
+ {
+ 	bug_insn_t insn;
+ 
+-	if (probe_kernel_address((bug_insn_t *)pc, insn))
++	if (get_kernel_nofault((bug_insn_t *)pc, insn))
+ 		return 0;
+ 
+ 	return GET_INSN_LENGTH(insn);
+@@ -165,7 +165,7 @@ int is_valid_bugaddr(unsigned long pc)
+ 
+ 	if (pc < VMALLOC_START)
+ 		return 0;
+-	if (probe_kernel_address((bug_insn_t *)pc, insn))
++	if (get_kernel_nofault((bug_insn_t *)pc, insn))
+ 		return 0;
+ 	if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32)
+ 		return (insn == __BUG_INSN_32);
+diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+index 6a24751557f0ef..90d2ed0d4db36f 100644
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -105,7 +105,7 @@ static int bad_address(void *p)
+ {
+ 	unsigned long dummy;
+ 
+-	return probe_kernel_address((unsigned long *)p, dummy);
++	return get_kernel_nofault((unsigned long *)p, dummy);
+ }
+ 
+ static void dump_pagetable(unsigned long asce, unsigned long address)
+diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
+index a33025451fcd09..a03b528adaf525 100644
+--- a/arch/sh/kernel/traps.c
++++ b/arch/sh/kernel/traps.c
+@@ -118,7 +118,7 @@ int is_valid_bugaddr(unsigned long addr)
+ 
+ 	if (addr < PAGE_OFFSET)
+ 		return 0;
+-	if (probe_kernel_address((insn_size_t *)addr, opcode))
++	if (get_kernel_nofault((insn_size_t *)addr, opcode))
+ 		return 0;
+ 	if (opcode == TRAPA_BUG_OPCODE)
+ 		return 1;
+diff --git a/arch/x86/kernel/probe_roms.c b/arch/x86/kernel/probe_roms.c
+index ee0286390a4c18..77f3341570e847 100644
+--- a/arch/x86/kernel/probe_roms.c
++++ b/arch/x86/kernel/probe_roms.c
+@@ -99,7 +99,7 @@ static bool probe_list(struct pci_dev *pdev, unsigned short vendor,
+ 	unsigned short device;
+ 
+ 	do {
+-		if (probe_kernel_address(rom_list, device) != 0)
++		if (get_kernel_nofault(rom_list, device) != 0)
+ 			device = 0;
+ 
+ 		if (device && match_id(pdev, vendor, device))
+@@ -125,13 +125,13 @@ static struct resource *find_oprom(struct pci_dev *pdev)
+ 			break;
+ 
+ 		rom = isa_bus_to_virt(res->start);
+-		if (probe_kernel_address(rom + 0x18, offset) != 0)
++		if (get_kernel_nofault(rom + 0x18, offset) != 0)
+ 			continue;
+ 
+-		if (probe_kernel_address(rom + offset + 0x4, vendor) != 0)
++		if (get_kernel_nofault(rom + offset + 0x4, vendor) != 0)
+ 			continue;
+ 
+-		if (probe_kernel_address(rom + offset + 0x6, device) != 0)
++		if (get_kernel_nofault(rom + offset + 0x6, device) != 0)
+ 			continue;
+ 
+ 		if (match_id(pdev, vendor, device)) {
+@@ -139,8 +139,8 @@ static struct resource *find_oprom(struct pci_dev *pdev)
+ 			break;
+ 		}
+ 
+-		if (probe_kernel_address(rom + offset + 0x8, list) == 0 &&
+-		    probe_kernel_address(rom + offset + 0xc, rev) == 0 &&
++		if (get_kernel_nofault(rom + offset + 0x8, list) == 0 &&
++		    get_kernel_nofault(rom + offset + 0xc, rev) == 0 &&
+ 		    rev >= 3 && list &&
+ 		    probe_list(pdev, vendor, rom + offset + list)) {
+ 			oprom = res;
+@@ -183,14 +183,14 @@ static int __init romsignature(const unsigned char *rom)
+ 	const unsigned short * const ptr = (const unsigned short *)rom;
+ 	unsigned short sig;
+ 
+-	return probe_kernel_address(ptr, sig) == 0 && sig == ROMSIGNATURE;
++	return get_kernel_nofault(ptr, sig) == 0 && sig == ROMSIGNATURE;
+ }
+ 
+ static int __init romchecksum(const unsigned char *rom, unsigned long length)
+ {
+ 	unsigned char sum, c;
+ 
+-	for (sum = 0; length && probe_kernel_address(rom++, c) == 0; length--)
++	for (sum = 0; length && get_kernel_nofault(rom++, c) == 0; length--)
+ 		sum += c;
+ 	return !length && !sum;
+ }
+@@ -211,7 +211,7 @@ void __init probe_roms(void)
+ 
+ 		video_rom_resource.start = start;
+ 
+-		if (probe_kernel_address(rom + 2, c) != 0)
++		if (get_kernel_nofault(rom + 2, c) != 0)
+ 			continue;
+ 
+ 		/* 0 < length <= 0x7f * 512, historically */
+@@ -249,7 +249,7 @@ void __init probe_roms(void)
+ 		if (!romsignature(rom))
+ 			continue;
+ 
+-		if (probe_kernel_address(rom + 2, c) != 0)
++		if (get_kernel_nofault(rom + 2, c) != 0)
+ 			continue;
+ 
+ 		/* 0 < length <= 0x7f * 512, historically */
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 7003f2e7b1634a..3b0ffbbab8f27d 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -91,7 +91,7 @@ int is_valid_bugaddr(unsigned long addr)
+ 	if (addr < TASK_SIZE_MAX)
+ 		return 0;
+ 
+-	if (probe_kernel_address((unsigned short *)addr, ud))
++	if (get_kernel_nofault((unsigned short *)addr, ud))
+ 		return 0;
+ 
+ 	return ud == INSN_UD0 || ud == INSN_UD2;
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index e996aa3833b85b..43cc1bde58b67c 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -99,7 +99,7 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
+ 		return !instr_lo || (instr_lo>>1) == 1;
+ 	case 0x00:
+ 		/* Prefetch instruction is 0x0F0D or 0x0F18 */
+-		if (probe_kernel_address(instr, opcode))
++		if (get_kernel_nofault(instr, opcode))
+ 			return 0;
+ 
+ 		*prefetch = (instr_lo == 0xF) &&
+@@ -133,7 +133,7 @@ is_prefetch(struct pt_regs *regs, unsigned long error_code, unsigned long addr)
+ 	while (instr < max_instr) {
+ 		unsigned char opcode;
+ 
+-		if (probe_kernel_address(instr, opcode))
++		if (get_kernel_nofault(instr, opcode))
+ 			break;
+ 
+ 		instr++;
+@@ -301,7 +301,7 @@ static int bad_address(void *p)
+ {
+ 	unsigned long dummy;
+ 
+-	return probe_kernel_address((unsigned long *)p, dummy);
++	return get_kernel_nofault((unsigned long *)p, dummy);
+ }
+ 
+ static void dump_pagetable(unsigned long address)
+diff --git a/arch/x86/pci/pcbios.c b/arch/x86/pci/pcbios.c
+index 9c97d814125eb9..b7f8699b18c1f9 100644
+--- a/arch/x86/pci/pcbios.c
++++ b/arch/x86/pci/pcbios.c
+@@ -302,7 +302,7 @@ static const struct pci_raw_ops *__init pci_find_bios(void)
+ 	     check <= (union bios32 *) __va(0xffff0);
+ 	     ++check) {
+ 		long sig;
+-		if (probe_kernel_address(&check->fields.signature, sig))
++		if (get_kernel_nofault(&check->fields.signature, sig))
+ 			continue;
+ 
+ 		if (check->fields.signature != BIOS32_SIGNATURE)
 diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 70a3d9cd9113f8..bef48da242cc2c 100644
+index bef48da242cc2c..5083e9fe1e3d8e 100644
 --- a/include/linux/uaccess.h
 +++ b/include/linux/uaccess.h
-@@ -306,8 +306,8 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size);
- long copy_from_kernel_nofault(void *dst, const void *src, size_t size);
- long notrace copy_to_kernel_nofault(void *dst, const void *src, size_t size);
- 
--extern long probe_user_read(void *dst, const void __user *src, size_t size);
--extern long notrace probe_user_write(void __user *dst, const void *src,
-+long copy_from_user_nofault(void *dst, const void __user *src, size_t size);
-+long notrace copy_to_user_nofault(void __user *dst, const void *src,
- 		size_t size);
- 
- long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 204afc12425fd7..dc05626979b8f8 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -141,7 +141,7 @@ bpf_probe_read_user_common(void *dst, u32 size, const void __user *unsafe_ptr)
- {
- 	int ret;
- 
--	ret = probe_user_read(dst, unsafe_ptr, size);
-+	ret = copy_from_user_nofault(dst, unsafe_ptr, size);
- 	if (unlikely(ret < 0))
- 		memset(dst, 0, size);
- 	return ret;
-@@ -326,7 +326,7 @@ BPF_CALL_3(bpf_probe_write_user, void __user *, unsafe_ptr, const void *, src,
- 	if (unlikely(!nmi_uaccess_okay()))
- 		return -EPERM;
- 
--	return probe_user_write(unsafe_ptr, src, size);
-+	return copy_to_user_nofault(unsafe_ptr, src, size);
- }
- 
- static const struct bpf_func_proto bpf_probe_write_user_proto = {
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 841c74863ff896..aefb6065b508de 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1290,7 +1290,7 @@ probe_mem_read_user(void *dest, void *src, size_t size)
- {
- 	const void __user *uaddr =  (__force const void __user *)src;
- 
--	return probe_user_read(dest, uaddr, size);
-+	return copy_from_user_nofault(dest, uaddr, size);
- }
- 
- static nokprobe_inline int
-diff --git a/mm/maccess.c b/mm/maccess.c
-index cc5d8c6233c05a..f98ff91e32c6df 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -194,7 +194,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- #endif /* HAVE_GET_KERNEL_NOFAULT */
+@@ -318,13 +318,13 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
  
  /**
-- * probe_user_read(): safely attempt to read from a user-space location
-+ * copy_from_user_nofault(): safely attempt to read from a user-space location
-  * @dst: pointer to the buffer that shall take the data
-  * @src: address to read from. This must be a user address.
-  * @size: size of the data chunk
-@@ -202,7 +202,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
-  * Safely read from user address @src to the buffer at @dst. If a kernel fault
-  * happens, handle that and return -EFAULT.
+- * probe_kernel_address(): safely attempt to read from a location
++ * get_kernel_nofault(): safely attempt to read from a location
+  * @addr: address to read from
+  * @retval: read into this variable
+  *
+  * Returns 0 on success, or -EFAULT.
   */
--long probe_user_read(void *dst, const void __user *src, size_t size)
-+long copy_from_user_nofault(void *dst, const void __user *src, size_t size)
- {
- 	long ret = -EFAULT;
- 	mm_segment_t old_fs = get_fs();
-@@ -219,10 +219,10 @@ long probe_user_read(void *dst, const void __user *src, size_t size)
- 		return -EFAULT;
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(probe_user_read);
-+EXPORT_SYMBOL_GPL(copy_from_user_nofault);
+-#define probe_kernel_address(addr, retval)		\
++#define get_kernel_nofault(addr, retval)		\
+ 	copy_from_kernel_nofault(&retval, addr, sizeof(retval))
  
- /**
-- * probe_user_write(): safely attempt to write to a user-space location
-+ * copy_to_user_nofault(): safely attempt to write to a user-space location
-  * @dst: address to write to
-  * @src: pointer to the data that shall be written
-  * @size: size of the data chunk
-@@ -230,7 +230,7 @@ EXPORT_SYMBOL_GPL(probe_user_read);
-  * Safely write to address @dst from the buffer at @src.  If a kernel fault
-  * happens, handle that and return -EFAULT.
-  */
--long probe_user_write(void __user *dst, const void *src, size_t size)
-+long copy_to_user_nofault(void __user *dst, const void *src, size_t size)
- {
- 	long ret = -EFAULT;
- 	mm_segment_t old_fs = get_fs();
-@@ -247,7 +247,7 @@ long probe_user_write(void __user *dst, const void *src, size_t size)
- 		return -EFAULT;
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(probe_user_write);
-+EXPORT_SYMBOL_GPL(copy_to_user_nofault);
+ #ifndef user_access_begin
+diff --git a/lib/test_lockup.c b/lib/test_lockup.c
+index f258743a0d8381..6bf712508673c5 100644
+--- a/lib/test_lockup.c
++++ b/lib/test_lockup.c
+@@ -419,8 +419,8 @@ static bool test_kernel_ptr(unsigned long addr, int size)
+ 	/* should be at least readable kernel address */
+ 	if (access_ok(ptr, 1) ||
+ 	    access_ok(ptr + size - 1, 1) ||
+-	    probe_kernel_address(ptr, buf) ||
+-	    probe_kernel_address(ptr + size - 1, buf)) {
++	    get_kernel_nofault(ptr, buf) ||
++	    get_kernel_nofault(ptr + size - 1, buf)) {
+ 		pr_err("invalid kernel ptr: %#lx\n", addr);
+ 		return true;
+ 	}
+@@ -437,7 +437,7 @@ static bool __maybe_unused test_magic(unsigned long addr, int offset,
+ 	if (!addr)
+ 		return false;
  
- /**
-  * strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user
+-	if (probe_kernel_address(ptr, magic) || magic != expected) {
++	if (get_kernel_nofault(ptr, magic) || magic != expected) {
+ 		pr_err("invalid magic at %#lx + %#x = %#x, expected %#x\n",
+ 		       addr, offset, magic, expected);
+ 		return true;
 -- 
 2.26.2
 
