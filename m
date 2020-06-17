@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C759D1FCA9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072CC1FCAAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 12:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgFQKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 06:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
+        id S1726582AbgFQKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 06:20:37 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:40177 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgFQKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 06:18:30 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725967AbgFQKUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 06:20:36 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66A1C208B8;
-        Wed, 17 Jun 2020 10:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592389110;
-        bh=t3O3UqUPbUfT6U+LwvmDhf8VfLM3fmdWGiN7u6Z4cqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTOqgPvE3c8CfIz5eGN+H1QWmhHhx4qZ+OBY53vIa2enZtatW6BqM01MylBKK03hc
-         xUemYqn0zAIhcnztlOTQh46+2RDBriTxkSiLc839HNanIu3LJCYD7uwQnbYqsaW7Rk
-         waEGqqsU7FVhnt5on9cwwAaNoUkeM0EySg/70Rek=
-Date:   Wed, 17 Jun 2020 11:18:25 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     catalin.marinas@arm.com, nsaenzjulienne@suse.de,
-        steve.capper@arm.com, rppt@linux.ibm.com,
-        akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH v2] arm64: mm: reserve hugetlb CMA after numa_init
-Message-ID: <20200617101824.GB3368@willie-the-truck>
-References: <20200616221924.74780-1-song.bao.hua@hisilicon.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49n1Kt37Xcz9sSn;
+        Wed, 17 Jun 2020 20:20:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1592389234;
+        bh=oW+aFhY14nVcErSZ1Yr17+EOjunMNqELZDGyY/r4C/Y=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=lbRHhw/nhzDMFxl8iYyc5SrpaxVTXQMRUwQKKZSfAxRKKg93xAROFcATq8H3RsSlC
+         d75MOAO59PYtsjMkRYUuwMccPf/naGXDi7Reovhr+UDv9sNU7cnuv/AkILZM5wAEsl
+         DE6LfbKp25olwBXMRK+AIfoc5thMBq8rTbbYDu9koN53rpuo8TeUgpiK+41RGya2TX
+         tjxqKJMypuZ4jrp64FsddFqF9ZBwFLH3whXX4fmBOlq42X0kM4SMf/rhbPHTi6cVbE
+         E2nYkuH8p0QpOTzjUx4pnJW1FPJozgD8d4kyh6HuZrnwGscvnvdx0OO6Zckpz+V/St
+         B4rcbwJyPaNOQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, arnd@arndb.de,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v5 01/13] powerpc: Remove Xilinx PPC405/PPC440 support
+In-Reply-To: <87bllidmk4.fsf@mpe.ellerman.id.au>
+References: <cover.1590079968.git.christophe.leroy@csgroup.eu> <8c593895e2cb57d232d85ce4d8c3a1aa7f0869cc.1590079968.git.christophe.leroy@csgroup.eu> <20200616002720.GA1307277@ubuntu-n2-xlarge-x86> <68503e5e-7456-b81c-e43d-27cb331a4b72@xilinx.com> <20200616181630.GA3403678@ubuntu-n2-xlarge-x86> <50fb2dd6-4e8f-a550-6eda-073beb86f2ff@xilinx.com> <87bllidmk4.fsf@mpe.ellerman.id.au>
+Date:   Wed, 17 Jun 2020 20:21:04 +1000
+Message-ID: <878sgmdmcv.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616221924.74780-1-song.bao.hua@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 10:19:24AM +1200, Barry Song wrote:
-> hugetlb_cma_reserve() is called at the wrong place. numa_init has not been
-> done yet. so all reserved memory will be located at node0.
-> 
-> Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Michael Ellerman <mpe@ellerman.id.au> writes:
+> Michal Simek <michal.simek@xilinx.com> writes:
+<snip>
 
-Damn, wasn't CC'd on that :/
+>> Or if bamboo requires uImage to be built by default you can do it via
+>> Kconfig.
+>>
+>> diff --git a/arch/powerpc/platforms/44x/Kconfig
+>> b/arch/powerpc/platforms/44x/Kconfig
+>> index 39e93d23fb38..300864d7b8c9 100644
+>> --- a/arch/powerpc/platforms/44x/Kconfig
+>> +++ b/arch/powerpc/platforms/44x/Kconfig
+>> @@ -13,6 +13,7 @@ config BAMBOO
+>>         select PPC44x_SIMPLE
+>>         select 440EP
+>>         select FORCE_PCI
+>> +       select DEFAULT_UIMAGE
+>>         help
+>>           This option enables support for the IBM PPC440EP evaluation board.
+>
+> Who knows what the actual bamboo board used. But I'd be happy to take a
+> SOB'ed patch to do the above, because these days the qemu emulation is
+> much more likely to be used than the actual board.
 
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  -v2: add Fixes tag according to Matthias Brugger's comment
-> 
->  arch/arm64/mm/init.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index e631e6425165..41914b483d54 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -404,11 +404,6 @@ void __init arm64_memblock_init(void)
->  	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
->  
->  	dma_contiguous_reserve(arm64_dma32_phys_limit);
-> -
-> -#ifdef CONFIG_ARM64_4K_PAGES
-> -	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> -#endif
+I just went to see why my CI boot of 44x didn't catch this, and it's
+because I don't use the uImage, I just boot the vmlinux directly:
 
-Why is this dependent on CONFIG_ARM64_4K_PAGES? We unconditionally
-select ARCH_HAS_GIGANTIC_PAGE so this seems unnecessary.
+  $ qemu-system-ppc -M bamboo -m 128m -display none -kernel build~/vmlinux -append "console=ttyS0" -display none -nodefaults -serial mon:stdio
+  Linux version 5.8.0-rc1-00118-g69119673bd50 (michael@alpine1-p1) (gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #4 Wed Jun 17 20:19:22 AEST 2020
+  Using PowerPC 44x Platform machine description
+  ioremap() called early from find_legacy_serial_ports+0x690/0x770. Use early_ioremap() instead
+  printk: bootconsole [udbg0] enabled
 
-> -
->  }
->  
->  void __init bootmem_init(void)
-> @@ -424,6 +419,11 @@ void __init bootmem_init(void)
->  	min_low_pfn = min;
->  
->  	arm64_numa_init();
-> +
-> +#ifdef CONFIG_ARM64_4K_PAGES
-> +	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> +#endif
 
-A comment here wouldn't hurt, as it does look a lot more natural next
-to dma_contiguous_reserve().
+So that's probably the simplest solution?
 
-Will
+cheers
