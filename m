@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C0E1FD2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09921FD2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgFQQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
+        id S1727889AbgFQQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgFQQsU (ORCPT
+        with ESMTP id S1727081AbgFQQsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:48:20 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010C0C06174E;
-        Wed, 17 Jun 2020 09:48:20 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id q19so3125644eja.7;
-        Wed, 17 Jun 2020 09:48:19 -0700 (PDT)
+        Wed, 17 Jun 2020 12:48:21 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3580BC06174E;
+        Wed, 17 Jun 2020 09:48:21 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id n24so3162325ejd.0;
+        Wed, 17 Jun 2020 09:48:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WbtFhwo2fqQ8/gIQgNvQA6jb7MjlC2oHnaaRv7v1IUo=;
-        b=A07pKi2LYvpXZf86f3a4g7sReKjO1U7SOzTgDaNnc/97/L9D0FW47EJvtPHPstA309
-         2mIVuhTx3sOVsqo2afHlc+SVcwD8uYqdgBOjn3iRWrMODrsZZr/IyDt+/F1o/+5BgYbi
-         5kerLNuB7Kyo1xTxHuR/6ABuvfGG7qM7CkTh7wf9lTJNQIJmFvGnb/Mf+hOz0JsKAiPM
-         rGHLrX2dsO8GB0b57TVodqMtY773pdHL5UFR8SxTswSh5WAuvJ4/XGkv6reN5iXBuG8M
-         CYAnohV2Gsvt32oYF4MO612scOWHHNfAW45MnaoaqIFu9XbuOLNUmpyipMnDLQktP5RU
-         cTyQ==
+        bh=q+5BoVRG0VffCCrfTH/S4zSbtLgUTIBUYTPvbWiSrIw=;
+        b=GkLw1Qi3/TTudWObG01QoJrFLKxkdf91mx1SL4oWeEOC8q6Gv/ljjmyt8pVbLHdDgq
+         3OWdR2KGw70+qrKXmtMD9Dj1U6QqT0QwZMe2fqPvA9wh7DzpH17z3QzMgUDhwKP8dAbK
+         5Thl1mj79F3RlP0hosvkJkBfjhvKNzKilAp8o2cMRog5w5lUwKjl3HA9DwS7UlF3rtbt
+         65TRG1tAO34jE5GgX3b93Qm1fNwFzmOeI5CmZ3fBOB21ntxet87PXhmNSkWo/2HYdDZM
+         dWP8u6vrcMoxXDbyZPaoqLJ3YbVRCV4ZDaneO8CTFeiPmpZyz3NEWd2LOBYUV/GOfq1p
+         CwIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WbtFhwo2fqQ8/gIQgNvQA6jb7MjlC2oHnaaRv7v1IUo=;
-        b=fcGgs9vFpml6YAr1A7HyAFXkvnbFpcxK+aR17uuWkLypflYKfDEj0nJeYZ7c6VG5yR
-         IDu7O9IAeudhqb1Fp2GCSUK2eOsMVrwkszG3ib5qYee6itaAsTs2yiwNTz7ahdnPQrHL
-         DgHKjR6W8Q8GcinGl8s9p/ltnq5fcQDf4GbmJRePG3zCcpRciQQOZfMH35qf/tQzzCWL
-         1aJV8T/+JXpmn6tFzZgNaSz1C2PLG56kwHZb3SgDaKLK4dhDZkaZZOlxorxhHnSrgNNk
-         /WyKDj0nzZjuuQb4H+DJP9/jI8rtVwAjo4wDzlxK2/tGj4Tnny0QSfqFNo5v2EPkUkJl
-         c3vw==
-X-Gm-Message-State: AOAM5326MiHWDLJNfQU0rUgsPDtlAy+Rb6HrVu4rWWyqFXz0ZG83UliY
-        1oPYDszT+M3heD48LNh668c=
-X-Google-Smtp-Source: ABdhPJwpe09uu45N6nr4qcBknRYME+IG2U1ApAgHIb2wdtB6mfX4FJC13WILYduRAMnTW86xDre4wg==
-X-Received: by 2002:a17:906:148b:: with SMTP id x11mr85532ejc.282.1592412498710;
-        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
+        bh=q+5BoVRG0VffCCrfTH/S4zSbtLgUTIBUYTPvbWiSrIw=;
+        b=J08s87O4hvptKvecMrH+Z6Do1/jZjpPbiv72UeoBvR9kGwDZ/f3EpDUjQZRl5T6fno
+         IrU5dwp70IOx/TIt/p/gIOVYBz89ou7vwn4G4dyic06LztSPq6DB0oX6h0Ihbi5QUiRY
+         uRmjpWjrKzFzNJXQY4DaIsI4xwT4zRZbQDteGt4CGBfxWZ2Q2FFWgIC93dXPubeaa+by
+         ptA+eg7pCE6LH8BqGtw0/MPoJewDuS4oLhhEDJTefXskcb9FOY3e7j5xaHSxab2WeHOV
+         r5uDaqgQzGRPWD2W5/Ecu6TsJk7+dnh/U2w+FqvBm0SgheaXIprOqkz39SOV5SFObSCZ
+         8Dpg==
+X-Gm-Message-State: AOAM530X9nI/oPmrXrWIRlBlheO2R+XMAjWXo+mD/gykDHwr7uJjkaR2
+        lcOk0hZPzivqX6Vbhkgijew=
+X-Google-Smtp-Source: ABdhPJzya/QUz9hu7DpG378s/WItmQR2ysBmEx0/RnQh/KMg8YjHmMTNVtBDCdDe9YqjZVf+sNcS2A==
+X-Received: by 2002:a17:906:365a:: with SMTP id r26mr60093ejb.466.1592412499978;
+        Wed, 17 Jun 2020 09:48:19 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.17
+        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:48:18 -0700 (PDT)
+        Wed, 17 Jun 2020 09:48:19 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/11] arm: dts: owl-s500: Set UART clock refs from CMU
-Date:   Wed, 17 Jun 2020 19:48:03 +0300
-Message-Id: <0dcd4186d4ecc420ce382977dd6624f6e63fefc7.1592407030.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH 04/11] arm: dts: owl-s500-roseapplepi: Use UART clock from CMU
+Date:   Wed, 17 Jun 2020 19:48:04 +0300
+Message-Id: <255941aa76e1eec8224c7a88b99924f3bae2cec8.1592407030.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
@@ -67,74 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable using Clock Management Unit clocks for every UART node
-of the Actions Semi S500 SoC.
+Remove the UART fixed clock and enable using the one provided by CMU.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 5d5ad9db549b..ac3d04c75dd5 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -131,6 +131,7 @@ uart0: serial@b0120000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb0120000 0x2000>;
- 			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART0>;
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+index a2087e617cb2..800edf5d2d12 100644
+--- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
++++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+@@ -25,12 +25,6 @@ memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000>; /* 2GB */
+ 	};
+-
+-	uart2_clk: uart2-clk {
+-		compatible = "fixed-clock";
+-		clock-frequency = <921600>;
+-		#clock-cells = <0>;
+-	};
+ };
  
-@@ -138,6 +139,7 @@ uart1: serial@b0122000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb0122000 0x2000>;
- 			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART1>;
- 			status = "disabled";
- 		};
+ &twd_timer {
+@@ -43,5 +37,4 @@ &timer {
  
-@@ -145,6 +147,7 @@ uart2: serial@b0124000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb0124000 0x2000>;
- 			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART2>;
- 			status = "disabled";
- 		};
- 
-@@ -152,6 +155,7 @@ uart3: serial@b0126000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb0126000 0x2000>;
- 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART3>;
- 			status = "disabled";
- 		};
- 
-@@ -159,6 +163,7 @@ uart4: serial@b0128000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb0128000 0x2000>;
- 			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART4>;
- 			status = "disabled";
- 		};
- 
-@@ -166,6 +171,7 @@ uart5: serial@b012a000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb012a000 0x2000>;
- 			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART5>;
- 			status = "disabled";
- 		};
- 
-@@ -173,6 +179,7 @@ uart6: serial@b012c000 {
- 			compatible = "actions,s500-uart", "actions,owl-uart";
- 			reg = <0xb012c000 0x2000>;
- 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_UART6>;
- 			status = "disabled";
- 		};
- 
+ &uart2 {
+ 	status = "okay";
+-	clocks = <&uart2_clk>;
+ };
 -- 
 2.27.0
 
