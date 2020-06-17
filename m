@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F251FD5B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB951FD5BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 22:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgFQUEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 16:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgFQUEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 16:04:39 -0400
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2813217BA
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 20:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592424279;
-        bh=yCtGv9eVlMKw9D6v7Ig4uZ2wW0Tp8uCLu0Xw3XWC5sE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U62EIiVFSy9+Y5G0+Z8Ru87mRY7pIfuk/Xt1lZwTH1R4Z1sogOcvMrDrqNLe2yrK7
-         2jd3b3fMwAwplYIympzqfs+cgg9rJworSDqTRYxZjGdWiqzDuwnsLQqIWmOVr8J44r
-         aR/UgDjBY5umc9i7U44UT5xEFKGcMaR5iAQQ33Ac=
-Received: by mail-wm1-f50.google.com with SMTP id y20so3344717wmi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:04:38 -0700 (PDT)
-X-Gm-Message-State: AOAM5329uncqNPEjAfHFU2hZEr104bUgYyflL35DWMB2yCW+Drvi3ERy
-        Vl0Mb5wnJwa/+YR/FqB3Rd16cGbTEzhBWR2UAmK2yQ==
-X-Google-Smtp-Source: ABdhPJwF+e7fdqSN9IJOEQH25Ju27rVnKNE0KkLy448jhlRMelw5Y5sP+Yps/00ZoQ2rvoEmHyYyOf2BhJS3yDCf8Yw=
-X-Received: by 2002:a05:600c:22da:: with SMTP id 26mr394359wmg.176.1592424277291;
- Wed, 17 Jun 2020 13:04:37 -0700 (PDT)
+        id S1726942AbgFQUFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 16:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbgFQUFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 16:05:52 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD9DC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:05:52 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id dp18so3904914ejc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 13:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=c1leZWIvOJKvKSJTXkMVRFdWNmCI6clPq41eJTdSrJk=;
+        b=YXMKuMLE1JpdALxeeof28M0jSsXSlZJB/X7nG8d63WHAHFTe8u1CnBkRsSjI11tzRW
+         xy75g8vx014t3N6fAb55aghc6xGPVZvlMmf3IWTAVLOIzOa9U3LnI8tIdOZ9WUnmfmHZ
+         gWFcSAggvlSEqIeMhI+RQHM1pg8IWXRIR2fyA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c1leZWIvOJKvKSJTXkMVRFdWNmCI6clPq41eJTdSrJk=;
+        b=I5Hzd2MmcTe/ZG+zrCN7imNIZyJX5tTMJrG7FE9BF9c6mjxDX0YSxLIkhVxcnal1U6
+         Vj+WxFQgEDkfVk9SAKsQtKbi8Dvvsa+U+AJCsbC9IhLXY+icchnGxjzPTd/eQ72Gr3Yz
+         4wbYxhbpJzcv/jYkeTs/dU69Ky6lmJ4k8h5l0L9hRttEr4aPUzPFVDxcwSXPKPwIGuHS
+         B6APUygSz9vE1LNkx+ksb6pucK2Ky00e2lq6mjXo0dvTiVZ68ycvnS2zLE8k5cU793ZH
+         2GDUSBivbF/rSLIz+dHjOhcxYVCS8GDKmK+61AYKxNqHGgI4c71CCrAw6Jr8rhTIEmV0
+         r+YA==
+X-Gm-Message-State: AOAM531EJYQZqtMDYOF5L/i/uh+L/EhY1ngknd+HWQrBxMkJ1QhzGdfu
+        O5p5yGlqbTiJPDI7C+ou9UEtjJ8mi7QnnA==
+X-Google-Smtp-Source: ABdhPJy2hphN+MmJJKLybt5Oa3cdP1lH+zUdT2EUOUqVnv8LdHF76O8QR5XiDiZnahfqVCcfhyaYPg==
+X-Received: by 2002:a17:906:22cc:: with SMTP id q12mr797135eja.485.1592424350833;
+        Wed, 17 Jun 2020 13:05:50 -0700 (PDT)
+Received: from [192.168.1.149] (ip-5-186-112-31.cgn.fibianet.dk. [5.186.112.31])
+        by smtp.gmail.com with ESMTPSA id dn17sm424011edb.26.2020.06.17.13.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jun 2020 13:05:50 -0700 (PDT)
+Subject: Re: [PATCH v3 00/21] dynamic_debug cleanups, query features, export
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        linux-kernel@vger.kernel.org, akpm@linuxfoundation.org,
+        gregkh@linuxfoundation.org
+References: <20200617162536.611386-1-jim.cromie@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <9d0900db-5480-cdc9-88e1-92035259fc43@rasmusvillemoes.dk>
+Date:   Wed, 17 Jun 2020 22:05:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com>
- <1592418233-17762-2-git-send-email-fenghua.yu@intel.com> <CALCETrXFHa_05-sGAy5M9YGJWUfTn9MfM-ZYk+hp12tqHNJA0Q@mail.gmail.com>
- <3908561D78D1C84285E8C5FCA982C28F7F67216A@ORSMSX115.amr.corp.intel.com>
-In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F7F67216A@ORSMSX115.amr.corp.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 17 Jun 2020 13:04:25 -0700
-X-Gmail-Original-Message-ID: <CALCETrWe=7CoS8j7w5penF9xWndcrvYDhJpEUdymfLBtjmNUkQ@mail.gmail.com>
-Message-ID: <CALCETrWe=7CoS8j7w5penF9xWndcrvYDhJpEUdymfLBtjmNUkQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/13] iommu: Change type of pasid to unsigned int
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradeed.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 12:39 PM Luck, Tony <tony.luck@intel.com> wrote:
->
-> > Is PASID in the uapi at all?
->
->
-> $ grep pasid include/uapi/linux/iommu.h
-> * @pasid: Process Address Space ID
->         __u32   pasid;
->  * @pasid: Process Address Space ID
->         __u32   pasid;
->  * @pasid: Process Address Space ID
->         __u32   pasid;
->  * - If the PASID bit is set, the @pasid field is populated and the invalidation
->  * @pasid: process address space ID
->         __u64   pasid;
->  * struct iommu_inv_pasid_info - PASID Selective Invalidation Structure
->  * - If the PASID bit is set, the @pasid field is populated and the invalidation
->  * @pasid: process address space ID
-> struct iommu_inv_pasid_info {
->         __u64   pasid;
->  * @pasid_info: invalidation data when @granularity is %IOMMU_INV_GRANU_PASID
->                 struct iommu_inv_pasid_info pasid_info;
->  * struct iommu_gpasid_bind_data_vtd - Intel VT-d specific data on device and guest
-> struct iommu_gpasid_bind_data_vtd {
->  * struct iommu_gpasid_bind_data - Information about device and guest PASID binding
->  * @hpasid:     Process address space ID used for the guest mm in host IOMMU
->  * @gpasid:     Process address space ID used for the guest mm in guest IOMMU
-> struct iommu_gpasid_bind_data {
->         __u64 hpasid;
->         __u64 gpasid;
->                 struct iommu_gpasid_bind_data_vtd vtd;
+On 17/06/2020 18.25, Jim Cromie wrote:
+> this is v3, changes from previous:
+>  - moved non-controversial commits up front, refactors to help this.
+>  - a few more minor cleanups
+>  - left out the WIP patches
+>  - export ddebug_exec_queries()
+>  - accept file=foo:func only, not module:foo
+>  - varname changes
+>  
+> v2: https://lore.kernel.org/lkml/20200613155738.2249399-1-jim.cromie@gmail.com/
+> v1: https://lore.kernel.org/lkml/20200605162645.289174-1-jim.cromie@gmail.com/
+> 
+> Patchset starts with 11 cleanups;
+>  - change section name from vague "__verbose" to "__dyndbg"
+>  - cleaner docs, drop obsolete comment & useless debug prints,
+>    refine verbosity, fix a BUG_ON, ram reporting miscounts. etc..
 
+So I haven't been following too closely, but I'm also a bit skeptical
+about the new custom flag thing. OTOH, I'd really like to see those
+first cleanups go in soon, especially patch 6 - which not only makes the
+ram use a bit more accurate, it also avoids ~10000 calls of strlen() on
+cache-cold memory during boot.
 
-Aha.  I guess this is considerably older than I thought.
+So, FWIW, you have my Acked-by for patches 1 through 11, and I hope
+those can be picked up before the next merge window. But the remaining
+ones seem to still require some discussion.
+
+Rasmus
