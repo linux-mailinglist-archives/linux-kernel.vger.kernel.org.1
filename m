@@ -2,85 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797E1FCF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F731FCF42
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgFQOPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgFQOPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:15:34 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E228C06174E;
-        Wed, 17 Jun 2020 07:15:34 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r18so1330295pgk.11;
-        Wed, 17 Jun 2020 07:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=llbvqScGaw1SQLgsvsAnASkmPUngs70hBefpUE/B/a4=;
-        b=HG117iHYLZN5d1cJQIGtYWWnoemquZ0+C3cPB6hx9eeQ57w9Pt61ysa78By8ApETzs
-         irghr2i6rEhJ6oJiymLu3ID8hucSubJ4s0KVppIvU8J0IXsHhM5Y8ELPTP9gD/PGmL6h
-         4pME/1AlSni7YTHY9ueHZrDkVCZPqDQYie4nr+Vh17R0ddJvsbTo8wYNZNIfSkI9eG97
-         as0oXucfdDYTLg52IidQJylIUYdQgR2jAsY75zk5S90oSzsHP8jK5Dyi7VV1az/ZwE5r
-         cNVvlEEhfo1U9kmJ71yDmgopLs0UOWFXBj+9ngaBHnhcYddod5qwIibGOftvM4p7YWm6
-         cJTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=llbvqScGaw1SQLgsvsAnASkmPUngs70hBefpUE/B/a4=;
-        b=Zag1UL/X7z4d3Dt64JbuYbD9AY77ul1hT4H8esBapKSFAHlev7iqR40x7MN9scOgjq
-         wkeiQ6sxkdtlJOrYfur59q+j7/09NLLL3myjGYGzyytSWudiyvUdBHp4NfubmTMcLyGc
-         n/iNyohQ9x+//nBfS9NsXoqdAH/xoE2XNd9n8eGygs6MjsXhMc32x1C69hlS5GEBpyiz
-         rJ/JhUh8LogEXn+HbxDq6uwWd2NxPOl8EnOZc5gNl71w2t93IQSE1R0h41Aumbcw09Aa
-         S/QTdE/a2HgCOUQw6cDqyMrrTHYfiFGfsDZEaoAd00oNf32COCNlcFDyZlaCMV6dzBTz
-         me/A==
-X-Gm-Message-State: AOAM533dY8AtyU5PS7gi9oCzJk1n2QOjciSR9m58UgXQzvzrPja7i6ME
-        ulprLtpPHJEVpftRiEUBEV4=
-X-Google-Smtp-Source: ABdhPJzhZBUZXNW8DEqF/16C68P9Bf38thJhQNINGAw4tVf+XXVuKgq1pp/ZYa2VuUqEANRxXcaacQ==
-X-Received: by 2002:a65:534d:: with SMTP id w13mr6341887pgr.18.1592403334093;
-        Wed, 17 Jun 2020 07:15:34 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o16sm82256pgg.57.2020.06.17.07.15.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 07:15:33 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 07:15:32 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/131] 5.4.47-rc2 review
-Message-ID: <20200617141532.GA93431@roeck-us.net>
-References: <20200616172616.044174583@linuxfoundation.org>
+        id S1727019AbgFQOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgFQOPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:15:43 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D95F720734;
+        Wed, 17 Jun 2020 14:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592403342;
+        bh=biwPr+tD+WRnoxG7WP871+HSHcU3RUZhL/WHAB2QxHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=btiiNL/vTiT0k62ixNdiDZ+ruGxW4Rj6Z1MrdHhjNdM13aF1bu4dGfrxc0Ej9fmvm
+         vOkJnoVqtdrJfbeqA0U4S8hbM9tUJrScyjaF4vk5ucdW53DNkzxeZv8A4dII+FO+gE
+         25IsrM2tiF2P/jY2m1cWu42YU0qXSj6OgrHToGaY=
+Date:   Wed, 17 Jun 2020 16:15:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Enderborg <peter.enderborg@sony.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3] debugfs: Add access restriction option
+Message-ID: <20200617141535.GA2624659@kroah.com>
+References: <20200617133738.6631-1-peter.enderborg@sony.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616172616.044174583@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200617133738.6631-1-peter.enderborg@sony.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 07:27:26PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.47 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Jun 17, 2020 at 03:37:38PM +0200, Peter Enderborg wrote:
+> Since debugfs include sensitive information it need to be treated
+> carefully. But it also has many very useful debug functions for userspace.
+> With this option we can have same configuration for system with
+> need of debugfs and a way to turn it off. This gives a extra protection
+> for exposure on systems where user-space services with system
+> access are attacked.
 > 
-> Responses should be made by Thu, 18 Jun 2020 17:25:49 +0000.
-> Anything received after that time might be too late.
+> When enabled it is needed a kernel command line parameter to be activated.
 > 
+> It can be on or off, but also internally on but not seen from user-space.
+> This no-fs mode do not register a debugfs as filesystem, but client can
+> register their parts in the internal structures. This data can be readed
+> with a debugger or saved with a crashkernel. When it is off clients
+> get EPERM error when accessing the functions for registering their
+> components.
+> 
+> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> ---
+> v2. Removed MOUNT as part of restrictions. Added API's restrictions as
+>     separate restriction.
+> v3  Updated Documentation after Randy Dunlap reviews and suggestions.
+> 
+>  .../admin-guide/kernel-parameters.txt         | 11 +++++
+>  fs/debugfs/inode.c                            | 47 +++++++++++++++++++
+>  lib/Kconfig.debug                             | 10 ++++
+>  3 files changed, 68 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index fb95fad81c79..249c86e53bb7 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -827,6 +827,17 @@
+>  			useful to also enable the page_owner functionality.
+>  			on: enable the feature
+>  
+> +	debugfs=    	[KNL] When CONFIG_DEBUG_FS_RESTRICTED is set, this parameter
+> +			enables what is exposed to userspace.
+> +			Format: { on, no_fs, off }
+> +			on: 	All functions are enabled.
+> +			no_fs: 	Filesystem is not registered but kernel clients can
+> +			        access APIs and a crashkernel can be used to read
+> +				it's content. There its nothing to mount.
+> +			off: 	(default) Filesystem is not registered and clients
+> +			        get a -EPERM as result when trying to register files
+> +				or directories within debugfs.
+> +
+>  	debugpat	[X86] Enable PAT debugging
+>  
+>  	decnet.addr=	[HW,NET]
+> diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+> index b7f2e971ecbc..2bd80a932ae1 100644
+> --- a/fs/debugfs/inode.c
+> +++ b/fs/debugfs/inode.c
+> @@ -31,10 +31,17 @@
+>  #include "internal.h"
+>  
+>  #define DEBUGFS_DEFAULT_MODE	0700
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +#define DEBUGFS_ALLOW_API 0x2
+> +#define DEBUGFS_ALLOW_FS 0x1
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+BIT()?
 
-Guenter
+And a tab?
+
+And why a #ifdef?
+
+> +#endif
+>  
+>  static struct vfsmount *debugfs_mount;
+>  static int debugfs_mount_count;
+>  static bool debugfs_registered;
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +static unsigned int debugfs_allow;
+> +#endif
+
+Why #ifdef?
+
+>  
+>  /*
+>   * Don't allow access attributes to be changed whilst the kernel is locked down
+> @@ -266,6 +273,10 @@ static struct dentry *debug_mount(struct file_system_type *fs_type,
+>  			int flags, const char *dev_name,
+>  			void *data)
+>  {
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +	if (!(debugfs_allow & DEBUGFS_ALLOW_API))
+> +		return ERR_PTR(-EPERM);
+> +#endif
+
+Ick, all of this #ifdef is a mess, and can be totally avoided if you do
+the logic right here.  Please make it so that the functions and almost
+all of the .c code does not have #ifdef CONFIG_DEBUG_FS_RESTRICTED at
+all.
+
+
+>  	return mount_single(fs_type, flags, data, debug_fill_super);
+>  }
+>  
+> @@ -385,6 +396,12 @@ static struct dentry *__debugfs_create_file(const char *name, umode_t mode,
+>  	if (IS_ERR(dentry))
+>  		return dentry;
+>  
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
+> +		failed_creating(dentry);
+> +		return ERR_PTR(-EPERM);
+> +	}
+> +#endif
+>  	inode = debugfs_get_inode(dentry->d_sb);
+>  	if (unlikely(!inode)) {
+>  		pr_err("out of free dentries, can not create file '%s'\n",
+> @@ -541,6 +558,12 @@ struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
+>  	if (IS_ERR(dentry))
+>  		return dentry;
+>  
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
+> +		failed_creating(dentry);
+> +		return ERR_PTR(-EPERM);
+> +	}
+> +#endif
+>  	inode = debugfs_get_inode(dentry->d_sb);
+>  	if (unlikely(!inode)) {
+>  		pr_err("out of free dentries, can not create directory '%s'\n",
+> @@ -583,6 +606,12 @@ struct dentry *debugfs_create_automount(const char *name,
+>  	if (IS_ERR(dentry))
+>  		return dentry;
+>  
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
+> +		failed_creating(dentry);
+> +		return ERR_PTR(-EPERM);
+> +	}
+> +#endif
+>  	inode = debugfs_get_inode(dentry->d_sb);
+>  	if (unlikely(!inode)) {
+>  		pr_err("out of free dentries, can not create automount '%s'\n",
+> @@ -786,10 +815,28 @@ bool debugfs_initialized(void)
+>  }
+>  EXPORT_SYMBOL_GPL(debugfs_initialized);
+>  
+> +static int __init debugfs_kernel(char *str)
+> +{
+> +#ifdef CONFIG_DEBUG_FS_RESTRICTED
+> +	if (str && !strcmp(str, "on"))
+> +		debugfs_allow = DEBUGFS_ALLOW_API | DEBUGFS_ALLOW_FS;
+> +	if (str && !strcmp(str, "no-fs"))
+> +		debugfs_allow |= DEBUGFS_ALLOW_API;
+> +	if (str && !strcmp(str, "off"))
+> +		debugfs_allow = 0;
+
+It's set to 0 by default, no need to set it again, right?
+
+> +#endif
+> +	return 0;
+> +
+> +}
+> +early_param("debugfs", debugfs_kernel);
+
+Why is this a valid parm even if the option is not enabled?  Do you mean
+to do that?  Why?
+
+thanks,
+
+greg k-h
