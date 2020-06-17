@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B161FD7E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D508A1FD78E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 23:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgFQVst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 17:48:49 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:33616 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbgFQVst (ORCPT
+        id S1727021AbgFQVjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 17:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbgFQVjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 17:48:49 -0400
-X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 17:48:48 EDT
-Date:   Wed, 17 Jun 2020 21:38:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1592429930; bh=BHRlybEla9RSsqJCF1ZBfvNg6UHwGh4px8zN0yh041Y=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=R6qNHWtP0rxd8v7/aRGEPRJvP4R8ESGedaF+i3uFy2jPt8eiRBw92z6JyEGMzgGPZ
-         qH2M+gtPZGuDSm+LZs44XjkaF1/muj3+r8yYkDMcHhnD3GFWgzDed/ifFPgRYzDn0s
-         D7GZYev0c/TWWUneeOtrfIGJepec04eaHjlowIvOtxikryLjtMEOGAzx5d9V+LrjjA
-         In1bqJCgrXLBAb6lfnbqyJOY7u0YKOS8PHkMGLvVQ7j9Y5GgxFDPJ2tRjH/cFaZJtl
-         pYh+mofJ9e2rN0GqJsdp4dn+WnhFDEjHruogaPlqN9sGcEjmmILJKqoJhAs95obRaO
-         a39S5301L53Qg==
-To:     Michal Kubecek <mkubecek@suse.cz>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH resend net] net: ethtool: add missing NETIF_F_GSO_FRAGLIST feature string
-Message-ID: <5u_BsHq6Jk0q09sGWsVKfvv0NRa5kBHjxdOr9VpNknRnxHpbRO_80JSHl_AWS-C_wBS7B15KetRleLaluF8tOysTNYyLVRUG4BRFQZxnhXw=@pm.me>
-In-Reply-To: <20200617211844.kupsyijuurjpb5kd@lion.mk-sys.cz>
-References: <9oPfKdiVuoDf251VBJXgNs-Hv-HWPnIJk52x-SQc1frfg8QSf9z3rCL-CBSafkp9SO0CjNzU8QvUv9Abe4SvoUpejeob9OImDPbflzRC-0Y=@pm.me> <20200617211844.kupsyijuurjpb5kd@lion.mk-sys.cz>
+        Wed, 17 Jun 2020 17:39:02 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF85C06174E;
+        Wed, 17 Jun 2020 14:39:01 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id b7so2681052pju.0;
+        Wed, 17 Jun 2020 14:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Z1L8zEnT0ez27hMPJfvySv6oSz2yh1sjZDdhcO8RfP0=;
+        b=WVUQiX4n9B4WfCJBET0HMR26vU5YifBBC/wyJt0FXFo1xS/PEUt4P9j1Yjm2b/b5jb
+         8zpmP4ZHRZNWEpI0mY/XCZ5N2kd2e0f/b0f6vqT93FbsNIQtb9ctyblIiWSX2c81oH3g
+         UQ9u/NivMKKM11OP7PxOWnqi271OlQTDB0idgVqXrgtxJkAJNYOZ7n8mQCDCfFz9jE7X
+         f8jTsMp06G6yb546m3ZsPNfPvOcWgkAYbDaxiwa8XgBxrkSU46kWFeRBKyrl0cUw8e3D
+         vI8nCAfl2ECyZVAuS8wlcSTkeEVKDuDRohwZxbRdneC5Be4FjTOwLNEzffi8AcWPV8D3
+         agIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z1L8zEnT0ez27hMPJfvySv6oSz2yh1sjZDdhcO8RfP0=;
+        b=tGlB91kNnDixHqvgNdkPLKmNOjEMizcaDMeHmSPJMKgC3zZ9xrX6L3gTxbQE5mLfLh
+         6HS8hSBX/CXTAG5T3cwZYr5Ou1IsDEmLHgkEWkzN+3tatZgdWG5kWMUIrYw5Ol2BrvW0
+         nwZWMBy1O6XexKplgrdMYiH8F9zxUDpXkpm5oAbQTPwXX7fE+vKNYI6b8UX21KH/BkAZ
+         v0dadacDIGqwNDLY7t6cR/qGyjrvHID3Ig/7jiO8EwYlz5ZGKjKx+diIyVLVMGjkN/PO
+         Lmv3XYClvA4WmgJceofiRwPmMGpdizyfl6hNn6UiKurTcc4hyf8PXfcDDI86BB1/Vd0h
+         7pRQ==
+X-Gm-Message-State: AOAM533TmN6lFZugA76XSJR5+46R6X4kXlibJLychtpqhensV9OmgwNV
+        1LylJ2dxgsAGH8ug2uY1Gs8MkuHD
+X-Google-Smtp-Source: ABdhPJz97eFcIZRAPlw+wrdz7tC9hhXVeN978btuN1qnKO9axu1PeT/YdSe8nJFrZiqd3ydWZR5BOw==
+X-Received: by 2002:a17:902:a410:: with SMTP id p16mr897252plq.283.1592429940900;
+        Wed, 17 Jun 2020 14:39:00 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id r4sm668701pgp.60.2020.06.17.14.38.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jun 2020 14:39:00 -0700 (PDT)
+Subject: Re: [PATCH 1/8] mips: bmips: add BCM3368 clock definitions
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        mturquette@baylibre.com, sboyd@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, robh+dt@kernel.org,
+        julia.lawall@lip6.fr, jonas.gorski@gmail.com, lkp@intel.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+References: <20200615090231.2932696-1-noltari@gmail.com>
+ <20200615090231.2932696-2-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <699e92c7-d84a-5625-be90-8c97914d56bb@gmail.com>
+Date:   Wed, 17 Jun 2020 14:38:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200615090231.2932696-2-noltari@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
 
-On Thursday, 18 June 2020, 0:18, Michal Kubecek <mkubecek@suse.cz> wrote:
 
-> On Wed, Jun 17, 2020 at 08:42:47PM +0000, Alexander Lobakin wrote:
->
-> > Commit 3b33583265ed ("net: Add fraglist GRO/GSO feature flags") missed
-> > an entry for NETIF_F_GSO_FRAGLIST in netdev_features_strings array. As
-> > a result, fraglist GSO feature is not shown in 'ethtool -k' output and
-> > can't be toggled on/off.
-> > The fix is trivial.
-> >
-> > Fixes: 3b33583265ed ("net: Add fraglist GRO/GSO feature flags")
-> > Signed-off-by: Alexander Lobakin alobakin@pm.me
-> >
-> > -----------------------------------------------------------------------=
------------------------------------------
-> >
-> > net/ethtool/common.c | 1 +
-> > 1 file changed, 1 insertion(+)
-> > diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-> > index 423e640e3876..47f63526818e 100644
-> > --- a/net/ethtool/common.c
-> > +++ b/net/ethtool/common.c
-> > @@ -43,6 +43,7 @@ const char netdev_features_strings[NETDEV_FEATURE_COU=
-NT][ETH_GSTRING_LEN] =3D {
-> > [NETIF_F_GSO_SCTP_BIT] =3D "tx-sctp-segmentation",
-> > [NETIF_F_GSO_ESP_BIT] =3D "tx-esp-segmentation",
-> > [NETIF_F_GSO_UDP_L4_BIT] =3D "tx-udp-segmentation",
-> >
-> > -   [NETIF_F_GSO_FRAGLIST_BIT] =3D "tx-gso-list",
-> >     [NETIF_F_FCOE_CRC_BIT] =3D "tx-checksum-fcoe-crc",
-> >     [NETIF_F_SCTP_CRC_BIT] =3D "tx-checksum-sctp",
-> >
->
-> Reviewed-by: Michal Kubecekmkubecek@suse.cz
+On 6/15/2020 2:02 AM, Álvaro Fernández Rojas wrote:
+> Add header with BCM3368 definitions in order to be able to include it from
+> device tree files.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-Thanks!
-
-> AFAICS the name for NETIF_F_GSO_TUNNEL_REMCSUM_BIT is also missing but
-> IMHO it will be better to fix that by a separate patch with its own
-> Fixes tag.
-
-Oh, nice catch! I'll make a separate for this one.
-I also wanted to add any sort of static_assert() / BUILD_BUG_ON() to
-prevent such misses, but don't see any easy pattern to check for now,
-as netdev_features_strings[] is always NETDEV_FEATURE_COUNT-sized.
-
-> Michal
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
