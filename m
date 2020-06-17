@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723B71FC978
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0606E1FC975
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 11:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgFQJGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 05:06:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54926 "EHLO huawei.com"
+        id S1726780AbgFQJGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 05:06:18 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6273 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726025AbgFQJGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 05:06:20 -0400
+        id S1726599AbgFQJGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 05:06:18 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 37CBF2B58B95CE9F9500;
+        by Forcepoint Email with ESMTP id 0DB84318A4F0EC286102;
         Wed, 17 Jun 2020 17:06:15 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 17 Jun 2020 17:06:06 +0800
+ 14.3.487.0; Wed, 17 Jun 2020 17:06:07 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -24,10 +24,12 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <linuxarm@huawei.com>, <irogers@google.com>, <ak@linux.intel.com>,
         <linux-kernel@vger.kernel.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 0/2] perf: Improve list for arm64
-Date:   Wed, 17 Jun 2020 17:01:52 +0800
-Message-ID: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
+Subject: [PATCH v2 1/2] perf pmu: List kernel supplied event aliases for arm64
+Date:   Wed, 17 Jun 2020 17:01:53 +0800
+Message-ID: <1592384514-119954-2-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
+References: <1592384514-119954-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.58]
@@ -37,21 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This couple of patches provides:
-- aliases for arm64 CPU core events in perf list, like x86
-- ensures that CPU core events are not sparsely listed
+In commit dc098b35b56f ("perf list: List kernel supplied event aliases"),
+the aliases for events are supplied in addition to CPU event in perf list.
 
-Differences to v1:
-- Add ack from Namhyung Kim (thanks)
-- use more concise logic in patch 2/2 and also add comment
+This relies on the name of the core PMU being "cpu", which is not the case
+for arm64, so arm64 has always missed this. Use generic is_pmu_core()
+helper which takes account of arm64 to make this feature work for arm64
+(and possibly other archs).
 
-John Garry (2):
-  perf pmu: List kernel supplied event aliases for arm64
-  perf pmu: Improve CPU core PMU HW event list ordering
+Sample, before:
+  armv8_pmuv3_0/br_mis_pred/          [Kernel PMU event]
+after:
+  br_mis_pred OR armv8_pmuv3_0/br_mis_pred/          [Kernel PMU event]
 
- tools/perf/util/pmu.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/util/pmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 93fe72a9dc0b..a375364537cd 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1475,7 +1475,7 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
+ 		list_for_each_entry(alias, &pmu->aliases, list) {
+ 			char *name = alias->desc ? alias->name :
+ 				format_alias(buf, sizeof(buf), pmu, alias);
+-			bool is_cpu = !strcmp(pmu->name, "cpu");
++			bool is_cpu = is_pmu_core(pmu->name);
+ 
+ 			if (alias->deprecated && !deprecated)
+ 				continue;
 -- 
 2.26.2
 
