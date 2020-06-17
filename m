@@ -2,235 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813EE1FD454
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B76E1FD458
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 20:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgFQSVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 14:21:01 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:37796 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgFQSU6 (ORCPT
+        id S1727877AbgFQSWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 14:22:17 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38072 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726927AbgFQSWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 14:20:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05HIKq4r013011;
-        Wed, 17 Jun 2020 13:20:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592418052;
-        bh=q18jyvzqApf66tsiB+/Qj+MdPJclLJLBC0R/semOBOI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=BeVPW8aXQ7RpHNo+w/QNO14rDd2iHW51ds6LC30NWrWNVuL6MxwOeaF0y5TAYvkwg
-         c3GmSGDSIm5rLo7xzEeya6iB8QjWsGuisZ6SmGD/aYhgxYyiZIotV78bd/J/IEtraz
-         3AEmXafbCYo51XmTDFIR3MvOVxzTAoIWXbsGcd8c=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05HIKqQa001494
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Jun 2020 13:20:52 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 17
- Jun 2020 13:20:52 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 17 Jun 2020 13:20:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05HIKqxC068519;
-        Wed, 17 Jun 2020 13:20:52 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next v7 6/6] net: phy: DP83822: Add ability to advertise Fiber connection
-Date:   Wed, 17 Jun 2020 13:20:19 -0500
-Message-ID: <20200617182019.6790-7-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200617182019.6790-1-dmurphy@ti.com>
-References: <20200617182019.6790-1-dmurphy@ti.com>
+        Wed, 17 Jun 2020 14:22:16 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HILA3s028352;
+        Wed, 17 Jun 2020 11:21:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=OG6CZKJV8GDqjEFwD4x0uPA9xyYkkbq9vIyGhOv+5Os=;
+ b=DcDwzV5dzh6Sg8kJGH3JzW+1AUQmn8/gWo9ebmCPAYzTUfTR5WoRBx6mcTLtCvzvr2S8
+ ik4GViM49R2eWya+YMGIbalRS9EQLgTJfLn1sB+B1b1A2kJ+aY+IZz/4N+LMVkTIA0gX
+ QTYfqnHC4tFI4yQoqWlEiHK7MUJzENt63Us= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31q65spvb5-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 17 Jun 2020 11:21:11 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Jun 2020 11:20:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N+/D/qkqN1+fGDtrmDqxdNMNCfPnCJTat9w8gdB55BOCAixgtJ6eR0hSqm3B6/O6G7ywDArE0rr4OasW1SFVJfT0IWqCtV8zu7n1a0w73FCZbbhc7RVmDF5seMjL2ju6bgVMvVZuNO3A/NTgZBgdMo1DKx4rUs4HmIATfHafAo2jfgXktG8pT1P32LkFWE28jbr+MFSyMp9M2FV63uUGJ0Xc87Ic/mMFCT9lt+1FjFq05FvQF0S/aHN5Ux8AX9ytVS7vXV5XYZwPdNhegjcboVDvfwj75JUQvjPSohcdQnwJaJ/y2K+n2RANXIS7nunXpvNhnd5OE/4lOfNacTn13g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OG6CZKJV8GDqjEFwD4x0uPA9xyYkkbq9vIyGhOv+5Os=;
+ b=TRGkSnuyYHmmdnPDGZ4zPwW68tC/sZVxA2WnvNV/ffpWQJvUpEnkhSS68nYPFLWt65C7AhtP0oU05TgPt7Rnu3xoMoupnOQDozbCGFu7wcrgbArFI87ds2SWCQLg6u981TYjS2Ay32IU2QzRV9PL3roFT6Picc0Utz/6/m80oeI30/PL/bGGzpOXt5ogkZJojuenZZfwgjnLavLCw48YYuV5hHFeSkQe6Hnjo96LTiSrD8q0eMM6x7TAGyRH1lBU7SIITJaWIcK6m0R7vWBPcnbNgeym93cC/+xhszLY4/Mljk6zybqw1KovIJNoBK/iNvi/tzOW/T8EvkYOm4ylDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OG6CZKJV8GDqjEFwD4x0uPA9xyYkkbq9vIyGhOv+5Os=;
+ b=T6YyKfVdPHZ1QPoiJH6guFmX+QJ614O0/ZX/b2L70FB7g/RiwxIhVW2wIXy0UWh/J2uLXnR989TTqYvDICQ1kqGdc+sxfDWT5Mx0S47mWbm3LK0FVevD6/fEZJdTSkM9898dEWuaeUui+Tt4Bcw6GZCJCyd9OzNfeWuVKNrJlEg=
+Authentication-Results: hisilicon.com; dkim=none (message not signed)
+ header.d=none;hisilicon.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2934.namprd15.prod.outlook.com (2603:10b6:a03:f7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.24; Wed, 17 Jun
+ 2020 18:20:30 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3088.029; Wed, 17 Jun 2020
+ 18:20:30 +0000
+Date:   Wed, 17 Jun 2020 11:20:26 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+CC:     Will Deacon <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "nsaenzjulienne@suse.de" <nsaenzjulienne@suse.de>,
+        "steve.capper@arm.com" <steve.capper@arm.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v2] arm64: mm: reserve hugetlb CMA after numa_init
+Message-ID: <20200617182026.GA19784@carbon.dhcp.thefacebook.com>
+References: <20200616221924.74780-1-song.bao.hua@hisilicon.com>
+ <20200617101824.GB3368@willie-the-truck>
+ <B926444035E5E2439431908E3842AFD2502AA9@DGGEMI525-MBS.china.huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B926444035E5E2439431908E3842AFD2502AA9@DGGEMI525-MBS.china.huawei.com>
+X-ClientProxiedBy: BYAPR05CA0006.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::19) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:dfc8) by BYAPR05CA0006.namprd05.prod.outlook.com (2603:10b6:a03:c0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.10 via Frontend Transport; Wed, 17 Jun 2020 18:20:29 +0000
+X-Originating-IP: [2620:10d:c090:400::5:dfc8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d3e7fe0-d837-4e25-a6bc-08d812eb1da7
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2934:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB29344CBBD52ACC1A80BDEA36BE9A0@BYAPR15MB2934.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 04371797A5
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8SN3ZDg2b1IHLWkdnODrfvaWBcoHE2vjNg6RYX/Z64lTCbz40XQaGeueoj2Lqxo9kf9z+LV6xaC5OH6wM7lZ86LxSgNENJW8xdN3PE5x+QTZ91lF+Nt3p//FySOU4Fdyx/iK72gykOiEcMagrVMNuM35gMksn8gECj56b1fJUkw+8/VIdW4XKaSlWBcoEFYaRQLm4KUXiarbJ9st7Pf6BfLpkYkfRtEDCSuDDydc7iWK3I1iy36yhFR6R+zZNo6wqqka+e/ZsoDBmnETh1lwexLPY2QdbvIHeReRpRaHxxvFIUpwMAgk5gCivCiB8hNYLaB0KFm2cc20ODwAJ9EFTw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(396003)(366004)(39860400002)(136003)(83380400001)(33656002)(4326008)(8676002)(316002)(478600001)(2906002)(7696005)(8936002)(54906003)(9686003)(52116002)(55016002)(1076003)(7416002)(66946007)(66476007)(5660300002)(6666004)(6916009)(16526019)(86362001)(66556008)(53546011)(6506007)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Wwhl/Fp0yYQexbzAysK0oHNP7aBEpafjv4Wd3Sd9GkeUnaxLH0XHGBlXMVg5bdSoNHCwDQ9Q7huCgg8ZMP/+CH65M/PljhSY/QRB9AtwNU5k0JidDfOx9TBGVXaLSfxZIMxpkiVB/CXJVVCLbd3IscR0QaAj2PAGrtULAeCcypSmbHf1TMd0osINWjhMCibur0jPNmG/eIbC8w/B8TwCWokCP1+0WEAwpamVKxkNUcaOmpTXzKzWrZIcZfs2nJe5XqWU2u9FpYKW1yGpq7XQ0C1/GnKhHeORayK/V6fGqIbajaCExw1hxT7R5uF46TM37UHzv6LFpjvYutn6YNx8AzZkvFvjis8j3XPcTgEXnNhN7He9+zd7akAsxo7CAeuWuN3lZdLvcoBbRF1y1l9vgwP8C58mQFt5vhEesEFfXtPInRUO3aSUqcgx8tT1LqmGNz9CByHarpl1oTvk51ha1HrH2Rn+yJcixOzfPObtLpl5rMYIKZBR+1Jzu60n8cxoS07aUmjdi8yhP4RaeiXBPQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d3e7fe0-d837-4e25-a6bc-08d812eb1da7
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2020 18:20:30.0704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +vn4pFOtR7+OaYjUFf9IKBrdr+ZKXZrCqlYdp8I83AC0E2OQuXQIFLwCgmFP5wy8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2934
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_10:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
+ phishscore=0 clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=1 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006170142
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DP83822 can be configured to use the RGMII interface. There are
-independent fixed 3.5ns clock shift (aka internal delay) for the TX and RX
-paths. This allow either one to be set if the MII interface is RGMII and
-the value is set in the firmware node.
+On Wed, Jun 17, 2020 at 11:38:03AM +0000, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Will Deacon [mailto:will@kernel.org]
+> > Sent: Wednesday, June 17, 2020 10:18 PM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: catalin.marinas@arm.com; nsaenzjulienne@suse.de;
+> > steve.capper@arm.com; rppt@linux.ibm.com; akpm@linux-foundation.org;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Linuxarm
+> > <linuxarm@huawei.com>; Matthias Brugger <matthias.bgg@gmail.com>;
+> > Roman Gushchin <guro@fb.com>
+> > Subject: Re: [PATCH v2] arm64: mm: reserve hugetlb CMA after numa_init
+> > 
+> > On Wed, Jun 17, 2020 at 10:19:24AM +1200, Barry Song wrote:
+> > > hugetlb_cma_reserve() is called at the wrong place. numa_init has not been
+> > > done yet. so all reserved memory will be located at node0.
+> > >
+> > > Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages
+> > using cma")
+> > 
+> > Damn, wasn't CC'd on that :/
+> > 
+> > > Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> > > Acked-by: Roman Gushchin <guro@fb.com>
+> > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > > ---
+> > >  -v2: add Fixes tag according to Matthias Brugger's comment
+> > >
+> > >  arch/arm64/mm/init.c | 10 +++++-----
+> > >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index e631e6425165..41914b483d54 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -404,11 +404,6 @@ void __init arm64_memblock_init(void)
+> > >  	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
+> > >
+> > >  	dma_contiguous_reserve(arm64_dma32_phys_limit);
+> > > -
+> > > -#ifdef CONFIG_ARM64_4K_PAGES
+> > > -	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> > > -#endif
+> > 
+> > Why is this dependent on CONFIG_ARM64_4K_PAGES? We unconditionally
+> > select ARCH_HAS_GIGANTIC_PAGE so this seems unnecessary.
+> 
+> Roman, would you like to answer this question? Have you found any problem if system
+> doesn't set 4K_PAGES?
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/net/phy/dp83822.c | 108 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 100 insertions(+), 8 deletions(-)
+No, I was just following the code in arch/arm64/mm/hugetlbpage.c where all
+related to PUD-sized pages is guarded by CONFIG_ARM64_4K_PAGES.
+Actually I did all my testing on x86-64, I don't even have any arm hardware.
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index 1dd19d0cb269..49574c3df9ca 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -26,7 +26,9 @@
- #define MII_DP83822_PHYSCR	0x11
- #define MII_DP83822_MISR1	0x12
- #define MII_DP83822_MISR2	0x13
-+#define MII_DP83822_RCSR	0x17
- #define MII_DP83822_RESET_CTRL	0x1f
-+#define MII_DP83822_GENCFG	0x465
- 
- #define DP83822_HW_RESET	BIT(15)
- #define DP83822_SW_RESET	BIT(14)
-@@ -77,6 +79,15 @@
- #define DP83822_WOL_INDICATION_SEL BIT(8)
- #define DP83822_WOL_CLR_INDICATION BIT(11)
- 
-+/* RSCR bits */
-+#define DP83822_RX_CLK_SHIFT	BIT(12)
-+#define DP83822_TX_CLK_SHIFT	BIT(11)
-+
-+struct dp83822_private {
-+	int rx_int_delay;
-+	int tx_int_delay;
-+};
-+
- static int dp83822_ack_interrupt(struct phy_device *phydev)
- {
- 	int err;
-@@ -255,7 +266,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 	return phy_write(phydev, MII_DP83822_PHYSCR, physcr_status);
- }
- 
--static int dp83822_config_init(struct phy_device *phydev)
-+static int dp8382x_disable_wol(struct phy_device *phydev)
- {
- 	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
- 		    DP83822_WOL_SECURE_ON;
-@@ -264,6 +275,32 @@ static int dp83822_config_init(struct phy_device *phydev)
- 				  MII_DP83822_WOL_CFG, value);
- }
- 
-+static int dp83822_config_init(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	int rgmii_delay;
-+	int err = 0;
-+
-+	if (phy_interface_is_rgmii(phydev)) {
-+		if (dp83822->rx_int_delay)
-+			rgmii_delay = DP83822_RX_CLK_SHIFT;
-+
-+		if (dp83822->tx_int_delay)
-+			rgmii_delay |= DP83822_TX_CLK_SHIFT;
-+
-+		if (rgmii_delay)
-+			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
-+					       MII_DP83822_RCSR, rgmii_delay);
-+	}
-+
-+	return dp8382x_disable_wol(phydev);
-+}
-+
-+static int dp8382x_config_init(struct phy_device *phydev)
-+{
-+	return dp8382x_disable_wol(phydev);
-+}
-+
- static int dp83822_phy_reset(struct phy_device *phydev)
- {
- 	int err;
-@@ -272,7 +309,46 @@ static int dp83822_phy_reset(struct phy_device *phydev)
- 	if (err < 0)
- 		return err;
- 
--	dp83822_config_init(phydev);
-+	return phydev->drv->config_init(phydev);
-+}
-+
-+#ifdef CONFIG_OF_MDIO
-+static int dp83822_of_init(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	struct device *dev = &phydev->mdio.dev;
-+
-+	dp83822->rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
-+						       true);
-+	if (dp83822->rx_int_delay < 0)
-+		dp83822->rx_int_delay = 0;
-+
-+	dp83822->tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
-+						       false);
-+	if (dp83822->tx_int_delay < 0)
-+		dp83822->tx_int_delay = 0;
-+
-+	return 0;
-+}
-+#else
-+static int dp83822_of_init(struct phy_device *phydev)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_OF_MDIO */
-+
-+static int dp83822_probe(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822;
-+
-+	dp83822 = devm_kzalloc(&phydev->mdio.dev, sizeof(*dp83822),
-+			       GFP_KERNEL);
-+	if (!dp83822)
-+		return -ENOMEM;
-+
-+	phydev->priv = dp83822;
-+
-+	dp83822_of_init(phydev);
- 
- 	return 0;
- }
-@@ -308,6 +384,7 @@ static int dp83822_resume(struct phy_device *phydev)
- 		PHY_ID_MATCH_MODEL(_id),			\
- 		.name		= (_name),			\
- 		/* PHY_BASIC_FEATURES */			\
-+		.probe          = dp83822_probe,		\
- 		.soft_reset	= dp83822_phy_reset,		\
- 		.config_init	= dp83822_config_init,		\
- 		.get_wol = dp83822_get_wol,			\
-@@ -318,14 +395,29 @@ static int dp83822_resume(struct phy_device *phydev)
- 		.resume = dp83822_resume,			\
- 	}
- 
-+#define DP8382X_PHY_DRIVER(_id, _name)				\
-+	{							\
-+		PHY_ID_MATCH_MODEL(_id),			\
-+		.name		= (_name),			\
-+		/* PHY_BASIC_FEATURES */			\
-+		.soft_reset	= dp83822_phy_reset,		\
-+		.config_init	= dp8382x_config_init,		\
-+		.get_wol = dp83822_get_wol,			\
-+		.set_wol = dp83822_set_wol,			\
-+		.ack_interrupt = dp83822_ack_interrupt,		\
-+		.config_intr = dp83822_config_intr,		\
-+		.suspend = dp83822_suspend,			\
-+		.resume = dp83822_resume,			\
-+	}
-+
- static struct phy_driver dp83822_driver[] = {
- 	DP83822_PHY_DRIVER(DP83822_PHY_ID, "TI DP83822"),
--	DP83822_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
--	DP83822_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
--	DP83822_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
--	DP83822_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
--	DP83822_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
--	DP83822_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
-+	DP8382X_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
-+	DP8382X_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
-+	DP8382X_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
-+	DP8382X_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
-+	DP8382X_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
-+	DP8382X_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
- };
- module_phy_driver(dp83822_driver);
- 
--- 
-2.26.2
+I'm totally fine with removing this #ifdef if it's not needed.
 
+Thanks!
+
+> 
+> > 
+> > > -
+> > >  }
+> > >
+> > >  void __init bootmem_init(void)
+> > > @@ -424,6 +419,11 @@ void __init bootmem_init(void)
+> > >  	min_low_pfn = min;
+> > >
+> > >  	arm64_numa_init();
+> > > +
+> > > +#ifdef CONFIG_ARM64_4K_PAGES
+> > > +	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+> > > +#endif
+> > 
+> > A comment here wouldn't hurt, as it does look a lot more natural next
+> > to dma_contiguous_reserve().
+> 
+> Will add some comment here.
+> 
+> > 
+> > Will
+> 
+> barry
