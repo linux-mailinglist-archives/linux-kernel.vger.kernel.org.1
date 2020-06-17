@@ -2,463 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7792E1FC792
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CFB1FC790
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 09:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgFQHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 03:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgFQHiG (ORCPT
+        id S1726758AbgFQHiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 03:38:04 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49493 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726629AbgFQHiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 03:38:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71CFC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 00:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=UKlq6Qc43uh+OEpd24UsOoAS2Du46RrmeUqkvLlfT0w=; b=errYpsc/4wXxXF8fL+BKKxPuoP
-        Gg1cPIp2O2O08nsRFymxC1XNac0U0Zr6ChBuDnBhx8OwHCbUubbHSEgV5G4vU8Xc0VAIEb1zBUcm8
-        gjSG1kYDepcbyiCdhekBtfb0mq+ygVBImo2TSke31slrGfYffL34p/kUUCowONOTW1polZD811XX9
-        LkxYXe48sFhcTQI0ckYYmLShHZEEWTqr6IoxObrKk8yyv7z9BAs1o7zsBN2hE+ZjhQ4Fz5G45kemw
-        Flh85NbELWYAe/D6WWyZr8FQ2wufT3oPMvOzmsnQcVz+ayUW+vQ08UY/AijqIer6DL0AI4nikYhac
-        y4XNnbxA==;
-Received: from 195-192-102-148.dyn.cablelink.at ([195.192.102.148] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlSe6-0001YG-AH; Wed, 17 Jun 2020 07:38:06 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] maccess: rename probe_kernel_address to get_kernel_nofault
-Date:   Wed, 17 Jun 2020 09:37:55 +0200
-Message-Id: <20200617073755.8068-4-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200617073755.8068-1-hch@lst.de>
-References: <20200617073755.8068-1-hch@lst.de>
+        Wed, 17 Jun 2020 03:38:03 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id D23F4574;
+        Wed, 17 Jun 2020 03:38:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 17 Jun 2020 03:38:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        subject:from:to:cc:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
+        /rAbDMt6FC3fG09UnQPczhNktJ9DSAXatCwomfNKw7A=; b=EZ+hu2XSckUTh2ww
+        9ChVrX43WWyu1hOF1y2dRHfKAYYvNcZrlWcuhfyle3e0DOj1puR+RCeEAkryYp/m
+        jORajl2/0TKGS8GTBloS1v8lJ6TuYDKVPsiWgFqRlAy+rtG82p/7/Ae6K7V1d72F
+        Kqeilin2R6vSR2WKNTnLkCLxKfo6i3NtEm1L53X5LL/vEXJMQtGFgYVYpVZVtvcQ
+        keCDqXhx+RI4SdAVXFq0R610EE/AEMCfck6odQphJz4UxcgRCjA0s1oJd0U383wE
+        TpCEtBnUEAwXsPDH/yFUOzCgh/XHm6Zb7Vfkm9cSb0WrXWaEP8rAK5COgCdwQRjP
+        HqqMFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=/rAbDMt6FC3fG09UnQPczhNktJ9DSAXatCwomfNKw
+        7A=; b=rKZrjB2o86mRXyffoXCH8nD6a1yeD2qKkhpJdp6+qxv+0lvcO1e/nYybC
+        nnDKyg/1iMDISUrdFHx2ibqAdC4wTZPFNe4gg/egISiHgWdOd82KhQpscPTijUpS
+        KoCzfNrbAAYHVEFFHMqNpBxivz4+tJCwHSrnHYU96W6/fAkNhGsgl7knCA2ckCg5
+        lVkoVDXVKvI9KSH49+DBkGhnouVfcCsi+pIH+La1xY0o98Ko+2XNBbaj7rt8wptm
+        MZKHEoHCq9o8PQJh5BG0Q+IwazlGwSKZ19UrLFvWRblh4Cb6/DRyTI6Haxp3SDMN
+        aygKiVtsNkSzoNPZGJARed4p5+Pug==
+X-ME-Sender: <xms:WcjpXs1F6Mwi6-1PBZjCTCOmk8EuK-4tX39h3WpxHJCBldvMxNGn6Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudejuddguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuhffvfffkjghffgggtgfgsehtjedttddtreejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epvddvvdfgleefhfelgfekvdejjefhvdetfeevueeggeefhfdujeegveejveejgfdunecu
+    kfhppeehkedrjedrudelgedrkeejnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrg
+    hmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:WcjpXnECjlRxolJOcpVcaPhBTGVBmCyNsSz6QVYDv43jVHCi7RQbRQ>
+    <xmx:WcjpXk7oNMyoL7cPXxSNUulyEnFr_zXBvVu2XzLSo5vIGokMuh9_cA>
+    <xmx:WcjpXl1pCIy2nBAYABob42NNGnHyt9_KV9kCHF3y5LEF4isZ_G94Qw>
+    <xmx:WcjpXgMsJwFVSDSoL177lggFhTKF5GbDUesEL14Qzrvj-KT05mFEYw>
+Received: from mickey.themaw.net (58-7-194-87.dyn.iinet.net.au [58.7.194.87])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0112430618B7;
+        Wed, 17 Jun 2020 03:38:01 -0400 (EDT)
+Received: from mickey.themaw.net (localhost [127.0.0.1])
+        by mickey.themaw.net (Postfix) with ESMTP id 69E00A0314;
+        Wed, 17 Jun 2020 15:37:58 +0800 (AWST)
+Subject: [PATCH v2 3/6] kernfs: improve kernfs path resolution
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 17 Jun 2020 15:37:58 +0800
+Message-ID: <159237947839.89469.7331804336434093565.stgit@mickey.themaw.net>
+In-Reply-To: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Better describe what this helper does, and match the naming of
-copy_from_kernel_nofault.
+Now that an rwsem is used by kernfs, take advantage of it to reduce
+lookup overhead.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+If there are many lookups (possibly many negative ones) there can
+be a lot of overhead during path walks.
+
+To reduce lookup overhead avoid allocating a new dentry where possible.
+
+To do this stay in rcu-walk mode where possible and use the dentry cache
+handling of negative hashed dentries to avoid allocating (and freeing
+shortly after) new dentries on every negative lookup.
+
+Signed-off-by: Ian Kent <raven@themaw.net>
 ---
- arch/arm/kernel/traps.c             |  2 +-
- arch/arm/mm/alignment.c             |  4 ++--
- arch/arm64/kernel/traps.c           |  2 +-
- arch/ia64/include/asm/sections.h    |  2 +-
- arch/parisc/kernel/process.c        |  2 +-
- arch/powerpc/include/asm/sections.h |  2 +-
- arch/powerpc/kernel/kgdb.c          |  2 +-
- arch/powerpc/kernel/kprobes.c       |  2 +-
- arch/powerpc/kernel/process.c       |  2 +-
- arch/powerpc/sysdev/fsl_pci.c       |  2 +-
- arch/riscv/kernel/kgdb.c            |  4 ++--
- arch/riscv/kernel/traps.c           |  4 ++--
- arch/s390/mm/fault.c                |  2 +-
- arch/sh/kernel/traps.c              |  2 +-
- arch/x86/kernel/probe_roms.c        | 20 ++++++++++----------
- arch/x86/kernel/traps.c             |  2 +-
- arch/x86/mm/fault.c                 |  6 +++---
- arch/x86/pci/pcbios.c               |  2 +-
- include/linux/uaccess.h             |  4 ++--
- lib/test_lockup.c                   |  6 +++---
- 20 files changed, 37 insertions(+), 37 deletions(-)
+ fs/kernfs/dir.c |   87 ++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 72 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index 65a3b1e7548023..605d304c8e1491 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -396,7 +396,7 @@ int is_valid_bugaddr(unsigned long pc)
- 	u32 insn = __opcode_to_mem_arm(BUG_INSTR_VALUE);
- #endif
- 
--	if (probe_kernel_address((unsigned *)pc, bkpt))
-+	if (get_kernel_nofault((unsigned *)pc, bkpt))
- 		return 0;
- 
- 	return bkpt == insn;
-diff --git a/arch/arm/mm/alignment.c b/arch/arm/mm/alignment.c
-index 84718eddae6039..236016f13bcd3c 100644
---- a/arch/arm/mm/alignment.c
-+++ b/arch/arm/mm/alignment.c
-@@ -774,7 +774,7 @@ static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
- 	if (user_mode(regs))
- 		fault = get_user(instr, ip);
- 	else
--		fault = probe_kernel_address(ip, instr);
-+		fault = get_kernel_nofault(ip, instr);
- 
- 	*inst = __mem_to_opcode_arm(instr);
- 
-@@ -789,7 +789,7 @@ static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
- 	if (user_mode(regs))
- 		fault = get_user(instr, ip);
- 	else
--		fault = probe_kernel_address(ip, instr);
-+		fault = get_kernel_nofault(ip, instr);
- 
- 	*inst = __mem_to_opcode_thumb16(instr);
- 
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 50cc30acf1064e..25f16b290f3820 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -376,7 +376,7 @@ static int call_undef_hook(struct pt_regs *regs)
- 
- 	if (!user_mode(regs)) {
- 		__le32 instr_le;
--		if (probe_kernel_address((__force __le32 *)pc, instr_le))
-+		if (get_kernel_nofault((__force __le32 *)pc, instr_le))
- 			goto exit;
- 		instr = le32_to_cpu(instr_le);
- 	} else if (compat_thumb_mode(regs)) {
-diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
-index cea15f2dd38df7..ef03eec8666f8c 100644
---- a/arch/ia64/include/asm/sections.h
-+++ b/arch/ia64/include/asm/sections.h
-@@ -35,7 +35,7 @@ static inline void *dereference_function_descriptor(void *ptr)
- 	struct fdesc *desc = ptr;
- 	void *p;
- 
--	if (!probe_kernel_address(&desc->ip, p))
-+	if (!get_kernel_nofault(&desc->ip, p))
- 		ptr = p;
- 	return ptr;
- }
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index 230a6422b99f36..c3b0f03bd0bf13 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -293,7 +293,7 @@ void *dereference_function_descriptor(void *ptr)
- 	Elf64_Fdesc *desc = ptr;
- 	void *p;
- 
--	if (!probe_kernel_address(&desc->addr, p))
-+	if (!get_kernel_nofault(&desc->addr, p))
- 		ptr = p;
- 	return ptr;
- }
-diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
-index d19871763ed4aa..636bb1633de182 100644
---- a/arch/powerpc/include/asm/sections.h
-+++ b/arch/powerpc/include/asm/sections.h
-@@ -85,7 +85,7 @@ static inline void *dereference_function_descriptor(void *ptr)
- 	struct ppc64_opd_entry *desc = ptr;
- 	void *p;
- 
--	if (!probe_kernel_address(&desc->funcaddr, p))
-+	if (!get_kernel_nofault(&desc->funcaddr, p))
- 		ptr = p;
- 	return ptr;
- }
-diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
-index 652b2852bea307..b3d13495eb15c8 100644
---- a/arch/powerpc/kernel/kgdb.c
-+++ b/arch/powerpc/kernel/kgdb.c
-@@ -421,7 +421,7 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
- 	unsigned int instr;
- 	struct ppc_inst *addr = (struct ppc_inst *)bpt->bpt_addr;
- 
--	err = probe_kernel_address(addr, instr);
-+	err = get_kernel_nofault(addr, instr);
- 	if (err)
- 		return err;
- 
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index 6f96f65ebfe892..f933a576b2a4df 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -289,7 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
- 	if (!p) {
- 		unsigned int instr;
- 
--		if (probe_kernel_address(addr, instr))
-+		if (get_kernel_nofault(addr, instr))
- 			goto no_kprobe;
- 
- 		if (instr != BREAKPOINT_INSTRUCTION) {
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index d4d0d10485003d..52d6f430881385 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1271,7 +1271,7 @@ static void show_instructions(struct pt_regs *regs)
- #endif
- 
- 		if (!__kernel_text_address(pc) ||
--		    probe_kernel_address((const void *)pc, instr)) {
-+		    get_kernel_nofault((const void *)pc, instr)) {
- 			pr_cont("XXXXXXXX ");
- 		} else {
- 			if (regs->nip == pc)
-diff --git a/arch/powerpc/sysdev/fsl_pci.c b/arch/powerpc/sysdev/fsl_pci.c
-index 73fa37ca40ef95..483412d5a1973c 100644
---- a/arch/powerpc/sysdev/fsl_pci.c
-+++ b/arch/powerpc/sysdev/fsl_pci.c
-@@ -1069,7 +1069,7 @@ int fsl_pci_mcheck_exception(struct pt_regs *regs)
- 			ret = copy_from_user_nofault(&inst,
- 					(void __user *)regs->nip, sizeof(inst));
- 		else
--			ret = probe_kernel_address((void *)regs->nip, inst);
-+			ret = get_kernel_nofault((void *)regs->nip, inst);
- 
- 		if (!ret && mcheck_handle_load(regs, inst)) {
- 			regs->nip += 4;
-diff --git a/arch/riscv/kernel/kgdb.c b/arch/riscv/kernel/kgdb.c
-index a21fb21883e782..eed33d8cca970b 100644
---- a/arch/riscv/kernel/kgdb.c
-+++ b/arch/riscv/kernel/kgdb.c
-@@ -62,7 +62,7 @@ int get_step_address(struct pt_regs *regs, unsigned long *next_addr)
- 	unsigned int rs1_num, rs2_num;
- 	int op_code;
- 
--	if (probe_kernel_address((void *)pc, op_code))
-+	if (get_kernel_nofault((void *)pc, op_code))
- 		return -EINVAL;
- 	if ((op_code & __INSN_LENGTH_MASK) != __INSN_LENGTH_GE_32) {
- 		if (is_c_jalr_insn(op_code) || is_c_jr_insn(op_code)) {
-@@ -146,7 +146,7 @@ int do_single_step(struct pt_regs *regs)
- 		return error;
- 
- 	/* Store the op code in the stepped address */
--	error = probe_kernel_address((void *)addr, stepped_opcode);
-+	error = get_kernel_nofault((void *)addr, stepped_opcode);
- 	if (error)
- 		return error;
- 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index ecec1778e3a424..1e45b9e22d199d 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -137,7 +137,7 @@ static inline unsigned long get_break_insn_length(unsigned long pc)
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 9b315f3b20ee..f4943329e578 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -1046,15 +1046,75 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
  {
- 	bug_insn_t insn;
+ 	struct kernfs_node *kn;
  
--	if (probe_kernel_address((bug_insn_t *)pc, insn))
-+	if (get_kernel_nofault((bug_insn_t *)pc, insn))
- 		return 0;
+-	if (flags & LOOKUP_RCU)
++	if (flags & LOOKUP_RCU) {
++		kn = kernfs_dentry_node(dentry);
++		if (!kn) {
++			/* Negative hashed dentry, tell the VFS to switch to
++			 * ref-walk mode and call us again so that node
++			 * existence can be checked.
++			 */
++			if (!d_unhashed(dentry))
++				return -ECHILD;
++
++			/* Negative unhashed dentry, this shouldn't happen
++			 * because this case occurs in rcu-walk mode after
++			 * dentry allocation which is followed by a call
++			 * to ->loopup(). But if it does happen the dentry
++			 * is surely invalid.
++			 */
++			return 0;
++		}
++
++		/* Since the dentry is positive (we got the kernfs node) a
++		 * kernfs node reference was held at the time. Now if the
++		 * dentry reference count is still greater than 0 it's still
++		 * positive so take a reference to the node to perform an
++		 * active check.
++		 */
++		if (d_count(dentry) <= 0 || !atomic_inc_not_zero(&kn->count))
++			return -ECHILD;
++
++		/* The kernfs node reference count was greater than 0, if
++		 * it's active continue in rcu-walk mode.
++		 */
++		if (kernfs_active_read(kn)) {
++			kernfs_put(kn);
++			return 1;
++		}
++
++		/* Otherwise, just tell the VFS to switch to ref-walk mode
++		 * and call us again so the kernfs node can be validated.
++		 */
++		kernfs_put(kn);
+ 		return -ECHILD;
++	}
  
- 	return GET_INSN_LENGTH(insn);
-@@ -165,7 +165,7 @@ int is_valid_bugaddr(unsigned long pc)
+-	/* Always perform fresh lookup for negatives */
+-	if (d_really_is_negative(dentry))
+-		goto out_bad_unlocked;
++	down_read(&kernfs_rwsem);
  
- 	if (pc < VMALLOC_START)
- 		return 0;
--	if (probe_kernel_address((bug_insn_t *)pc, insn))
-+	if (get_kernel_nofault((bug_insn_t *)pc, insn))
- 		return 0;
- 	if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32)
- 		return (insn == __BUG_INSN_32);
-diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-index 6a24751557f0ef..90d2ed0d4db36f 100644
---- a/arch/s390/mm/fault.c
-+++ b/arch/s390/mm/fault.c
-@@ -105,7 +105,7 @@ static int bad_address(void *p)
- {
- 	unsigned long dummy;
+ 	kn = kernfs_dentry_node(dentry);
+-	down_read(&kernfs_rwsem);
++	if (!kn) {
++		struct kernfs_node *parent;
++
++		/* If the kernfs node can be found this is a stale negative
++		 * hashed dentry so it must be discarded and the lookup redone.
++		 */
++		parent = kernfs_dentry_node(dentry->d_parent);
++		if (parent) {
++			const void *ns = NULL;
++
++			if (kernfs_ns_enabled(parent))
++				ns = kernfs_info(dentry->d_parent->d_sb)->ns;
++			kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
++			if (kn)
++				goto out_bad;
++		}
++
++		/* The kernfs node doesn't exist, leave the dentry negative
++		 * and return success.
++		 */
++		goto out;
++	}
++
  
--	return probe_kernel_address((unsigned long *)p, dummy);
-+	return get_kernel_nofault((unsigned long *)p, dummy);
+ 	/* The kernfs node has been deactivated */
+ 	if (!kernfs_active_read(kn))
+@@ -1072,12 +1132,11 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+ 	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
+ 	    kernfs_info(dentry->d_sb)->ns != kn->ns)
+ 		goto out_bad;
+-
++out:
+ 	up_read(&kernfs_rwsem);
+ 	return 1;
+ out_bad:
+ 	up_read(&kernfs_rwsem);
+-out_bad_unlocked:
+ 	return 0;
  }
  
- static void dump_pagetable(unsigned long asce, unsigned long address)
-diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
-index a33025451fcd09..a03b528adaf525 100644
---- a/arch/sh/kernel/traps.c
-+++ b/arch/sh/kernel/traps.c
-@@ -118,7 +118,7 @@ int is_valid_bugaddr(unsigned long addr)
+@@ -1092,7 +1151,7 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 	struct dentry *ret;
+ 	struct kernfs_node *parent = dir->i_private;
+ 	struct kernfs_node *kn;
+-	struct inode *inode;
++	struct inode *inode = NULL;
+ 	const void *ns = NULL;
  
- 	if (addr < PAGE_OFFSET)
- 		return 0;
--	if (probe_kernel_address((insn_size_t *)addr, opcode))
-+	if (get_kernel_nofault((insn_size_t *)addr, opcode))
- 		return 0;
- 	if (opcode == TRAPA_BUG_OPCODE)
- 		return 1;
-diff --git a/arch/x86/kernel/probe_roms.c b/arch/x86/kernel/probe_roms.c
-index ee0286390a4c18..77f3341570e847 100644
---- a/arch/x86/kernel/probe_roms.c
-+++ b/arch/x86/kernel/probe_roms.c
-@@ -99,7 +99,7 @@ static bool probe_list(struct pci_dev *pdev, unsigned short vendor,
- 	unsigned short device;
+ 	down_read(&kernfs_rwsem);
+@@ -1102,11 +1161,9 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
  
- 	do {
--		if (probe_kernel_address(rom_list, device) != 0)
-+		if (get_kernel_nofault(rom_list, device) != 0)
- 			device = 0;
+ 	kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
  
- 		if (device && match_id(pdev, vendor, device))
-@@ -125,13 +125,13 @@ static struct resource *find_oprom(struct pci_dev *pdev)
- 			break;
+-	/* no such entry */
+-	if (!kn || !kernfs_active(kn)) {
+-		ret = NULL;
+-		goto out_unlock;
+-	}
++	/* no such entry, retain as negative hashed dentry */
++	if (!kn || !kernfs_active(kn))
++		goto out_negative;
  
- 		rom = isa_bus_to_virt(res->start);
--		if (probe_kernel_address(rom + 0x18, offset) != 0)
-+		if (get_kernel_nofault(rom + 0x18, offset) != 0)
- 			continue;
- 
--		if (probe_kernel_address(rom + offset + 0x4, vendor) != 0)
-+		if (get_kernel_nofault(rom + offset + 0x4, vendor) != 0)
- 			continue;
- 
--		if (probe_kernel_address(rom + offset + 0x6, device) != 0)
-+		if (get_kernel_nofault(rom + offset + 0x6, device) != 0)
- 			continue;
- 
- 		if (match_id(pdev, vendor, device)) {
-@@ -139,8 +139,8 @@ static struct resource *find_oprom(struct pci_dev *pdev)
- 			break;
- 		}
- 
--		if (probe_kernel_address(rom + offset + 0x8, list) == 0 &&
--		    probe_kernel_address(rom + offset + 0xc, rev) == 0 &&
-+		if (get_kernel_nofault(rom + offset + 0x8, list) == 0 &&
-+		    get_kernel_nofault(rom + offset + 0xc, rev) == 0 &&
- 		    rev >= 3 && list &&
- 		    probe_list(pdev, vendor, rom + offset + list)) {
- 			oprom = res;
-@@ -183,14 +183,14 @@ static int __init romsignature(const unsigned char *rom)
- 	const unsigned short * const ptr = (const unsigned short *)rom;
- 	unsigned short sig;
- 
--	return probe_kernel_address(ptr, sig) == 0 && sig == ROMSIGNATURE;
-+	return get_kernel_nofault(ptr, sig) == 0 && sig == ROMSIGNATURE;
- }
- 
- static int __init romchecksum(const unsigned char *rom, unsigned long length)
- {
- 	unsigned char sum, c;
- 
--	for (sum = 0; length && probe_kernel_address(rom++, c) == 0; length--)
-+	for (sum = 0; length && get_kernel_nofault(rom++, c) == 0; length--)
- 		sum += c;
- 	return !length && !sum;
- }
-@@ -211,7 +211,7 @@ void __init probe_roms(void)
- 
- 		video_rom_resource.start = start;
- 
--		if (probe_kernel_address(rom + 2, c) != 0)
-+		if (get_kernel_nofault(rom + 2, c) != 0)
- 			continue;
- 
- 		/* 0 < length <= 0x7f * 512, historically */
-@@ -249,7 +249,7 @@ void __init probe_roms(void)
- 		if (!romsignature(rom))
- 			continue;
- 
--		if (probe_kernel_address(rom + 2, c) != 0)
-+		if (get_kernel_nofault(rom + 2, c) != 0)
- 			continue;
- 
- 		/* 0 < length <= 0x7f * 512, historically */
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 7003f2e7b1634a..3b0ffbbab8f27d 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -91,7 +91,7 @@ int is_valid_bugaddr(unsigned long addr)
- 	if (addr < TASK_SIZE_MAX)
- 		return 0;
- 
--	if (probe_kernel_address((unsigned short *)addr, ud))
-+	if (get_kernel_nofault((unsigned short *)addr, ud))
- 		return 0;
- 
- 	return ud == INSN_UD0 || ud == INSN_UD2;
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index e996aa3833b85b..43cc1bde58b67c 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -99,7 +99,7 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
- 		return !instr_lo || (instr_lo>>1) == 1;
- 	case 0x00:
- 		/* Prefetch instruction is 0x0F0D or 0x0F18 */
--		if (probe_kernel_address(instr, opcode))
-+		if (get_kernel_nofault(instr, opcode))
- 			return 0;
- 
- 		*prefetch = (instr_lo == 0xF) &&
-@@ -133,7 +133,7 @@ is_prefetch(struct pt_regs *regs, unsigned long error_code, unsigned long addr)
- 	while (instr < max_instr) {
- 		unsigned char opcode;
- 
--		if (probe_kernel_address(instr, opcode))
-+		if (get_kernel_nofault(instr, opcode))
- 			break;
- 
- 		instr++;
-@@ -301,7 +301,7 @@ static int bad_address(void *p)
- {
- 	unsigned long dummy;
- 
--	return probe_kernel_address((unsigned long *)p, dummy);
-+	return get_kernel_nofault((unsigned long *)p, dummy);
- }
- 
- static void dump_pagetable(unsigned long address)
-diff --git a/arch/x86/pci/pcbios.c b/arch/x86/pci/pcbios.c
-index 9c97d814125eb9..b7f8699b18c1f9 100644
---- a/arch/x86/pci/pcbios.c
-+++ b/arch/x86/pci/pcbios.c
-@@ -302,7 +302,7 @@ static const struct pci_raw_ops *__init pci_find_bios(void)
- 	     check <= (union bios32 *) __va(0xffff0);
- 	     ++check) {
- 		long sig;
--		if (probe_kernel_address(&check->fields.signature, sig))
-+		if (get_kernel_nofault(&check->fields.signature, sig))
- 			continue;
- 
- 		if (check->fields.signature != BIOS32_SIGNATURE)
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index bef48da242cc2c..5083e9fe1e3d8e 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -318,13 +318,13 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
- long strnlen_user_nofault(const void __user *unsafe_addr, long count);
- 
- /**
-- * probe_kernel_address(): safely attempt to read from a location
-+ * get_kernel_nofault(): safely attempt to read from a location
-  * @addr: address to read from
-  * @retval: read into this variable
-  *
-  * Returns 0 on success, or -EFAULT.
-  */
--#define probe_kernel_address(addr, retval)		\
-+#define get_kernel_nofault(addr, retval)		\
- 	copy_from_kernel_nofault(&retval, addr, sizeof(retval))
- 
- #ifndef user_access_begin
-diff --git a/lib/test_lockup.c b/lib/test_lockup.c
-index f258743a0d8381..6bf712508673c5 100644
---- a/lib/test_lockup.c
-+++ b/lib/test_lockup.c
-@@ -419,8 +419,8 @@ static bool test_kernel_ptr(unsigned long addr, int size)
- 	/* should be at least readable kernel address */
- 	if (access_ok(ptr, 1) ||
- 	    access_ok(ptr + size - 1, 1) ||
--	    probe_kernel_address(ptr, buf) ||
--	    probe_kernel_address(ptr + size - 1, buf)) {
-+	    get_kernel_nofault(ptr, buf) ||
-+	    get_kernel_nofault(ptr + size - 1, buf)) {
- 		pr_err("invalid kernel ptr: %#lx\n", addr);
- 		return true;
+ 	/* attach dentry and inode */
+ 	inode = kernfs_get_inode(dir->i_sb, kn);
+@@ -1114,10 +1171,10 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 		ret = ERR_PTR(-ENOMEM);
+ 		goto out_unlock;
  	}
-@@ -437,7 +437,7 @@ static bool __maybe_unused test_magic(unsigned long addr, int offset,
- 	if (!addr)
- 		return false;
- 
--	if (probe_kernel_address(ptr, magic) || magic != expected) {
-+	if (get_kernel_nofault(ptr, magic) || magic != expected) {
- 		pr_err("invalid magic at %#lx + %#x = %#x, expected %#x\n",
- 		       addr, offset, magic, expected);
- 		return true;
--- 
-2.26.2
+-
++out_negative:
+ 	/* instantiate and hash dentry */
+ 	ret = d_splice_alias(inode, dentry);
+- out_unlock:
++out_unlock:
+ 	up_read(&kernfs_rwsem);
+ 	return ret;
+ }
+
 
