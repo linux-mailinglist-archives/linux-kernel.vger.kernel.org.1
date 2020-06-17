@@ -2,279 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089EA1FC595
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 07:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7B91FC59B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 07:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgFQFRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 01:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgFQFRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 01:17:44 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36C8A20720;
-        Wed, 17 Jun 2020 05:17:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592371062;
-        bh=bUjAwYSu04OhLGHSHG9zX0H4YqzUVJ7N7sBpjDl/3YY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G73D/dzLKqEE/wZj0Hc/Ff6cNBHCBVKhXYvgo+y9PzZZpqirWVe5+lKuJ+d1glv/S
-         1nEK/Uc0O2EyZdd6GnvF4aMx5gFIpsRom+4br/zylaupCpMhs4CoK/GUfMBqyZEDRI
-         OORrPq+aL9tGJTpsPpvEqcnf6Nx6NnxaKu47oiZE=
-Date:   Wed, 17 Jun 2020 08:17:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Divya Indi <divya.indi@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Gerd Rausch <gerd.rausch@oracle.com>,
-        =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v3] IB/sa: Resolving use-after-free in ib_nl_send_msg
-Message-ID: <20200617051739.GH2383158@unreal>
-References: <1591627576-920-1-git-send-email-divya.indi@oracle.com>
- <1591627576-920-2-git-send-email-divya.indi@oracle.com>
- <20200609070026.GJ164174@unreal>
- <ee7139ff-465e-6c43-1b55-eab502044e0f@oracle.com>
- <20200614064156.GB2132762@unreal>
- <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09bbe749-7eb2-7caa-71a9-3ead4e51e5ed@oracle.com>
+        id S1726826AbgFQF0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 01:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgFQF0k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 01:26:40 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C67AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 22:26:40 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id j4so407505plk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Jun 2020 22:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Lc7FgqcsDN0tttKh7Ik1OmjvmZ50mmQuSAGSsyUsb4c=;
+        b=tTxtGT5dJXrIviz6E5m0saisU+3QwVtdoTGHClU1IIxyW8QpGgZXnIj6Yr3v0TFrLe
+         D7fcZCzxtGabDjd/5dBfSWFLWB6fi1AWN5DoBHtBviPBIbGK18ITanyC/xAuLY0g3SSZ
+         cKgNEHhbEEbkbzZ6LLkFvYi0jDkmMw6K4BPatHgqrZv8Ot8zFTvjjrUDHq1s2K9rp+Hy
+         lzO27vlO01CEHz4ZkT4c5U5iCsVgNOWdYvuWk3N9itAZrviF9et6mWTnIV9wgAdFrAzr
+         MM8hw+wMdeT1p3FpLokT4Kgwx8qH6y3COGn2ua6AV6xbexT/3sSD+03gGHL15rZcMQ7Y
+         L4Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Lc7FgqcsDN0tttKh7Ik1OmjvmZ50mmQuSAGSsyUsb4c=;
+        b=LKaDe4iaTEfFbYLsVxsscnFKKeeDRYS7GnOSuO4OnbzLPXKi95owm3sBZS1j26xuiZ
+         zdFAECJMgPO6ENqJLQugVVCE37nnGFfiUlH9Z8VVa4jW0pJWjZw62YTdaFrjoPt/c+Pa
+         o/4thssVKwoj/Kv+erwaSQlROciXAXzqII/jUgRSWTHSsUMI1zIGMxr209DKoQTvUF+l
+         7dUUTCF9Tl3YalgDu3E//3F2KV7SoTwCFjOL+12nCGv/ywVlu9u7fJoo1Tg1u3MVY12g
+         WBJ0LBsvGe/lPVPK8BmB+a2r/X66KfW/Tzu4KvD8B/ZvPN7bON27HhRKyLEC2fba6GMl
+         uoBA==
+X-Gm-Message-State: AOAM530hdUyAQZo0XMpCCrTtPgxPXimVjKYiGVZnX1dWGxLfqMWNXnNx
+        8vxQ6MFmox0i1gfd3+Ozgc8=
+X-Google-Smtp-Source: ABdhPJzox5F8HbgILsau8S3nryPRLFwBsdze5Llmmk3Rx/fTcTc9d6m7KLxoEJ2wJaBbSbcDWPesJQ==
+X-Received: by 2002:a17:902:7247:: with SMTP id c7mr5230343pll.103.1592371599412;
+        Tue, 16 Jun 2020 22:26:39 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id d184sm8830068pfd.85.2020.06.16.22.26.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jun 2020 22:26:38 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: [PATCH v6 0/6] workingset protection/detection on the anonymous LRU list
+Date:   Wed, 17 Jun 2020 14:26:17 +0900
+Message-Id: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:56:53AM -0700, Divya Indi wrote:
-> Hi Leon,
->
-> Please find my comments inline -
->
-> On 6/13/20 11:41 PM, Leon Romanovsky wrote:
-> > On Tue, Jun 09, 2020 at 07:45:21AM -0700, Divya Indi wrote:
-> >> Hi Leon,
-> >>
-> >> Thanks for taking the time to review.
-> >>
-> >> Please find my comments inline -
-> >>
-> >> On 6/9/20 12:00 AM, Leon Romanovsky wrote:
-> >>> On Mon, Jun 08, 2020 at 07:46:16AM -0700, Divya Indi wrote:
-> >>>> Commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
-> >>>> -
-> >>>> 1. Adds the query to the request list before ib_nl_snd_msg.
-> >>>> 2. Removes ib_nl_send_msg from within the spinlock which also makes it
-> >>>> possible to allocate memory with GFP_KERNEL.
-> >>>>
-> >>>> However, if there is a delay in sending out the request (For
-> >>>> eg: Delay due to low memory situation) the timer to handle request timeout
-> >>>> might kick in before the request is sent out to ibacm via netlink.
-> >>>> ib_nl_request_timeout may release the query causing a use after free situation
-> >>>> while accessing the query in ib_nl_send_msg.
-> >>>>
-> >>>> Call Trace for the above race:
-> >>>>
-> >>>> [<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
-> >>>> [<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
-> >>>> [<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
-> >>>> [<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
-> >>>> [<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
-> >>>> [rds_rdma]
-> >>>> [<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
-> >>>> [rds_rdma]
-> >>>> [<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
-> >>>> [<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
-> >>>> [<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
-> >>>> [<ffffffff810a02f9>] process_one_work+0x169/0x4a0
-> >>>> [<ffffffff810a0b2b>] worker_thread+0x5b/0x560
-> >>>> [<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
-> >>>> [<ffffffff810a68fb>] kthread+0xcb/0xf0
-> >>>> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-> >>>> [<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-> >>>> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-> >>>> [<ffffffff816f25a7>] ret_from_fork+0x47/0x90
-> >>>> [<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-> >>>> ....
-> >>>> RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
-> >>>>
-> >>>> To resolve the above issue -
-> >>>> 1. Add the req to the request list only after the request has been sent out.
-> >>>> 2. To handle the race where response comes in before adding request to
-> >>>> the request list, send(rdma_nl_multicast) and add to list while holding the
-> >>>> spinlock - request_lock.
-> >>>> 3. Use GFP_NOWAIT for rdma_nl_multicast since it is called while holding
-> >>>> a spinlock. In case of memory allocation failure, request will go out to SA.
-> >>>>
-> >>>> Signed-off-by: Divya Indi <divya.indi@oracle.com>
-> >>>> Fixes: 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
-> >>>> before sending")
-> >>> Author SOB should be after "Fixes" line.
-> >> My bad. Noted.
-> >>
-> >>>> ---
-> >>>>  drivers/infiniband/core/sa_query.c | 34 +++++++++++++++++-----------------
-> >>>>  1 file changed, 17 insertions(+), 17 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-> >>>> index 74e0058..042c99b 100644
-> >>>> --- a/drivers/infiniband/core/sa_query.c
-> >>>> +++ b/drivers/infiniband/core/sa_query.c
-> >>>> @@ -836,6 +836,9 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
-> >>>>  	void *data;
-> >>>>  	struct ib_sa_mad *mad;
-> >>>>  	int len;
-> >>>> +	unsigned long flags;
-> >>>> +	unsigned long delay;
-> >>>> +	int ret;
-> >>>>
-> >>>>  	mad = query->mad_buf->mad;
-> >>>>  	len = ib_nl_get_path_rec_attrs_len(mad->sa_hdr.comp_mask);
-> >>>> @@ -860,35 +863,32 @@ static int ib_nl_send_msg(struct ib_sa_query *query, gfp_t gfp_mask)
-> >>>>  	/* Repair the nlmsg header length */
-> >>>>  	nlmsg_end(skb, nlh);
-> >>>>
-> >>>> -	return rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_mask);
-> >>>> +	spin_lock_irqsave(&ib_nl_request_lock, flags);
-> >>>> +	ret =  rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, GFP_NOWAIT);
-> >>> It is hard to be convinced that this is correct solution. The mix of
-> >>> gfp_flags and GFP_NOWAIT at the same time and usage of
-> >>> ib_nl_request_lock to protect lists and suddenly rdma_nl_multicast() too
-> >>> makes this code unreadable/non-maintainable.
-> >> Prior to 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list
-> >> before sending"), we had ib_nl_send_msg under the spinlock ib_nl_request_lock.
-> >>
-> >> ie we had -
-> >>
-> >> 1. Get spinlock - ib_nl_request_lock
-> >> 2. ib_nl_send_msg
-> >> 	2.a) rdma_nl_multicast
-> >> 3. Add request to the req list
-> >> 4. Arm the timer if needed.
-> >> 5. Release spinlock
-> >>
-> >> However, ib_nl_send_msg involved a memory allocation using GFP_KERNEL.
-> >> hence, was moved out of the spinlock. In addition, req was now being
-> >> added prior to ib_nl_send_msg [To handle the race where response can
-> >> come in before we get a chance to add the request back to the list].
-> >>
-> >> This introduced another race resulting in use-after-free.[Described in the commit.]
-> >>
-> >> To resolve this, sending out the request and adding it to list need to
-> >> happen while holding the request_lock.
-> >> To ensure minimum allocations while holding the lock, instead of having
-> >> the entire ib_nl_send_msg under the lock, we only have rdma_nl_multicast
-> >> under this spinlock.
-> >>
-> >> However, do you think it would be a good idea to split ib_nl_send_msg
-> >> into 2 functions -
-> >> 1. Prepare the req/query [Outside the spinlock]
-> >> 2. Sending the req - rdma_nl_multicast [while holding spinlock]
-> >>
-> >> Would this be more intuitive?
-> > While it is always good idea to minimize the locked period. It still
-> > doesn't answer concern about mixing gfp_flags and direct GFP_NOWAIT.
-> > For example if user provides GFP_ATOMIC, the GFP_NOWAIT allocation will
-> > cause a trouble because latter is more lax than first one.
->
-> Makes sense, and we do have callers passing GFP_ATOMIC with gfp_mask.
->
-> However, in this case when we fail to send the request to ibacm,
-> we then fallback to sending it to the SA with gfp_mask. So, the
-> request will eventually go out with GFP_ATOMIC to SA. From the
-> caller perspective the request will not fail due to memory pressure.
->
-> -------
-> send_mad(...gfp_mask)
-> 	- send to ibacm with GFP_NOWAIT
-> 	- If fails, send to SA with gfp_mask
-> -------
->
-> So, using GFP_NOWAIT may not cause trouble here.
->
-> The other option might be to use GFP_NOWAIT conditionally ie
-> (only use GFP_NOWAIT when GFP_ATOMIC is not specified in gfp_mask else
-> use GFP_ATOMIC). Eventual goal being to not have a blocking memory allocation.
->
-> Your thoughts?
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-My thoughts that everything here hints me that state machine and
-locking are implemented wrongly. In ideal world, the expectation
-is that REQ message will have a state in it (PREPARED, SENT, ACK
-e.t.c.) and list manipulations are done accordingly with proper
-locks, while rdma_nl_multicast() is done outside of the locks.
+Hello,
 
-I don't know if it is possible to fix.
+This patchset implements workingset protection and detection on
+the anonymous LRU list.
 
->
-> Really appreciate your feedback. Thanks!
->
->
-> Regards,
-> Divya
->
-> >
-> > Thanks
-> >
-> >>>> +	if (!ret) {
-> >>> Please use kernel coding style.
-> >>>
-> >>> if (ret) {
-> >>>   spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-> >>>   return ret;
-> >>>   }
-> >>>
-> >>>  ....
-> >> Noted. Will make this change.
-> >>
-> >>>> +		/* Put the request on the list.*/
-> >>>> +		delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
-> >>>> +		query->timeout = delay + jiffies;
-> >>>> +		list_add_tail(&query->list, &ib_nl_request_list);
-> >>>> +		/* Start the timeout if this is the only request */
-> >>>> +		if (ib_nl_request_list.next == &query->list)
-> >>>> +			queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
-> >>>> +	}
-> >>>> +	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-> >>>> +
-> >>>> +	return ret;
-> >>>>  }
-> >>>>
-> >>>>  static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
-> >>>>  {
-> >>>> -	unsigned long flags;
-> >>>> -	unsigned long delay;
-> >>>>  	int ret;
-> >>>>
-> >>>>  	INIT_LIST_HEAD(&query->list);
-> >>>>  	query->seq = (u32)atomic_inc_return(&ib_nl_sa_request_seq);
-> >>>>
-> >>>> -	/* Put the request on the list first.*/
-> >>>> -	spin_lock_irqsave(&ib_nl_request_lock, flags);
-> >>>> -	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
-> >>>> -	query->timeout = delay + jiffies;
-> >>>> -	list_add_tail(&query->list, &ib_nl_request_list);
-> >>>> -	/* Start the timeout if this is the only request */
-> >>>> -	if (ib_nl_request_list.next == &query->list)
-> >>>> -		queue_delayed_work(ib_nl_wq, &ib_nl_timed_work, delay);
-> >>>> -	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-> >>>> -
-> >>>>  	ret = ib_nl_send_msg(query, gfp_mask);
-> >>>>  	if (ret) {
-> >>>>  		ret = -EIO;
-> >>>> -		/* Remove the request */
-> >>>> -		spin_lock_irqsave(&ib_nl_request_lock, flags);
-> >>>> -		list_del(&query->list);
-> >>>> -		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-> >>>>  	}
-> >>> Brackets should be removed too.
-> >> Noted.
-> >>>>  	return ret;
-> >>>> --
-> >>>> 1.8.3.1
-> >>>>
+* Changes on v6
+- rework to reflect a new LRU balance model
+- remove memcg charge timing stuff on v5 since alternative is already
+merged on mainline
+- remove readahead stuff on v5 (reason is the same with above)
+- clear shadow entry if corresponding swap entry is deleted
+(mm/swapcache: support to handle the exceptional entries in swapcache)
+- change experiment environment
+(from ssd swap to ram swap, for fast evaluation and for reducing side-effect of I/O)
+- update performance number
+
+* Changes on v5
+- change memcg charge timing for the swapped-in page (fault -> swap-in)
+- avoid readahead if previous owner of the swapped-out page isn't me
+- use another lruvec to update the reclaim_stat for a new anonymous page
+- add two more cases to fix up the reclaim_stat
+
+* Changes on v4
+- In the patch "mm/swapcache: support to handle the exceptional
+entries in swapcache":
+-- replace the word "value" with "exceptional entries"
+-- add to handle the shadow entry in add_to_swap_cache()
+-- support the huge page
+-- remove the registration code for shadow shrinker
+
+- remove the patch "mm/workingset: use the node counter
+if memcg is the root memcg" since workingset detection for
+anonymous page doesn't use shadow shrinker now
+- minor style fixes
+
+* Changes on v3
+- rework the patch, "mm/vmscan: protect the workingset on anonymous LRU"
+(use almost same reference tracking algorithm to the one for the file
+mapped page)
+
+* Changes on v2
+- fix a critical bug that uses out of index lru list in
+workingset_refault()
+- fix a bug that reuses the rotate value for previous page
+
+* SUBJECT
+workingset protection
+
+* PROBLEM
+In current implementation, newly created or swap-in anonymous page is
+started on the active list. Growing the active list results in rebalancing
+active/inactive list so old pages on the active list are demoted to the
+inactive list. Hence, hot page on the active list isn't protected at all.
+
+Following is an example of this situation.
+
+Assume that 50 hot pages on active list and system can contain total
+100 pages. Numbers denote the number of pages on active/inactive
+list (active | inactive). (h) stands for hot pages and (uo) stands for
+used-once pages.
+
+1. 50 hot pages on active list
+50(h) | 0
+
+2. workload: 50 newly created (used-once) pages
+50(uo) | 50(h)
+
+3. workload: another 50 newly created (used-once) pages
+50(uo) | 50(uo), swap-out 50(h)
+
+As we can see, hot pages are swapped-out and it would cause swap-in later.
+
+* SOLUTION
+Since this is what we want to avoid, this patchset implements workingset
+protection. Like as the file LRU list, newly created or swap-in anonymous
+page is started on the inactive list. Also, like as the file LRU list,
+if enough reference happens, the page will be promoted. This simple
+modification changes the above example as following.
+
+1. 50 hot pages on active list
+50(h) | 0
+
+2. workload: 50 newly created (used-once) pages
+50(h) | 50(uo)
+
+3. workload: another 50 newly created (used-once) pages
+50(h) | 50(uo), swap-out 50(uo)
+
+hot pages remains in the active list. :)
+
+* EXPERIMENT
+I tested this scenario on my test bed and confirmed that this problem
+happens on current implementation. I also checked that it is fixed by
+this patchset.
+
+
+* SUBJECT
+workingset detection
+
+* PROBLEM
+Later part of the patchset implements the workingset detection for
+the anonymous LRU list. There is a corner case that workingset protection
+could cause thrashing. If we can avoid thrashing by workingset detection,
+we can get the better performance.
+
+Following is an example of thrashing due to the workingset protection.
+
+1. 50 hot pages on active list
+50(h) | 0
+
+2. workload: 50 newly created (will be hot) pages
+50(h) | 50(wh)
+
+3. workload: another 50 newly created (used-once) pages
+50(h) | 50(uo), swap-out 50(wh)
+
+4. workload: 50 (will be hot) pages
+50(h) | 50(wh), swap-in 50(wh)
+
+5. workload: another 50 newly created (used-once) pages
+50(h) | 50(uo), swap-out 50(wh)
+
+6. repeat 4, 5
+
+Without workingset detection, this kind of workload cannot be promoted
+and thrashing happens forever.
+
+* SOLUTION
+Therefore, this patchset implements workingset detection.
+All the infrastructure for workingset detecion is already implemented,
+so there is not much work to do. First, extend workingset detection
+code to deal with the anonymous LRU list. Then, make swap cache handles
+the exceptional value for the shadow entry. Lastly, install/retrieve
+the shadow value into/from the swap cache and check the refault distance.
+
+* EXPERIMENT
+I made a test program to imitates above scenario and confirmed that
+problem exists. Then, I checked that this patchset fixes it.
+
+My test setup is a virtual machine with 8 cpus and 6100MB memory. But,
+the amount of the memory that the test program can use is about 280 MB.
+This is because the system uses large ram-backed swap and large ramdisk
+to capture the trace.
+
+Test scenario is like as below.
+
+1. allocate cold memory (512MB)
+2. allocate hot-1 memory (96MB)
+3. activate hot-1 memory (96MB)
+4. allocate another hot-2 memory (96MB)
+5. access cold memory (128MB)
+6. access hot-2 memory (96MB)
+7. repeat 5, 6
+
+Since hot-1 memory (96MB) is on the active list, the inactive list can
+contains roughly 190MB pages. hot-2 memory's re-access interval
+(96+128 MB) is more 190MB, so it cannot be promoted without workingset
+detection and swap-in/out happens repeatedly. With this patchset,
+workingset detection works and promotion happens. Therefore, swap-in/out
+occurs less.
+
+Here is the result. (average of 5 runs)
+
+type swap-in swap-out
+base 863240 989945
+patch 681565 809273
+
+As we can see, patched kernel do less swap-in/out.
+
+* OVERALL TEST (ebizzy using modified random function)
+
+ebizzy is the test program that main thread allocates lots of memory and
+child threads access them randomly during the given times. Swap-in
+will happen if allocated memory is larger than the system memory.
+
+The random function that represents the zipf distribution is used to
+make hot/cold memory. Hot/cold ratio is controlled by the parameter. If
+the parameter is high, hot memory is accessed much larger than cold one.
+If the parameter is low, the number of access on each memory would be
+similar. I uses various parameters in order to show the effect of
+patchset on various hot/cold ratio workload.
+
+My test setup is a virtual machine with 8 cpus, 1024 MB memory and
+5120 MB ram swap.
+
+Result format is as following.
+
+param: 1-1024-0.1
+- 1 (number of thread)
+- 1024 (allocated memory size, MB)
+- 0.1 (zipf distribution alpha,
+0.1 works like as roughly uniform random,
+1.3 works like as small portion of memory is hot and the others are cold)
+
+pswpin: smaller is better
+std: standard deviation
+improvement: negative is better
+
+* single thread
+           param        pswpin       std       improvement
+      base 1-1024.0-0.1 14101983.40   79441.19
+      prot 1-1024.0-0.1 14065875.80  136413.01  (   -0.26 )
+    detect 1-1024.0-0.1 13910435.60  100804.82  (   -1.36 )
+      base 1-1024.0-0.7 7998368.80   43469.32
+      prot 1-1024.0-0.7 7622245.80   88318.74  (   -4.70 )
+    detect 1-1024.0-0.7 7618515.20   59742.07  (   -4.75 )
+      base 1-1024.0-1.3 1017400.80   38756.30
+      prot 1-1024.0-1.3  940464.60   29310.69  (   -7.56 )
+    detect 1-1024.0-1.3  945511.40   24579.52  (   -7.07 )
+      base 1-1280.0-0.1 22895541.40   50016.08
+      prot 1-1280.0-0.1 22860305.40   51952.37  (   -0.15 )
+    detect 1-1280.0-0.1 22705565.20   93380.35  (   -0.83 )
+      base 1-1280.0-0.7 13717645.60   46250.65
+      prot 1-1280.0-0.7 12935355.80   64754.43  (   -5.70 )
+    detect 1-1280.0-0.7 13040232.00   63304.00  (   -4.94 )
+      base 1-1280.0-1.3 1654251.40    4159.68
+      prot 1-1280.0-1.3 1522680.60   33673.50  (   -7.95 )
+    detect 1-1280.0-1.3 1599207.00   70327.89  (   -3.33 )
+      base 1-1536.0-0.1 31621775.40   31156.28
+      prot 1-1536.0-0.1 31540355.20   62241.36  (   -0.26 )
+    detect 1-1536.0-0.1 31420056.00  123831.27  (   -0.64 )
+      base 1-1536.0-0.7 19620760.60   60937.60
+      prot 1-1536.0-0.7 18337839.60   56102.58  (   -6.54 )
+    detect 1-1536.0-0.7 18599128.00   75289.48  (   -5.21 )
+      base 1-1536.0-1.3 2378142.40   20994.43
+      prot 1-1536.0-1.3 2166260.60   48455.46  (   -8.91 )
+    detect 1-1536.0-1.3 2183762.20   16883.24  (   -8.17 )
+      base 1-1792.0-0.1 40259714.80   90750.70
+      prot 1-1792.0-0.1 40053917.20   64509.47  (   -0.51 )
+    detect 1-1792.0-0.1 39949736.40  104989.64  (   -0.77 )
+      base 1-1792.0-0.7 25704884.40   69429.68
+      prot 1-1792.0-0.7 23937389.00   79945.60  (   -6.88 )
+    detect 1-1792.0-0.7 24271902.00   35044.30  (   -5.57 )
+      base 1-1792.0-1.3 3129497.00   32731.86
+      prot 1-1792.0-1.3 2796994.40   19017.26  (  -10.62 )
+    detect 1-1792.0-1.3 2886840.40   33938.82  (   -7.75 )
+      base 1-2048.0-0.1 48746924.40   50863.88
+      prot 1-2048.0-0.1 48631954.40   24537.30  (   -0.24 )
+    detect 1-2048.0-0.1 48509419.80   27085.34  (   -0.49 )
+      base 1-2048.0-0.7 32046424.40   78624.22
+      prot 1-2048.0-0.7 29764182.20   86002.26  (   -7.12 )
+    detect 1-2048.0-0.7 30250315.80  101282.14  (   -5.60 )
+      base 1-2048.0-1.3 3916723.60   24048.55
+      prot 1-2048.0-1.3 3490781.60   33292.61  (  -10.87 )
+    detect 1-2048.0-1.3 3585002.20   44942.04  (   -8.47 )
+
+* multi thread
+           param        pswpin       std       improvement
+      base 8-1024.0-0.1 16219822.60  329474.01
+      prot 8-1024.0-0.1 15959494.00  654597.45  (   -1.61 )
+    detect 8-1024.0-0.1 15773790.80  502275.25  (   -2.75 )
+      base 8-1024.0-0.7 9174107.80  537619.33
+      prot 8-1024.0-0.7 8571915.00  385230.08  (   -6.56 )
+    detect 8-1024.0-0.7 8489484.20  364683.00  (   -7.46 )
+      base 8-1024.0-1.3 1108495.60   83555.98
+      prot 8-1024.0-1.3 1038906.20   63465.20  (   -6.28 )
+    detect 8-1024.0-1.3  941817.80   32648.80  (  -15.04 )
+      base 8-1280.0-0.1 25776114.20  450480.45
+      prot 8-1280.0-0.1 25430847.00  465627.07  (   -1.34 )
+    detect 8-1280.0-0.1 25282555.00  465666.55  (   -1.91 )
+      base 8-1280.0-0.7 15218968.00  702007.69
+      prot 8-1280.0-0.7 13957947.80  492643.86  (   -8.29 )
+    detect 8-1280.0-0.7 14158331.20  238656.02  (   -6.97 )
+      base 8-1280.0-1.3 1792482.80   30512.90
+      prot 8-1280.0-1.3 1577686.40   34002.62  (  -11.98 )
+    detect 8-1280.0-1.3 1556133.00   22944.79  (  -13.19 )
+      base 8-1536.0-0.1 33923761.40  575455.85
+      prot 8-1536.0-0.1 32715766.20  300633.51  (   -3.56 )
+    detect 8-1536.0-0.1 33158477.40  117764.51  (   -2.26 )
+      base 8-1536.0-0.7 20628907.80  303851.34
+      prot 8-1536.0-0.7 19329511.20  341719.31  (   -6.30 )
+    detect 8-1536.0-0.7 20013934.00  385358.66  (   -2.98 )
+      base 8-1536.0-1.3 2588106.40  130769.20
+      prot 8-1536.0-1.3 2275222.40   89637.06  (  -12.09 )
+    detect 8-1536.0-1.3 2365008.40  124412.55  (   -8.62 )
+      base 8-1792.0-0.1 43328279.20  946469.12
+      prot 8-1792.0-0.1 41481980.80  525690.89  (   -4.26 )
+    detect 8-1792.0-0.1 41713944.60  406798.93  (   -3.73 )
+      base 8-1792.0-0.7 27155647.40  536253.57
+      prot 8-1792.0-0.7 24989406.80  502734.52  (   -7.98 )
+    detect 8-1792.0-0.7 25524806.40  263237.87  (   -6.01 )
+      base 8-1792.0-1.3 3260372.80  137907.92
+      prot 8-1792.0-1.3 2879187.80   63597.26  (  -11.69 )
+    detect 8-1792.0-1.3 2892962.20   33229.13  (  -11.27 )
+      base 8-2048.0-0.1 50583989.80  710121.48
+      prot 8-2048.0-0.1 49599984.40  228782.42  (   -1.95 )
+    detect 8-2048.0-0.1 50578596.00  660971.66  (   -0.01 )
+      base 8-2048.0-0.7 33765479.60  812659.55
+      prot 8-2048.0-0.7 30767021.20  462907.24  (   -8.88 )
+    detect 8-2048.0-0.7 32213068.80  211884.24  (   -4.60 )
+      base 8-2048.0-1.3 3941675.80   28436.45
+      prot 8-2048.0-1.3 3538742.40   76856.08  (  -10.22 )
+    detect 8-2048.0-1.3 3579397.80   58630.95  (   -9.19 )
+
+As we can see, all the cases show improvement. Especially,
+test case with zipf distribution 1.3 show more improvements.
+It means that if there is a hot/cold tendency in anon pages,
+this patchset works better.
+
+Patchset is based on next-20200616 + the patchset [1].
+The patchset [1] is included into the Andrew's tree now.
+
+Full patchset can also be available at
+
+https://github.com/JoonsooKim/linux/tree/improve-anonymous-lru-management-v6.00-next-20200616
+
+Enjoy it.
+
+Thanks.
+
+[1]: fix for "mm: balance LRU lists based on relative thrashing",
+http://lkml.kernel.org/r/1592288204-27734-1-git-send-email-iamjoonsoo.kim@lge.com
+
+Joonsoo Kim (6):
+  mm/vmscan: make active/inactive ratio as 1:1 for anon lru
+  mm/vmscan: protect the workingset on anonymous LRU
+  mm/workingset: extend the workingset detection for anon LRU
+  mm/swapcache: support to handle the exceptional entries in swapcache
+  mm/swap: implement workingset detection for anonymous LRU
+  mm/vmscan: restore active/inactive ratio for anonymous LRU
+
+ include/linux/mmzone.h  | 16 ++++++----
+ include/linux/swap.h    | 25 ++++++++++++----
+ kernel/events/uprobes.c |  2 +-
+ mm/huge_memory.c        |  2 +-
+ mm/khugepaged.c         |  2 +-
+ mm/memcontrol.c         | 16 ++++++----
+ mm/memory.c             | 20 +++++--------
+ mm/migrate.c            |  2 +-
+ mm/shmem.c              |  3 +-
+ mm/swap.c               | 13 +++++----
+ mm/swap_state.c         | 77 ++++++++++++++++++++++++++++++++++++++++++-------
+ mm/swapfile.c           |  4 ++-
+ mm/userfaultfd.c        |  2 +-
+ mm/vmscan.c             | 26 ++++++++++-------
+ mm/vmstat.c             |  9 ++++--
+ mm/workingset.c         | 15 +++++-----
+ 16 files changed, 163 insertions(+), 71 deletions(-)
+
+-- 
+2.7.4
+
