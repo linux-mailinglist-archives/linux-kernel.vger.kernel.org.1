@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A5E1FD214
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783391FD20F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgFQQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S1727819AbgFQQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgFQQ0f (ORCPT
+        with ESMTP id S1727102AbgFQQ0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:35 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDE8C06174E;
-        Wed, 17 Jun 2020 09:26:35 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id s13so2092377otd.7;
-        Wed, 17 Jun 2020 09:26:35 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:38 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A46C06174E;
+        Wed, 17 Jun 2020 09:26:38 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id b8so2315271oic.1;
+        Wed, 17 Jun 2020 09:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DtbCt4lXWAsz7/FyFOawXtgiyr7YGkyvVZTRxQCf5d4=;
-        b=pNglAxY2ycX605y2jzji57ed8Op7lxOb3lc1yCuCT7cwDvqYUDmz1x84j76wEkz/+U
-         0LeQyM0X9mM5lvWeFfJ7WjPrItNKfJiBlHFgTThb10kw+vs6EQFAzI0UZxQcVhcba1lE
-         0zJ4Stp5KThf+bflvsmxK4NWDDAV/BVNiFRp4QIwbSgPsUaMrSS9B9OqBmFzOzvkp2SI
-         aK5eOOksrf6YBFZOOhN4z/hzQE4H2182N/0AOf0UNffepyi9uWgy2XszKC4R+vqyrtqF
-         cBldMZgbzvdQN/qJcf9DLpoR44jMuI54PHPiO1z249i/IXengOo1jponEi3ESwXsle/N
-         zUnQ==
+        bh=naIBWtFWSG448zP0V4TFY2wwlYvOJWt7QTzQ4V+d18c=;
+        b=Eu2e714sEdi6Ki9f4cdIAT2Bi3lLIUvNLMBydRztk24iRwQ9N+SgTWAnplstaiLfAx
+         lr6jSuNbUh40N4JaJwv5VBl268yuPBsUoqYKq/OCvNTKvL8k50hO28Ui5ByFeQu+hEhz
+         7hS+rrwh4uqRc3ElPVTG/kzqVvkmfZB1h8QMMrVrlOo3rwof7yGphXWFr+NTjQBG63SY
+         6yt9BO/8a1Ne/w+hd1UmdYCbW/jY1I22PJloM15nEDU78St6sC2AsHoCMPjOcgVItaPw
+         FYHVwZq99W4VBBok5jByOSXy5Zhw7KIEQZgavM4ASWsY9oyzXYks4A+l+a969/Zukur3
+         0y3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DtbCt4lXWAsz7/FyFOawXtgiyr7YGkyvVZTRxQCf5d4=;
-        b=fBCOS++ekdTKc0kOGznfVlLfKnPvNclWz9Z9uMQmo2d9fODqUuBo5Yv5uE+0i1ecAC
-         /zKQXAgN5o6V3S8OltQjsBr4jSfWJOO8weRJrg346Z3WTdZekwFAmIjefa9uAOPg7bDY
-         hyHGir45hE/0oP7Q7pWjX8zq5YrCFokVvBRoCuVrFQZfnu7vvD67bktDptsG156Fn3VV
-         +JlcoUOMloSOf54RXTG36gq9geKzAlPC2/dc/jdfpj83uSvrhAZW8PDK8scdVfAkCOQ6
-         02y4Ibhy7L6AT2tJwyrFaqZeEYHGpn2EQvDSNntGICkxJYcXtQ67QWmnEI3IvCrZtb6t
-         ihCA==
-X-Gm-Message-State: AOAM530sefpQ71uPYCPBtwCkMCmvn+2GFrkXqLw2/HaXgRNxpIfMnTMY
-        aqDjJ3AEBZ0jv5CfgZOYV0c=
-X-Google-Smtp-Source: ABdhPJwHlRqkjC8/GZ7Wa363TGIpU8xB0IfHK5jXMv5FOhQjohFvR7XgirJIbCmqx/x4X2H8BPcrUA==
-X-Received: by 2002:a05:6830:1218:: with SMTP id r24mr5323482otp.247.1592411194459;
-        Wed, 17 Jun 2020 09:26:34 -0700 (PDT)
+        bh=naIBWtFWSG448zP0V4TFY2wwlYvOJWt7QTzQ4V+d18c=;
+        b=ZGXuPd85UWmR7VpbxVWIUr0STQJ7M5kZKSKGk+zQvPGPAHV+sFZyKRV+cViHaUL7hl
+         q0Q9Msm9/QQugD6E7HJVpUmRfZimMk5wlsYnUiy1GrMl5dAZpAY99NU++NhL7Q7HOkKt
+         tTKKYPpS210a3qWT43D6wRvjIeziHWa/wGjN2NBH9xSnVntVGZ0ib2jeYZTo+xshbqzt
+         VkVjGyhhmIYVaHjt/8aGyJTyZ4IfVPpveZz5vUhR5/dloy77wGe0Le2xHmMj1HJjTdNM
+         RCjFr54UayAG80TVfDzmVThDjLCwamIlpVMSQ+L92QSOs0Qp1uZasBsidTzFgzqXJU/L
+         AP/Q==
+X-Gm-Message-State: AOAM530UulH+AwuuAc3nuR53y+mP9V3y+pljllFyenxlSIcHAvDKkjje
+        z+S443yrrbq6SwJRO2CDeUY=
+X-Google-Smtp-Source: ABdhPJzLOQjoNT87qyfUu/kkXcSSrw+y/lYr87O05aBRMB3IWNy0TaoQL3mR/Q4HIsEtdEeR8i9anQ==
+X-Received: by 2002:a05:6808:ab0:: with SMTP id r16mr8091168oij.24.1592411197632;
+        Wed, 17 Jun 2020 09:26:37 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.32
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:33 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:37 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v3 19/21] dyndbg: extend ddebug_parse_flags to accept optional leading filter-flags
-Date:   Wed, 17 Jun 2020 10:25:34 -0600
-Message-Id: <20200617162536.611386-22-jim.cromie@gmail.com>
+        Will Deacon <will@kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org
+Subject: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and filtering on flags
+Date:   Wed, 17 Jun 2020 10:25:35 -0600
+Message-Id: <20200617162536.611386-23-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -69,122 +70,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change ddebug_parse_flags to accept optional filterflags before the
-required operator [-+=].  Read the flags into the filter_flags
-parameter added in the previous patch.  So this now supplies the
-filterflags to ddebug_exec_query.
+1. Add a user-flag [u] which works like the [pfmlt] flags, but has no
+effect on callsite behavior; it allows incremental marking of
+arbitrary sets of callsites.
 
-filterflags work like query terms, they constrain what callsites get
-matched before theyre modified.  So like a query, they can be empty.
+2. Add [PFMLTU] flags, which negate their counterparts; P===!p etc.
+And in ddebug_read_flags():
+   current code does:	[pfmltu_] -> flags
+   copy it to:		[PFMLTU_] -> mask
 
-Filterflags let you read callsite's flagstate, including results of
-previous modifications, and require that certain flags are set, before
-modifying the callsite further.
+also disallow both of a pair: ie no 'pP', no true & false.
 
-So you can build up sets of callsites by marking them with a
-particular flagstate, for example 'fmlt', then enable that set in a
-batch.
+3. Add filtering ops into ddebug_change(), right after all the
+callsite-property selections are complete.  These filter on the
+callsite's current flagstate before applying modflags.
 
-  echo fmlt+p >control
+Why ?
 
-Naturally you can use almost any combo of flags you want for marking,
-and can mark several different sets with different patterns.  And then
-you can activate them in a bunch:
+The u-flag & filter flags
 
-  echo 'ft+p; mt+p; lt+p;' >control
+The 'u' flag lets the user assemble an arbitary set of callsites.
+Then using filter flags, user can activate the 'u' callsite set.
 
-You just can't prohibit true flags.
+  #> echo 'file foo.c +u; file bar.c +u' > control   # and repeat
+  #> echo 'u+p' > control
+
+Of course, you can continue to just activate your set without ever
+marking it 1st, but you could trivially add the markup as you go, then
+be able to use it as a constraint later, to undo or modify your set.
+
+  #> echo 'file foo.c +up' >control
+  .. monitor, debug, finish ..
+  #> echo 'u-p' >control
+
+  # then later resume
+  #> echo 'u+p' >control
+
+  # disable some cluttering messages, and remove from u-set
+  #> echo 'file noisy.c function:jabber_* u-pu' >control
+
+  # for doc, recollection
+  grep =pu control > my-favorite-callsites
+
+Note:
+
+Your flagstate after boot is generally not all =_. -DDEBUG will arm
+compiled callsites by default, $builtinmod.dyndbg=+p bootargs can
+enable them early, and $module.dyndbg=+p bootargs will arm them when
+the module is loaded.  But you could manage them with u-flags:
+
+  #> echo '-t' >control		# clear t-flag to use it as 2ndary markup
+  #> echo 'p+ut' >control	# mark the boot-enabled set of callsites
+  #> echo '-p' >control		# clean your dmesg -w stream
+
+  ... monitor, debug ..
+  #> echo 'module of_interest $qterms +pu' >control	# build your set of useful debugs
+  #> echo 'module of_interest $qterms UT+pu' >control	# same, but dont alter ut marked set
+
+The user flag isn't strictly needed, but with it you can avoid using
+[fmlt] flags for marking, which would alter logging when enabled.
+
+Negating-flags:
+
+Using negating-flags in your filter-flags, you can completely specify
+the matching flagstate; not just required flags, but also prohibited
+flags.
+
+So if you want to avoid altering your u-set, prohibit the flag with U,
+and all marked callsites will be skipped, for whatever change.
+
+    #> echo U-pt >control
+
+At the outer limits, you could use many flag patterns to form separate
+subgroups of callsites, then enable those groups by filtering on just
+their flagstates, or you could add further constraints on callsite
+selection.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../admin-guide/dynamic-debug-howto.rst       | 18 ++++++++----
- lib/dynamic_debug.c                           | 29 ++++++++++---------
- 2 files changed, 28 insertions(+), 19 deletions(-)
+ .../admin-guide/dynamic-debug-howto.rst       | 31 ++++++++++++++++---
+ include/linux/dynamic_debug.h                 |  1 +
+ lib/dynamic_debug.c                           | 29 ++++++++++++-----
+ 3 files changed, 50 insertions(+), 11 deletions(-)
 
 diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index e5a8def45f3f..e1ea0c307fcf 100644
+index e1ea0c307fcf..e910865b2edc 100644
 --- a/Documentation/admin-guide/dynamic-debug-howto.rst
 +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -218,13 +218,19 @@ line
- 	line -1605          // the 1605 lines from line 1 to line 1605
- 	line 1600-          // all lines from line 1600 to the end of the file
+@@ -239,16 +239,39 @@ The flags are::
+   l    Include line number in the printed message
+   m    Include module name in the printed message
+   t    Include thread ID in messages not generated from interrupt context
++  u    user flag, to mark callsites into a group
+   _    No flags are set. (Or'd with others on input)
  
--The flags specification comprises a change operation followed
--by one or more flag characters.  The change operation is one
--of the characters::
-+Flags Specification::
- 
--  -    remove the given flags
--  +    add the given flags
--  =    set the flags to the given flags
-+  flagspec	::= filterflags? OP modflags
-+  filterflags	::= flagset
-+  modflags	::= flagset
-+  flagset	::= ([pfmltu_] | [PFMLTU_])+	# also cant have pP etc
-+  OP		::= [-+=]
+-For ``print_hex_dump_debug()`` and ``print_hex_dump_bytes()``, only ``p`` flag
+-have meaning, other flags ignored.
++Additionally, the flag-chars ``[pflmtu]`` have negating flag-chars
++``[PFMLTU]``, which invert the meanings above.  Their use follows.
 +
-+OP: modify callsites per following flagset::
++Using Filters::
 +
-+  -    remove the following flags
-+  +    add the following flags
-+  =    set the flags to the following flags
++Filter-flags specify an optional additional selector on pr_debug
++callsites; with them you can compose an arbitrary set of callsites, by
++iteratively marking them with ``+u``, then enabling them all with
++``u+p``.  You can also use ``fmlt`` flags for this, unless the format
++changes are inconvenient.
++
++Filters can also contain the negating flags, like ``UF``, which select
++only callsites with ``u`` and ``f`` cleared.
++
++Flagsets cannot contain ``pP`` etc, a flag cannot be true and false.
++
++modflags containing upper-case flags is reserved/undefined for now.
++inverted-flags are currently ignored, usage gets trickier if given
++``-pXy``, it should leave x set.
++
++Notes::
++
++For ``print_hex_dump_debug()`` and ``print_hex_dump_bytes()``, only
++``p`` flag has meaning, other flags are ignored.
  
- The flags are::
+ For display, the flags are preceded by ``=``
+ (mnemonic: what the flags are currently equal to).
  
+-Note the regexp ``^[-+=][flmpt_]+$`` matches a flags specification.
+-To clear all flags at once, use ``=_`` or ``-flmpt``.
++Note the regexp ``^[-+=][flmptu_]+$`` matches a flags specification.
++To clear all flags at once, use ``=_`` or ``-flmptu``.
+ 
+ 
+ Debug messages during Boot Process
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index aa9ff9e1c0b3..59960a8dd9f9 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -32,6 +32,7 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+ #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+ #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
++#define _DPRINTK_FLAGS_USR		(1<<5)
+ #if defined DEBUG
+ #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
+ #else
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 0fcc688789f4..cf3379b40483 100644
+index cf3379b40483..a302a7d8a722 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -452,33 +452,36 @@ static int ddebug_read_flags(const char *str, struct flag_settings *modifiers)
+@@ -83,13 +83,14 @@ static inline const char *trim_prefix(const char *path)
+ 	return path + skip;
  }
  
- /*
-- * Parse `str' as a flags specification, format [-+=][p]+.
-- * Sets up *maskp and *flagsp to be used when changing the
-- * flags fields of matched _ddebug's.  Returns 0 on success
-- * or <0 on error.
-+ * Parse `str' as a flags-spec, ie: [pfmlt_]*[-+=][pfmlt_]+
-+ * Fills flagsettings provided.  Returns 0 on success or <0 on error.
-  */
- static int ddebug_parse_flags(const char *str,
- 			      struct flag_settings *modifiers,
- 			      struct flag_settings *filter)
- {
- 	int op;
-+	char *opp = strpbrk(str, "-+=");
+-static struct { unsigned flag:8; char opt_char; } opt_array[] = {
+-	{ _DPRINTK_FLAGS_PRINT, 'p' },
+-	{ _DPRINTK_FLAGS_INCL_MODNAME, 'm' },
+-	{ _DPRINTK_FLAGS_INCL_FUNCNAME, 'f' },
+-	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
+-	{ _DPRINTK_FLAGS_INCL_TID, 't' },
+-	{ _DPRINTK_FLAGS_NONE, '_' },
++static struct { unsigned flag:8; char opt_char, not_char; } opt_array[] = {
++	{ _DPRINTK_FLAGS_PRINT,		'p', 'P' },
++	{ _DPRINTK_FLAGS_INCL_MODNAME,	'm', 'M' },
++	{ _DPRINTK_FLAGS_INCL_FUNCNAME,	'f', 'F' },
++	{ _DPRINTK_FLAGS_INCL_LINENO,	'l', 'L' },
++	{ _DPRINTK_FLAGS_INCL_TID,	't', 'T' },
++	{ _DPRINTK_FLAGS_NONE,		'_', '_' },
++	{ _DPRINTK_FLAGS_USR,		'u', 'U' },
+ };
  
--	switch (*str) {
--	case '+':
--	case '-':
--	case '=':
--		op = *str++;
--		break;
--	default:
--		pr_err("bad flag-op %c, at start of %s\n", *str, str);
-+	if (!opp) {
-+		pr_err("no OP given in %s\n", str);
- 		return -EINVAL;
- 	}
-+	op = *opp;
- 	vpr_info("op='%c'\n", op);
+ struct flagsbuf { char buf[ARRAY_SIZE(opt_array)+1]; };
+@@ -194,6 +195,13 @@ static int ddebug_change(const struct ddebug_query *query,
+ 			    dp->lineno > query->last_lineno)
+ 				continue;
  
-+	if (opp != str) {
-+		/* filterflags precedes OP, grab it */
-+		*opp++ = '\0';
-+		if (ddebug_read_flags(str, filter))
-+			return -EINVAL;
-+		str = opp;
-+	} else
-+		str++;
++			/* filter for required flags */
++			if ((dp->flags & filter->flags) != filter->flags)
++				continue;
++			/* filter on prohibited bits */
++			if ((~dp->flags & filter->mask) != filter->mask)
++				continue;
 +
- 	if (ddebug_read_flags(str, modifiers))
- 		return -EINVAL;
+ 			nfound++;
  
--	/* calculate final flags, mask based upon op */
-+	/* calculate final mods: flags, mask based upon op */
- 	switch (op) {
- 	case '=':
- 		/* modifiers->flags already set */
+ 			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
+@@ -440,12 +448,19 @@ static int ddebug_read_flags(const char *str, struct flag_settings *modifiers)
+ 			if (*str == opt_array[i].opt_char) {
+ 				modifiers->flags |= opt_array[i].flag;
+ 				break;
++			} else if (*str == opt_array[i].not_char) {
++				modifiers->mask |= opt_array[i].flag;
++				break;
+ 			}
+ 		}
+ 		if (i < 0) {
+ 			pr_err("unknown flag '%c'\n", *str);
+ 			return -EINVAL;
+ 		}
++		if (modifiers->flags & modifiers->mask) {
++			pr_err("flag '%c' conflicts with previous\n", *str);
++			return -EINVAL;
++		}
+ 	}
+ 	vpr_info("flags=0x%x\n", modifiers->flags);
+ 	return 0;
 -- 
 2.26.2
 
