@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636561FD2AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DC21FD2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgFQQsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727123AbgFQQsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:48:32 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167D3C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:48:31 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dp18so3116796ejc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f7npwx+OVVnlTEpHUjG7c4pc1dMCFFQmOZjMVjejs+4=;
-        b=IKwSbx15Kn5bdDrYn5y6+zFIka1nUTARbxOfBPUf8KptdpHEWQUvOvMldbG8OGH9Qv
-         GUPopILnJnHYSj6LXzWOTg9vVgcOTNsIwRBDODO9gQmeNbCLBDQcYs1wURQVy8S73USD
-         kcjuUFSM8zrWq85lDj7Ug2Q5Xnl8TbhMPGWJXO4DRqAMR0SLgHU0rnCi9iAc/+bBWEz+
-         PxtF18d6Ax8CAWbK9oI1nNbVwVRBSJ2qS67iOFjmH4soVapkJfhqLq/bX+O2tw7vkPcP
-         kQx3/Vb3hD3t3BMbCk8nZHB7GRds/UuI5/oehYItcHrXyTSrEUf8vwqzyvGh0LaRIyk1
-         dBAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f7npwx+OVVnlTEpHUjG7c4pc1dMCFFQmOZjMVjejs+4=;
-        b=HXIHU71toLGTbHPez3oNWyyCpJoAiuAdMJDX8sIczRC066QEuvpJOu4G6SwN6Cqe3C
-         5cdQKlI88sbBEErjPnBQadlag3hyz9unMkLk/u3N2tRcugSpVnJEKmUhHPB9dfr6mTl2
-         YDCstpbTG57SGeYz8aPO/Jb0KSw2tGW22MSKqzMY8khovokgnkZfwCIoqA1LzPhHytuJ
-         xdhWe6TxY7F2qmmy9ZfnFsLeCVGPW8aLQqySLY7qZGt12lg73WnH46/14pQqogXlSqcm
-         lbPkHkATVPOETNP5wBlJ05ht7QtJAR8luQXnyVJYB5hhzD6tRgKOEeqRpY8r/ZdcwrQm
-         2Ubg==
-X-Gm-Message-State: AOAM5334YDxKkNFo4gN0CG4gz/f2bN2vpau+RZ9Ci+j3IPR3Qi2t4934
-        5I5sxI8kaMXDABXRIADeess=
-X-Google-Smtp-Source: ABdhPJz2p0gr4+MQhTEDwwr3BbQs+BB9x8fdF1XV28ji/EInZnrjuv2O/VBITafBkBcRMetjTmwh6g==
-X-Received: by 2002:a17:906:f0c6:: with SMTP id dk6mr43384ejb.157.1592412509863;
-        Wed, 17 Jun 2020 09:48:29 -0700 (PDT)
-Received: from localhost.localdomain ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id v3sm127124edj.89.2020.06.17.09.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:48:29 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-actions@lists.infradead.org
-Subject: [PATCH 11/11] MAINTAINERS: Add reset binding entry for Actions Semi Owl SoCs
-Date:   Wed, 17 Jun 2020 19:48:11 +0300
-Message-Id: <1ebb8525992d68186a148ae222b085d3c5416f37.1592407030.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
-References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727802AbgFQQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726861AbgFQQsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 12:48:38 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1632E21532;
+        Wed, 17 Jun 2020 16:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592412518;
+        bh=jKmBqGMw//TDq5d1AN61mPbBQRkBy3ivxqxYjKASoVA=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=yp2qLscaYNDIVwrFhkLWX2B5HzhY7YccM3l+pUBHKnUwKRVEcmVTgaWk7CnhvqLmY
+         OnhO4lTymyuSDYGW5bY2oCVivdPCCj4uYbJgD04NYyI3gietIFrORHzxhKWFfkLdMW
+         psKHjNOdVbiAqyDAwnD8ITA/AJ/kJy5UKyjUm8Yk=
+Date:   Wed, 17 Jun 2020 17:48:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org
+In-Reply-To: <20200617155047.1187256-1-jbrunet@baylibre.com>
+References: <20200617155047.1187256-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: imply acodec glue on axg sound card
+Message-Id: <159241251642.14602.5400773312595061016.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a reset binding entry to match all members of Actions Semi Owl SoCs.
+On Wed, 17 Jun 2020 17:50:47 +0200, Jerome Brunet wrote:
+> When axg card driver support is enabled, lets enable the related
+> internal DAC glue by default.
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Applied to
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 68f21d46614c..f1ba24ee0eae 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1533,6 +1533,7 @@ F:	drivers/mmc/host/owl-mmc.c
- F:	drivers/pinctrl/actions/*
- F:	drivers/soc/actions/
- F:	include/dt-bindings/power/owl-*
-+F:	include/dt-bindings/reset/actions,*-reset.h
- F:	include/linux/soc/actions/
- N:	owl
- 
--- 
-2.27.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: meson: imply acodec glue on axg sound card
+      commit: e50186e1dae67e070d4725b1f0b35b131969141d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
