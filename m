@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EAE1FD9D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12F21FD9E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 01:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgFQXlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 19:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgFQXlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:41:06 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6390C06174E;
-        Wed, 17 Jun 2020 16:41:05 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d27so2368482lfq.5;
-        Wed, 17 Jun 2020 16:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pAxyB6C7aJlpOxagnpZfk3yhTf/LsEQQa81zSGYW43g=;
-        b=B9nMsiI6lfN7t3LM1U/WpG+wTKt7bOM1IpIV2Ix76X0/HY/Yg9Oqqr903PuHP9lFuB
-         RTREq0KBfW1XVVxk9rl39YWJtc81FtuhslgD61jto+JyxjrceZVMG+fIAc4Tu1xO3Tx4
-         s77pLBWBAOD902doRB8H+zla+jkalMJpQWef2qmIZgwrt/3cQSDnPX1c76cYLzUhQpoX
-         IJVVd0dy2t9y0YmOPFQ7NzbrOeidSofir9I//r3ZjzCLl3SGGZlYsgtD8sBOXwBHe0zm
-         Wvrx1ON+QOIJYfYXoGWYxgaacVdscXRs1IdH69uaRuJ1a6ORkFtnNGALZ30YzpClomt2
-         HMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pAxyB6C7aJlpOxagnpZfk3yhTf/LsEQQa81zSGYW43g=;
-        b=lL3BQeZp90tbns/BFURcCSk+9PgXK0/JkjVXM6hsUhA50fWBZI8Z2Xpk0flaDH/hiT
-         132h75iixvrFZ/2+JGuQ9mRxiT8bOclwomPmjJ7w45M5qCiAYKsOZImz4Gj6AKFbYARD
-         39KTlksi463G+qMVAQc58sHEwGASNiMV5vu4Y2y8luS+v8YhbP6rzhsCU5rDEOv4nwQt
-         wATU1JxRCTM17+9eiZ01bADUQGbGzUSdh9KH3IDKo9+N5i3qvlWUldaL6N5i5sXNldkD
-         UM/psxxE2EscKBas105ILHNaLwbrXEZsmnvBpEcPcTmd7HNRIV5P/QxuHlor0pIPyI34
-         6UyQ==
-X-Gm-Message-State: AOAM532xBdVTkCx5xuFPkyjN2F8qHEF9gn5Gk+Q+su6mCX4AUxMBIJKh
-        eA4ch7gQbal/Couj/Rn8XcQ=
-X-Google-Smtp-Source: ABdhPJz5cDVUwKIFbHJvRRcZm/RgHQl0lqOLx6eYkfTVVUQv765IyixK8lF7EOCan5KXL+JrjhETlQ==
-X-Received: by 2002:a05:6512:10c8:: with SMTP id k8mr704401lfg.181.1592437264376;
-        Wed, 17 Jun 2020 16:41:04 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id c8sm287871lfc.46.2020.06.17.16.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 16:41:03 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Daniel Stone <daniel@fooishbar.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] =?UTF-8?q?drm/tegra:=20plane:=20Support=20180?= =?UTF-8?q?=C2=B0=20rotation?=
-Date:   Thu, 18 Jun 2020 02:40:40 +0300
-Message-Id: <20200617234040.1094-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200617234040.1094-1-digetx@gmail.com>
-References: <20200617234040.1094-1-digetx@gmail.com>
+        id S1726909AbgFQXqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 19:46:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726815AbgFQXqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 19:46:10 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83F23207E8;
+        Wed, 17 Jun 2020 23:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592437569;
+        bh=M7bG+rSHSEDHF2Qry9Zk4SV+gGKCbl4sGRVOdFojW+4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HUfgpYwyNBOTeYNYb/UuaWuV4M7LYIjs+fIVd5OF+TCaLqEQK6a+xaIbb50JIhdB0
+         4X7NuWBSpb4wZVP5UmBhN27cOT0A7G0HYtfTZVvGhv+4D/SC7XlLxcI+022GMzRi0c
+         mesUzHw/QEVJ9z3YjRh+D1v2du+ew+W9r2Xz6iWY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6B8B03523551; Wed, 17 Jun 2020 16:46:09 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 16:46:09 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
+ ptrs
+Message-ID: <20200617234609.GA10087@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200525214800.93072-1-urezki@gmail.com>
+ <20200525214800.93072-10-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525214800.93072-10-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combining horizontal and vertical reflections gives us 180 degrees of
-rotation. Both reflection modes are already supported, and thus, we just
-need to mark the 180 rotation mode as supported. The 180 rotation mode is
-needed for devices like Nexus 7 tablet, which have display panel mounted
-upside-down.
+On Mon, May 25, 2020 at 11:47:53PM +0200, Uladzislau Rezki (Sony) wrote:
+> To do so, we use an array of kvfree_rcu_bulk_data structures.
+> It consists of two elements:
+>  - index number 0 corresponds to slab pointers.
+>  - index number 1 corresponds to vmalloc pointers.
+> 
+> Keeping vmalloc pointers separated from slab pointers makes
+> it possible to invoke the right freeing API for the right
+> kind of pointer.
+> 
+> It also prepares us for future headless support for vmalloc
+> and SLAB objects. Such objects cannot be queued on a linked
+> list and are instead directly into an array.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/tegra/dc.c | 2 ++
- 1 file changed, 2 insertions(+)
+[ . . . ]
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index f8149dc3b1b4..1a9a5f8bba34 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -816,6 +816,7 @@ static struct drm_plane *tegra_primary_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
-@@ -1105,6 +1106,7 @@ static struct drm_plane *tegra_dc_overlay_plane_create(struct drm_device *drm,
- 	err = drm_plane_create_rotation_property(&plane->base,
- 						 DRM_MODE_ROTATE_0,
- 						 DRM_MODE_ROTATE_0 |
-+						 DRM_MODE_ROTATE_180 |
- 						 DRM_MODE_REFLECT_X |
- 						 DRM_MODE_REFLECT_Y);
- 	if (err < 0)
--- 
-2.26.0
+> +	// Handle two first channels.
+> +	for (i = 0; i < FREE_N_CHANNELS; i++) {
+> +		for (; bkvhead[i]; bkvhead[i] = bnext) {
+> +			bnext = bkvhead[i]->next;
+> +			debug_rcu_bhead_unqueue(bkvhead[i]);
+> +
+> +			rcu_lock_acquire(&rcu_callback_map);
+> +			if (i == 0) { // kmalloc() / kfree().
+> +				trace_rcu_invoke_kfree_bulk_callback(
+> +					rcu_state.name, bkvhead[i]->nr_records,
+> +					bkvhead[i]->records);
+> +
+> +				kfree_bulk(bkvhead[i]->nr_records,
+> +					bkvhead[i]->records);
+> +			} else { // vmalloc() / vfree().
+> +				for (j = 0; j < bkvhead[i]->nr_records; j++) {
+> +					trace_rcu_invoke_kfree_callback(
+> +						rcu_state.name,
+> +						bkvhead[i]->records[j], 0);
+> +
+> +					vfree(bkvhead[i]->records[j]);
+> +				}
+> +			}
+> +			rcu_lock_release(&rcu_callback_map);
 
+Not an emergency, but did you look into replacing this "if" statement
+with an array of pointers to functions implementing the legs of the
+"if" statement?  If nothing else, this would greatly reduced indentation.
+
+I am taking this as is, but if you have not already done so, could you
+please look into this for a follow-up patch?
+
+							Thanx, Paul
