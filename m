@@ -2,110 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9FB1FD57E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B018F1FD579
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 21:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgFQTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 15:38:49 -0400
-Received: from djelibeybi.uuid.uk ([45.91.101.70]:57950 "EHLO
-        djelibeybi.uuid.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726597AbgFQTis (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:38:48 -0400
-X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 15:38:46 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CBFAg6s+vq5P374WzvzyZ5LF5sqRXWLUvi7gDQCysuQ=; b=s4niYvrhMPjKxPqwZfV/XTAR6X
-        iqawHB1UE2brS2dFuRjx2BU/xoVl7uZN77L6+lV00LVJkldfRno8zX0HrZ8wLzQdqfWS1RYGNUgEu
-        rfjfFsLmKcHLU3hTd5Diwj/dmRc8qPan8G0sp3/FftcuLt5Ba9RdqUkStAUskP6k0Kx/yDwP3Wb0b
-        XCllNmx+7J9zxkPSem743Ksy483GZJmUUgmMYghnHdRlEJB/iXU8KT10IWJeNkfI0tDnSHHVsB49/
-        IRKXRKuVWIyJCGM0wRLfS3VDQGu1ovwVtYT5QcfRPRUFDpo95gN0uE4Jjqh31rs3pD6tLCX+D3iQM
-        tYodPY3w==;
-Received: by djelibeybi.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jldn9-0001NO-4a; Wed, 17 Jun 2020 20:32:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject;
-        bh=CBFAg6s+vq5P374WzvzyZ5LF5sqRXWLUvi7gDQCysuQ=; b=iNRgLuzImYOvm7B2xpgqc+VmTG
-        wSOj8XmLpCXMk8XZWAPtXq10UdhX85+0B0vNcO7HZS7RxhBYV60tW8QQ0G1zeuLYXnzFYf4MgO00K
-        dphadsBfZCgcLuk1U1LytGUTHTEz4bSPbumr0a8kRhAfRS4PeJm+7sfPW4kfv3J5QPlI1FDfZ08VT
-        jFBZOdQ3FM7D3Ah5tDYzMnAASIc2JR94Uq4v76bohe315pkXZ5Gqyrrevf48Sb2bftgKr98QEL8P3
-        njaYk/7yR6fHUz9GoQ9zq5EDv2Hj/t8KtGtMluUIwXM7Hl+7XiA3e4l3AQjNBT08bFnMYKgQUDt3u
-        43Jqp2ZA==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jldn7-00062R-3q; Wed, 17 Jun 2020 20:32:09 +0100
-Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
-To:     Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
- <b92ce48a-55d8-9377-f6c5-510d7e3beb1b@acm.org>
-From:   Simon Arlott <simon@octiron.net>
-Message-ID: <04bf3c02-85f4-3fbc-525a-4189aadf9241@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Date:   Wed, 17 Jun 2020 20:32:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726854AbgFQTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 15:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726540AbgFQTfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 15:35:25 -0400
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52EE02073E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592422524;
+        bh=kj0CVUWmj6brL8f0EF5vkVooJfxv+yYMAPz+jZjllkU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=agqnsRa/EK56lzeAqjMVgQ1zbGyGoA2svGW8UU92BMH5riL2IDrqXSl30601Let+T
+         Fd8XkVT/VcRME6B1M/dEiFsPsHxNWMLiZjMBzMAVNrUqFSFOmUu+FZ/lEU2FxhFz1O
+         X6HuTjdQFU2wcbM7p0A8xL+cYsaejBnp+778vd3I=
+Received: by mail-wm1-f54.google.com with SMTP id r9so2990818wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 12:35:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530PKd2CKfUwrAC8hBbyCu6PxqMEdeKG7OnKT01XAo/VxHy2yxGt
+        kuwilc9Hgp7zn0yvJo17eglgoA2UIhWbsIPYFH+4ag==
+X-Google-Smtp-Source: ABdhPJwZufrSC0HSDHfM4LNl3upPjFIP57rAsb579ve9INcvPBLnanr6p4UckI+Bo36Vg5i5NBiwIO759HWAx17PmDw=
+X-Received: by 2002:a1c:4804:: with SMTP id v4mr294927wma.21.1592422522886;
+ Wed, 17 Jun 2020 12:35:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b92ce48a-55d8-9377-f6c5-510d7e3beb1b@acm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <1592418233-17762-1-git-send-email-fenghua.yu@intel.com> <1592418233-17762-2-git-send-email-fenghua.yu@intel.com>
+In-Reply-To: <1592418233-17762-2-git-send-email-fenghua.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 17 Jun 2020 12:35:11 -0700
+X-Gmail-Original-Message-ID: <CALCETrXFHa_05-sGAy5M9YGJWUfTn9MfM-ZYk+hp12tqHNJA0Q@mail.gmail.com>
+Message-ID: <CALCETrXFHa_05-sGAy5M9YGJWUfTn9MfM-ZYk+hp12tqHNJA0Q@mail.gmail.com>
+Subject: Re: [PATCH v3 01/13] iommu: Change type of pasid to unsigned int
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradeed.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2020 20:19, Bart Van Assche wrote:
-> On 2020-06-17 11:49, Simon Arlott wrote:
->> @@ -3576,9 +3582,19 @@ static void sd_shutdown(struct device *dev)
->>  		sd_sync_cache(sdkp, NULL);
->>  	}
->>  
->> -	if (system_state != SYSTEM_RESTART && sdkp->device->manage_start_stop) {
->> -		sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
->> -		sd_start_stop_device(sdkp, 0);
->> +	if (sdkp->device->manage_start_stop) {
->> +		bool stop_disk = (system_state != SYSTEM_RESTART);
->> +
->> +		if (stop_before_reboot > 1) { /* stop all disks */
->> +			stop_disk = true;
->> +		} else if (stop_before_reboot) { /* non-rotational only */
->> +			stop_disk |= blk_queue_nonrot(sdkp->disk->queue);
->> +		}
->> +
->> +		if (stop_disk) {
->> +			sd_printk(KERN_NOTICE, sdkp, "Stopping disk\n");
->> +			sd_start_stop_device(sdkp, 0);
->> +		}
->>  	}
->>  }
-> 
-> Is introduction of a new kernel module parameter essential?
+On Wed, Jun 17, 2020 at 11:24 AM Fenghua Yu <fenghua.yu@intel.com> wrote:
+>
+> PASID is defined as a few different types in iommu including "int",
+> "u32", and "unsigned int". To be consistent and to match with ioasid's
+> type, define PASID and its variations (e.g. max PASID) as "unsigned int".
+>
+> No PASID type change in uapi.
 
-It is system-dependent whether or not a reboot is going to result in a
-loss of power, so it's required to be able to stop the HDDs too.
+Is PASID in the uapi at all?
 
-They're already always stopped on shutdown where power is definitely
-going to be lost. I can't do that by default on a reboot because the
-usual convention is that the power stays on during a reboot and it would
-be expected that the HDDs keep spinning.
-
-> Or in other
-> words, has it been considered to apply the new behavior to all SSDs?
-
-The default value is 1, so it does apply to all SSDs. I want to be able
-to configure it to apply to HDDs too.
-
--- 
-Simon Arlott
+--Andy
