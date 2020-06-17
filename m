@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133FD1FD217
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE591FD207
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgFQQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        id S1727116AbgFQQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727054AbgFQQ01 (ORCPT
+        with ESMTP id S1727062AbgFQQ02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:27 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14831C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id v13so2103016otp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
+        Wed, 17 Jun 2020 12:26:28 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8E3C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:28 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id a3so2300553oid.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dk3pc8AeI0c3+wdEYp+hTZYx+ewWTm/IvoUeIkfxAsE=;
-        b=nG+nuav8Qw6xBb23T2t9tWvMzUDdAcso2xuwHW3zG0/KAAmHHffC3dgtlW/jK5H5uF
-         0H0WW5/lFA1J7jQj3qZdLWZ2KdkqtAwzezF0+L2hzmt09jTWp7KUh+ErbuHgZuoClKPD
-         w2DtAj8nf4hugN5yM9ABahO9fYEBM9Rm91W8jv2xKbf7bmDrGQobDUqNUb4rOqMRK7kr
-         vVE9yYZvDHZ5/v3+nNJZl7Z1OGocZOsNsuiQZYIZtlLYlaZ1QoOTS8ueNFVPsjNVkvwa
-         Q0Mopc4NZp4Tl4GMOFhoo1FKCm7Dg61wb5h4DqGsFR8s6LiDlGchJICrYcDdR/RQYqlC
-         vnJw==
+        bh=OpKisUIrNDP4b7Le3VGwmmpBHcbUC4mhjuxLi316v8I=;
+        b=jgXTbxLw7ienGk2MzFo5c0wKoSn2H8CttyP3ZPskJYPeIeP1PPl70Le0PY4aN2EiEQ
+         iEDGqQJiiSq/Xq/eoEM3TsIkuZkKpdCNIPwS5QjaI8UH5QrxB27IddmRnrYl+EJz4VrH
+         d/vhhH7iR3tox52A37syuTUMeDqCSj0bodLOjh6OVketiv7/R6x+HIC5gRFZ6TN5xHO6
+         RpPcoovEohIVWTMIWqnWmW5zGXiKX3TUuBZTlo/rK/eu/gkrnkJkcbDF9zFKkLPYgsJY
+         4pvEhfCsG3BeO9nOzbqcLPRs7lzWb56nzn0jtAnBxZRHV8JH7u+LwWygbahWc11THy9R
+         tf8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dk3pc8AeI0c3+wdEYp+hTZYx+ewWTm/IvoUeIkfxAsE=;
-        b=PQYYCqSl+zT2rXHEk6JceaWw0BHyIDLr/10wGiewYn8x4BXY9KqGoS/Dgv5v1gLst1
-         EPvAXjN9qY76s6rAY5zHDhKYin1XkCu89LfJIvzMp+r7FVxf/LBky7uGiqtIRpFWhLRZ
-         Zz2RF8s7SDLcn4pTQ1UW/avtIINXTKyc14tib8r7cOy7Mvboffai1dXbqcXCXLapD5py
-         iFcK1NRmlVBnhvMhPixWvmDwIhq5WkoQusMpkfiMGKGeU16br79QoJ3uNU4IZxAzhN9I
-         LfyLZXudM32ovNmGIXKjhwkHQymZVHN462WtKgv9l4u+A5QwinhQmhQg2h7qSdDDqChP
-         w9Sg==
-X-Gm-Message-State: AOAM5329ZApPTXMZVCjiaZ+iuXSjGm9SxHLzkrwhbFRGCrDtTALn0bHU
-        S5NDMYJtY6hh2KFuchNrsJY=
-X-Google-Smtp-Source: ABdhPJxxoHW1tEDOZuRDffrva288t4Ajc/90lYQP2ebkwDRKVRuwohnE022y+hBEZrZgf0oEb0/kYw==
-X-Received: by 2002:a9d:2de6:: with SMTP id g93mr7924661otb.28.1592411186443;
-        Wed, 17 Jun 2020 09:26:26 -0700 (PDT)
+        bh=OpKisUIrNDP4b7Le3VGwmmpBHcbUC4mhjuxLi316v8I=;
+        b=s/vBBm+bhEAxHbRQW6dWx+0Fc1mrUzvcBuf1viaxDX8Cl6X7IrbI3wF3ygXGNAwowk
+         VPqWiKL+NbEsBtw4pdJ49qBj1dmsV4G8BUZfMEC9aRi2EGad75pn86IYM8zud0Vj2yVT
+         ZTHRjyuDYuHn36b7gzLZyZ+EP+MTnjsAAMW2s+9gk3oA4NZGbCxquOXCPJxfYcoWrh+5
+         mFdFLXFhPdkqJk8fr6hbXiPCumD7Zkf2bvYdbgUoLdTbrAY5RzMrXDXckzQeGFPzSeDq
+         DCdy9aVMD13s2d66cvpiQOOUryvv7eFhI1V1L3pCpedLa+4E3pvcAyXCNMESZ+Q+Vmja
+         5b7Q==
+X-Gm-Message-State: AOAM5300mHRrfC1lXq0GOmfdTI4C4t8FVCkjbykHhhJ8MX0tB8IDlPOz
+        QbZNKzVl0vdQrpyYb29Zxiw=
+X-Google-Smtp-Source: ABdhPJyktbEeQ4lzo1ybzJxvOPN38vMwOJif3TWdAdUj+7nvB113kmYKbE4fme5DITZSwsfIpFMTRg==
+X-Received: by 2002:a05:6808:8ce:: with SMTP id k14mr5690052oij.141.1592411187727;
+        Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
 Received: from frodo.hsd1.co.comcast.net ([2601:284:8204:6ba0::ae4b])
-        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.25
+        by smtp.googlemail.com with ESMTPSA id h7sm95877otk.48.2020.06.17.09.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:25 -0700 (PDT)
+        Wed, 17 Jun 2020 09:26:27 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 15/21] dyndbg: export ddebug_exec_queries
-Date:   Wed, 17 Jun 2020 10:25:30 -0600
-Message-Id: <20200617162536.611386-18-jim.cromie@gmail.com>
+Subject: [PATCH v3 16/21] dyndbg: combine flags & mask into a struct, simplify with it
+Date:   Wed, 17 Jun 2020 10:25:31 -0600
+Message-Id: <20200617162536.611386-19-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200617162536.611386-1-jim.cromie@gmail.com>
 References: <20200617162536.611386-1-jim.cromie@gmail.com>
@@ -65,75 +65,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exporting ddebug_exec_queries will allow module authors using dynamic
-debug to actually control/enable/disable their own pr-debug callsites
-dynamically.
+flags & mask are used together everywhere, and are passed around
+together between multiple functions; they belong together in a struct,
+call that struct flag_settings.
 
-With it, module authors can tie any update of their internal debug
-variables to a corresponding ddebug_exec_queries invocation, which
-will modify all their selected callsites accordingly.
+Use struct flag_settings to rework 3 functions:
+ - ddebug_exec_query - calls other 2
+ - ddebug_parse_flags - fills flag_settings and returns
+ - ddebug_change - test all callsites against query,
+   		   modify passing sites.
 
-Generally, authors would exec +p or -p on some subsets of their set of
-callsites, and leave fmlt flags for user to choose the appropriate
-amount of structural context desired in the logs.
-
-Depending upon the user needs, the module might be known, and
-therefore a waste of screen width, function would be valuable, file
-would be long and familiar to the author, etc..  That said, author
-could harness the message-prefix facility if they saw fit to do so.
-Any author preferences can be overridden with echo >control
-
-Is it safe ?
-
-ddebug_exec_queries() is currently 'exposed' to user space in
-several limited ways;
-
-1 it is called from module-load callback, where it implements the
-  $modname.dyndbg=+p "fake" parameter provided to all modules.
-
-2 it handles query input from >control directly
-
-IOW, it is "fully" exposed to local root user; exposing the same
-functionality to other kernel modules is no additional risk.
-
-The other big issue to check is locking:
-
-dyndbg has a single mutex, taken by ddebug_change to handle >control,
-and by ddebug_proc_(start|stop) to span `cat control`.  ISTM this
-proposed export presents no locking problems.
-
-drm use case:
-
-drm.debug=0x03 appears to be a kernel boot-arg example, setting 2
-internal debug flags.  Each bit is probably controlling a separate
-subset of all debug-prints, they may be overlapping subsets.
-
-Those subsets are *definitely* expressible as a few dyndbg queries
-each.  Any arbitrary subset is.
-
-   drm.dyndbg='file drm_gem_* +p'	# gem debug
-   drm.dyndbg='file *_gem_* +p'		# *gem debug
-
-With this proposed export, drm authors could exec these examples, most
-likely in the callback that handles updates to the drm.debug variable.
-
+benefits:
+ - bit-banging always needs flags & mask, best together.
+ - simpler function signatures
+ - 1 less parameter, less stack overhead
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/dynamic_debug.c | 45 ++++++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index e1dd96178f18..ff97938b5849 100644
+index ff97938b5849..22335f7dbac1 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -547,6 +547,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
- 		return exitcode;
- 	return nfound;
+@@ -62,6 +62,11 @@ struct ddebug_iter {
+ 	unsigned int idx;
+ };
+ 
++struct flag_settings {
++	unsigned int flags;
++	unsigned int mask;
++};
++
+ static DEFINE_MUTEX(ddebug_lock);
+ static LIST_HEAD(ddebug_tables);
+ static int verbose;
+@@ -141,7 +146,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+  * logs the changes.  Takes ddebug_lock.
+  */
+ static int ddebug_change(const struct ddebug_query *query,
+-			unsigned int flags, unsigned int mask)
++			 struct flag_settings *modifiers)
+ {
+ 	int i;
+ 	struct ddebug_table *dt;
+@@ -190,14 +195,14 @@ static int ddebug_change(const struct ddebug_query *query,
+ 
+ 			nfound++;
+ 
+-			newflags = (dp->flags & mask) | flags;
++			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
+ 			if (newflags == dp->flags)
+ 				continue;
+ #ifdef CONFIG_JUMP_LABEL
+ 			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
+-				if (!(flags & _DPRINTK_FLAGS_PRINT))
++				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
+ 					static_branch_disable(&dp->key.dd_key_true);
+-			} else if (flags & _DPRINTK_FLAGS_PRINT)
++			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
+ 				static_branch_enable(&dp->key.dd_key_true);
+ #endif
+ 			dp->flags = newflags;
+@@ -431,11 +436,9 @@ static int ddebug_parse_query(char *words[], int nwords,
+  * flags fields of matched _ddebug's.  Returns 0 on success
+  * or <0 on error.
+  */
+-static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+-			       unsigned int *maskp)
++static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ {
+-	unsigned flags = 0;
+-	int op = '=', i;
++	int op, i;
+ 
+ 	switch (*str) {
+ 	case '+':
+@@ -452,7 +455,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+ 	for (; *str ; ++str) {
+ 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
+ 			if (*str == opt_array[i].opt_char) {
+-				flags |= opt_array[i].flag;
++				modifiers->flags |= opt_array[i].flag;
+ 				break;
+ 			}
+ 		}
+@@ -461,30 +464,30 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
+ 			return -EINVAL;
+ 		}
+ 	}
+-	vpr_info("flags=0x%x\n", flags);
++	vpr_info("flags=0x%x\n", modifiers->flags);
+ 
+-	/* calculate final *flagsp, *maskp according to mask and op */
++	/* calculate final flags, mask based upon op */
+ 	switch (op) {
+ 	case '=':
+-		*maskp = 0;
+-		*flagsp = flags;
++		/* modifiers->flags already set */
++		modifiers->mask = 0;
+ 		break;
+ 	case '+':
+-		*maskp = ~0U;
+-		*flagsp = flags;
++		modifiers->mask = ~0U;
+ 		break;
+ 	case '-':
+-		*maskp = ~flags;
+-		*flagsp = 0;
++		modifiers->mask = ~modifiers->flags;
++		modifiers->flags = 0;
+ 		break;
+ 	}
+-	vpr_info("*flagsp=0x%x *maskp=0x%x\n", *flagsp, *maskp);
++	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
++
+ 	return 0;
  }
-+EXPORT_SYMBOL(ddebug_exec_queries);
  
- #define PREFIX_SIZE 64
+ static int ddebug_exec_query(char *query_string, const char *modname)
+ {
+-	unsigned int flags = 0, mask = 0;
++	struct flag_settings modifiers = {};
+ 	struct ddebug_query query = {};
+ #define MAXWORDS 9
+ 	int nwords, nfound;
+@@ -496,7 +499,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+ 		return -EINVAL;
+ 	}
+ 	/* check flags 1st (last arg) so query is pairs of spec,val */
+-	if (ddebug_parse_flags(words[nwords-1], &flags, &mask)) {
++	if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
+ 		pr_err("flags parse failed\n");
+ 		return -EINVAL;
+ 	}
+@@ -505,7 +508,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+ 		return -EINVAL;
+ 	}
+ 	/* actually go and implement the change */
+-	nfound = ddebug_change(&query, flags, mask);
++	nfound = ddebug_change(&query, &modifiers);
+ 	vpr_info_dq(&query, nfound ? "applied" : "no-match");
  
+ 	return nfound;
 -- 
 2.26.2
 
