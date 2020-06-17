@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1E31FCF16
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6981FCF0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgFQOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:05:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:58514 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726857AbgFQOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:05:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DC9E31B;
-        Wed, 17 Jun 2020 07:05:55 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA5563F73C;
-        Wed, 17 Jun 2020 07:05:53 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 15:05:47 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH 1/2] arm64: kvm: Save/restore MTE registers
-Message-ID: <20200617140546.GE5388@gaia>
-References: <20200617123844.29960-1-steven.price@arm.com>
- <20200617123844.29960-2-steven.price@arm.com>
+        id S1726899AbgFQOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:04:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52724 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725894AbgFQOEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 10:04:47 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5B33BB4F90B46736D7A0;
+        Wed, 17 Jun 2020 22:04:44 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 17 Jun 2020 22:04:37 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
+Date:   Wed, 17 Jun 2020 22:08:03 +0800
+Message-ID: <20200617140803.181333-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617123844.29960-2-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:38:43PM +0100, Steven Price wrote:
-> diff --git a/arch/arm64/kvm/hyp/sysreg-sr.c b/arch/arm64/kvm/hyp/sysreg-sr.c
-> index 75b1925763f1..6ecee1528566 100644
-> --- a/arch/arm64/kvm/hyp/sysreg-sr.c
-> +++ b/arch/arm64/kvm/hyp/sysreg-sr.c
-> @@ -26,6 +26,12 @@
->  static void __hyp_text __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
->  {
->  	ctxt->sys_regs[MDSCR_EL1]	= read_sysreg(mdscr_el1);
-> +	if (system_supports_mte()) {
-> +		ctxt->sys_regs[RGSR_EL1] = read_sysreg_s(SYS_RGSR_EL1);
-> +		ctxt->sys_regs[GCR_EL1] = read_sysreg_s(SYS_GCR_EL1);
-> +		ctxt->sys_regs[TFSRE0_EL1] = read_sysreg_s(SYS_TFSRE0_EL1);
-> +		ctxt->sys_regs[TFSR_EL1] = read_sysreg_s(SYS_TFSR_EL1);
-> +	}
+The callers pass the pointer '&req' or 'private_data' to
+srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
+'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
+sdev and req are always valid. So we remove unnecessary WARN_ON.
 
-TFSR_EL1 is not a common register as we have the TFSR_EL2 as well. So
-you'd have to access it as read_sysreg_el1(SYS_TFSR) so that, in the VHE
-case, it generates TFSR_EL12, otherwise you just save the host register.
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Also, since TFSR*_EL1 can be set asynchronously, I think we need to set
-the SCTLR_EL2.ITFSB bit so that the register update is synchronised on
-entry to EL2. With VHE we get this automatically as part of
-SCTLR_EL1_SET but it turns out that we have another SCTLR_ELx_FLAGS
-macro for the non-VHE case (why not calling this SCTLR_EL2_* I have no
-idea).
-
->  	/*
->  	 * The host arm64 Linux uses sp_el0 to point to 'current' and it must
-> @@ -99,6 +105,12 @@ NOKPROBE_SYMBOL(sysreg_save_guest_state_vhe);
->  static void __hyp_text __sysreg_restore_common_state(struct kvm_cpu_context *ctxt)
->  {
->  	write_sysreg(ctxt->sys_regs[MDSCR_EL1],	  mdscr_el1);
-> +	if (system_supports_mte()) {
-> +		write_sysreg_s(ctxt->sys_regs[RGSR_EL1], SYS_RGSR_EL1);
-> +		write_sysreg_s(ctxt->sys_regs[GCR_EL1], SYS_GCR_EL1);
-> +		write_sysreg_s(ctxt->sys_regs[TFSRE0_EL1], SYS_TFSRE0_EL1);
-> +		write_sysreg_s(ctxt->sys_regs[TFSR_EL1], SYS_TFSR_EL1);
-> +	}
-
-Similarly here, you override the TFSR_EL2 with VHE enabled.
-
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index ef7fcd3..0fa65c6 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2156,9 +2156,6 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 
+ 	WARN_ON_ONCE(irqs_disabled());
+ 
+-	if (WARN_ON(!sdev || !req))
+-		return -EINVAL;
+-
+ 	it_iu_len = be32_to_cpu(req->req_it_iu_len);
+ 
+ 	pr_info("Received SRP_LOGIN_REQ with i_port_id %pI6, t_port_id %pI6 and it_iu_len %d on port %d (guid=%pI6); pkey %#04x\n",
 -- 
-Catalin
+1.8.3.1
+
