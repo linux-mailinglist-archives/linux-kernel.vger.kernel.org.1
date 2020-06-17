@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032E41FCF36
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15301FCF1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 16:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgFQOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 10:14:04 -0400
-Received: from mailout2n.rrzn.uni-hannover.de ([130.75.2.113]:39520 "EHLO
-        mailout2n.rrzn.uni-hannover.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726495AbgFQOOD (ORCPT
+        id S1726853AbgFQOJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 10:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgFQOJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 10:14:03 -0400
-X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 10:14:02 EDT
-Received: from lab-pc01.sra.uni-hannover.de (lab.sra.uni-hannover.de [130.75.33.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailout2n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id D0C281F477;
-        Wed, 17 Jun 2020 16:08:26 +0200 (CEST)
-From:   Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     rostedt@goodmis.org, mingo@redhat.com,
-        linux-trace-devel@vger.kernel.org,
-        Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>,
-        linux-kernel@i4.cs.fau.de,
-        Maximilian Werner <maximilian.werner96@gmail.com>
-Subject: [PATCH] tracing/boottime: Fix kprobe multiple events
-Date:   Wed, 17 Jun 2020 16:08:17 +0200
-Message-Id: <20200617140817.17161-1-sascha.ortmann@stud.uni-hannover.de>
-X-Mailer: git-send-email 2.17.1
+        Wed, 17 Jun 2020 10:09:05 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14907C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:09:02 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h5so2499499wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 07:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Q/YL4Tzx4ADMiyqvj4Ve2wziFTGT/p0DVcYFG6HXk08=;
+        b=d+J+aw6Zm5XRvlxRf1UGsdkDdw/4mdWlAseuLVRmjuRl77imTs8xnEwfCx3+/GfmIn
+         bikdBwRjyQV2FhPxZDoxaryjSxXvxqhpXbUEuGGRJ6XKTOw9aHhfZNDGhlxVfd4s8+dB
+         zPJBHP+Y5JfMrXFtfl1BiiRwc2CLhSP1/aSVo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Q/YL4Tzx4ADMiyqvj4Ve2wziFTGT/p0DVcYFG6HXk08=;
+        b=OLj7c5ofJru+CKYsUfVeWLQj3i3Si9ibY4LekgR8LXyUupFBvISwjQUcsPKyxYJaPL
+         BDwyE6InEJQux6+opzWN81dazlxTmeX8ZIvZ3qHN1mcQGdi7c0MPku6BHQxnYLetXjoW
+         OMt82E3vnEW17lZqnm3D5E3FNnYa3IS1l5bNemETIO0Q4DeZLnrb9SNIsGOtNpT9CnEH
+         1CI9klMFkRS9HoKNQm7NcaerItH1hlT1H3tpkBUZuzfKj1ttXRC7rjFQDlQLi01lp+2C
+         0LXNAwpzW05s+TA7k/KjPgSeYDzm1dPHlvqIoVAE0jkyjgMYKaTWrVVAh03WR7aycqYX
+         3zdw==
+X-Gm-Message-State: AOAM530svbC1tN+BSPjYSbkXQMMtmmFXXjBD7pxxdWMMg7v/KUh0XJLY
+        5EUdRWiTdQWWqjoXLzga3UDnQA==
+X-Google-Smtp-Source: ABdhPJzL0eIzzTI+SzZBoqt3/b7Xundx14ukkyOPthT2L2+/VFT7bPwecalJL/jau7TXAMBO1wA5IA==
+X-Received: by 2002:adf:fd48:: with SMTP id h8mr9338191wrs.226.1592402940724;
+        Wed, 17 Jun 2020 07:09:00 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id o6sm33035118wrp.3.2020.06.17.07.08.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 07:08:59 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 15:08:59 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200617140859.GB548179@chrisdown.name>
+References: <20200519075213.GF32497@dhcp22.suse.cz>
+ <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+ <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name>
+ <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+ <20200617135951.GP9499@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200617135951.GP9499@dhcp22.suse.cz>
+User-Agent: Mutt/1.14.3 (2020-06-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix boottime kprobe events to add multiple events even if one fails
-and report probe generation failures.
+Michal Hocko writes:
+>and it makes some sense. Except for the root memcg where we do not
+>account any memory. Adding if (mem_cgroup_is_root(memcg)) return false;
+>should do the trick. The same is the case for mem_cgroup_below_low.
+>Could you give it a try please just to confirm?
 
-As an example, when we try to set multiprobe kprobe events in
-bootconfig like this:
-
-ftrace.event.kprobes.vfsevents {
-	probes = "vfs_read $arg1 $arg2,,
-                 !error! not reported;?", // leads to error
-		 "vfs_write $arg1 $arg2"
-}
-
-this will not work like expected. After commit
-da0f1f4167e3af69e1d8b32d6d65195ddd2bfb64 ("tracing/boottime:
-Fix kprobe event API usage"), the function
-trace_boot_add_kprobe_event will not produce any error message,
-aborting the function and stopping subsequent probes from getting
-installed when adding a probe fails at kprobe_event_gen_cmd_start.
-Furthermore, probes continue when kprobe_event_gen_cmd_end fails
-(and kprobe_event_gen_cmd_start did not fail). In this case the
-function even returns successfully when the last call to
-kprobe_event_gen_cmd_end is successful.
-
-The behaviour of reporting and aborting after failures is not
-consistent.
-
-The function trace_boot_add_kprobe_event now continues even when
-one of the multiple events fails. Each failure is now reported
-individually. Since the function can only return one result to the
-caller, the function returns now the last failure (or none, if
-nothing fails).
-
-Cc: linux-kernel@i4.cs.fau.de
-Signed-off-by: Maximilian Werner <maximilian.werner96@gmail.com>
-Signed-off-by: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
----
- kernel/trace/trace_boot.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 9de29bb45a27..dbb50184e060 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -95,18 +95,24 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
- 	struct xbc_node *anode;
- 	char buf[MAX_BUF_LEN];
- 	const char *val;
-+	int error = 0;
- 	int ret = 0;
- 
- 	xbc_node_for_each_array_value(node, "probes", anode, val) {
- 		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
- 
--		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
--		if (ret)
--			break;
-+		error = kprobe_event_gen_cmd_start(&cmd, event, val);
-+		if (error) {
-+			pr_err("Failed to generate probe: %s\n", buf);
-+			ret = error;
-+			continue;
-+		}
- 
--		ret = kprobe_event_gen_cmd_end(&cmd);
--		if (ret)
-+		error = kprobe_event_gen_cmd_end(&cmd);
-+		if (error) {
- 			pr_err("Failed to add probe: %s\n", buf);
-+			ret = error;
-+		}
- 	}
- 
- 	return ret;
--- 
-2.17.1
-
+Oh, of course :-) This seems more likely than what I proposed, and would be 
+great to test.
