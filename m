@@ -2,142 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002211FC3F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E46B1FC3F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 04:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgFQCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Jun 2020 22:00:52 -0400
-Received: from vps.xff.cz ([195.181.215.36]:45304 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726253AbgFQCAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Jun 2020 22:00:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1592359249; bh=nfSFk/xxv2HPjCmgiQmTzC85XO7JsaYmjsZ2Hf0O8WA=;
-        h=Date:From:To:Cc:Subject:References:From;
-        b=RSTp/x25+vrf98bzteSPi+kPYJSJl7O5J4mEvqeDFgtzOodDhGQfnygpDh84JiXmH
-         7U6a1om3H+8zqs/Y+QMNPTl24XwrWut/xPnaaHdCyotCcDDbC7Wqd3W7Oo213aSY9N
-         XoVIbzOov26zePoClavc9rZy25sVMXE7VaGg/5M8=
-Date:   Wed, 17 Jun 2020 04:00:49 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-sunxi <linux-sunxi@googlegroups.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-Subject: Re: [linux-sunxi] Re: [PATCH v3 3/5] drm: panel: Add Xingbangda
- XBD599 panel (ST7703 controller)
-Message-ID: <20200617020049.iz6vujrs25kuipl6@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
-        Bhushan Shah <bshah@kde.org>
-References: <20200513212451.1919013-1-megous@megous.com>
- <20200513212451.1919013-4-megous@megous.com>
- <CACRpkdZpiQ7E_v-Gfk6vFcUEiMazvixYaL0ksKeP=Tq3O6Fh=Q@mail.gmail.com>
+        id S1726635AbgFQCHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Jun 2020 22:07:47 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38788 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgFQCHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Jun 2020 22:07:45 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 08FB82787E;
+        Tue, 16 Jun 2020 22:07:38 -0400 (EDT)
+Date:   Wed, 17 Jun 2020 12:07:40 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Bart Van Assche <bvanassche@acm.org>
+cc:     Chris Boot <bootc@boo.tc>, linuxppc-dev@lists.ozlabs.org,
+        target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Nicholas Bellinger <nab@linux-iscsi.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
+In-Reply-To: <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
+Message-ID: <alpine.LNX.2.22.394.2006171104540.11@nippy.intranet>
+References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com> <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet> <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc> <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
+ <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc> <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet> <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZpiQ7E_v-Gfk6vFcUEiMazvixYaL0ksKeP=Tq3O6Fh=Q@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Tue, 16 Jun 2020, Bart Van Assche wrote:
 
-On Tue, May 26, 2020 at 01:32:25PM +0200, Linus Walleij wrote:
-> Hi Ondrej,
 > 
+> As far as I know the sbp driver only has had one user ever and that user 
+> is no longer user the sbp driver.
 
-[...]
+So, you estimate the userbase at zero. Can you give a confidence level? 
+Actual measurement is hard because when end users encounter breakage, they 
+look for quick workarounds before they undertake post mortem, log 
+collection, bug reporting, mailing list discussions, analysis etc.
 
-> > +       dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP1,
-> > +                         0x82, 0x10, 0x06, 0x05, 0xA2, 0x0A, 0xA5, 0x12,
-> > +                         0x31, 0x23, 0x37, 0x83, 0x04, 0xBC, 0x27, 0x38,
-> > +                         0x0C, 0x00, 0x03, 0x00, 0x00, 0x00, 0x0C, 0x00,
-> > +                         0x03, 0x00, 0x00, 0x00, 0x75, 0x75, 0x31, 0x88,
-> > +                         0x88, 0x88, 0x88, 0x88, 0x88, 0x13, 0x88, 0x64,
-> > +                         0x64, 0x20, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
-> > +                         0x02, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
-> > +       dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP2,
-> > +                         0x02, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +                         0x00, 0x00, 0x00, 0x00, 0x02, 0x46, 0x02, 0x88,
-> > +                         0x88, 0x88, 0x88, 0x88, 0x88, 0x64, 0x88, 0x13,
-> > +                         0x57, 0x13, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
-> > +                         0x75, 0x88, 0x23, 0x14, 0x00, 0x00, 0x02, 0x00,
-> > +                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > +                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0A,
-> > +                         0xA5, 0x00, 0x00, 0x00, 0x00);
-> > +       dsi_dcs_write_seq(dsi, ST7703_CMD_SETGAMMA,
-> > +                         0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41, 0x35,
-> > +                         0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12, 0x12,
-> > +                         0x18, 0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41,
-> > +                         0x35, 0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12,
-> > +                         0x12, 0x18);
-> > +       msleep(20);
-> 
-> This stuff is really hard or impossible to understand without the
-> datasheet.
-> 
-> In my previous review I wrote:
-> 
-> It appears that the Himax HX8363 is using the same display controller
-> if you look at the datasheet:
-> http://www.datasheet-pdf.com/PDF/HX8369-A-Datasheet-Himax-729024
-> There you find an explanation to some of the commands.
+> So why to keep it in the kernel tree?
 
-It is st7703, and we have a fairly complete datasheet available
-publicly. I posted links in the cover letter.
+Answer: for the same reason it was added to the tree.
 
-> That means, try to get rid of as much of the magic bytes as you can
-> and use proper #defines. I know it takes some work but the result
-> is so much more useful and readable.
+Here's a different question: "Why remove it from the kernel tree?"
 
-I've added some descriptions from the datasheet as comments next
-to the values in v4.
+If maintaining this code is a burden, is it not the kind of tax that all 
+developers/users pay to all developers/users? Does this driver impose an 
+unreasonably high burden for some reason?
 
-Thank you and regards,
-	o.
+The growth of a maintenance burden in general has lead to the invention of 
+design patterns and tooling to minize it. So a good argument for removal 
+would describe the nature of the problem, because some driver deficiencies 
+can be fixed automatically, and some tooling deficiencies can compound an 
+otherwise insignificant or common driver deficiency.
 
-> Further I wrote:
-> 
-> You should definately insert code to read the MTP bytes:
-> 0xDA manufacturer
-> 0xDB driver version
-> 0xDC LCD module/driver
-> And print these, se e.g. my newly added NT35510 driver or
-> the Sony ACX424AKP driver.
-> 
-> So please do that.
-> 
-> Yours,
-> Linus Walleij
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/CACRpkdZpiQ7E_v-Gfk6vFcUEiMazvixYaL0ksKeP%3DTq3O6Fh%3DQ%40mail.gmail.com.
+There are spin-off benefits from legacy code besides process improvements. 
+Building and testing this sort of code has regularly revealed erroneous 
+corner cases in commits elsewhere like API changes and refactoring.
+
+Also, legacy code is used by new developers get experience in code 
+modernization. And it provides more training material for neural networks 
+that need to be taught to recognize patches that raise quality.
+
+Ten or twenty years ago, I doubt that anyone predicted these (and other) 
+spin-off benefits. If we can't predict the benefit, how will we project 
+the cost, and use that to justify deletion?
+
+Please see also,
+http://www.mac.linux-m68k.org/docs/obsolete.php
