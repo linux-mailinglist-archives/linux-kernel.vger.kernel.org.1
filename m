@@ -2,130 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C80C1FD21C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C9D1FD213
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Jun 2020 18:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgFQQ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 12:27:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52616 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727003AbgFQQ0R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:26:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592411173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1M9WvivRzg/UUgjnxURfzGnX8qHpGKU/oDf/OOqkscI=;
-        b=C3DuAi5xowUFEZZmlGJkuA7ds+Hbd6Q2N5GW6kVi8ulIL5wB3ESS9F1RQv9OGimU3Ax0cU
-        bKcyyrVuqQWTZr/9llXywC/NWLMsJamm2h0uED2ZHzTV01K75/h1BZwAl/lHxjIqosLjJ7
-        tjg6P1Oo9rXDO8KtlBV3KlHZSaTa690=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-MD4jdINdOpqw1fg6BVfzbQ-1; Wed, 17 Jun 2020 12:26:12 -0400
-X-MC-Unique: MD4jdINdOpqw1fg6BVfzbQ-1
-Received: by mail-qk1-f199.google.com with SMTP id l6so2228801qkk.14
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 09:26:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1M9WvivRzg/UUgjnxURfzGnX8qHpGKU/oDf/OOqkscI=;
-        b=R/5fBAa5tQq8tK0G54tjB2imGWdKVFg9Q3Ze6mdt+9qJssb1axBoMex3frq3JMWu10
-         ojxVidy+dz5PPNDyM9VvYlZxdIJX/YzIOSl9H/4IriZxo7VNc5WD/gSpJ5B91nYux0il
-         lN1riXosxlGdGJOMhs5S+SXBeuYp8u0tgKXtqYXHZiZXNB7QcHNbzhJy64OPkatAbzOW
-         /EmGZx0wm49E+eibtM2Z1zIlwZaiR7OghHFEqJybTW9ro7wz9bxyVbLt/Td7Xpa9DMDM
-         1Vd5byV3vut77VFr6FVx126a9xZH0bH5Zskqa8DP4hWjBigEbVeZzOkCaSzQmNLrZxOs
-         ZrqA==
-X-Gm-Message-State: AOAM533IwyWCxET7smR07i1tMzFVlVQOecirvsCZ32dK6Jkq882YkYki
-        iVkeRMQn89Awtglf4BeEn8e4euUjlwtJilfFFCyYhWt0UhPnctttSPID5NFC+p04PPvzuIfEa7/
-        T+1eh30fp8qzBsRPV8k2Y8/ER
-X-Received: by 2002:a0c:8145:: with SMTP id 63mr7951246qvc.60.1592411170977;
-        Wed, 17 Jun 2020 09:26:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz5WMjBE13VUb/JibHYqb8P3sJF0YbvsjnO7AsWjJWN8INO9NeIPMzvOcqYNy8ozdjAcpcqxA==
-X-Received: by 2002:a0c:8145:: with SMTP id 63mr7951232qvc.60.1592411170743;
-        Wed, 17 Jun 2020 09:26:10 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id t188sm393624qka.27.2020.06.17.09.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 09:26:10 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 12:26:08 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 02/25] mm: Introduce mm_fault_accounting()
-Message-ID: <20200617162608.GF76766@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615221607.7764-3-peterx@redhat.com>
- <CAHk-=wh3KYWKMPWYcyu9c-UPAwCXMcN86Wr5xyivCumWxEi7AQ@mail.gmail.com>
- <20200615231917.GA6307@xz-x1>
- <20200616120037.e96d8d9b42e615f3b8da222f@linux-foundation.org>
+        id S1727830AbgFQQ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 12:27:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42841 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727809AbgFQQ1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 12:27:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592411221; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=3kphDNNgXxmWAV6mi4fI4VHOf8JSRgD1IIPPeGHUYd0=; b=CGrdoipD4l5+jDym+0KJP0wdvXAM+GolgvwPXejH1aNVfFAUAqnfi/CjBYEC/9JTZWkL6Xle
+ slE048rL6WoVGJgNjXseKqjsILvB/2LSgLs7lYOYjAac2+TTs19jvY1WxdBBCZqTx0H2EfB1
+ yXF3nfZoMTRi7rpgPOEonFu1eQ0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-east-1.postgun.com with SMTP id
+ 5eea4448c4bb4f886d9c2702 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Jun 2020 16:26:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A68CC4339C; Wed, 17 Jun 2020 16:26:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.50.9.163] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rbokka)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 315E0C433AD;
+        Wed, 17 Jun 2020 16:26:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 315E0C433AD
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rbokka@codeaurora.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: nvmem: qfprom: Convert to yaml
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     dhavalp@codeaurora.org, mturney@codeaurora.org,
+        rnayak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        saiprakash.ranjan@codeaurora.org, sparate@codeaurora.org,
+        mkurumel@codeaurora.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200617145116.247432-1-dianders@chromium.org>
+ <20200617074930.v3.1.Iea2704ec2cb40c00eca47781c310a6330ac5dd41@changeid>
+ <ed6d22a1-0d38-9874-d5cc-efe39f360baa@linaro.org>
+From:   "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
+Message-ID: <0181cfe3-6627-e599-8f2f-1f433d9e0596@codeaurora.org>
+Date:   Wed, 17 Jun 2020 21:56:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200616120037.e96d8d9b42e615f3b8da222f@linux-foundation.org>
+In-Reply-To: <ed6d22a1-0d38-9874-d5cc-efe39f360baa@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 12:00:37PM -0700, Andrew Morton wrote:
-> On Mon, 15 Jun 2020 19:19:17 -0400 Peter Xu <peterx@redhat.com> wrote:
-> 
-> > On Mon, Jun 15, 2020 at 03:32:40PM -0700, Linus Torvalds wrote:
-> > > On Mon, Jun 15, 2020 at 3:16 PM Peter Xu <peterx@redhat.com> wrote:
-> > > >
-> > > > Provide this helper for doing memory page fault accounting across archs.  It
-> > > > can be defined unconditionally because perf_sw_event() is always defined, and
-> > > > perf_sw_event() will be a no-op if !CONFIG_PERF_EVENTS.
-> > > 
-> > > Well, the downside is that now it forces a separate I$ miss and all
-> > > those extra arguments because it's a out-of-line function and the
-> > > compiler won't see that they all go away.
-> > > 
-> > > Yeah, maybe some day maybe we'll have LTO and these kinds of things
-> > > will not matter. And maybe they already don't. But it seems kind of
-> > > sad to basically force non-optimal code generation from this series.
-> > 
-> > I tried to make it static inline firstly in linux/mm.h, however it'll need to
-> > have linux/mm.h include linux/perf_event.h which seems to have created a loop
-> > dependency of headers.  I verified current code will at least generate inlined
-> > functions too for x86 (no mm_fault_accounting() in "objdump -t vmlinux") with
-> > gcc10.
-> > 
-> > Another alternative is to make it a macro, it's just that I feel the function
-> > definition is a bit cleaner.  Any further suggestions welcomed too.
-> 
-> Could create a new header file mm_fault.h which includes mm.h and
-> perf_event.h.  A later cleanup could move other fault-related things
-> into that header and add the appropriate inclusions into files which
-> use these things.
-> 
-> btw, I think mm_account_fault() might be a better name for this function.
-> 
-> And some (kerneldoc) documentation would be nice.  Although this
-> function is pretty self-evident.
-> 
-> > > 
-> > > Why would you export the symbol, btw? Page fault handling is never a module.
-> > 
-> > I followed handle_mm_fault() which is exported too, since potentially
-> > mm_fault_accounting() should always be called in the same context of
-> > handle_mm_fault().  Or do you prefer me to drop it?
-> 
-> Let's not add an unneeded export.  If someone for some reason needs it
-> later, it can be added then.
 
-I plan to take the approach that Linus suggested, probably with
-mm_account_fault() declared as static inline in memory.c.  I'll remember to add
-some kerneldoc too.
 
-Thanks!
+On 6/17/2020 8:48 PM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 17/06/2020 15:51, Douglas Anderson wrote:
+>> From: Ravi Kumar Bokka <rbokka@codeaurora.org>
+>>
+>> This switches the bindings over from txt to yaml.
+>>
+>> Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>> ---
+>>
+>> Changes in v3:
+>> - Split conversion to yaml into separate patch new in v3.
+>> - Use 'const' for compatible instead of a 1-entry enum.
+>> - Changed filename to match compatible string.
+>> - Add #address-cells and #size-cells to list of properties.
+>> - Fixed up example.
+>>
+>>   .../bindings/nvmem/qcom,qfprom.yaml           | 45 +++++++++++++++++++
+>>   .../devicetree/bindings/nvmem/qfprom.txt      | 35 ---------------
+>>   2 files changed, 45 insertions(+), 35 deletions(-)
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+>>   delete mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml 
+>> b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+>> new file mode 100644
+>> index 000000000000..5efa5e7c4d81
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+>> @@ -0,0 +1,45 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/nvmem/qcom,qfprom.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Technologies Inc, QFPROM Efuse bindings
+>> +
+>> +maintainers:
+>> +  - Ravi Kumar Bokka <rbokka@codeaurora.org>
+>> +
+> 
+> Am not sure this was intentional, but the old maintainer name is totally 
+> lost in this patch!
+> 
+> Please fix this!
+> 
+
+Hi Srinivas,
+The existed qfprom dt-bindings in .txt format.
+I will make it as it is to merge whole content in .yaml format once 
+confirm all the parameters with this new driver changes.
+
+> 
+> 
+>> +allOf:
+>> +  - $ref: "nvmem.yaml#"
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: qcom,qfprom
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: The corrected region.
+>> +
+>> +  # Needed if any child nodes are present.
+>> +  "#address-cells":
+>> +    const: 1
+>> +  "#size-cells":
+>> +    const: 1
+>> +
+>> +required:
+>> +   - compatible
+>> +   - reg
+>> +
+>> +examples:
+>> +  - |
+>> +    efuse@784000 {
+>> +      compatible = "qcom,qfprom";
+>> +      reg = <0 0x00784000 0 0x8ff>;
+>> +      #address-cells = <1>;
+>> +      #size-cells = <1>;
+>> +
+>> +      hstx-trim-primary@1eb {
+>> +        reg = <0x1eb 0x1>;
+>> +        bits = <1 4>;
+>> +      };
+>> +    };
+>> diff --git a/Documentation/devicetree/bindings/nvmem/qfprom.txt 
+>> b/Documentation/devicetree/bindings/nvmem/qfprom.txt
+>> deleted file mode 100644
+>> index 26fe878d5c86..000000000000
+>> --- a/Documentation/devicetree/bindings/nvmem/qfprom.txt
+>> +++ /dev/null
+>> @@ -1,35 +0,0 @@
+>> -= Qualcomm QFPROM device tree bindings =
+>> -
+>> -This binding is intended to represent QFPROM which is found in most 
+>> QCOM SOCs.
+>> -
+>> -Required properties:
+>> -- compatible: should be "qcom,qfprom"
+>> -- reg: Should contain registers location and length
+>> -
+>> -= Data cells =
+>> -Are child nodes of qfprom, bindings of which as described in
+>> -bindings/nvmem/nvmem.txt
+>> -
+>> -Example:
+>> -
+>> -    qfprom: qfprom@700000 {
+>> -        compatible     = "qcom,qfprom";
+>> -        reg        = <0x00700000 0x8000>;
+>> -        ...
+>> -        /* Data cells */
+>> -        tsens_calibration: calib@404 {
+>> -            reg = <0x4404 0x10>;
+>> -        };
+>> -    };
+>> -
+>> -
+>> -= Data consumers =
+>> -Are device nodes which consume nvmem data cells.
+>> -
+>> -For example:
+>> -
+>> -    tsens {
+>> -        ...
+>> -        nvmem-cells = <&tsens_calibration>;
+>> -        nvmem-cell-names = "calibration";
+>> -    };
+>>
 
 -- 
-Peter Xu
-
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by the Linux Foundation.
