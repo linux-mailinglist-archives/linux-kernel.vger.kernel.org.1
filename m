@@ -2,87 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF3C1FF426
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29811FF42C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbgFROD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:03:58 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41074 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730294AbgFRODz (ORCPT
+        id S1730317AbgFROGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgFROGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:03:55 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 10so2829147pfx.8;
-        Thu, 18 Jun 2020 07:03:55 -0700 (PDT)
+        Thu, 18 Jun 2020 10:06:22 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A369C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:06:20 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id e2so2790955qvw.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lVMlOdIyNxLzGMiXNj2N9UYux15sD/EtwgLiUczR68=;
+        b=SWNQqCthtE9g0sq3+vBFx/xnVnQdfhX2FgyyrH2jWJFlJQyuF0LHukWNOzeQjqQ3jc
+         PoK+nLYaILrXuAC7q5eN4U3mUZlz4Bs1QVX//qlaGU/HtbJPqnAvKeirLKJaGwqnaZ9g
+         zRFEbsVSkyv25KzZcI8BjMF2pHWeyIiss/pGdAH4kNuMj3SGwOQ/hzLWycs2mrtOBrFe
+         rNBKLYC6lBsASbw/Ah4WJXp7FlfNtL0oWTJVLFE4fLeDLi67BbtXF8gsOEv9zt9WmtA4
+         Coh6Rnb5LShAGWr4w4oAgYyJcFnaCLCArUqpTK2RN8JCTanKl2KCVMcA80t4dqbOynyu
+         4FZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1WN3ZnREZD5mqi8HO9H+H34Iu3eMNBHfeSJB4E/zR+M=;
-        b=dQAvWbzQ0azWoU0hn8ksocV8vqrPCfJh0DuOlWUvM2DyoCXeFrVBtE5k8aGHvnHfZO
-         2ZC08y+8tW3OEZNNdFKPv26RknJCbyUjz3D1AEd1m+ugrwHI7/C48CHFKt/wgr7ZNG+f
-         rMOApomfJV1UfrcBoXpFYyW06vbyHkMTjXzSPyyRFWxldcn1oVY8xWeTuxRnYu2UTi8A
-         wR9Ri1wD3GmiRq30z1PHlzrKL3u7Hb6EEk9JJcOnc9kb/oP6aQRLlSLUZ7/UgPfGbCqu
-         OYDUvlLbSzNsSyDWlKNmVgh3Igclrl8cA2+jvCmcs4OM7h/QVy9dkNOwF/+nL4kT5iqo
-         eqFg==
-X-Gm-Message-State: AOAM532sURYNj2uxBbhZc5Oa4rA1NJElXa3piQd/+vlzdwuaZPO8wj+q
-        kVrrfunjxMQKmUlpGVXqfB4vexTF
-X-Google-Smtp-Source: ABdhPJzbhwbwQOEUu3YJw6YezVA/RUpvZiw+gzIegGMyl/FadwacdffeWBUE8cH6Ocg4N6Sg/YgkoQ==
-X-Received: by 2002:a63:5406:: with SMTP id i6mr3323164pgb.155.1592489034924;
-        Thu, 18 Jun 2020 07:03:54 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id h9sm2537716pjs.50.2020.06.18.07.03.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 07:03:54 -0700 (PDT)
-Subject: Re: [PATCH v3] IB/srpt: Remove WARN_ON from srpt_cm_req_recv
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20200617140803.181333-1-jingxiangfeng@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <3d0354bc-e859-740a-f2d8-362604377f86@acm.org>
-Date:   Thu, 18 Jun 2020 07:03:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lVMlOdIyNxLzGMiXNj2N9UYux15sD/EtwgLiUczR68=;
+        b=qL8elAbvpTJ0muYCu18JItlJsc8I95nk8mQB2UONfi4F9PSYppFen7LMPtAEzGctYa
+         3zxDHfyvA68yLIyG87XTIb8fB3Fg2CEeBlxDASEp0nx5LjJQJ7lVFByNv2xqLDknVZv+
+         KEoaWY8jlL7yii5Sdr2rSkSWkuH9OhlXtzxEvpq3ueKERIXO37ojgu8Wq6Z/ESOrdNAe
+         o4T0B/htQDug+m1VUgurhKqiPksie5saHuaxResqM8a3we4dC6pDQpw6daRok700Q7cu
+         NkG1rFdYZR7HA6VjjB2kO9vsjPkc6eJr1eBjXcjJZpvPDK7sx5td3IASAjEm/WEyVs/I
+         YrUg==
+X-Gm-Message-State: AOAM533PzzT/8+xDYAvnw7Kp9gxLtC0+V2p5nO18rsYF+sEPqjMAVEyE
+        CgUsiMqa2rWTjtbzit4Z0Lu4Pw==
+X-Google-Smtp-Source: ABdhPJySXdwj3CLQ0yEHHLQIIJimTYgUOu6BXtPn4akRwatVE26vzbLMCKx03UNsHAutW7tfTuBTdA==
+X-Received: by 2002:a05:6214:178e:: with SMTP id ct14mr3860484qvb.73.1592489179664;
+        Thu, 18 Jun 2020 07:06:19 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id d140sm3005219qkc.22.2020.06.18.07.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 07:06:19 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com
+Cc:     skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        keescook@chromium.org, linux@rasmusvillemoes.dk,
+        davidgow@google.com
+Subject: [PATCH v2] lib: overflow-test: add KUnit test of check_*_overflow functions
+Date:   Thu, 18 Jun 2020 11:06:15 -0300
+Message-Id: <20200618140615.135606-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200617140803.181333-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-17 07:08, Jing Xiangfeng wrote:
-> The callers pass the pointer '&req' or 'private_data' to
-> srpt_cm_req_recv(), and 'private_data' is initialized in srp_send_req().
-> 'sdev' is allocated and stored in srpt_add_one(). It's easy to show that
-> sdev and req are always valid. So we remove unnecessary WARN_ON.
+This adds the conversion of the runtime tests of check_*_overflow functions,
+from `lib/test_overflow.c`to KUnit tests.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+The log similar to the one seen in dmesg running test_overflow.c can be
+seen in `test.log`.
+
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+v2:
+  * moved lib/test_overflow.c to lib/overflow-test.c; 
+    * back to original license;
+    * fixed style code;
+    * keeps __initconst and added _refdata on overflow_test_cases variable;
+    * keeps macros intact making asserts with the variable err;
+    * removed duplicate test_s8_overflow();
+  * fixed typos on commit message;
+---
+ lib/Kconfig.debug                        | 20 +++++++--
+ lib/Makefile                             |  2 +-
+ lib/{test_overflow.c => overflow-test.c} | 54 +++++++++---------------
+ 3 files changed, 38 insertions(+), 38 deletions(-)
+ rename lib/{test_overflow.c => overflow-test.c} (96%)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index d74ac0fd6b2d..fb8a3955e969 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2000,9 +2000,6 @@ config TEST_UUID
+ config TEST_XARRAY
+ 	tristate "Test the XArray code at runtime"
+ 
+-config TEST_OVERFLOW
+-	tristate "Test check_*_overflow() functions at runtime"
+-
+ config TEST_RHASHTABLE
+ 	tristate "Perform selftest on resizable hash table"
+ 	help
+@@ -2155,6 +2152,23 @@ config SYSCTL_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config OVERFLOW_KUNIT_TEST
++	tristate "KUnit test for overflow" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  This builds the overflow KUnit tests.
++
++	  KUnit tests run during boot and output the results to the debug log
++	  in TAP format (http://testanything.org/). Only useful for kernel devs
++	  running KUnit test harness and are not for inclusion into a production
++	  build.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config LIST_KUNIT_TEST
+ 	tristate "KUnit Test for Kernel Linked-list structures" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/lib/Makefile b/lib/Makefile
+index b1c42c10073b..3b725c9f92d4 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -75,7 +75,6 @@ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+ obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+ obj-$(CONFIG_TEST_LKM) += test_module.o
+ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+-obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+ obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
+ obj-$(CONFIG_TEST_SORT) += test_sort.o
+ obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+@@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+ # KUnit tests
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
++obj-$(CONFIG_OVERFLOW_KUNIT_TEST) += overflow-test.o
+diff --git a/lib/test_overflow.c b/lib/overflow-test.c
+similarity index 96%
+rename from lib/test_overflow.c
+rename to lib/overflow-test.c
+index 7a4b6f6c5473..d40ef06b1ade 100644
+--- a/lib/test_overflow.c
++++ b/lib/overflow-test.c
+@@ -4,14 +4,11 @@
+  */
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <kunit/test.h>
+ #include <linux/device.h>
+ #include <linux/init.h>
+-#include <linux/kernel.h>
+ #include <linux/mm.h>
+-#include <linux/module.h>
+ #include <linux/overflow.h>
+-#include <linux/slab.h>
+-#include <linux/types.h>
+ #include <linux/vmalloc.h>
+ 
+ #define DEFINE_TEST_ARRAY(t)			\
+@@ -270,7 +267,7 @@ DEFINE_TEST_FUNC(u64, "%llu");
+ DEFINE_TEST_FUNC(s64, "%lld");
+ #endif
+ 
+-static int __init test_overflow_calculation(void)
++static void __init overflow_calculation_test(struct kunit *test)
+ {
+ 	int err = 0;
+ 
+@@ -285,10 +282,10 @@ static int __init test_overflow_calculation(void)
+ 	err |= test_s64_overflow();
+ #endif
+ 
+-	return err;
++	KUNIT_EXPECT_FALSE(test, err);
+ }
+ 
+-static int __init test_overflow_shift(void)
++static void __init overflow_shift_test(struct kunit *test)
+ {
+ 	int err = 0;
+ 
+@@ -479,7 +476,7 @@ static int __init test_overflow_shift(void)
+ 	err |= TEST_ONE_SHIFT(0, 31, s32, 0, false);
+ 	err |= TEST_ONE_SHIFT(0, 63, s64, 0, false);
+ 
+-	return err;
++	KUNIT_EXPECT_FALSE(test, err);
+ }
+ 
+ /*
+@@ -555,7 +552,7 @@ DEFINE_TEST_ALLOC(kvzalloc_node, kvfree,     0, 1, 1);
+ DEFINE_TEST_ALLOC(devm_kmalloc,  devm_kfree, 1, 1, 0);
+ DEFINE_TEST_ALLOC(devm_kzalloc,  devm_kfree, 1, 1, 0);
+ 
+-static int __init test_overflow_allocation(void)
++static void __init overflow_allocation_test(struct kunit *test)
+ {
+ 	const char device_name[] = "overflow-test";
+ 	struct device *dev;
+@@ -563,10 +560,8 @@ static int __init test_overflow_allocation(void)
+ 
+ 	/* Create dummy device for devm_kmalloc()-family tests. */
+ 	dev = root_device_register(device_name);
+-	if (IS_ERR(dev)) {
+-		pr_warn("Cannot register test device\n");
+-		return 1;
+-	}
++	if (IS_ERR(dev))
++		kunit_warn(test, "Cannot register test device\n");
+ 
+ 	err |= test_kmalloc(NULL);
+ 	err |= test_kmalloc_node(NULL);
+@@ -585,30 +580,21 @@ static int __init test_overflow_allocation(void)
+ 
+ 	device_unregister(dev);
+ 
+-	return err;
++	KUNIT_EXPECT_FALSE(test, err);
+ }
+ 
+-static int __init test_module_init(void)
+-{
+-	int err = 0;
+-
+-	err |= test_overflow_calculation();
+-	err |= test_overflow_shift();
+-	err |= test_overflow_allocation();
+-
+-	if (err) {
+-		pr_warn("FAIL!\n");
+-		err = -EINVAL;
+-	} else {
+-		pr_info("all tests passed\n");
+-	}
++static struct kunit_case __refdata overflow_test_cases[] = {
++	KUNIT_CASE(overflow_calculation_test),
++	KUNIT_CASE(overflow_shift_test),
++	KUNIT_CASE(overflow_allocation_test),
++	{}
++};
+ 
+-	return err;
+-}
++static struct kunit_suite overflow_test_suite = {
++	.name = "overflow",
++	.test_cases = overflow_test_cases,
++};
+ 
+-static void __exit test_module_exit(void)
+-{ }
++kunit_test_suites(&overflow_test_suite);
+ 
+-module_init(test_module_init);
+-module_exit(test_module_exit);
+ MODULE_LICENSE("Dual MIT/GPL");
+
+base-commit: 7bf200b3a4ac10b1b0376c70b8c66ed39eae7cdd
+prerequisite-patch-id: e827b6b22f950b9f69620805a04e4a264cf4cc6a
+-- 
+2.26.2
+
