@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29811FF42C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A70E1FF434
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgFROGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        id S1730526AbgFROIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgFROGW (ORCPT
+        with ESMTP id S1730518AbgFROIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:06:22 -0400
+        Thu, 18 Jun 2020 10:08:22 -0400
 Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A369C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:06:20 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id e2so2790955qvw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:06:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F49C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:08:19 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id p15so2786514qvr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:08:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=massaru-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9lVMlOdIyNxLzGMiXNj2N9UYux15sD/EtwgLiUczR68=;
-        b=SWNQqCthtE9g0sq3+vBFx/xnVnQdfhX2FgyyrH2jWJFlJQyuF0LHukWNOzeQjqQ3jc
-         PoK+nLYaILrXuAC7q5eN4U3mUZlz4Bs1QVX//qlaGU/HtbJPqnAvKeirLKJaGwqnaZ9g
-         zRFEbsVSkyv25KzZcI8BjMF2pHWeyIiss/pGdAH4kNuMj3SGwOQ/hzLWycs2mrtOBrFe
-         rNBKLYC6lBsASbw/Ah4WJXp7FlfNtL0oWTJVLFE4fLeDLi67BbtXF8gsOEv9zt9WmtA4
-         Coh6Rnb5LShAGWr4w4oAgYyJcFnaCLCArUqpTK2RN8JCTanKl2KCVMcA80t4dqbOynyu
-         4FZA==
+        bh=JXLha1RTWIXF0lXAQyqwuY9PTZXuY44UcKST+Lha3uU=;
+        b=jZD6g78RTmAlMpmUep1/NUJSNYHP2pvki450PEIkzl1gcw8BRYivlYnueRKbdtrbkf
+         YCGy/hMZLtFiYCu3SE2ZNh4JgQ6c4IWZvLkni3dnYJ8FNXTdwIpojX3UMN5Cymmw83Rr
+         zGe1b4uEwgUOp5OT3dcDCnZnDIwZNEckpzsIG07LYQQj85V6bInFHWYa2/rTR0YTqy5m
+         4lNj0B98GglCyptnw7I8/VmqgNIqAkW6+XoyRgK3tS1qJ69sniBD+EvdUPtWbWDBzqKw
+         bNJqup1MXc7weoLPQ5Fe6OSeGGzctvCFXmA0CNwNejYwJ3CiwYLHsGRw96bJ2aZlIyUh
+         kC7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9lVMlOdIyNxLzGMiXNj2N9UYux15sD/EtwgLiUczR68=;
-        b=qL8elAbvpTJ0muYCu18JItlJsc8I95nk8mQB2UONfi4F9PSYppFen7LMPtAEzGctYa
-         3zxDHfyvA68yLIyG87XTIb8fB3Fg2CEeBlxDASEp0nx5LjJQJ7lVFByNv2xqLDknVZv+
-         KEoaWY8jlL7yii5Sdr2rSkSWkuH9OhlXtzxEvpq3ueKERIXO37ojgu8Wq6Z/ESOrdNAe
-         o4T0B/htQDug+m1VUgurhKqiPksie5saHuaxResqM8a3we4dC6pDQpw6daRok700Q7cu
-         NkG1rFdYZR7HA6VjjB2kO9vsjPkc6eJr1eBjXcjJZpvPDK7sx5td3IASAjEm/WEyVs/I
-         YrUg==
-X-Gm-Message-State: AOAM533PzzT/8+xDYAvnw7Kp9gxLtC0+V2p5nO18rsYF+sEPqjMAVEyE
-        CgUsiMqa2rWTjtbzit4Z0Lu4Pw==
-X-Google-Smtp-Source: ABdhPJySXdwj3CLQ0yEHHLQIIJimTYgUOu6BXtPn4akRwatVE26vzbLMCKx03UNsHAutW7tfTuBTdA==
-X-Received: by 2002:a05:6214:178e:: with SMTP id ct14mr3860484qvb.73.1592489179664;
-        Thu, 18 Jun 2020 07:06:19 -0700 (PDT)
+        bh=JXLha1RTWIXF0lXAQyqwuY9PTZXuY44UcKST+Lha3uU=;
+        b=dZaJPQugEfTL1ldxZ0TbwxjmyYi7hKuKkcfc1blcwd3xzgn12XD5Jpx8fz/ZX3wlqg
+         tH38Imrf81WZ/3/9vLe7rDlXcFqBT+N+bJSNVDyMtN0yMEZP7z5/TZLDKGGjCsPFXIdB
+         MaAzqlbkt0Huvn0HUzTuw021D/LYKUzAKKEaUVq5au+AR/L1X7N/XC2MWIkVMdo8kKRh
+         ywH4zZ2B4Ay9Gn6bypHe3B4C05s1tErQN2MbYxBpGo6UCkFwzJWbq9quKyKSjBprlnmA
+         C4PgvXZnRyS9f0ZOa1LiC1HYG8gLig+D9zp67rDdGkVfD5NS+wxgokNbXlwrWweUz2K7
+         DMXA==
+X-Gm-Message-State: AOAM531A6Q543lA1p5yqn7aeEFvpUiTNI95ndy3lqtod4/Kp44cxuZO7
+        sztXz1eRVWj+p2PUVkc/3Flg4WPSRZ62A144
+X-Google-Smtp-Source: ABdhPJwFjA1N4L0WlyH0BXXtioLH2Ruv/9nDhNrLkpccWCX1TF4LkSOvfdixWAAKSKLWoYtUHZba5g==
+X-Received: by 2002:a05:6214:11f0:: with SMTP id e16mr3780913qvu.37.1592489298846;
+        Thu, 18 Jun 2020 07:08:18 -0700 (PDT)
 Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
-        by smtp.gmail.com with ESMTPSA id d140sm3005219qkc.22.2020.06.18.07.06.17
+        by smtp.gmail.com with ESMTPSA id a1sm2929823qkn.87.2020.06.18.07.08.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 07:06:19 -0700 (PDT)
+        Thu, 18 Jun 2020 07:08:18 -0700 (PDT)
 From:   Vitor Massaru Iha <vitor@massaru.org>
 To:     kunit-dev@googlegroups.com
 Cc:     skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         keescook@chromium.org, linux@rasmusvillemoes.dk,
         davidgow@google.com
-Subject: [PATCH v2] lib: overflow-test: add KUnit test of check_*_overflow functions
-Date:   Thu, 18 Jun 2020 11:06:15 -0300
-Message-Id: <20200618140615.135606-1-vitor@massaru.org>
+Subject: [RESEND, PATCH v2] lib: overflow-test: add KUnit test of check_*_overflow functions
+Date:   Thu, 18 Jun 2020 11:08:14 -0300
+Message-Id: <20200618140814.135948-1-vitor@massaru.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,6 +73,7 @@ The log similar to the one seen in dmesg running test_overflow.c can be
 seen in `test.log`.
 
 Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+Tested-by: David Gow <davidgow@google.com>
 ---
 v2:
   * moved lib/test_overflow.c to lib/overflow-test.c; 
