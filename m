@@ -2,98 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E81FE340
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E111FE469
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732731AbgFRCHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730699AbgFRBWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:22:16 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14599221F0;
-        Thu, 18 Jun 2020 01:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443335;
-        bh=84CiTjOmC6L1iB5HAl8uSFlVjOWCYawhCLhEijI3Jpk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8pE7w4gwpKdS7XbVZOaKNOnLQJMRYQAJGcol5219RrH4UcNFwZtq2Mscu9xhIZMH
-         mpUzpVnk19jOpsd+CoUuYBTKmzOqqWoLhuD/adIAOSStC/XCSaXC8dSSat5rq2zRt6
-         zfdJof+FtRMh93bNg8YV1HERA1NRDjKXGHxzkXCM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrey Ignatov <rdna@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 266/266] bpf: Fix memlock accounting for sock_hash
-Date:   Wed, 17 Jun 2020 21:16:31 -0400
-Message-Id: <20200618011631.604574-266-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
-References: <20200618011631.604574-1-sashal@kernel.org>
+        id S1731783AbgFRCSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:18:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6818 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730205AbgFRBTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:19:51 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05I1JahM023901;
+        Wed, 17 Jun 2020 18:19:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=wcx8YVBZHU75QQNWCyUI4ONPrV3RM4j1rlti8vgFFL8=;
+ b=DlkF8jyPuH56kSaY53k4g/MgCFdf+lY9tXyoodbuNOd9p90j6b/GRaL45GbDuwyzkFSE
+ Bq1JXSquQL3Muj1X59BMHG8PZ76vukOCDuNEHl6s53tOUog32V8IFMIOEfeUqqelB/CC
+ oXA0D8xqWKN78koX4NjmG9VC7MCKIl4zywA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31q644hkqp-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 17 Jun 2020 18:19:37 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Jun 2020 18:19:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ihOmv1LGb2z2KJIdD+H2OZvPLXtTJijzgFphM035e6iRriq78guqaO/TZziMFjoshQV9LmKKv7deO99Ky6ltExtGW9Lmt9xr61uTcInSzjhP5SrpgRTX7C2uXIr/LXdjlccVndYGpxD1kwuW2Ni69dEdkhFAbkTbk5vrEfezzZPdln6xufdF2lO0xJY3Vv3T5EiIwfcsZ/L/JU8e6bYKrgCrSZ/JgBXl1tQU0lv1Ln4hZYL6f5YBTrtrLtrQ/+EntUODB26nnjgAal7sSXtjiMSaxU0R6oAPrJNr7PkBVJf9dxreRhAoVnBjtr0mkvcwKVFqA8sJvkmo4Ov0fMhiUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wcx8YVBZHU75QQNWCyUI4ONPrV3RM4j1rlti8vgFFL8=;
+ b=RRljhxp3sQqCKgjFIbA0hzYR7QoBWObDwtB2bw8HcidPIPL0XsY+aqU2DLKdT4hg2twpMrS4Gb8ivW/Mfil2ferJNIvkvOBkzxrHNNneNNvZJV8yQG/y7x6G08n9hRr54l1KVYSii30KnYhgh9S7Iua5wrDVZAscKW6KIod0NWrxihcwyvSrgfsHnwhZTofanobwxVBP85NZN8dDaTOZdxBMH3CdouY8EblYTQDKWDKe9ulvcUtxlsxGQ/3d96JfJjwePTaW8HHwVSrgOwQ+C/10Zi6Db+z6JxJZ1NNRotKNVqjoCvgwGX1kGoW0cMuN7IsTXwrRIUF3+8AkQcrEsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wcx8YVBZHU75QQNWCyUI4ONPrV3RM4j1rlti8vgFFL8=;
+ b=YyiuqBUAFQZbx8daxKUEzV9DzREfYTw59Tk4u8OOsOaYfJn9W7CIKKAFDRvxWkKcCqGgbWa+Z4ebQvIZnOQhbxQN5LPGQWL0/42qQZ76afh5pmIUamIIB/1/kpkMKNN3f1fNHnbnLIcgHPIXuCV7Csi4wsnUKoZ5cSmiGwgEim4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SN6PR15MB2397.namprd15.prod.outlook.com
+ (2603:10b6:805:1c::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Thu, 18 Jun
+ 2020 01:19:02 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::3046:2fa:5da3:73be]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::3046:2fa:5da3:73be%7]) with mapi id 15.20.3088.028; Thu, 18 Jun 2020
+ 01:19:02 +0000
+Date:   Wed, 17 Jun 2020 18:18:58 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 00/19] The new cgroup slab memory controller
+Message-ID: <20200618011858.GC24694@carbon.DHCP.thefacebook.com>
+References: <20200608230654.828134-1-guro@fb.com>
+ <CALvZod7ThL=yMwxzCLvrTtq=+Dr5ooUSX-iFP8AhiAGURByFBA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7ThL=yMwxzCLvrTtq=+Dr5ooUSX-iFP8AhiAGURByFBA@mail.gmail.com>
+X-ClientProxiedBy: BY3PR04CA0016.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::21) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:9687) by BY3PR04CA0016.namprd04.prod.outlook.com (2603:10b6:a03:217::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Thu, 18 Jun 2020 01:19:01 +0000
+X-Originating-IP: [2620:10d:c090:400::5:9687]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a16ada88-6052-41bf-40d3-08d8132595e9
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2397:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB23973B4B55E575057CAFD85BBE9B0@SN6PR15MB2397.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0438F90F17
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8zFTndWHVNNGtD9y2m0Evv0yC/XMLRqOqGiVQrTnT679IiCntvn9KJtZ9uPQik8yuAPctq6Bowh3uU0yEI4TbWzIuUpQIOj6KJ84jxM7xc+znrEBHwhKZgwU0i0+ng+MvpNWAsgu/mgY002bxKuW3lRPbvTR55mny/Tb9yX9JYSzwdLmhUyipxKiSqL8ZtCLiAFmJzyzlDGmXzSG/BhV87K9v4JeXHaIsW7KYj44C6tvKE2EbD1iXGijUYVjcimGf/4ab20Y0haLpGNrNOJ4ZLadk5DT/AAkc0WoWPle7Ji6eiisqdaI1AT8qNEMfVBLdctN905kQhgP996Rf9IcKA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(39860400002)(396003)(346002)(376002)(54906003)(2906002)(83380400001)(316002)(5660300002)(478600001)(4326008)(186003)(16526019)(86362001)(6666004)(7696005)(8676002)(52116002)(66476007)(66556008)(33656002)(66946007)(6916009)(6506007)(53546011)(4744005)(9686003)(8936002)(1076003)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: YXQPT9FQjdzZyLAL/fTffFAeV9ae3ww88rEXWnY41N0DB43YYc0NLa5UXGwObXZiTkspAvPIslfsep4tSMYXXV520hsrs2BdyqyTPVcE3Ln+VpX9BiLfpUNwkk/TYMrZXLTvuGr32h+3xvpX/cnuIAeLleB1nKXjjyiC2Bf/P+7KJSkjbFnN153UrkO+1SnCjdsDwCRx3qjMNcVteLMvjw2izddt5vCv1CrUWNnmPuJdi/dlo0K7ZL6c7QwJoFXtuJwYXm+r5JYtoqPrMzozvqyM8SuUvWotapBY1HX+RocZhMMvH7FQwp1O94+ocWgVOCl+7zov+olFUTYsAM8Y5B4Y55+6UasEtKqA3qq8lDGyoQfHuuvoPKdYtsV4ZuewQBPdnwuirqhuL2dpX7VBgXm0v1u4MQGtKIwKWEGuneRRmoMO0Ro3oTegeFk+ZvtJR/Uyr+vt2GIaUj1VNll4prk+jyrtmBxF0PZbPpUMvs2wxYPPCikwZTgs65HmiIzOA51UCuXb2gcNyrtjZcp02A==
+X-MS-Exchange-CrossTenant-Network-Message-Id: a16ada88-6052-41bf-40d3-08d8132595e9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 01:19:02.4393
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kwdRVfYvtKnaJrROtiVC5Vd+nizCR6BzkGgVXgQyaXN1vZwIX+zjRggBK7av6XyK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2397
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_12:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ cotscore=-2147483648 suspectscore=1 adultscore=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006180007
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Ignatov <rdna@fb.com>
+On Tue, Jun 16, 2020 at 06:46:56PM -0700, Shakeel Butt wrote:
+> On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > This is v6 of the slab cgroup controller rework.
+> >
+> > The patchset moves the accounting from the page level to the object
+> > level. It allows to share slab pages between memory cgroups.
+> > This leads to a significant win in the slab utilization (up to 45%)
+> > and the corresponding drop in the total kernel memory footprint.
+> 
+> Is this based on just SLUB or does this have a similar impact on SLAB as well?
 
-[ Upstream commit 60e5ca8a64bad8f3e2e20a1e57846e497361c700 ]
 
-Add missed bpf_map_charge_init() in sock_hash_alloc() and
-correspondingly bpf_map_charge_finish() on ENOMEM.
+Just got some fresh numbers on my desktop running 5.8-rc1 + slab controller v6.
+It's 8-cores Ryzen 1700 with 32 GB RAM running Fedora 32.
 
-It was found accidentally while working on unrelated selftest that
-checks "map->memory.pages > 0" is true for all map types.
+I measured the size of slab memory just after logging into the system.
 
-Before:
-	# bpftool m l
-	...
-	3692: sockhash  name m_sockhash  flags 0x0
-		key 4B  value 4B  max_entries 8  memlock 0B
+                   SLUB           SLAB
+Original:     463232 kB      312880 kB
+Patched:      194840 kB      193392 kB
+                   -58%           -38%
 
-After:
-	# bpftool m l
-	...
-	84: sockmap  name m_sockmap  flags 0x0
-		key 4B  value 4B  max_entries 8  memlock 4096B
+Plus perpcu memory usage is also a bit lower.
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200612000857.2881453-1-rdna@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/sock_map.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index b22e9f119180..6bbc118bf00e 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -837,11 +837,15 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
- 		err = -EINVAL;
- 		goto free_htab;
- 	}
-+	err = bpf_map_charge_init(&htab->map.memory, cost);
-+	if (err)
-+		goto free_htab;
- 
- 	htab->buckets = bpf_map_area_alloc(htab->buckets_num *
- 					   sizeof(struct bpf_htab_bucket),
- 					   htab->map.numa_node);
- 	if (!htab->buckets) {
-+		bpf_map_charge_finish(&htab->map.memory);
- 		err = -ENOMEM;
- 		goto free_htab;
- 	}
--- 
-2.25.1
-
+Thanks!
