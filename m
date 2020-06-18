@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930321FE324
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7671FE2CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733046AbgFRCGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
+        id S2387420AbgFRCED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730747AbgFRBW3 (ORCPT
+        with ESMTP id S1730942AbgFRBXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:22:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22188C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 18:22:28 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id n23so5211063ljh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 18:22:28 -0700 (PDT)
+        Wed, 17 Jun 2020 21:23:16 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD57BC06174E;
+        Wed, 17 Jun 2020 18:23:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id g28so4101839qkl.0;
+        Wed, 17 Jun 2020 18:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FaWvn+LzUrHwIuJUNTAyXF6UGUzwalmGorSr6oFx2Pg=;
-        b=kyiK1wNG4Lc1N0Lxuahc3vmiBcgTlXg4PJWgxJSP5mw4VmYChXwPMuSZstk/LEiGCy
-         Wqeg2Aokh4FaOjKTEVe9x30C9v7tMTr7LNZz2iCJI5Nh8Liv2/uxRsMncj7yAYUznsNT
-         rauLfl+HFjPm5dxjEnqpV8cTxuJNK0oXK6Ar/JfTFMYx+uIlN6NNeqXukmkZ99Xas6TN
-         mVDPyUvRHnviXRzZG+J/umdq7z4z4bNmn8E26TAo1DA9+9eQ8oc6GjZc6BiXb1T65MqJ
-         BPzITKaqERM550cWLj1oAJSPULjZtit035usTjlJd5F5Ugq4+q6E1JMaNhj/KaSrIGie
-         +xig==
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=BZBgHUVMyHOS5LkbKYVWmY+yNcbuO83zhN+iu0CwYNg=;
+        b=vJ0sBkcPdJNP09wXYtA7B0xFDcm40SusuxCDfIYdpPeW1mkWa366T+HPTlH5lJOQo5
+         FNw8MvINaEJ6FZNhGzqCKF0xs1JV1IQFfq9nyXuyPG3fZAQnODVefycSTDV1r+SUjNON
+         +E3Or+8cImgImGSzKxQaedsTpVV9HwcXBV8rb6+lo6l1zQlBy5FyEXS0Qr5CYYSQ+cea
+         YZgo6FOKrJSNs7tU0b9V8Q/K7gyHFKqaC17Yj++vnjUP/SxuHSsRqK/Vag+NJulLUkmU
+         cO70mV6yFp16hySaGJgAvkfaGUmHRmQb0eIpVTuedJyrE0XdT+hxK5KhStYqdevAbcnG
+         JWZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FaWvn+LzUrHwIuJUNTAyXF6UGUzwalmGorSr6oFx2Pg=;
-        b=B5WFI/qenH9buOcwZ3OO+Y3sEOUhBATe7I7ctZFVRHgBGO3hCG5oQ7eumlFMMKN4Of
-         JW1kGFC3CQj/jwEI9/wUvWChG7ry1W7MRgFkIavuVxXvZO25k593QL4JuDz8UAETtBbh
-         KP18FibJzVWen+xOe29UEZiIxL+6Aaz7yzpdKK9QCGAEmqMkC2J3e0AduoFUJ1EmoT3S
-         9kzz6ksWk2sfg8eW1f8niEPYDSs2Tcn/TSFaSxfQT5BbLSeDs/tefv+aly81uTABnP/Q
-         P9s4mgx9gkyC0h0N4wHkVbVvnzzK0Lqfj3g1r1FJR8w48Jvqp9EQQtOIr6GfBXHqA7qq
-         dz/w==
-X-Gm-Message-State: AOAM531f9k0IGvSovRZJzyHV7KCKBmIPMgnJH9dzijtgPpGemgW5aBX+
-        bXI0rsMVE3NMxtgp4FztssPFrS07SK3zOLRxJN/MPw==
-X-Google-Smtp-Source: ABdhPJwfnBt/yiNef2EujnYSVQGXdREHugwntNCW5jy9ouvVu3ePlXzbuRHAY1CGfVcxCsQcNgeKwMv/f+M6q59Bx00=
-X-Received: by 2002:a2e:9e86:: with SMTP id f6mr875898ljk.95.1592443346675;
- Wed, 17 Jun 2020 18:22:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200617220226.88948-1-luc.vanoostenryck@gmail.com>
-In-Reply-To: <20200617220226.88948-1-luc.vanoostenryck@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 18 Jun 2020 03:22:15 +0200
-Message-ID: <CANiq72nNQ+11ch7sRjLLc33s_OkftuOqgGkCDggq88tbJtdPNQ@mail.gmail.com>
-Subject: Re: [PATCH] sparse: use identifiers to define address spaces
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=BZBgHUVMyHOS5LkbKYVWmY+yNcbuO83zhN+iu0CwYNg=;
+        b=FsDpau7IhRaVHlVsipLFTGT2XGdA+vN5Jj0yBqZB9xv6XxntRcyXOhQKa9oas0N8mH
+         CXROXLiJjw/EvaBRwpm6NcpXU2Rk9FerkH23m6RUFAI/g+soihgUCiwNN6cw5cOUr/BF
+         LUSOIeTBfy5Y49AuHyza0puJLtHGC6TpvaySiml3PO/2Go4VkRWpDVyHIEaaAWHdgk+n
+         sAve680ScM8AEv3/IU/TCeV0ykaUIK8N7DkIp4A6InBgfkuoN92fNYy0tqO6afi4JPLp
+         8gD3erm1mbNEr39qqA5x4dgj3XzACQbIpMGzm25+m9DlQ8rfehWF1mKFYSGZpbJQU+ze
+         xLvQ==
+X-Gm-Message-State: AOAM533JXBJOzpoXpVR6b5yxUd+giyJISH9h83g0i70A56oj1+eyFlhC
+        bOG9Ve7ZrRyNE8F0GrVnHlQ=
+X-Google-Smtp-Source: ABdhPJwXGwPPUSeXPP8vcV1ZCnKPq9yu6Ou1HYbydddgtXmlbYDDBPg/gVGKEmGJXXQZ4nXkwrjAQg==
+X-Received: by 2002:a37:2c05:: with SMTP id s5mr1505148qkh.379.1592443396150;
+        Wed, 17 Jun 2020 18:23:16 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:9c3:b47c:c995:4853])
+        by smtp.googlemail.com with ESMTPSA id f13sm1634777qka.52.2020.06.17.18.23.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 18:23:15 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:TC subsystem),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [net/sched]: Remove redundant condition in qdisc_graft
+Date:   Wed, 17 Jun 2020 21:23:08 -0400
+Message-Id: <20200618012308.28153-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200618005526.27101-1-gaurav1086@gmail.com>
+References: <20200618005526.27101-1-gaurav1086@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luc,
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 
-On Thu, Jun 18, 2020 at 12:02 AM Luc Van Oostenryck
-<luc.vanoostenryck@gmail.com> wrote:
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 21aed0981edf..e368384445b6 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -5,20 +5,20 @@
->  #ifndef __ASSEMBLY__
->
->  #ifdef __CHECKER__
-> -# define __user                __attribute__((noderef, address_space(1)))
->  # define __kernel      __attribute__((address_space(0)))
-> +# define __user                __attribute__((noderef, address_space(__user)))
+Fix build errors
 
-I guess `__kernel` moves to the first place since it uses the first
-address space?
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ net/sched/sch_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index 9a3449b56bd6..be93ebcdb18d 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -1094,7 +1094,7 @@ static int qdisc_graft(struct net_device *dev, struct Qdisc *parent,
+ 
+ 		/* Only support running class lockless if parent is lockless */
+ 		if (new && (new->flags & TCQ_F_NOLOCK) &&
+-		    parent && !(parent->flags & TCQ_F_NOLOCK))
++			!(parent->flags & TCQ_F_NOLOCK))
+ 			qdisc_clear_nolock(new);
+ 
+ 		if (!cops || !cops->graft)
+-- 
+2.17.1
 
-Cheers,
-Miguel
