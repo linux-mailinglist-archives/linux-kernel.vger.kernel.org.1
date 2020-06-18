@@ -2,40 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AB01FFEFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ED11FFF12
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgFRX4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 19:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35926 "EHLO mail.kernel.org"
+        id S1728338AbgFRX5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 19:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgFRX4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728104AbgFRX4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Jun 2020 19:56:41 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9CD2208C7;
-        Thu, 18 Jun 2020 23:56:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03769212CC;
+        Thu, 18 Jun 2020 23:56:41 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jm4Od-003lNh-SA; Thu, 18 Jun 2020 19:56:39 -0400
-Message-ID: <20200618235639.753073720@goodmis.org>
+        id 1jm4Oe-003lOD-0T; Thu, 18 Jun 2020 19:56:40 -0400
+Message-ID: <20200618235639.896354286@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 18 Jun 2020 19:56:00 -0400
+Date:   Thu, 18 Jun 2020 19:56:01 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Ingo Molnar <mingo@elte.hu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ziqian SUN <zsun@redhat.com>, stable@vger.kernel.org,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 04/17] kprobes: Fix to protect kick_kprobe_optimizer() by kprobe_mutex
+Subject: [for-linus][PATCH 05/17] kprobes: Remove redundant arch_disarm_kprobe() call
 References: <20200618235556.451120786@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +38,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-In kprobe_optimizer() kick_kprobe_optimizer() is called
-without kprobe_mutex, but this can race with other caller
-which is protected by kprobe_mutex.
+Fix to remove redundant arch_disarm_kprobe() call in
+force_unoptimize_kprobe(). This arch_disarm_kprobe()
+will be invoked if the kprobe is optimized but disabled,
+but that means the kprobe (optprobe) is unused (and
+unoptimized) state.
 
-To fix that, expand kprobe_mutex protected area to protect
-kick_kprobe_optimizer() call.
+In that case, unoptimize_kprobe() puts it in freeing_list
+and kprobe_optimizer (do_unoptimize_kprobes()) automatically
+disarm it. Thus this arch_disarm_kprobe() is redundant.
 
-Link: http://lkml.kernel.org/r/158927057586.27680.5036330063955940456.stgit@devnote2
+Link: http://lkml.kernel.org/r/158927058719.27680.17183632908465341189.stgit@devnote2
 
-Fixes: cd7ebe2298ff ("kprobes: Use text_poke_smp_batch for optimizing")
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Cc: Anders Roxell <anders.roxell@linaro.org>
-Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
-Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-Cc: David Miller <davem@davemloft.net>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ziqian SUN <zsun@redhat.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/kprobes.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/kprobes.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index ceb0e273bd69..0e185763578b 100644
+index 0e185763578b..5cb7791c16b3 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -592,11 +592,12 @@ static void kprobe_optimizer(struct work_struct *work)
- 	mutex_unlock(&module_mutex);
- 	mutex_unlock(&text_mutex);
- 	cpus_read_unlock();
--	mutex_unlock(&kprobe_mutex);
- 
- 	/* Step 5: Kick optimizer again if needed */
- 	if (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list))
- 		kick_kprobe_optimizer();
-+
-+	mutex_unlock(&kprobe_mutex);
+@@ -675,8 +675,6 @@ static void force_unoptimize_kprobe(struct optimized_kprobe *op)
+ 	lockdep_assert_cpus_held();
+ 	arch_unoptimize_kprobe(op);
+ 	op->kp.flags &= ~KPROBE_FLAG_OPTIMIZED;
+-	if (kprobe_disabled(&op->kp))
+-		arch_disarm_kprobe(&op->kp);
  }
  
- /* Wait for completing optimization and unoptimization */
+ /* Unoptimize a kprobe if p is optimized */
 -- 
 2.26.2
 
