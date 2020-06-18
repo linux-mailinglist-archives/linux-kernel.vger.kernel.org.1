@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AB41FDA55
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21771FDA80
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgFRAkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 20:40:45 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33172 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbgFRAkp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 20:40:45 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 2C6062073E;
-        Wed, 17 Jun 2020 20:40:40 -0400 (EDT)
-Date:   Thu, 18 Jun 2020 10:40:37 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-cc:     Chris Boot <bootc@boo.tc>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux1394-devel@lists.sourceforge.net" 
-        <linux1394-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Nicholas Bellinger <nab@linux-iscsi.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH] scsi: target/sbp: remove firewire SBP target driver
-In-Reply-To: <yq1366ul8o4.fsf@ca-mkp.ca.oracle.com>
-Message-ID: <alpine.LNX.2.22.394.2006180953320.8@nippy.intranet>
-References: <01020172acd3d10f-3964f076-a820-43fc-9494-3f3946e9b7b5-000000@eu-west-1.amazonses.com>        <alpine.LNX.2.22.394.2006140934520.15@nippy.intranet>        <7ad14946-5c25-fc49-1e48-72d37a607832@boo.tc>        <alpine.LNX.2.22.394.2006150919110.8@nippy.intranet>
-        <8da0c285-d707-a3d2-063e-472af5cc560f@boo.tc>        <alpine.LNX.2.22.394.2006161929380.8@nippy.intranet>        <8cbab988-fba7-8e27-7faf-9f7aa36ca235@acm.org>        <SN4PR0401MB35982D889857E3C03E96E49D9B9D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-        <1592321667.4394.5.camel@HansenPartnership.com>        <5e512185-45d1-61eb-9bec-91e9f9d53ea3@boo.tc> <yq1366ul8o4.fsf@ca-mkp.ca.oracle.com>
-MIME-Version: 1.0
+        id S1726920AbgFRAnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 20:43:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726854AbgFRAnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 20:43:51 -0400
+Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B88521556;
+        Thu, 18 Jun 2020 00:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592441031;
+        bh=z8URL52jsUeVV4acHgb8mhAwfXotlh0gswF4QwIowhc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lFr7x6WrpgmRN4lzyjuvDZG/zGaopYG62aB1wPAszZtJjQPV9FdWelscdkKZ1qRgQ
+         AvtBQETgA+y3uFWv09ZMZ8o39Xuvl5i+wHRZRgNpcmzkR8W9OqNit+yo8ORkU4fGBb
+         M3YbM5M6BVVRc9kul9eNloay4TPH74oCLloXGYj4=
+Date:   Wed, 17 Jun 2020 17:43:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        axboe@kernel.dk, bfields@fieldses.org, chuck.lever@oracle.com,
+        roopa@cumulusnetworks.com, nikolay@cumulusnetworks.com,
+        davem@davemloft.net, kuba@kernel.org, dhowells@redhat.com,
+        jarkko.sakkinen@linux.intel.com, jmorris@namei.org,
+        serge@hallyn.com, christian.brauner@ubuntu.com, slyfox@gentoo.org,
+        ast@kernel.org, keescook@chromium.org, josh@joshtriplett.org,
+        ravenexp@gmail.com, chainsaw@gentoo.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        bridge@lists.linux-foundation.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] kmod/umh: a few fixes
+Message-Id: <20200617174348.70710c3ecb14005fb1b9ec39@linux-foundation.org>
+In-Reply-To: <20200610154923.27510-1-mcgrof@kernel.org>
+References: <20200610154923.27510-1-mcgrof@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020, Martin K. Petersen wrote:
+On Wed, 10 Jun 2020 15:49:18 +0000 "Luis R. Rodriguez" <mcgrof@kernel.org> wrote:
 
+> Tiezhu Yang had sent out a patch set with a slew of kmod selftest
+> fixes, and one patch which modified kmod to return 254 when a module
+> was not found. This opened up pandora's box about why that was being
+> used for and low and behold its because when UMH_WAIT_PROC is used
+> we call a kernel_wait4() call but have never unwrapped the error code.
+> The commit log for that fix details the rationale for the approach
+> taken. I'd appreciate some review on that, in particular nfs folks
+> as it seems a case was never really hit before.
 > 
-> However, keeping code around is not free.
+> This goes boot tested, selftested with kmod, and 0-day gives its
+> build blessings.
 
-Right. And removing code isn't free either, if it forces people to find 
-workarounds.
+Any thoughts on which kernel version(s) need some/all of these fixes?
 
-> Core interfaces change frequently.  Nobody enjoys having to tweak host 
-> templates for 50 devices they have never even heard about.
+>  drivers/block/drbd/drbd_nl.c         | 20 +++++------
+>  fs/nfsd/nfs4recover.c                |  2 +-
+>  include/linux/sched/task.h           | 13 ++++++++
+>  kernel/kmod.c                        |  5 ++-
+>  kernel/umh.c                         |  4 +--
+>  lib/test_kmod.c                      |  2 +-
+>  net/bridge/br_stp_if.c               | 10 ++----
+>  security/keys/request_key.c          |  2 +-
+>  tools/testing/selftests/kmod/kmod.sh | 50 +++++++++++++++++++++++-----
 
-And yet some people seem to enjoy writing patches that are as trivial as 
-they are invasive...
+I'm not really sure who takes kmod changes - I'll grab these unless
+someone shouts at me.
 
-You seem to be making an argument for more automation here, not an 
-argument for less code. Or is there some upper bound to the size of the 
-kernel, that might be lifted by adding maintainers? (Can you deliver a 
-better product by adding more developers to your project?)
-
-> Also, we now live in a reality where there is a constant barrage of 
-> build bots and code analyzers sending mail. So the effective cost of 
-> keeping code around in the tree is going up.
-
-But if maintenance cost rises due to good analysis, the value of the code 
-should rise too. So what's the problem? It seems to me that the real 
-problem is too many analyses that generate pedantic noise and no tangible 
-improvement in code quality or value.
-
-> I get a substantial amount of code analysis mail about drivers nobody 
-> have touched in a decade or more.
-> 
-
-When stable, mature code fails analysis, the analysis is also questionable 
-(in the absence of real examples).
-
-> Consequently, I am much more inclined to remove drivers than I have been 
-> in the past. But I am also very happy to bring them back if somebody 
-> uses them or - even better - are willing to step up and maintain them.
-> 
-
-You seem to be saying that 1) a driver should be removed when it no longer 
-meets the present threshold for code quality and 2) that a low quality 
-driver is eligible for re-addition because someone wants to use it.
-I don't think you can have it both ways.
-
-> I don't particularly like the notion of a driver being orphaned because 
-> all that really means is that the driver transitions from being (at 
-> least partially) somebody else's problem to being mine and mine alone.
-> 
-
-Yes it's your problem but only on a best-effort basis.
-
-Many issues detected by automatic analyzers can be fixed with automatic 
-code transformation tools. This kind of solution works tree-wide, so even 
-if some defect in your driver is "yours and yours alone", the solution 
-will probably come from others.
-
-This email, like yours, is just hand-waving. So feel free to ignore it or 
-(preferably) provide evidence of real defects.
