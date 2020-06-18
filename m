@@ -2,203 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3801FEBCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B691FEBE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgFRG57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 02:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbgFRG5z (ORCPT
+        id S1727994AbgFRHDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 03:03:00 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:39886 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727928AbgFRHC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 02:57:55 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24677C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 23:57:55 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id r7so4833175wro.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 23:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forissier-org.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gjj1nJScgeETVB1sGHCvwVl4garCuwqOg+nannMyhR0=;
-        b=fajwe68DPCqqm1PlI2LvucOr4yFPHF9ov4K/5S8xakCxmEQuVpW+maNukQiC8xz+V2
-         unIfnlpTNlLqUGe+F/vaaciKLp6Q5V1h9e5vX5UqSt0clfLBN3vL+/nMtsdDAoDBh+xv
-         m+/RTTP2nbptgnTsciN+p3NYyffT4qORr78gHzQPFH1cA2VMuAalzzZt2KkdBSuirMnj
-         nBt6V+VU19Pv9kF6RlG76T8eMQM2uk8WvrWwtgevtDZb09oYp982X04k7+J/8+ZD0L5O
-         PGX5ThO7dJy1C94hyfkDRBLAFA4cxKEIGwpvi0aFv61ElCFU9pGsuP8VXwyJznblsyd8
-         xu5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gjj1nJScgeETVB1sGHCvwVl4garCuwqOg+nannMyhR0=;
-        b=PiWFpowcvE7bHMweCUxAW/n7WeHpFobdY2e5XiTy677kPjj/XpTyIGEia2dKU47eEG
-         3rM5w115fcZnOX+O+5LeccZL5wiIy5H3ig3bsdfmSY2zfghDZyHGdzA88MIIqAeqGtwu
-         +MmcZRxqlKNmjMu+zaDaOslfC2DWP01c8lUz9mD17eJKF3y6hx8PmkMRpYQMqaSNmhwi
-         fg4jf4wXFeGkoGc9mbtM0npXchdiPQGR7vKCwrEJOM+NPl5nPxYXB6IIKUu9Ph90Mf+3
-         bjQr3ViQBZg7ICKMwo7yHnrw3UnsWP1jWFSp5s2Ap4MmJS0OMPa2EF1LPaSidsgCR7ht
-         07eg==
-X-Gm-Message-State: AOAM531/SkcGFEvCgulIPP3LiK6IKoWlfDyF0jtN7df+iT/cs3hzXKjS
-        pUqhYHmLl8Wnndp9rsrc4Foljg==
-X-Google-Smtp-Source: ABdhPJw79suYDvUm3Xs8K1QYbjnNDzDmpAY+39aoPvuYtWhJr72UeIpXQMKeJVlzZl77onkFfrcfug==
-X-Received: by 2002:a5d:4dd0:: with SMTP id f16mr3148610wru.117.1592463473721;
-        Wed, 17 Jun 2020 23:57:53 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:3cb:7bb0:98f8:245a:88c9:f6f4? ([2a01:e0a:3cb:7bb0:98f8:245a:88c9:f6f4])
-        by smtp.gmail.com with ESMTPSA id o10sm2268375wrj.37.2020.06.17.23.57.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 23:57:52 -0700 (PDT)
-Subject: Re: [Tee-dev] [PATCHv8 1/3] optee: use uuid for sysfs driver entry
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, peterhuewe@gmx.de
-References: <20200604175851.758-1-maxim.uvarov@linaro.org>
- <20200604175851.758-2-maxim.uvarov@linaro.org>
- <CAFA6WYNVk1RcaqnL0FGyYkB+hGkgyqeOMsSKyySL=zfCdNUZXA@mail.gmail.com>
- <b9960a51-7e00-4992-eed5-bd43e7f27b43@forissier.org>
- <CAFA6WYM6XBduokYOdnWD6m+To=6k2SMbXU=HzK_Enk9h-s7VBQ@mail.gmail.com>
-From:   Jerome Forissier <jerome@forissier.org>
-Message-ID: <6b67cd00-a302-55a1-1e56-d1f1e7a06cef@forissier.org>
-Date:   Thu, 18 Jun 2020 08:57:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 18 Jun 2020 03:02:57 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200618070253epoutp016bbafa6e556730c8a8c2cdfb87f7e6e5~ZkV1p5o3w0653306533epoutp01P
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:02:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200618070253epoutp016bbafa6e556730c8a8c2cdfb87f7e6e5~ZkV1p5o3w0653306533epoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592463773;
+        bh=ls1ySa4sCYDpC+WfJ4XyK2tqKI6beYTc/ZQcX1v3oY0=;
+        h=To:Cc:From:Subject:Date:References:From;
+        b=TlRNMtTRjWlS+Faj5VEAB9qiARoPlIOnuZY46T5VndsqRcuFe/eA2REKyayE2j2bM
+         1CMEKebDS8PmkVr0r3y9tgdqDvPOSrpi1zriQ7PrShVAGo2fZ9y1/5d/9+zIvYPRlv
+         okqTxgx3TjlF2jcpFTeFxQbn48hpvmFHKLsKKdm8=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200618070253epcas1p1c42d753f2d53ffd87991676dabf9bcef~ZkV1QN-BP3101931019epcas1p1h;
+        Thu, 18 Jun 2020 07:02:53 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49nXvJ1Yj8zMqYm9; Thu, 18 Jun
+        2020 07:02:52 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F4.78.18978.A911BEE5; Thu, 18 Jun 2020 16:02:50 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25~ZkVytozK72920429204epcas1p4F;
+        Thu, 18 Jun 2020 07:02:50 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200618070250epsmtrp2a59c7d796bd7fdfa4f83cb987a94ebdc~ZkVys_xeg2848228482epsmtrp2L;
+        Thu, 18 Jun 2020 07:02:50 +0000 (GMT)
+X-AuditID: b6c32a35-b8298a8000004a22-bb-5eeb119a7a4a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        39.75.08382.A911BEE5; Thu, 18 Jun 2020 16:02:50 +0900 (KST)
+Received: from [10.253.105.155] (unknown [10.253.105.155]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200618070250epsmtip18810653d5dd9abb3c6c6cd16e3ee97a9~ZkVydJTJ20875208752epsmtip1e;
+        Thu, 18 Jun 2020 07:02:50 +0000 (GMT)
+To:     snitzer@redhat.com
+Cc:     agk@redhat.com, dm-devel@redhat.com, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   JeongHyeon Lee <jhs2.lee@samsung.com>
+Subject: [patch] New mode DM-Verity error handling
+Message-ID: <98eac3fc-c399-625d-5730-29853b3a0771@samsung.com>
+Date:   Thu, 18 Jun 2020 15:56:50 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAFA6WYM6XBduokYOdnWD6m+To=6k2SMbXU=HzK_Enk9h-s7VBQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed;
+        boundary="------------9C73C137154A1ECE1862557A"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmru4swddxBru+2FisP3WM2eLJgXZG
+        i73vZrNaLGxbwmJxedccNou2jV8ZHdg8FvdNZvV4v+8qm8fnTXIBzFE5NhmpiSmpRQqpecn5
+        KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAe5UUyhJzSoFCAYnFxUr6djZF
+        +aUlqQoZ+cUltkqpBSk5BYYGBXrFibnFpXnpesn5uVaGBgZGpkCVCTkZzxd/YC/4qVuxeftS
+        5gbG5dpdjJwcEgImEkc7nrJ0MXJxCAnsYJTYMeMLI0hCSOATo8SXpQYQiW+MEi+2djHDdJxb
+        ehGqYy+jxNbOg2wQzntGicffXrKCVIkIiEkc6XsAZjMLFElM+f6aCcRmE9CWuN2yiR3EFhYw
+        kvh8/SdYnFfATmLS5sVgq1kEVCWubH4MFhcViJC4f2wDK0SNoMTJmU9YIGYGSBx93Qpli0vc
+        ejKfCeQICYFODonjlzpZIE51kdj0+xkThC0s8er4FnYIW0ri87u9bBB2ucSVpsuMEHaNxIQL
+        3awQtrHE/JaFUC8rSuz8PZcRYhmfxLuvPUA1HEBxXomONiGIEiWJFf+uQa2VkNhwuBtqvIfE
+        0tbprJAgjZW48X8qywRG+VlI3pmF5J1ZSN6BsOUltr+dwzwLaBuzgKbE+l36EGaKxI5GH4gK
+        RYkp3Q/ZIewGRon+myYLGDlWMYqlFhTnpqcWGxYYIieITYzgdKtluoNx4tsPeocYmTgYDzGq
+        APU+2rD6AqMUS15+XqqSCK/z7xdxQrwpiZVVqUX58UWlOanFhxhNgXEzkVlKNDkfmAnySuIN
+        TY2MjY0tTMzMzUyNlcR5xWUuxAkJpCeWpGanphakFsH0MXFwSjUwrbuXvfFi/TX3joS8irUf
+        vgWXTTJ2OdMVnFv/62XTi5OCovWXt096MuuF8r2ddx++ZrDYZB2178Qd68VnZB8Jn5aKTUvn
+        401e3f49YJ/EurToCb3vGw07Qp7GJ8apydU9UWKO7jW8V+Ap8UhunuDBkohS92VJSj8/LrrY
+        JCX/9LQk22kRmQnPVs/7whvhMY/JZ5Lo3MWmtn9nHjqb9YX1fuuDablTXFJmKm0tZFHYcc6B
+        9eraOf/F5b/dVzxaoFIVseUZ/8/NZadev36Uc/X1/FsRVdPPv/zTutLHbE5hXf2BzcHuFx8v
+        lw2527WR2XX+hR2L7oi7P0g6U6vtyJ6Z95HlwQqhP0fMKy+2iIaYhSixFGckGmoxFxUnAgD8
+        /1siTAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWy7bCSnO4swddxBm9ei1msP3WM2eLJgXZG
+        i73vZrNaLGxbwmJxedccNou2jV8ZHdg8FvdNZvV4v+8qm8fnTXIBzFFcNimpOZllqUX6dglc
+        GT86kgv2q1R82XuLuYFxqlwXIyeHhICJxLmlF1m6GLk4hAR2M0psXbuWFSIhIbFh01r2LkYO
+        IFtY4vDhYoiat4wSzSv/sYDUiAiISRzpewBWzyxQJLF62V0wm01AW+J2yyZ2EFtYwEji8/Wf
+        TCA2r4CdxKTNixlBbBYBVYkrmx+DxUUFIiTOvF/BAlEjKHFy5hMWiJkBEm9n/IaaLy5x68l8
+        pgmM/LOQlM1CUjYLSRmEbSYxb/NDZghbXmL72zlQdorEtscv0cS5gOwGRonbq24yLWDkWMUo
+        mVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERwvWpo7GLev+qB3iJGJg/EQowpQ/6MNqy8w
+        SrHk5eelKonwOv9+ESfEm5JYWZValB9fVJqTWnyIUZqDRUmc90bhwjghgfTEktTs1NSC1CKY
+        LBMHp1QD02LvM88TiwqKfv5IOOej+l9AsnCj/3XRrPJVbzcmnHl8LDXJuznE/MKmNJt18zwb
+        JONP95zbtqTTy/3sLvHDKeXV155aBv70mZd+S+vAzK5JP0/6+yQz3d+bpPnh5YQpT6qvVmap
+        nnIx1uXQ4WRMM37D/o3zyrx1t8P2ibHfE5hqYzzZV+yyrA3zggaDKO9PWiv3FRQc2dv7zT5P
+        8Ya71VZWyccBJTftRBgnikx932Sl8ylUu7pObP+Kl1fv5WyeO+v3YoPkGwx2d86EPk1Yaz1r
+        2VQrqbPNJkvPWbc9/H94YWGjy42/j1uvWomFFfyymPJSQu/zPg4di4oFzuzKvBH/3n9pu7Xx
+        r0mKfczFp0osxRmJhlrMRcWJAFgT+FASAwAA
+X-CMS-MailID: 20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25
+References: <CGME20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25@epcas1p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/20 6:59 AM, Sumit Garg wrote:
-> Hi Jerome,
-> 
-> On Wed, 17 Jun 2020 at 20:46, Jerome Forissier <jerome@forissier.org> wrote:
->>
->>
->>
->> On 6/17/20 3:58 PM, Sumit Garg wrote:
->>> Hi Maxim,
->>>
->>> On Thu, 4 Jun 2020 at 23:28, Maxim Uvarov <maxim.uvarov@linaro.org> wrote:
->>>>
->>>> With the evolving use-cases for TEE bus, now it's required to support
->>>> multi-stage enumeration process. But using a simple index doesn't
->>>> suffice this requirement and instead leads to duplicate sysfs entries.
->>>> So instead switch to use more informative device UUID for sysfs entry
->>>> like:
->>>> /sys/bus/tee/devices/optee-ta-<uuid>
->>>>
->>>> Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
->>>> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
->>>> ---
->>>>  Documentation/ABI/testing/sysfs-bus-optee-devices | 8 ++++++++
->>>>  MAINTAINERS                                       | 1 +
->>>>  drivers/tee/optee/device.c                        | 9 ++++++---
->>>>  3 files changed, 15 insertions(+), 3 deletions(-)
->>>>  create mode 100644 Documentation/ABI/testing/sysfs-bus-optee-devices
->>>>
->>>> diff --git a/Documentation/ABI/testing/sysfs-bus-optee-devices b/Documentation/ABI/testing/sysfs-bus-optee-devices
->>>> new file mode 100644
->>>> index 000000000000..0ae04ae5374a
->>>> --- /dev/null
->>>> +++ b/Documentation/ABI/testing/sysfs-bus-optee-devices
->>>> @@ -0,0 +1,8 @@
->>>> +What:          /sys/bus/tee/devices/optee-ta-<uuid>/
->>>> +Date:           May 2020
->>>> +KernelVersion   5.7
->>>> +Contact:        tee-dev@lists.linaro.org
->>>> +Description:
->>>> +               OP-TEE bus provides reference to registered drivers under this directory. The <uuid>
->>>> +               matches Trusted Application (TA) driver and corresponding TA in secure OS. Drivers
->>>> +               are free to create needed API under optee-ta-<uuid> directory.
->>>> diff --git a/MAINTAINERS b/MAINTAINERS
->>>> index ecc0749810b0..6717afef2de3 100644
->>>> --- a/MAINTAINERS
->>>> +++ b/MAINTAINERS
->>>> @@ -12516,6 +12516,7 @@ OP-TEE DRIVER
->>>>  M:     Jens Wiklander <jens.wiklander@linaro.org>
->>>>  L:     tee-dev@lists.linaro.org
->>>>  S:     Maintained
->>>> +F:     Documentation/ABI/testing/sysfs-bus-optee-devices
->>>>  F:     drivers/tee/optee/
->>>>
->>>>  OP-TEE RANDOM NUMBER GENERATOR (RNG) DRIVER
->>>> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
->>>> index e3a148521ec1..23d264c8146e 100644
->>>> --- a/drivers/tee/optee/device.c
->>>> +++ b/drivers/tee/optee/device.c
->>>> @@ -65,7 +65,7 @@ static int get_devices(struct tee_context *ctx, u32 session,
->>>>         return 0;
->>>>  }
->>>>
->>>> -static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
->>>> +static int optee_register_device(const uuid_t *device_uuid)
->>>>  {
->>>>         struct tee_client_device *optee_device = NULL;
->>>>         int rc;
->>>> @@ -75,7 +75,10 @@ static int optee_register_device(const uuid_t *device_uuid, u32 device_id)
->>>>                 return -ENOMEM;
->>>>
->>>>         optee_device->dev.bus = &tee_bus_type;
->>>> -       dev_set_name(&optee_device->dev, "optee-clnt%u", device_id);
->>>> +       if (dev_set_name(&optee_device->dev, "optee-ta-%pUl", device_uuid)) {
->>>
->>> You should be using format specifier as: "%pUb" instead of "%pUl" as
->>> UUID representation for TAs is in big endian format. See below:
->>
->> Where does device_uuid come from? If it comes directly from OP-TEE, then
->> it should be a pointer to the following struct:
->>
->> typedef struct
->> {
->>         uint32_t timeLow;
->>         uint16_t timeMid;
->>         uint16_t timeHiAndVersion;
->>         uint8_t clockSeqAndNode[8];
->> } TEE_UUID;
->>
->> (GlobalPlatform TEE Internal Core API spec v1.2.1 section 3.2.4)
->>
->> - The spec does not mandate any particular endianness and simply warns
->> about possible issues if secure and non-secure worlds differ in endianness.
->> - OP-TEE uses %pUl assuming that host order is little endian (that is
->> true for the Arm platforms that run OP-TEE currently). By the same logic
->> %pUl should be fine in the kernel.
->> - On the other hand, the UUID in a Trusted App header is always encoded
->> big endian by the Python script that signs and optionally encrypts the
->> TA. This should not have any visible impact on UUIDs exchanged between
->> the secure and non-secure world though.
->>
->> So I am wondering why you had to use %pUb. There must be some
->> inconsistency somewhere :-/
-> 
-> Yes there is. Linux stores UUID in big endian format (16 byte octets)
-> and OP-TEE stores UUID in little endian format (in form of struct you
-> referenced above).
-> 
-> And format conversion APIs [1] in OP-TEE OS are used while passing
-> UUID among Linux and OP-TEE.
-> 
-> So we need to use %pUb in case of Linux and %pUl in case of OP-TEE.
-> 
-> [1] https://github.com/OP-TEE/optee_os/blob/master/core/tee/uuid.c
+This is a multi-part message in MIME format.
+--------------9C73C137154A1ECE1862557A
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+
+Hello, Dear devcice-mapper maintainers.
+
+I'm JeongHyeon Lee, work in Samsung. I'm chage of DM-Verity feature with 
+Mr. sunwook eom.
+I have a patch or suggestion about DM-Verity error handling.
+
+Our device (smart phone) need DM-Verity feature. So I hope there is new 
+mode DM-Verity error handling.
+This new mode concept is When detect corrupted block, will be go to panic.
+
+Because our team policy is found device DM-Verity error, device will go 
+panic.
+And then analyze what kind of device fault (crash UFS, IO error, DRAM 
+bit flip etc)
+
+In addition to the smart phone, I would like to have an option that 
+users or administrators can use accordingly.
+There are patch contents in the attachment. I would really appreciate it 
+if you could check it.
+
+I will look forward to hearing from yours.
+Thank you :)
 
 
-Got it now. The TA enumeration function in OP-TEE performs  the
-conversion here:
-https://github.com/OP-TEE/optee_os/blob/3.9.0/core/pta/device.c#L34
+--------------9C73C137154A1ECE1862557A
+Content-Type: text/x-patch;
+	name="0001-dm-verity-new-error-handling-mode-for-corrupted-bloc.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename*0="0001-dm-verity-new-error-handling-mode-for-corrupted-bloc.pa";
+	filename*1="tch"
 
-Thanks for clarifying.
+RnJvbSA2ZDNlNTA4ZWQ2ODcyYmZkYzg4ZDZhZDk3OWFjNWMwMzQ3MTQ0ZmJiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQ0KRnJvbTogImpoczIubGVlIiA8amhzMi5sZWVAc2Ftc3VuZy5jb20+DQpE
+YXRlOiBUaHUsIDE4IEp1biAyMDIwIDE1OjMyOjIwICswOTAwDQpTdWJqZWN0OiBbUEFUQ0hdIGRt
+IHZlcml0eTogbmV3IGVycm9yIGhhbmRsaW5nIG1vZGUgZm9yIGNvcnJ1cHRlZCBibG9ja3MNCg0K
+VGhlcmUgaXMgbm8gcGFuaWMgZXJyb3IgaGFuZGxpbmcgbW9kZSB3aGVuIGEgcHJvYmxlbSBvY2N1
+cnMuDQpTbyBXZSBhZGQgbmV3IGVycm9yIGhhbmRsaW5nIG1vZGUuIHVzZXJzIGFuZCBhZG1pbmlz
+dHJhdG9ycw0Kc2V0dXAgdG8gZml0IHlvdXIgbmVlZC4NCg0KU2lnbmVkLW9mZi1ieTogamhzMi5s
+ZWUgPGpoczIubGVlQHNhbXN1bmcuY29tPg0KLS0tDQogRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlk
+ZS9kZXZpY2UtbWFwcGVyL3Zlcml0eS5yc3QgfCAgNCArKysrDQogZHJpdmVycy9tZC9kbS12ZXJp
+dHktdGFyZ2V0LmMgICAgICAgICAgICAgICAgICAgICAgfCAxMSArKysrKysrKysrKw0KIGRyaXZl
+cnMvbWQvZG0tdmVyaXR5LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKystDQog
+MyBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYg
+LS1naXQgYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2RldmljZS1tYXBwZXIvdmVyaXR5LnJz
+dCBiL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvZGV2aWNlLW1hcHBlci92ZXJpdHkucnN0DQpp
+bmRleCBiYjAyY2FhNDUyODkuLjY2ZjcxZjBkYWIxYiAxMDA2NDQNCi0tLSBhL0RvY3VtZW50YXRp
+b24vYWRtaW4tZ3VpZGUvZGV2aWNlLW1hcHBlci92ZXJpdHkucnN0DQorKysgYi9Eb2N1bWVudGF0
+aW9uL2FkbWluLWd1aWRlL2RldmljZS1tYXBwZXIvdmVyaXR5LnJzdA0KQEAgLTgzLDYgKzgzLDEw
+IEBAIHJlc3RhcnRfb25fY29ycnVwdGlvbg0KICAgICBub3QgY29tcGF0aWJsZSB3aXRoIGlnbm9y
+ZV9jb3JydXB0aW9uIGFuZCByZXF1aXJlcyB1c2VyIHNwYWNlIHN1cHBvcnQgdG8NCiAgICAgYXZv
+aWQgcmVzdGFydCBsb29wcy4NCiANCitwYW5pY19vbl9jb3JydXB0aW9uDQorICAgIFBhbmljIHRo
+ZSBkZXZpY2Ugd2hlbiBhIGNvcnJ1cHRlZCBibG9jayBpcyBkaXNjb3ZlcmVkLiBUaGlzIG9wdGlv
+biBpcw0KKyAgICBub3QgY29tcGF0aWJsZSB3aXRoIGlnbm9yZV9jb3JydXB0aW9uIGFuZCByZXN0
+YXJ0X29uX2NvcnJ1cHRpb24uDQorDQogaWdub3JlX3plcm9fYmxvY2tzDQogICAgIERvIG5vdCB2
+ZXJpZnkgYmxvY2tzIHRoYXQgYXJlIGV4cGVjdGVkIHRvIGNvbnRhaW4gemVyb2VzIGFuZCBhbHdh
+eXMgcmV0dXJuDQogICAgIHplcm9lcyBpbnN0ZWFkLiBUaGlzIG1heSBiZSB1c2VmdWwgaWYgdGhl
+IHBhcnRpdGlvbiBjb250YWlucyB1bnVzZWQgYmxvY2tzDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+ZC9kbS12ZXJpdHktdGFyZ2V0LmMgYi9kcml2ZXJzL21kL2RtLXZlcml0eS10YXJnZXQuYw0KaW5k
+ZXggZWVjOWYyNTJlOTM1Li5jODkxMTRlNzg4NmMgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL21kL2Rt
+LXZlcml0eS10YXJnZXQuYw0KKysrIGIvZHJpdmVycy9tZC9kbS12ZXJpdHktdGFyZ2V0LmMNCkBA
+IC0zMCw2ICszMCw3IEBADQogDQogI2RlZmluZSBETV9WRVJJVFlfT1BUX0xPR0dJTkcJCSJpZ25v
+cmVfY29ycnVwdGlvbiINCiAjZGVmaW5lIERNX1ZFUklUWV9PUFRfUkVTVEFSVAkJInJlc3RhcnRf
+b25fY29ycnVwdGlvbiINCisjZGVmaW5lIERNX1ZFUklUWV9PUFRfUEFOSUMJCSJwYW5pY19vbl9j
+b3JydXB0aW9uIg0KICNkZWZpbmUgRE1fVkVSSVRZX09QVF9JR05fWkVST0VTCSJpZ25vcmVfemVy
+b19ibG9ja3MiDQogI2RlZmluZSBETV9WRVJJVFlfT1BUX0FUX01PU1RfT05DRQkiY2hlY2tfYXRf
+bW9zdF9vbmNlIg0KIA0KQEAgLTI1NCw2ICsyNTUsOSBAQCBzdGF0aWMgaW50IHZlcml0eV9oYW5k
+bGVfZXJyKHN0cnVjdCBkbV92ZXJpdHkgKnYsIGVudW0gdmVyaXR5X2Jsb2NrX3R5cGUgdHlwZSwN
+CiAJaWYgKHYtPm1vZGUgPT0gRE1fVkVSSVRZX01PREVfUkVTVEFSVCkNCiAJCWtlcm5lbF9yZXN0
+YXJ0KCJkbS12ZXJpdHkgZGV2aWNlIGNvcnJ1cHRlZCIpOw0KIA0KKwlpZiAodi0+bW9kZSA9PSBE
+TV9WRVJJVFlfTU9ERV9QQU5JQykNCisJCXBhbmljKCJkbS12ZXJpdHkgZGV2aWNlIGNvcnJ1cHRl
+ZCIpOw0KKw0KIAlyZXR1cm4gMTsNCiB9DQogDQpAQCAtNzQyLDYgKzc0Niw5IEBAIHN0YXRpYyB2
+b2lkIHZlcml0eV9zdGF0dXMoc3RydWN0IGRtX3RhcmdldCAqdGksIHN0YXR1c190eXBlX3QgdHlw
+ZSwNCiAJCQljYXNlIERNX1ZFUklUWV9NT0RFX1JFU1RBUlQ6DQogCQkJCURNRU1JVChETV9WRVJJ
+VFlfT1BUX1JFU1RBUlQpOw0KIAkJCQlicmVhazsNCisJCQljYXNlIERNX1ZFUklUWV9NT0RFX1BB
+TklDOg0KKwkJCQlETUVNSVQoRE1fVkVSSVRZX09QVF9QQU5JQyk7DQorCQkJCWJyZWFrOw0KIAkJ
+CWRlZmF1bHQ6DQogCQkJCUJVRygpOw0KIAkJCX0NCkBAIC05MDcsNiArOTE0LDEwIEBAIHN0YXRp
+YyBpbnQgdmVyaXR5X3BhcnNlX29wdF9hcmdzKHN0cnVjdCBkbV9hcmdfc2V0ICphcywgc3RydWN0
+IGRtX3Zlcml0eSAqdiwNCiAJCQl2LT5tb2RlID0gRE1fVkVSSVRZX01PREVfUkVTVEFSVDsNCiAJ
+CQljb250aW51ZTsNCiANCisJCX0gZWxzZSBpZiAoIXN0cmNhc2VjbXAoYXJnX25hbWUsIERNX1ZF
+UklUWV9PUFRfUEFOSUMpKSB7DQorCQkJdi0+bW9kZSA9IERNX1ZFUklUWV9NT0RFX1BBTklDOw0K
+KwkJCWNvbnRpbnVlOw0KKw0KIAkJfSBlbHNlIGlmICghc3RyY2FzZWNtcChhcmdfbmFtZSwgRE1f
+VkVSSVRZX09QVF9JR05fWkVST0VTKSkgew0KIAkJCXIgPSB2ZXJpdHlfYWxsb2NfemVyb19kaWdl
+c3Qodik7DQogCQkJaWYgKHIpIHsNCmRpZmYgLS1naXQgYS9kcml2ZXJzL21kL2RtLXZlcml0eS5o
+IGIvZHJpdmVycy9tZC9kbS12ZXJpdHkuaA0KaW5kZXggNjQxYjllM2EzOTliLi40ZTc2OWQxMzQ3
+M2EgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL21kL2RtLXZlcml0eS5oDQorKysgYi9kcml2ZXJzL21k
+L2RtLXZlcml0eS5oDQpAQCAtMjAsNyArMjAsOCBAQA0KIGVudW0gdmVyaXR5X21vZGUgew0KIAlE
+TV9WRVJJVFlfTU9ERV9FSU8sDQogCURNX1ZFUklUWV9NT0RFX0xPR0dJTkcsDQotCURNX1ZFUklU
+WV9NT0RFX1JFU1RBUlQNCisJRE1fVkVSSVRZX01PREVfUkVTVEFSVCwNCisJRE1fVkVSSVRZX01P
+REVfUEFOSUMNCiB9Ow0KIA0KIGVudW0gdmVyaXR5X2Jsb2NrX3R5cGUgew0KLS0gDQoyLjE3LjEN
+Cg0K
 
--- 
-Jerome
+--------------9C73C137154A1ECE1862557A--
