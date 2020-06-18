@@ -2,180 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE3D1FEB5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6511FEB3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgFRGPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 02:15:19 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:53490 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727835AbgFRGPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 02:15:07 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 87737200068;
-        Thu, 18 Jun 2020 08:15:05 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 880DF200C24;
-        Thu, 18 Jun 2020 08:15:01 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C3BC54030D;
-        Thu, 18 Jun 2020 14:14:55 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 5/5] ARM: dts: imx6sx-sabreauto: Add cs42888 sound card support
-Date:   Thu, 18 Jun 2020 14:03:49 +0800
-Message-Id: <98c07c00c833080b561a2310cafcc79f8af78704.1592460381.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1592460381.git.shengjiu.wang@nxp.com>
-References: <cover.1592460381.git.shengjiu.wang@nxp.com>
-In-Reply-To: <cover.1592460381.git.shengjiu.wang@nxp.com>
-References: <cover.1592460381.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727079AbgFRGEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 02:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgFRGEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 02:04:48 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78228C06174E;
+        Wed, 17 Jun 2020 23:04:48 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id g7so3606615oti.13;
+        Wed, 17 Jun 2020 23:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PFBRcisrxcdT2GNCJlysWqIQRHhxPyF35WC7Sw0CFJ4=;
+        b=I4ZOINg4XbtlGzruPpeQe/WtahFpxH4V8rBhuNfNLg4ImYByAgkUuh/6hW/nzFeS/g
+         bqJiOR81BuYZEnW1GqB5Gsfk7nIsO4o4x7GeopHDcs6az/PbX55yYyy9lsHsk7etLMH3
+         IpwFw2pyX04Hcuq5WUfsOO9eO9mDiUCYka6CnQp0plqN7sJqPAOIi/FVp23OWT8nLTYY
+         9Kxxx5p7xf7PGeEtL7pKhVM8++m/p2nVTUS3XtECQU8J/Ju7y3d36XngL5vu/376QgE4
+         BLXSv9dktv76xM+d0US0dPMlCXmGX/n5UY++TLW9Qodty+qkwJ1SoeFLu8ory/2rw1wq
+         LtbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PFBRcisrxcdT2GNCJlysWqIQRHhxPyF35WC7Sw0CFJ4=;
+        b=j1Ykln55k3O709QlW5Bl2xkJIPDSRXWwVqH5cnEjCmHpwH4aTYYFqcgGRzrKobNyyQ
+         TO12BZJ4A1FfkRh47cU3jifFeP5o43RMJCxMdIKdg37E1TTT0bFD+e1sJlqcsZIemBj1
+         nWvdtOudyGqCVjxmmPJOOv/TDDzEraibB84+ip/PNa+dFyOPtqjH0AsfPwB3UU20fTSG
+         RmKlpD/7ZopqwkwNzif4JnJm7Z0l+qOU62KqH47e4GpKfRWpS0KBsGgEcqmFK38qo1kZ
+         kgYa+yWu1aFpEdOMXx4ID9qSwh5rbJh+9Jx/dMWW87C8u1z7SJgrilv8ETGvee0eOITc
+         15NA==
+X-Gm-Message-State: AOAM533aV6Nc6xnUznvu0qToWDismkE8ZvALabcgGtyVtphoEpbd/WvT
+        ymnhiY4EP8/5yTrYVkEVrNM=
+X-Google-Smtp-Source: ABdhPJyQdLghNKc2N+kWtm6ifgnu53yuZbVj2st7hdzPhwjqqiPl03QN2viAKNcayk34jWdzRbF0Uw==
+X-Received: by 2002:a9d:a14:: with SMTP id 20mr2263456otg.292.1592460287636;
+        Wed, 17 Jun 2020 23:04:47 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id n9sm504136oom.45.2020.06.17.23.04.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 23:04:46 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 23:04:45 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     containers@lists.linux-foundation.org, keescook@chromium.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, christian.brauner@ubuntu.com,
+        cyphar@cyphar.com, jannh@google.com, jeffv@google.com,
+        palmer@google.com, rsesek@google.com, tycho@tycho.ws,
+        Matt Denton <mpdenton@google.com>,
+        Kees Cook <keescook@google.com>
+Subject: Re: [PATCH v3] seccomp: Add find_notification helper
+Message-ID: <20200618060445.GA3230200@ubuntu-n2-xlarge-x86>
+References: <20200601112532.150158-1-sargun@sargun.me>
+ <20200617200844.GA12976@Ryzen-9-3900X.localdomain>
+ <20200618054413.GA18669@ircssh-2.c.rugged-nimbus-611.internal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200618054413.GA18669@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Complete the ESAI node and Add cs42888 sound card support.
+On Thu, Jun 18, 2020 at 05:44:14AM +0000, Sargun Dhillon wrote:
+> On Wed, Jun 17, 2020 at 01:08:44PM -0700, Nathan Chancellor wrote:
+> > On Mon, Jun 01, 2020 at 04:25:32AM -0700, Sargun Dhillon wrote:
+> > > This adds a helper which can iterate through a seccomp_filter to
+> > > find a notification matching an ID. It removes several replicated
+> > > chunks of code.
+> > >=20
+> > > Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> > > Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> > > Reviewed-by: Tycho Andersen <tycho@tycho.ws>
+> > > Cc: Matt Denton <mpdenton@google.com>
+> > > Cc: Kees Cook <keescook@google.com>,
+> > > Cc: Jann Horn <jannh@google.com>,
+> > > Cc: Robert Sesek <rsesek@google.com>,
+> > > Cc: Chris Palmer <palmer@google.com>
+> > > Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> > > Cc: Tycho Andersen <tycho@tycho.ws>
+> > > ---
+> > >  kernel/seccomp.c | 55 ++++++++++++++++++++++++----------------------=
+--
+> > >  1 file changed, 28 insertions(+), 27 deletions(-)
+> > >=20
+> > > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > > index 55a6184f5990..cc6b47173a95 100644
+> > > --- a/kernel/seccomp.c
+> > > +++ b/kernel/seccomp.c
+> > > @@ -41,6 +41,7 @@
+> > >  #include <linux/tracehook.h>
+> > >  #include <linux/uaccess.h>
+> > >  #include <linux/anon_inodes.h>
+> > > +#include <linux/lockdep.h>
+> > > =20
+> > >  enum notify_state {
+> > >  	SECCOMP_NOTIFY_INIT,
+> > > @@ -1021,10 +1022,27 @@ static int seccomp_notify_release(struct inod=
+e *inode, struct file *file)
+> > >  	return 0;
+> > >  }
+> > > =20
+> > > +/* must be called with notif_lock held */
+> > > +static inline struct seccomp_knotif *
+> > > +find_notification(struct seccomp_filter *filter, u64 id)
+> > > +{
+> > > +	struct seccomp_knotif *cur;
+> > > +
+> > > +	lockdep_assert_held(&filter->notify_lock);
+> > > +
+> > > +	list_for_each_entry(cur, &filter->notif->notifications, list) {
+> > > +		if (cur->id =3D=3D id)
+> > > +			return cur;
+> > > +	}
+> > > +
+> > > +	return NULL;
+> > > +}
+> > > +
+> > > +
+> > >  static long seccomp_notify_recv(struct seccomp_filter *filter,
+> > >  				void __user *buf)
+> > >  {
+> > > -	struct seccomp_knotif *knotif =3D NULL, *cur;
+> > > +	struct seccomp_knotif *knotif, *cur;
+> > >  	struct seccomp_notif unotif;
+> > >  	ssize_t ret;
+> > > =20
+> > > @@ -1078,15 +1096,8 @@ static long seccomp_notify_recv(struct seccomp=
+_filter *filter,
+> > >  		 * may have died when we released the lock, so we need to make
+> > >  		 * sure it's still around.
+> > >  		 */
+> > > -		knotif =3D NULL;
+> > >  		mutex_lock(&filter->notify_lock);
+> > > -		list_for_each_entry(cur, &filter->notif->notifications, list) {
+> > > -			if (cur->id =3D=3D unotif.id) {
+> > > -				knotif =3D cur;
+> > > -				break;
+> > > -			}
+> > > -		}
+> > > -
+> > > +		knotif =3D find_notification(filter, unotif.id);
+> > >  		if (knotif) {
+> > >  			knotif->state =3D SECCOMP_NOTIFY_INIT;
+> > >  			up(&filter->notif->request);
+> > > @@ -1101,7 +1112,7 @@ static long seccomp_notify_send(struct seccomp_=
+filter *filter,
+> > >  				void __user *buf)
+> > >  {
+> > >  	struct seccomp_notif_resp resp =3D {};
+> > > -	struct seccomp_knotif *knotif =3D NULL, *cur;
+> > > +	struct seccomp_knotif *knotif;
+> > >  	long ret;
+> > > =20
+> > >  	if (copy_from_user(&resp, buf, sizeof(resp)))
+> > > @@ -1118,13 +1129,7 @@ static long seccomp_notify_send(struct seccomp=
+_filter *filter,
+> > >  	if (ret < 0)
+> > >  		return ret;
+> > > =20
+> > > -	list_for_each_entry(cur, &filter->notif->notifications, list) {
+> > > -		if (cur->id =3D=3D resp.id) {
+> > > -			knotif =3D cur;
+> > > -			break;
+> > > -		}
+> > > -	}
+> > > -
+> > > +	knotif =3D find_notification(filter, resp.id);
+> > >  	if (!knotif) {
+> > >  		ret =3D -ENOENT;
+> > >  		goto out;
+> > > @@ -1150,7 +1155,7 @@ static long seccomp_notify_send(struct seccomp_=
+filter *filter,
+> > >  static long seccomp_notify_id_valid(struct seccomp_filter *filter,
+> > >  				    void __user *buf)
+> > >  {
+> > > -	struct seccomp_knotif *knotif =3D NULL;
+> >=20
+> > I don't know that this should have been removed, clang now warns:
+> >=20
+> > kernel/seccomp.c:1063:2: warning: variable 'knotif' is used uninitializ=
+ed whenever 'for' loop exits because its condition is false [-Wsometimes-un=
+initialized]
+> >         list_for_each_entry(cur, &filter->notif->notifications, list) {
+> >         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/linux/list.h:602:7: note: expanded from macro 'list_for_each_en=
+try'
+> >              &pos->member !=3D (head);                                 =
+   \
+> >              ^~~~~~~~~~~~~~~~~~~~~~
+> > kernel/seccomp.c:1075:7: note: uninitialized use occurs here
+> >         if (!knotif) {
+> >              ^~~~~~
+> > kernel/seccomp.c:1063:2: note: remove the condition if it is always true
+> >         list_for_each_entry(cur, &filter->notif->notifications, list) {
+> >         ^
+> > include/linux/list.h:602:7: note: expanded from macro 'list_for_each_en=
+try'
+> >              &pos->member !=3D (head);                                 =
+   \
+> >              ^
+> > kernel/seccomp.c:1045:31: note: initialize the variable 'knotif' to sil=
+ence this warning
+> >         struct seccomp_knotif *knotif, *cur;
+> >                                      ^
+> >                                       =3D NULL
+> > 1 warning generated.
+> >=20
+> I'm curious as to how you got clang to generate this warning. I'm running=
+ with clang 10, and
+> upon running with V=3D1, and adding -Wsometimes-uninitialized, I'm not se=
+eing this warning.
+> The following is the command called:
+> /usr/bin/clang-10 -Wp,-MD,kernel/.seccomp.o.d  -nostdinc -isystem /usr/li=
+b/llvm-10/lib/clang/10.0.0/include -I./arch/x86/include -I./arch/x86/includ=
+e/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/gen=
+erated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/=
+linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -Qun=
+used-arguments -Wsometimes-uninitialized -Wall -Wundef -Werror=3Dstrict-pro=
+totypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-=
+PIE -Werror=3Dimplicit-function-declaration -Werror=3Dimplicit-int -Wno-for=
+mat-security -std=3Dgnu89 -no-integrated-as -Werror=3Dunknown-warning-optio=
+n -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mstack-a=
+lignment=3D8 -mtune=3Dgeneric -mno-red-zone -mcmodel=3Dkernel -DCONFIG_X86_=
+X32_ABI -Wno-sign-compare -fno-asynchronous-unwind-tables -mretpoline-exter=
+nal-thunk -fno-delete-null-pointer-checks -Wno-address-of-packed-member -O2=
+ -Wframe-larger-than=3D1024 -fstack-protector -Wno-format-invalid-specifier=
+ -Wno-gnu -mno-global-merge -Wno-unused-const-variable -g -pg -mfentry -DCC=
+_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-ar=
+ray-bounds -fno-strict-overflow -fno-merge-all-constants -fno-stack-check -=
+Werror=3Ddate-time -Werror=3Dincompatible-pointer-types -fmacro-prefix-map=
+=3D./=3D -fcf-protection=3Dnone -Wno-initializer-overrides -Wno-format -Wno=
+-sign-compare -Wno-format-zero-length -Wno-tautological-constant-out-of-ran=
+ge-compare    -DKBUILD_MODFILE=3D'"kernel/seccomp"' -DKBUILD_BASENAME=3D'"s=
+eccomp"' -DKBUILD_MODNAME=3D'"seccomp"' -c -o kernel/seccomp.o kernel/secco=
+mp.c
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- arch/arm/boot/dts/imx6sx-sabreauto.dts | 75 ++++++++++++++++++++++++++
- arch/arm/boot/dts/imx6sx.dtsi          |  4 ++
- 2 files changed, 79 insertions(+)
+I saw it on a variety of configs but the one that is probably the
+easiest to reproduce with is arm32 defconfig:
 
-diff --git a/arch/arm/boot/dts/imx6sx-sabreauto.dts b/arch/arm/boot/dts/imx6sx-sabreauto.dts
-index 772b8ac5d637..76a4c06e0ff2 100644
---- a/arch/arm/boot/dts/imx6sx-sabreauto.dts
-+++ b/arch/arm/boot/dts/imx6sx-sabreauto.dts
-@@ -67,6 +67,36 @@
- 		vin-supply = <&reg_can_en>;
- 	};
- 
-+	reg_cs42888: cs42888_supply {
-+		compatible = "regulator-fixed";
-+		regulator-name = "cs42888_supply";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	sound-cs42888 {
-+		compatible = "fsl,imx6-sabreauto-cs42888",
-+			     "fsl,imx-audio-cs42888";
-+		model = "imx-cs42888";
-+		audio-cpu = <&esai>;
-+		audio-asrc = <&asrc>;
-+		audio-codec = <&cs42888>;
-+		audio-routing =
-+			"Line Out Jack", "AOUT1L",
-+			"Line Out Jack", "AOUT1R",
-+			"Line Out Jack", "AOUT2L",
-+			"Line Out Jack", "AOUT2R",
-+			"Line Out Jack", "AOUT3L",
-+			"Line Out Jack", "AOUT3R",
-+			"Line Out Jack", "AOUT4L",
-+			"Line Out Jack", "AOUT4R",
-+			"AIN1L", "Line In Jack",
-+			"AIN1R", "Line In Jack",
-+			"AIN2L", "Line In Jack",
-+			"AIN2R", "Line In Jack";
-+	};
-+
- 	sound-spdif {
- 		compatible = "fsl,imx-audio-spdif";
- 		model = "imx-spdif";
-@@ -79,6 +109,25 @@
- 	clock-frequency = <24576000>;
- };
- 
-+&clks {
-+	assigned-clocks = <&clks IMX6SX_PLL4_BYPASS_SRC>,
-+			  <&clks IMX6SX_PLL4_BYPASS>,
-+			  <&clks IMX6SX_CLK_PLL4_POST_DIV>;
-+	assigned-clock-parents = <&clks IMX6SX_CLK_LVDS2_IN>,
-+				 <&clks IMX6SX_PLL4_BYPASS_SRC>;
-+	assigned-clock-rates = <0>, <0>, <24576000>;
-+};
-+
-+&esai {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_esai>;
-+	assigned-clocks = <&clks IMX6SX_CLK_ESAI_SEL>,
-+			<&clks IMX6SX_CLK_ESAI_EXTAL>;
-+	assigned-clock-parents = <&clks IMX6SX_CLK_PLL4_AUDIO_DIV>;
-+	assigned-clock-rates = <0>, <24576000>;
-+	status = "okay";
-+};
-+
- &fec1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet1>;
-@@ -200,6 +249,21 @@
- 		>;
- 	};
- 
-+	pinctrl_esai: esaigrp {
-+		fsl,pins = <
-+			MX6SX_PAD_CSI_DATA00__ESAI_TX_CLK   0x1b030
-+			MX6SX_PAD_CSI_DATA01__ESAI_TX_FS    0x1b030
-+			MX6SX_PAD_CSI_HSYNC__ESAI_TX0       0x1b030
-+			MX6SX_PAD_CSI_DATA04__ESAI_TX1      0x1b030
-+			MX6SX_PAD_CSI_DATA06__ESAI_TX2_RX3  0x1b030
-+			MX6SX_PAD_CSI_DATA07__ESAI_TX3_RX2  0x1b030
-+			MX6SX_PAD_CSI_DATA02__ESAI_RX_CLK   0x1b030
-+			MX6SX_PAD_CSI_DATA03__ESAI_RX_FS    0x1b030
-+			MX6SX_PAD_CSI_VSYNC__ESAI_TX5_RX0   0x1b030
-+			MX6SX_PAD_CSI_DATA05__ESAI_TX4_RX1  0x1b030
-+		>;
-+	};
-+
- 	pinctrl_flexcan1: flexcan1grp {
- 		fsl,pins = <
- 			MX6SX_PAD_QSPI1B_DQS__CAN1_TX   0x1b020
-@@ -326,6 +390,17 @@
- 	pinctrl-0 = <&pinctrl_i2c2>;
- 	status = "okay";
- 
-+	cs42888: cs42888@48 {
-+		compatible = "cirrus,cs42888";
-+		reg = <0x48>;
-+		clocks = <&anaclk2 0>;
-+		clock-names = "mclk";
-+		VA-supply = <&reg_cs42888>;
-+		VD-supply = <&reg_cs42888>;
-+		VLS-supply = <&reg_cs42888>;
-+		VLC-supply = <&reg_cs42888>;
-+	};
-+
- 	touchscreen@4 {
- 		compatible = "eeti,egalax_ts";
- 		reg = <0x04>;
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index 8dc412b3862b..9f4f3c0aace5 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -341,6 +341,7 @@
- 				};
- 
- 				esai: esai@2024000 {
-+					compatible = "fsl,imx6sx-esai", "fsl,imx35-esai";
- 					reg = <0x02024000 0x4000>;
- 					interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
- 					clocks = <&clks IMX6SX_CLK_ESAI_IPG>,
-@@ -350,6 +351,9 @@
- 						 <&clks IMX6SX_CLK_SPBA>;
- 					clock-names = "core", "mem", "extal",
- 						      "fsys", "spba";
-+					dmas = <&sdma 23 21 0>,
-+					       <&sdma 24 21 0>;
-+					dma-names = "rx", "tx";
- 					status = "disabled";
- 				};
- 
--- 
-2.21.0
+$ curl -LSs https://lore.kernel.org/lkml/20200601112532.150158-1-sargun@sar=
+gun.me/raw | git am
 
+$ make -skj"$(nproc)" ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabi- LLVM=3D=
+1 O=3Dout/arm distclean defconfig kernel/seccomp.o
+
+Cheers,
+Nathan
+
+> > > +	struct seccomp_knotif *knotif;
+> > >  	u64 id;
+> > >  	long ret;
+> > > =20
+> > > @@ -1161,16 +1166,12 @@ static long seccomp_notify_id_valid(struct se=
+ccomp_filter *filter,
+> > >  	if (ret < 0)
+> > >  		return ret;
+> > > =20
+> > > -	ret =3D -ENOENT;
+> > > -	list_for_each_entry(knotif, &filter->notif->notifications, list) {
+> > > -		if (knotif->id =3D=3D id) {
+> > > -			if (knotif->state =3D=3D SECCOMP_NOTIFY_SENT)
+> > > -				ret =3D 0;
+> > > -			goto out;
+> > > -		}
+> > > -	}
+> > > +	knotif =3D find_notification(filter, id);
+> > > +	if (knotif && knotif->state =3D=3D SECCOMP_NOTIFY_SENT)
+> > > +		ret =3D 0;
+> > > +	else
+> > > +		ret =3D -ENOENT;
+> > > =20
+> > > -out:
+> > >  	mutex_unlock(&filter->notify_lock);
+> > >  	return ret;
+> > >  }
+> > > --=20
+> > > 2.25.1
+> > >=20
+> >=20
+> > Cheers,
+> > Nathan
