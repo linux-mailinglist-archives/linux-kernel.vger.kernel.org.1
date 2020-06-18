@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFF61FEEB7
+	by mail.lfdr.de (Postfix) with ESMTP id 31CD01FEEB6
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgFRJcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S1729214AbgFRJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728943AbgFRJcE (ORCPT
+        with ESMTP id S1729197AbgFRJcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:32:04 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02371C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:04 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id a6so3996647qka.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:03 -0700 (PDT)
+        Thu, 18 Jun 2020 05:32:05 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03EAC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:05 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id k186so5743289yba.18
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=086vfv3gPPfJZ5VO4SEM366I1+MoqC/R0oD42Imdbh8=;
-        b=fAXDSFhjAVW4D6Zy29LknWSqsBJPV7OzLPf+6YGVWWFtRLCpfWLWCTqnk00WsdEqgk
-         nrmwG5o35UyKtRhmjzOZi9ZKNni8p0ucP+WXj8VRjDptiqWY8ns0pHEjH6Tr9tGa3T7S
-         /aZ5M+vvTdTctOQ12ZJ4lCwqda/aajsZkK7EnSe8+ngTN9Pg2cvj9AUEzh2JJB/gSL/a
-         af7HqmAVCufSsJJwNR9+epbZqE37Iq/Min3EpcTyQQvaPHuhysdkJAqRr8+1JBscNhjY
-         8JvNhKSHylMudoZdr7iedjpRNhapca1tJSKmp/8xDu9WeGFdjhRjsSNz1m+qpaNL2TUI
-         8SUg==
+        bh=wAC/0zMBk1R1mKjHS4CraP1dln5upgDgvVtxjRPVBbA=;
+        b=C8BIq7mEJOO8a5LHVQ1SuDhcysfjMc5V2zuefaCD1/AohUdWCQ6EzEpjc/S+CtyVqD
+         1IhMpQrvVmfXwSUu+I9vQF1+c/54BZFxIKOdFnpCS6XgDWQJ4LQNWdZkuvXVf5PkgisN
+         OMuF+A5L2J5RCry6wyradYuB/UTxB8gGYvWfpT7ZXyWQLjVVZAB36ligjDfkOAXazDmg
+         C+lKnEOrLJsGhipSA01GmPwzu7HWTekfnJ3m0MhcTjtdUgLmAlR2X7ReYnwzZFgJLmO2
+         U5hkTjCWaNLWE9rRwvvU3WjYa6roSqQgnXBu7zdU/5DcTFHM2ecWAy4ESfuivG5UBR1Z
+         5o6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=086vfv3gPPfJZ5VO4SEM366I1+MoqC/R0oD42Imdbh8=;
-        b=G+5baya7UVRg0gIwgqklfORx5TAb2VRLj6aORIy2FDfunUUibjmuciKW98Y2KBa1w/
-         f/ZXfqSpqr8F3gueiLEZuqt/4OSNInoGd3KCz/YxDyLs+Bg7FIwxvikKRngo21G6xQ00
-         aZwdE8nZ1PR5UKxFB3W7BidIZhz9/tXlaRvlMWHmzU9FRDmMaxS+oQUnOm9rQCvxFikF
-         Yx0Kmz2DezmSot5Y5WOWBDo/1AKWavKThM23Rxg9sB2aWYmtQ75X1/KJl9/dFxGu4viQ
-         dWB/mPkIt7SF5xbll6LkW4jkODUY9NPpKZDMIhq3KMlnyjZKKMWkvwMiNv/7fu6nQKE9
-         AP3Q==
-X-Gm-Message-State: AOAM530K9H4/IsVUKBU2DPBjx5evH8P226hGBTstlUEj0iILF723Pj73
-        vh7CmsXqkSxIADgPxyfqE0hyzzQDAw==
-X-Google-Smtp-Source: ABdhPJxEeFmMNF1bE1+DiWwBprbkp2j2l6t7tHy189I4SoMWXy6UX9ktxxCFqnZGhSRak4y/9K3qlWG5kw==
-X-Received: by 2002:ad4:50c4:: with SMTP id e4mr2848394qvq.45.1592472722603;
- Thu, 18 Jun 2020 02:32:02 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 11:31:17 +0200
+        bh=wAC/0zMBk1R1mKjHS4CraP1dln5upgDgvVtxjRPVBbA=;
+        b=XpXTI7N+5MpOm6mw2Vo9k3oqSzdDzDHVvUhsYs9BODKgX8VD2oz4UbapEAVoJgH7E3
+         qWnRDE1UDJBq8/X/CeR6YsH5J6MqCpcBNx+TIrjbKAPIbEzvMag1wmDHlDdF9WQ+ZUwq
+         n5PPU38YWYnJzaLDbs8EHwBtACBvVKOuyEDWkB7ZgpwV5Blxl7trfDUKtlx6qZ58+OIs
+         yMu3Zhjv2PR4mCZCSbJLFc/Vk8M3JAdzYmplVkS3fkAfACECLOOyj0z3FVGNT0Jjsnf8
+         kmXkV0upf9Msg2/juw/gcOF6UfhbErh9RxNlrQjTQ7w5eDOIRq4GWzTC838xyWpiryRh
+         dE+w==
+X-Gm-Message-State: AOAM532EIDa0/SKMRjVZOAbesh0AjlJOKBwgdceFm+N9fE57TtN5RRey
+        WToUbffBXX2VtHe7K3VU8vstPkCCBA==
+X-Google-Smtp-Source: ABdhPJyoNvmUy6LQW6lg0uXVx0KMGkjLhkRReal6sqe7bk+aXHSMMR5P0LvdBpXockzmMqxZT8kS9TKSlg==
+X-Received: by 2002:a25:348a:: with SMTP id b132mr5314699yba.491.1592472724817;
+ Thu, 18 Jun 2020 02:32:04 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 11:31:18 +0200
 In-Reply-To: <20200618093118.247375-1-elver@google.com>
-Message-Id: <20200618093118.247375-3-elver@google.com>
+Message-Id: <20200618093118.247375-4-elver@google.com>
 Mime-Version: 1.0
 References: <20200618093118.247375-1-elver@google.com>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH 2/3] kcsan: Simplify compiler flags
+Subject: [PATCH 3/3] kcsan: Disable branch tracing in core runtime
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     will@kernel.org, peterz@infradead.org, bp@alien8.de,
@@ -63,27 +63,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the set of compiler flags for the runtime by removing cc-option
-from -fno-stack-protector, because all supported compilers support it.
-This saves us one compiler invocation during build.
+Disable branch tracing in core KCSAN runtime if branches are being
+traced (TRACE_BRANCH_PROFILING). This it to avoid its performance
+impact, but also avoid recursion in case KCSAN is enabled for the branch
+tracing runtime.
+
+The latter had already been a problem for KASAN:
+https://lore.kernel.org/lkml/CANpmjNOeXmD5E3O50Z3MjkiuCYaYOPyi+1rq=GZvEKwBvLR0Ug@mail.gmail.com/
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- kernel/kcsan/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/kcsan/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/kcsan/Makefile b/kernel/kcsan/Makefile
-index 092ce58d2e56..fea064afc4f7 100644
+index fea064afc4f7..65ca5539c470 100644
 --- a/kernel/kcsan/Makefile
 +++ b/kernel/kcsan/Makefile
-@@ -7,8 +7,8 @@ CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_debugfs.o = $(CC_FLAGS_FTRACE)
+@@ -8,7 +8,7 @@ CFLAGS_REMOVE_debugfs.o = $(CC_FLAGS_FTRACE)
  CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
  
--CFLAGS_core.o := $(call cc-option,-fno-conserve-stack,) \
--	$(call cc-option,-fno-stack-protector,)
-+CFLAGS_core.o := $(call cc-option,-fno-conserve-stack) \
-+	-fno-stack-protector
+ CFLAGS_core.o := $(call cc-option,-fno-conserve-stack) \
+-	-fno-stack-protector
++	-fno-stack-protector -DDISABLE_BRANCH_PROFILING
  
  obj-y := core.o debugfs.o report.o
  obj-$(CONFIG_KCSAN_SELFTEST) += selftest.o
