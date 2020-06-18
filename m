@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9489E1FE779
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4A21FE6D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387787AbgFRClK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
+        id S1729199AbgFRBNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:13:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728231AbgFRBM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:29 -0400
+        id S1728918AbgFRBMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:12:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D04E221EB;
-        Thu, 18 Jun 2020 01:12:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEDD020EDD;
+        Thu, 18 Jun 2020 01:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442749;
-        bh=akzNYp/BG7Kv+ev3sVP1mF5oUsQ0FXBpqIqVlnZYvl0=;
+        s=default; t=1592442751;
+        bh=G3npwubaEKnd3PGv+uBeBKcI2zNcuNgQoVB37CCG5rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdVUjYiV2nHkGkAypF31DIZ5AshUv3iAW3ShR/onMFiHIa0Fo/VDBWRHvGkgz3Xy5
-         Xcpvnsm+RMcxGH97nqgMwfartPz4qblLYvujPXBbPw50DQUfRs69uomMxcBWrVofOt
-         oOGhHJdIz9PlPyZ3STZsJ1KVgMooshem3casFpcs=
+        b=N4g0EsoKLEgbgSAfzAp3MqeVdFts08JAjMcW5MwkkAdJE+/DARZPPFkxE+2zaNcJw
+         vAbqbLSbFpAkJ1PZYqlNYFB1CK0wWQr9fOI36T+JWg1ppUapxQebya1fJFCcyNkjbX
+         0PCHSlgS45AJQUxKzNSJP0Z1Yo90+Q+J8oCLJrVQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 201/388] arm64: dts: qcom: db820c: Fix invalid pm8994 supplies
-Date:   Wed, 17 Jun 2020 21:04:58 -0400
-Message-Id: <20200618010805.600873-201-sashal@kernel.org>
+Cc:     Tero Kristo <t-kristo@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 203/388] clk: ti: composite: fix memory leak
+Date:   Wed, 17 Jun 2020 21:05:00 -0400
+Message-Id: <20200618010805.600873-203-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,62 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 1cacdf5d3bb9644ac7b9339c611ac5b9dd90d09d ]
+[ Upstream commit c7c1cbbc9217ebb5601b88d138d4a5358548de9d ]
 
-It's uncertain where the "vreg_s8a_l3a_input" comes from, but the supply
-for VDD_L3_L11 on PM8994 should be VREG_S3A_1P3, so correct this - and
-drop the vreg_s8a_l3a_input.
+The parent_names is never released for a component clock definition,
+causing some memory leak. Fix by releasing it once it is no longer
+needed.
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Fixes: 83d9ed4342a3 ("arm64: dts: qcom: db820c: Use regulator names from schematics")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200417070712.1376355-1-bjorn.andersson@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lkml.kernel.org/r/20200429131341.4697-2-t-kristo@ti.com
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/clk/ti/composite.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index c4abbccf2bed..eaa1eb70b455 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -117,16 +117,6 @@ vph_pwr: vph-pwr-regulator {
- 		regulator-max-microvolt = <3700000>;
- 	};
+diff --git a/drivers/clk/ti/composite.c b/drivers/clk/ti/composite.c
+index 6a89936ba03a..eaa43575cfa5 100644
+--- a/drivers/clk/ti/composite.c
++++ b/drivers/clk/ti/composite.c
+@@ -196,6 +196,7 @@ static void __init _register_composite(void *user,
+ 		if (!cclk->comp_clks[i])
+ 			continue;
+ 		list_del(&cclk->comp_clks[i]->link);
++		kfree(cclk->comp_clks[i]->parent_names);
+ 		kfree(cclk->comp_clks[i]);
+ 	}
  
--	vreg_s8a_l3a_input: vreg-s8a-l3a-input {
--		compatible = "regulator-fixed";
--		regulator-name = "vreg_s8a_l3a_input";
--		regulator-always-on;
--		regulator-boot-on;
--
--		regulator-min-microvolt = <0>;
--		regulator-max-microvolt = <0>;
--	};
--
- 	wlan_en: wlan-en-1-8v {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wlan_en_gpios>;
-@@ -705,14 +695,14 @@ pm8994-regulators {
- 		vdd_s11-supply = <&vph_pwr>;
- 		vdd_s12-supply = <&vph_pwr>;
- 		vdd_l2_l26_l28-supply = <&vreg_s3a_1p3>;
--		vdd_l3_l11-supply = <&vreg_s8a_l3a_input>;
-+		vdd_l3_l11-supply = <&vreg_s3a_1p3>;
- 		vdd_l4_l27_l31-supply = <&vreg_s3a_1p3>;
- 		vdd_l5_l7-supply = <&vreg_s5a_2p15>;
- 		vdd_l6_l12_l32-supply = <&vreg_s5a_2p15>;
- 		vdd_l8_l16_l30-supply = <&vph_pwr>;
- 		vdd_l14_l15-supply = <&vreg_s5a_2p15>;
- 		vdd_l25-supply = <&vreg_s3a_1p3>;
--		vdd_lvs1_2-supply = <&vreg_s4a_1p8>;
-+		vdd_lvs1_lvs2-supply = <&vreg_s4a_1p8>;
- 
- 		vreg_s3a_1p3: s3 {
- 			regulator-name = "vreg_s3a_1p3";
 -- 
 2.25.1
 
