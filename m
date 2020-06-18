@@ -2,80 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EB41FDE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DBE1FDE94
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733050AbgFRBeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732760AbgFRBbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:31:23 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732113AbgFRBe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:34:56 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:41431 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731409AbgFRBdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:33:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592443988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIDGi3sXPt+fhjCjxVVlP5Ysnp3g6oAAR1w/q4/ns0Q=;
+        b=N7fBjlHZewQDxMzVJo5Z8NXdInXVPEKzfFAaAJQN3NqwHQHIAL/fVZNM6v901q4dEoshr1
+        Jkhqfn+EzKynATQU8O6tprL/T/X10mfgL+MMquSl6JCC7m9hqOGLk/reoki0UFa2+yhpBl
+        I11rvnmcapDBeVhpJXkz6xFTR3CIXzs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-qpFtEkRSOOWEy4mHP7dN4A-1; Wed, 17 Jun 2020 21:33:06 -0400
+X-MC-Unique: qpFtEkRSOOWEy4mHP7dN4A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BE442224B;
-        Thu, 18 Jun 2020 01:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443882;
-        bh=i77N/US4sl25BCnif63wW5G4Cm8Q8CCwdpW65jgwKP8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EoGhXezUQkG3Z227OOtSL8FdFE34M3ypqrIfSn2ewYbIVJGu2jUTSdiRdJnjkmrOP
-         p6rKC/B8cn/h0SgRJMpNP0dCCjzXkwyg8b0CiJePEzuNlXolqE926d+RlK4tb1zC5u
-         YrVBwNRNvVKnbLZy/BbMem92MkUcdy6zG3fW8WmI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 60/60] scsi: acornscsi: Fix an error handling path in acornscsi_probe()
-Date:   Wed, 17 Jun 2020 21:30:04 -0400
-Message-Id: <20200618013004.610532-60-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618013004.610532-1-sashal@kernel.org>
-References: <20200618013004.610532-1-sashal@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 076568005AD;
+        Thu, 18 Jun 2020 01:33:05 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-167.rdu2.redhat.com [10.10.117.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B2E160F89;
+        Thu, 18 Jun 2020 01:32:58 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] sched: Add PF_MEMALLOC_NOLOCKDEP flag
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200617175310.20912-1-longman@redhat.com>
+ <20200617175310.20912-2-longman@redhat.com>
+ <20200618000110.GF2005@dread.disaster.area>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <7371c5dc-7ba7-6d86-75ca-43bedfa6b24f@redhat.com>
+Date:   Wed, 17 Jun 2020 21:32:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200618000110.GF2005@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On 6/17/20 8:01 PM, Dave Chinner wrote:
+> On Wed, Jun 17, 2020 at 01:53:09PM -0400, Waiman Long wrote:
+>> There are cases where calling kmalloc() can lead to false positive
+>> lockdep splat. One notable example that can happen in the freezing of
+>> the xfs filesystem is as follows:
+>>
+>>   Possible unsafe locking scenario:
+>>
+>>         CPU0                    CPU1
+>>         ----                    ----
+>>    lock(sb_internal);
+>>                                 lock(fs_reclaim);
+>>                                 lock(sb_internal);
+>>    lock(fs_reclaim);
+>>
+>>   *** DEADLOCK ***
+>>
+>> This is a false positive as all the dirty pages are flushed out before
+>> the filesystem can be frozen. However, there is no easy way to modify
+>> lockdep to handle this situation properly.
+>>
+>> One possible workaround is to disable lockdep by setting __GFP_NOLOCKDEP
+>> in the appropriate kmalloc() calls.  However, it will be cumbersome to
+>> locate all the right kmalloc() calls to insert __GFP_NOLOCKDEP and it
+>> is easy to miss some especially when the code is updated in the future.
+>>
+>> Another alternative is to have a per-process global state that indicates
+>> the equivalent of __GFP_NOLOCKDEP without the need to set the gfp_t flag
+>> individually. To allow the latter case, a new PF_MEMALLOC_NOLOCKDEP
+>> per-process flag is now added. After adding this new bit, there are
+>> still 2 free bits left.
+>>
+>> Suggested-by: Dave Chinner <david@fromorbit.com>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/sched.h    |  7 +++++++
+>>   include/linux/sched/mm.h | 15 ++++++++++-----
+>>   2 files changed, 17 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index b62e6aaf28f0..44247cbc9073 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -1508,6 +1508,7 @@ extern struct pid *cad_pid;
+>>   #define PF_MEMALLOC_NOIO	0x00080000	/* All allocation requests will inherit GFP_NOIO */
+>>   #define PF_LOCAL_THROTTLE	0x00100000	/* Throttle writes only against the bdi I write to,
+>>   						 * I am cleaning dirty pages from some other bdi. */
+>> +#define __PF_MEMALLOC_NOLOCKDEP	0x00100000	/* All allocation requests will inherit __GFP_NOLOCKDEP */
+> Why is this considered a safe thing to do? Any context that sets
+> __PF_MEMALLOC_NOLOCKDEP will now behave differently in memory
+> reclaim as it will think that PF_LOCAL_THROTTLE is set when lockdep
+> is enabled.
 
-[ Upstream commit 42c76c9848e13dbe0538d7ae0147a269dfa859cb ]
+Oh, my mistake, it should be 0x01000000 which is not currently being 
+used. Thank for catching that. I will repost a new version. I have no 
+intention to reuse any existing bit. As said in the commit log, there 
+are actually 2 more free bits left.
 
-'ret' is known to be 0 at this point.  Explicitly return -ENOMEM if one of
-the 'ecardm_iomap()' calls fail.
 
-Link: https://lore.kernel.org/r/20200530081622.577888-1-christophe.jaillet@wanadoo.fr
-Fixes: e95a1b656a98 ("[ARM] rpc: acornscsi: update to new style ecard driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/arm/acornscsi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>
+>>   #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
+>>   #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
+>>   #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
+>> @@ -1519,6 +1520,12 @@ extern struct pid *cad_pid;
+>>   #define PF_FREEZER_SKIP		0x40000000	/* Freezer should not count it as freezable */
+>>   #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
+>>   
+>> +#ifdef CONFIG_LOCKDEP
+>> +#define PF_MEMALLOC_NOLOCKDEP	__PF_MEMALLOC_NOLOCKDEP
+>> +#else
+>> +#define PF_MEMALLOC_NOLOCKDEP	0
+>> +#endif
+>> +
+>>   /*
+>>    * Only the _current_ task can read/write to tsk->flags, but other
+>>    * tasks can access tsk->flags in readonly mode for example
+>> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+>> index 480a4d1b7dd8..4a076a148568 100644
+>> --- a/include/linux/sched/mm.h
+>> +++ b/include/linux/sched/mm.h
+>> @@ -177,22 +177,27 @@ static inline bool in_vfork(struct task_struct *tsk)
+>>    * Applies per-task gfp context to the given allocation flags.
+>>    * PF_MEMALLOC_NOIO implies GFP_NOIO
+>>    * PF_MEMALLOC_NOFS implies GFP_NOFS
+>> + * PF_MEMALLOC_NOLOCKDEP implies __GFP_NOLOCKDEP
+>>    * PF_MEMALLOC_NOCMA implies no allocation from CMA region.
+>>    */
+>>   static inline gfp_t current_gfp_context(gfp_t flags)
+>>   {
+>> -	if (unlikely(current->flags &
+>> -		     (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS | PF_MEMALLOC_NOCMA))) {
+>> +	unsigned int pflags = current->flags;
+>> +
+>> +	if (unlikely(pflags & (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS |
+>> +			       PF_MEMALLOC_NOCMA | PF_MEMALLOC_NOLOCKDEP))) {
+> That needs a PF_MEMALLOC_MASK.
 
-diff --git a/drivers/scsi/arm/acornscsi.c b/drivers/scsi/arm/acornscsi.c
-index deaaf84989cd..be595add8026 100644
---- a/drivers/scsi/arm/acornscsi.c
-+++ b/drivers/scsi/arm/acornscsi.c
-@@ -2912,8 +2912,10 @@ static int acornscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
- 
- 	ashost->base = ecardm_iomap(ec, ECARD_RES_MEMC, 0, 0);
- 	ashost->fast = ecardm_iomap(ec, ECARD_RES_IOCFAST, 0, 0);
--	if (!ashost->base || !ashost->fast)
-+	if (!ashost->base || !ashost->fast) {
-+		ret = -ENOMEM;
- 		goto out_put;
-+	}
- 
- 	host->irq = ec->irq;
- 	ashost->host = host;
--- 
-2.25.1
+Will add that in the next version.
+
+Thanks,
+Longman
 
