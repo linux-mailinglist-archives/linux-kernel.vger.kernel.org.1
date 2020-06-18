@@ -2,101 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AD81FE3E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC711FE5CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387546AbgFRCN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S2387623AbgFRC22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:28:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:38636 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730410AbgFRBUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:20:55 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D5B520FC3;
-        Thu, 18 Jun 2020 01:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443255;
-        bh=jZ92myoh9p0SwxIy56nhQlfUDjZkGC29YAyAi+XrVCw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djTfkVbCas+38Y7Si6p1NacFON6GHeJ7osJz/zAXC7xJEV/8pxSielnNb9dQemgfY
-         JpEE409dhWac1JiblsJJfTjxDjEAC7wiJJZlHVvMHseCjEK2wW1U8ntkBPSuulhgya
-         fur3E3CWilMYRlB+EwBrInhvwUeipe4I+BoMM0HE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marcos Scriven <marcos@scriven.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 203/266] PCI: Avoid FLR for AMD Matisse HD Audio & USB 3.0
-Date:   Wed, 17 Jun 2020 21:15:28 -0400
-Message-Id: <20200618011631.604574-203-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
-References: <20200618011631.604574-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1729570AbgFRBQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:16:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16E6C1042;
+        Wed, 17 Jun 2020 18:16:23 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.80.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 295E23F6CF;
+        Wed, 17 Jun 2020 18:16:13 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 (RESEND) 1/3] mm/sparsemem: Enable vmem_altmap support in vmemmap_populate_basepages()
+Date:   Thu, 18 Jun 2020 06:45:28 +0530
+Message-Id: <1592442930-9380-2-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
+References: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcos Scriven <marcos@scriven.org>
+vmemmap_populate_basepages() is used across platforms to allocate backing
+memory for vmemmap mapping. This is used as a standard default choice or
+as a fallback when intended huge pages allocation fails. This just creates
+entire vmemmap mapping with base pages (PAGE_SIZE).
 
-[ Upstream commit 0d14f06cd6657ba3446a5eb780672da487b068e7 ]
+On arm64 platforms, vmemmap_populate_basepages() is called instead of the
+platform specific vmemmap_populate() when ARM64_SWAPPER_USES_SECTION_MAPS
+is not enabled as in case for ARM64_16K_PAGES and ARM64_64K_PAGES configs.
 
-The AMD Matisse HD Audio & USB 3.0 devices advertise Function Level Reset
-support, but hang when an FLR is triggered.
+At present vmemmap_populate_basepages() does not support allocating from
+driver defined struct vmem_altmap while trying to create vmemmap mapping
+for a device memory range. It prevents ARM64_16K_PAGES and ARM64_64K_PAGES
+configs on arm64 from supporting device memory with vmemap_altmap request.
 
-To reproduce the problem, attach the device to a VM, then detach and try to
-attach again.
+This enables vmem_altmap support in vmemmap_populate_basepages() unlocking
+device memory allocation for vmemap mapping on arm64 platforms with 16K or
+64K base page configs.
 
-Rename the existing quirk_intel_no_flr(), which was not Intel-specific, to
-quirk_no_flr(), and apply it to prevent the use of FLR on these AMD
-devices.
+Each architecture should evaluate and decide on subscribing device memory
+based base page allocation through vmemmap_populate_basepages(). Hence lets
+keep it disabled on all archs in order to preserve the existing semantics.
+A subsequent patch enables it on arm64.
 
-Link: https://lore.kernel.org/r/CAAri2DpkcuQZYbT6XsALhx2e6vRqPHwtbjHYeiH7MNp4zmt1RA@mail.gmail.com
-Signed-off-by: Marcos Scriven <marcos@scriven.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Tested-by: Jia He <justin.he@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/pci/quirks.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ arch/arm64/mm/mmu.c      |  2 +-
+ arch/ia64/mm/discontig.c |  2 +-
+ arch/riscv/mm/init.c     |  2 +-
+ arch/x86/mm/init_64.c    |  6 +++---
+ include/linux/mm.h       |  5 +++--
+ mm/sparse-vmemmap.c      | 16 +++++++++++-----
+ 6 files changed, 20 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 798e52051ecc..3f89ba7fe7fb 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5130,13 +5130,23 @@ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
- }
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
- 
--/* FLR may cause some 82579 devices to hang */
--static void quirk_intel_no_flr(struct pci_dev *dev)
-+/*
-+ * FLR may cause the following to devices to hang:
-+ *
-+ * AMD Starship/Matisse HD Audio Controller 0x1487
-+ * AMD Matisse USB 3.0 Host Controller 0x149c
-+ * Intel 82579LM Gigabit Ethernet Controller 0x1502
-+ * Intel 82579V Gigabit Ethernet Controller 0x1503
-+ *
-+ */
-+static void quirk_no_flr(struct pci_dev *dev)
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 990929c8837e..0adad8859393 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1068,7 +1068,7 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap)
  {
- 	dev->dev_flags |= PCI_DEV_FLAGS_NO_FLR_RESET;
+-	return vmemmap_populate_basepages(start, end, node);
++	return vmemmap_populate_basepages(start, end, node, NULL);
  }
--DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1502, quirk_intel_no_flr);
--DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1503, quirk_intel_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x1487, quirk_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x149c, quirk_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1502, quirk_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1503, quirk_no_flr);
- 
- static void quirk_no_ext_tags(struct pci_dev *pdev)
+ #else	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
+index dd8284bcbf16..4d23c81f96d8 100644
+--- a/arch/ia64/mm/discontig.c
++++ b/arch/ia64/mm/discontig.c
+@@ -656,7 +656,7 @@ void arch_refresh_nodedata(int update_node, pg_data_t *update_pgdat)
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap)
  {
+-	return vmemmap_populate_basepages(start, end, node);
++	return vmemmap_populate_basepages(start, end, node, NULL);
+ }
+ 
+ void vmemmap_free(unsigned long start, unsigned long end,
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index f4adb3684f3d..8101170f54ac 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -530,6 +530,6 @@ void __init paging_init(void)
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 			       struct vmem_altmap *altmap)
+ {
+-	return vmemmap_populate_basepages(start, end, node);
++	return vmemmap_populate_basepages(start, end, node, NULL);
+ }
+ #endif
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index dbae185511cd..19c0ed3271a3 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1493,7 +1493,7 @@ static int __meminit vmemmap_populate_hugepages(unsigned long start,
+ 			vmemmap_verify((pte_t *)pmd, node, addr, next);
+ 			continue;
+ 		}
+-		if (vmemmap_populate_basepages(addr, next, node))
++		if (vmemmap_populate_basepages(addr, next, node, NULL))
+ 			return -ENOMEM;
+ 	}
+ 	return 0;
+@@ -1505,7 +1505,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 	int err;
+ 
+ 	if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+-		err = vmemmap_populate_basepages(start, end, node);
++		err = vmemmap_populate_basepages(start, end, node, NULL);
+ 	else if (boot_cpu_has(X86_FEATURE_PSE))
+ 		err = vmemmap_populate_hugepages(start, end, node, altmap);
+ 	else if (altmap) {
+@@ -1513,7 +1513,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 				__func__);
+ 		err = -ENOMEM;
+ 	} else
+-		err = vmemmap_populate_basepages(start, end, node);
++		err = vmemmap_populate_basepages(start, end, node, NULL);
+ 	if (!err)
+ 		sync_global_pgds(start, end - 1);
+ 	return err;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index dc7b87310c10..e40ac543d248 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3011,14 +3011,15 @@ pgd_t *vmemmap_pgd_populate(unsigned long addr, int node);
+ p4d_t *vmemmap_p4d_populate(pgd_t *pgd, unsigned long addr, int node);
+ pud_t *vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node);
+ pmd_t *vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node);
+-pte_t *vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node);
++pte_t *vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
++			    struct vmem_altmap *altmap);
+ void *vmemmap_alloc_block(unsigned long size, int node);
+ struct vmem_altmap;
+ void *vmemmap_alloc_block_buf(unsigned long size, int node);
+ void *altmap_alloc_block_buf(unsigned long size, struct vmem_altmap *altmap);
+ void vmemmap_verify(pte_t *, int, unsigned long, unsigned long);
+ int vmemmap_populate_basepages(unsigned long start, unsigned long end,
+-			       int node);
++			       int node, struct vmem_altmap *altmap);
+ int vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap);
+ void vmemmap_populate_print_last(void);
+diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+index 0db7738d76e9..ceed10dec31e 100644
+--- a/mm/sparse-vmemmap.c
++++ b/mm/sparse-vmemmap.c
+@@ -139,12 +139,18 @@ void __meminit vmemmap_verify(pte_t *pte, int node,
+ 			start, end - 1);
+ }
+ 
+-pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node)
++pte_t * __meminit vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
++				       struct vmem_altmap *altmap)
+ {
+ 	pte_t *pte = pte_offset_kernel(pmd, addr);
+ 	if (pte_none(*pte)) {
+ 		pte_t entry;
+-		void *p = vmemmap_alloc_block_buf(PAGE_SIZE, node);
++		void *p;
++
++		if (altmap)
++			p = altmap_alloc_block_buf(PAGE_SIZE, altmap);
++		else
++			p = vmemmap_alloc_block_buf(PAGE_SIZE, node);
+ 		if (!p)
+ 			return NULL;
+ 		entry = pfn_pte(__pa(p) >> PAGE_SHIFT, PAGE_KERNEL);
+@@ -212,8 +218,8 @@ pgd_t * __meminit vmemmap_pgd_populate(unsigned long addr, int node)
+ 	return pgd;
+ }
+ 
+-int __meminit vmemmap_populate_basepages(unsigned long start,
+-					 unsigned long end, int node)
++int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
++					 int node, struct vmem_altmap *altmap)
+ {
+ 	unsigned long addr = start;
+ 	pgd_t *pgd;
+@@ -235,7 +241,7 @@ int __meminit vmemmap_populate_basepages(unsigned long start,
+ 		pmd = vmemmap_pmd_populate(pud, addr, node);
+ 		if (!pmd)
+ 			return -ENOMEM;
+-		pte = vmemmap_pte_populate(pmd, addr, node);
++		pte = vmemmap_pte_populate(pmd, addr, node, altmap);
+ 		if (!pte)
+ 			return -ENOMEM;
+ 		vmemmap_verify(pte, node, addr, addr + PAGE_SIZE);
 -- 
-2.25.1
+2.20.1
 
