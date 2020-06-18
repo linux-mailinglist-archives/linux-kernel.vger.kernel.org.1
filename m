@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F391FE663
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065C61FE660
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387464AbgFRCdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
+        id S2387710AbgFRCdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729372AbgFRBOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:50 -0400
+        id S1729417AbgFRBO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4A9E20EDD;
-        Thu, 18 Jun 2020 01:14:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64BCE20EDD;
+        Thu, 18 Jun 2020 01:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442889;
-        bh=lTf3psMkvzYLlXoW5mhe7q+SLED4DuOEqoOrFxakpfQ=;
+        s=default; t=1592442898;
+        bh=c6VpuJJmM3SJJVJBzIjuWts789Ks6N5gnyM90yPAznw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mi+X8g9KwtoUf5wEK9Kdb9mU95tYdk+THgFZBo59VDO+C1xpYB47GZF9DXsb7A8tF
-         9SljUfqYp8Sb6jM1cD5/QR+AaBRQZjkmUfdoR6Oj4U99l0eGh3eJdKFjzpFfXQxtVv
-         V6jPAvqYqAtJD6aS9U/+N69+2UzyFqgiDTWWYcUI=
+        b=u1uRglkxkPMK6P0Yk/6hNQGOwysiEeon0XYYuBSX4VTTgcDbFfMTFKhl0a8N1KM4e
+         XhtQZjiom3jXDXzl5xPaLDBGNoa0/IInXvAsCyUiExBAopXMP1jnuIGHoFGht1DMlD
+         pZLEwuivfp3jRxIKiMTxteGKUwhGss1OVh3IKNb8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 312/388] rxrpc: Adjust /proc/net/rxrpc/calls to display call->debug_id not user_ID
-Date:   Wed, 17 Jun 2020 21:06:49 -0400
-Message-Id: <20200618010805.600873-312-sashal@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-unionfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 319/388] ovl: verify permissions in ovl_path_open()
+Date:   Wed, 17 Jun 2020 21:06:56 -0400
+Message-Id: <20200618010805.600873-319-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,51 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 32f71aa497cfb23d37149c2ef16ad71fce2e45e2 ]
+[ Upstream commit 56230d956739b9cb1cbde439d76227d77979a04d ]
 
-The user ID value isn't actually much use - and leaks a kernel pointer or a
-userspace value - so replace it with the call debug ID, which appears in trace
-points.
+Check permission before opening a real file.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+ovl_path_open() is used by readdir and copy-up routines.
+
+ovl_permission() theoretically already checked copy up permissions, but it
+doesn't hurt to re-do these checks during the actual copy-up.
+
+For directory reading ovl_permission() only checks access to topmost
+underlying layer.  Readdir on a merged directory accesses layers below the
+topmost one as well.  Permission wasn't checked for these layers.
+
+Note: modifying ovl_permission() to perform this check would be far more
+complex and hence more bug prone.  The result is less precise permissions
+returned in access(2).  If this turns out to be an issue, we can revisit
+this bug.
+
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rxrpc/proc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/overlayfs/util.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/net/rxrpc/proc.c b/net/rxrpc/proc.c
-index 8b179e3c802a..543afd9bd664 100644
---- a/net/rxrpc/proc.c
-+++ b/net/rxrpc/proc.c
-@@ -68,7 +68,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
- 			 "Proto Local                                          "
- 			 " Remote                                         "
- 			 " SvID ConnID   CallID   End Use State    Abort   "
--			 " UserID           TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
-+			 " DebugId  TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
- 		return 0;
- 	}
+diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
+index 36b60788ee47..a0878039332a 100644
+--- a/fs/overlayfs/util.c
++++ b/fs/overlayfs/util.c
+@@ -459,7 +459,32 @@ bool ovl_is_whiteout(struct dentry *dentry)
  
-@@ -100,7 +100,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
- 	rx_hard_ack = READ_ONCE(call->rx_hard_ack);
- 	seq_printf(seq,
- 		   "UDP   %-47.47s %-47.47s %4x %08x %08x %s %3u"
--		   " %-8.8s %08x %lx %08x %02x %08x %02x %08x %06lx\n",
-+		   " %-8.8s %08x %08x %08x %02x %08x %02x %08x %06lx\n",
- 		   lbuff,
- 		   rbuff,
- 		   call->service_id,
-@@ -110,7 +110,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
- 		   atomic_read(&call->usage),
- 		   rxrpc_call_states[call->state],
- 		   call->abort_code,
--		   call->user_call_ID,
-+		   call->debug_id,
- 		   tx_hard_ack, READ_ONCE(call->tx_top) - tx_hard_ack,
- 		   rx_hard_ack, READ_ONCE(call->rx_top) - rx_hard_ack,
- 		   call->rx_serial,
+ struct file *ovl_path_open(struct path *path, int flags)
+ {
+-	return dentry_open(path, flags | O_NOATIME, current_cred());
++	struct inode *inode = d_inode(path->dentry);
++	int err, acc_mode;
++
++	if (flags & ~(O_ACCMODE | O_LARGEFILE))
++		BUG();
++
++	switch (flags & O_ACCMODE) {
++	case O_RDONLY:
++		acc_mode = MAY_READ;
++		break;
++	case O_WRONLY:
++		acc_mode = MAY_WRITE;
++		break;
++	default:
++		BUG();
++	}
++
++	err = inode_permission(inode, acc_mode | MAY_OPEN);
++	if (err)
++		return ERR_PTR(err);
++
++	/* O_NOATIME is an optimization, don't fail if not permitted */
++	if (inode_owner_or_capable(inode))
++		flags |= O_NOATIME;
++
++	return dentry_open(path, flags, current_cred());
+ }
+ 
+ /* Caller should hold ovl_inode->lock */
 -- 
 2.25.1
 
