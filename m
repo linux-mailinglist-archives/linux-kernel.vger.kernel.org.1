@@ -2,71 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FA81FF486
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF621FF432
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgFROST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:18:19 -0400
-Received: from mail-m964.mail.126.com ([123.126.96.4]:49278 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgFROSS (ORCPT
+        id S1730502AbgFROIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:08:04 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:28282 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730360AbgFROIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:18:18 -0400
-X-Greylist: delayed 1849 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Jun 2020 10:18:16 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=dE/u/Olq00IitY+Hxe
-        hpcTZ9LTITxRuFXdDzNJlgZMU=; b=MLnc9/S4PnYP4jmWCYMN3uxxK+/xLKP2GX
-        kLHeK/H888C0chYzZP4d7SxJk1zrzJTKN/A8b+IFdy2H8K6Yxju0KIJFjThOCSK5
-        sWsk8Z4uoLc8TXdrLoh38C/7jp762t5ErjVnJk7KTpEJIwH4LpB7r5KFqCkK96Sz
-        eaV1q8Nng=
-Received: from zhixu-home.lan (unknown [114.249.228.138])
-        by smtp9 (Coremail) with SMTP id NeRpCgBnbwu2b+tekoqNSA--.114S2;
-        Thu, 18 Jun 2020 21:44:23 +0800 (CST)
-From:   Zhixu Zhao <zhixu001@126.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Rob Springer <rspringer@google.com>,
-        Todd Poynor <toddpoynor@google.com>,
-        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in gasket_core.c
-Date:   Thu, 18 Jun 2020 21:44:22 +0800
-Message-Id: <20200618134422.24278-1-zhixu001@126.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200617161127.32006-1-zhixu001@126.com>
-References: <20200617161127.32006-1-zhixu001@126.com>
-X-CM-TRANSID: NeRpCgBnbwu2b+tekoqNSA--.114S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4kuFy7tr1fGrW3AFyrWFg_yoW3AwbEkr
-        WxZrykG3Z8GasYyrWUCrsxJF9rCw1fJFnY93y5t34DG34kAwsxXws7Gr40krnxZ3Z7X3Zx
-        Z3sFvas7Jw12gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeLNVDUUUUU==
-X-Originating-IP: [114.249.228.138]
-X-CM-SenderInfo: x2kl53qqqrqiyswou0bp/1tbiuxdHfFpEA3VICwAAs8
+        Thu, 18 Jun 2020 10:08:01 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Jun 2020 10:07:58 EDT
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 18 Jun 2020 07:01:54 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 Jun 2020 07:01:52 -0700
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 18 Jun 2020 19:31:28 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 5292D4A0A; Thu, 18 Jun 2020 19:31:27 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        travitej@codeaurora.org, nganji@codeaurora.org
+Subject: [v8] drm/msm/dpu: ensure device suspend happens during PM sleep
+Date:   Thu, 18 Jun 2020 19:31:24 +0530
+Message-Id: <1592488884-21890-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At 2020-06-18 03:10:02, "Dan Carpenter" <dan.carpenter@oracle.com> wrote:
->It would be better to do this in the declaration block so you can change
->the earlier two uses in this function:
->
->+	struct gasket_bar_data *data = &gasket_dev->bar_data[bar_num];
->-	ulong desc_bytes = driver_desc->bar_descriptions[bar_num].size;
->+	ulong desc_bytes = data->size;
->
->...
->
->-	if (driver_desc->bar_descriptions[bar_num].type != PCI_BAR) {
->+	if (data->type != PCI_BAR) {
+"The PM core always increments the runtime usage counter
+before calling the ->suspend() callback and decrements it
+after calling the ->resume() callback"
 
-`struct gasket_bar_data *data` and `driver_desc->bar_descriptions[bar_num]`
-are not the same thing as I see it. Besides, `struct gasket_bar_data`
-doesn't have a `size` field (it does have a `length_bytes` field).
-So... did I miss anything?
+DPU and DSI are managed as runtime devices. When
+suspend is triggered, PM core adds a refcount on all the
+devices and calls device suspend, since usage count is
+already incremented, runtime suspend was not getting called
+and it kept the clocks on which resulted in target not
+entering into XO shutdown.
 
+Add changes to force suspend on runtime devices during pm sleep.
+
+Changes in v1:
+ - Remove unnecessary checks in the function
+    _dpu_kms_disable_dpu (Rob Clark).
+
+Changes in v2:
+ - Avoid using suspend_late to reset the usagecount
+   as suspend_late might not be called during suspend
+   call failures (Doug).
+
+Changes in v3:
+ - Use force suspend instead of managing device usage_count
+   via runtime put and get API's to trigger callbacks (Doug).
+
+Changes in v4:
+ - Check the return values of pm_runtime_force_suspend and
+   pm_runtime_force_resume API's and pass appropriately (Doug).
+
+Changes in v5:
+ - With v4 patch, test cycle has uncovered issues in device resume.
+
+   On bubs: cmd tx failures were seen as SW is sending panel off
+   commands when the dsi resources are turned off.
+
+   Upon suspend, DRM driver will issue a NULL composition to the
+   dpu, followed by turning off all the HW blocks.
+
+   v5 changes will serialize the NULL commit and resource unwinding
+   by handling them under PM prepare and PM complete phases there by
+   ensuring that clks are on when panel off commands are being
+   processed.
+
+Changes in v6:
+- Use drm_mode_config_helper_suspend/resume() instead of legacy API
+  drm_atomic_helper_suspend/resume() (Doug).
+
+  Trigger runtime callbacks from the suspend/resume call to turn
+  off the resources.
+
+Changes in v7:
+- Add "__maybe_unused" to the functions to avoid compilation
+  failures. Cleanup unnecessary configs (Doug).
+
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  2 +
+ drivers/gpu/drm/msm/dsi/dsi.c           |  2 +
+ drivers/gpu/drm/msm/msm_drv.c           | 67 +++++++++++++++------------------
+ 3 files changed, 35 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index a5da7aa..dcf5b9a 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1150,6 +1150,8 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+ 
+ static const struct dev_pm_ops dpu_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(dpu_runtime_suspend, dpu_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static const struct of_device_id dpu_dt_match[] = {
+diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+index 55ea4bc2..62704885 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi.c
++++ b/drivers/gpu/drm/msm/dsi/dsi.c
+@@ -161,6 +161,8 @@ static int dsi_dev_remove(struct platform_device *pdev)
+ 
+ static const struct dev_pm_ops dsi_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(msm_dsi_runtime_suspend, msm_dsi_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static struct platform_driver dsi_driver = {
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index f6ce40b..6d294c8 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1039,75 +1039,70 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
+ 	.patchlevel         = MSM_VERSION_PATCHLEVEL,
+ };
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int msm_pm_suspend(struct device *dev)
++static int __maybe_unused msm_runtime_suspend(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct msm_drm_private *priv = ddev->dev_private;
++	struct msm_mdss *mdss = priv->mdss;
+ 
+-	if (WARN_ON(priv->pm_state))
+-		drm_atomic_state_put(priv->pm_state);
++	DBG("");
+ 
+-	priv->pm_state = drm_atomic_helper_suspend(ddev);
+-	if (IS_ERR(priv->pm_state)) {
+-		int ret = PTR_ERR(priv->pm_state);
+-		DRM_ERROR("Failed to suspend dpu, %d\n", ret);
+-		return ret;
+-	}
++	if (mdss && mdss->funcs)
++		return mdss->funcs->disable(mdss);
+ 
+ 	return 0;
+ }
+ 
+-static int msm_pm_resume(struct device *dev)
++static int __maybe_unused msm_runtime_resume(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct msm_drm_private *priv = ddev->dev_private;
+-	int ret;
++	struct msm_mdss *mdss = priv->mdss;
+ 
+-	if (WARN_ON(!priv->pm_state))
+-		return -ENOENT;
++	DBG("");
+ 
+-	ret = drm_atomic_helper_resume(ddev, priv->pm_state);
+-	if (!ret)
+-		priv->pm_state = NULL;
++	if (mdss && mdss->funcs)
++		return mdss->funcs->enable(mdss);
+ 
+-	return ret;
++	return 0;
+ }
+-#endif
+ 
+-#ifdef CONFIG_PM
+-static int msm_runtime_suspend(struct device *dev)
++static int __maybe_unused msm_pm_suspend(struct device *dev)
+ {
+-	struct drm_device *ddev = dev_get_drvdata(dev);
+-	struct msm_drm_private *priv = ddev->dev_private;
+-	struct msm_mdss *mdss = priv->mdss;
+ 
+-	DBG("");
++	if (pm_runtime_suspended(dev))
++		return 0;
+ 
+-	if (mdss && mdss->funcs)
+-		return mdss->funcs->disable(mdss);
++	return msm_runtime_suspend(dev);
++}
+ 
+-	return 0;
++static int __maybe_unused msm_pm_resume(struct device *dev)
++{
++	if (pm_runtime_suspended(dev))
++		return 0;
++
++	return msm_runtime_resume(dev);
+ }
+ 
+-static int msm_runtime_resume(struct device *dev)
++static int __maybe_unused msm_pm_prepare(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+-	struct msm_drm_private *priv = ddev->dev_private;
+-	struct msm_mdss *mdss = priv->mdss;
+ 
+-	DBG("");
++	return drm_mode_config_helper_suspend(ddev);
++}
+ 
+-	if (mdss && mdss->funcs)
+-		return mdss->funcs->enable(mdss);
++static void __maybe_unused msm_pm_complete(struct device *dev)
++{
++	struct drm_device *ddev = dev_get_drvdata(dev);
+ 
+-	return 0;
++	drm_mode_config_helper_resume(ddev);
+ }
+-#endif
+ 
+ static const struct dev_pm_ops msm_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(msm_pm_suspend, msm_pm_resume)
+ 	SET_RUNTIME_PM_OPS(msm_runtime_suspend, msm_runtime_resume, NULL)
++	.prepare = msm_pm_prepare,
++	.complete = msm_pm_complete,
+ };
+ 
+ /*
 -- 
-Zhixu Zhao
-https://github.com/zhaozhixu
+1.9.1
 
