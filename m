@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B301FE11C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03A31FE13D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731652AbgFRB0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
+        id S1731640AbgFRB0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:26:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730926AbgFRBXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:23:10 -0400
+        id S1730107AbgFRBXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:23:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BDDC20FC3;
-        Thu, 18 Jun 2020 01:23:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97C2721974;
+        Thu, 18 Jun 2020 01:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443389;
-        bh=/6TaqL/dS4z6Z66mGklGxkbdqDZPZ7/nTUQv+UC+Plc=;
+        s=default; t=1592443393;
+        bh=HMUNp5S7JgC4MKED6px7xVMS2rMtoj7TyHYEgUjlX8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aGBL/XuKDngcFtnGW3xgSzLXGWFwoEDVzylprCq1laz60dhtndPXJLWPB0o+JEaV2
-         bW5TnVZPgiZPq9xorkSru9XE0HEtPKspZ/7rXgFC3FPibUwS7WZ+A7/WUhkzGL/c3o
-         FwYfNZrY7W54XUgyCmj6VOR0ewcNsdw5BVcKlwxM=
+        b=1ihu6LRSyXyKrfkhblZIo3Dv1yl1+4CK834Jr3+xFQJnDGOmO93PLLnDQ9qeyKpey
+         idsRxaIte+pD/SMif5FeXbBLlYT1Ccw8VW0/bkCN8BVlhA3vVfc1IAA782clgR67Ic
+         uj1qGosRGKfb2tFxsVFX47rVNkZRQo9rOeXvrBAI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 039/172] pwm: img: Call pm_runtime_put() in pm_runtime_get_sync() failed case
-Date:   Wed, 17 Jun 2020 21:20:05 -0400
-Message-Id: <20200618012218.607130-39-sashal@kernel.org>
+Cc:     Wang Hai <wanghai38@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 040/172] yam: fix possible memory leak in yam_init_driver
+Date:   Wed, 17 Jun 2020 21:20:06 -0400
+Message-Id: <20200618012218.607130-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -43,49 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit ca162ce98110b98e7d97b7157328d34dcfdd40a9 ]
+[ Upstream commit 98749b7188affbf2900c2aab704a8853901d1139 ]
 
-Even in failed case of pm_runtime_get_sync(), the usage_count is
-incremented. In order to keep the usage_count with correct value call
-appropriate pm_runtime_put().
+If register_netdev(dev) fails, free_netdev(dev) needs
+to be called, otherwise a memory leak will occur.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-img.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/hamradio/yam.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-index 815f5333bb8f..da72b2866e88 100644
---- a/drivers/pwm/pwm-img.c
-+++ b/drivers/pwm/pwm-img.c
-@@ -132,8 +132,10 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	duty = DIV_ROUND_UP(timebase * duty_ns, period_ns);
- 
- 	ret = pm_runtime_get_sync(chip->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(chip->dev);
- 		return ret;
-+	}
- 
- 	val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
- 	val &= ~(PWM_CTRL_CFG_DIV_MASK << PWM_CTRL_CFG_DIV_SHIFT(pwm->hwpwm));
-@@ -334,8 +336,10 @@ static int img_pwm_remove(struct platform_device *pdev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(&pdev->dev);
- 		return ret;
-+	}
- 
- 	for (i = 0; i < pwm_chip->chip.npwm; i++) {
- 		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index ba9df430fca6..fdab49872587 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -1148,6 +1148,7 @@ static int __init yam_init_driver(void)
+ 		err = register_netdev(dev);
+ 		if (err) {
+ 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
++			free_netdev(dev);
+ 			goto error;
+ 		}
+ 		yam_devs[i] = dev;
 -- 
 2.25.1
 
