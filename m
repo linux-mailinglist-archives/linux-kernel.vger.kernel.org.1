@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869601FEDBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68751FEDC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgFRIg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54142 "EHLO mail.kernel.org"
+        id S1728741AbgFRIhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:37:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:46068 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgFRIgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:36:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBE5F214DB;
-        Thu, 18 Jun 2020 08:36:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592469413;
-        bh=ceL/T8t0nvr/U3tOjodwMKknS/aAxNJ8RojCHrLF1ok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fhmVqgBm4oYl3kaigyXF+fjYbAtWBnSCDQ01zfS0JLYK3gukCSKFX5/7FuhT1Rddg
-         G+/nRvmR+h/ih67DEse6ah3ZJOIHmQNa/IrfpIzNqOgVLauwcJ4gL8gLuByIeLnTZe
-         XbWo06NX2QYRQYvzI3OU8jnZRnrWl3CjgdK+X07A=
-Date:   Thu, 18 Jun 2020 10:36:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Oliver O'Halloran <oohall@gmail.com>
-Subject: Re: [PATCH 4/4] pci: export untrusted attribute in sysfs
-Message-ID: <20200618083646.GA1066967@kroah.com>
-References: <20200616011742.138975-1-rajatja@google.com>
- <20200616011742.138975-4-rajatja@google.com>
- <20200616073249.GB30385@infradead.org>
- <CACK8Z6ELaM8KxbwPor=BUquWN7pALQmmHu5geSOc71P3KoJ1QA@mail.gmail.com>
- <20200617073100.GA14424@infradead.org>
- <CACK8Z6FecYkAYQh4sm4RbAQ1iwb9gexqgY9ExD9BH2p-5Usj=g@mail.gmail.com>
- <CAHp75Vc6eA33cyAQH-m+yixTuHqiobg6fo7nzbbb-J6vN6qFcA@mail.gmail.com>
+        id S1728465AbgFRIhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 04:37:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 818F431B;
+        Thu, 18 Jun 2020 01:37:11 -0700 (PDT)
+Received: from [10.37.12.69] (unknown [10.37.12.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CEF343F6CF;
+        Thu, 18 Jun 2020 01:37:09 -0700 (PDT)
+Subject: Re: [PATCH v8 3/9] firmware: arm_scmi: Add notification dispatch and
+ delivery
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        dave.martin@arm.com
+References: <20200520081118.54897-1-cristian.marussi@arm.com>
+ <20200520081118.54897-4-cristian.marussi@arm.com>
+ <20200608170346.GD13622@bogus>
+ <20200617233105.GB9236@e119603-lin.cambridge.arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <20bf2b0b-c6bc-1010-0512-e970982f9e79@arm.com>
+Date:   Thu, 18 Jun 2020 09:37:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vc6eA33cyAQH-m+yixTuHqiobg6fo7nzbbb-J6vN6qFcA@mail.gmail.com>
+In-Reply-To: <20200617233105.GB9236@e119603-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 11:12:56AM +0300, Andy Shevchenko wrote:
-> On Wed, Jun 17, 2020 at 10:56 PM Rajat Jain <rajatja@google.com> wrote:
-> > On Wed, Jun 17, 2020 at 12:31 AM Christoph Hellwig <hch@infradead.org> wrote:
+
+
+On 6/18/20 12:31 AM, Cristian Marussi wrote:
+> On Mon, Jun 08, 2020 at 06:03:46PM +0100, Sudeep Holla wrote:
+>> On Wed, May 20, 2020 at 09:11:12AM +0100, Cristian Marussi wrote:
+>>> Add core SCMI Notifications dispatch and delivery support logic which is
+>>> able, at first, to dispatch well-known received events from the RX ISR to
+>>> the dedicated deferred worker, and then, from there, to final deliver the
+>>> events to the registered users' callbacks.
+>>>
+>>> Dispatch and delivery is just added here, still not enabled.
+>>>
+>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+>>> ---
+>>>   drivers/firmware/arm_scmi/notify.c | 354 ++++++++++++++++++++++++++++-
+>>>   drivers/firmware/arm_scmi/notify.h |  10 +
+>>>   2 files changed, 362 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+>>> index 7cf61dbe2a8e..d582f71fde5b 100644
+>>> --- a/drivers/firmware/arm_scmi/notify.c
+>>> +++ b/drivers/firmware/arm_scmi/notify.c
+>>
+>> [...]
+>>
+>>> @@ -1085,6 +1422,12 @@ int scmi_notification_init(struct scmi_handle *handle)
+>>>   	ni->gid = gid;
+>>>   	ni->handle = handle;
+>>>   
+>>> +	ni->notify_wq = alloc_workqueue("scmi_notify",
+>>> +					WQ_UNBOUND | WQ_FREEZABLE | WQ_SYSFS,
+>>> +					0);
+>>
+>> What's the use of WQ_SYSFS for SCMI notifications ? Do we need it ?
+>>
 > 
-> ...
+> Lukasz asked for it, when we were talking about workqueues' priorities configurability.
+> (not implemented in this series)
+
+I confirm, I've asked if we can have a mechanism to control these
+workqueues. They will be running concurrently with other CFS
+tasks which could cause delays for them. They could also be scheduled
+on a random core: big or little (depends on its utilization) but maybe
+we would like to pin them explicitly to some cores, i.e
+little only. We have also discussed a possible mechanism based on RT
+threads (which could avoid CFS delays), but that would require a lot of
+changes, so this flag here gives us some control.
+But if you decide to remove this flag, we would probably find a solution
+using uclamp or similar when needed.
+
+Regards,
+Lukasz
+
 > 
-> > (and likely call it "external" instead of "untrusted".
+> Thanks
 > 
-> Which is not okay. 'External' to what? 'untrusted' has been carefully
-> chosen by the meaning of it.
-> What external does mean for M.2. WWAN card in my laptop? It's in ACPI
-> tables, but I can replace it.
-
-Then your ACPI tables should show this, there is an attribute for it,
-right?
-
-> This is only one example. Or if firmware of some device is altered,
-> and it's internal (whatever it means) is it trusted or not?
-
-That is what people are using policy for today, if you object to this,
-please bring it up to those developers :)
-
-> So, please leave it as is (I mean name).
-
-firmware today exports this attribute, why do you not want userspace to
-also know it?
-
-Trust is different, yes, don't get the two mixed up please.  That should
-be a different sysfs attribute for obvious reasons.
-
-thanks,
-
-greg k-h
+> Cristian
+>> -- 
+>> Regards,
+>> Sudeep
