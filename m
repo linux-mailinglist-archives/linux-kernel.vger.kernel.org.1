@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09011FFC2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4313F1FFC2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730869AbgFRUCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730805AbgFRUCq (ORCPT
+        id S1730698AbgFRUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:02:41 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:16855 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727909AbgFRUCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:02:46 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D39C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:02:46 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jm0k2-0001uq-Jc; Thu, 18 Jun 2020 22:02:31 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 10965101482; Thu, 18 Jun 2020 22:02:30 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Cyril Hrubis <chrubis@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>, ltp@lists.linux.it
-Subject: Re: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
-In-Reply-To: <20200617131742.GD8389@yuki.lan>
-References: <87y2onbdtb.fsf@nanos.tec.linutronix.de> <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net> <20200616132705.GW2531@hirez.programming.kicks-ass.net> <20200617131742.GD8389@yuki.lan>
-Date:   Thu, 18 Jun 2020 22:02:30 +0200
-Message-ID: <87r1ucb0rt.fsf@nanos.tec.linutronix.de>
+        Thu, 18 Jun 2020 16:02:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1592510561; x=1624046561;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2kmMXn71z1aHaErHJz+a+5Rckm6j69eZzhgRB1l7j0Y=;
+  b=JPAWHp88i+B+8LaBocgA9OYg3v8nleV2cQ6IDVsbr0CQExdRescL0C95
+   HmVLhe9fMHq4yJ7SsPh/atdsvP5T+SuTiYBpSs7DRJbCAN50kR81TmCL2
+   JR22ThasVPH5W958F7kWOwoOGczh5JbtzGFeuawgfxIEJ0f6Ry7fLX0YB
+   SvDe2D06vt07iPHOt9z+LBgAnvR7hItPxubTrmevOvDm6j+E2atHzmsZj
+   bwIOwhXeT9xUX1jlLGRAkYhwLBbUuzzbO21ClZLy8mmJX8mftGZIYapSK
+   l3Y9hlzM+LqggfzYgc3SIDxiDDsrdbUdaJXfPYuBwDQAV/cKcW6jq7LRF
+   g==;
+IronPort-SDR: rFa77vFWCh8XfvxgQA1BSJ0pAXyyqDu16jtWCc3pgfvPzyOW8nyIx9Y7+yyaJI20tqVk6JGAD/
+ kSctG14tGyBlEhc0i4gdLlHFgUweNzK5rYjcLDKkLsId0XBot5OQMxm4bc1XBy9mHry8TMLgBM
+ r17df+rx0hypZSbSLAJr8Qf1MEcUePNVEHV2wHOpUKmNKBIM8si4KRRL7BmOI5+iqrlbcdmrkB
+ WHQgdA8/lpqJ9Tg5v+SEWYHEcmwKQnzOm4T3cdY2JIqr4wUATCNlmcptFdagwvkcUDFmJIHm13
+ r14=
+X-IronPort-AV: E=Sophos;i="5.75,252,1589212800"; 
+   d="scan'208";a="140608364"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jun 2020 04:02:41 +0800
+IronPort-SDR: DMygmfIDZdSi9iKFbc1QNUUMHkCC+l93bxLp9S6siMvXLs3lATDXGAbKHfnw5XHDBS/WNtWPJj
+ +M8kVAI8eVgX05bWhVq+v0mYpcRLJ5bdA=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 12:51:19 -0700
+IronPort-SDR: lSS9MdC0lT01x7YZEJMxSdooO7aOZJmx5J4yxQcctGElNPf6cUg5eI6/ZpCBeeciO/sUzmfkZp
+ yi8Dic1t1FAQ==
+WDCIronportException: Internal
+Received: from usa001298.ad.shared (HELO localhost.hgst.com) ([10.86.58.149])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jun 2020 13:02:38 -0700
+From:   Niklas Cassel <niklas.cassel@wdc.com>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     Niklas Cassel <niklas.cassel@wdc.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] remove workarounds for gcc bug wrt unnamed fields in initializers
+Date:   Thu, 18 Jun 2020 22:02:32 +0200
+Message-Id: <20200618200235.1104587-1-niklas.cassel@wdc.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-> What is does is to write:
->
-> 	(void*)1 to u_debugreg[0]
-> 	(void*)1 to u_debugreg[7]
-> 	do_debug addr to u_debugreg[0]
->
-> Looking at the kernel code the write to register 7 enables the breakpoints and
-> what we attempt here is to change an invalid address to a valid one after we
-> enabled the breakpoint but that's as far I can go.
->
-> So does anyone has an idea how to trigger the bug without the do_debug function
-> address? Would any valid kernel function address suffice?
+Make the nvme code more uniform by initializing struct members at
+declaration time. This change is done both in drivers/nvme/host/ and
+drivers/nvme/target/.
 
-According to https://www.openwall.com/lists/oss-security/2018/05/01/3
-the trigger is to set the breakpoint to do_debug() and then execute
-INT1, aka. ICEBP which ends up in do_debug() ....
+This is how the design pattern was in nvme, before workarounds for a gcc
+bug were introduced in commit e44ac588cd61 ("drivers/block/nvme-core.c:
+fix build with gcc-4.4.4").
 
-In principle each kernel address is ok, but do_debug() is interesting
-due to the recursion issue because user space can reach it by executing
-INT1.
+Since the minimum gcc version needed to build the kernel is now gcc 4.8.0,
+which does not have this bug, revert to the previous design pattern,
+which matches how the rest of the nvme code handles initialization
+of struct members (excluding the cases where anonymous unions were
+involved).
 
-So you might check for exc_debug() if do_debug() is not available and
-make the whole thing fail gracefully with a usefu error message.
+If, for some reason, we want to allow builds with gcc < 4.6.0
+even though the minimum gcc version is now 4.8.0,
+there is another less intrusive workaround where you add an extra pair of
+curly braces, see e.g. commit 6cc65be4f6f2 ("locking/qspinlock: Fix build
+for anonymous union in older GCC compilers").
 
-Thanks,
+Changes since v1:
+-Fixed RDMA build error.
 
-        tglx
+Niklas Cassel (2):
+  nvme: remove workarounds for gcc bug wrt unnamed fields in
+    initializers
+  nvmet: remove workarounds for gcc bug wrt unnamed fields in
+    initializers
+
+ drivers/nvme/host/core.c     | 59 ++++++++++++++++++------------------
+ drivers/nvme/host/lightnvm.c | 32 +++++++++----------
+ drivers/nvme/host/rdma.c     | 28 ++++++++---------
+ drivers/nvme/target/rdma.c   | 23 +++++++-------
+ 4 files changed, 71 insertions(+), 71 deletions(-)
+
+-- 
+2.26.2
+
