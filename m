@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943F61FFA51
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063741FFA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732235AbgFRRcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 13:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49884 "EHLO mail.kernel.org"
+        id S1732214AbgFRReC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 13:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732192AbgFRRcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 13:32:07 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728384AbgFRReB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 13:34:01 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0AFA208B8;
-        Thu, 18 Jun 2020 17:32:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33A4D20CC7;
+        Thu, 18 Jun 2020 17:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592501526;
-        bh=yTsrBl2tE3fnFEIPv5CpTnTJlef/tgV4kZQ5U8GHJPk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UlADRr7WPtcKFU60fOr0nPBXKkKCmTiJXKtK1awwyyMozYrumEaYzjk4gKRCbAKZx
-         dKEY7iMvjfLaSg1faXq+gXFitw+PT6LJj/ZiTrrN32GzQMD1MzSiunYq7D2hxeMWp7
-         ssY1umEG+TBGUQMrb02kMW5n51sLBp+H9edLded8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AEC9E35229B4; Thu, 18 Jun 2020 10:32:06 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 10:32:06 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200618173206.GS2723@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200525214800.93072-1-urezki@gmail.com>
- <20200525214800.93072-10-urezki@gmail.com>
- <20200617234609.GA10087@paulmck-ThinkPad-P72>
- <20200618172504.GA14613@pc636>
+        s=default; t=1592501641;
+        bh=7bAYDoSOKsBXo7n+wl8FVmIDDBqoaqP8Khk8lB2kWbw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IsVqhHWvB+5h5r2AmLQfAAPGjIwHflWGk9qU0oGIBdUY39MQAAvYb63cEqW/DbA7i
+         PwtopF2osGqrc6slvKKcFEO2iDgSBydUV0yezMnwA97T2c2twNAKlVlAfsuQean/Nj
+         uzgCBhmYsOlL1BBWc+d9HWmOaBcXzH+kGg+1lTJs=
+Received: by mail-ot1-f42.google.com with SMTP id m2so5152992otr.12;
+        Thu, 18 Jun 2020 10:34:01 -0700 (PDT)
+X-Gm-Message-State: AOAM531820zNfHIJGb1fh/OnrRVy/ES95lkYuJt1tD5fnB1sNwsPcyE1
+        yppRv3VzcHrJ6+X2o4bZkoVYrF8QNBLtZgsmlA==
+X-Google-Smtp-Source: ABdhPJznBot1zRIf3mT//QAyCMg0HJbDF/5FGHU2eV3Y2WUSQryP8tTu3KPxwVMnn5BGgo6zOJop1+ZTJc4C4J62cVM=
+X-Received: by 2002:a9d:c29:: with SMTP id 38mr4268091otr.107.1592501640510;
+ Thu, 18 Jun 2020 10:34:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618172504.GA14613@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1591123192-565-1-git-send-email-sanm@codeaurora.org>
+ <20200618081443.GA1043700@kroah.com> <20200618154555.GD4525@google.com>
+ <20200618155820.GA3076467@kroah.com> <20200618165151.GE4525@google.com>
+In-Reply-To: <20200618165151.GE4525@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 18 Jun 2020 11:33:49 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+5NCvvpKd-69QvgqK6wzbc53=MTt-TcVop23hjT6Rs_g@mail.gmail.com>
+Message-ID: <CAL_Jsq+5NCvvpKd-69QvgqK6wzbc53=MTt-TcVop23hjT6Rs_g@mail.gmail.com>
+Subject: Re: [PATCH] driver core:Export the symbol device_is_bound
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Manu Gautam <mgautam@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 07:25:04PM +0200, Uladzislau Rezki wrote:
-> > > +	// Handle two first channels.
-> > > +	for (i = 0; i < FREE_N_CHANNELS; i++) {
-> > > +		for (; bkvhead[i]; bkvhead[i] = bnext) {
-> > > +			bnext = bkvhead[i]->next;
-> > > +			debug_rcu_bhead_unqueue(bkvhead[i]);
-> > > +
-> > > +			rcu_lock_acquire(&rcu_callback_map);
-> > > +			if (i == 0) { // kmalloc() / kfree().
-> > > +				trace_rcu_invoke_kfree_bulk_callback(
-> > > +					rcu_state.name, bkvhead[i]->nr_records,
-> > > +					bkvhead[i]->records);
-> > > +
-> > > +				kfree_bulk(bkvhead[i]->nr_records,
-> > > +					bkvhead[i]->records);
-> > > +			} else { // vmalloc() / vfree().
-> > > +				for (j = 0; j < bkvhead[i]->nr_records; j++) {
-> > > +					trace_rcu_invoke_kfree_callback(
-> > > +						rcu_state.name,
-> > > +						bkvhead[i]->records[j], 0);
-> > > +
-> > > +					vfree(bkvhead[i]->records[j]);
-> > > +				}
-> > > +			}
-> > > +			rcu_lock_release(&rcu_callback_map);
-> > 
-> > Not an emergency, but did you look into replacing this "if" statement
-> > with an array of pointers to functions implementing the legs of the
-> > "if" statement?  If nothing else, this would greatly reduced indentation.
-> > 
+On Thu, Jun 18, 2020 at 10:51 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> On Thu, Jun 18, 2020 at 05:58:20PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Jun 18, 2020 at 08:45:55AM -0700, Matthias Kaehlcke wrote:
+> > > Hi Greg,
+> > >
+> > > On Thu, Jun 18, 2020 at 10:14:43AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Jun 03, 2020 at 12:09:52AM +0530, Sandeep Maheswaram wrote:
+> > > > > Export the symbol device_is_bound so that it can be used by the modules.
+> > > >
+> > > > What modules need this?
+> > >
+> > > drivers/usb/dwc3/dwc3-qcom.c (and probably other dwc3 'wrappers').
 > >
-> > I am taking this as is, but if you have not already done so, could you
-> > please look into this for a follow-up patch?
-> > 
-> I do not think it makes sense, because it would require to check each
-> pointer in the array, what can lead to many branching, i.e. "if-else"
-> instructions.
+> > Why wasn't that said here?  No context is not good :(
+>
+> Agreed, this patch should probably have been part of a series to establish
+> the context.
+>
+> > > Short summary: QCOM dwc3 support is split in two drivers, the core dwc3
+> > > driver and the QCOM specific parts. dwc3-qcom is probed first (through
+> > > a DT entry or ACPI), dwc3_qcom_probe() then calls of_platform_populate()
+> > > to probe the core part. After a successful return from _populate() the
+> > > driver assumes that the core device is fully initialized. However the
+> > > latter is not correct, the driver core doesn't propagate errors from
+> > > probe() to platform_populate(). The dwc3-qcom driver would use
+> > > device_is_bound() to make sure the core device was probed successfully.
+> >
+> > why does the dwc3-qcom driver care?
+>
+> Currently the dwc3-qcom driver uses the core device to determine if the
+> controller is used in peripheral mode and it runtime resumes the XHCI
+> device when it sees a wakeup interrupt.
+>
+> The WIP patch to add interconnect support relies on the core driver
+> to determine the max speed of the controller.
+>
+> > And why is the driver split in a way that requires such "broken"
+> > structures?  Why can't that be fixed instead?
+>
+> It seems determining the mode could be easily changed by getting it through
+> the pdev, as in st_dwc3_probe(). Not sure about the other two parts,
+> determining the maximum speed can involve evaluating hardware registers,
+> which currently are 'owned' by the core driver.
+>
+> Manu or Sandeep who know the hardware and the driver better than me might
+> have ideas on how to improve things.
 
-Mightn't the compiler simply unroll the outer loop?  Then the first
-unrolled iteration of that loop would contain the then-clause and
-the second unrolled iteration would contain the else-clause.  At that
-point, there would be no checking, just direct calls.
+We never should have had this split either in the DT binding nor
+driver(s) as if the SoC wrapper crap and licensed IP block are
+independent things. The thing to do here is either make the DWC3 code
+a library which drivers call (e.g. SDHCI) or add hooks into the DWC3
+driver for platform specifics (e.g. Designware PCI). Neither is a
+simple solution though.
 
-Or am I missing something?
-
-> Paul, thank you to take it in!
-
-Thank you for persisting!
-
-							Thanx, Paul
+Rob
