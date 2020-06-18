@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC8B1FF4B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA641FF5EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgFRO3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:29:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53382 "EHLO mail.kernel.org"
+        id S1731355AbgFRO43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:56:29 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8231 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726905AbgFRO3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:29:45 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0C70207E8;
-        Thu, 18 Jun 2020 14:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592490584;
-        bh=3OO4kEs57sfNjzQq7iy84oQLGMRCkyvOCnFELjitwc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yOGTyQZOeF3MreSMzsPgPbZLSkqgahgCBlwYFNIo1+IfNVR/j5HUQf3D6q9UUwZ2F
-         TaWa3A6AdQE8H12eN+fJiEi6BldZIt4aGEPbVbjNGD/odz8DK5A3IdjJNw/5mRhRl6
-         4v2SZZtTzg3QkOEU+dUmO6UV4hAKfnbjrLZyNLvo=
-Date:   Thu, 18 Jun 2020 10:29:43 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qian Cai <cai@lca.pw>, kvm@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.7 280/388] vfio/pci: fix memory leaks of
- eventfd ctx
-Message-ID: <20200618142943.GS1931@sasha-vm>
-References: <20200618010805.600873-1-sashal@kernel.org>
- <20200618010805.600873-280-sashal@kernel.org>
- <20200617192501.2310afe6@x1.home>
+        id S1730885AbgFRO42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 10:56:28 -0400
+IronPort-SDR: H7iTJm2UcQg/t2n495Xzfs4x238RRREgFnE/zfxuYbHjaHQJD7xvAVzruwjPBPjMrTDLQcMUWU
+ s3QnhZcQo6RA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="204090969"
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
+   d="scan'208";a="204090969"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 07:56:27 -0700
+IronPort-SDR: NEx0GOaMn7OvG1Et1Z3rmhL2o3vxYosQnEPvgEEQoBzIU1av8cbFXZ6IsBIpSxA+94iSjx64Dh
+ kvfC5ZH29okg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
+   d="scan'208";a="477268207"
+Received: from richard2-mobl.amr.corp.intel.com (HELO [10.254.109.110]) ([10.254.109.110])
+  by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 07:56:25 -0700
+Subject: Re: [PATCH] ANDROID: sound: usb: Add vendor's hooking interface
+To:     JaeHun Jung <jh0801.jung@samsung.com>, tiwai@suse.de
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <CGME20200617022554epcas2p214a49f03a15e504d8faa28148e06e796@epcas2p2.samsung.com>
+ <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d37660f8-3bb6-5f3a-8ac1-c0d6d5a08468@linux.intel.com>
+Date:   Thu, 18 Jun 2020 07:27:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200617192501.2310afe6@x1.home>
+In-Reply-To: <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:25:01PM -0600, Alex Williamson wrote:
->On Wed, 17 Jun 2020 21:06:17 -0400
->Sasha Levin <sashal@kernel.org> wrote:
->
->> From: Qian Cai <cai@lca.pw>
->>
->> [ Upstream commit 1518ac272e789cae8c555d69951b032a275b7602 ]
->>
->> Finished a qemu-kvm (-device vfio-pci,host=0001:01:00.0) triggers a few
->> memory leaks after a while because vfio_pci_set_ctx_trigger_single()
->> calls eventfd_ctx_fdget() without the matching eventfd_ctx_put() later.
->> Fix it by calling eventfd_ctx_put() for those memory in
->> vfio_pci_release() before vfio_device_release().
->>
->> unreferenced object 0xebff008981cc2b00 (size 128):
->>   comm "qemu-kvm", pid 4043, jiffies 4294994816 (age 9796.310s)
->>   hex dump (first 32 bytes):
->>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
->>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
->>   backtrace:
->>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
->>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
->>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
->>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
->>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
->>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
->>     [<00000000d495ef94>] el0_sync+0x164/0x180
->> unreferenced object 0x29ff008981cc4180 (size 128):
->>   comm "qemu-kvm", pid 4043, jiffies 4294994818 (age 9796.290s)
->>   hex dump (first 32 bytes):
->>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
->>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
->>   backtrace:
->>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
->>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
->>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
->>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
->>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
->>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
->>     [<00000000d495ef94>] el0_sync+0x164/0x180
->>
->> Signed-off-by: Qian Cai <cai@lca.pw>
->> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  drivers/vfio/pci/vfio_pci.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
->> index 6c6b37b5c04e..080e6608f297 100644
->> --- a/drivers/vfio/pci/vfio_pci.c
->> +++ b/drivers/vfio/pci/vfio_pci.c
->> @@ -519,6 +519,10 @@ static void vfio_pci_release(void *device_data)
->>  		vfio_pci_vf_token_user_add(vdev, -1);
->>  		vfio_spapr_pci_eeh_release(vdev->pdev);
->>  		vfio_pci_disable(vdev);
->> +		if (vdev->err_trigger)
->> +			eventfd_ctx_put(vdev->err_trigger);
->> +		if (vdev->req_trigger)
->> +			eventfd_ctx_put(vdev->req_trigger);
->>  	}
->>
->>  	mutex_unlock(&vdev->reflck->lock);
->
->
->This has a fix pending, I'd suggest not picking it on its own:
->
->https://lore.kernel.org/kvm/20200616085052.sahrunsesjyjeyf2@beryllium.lan/
->https://lore.kernel.org/kvm/159234276956.31057.6902954364435481688.stgit@gimli.home/
 
-Thanks! I'll hold off on this until the fix is in too.
 
--- 
-Thanks,
-Sasha
+On 6/16/20 9:18 PM, JaeHun Jung wrote:
+> In mobile, a co-processor is used when using USB audio
+> to improve power consumption.
+> hooking is required for sync-up when operating
+> the co-processor. So register call-back function.
+> The main operation of the call-back function is as follows:
+> - Initialize the co-processor by transmitting data
+>    when initializing.
+> - Change the co-processor setting value through
+>    the interface function.
+> - Configure sampling rate
+> - pcm open/close
+
+Thank you for this patch. With the removal of the 3.5mm jack on a number 
+of platforms, and improvements to reduce power consumption on a variety 
+of hosts there's indeed a need to enhance sound/usb in the kernel.
+
+> 
+> Bug: 156315379
+> 
+> Change-Id: I32e1dd408e64aaef68ee06c480c4b4d4c95546dc
+> Signed-off-by: JaeHun Jung <jh0801.jung@samsung.com>
+
+You probably want to remove bug references and Change-Id if they are not 
+publicly visible
+
+> @@ -891,6 +897,15 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>   	struct usb_interface *iface;
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_set_pcmbuf) {
+> +		ret = usb_audio_ops->vendor_set_pcmbuf(subs->dev);
+> +
+> +		if (ret < 0) {
+> +			dev_err(&subs->dev->dev, "pcm buf transfer failed\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>   	if (! subs->cur_audiofmt) {
+>   		dev_err(&subs->dev->dev, "no format is specified!\n");
+>   		return -ENXIO;
+> @@ -924,6 +939,15 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>   		if (ret < 0)
+>   			goto unlock;
+>   
+> +		if (usb_audio_ops && usb_audio_ops->vendor_set_rate) {
+> +			subs->need_setup_ep = false;
+> +			usb_audio_ops->vendor_set_rate(
+> +					subs->cur_audiofmt->iface,
+> +					subs->cur_rate,
+> +					subs->cur_audiofmt->altsetting);
+> +			goto unlock;
+> +		}
+> +
+>   		ret = configure_endpoint(subs);
+>   		if (ret < 0)
+>   			goto unlock;
+> @@ -1333,6 +1357,9 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+>   	struct snd_usb_substream *subs = &as->substream[direction];
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_pcm_con)
+> +		usb_audio_ops->vendor_pcm_con(true, direction);
+> +
+>   	subs->interface = -1;
+>   	subs->altset_idx = 0;
+>   	runtime->hw = snd_usb_hardware;
+> @@ -1361,12 +1388,18 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>   	struct snd_usb_substream *subs = &as->substream[direction];
+>   	int ret;
+>   
+> +	if (usb_audio_ops && usb_audio_ops->vendor_pcm_con)
+> +		usb_audio_ops->vendor_pcm_con(false, direction);
+> +
+
+can you elaborate on the PCM streaming parts? if you allocate a buffer 
+for the co-processor to deal with PCM data, will you end-up copying data 
+from the existing ring buffers allocated with vmalloc() into your 
+coprocessor?
+
+I was instead thinking of having a different 'mode' where the PCM 
+buffers are not allocated by sound/usb, but instead allocated by the 
+driver taking care of the low-power USB path, so that apps can directly 
+write into ring buffers that are handled by the coprocessor/offload unit.
+
+Thanks
+-Pierre
