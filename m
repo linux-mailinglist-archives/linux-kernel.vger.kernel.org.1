@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B281FE6C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3A41FE6BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387752AbgFRCgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43468 "EHLO mail.kernel.org"
+        id S2387732AbgFRCgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbgFRBN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:13:58 -0400
+        id S1729245AbgFRBOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB436221F1;
-        Thu, 18 Jun 2020 01:13:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 223FD20EDD;
+        Thu, 18 Jun 2020 01:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442837;
-        bh=r+sGKsCZdJ6ItZ8zWIiODoB6JpSbLYt8qmx53pm6jdY=;
+        s=default; t=1592442839;
+        bh=URc4789k/5yNLxNApylXOdyYnfGKoDQJ73exVVOeipg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fbfnFGRP0qn5v+2EEER51ha004HaA8Eqg0X+VJCWtYFkJldX+01Vj7hlg+u9wqjNG
-         BeqnrlOnKk5uS+3+hMlVJ76qfiLs/0NbjdQMmY8qQTqX1//xPbAJ81O6te5VQGW3J8
-         MlLx7FKijU3dvpw0zba4lm8CgLwficXsd++G1Oow=
+        b=pSDQeYDYBFBCuBZ/cOGU4Smv8XdIxIgV2D7BYLdeNtoR2jivQLPE1TnCyTPUaYlen
+         BA8V4L0TQwsvK0MP4P6WXwCSMzoLElJk4+9TB49k7JO4eltVOVZnWo8nGOtekY8/G/
+         hpOSiuJTz7EI0MPi3BviGS0qGEyyinit78TToNck=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 271/388] RDMA/iw_cxgb4: cleanup device debugfs entries on ULD remove
-Date:   Wed, 17 Jun 2020 21:06:08 -0400
-Message-Id: <20200618010805.600873-271-sashal@kernel.org>
+Cc:     Amelie Delaunay <amelie.delaunay@st.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 273/388] mfd: stmfx: Reset chip on resume as supply was disabled
+Date:   Wed, 17 Jun 2020 21:06:10 -0400
+Message-Id: <20200618010805.600873-273-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,33 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Amelie Delaunay <amelie.delaunay@st.com>
 
-[ Upstream commit 49ea0c036ede81f126f1a9389d377999fdf5c5a1 ]
+[ Upstream commit e583649d87ec090444aa5347af0927cd6e8581ae ]
 
-Remove device specific debugfs entries immediately if LLD detaches a
-particular ULD device in case of fatal PCI errors.
+STMFX supply is disabled during suspend. To avoid a too early access to
+the STMFX firmware on resume, reset the chip and wait for its firmware to
+be loaded.
 
-Link: https://lore.kernel.org/r/20200524190814.17599-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 06252ade9156 ("mfd: Add ST Multi-Function eXpander (STMFX) core driver")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/device.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/stmfx.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
-index 599340c1f0b8..541dbcf22d0e 100644
---- a/drivers/infiniband/hw/cxgb4/device.c
-+++ b/drivers/infiniband/hw/cxgb4/device.c
-@@ -953,6 +953,7 @@ void c4iw_dealloc(struct uld_ctx *ctx)
- static void c4iw_remove(struct uld_ctx *ctx)
- {
- 	pr_debug("c4iw_dev %p\n", ctx->dev);
-+	debugfs_remove_recursive(ctx->dev->debugfs_root);
- 	c4iw_unregister_device(ctx->dev);
- 	c4iw_dealloc(ctx);
- }
+diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
+index 857991cb3cbb..fde6541e347c 100644
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -501,6 +501,13 @@ static int stmfx_resume(struct device *dev)
+ 		}
+ 	}
+ 
++	/* Reset STMFX - supply has been stopped during suspend */
++	ret = stmfx_chip_reset(stmfx);
++	if (ret) {
++		dev_err(stmfx->dev, "Failed to reset chip: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = regmap_raw_write(stmfx->map, STMFX_REG_SYS_CTRL,
+ 			       &stmfx->bkp_sysctrl, sizeof(stmfx->bkp_sysctrl));
+ 	if (ret)
 -- 
 2.25.1
 
