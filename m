@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9E11FF311
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABE91FF30E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730169AbgFRN37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45148 "EHLO mail.kernel.org"
+        id S1728303AbgFRN3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:29:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgFRN36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:29:58 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1726940AbgFRN3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 09:29:38 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 686DA2083B;
-        Thu, 18 Jun 2020 13:29:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B88D207D8;
+        Thu, 18 Jun 2020 13:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592486998;
-        bh=WaYgBZaJqu7hn1fWtwnsUeQaFB0XHj77UgqJjlHIrbs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mJYhtXYE1qfEQR+EANdrGw14k2DYDo/Hbl8UEMB9L0K3qOJUVlMfDCIfG2Lw/yrtb
-         Q0yrV4WGBk1rCoAFMkdYx0USc2lN8sKh67tEk6agQLTvGukLEa6pb9RwE38REl3+oB
-         Ij6ghKmL5XZ1xmVyZaKEuDF6X3bf5ZArnayhK3yM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 73450405FF; Thu, 18 Jun 2020 10:29:56 -0300 (-03)
-Date:   Thu, 18 Jun 2020 10:29:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v4] perf tools: Check libasan and libubsan in
- Makefile.config
-Message-ID: <20200618132956.GB26403@kernel.org>
-References: <1592445961-28044-1-git-send-email-yangtiezhu@loongson.cn>
- <20200618125746.GD2369163@krava>
+        s=default; t=1592486978;
+        bh=mhKkC93IxTE6r/z8FPCV/N5OA7kRLNqPARji3a1ASFI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tDylvdmd6vXysvSLfn+nbl7nUuQQjXMDDoHlDiNTLuZro9VKkF6pYD5ciD/5wjciz
+         FxU0eIlLDksKfYQwz5Mlv3TQse9+XEpp9BzEWKIppxnqn2hUSeReNvEPxh9PNLnpaN
+         yTo6OBx/KCx5DDMbQaKWKLjA8z6bATnumBsPdkek=
+Date:   Thu, 18 Jun 2020 08:35:00 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] tipc: Use struct_size() helper
+Message-ID: <20200618133459.GA8169@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618125746.GD2369163@krava>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 18, 2020 at 02:57:46PM +0200, Jiri Olsa escreveu:
-> On Thu, Jun 18, 2020 at 10:06:01AM +0800, Tiezhu Yang wrote:
-> > When build perf with ASan or UBSan, if libasan or libubsan can not find,
-> > the feature-glibc is 0 and there exists the following error log which is
-> > wrong, because we can find gnu/libc-version.h in /usr/include, glibc-devel
-> > is also installed.
-> > 
-> > [yangtiezhu@linux perf]$ make DEBUG=1 EXTRA_CFLAGS='-fno-omit-frame-pointer -fsanitize=address'
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-<SNIP>
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-> > After install libasan and libubsan, the feature-glibc is 1 and the build
-> > process is success, so the cause is related with libasan or libubsan, we
-> > should check them and print an error log to reflect the reality.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/tipc/link.c | 8 ++++----
+ net/tipc/msg.h  | 6 ++----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/net/tipc/link.c b/net/tipc/link.c
+index ee3b8d0576b8..9a33752f0263 100644
+--- a/net/tipc/link.c
++++ b/net/tipc/link.c
+@@ -1385,12 +1385,12 @@ u16 tipc_get_gap_ack_blks(struct tipc_gap_ack_blks **ga, struct tipc_link *l,
+ 		p = (struct tipc_gap_ack_blks *)msg_data(hdr);
+ 		sz = ntohs(p->len);
+ 		/* Sanity check */
+-		if (sz == tipc_gap_ack_blks_sz(p->ugack_cnt + p->bgack_cnt)) {
++		if (sz == struct_size(p, gacks, p->ugack_cnt + p->bgack_cnt)) {
+ 			/* Good, check if the desired type exists */
+ 			if ((uc && p->ugack_cnt) || (!uc && p->bgack_cnt))
+ 				goto ok;
+ 		/* Backward compatible: peer might not support bc, but uc? */
+-		} else if (uc && sz == tipc_gap_ack_blks_sz(p->ugack_cnt)) {
++		} else if (uc && sz == struct_size(p, gacks, p->ugack_cnt)) {
+ 			if (p->ugack_cnt) {
+ 				p->bgack_cnt = 0;
+ 				goto ok;
+@@ -1472,7 +1472,7 @@ static u16 tipc_build_gap_ack_blks(struct tipc_link *l, struct tipc_msg *hdr)
+ 			__tipc_build_gap_ack_blks(ga, l, ga->bgack_cnt) : 0;
  
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> > 
-> > v2:
-> >   - Check libasan and libubsan in tools/build/Makefile.feature
-> >   - Modify the patch subject
+ 	/* Total len */
+-	len = tipc_gap_ack_blks_sz(ga->bgack_cnt + ga->ugack_cnt);
++	len = struct_size(ga, gacks, ga->bgack_cnt + ga->ugack_cnt);
+ 	ga->len = htons(len);
+ 	return len;
+ }
+@@ -1521,7 +1521,7 @@ static int tipc_link_advance_transmq(struct tipc_link *l, struct tipc_link *r,
+ 		gacks = &ga->gacks[ga->bgack_cnt];
+ 	} else if (ga) {
+ 		/* Copy the Gap ACKs, bc part, for later renewal if needed */
+-		this_ga = kmemdup(ga, tipc_gap_ack_blks_sz(ga->bgack_cnt),
++		this_ga = kmemdup(ga, struct_size(ga, gacks, ga->bgack_cnt),
+ 				  GFP_ATOMIC);
+ 		if (likely(this_ga)) {
+ 			this_ga->start_index = 0;
+diff --git a/net/tipc/msg.h b/net/tipc/msg.h
+index 58660d56bc83..c0d161bc7a50 100644
+--- a/net/tipc/msg.h
++++ b/net/tipc/msg.h
+@@ -189,11 +189,9 @@ struct tipc_gap_ack_blks {
+ 	struct tipc_gap_ack gacks[];
+ };
  
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+-#define tipc_gap_ack_blks_sz(n) (sizeof(struct tipc_gap_ack_blks) + \
+-				 sizeof(struct tipc_gap_ack) * (n))
+-
+ #define MAX_GAP_ACK_BLKS	128
+-#define MAX_GAP_ACK_BLKS_SZ	tipc_gap_ack_blks_sz(MAX_GAP_ACK_BLKS)
++#define MAX_GAP_ACK_BLKS_SZ	(sizeof(struct tipc_gap_ack_blks) + \
++				 sizeof(struct tipc_gap_ack) * MAX_GAP_ACK_BLKS)
+ 
+ static inline struct tipc_msg *buf_msg(struct sk_buff *skb)
+ {
+-- 
+2.27.0
 
-Applied after changing the subject to:
-
-[PATCH] perf build: Fix error message when asking for -fsanitize=address without required libraries
-
-Will test now.
-
-- Arnaldo
