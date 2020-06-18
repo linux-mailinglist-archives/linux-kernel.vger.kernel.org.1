@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525291FDEF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2451FDEFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732003AbgFRBhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:37:19 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:45666 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732922AbgFRBhD (ORCPT
+        id S1731059AbgFRBhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:37:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20816 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732858AbgFRBhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:37:03 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05I1VwwD020779;
-        Thu, 18 Jun 2020 01:36:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=NjO9T+ItUssJ7a0CFcdru+/uu2SQQSgoZuGDk/82NMM=;
- b=r2fNIwyDn5uoXDgXjExVguYuEbEMerprYiys7ZMPD+7osHM1ln5t2f7dicDoFNGe9IKd
- rDhDLKJqpONP5xAMuKnK0fqxmvihg9iJ6nFjE3aLnvOSLTExkQdTn7FgjgikSesNep6O
- pswIQP9kgVtDRoQpXFchm2F6Fw48ahQHLfXFJaYER2F4dbA5nGHNzXOyoesPk/olLgk2
- 5UL+i49w+U9sDH8slraHP7xquGfRQqHrraUTF1ANJLL8i6CIr9/a6QMTWPcd0NavwOTs
- 3Jtqck99LpSg0y+4g2YGb3aENcGu1E/Lx3ilmitYLpE2+9pDDgStPzE/zb1SLNUJtQJo dg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31qg354d3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 18 Jun 2020 01:36:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05I1TCex141282;
-        Thu, 18 Jun 2020 01:36:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 31q66qprqe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Jun 2020 01:36:31 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05I1aSXr014206;
-        Thu, 18 Jun 2020 01:36:29 GMT
-Received: from localhost (/10.159.233.73)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 17 Jun 2020 18:36:28 -0700
-Date:   Wed, 17 Jun 2020 18:36:27 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/2] xfs: Fix false positive lockdep warning with
- sb_internal & fs_reclaim
-Message-ID: <20200618013627.GQ11245@magnolia>
-References: <20200617175310.20912-1-longman@redhat.com>
- <20200617175310.20912-3-longman@redhat.com>
- <20200618004505.GG2005@dread.disaster.area>
+        Wed, 17 Jun 2020 21:37:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592444254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAQoxQtYf9o5VqaT/fLVHNu7f5XQuSefUz3MAMf7JgU=;
+        b=d3tAI7/7HIwOa1whht1VIp6UxTwoPQEr3ZrnlRSjKTmnGDqdt1D1UGM20AshibNHFzyf/5
+        swcWgGvyrBpugPuwFyQkM12GznyMUVuTcTm1pPFT8o9bG3Vt3t0e0DNdAfzv7FfzCKMyik
+        F/n8ymOs9wy3kRQnuGV+Dm32RAdP9lc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-SgHeQMSeMj6EAXqzuPBpVA-1; Wed, 17 Jun 2020 21:37:30 -0400
+X-MC-Unique: SgHeQMSeMj6EAXqzuPBpVA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DCBF107ACCA;
+        Thu, 18 Jun 2020 01:37:29 +0000 (UTC)
+Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1D847CAC4;
+        Thu, 18 Jun 2020 01:37:28 +0000 (UTC)
+Date:   Wed, 17 Jun 2020 19:37:28 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qian Cai <cai@lca.pw>, kvm@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.4 50/60] vfio/pci: fix memory leaks of eventfd
+ ctx
+Message-ID: <20200617193728.30244c2b@x1.home>
+In-Reply-To: <20200618013004.610532-50-sashal@kernel.org>
+References: <20200618013004.610532-1-sashal@kernel.org>
+        <20200618013004.610532-50-sashal@kernel.org>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618004505.GG2005@dread.disaster.area>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 adultscore=0 phishscore=0 suspectscore=1 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006180008
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- clxscore=1015 malwarescore=0 impostorscore=0 adultscore=0
- cotscore=-2147483648 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- suspectscore=1 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006180008
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 10:45:05AM +1000, Dave Chinner wrote:
-> On Wed, Jun 17, 2020 at 01:53:10PM -0400, Waiman Long wrote:
-> >  fs/xfs/xfs_log.c   |  9 +++++++++
-> >  fs/xfs/xfs_trans.c | 31 +++++++++++++++++++++++++++----
-> >  2 files changed, 36 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-> > index 00fda2e8e738..33244680d0d4 100644
-> > --- a/fs/xfs/xfs_log.c
-> > +++ b/fs/xfs/xfs_log.c
-> > @@ -830,8 +830,17 @@ xlog_unmount_write(
-> >  	xfs_lsn_t		lsn;
-> >  	uint			flags = XLOG_UNMOUNT_TRANS;
-> >  	int			error;
-> > +	unsigned long		pflags;
-> >  
-> > +	/*
-> > +	 * xfs_log_reserve() allocates memory. This can lead to fs reclaim
-> > +	 * which may conflicts with the unmount process. To avoid that,
-> > +	 * disable fs reclaim for this allocation.
-> > +	 */
-> > +	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
-> >  	error = xfs_log_reserve(mp, 600, 1, &tic, XFS_LOG, 0);
-> > +	current_restore_flags_nested(&pflags, PF_MEMALLOC_NOFS);
-> > +
-> >  	if (error)
-> >  		goto out_err;
-> 
-> The more I look at this, the more I think Darrick is right and I
-> somewhat misinterpretted what he meant by "the top of the freeze
-> path".
-> 
-> i.e. setting PF_MEMALLOC_NOFS here is out of place - only one caller
-> of xlog_unmount_write requires PF_MEMALLOC_NOFS
-> context. That context should be set in the caller that requires this
-> context, and in this case it is xfs_fs_freeze(). This is top of the
-> final freeze state processing (what I think Darrick meant), not the
-> top of the freeze syscall call chain (what I thought he meant).
+On Wed, 17 Jun 2020 21:29:54 -0400
+Sasha Levin <sashal@kernel.org> wrote:
 
-Aha!  Yes, that's exactly what I meant.  Sorry we all kinda muddled
-around for a few days. :/
-
---D
-
-> So if set PF_MEMALLOC_NOFS setting in xfs_fs_freeze(), it covers all
-> the allocations in this problematic path, and it should obliviates
-> the need for the first patch in the series altogether.
+> From: Qian Cai <cai@lca.pw>
 > 
-> Cheers,
+> [ Upstream commit 1518ac272e789cae8c555d69951b032a275b7602 ]
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> Finished a qemu-kvm (-device vfio-pci,host=0001:01:00.0) triggers a few
+> memory leaks after a while because vfio_pci_set_ctx_trigger_single()
+> calls eventfd_ctx_fdget() without the matching eventfd_ctx_put() later.
+> Fix it by calling eventfd_ctx_put() for those memory in
+> vfio_pci_release() before vfio_device_release().
+> 
+> unreferenced object 0xebff008981cc2b00 (size 128):
+>   comm "qemu-kvm", pid 4043, jiffies 4294994816 (age 9796.310s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
+>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
+>   backtrace:
+>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
+>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
+>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
+>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
+>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
+>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
+>     [<00000000d495ef94>] el0_sync+0x164/0x180
+> unreferenced object 0x29ff008981cc4180 (size 128):
+>   comm "qemu-kvm", pid 4043, jiffies 4294994818 (age 9796.290s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
+>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
+>   backtrace:
+>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
+>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
+>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
+>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
+>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
+>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
+>     [<00000000d495ef94>] el0_sync+0x164/0x180
+> 
+> Signed-off-by: Qian Cai <cai@lca.pw>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/vfio/pci/vfio_pci.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> index 7a82735d5308..ab765770e8dd 100644
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -255,6 +255,10 @@ static void vfio_pci_release(void *device_data)
+>  	if (!(--vdev->refcnt)) {
+>  		vfio_spapr_pci_eeh_release(vdev->pdev);
+>  		vfio_pci_disable(vdev);
+> +		if (vdev->err_trigger)
+> +			eventfd_ctx_put(vdev->err_trigger);
+> +		if (vdev->req_trigger)
+> +			eventfd_ctx_put(vdev->req_trigger);
+>  	}
+>  
+>  	mutex_unlock(&driver_lock);
+
+This has a fix pending, I'd suggest not picking it on its own:
+
+https://lore.kernel.org/kvm/20200616085052.sahrunsesjyjeyf2@beryllium.lan/
+https://lore.kernel.org/kvm/159234276956.31057.6902954364435481688.stgit@gimli.home/
+
+Thanks,
+Alex
+
