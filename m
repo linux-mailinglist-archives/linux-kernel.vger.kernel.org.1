@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFDC1FDB42
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76491FDB6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgFRBLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
+        id S1727798AbgFRBLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:11:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727809AbgFRBK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:10:59 -0400
+        id S1728709AbgFRBLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:11:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A996214DB;
-        Thu, 18 Jun 2020 01:10:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B88021D7E;
+        Thu, 18 Jun 2020 01:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442659;
-        bh=rGnkqzOklVdCYmtctnndT4Xj7oX+ndcWZlmsfC9t1nQ=;
+        s=default; t=1592442665;
+        bh=nXySQYyZR7XIC8RhMQ6BDal9RFYXQkjxarwlV7ejjg4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XthIOUjfoIfJn6EEqPux7QG7JwkqZfGdn+/wGnDRJPEInZF/cWZDcQcTlF7bzDKUU
-         lxngtltCsXXcyha2RZ9bp/ztAhov6zmJqxEsKlcQ6x1qw+JvgUk01xemNosPy3SeD2
-         +LzRT9+0CI1BfwT+k36G5YrYU7olLOducGLhOQXM=
+        b=oksSqBSdFUTFZz76Fsp50PfymeOiMY2wCJZwx2v9zo35ieaYH06yuo9Rr76QsKmL6
+         cQLKQlMMllPbiDHtxW6KACXZExLJx4LOaz/b1ZAIAI16MWrl34np9uQLmTaIFrveCl
+         uo30EKvIei+psEhg3Egn6c750jIBfYhT16KkOL8c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wei Li <liwei391@huawei.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.7 130/388] ASoC: Fix wrong dependency of da7210 and wm8983
-Date:   Wed, 17 Jun 2020 21:03:47 -0400
-Message-Id: <20200618010805.600873-130-sashal@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 135/388] arm64: dts: qcom: sm8250: Fix PDC compatible and reg
+Date:   Wed, 17 Jun 2020 21:03:52 -0400
+Message-Id: <20200618010805.600873-135-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -42,44 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit c1c050ee74d67aeb879fd38e3a07139d7fdb79f4 ]
+[ Upstream commit 240031967ac4c63713c6e0c3249d734e23c913aa ]
 
-As these two drivers support I2C and SPI, we should add the SND_SOC_I2C_AND_SPI
-dependency instead.
+The pdc node suffers from both too narrow compatible and insufficient
+cells in the reg, fix these.
 
-Fixes: ce0c97f8a2936 ("ASoC: Fix SND_SOC_ALL_CODECS imply SPI fallout")
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Link: https://lore.kernel.org/r/20200420202410.47327-3-liwei391@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
+Tested-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20200415054703.739507-1-bjorn.andersson@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8cdc68c141dc..7d2cbed55a9d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -717,7 +717,7 @@ config SND_SOC_L3
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 891d83b2afea..2a7eaefd221d 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -314,8 +314,8 @@ intc: interrupt-controller@17a00000 {
+ 		};
  
- config SND_SOC_DA7210
- 	tristate
--	depends on I2C
-+	depends on SND_SOC_I2C_AND_SPI
- 
- config SND_SOC_DA7213
- 	tristate "Dialog DA7213 CODEC"
-@@ -1569,7 +1569,7 @@ config SND_SOC_WM8978
- 
- config SND_SOC_WM8983
- 	tristate
--	depends on I2C
-+	depends on SND_SOC_I2C_AND_SPI
- 
- config SND_SOC_WM8985
- 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
+ 		pdc: interrupt-controller@b220000 {
+-			compatible = "qcom,sm8250-pdc";
+-			reg = <0x0b220000 0x30000>, <0x17c000f0 0x60>;
++			compatible = "qcom,sm8250-pdc", "qcom,pdc";
++			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
+ 			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
+ 					  <125 63 1>, <126 716 12>;
+ 			#interrupt-cells = <2>;
 -- 
 2.25.1
 
