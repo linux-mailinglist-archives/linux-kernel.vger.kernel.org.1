@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3A1FFC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284DA1FFC8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731259AbgFRUac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
+        id S1729920AbgFRUbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgFRUaJ (ORCPT
+        with ESMTP id S1727074AbgFRUbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:30:09 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C0DC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:30:09 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b27so6928670qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:30:09 -0700 (PDT)
+        Thu, 18 Jun 2020 16:31:35 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF21C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:31:35 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l24so3445353pgb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jx1ahIG5x2xobNXqKJVJpgSIz/2NwPxYpe7GOL7ZVfU=;
-        b=FB0J9rkYiwgXuHJSC1DnZtDkZF4Tw75ZIZHluNjr3AUvFDwfUTMgtY4H214+sXIJLX
-         9Rtlm5lo5CdL/BvI+EGkOWs4zuobC1azbbFFc0+13NKhzKxZYWFDTr8MEdpghAo9awS7
-         8R5UTkPC7ewrUUIXIXVyczO6Cx+kvBVlyVu24=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2vYguTxknGE8Dx16795P40n1hyMI+4rqo7SoKdZ0n4M=;
+        b=jUQk5nqzrPWoyZry6OFj3XXe2iWiykd0oEPPhNsYguTw0jHnq0ttSeXC05Jbcj+aKH
+         i2w49bRIQ5UXe4x22BDcgWgjawQPc1s94rGXML4EP3kzY94O7KzGbJmSf8A849v/UXa2
+         oRf+0BFrbHWIBtEoBJdAikbWPgiYzu90FKcXuNY+ZRcgFcx+Wm8Nv9EGxMtm1b0LKXn3
+         G5kB8nhaWvIOWj9+7918MeRleRN0sfuG6FyMC3ZIONGqNxWyBXVUr67HqJ+qoafWkLB7
+         hCFfMmFjlUt/CmROnI8YhwVwYsILkkIJmZo5/IDHjO4Rsp9jrOOJozHQ13XkS+gRKeeM
+         4BAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jx1ahIG5x2xobNXqKJVJpgSIz/2NwPxYpe7GOL7ZVfU=;
-        b=aaNTy7Mfc7oClTkhw1QgOOLieWtztIJBgmKzCmFfqqTqoV/b+dskup3y970j+VfIbj
-         YXOTVTYDwzOjrX/TB80DQ06F51iXQD4FnjscJbvHSSogd1B9ITKaawreT+IkmiDLgSWV
-         3UpdYZvWHSJVxE92KLMHKImThUA52aitKv8B64BqwDj5EsFr3d4oC3/biex/DDAW4S8T
-         e1kf4b7pfvJ/bi8P/2qPszog5hxyPdXgk5whkgHXK6Hjodka6tSGYs5k2W5ZRfzeca3I
-         dnLsoFxYkCJnf08CWvKbSBmNzjP2nzx1WlSqfvbY9KYox7WkZewIFNfHLoBGVcfRw+mg
-         Mjcg==
-X-Gm-Message-State: AOAM532iPssHMbkIEMVih2PfoCvLJ4556S5m0rKP0VCsmK54CL9eqXY0
-        LxxNvgvgtcAnU46lBK7ltx7RHI+oki8=
-X-Google-Smtp-Source: ABdhPJzylQaooeD46hftkonQc35ZJOpi4VP5APbXZBlkgFXxIh6caC2s9W0bhjKMn1dR8N2XfIyT+g==
-X-Received: by 2002:a37:6610:: with SMTP id a16mr206695qkc.17.1592512208454;
-        Thu, 18 Jun 2020 13:30:08 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id v3sm4027503qkh.130.2020.06.18.13.30.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:30:08 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: [PATCH 5/7] rcu/trace: Use rsp's gp_seq in acceleration's rcu_grace_period tracepoint
-Date:   Thu, 18 Jun 2020 16:29:53 -0400
-Message-Id: <20200618202955.4024-5-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-In-Reply-To: <20200618202955.4024-1-joel@joelfernandes.org>
-References: <20200618202955.4024-1-joel@joelfernandes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2vYguTxknGE8Dx16795P40n1hyMI+4rqo7SoKdZ0n4M=;
+        b=Xxr4zQwhMevbAjYDekthene5Ij0Q8apx7ZmDoup8B9rYL9iPnSUDV6jPwe5/G98j8D
+         Zeu8SOo+kI6g8IRfh3dBnTqOJBFZT4tFgxPnSspCBAlAEWxHIJDvZyMezgaW+WqwOE9D
+         knq9lzYX/ycscC5DNDhLf1EJ6xG4lm6DhRux1CzFvN7sMS5DXRQ20YO91oKIbqVCmq+O
+         l5NtV/ShV3s0VJmgr3lFlp4A5fEEggOOKSFplmi1StHmIz62jbZQ4FHJslhgsKifuU1S
+         Hq709TQYfuHH/y8DHEEk/AdOno0pXkqXS3RUvEFkISB8mpyklwO1wTe0baLBxWnxxCms
+         060A==
+X-Gm-Message-State: AOAM532HJrbckqDG8C5ByxwSBGW5HWFZhMVdWEthH1VG1IEDZuTbdodA
+        KisczUn4+A2PsQGeLSrU7KGwbwa5Tsrac+x+tExrLA==
+X-Google-Smtp-Source: ABdhPJyg7+/EsMv/uILhnCx33cvfvyj/A5rdmlcYEhM69bT4X7pfCnqfldKiOJpntTlq+2IKO59hml9kLz5hSl5KpGY=
+X-Received: by 2002:aa7:868f:: with SMTP id d15mr5402182pfo.166.1592512294729;
+ Thu, 18 Jun 2020 13:31:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200618123912.64762-1-vitor@massaru.org>
+In-Reply-To: <20200618123912.64762-1-vitor@massaru.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 18 Jun 2020 13:31:23 -0700
+Message-ID: <CAFd5g47tWA=yqa2zN8f6d=dKDhutU_Dr3JLjAdu8+wRFq9iOyg@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: fix KconfigParseError handling CC_VERSION_TEXT
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During acceleration of CB, the rsp's gp_seq is rcu_seq_snap'd. This is
-the value used for acceleration - it is the value of gp_seq at which it
-is safe the execute all callbacks in the callback list.
+On Thu, Jun 18, 2020 at 5:39 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
+>
+> Commit 8b59cd81dc5 ("kbuild: ensure full rebuild when the compiler
+> is updated") added the environment variable CC_VERSION_TEXT,
+> parse_from_string() doesn't expect a string in value field and this
+> causes the failure below:
+>
+> [iha@bbking linux]$ tools/testing/kunit/kunit.py run --timeout=60
+> [00:20:12] Configuring KUnit Kernel ...
+> Generating .config ...
+> Traceback (most recent call last):
+>   File "tools/testing/kunit/kunit.py", line 347, in <module>
+>     main(sys.argv[1:])
+>   File "tools/testing/kunit/kunit.py", line 257, in main
+>     result = run_tests(linux, request)
+>   File "tools/testing/kunit/kunit.py", line 134, in run_tests
+>     config_result = config_tests(linux, config_request)
+>   File "tools/testing/kunit/kunit.py", line 64, in config_tests
+>     success = linux.build_reconfig(request.build_dir, request.make_options)
+>   File "/home/iha/lkmp/linux/tools/testing/kunit/kunit_kernel.py", line 161, in build_reconfig
+>     return self.build_config(build_dir, make_options)
+>   File "/home/iha/lkmp/linux/tools/testing/kunit/kunit_kernel.py", line 145, in build_config
+>     return self.validate_config(build_dir)
+>   File "/home/iha/lkmp/linux/tools/testing/kunit/kunit_kernel.py", line 124, in validate_config
+>     validated_kconfig.read_from_file(kconfig_path)
+>   File "/home/iha/lkmp/linux/tools/testing/kunit/kunit_config.py", line 89, in read_from_file
+>     self.parse_from_string(f.read())
+>   File "/home/iha/lkmp/linux/tools/testing/kunit/kunit_config.py", line 85, in parse_from_string
+>     raise KconfigParseError('Failed to parse: ' + line)
+> kunit_config.KconfigParseError: Failed to parse: CONFIG_CC_VERSION_TEXT="gcc (GCC) 10.1.1 20200507 (Red Hat 10.1.1-1)"
 
-The rdp's gp_seq is not very useful for this scenario. Make
-rcu_grace_period report the rsp's gp_seq instead as it allows one to
-reason about how the acceleration works.
+I am pretty there is already a fix out for this issue:
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+https://patchwork.kernel.org/patch/11592313/
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 81df1b837dd9d..c3bae7a83d792 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1437,9 +1437,9 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 
- 	/* Trace depending on how much we were able to accelerate. */
- 	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
--		trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("AccWaitCB"));
-+		trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq, TPS("AccWaitCB"));
- 	else
--		trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("AccReadyCB"));
-+		trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq, TPS("AccReadyCB"));
- 
- 	/* Count CBs for tracing. */
- 	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
--- 
-2.27.0.111.gc72c7da667-goog
-
+Can you confirm?
