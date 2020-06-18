@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F01B1FF918
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F247E1FF913
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731945AbgFRQUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:20:02 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:34974 "EHLO
+        id S1731860AbgFRQTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:19:32 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:34163 "EHLO
         conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731272AbgFRQUB (ORCPT
+        with ESMTP id S1731704AbgFRQTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:20:01 -0400
+        Thu, 18 Jun 2020 12:19:16 -0400
 Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 05IGHqZA027327;
-        Fri, 19 Jun 2020 01:17:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 05IGHqZA027327
+        by conuserg-10.nifty.com with ESMTP id 05IGHqZB027327;
+        Fri, 19 Jun 2020 01:17:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 05IGHqZB027327
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592497073;
-        bh=IF3xULoeXnGB+k9UcqNfKU1f01wqRcEAsOsoDhwit7M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=u7H0Rjqeox7aSFatubRj542v2dGdwC8zsdX52NoFG26Ekm7qILBuiBylr78ybJOy1
-         5FlpCumLB2EybelhJq+6cTwMIjMkewqxpe0/GtHeU/oIxOAbM/mOPJGuFgEOD7LJIh
-         PmAUKBQVsVe7Kq5/9nZlrNQvmaDz4Zv/M+HyJcTkJC0MEr7NTPCgwSecK+GLz4WN2T
-         nKBYWhKKuHqfVTjfRdb52SWlM4rFV15H00sB2UBnN/xVHZ8oEvTQvy4R+Ft7j0V4t+
-         BAiasmo5xbJUrFoBTa/0/d4Z14vudQwjsXnwGoI+qQDusVKwzFoAJf2MdBmbz2+qDg
-         v/L+hXxg+3rHg==
+        s=dec2015msa; t=1592497074;
+        bh=bJXBqWiLF+s040Rs2D8WdVLHL2N8PIPU8Pr23YrC5Vs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=xqL3+bnnoZ6TEYCvn48oCUoshcQ5K4K3xPCqoCTZAae9ot1kXxhXza5N2p8KFmlnV
+         R4eiJk/i74w6Dpcvszwi/nYG278ddWcwr1ARSB8bQ7rDWeEcbpcXF/iItUUsciHUpL
+         2WT0oZ/XofHZot0N+wOl162ulciJ6H95dU0LDCNF1E7KKfP5eIrP5yf360p5URgQN4
+         gKpzHYF/lz1h3ZGrM6IhgbG9IleNdDE/NxPImeN6qgPNO8p8lTeQW1nXYLjKpNWa8F
+         L2UZkmDEpHBpf6bv7wdo7nvApp+dplATrr6WiRGjdwUpqraSa9Pbx0sTneXYBERFID
+         IDqYs/3r+7muA==
 X-Nifty-SrcIP: [126.90.202.47]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     David Howells <dhowells@redhat.com>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>, Marco Elver <elver@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] sched: fix thread_union::task visibility
-Date:   Fri, 19 Jun 2020 01:17:49 +0900
-Message-Id: <20200618161750.178659-1-masahiroy@kernel.org>
+Subject: [PATCH 2/2] init: annotate init_task as __init_task_data for all arches
+Date:   Fri, 19 Jun 2020 01:17:50 +0900
+Message-Id: <20200618161750.178659-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618161750.178659-1-masahiroy@kernel.org>
+References: <20200618161750.178659-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -51,34 +50,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_ARCH_TASK_STRUCT_ON_STACK=y (i.e. ARCH=ia64), task_struct
-and the thread stack are shared.
+__init_task_data is no-op when CONFIG_ARCH_TASK_STRUCT_ON_STACK=n,
+so you can always annotate init_task as __init_task_data.
 
-The ifdef condition of CONFIG_ARCH_TASK_STRUCT_ON_STACK is opposite.
-
-Now that the init thread stack is constructed by the linker script,
-this is not a practical problem, but let's fix the code just in case.
-
-Fixes: 0500871f21b2 ("Construct init thread stack in the linker script rather than by union")
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- include/linux/sched.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ init/init_task.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b62e6aaf28f0..6d6c4d38c063 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1674,7 +1674,7 @@ extern void ia64_set_curr_task(int cpu, struct task_struct *p);
- void yield(void);
- 
- union thread_union {
--#ifndef CONFIG_ARCH_TASK_STRUCT_ON_STACK
-+#ifdef CONFIG_ARCH_TASK_STRUCT_ON_STACK
- 	struct task_struct task;
- #endif
- #ifndef CONFIG_THREAD_INFO_IN_TASK
+diff --git a/init/init_task.c b/init/init_task.c
+index 15089d15010a..0110b2941c4d 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -61,11 +61,7 @@ unsigned long init_shadow_call_stack[SCS_SIZE / sizeof(long)]
+  * Set up the first task table, touch at your own risk!. Base=0,
+  * limit=0x1fffff (=2MB)
+  */
+-struct task_struct init_task
+-#ifdef CONFIG_ARCH_TASK_STRUCT_ON_STACK
+-	__init_task_data
+-#endif
+-= {
++struct task_struct init_task __init_task_data = {
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	.thread_info	= INIT_THREAD_INFO(init_task),
+ 	.stack_refcount	= REFCOUNT_INIT(1),
 -- 
 2.25.1
 
