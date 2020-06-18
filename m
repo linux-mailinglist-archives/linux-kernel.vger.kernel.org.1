@@ -2,185 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29A81FF14C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB991FF138
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729450AbgFRMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 08:10:17 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:19485 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgFRMKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:10:13 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200618121009epoutp01c8b49ee963431738d3b0ab663ba5a19b~ZoiHCLzm_0822708227epoutp01W
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 12:10:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200618121009epoutp01c8b49ee963431738d3b0ab663ba5a19b~ZoiHCLzm_0822708227epoutp01W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592482209;
-        bh=vjuIqEJrow48HTftCC7QXvVlxYZ/RCtLUMgGhLL3EZk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=kciM2KW1a5tljq97EUdfV57hSoHS+6PBTSlB2nqx4QG9OGRtW+EPdAfDBa+VEU1Tw
-         jIWVsq3cjwBgqeocfWOzoTU7EhwFISRhWMd11bkvfpcXjS12xbAXWFfUAK0+YWyhKg
-         YeDYl5tB9M58sZ9yHzIxQPfFjpD5n//jJocZFry4=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200618121008epcas1p4de6f2446f64408e1e85f9bcde75885b3~ZoiGvb5pv3178331783epcas1p48;
-        Thu, 18 Jun 2020 12:10:08 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 49ngjq6YPxzMqYkZ; Thu, 18 Jun
-        2020 12:10:07 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        76.CB.29173.F995BEE5; Thu, 18 Jun 2020 21:10:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200618121007epcas1p1aa0f24b361e0232913bf7477ee0a92c8~ZoiFefivc2444024440epcas1p1c;
-        Thu, 18 Jun 2020 12:10:07 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200618121007epsmtrp292f6ed3f2fa5db419dc7b79760a3daf3~ZoiFd3Syg3212132121epsmtrp2Z;
-        Thu, 18 Jun 2020 12:10:07 +0000 (GMT)
-X-AuditID: b6c32a37-9b7ff700000071f5-c7-5eeb599f7cf2
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9D.70.08382.F995BEE5; Thu, 18 Jun 2020 21:10:07 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.98.115]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200618121007epsmtip1f5eb374c3713eab1424c3a8d666be777~ZoiFTs-WY1697916979epsmtip1S;
-        Thu, 18 Jun 2020 12:10:07 +0000 (GMT)
-From:   Sungjong Seo <sj1557.seo@samsung.com>
-To:     namjae.jeon@samsung.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sungjong Seo <sj1557.seo@samsung.com>
-Subject: [PATCH] exfat: flush dirty metadata in fsync
-Date:   Thu, 18 Jun 2020 20:43:26 +0900
-Message-Id: <1592480606-14657-1-git-send-email-sj1557.seo@samsung.com>
-X-Mailer: git-send-email 1.9.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7bCmru78yNdxBk8/GFrs2XuSxeLyrjls
-        Fj+m11ts+XeE1YHFo2/LKkaPz5vkApiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
-        LS3MlRTyEnNTbZVcfAJ03TJzgPYoKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoM
-        DQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMmZsO8BYsFa04vSZ7awNjLcEuxg5OCQETCR+NNZ3
-        MXJxCAnsYJSYsmc3WxcjJ5DziVFiwgEWCPsbo0TbhVgQG6T+zuorLBANexklPs79yAbhfGaU
-        mPFkLiNIFZuAtsTypmXMILaIgLTEpPnHmUBsZoEMiZtvjoPVCAuYSpy6shTMZhFQlVj9YivY
-        Nl4BN4nmUw9YILbJSZw8NpkVZIGEQDu7xKfZZ9ghznaR2LSgAKJGWOLV8S3sELaUxOd3e9kg
-        7HqJ3atOsUD0NjBKHHm0EGqoscT8loXMIHOYBTQl1u/ShwgrSuz8DXE/swCfxLuvPawQq3gl
-        OtqEIEpUJL5/2MkCs+rKj6tMECUeEv1HEyBhFSsxe+cblgmMsrMQ5i9gZFzFKJZaUJybnlps
-        WGCMHEObGMEJR8t8B+O0tx/0DjEycTAeYpTgYFYS4XX+/SJOiDclsbIqtSg/vqg0J7X4EKMp
-        MLgmMkuJJucDU15eSbyhqZGxsbGFiZm5mamxkjivr9WFOCGB9MSS1OzU1ILUIpg+Jg5OqQam
-        /fWKE67MlTy6pqSnLkdfYb6RxpLnST02i57/duwIy2/3Cutdul/k0I79uiJRfv/iDy6av5Pz
-        fJT91vNlJ38YrHvklv4+f+vRI2cvnX22MzJeXC79U1rDhqCqRe28G57p6fyKkfuvfPJkFjf3
-        KbsP+c71ndc5Oidl6QhOSj1V4/Zlm2nHC96gSdH9uWlHd7GdafCyenvwckVekfOUhyxPqmR0
-        GsO22us81vE6Yy9cmapqXShc4JG11KLmn9yt/5mVCZXt4V81Zhir205efan6hZ7M4nz9pUEz
-        2JJLzp75s2/TzxuL2TZsLXiu1hm0M/KgjpH7iuQlAg9E+Pgvbjg7x3p32WcWyTc//3ufTVus
-        xFKckWioxVxUnAgAy1Z+vcEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJMWRmVeSWpSXmKPExsWy7bCSnO78yNdxBtOvilrs2XuSxeLyrjls
-        Fj+m11ts+XeE1YHFo2/LKkaPz5vkApiiuGxSUnMyy1KL9O0SuDJmbDvAWLBWtOL0me2sDYy3
-        BLsYOTkkBEwk7qy+wtLFyMUhJLCbUWJXz0bGLkYOoISUxMF9mhCmsMThw8Ug5UICHxkluh47
-        g9hsAtoSy5uWMYPYIgLSEpPmH2cCsZkFsiRu3TrKAmILC5hKnLqylBHEZhFQlVj9YitYnFfA
-        TaL51AMWiBPkJE4em8w6gZFnASPDKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4BDQ
-        0tzBuH3VB71DjEwcjIcYJTiYlUR4nX+/iBPiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6NwYZyQ
-        QHpiSWp2ampBahFMlomDU6qBKa8tf+Wxwx7HrLfYMP0/4jonhG2z406591ZTpubJHv+c9Kzj
-        vOki5t/euSfmGaeeOHfIeINX2ZSSE79eH20SzzvB9IjzSLbkli+6yVXx1T99Xumyihs6Lumy
-        O1Z9Pyu5odI97s7aGUfLdIPTdHc6rf67RsV0s7Xj2T/+apFeU3VMPyx5fXam7e99Pis9da7/
-        mzfLfN/aZif1bRy88wwniMbtWmH6aIl/326J2++yfDqOHN0iLV/Ct/zuI5m58aWRSouaVuXW
-        O7pEzvohNXXJ3aInK3/czfKYXB7cZSt3s7dJcbf+qeL1Vd+PBRnXrZr5NXtK5broE34lv56c
-        4Tr1N5BhfaOi/cet8xjYrA+eL1BiKc5INNRiLipOBADj/w/OcAIAAA==
-X-CMS-MailID: 20200618121007epcas1p1aa0f24b361e0232913bf7477ee0a92c8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200618121007epcas1p1aa0f24b361e0232913bf7477ee0a92c8
-References: <CGME20200618121007epcas1p1aa0f24b361e0232913bf7477ee0a92c8@epcas1p1.samsung.com>
+        id S1729378AbgFRMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 08:06:52 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:46510 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727093AbgFRMGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:06:50 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6E6402000A7;
+        Thu, 18 Jun 2020 14:06:48 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E2623200D40;
+        Thu, 18 Jun 2020 14:06:43 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 412C94024F;
+        Thu, 18 Jun 2020 20:06:38 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_spdif: Add pm runtime function
+Date:   Thu, 18 Jun 2020 19:55:34 +0800
+Message-Id: <1592481334-3680-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-generic_file_fsync() exfat used could not guarantee the consistency of
-a file because it has flushed not dirty metadata but only dirty data pages
-for a file.
+Add pm runtime support and move clock handling there.
+Close the clocks at suspend to reduce the power consumption.
 
-Instead of that, use exfat_file_fsync() for files and directories so that
-it guarantees to commit both the metadata and data pages for a file.
+fsl_spdif_suspend is replaced by pm_runtime_force_suspend.
+fsl_spdif_resume is replaced by pm_runtime_force_resume.
 
-Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- fs/exfat/dir.c      |  2 +-
- fs/exfat/exfat_fs.h |  1 +
- fs/exfat/file.c     | 19 ++++++++++++++++++-
- 3 files changed, 20 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 113 ++++++++++++++++++++++----------------
+ 1 file changed, 67 insertions(+), 46 deletions(-)
 
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index 02acbb6ddf02..b71c540d88f2 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -309,7 +309,7 @@ const struct file_operations exfat_dir_operations = {
- 	.llseek		= generic_file_llseek,
- 	.read		= generic_read_dir,
- 	.iterate	= exfat_iterate,
--	.fsync		= generic_file_fsync,
-+	.fsync		= exfat_file_fsync,
- };
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5bc0e4729341..46719fd2f1ec 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -16,6 +16,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/regmap.h>
++#include <linux/pm_runtime.h>
  
- int exfat_alloc_new_dir(struct inode *inode, struct exfat_chain *clu)
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index 84664024e51e..6ec253581b86 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -417,6 +417,7 @@ void exfat_truncate(struct inode *inode, loff_t size);
- int exfat_setattr(struct dentry *dentry, struct iattr *attr);
- int exfat_getattr(const struct path *path, struct kstat *stat,
- 		unsigned int request_mask, unsigned int query_flags);
-+int exfat_file_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+ #include <sound/asoundef.h>
+ #include <sound/dmaengine_pcm.h>
+@@ -495,25 +496,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 	struct platform_device *pdev = spdif_priv->pdev;
+ 	struct regmap *regmap = spdif_priv->regmap;
+ 	u32 scr, mask;
+-	int i;
+ 	int ret;
  
- /* namei.c */
- extern const struct dentry_operations exfat_dentry_ops;
-diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-index fce03f318787..3b7fea465fd4 100644
---- a/fs/exfat/file.c
-+++ b/fs/exfat/file.c
-@@ -6,6 +6,7 @@
- #include <linux/slab.h>
- #include <linux/cred.h>
- #include <linux/buffer_head.h>
-+#include <linux/blkdev.h>
+ 	/* Reset module and interrupts only for first initialization */
+ 	if (!snd_soc_dai_active(cpu_dai)) {
+-		ret = clk_prepare_enable(spdif_priv->coreclk);
+-		if (ret) {
+-			dev_err(&pdev->dev, "failed to enable core clock\n");
+-			return ret;
+-		}
+-
+-		if (!IS_ERR(spdif_priv->spbaclk)) {
+-			ret = clk_prepare_enable(spdif_priv->spbaclk);
+-			if (ret) {
+-				dev_err(&pdev->dev, "failed to enable spba clock\n");
+-				goto err_spbaclk;
+-			}
+-		}
+-
+ 		ret = spdif_softreset(spdif_priv);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to soft reset\n");
+@@ -531,18 +517,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
+ 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
+ 			SCR_TXFIFO_FSEL_MASK;
+-		for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
+-			ret = clk_prepare_enable(spdif_priv->txclk[i]);
+-			if (ret)
+-				goto disable_txclk;
+-		}
+ 	} else {
+ 		scr = SCR_RXFIFO_FSEL_IF8 | SCR_RXFIFO_AUTOSYNC;
+ 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
+ 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
+-		ret = clk_prepare_enable(spdif_priv->rxclk);
+-		if (ret)
+-			goto err;
+ 	}
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
  
- #include "exfat_raw.h"
- #include "exfat_fs.h"
-@@ -346,12 +347,28 @@ int exfat_setattr(struct dentry *dentry, struct iattr *attr)
- 	return error;
+@@ -551,15 +529,7 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 
+ 	return 0;
+ 
+-disable_txclk:
+-	for (i--; i >= 0; i--)
+-		clk_disable_unprepare(spdif_priv->txclk[i]);
+ err:
+-	if (!IS_ERR(spdif_priv->spbaclk))
+-		clk_disable_unprepare(spdif_priv->spbaclk);
+-err_spbaclk:
+-	clk_disable_unprepare(spdif_priv->coreclk);
+-
+ 	return ret;
  }
  
-+int exfat_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
-+{
-+	struct inode *inode = filp->f_mapping->host;
-+	int err;
+@@ -569,20 +539,17 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
+ 	struct regmap *regmap = spdif_priv->regmap;
+-	u32 scr, mask, i;
++	u32 scr, mask;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		scr = 0;
+ 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
+ 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
+ 			SCR_TXFIFO_FSEL_MASK;
+-		for (i = 0; i < SPDIF_TXRATE_MAX; i++)
+-			clk_disable_unprepare(spdif_priv->txclk[i]);
+ 	} else {
+ 		scr = SCR_RXFIFO_OFF | SCR_RXFIFO_CTL_ZERO;
+ 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
+ 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
+-		clk_disable_unprepare(spdif_priv->rxclk);
+ 	}
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
+ 
+@@ -591,9 +558,6 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
+ 		spdif_intr_status_clear(spdif_priv);
+ 		regmap_update_bits(regmap, REG_SPDIF_SCR,
+ 				SCR_LOW_POWER, SCR_LOW_POWER);
+-		if (!IS_ERR(spdif_priv->spbaclk))
+-			clk_disable_unprepare(spdif_priv->spbaclk);
+-		clk_disable_unprepare(spdif_priv->coreclk);
+ 	}
+ }
+ 
+@@ -1350,6 +1314,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 
+ 	/* Register with ASoC */
+ 	dev_set_drvdata(&pdev->dev, spdif_priv);
++	pm_runtime_enable(&pdev->dev);
++	regcache_cache_only(spdif_priv->regmap, true);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_spdif_component,
+ 					      &spdif_priv->cpu_dai_drv, 1);
+@@ -1365,36 +1331,91 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_spdif_suspend(struct device *dev)
++#ifdef CONFIG_PM
++static int fsl_spdif_runtime_suspend(struct device *dev)
+ {
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	int i;
+ 
+ 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			&spdif_priv->regcache_srpc);
+-
+ 	regcache_cache_only(spdif_priv->regmap, true);
+-	regcache_mark_dirty(spdif_priv->regmap);
 +
-+	err = __generic_file_fsync(filp, start, end, datasync);
-+	if (err)
-+		return err;
++	clk_disable_unprepare(spdif_priv->rxclk);
 +
-+	err = sync_blockdev(inode->i_sb->s_bdev);
-+	if (err)
-+		return err;
++	for (i = 0; i < SPDIF_TXRATE_MAX; i++)
++		clk_disable_unprepare(spdif_priv->txclk[i]);
 +
-+	return blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL);
-+}
++	if (!IS_ERR(spdif_priv->spbaclk))
++		clk_disable_unprepare(spdif_priv->spbaclk);
++	clk_disable_unprepare(spdif_priv->coreclk);
+ 
+ 	return 0;
+ }
+ 
+-static int fsl_spdif_resume(struct device *dev)
++static int fsl_spdif_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
++	int ret;
++	int i;
 +
- const struct file_operations exfat_file_operations = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= generic_file_read_iter,
- 	.write_iter	= generic_file_write_iter,
- 	.mmap		= generic_file_mmap,
--	.fsync		= generic_file_fsync,
-+	.fsync		= exfat_file_fsync,
- 	.splice_read	= generic_file_splice_read,
- 	.splice_write	= iter_file_splice_write,
++	ret = clk_prepare_enable(spdif_priv->coreclk);
++	if (ret) {
++		dev_err(dev, "failed to enable core clock\n");
++		return ret;
++	}
++
++	if (!IS_ERR(spdif_priv->spbaclk)) {
++		ret = clk_prepare_enable(spdif_priv->spbaclk);
++		if (ret) {
++			dev_err(dev, "failed to enable spba clock\n");
++			goto disable_core_clk;
++		}
++	}
++
++	for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
++		ret = clk_prepare_enable(spdif_priv->txclk[i]);
++		if (ret)
++			goto disable_spba_clk;
++	}
++
++	ret = clk_prepare_enable(spdif_priv->rxclk);
++	if (ret)
++		goto disable_tx_clk;
+ 
+ 	regcache_cache_only(spdif_priv->regmap, false);
++	regcache_mark_dirty(spdif_priv->regmap);
+ 
+ 	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			SRPC_CLKSRC_SEL_MASK | SRPC_GAINSEL_MASK,
+ 			spdif_priv->regcache_srpc);
+ 
+-	return regcache_sync(spdif_priv->regmap);
++	ret = regcache_sync(spdif_priv->regmap);
++	if (ret)
++		goto disable_rx_clk;
++
++	return 0;
++
++disable_rx_clk:
++	clk_disable_unprepare(spdif_priv->rxclk);
++disable_tx_clk:
++disable_spba_clk:
++	for (i--; i >= 0; i--)
++		clk_disable_unprepare(spdif_priv->txclk[i]);
++	if (!IS_ERR(spdif_priv->spbaclk))
++		clk_disable_unprepare(spdif_priv->spbaclk);
++disable_core_clk:
++	clk_disable_unprepare(spdif_priv->coreclk);
++
++	return ret;
+ }
+-#endif /* CONFIG_PM_SLEEP */
++#endif
+ 
+ static const struct dev_pm_ops fsl_spdif_pm = {
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_spdif_suspend, fsl_spdif_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(fsl_spdif_runtime_suspend, fsl_spdif_runtime_resume,
++			   NULL)
  };
+ 
+ static const struct of_device_id fsl_spdif_dt_ids[] = {
 -- 
-2.17.1
+2.21.0
 
