@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706E61FDBD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC50A1FDBDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgFRBPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:15:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42852 "EHLO mail.kernel.org"
+        id S1729452AbgFRBPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727082AbgFRBNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:13:34 -0400
+        id S1728014AbgFRBNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E4D9221F1;
-        Thu, 18 Jun 2020 01:13:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08E3421924;
+        Thu, 18 Jun 2020 01:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442814;
-        bh=C6pOC5KpqXsyu8075XFWZfvFx0K9kr4hVggmywYM0pI=;
+        s=default; t=1592442819;
+        bh=++TE833j+DXLC/txZxLB2LxUhnJsxmm4FsnYJoi9dB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSCAGaG9Wk7v4Tjv0V5/NByKi0uj12xb9JXMbvVNu4as+B6ZsQRtqCdnSIS/NSofH
-         cFFRXJkUJ/tsjx4hDeMlCDQ5Z8DudrLbU2oVIMq9QL6mGgZh0KpTjnW2/LFxok9RLV
-         6hIXQZgNCr3cD4WUA18M4R2ergtz4aEQLIPp5sok=
+        b=C6pUeXGKa7SvAt8zdK9LNe/ol6sjtyqgKQ5X5hQ8E0JuvdZ4q3K2M7+n3BqaIy/CA
+         DvPbgWIZi/rtvsJ7n6o5upj2TuTJMY94nZscG/xjjg8Bzr7iJLf9wIvfkDwU2rjNVX
+         VkVo74y7fqEIceYjQnFI7vTeqfwwXZHUeJ1wcFtg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.7 252/388] dm zoned: return NULL if dmz_get_zone_for_reclaim() fails to find a zone
-Date:   Wed, 17 Jun 2020 21:05:49 -0400
-Message-Id: <20200618010805.600873-252-sashal@kernel.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 256/388] bus: mhi: core: Read transfer length from an event properly
+Date:   Wed, 17 Jun 2020 21:05:53 -0400
+Message-Id: <20200618010805.600873-256-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,60 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Hemant Kumar <hemantk@codeaurora.org>
 
-[ Upstream commit 489dc0f06a5837f87482c0ce61d830d24e17082e ]
+[ Upstream commit ee75cedf82d832561af8ba8380aeffd00a9eea77 ]
 
-The only case where dmz_get_zone_for_reclaim() cannot return a zone is
-if the respective lists are empty. So we should just return a simple
-NULL value here as we really don't have an error code which would make
-sense.
+When MHI Driver receives an EOT event, it reads xfer_len from the
+event in the last TRE. The value is under control of the MHI device
+and never validated by Host MHI driver. The value should never be
+larger than the real size of the buffer but a malicious device can
+set the value 0xFFFF as maximum. This causes driver to memory
+overflow (both read or write). Fix this issue by reading minimum of
+transfer length from event and the buffer length provided.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20200521170249.21795-5-manivannan.sadhasivam@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-zoned-metadata.c | 4 ++--
- drivers/md/dm-zoned-reclaim.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/bus/mhi/core/main.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
-index 369de15c4e80..61b7d7b7e5a6 100644
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -1554,7 +1554,7 @@ static struct dm_zone *dmz_get_rnd_zone_for_reclaim(struct dmz_metadata *zmd)
- 			return dzone;
- 	}
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 97e06cc586e4..8be3d0fb0614 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -513,7 +513,10 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+ 				mhi_cntrl->unmap_single(mhi_cntrl, buf_info);
  
--	return ERR_PTR(-EBUSY);
-+	return NULL;
- }
+ 			result.buf_addr = buf_info->cb_buf;
+-			result.bytes_xferd = xfer_len;
++
++			/* truncate to buf len if xfer_len is larger */
++			result.bytes_xferd =
++				min_t(u16, xfer_len, buf_info->len);
+ 			mhi_del_ring_element(mhi_cntrl, buf_ring);
+ 			mhi_del_ring_element(mhi_cntrl, tre_ring);
+ 			local_rp = tre_ring->rp;
+@@ -597,7 +600,9 @@ static int parse_rsc_event(struct mhi_controller *mhi_cntrl,
  
- /*
-@@ -1574,7 +1574,7 @@ static struct dm_zone *dmz_get_seq_zone_for_reclaim(struct dmz_metadata *zmd)
- 			return zone;
- 	}
- 
--	return ERR_PTR(-EBUSY);
-+	return NULL;
- }
- 
- /*
-diff --git a/drivers/md/dm-zoned-reclaim.c b/drivers/md/dm-zoned-reclaim.c
-index e7ace908a9b7..d50817320e8e 100644
---- a/drivers/md/dm-zoned-reclaim.c
-+++ b/drivers/md/dm-zoned-reclaim.c
-@@ -349,8 +349,8 @@ static int dmz_do_reclaim(struct dmz_reclaim *zrc)
- 
- 	/* Get a data zone */
- 	dzone = dmz_get_zone_for_reclaim(zmd);
--	if (IS_ERR(dzone))
--		return PTR_ERR(dzone);
-+	if (!dzone)
-+		return -EBUSY;
- 
- 	start = jiffies;
+ 	result.transaction_status = (ev_code == MHI_EV_CC_OVERFLOW) ?
+ 		-EOVERFLOW : 0;
+-	result.bytes_xferd = xfer_len;
++
++	/* truncate to buf len if xfer_len is larger */
++	result.bytes_xferd = min_t(u16, xfer_len, buf_info->len);
+ 	result.buf_addr = buf_info->cb_buf;
+ 	result.dir = mhi_chan->dir;
  
 -- 
 2.25.1
