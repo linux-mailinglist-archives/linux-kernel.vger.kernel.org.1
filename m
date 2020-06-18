@@ -2,212 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01811FFC3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379C11FFC43
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgFRUFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730918AbgFRUFQ (ORCPT
+        id S1731014AbgFRUGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:06:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7130 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729154AbgFRUGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:05:16 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5464C0613EE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:05:16 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e18so3411247pgn.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 13:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hH5UdqkrUsHHkWkTkrsTpUaZ/SG0CR6QLInGjMheMsQ=;
-        b=etadw103cqJRZdZ59vL7+FSIVCyWqJxsPUoshMP46pJkWYpyPh1Z8z2rOaozPM6T9H
-         5c7AmqMnocB+A8JJb/7BGlmzUHsa8VUg/Sy09a1I4Lr+wMi+eXoSUP1amVW/VFTdTB0Y
-         Az+830Tp9h9FTrH3X1IX6E56xQAUj6mYytnd0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hH5UdqkrUsHHkWkTkrsTpUaZ/SG0CR6QLInGjMheMsQ=;
-        b=cjFi1Y1ZxtZYAxKg5rM3ErGjCrXGjBl0XlHe1PpzPdQgJWNTnT9KdFuegHsiayR5yt
-         g8jFCkbTRU7+H040KDcgFDFozaYO2CfzwjRKVQ+hl0w2U72MG695tjbRAtaSEE1lrnaT
-         7rqfvfMYVBY3oLXKIYUTjPXyz9aablNMngsf1QJw5/gVlcJj6AWVM4KLwhRtUa5dSYLa
-         l7pZVzuPV/ObyHCM+94//mUJvuwSbN60dMsgEwkE3GqduYYcaUgMUCB3Rs5SlYVAd9+s
-         9vyRkVTs+bjHKqi43ZicDtZGSX+p8LD0Jm6fXBB22xvupJwmLRit6yDJ4IorKTF4gz6T
-         ToMw==
-X-Gm-Message-State: AOAM533Xaoklchrw+HMG+HvL8ic0mXFQprnHrQR+9i1DyC1pwe3t+pRf
-        UQV6p+kOeoRTBH7sBvGIBm2t0g==
-X-Google-Smtp-Source: ABdhPJyvN1SyXkPFRjQ3ru6p0iO6TqH4uR0HKiNTz7KbggpLMsPBApIzCK92OExHh+Nr7VZgXchX+A==
-X-Received: by 2002:a62:1c5:: with SMTP id 188mr4954296pfb.213.1592510716220;
-        Thu, 18 Jun 2020 13:05:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p14sm3201600pju.7.2020.06.18.13.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:05:15 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 13:05:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 02/11] fs: Move __scm_install_fd() to
- __fd_install_received()
-Message-ID: <202006181302.84BFFF52CA@keescook>
-References: <20200616032524.460144-1-keescook@chromium.org>
- <20200616032524.460144-3-keescook@chromium.org>
- <20200618085614.fw3ynalpcipbplf3@wittgenstein>
-MIME-Version: 1.0
+        Thu, 18 Jun 2020 16:06:50 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05IK6aSp010932;
+        Thu, 18 Jun 2020 13:06:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Bt35ui5O9WgRjCG/1WQOzOirTp0hI/f4CFQSmauBr7I=;
+ b=abIfJjV6FawS96Iv5udInj6FBNZBNsLPbidTQXHeyFi2zUdp6R9ZvbzFK05iEUdMYAR3
+ 9b3ozjA/jI+fAA85wTU2GC6vrPYPcKnoF/B1CJnCqu0DGBDq6sjQCXy6/Maj+y7UZQ7h
+ ykIiCrJwk29Ah5VioWnIhHQwvOaPRaCqtqk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 31rcbe0y7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Jun 2020 13:06:35 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Jun 2020 13:06:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YOOk9zRj4kxysmpSMpXqSNp31dfyJBirlCbzGX/m3TTtoC6Nr8SYI1xpOVqt8ejHyE5mHtTBSBiS4gHC+OEHIvggzYKNR15JLKY8Mp6SNu2b76N97W1Y2Ngd1CDqAmJ1fzYq4H4IwRhSeLaFoT7PF00g5lmeJ6az4/hOLgi8KhVnY43DnNre32x/DKuzpne3Es1UGJWQYLnM5ncwOLAaqkObG45DA2Jg/SxB6IRnhi3gS1Veil+1hlGhqMAZa2G9UrDnSHwIVigWqV9pvFD+ISCLqdslpK1Z5ms6CGHxSeIMpLS1NzsuyIJJHq7KH8hhwJt2X+e584EUurMKJ2+Ezw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bt35ui5O9WgRjCG/1WQOzOirTp0hI/f4CFQSmauBr7I=;
+ b=KvUrgquhIj9VgPXmCRkd/tEnbu7iqWMkDQOiDjePVmwS5Od72rJwN+hsml4Au79XA6NQxS6n6byI8j4+p+nZLLe3+MkWeszvKN4hc7j3mRUaN0pthipOyTlfDeMg2ewtJeD2HnzWP83K/ZbQrzCNWKCiytN2TFxXWSBII28lvkncSpLj+Zqch6xKvnvBmgbv6oZFiKv9M/FM9CZR8MGBT58FgKuNgeA+QM8kHCPccT9YX5c+MUwvi3G0WI7e2VzTtu9YEyPaLTMmK9fg/Rn16aXpYoNxqPldlSWeAl5Af0qGfgYOeFXJtJkg0fQsx51f1X0e+izRabfhtk3Ibq/0qQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bt35ui5O9WgRjCG/1WQOzOirTp0hI/f4CFQSmauBr7I=;
+ b=UOZA5IiQg8HX1u0DZmZyP3mxqsop5TDTtCXTHe5HUOgnYYW2N5opV7E1PLj5t7R00cwAt7spWe60FFefOEOv7EWoCCBEOr2wgWfZ6PQx8zU6rVKvycp05S4TDBO5/iE+sboJSgQJRekcyyIwgzIGNNh/2cZMsykLVnrc4AyEjx8=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3399.namprd15.prod.outlook.com (2603:10b6:a03:10a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.24; Thu, 18 Jun
+ 2020 20:05:59 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3109.021; Thu, 18 Jun 2020
+ 20:05:59 +0000
+Date:   Thu, 18 Jun 2020 13:05:53 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+CC:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@android.com>,
+        <vinmenon@codeaurora.org>, Matthew Garrett <mjg59@google.com>,
+        Jann Horn <jannh@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>
+Subject: Re: [PATCH 9/9] mm, slab/slub: move and improve cache_from_obj()
+Message-ID: <20200618200553.GE110603@carbon.dhcp.thefacebook.com>
+References: <20200610163135.17364-1-vbabka@suse.cz>
+ <20200610163135.17364-10-vbabka@suse.cz>
+ <202006171039.FBDF2D7F4A@keescook>
+ <afeda7ac-748b-33d8-a905-56b708148ad5@suse.cz>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618085614.fw3ynalpcipbplf3@wittgenstein>
+In-Reply-To: <afeda7ac-748b-33d8-a905-56b708148ad5@suse.cz>
+X-ClientProxiedBy: DM6PR13CA0017.namprd13.prod.outlook.com
+ (2603:10b6:5:bc::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:632d) by DM6PR13CA0017.namprd13.prod.outlook.com (2603:10b6:5:bc::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.12 via Frontend Transport; Thu, 18 Jun 2020 20:05:57 +0000
+X-Originating-IP: [2620:10d:c090:400::5:632d]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3361f039-3d84-4076-9de7-08d813c304e0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3399:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB339944D8F9F318470214E1F7BE9B0@BYAPR15MB3399.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:792;
+X-Forefront-PRVS: 0438F90F17
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: scs07Q0bKF8VxieDD5RXO+RI752mfwnF/SrsPw5y4aSyfBgPSXbya3QdoP+q8m/sq0hHhNRQi7Lq1lckh0p69iIsrnO1+Ss7YtIs2GQFCZF/YyUOHgiMLGOBw0KpHgpqc4sUdMnGp0w0CmvbR9tNIduxz+fj1w/SCdHZQv2UqxHOZu2ajDZbTiraJbAyjouuE5dMXr4IyxCT3ME4V4bTZqYbRE6MT8KiH96OfcuCLb1uZ80eFeKI1Tz73rbWhBdPZOk6ws0Kq/iJZqyOkWunTeFbCaHcl0uxEkF77MVcGfMcDHU5H73q1bPFsrkzjmpoVmqRGjFvuBgk5uSUmH3xODlEegGAqzuKJ4AH/IO0lyFlEC7NFUib+x867a9cGylNRw/RRTWqevi/Tq22PmLlIg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(346002)(376002)(366004)(396003)(136003)(6916009)(33656002)(6666004)(9686003)(8676002)(478600001)(8936002)(316002)(4326008)(7416002)(83380400001)(966005)(54906003)(86362001)(66556008)(66946007)(66476007)(1076003)(2906002)(52116002)(55016002)(5660300002)(6506007)(53546011)(7696005)(16526019)(30864003)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ikhSzm0Yn9LThL2GjsTPiVtT5J7y7bEcy/hbdsov2oZqj3zg2hADey63KuJN3IUW9MvCCgniCzRYJr3oIipE4Dkb+vvumC1jQSXAjbnK0aq/9MieUd2t7NTAh3qRcXQBAWJkmYwI7LeiUR0YqIv8wjMBJxbu3zNbUak0BILF6aRDnjhNCnMwk158/rIShM7vGi2SSdFbparGAGxI3Q33o4IodS10IfJ+qxAcZyak2RdsiiSsQSmbsN3Di4Iib4C02aKumB35R2X6IuCn70BHkHqgkA8/OTpdm0pbiREsjZ+vIWqoabA3Z9viD5mOMmXQDvcs3pnFXSOVhVmOrChKTckcph8ZJ/cjRZXsDLLXURH08VRAL2jCB+DRH/fg8HgSoB3VKAkx8pzh/3l0Z1cwvsoXH/AOpfoMkBPZGnCsLSn+EZqNtBDwUTd75BBvDfipvCqhEdP+6BqvLIpu5PdmWihUWV3HWWQU5FErkG9Dxxr0c7jm+BpV+Y1bEDJAFp6hEI2xb0kpuYQRzWfGMp/xmg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3361f039-3d84-4076-9de7-08d813c304e0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 20:05:59.7024
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CznfLt1AVUeqsTAYUDCBhzZBPFbHio5MlJVeYG+CmdmXvIYR7WhYUnqkeHOGyrg7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3399
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-18_15:2020-06-18,2020-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ cotscore=-2147483648 malwarescore=0 adultscore=0 impostorscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006180153
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 10:56:14AM +0200, Christian Brauner wrote:
-> On Mon, Jun 15, 2020 at 08:25:15PM -0700, Kees Cook wrote:
-> > In preparation for users of the "install a received file" logic outside
-> > of net/ (pidfd and seccomp), relocate and rename __scm_install_fd() from
-> > net/core/scm.c to __fd_install_received() in fs/file.c, and provide a
-> > wrapper named fd_install_received_user(), as future patches will change
-> > the interface to __fd_install_received().
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  fs/file.c            | 47 ++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/file.h |  8 ++++++++
-> >  include/net/scm.h    |  1 -
-> >  net/compat.c         |  2 +-
-> >  net/core/scm.c       | 32 +-----------------------------
-> >  5 files changed, 57 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/fs/file.c b/fs/file.c
-> > index abb8b7081d7a..fcfddae0d252 100644
-> > --- a/fs/file.c
-> > +++ b/fs/file.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/export.h>
-> >  #include <linux/fs.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/net.h>
-> >  #include <linux/sched/signal.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/file.h>
-> > @@ -18,6 +19,8 @@
-> >  #include <linux/bitops.h>
-> >  #include <linux/spinlock.h>
-> >  #include <linux/rcupdate.h>
-> > +#include <net/cls_cgroup.h>
-> > +#include <net/netprio_cgroup.h>
-> >  
-> >  unsigned int sysctl_nr_open __read_mostly = 1024*1024;
-> >  unsigned int sysctl_nr_open_min = BITS_PER_LONG;
-> > @@ -931,6 +934,50 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
-> >  	return err;
-> >  }
-> >  
-> > +/**
-> > + * __fd_install_received() - Install received file into file descriptor table
-> > + *
-> > + * @fd: fd to install into (if negative, a new fd will be allocated)
-> > + * @file: struct file that was received from another process
-> > + * @ufd_required: true to use @ufd for writing fd number to userspace
-> > + * @ufd: __user pointer to write new fd number to
-> > + * @o_flags: the O_* flags to apply to the new fd entry
-> > + *
-> > + * Installs a received file into the file descriptor table, with appropriate
-> > + * checks and count updates. Optionally writes the fd number to userspace.
-> > + *
-> > + * Returns -ve on error.
-> > + */
-> > +int __fd_install_received(struct file *file, int __user *ufd, unsigned int o_flags)
-> > +{
-> > +	struct socket *sock;
-> > +	int new_fd;
-> > +	int error;
-> > +
-> > +	error = security_file_receive(file);
-> > +	if (error)
-> > +		return error;
-> > +
-> > +	new_fd = get_unused_fd_flags(o_flags);
-> > +	if (new_fd < 0)
-> > +		return new_fd;
-> > +
-> > +	error = put_user(new_fd, ufd);
-> > +	if (error) {
-> > +		put_unused_fd(new_fd);
-> > +		return error;
-> > +	}
-> > +
-> > +	/* Bump the usage count and install the file. */
-> > +	sock = sock_from_file(file, &error);
-> > +	if (sock) {
-> > +		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
-> > +		sock_update_classid(&sock->sk->sk_cgrp_data);
-> > +	}
-> > +	fd_install(new_fd, get_file(file));
-> > +	return 0;
-> > +}
-> > +
-> >  static int ksys_dup3(unsigned int oldfd, unsigned int newfd, int flags)
-> >  {
-> >  	int err = -EBADF;
-> > diff --git a/include/linux/file.h b/include/linux/file.h
-> > index 122f80084a3e..fe18a1a0d555 100644
-> > --- a/include/linux/file.h
-> > +++ b/include/linux/file.h
-> > @@ -91,6 +91,14 @@ extern void put_unused_fd(unsigned int fd);
-> >  
-> >  extern void fd_install(unsigned int fd, struct file *file);
-> >  
-> > +extern int __fd_install_received(struct file *file, int __user *ufd,
-> > +				 unsigned int o_flags);
-> > +static inline int fd_install_received_user(struct file *file, int __user *ufd,
-> > +					   unsigned int o_flags)
-> > +{
-> > +	return __fd_install_received(file, ufd, o_flags);
-> > +}
+On Thu, Jun 18, 2020 at 12:10:38PM +0200, Vlastimil Babka wrote:
 > 
-> Shouldn't this be the other way around such that
-> fd_install_received_user() is the workhorse that has a "ufd" argument
-> and fd_install_received() is the static inline function that doesn't?
+> On 6/17/20 7:49 PM, Kees Cook wrote:
+> > On Wed, Jun 10, 2020 at 06:31:35PM +0200, Vlastimil Babka wrote:
+> >> The function cache_from_obj() was added by commit b9ce5ef49f00 ("sl[au]b:
+> >> always get the cache from its page in kmem_cache_free()") to support kmemcg,
+> >> where per-memcg cache can be different from the root one, so we can't use
+> >> the kmem_cache pointer given to kmem_cache_free().
+> >> 
+> >> Prior to that commit, SLUB already had debugging check+warning that could be
+> >> enabled to compare the given kmem_cache pointer to one referenced by the slab
+> >> page where the object-to-be-freed resides. This check was moved to
+> >> cache_from_obj(). Later the check was also enabled for SLAB_FREELIST_HARDENED
+> >> configs by commit 598a0717a816 ("mm/slab: validate cache membership under
+> >> freelist hardening").
+> >> 
+> >> These checks and warnings can be useful especially for the debugging, which can
+> >> be improved. Commit 598a0717a816 changed the pr_err() with WARN_ON_ONCE() to
+> >> WARN_ONCE() so only the first hit is now reported, others are silent. This
+> >> patch changes it to WARN() so that all errors are reported.
+> >> 
+> >> It's also useful to print SLUB allocation/free tracking info for the offending
+> >> object, if tracking is enabled. We could export the SLUB print_tracking()
+> >> function and provide an empty one for SLAB, or realize that both the debugging
+> >> and hardening cases in cache_from_obj() are only supported by SLUB anyway. So
+> >> this patch moves cache_from_obj() from slab.h to separate instances in slab.c
+> >> and slub.c, where the SLAB version only does the kmemcg lookup and even could
+> > 
+> > Oops. I made a mistake when I applied CONFIG_SLAB_FREELIST_HARDENED
+> > here, I was thinking of SLAB_FREELIST_RANDOM's coverage (SLUB and SLAB),
+> > and I see now that I never updated CONFIG_SLAB_FREELIST_HARDENED to
+> > cover SLAB and SLOB.
+> > 
+> > The point being: I still want the sanity check for the SLAB case under
+> > hardening. This needs to stay a common function. The whole point is
+> > to catch corruption from the wrong kmem_cache * being associated with
+> > an object, and that's agnostic of slab/slub/slob.
+> > 
+> > So, I'll send a follow-up to this patch to actually do what I had
+> > originally intended for 598a0717a816 ("mm/slab: validate cache membership
+> > under freelist hardening"), which wasn't intended to be SLUB-specific.
 > 
-> extern int fd_install_received_user(struct file *file, int __user *ufd, unsigned int o_flags)
-> static inline int fd_install_received(struct file *file, unsigned int o_flags)
-> {
-> 	return fd_install_received_user(file, NULL, o_flags);
-> }
+> To prvent the churn of your patch moving the cache_from_obj() back to slab.h, I
+> think it's best if we modify my patch. The patch below should be squashed into
+> the current version in mmots, with the commit log used for the whole result.
+> 
+> This will cause conflicts while reapplying Roman's
+> mm-memcg-slab-use-a-single-set-of-kmem_caches-for-all-allocations.patch which
+> can be fixed by
+> a) throwing away the conflicting hunks for cache_from_obj() in slab.c and slub.c
+> b) applying this hunk instead:
+> 
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -455,12 +455,11 @@ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+>  	struct kmem_cache *cachep;
+>  
+>  	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> -	    !memcg_kmem_enabled() &&
+>  	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+>  		return s;
+>  
+>  	cachep = virt_to_cache(x);
+> -	if (WARN(cachep && !slab_equal_or_root(cachep, s),
+> +	if (WARN(cachep && cachep != s,
+>  		  "%s: Wrong slab cache. %s but object is from %s\n",
+>  		  __func__, s->name, cachep->name))
+>  		print_tracking(cachep, x);
+> 
+> The fixup patch itself:
+> ----8<----
+> From b8df607d92b37e5329ce7bda62b2b364cc249893 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Thu, 18 Jun 2020 11:52:03 +0200
+> Subject: [PATCH] mm, slab/slub: improve error reporting and overhead of
+>  cache_from_obj()
+> 
+> The function cache_from_obj() was added by commit b9ce5ef49f00 ("sl[au]b:
+> always get the cache from its page in kmem_cache_free()") to support
+> kmemcg, where per-memcg cache can be different from the root one, so we
+> can't use the kmem_cache pointer given to kmem_cache_free().
+> 
+> Prior to that commit, SLUB already had debugging check+warning that could
+> be enabled to compare the given kmem_cache pointer to one referenced by
+> the slab page where the object-to-be-freed resides.  This check was moved
+> to cache_from_obj().  Later the check was also enabled for
+> SLAB_FREELIST_HARDENED configs by commit 598a0717a816 ("mm/slab: validate
+> cache membership under freelist hardening").
+> 
+> These checks and warnings can be useful especially for the debugging,
+> which can be improved.  Commit 598a0717a816 changed the pr_err() with
+> WARN_ON_ONCE() to WARN_ONCE() so only the first hit is now reported,
+> others are silent.  This patch changes it to WARN() so that all errors are
+> reported.
+> 
+> It's also useful to print SLUB allocation/free tracking info for the offending
+> object, if tracking is enabled. Thus, export the SLUB print_tracking() function
+> and provide an empty one for SLAB.
+> 
+> For SLUB we can also benefit from the static key check in
+> kmem_cache_debug_flags(), but we need to move this function to slab.h and
+> declare the static key there.
+> 
+> [1] https://lore.kernel.org/r/20200608230654.828134-18-guro@fb.com
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-So, I think it's all worked out in v5[1], so the helper argument handling
-is better for the ufd case, as David pointed out earlier. (As in,
-I think you're reacting to the same general problem here.)
+Acked-by: Roman Gushchin <guro@fb.com>
 
-> (So I'm on vacation this week some my reviews are selective and spotty
-> but I promise to be back next week. :))
+Thanks!
 
-No worries!
-
--Kees
-
-[1] https://lore.kernel.org/lkml/20200617220327.3731559-1-keescook@chromium.org/
-
--- 
-Kees Cook
+> ---
+>  mm/slab.c |  8 --------
+>  mm/slab.h | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>  mm/slub.c | 38 +-------------------------------------
+>  3 files changed, 46 insertions(+), 45 deletions(-)
+> 
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 6134c4c36d4c..9350062ffc1a 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3672,14 +3672,6 @@ void *__kmalloc_track_caller(size_t size, gfp_t flags, unsigned long caller)
+>  }
+>  EXPORT_SYMBOL(__kmalloc_track_caller);
+>  
+> -static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> -{
+> -	if (memcg_kmem_enabled())
+> -		return virt_to_cache(x);
+> -	else
+> -		return s;
+> -}
+> -
+>  /**
+>   * kmem_cache_free - Deallocate an object
+>   * @cachep: The cache the allocation was from.
+> diff --git a/mm/slab.h b/mm/slab.h
+> index a2696d306b62..a9f5ba9ce9a7 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -275,6 +275,34 @@ static inline int cache_vmstat_idx(struct kmem_cache *s)
+>  		NR_SLAB_RECLAIMABLE : NR_SLAB_UNRECLAIMABLE;
+>  }
+>  
+> +#ifdef CONFIG_SLUB_DEBUG
+> +#ifdef CONFIG_SLUB_DEBUG_ON
+> +DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+> +#else
+> +DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
+> +#endif
+> +extern void print_tracking(struct kmem_cache *s, void *object);
+> +#else
+> +static inline void print_tracking(struct kmem_cache *s, void *object)
+> +{
+> +}
+> +#endif
+> +
+> +/*
+> + * Returns true if any of the specified slub_debug flags is enabled for the
+> + * cache. Use only for flags parsed by setup_slub_debug() as it also enables
+> + * the static key.
+> + */
+> +static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+> +{
+> +	VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	if (static_branch_unlikely(&slub_debug_enabled))
+> +		return s->flags & flags;
+> +#endif
+> +	return false;
+> +}
+> +
+>  #ifdef CONFIG_MEMCG_KMEM
+>  
+>  /* List of all root caches. */
+> @@ -503,6 +531,23 @@ static __always_inline void uncharge_slab_page(struct page *page, int order,
+>  	memcg_uncharge_slab(page, order, s);
+>  }
+>  
+> +static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> +{
+> +	struct kmem_cache *cachep;
+> +
+> +	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> +	    !memcg_kmem_enabled() &&
+> +	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> +		return s;
+> +
+> +	cachep = virt_to_cache(x);
+> +	if (WARN(cachep && !slab_equal_or_root(cachep, s),
+> +		  "%s: Wrong slab cache. %s but object is from %s\n",
+> +		  __func__, s->name, cachep->name))
+> +		print_tracking(cachep, x);
+> +	return cachep;
+> +}
+> +
+>  static inline size_t slab_ksize(const struct kmem_cache *s)
+>  {
+>  #ifndef CONFIG_SLUB
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 202fb423d195..0e635a8aa340 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -122,21 +122,6 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
+>  #endif
+>  #endif
+>  
+> -/*
+> - * Returns true if any of the specified slub_debug flags is enabled for the
+> - * cache. Use only for flags parsed by setup_slub_debug() as it also enables
+> - * the static key.
+> - */
+> -static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+> -{
+> -	VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
+> -#ifdef CONFIG_SLUB_DEBUG
+> -	if (static_branch_unlikely(&slub_debug_enabled))
+> -		return s->flags & flags;
+> -#endif
+> -	return false;
+> -}
+> -
+>  static inline bool kmem_cache_debug(struct kmem_cache *s)
+>  {
+>  	return kmem_cache_debug_flags(s, SLAB_DEBUG_FLAGS);
+> @@ -653,7 +638,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
+>  #endif
+>  }
+>  
+> -static void print_tracking(struct kmem_cache *s, void *object)
+> +void print_tracking(struct kmem_cache *s, void *object)
+>  {
+>  	unsigned long pr_time = jiffies;
+>  	if (!(s->flags & SLAB_STORE_USER))
+> @@ -1525,10 +1510,6 @@ static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
+>  {
+>  	return false;
+>  }
+> -
+> -static void print_tracking(struct kmem_cache *s, void *object)
+> -{
+> -}
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+>  /*
+> @@ -3180,23 +3161,6 @@ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+>  }
+>  #endif
+>  
+> -static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> -{
+> -	struct kmem_cache *cachep;
+> -
+> -	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> -	    !memcg_kmem_enabled() &&
+> -	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> -		return s;
+> -
+> -	cachep = virt_to_cache(x);
+> -	if (WARN(cachep && !slab_equal_or_root(cachep, s),
+> -		  "%s: Wrong slab cache. %s but object is from %s\n",
+> -		  __func__, s->name, cachep->name))
+> -		print_tracking(cachep, x);
+> -	return cachep;
+> -}
+> -
+>  void kmem_cache_free(struct kmem_cache *s, void *x)
+>  {
+>  	s = cache_from_obj(s, x);
+> -- 
+> 2.27.0
+> 
+> 
