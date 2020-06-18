@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2621FF1B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A0B1FF1B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgFRM2S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Jun 2020 08:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729026AbgFRM0C (ORCPT
+        id S1729737AbgFRM2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 08:28:25 -0400
+Received: from fourecks.uuid.uk ([147.135.211.183]:43798 "EHLO
+        fourecks.uuid.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729300AbgFRM0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:26:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E70C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:25:59 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jltc8-0000Dc-C7; Thu, 18 Jun 2020 14:25:52 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1jltc6-0001Th-NY; Thu, 18 Jun 2020 14:25:50 +0200
-Message-ID: <41a3c509e8d72d1e1c45b6b87f52f0a75018e6b0.camel@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] Add PWM fan controller driver for LGM SoC
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com
-Date:   Thu, 18 Jun 2020 14:25:50 +0200
-In-Reply-To: <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
-References: <cover.1592474693.git.rahul.tanwar@linux.intel.com>
-         <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Thu, 18 Jun 2020 08:26:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GwpwYN7fcjVD5JOBtRDLYYGkzTdld4atRJZPVH9CT8o=; b=i409kKuweWdj5i+yO300qD9UM9
+        ogf5WGJ0wNz9RF8USD87C2lkiPmylOiocyPhc0flTIFGFEZOt9zAwTNhaAGT5j6f0BioTj49Sdxte
+        1uvOmKX9u0/IA/DrpmBbVDO/Wu0pwYutwbDgy5uKEmze5ZIotk5iVSbjpSJ902LYGtjvOuFH6AAA/
+        0vglcFdFcci4V9m5505JULMPYtu0IcAXg5abJzqT/ddeInMHXSNenvTcmoz1iH7D+gDA2t8JTiQC6
+        TLkkp1RMHTWNqfih6N+/3sVQUlX+vjRUdb5dqxq9L8EL1axrc682ZcgFNI8+aS3lPE8p3Zqq9sHEU
+        mPt2JIpg==;
+Received: by fourecks.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <simon@octiron.net>)
+        id 1jltcD-0003Fq-Vh; Thu, 18 Jun 2020 13:26:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
+        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject;
+        bh=GwpwYN7fcjVD5JOBtRDLYYGkzTdld4atRJZPVH9CT8o=; b=u//XLbv1oTe1N+cIA92I5Isk9E
+        HxRwpuhsmswk3V023bPznux8shzpvpkbjrksH4GPK/l1hpYAi27aj7MtpWqL7wldlaVtUKaWxMPO0
+        pwniabl17tIVkkMyzPQG+P3qkZTaQciuEwG39U6iQlZPFoniMukTU1HLwOOoshogmVBYKqPYZKH1K
+        jIj5awZyrW/2pBBnijyOKvnaOet8I4l1GM3nmhRtnq/m5e9bPt5Q8EWERFfuSBMbrZE9doXyuMo5x
+        b8nX+oCi0dulpMDnDLXqI0udfj+pQFfiMZiVjbBvQ7x2jUxjfQpb7YbST1Zq0G+SrkZmGMGOok+aJ
+        aIjoGEFA==;
+Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <simon@octiron.net>)
+        id 1jltcC-0005s7-9F; Thu, 18 Jun 2020 13:25:56 +0100
+Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+ <CY4PR04MB37511505492E9EC6A245CFB1E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
+From:   Simon Arlott <simon@octiron.net>
+Message-ID: <18da4d78-f3df-967f-e7ea-8f2faaa95d6b@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+Date:   Thu, 18 Jun 2020 13:25:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CY4PR04MB37511505492E9EC6A245CFB1E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rahul,
-
-On Thu, 2020-06-18 at 20:05 +0800, Rahul Tanwar wrote:
-> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
-> This PWM controller does not have any other consumer, it is a
-> dedicated PWM controller for fan attached to the system. Add
-> driver for this PWM fan controller.
+On 18/06/2020 09:36, Damien Le Moal wrote:
+> On 2020/06/18 3:50, Simon Arlott wrote:
+>> I need to use "reboot=p" on my desktop because one of the PCIe devices
+>> does not appear after a warm boot. This results in a very cold boot
+>> because the BIOS turns the PSU off and on.
+>> 
+>> The scsi sd shutdown process does not send a stop command to disks
+>> before the reboot happens (stop commands are only sent for a shutdown).
+>> 
+>> The result is that all of my SSDs experience a sudden power loss on
+>> every reboot, which is undesirable behaviour. These events are recorded
+>> in the SMART attributes.
 > 
-> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
-> ---
->  drivers/pwm/Kconfig         |   9 +
->  drivers/pwm/Makefile        |   1 +
->  drivers/pwm/pwm-intel-lgm.c | 400 ++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 410 insertions(+)
->  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+> Why is it undesirable for an SSD ? The sequence you are describing is not
+> different from doing "shutdown -h now" and then pressing down the power button
+> again immediately after power is cut...
+
+On a shutdown the kernel will send a stop command to the SSD. It does
+not currently do this for a reboot so I observe the unexpected power
+loss counters increasing.
+
+> Are you experiencing data loss or corruption ? If yes, since a clean reboot or
+> shutdown issues a synchronize cache to all devices, a corruption would mean that
+> your SSD is probably not correctly processing flush cache commands.
+
+No, I'm not experiencing any data loss or corruption that I'm aware of.
+
+We can argue whether or not any given SSD correctly processes commands
+to flush the cache, but they are expecting to be stopped before power
+is removed.
+
+>> Avoiding a stop of the disk on a reboot is appropriate for HDDs because
+>> they're likely to continue to be powered (and should not be told to spin
+>> down only to spin up again) but the default behaviour for SSDs should
+>> be changed to stop them before the reboot.
 > 
-[...]
-> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
-> new file mode 100644
-> index 000000000000..3c7077acb161
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-intel-lgm.c
-> @@ -0,0 +1,400 @@
-[...]
-> +static int lgm_pwm_probe(struct platform_device *pdev)
-> +{
-> +	struct lgm_pwm_chip *pc;
-> +	struct device *dev = &pdev->dev;
-> +	void __iomem *io_base;
-> +	int ret;
-> +
-> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> +	if (!pc)
-> +		return -ENOMEM;
-> +
-> +	io_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
-> +
-> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &pwm_regmap_config);
-> +	if (IS_ERR(pc->regmap)) {
-> +		ret = PTR_ERR(pc->regmap);
-> +		dev_err(dev, "failed to init register map: %pe\n", pc->regmap);
-> +		return ret;
-> +	}
-> +
-> +	pc->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(pc->clk)) {
-> +		ret = PTR_ERR(pc->clk);
-> +		dev_err(dev, "failed to get clock: %pe\n", pc->clk);
-> +		return ret;
-> +	}
-> +
-> +	pc->rst = devm_reset_control_get(dev, NULL);
-> +	if (IS_ERR(pc->rst)) {
-> +		ret = PTR_ERR(pc->rst);
-> +		dev_err(dev, "failed to get reset control: %pe\n", pc->rst);
-> +		return ret;
-> +	}
+> If your BIOS turns the PSU down and up, then the HDDs too will lose power... The
+> difference will be that the disks will still be spinning from inertia on the
+> power up, and so the HDD spin up processing will be faster than for a pure cold
+> boot sequence.
 
-Please use devm_reset_control_get_exclusive() to make it explicit an
-that exclusive reset control is requested. Given how the reset control
-is used, I think this driver could also use
-devm_reset_control_get_shared() to potentially allow sharing a reset
-line with other devices.
+I haven't verified it, but the BIOS leaves the power off for several
+seconds which should be long enough for the HDDs to spin down.
 
-regards
-Philipp
+I'm less concerned about those suddenly losing power but it would be
+nice to have a stop command sent to them too.
+
+-- 
+Simon Arlott
