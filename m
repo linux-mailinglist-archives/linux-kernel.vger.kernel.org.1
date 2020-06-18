@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DCD1FE4CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6351FE60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgFRBSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:18:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
+        id S1733273AbgFRCac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:30:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729514AbgFRBPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:40 -0400
+        id S1729518AbgFRBPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C93C2088E;
-        Thu, 18 Jun 2020 01:15:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDCB22088E;
+        Thu, 18 Jun 2020 01:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442940;
-        bh=CfjdaiD3CHfP1mp54VQFhoyb/LcS2K9xmJBfV/HAfmQ=;
+        s=default; t=1592442947;
+        bh=DP3l/3dfACuyGZjRaWpqftXw9fDHov1QXG3qtDR18Zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rYVpqm/E0RxxVh85LGH2JCbhE/hg2PzZaBlEwgJomyJYUHpEOur8o25p4RavC9FKb
-         JfGHwNVrX3Z74dyXIPqcQZPz8MaqsKPaeJ6W1CQGI0dyFX9X5cClbHqMaIGslPM8Ji
-         3oYQaXibT368UOcrE9m2bFUSYJp+z6zpjDxzPUyE=
+        b=Yrkq3MpjWv6H6SHC6bNG/YKEWxGiiNXknB2+sSMlIAKykFhaR08OxDU9L08gDl8kI
+         ltmLWoN0OA082EcVMhWO1HHYMz6VhGfrpVrvWVAqoaPmyj5d6rVkyCq6THXLgm8xc4
+         k2QDphhQ03UJf/hBKx5pG6Yvkz7w6AklNSazYlVc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Alexander Fomichev <fomichev.ru@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
-        linux-ntb@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 351/388] NTB: perf: Don't require one more memory window than number of peers
-Date:   Wed, 17 Jun 2020 21:07:28 -0400
-Message-Id: <20200618010805.600873-351-sashal@kernel.org>
+Cc:     Joe Perches <joe@perches.com>, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 357/388] arm64: ftrace: Change CONFIG_FTRACE_WITH_REGS to CONFIG_DYNAMIC_FTRACE_WITH_REGS
+Date:   Wed, 17 Jun 2020 21:07:34 -0400
+Message-Id: <20200618010805.600873-357-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -45,36 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+From: Joe Perches <joe@perches.com>
 
-[ Upstream commit a9c4211ac918ade1522aced6b5acfbe824722f7d ]
+[ Upstream commit 91970bef48d68d06b2bb3f464b572ad50941f6a9 ]
 
-ntb_perf should not require more than one memory window per peer. This
-was probably an off-by-one error.
+CONFIG_FTRACE_WITH_REGS does not exist as a Kconfig symbol.
 
-Fixes: 5648e56d03fa ("NTB: ntb_perf: Add full multi-port NTB API support")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Allen Hubbe <allenbh@gmail.com>
-Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Fixes: 3b23e4991fb6 ("arm64: implement ftrace with regs")
+Signed-off-by: Joe Perches <joe@perches.com>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/b9b27f2233bd1fa31d72ff937beefdae0e2104e5.camel@perches.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/ftrace.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
-index 1c93b9f5c73b..21c8a3bac1e0 100644
---- a/drivers/ntb/test/ntb_perf.c
-+++ b/drivers/ntb/test/ntb_perf.c
-@@ -654,7 +654,7 @@ static int perf_init_service(struct perf_ctx *perf)
- {
- 	u64 mask;
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index 8618faa82e6d..86a5cf9bc19a 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -69,7 +69,8 @@ static struct plt_entry *get_ftrace_plt(struct module *mod, unsigned long addr)
  
--	if (ntb_peer_mw_count(perf->ntb) < perf->pcnt + 1) {
-+	if (ntb_peer_mw_count(perf->ntb) < perf->pcnt) {
- 		dev_err(&perf->ntb->dev, "Not enough memory windows\n");
- 		return -EINVAL;
- 	}
+ 	if (addr == FTRACE_ADDR)
+ 		return &plt[FTRACE_PLT_IDX];
+-	if (addr == FTRACE_REGS_ADDR && IS_ENABLED(CONFIG_FTRACE_WITH_REGS))
++	if (addr == FTRACE_REGS_ADDR &&
++	    IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_REGS))
+ 		return &plt[FTRACE_REGS_PLT_IDX];
+ #endif
+ 	return NULL;
 -- 
 2.25.1
 
