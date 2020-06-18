@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0731FF1BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2621FF1B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgFRM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 08:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        id S1729618AbgFRM2S convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Jun 2020 08:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727853AbgFRM0p (ORCPT
+        with ESMTP id S1729026AbgFRM0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:26:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4A8C0617BB
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:26:16 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q2so3415491wrv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eoJNhGWephHh2kHxeUxYOokymywaEEsB1soK0bgoMag=;
-        b=TEXYXyhlg3yz0B8UIHkZXn6oAo3avJRrYkTyA9xaGkqdf5nonfGKN+VqZuKiArfpyg
-         C4p/meD1W8zwxsQnM57O6GwJ4OdMceJ9XCYBBSHM7mMozUWAEhbCA6F0qm/dj2K9xK/e
-         k/mK2fqb1vNFuJxs07bips/lRohz68SPOfmnqdd/TRIFyt5B/5+ceGinZ5PANTif+PWr
-         EsACQ5qWGE413ytIYmfBVWTRRrjBhtqAGsGUFtYXw/Qx7SCxH8auMx0siwVhfPpoacYz
-         Z4e+upQ9X957zGzIo//NEh3QnseeF0MDGnex47/HvPWSesAyd77vTORe6vQxrdY/0Gsg
-         YedA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eoJNhGWephHh2kHxeUxYOokymywaEEsB1soK0bgoMag=;
-        b=IeEkcCwDwWdD80OT0TNh94qr4axQPCSzeY4ZAbOLwD/PATgDTgY2j2fzCeS11348oJ
-         ajH03NhDs9CvqYg3rwqRXVYosU8Cz6q45oWbb6S5Ln9If5h6n3eQI1vXGgeoYF6WIpdt
-         NvezrxiGJZGtdzypg7gOwet2vXT4GsR0/q1gvthO33irR3aUCFXeu3+0Zcmo0Nrdsa7w
-         u1Bvfn6m3PjrbHHTvPltxeEupYTLOmvA+EQebDD7r5uqzwhzfn+5du6IXneksQ8JUkIE
-         DsFM+gxbgeLbLsXfTgxgaoRqrSXBqpBQCm9vPQu95D/KCLVd3pUegA3hsiNPYXWPmSnL
-         /62w==
-X-Gm-Message-State: AOAM5337H2uxGGHMcfN5sbluKvPGahJ/zR/tn4TF7IhpOwIqSvrE3N5M
-        Ycj0ieCS8Zvt80i1JmITzAQWEA==
-X-Google-Smtp-Source: ABdhPJxWu2jWVCT4QdDVDT6jQzuNA/gmHgg6owA60mBPTRcDkKwon5A4vNDF90GMtDZwYVwwGKyFJQ==
-X-Received: by 2002:adf:97cb:: with SMTP id t11mr4371001wrb.314.1592483175166;
-        Thu, 18 Jun 2020 05:26:15 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8523:2d03:c1af:c724:158a:e200])
-        by smtp.gmail.com with ESMTPSA id t188sm3491013wmt.27.2020.06.18.05.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 05:26:14 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, android-kvm@google.com,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v3 15/15] arm64: kvm: Lift instrumentation restrictions on VHE
-Date:   Thu, 18 Jun 2020 13:25:37 +0100
-Message-Id: <20200618122537.9625-16-dbrazdil@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200618122537.9625-1-dbrazdil@google.com>
-References: <20200618122537.9625-1-dbrazdil@google.com>
+        Thu, 18 Jun 2020 08:26:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E70C061795
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:25:59 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jltc8-0000Dc-C7; Thu, 18 Jun 2020 14:25:52 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jltc6-0001Th-NY; Thu, 18 Jun 2020 14:25:50 +0200
+Message-ID: <41a3c509e8d72d1e1c45b6b87f52f0a75018e6b0.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] Add PWM fan controller driver for LGM SoC
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
+Cc:     thierry.reding@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+Date:   Thu, 18 Jun 2020 14:25:50 +0200
+In-Reply-To: <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
+References: <cover.1592474693.git.rahul.tanwar@linux.intel.com>
+         <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With VHE and nVHE executable code completely separated, remove build config
-that disabled GCOV/KASAN/UBSAN/KCOV instrumentation for VHE as these now
-execute under the same memory mappings as the rest of the kernel.
+Hi Rahul,
 
-No violations are currently being reported by either KASAN or UBSAN.
+On Thu, 2020-06-18 at 20:05 +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
+> 
+> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+> ---
+>  drivers/pwm/Kconfig         |   9 +
+>  drivers/pwm/Makefile        |   1 +
+>  drivers/pwm/pwm-intel-lgm.c | 400 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 410 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+> 
+[...]
+> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
+> new file mode 100644
+> index 000000000000..3c7077acb161
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-intel-lgm.c
+> @@ -0,0 +1,400 @@
+[...]
+> +static int lgm_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct lgm_pwm_chip *pc;
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem *io_base;
+> +	int ret;
+> +
+> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+> +	if (!pc)
+> +		return -ENOMEM;
+> +
+> +	io_base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(io_base))
+> +		return PTR_ERR(io_base);
+> +
+> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &pwm_regmap_config);
+> +	if (IS_ERR(pc->regmap)) {
+> +		ret = PTR_ERR(pc->regmap);
+> +		dev_err(dev, "failed to init register map: %pe\n", pc->regmap);
+> +		return ret;
+> +	}
+> +
+> +	pc->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(pc->clk)) {
+> +		ret = PTR_ERR(pc->clk);
+> +		dev_err(dev, "failed to get clock: %pe\n", pc->clk);
+> +		return ret;
+> +	}
+> +
+> +	pc->rst = devm_reset_control_get(dev, NULL);
+> +	if (IS_ERR(pc->rst)) {
+> +		ret = PTR_ERR(pc->rst);
+> +		dev_err(dev, "failed to get reset control: %pe\n", pc->rst);
+> +		return ret;
+> +	}
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kvm/hyp/Makefile | 8 --------
- 1 file changed, 8 deletions(-)
+Please use devm_reset_control_get_exclusive() to make it explicit an
+that exclusive reset control is requested. Given how the reset control
+is used, I think this driver could also use
+devm_reset_control_get_shared() to potentially allow sharing a reset
+line with other devices.
 
-diff --git a/arch/arm64/kvm/hyp/Makefile b/arch/arm64/kvm/hyp/Makefile
-index 5f4f217532e0..cd0c3936d266 100644
---- a/arch/arm64/kvm/hyp/Makefile
-+++ b/arch/arm64/kvm/hyp/Makefile
-@@ -11,11 +11,3 @@ obj-$(CONFIG_KVM_INDIRECT_VECTORS) += smccc_wa.o
- 
- hyp-y := vgic-v3-sr.o timer-sr.o aarch32.o vgic-v2-cpuif-proxy.o sysreg-sr.o \
- 	 debug-sr.o entry.o switch.o fpsimd.o tlb.o hyp-entry.o
--
--# KVM code is run at a different exception code with a different map, so
--# compiler instrumentation that inserts callbacks or checks into the code may
--# cause crashes. Just disable it.
--GCOV_PROFILE	:= n
--KASAN_SANITIZE	:= n
--UBSAN_SANITIZE	:= n
--KCOV_INSTRUMENT	:= n
--- 
-2.27.0
-
+regards
+Philipp
