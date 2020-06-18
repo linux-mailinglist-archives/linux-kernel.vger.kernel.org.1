@@ -2,243 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3421FDC72
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FA11FDD2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgFRBTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:19:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:38712 "EHLO foss.arm.com"
+        id S1731244AbgFRBYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:24:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729594AbgFRBQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB8A912FC;
-        Wed, 17 Jun 2020 18:16:34 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.80.176])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 20DE83F6CF;
-        Wed, 17 Jun 2020 18:16:29 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steve Capper <steve.capper@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 (RESEND) 3/3] arm64/mm: Enable vmem_altmap support for vmemmap mappings
-Date:   Thu, 18 Jun 2020 06:45:30 +0530
-Message-Id: <1592442930-9380-4-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
-References: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
+        id S1730075AbgFRBVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:21:14 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 627F3221EC;
+        Thu, 18 Jun 2020 01:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592443274;
+        bh=woGERwUh9I+hVoi3TKEyzY8XlN7yhCWfNg4pXooHkjY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kOKBQe1ksidlsbJBMOszixilbjnXLBpVDYfL9YWK3ROWtdX0QtioK0VpxsNbW/mcp
+         6Pr9lUpfk0OePQ3ps65IbXIkwJbhwSpChnea4ZOn6yDKDxrv47yRhBcoyIRismdWso
+         oh70ph0NN92BgtRrwfh9pYvAJVE/tgQZUV35W4B0=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-unionfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 219/266] ovl: verify permissions in ovl_path_open()
+Date:   Wed, 17 Jun 2020 21:15:44 -0400
+Message-Id: <20200618011631.604574-219-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
+References: <20200618011631.604574-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device memory ranges when getting hot added into ZONE_DEVICE, might require
-their vmemmap mapping's backing memory to be allocated from their own range
-instead of consuming system memory. This prevents large system memory usage
-for potentially large device memory ranges. Device driver communicates this
-request via vmem_altmap structure. Architecture needs to take this request
-into account while creating and tearing down vemmmap mappings.
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-This enables vmem_altmap support in vmemmap_populate() and vmemmap_free()
-which includes vmemmap_populate_basepages() used for ARM64_16K_PAGES and
-ARM64_64K_PAGES configs.
+[ Upstream commit 56230d956739b9cb1cbde439d76227d77979a04d ]
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Steve Capper <steve.capper@arm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Tested-by: Jia He <justin.he@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Check permission before opening a real file.
+
+ovl_path_open() is used by readdir and copy-up routines.
+
+ovl_permission() theoretically already checked copy up permissions, but it
+doesn't hurt to re-do these checks during the actual copy-up.
+
+For directory reading ovl_permission() only checks access to topmost
+underlying layer.  Readdir on a merged directory accesses layers below the
+topmost one as well.  Permission wasn't checked for these layers.
+
+Note: modifying ovl_permission() to perform this check would be far more
+complex and hence more bug prone.  The result is less precise permissions
+returned in access(2).  If this turns out to be an issue, we can revisit
+this bug.
+
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/mmu.c | 58 +++++++++++++++++++++++++++++----------------
- 1 file changed, 38 insertions(+), 20 deletions(-)
+ fs/overlayfs/util.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 7ca21adb4412..f2ad5b94a235 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -759,15 +759,20 @@ int kern_addr_valid(unsigned long addr)
- }
+diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
+index f5678a3f8350..eb325322a893 100644
+--- a/fs/overlayfs/util.c
++++ b/fs/overlayfs/util.c
+@@ -475,7 +475,32 @@ bool ovl_is_whiteout(struct dentry *dentry)
  
- #ifdef CONFIG_MEMORY_HOTPLUG
--static void free_hotplug_page_range(struct page *page, size_t size)
-+static void free_hotplug_page_range(struct page *page, size_t size,
-+				    struct vmem_altmap *altmap)
+ struct file *ovl_path_open(struct path *path, int flags)
  {
--	WARN_ON(PageReserved(page));
--	free_pages((unsigned long)page_address(page), get_order(size));
-+	if (altmap) {
-+		vmem_altmap_free(altmap, size >> PAGE_SHIFT);
-+	} else {
-+		WARN_ON(PageReserved(page));
-+		free_pages((unsigned long)page_address(page), get_order(size));
-+	}
- }
- 
- static void free_hotplug_pgtable_page(struct page *page)
- {
--	free_hotplug_page_range(page, PAGE_SIZE);
-+	free_hotplug_page_range(page, PAGE_SIZE, NULL);
- }
- 
- static bool pgtable_range_aligned(unsigned long start, unsigned long end,
-@@ -790,7 +795,8 @@ static bool pgtable_range_aligned(unsigned long start, unsigned long end,
- }
- 
- static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
--				    unsigned long end, bool free_mapped)
-+				    unsigned long end, bool free_mapped,
-+				    struct vmem_altmap *altmap)
- {
- 	pte_t *ptep, pte;
- 
-@@ -804,12 +810,14 @@ static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
- 		pte_clear(&init_mm, addr, ptep);
- 		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 		if (free_mapped)
--			free_hotplug_page_range(pte_page(pte), PAGE_SIZE);
-+			free_hotplug_page_range(pte_page(pte),
-+						PAGE_SIZE, altmap);
- 	} while (addr += PAGE_SIZE, addr < end);
- }
- 
- static void unmap_hotplug_pmd_range(pud_t *pudp, unsigned long addr,
--				    unsigned long end, bool free_mapped)
-+				    unsigned long end, bool free_mapped,
-+				    struct vmem_altmap *altmap)
- {
- 	unsigned long next;
- 	pmd_t *pmdp, pmd;
-@@ -832,16 +840,17 @@ static void unmap_hotplug_pmd_range(pud_t *pudp, unsigned long addr,
- 			flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 			if (free_mapped)
- 				free_hotplug_page_range(pmd_page(pmd),
--							PMD_SIZE);
-+							PMD_SIZE, altmap);
- 			continue;
- 		}
- 		WARN_ON(!pmd_table(pmd));
--		unmap_hotplug_pte_range(pmdp, addr, next, free_mapped);
-+		unmap_hotplug_pte_range(pmdp, addr, next, free_mapped, altmap);
- 	} while (addr = next, addr < end);
- }
- 
- static void unmap_hotplug_pud_range(p4d_t *p4dp, unsigned long addr,
--				    unsigned long end, bool free_mapped)
-+				    unsigned long end, bool free_mapped,
-+				    struct vmem_altmap *altmap)
- {
- 	unsigned long next;
- 	pud_t *pudp, pud;
-@@ -864,16 +873,17 @@ static void unmap_hotplug_pud_range(p4d_t *p4dp, unsigned long addr,
- 			flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 			if (free_mapped)
- 				free_hotplug_page_range(pud_page(pud),
--							PUD_SIZE);
-+							PUD_SIZE, altmap);
- 			continue;
- 		}
- 		WARN_ON(!pud_table(pud));
--		unmap_hotplug_pmd_range(pudp, addr, next, free_mapped);
-+		unmap_hotplug_pmd_range(pudp, addr, next, free_mapped, altmap);
- 	} while (addr = next, addr < end);
- }
- 
- static void unmap_hotplug_p4d_range(pgd_t *pgdp, unsigned long addr,
--				    unsigned long end, bool free_mapped)
-+				    unsigned long end, bool free_mapped,
-+				    struct vmem_altmap *altmap)
- {
- 	unsigned long next;
- 	p4d_t *p4dp, p4d;
-@@ -886,16 +896,24 @@ static void unmap_hotplug_p4d_range(pgd_t *pgdp, unsigned long addr,
- 			continue;
- 
- 		WARN_ON(!p4d_present(p4d));
--		unmap_hotplug_pud_range(p4dp, addr, next, free_mapped);
-+		unmap_hotplug_pud_range(p4dp, addr, next, free_mapped, altmap);
- 	} while (addr = next, addr < end);
- }
- 
- static void unmap_hotplug_range(unsigned long addr, unsigned long end,
--				bool free_mapped)
-+				bool free_mapped, struct vmem_altmap *altmap)
- {
- 	unsigned long next;
- 	pgd_t *pgdp, pgd;
- 
-+	/*
-+	 * altmap can only be used as vmemmap mapping backing memory.
-+	 * In case the backing memory itself is not being freed, then
-+	 * altmap is irrelevant. Warn about this inconsistency when
-+	 * encountered.
-+	 */
-+	WARN_ON(!free_mapped && altmap);
+-	return dentry_open(path, flags | O_NOATIME, current_cred());
++	struct inode *inode = d_inode(path->dentry);
++	int err, acc_mode;
 +
- 	do {
- 		next = pgd_addr_end(addr, end);
- 		pgdp = pgd_offset_k(addr);
-@@ -904,7 +922,7 @@ static void unmap_hotplug_range(unsigned long addr, unsigned long end,
- 			continue;
- 
- 		WARN_ON(!pgd_present(pgd));
--		unmap_hotplug_p4d_range(pgdp, addr, next, free_mapped);
-+		unmap_hotplug_p4d_range(pgdp, addr, next, free_mapped, altmap);
- 	} while (addr = next, addr < end);
++	if (flags & ~(O_ACCMODE | O_LARGEFILE))
++		BUG();
++
++	switch (flags & O_ACCMODE) {
++	case O_RDONLY:
++		acc_mode = MAY_READ;
++		break;
++	case O_WRONLY:
++		acc_mode = MAY_WRITE;
++		break;
++	default:
++		BUG();
++	}
++
++	err = inode_permission(inode, acc_mode | MAY_OPEN);
++	if (err)
++		return ERR_PTR(err);
++
++	/* O_NOATIME is an optimization, don't fail if not permitted */
++	if (inode_owner_or_capable(inode))
++		flags |= O_NOATIME;
++
++	return dentry_open(path, flags, current_cred());
  }
  
-@@ -1068,7 +1086,7 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
- int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 		struct vmem_altmap *altmap)
- {
--	return vmemmap_populate_basepages(start, end, node, NULL);
-+	return vmemmap_populate_basepages(start, end, node, altmap);
- }
- #else	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
- int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
-@@ -1101,7 +1119,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 			void *p = NULL;
- 
- 			p = vmemmap_alloc_block_buf(PMD_SIZE, node,
--						    NULL, false);
-+						    altmap, false);
- 			if (!p)
- 				return -ENOMEM;
- 
-@@ -1119,7 +1137,7 @@ void vmemmap_free(unsigned long start, unsigned long end,
- #ifdef CONFIG_MEMORY_HOTPLUG
- 	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
- 
--	unmap_hotplug_range(start, end, true);
-+	unmap_hotplug_range(start, end, true, altmap);
- 	free_empty_tables(start, end, VMEMMAP_START, VMEMMAP_END);
- #endif
- }
-@@ -1410,7 +1428,7 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- 	WARN_ON(pgdir != init_mm.pgd);
- 	WARN_ON((start < PAGE_OFFSET) || (end > PAGE_END));
- 
--	unmap_hotplug_range(start, end, false);
-+	unmap_hotplug_range(start, end, false, NULL);
- 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
- }
- 
+ /* Caller should hold ovl_inode->lock */
 -- 
-2.20.1
+2.25.1
 
