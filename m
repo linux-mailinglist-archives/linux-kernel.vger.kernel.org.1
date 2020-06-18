@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1C51FE1A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EF01FE1A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732201AbgFRB4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
+        id S1731609AbgFRB4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731436AbgFRBZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:25:31 -0400
+        id S1731444AbgFRBZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:25:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C1C72075E;
-        Thu, 18 Jun 2020 01:25:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EB672075E;
+        Thu, 18 Jun 2020 01:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443531;
-        bh=+PpjlUb1dxhq4JKmEBeSoRDBzT5KQsOuracHEapIOys=;
+        s=default; t=1592443533;
+        bh=+Wgq2R3qq+N8LZi/lKkTxsvek9U1KqwL0evaoaUeitA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GGTNnFeQKVuBiIucZWGtODWQuJ8WA7xG0Xiji85PzzorfngmGusxwNFDN1rENfkIk
-         XLEgLhy/PBAKOUndDtdFx7NUp/KwUUUx4GYNK6GE/aTSN9y9cP0+UXOuZRbXwOukNb
-         8WZvIi5e/oQxc9XtaIS4OjBjqIj+SnzAYH27hxlg=
+        b=s9/spQ3p9wdlTE8H+Z+Fw0RRdsoVMbHlukoqae3xys9MpJlvRVqH87lplGAZVBZwR
+         dpw+jEufzrcPTODVMqG5nfk10CJ3wHvKCrJktKHTlTachxyJo8t5YGPM7CRZ20CTKm
+         URUIBV2eAY2/BZAphq/G7sRz3PBK5r907niJJqro=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 150/172] blktrace: fix endianness in get_pdu_int()
-Date:   Wed, 17 Jun 2020 21:21:56 -0400
-Message-Id: <20200618012218.607130-150-sashal@kernel.org>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.19 152/172] gfs2: fix use-after-free on transaction ail lists
+Date:   Wed, 17 Jun 2020 21:21:58 -0400
+Message-Id: <20200618012218.607130-152-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -43,33 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 71df3fd82e7cccec7b749a8607a4662d9f7febdd ]
+[ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
 
-In function get_pdu_len() replace variable type from __u64 to
-__be64. This fixes sparse warning.
+Before this patch, transactions could be merged into the system
+transaction by function gfs2_merge_trans(), but the transaction ail
+lists were never merged. Because the ail flushing mechanism can run
+separately, bd elements can be attached to the transaction's buffer
+list during the transaction (trans_add_meta, etc) but quickly moved
+to its ail lists. Later, in function gfs2_trans_end, the transaction
+can be freed (by gfs2_trans_end) while it still has bd elements
+queued to its ail lists, which can cause it to either lose track of
+the bd elements altogether (memory leak) or worse, reference the bd
+elements after the parent transaction has been freed.
 
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Although I've not seen any serious consequences, the problem becomes
+apparent with the previous patch's addition of:
+
+	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
+
+to function gfs2_trans_free().
+
+This patch adds logic into gfs2_merge_trans() to move the merged
+transaction's ail lists to the sdp transaction. This prevents the
+use-after-free. To do this properly, we need to hold the ail lock,
+so we pass sdp into the function instead of the transaction itself.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/log.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 5c84f7421871..42027cf4ea91 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1267,7 +1267,7 @@ static inline __u16 t_error(const struct trace_entry *ent)
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index d3f0612e3347..06752db213d2 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -877,8 +877,10 @@ void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl, u32 flags)
+  * @new: New transaction to be merged
+  */
  
- static __u64 get_pdu_int(const struct trace_entry *ent, bool has_cg)
+-static void gfs2_merge_trans(struct gfs2_trans *old, struct gfs2_trans *new)
++static void gfs2_merge_trans(struct gfs2_sbd *sdp, struct gfs2_trans *new)
  {
--	const __u64 *val = pdu_start(ent, has_cg);
-+	const __be64 *val = pdu_start(ent, has_cg);
- 	return be64_to_cpu(*val);
++	struct gfs2_trans *old = sdp->sd_log_tr;
++
+ 	WARN_ON_ONCE(!test_bit(TR_ATTACHED, &old->tr_flags));
+ 
+ 	old->tr_num_buf_new	+= new->tr_num_buf_new;
+@@ -890,6 +892,11 @@ static void gfs2_merge_trans(struct gfs2_trans *old, struct gfs2_trans *new)
+ 
+ 	list_splice_tail_init(&new->tr_databuf, &old->tr_databuf);
+ 	list_splice_tail_init(&new->tr_buf, &old->tr_buf);
++
++	spin_lock(&sdp->sd_ail_lock);
++	list_splice_tail_init(&new->tr_ail1_list, &old->tr_ail1_list);
++	list_splice_tail_init(&new->tr_ail2_list, &old->tr_ail2_list);
++	spin_unlock(&sdp->sd_ail_lock);
  }
  
+ static void log_refund(struct gfs2_sbd *sdp, struct gfs2_trans *tr)
+@@ -901,7 +908,7 @@ static void log_refund(struct gfs2_sbd *sdp, struct gfs2_trans *tr)
+ 	gfs2_log_lock(sdp);
+ 
+ 	if (sdp->sd_log_tr) {
+-		gfs2_merge_trans(sdp->sd_log_tr, tr);
++		gfs2_merge_trans(sdp, tr);
+ 	} else if (tr->tr_num_buf_new || tr->tr_num_databuf_new) {
+ 		gfs2_assert_withdraw(sdp, test_bit(TR_ALLOCED, &tr->tr_flags));
+ 		sdp->sd_log_tr = tr;
 -- 
 2.25.1
 
