@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9771FE37D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91831FE508
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgFRBVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
+        id S1731601AbgFRCWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:22:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729905AbgFRBSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:18:18 -0400
+        id S1728643AbgFRBSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:18:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3F1121D7E;
-        Thu, 18 Jun 2020 01:18:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B08E021D79;
+        Thu, 18 Jun 2020 01:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443097;
-        bh=OIYT7gtZ+XCijQ5tg0X36lmiQdChw2ZVfnrIku9gejY=;
+        s=default; t=1592443101;
+        bh=pfZB5y3kDygxLOky68VuEsp/A3ZbZCf+SZE2za9Qu4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vb1ucJQiSzTaPPAyhFfhMcnsRhYjMVCfqisWfPxprkCh1uDGoVgQHHYMww0vY0fhc
-         9DuFCyViZFTmb6ixa/KBNk+pTm6AeQHoC0xWf0YJicv3ZHB23aDgruYvUN9+D69U5f
-         9ywtttWFRt1GlfWQGuEOWsBTKcwHZgJ3K2Nx3Lbc=
+        b=U5Ljdyi1H7Oz3jdpn+71M0wSxLIIi8kjNgONCCzTEOP1w/3VqwPTtq/lfKVFLW3cW
+         vm/iyfNJa7o+NLRCiV43s2306VWpG4Ku8SXJyvwIlPH6idVZ/OebWoG/XyzjM7rnQk
+         xIsp46C6hoO/3A7LJZcfK/RHq/Lmh4EMWlHBXa1w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mauricio Faria de Oliveira <mfo@canonical.com>,
-        Brian Moyles <bmoyles@netflix.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 077/266] apparmor: check/put label on apparmor_sk_clone_security()
-Date:   Wed, 17 Jun 2020 21:13:22 -0400
-Message-Id: <20200618011631.604574-77-sashal@kernel.org>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 080/266] bpf, sockhash: Fix memory leak when unlinking sockets in sock_hash_free
+Date:   Wed, 17 Jun 2020 21:13:25 -0400
+Message-Id: <20200618011631.604574-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -45,191 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauricio Faria de Oliveira <mfo@canonical.com>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-[ Upstream commit 3b646abc5bc6c0df649daea4c2c976bd4d47e4c8 ]
+[ Upstream commit 33a7c831565c43a7ee2f38c7df4c4a40e1dfdfed ]
 
-Currently apparmor_sk_clone_security() does not check for existing
-label/peer in the 'new' struct sock; it just overwrites it, if any
-(with another reference to the label of the source sock.)
+When sockhash gets destroyed while sockets are still linked to it, we will
+walk the bucket lists and delete the links. However, we are not freeing the
+list elements after processing them, leaking the memory.
 
-    static void apparmor_sk_clone_security(const struct sock *sk,
-                                           struct sock *newsk)
-    {
-            struct aa_sk_ctx *ctx = SK_CTX(sk);
-            struct aa_sk_ctx *new = SK_CTX(newsk);
+The leak can be triggered by close()'ing a sockhash map when it still
+contains sockets, and observed with kmemleak:
 
-            new->label = aa_get_label(ctx->label);
-            new->peer = aa_get_label(ctx->peer);
-    }
+  unreferenced object 0xffff888116e86f00 (size 64):
+    comm "race_sock_unlin", pid 223, jiffies 4294731063 (age 217.404s)
+    hex dump (first 32 bytes):
+      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+      81 de e8 41 00 00 00 00 c0 69 2f 15 81 88 ff ff  ...A.....i/.....
+    backtrace:
+      [<00000000dd089ebb>] sock_hash_update_common+0x4ca/0x760
+      [<00000000b8219bd5>] sock_hash_update_elem+0x1d2/0x200
+      [<000000005e2c23de>] __do_sys_bpf+0x2046/0x2990
+      [<00000000d0084618>] do_syscall_64+0xad/0x9a0
+      [<000000000d96f263>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-This might leak label references, which might overflow under load.
-Thus, check for and put labels, to prevent such errors.
+Fix it by freeing the list element when we're done with it.
 
-Note this is similarly done on:
-
-    static int apparmor_socket_post_create(struct socket *sock, ...)
-    ...
-            if (sock->sk) {
-                    struct aa_sk_ctx *ctx = SK_CTX(sock->sk);
-
-                    aa_put_label(ctx->label);
-                    ctx->label = aa_get_label(label);
-            }
-    ...
-
-Context:
--------
-
-The label reference count leak is observed if apparmor_sock_graft()
-is called previously: this sets the 'ctx->label' field by getting
-a reference to the current label (later overwritten, without put.)
-
-    static void apparmor_sock_graft(struct sock *sk, ...)
-    {
-            struct aa_sk_ctx *ctx = SK_CTX(sk);
-
-            if (!ctx->label)
-                    ctx->label = aa_get_current_label();
-    }
-
-And that is the case on crypto/af_alg.c:af_alg_accept():
-
-    int af_alg_accept(struct sock *sk, struct socket *newsock, ...)
-    ...
-            struct sock *sk2;
-            ...
-            sk2 = sk_alloc(...);
-            ...
-            security_sock_graft(sk2, newsock);
-            security_sk_clone(sk, sk2);
-    ...
-
-Apparently both calls are done on their own right, especially for
-other LSMs, being introduced in 2010/2014, before apparmor socket
-mediation in 2017 (see commits [1,2,3,4]).
-
-So, it looks OK there! Let's fix the reference leak in apparmor.
-
-Test-case:
----------
-
-Exercise that code path enough to overflow label reference count.
-
-    $ cat aa-refcnt-af_alg.c
-    #include <stdio.h>
-    #include <string.h>
-    #include <unistd.h>
-    #include <sys/socket.h>
-    #include <linux/if_alg.h>
-
-    int main() {
-            int sockfd;
-            struct sockaddr_alg sa;
-
-            /* Setup the crypto API socket */
-            sockfd = socket(AF_ALG, SOCK_SEQPACKET, 0);
-            if (sockfd < 0) {
-                    perror("socket");
-                    return 1;
-            }
-
-            memset(&sa, 0, sizeof(sa));
-            sa.salg_family = AF_ALG;
-            strcpy((char *) sa.salg_type, "rng");
-            strcpy((char *) sa.salg_name, "stdrng");
-
-            if (bind(sockfd, (struct sockaddr *) &sa, sizeof(sa)) < 0) {
-                    perror("bind");
-                    return 1;
-            }
-
-            /* Accept a "connection" and close it; repeat. */
-            while (!close(accept(sockfd, NULL, 0)));
-
-            return 0;
-    }
-
-    $ gcc -o aa-refcnt-af_alg aa-refcnt-af_alg.c
-
-    $ ./aa-refcnt-af_alg
-    <a few hours later>
-
-    [ 9928.475953] refcount_t overflow at apparmor_sk_clone_security+0x37/0x70 in aa-refcnt-af_alg[1322], uid/euid: 1000/1000
-    ...
-    [ 9928.507443] RIP: 0010:apparmor_sk_clone_security+0x37/0x70
-    ...
-    [ 9928.514286]  security_sk_clone+0x33/0x50
-    [ 9928.514807]  af_alg_accept+0x81/0x1c0 [af_alg]
-    [ 9928.516091]  alg_accept+0x15/0x20 [af_alg]
-    [ 9928.516682]  SYSC_accept4+0xff/0x210
-    [ 9928.519609]  SyS_accept+0x10/0x20
-    [ 9928.520190]  do_syscall_64+0x73/0x130
-    [ 9928.520808]  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-
-Note that other messages may be seen, not just overflow, depending on
-the value being incremented by kref_get(); on another run:
-
-    [ 7273.182666] refcount_t: saturated; leaking memory.
-    ...
-    [ 7273.185789] refcount_t: underflow; use-after-free.
-
-Kprobes:
--------
-
-Using kprobe events to monitor sk -> sk_security -> label -> count (kref):
-
-Original v5.7 (one reference leak every iteration)
-
- ... (af_alg_accept+0x0/0x1c0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd2
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd4
- ... (af_alg_accept+0x0/0x1c0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd3
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd5
- ... (af_alg_accept+0x0/0x1c0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd4
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff8a0f36c25eb0 label_refcnt=0x11fd6
-
-Patched v5.7 (zero reference leak per iteration)
-
- ... (af_alg_accept+0x0/0x1c0) label=0xffff9ff376c25eb0 label_refcnt=0x593
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff9ff376c25eb0 label_refcnt=0x594
- ... (af_alg_accept+0x0/0x1c0) label=0xffff9ff376c25eb0 label_refcnt=0x593
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff9ff376c25eb0 label_refcnt=0x594
- ... (af_alg_accept+0x0/0x1c0) label=0xffff9ff376c25eb0 label_refcnt=0x593
- ... (af_alg_release_parent+0x0/0xd0) label=0xffff9ff376c25eb0 label_refcnt=0x594
-
-Commits:
--------
-
-[1] commit 507cad355fc9 ("crypto: af_alg - Make sure sk_security is initialized on accept()ed sockets")
-[2] commit 4c63f83c2c2e ("crypto: af_alg - properly label AF_ALG socket")
-[3] commit 2acce6aa9f65 ("Networking") a.k.a ("crypto: af_alg - Avoid sock_graft call warning)
-[4] commit 56974a6fcfef ("apparmor: add base infastructure for socket mediation")
-
-Fixes: 56974a6fcfef ("apparmor: add base infastructure for socket mediation")
-Reported-by: Brian Moyles <bmoyles@netflix.com>
-Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20200607205229.2389672-2-jakub@cloudflare.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/apparmor/lsm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/core/sock_map.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index ec3a928af829..e31965dc6dd1 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -791,7 +791,12 @@ static void apparmor_sk_clone_security(const struct sock *sk,
- 	struct aa_sk_ctx *ctx = SK_CTX(sk);
- 	struct aa_sk_ctx *new = SK_CTX(newsk);
- 
-+	if (new->label)
-+		aa_put_label(new->label);
- 	new->label = aa_get_label(ctx->label);
-+
-+	if (new->peer)
-+		aa_put_label(new->peer);
- 	new->peer = aa_get_label(ctx->peer);
- }
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 8291568b707f..ba65c608c228 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -879,6 +879,7 @@ static void sock_hash_free(struct bpf_map *map)
+ 			sock_map_unref(elem->sk, elem);
+ 			rcu_read_unlock();
+ 			release_sock(elem->sk);
++			sock_hash_free_elem(htab, elem);
+ 		}
+ 	}
  
 -- 
 2.25.1
