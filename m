@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236D81FEB7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725621FEB9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgFRGgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 02:36:43 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56270 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726952AbgFRGgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 02:36:42 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A323F17A898288F2A316;
-        Thu, 18 Jun 2020 14:36:40 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 18 Jun 2020 14:36:33 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 5/5] f2fs: show more debug info for per-temperature log
-Date:   Thu, 18 Jun 2020 14:36:25 +0800
-Message-ID: <20200618063625.110273-5-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.18.0.rc1
-In-Reply-To: <20200618063625.110273-1-yuchao0@huawei.com>
-References: <20200618063625.110273-1-yuchao0@huawei.com>
+        id S1727853AbgFRGm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 02:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727010AbgFRGmz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 02:42:55 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39CEC0613EF
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 23:42:54 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id c21so2797650lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 23:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K6hCnmc25bPhM8Zds15z3T5k2ctR9P+E0kmH5eedao4=;
+        b=LvLtQrHK+FRlk5/sD/8n+NvY5OlKXKDXtDGMvGAWEV8LStu+H5SMcJeof/D1Bi311E
+         iG2SVk2aU8L6UtTvMM8QqgfobAoSZA/4MszA+QHc6H9+WyoduT5HIfL3NiYOClb4mgyQ
+         sWSi05++HNZSaCzaYuMbRzFE/0UM0074HyCLCvUzrlUKp9M2DFy94o8jLGFyaPfQRSRB
+         vUi6H6KpwDixktHDOVJdezLiS2MP8TfPZ1UtIASSqww607WvpGLOrH5fk+dmANcJlVEi
+         LblDqZh3z5oDKbVxry/Q7EUNdmW19cHib1w0FFgAFPAmFzAtBbVtvd2OsQMdNed0x+IO
+         CTaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K6hCnmc25bPhM8Zds15z3T5k2ctR9P+E0kmH5eedao4=;
+        b=i0pU3R8eM8kTlk8isXpS01Tp5plO/eECvuoq9k7lNynpMV9nNhhQ7vtjqwObuBSy7j
+         aigZ5K8pikiipU6HQLJB9xQ+Ji1yAMvTqeNzdWWiJDvpywq0G20fKGzAxueNcitKYX2T
+         dNQZYM+U3uICKKtw5RqVjQUYt8x9ZDgfddlny584DxZFXVnRVSqJv0zmTUyfFbW+rne+
+         LosQduXL+WbMWXEAxsKbelODOsgp07ZccD2OYXj4eOIjCh1q+4fqUtgaQ+MrOXNM82lx
+         q3PYPMLEKshkWnBZGHPloq97jAJfdppOML6zfR4oUjNw+GCdY/rC7ZAFwX4+8c9Zowpy
+         rsQg==
+X-Gm-Message-State: AOAM53011HcZJlMdNbdcEJdF3/NDLJhXDQ3v3ANVzYI9VCDFI9yo/tJK
+        okNJLSJNBm+BCySisCQbHdWAVLMbZduAaig784T0HA==
+X-Google-Smtp-Source: ABdhPJx4QxcHzkbgPAk3c9tXd5/s0nYZNRG6j8i+HfERTJzJ+F0FGPMbAipjRTc9ukWM5DOXoFi2vtfz2V+2oSbLHwA=
+X-Received: by 2002:ac2:41d4:: with SMTP id d20mr1489555lfi.204.1592462573264;
+ Wed, 17 Jun 2020 23:42:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+References: <1591107505-6030-1-git-send-email-sumit.garg@linaro.org>
+ <1591107505-6030-2-git-send-email-sumit.garg@linaro.org> <20200615182457.GB5416@linux.intel.com>
+ <CAFA6WYNEnXm5FOGHGAg4XB-+GXD=C+YMh+6t976=pStU0WshAA@mail.gmail.com> <20200617231429.GD62794@linux.intel.com>
+In-Reply-To: <20200617231429.GD62794@linux.intel.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 18 Jun 2020 12:12:41 +0530
+Message-ID: <CAFA6WYOdtwnewqY0ASnMf7fyw3s_hQx0+oWJRhT3CpkkkxYpDA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] KEYS: trusted: Add generic trusted keys framework
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org,
+        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
+        Luke Hinds <lhinds@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Add to account and show per-log dirty_seg, full_seg and valid_blocks
-in debugfs.
-- reformat printed info.
+On Thu, 18 Jun 2020 at 04:44, Jarkko Sakkinen
+<jarkko.sakkinen@linux.intel.com> wrote:
+>
+> On Tue, Jun 16, 2020 at 07:02:37PM +0530, Sumit Garg wrote:
+> > + Luke
+> >
+> > Hi Jarkko,
+> >
+> > Prior to addressing your comments below which seems to show your
+> > preference for compile time selection of trust source (TPM or TEE), I
+> > would just like to hear the reasons for this preference especially if
+> > it makes distro vendor's life difficult [1] to make opinionated
+> > selection which could rather be achieved dynamically based on platform
+> > capability.
+> >
+> > [1] https://lkml.org/lkml/2020/6/3/405
+> >
+> > -Sumit
+>
+> Hmm... I do get the distribution kernel point. OK, lets revert to
+> dynamic then. Thanks for the remark.
+>
+> /Jarkko
 
-    TYPE            segno    secno   zoneno  dirty_seg   full_seg  valid_blk
-  - COLD   data:     1523     1523     1523          1          0        399
-  - WARM   data:      769      769      769         20        255     133098
-  - HOT    data:      767      767      767          9          0        167
-  - Dir   dnode:       22       22       22          3          0         70
-  - File  dnode:      722      722      722         14         10       6505
-  - Indir nodes:        2        2        2          1          0          3
+Thanks, will revert to dynamic mode in v6.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/debug.c | 67 ++++++++++++++++++++++++++++++++++++++++---------
- fs/f2fs/f2fs.h  |  3 +++
- 2 files changed, 58 insertions(+), 12 deletions(-)
-
-diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-index 0dbcb0f9c019..aa1fd2de11ba 100644
---- a/fs/f2fs/debug.c
-+++ b/fs/f2fs/debug.c
-@@ -174,6 +174,29 @@ static void update_general_status(struct f2fs_sb_info *sbi)
- 	for (i = META_CP; i < META_MAX; i++)
- 		si->meta_count[i] = atomic_read(&sbi->meta_count[i]);
- 
-+	for (i = 0; i < NO_CHECK_TYPE; i++) {
-+		si->dirty_seg[i] = 0;
-+		si->full_seg[i] = 0;
-+		si->valid_blks[i] = 0;
-+	}
-+
-+	for (i = 0; i < MAIN_SEGS(sbi); i++) {
-+		int blks = get_seg_entry(sbi, i)->valid_blocks;
-+		int type = get_seg_entry(sbi, i)->type;
-+
-+		if (!blks)
-+			continue;
-+
-+		if (IS_CURSEG(sbi, i))
-+			continue;
-+
-+		if (blks == sbi->blocks_per_seg)
-+			si->full_seg[type]++;
-+		else
-+			si->dirty_seg[type]++;
-+		si->valid_blks[type] += blks;
-+	}
-+
- 	for (i = 0; i < 2; i++) {
- 		si->segment_count[i] = sbi->segment_count[i];
- 		si->block_count[i] = sbi->block_count[i];
-@@ -329,30 +352,50 @@ static int stat_show(struct seq_file *s, void *v)
- 		seq_printf(s, "\nMain area: %d segs, %d secs %d zones\n",
- 			   si->main_area_segs, si->main_area_sections,
- 			   si->main_area_zones);
--		seq_printf(s, "  - COLD  data: %d, %d, %d\n",
-+		seq_printf(s, "    TYPE         %8s %8s %8s %10s %10s %10s\n",
-+			   "segno", "secno", "zoneno", "dirty_seg", "full_seg", "valid_blk");
-+		seq_printf(s, "  - COLD   data: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_COLD_DATA],
- 			   si->cursec[CURSEG_COLD_DATA],
--			   si->curzone[CURSEG_COLD_DATA]);
--		seq_printf(s, "  - WARM  data: %d, %d, %d\n",
-+			   si->curzone[CURSEG_COLD_DATA],
-+			   si->dirty_seg[CURSEG_COLD_DATA],
-+			   si->full_seg[CURSEG_COLD_DATA],
-+			   si->valid_blks[CURSEG_COLD_DATA]);
-+		seq_printf(s, "  - WARM   data: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_WARM_DATA],
- 			   si->cursec[CURSEG_WARM_DATA],
--			   si->curzone[CURSEG_WARM_DATA]);
--		seq_printf(s, "  - HOT   data: %d, %d, %d\n",
-+			   si->curzone[CURSEG_WARM_DATA],
-+			   si->dirty_seg[CURSEG_WARM_DATA],
-+			   si->full_seg[CURSEG_WARM_DATA],
-+			   si->valid_blks[CURSEG_WARM_DATA]);
-+		seq_printf(s, "  - HOT    data: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_HOT_DATA],
- 			   si->cursec[CURSEG_HOT_DATA],
--			   si->curzone[CURSEG_HOT_DATA]);
--		seq_printf(s, "  - Dir   dnode: %d, %d, %d\n",
-+			   si->curzone[CURSEG_HOT_DATA],
-+			   si->dirty_seg[CURSEG_HOT_DATA],
-+			   si->full_seg[CURSEG_HOT_DATA],
-+			   si->valid_blks[CURSEG_HOT_DATA]);
-+		seq_printf(s, "  - Dir   dnode: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_HOT_NODE],
- 			   si->cursec[CURSEG_HOT_NODE],
--			   si->curzone[CURSEG_HOT_NODE]);
--		seq_printf(s, "  - File   dnode: %d, %d, %d\n",
-+			   si->curzone[CURSEG_HOT_NODE],
-+			   si->dirty_seg[CURSEG_HOT_NODE],
-+			   si->full_seg[CURSEG_HOT_NODE],
-+			   si->valid_blks[CURSEG_HOT_NODE]);
-+		seq_printf(s, "  - File  dnode: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_WARM_NODE],
- 			   si->cursec[CURSEG_WARM_NODE],
--			   si->curzone[CURSEG_WARM_NODE]);
--		seq_printf(s, "  - Indir nodes: %d, %d, %d\n",
-+			   si->curzone[CURSEG_WARM_NODE],
-+			   si->dirty_seg[CURSEG_WARM_NODE],
-+			   si->full_seg[CURSEG_WARM_NODE],
-+			   si->valid_blks[CURSEG_WARM_NODE]);
-+		seq_printf(s, "  - Indir nodes: %8d %8d %8d %10u %10u %10u\n",
- 			   si->curseg[CURSEG_COLD_NODE],
- 			   si->cursec[CURSEG_COLD_NODE],
--			   si->curzone[CURSEG_COLD_NODE]);
-+			   si->curzone[CURSEG_COLD_NODE],
-+			   si->dirty_seg[CURSEG_COLD_NODE],
-+			   si->full_seg[CURSEG_COLD_NODE],
-+			   si->valid_blks[CURSEG_COLD_NODE]);
- 		seq_printf(s, "\n  - Valid: %d\n  - Dirty: %d\n",
- 			   si->main_area_segs - si->dirty_count -
- 			   si->prefree_count - si->free_segs,
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 72a667f1d678..70565d81320b 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3536,6 +3536,9 @@ struct f2fs_stat_info {
- 	int curseg[NR_CURSEG_TYPE];
- 	int cursec[NR_CURSEG_TYPE];
- 	int curzone[NR_CURSEG_TYPE];
-+	unsigned int dirty_seg[NR_CURSEG_TYPE];
-+	unsigned int full_seg[NR_CURSEG_TYPE];
-+	unsigned int valid_blks[NR_CURSEG_TYPE];
- 
- 	unsigned int meta_count[META_MAX];
- 	unsigned int segment_count[2];
--- 
-2.18.0.rc1
-
+-Sumit
