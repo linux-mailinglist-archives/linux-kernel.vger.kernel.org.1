@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0011FF82A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394B51FF7F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731610AbgFRPw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:52:59 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58067 "EHLO mga14.intel.com"
+        id S1731538AbgFRPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727911AbgFRPw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:52:58 -0400
-IronPort-SDR: zz43w2BAAasn4uYs6kw3LtkM3X323TZTDNMMY35jUR2bO0DDhj5n4j/NuluZmxsdce64e6hqCN
- ReScRyT47BAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="141701484"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="141701484"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 08:52:56 -0700
-IronPort-SDR: Rz7wj+h3c6y5PnE7mt0HLs+WCimZP8shyO9jjYR92TH5XPP+l4Rs1D7su9MB1R/gF705XCWoaj
- /weqIcFrTVQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="277665815"
-Received: from otcsectest.jf.intel.com (HELO 258ff54ff3c0) ([10.54.30.81])
-  by orsmga006.jf.intel.com with ESMTP; 18 Jun 2020 08:52:56 -0700
-Date:   Thu, 18 Jun 2020 15:49:32 +0000
-From:   "Andersen, John" <john.s.andersen@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     corbet@lwn.net, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        shuah@kernel.org, sean.j.christopherson@intel.com,
-        liran.alon@oracle.com, drjones@redhat.com,
-        rick.p.edgecombe@intel.com, kristen@linux.intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, mchehab+huawei@kernel.org,
-        gregkh@linuxfoundation.org, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, jgross@suse.com,
-        mike.kravetz@oracle.com, oneukum@suse.com, luto@kernel.org,
-        peterz@infradead.org, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, vineela.tummalapalli@intel.com,
-        dave.hansen@linux.intel.com, arjan@linux.intel.com,
-        caoj.fnst@cn.fujitsu.com, bhe@redhat.com, nivedita@alum.mit.edu,
-        keescook@chromium.org, dan.j.williams@intel.com,
-        eric.auger@redhat.com, aaronlewis@google.com, peterx@redhat.com,
-        makarandsonare@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH 4/4] X86: Use KVM CR pin MSRs
-Message-ID: <20200618154931.GD23@258ff54ff3c0>
-References: <20200617190757.27081-1-john.s.andersen@intel.com>
- <20200617190757.27081-5-john.s.andersen@intel.com>
- <b5d791f9-1708-9715-e03d-4618d1b27d05@intel.com>
- <20200618152649.GC23@258ff54ff3c0>
- <5706af0c-e426-91bc-4c38-d1203cf1b3b7@intel.com>
+        id S1725829AbgFRPtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 11:49:41 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED185206FA;
+        Thu, 18 Jun 2020 15:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592495381;
+        bh=hFKgQ5zIlUVwUCd4vemsKp/qhEI0+cfFJWwn9Vu0YNo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kgm5SWFi48YXkeSnjiXt2jLyDZu2R3Dhkcwbl0HLsPDJG7FkplrXQnNmwHfBVZBZ7
+         pZl9QGptPbOZOFg4Bjal7xKEjpYM7tYqSNQ/wppWB16NUPRK5EqSxiMHWeyzbpWoaA
+         W4bTIuAmk46yzxz7RnhiUBXvGbVQ6e008hQrNEck=
+Date:   Thu, 18 Jun 2020 08:49:39 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     davem@davemloft.net, robh+dt@kernel.org, andrew@lunn.ch,
+        f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: Re: [PATCH v5 3/3] net: phy: mscc: handle the clkout control on
+ some phy variants
+Message-ID: <20200618084939.3f07f13e@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <20200618121139.1703762-4-heiko@sntech.de>
+References: <20200618121139.1703762-1-heiko@sntech.de>
+        <20200618121139.1703762-4-heiko@sntech.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5706af0c-e426-91bc-4c38-d1203cf1b3b7@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 08:38:06AM -0700, Dave Hansen wrote:
-> On 6/18/20 8:26 AM, Andersen, John wrote:
-> > On Thu, Jun 18, 2020 at 07:41:04AM -0700, Dave Hansen wrote:
-> >>> +config PARAVIRT_CR_PIN
-> >>> +       bool "Paravirtual bit pinning for CR0 and CR4"
-> >>> +       depends on KVM_GUEST
-> >>> +       help
-> >>> +         Select this option to have the virtualised guest request that the
-> >>> +         hypervisor disallow it from disabling protections set in control
-> >>> +         registers. The hypervisor will prevent exploits from disabling
-> >>> +         features such as SMEP, SMAP, UMIP, and WP.
-> >>
-> >> I'm confused.  Does this add support for ""Paravirtual bit pinning", or
-> >> actually tell the guest to request pinning by default?
-> >>
-> >> It says "Select this option to have the virtualised guest request...",
-> >> which makes it sound like it affects the default rather than the
-> >> availability of the option.
-> > 
-> > How about this
-> > 
-> > Select this option to request protection of SMEP, SMAP, UMIP, and WP
-> > control register bits when running paravirtualized under KVM. Protection will
-> > be active provided the feature is available host side and kexec is disabled via
-> > kconfig or the command line for the guest requesting protection.
-> 
-> It still isn't very clear to me.
-> 
-> Let's pull the config option out of this patch.  Enable the feature by
-> default and do the command-line processing in this patch.
-> 
-> If you still think a Kconfig option is helpful, add it in a separate
-> patch calling out the deficiencies with the boot-time options.
+On Thu, 18 Jun 2020 14:11:39 +0200 Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+>=20
+> At least VSC8530/8531/8540/8541 contain a clock output that can emit
+> a predefined rate of 25, 50 or 125MHz.
+>=20
+> This may then feed back into the network interface as source clock.
+> So expose a clock-provider from the phy using the common clock framework
+> to allow setting the rate.
+>=20
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-That's right we're going to pull it out anyway and just disable if the
-disable_pv_cr_pin command line option is set. Oops. That solves that.
+Doesn't build with allmodconfig:
 
-Thank you very much for your review Dave
+../drivers/net/phy/mscc/mscc_macsec.c:391:42: warning: cast from restricted=
+ sci_t
+../drivers/net/phy/mscc/mscc_macsec.c:393:42: warning: restricted sci_t deg=
+rades to integer
+../drivers/net/phy/mscc/mscc_macsec.c:400:42: warning: restricted __be16 de=
+grades to integer
+../drivers/net/phy/mscc/mscc_macsec.c:606:34: warning: cast from restricted=
+ sci_t
+../drivers/net/phy/mscc/mscc_macsec.c:608:34: warning: restricted sci_t deg=
+rades to integer
+../drivers/net/phy/mscc/mscc_macsec.c:391:42: warning: cast from restricted=
+ sci_t
+../drivers/net/phy/mscc/mscc_macsec.c:393:42: warning: restricted sci_t deg=
+rades to integer
+../drivers/net/phy/mscc/mscc_macsec.c:400:42: warning: restricted __be16 de=
+grades to integer
+../drivers/net/phy/mscc/mscc_macsec.c:606:34: warning: cast from restricted=
+ sci_t
+../drivers/net/phy/mscc/mscc_macsec.c:608:34: warning: restricted sci_t deg=
+rades to integer
+In file included from ../drivers/net/phy/mscc/mscc_macsec.c:17:
+../drivers/net/phy/mscc/mscc.h:371:16: error: field =C3=A2=E2=82=AC=CB=9Ccl=
+kout_hw=C3=A2=E2=82=AC=E2=84=A2 has incomplete type
+  371 |  struct clk_hw clkout_hw;
+      |                ^~~~~~~~~
+make[5]: *** [drivers/net/phy/mscc/mscc_macsec.o] Error 1
+make[5]: *** Waiting for unfinished jobs....
+make[4]: *** [drivers/net/phy/mscc] Error 2
+make[3]: *** [drivers/net/phy] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [drivers/net] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [drivers] Error 2
+make: *** [__sub-make] Error 2
