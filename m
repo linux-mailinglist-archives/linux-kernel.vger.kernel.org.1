@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D001FE89F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A655E1FE8B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbgFRBJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:09:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
+        id S1728574AbgFRCu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:50:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728102AbgFRBJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:09:17 -0400
+        id S1728061AbgFRBJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:09:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADE122193E;
-        Thu, 18 Jun 2020 01:09:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 121BC21D7B;
+        Thu, 18 Jun 2020 01:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442556;
-        bh=6gruKfqidV8dlcCkOj9tUa6RXFVX8x50lVwibQBN1mw=;
+        s=default; t=1592442559;
+        bh=4qBR61r3nM6bdJZcmW6Y39cAB3ZUpIlI9O50ZJzCDrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ksQ0AyCPqlmHiHObWLQsZZXtpdSuGhFQxYf8f/R0naOk4Mbm4mviGUv4K425KoFYE
-         njGtxg8A+bWByqHhU5VlVd76iWpXRBxF2TKABek2wBoVxBF96cwHWdtMymzxsyto9q
-         5WY2MsGxqWP0N1X45rrKxxz0H24ZR2XkNL+8tN7U=
+        b=GKLacmhr/x34DIiETgiaYugUxWvufWTR/Z9iiLlAMrFySa6H6lc+okRCRo9Dr8Jom
+         4CY4fLbFdVNNMm1inSaAPBvVJx4Kuy5vAmOPsHSctALYEQzhJmOxueMGVDeKu5Z2Zd
+         i9Hl9zWP1mcVYf64NGIFvsh+5sSUqT92Y64bNt0o=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 053/388] pinctrl: ocelot: Fix GPIO interrupt decoding on Jaguar2
-Date:   Wed, 17 Jun 2020 21:02:30 -0400
-Message-Id: <20200618010805.600873-53-sashal@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.7 055/388] ASoC: SOF: Do nothing when DSP PM callbacks are not set
+Date:   Wed, 17 Jun 2020 21:02:32 -0400
+Message-Id: <20200618010805.600873-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,43 +47,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Povlsen <lars.povlsen@microchip.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-[ Upstream commit 0b47afc65453a70bc521e251138418056f65793f ]
+[ Upstream commit c26fde3b15ed41f5f452f1da727795f787833287 ]
 
-This fixes a problem with using the GPIO as an interrupt on Jaguar2
-(and similar), as the register layout of the platforms with 64 GPIO's
-are pairwise, such that the original offset must be multiplied with
-the platform stride.
+This provides a better separation between runtime and PM sleep
+callbacks.
 
-Fixes: da801ab56ad8 pinctrl: ocelot: add MSCC Jaguar2 support.
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Link: https://lore.kernel.org/r/20200513125532.24585-4-lars.povlsen@microchip.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Only do nothing if given runtime flag is set and calback is not set.
+
+With the current implementation, if PM sleep callback is set but runtime
+callback is not set then at runtime resume we reload the firmware even
+if we do not support runtime resume callback.
+
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20200515135958.17511-2-kai.vehmanen@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-ocelot.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sof/pm.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
-index ed8eac6c1494..4b99922d6c7e 100644
---- a/drivers/pinctrl/pinctrl-ocelot.c
-+++ b/drivers/pinctrl/pinctrl-ocelot.c
-@@ -714,11 +714,12 @@ static void ocelot_irq_handler(struct irq_desc *desc)
- 	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
- 	struct gpio_chip *chip = irq_desc_get_handler_data(desc);
- 	struct ocelot_pinctrl *info = gpiochip_get_data(chip);
-+	unsigned int id_reg = OCELOT_GPIO_INTR_IDENT * info->stride;
- 	unsigned int reg = 0, irq, i;
- 	unsigned long irqs;
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index c410822d9920..01d83ddc16ba 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -90,7 +90,10 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ 	int ret;
  
- 	for (i = 0; i < info->stride; i++) {
--		regmap_read(info->map, OCELOT_GPIO_INTR_IDENT + 4 * i, &reg);
-+		regmap_read(info->map, id_reg + 4 * i, &reg);
- 		if (!reg)
- 			continue;
+ 	/* do nothing if dsp resume callbacks are not set */
+-	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
++	if (!runtime_resume && !sof_ops(sdev)->resume)
++		return 0;
++
++	if (runtime_resume && !sof_ops(sdev)->runtime_resume)
+ 		return 0;
  
+ 	/* DSP was never successfully started, nothing to resume */
+@@ -175,7 +178,10 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	int ret;
+ 
+ 	/* do nothing if dsp suspend callback is not set */
+-	if (!sof_ops(sdev)->suspend)
++	if (!runtime_suspend && !sof_ops(sdev)->suspend)
++		return 0;
++
++	if (runtime_suspend && !sof_ops(sdev)->runtime_suspend)
+ 		return 0;
+ 
+ 	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE)
 -- 
 2.25.1
 
