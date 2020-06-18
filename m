@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4561FF5B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1542C1FF5B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731195AbgFROvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S1731243AbgFROvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731152AbgFROvC (ORCPT
+        with ESMTP id S1731167AbgFROvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Jun 2020 10:51:02 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AF5C0613EF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90965C0613F0
         for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=DoID9zoGW91RyxMUWv4e500HCOtNfc1n8lbVfmpATSs=; b=lTHM5czDAtTYXfPLeK2Y0b85jY
-        eTsQ3Se3mV114drLY/tnpYloFlO6ZnAp5sMn34Ce9BKZGIGyIwp6hT7wc0p9Uvaw/Y/qpOhfTtloY
-        zIBBpWuZDgGG/LFu/wSrZh+MQfU0GP9h7nkk23NyUOHZyy/65+8mrr0jbXdw9w6x72/tnsMLQYjBr
-        qLfNWwXY0hFo3u+InDTWub0QK2V3VBh+Ds0607V2sCp8KYCQjZ1D/pI1jA38RSfZni0QmI45KZ5+5
-        0rgTBM1ILsVJgHUgxVF3A5ntfm/90POxzsZp/dS+GxRjj8Ilh/U/BNiYe+bH/OTtN4lZQIvNiXzZq
-        j/6rGYWg==;
+        bh=cPNi5GydH9kAjx5H9Cs/6JIq+NUbUxCaD6AbMZp0vgY=; b=HWYpjjP/gT2tvD2OpPPfSp0Q0X
+        XBxR0a12KnKFXJI/vb0pFg3RfHoXCYhKme9RxnYCsCIWnTOpikNJJFPLRJWLq8RbDKv94KOVDSul2
+        9MXH/he+SZ9hnxogZeULZHDThjm1m0jCjjDV8HN0jTEhULeMFjFd22I2LllFlk1lwayXJgo4M7jZG
+        LNHzS1z/mITNI3YOHvyOLwzpEhZysOVIsdvC7Pho8GyoejNLQj7EaK97EQEFjbS1NmDepey7u4j7G
+        xOiE3v1WkdHulR3bhhNvY5XkjXq4f3fxj9i1jRM9S/hsKcwuTyIlv1fPx2wPdvD3G9UJp8epGKgZg
+        CKijc9KA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlvsA-0006Hm-9q; Thu, 18 Jun 2020 14:50:34 +0000
+        id 1jlvsB-0006Ho-Fi; Thu, 18 Jun 2020 14:50:35 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4693A30753E;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68DB730791C;
         Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2A4D52146C403; Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
-Message-ID: <20200618144801.819246178@infradead.org>
+        id 2DFEB2146C402; Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
+Message-ID: <20200618144801.877896100@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 18 Jun 2020 16:44:11 +0200
+Date:   Thu, 18 Jun 2020 16:44:12 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Josh Poimboeuf <jpoimboe@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
         elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
         mhelsley@vmware.com, rostedt@goodmis.org, jthierry@redhat.com,
-        mbenes@suse.cz, peterz@infradead.org,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: [PATCH 4/7] x86/entry: Increase entry_stack size to a full page
+        mbenes@suse.cz, peterz@infradead.org
+Subject: [PATCH 5/7] objtool: Clean up elf_write() condition
 References: <20200618144407.520952071@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,27 +53,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco crashed in bad_iret with a Clang11/KCSAN build due to
-overflowing the stack. Now that we run C code on it, expand it to a
-full page.
+With there being multiple ways to change the ELF data, let's more
+concisely track modification.
 
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
-Reported-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/processor.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/objtool/check.c   |    4 +++-
+ tools/objtool/elf.c     |   13 +++++++++++--
+ tools/objtool/elf.h     |    5 +++--
+ tools/objtool/orc_gen.c |    2 +-
+ 4 files changed, 18 insertions(+), 6 deletions(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -370,7 +370,7 @@ struct x86_hw_tss {
- #define IO_BITMAP_OFFSET_INVALID	(__KERNEL_TSS_LIMIT + 1)
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2740,7 +2740,7 @@ int check(const char *_objname, bool orc
  
- struct entry_stack {
--	unsigned long		words[64];
-+	char	stack[PAGE_SIZE];
- };
+ 	objname = _objname;
  
- struct entry_stack_page {
+-	file.elf = elf_open_read(objname, orc ? O_RDWR : O_RDONLY);
++	file.elf = elf_open_read(objname, O_RDWR);
+ 	if (!file.elf)
+ 		return 1;
+ 
+@@ -2801,7 +2801,9 @@ int check(const char *_objname, bool orc
+ 		ret = create_orc_sections(&file);
+ 		if (ret < 0)
+ 			goto out;
++	}
+ 
++	if (file.elf->changed) {
+ 		ret = elf_write(file.elf);
+ 		if (ret < 0)
+ 			goto out;
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -747,6 +747,8 @@ struct section *elf_create_section(struc
+ 	elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
+ 	elf_hash_add(elf->section_name_hash, &sec->name_hash, str_hash(sec->name));
+ 
++	elf->changed = true;
++
+ 	return sec;
+ }
+ 
+@@ -880,11 +882,14 @@ static int elf_rebuild_rela_reloc_sectio
+ 	return 0;
+ }
+ 
+-int elf_rebuild_reloc_section(struct section *sec)
++int elf_rebuild_reloc_section(struct elf *elf, struct section *sec)
+ {
+ 	struct reloc *reloc;
+ 	int nr;
+ 
++	sec->changed = true;
++	elf->changed = true;
++
+ 	nr = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list)
+ 		nr++;
+@@ -896,7 +901,7 @@ int elf_rebuild_reloc_section(struct sec
+ 	}
+ }
+ 
+-int elf_write(const struct elf *elf)
++int elf_write(struct elf *elf)
+ {
+ 	struct section *sec;
+ 	Elf_Scn *s;
+@@ -913,6 +918,8 @@ int elf_write(const struct elf *elf)
+ 				WARN_ELF("gelf_update_shdr");
+ 				return -1;
+ 			}
++
++			sec->changed = false;
+ 		}
+ 	}
+ 
+@@ -925,6 +932,8 @@ int elf_write(const struct elf *elf)
+ 		return -1;
+ 	}
+ 
++	elf->changed = false;
++
+ 	return 0;
+ }
+ 
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -79,6 +79,7 @@ struct elf {
+ 	Elf *elf;
+ 	GElf_Ehdr ehdr;
+ 	int fd;
++	bool changed;
+ 	char *name;
+ 	struct list_head sections;
+ 	DECLARE_HASHTABLE(symbol_hash, ELF_HASH_BITS);
+@@ -121,7 +122,7 @@ struct elf *elf_open_read(const char *na
+ struct section *elf_create_section(struct elf *elf, const char *name, size_t entsize, int nr);
+ struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+ void elf_add_reloc(struct elf *elf, struct reloc *reloc);
+-int elf_write(const struct elf *elf);
++int elf_write(struct elf *elf);
+ void elf_close(struct elf *elf);
+ 
+ struct section *find_section_by_name(const struct elf *elf, const char *name);
+@@ -133,7 +134,7 @@ struct reloc *find_reloc_by_dest(const s
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+-int elf_rebuild_reloc_section(struct section *sec);
++int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
+ 
+ #define for_each_sec(file, sec)						\
+ 	list_for_each_entry(sec, &file->elf->sections, list)
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -222,7 +222,7 @@ int create_orc_sections(struct objtool_f
+ 		}
+ 	}
+ 
+-	if (elf_rebuild_reloc_section(ip_relocsec))
++	if (elf_rebuild_reloc_section(file->elf, ip_relocsec))
+ 		return -1;
+ 
+ 	return 0;
 
 
