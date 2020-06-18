@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0901FF495
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA451FF497
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbgFROVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:21:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:51018 "EHLO foss.arm.com"
+        id S1730741AbgFROWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:22:15 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:29808 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727078AbgFROVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:21:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D4B2101E;
-        Thu, 18 Jun 2020 07:21:08 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1CDE3F6CF;
-        Thu, 18 Jun 2020 07:21:07 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id AB6D7682B9C; Thu, 18 Jun 2020 15:21:06 +0100 (BST)
-Date:   Thu, 18 Jun 2020 15:21:06 +0100
-From:   Liviu Dudau <liviu.dudau@arm.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     David Airlie <airlied@linux.ie>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/arm: fix unintentional integer overflow on left shift
-Message-ID: <20200618142106.GK159988@e110455-lin.cambridge.arm.com>
-References: <20200618100400.11464-1-colin.king@canonical.com>
- <20200618121405.GJ159988@e110455-lin.cambridge.arm.com>
- <5d08fbec-75d8-d9a9-af61-e6ab98e77c80@canonical.com>
+        id S1728033AbgFROWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 10:22:14 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49nkf96Dz2z9v22D;
+        Thu, 18 Jun 2020 16:22:09 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id fKTzY7i6T9qx; Thu, 18 Jun 2020 16:22:09 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49nkf95BPcz9v22C;
+        Thu, 18 Jun 2020 16:22:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B04C78B84F;
+        Thu, 18 Jun 2020 16:22:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ibpuocsAlwuq; Thu, 18 Jun 2020 16:22:11 +0200 (CEST)
+Received: from [10.25.210.22] (po15451.idsi0.si.c-s.fr [10.25.210.22])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B6938B849;
+        Thu, 18 Jun 2020 16:22:11 +0200 (CEST)
+Subject: Re: [PATCH 3/3] powerpc/8xx: Provide ptep_get() with 16k pages
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+References: <cover.1592225557.git.christophe.leroy@csgroup.eu>
+ <341688399c1b102756046d19ea6ce39db1ae4742.1592225558.git.christophe.leroy@csgroup.eu>
+ <20200615132244.GR2531@hirez.programming.kicks-ass.net>
+ <87wo45db8d.fsf@mpe.ellerman.id.au>
+ <20200617143826.GJ2531@hirez.programming.kicks-ass.net>
+ <87pn9xchql.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <baa6c8bc-1d2e-d714-8dee-5d97a643f5ee@csgroup.eu>
+Date:   Thu, 18 Jun 2020 16:21:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <87pn9xchql.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5d08fbec-75d8-d9a9-af61-e6ab98e77c80@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 01:50:34PM +0100, Colin Ian King wrote:
-> On 18/06/2020 13:14, Liviu Dudau wrote:
-> > On Thu, Jun 18, 2020 at 11:04:00AM +0100, Colin King wrote:
-> >> From: Colin Ian King <colin.king@canonical.com>
-> > 
-> > Hi Colin,
-> > 
-> >>
-> >> Shifting the integer value 1 is evaluated using 32-bit arithmetic
-> >> and then used in an expression that expects a long value leads to
-> >> a potential integer overflow.
-> > 
-> > I'm afraid this explanation makes no sense to me. Do you care to explain better what
-> > you think the issue is? If the shift is done as 32-bit arithmetic and then promoted
-> > to long how does the overflow happen?
+
+
+Le 18/06/2020 à 02:58, Michael Ellerman a écrit :
+> Peter Zijlstra <peterz@infradead.org> writes:
+>> On Thu, Jun 18, 2020 at 12:21:22AM +1000, Michael Ellerman wrote:
+>>> Peter Zijlstra <peterz@infradead.org> writes:
+>>>> On Mon, Jun 15, 2020 at 12:57:59PM +0000, Christophe Leroy wrote:
+>>
+>>>>> +#if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
+>>>>> +#define __HAVE_ARCH_PTEP_GET
+>>>>> +static inline pte_t ptep_get(pte_t *ptep)
+>>>>> +{
+>>>>> +	pte_t pte = {READ_ONCE(ptep->pte), 0, 0, 0};
+>>>>> +
+>>>>> +	return pte;
+>>>>> +}
+>>>>> +#endif
+>>>>
+>>>> Would it make sense to have a comment with this magic? The casual reader
+>>>> might wonder WTH just happened when he stumbles on this :-)
+>>>
+>>> I tried writing a helpful comment but it's too late for my brain to form
+>>> sensible sentences.
+>>>
+>>> Christophe can you send a follow-up with a comment explaining it? In
+>>> particular the zero entries stand out, it's kind of subtle that those
+>>> entries are only populated with the right value when we write to the
+>>> page table.
+>>
+>> static inline pte_t ptep_get(pte_t *ptep)
+>> {
+>> 	unsigned long val = READ_ONCE(ptep->pte);
+>> 	/* 16K pages have 4 identical value 4K entries */
+>> 	pte_t pte = {val, val, val, val);
+>> 	return pte;
+>> }
+>>
+>> Maybe something like that?
 > 
-> The shift is performed using 32 bit signed math and then assigned to an
-> unsigned 64 bit long. This if the shift is 31 bits then the signed int
-> conversion of 0x80000000 to unsigned long becomes 0xffffffff80000000.
-> If the shift is more than 32 bits then result overflows and becomes 0x0.
-
-You are right, I've missed the fact that it is signed math. Not very likely that
-we are going to ever have 30 or more CRTCs in the driver, but Coverity has no
-way of knowing that.
-
-Acked-by: Liviu Dudau <liviu.dudau@arm.com>
-
-I will pull this into drm-misc-next today.
-
-Best regards,
-Liviu
-
+> I think val wants to be pte_basic_t, but otherwise yeah I like that much
+> better.
 > 
-> Colin
-> 
-> > 
-> > Best regards,
-> > Liviu
-> > 
-> >> Fix this by using the BIT macro to
-> >> perform the shift to avoid the overflow.
-> >>
-> >> Addresses-Coverity: ("Unintentional integer overflow")
-> >> Fixes: ad49f8602fe8 ("drm/arm: Add support for Mali Display Processors")
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >> ---
-> >>  drivers/gpu/drm/arm/malidp_planes.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/arm/malidp_planes.c b/drivers/gpu/drm/arm/malidp_planes.c
-> >> index 37715cc6064e..ab45ac445045 100644
-> >> --- a/drivers/gpu/drm/arm/malidp_planes.c
-> >> +++ b/drivers/gpu/drm/arm/malidp_planes.c
-> >> @@ -928,7 +928,7 @@ int malidp_de_planes_init(struct drm_device *drm)
-> >>  	const struct malidp_hw_regmap *map = &malidp->dev->hw->map;
-> >>  	struct malidp_plane *plane = NULL;
-> >>  	enum drm_plane_type plane_type;
-> >> -	unsigned long crtcs = 1 << drm->mode_config.num_crtc;
-> >> +	unsigned long crtcs = BIT(drm->mode_config.num_crtc);
-> >>  	unsigned long flags = DRM_MODE_ROTATE_0 | DRM_MODE_ROTATE_90 | DRM_MODE_ROTATE_180 |
-> >>  			      DRM_MODE_ROTATE_270 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
-> >>  	unsigned int blend_caps = BIT(DRM_MODE_BLEND_PIXEL_NONE) |
-> >> -- 
-> >> 2.27.0.rc0
-> >>
-> > 
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
--- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+I sent a patch for that.
+
+I'll also send one to fix mm/debug_vm_pgtable.c which also uses 
+READ_ONCE() to access page table entries.
+
+Christophe
