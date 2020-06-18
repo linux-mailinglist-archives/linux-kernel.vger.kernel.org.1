@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8198E1FE40A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AFC1FE406
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730532AbgFRCPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52902 "EHLO mail.kernel.org"
+        id S1729452AbgFRCPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727929AbgFRBUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:20:38 -0400
+        id S1730332AbgFRBUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:20:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE86C21974;
-        Thu, 18 Jun 2020 01:20:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0738720776;
+        Thu, 18 Jun 2020 01:20:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443238;
-        bh=0W3RvPQjuYJQCDakR0o1Rs3erDv+s2YD4K4wo7Py5p8=;
+        s=default; t=1592443241;
+        bh=jgjHGsVhsJSxDyGA5Ork60r7TWAvi3KNCTPoeYEILdo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BggyMK06FKi8kTgNiH9OD+EkLwgs7v97bo+c1qEHvI/PUHgCDR3cH5BsVOwIt05bJ
-         rhMDZ30hWz3jRagTg6yaCUTMJdkfNmJML91Rvt3Ms5YNbSelmerIpgO/gHvENVXon9
-         YqL5u7ovqirCjB8/S70GB91C+17PIadJXS38liW4=
+        b=I6TMmsQlwvykcti/s8QMx1bkCetcMEhYB0W0gNap1elxP8QJbf4DeVZmO+OxtOC9v
+         krn4CuDK1MbEQoRtQvBjqrUq9ZAL51YU+BNjC8WPswgkvFs2LxqlNu9zu+wPqPkr1t
+         Ch0b+IQ/CaiB8vj8rcqRtV6ISmPd6IfOT7LSB6o0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 190/266] ASoC: fix incomplete error-handling in img_i2s_in_probe.
-Date:   Wed, 17 Jun 2020 21:15:15 -0400
-Message-Id: <20200618011631.604574-190-sashal@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Christie <mchristi@redhat.com>,
+        David Disseldorp <ddiss@suse.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 192/266] scsi: target: tcmu: Fix a use after free in tcmu_check_expired_queue_cmd()
+Date:   Wed, 17 Jun 2020 21:15:17 -0400
+Message-Id: <20200618011631.604574-192-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -42,34 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 25bf943e4e7b47282bd86ae7d39e039217ebb007 ]
+[ Upstream commit 9d7464b18892332e35ff37f0b024429a1a9835e6 ]
 
-Function "pm_runtime_get_sync()" is not handled by "pm_runtime_put()"
-if "PTR_ERR(rst) == -EPROBE_DEFER". Fix this issue by adding
-"pm_runtime_put()" into this error path.
+The pr_debug() dereferences "cmd" after we already freed it by calling
+tcmu_free_cmd(cmd).  The debug printk needs to be done earlier.
 
-Fixes: f65bb92ca12e ("ASoC: img-i2s-in: Add runtime PM")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200525055011.31925-1-wu000273@umn.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200523101129.GB98132@mwanda
+Fixes: 61fb24822166 ("scsi: target: tcmu: Userspace must not complete queued commands")
+Reviewed-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: David Disseldorp <ddiss@suse.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/img/img-i2s-in.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/target/target_core_user.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index fdd2c73fd2fa..869fe0068cbd 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -482,6 +482,7 @@ static int img_i2s_in_probe(struct platform_device *pdev)
- 	if (IS_ERR(rst)) {
- 		if (PTR_ERR(rst) == -EPROBE_DEFER) {
- 			ret = -EPROBE_DEFER;
-+			pm_runtime_put(&pdev->dev);
- 			goto err_suspend;
- 		}
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 70c64e69a1d2..a497e7c1f4fc 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -1292,13 +1292,13 @@ static void tcmu_check_expired_queue_cmd(struct tcmu_cmd *cmd)
+ 	if (!time_after(jiffies, cmd->deadline))
+ 		return;
+ 
++	pr_debug("Timing out queued cmd %p on dev %s.\n",
++		  cmd, cmd->tcmu_dev->name);
++
+ 	list_del_init(&cmd->queue_entry);
+ 	se_cmd = cmd->se_cmd;
+ 	tcmu_free_cmd(cmd);
+ 
+-	pr_debug("Timing out queued cmd %p on dev %s.\n",
+-		  cmd, cmd->tcmu_dev->name);
+-
+ 	target_complete_cmd(se_cmd, SAM_STAT_TASK_SET_FULL);
+ }
  
 -- 
 2.25.1
