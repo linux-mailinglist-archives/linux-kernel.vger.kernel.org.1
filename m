@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569D11FEE8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8741FEE93
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgFRJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:23:59 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:52806 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729082AbgFRJX6 (ORCPT
+        id S1729143AbgFRJYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:24:06 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:44585 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729082AbgFRJYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:23:58 -0400
+        Thu, 18 Jun 2020 05:24:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592472237; x=1624008237;
+  t=1592472241; x=1624008241;
   h=from:to:cc:subject:date:message-id:in-reply-to;
-  bh=AXktVEBst0a5Xx6ME8y/aUH5oG7cSFUc9f7JNgXbuDM=;
-  b=qiIW3k7acs3gg+BFNFo7DmpAP2d35M+sc32SS8ZOB3z7QqqXxxoPU7t3
-   Ka0KEi7MbIdbWlJJnzGdqCfRu5QpGayTg3IX/xN8YTDQKeFEUU3bFjj4m
-   4hEdDlebwLX7K18Hs1LgD5U3/m83EWanMx/PoJqPgFRZQ5XAv4FlpQac8
-   U=;
-IronPort-SDR: 1T86ecPT5WS1me4DVgCewcfsSHOeBhqhzAMxlusNuWC6ifv0Btz7+fmrJTbG84DGklWX4oNlH5
- 1MtuLKS7jIYw==
+  bh=NqBQVyg4uwgGurJD1OK/0Mw40EovCNrpIfD1ESnsdgw=;
+  b=c8rsaieIO4PpiACctGZ7+8ZVUgneBdnZ699vbiitoy4jg4ntf363L9JX
+   7nRaeqtetTX0AEXlRGpK55bRPdKNmw1eTlks3kKACugHxQkHSagEHeeoX
+   hQ1DrLRHApVQvHZdfWjeLPlPWH5sB085KcY1g22JQkkBxc/Q4gu27FICu
+   k=;
+IronPort-SDR: B0IbgC/i6TutrZWpQCAdEPzC6VImJL1/IRg3ksa2yKAXwgXG/KWUrOopEC3lxZIb0h2TMjvrzp
+ o72ggBtlW7og==
 X-IronPort-AV: E=Sophos;i="5.73,526,1583193600"; 
-   d="scan'208";a="36904964"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 18 Jun 2020 09:23:52 +0000
+   d="scan'208";a="44956919"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 18 Jun 2020 09:23:58 +0000
 Received: from uc85b765ebdd8595b4b67.ant.amazon.com (pdx2-ws-svc-lb17-vlan3.amazon.com [10.247.140.70])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id F36331A00F3;
-        Thu, 18 Jun 2020 09:23:48 +0000 (UTC)
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 69BEC221CE4;
+        Thu, 18 Jun 2020 09:23:55 +0000 (UTC)
 Received: from uc85b765ebdd8595b4b67.ant.amazon.com (localhost [127.0.0.1])
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 05I9Nk4P022816;
-        Thu, 18 Jun 2020 11:23:46 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 05I9NrKA022961;
+        Thu, 18 Jun 2020 11:23:53 +0200
 Received: (from foersleo@localhost)
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 05I9NkJk022812;
-        Thu, 18 Jun 2020 11:23:46 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 05I9NqB5022955;
+        Thu, 18 Jun 2020 11:23:52 +0200
 From:   Leonard Foerster <foersleo@amazon.com>
 To:     SeongJae Park <sjpark@amazon.com>
 Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
@@ -54,31 +54,28 @@ Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
         ying.huang@intel.com, david@redhat.com, linux-damon@amazon.com,
         linux-mm@kvack.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v16 05/14] mm/damon: Allow dynamic monitoring target regions update
-Date:   Thu, 18 Jun 2020 11:23:45 +0200
-Message-Id: <1592472225-22768-1-git-send-email-foersleo@amazon.com>
+Subject: Re: [PATCH v16 06/14] mm/damon: Implement callbacks for the virtual memory address spaces
+Date:   Thu, 18 Jun 2020 11:23:51 +0200
+Message-Id: <1592472232-22839-1-git-send-email-foersleo@amazon.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20200615161927.12637-6-sjpark@amazon.com>
+In-Reply-To: <20200615161927.12637-7-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-15T18:19:18+02:00 SeongJae Park <sjpark@amazon.com> wrote:
+On 2020-06-15T18:19:19+02:00 SeongJae Park <sjpark@amazon.com> wrote:
 
 > From: SeongJae Park <sjpark@amazon.de>
 > 
-> The monitoring target regions can be dynamically changed.  For example,
-> virtual memory mapping could be dynamically updated and physical memory
-> could be hot-plugged.
-> 
-> To handle such cases, this commit adds a monitoring attribute, ``regions
-> update interval`` and a callback ``init_target_regions`` in the
-> monitoring context.  If the two fields are properly set, DAMON will call
-> the ``init_target_regions()`` callback for every ``regions update
-> interval``.  In the callback, users can check current memory mapping or
-> hotplugged physical memory sections and appropriately update the
-> monitoring target regions of the context.
+> This commit implements the four essential callbacks of DAMON,
+> '->init_target_regions', '->update_target_regions',
+> '->prepare_access_checks', and '->check_accesses' for virtual memory
+> address spaces.  Those internally use PTE Accessed bit.  Using these
+> callbacks, users can easily monitor the virtual address space data
+> accesses of specific processes.  Nonetheless, these are just reference
+> implementations.  Users can implement and use their own callbacks for
+> their special use case, if required.
 > 
 > Signed-off-by: SeongJae Park <sjpark@amazon.de>
 > ---
