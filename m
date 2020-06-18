@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62771FE6F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9489E1FE779
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgFRBNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:13:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
+        id S2387787AbgFRClK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728908AbgFRBM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:27 -0400
+        id S1728231AbgFRBM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:12:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F38D620CC7;
-        Thu, 18 Jun 2020 01:12:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D04E221EB;
+        Thu, 18 Jun 2020 01:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442746;
-        bh=2UkhSz4l9Xn7rW27ttSB2IEZ/oo6QJvPwkQ59xLynXE=;
+        s=default; t=1592442749;
+        bh=akzNYp/BG7Kv+ev3sVP1mF5oUsQ0FXBpqIqVlnZYvl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jLAxU0guepCj0slMkEnKlmQmk7TsffJbrKeLdjJSHU/J81s54yP6gC1TZo9VAvZr0
-         HtyRa72ETfnPB2D3v9N6GMZc8iFi+DtuB2OyL0g5WZBSvYLSo+56iNoLPZsGNCCQ0W
-         vQnlQA61VIDkTquFfT9z7pN/ZhkGPCD3/W2qeCbQ=
+        b=cdVUjYiV2nHkGkAypF31DIZ5AshUv3iAW3ShR/onMFiHIa0Fo/VDBWRHvGkgz3Xy5
+         Xcpvnsm+RMcxGH97nqgMwfartPz4qblLYvujPXBbPw50DQUfRs69uomMxcBWrVofOt
+         oOGhHJdIz9PlPyZ3STZsJ1KVgMooshem3casFpcs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>, Roger Quadros <rogerq@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 199/388] phy: ti: j721e-wiz: Fix some error return code in wiz_probe()
-Date:   Wed, 17 Jun 2020 21:04:56 -0400
-Message-Id: <20200618010805.600873-199-sashal@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 201/388] arm64: dts: qcom: db820c: Fix invalid pm8994 supplies
+Date:   Wed, 17 Jun 2020 21:04:58 -0400
+Message-Id: <20200618010805.600873-201-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,56 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit e2ae8bca494481a9f38fcd1d52943ac04e654745 ]
+[ Upstream commit 1cacdf5d3bb9644ac7b9339c611ac5b9dd90d09d ]
 
-Fix to return negative error code from some error handling
-cases instead of 0, as done elsewhere in this function.
+It's uncertain where the "vreg_s8a_l3a_input" comes from, but the supply
+for VDD_L3_L11 on PM8994 should be VREG_S3A_1P3, so correct this - and
+drop the vreg_s8a_l3a_input.
 
-Fixes: 091876cc355d ("phy: ti: j721e-wiz: Add support for WIZ module present in TI J721E SoC")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Acked-by: Roger Quadros <rogerq@ti.com>
-Link: https://lore.kernel.org/r/20200507054109.110849-1-weiyongjun1@huawei.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 83d9ed4342a3 ("arm64: dts: qcom: db820c: Use regulator names from schematics")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20200417070712.1376355-1-bjorn.andersson@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 7b51045df783..c8e4ff341cef 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -794,8 +794,10 @@ static int wiz_probe(struct platform_device *pdev)
- 	}
+diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+index c4abbccf2bed..eaa1eb70b455 100644
+--- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+@@ -117,16 +117,6 @@ vph_pwr: vph-pwr-regulator {
+ 		regulator-max-microvolt = <3700000>;
+ 	};
  
- 	base = devm_ioremap(dev, res.start, resource_size(&res));
--	if (!base)
-+	if (!base) {
-+		ret = -ENOMEM;
- 		goto err_addr_to_resource;
-+	}
+-	vreg_s8a_l3a_input: vreg-s8a-l3a-input {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vreg_s8a_l3a_input";
+-		regulator-always-on;
+-		regulator-boot-on;
+-
+-		regulator-min-microvolt = <0>;
+-		regulator-max-microvolt = <0>;
+-	};
+-
+ 	wlan_en: wlan-en-1-8v {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&wlan_en_gpios>;
+@@ -705,14 +695,14 @@ pm8994-regulators {
+ 		vdd_s11-supply = <&vph_pwr>;
+ 		vdd_s12-supply = <&vph_pwr>;
+ 		vdd_l2_l26_l28-supply = <&vreg_s3a_1p3>;
+-		vdd_l3_l11-supply = <&vreg_s8a_l3a_input>;
++		vdd_l3_l11-supply = <&vreg_s3a_1p3>;
+ 		vdd_l4_l27_l31-supply = <&vreg_s3a_1p3>;
+ 		vdd_l5_l7-supply = <&vreg_s5a_2p15>;
+ 		vdd_l6_l12_l32-supply = <&vreg_s5a_2p15>;
+ 		vdd_l8_l16_l30-supply = <&vph_pwr>;
+ 		vdd_l14_l15-supply = <&vreg_s5a_2p15>;
+ 		vdd_l25-supply = <&vreg_s3a_1p3>;
+-		vdd_lvs1_2-supply = <&vreg_s4a_1p8>;
++		vdd_lvs1_lvs2-supply = <&vreg_s4a_1p8>;
  
- 	regmap = devm_regmap_init_mmio(dev, base, &wiz_regmap_config);
- 	if (IS_ERR(regmap)) {
-@@ -812,6 +814,7 @@ static int wiz_probe(struct platform_device *pdev)
- 
- 	if (num_lanes > WIZ_MAX_LANES) {
- 		dev_err(dev, "Cannot support %d lanes\n", num_lanes);
-+		ret = -ENODEV;
- 		goto err_addr_to_resource;
- 	}
- 
-@@ -897,6 +900,7 @@ static int wiz_probe(struct platform_device *pdev)
- 	serdes_pdev = of_platform_device_create(child_node, NULL, dev);
- 	if (!serdes_pdev) {
- 		dev_WARN(dev, "Unable to create SERDES platform device\n");
-+		ret = -ENOMEM;
- 		goto err_pdev_create;
- 	}
- 	wiz->serdes_pdev = serdes_pdev;
+ 		vreg_s3a_1p3: s3 {
+ 			regulator-name = "vreg_s3a_1p3";
 -- 
 2.25.1
 
