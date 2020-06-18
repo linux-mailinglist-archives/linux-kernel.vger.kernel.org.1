@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC131FECE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959791FECA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgFRHup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 03:50:45 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48669 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728245AbgFRHun (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:50:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592466642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8mNDAD09ZF11gVKKLJQ7tphenyVSu5+EHhncfG5s2V8=;
-        b=XiMtWaFicUV+wmxINlTig8XRG4rlWaL1KpC+y1qfGpBj/ecaHhMDmXwIRfs0J9iO8GbZGt
-        P1sTQoF40sZRau/0C5nuGQUU4qmyUSZBRpcpXHcBfOG0UknqS0U7ss6iQuuCSShMmSCTve
-        hOygNQHsMvhn0oZfoCCEqdmkMtDnrBw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-5bX6ePhfN2KccolsBVOJlA-1; Thu, 18 Jun 2020 03:50:38 -0400
-X-MC-Unique: 5bX6ePhfN2KccolsBVOJlA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 363C31800D42;
-        Thu, 18 Jun 2020 07:50:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 684D160BF3;
-        Thu, 18 Jun 2020 07:50:36 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net 3/3] rxrpc: Fix afs large storage transmission performance
- drop
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 18 Jun 2020 08:50:35 +0100
-Message-ID: <159246663560.1229328.1476552302291944463.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159246661514.1229328.4419873299996950969.stgit@warthog.procyon.org.uk>
-References: <159246661514.1229328.4419873299996950969.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
+        id S1728153AbgFRHlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 03:41:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:30544 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgFRHlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:41:18 -0400
+IronPort-SDR: PyS9QxPx83GJgTqRV7LCLEh7+rPwFyVZaET4ecpfgwIrZRrG3Q7iFXbvT14ziAF+QqbU3Lo3oz
+ KVs8LCD9VKkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="227179317"
+X-IronPort-AV: E=Sophos;i="5.73,525,1583222400"; 
+   d="scan'208";a="227179317"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 00:41:17 -0700
+IronPort-SDR: hmPEk8+Ta8XZa7xBYxEquUcTyXFqmonbmopCvD6mlJZ0KmkMLQKFIJmdXqmGJTbcsfu2+EL2DP
+ PudKsxxBIExQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,525,1583222400"; 
+   d="scan'208";a="273776057"
+Received: from xpf-desktop.sh.intel.com ([10.239.13.107])
+  by orsmga003.jf.intel.com with ESMTP; 18 Jun 2020 00:41:10 -0700
+Date:   Thu, 18 Jun 2020 15:51:04 +0800
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Heng Su <heng.su@intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Svahn <kai.svahn@intel.com>
+Subject: Re: [Linux] [PATCH] Kernel selftests: tpm2: upgrade tpm2 tests from
+ python2 to python3
+Message-ID: <20200618075104.GA13935@xpf-desktop.sh.intel.com>
+References: <20200618030245.7153-1-pengfei.xu@intel.com>
+ <20200618071858.GD6560@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618071858.GD6560@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2ad6691d988c, which moved the modification of the status annotation
-for a packet in the Tx buffer prior to the retransmission moved the state
-clearance, but managed to lose the bit that set it to UNACK.
+Hi Jarkko,
+  Thanks for your advice.
+  My feedback is as below.
 
-Consequently, if a retransmission occurs, the packet is accidentally
-changed to the ACK state (ie. 0) by masking it off, which means that the
-packet isn't counted towards the tally of newly-ACK'd packets if it gets
-hard-ACK'd.  This then prevents the congestion control algorithm from
-recovering properly.
+  BR.
+  Thanks!
 
-Fix by reinstating the change of state to UNACK.
+On 2020-06-18 at 10:18:58 +0300, Jarkko Sakkinen wrote:
+> On Thu, Jun 18, 2020 at 11:02:45AM +0800, Pengfei Xu wrote:
+> > Some Linux OS will never support python2 anymore, so upgrade tpm2 selftests
+> > to python3.
+> > 
+> > Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+> 
+> Linux is a kernel, not a full operating system. Perhaps you mean Linux
+> distributions?
+> 
 
-Spotted by the generic/460 xfstest.
+  Will remove [Linux], thanks!
 
-Fixes: 2ad6691d988c ("rxrpc: Fix race between incoming ACK parser and retransmitter")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+> Please capitalize abbrevations correctly (TPM2, not tpm2). Please write
+> 'Python 2' instead of python2.
+> 
 
- net/rxrpc/call_event.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Will do, thanks!
 
-diff --git a/net/rxrpc/call_event.c b/net/rxrpc/call_event.c
-index aa1c8eee6557..6be2672a65ea 100644
---- a/net/rxrpc/call_event.c
-+++ b/net/rxrpc/call_event.c
-@@ -253,7 +253,7 @@ static void rxrpc_resend(struct rxrpc_call *call, unsigned long now_j)
- 		 * confuse things
- 		 */
- 		annotation &= ~RXRPC_TX_ANNO_MASK;
--		annotation |= RXRPC_TX_ANNO_RESENT;
-+		annotation |= RXRPC_TX_ANNO_UNACK | RXRPC_TX_ANNO_RESENT;
- 		call->rxtx_annotations[ix] = annotation;
- 
- 		skb = call->rxtx_buffer[ix];
+> With that said the commit message is inaccurate. The root reason for
+> moving to Python 3 is that Python 2 is no longer supported by the Python
+> upstream project. Nothing to do with Linux or Linux distributions for
+> that matter.
+> 
+  Will do, thanks!
 
-
+> /Jarkko
