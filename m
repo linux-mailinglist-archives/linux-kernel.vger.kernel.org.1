@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E5E1FF997
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B163F1FF99D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732075AbgFRQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:48:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:20430 "EHLO mga07.intel.com"
+        id S1730832AbgFRQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:48:17 -0400
+Received: from mga03.intel.com ([134.134.136.65]:18732 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732037AbgFRQrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:47:55 -0400
-IronPort-SDR: WB9FXtIhM8zTNggO2PsNcXWFqPtHVuc3ziXfTCDETg/pn6R8qn8Wf+O71mwyffjag/10EVn+NF
- em89Valn93Lg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="207886171"
+        id S1732055AbgFRQr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:47:58 -0400
+IronPort-SDR: g1z67WL4rXumrC31JvueiR9NCqfTLZ51XXn9F8z6Crr+KujB+CVL9gSUvn+akmIA/XPjcVbzRi
+ xQ0J24GJgHkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="142595289"
 X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="207886171"
+   d="scan'208";a="142595289"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:47:55 -0700
-IronPort-SDR: rFKrmJUC+dDIHTpvLuFLyTN9lrnhqo9ubniw5uiAMh8xDQgjBRTO6qloZefZpu3k/fQabNS+hH
- QBSAitWCEKLQ==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:47:57 -0700
+IronPort-SDR: 3a8y2+tuF1G777QHoLpoaEYLIt1skH8wZYy2EWSA6PprgElHUtXbQ6WjFlSm+SmwOWJTppes3h
+ 9H/fHhR0VjfQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="273916254"
+   d="scan'208";a="477257278"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 18 Jun 2020 09:47:52 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 18 Jun 2020 09:47:55 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CC94C22C; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
+        id DE47430F; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -36,10 +36,11 @@ To:     Petr Mladek <pmladek@suse.com>,
         linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 4/6] tty: hvc: Return proper error code from console ->setup() hook
-Date:   Thu, 18 Jun 2020 19:47:49 +0300
-Message-Id: <20200618164751.56828-5-andriy.shevchenko@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH v1 5/6] console: Propagate error code from console ->setup()
+Date:   Thu, 18 Jun 2020 19:47:50 +0300
+Message-Id: <20200618164751.56828-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
 References: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
@@ -50,27 +51,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For unifying console ->setup() handling, which is pure documented,
-return error code, rather than non-zero arbitrary number.
+Since console ->setup() hook returns meaningful error codes,
+propagate it to the caller of try_enable_new_console().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 ---
- drivers/tty/hvc/hvsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/printk/printk.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/hvc/hvsi.c b/drivers/tty/hvc/hvsi.c
-index 66f95f758be0..e8c58f9bd263 100644
---- a/drivers/tty/hvc/hvsi.c
-+++ b/drivers/tty/hvc/hvsi.c
-@@ -1128,7 +1128,7 @@ static int __init hvsi_console_setup(struct console *console, char *options)
- 	int ret;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 8c14835be46c..aaea3ad182e1 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2668,7 +2668,7 @@ early_param("keep_bootcon", keep_bootcon_setup);
+ static int try_enable_new_console(struct console *newcon, bool user_specified)
+ {
+ 	struct console_cmdline *c;
+-	int i;
++	int i, err;
  
- 	if (console->index < 0 || console->index >= hvsi_count)
--		return -1;
-+		return -EINVAL;
- 	hp = &hvsi_ports[console->index];
+ 	for (i = 0, c = console_cmdline;
+ 	     i < MAX_CMDLINECONSOLES && c->name[0];
+@@ -2691,8 +2691,8 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
+ 				return 0;
  
- 	/* give the FSP a chance to change the baud rate when we re-open */
+ 			if (newcon->setup &&
+-			    newcon->setup(newcon, c->options) != 0)
+-				return -EIO;
++			    (err = newcon->setup(newcon, c->options)) != 0)
++				return err;
+ 		}
+ 		newcon->flags |= CON_ENABLED;
+ 		if (i == preferred_console) {
 -- 
 2.27.0
 
