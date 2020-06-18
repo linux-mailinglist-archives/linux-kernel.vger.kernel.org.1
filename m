@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0C01FF827
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12BC1FF830
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgFRPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727911AbgFRPwx (ORCPT
+        id S1731635AbgFRPxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:53:07 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:65016 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729225AbgFRPxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:52:53 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0067C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:52:52 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1jlwqR-00064n-GH; Thu, 18 Jun 2020 17:52:51 +0200
-Message-ID: <4b717455032b5409754dffb71acc82c5fc0fc755.camel@pengutronix.de>
-Subject: Re: [RESEND PATCH v2 0/4] drm/etnaviv: Tidy up clocks handling
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Geiner <christian.gmeiner@gmail.com>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org
-Date:   Thu, 18 Jun 2020 17:52:50 +0200
-In-Reply-To: <20200616212127.986410-1-lkundrak@v3.sk>
-References: <20200616212127.986410-1-lkundrak@v3.sk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Thu, 18 Jun 2020 11:53:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1592495585; x=1624031585;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=hTn4UBObJuaxDPv1HSr82vcMXBIjmYhw0RP1gEzZsnc=;
+  b=YgO6FGYx0wBzSS1rjXTEEIA68pjV6Cctay+HqsJaabVVUY7CKhJf84uW
+   jj3Xj7c35voRXqoB73rtIK906Oj+a/9iDaLyiETSfNhnLXoKQ4j7uYvrB
+   Ai9aYMjHP3Nv3JQcy3bkQuK50CaD6ZwnN6T4ZFm4h9dsvD/DEnTAHXzMc
+   OIu61ibUsmjW11nDRXB7RukqLbUySuY6rS6+4dua0Qni/sVTn8H9NOoQN
+   F/uLogmjMn2BSorc58x/eGlimvJ0mOKAXGaHhQEY0jU1agNJndqG+77Qq
+   56x6f4Y33pJehm3JY1AEmTvzJwHi6qmvJgZ4AEabcj9ICbFaiUOgxMp/c
+   g==;
+IronPort-SDR: XqZnv9pYBjMo8pNxkr9b5+VLjc4j16JDdC2Nla8S1JUE+141D1NfX+Vd5jANp7Eg2jgstZSqir
+ j66huWWf7UhI7RpLfNHc3wChi35xBW+9QACem71qP8uNDMuIU4rCKp4oSn1smymtdbKLbpk1Bn
+ fTbPyD4rbD2LoEMSBHHo3eWy5zHW0GNOMQJt4gAa84h5kILQO268CAEx8/NJNe3nANCuvvweZs
+ dll0ixJicb4b2nNu/wmWveT4Gm/X6+y/GioaAaCJpI2mi3flJCDCbmKU0ogufG84ggpFj3MvQO
+ KkQ=
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
+   d="scan'208";a="78976284"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Jun 2020 08:53:04 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Jun 2020 08:52:58 -0700
+Received: from [10.171.246.49] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 18 Jun 2020 08:52:55 -0700
+Subject: Re: [PATCH v2] net: macb: undo operations in case of failure
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <linux@armlinux.org.uk>
+CC:     <antoine.tenart@bootlin.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1592469460-17825-1-git-send-email-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <e1f5e65a-c670-f178-dcda-a630db424215@microchip.com>
+Date:   Thu, 18 Jun 2020 17:53:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <1592469460-17825-1-git-send-email-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 16.06.2020, 23:21 +0200 schrieb Lubomir Rintel:
-> Hi,
+On 18/06/2020 at 10:37, Claudiu Beznea wrote:
+> Undo previously done operation in case macb_phylink_connect()
+> fails. Since macb_reset_hw() is the 1st undo operation the
+> napi_exit label was renamed to reset_hw.
 > 
-> please consider applying patches that are chained to this message.
+> Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-Thanks, I've applied all of them to etnaviv/next.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Thanks Claudiu.
 
 Regards,
-Lucas
+   Nicolas
 
-> They make getting/enabling the clocks in the etnaviv driver slightly nicer,
-> first two also fix potential problems.
+> ---
 > 
-> Compared to v1, patch 2/4 was fixed and patch 3/4 was added.
+> Changes in v2:
+> - corrected fixes SHA1
 > 
-> As it was pointed out in response to v1, the clocks documented as
-> mandatory by the binding document are different from what the driver
-> enforces. Moreover, there is no agreement on which clocks must be
-> present in the device tree, so I'm leaving the binding document until
-> it's cleared up.
+>   drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> In any case, the "core" clock is always present so it's safe to make it
-> mandatory and regardless of what ends up happening to the binding
-> documentation, the other clocks can't be enforced without regressions.
-> At most a comment or a warning could be added. I'm leaving it as it is.
+> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> index 67933079aeea..257c4920cb88 100644
+> --- a/drivers/net/ethernet/cadence/macb_main.c
+> +++ b/drivers/net/ethernet/cadence/macb_main.c
+> @@ -2558,7 +2558,7 @@ static int macb_open(struct net_device *dev)
+>   
+>   	err = macb_phylink_connect(bp);
+>   	if (err)
+> -		goto napi_exit;
+> +		goto reset_hw;
+>   
+>   	netif_tx_start_all_queues(dev);
+>   
+> @@ -2567,9 +2567,11 @@ static int macb_open(struct net_device *dev)
+>   
+>   	return 0;
+>   
+> -napi_exit:
+> +reset_hw:
+> +	macb_reset_hw(bp);
+>   	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue)
+>   		napi_disable(&queue->napi);
+> +	macb_free_consistent(bp);
+>   pm_exit:
+>   	pm_runtime_put_sync(&bp->pdev->dev);
+>   	return err;
 > 
-> Thank you
-> Lubo
-> 
-> 
-> _______________________________________________
-> etnaviv mailing list
-> etnaviv@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/etnaviv
 
+
+-- 
+Nicolas Ferre
