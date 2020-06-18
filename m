@@ -2,172 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E271FF894
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A461FF871
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731843AbgFRQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:04:35 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2334 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731811AbgFRQE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:04:27 -0400
-Received: from lhreml735-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 1342DB8A14AFCE0680A1;
-        Thu, 18 Jun 2020 17:04:26 +0100 (IST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- lhreml735-chm.china.huawei.com (10.201.108.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Thu, 18 Jun 2020 17:04:25 +0100
-Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
- by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 18 Jun 2020 18:04:25 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <mjg59@google.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 05/11] evm: Allow xattr/attr operations for portable signatures if check fails
-Date:   Thu, 18 Jun 2020 18:01:27 +0200
-Message-ID: <20200618160133.937-5-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200618160133.937-1-roberto.sassu@huawei.com>
-References: <20200618160133.937-1-roberto.sassu@huawei.com>
+        id S1731699AbgFRQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:01:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43464 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729481AbgFRQBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:01:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6BA06AC9F;
+        Thu, 18 Jun 2020 16:01:30 +0000 (UTC)
+Date:   Thu, 18 Jun 2020 18:01:29 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v3 19/21] dyndbg: extend ddebug_parse_flags to accept
+ optional leading filter-flags
+Message-ID: <20200618160129.GC3617@alley>
+References: <20200617162536.611386-1-jim.cromie@gmail.com>
+ <20200617162536.611386-22-jim.cromie@gmail.com>
+ <20200618124400.GA7536@alley>
+ <CAJfuBxyw7v=uQFMLHbsP_MAub7DFZOto6SnU71upXZDcK9L9QQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.204.65.160]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfuBxyw7v=uQFMLHbsP_MAub7DFZOto6SnU71upXZDcK9L9QQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If files with portable signatures are copied from one location to another
-or are extracted from an archive, verification can temporarily fail until
-all xattrs/attrs are set in the destination. Portable signatures are the
-only ones that can be moved to different files, as they don't depend on
-system-specific information such as the inode generation.
+On Thu 2020-06-18 08:54:58, jim.cromie@gmail.com wrote:
+> On Thu, Jun 18, 2020 at 6:44 AM Petr Mladek <pmladek@suse.com> wrote:
+> >
+> > On Wed 2020-06-17 10:25:34, Jim Cromie wrote:
+> > > Change ddebug_parse_flags to accept optional filterflags before the
+> > > required operator [-+=].  Read the flags into the filter_flags
+> > > parameter added in the previous patch.  So this now supplies the
+> > > filterflags to ddebug_exec_query.
+> > >
+> > > filterflags work like query terms, they constrain what callsites get
+> > > matched before theyre modified.  So like a query, they can be empty.
+> > >
+> > > Filterflags let you read callsite's flagstate, including results of
+> > > previous modifications, and require that certain flags are set, before
+> > > modifying the callsite further.
+> > >
+> > > So you can build up sets of callsites by marking them with a
+> > > particular flagstate, for example 'fmlt', then enable that set in a
+> > > batch.
+> > >
+> > >   echo fmlt+p >control
+> > >
+> > > Naturally you can use almost any combo of flags you want for marking,
+> > > and can mark several different sets with different patterns.  And then
+> > > you can activate them in a bunch:
+> > >
+> > >   echo 'ft+p; mt+p; lt+p;' >control
+> > >
+> > > + * Parse `str' as a flags-spec, ie: [pfmlt_]*[-+=][pfmlt_]+
+> >
+> > This interface is simply _horrible_ and I do not see a point in this feature!!!
+> >
+> > I as a normal dynamic debug user am interested into:
+> >
+> >    + enabling/disabling messages from a given module/file/line/function
+> >    + list of available modules/files/lines/functions
+> >    + list of enabled modules/files/lines/functions
+> >
+> > I do not understand why I would ever want to do something like:
+> >
+> >    + enable messages that print module name and line number
+> >    + disable message that does not print a module name
+> 
+> messages dont print them, the flags do, according to USER CHOICE.
+> a developer who is deeply familiar with the code doesnt need to
+> see most of it in the logs, average user might need them to comprehend things.
 
-Unlike other security.evm types, portable signatures can never be replaced
-even if an xattr/attr operation is granted, as once evm_update_evmxattr()
-detects this type, it returns without updating the HMAC. Thus, it wouldn't
-be a problem to allow those operations so that verification passes on the
-destination after all xattrs/attrs are copied.
+Any user, even average, has to deal also with non-debug messages that
+do not include this extra information. Why pr_debug() message would
+need it?
 
-This patch first introduces a new integrity status called
-INTEGRITY_FAIL_IMMUTABLE, that allows callers of
-evm_verify_current_integrity() to detect that a portable signature didn't
-pass verification and then adds an exception in evm_protect_xattr() and
-evm_inode_setattr() for this status and returns 0 instead of -EPERM.
+Message should be useful on its own. The location can be found by
+grepping like for any other printk() messages.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- include/linux/integrity.h             |  1 +
- security/integrity/evm/evm_main.c     | 25 ++++++++++++++++++++-----
- security/integrity/ima/ima_appraise.c |  1 +
- 3 files changed, 22 insertions(+), 5 deletions(-)
+Yes, the information might be handy. But all these configuration
+choices also make the interface and code complicated. IMHO, it has
+been over engineered. And this patch makes it even worse.
 
-diff --git a/include/linux/integrity.h b/include/linux/integrity.h
-index 2271939c5c31..2ea0f2f65ab6 100644
---- a/include/linux/integrity.h
-+++ b/include/linux/integrity.h
-@@ -13,6 +13,7 @@ enum integrity_status {
- 	INTEGRITY_PASS = 0,
- 	INTEGRITY_PASS_IMMUTABLE,
- 	INTEGRITY_FAIL,
-+	INTEGRITY_FAIL_IMMUTABLE,
- 	INTEGRITY_NOLABEL,
- 	INTEGRITY_NOXATTRS,
- 	INTEGRITY_UNKNOWN,
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index 4e9f5e8b21d5..30072030f05d 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -27,7 +27,8 @@
- int evm_initialized;
- 
- static const char * const integrity_status_msg[] = {
--	"pass", "pass_immutable", "fail", "no_label", "no_xattrs", "unknown"
-+	"pass", "pass_immutable", "fail", "fail_immutable", "no_label",
-+	"no_xattrs", "unknown"
- };
- int evm_hmac_attrs;
- 
-@@ -134,7 +135,7 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
- 	enum integrity_status evm_status = INTEGRITY_PASS;
- 	struct evm_digest digest;
- 	struct inode *inode;
--	int rc, xattr_len;
-+	int rc, xattr_len, evm_immutable = 0;
- 
- 	if (iint && (iint->evm_status == INTEGRITY_PASS ||
- 		     iint->evm_status == INTEGRITY_PASS_IMMUTABLE))
-@@ -179,8 +180,10 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
- 		if (rc)
- 			rc = -EINVAL;
- 		break;
--	case EVM_IMA_XATTR_DIGSIG:
- 	case EVM_XATTR_PORTABLE_DIGSIG:
-+		evm_immutable = 1;
-+		fallthrough;
-+	case EVM_IMA_XATTR_DIGSIG:
- 		/* accept xattr with non-empty signature field */
- 		if (xattr_len <= sizeof(struct signature_v2_hdr)) {
- 			evm_status = INTEGRITY_FAIL;
-@@ -219,7 +222,8 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
- 
- 	if (rc)
- 		evm_status = (rc == -ENODATA) ?
--				INTEGRITY_NOXATTRS : INTEGRITY_FAIL;
-+				INTEGRITY_NOXATTRS : evm_immutable ?
-+				INTEGRITY_FAIL_IMMUTABLE : INTEGRITY_FAIL;
- out:
- 	if (iint)
- 		iint->evm_status = evm_status;
-@@ -351,6 +355,12 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
- 				    -EPERM, 0);
- 	}
- out:
-+	/* It is safe to allow fail_immutable, portable signatures can never be
-+	 * updated
-+	 */
-+	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
-+		return 0;
-+
- 	if (evm_status != INTEGRITY_PASS)
- 		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
- 				    dentry->d_name.name, "appraise_metadata",
-@@ -488,9 +498,14 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (!(ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID)))
- 		return 0;
- 	evm_status = evm_verify_current_integrity(dentry);
-+	/* It is safe to allow fail_immutable, portable signatures can never
-+	 * be updated
-+	 */
- 	if ((evm_status == INTEGRITY_PASS) ||
--	    (evm_status == INTEGRITY_NOXATTRS))
-+	    (evm_status == INTEGRITY_NOXATTRS) ||
-+	    (evm_status == INTEGRITY_FAIL_IMMUTABLE))
- 		return 0;
-+
- 	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
- 			    dentry->d_name.name, "appraise_metadata",
- 			    integrity_status_msg[evm_status], -EPERM, 0);
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index a9649b04b9f1..21bda264fc30 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -393,6 +393,7 @@ int ima_appraise_measurement(enum ima_hooks func,
- 	case INTEGRITY_NOLABEL:		/* No security.evm xattr. */
- 		cause = "missing-HMAC";
- 		goto out;
-+	case INTEGRITY_FAIL_IMMUTABLE:
- 	case INTEGRITY_FAIL:		/* Invalid HMAC/signature. */
- 		cause = "invalid-HMAC";
- 		goto out;
--- 
-2.17.1
 
+Anyway, you answered why the flags are there. But you did not explain
+why anyone would need to use a filter based on them. Answer this,
+please!!!
+
+
+> > In fact, IMHO, all the 'flmt' flags were a wrong idea and nobody
+> > really needed them. This information in not needed by other
+> > printk() messages. Why pr_debug() would need them?
+> > They just made the code and interface complicated.
+> >
+> 
+> it looks like they landed fully formed in lib/dynamic_debug.c
+> probably because that was a unification of several different print
+> debug systems.
+
+No, they were added by the commit 8ba6ebf583f12da32036fc0 ("Dynamic debug:
+Add more flags").
+
+There is no explanation why they were added. It probably just looked
+like a good idea to the author and nobody complained at that time.
+
+It has been included wihtout any comment, see
+https://lore.kernel.org/lkml/201101231717.24175.bvanassche@acm.org/
+https://lore.kernel.org/lkml/1300309888-5028-5-git-send-email-gregkh@suse.de/
+
+
+> you are free to set them globally:
+> echo +fmlt >control
+> 
+> or just the ones youre using
+> echo up+fmlt >control
+
+The question is not if I could do so. The question is how many users
+do it or need to do so.
+
+Features in this patchset affect the interface with userspace. It
+means that they would need to be maintained "forewer". For this,
+you need to prove that it is widely useful. Ideally, it should
+be outcome of some discussion where people missed this.
+
+I do not see any reasonable usecase for anything like:
+
+   echo 'ft+p; mt+p; lt+p;' >control
+
+Why people would do this, please?
+
+Best Regards,
+Petr
