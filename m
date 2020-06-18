@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16691FE553
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AAC1FE527
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgFRBRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:17:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        id S1729026AbgFRBRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729384AbgFRBOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:52 -0400
+        id S1729402AbgFRBO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EDD821D7B;
-        Thu, 18 Jun 2020 01:14:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E624B21D7E;
+        Thu, 18 Jun 2020 01:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442891;
-        bh=mIJ1TUXp7dszAtRrMyJYmXKkKV2repG8ZIcsS6zctIo=;
+        s=default; t=1592442895;
+        bh=dmuvR/xPFusMGiKvEEAwv0PxlMX7akh3AkyTfLZHxdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DTWvIGZS2MrSC/X735ehRXNLIFjta010kH1iqXTcfcAa+a1r8PrJAHl67pd6KKcit
-         ei2LC2C/0TcGnR7ZroLmOJh5QlZVzTE72K3wbtFQ3CxbusFsxRXAz9Ro5dGjR28V7m
-         rT+MVcTWdQXzFd8QKrfgKRyVE55duCm4cU/+H1fY=
+        b=kkYvzKy1EEX2MwFS6IbrL0L/+dmDe4PLTCZ3bjoAH96bpMoX/t0/wLruDvJWahMg+
+         fH42410mvcA89CUbK4TyAi9SMVl/UChEMMSH5KUzs35YiXlWA6N4/E0XPi5CSJa2On
+         nZfy/nX+bR7Bn0v0GYglNQH0m8xM9yNzyDvbxlm4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.7 314/388] drm/nouveau/disp/gm200-: fix NV_PDISP_SOR_HDMI2_CTRL(n) selection
-Date:   Wed, 17 Jun 2020 21:06:51 -0400
-Message-Id: <20200618010805.600873-314-sashal@kernel.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 317/388] pwm: imx27: Fix rounding behavior
+Date:   Wed, 17 Jun 2020 21:06:54 -0400
+Message-Id: <20200618010805.600873-317-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -42,38 +46,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit a1ef8bad506e4ffa0c57ac5f8cb99ab5cbc3b1fc ]
+[ Upstream commit aef1a3799b5cb3ba4841f6034497b179646ccc70 ]
 
-This is a SOR register, and not indexed by the bound head.
+To not trigger the warnings provided by CONFIG_PWM_DEBUG
 
-Fixes display not coming up on high-bandwidth HDMI displays under a
-number of configurations.
+ - use up-rounding in .get_state()
+ - don't divide by the result of a division
+ - don't use the rounded counter value for the period length to calculate
+   the counter value for the duty cycle
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pwm/pwm-imx27.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
-index 9b16a08eb4d9..bf6d41fb0c9f 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
-@@ -27,10 +27,10 @@ void
- gm200_hdmi_scdc(struct nvkm_ior *ior, int head, u8 scdc)
- {
- 	struct nvkm_device *device = ior->disp->engine.subdev.device;
--	const u32 hoff = head * 0x800;
-+	const u32 soff = nv50_ior_base(ior);
- 	const u32 ctrl = scdc & 0x3;
+diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
+index a6e40d4c485f..732a6f3701e8 100644
+--- a/drivers/pwm/pwm-imx27.c
++++ b/drivers/pwm/pwm-imx27.c
+@@ -150,13 +150,12 @@ static void pwm_imx27_get_state(struct pwm_chip *chip,
  
--	nvkm_mask(device, 0x61c5bc + hoff, 0x00000003, ctrl);
-+	nvkm_mask(device, 0x61c5bc + soff, 0x00000003, ctrl);
+ 	prescaler = MX3_PWMCR_PRESCALER_GET(val);
+ 	pwm_clk = clk_get_rate(imx->clk_per);
+-	pwm_clk = DIV_ROUND_CLOSEST_ULL(pwm_clk, prescaler);
+ 	val = readl(imx->mmio_base + MX3_PWMPR);
+ 	period = val >= MX3_PWMPR_MAX ? MX3_PWMPR_MAX : val;
  
- 	ior->tmds.high_speed = !!(scdc & 0x2);
+ 	/* PWMOUT (Hz) = PWMCLK / (PWMPR + 2) */
+-	tmp = NSEC_PER_SEC * (u64)(period + 2);
+-	state->period = DIV_ROUND_CLOSEST_ULL(tmp, pwm_clk);
++	tmp = NSEC_PER_SEC * (u64)(period + 2) * prescaler;
++	state->period = DIV_ROUND_UP_ULL(tmp, pwm_clk);
+ 
+ 	/*
+ 	 * PWMSAR can be read only if PWM is enabled. If the PWM is disabled,
+@@ -167,8 +166,8 @@ static void pwm_imx27_get_state(struct pwm_chip *chip,
+ 	else
+ 		val = imx->duty_cycle;
+ 
+-	tmp = NSEC_PER_SEC * (u64)(val);
+-	state->duty_cycle = DIV_ROUND_CLOSEST_ULL(tmp, pwm_clk);
++	tmp = NSEC_PER_SEC * (u64)(val) * prescaler;
++	state->duty_cycle = DIV_ROUND_UP_ULL(tmp, pwm_clk);
+ 
+ 	pwm_imx27_clk_disable_unprepare(imx);
  }
+@@ -220,22 +219,23 @@ static int pwm_imx27_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	struct pwm_imx27_chip *imx = to_pwm_imx27_chip(chip);
+ 	struct pwm_state cstate;
+ 	unsigned long long c;
++	unsigned long long clkrate;
+ 	int ret;
+ 	u32 cr;
+ 
+ 	pwm_get_state(pwm, &cstate);
+ 
+-	c = clk_get_rate(imx->clk_per);
+-	c *= state->period;
++	clkrate = clk_get_rate(imx->clk_per);
++	c = clkrate * state->period;
+ 
+-	do_div(c, 1000000000);
++	do_div(c, NSEC_PER_SEC);
+ 	period_cycles = c;
+ 
+ 	prescale = period_cycles / 0x10000 + 1;
+ 
+ 	period_cycles /= prescale;
+-	c = (unsigned long long)period_cycles * state->duty_cycle;
+-	do_div(c, state->period);
++	c = clkrate * state->duty_cycle;
++	do_div(c, NSEC_PER_SEC * prescale);
+ 	duty_cycles = c;
+ 
+ 	/*
 -- 
 2.25.1
 
