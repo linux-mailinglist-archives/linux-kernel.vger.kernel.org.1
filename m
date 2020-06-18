@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25671FF1DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B806D1FF1D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgFRMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 08:31:57 -0400
-Received: from papylos.uuid.uk ([185.34.62.16]:39844 "EHLO papylos.uuid.uk"
+        id S1729418AbgFRMaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 08:30:17 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:53560 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbgFRMb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:31:56 -0400
-X-Greylist: delayed 378 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Jun 2020 08:31:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=B+4Gs/0j/CESrZMyfibpjnqye8gtYFkuSwBCEo4B4VU=; b=UxoWk3h38JdZskTb8k+g1JvlSX
-        J5meE/UfbOPHdvXFp37nuu03bS2qMZvlCfKTubNavPntxMInBBDpGlIPj8dUY4cmIDi1swo1koauR
-        WNrHn7VZYfILoctfwqGfoEolGDj9BGipBbCSLbYZiqXNIIc0Zj3xPJXIrmRuAvYOg0PM0KmgWpuhP
-        0SVZLXWj/QaIB3kVDfpgP2WvC1sJyRfK7TwBauFz+C6XoB2C2dEhH/k7+EcTSP+q8tbaV3tpkTp3F
-        k+ZPRU7PxOaWQkJbtLZgXP06q+6RyK3hcStGxkT5U2cY2TWtACQq1A3BSWYe6Q75JFh2ra/zyfEIy
-        rngaYrCQ==;
-Received: by papylos.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jltbe-0002ue-PS; Thu, 18 Jun 2020 13:25:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=B+4Gs/0j/CESrZMyfibpjnqye8gtYFkuSwBCEo4B4VU=; b=x8aZ/CucIHuoSAuaPxrBMUKSLr
-        KJK8ZF8FACElj/AlLKrUtED2J1vemTCikrWSh5nFeyf/w7eK/i+WMGcflRSk+lHGQ/HMDG9inpQSR
-        i1SS25kjnbQutg8MG2eIZI6NPVJu/3pR2/mNWe6cYfrG2UgQ3biYMkgvzo4vq2FpSXzhUA1eSX3la
-        oRKtFhpHjFvr9kNkmn7ZOHharZILBuU7GfCnse+UrfxBj+Wpco/NBNSEAxTt3/FHk2QcTYbbu5XV5
-        TF4cVtmZFPK2Fjw9G2q1YRwN19VMFZ2B8Hd1TT7rDyJpOYLtd0vmy3Y2dCpjVBehw01Z20zo6b8P1
-        9zmrx4FA==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jltba-0005r9-6N; Thu, 18 Jun 2020 13:25:18 +0100
-Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
- <20200618072138.GA11778@infradead.org>
-From:   Simon Arlott <simon@octiron.net>
-Message-ID: <9877e7de-d573-694b-2b75-95192756684b@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Date:   Thu, 18 Jun 2020 13:25:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727093AbgFRMaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:30:14 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jltg5-00080e-08; Thu, 18 Jun 2020 14:29:57 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     wu000273@umn.edu
+Cc:     kjlu@umn.edu, Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hansverk@cisco.com>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rockchip/rga: Fix a reference count leak.
+Date:   Thu, 18 Jun 2020 14:29:56 +0200
+Message-ID: <2014126.fRahu6ktRn@diego>
+In-Reply-To: <20200613231350.15504-1-wu000273@umn.edu>
+References: <20200613231350.15504-1-wu000273@umn.edu>
 MIME-Version: 1.0
-In-Reply-To: <20200618072138.GA11778@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2020 08:21, Christoph Hellwig wrote:
-> On Wed, Jun 17, 2020 at 07:49:57PM +0100, Simon Arlott wrote:
->> Avoiding a stop of the disk on a reboot is appropriate for HDDs because
->> they're likely to continue to be powered (and should not be told to spin
->> down only to spin up again) but the default behaviour for SSDs should
->> be changed to stop them before the reboot.
+Am Sonntag, 14. Juni 2020, 01:13:49 CEST schrieb wu000273@umn.edu:
+> From: Qiushi Wu <wu000273@umn.edu>
 > 
-> I don't think that is true in general.  At least for most current server
-> class and older desktop and laptop class systems they use the same
-> format factors and enclosures, although they are slightly divering now.
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code. Thus call pm_runtime_put_noidle()
+> if pm_runtime_get_sync() fails.
 > 
-> So I think this needs to be quirked based on the platform and/or
-> enclosure.
+> Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
+> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 
-Are you referring to the behaviour for handling HDDs or SSDs?
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 
-For HDDs, the default "1" option could mean "automatic" and apply to
-rotational disks when power loss is expected.
+> ---
+>  drivers/media/platform/rockchip/rga/rga-buf.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
+> index 36b821ccc1db..bf9a75b75083 100644
+> --- a/drivers/media/platform/rockchip/rga/rga-buf.c
+> +++ b/drivers/media/platform/rockchip/rga/rga-buf.c
+> @@ -81,6 +81,7 @@ static int rga_buf_start_streaming(struct vb2_queue *q, unsigned int count)
+>  
+>  	ret = pm_runtime_get_sync(rga->dev);
+>  	if (ret < 0) {
+> +		pm_runtime_put_noidle(rga->dev);
+>  		rga_buf_return_buffers(q, VB2_BUF_STATE_QUEUED);
+>  		return ret;
+>  	}
+> 
 
-For SSDs, I don't think an extra stop should ever be an issue.
 
--- 
-Simon Arlott
+
+
