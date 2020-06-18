@@ -2,197 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706801FFD43
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 23:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC711FFD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 23:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731300AbgFRVKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 17:10:55 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:57058 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730989AbgFRVKs (ORCPT
+        id S1730484AbgFRVKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 17:10:20 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:52560 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727120AbgFRVKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 17:10:48 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAh43036218;
-        Thu, 18 Jun 2020 16:10:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592514643;
-        bh=ehq+Ty1gZ2t4R0aAfzFJjltOQ0z7TJBMi3aVsQVQchg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=opI/u/XVls5qmauY8k3rC4TzC+lQsGCbqkcL55OjFbLaMI5VFm0heUj5WIyJjLZM+
-         ylY+iYoz9W6kr6oxkcB/Gp15EhsWejlPcX+hPMgW/3U2KHOC+RCt+tWmS8l0rHEvXr
-         eIfB7PrmNSGMO1YAR4U7gINWilqGOrJxrmvmmBBg=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAhSQ084551;
-        Thu, 18 Jun 2020 16:10:43 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 18
- Jun 2020 16:10:43 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 18 Jun 2020 16:10:43 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAhgF015270;
-        Thu, 18 Jun 2020 16:10:43 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <robh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH net-next v8 5/5] net: phy: DP83822: Add setting the fixed internal delay
-Date:   Thu, 18 Jun 2020 16:10:11 -0500
-Message-ID: <20200618211011.28837-6-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200618211011.28837-1-dmurphy@ti.com>
-References: <20200618211011.28837-1-dmurphy@ti.com>
+        Thu, 18 Jun 2020 17:10:17 -0400
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3649420B4781;
+        Thu, 18 Jun 2020 14:10:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3649420B4781
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1592514616;
+        bh=7mTVDsv+GEUPRlgSONBCE30TBmxj3kFMNMzV7rQN000=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kBge8xWuXPYlYpN1G/JDzNbB8BiaZPSDToFXlJFw9L6KvUdN+ZSNe3gMgGWmTvsTc
+         lW1aQwuveyqk+ZKNaHVfrPeXTE8avatV/+2U0t7TjJvpjBPp+9qtsJtFZ/TCRRsmGn
+         ELFhjMv5io+0tJ15mT1zJtfylhhV1am60q8yZ8co=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, sgrubb@redhat.com, paul@paul-moore.com
+Cc:     rgb@redhat.com, linux-integrity@vger.kernel.org,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] IMA: Add audit log for failure conditions
+Date:   Thu, 18 Jun 2020 14:10:12 -0700
+Message-Id: <20200618211012.2823-2-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200618211012.2823-1-nramas@linux.microsoft.com>
+References: <20200618211012.2823-1-nramas@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DP83822 can be configured to use the RGMII interface. There are
-independent fixed 3.5ns clock shift (aka internal delay) for the TX and RX
-paths. This allow either one to be set if the MII interface is RGMII and
-the value is set in the firmware node.
+process_buffer_measurement() and ima_alloc_key_entry() functions need to
+log an audit message for auditing integrity measurement failures.
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Add audit message in these two functions. Remove "pr_devel" log message
+in process_buffer_measurement().
+
+Sample audit messages:
+
+[    6.303048] audit: type=1804 audit(1592506281.627:2): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=kernel op=measuring_key cause=ENOMEM comm="swapper/0" name=".builtin_trusted_keys" res=0 errno=-12
+
+[    8.019432] audit: type=1804 audit(1592506283.344:10): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0 op=measuring_kexec_cmdline cause=hashing_error comm="systemd" name="kexec-cmdline" res=0 errno=-22
+
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
 ---
- drivers/net/phy/dp83822.c | 78 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 68 insertions(+), 10 deletions(-)
+ security/integrity/ima/ima.h            | 48 ++++++++++++++++---------
+ security/integrity/ima/ima_main.c       | 18 +++++++---
+ security/integrity/ima/ima_policy.c     |  2 +-
+ security/integrity/ima/ima_queue_keys.c |  5 +++
+ 4 files changed, 51 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index 1dd19d0cb269..0fe91119d57f 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -26,7 +26,9 @@
- #define MII_DP83822_PHYSCR	0x11
- #define MII_DP83822_MISR1	0x12
- #define MII_DP83822_MISR2	0x13
-+#define MII_DP83822_RCSR	0x17
- #define MII_DP83822_RESET_CTRL	0x1f
-+#define MII_DP83822_GENCFG	0x465
- 
- #define DP83822_HW_RESET	BIT(15)
- #define DP83822_SW_RESET	BIT(14)
-@@ -77,6 +79,10 @@
- #define DP83822_WOL_INDICATION_SEL BIT(8)
- #define DP83822_WOL_CLR_INDICATION BIT(11)
- 
-+/* RSCR bits */
-+#define DP83822_RX_CLK_SHIFT	BIT(12)
-+#define DP83822_TX_CLK_SHIFT	BIT(11)
-+
- static int dp83822_ack_interrupt(struct phy_device *phydev)
- {
- 	int err;
-@@ -255,7 +261,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 	return phy_write(phydev, MII_DP83822_PHYSCR, physcr_status);
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index df93ac258e01..c3a32e181b48 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -186,27 +186,43 @@ static inline unsigned int ima_hash_key(u8 *digest)
+ 	return (digest[0] | digest[1] << 8) % IMA_MEASURE_HTABLE_SIZE;
  }
  
--static int dp83822_config_init(struct phy_device *phydev)
-+static int dp8382x_disable_wol(struct phy_device *phydev)
- {
- 	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
- 		    DP83822_WOL_SECURE_ON;
-@@ -264,6 +270,45 @@ static int dp83822_config_init(struct phy_device *phydev)
- 				  MII_DP83822_WOL_CFG, value);
- }
+-#define __ima_hooks(hook)		\
+-	hook(NONE)			\
+-	hook(FILE_CHECK)		\
+-	hook(MMAP_CHECK)		\
+-	hook(BPRM_CHECK)		\
+-	hook(CREDS_CHECK)		\
+-	hook(POST_SETATTR)		\
+-	hook(MODULE_CHECK)		\
+-	hook(FIRMWARE_CHECK)		\
+-	hook(KEXEC_KERNEL_CHECK)	\
+-	hook(KEXEC_INITRAMFS_CHECK)	\
+-	hook(POLICY_CHECK)		\
+-	hook(KEXEC_CMDLINE)		\
+-	hook(KEY_CHECK)			\
+-	hook(MAX_CHECK)
+-#define __ima_hook_enumify(ENUM)	ENUM,
++#define __ima_hooks(hook)				\
++	hook(NONE, none)				\
++	hook(FILE_CHECK, file)				\
++	hook(MMAP_CHECK, mmap)				\
++	hook(BPRM_CHECK, bprm)				\
++	hook(CREDS_CHECK, creds)			\
++	hook(POST_SETATTR, post_setattr)		\
++	hook(MODULE_CHECK, module)			\
++	hook(FIRMWARE_CHECK, firmware)			\
++	hook(KEXEC_KERNEL_CHECK, kexec_kernel)		\
++	hook(KEXEC_INITRAMFS_CHECK, kexec_initramfs)	\
++	hook(POLICY_CHECK, policy)			\
++	hook(KEXEC_CMDLINE, kexec_cmdline)		\
++	hook(KEY_CHECK, key)				\
++	hook(MAX_CHECK, none)
++
++#define __ima_hook_enumify(ENUM, str)	ENUM,
++#define __ima_stringify(arg) (#arg)
++#define __ima_hook_measuring_stringify(ENUM, str) \
++		(__ima_stringify(measuring_ ##str)),
  
-+static int dp83822_config_init(struct phy_device *phydev)
-+{
-+	struct device *dev = &phydev->mdio.dev;
-+	int rgmii_delay;
-+	s32 rx_int_delay;
-+	s32 tx_int_delay;
-+	int err = 0;
-+
-+	if (phy_interface_is_rgmii(phydev)) {
-+		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
-+						      true);
-+		if (rx_int_delay <= 0)
-+			rx_int_delay = 0;
-+		else
-+			rgmii_delay = DP83822_RX_CLK_SHIFT;
-+
-+		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
-+						      false);
-+		if (tx_int_delay <= 0)
-+			tx_int_delay = 0;
-+		else
-+			rgmii_delay |= DP83822_TX_CLK_SHIFT;
-+
-+		if (rgmii_delay) {
-+			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
-+					       MII_DP83822_RCSR, rgmii_delay);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return dp8382x_disable_wol(phydev);
-+}
-+
-+static int dp8382x_config_init(struct phy_device *phydev)
-+{
-+	return dp8382x_disable_wol(phydev);
-+}
-+
- static int dp83822_phy_reset(struct phy_device *phydev)
- {
- 	int err;
-@@ -272,9 +317,7 @@ static int dp83822_phy_reset(struct phy_device *phydev)
- 	if (err < 0)
- 		return err;
- 
--	dp83822_config_init(phydev);
--
--	return 0;
-+	return phydev->drv->config_init(phydev);
- }
- 
- static int dp83822_suspend(struct phy_device *phydev)
-@@ -318,14 +361,29 @@ static int dp83822_resume(struct phy_device *phydev)
- 		.resume = dp83822_resume,			\
- 	}
- 
-+#define DP8382X_PHY_DRIVER(_id, _name)				\
-+	{							\
-+		PHY_ID_MATCH_MODEL(_id),			\
-+		.name		= (_name),			\
-+		/* PHY_BASIC_FEATURES */			\
-+		.soft_reset	= dp83822_phy_reset,		\
-+		.config_init	= dp8382x_config_init,		\
-+		.get_wol = dp83822_get_wol,			\
-+		.set_wol = dp83822_set_wol,			\
-+		.ack_interrupt = dp83822_ack_interrupt,		\
-+		.config_intr = dp83822_config_intr,		\
-+		.suspend = dp83822_suspend,			\
-+		.resume = dp83822_resume,			\
-+	}
-+
- static struct phy_driver dp83822_driver[] = {
- 	DP83822_PHY_DRIVER(DP83822_PHY_ID, "TI DP83822"),
--	DP83822_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
--	DP83822_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
--	DP83822_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
--	DP83822_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
--	DP83822_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
--	DP83822_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
-+	DP8382X_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
-+	DP8382X_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
-+	DP8382X_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
-+	DP8382X_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
-+	DP8382X_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
-+	DP8382X_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
+ enum ima_hooks {
+ 	__ima_hooks(__ima_hook_enumify)
  };
- module_phy_driver(dp83822_driver);
  
++static const char * const ima_hooks_measure_str[] = {
++	__ima_hooks(__ima_hook_measuring_stringify)
++};
++
++static inline const char *func_measure_str(enum ima_hooks func)
++{
++	if (func >= MAX_CHECK)
++		return ima_hooks_measure_str[NONE];
++
++	return ima_hooks_measure_str[func];
++}
++
+ extern const char *const func_tokens[];
+ 
+ struct modsig;
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index c1583d98c5e5..8351b2fd48e0 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -740,6 +740,7 @@ void process_buffer_measurement(const void *buf, int size,
+ 				int pcr, const char *keyring)
+ {
+ 	int ret = 0;
++	const char *audit_cause = "ENOMEM";
+ 	struct ima_template_entry *entry = NULL;
+ 	struct integrity_iint_cache iint = {};
+ 	struct ima_event_data event_data = {.iint = &iint,
+@@ -794,21 +795,28 @@ void process_buffer_measurement(const void *buf, int size,
+ 	iint.ima_hash->length = hash_digest_size[ima_hash_algo];
+ 
+ 	ret = ima_calc_buffer_hash(buf, size, iint.ima_hash);
+-	if (ret < 0)
++	if (ret < 0) {
++		audit_cause = "hashing_error";
+ 		goto out;
++	}
+ 
+ 	ret = ima_alloc_init_template(&event_data, &entry, template);
+-	if (ret < 0)
++	if (ret < 0) {
++		audit_cause = "alloc_entry";
+ 		goto out;
++	}
+ 
+ 	ret = ima_store_template(entry, violation, NULL, buf, pcr);
+-
+-	if (ret < 0)
++	if (ret < 0) {
++		audit_cause = "store_entry";
+ 		ima_free_template_entry(entry);
++	}
+ 
+ out:
+ 	if (ret < 0)
+-		pr_devel("%s: failed, result: %d\n", __func__, ret);
++		integrity_audit_message(AUDIT_INTEGRITY_PCR, NULL, eventname,
++					func_measure_str(func),
++					audit_cause, ret, 0, ret);
+ 
+ 	return;
+ }
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index e493063a3c34..66aa3e17a888 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1414,7 +1414,7 @@ void ima_delete_rules(void)
+ 	}
+ }
+ 
+-#define __ima_hook_stringify(str)	(#str),
++#define __ima_hook_stringify(func, str)	(#func),
+ 
+ const char *const func_tokens[] = {
+ 	__ima_hooks(__ima_hook_stringify)
+diff --git a/security/integrity/ima/ima_queue_keys.c b/security/integrity/ima/ima_queue_keys.c
+index cb3e3f501593..56ce24a18b66 100644
+--- a/security/integrity/ima/ima_queue_keys.c
++++ b/security/integrity/ima/ima_queue_keys.c
+@@ -68,6 +68,7 @@ static struct ima_key_entry *ima_alloc_key_entry(struct key *keyring,
+ 						 size_t payload_len)
+ {
+ 	int rc = 0;
++	const char *audit_cause = "ENOMEM";
+ 	struct ima_key_entry *entry;
+ 
+ 	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+@@ -88,6 +89,10 @@ static struct ima_key_entry *ima_alloc_key_entry(struct key *keyring,
+ 
+ out:
+ 	if (rc) {
++		integrity_audit_message(AUDIT_INTEGRITY_PCR, NULL,
++					keyring->description,
++					func_measure_str(KEY_CHECK),
++					audit_cause, rc, 0, rc);
+ 		ima_free_key_entry(entry);
+ 		entry = NULL;
+ 	}
 -- 
-2.26.2
+2.27.0
 
