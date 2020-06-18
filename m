@@ -2,83 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C871FEE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED351FEE1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728820AbgFRIv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:51:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:46330 "EHLO foss.arm.com"
+        id S1728908AbgFRIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:52:57 -0400
+Received: from mga09.intel.com ([134.134.136.24]:16102 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728536AbgFRIv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:51:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3579931B;
-        Thu, 18 Jun 2020 01:51:26 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A010F3F6CF;
-        Thu, 18 Jun 2020 01:51:24 -0700 (PDT)
-References: <20200617121742.cpxppyi7twxmpin7@linutronix.de> <jhjmu51eq2k.mognet@arm.com> <696309d91635fa965ad8436388e7ae7d098420a1.camel@redhat.com> <20200618080700.cig4x4y7n3thmneu@linutronix.de>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Scott Wood <swood@redhat.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched: __set_cpus_allowed_ptr(): Check cpus_mask, not cpus_ptr
-In-reply-to: <20200618080700.cig4x4y7n3thmneu@linutronix.de>
-Date:   Thu, 18 Jun 2020 09:51:18 +0100
-Message-ID: <jhj366seozd.mognet@arm.com>
+        id S1728579AbgFRIwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 04:52:55 -0400
+IronPort-SDR: GtzOut6XAZirugUmIviNgezaAXplIgd5C6ElyHjB+tjeDQWw/+Yqr8hugA1aQShPrH2aKK653I
+ /M4I9v9Ezu1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="143998507"
+X-IronPort-AV: E=Sophos;i="5.73,526,1583222400"; 
+   d="scan'208";a="143998507"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 01:52:54 -0700
+IronPort-SDR: zAmkgPd8fBt7cgCrcL9Agi7pNh4hRkKMvjiZWz9SP82C6EHaxF+rPAfl0H48SECFOI+frQFdHm
+ TDNkds63WJ7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,526,1583222400"; 
+   d="scan'208";a="277557414"
+Received: from lkp-server02.sh.intel.com (HELO 5ce11009e457) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 18 Jun 2020 01:52:53 -0700
+Received: from kbuild by 5ce11009e457 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jlqI0-0000AB-AI; Thu, 18 Jun 2020 08:52:52 +0000
+Date:   Thu, 18 Jun 2020 16:52:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 29d1b790334839a0f13908f8819d1371daf765c8
+Message-ID: <5eeb2b30.8OXLhlgS/3u1YNuR%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 29d1b790334839a0f13908f8819d1371daf765c8  Merge branch 'WIP.fixes'
 
-On 18/06/20 09:07, Sebastian Andrzej Siewior wrote:
-> On 2020-06-17 17:49:48 [-0500], Scott Wood wrote:
->> > Makes sense, but what about the rest of the checks? Further down there is
->> >
->> >         /* Can the task run on the task's current CPU? If so, we're done
->> > */
->> >         if (cpumask_test_cpu(task_cpu(p), new_mask))
->> >                 goto out;
->> >
->> > If the task is currently migrate disabled and for some stupid reason it
->> > gets affined elsewhere, we could try to move it out - which AFAICT we
->> > don't
->> > want to do because migrate disabled. So I suppose you'd want an extra
->> > bailout condition here when the task is migrate disabled.
->> >
->> > ISTR in RT you do re-check the affinity and potentially move the task away
->> > when re-enabling migration, so that should work out all fine.
->>
->> On RT the above test is:
->>
->>         /* Can the task run on the task's current CPU? If so, we're done */
->>         if (cpumask_test_cpu(task_cpu(p), new_mask) ||
->>             p->cpus_ptr != &p->cpus_mask)
->>                 goto out;
->>
->> ...so we do bail out if we're migrate disabled.
->
-> correct. There is a complete migrate_disable() patch in the RT queue
-> which has to wait. This patch however looked to be independent of that
-> and could "fix" the pointer part which is already here so I sent it.
->
+elapsed time: 726m
 
-Okay, thanks. I don't see any harm in including that extra check with the
-patch, but either way:
+configs tested: 112
+configs skipped: 3
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->> -Scott
->
-> Sebastian
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arc                      axs103_smp_defconfig
+sh                   secureedge5410_defconfig
+powerpc                      pmac32_defconfig
+openrisc                    or1ksim_defconfig
+nds32                            alldefconfig
+mips                         tb0287_defconfig
+arm                       mainstone_defconfig
+arm                          collie_defconfig
+mips                        nlm_xlp_defconfig
+sh                          polaris_defconfig
+arm                         bcm2835_defconfig
+ia64                                defconfig
+parisc                generic-64bit_defconfig
+arm                       spear13xx_defconfig
+arc                          axs103_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200618
+i386                 randconfig-a006-20200618
+i386                 randconfig-a001-20200618
+i386                 randconfig-a004-20200618
+i386                 randconfig-a005-20200618
+i386                 randconfig-a003-20200618
+x86_64               randconfig-a001-20200618
+x86_64               randconfig-a003-20200618
+x86_64               randconfig-a006-20200618
+x86_64               randconfig-a002-20200618
+x86_64               randconfig-a005-20200618
+x86_64               randconfig-a004-20200618
+i386                 randconfig-a015-20200617
+i386                 randconfig-a011-20200617
+i386                 randconfig-a014-20200617
+i386                 randconfig-a016-20200617
+i386                 randconfig-a013-20200617
+i386                 randconfig-a012-20200617
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                                  defconfig
+um                               allyesconfig
+um                               allmodconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
