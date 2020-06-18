@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF90A1FDAE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AB01FDAB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgFRBJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:09:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727915AbgFRBIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:08:49 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5774621BE5;
-        Thu, 18 Jun 2020 01:08:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442529;
-        bh=ObCBeVgx/79ahaKVS2dysZmUhNkq33qM2M8gNwhURhk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hqAZa3JY6+3iBs1WUEu+kj5ezNaH2Pr1UvEiRtdPvn9CLZDyEEPqighMsyIdJMjmQ
-         Ms5yU3gKSFZ5tnticLZPI7s/bTPmBX+7H53mtkmXFoXhIEbrPn5P1RicRNRQKZeTu0
-         qlZJD/NoCv7wnsBr0Sp0pzy5f9427zzinkcC2Nb4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>, erhard_f@mailbox.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.7 032/388] powerpc/kasan: Fix stack overflow by increasing THREAD_SHIFT
-Date:   Wed, 17 Jun 2020 21:02:09 -0400
-Message-Id: <20200618010805.600873-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1727071AbgFRBE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:04:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6276 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726925AbgFRBEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:04:55 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 81848D0D06543749C19B;
+        Thu, 18 Jun 2020 09:04:54 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.42) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 18 Jun 2020 09:04:44 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <netdev@vger.kernel.org>, <linyunsheng@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH 4/5] net: hns3: replace disable_irq by IRQ_NOAUTOEN flag
+Date:   Thu, 18 Jun 2020 13:02:10 +1200
+Message-ID: <20200618010211.75840-5-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
+References: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.42]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+disable_irq() after request_irq() is still risk as there is a chance irq
+can come after request_irq() and before disable_irq().
+this should be done by IRQ_NOAUTOEN flag.
 
-[ Upstream commit edbadaf0671072298e506074128b64e003c5812c ]
-
-When CONFIG_KASAN is selected, the stack usage is increased.
-
-In the same way as x86 and arm64 architectures, increase
-THREAD_SHIFT when CONFIG_KASAN is selected.
-
-Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
-Reported-by: <erhard_f@mailbox.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=207129
-Link: https://lore.kernel.org/r/2c50f3b1c9bbaa4217c9a98f3044bd2a36c46a4f.1586361277.git.christophe.leroy@c-s.fr
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- arch/powerpc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index b29d7cb38368..51a074c26793 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -773,6 +773,7 @@ config THREAD_SHIFT
- 	range 13 15
- 	default "15" if PPC_256K_PAGES
- 	default "14" if PPC64
-+	default "14" if KASAN
- 	default "13"
- 	help
- 	  Used to define the stack size. The default is almost always what you
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 3cd2216e49b9..1330820152fa 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -8,6 +8,7 @@
+ #include <linux/cpu_rmap.h>
+ #endif
+ #include <linux/if_vlan.h>
++#include <linux/irq.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+ #include <linux/module.h>
+@@ -154,6 +155,7 @@ static int hns3_nic_init_irq(struct hns3_nic_priv *priv)
+ 
+ 		tqp_vectors->name[HNAE3_INT_NAME_LEN - 1] = '\0';
+ 
++		irq_set_status_flags(tqp_vectors->vector_irq, IRQ_NOAUTOEN);
+ 		ret = request_irq(tqp_vectors->vector_irq, hns3_irq_handle, 0,
+ 				  tqp_vectors->name, tqp_vectors);
+ 		if (ret) {
+@@ -163,8 +165,6 @@ static int hns3_nic_init_irq(struct hns3_nic_priv *priv)
+ 			return ret;
+ 		}
+ 
+-		disable_irq(tqp_vectors->vector_irq);
+-
+ 		irq_set_affinity_hint(tqp_vectors->vector_irq,
+ 				      &tqp_vectors->affinity_mask);
+ 
 -- 
-2.25.1
+2.23.0
+
 
