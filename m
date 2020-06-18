@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031E31FF9C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7E71FF9CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgFRQ4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728664AbgFRQ4g (ORCPT
+        id S1731089AbgFRQ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:57:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53464 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728664AbgFRQ53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:56:36 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F68C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 09:56:35 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 97so5084790otg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 09:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zro+n3z0njYBHvGQWaJJ5NJct6859FMlEejE/Xg7KJ0=;
-        b=iglS7H1g0KWgSc8Vf/iE7DggyvIgMJRA+b87+ohrPrEWwRsgch+QeKyCBIU7oOqmaf
-         YlyVDjGBHqwu9vQQxTrsQVoQPfqTCs0YP/TSCuY8epdv/t9Or+/OsHUqhg0XY+2M7XnF
-         MlvD8JzQjvt9JwWnYxlanIuqt/wtl1SnUCvas=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zro+n3z0njYBHvGQWaJJ5NJct6859FMlEejE/Xg7KJ0=;
-        b=V4o3INSI+2tbOk8Du35MJE0/iPemSyQ/S5ry0BKSWvmFvkT1oS3FBW/acN4bzP4ex9
-         2CjZOPWPz+S6PRzEg0xyXnG1eYpNFzuyNl717MvAjr1wPlZATPYByArGKGu76i94ZclE
-         QxJdS8VLsGt4H+eOu3RMr0qCuk3YKIdvL/EB/hMipsj2yg0OzG9fQ/9DM6lbyXX0wJBH
-         H9BEXAic6B9i7seCtzC5rINh77+J6z2N/sxXEnLD+DW8bFn6oe2wsohar9CIWHYqlj2c
-         6MhT+ML1SYo6DYTEbIoSHv+NpQqBYE/V1zac2h4cH45WmtHK7AKpdVuQxfnmr7+Q+eEf
-         NF9Q==
-X-Gm-Message-State: AOAM532ro1tutgN5BRqHp23b++JwgqjygzfarXyparunFlvVYIJffBC6
-        Ls3H71XASC5mcFo/pkm+8w9sxA==
-X-Google-Smtp-Source: ABdhPJwo1OFUDahuNyT3wch9v/M6kjyidLgcNkfNqbUQIW/bpISmFdP12DbD+5iSAjQBCihXWbfT+A==
-X-Received: by 2002:a9d:7f8c:: with SMTP id t12mr4420100otp.66.1592499395153;
-        Thu, 18 Jun 2020 09:56:35 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b4sm817636otp.45.2020.06.18.09.56.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 09:56:34 -0700 (PDT)
-Subject: Re: [PATCH] usbip: tools: fix module name in man page
-To:     Antonio Borneo <borneo.antonio@gmail.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, matt mooney <mfm@muteddisk.com>,
-        Greg Kroah-Hartman <gregkh@suse.de>, linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200618000818.1048203-1-borneo.antonio@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7902323e-fd72-8301-9a11-e6b912b61890@linuxfoundation.org>
-Date:   Thu, 18 Jun 2020 10:56:33 -0600
+        Thu, 18 Jun 2020 12:57:29 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05IGaHxQ161321;
+        Thu, 18 Jun 2020 12:56:59 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31r96gdytc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 12:56:59 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05IGaIAG161494;
+        Thu, 18 Jun 2020 12:56:58 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31r96gdysc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 12:56:58 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05IGuqtG000595;
+        Thu, 18 Jun 2020 16:56:55 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 31quax9dxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 16:56:54 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05IGtIm720840944
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jun 2020 16:55:18 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A72BA405C;
+        Thu, 18 Jun 2020 16:56:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9C02A405B;
+        Thu, 18 Jun 2020 16:56:35 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.12.179])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Jun 2020 16:56:35 +0000 (GMT)
+Subject: Re: [PATCH v2 02/12] ocxl: Change type of pasid to unsigned int
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <1592008893-9388-1-git-send-email-fenghua.yu@intel.com>
+ <1592008893-9388-3-git-send-email-fenghua.yu@intel.com>
+ <972dc2cb-9643-53af-b11d-ebb56d96053d@linux.ibm.com>
+ <20200618153747.GE15763@romley-ivt3.sc.intel.com>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <7450b0f1-c936-2644-7140-8641ec99a921@linux.ibm.com>
+Date:   Thu, 18 Jun 2020 18:56:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200618000818.1048203-1-borneo.antonio@gmail.com>
+In-Reply-To: <20200618153747.GE15763@romley-ivt3.sc.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-18_14:2020-06-18,2020-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxlogscore=811
+ cotscore=-2147483648 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006180125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/17/20 6:08 PM, Antonio Borneo wrote:
-> Commit 64e62426f40d ("staging: usbip: edit Kconfig and rename
-> CONFIG options") renamed the module usbip as usbip-host, but the
-> example in the man page still reports the old module name.
-> 
-> Fix the module name in usbipd.8
-> 
-> Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-> Fixes: 64e62426f40d ("staging: usbip: edit Kconfig and rename CONFIG options")
-> ---
->   tools/usb/usbip/doc/usbipd.8 | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/usb/usbip/doc/usbipd.8 b/tools/usb/usbip/doc/usbipd.8
-> index ac4635db3f03..fb62a756893b 100644
-> --- a/tools/usb/usbip/doc/usbipd.8
-> +++ b/tools/usb/usbip/doc/usbipd.8
-> @@ -73,7 +73,7 @@ USB/IP client can connect and use exported devices.
->   
->   .SH EXAMPLES
->   
-> -    server:# modprobe usbip
-> +    server:# modprobe usbip-host
->   
->       server:# usbipd -D
->           - Start usbip daemon.
-> 
-> base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
-> 
 
-Looks good. Thanks for fixing this.
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+Le 18/06/2020 à 17:37, Fenghua Yu a écrit :
+> The first 3 patches clean up pasid and flag defitions to prepare for
+> following patches.
+> 
+> If you think this patch can be dropped, we will drop it.
 
-thanks,
--- Shuah
+Yes, I think that's the case.
+
+Thanks,
+
+  Fred
