@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B311FFCBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C3D1FFCC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731556AbgFRUkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:40:35 -0400
+        id S1732041AbgFRUmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:42:04 -0400
 Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36734 "EHLO
         EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731351AbgFRUjc (ORCPT
+        by vger.kernel.org with ESMTP id S1730903AbgFRUjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:32 -0400
+        Thu, 18 Jun 2020 16:39:35 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:23 -0700
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:24 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 33939B2656;
-        Thu, 18 Jun 2020 16:39:26 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 33D4DB265B;
+        Thu, 18 Jun 2020 16:39:27 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,9 +26,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 34/51] objtool: mcount: Remove wrapper double-include trick
-Date:   Thu, 18 Jun 2020 13:38:20 -0700
-Message-ID: <ed6129e5918b201b21464e320c5e525fa573c47f.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 35/51] objtool: mcount: Remove endian wrappers
+Date:   Thu, 18 Jun 2020 13:38:21 -0700
+Message-ID: <72408e62826ff1ef26568104cd63dd1851a96dd4.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
@@ -42,295 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We no longer need to double-include the recordmcount.h wrapper
-All of the types and functions that rely on them have been converted
-to using objtool's ELF code. This moves the remaining function to
-recordmcount.c and changes the function name to something slightly
-more descriptive while dropping the wrapped naming.
+Now that they're no longer used we can remove these endian
+wrappers.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.c | 113 ++++++++++++++++++++++++++++--
- tools/objtool/recordmcount.h | 132 -----------------------------------
- 2 files changed, 107 insertions(+), 138 deletions(-)
- delete mode 100644 tools/objtool/recordmcount.h
+ tools/objtool/recordmcount.c | 63 ------------------------------------
+ 1 file changed, 63 deletions(-)
 
 diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index 6db035252b6c..7f4d18e83e24 100644
+index 7f4d18e83e24..ff52697613b1 100644
 --- a/tools/objtool/recordmcount.c
 +++ b/tools/objtool/recordmcount.c
-@@ -442,10 +442,111 @@ static void sift_rel_mcount(GElf_Addr **mlocpp,
- 	*mrelpp = is_rela ? (void *)mrelap : (void *)mrelp;
+@@ -149,53 +149,6 @@ static int make_nop_arm64(struct section *txts, size_t const offset)
+ 	return 0;
  }
  
--/* 32 bit and 64 bit are very similar */
--#include "recordmcount.h"
--#define RECORD_MCOUNT_64
--#include "recordmcount.h"
-+/* Overall supervision for Elf32 ET_REL file. */
-+static int do_mcount(unsigned const reltype, size_t rela_size)
-+{
-+	/* Upper bound on space: assume all relevant relocs are for mcount. */
-+	unsigned       totrelsz;
-+
-+	void *mrel0;
-+	void *mrelp;
-+
-+	GElf_Addr *mloc0;
-+	GElf_Addr *mlocp;
-+	GElf_Sxword r_offset = 0;
-+
-+	struct section *sec, *mlocs, *mrels;
-+	const char * const mc_name =  "__mcount_loc";
-+
-+	unsigned int rel_entsize = 0;
-+	int result = -1;
-+	bool is_rela;
-+
-+	if (find_section_by_name(lf, "__mcount_loc") != NULL)
-+		return 0;
-+
-+	totrelsz = tot_relsize(&rel_entsize);
-+	if (totrelsz == 0)
-+		return 0;
-+
-+	mrel0 = malloc(totrelsz);
-+	mrelp = mrel0;
-+	if (!mrel0)
-+		return -1;
-+
-+	/* 2*sizeof(address) <= sizeof(Elf_Rel) */
-+	mloc0 = malloc(totrelsz>>1);
-+	mlocp = mloc0;
-+	if (!mloc0) {
-+		free(mrel0);
-+		return -1;
-+	}
-+
-+	is_rela = (rela_size == rel_entsize);
-+
-+	/* add section: __mcount_loc */
-+	mlocs = elf_create_section(lf, mc_name, sizeof(*mloc0), 0);
-+	if (!mlocs)
-+		goto out;
-+	mlocs->sh.sh_link = 0;
-+	mlocs->sh.sh_info = 0;
-+	mlocs->sh.sh_addralign = 8;
-+	mlocs->data->d_buf = mloc0;
-+	mlocs->data->d_type = ELF_T_ADDR; /* elf_xlatetof() conversion */
-+
-+	/* add section .rel[a]__mcount_loc */
-+	mrels = elf_create_reloc_section(lf, mlocs,
-+					 is_rela ? SHT_RELA : SHT_REL);
-+	if (!mrels)
-+		goto out;
-+	mrels->sh.sh_flags = 0; /* clear SHF_INFO_LINK */
-+	mrels->data->d_buf = mrel0;
-+
-+	list_for_each_entry(sec, &lf->sections, list) {
-+		char const *txtname;
-+
-+		txtname = has_rel_mcount(sec);
-+		if (txtname && is_mcounted_section_name(txtname)) {
-+			unsigned long recval = 0;
-+			unsigned int recsym;
-+
-+			if (find_section_sym_index(sec->sh.sh_info,
-+						txtname, &recval, &recsym))
-+				goto out;
-+
-+			sift_rel_mcount(&mlocp, &r_offset, &mrelp, sec,
-+				recsym, recval, reltype, is_rela);
-+		} else if (txtname && (warn_on_notrace_sect || make_nop)) {
-+			/*
-+			 * This section is ignored by ftrace, but still
-+			 * has mcount calls. Convert them to nops now.
-+			 */
-+			if (nop_mcount(sec, txtname) < 0)
-+				goto out;
-+		}
-+	}
-+
-+	if (mloc0 != mlocp) {
-+		/* Update the section size and Elf_Data size */
-+		mlocs->sh.sh_size = (void *)mlocp - (void *)mloc0;
-+		mlocs->len = mlocs->sh.sh_size;
-+		mlocs->data->d_size = mlocs->len;
-+		elf_flagdata(mlocs->data, ELF_C_SET, ELF_F_DIRTY);
-+
-+		mrels->sh.sh_size = mrelp - mrel0;
-+		mrels->len = mrels->sh.sh_size;
-+		mrels->data->d_size = mrels->len;
-+		elf_flagdata(mrels->data, ELF_C_SET, ELF_F_DIRTY);
-+
-+		/* overwrite the ELF file */
-+		result = elf_write(lf);
-+	} else
-+		result = 0;
-+out:
-+	free(mrel0);
-+	free(mloc0);
-+	return result;
-+}
- 
- static int arm_is_fake_mcount(struct reloc const *rp)
- {
-@@ -575,7 +676,7 @@ static int do_file(char const *const fname)
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		loc_size = 4;
--		rc = do32(reltype, sizeof(Elf32_Rela));
-+		rc = do_mcount(reltype, sizeof(Elf32_Rela));
- 		break;
- 	case ELFCLASS64: {
- 		if (lf->ehdr.e_ehsize != sizeof(Elf64_Ehdr)
-@@ -593,7 +694,7 @@ static int do_file(char const *const fname)
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		loc_size = 8;
--		rc = do64(reltype, sizeof(Elf64_Rela));
-+		rc = do_mcount(reltype, sizeof(Elf64_Rela));
- 		break;
- 	}
- 	}  /* end switch */
-diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-deleted file mode 100644
-index 07fc93917736..000000000000
---- a/tools/objtool/recordmcount.h
-+++ /dev/null
-@@ -1,132 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * recordmcount.h
-- *
-- * This code was taken out of recordmcount.c written by
-- * Copyright 2009 John F. Reiser <jreiser@BitWagon.com>.  All rights reserved.
-- *
-- * The original code had the same algorithms for both 32bit
-- * and 64bit ELF files, but the code was duplicated to support
-- * the difference in structures that were used. This
-- * file creates a macro of everything that is different between
-- * the 64 and 32 bit code, such that by including this header
-- * twice we can create both sets of functions by including this
-- * header once with RECORD_MCOUNT_64 undefined, and again with
-- * it defined.
-- *
-- * This conversion to macros was done by:
-- * Copyright 2010 Steven Rostedt <srostedt@redhat.com>, Red Hat Inc.
-- */
--#undef do_func
+-/* w8rev, w8nat, ...: Handle endianness. */
 -
--#ifdef RECORD_MCOUNT_64
--# define do_func		do64
--#else
--# define do_func		do32
--#endif
--
--/* Overall supervision for Elf32 ET_REL file. */
--static int do_func(unsigned const reltype, size_t rela_size)
+-static uint64_t w8rev(uint64_t const x)
 -{
--	/* Upper bound on space: assume all relevant relocs are for mcount. */
--	unsigned       totrelsz;
--
--	void *mrel0;
--	void *mrelp;
--
--	GElf_Addr *mloc0;
--	GElf_Addr *mlocp;
--	GElf_Sxword r_offset = 0;
--
--	struct section *sec, *mlocs, *mrels;
--	const char * const mc_name =  "__mcount_loc";
--
--	unsigned int rel_entsize = 0;
--	int result = -1;
--	bool is_rela;
--
--	if (find_section_by_name(lf, "__mcount_loc") != NULL)
--		return 0;
--
--	totrelsz = tot_relsize(&rel_entsize);
--	if (totrelsz == 0)
--		return 0;
--
--	mrel0 = malloc(totrelsz);
--	mrelp = mrel0;
--	if (!mrel0)
--		return -1;
--
--	/* 2*sizeof(address) <= sizeof(Elf_Rel) */
--	mloc0 = malloc(totrelsz>>1);
--	mlocp = mloc0;
--	if (!mloc0) {
--		free(mrel0);
--		return -1;
--	}
--
--	is_rela = (rela_size == rel_entsize);
--
--	/* add section: __mcount_loc */
--	mlocs = elf_create_section(lf, mc_name, sizeof(*mloc0), 0);
--	if (!mlocs)
--		goto out;
--	mlocs->sh.sh_link = 0;
--	mlocs->sh.sh_info = 0;
--	mlocs->sh.sh_addralign = 8;
--	mlocs->data->d_buf = mloc0;
--	mlocs->data->d_type = ELF_T_ADDR; /* elf_xlatetof() conversion */
--
--	/* add section .rel[a]__mcount_loc */
--	mrels = elf_create_reloc_section(lf, mlocs,
--					 is_rela ? SHT_RELA : SHT_REL);
--	if (!mrels)
--		goto out;
--	mrels->sh.sh_flags = 0; /* clear SHF_INFO_LINK */
--	mrels->data->d_buf = mrel0;
--
--	list_for_each_entry(sec, &lf->sections, list) {
--		char const *txtname;
--
--		txtname = has_rel_mcount(sec);
--		if (txtname && is_mcounted_section_name(txtname)) {
--			unsigned long recval = 0;
--			unsigned int recsym;
--
--			if (find_section_sym_index(sec->sh.sh_info,
--						txtname, &recval, &recsym))
--				goto out;
--
--			sift_rel_mcount(&mlocp, &r_offset, &mrelp, sec,
--				recsym, recval, reltype, is_rela);
--		} else if (txtname && (warn_on_notrace_sect || make_nop)) {
--			/*
--			 * This section is ignored by ftrace, but still
--			 * has mcount calls. Convert them to nops now.
--			 */
--			if (nop_mcount(sec, txtname) < 0)
--				goto out;
--		}
--	}
--
--	if (mloc0 != mlocp) {
--		/* Update the section size and Elf_Data size */
--		mlocs->sh.sh_size = (void *)mlocp - (void *)mloc0;
--		mlocs->len = mlocs->sh.sh_size;
--		mlocs->data->d_size = mlocs->len;
--		elf_flagdata(mlocs->data, ELF_C_SET, ELF_F_DIRTY);
--
--		mrels->sh.sh_size = mrelp - mrel0;
--		mrels->len = mrels->sh.sh_size;
--		mrels->data->d_size = mrels->len;
--		elf_flagdata(mrels->data, ELF_C_SET, ELF_F_DIRTY);
--
--		/* overwrite the ELF file */
--		result = elf_write(lf);
--	} else
--		result = 0;
--out:
--	free(mrel0);
--	free(mloc0);
--	return result;
+-	return   ((0xff & (x >> (0 * 8))) << (7 * 8))
+-	       | ((0xff & (x >> (1 * 8))) << (6 * 8))
+-	       | ((0xff & (x >> (2 * 8))) << (5 * 8))
+-	       | ((0xff & (x >> (3 * 8))) << (4 * 8))
+-	       | ((0xff & (x >> (4 * 8))) << (3 * 8))
+-	       | ((0xff & (x >> (5 * 8))) << (2 * 8))
+-	       | ((0xff & (x >> (6 * 8))) << (1 * 8))
+-	       | ((0xff & (x >> (7 * 8))) << (0 * 8));
 -}
+-
+-static uint32_t w4rev(uint32_t const x)
+-{
+-	return   ((0xff & (x >> (0 * 8))) << (3 * 8))
+-	       | ((0xff & (x >> (1 * 8))) << (2 * 8))
+-	       | ((0xff & (x >> (2 * 8))) << (1 * 8))
+-	       | ((0xff & (x >> (3 * 8))) << (0 * 8));
+-}
+-
+-static uint32_t w2rev(uint16_t const x)
+-{
+-	return   ((0xff & (x >> (0 * 8))) << (1 * 8))
+-	       | ((0xff & (x >> (1 * 8))) << (0 * 8));
+-}
+-
+-static uint64_t w8nat(uint64_t const x)
+-{
+-	return x;
+-}
+-
+-static uint32_t w4nat(uint32_t const x)
+-{
+-	return x;
+-}
+-
+-static uint32_t w2nat(uint16_t const x)
+-{
+-	return x;
+-}
+-
+-static uint64_t (*w8)(uint64_t);
+-static uint32_t (*w)(uint32_t);
+-static uint32_t (*w2)(uint16_t);
+-
+ /* Names of the sections that could contain calls to mcount. */
+ static int is_mcounted_section_name(char const *const txtname)
+ {
+@@ -571,22 +524,12 @@ static int do_file(char const *const fname)
+ 		goto out;
+ 	}
+ 
+-	w = w4nat;
+-	w2 = w2nat;
+-	w8 = w8nat;
+ 	switch (lf->ehdr.e_ident[EI_DATA]) {
+-		static unsigned int const endian = 1;
+ 	default:
+ 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
+ 			lf->ehdr.e_ident[EI_DATA], fname);
+ 		goto out;
+ 	case ELFDATA2LSB:
+-		if (*(unsigned char const *)&endian != 1) {
+-			/* objtool is big endian, file.o is little endian. */
+-			w = w4rev;
+-			w2 = w2rev;
+-			w8 = w8rev;
+-		}
+ 		ideal_nop4_arm = ideal_nop4_arm_le;
+ 		bl_mcount_arm = bl_mcount_arm_le;
+ 		push_arm = push_arm_le;
+@@ -594,12 +537,6 @@ static int do_file(char const *const fname)
+ 		push_bl_mcount_thumb = push_bl_mcount_thumb_le;
+ 		break;
+ 	case ELFDATA2MSB:
+-		if (*(unsigned char const *)&endian != 0) {
+-			/*  objtool is little endian, file.o is big endian. */
+-			w = w4rev;
+-			w2 = w2rev;
+-			w8 = w8rev;
+-		}
+ 		ideal_nop4_arm = ideal_nop4_arm_be;
+ 		bl_mcount_arm = bl_mcount_arm_be;
+ 		push_arm = push_arm_be;
 -- 
 2.20.1
 
