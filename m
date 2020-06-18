@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB7D1FDE6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D71C1FDE42
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732833AbgFRBbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38628 "EHLO mail.kernel.org"
+        id S1730957AbgFRBbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732276AbgFRB3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:29:19 -0400
+        id S1732279AbgFRB3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:29:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D4BA22228;
-        Thu, 18 Jun 2020 01:29:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4899B2222F;
+        Thu, 18 Jun 2020 01:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443758;
-        bh=09rvWbk8Ky7fR1yr6TY6KKhEpOIbZH4kf4XvocKd1Mg=;
+        s=default; t=1592443759;
+        bh=p5j9bXEfQihepKV8ulcRN1vZrOTxa+RtQpCBl17Vk5Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZhQATq2BZ3emqNDAGASfAbV4LztzT8HeDuYDNZQf9+Q/ZdCXQj80yuAPE64z76pIw
-         f6CDCqRcejAXPKkfYYnIHEG/tkdcqaNmz1PnRS20cjJYfRDpAYHDAub27X+7DGgAJx
-         359kU3FiBl7BT3vK06bdUrktFs9aAHQpnQF5xPZY=
+        b=MXFUb2DzehuA3aFX/kDJcaLMTfsmfyRbYeAzuWd3kbmu1XRhD7WAnyJSC4gSC1KmN
+         TAlpDNmAxcZs60KbkC0p4HX87/8Y52JtarppKUtg+mmT+JK5Ui+magNn5Rvobhk8sW
+         vbL2e4e5/9BueLlHC+UpsWIqZ+lHdvou8US3HfkY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 45/80] tty: n_gsm: Fix SOF skipping
-Date:   Wed, 17 Jun 2020 21:27:44 -0400
-Message-Id: <20200618012819.609778-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 46/80] tty: n_gsm: Fix waking up upper tty layer when room available
+Date:   Wed, 17 Jun 2020 21:27:45 -0400
+Message-Id: <20200618012819.609778-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012819.609778-1-sashal@kernel.org>
 References: <20200618012819.609778-1-sashal@kernel.org>
@@ -45,54 +45,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-[ Upstream commit 84d6f81c1fb58b56eba81ff0a36cf31946064b40 ]
+[ Upstream commit 01dbb362f0a114fbce19c8abe4cd6f4710e934d5 ]
 
-For at least some modems like the TELIT LE910, skipping SOF makes
-transfers blocking indefinitely after a short amount of data
-transferred.
-
-Given the small improvement provided by skipping the SOF (just one
-byte on about 100 bytes), it seems better to completely remove this
-"feature" than make it optional.
+Warn the upper layer when n_gms is ready to receive data
+again. Without this the associated virtual tty remains blocked
+indefinitely.
 
 Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Link: https://lore.kernel.org/r/20200512115323.1447922-3-gregory.clement@bootlin.com
+Link: https://lore.kernel.org/r/20200512115323.1447922-4-gregory.clement@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/n_gsm.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/tty/n_gsm.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 9e9016e67843..d5efacd27b15 100644
+index d5efacd27b15..56716f525030 100644
 --- a/drivers/tty/n_gsm.c
 +++ b/drivers/tty/n_gsm.c
-@@ -685,7 +685,6 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+@@ -681,7 +681,7 @@ static struct gsm_msg *gsm_data_alloc(struct gsm_mux *gsm, u8 addr, int len,
+  *	FIXME: lock against link layer control transmissions
+  */
+ 
+-static void gsm_data_kick(struct gsm_mux *gsm)
++static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
  {
  	struct gsm_msg *msg, *nmsg;
  	int len;
--	int skip_sof = 0;
- 
- 	list_for_each_entry_safe(msg, nmsg, &gsm->tx_list, list) {
- 		if (gsm->constipated && msg->addr)
-@@ -707,15 +706,10 @@ static void gsm_data_kick(struct gsm_mux *gsm)
- 			print_hex_dump_bytes("gsm_data_kick: ",
- 					     DUMP_PREFIX_OFFSET,
- 					     gsm->txframe, len);
--
--		if (gsm->output(gsm, gsm->txframe + skip_sof,
--						len - skip_sof) < 0)
-+		if (gsm->output(gsm, gsm->txframe, len) < 0)
- 			break;
- 		/* FIXME: Can eliminate one SOF in many more cases */
- 		gsm->tx_bytes -= msg->len;
--		/* For a burst of frames skip the extra SOF within the
--		   burst */
--		skip_sof = 1;
+@@ -713,6 +713,24 @@ static void gsm_data_kick(struct gsm_mux *gsm)
  
  		list_del(&msg->list);
  		kfree(msg);
++
++		if (dlci) {
++			tty_port_tty_wakeup(&dlci->port);
++		} else {
++			int i = 0;
++
++			for (i = 0; i < NUM_DLCI; i++) {
++				struct gsm_dlci *dlci;
++
++				dlci = gsm->dlci[i];
++				if (dlci == NULL) {
++					i++;
++					continue;
++				}
++
++				tty_port_tty_wakeup(&dlci->port);
++			}
++		}
+ 	}
+ }
+ 
+@@ -764,7 +782,7 @@ static void __gsm_data_queue(struct gsm_dlci *dlci, struct gsm_msg *msg)
+ 	/* Add to the actual output queue */
+ 	list_add_tail(&msg->list, &gsm->tx_list);
+ 	gsm->tx_bytes += msg->len;
+-	gsm_data_kick(gsm);
++	gsm_data_kick(gsm, dlci);
+ }
+ 
+ /**
+@@ -1225,7 +1243,7 @@ static void gsm_control_message(struct gsm_mux *gsm, unsigned int command,
+ 		gsm_control_reply(gsm, CMD_FCON, NULL, 0);
+ 		/* Kick the link in case it is idling */
+ 		spin_lock_irqsave(&gsm->tx_lock, flags);
+-		gsm_data_kick(gsm);
++		gsm_data_kick(gsm, NULL);
+ 		spin_unlock_irqrestore(&gsm->tx_lock, flags);
+ 		break;
+ 	case CMD_FCOFF:
+@@ -2408,7 +2426,7 @@ static void gsmld_write_wakeup(struct tty_struct *tty)
+ 	/* Queue poll */
+ 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+ 	spin_lock_irqsave(&gsm->tx_lock, flags);
+-	gsm_data_kick(gsm);
++	gsm_data_kick(gsm, NULL);
+ 	if (gsm->tx_bytes < TX_THRESH_LO) {
+ 		gsm_dlci_data_sweep(gsm);
+ 	}
 -- 
 2.25.1
 
