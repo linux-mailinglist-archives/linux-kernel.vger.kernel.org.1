@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0481FDD6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5B61FDD78
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731621AbgFRB0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56468 "EHLO mail.kernel.org"
+        id S1730091AbgFRB0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730921AbgFRBXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:23:08 -0400
+        id S1729544AbgFRBXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:23:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C32C120CC7;
-        Thu, 18 Jun 2020 01:23:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC86E20776;
+        Thu, 18 Jun 2020 01:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443387;
-        bh=7wQA2Z5H/KyOKIa4tfUvi/1sX8CoYrwIesTMR+Lk84k=;
+        s=default; t=1592443394;
+        bh=8rEuU+HOd7oL+2eFUd+0ScN7CiMpOIKu5iY4f3aIeb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xokk5Ytmd73Rj7HZDPmjj6qaf6D6kOqQNYuKpp3Aub1/0XNrBcVizuKW+XUjJRPbR
-         OjTLBaKg/Ux4NtUwVpxGI4V1/d3d7Ok9vyw/17ycF3PwEJC/m8KPCSpjYVfI5BFU/T
-         WNu2HLUn/sd5CZNUrCgEsuCueIW3qp6rB/8bfjKw=
+        b=vHC1G7fSTeXcdd4UZTuqoWHvdehDYxOmLD94izq/z52NvB/26vLrv+vHhnjJh2waj
+         sm3NDzPOEAqg4ixQRKCFujAtlfiGgGiXk3sZqOaVuuYlsjyBTf+7Dh/DZ9YHvtlfQW
+         a4lBXYWc1ui3xaiZNb2DSW5VkORyjhmrB+2Mf/y8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jon Derrick <jonathan.derrick@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 037/172] PCI: vmd: Filter resource type bits from shadow register
-Date:   Wed, 17 Jun 2020 21:20:03 -0400
-Message-Id: <20200618012218.607130-37-sashal@kernel.org>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 041/172] fat: don't allow to mount if the FAT length == 0
+Date:   Wed, 17 Jun 2020 21:20:07 -0400
+Message-Id: <20200618012218.607130-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -43,53 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Derrick <jonathan.derrick@intel.com>
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-[ Upstream commit 3e5095eebe015d5a4d566aa5e03c8621add5f0a7 ]
+[ Upstream commit b1b65750b8db67834482f758fc385bfa7560d228 ]
 
-Versions of VMD with the Host Physical Address shadow register use this
-register to calculate the bus address offset needed to do guest
-passthrough of the domain. This register shadows the Host Physical
-Address registers including the resource type bits. After calculating
-the offset, the extra resource type bits lead to the VMD resources being
-over-provisioned at the front and under-provisioned at the back.
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
 
-Example:
-pci 10000:80:02.0: reg 0x10: [mem 0xf801fffc-0xf803fffb 64bit]
+Also Windows treats it as invalid format.
 
-Expected:
-pci 10000:80:02.0: reg 0x10: [mem 0xf8020000-0xf803ffff 64bit]
-
-If other devices are mapped in the over-provisioned front, it could lead
-to resource conflict issues with VMD or those devices.
-
-Link: https://lore.kernel.org/r/20200528030240.16024-3-jonathan.derrick@intel.com
-Fixes: a1a30170138c9 ("PCI: vmd: Fix shadow offsets to reflect spec changes")
-Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/vmd.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/fat/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index ab36e5ca1aca..153abbc9412d 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -617,9 +617,11 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
- 			if (!membar2)
- 				return -ENOMEM;
- 			offset[0] = vmd->dev->resource[VMD_MEMBAR1].start -
--					readq(membar2 + MB2_SHADOW_OFFSET);
-+					(readq(membar2 + MB2_SHADOW_OFFSET) &
-+					 PCI_BASE_ADDRESS_MEM_MASK);
- 			offset[1] = vmd->dev->resource[VMD_MEMBAR2].start -
--					readq(membar2 + MB2_SHADOW_OFFSET + 8);
-+					(readq(membar2 + MB2_SHADOW_OFFSET + 8) &
-+					 PCI_BASE_ADDRESS_MEM_MASK);
- 			pci_iounmap(vmd->dev, membar2);
- 		}
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index 70d37a5fd72c..607e1d124062 100644
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1519,6 +1519,12 @@ static int fat_read_bpb(struct super_block *sb, struct fat_boot_sector *b,
+ 		goto out;
  	}
+ 
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
++
+ 	error = 0;
+ 
+ out:
 -- 
 2.25.1
 
