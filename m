@@ -2,92 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CAB1FDA44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF401FDA91
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgFRAat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 20:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgFRAat (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 20:30:49 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E62DC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:30:49 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id c12so3095149qtq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=akP5TkvP5YIRbXmgcjZryXwqTlfdBNOtLQhNnMzmBg8=;
-        b=fsGlLlWzYEWqgg5lC7qq3g3HVKzQyMMUjnuhIMp8KzYT0eltdurHq8Z0Q/PAMHug9B
-         R5Ft+yQbK5elRA5weU43vQMisjAf7hahd8ymokdWebcw1Kf5/eqr/mE+d5+R9glzRTQ+
-         F7kpOiubXtU48uqUGJZA8KtfpKkHox/qg3GslDiNnnpgE6TpTE2wDMmptz3N1DVPyQjf
-         5APlGU/MQFfDVFWRpyCMP4KPlVw41jbUAbUTxkVHqJ36HOsjQJSRG+QkkokvcVnHfC8C
-         Lj4Hjel5k6XRhb0VajDY23R1ARn4oBrWM7O4ScameFFXO/G6Qda1RbFXy0QJb6vu8O5b
-         RS2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=akP5TkvP5YIRbXmgcjZryXwqTlfdBNOtLQhNnMzmBg8=;
-        b=FhPrrO9o+pldeVVc9UJAtvtQLT2jvemV642HFhU+LnYhAkee4rvJnidqqdWuHsdsNJ
-         Dr11vtao01mIVg5Mej9KYjnDwm1WR938SkGtQrXZIbqFFVmQvpk/Zk9lJSPQJz3GwZjt
-         Majt8nZP77NJrnvpneCABr3dP4UFx/HAff5sHj708jVR2gzYV0zgYDsngY0tGVR4tC/Q
-         6WzoFJ5+9H1raMleNERfBDynMtIo9rmyB/4psonZySRozqLg3Bn2cCWIgVQyWm8hXifk
-         VnU2Bbw7WkvaDxayjDCLHiUZA13nduYKLFuzTVvmbzMe7HrsPh5rEwtllvQIQkd54hq1
-         QXFw==
-X-Gm-Message-State: AOAM532DNZajrpsmOSlysRe0MSJTlaV2Va8JBTynZayC6VgjlmYEYncs
-        c3Ko+1cwcx85AQDWTyEu1Mo=
-X-Google-Smtp-Source: ABdhPJxrf8U7AvDY7BA+EpaFqARDd7AaisPCxAptSyMJMmAL6mD5D4Dg2YYeayEg+wsRHO9Rnc4J5A==
-X-Received: by 2002:ac8:3f77:: with SMTP id w52mr1834059qtk.161.1592440248360;
-        Wed, 17 Jun 2020 17:30:48 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:9c3:b47c:c995:4853])
-        by smtp.googlemail.com with ESMTPSA id k81sm1450121qke.11.2020.06.17.17.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 17:30:47 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1726995AbgFRAsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 20:48:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:25710 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726906AbgFRAsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 20:48:22 -0400
+IronPort-SDR: K2ltQazXPCRWB1aCIps492brO734W8bHIwlQctbNljMm4NxnPOQhQMRcI6C4dh7e8Ruh1YKpiT
+ +yQvCij0FUpg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 17:48:12 -0700
+IronPort-SDR: gXk4D2WWwT4jqx+vmM9RPAqxO0zYH4gaaNTYWhJpEgsbd2LE9zw6yKYA0V83WZQ/+OANIC/cE5
+ C7zL4y7we1QA==
+X-IronPort-AV: E=Sophos;i="5.73,524,1583222400"; 
+   d="scan'208";a="262752143"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 17:48:12 -0700
+Subject: [PATCH v6 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user, kernel}
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     akpm@linux-foundation.org, tglx@linutronix.de, mingo@redhat.com
+Cc:     Tony Luck <tony.luck@intel.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Borislav Petkov <bp@alien8.de>, stable@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mikulas Patocka <mpatocka@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
-Subject: [PATCH] [perf] sort : Fix null pointer dereference in _hist_entry__sym_snprintf
-Date:   Wed, 17 Jun 2020 20:30:18 -0400
-Message-Id: <20200618003040.26360-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Date:   Wed, 17 Jun 2020 17:31:58 -0700
+Message-ID: <159244031857.1107636.5054974045023236143.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer ms can be NULL. Add null check before
-dereferencing it to avoid segmentation fault.
+No changes since v5 [1], just rebased to v5.8-rc1. No comments since
+that posting back at the end of May either, will continue to re-post
+weekly, I am otherwise at a loss for what else to do to move this
+forward. Should it go through Andrew since it's across PPC and x86?
+Thanks again to Michael for the PPC acks.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+[1]: http://lore.kernel.org/r/159062136234.2192412.7285856919306307817.stgit@dwillia2-desk3.amr.corp.intel.com
+
 ---
- tools/perf/util/sort.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index d42339df20f8..25c7c96893f6 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -294,6 +294,9 @@ static int _hist_entry__sym_snprintf(struct map_symbol *ms,
- 				     u64 ip, char level, char *bf, size_t size,
- 				     unsigned int width)
- {
-+	if (!ms) 
-+		return 0;
-+
- 	struct symbol *sym = ms->sym;
- 	struct map *map = ms->map;
- 	size_t ret = 0;
--- 
-2.17.1
+The primary motivation to go touch memcpy_mcsafe() is that the existing
+benefit of doing slow "handle with care" copies is obviated on newer
+CPUs. With that concern lifted it also obviates the need to continue to
+update the MCA-recovery capability detection code currently gated by
+"mcsafe_key". Now the old "mcsafe_key" opt-in to perform the copy with
+concerns for recovery fragility can instead be made an opt-out from the
+default fast copy implementation (enable_copy_mc_fragile()).
 
+The discussion with Linus on the first iteration of this patch
+identified that memcpy_mcsafe() was misnamed relative to its usage. The
+new names copy_mc_to_user() and copy_mc_to_kernel() clearly indicate the
+intended use case and lets the architecture organize the implementation
+accordingly.
+
+For both powerpc and x86 a copy_mc_generic() implementation is added as
+the backend for these interfaces.
+
+Patches are relative to v5.8-rc1. It has a recent build success
+notification from the kbuild robot and is passing local nvdimm tests.
+
+---
+
+Dan Williams (2):
+      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user,kernel}()
+      x86/copy_mc: Introduce copy_mc_generic()
+
+
+ arch/powerpc/Kconfig                               |    2 
+ arch/powerpc/include/asm/string.h                  |    2 
+ arch/powerpc/include/asm/uaccess.h                 |   40 +++--
+ arch/powerpc/lib/Makefile                          |    2 
+ arch/powerpc/lib/copy_mc_64.S                      |    4 
+ arch/x86/Kconfig                                   |    2 
+ arch/x86/Kconfig.debug                             |    2 
+ arch/x86/include/asm/copy_mc_test.h                |   75 +++++++++
+ arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
+ arch/x86/include/asm/string_64.h                   |   32 ----
+ arch/x86/include/asm/uaccess.h                     |   21 +++
+ arch/x86/include/asm/uaccess_64.h                  |   20 --
+ arch/x86/kernel/cpu/mce/core.c                     |    8 -
+ arch/x86/kernel/quirks.c                           |    9 -
+ arch/x86/lib/Makefile                              |    1 
+ arch/x86/lib/copy_mc.c                             |   64 ++++++++
+ arch/x86/lib/copy_mc_64.S                          |  165 ++++++++++++++++++++
+ arch/x86/lib/memcpy_64.S                           |  115 --------------
+ arch/x86/lib/usercopy_64.c                         |   21 ---
+ drivers/md/dm-writecache.c                         |   15 +-
+ drivers/nvdimm/claim.c                             |    2 
+ drivers/nvdimm/pmem.c                              |    6 -
+ include/linux/string.h                             |    9 -
+ include/linux/uaccess.h                            |    9 +
+ include/linux/uio.h                                |   10 +
+ lib/Kconfig                                        |    7 +
+ lib/iov_iter.c                                     |   43 +++--
+ tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
+ tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
+ tools/objtool/check.c                              |    5 -
+ tools/perf/bench/Build                             |    1 
+ tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
+ tools/testing/nvdimm/test/nfit.c                   |   48 +++---
+ .../testing/selftests/powerpc/copyloops/.gitignore |    2 
+ tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
+ .../selftests/powerpc/copyloops/copy_mc_64.S       |    1 
+ .../selftests/powerpc/copyloops/memcpy_mcsafe_64.S |    1 
+ 37 files changed, 451 insertions(+), 526 deletions(-)
+ rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_mc_64.S} (98%)
+ create mode 100644 arch/x86/include/asm/copy_mc_test.h
+ delete mode 100644 arch/x86/include/asm/mcsafe_test.h
+ create mode 100644 arch/x86/lib/copy_mc.c
+ create mode 100644 arch/x86/lib/copy_mc_64.S
+ delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
+ delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
+ create mode 120000 tools/testing/selftests/powerpc/copyloops/copy_mc_64.S
+ delete mode 120000 tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S
+
+base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
