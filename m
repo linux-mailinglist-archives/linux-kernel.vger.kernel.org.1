@@ -2,382 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351CF1FF53A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A511FF50C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731145AbgFROpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:45:45 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16608 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730930AbgFROoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:44:11 -0400
-IronPort-SDR: pTtnS9gX5bn19EOF726IyeBaKtdJKR1RW1P5YZB8Aqb/5HrDltPG5zOHYWHew8kNiwRPOQ3IWj
- FTE7TNKZB+Fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="140095799"
-X-IronPort-AV: E=Sophos;i="5.75,526,1589266800"; 
-   d="scan'208";a="140095799"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 07:44:02 -0700
-IronPort-SDR: M8SdHP6oVhEayiUH14hOjSkQ4KN9uRrwVbDTRLlgCT19RtM0Af3J+j9A4Tkkv06xuH5oeLTgrW
- oBJhGfT/8cRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,526,1589266800"; 
-   d="scan'208";a="309128804"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jun 2020 07:43:58 -0700
-Subject: Re: [PATCH v4 2/3] sdhci: sparx5: Add Sparx5 SoC eMMC driver
-To:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, SoC Team <soc@kernel.org>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20200618141326.25723-1-lars.povlsen@microchip.com>
- <20200618141326.25723-3-lars.povlsen@microchip.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <aee90bbf-f0ff-b0cb-b10a-9a2f3bb6acca@intel.com>
-Date:   Thu, 18 Jun 2020 17:43:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1730944AbgFROoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbgFROoA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 10:44:00 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A8EC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:44:00 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b16so2861247pfi.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:reply-to:mime-version
+         :content-transfer-encoding;
+        bh=QtQZj6qHx4NyNp4faebxEBGjQhFGouVk8vIR/YM0OZ0=;
+        b=LaeOybvgVFUedJ618PM1GTEUXkMXPY3qF3zemK0oPI0t/5c3IyDHmKKjFSXMlllNpg
+         u4+VdHvZcEwrYY6QLxMvN9QNbcQkL40jfHhhwKnfjkRjaCBH/fdF2CXYNuGlJe/1qagv
+         GOuftdx/mhTGZ0CDkYYM/BzpHCtO3WgFPHV5MzKmJusZp3RHe6UsIOj2jqBaJqopy9w1
+         8dyb1/ZNKWuCGje3eaRAvZHyHC8hhvG7uaNyzR+WZLwsMfnWHwLZir4H4MXYeJ5kkTgv
+         S21Bzwg3kx7/cgMp23f6Z1a2ySJ2w9JTPWvpySOoRC3V8WNU7ZClsM3eXev1LkALavYt
+         hZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :mime-version:content-transfer-encoding;
+        bh=QtQZj6qHx4NyNp4faebxEBGjQhFGouVk8vIR/YM0OZ0=;
+        b=IA/0m5LKQI+XBNgfSa3aEAqxCfdd0IVXLIuhykiU8PxyK9oR2uuTpxOMRh7NV2tJ57
+         CwhkyD0TJRGLIvfVb3zb8wAHs9OdwQ2oHdP0QRNQ+EmBH+2daYW0+ift+OJ6YwZAK+fP
+         T3XxtLCMfWi9Se16aJJK3/nWr9kZUULouLvqbnnpAML9IsCiyQdJswf+4WWp1MbGl9NR
+         Vmzyu26U9gOMQERRTdQq3BkiC1d4rVhrzq2xpqYHJGETZsrEPizsaapei0j5khhigNBG
+         JgrHFtQo5ZfbfPE7J2M3ukxYbTlSv+s8E+0xSbL7Pe7QOe3hdUtu0RvwX1ajTqSCH9wq
+         Mcow==
+X-Gm-Message-State: AOAM532Qu9qIb+trqNe7QqZ6RSU9CMfhT2GG/gF732L1tQcOPrFLHrBS
+        Ik2L0y0IFty4CVi07ODOZc5VMg==
+X-Google-Smtp-Source: ABdhPJwVlCUbORgsthBtt/igrlr5i7l6tNK0VhZZRDtHj5c1nyTVCxDwaDg3pXHR9uxp5F9dJc2YrQ==
+X-Received: by 2002:a62:191:: with SMTP id 139mr3946645pfb.94.1592491439786;
+        Thu, 18 Jun 2020 07:43:59 -0700 (PDT)
+Received: from x1.localdomain ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id g9sm3127197pfm.151.2020.06.18.07.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 07:43:59 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org
+Subject: 
+Date:   Thu, 18 Jun 2020 08:43:40 -0600
+Message-Id: <20200618144355.17324-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.27.0
+Reply-To: "[PATCHSET v7 0/15]"@vger.kernel.org, Add@vger.kernel.org,
+          support@vger.kernel.org, for@vger.kernel.org,
+          async@vger.kernel.org, buffered@vger.kernel.org,
+          reads@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20200618141326.25723-3-lars.povlsen@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/20 5:13 pm, Lars Povlsen wrote:
-> This adds the eMMC driver for the Sparx5 SoC. It is based upon the
-> designware IP, but requires some extra initialization and quirks.
-> 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+We technically support this already through io_uring, but it's
+implemented with a thread backend to support cases where we would
+block. This isn't ideal.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+After a few prep patches, the core of this patchset is adding support
+for async callbacks on page unlock. With this primitive, we can simply
+retry the IO operation. With io_uring, this works a lot like poll based
+retry for files that support it. If a page is currently locked and
+needed, -EIOCBQUEUED is returned with a callback armed. The callers
+callback is responsible for restarting the operation.
 
-> ---
->  drivers/mmc/host/Kconfig           |  13 ++
->  drivers/mmc/host/Makefile          |   1 +
->  drivers/mmc/host/sdhci-of-sparx5.c | 269 +++++++++++++++++++++++++++++
->  3 files changed, 283 insertions(+)
->  create mode 100644 drivers/mmc/host/sdhci-of-sparx5.c
-> 
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 3b706af35ec31..a3bad4b4ed7ea 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -213,6 +213,19 @@ config MMC_SDHCI_OF_DWCMSHC
->  	  If you have a controller with this interface, say Y or M here.
->  	  If unsure, say N.
->  
-> +config MMC_SDHCI_OF_SPARX5
-> +	tristate "SDHCI OF support for the MCHP Sparx5 SoC"
-> +	depends on MMC_SDHCI_PLTFM
-> +	depends on ARCH_SPARX5
-> +	select MMC_SDHCI_IO_ACCESSORS
-> +	help
-> +	  This selects the Secure Digital Host Controller Interface (SDHCI)
-> +	  found in the MCHP Sparx5 SoC.
-> +
-> +	  If you have a Sparx5 SoC with this interface, say Y or M here.
-> +
-> +	  If unsure, say N.
-> +
->  config MMC_SDHCI_CADENCE
->  	tristate "SDHCI support for the Cadence SD/SDIO/eMMC controller"
->  	depends on MMC_SDHCI_PLTFM
-> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-> index 4d5bcb0144a0a..451c25fc2c692 100644
-> --- a/drivers/mmc/host/Makefile
-> +++ b/drivers/mmc/host/Makefile
-> @@ -94,6 +94,7 @@ obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
->  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
->  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
->  obj-$(CONFIG_MMC_SDHCI_OF_DWCMSHC)	+= sdhci-of-dwcmshc.o
-> +obj-$(CONFIG_MMC_SDHCI_OF_SPARX5)	+= sdhci-of-sparx5.o
->  obj-$(CONFIG_MMC_SDHCI_BCM_KONA)	+= sdhci-bcm-kona.o
->  obj-$(CONFIG_MMC_SDHCI_IPROC)		+= sdhci-iproc.o
->  obj-$(CONFIG_MMC_SDHCI_MSM)		+= sdhci-msm.o
-> diff --git a/drivers/mmc/host/sdhci-of-sparx5.c b/drivers/mmc/host/sdhci-of-sparx5.c
-> new file mode 100644
-> index 0000000000000..2b262c12e5530
-> --- /dev/null
-> +++ b/drivers/mmc/host/sdhci-of-sparx5.c
-> @@ -0,0 +1,269 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * drivers/mmc/host/sdhci-of-sparx5.c
-> + *
-> + * MCHP Sparx5 SoC Secure Digital Host Controller Interface.
-> + *
-> + * Copyright (c) 2019 Microchip Inc.
-> + *
-> + * Author: Lars Povlsen <lars.povlsen@microchip.com>
-> + */
-> +
-> +#include <linux/sizes.h>
-> +#include <linux/delay.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/of_device.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/dma-mapping.h>
-> +
-> +#include "sdhci-pltfm.h"
-> +
-> +#define CPU_REGS_GENERAL_CTRL	(0x22 * 4)
-> +#define  MSHC_DLY_CC_MASK	GENMASK(16, 13)
-> +#define  MSHC_DLY_CC_SHIFT	13
-> +#define  MSHC_DLY_CC_MAX	15
-> +
-> +#define CPU_REGS_PROC_CTRL	(0x2C * 4)
-> +#define  ACP_CACHE_FORCE_ENA	BIT(4)
-> +#define  ACP_AWCACHE		BIT(3)
-> +#define  ACP_ARCACHE		BIT(2)
-> +#define  ACP_CACHE_MASK		(ACP_CACHE_FORCE_ENA|ACP_AWCACHE|ACP_ARCACHE)
-> +
-> +#define MSHC2_VERSION			0x500	/* Off 0x140, reg 0x0 */
-> +#define MSHC2_TYPE			0x504	/* Off 0x140, reg 0x1 */
-> +#define MSHC2_EMMC_CTRL			0x52c	/* Off 0x140, reg 0xB */
-> +#define  MSHC2_EMMC_CTRL_EMMC_RST_N	BIT(2)
-> +#define  MSHC2_EMMC_CTRL_IS_EMMC	BIT(0)
-> +
-> +struct sdhci_sparx5_data {
-> +	struct sdhci_host *host;
-> +	struct regmap *cpu_ctrl;
-> +	int delay_clock;
-> +};
-> +
-> +#define BOUNDARY_OK(addr, len) \
-> +	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
-> +
-> +/*
-> + * If DMA addr spans 128MB boundary, we split the DMA transfer into two
-> + * so that each DMA transfer doesn't exceed the boundary.
-> + */
-> +static void sdhci_sparx5_adma_write_desc(struct sdhci_host *host, void **desc,
-> +					  dma_addr_t addr, int len,
-> +					  unsigned int cmd)
-> +{
-> +	int tmplen, offset;
-> +
-> +	if (likely(!len || BOUNDARY_OK(addr, len))) {
-> +		sdhci_adma_write_desc(host, desc, addr, len, cmd);
-> +		return;
-> +	}
-> +
-> +	pr_debug("%s: write_desc: splitting dma len %d, offset 0x%0llx\n",
-> +		 mmc_hostname(host->mmc), len, addr);
-> +
-> +	offset = addr & (SZ_128M - 1);
-> +	tmplen = SZ_128M - offset;
-> +	sdhci_adma_write_desc(host, desc, addr, tmplen, cmd);
-> +
-> +	addr += tmplen;
-> +	len -= tmplen;
-> +	sdhci_adma_write_desc(host, desc, addr, len, cmd);
-> +}
-> +
-> +static void sparx5_set_cacheable(struct sdhci_host *host, u32 value)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct sdhci_sparx5_data *sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
-> +
-> +	pr_debug("%s: Set Cacheable = 0x%x\n", mmc_hostname(host->mmc), value);
-> +
-> +	/* Update ACP caching attributes in HW */
-> +	regmap_update_bits(sdhci_sparx5->cpu_ctrl,
-> +			   CPU_REGS_PROC_CTRL, ACP_CACHE_MASK, value);
-> +}
-> +
-> +static void sparx5_set_delay(struct sdhci_host *host, u8 value)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct sdhci_sparx5_data *sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
-> +
-> +	pr_debug("%s: Set DLY_CC = %u\n", mmc_hostname(host->mmc), value);
-> +
-> +	/* Update DLY_CC in HW */
-> +	regmap_update_bits(sdhci_sparx5->cpu_ctrl,
-> +			   CPU_REGS_GENERAL_CTRL,
-> +			   MSHC_DLY_CC_MASK,
-> +			   (value << MSHC_DLY_CC_SHIFT));
-> +}
-> +
-> +static void sdhci_sparx5_set_emmc(struct sdhci_host *host)
-> +{
-> +	if (!mmc_card_is_removable(host->mmc)) {
-> +		u8 value;
-> +
-> +		value = sdhci_readb(host, MSHC2_EMMC_CTRL);
-> +		if (!(value & MSHC2_EMMC_CTRL_IS_EMMC)) {
-> +			value |= MSHC2_EMMC_CTRL_IS_EMMC;
-> +			pr_debug("%s: Set EMMC_CTRL: 0x%08x\n",
-> +				 mmc_hostname(host->mmc), value);
-> +			sdhci_writeb(host, value, MSHC2_EMMC_CTRL);
-> +		}
-> +	}
-> +}
-> +
-> +static void sdhci_sparx5_reset_emmc(struct sdhci_host *host)
-> +{
-> +	u8 value;
-> +
-> +	pr_debug("%s: Toggle EMMC_CTRL.EMMC_RST_N\n", mmc_hostname(host->mmc));
-> +	value = sdhci_readb(host, MSHC2_EMMC_CTRL) &
-> +		~MSHC2_EMMC_CTRL_EMMC_RST_N;
-> +	sdhci_writeb(host, value, MSHC2_EMMC_CTRL);
-> +	/* For eMMC, minimum is 1us but give it 10us for good measure */
-> +	usleep_range(10, 20);
-> +	sdhci_writeb(host, value | MSHC2_EMMC_CTRL_EMMC_RST_N,
-> +		     MSHC2_EMMC_CTRL);
-> +	/* For eMMC, minimum is 200us but give it 300us for good measure */
-> +	usleep_range(300, 400);
-> +}
-> +
-> +static void sdhci_sparx5_reset(struct sdhci_host *host, u8 mask)
-> +{
-> +	pr_debug("%s: *** RESET: mask %d\n", mmc_hostname(host->mmc), mask);
-> +
-> +	sdhci_reset(host, mask);
-> +
-> +	/* Be sure CARD_IS_EMMC stays set */
-> +	sdhci_sparx5_set_emmc(host);
-> +}
-> +
-> +static const struct sdhci_ops sdhci_sparx5_ops = {
-> +	.set_clock		= sdhci_set_clock,
-> +	.set_bus_width		= sdhci_set_bus_width,
-> +	.set_uhs_signaling	= sdhci_set_uhs_signaling,
-> +	.get_max_clock		= sdhci_pltfm_clk_get_max_clock,
-> +	.reset			= sdhci_sparx5_reset,
-> +	.adma_write_desc	= sdhci_sparx5_adma_write_desc,
-> +};
-> +
-> +static const struct sdhci_pltfm_data sdhci_sparx5_pdata = {
-> +	.quirks  = 0,
-> +	.quirks2 = SDHCI_QUIRK2_HOST_NO_CMD23 | /* Controller issue */
-> +		   SDHCI_QUIRK2_NO_1_8_V, /* No sdr104, ddr50, etc */
-> +	.ops = &sdhci_sparx5_ops,
-> +};
-> +
-> +int sdhci_sparx5_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	const char *syscon = "microchip,sparx5-cpu-syscon";
-> +	struct sdhci_host *host;
-> +	struct sdhci_pltfm_host *pltfm_host;
-> +	struct sdhci_sparx5_data *sdhci_sparx5;
-> +	struct device_node *np = pdev->dev.of_node;
-> +	u32 value;
-> +	u32 extra;
-> +
-> +	host = sdhci_pltfm_init(pdev, &sdhci_sparx5_pdata,
-> +				sizeof(*sdhci_sparx5));
-> +
-> +	if (IS_ERR(host))
-> +		return PTR_ERR(host);
-> +
-> +	/*
-> +	 * extra adma table cnt for cross 128M boundary handling.
-> +	 */
-> +	extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
-> +	if (extra > SDHCI_MAX_SEGS)
-> +		extra = SDHCI_MAX_SEGS;
-> +	host->adma_table_cnt += extra;
-> +
-> +	pltfm_host = sdhci_priv(host);
-> +	sdhci_sparx5 = sdhci_pltfm_priv(pltfm_host);
-> +	sdhci_sparx5->host = host;
-> +
-> +	pltfm_host->clk = devm_clk_get(&pdev->dev, "core");
-> +	if (IS_ERR(pltfm_host->clk)) {
-> +		ret = PTR_ERR(pltfm_host->clk);
-> +		dev_err(&pdev->dev, "failed to get core clk: %d\n", ret);
-> +		goto free_pltfm;
-> +	}
-> +	ret = clk_prepare_enable(pltfm_host->clk);
-> +	if (ret)
-> +		goto free_pltfm;
-> +
-> +	if (!of_property_read_u32(np, "microchip,clock-delay", &value) &&
-> +	    (value > 0 && value <= MSHC_DLY_CC_MAX))
-> +		sdhci_sparx5->delay_clock = value;
-> +
-> +	sdhci_get_of_property(pdev);
-> +
-> +	ret = mmc_of_parse(host->mmc);
-> +	if (ret)
-> +		goto err_clk;
-> +
-> +	sdhci_sparx5->cpu_ctrl = syscon_regmap_lookup_by_compatible(syscon);
-> +	if (IS_ERR(sdhci_sparx5->cpu_ctrl)) {
-> +		dev_err(&pdev->dev, "No CPU syscon regmap !\n");
-> +		ret = PTR_ERR(sdhci_sparx5->cpu_ctrl);
-> +		goto err_clk;
-> +	}
-> +
-> +	if (sdhci_sparx5->delay_clock >= 0)
-> +		sparx5_set_delay(host, sdhci_sparx5->delay_clock);
-> +
-> +	if (!mmc_card_is_removable(host->mmc)) {
-> +		/* Do a HW reset of eMMC card */
-> +		sdhci_sparx5_reset_emmc(host);
-> +		/* Update EMMC_CTRL */
-> +		sdhci_sparx5_set_emmc(host);
-> +		/* If eMMC, disable SD and SDIO */
-> +		host->mmc->caps2 |= (MMC_CAP2_NO_SDIO|MMC_CAP2_NO_SD);
-> +	}
-> +
-> +	ret = sdhci_add_host(host);
-> +	if (ret)
-> +		goto err_clk;
-> +
-> +	/* Set AXI bus master to use un-cached access (for DMA) */
-> +	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA) &&
-> +	    IS_ENABLED(CONFIG_DMA_DECLARE_COHERENT))
-> +		sparx5_set_cacheable(host, ACP_CACHE_FORCE_ENA);
-> +
-> +	pr_debug("%s: SDHC version: 0x%08x\n",
-> +		 mmc_hostname(host->mmc), sdhci_readl(host, MSHC2_VERSION));
-> +	pr_debug("%s: SDHC type:    0x%08x\n",
-> +		 mmc_hostname(host->mmc), sdhci_readl(host, MSHC2_TYPE));
-> +
-> +	return ret;
-> +
-> +err_clk:
-> +	clk_disable_unprepare(pltfm_host->clk);
-> +free_pltfm:
-> +	sdhci_pltfm_free(pdev);
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id sdhci_sparx5_of_match[] = {
-> +	{ .compatible = "microchip,dw-sparx5-sdhci" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sdhci_sparx5_of_match);
-> +
-> +static struct platform_driver sdhci_sparx5_driver = {
-> +	.driver = {
-> +		.name = "sdhci-sparx5",
-> +		.of_match_table = sdhci_sparx5_of_match,
-> +		.pm = &sdhci_pltfm_pmops,
-> +	},
-> +	.probe = sdhci_sparx5_probe,
-> +	.remove = sdhci_pltfm_unregister,
-> +};
-> +
-> +module_platform_driver(sdhci_sparx5_driver);
-> +
-> +MODULE_DESCRIPTION("Sparx5 SDHCI OF driver");
-> +MODULE_AUTHOR("Lars Povlsen <lars.povlsen@microchip.com>");
-> +MODULE_LICENSE("GPL v2");
-> 
+With this callback primitive, we can add support for
+generic_file_buffered_read(), which is what most file systems end up
+using for buffered reads. XFS/ext4/btrfs/bdev is wired up, but probably
+trivial to add more.
+
+The file flags support for this by setting FMODE_BUF_RASYNC, similar
+to what we do for FMODE_NOWAIT. Open to suggestions here if this is
+the preferred method or not.
+
+In terms of results, I wrote a small test app that randomly reads 4G
+of data in 4K chunks from a file hosted by ext4. The app uses a queue
+depth of 32. If you want to test yourself, you can just use buffered=1
+with ioengine=io_uring with fio. No application changes are needed to
+use the more optimized buffered async read.
+
+preadv for comparison:
+	real    1m13.821s
+	user    0m0.558s
+	sys     0m11.125s
+	CPU	~13%
+
+Mainline:
+	real    0m12.054s
+	user    0m0.111s
+	sys     0m5.659s
+	CPU	~32% + ~50% == ~82%
+
+This patchset:
+	real    0m9.283s
+	user    0m0.147s
+	sys     0m4.619s
+	CPU	~52%
+
+The CPU numbers are just a rough estimate. For the mainline io_uring
+run, this includes the app itself and all the threads doing IO on its
+behalf (32% for the app, ~1.6% per worker and 32 of them). Context
+switch rate is much smaller with the patchset, since we only have the
+one task performing IO.
+
+Also ran a simple fio based test case, varying the queue depth from 1
+to 16, doubling every time:
+
+[buf-test]
+filename=/data/file
+direct=0
+ioengine=io_uring
+norandommap
+rw=randread
+bs=4k
+iodepth=${QD}
+randseed=89
+runtime=10s
+
+QD/Test		Patchset IOPS		Mainline IOPS
+1		9046			8294
+2		19.8k			18.9k
+4		39.2k			28.5k
+8		64.4k			31.4k
+16		65.7k			37.8k
+
+Outside of my usual environment, so this is just running on a virtualized
+NVMe device in qemu, using ext4 as the file system. NVMe isn't very
+efficient virtualized, so we run out of steam at ~65K which is why we
+flatline on the patched side (nvme_submit_cmd() eats ~75% of the test app
+CPU). Before that happens, it's a linear increase. Not shown is context
+switch rate, which is massively lower with the new code. The old thread
+offload adds a blocking thread per pending IO, so context rate quickly
+goes through the roof.
+
+The goal here is efficiency. Async thread offload adds latency, and
+it also adds noticable overhead on items such as adding pages to the
+page cache. By allowing proper async buffered read support, we don't
+have X threads hammering on the same inode page cache, we have just
+the single app actually doing IO.
+
+Been beating on this and it's solid for me, and I'm now pretty happy
+with how it all turned out. Not aware of any missing bits/pieces or
+code cleanups that need doing.
+
+Series can also be found here:
+
+https://git.kernel.dk/cgit/linux-block/log/?h=async-buffered.7
+
+or pull from:
+
+git://git.kernel.dk/linux-block async-buffered.7
+
+ block/blk-core.c        |   6 +
+ fs/block_dev.c          |   2 +-
+ fs/btrfs/file.c         |   2 +-
+ fs/ext4/file.c          |   2 +-
+ fs/io_uring.c           | 336 ++++++++++++++++++++++++++++++++++------
+ fs/xfs/xfs_file.c       |   2 +-
+ include/linux/blkdev.h  |   1 +
+ include/linux/fs.h      |  10 +-
+ include/linux/pagemap.h |  75 +++++++++
+ mm/filemap.c            | 110 ++++++++-----
+ 10 files changed, 454 insertions(+), 92 deletions(-)
+
+Changes since v6:
+- Properly catch and resubmit requests that would have blocked in
+  submission.
+- Fix sqthread mm usage for async buffered retry
+- Fix a retry condition iter setup
+- Rebase on master + for-5.9/io_uring
+Changes since v5:
+- Correct commit message, iocb->private -> iocb->ki_waitq
+- Get rid of io_uring goto, use an iter read helper
+Changes since v3:
+- io_uring: don't retry if REQ_F_NOWAIT is set
+- io_uring: alloc req->io if the request type didn't already
+- Add iocb->ki_waitq instead of (ab)using iocb->private
+Changes since v2:
+- Get rid of unnecessary wait_page_async struct, just use wait_page_async
+- Add another prep handler, adding wake_page_match()
+- Use wake_page_match() in both callers
+Changes since v1:
+- Fix an issue with inline page locking
+- Fix a potential race with __wait_on_page_locked_async()
+- Fix a hang related to not setting page_match, thus missing a wakeup
+
+-- 
+Jens Axboe
+
+
 
