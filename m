@@ -2,374 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92FF1FF77F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C061FF7B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731801AbgFRPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:41:26 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:54849 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731744AbgFRPk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:40:56 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200618154039euoutp012b973feef4827c536649d0d6c105bf19~ZrZ56DALm1845318453euoutp01T
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 15:40:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200618154039euoutp012b973feef4827c536649d0d6c105bf19~ZrZ56DALm1845318453euoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592494839;
-        bh=bUR0gkYnHY2yGJNGlfsLKjT3FPrFZZ3Z2LsLuxLZIzE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qc9xM290EInWEc6qOa+aAiUjmqO3epRnOrc6nSHKgDev3t4LN1k4W5tu8cp34nabm
-         EbLBhXwwEgR9vg3caaX12Yd3RRi4t14YhzqOP3rbft79xPrudkTSZkrvLVsHu3/DMa
-         hYK4ZgDNP7wl2mquyDG44tghLtdaOQJWPJflaL9w=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200618154039eucas1p27f22f2881645b0769b94b16a5159f94d~ZrZ5oBFp40608806088eucas1p20;
-        Thu, 18 Jun 2020 15:40:39 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 61.70.60698.6FA8BEE5; Thu, 18
-        Jun 2020 16:40:38 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200618154038eucas1p1acd4fcdd183de4c19c4004778527a755~ZrZ5UdJYA1545815458eucas1p1o;
-        Thu, 18 Jun 2020 15:40:38 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200618154038eusmtrp12e800f642df656361881d213119aff1b~ZrZ5Ty4wZ2230622306eusmtrp1W;
-        Thu, 18 Jun 2020 15:40:38 +0000 (GMT)
-X-AuditID: cbfec7f5-a0fff7000001ed1a-54-5eeb8af69cde
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 76.F9.07950.6FA8BEE5; Thu, 18
-        Jun 2020 16:40:38 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200618154038eusmtip19632174da7f25d0e928d6533f76216c7~ZrZ4ojlkT0833608336eusmtip1V;
-        Thu, 18 Jun 2020 15:40:38 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org
-Subject: [PATCH v6 35/36] videobuf2: use sgtable-based scatterlist wrappers
-Date:   Thu, 18 Jun 2020 17:39:56 +0200
-Message-Id: <20200618153956.29558-36-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200618153956.29558-1-m.szyprowski@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSfSxVYRzuPeeec8+9uXW6bN6htLtVqy0y2s7GRMXO1h+ppbU+cOPsMp/d
-        g6g/ssR0XUYUSTGZb7ldopFEcUXdiBpJiLXrW7vubczIcaj/nt/z/J49z+/dS6DSLsyGCImI
-        ZpQR8jAZLhbUdyzpD5tV035HFtvdqDT9e4R6nluDUWv1mSjVb5rHqfLKdoTqfTgsoApbXKnF
-        /jGE0o5/xai+xnycUmteYFT1u2EhVaJdQajs2SUh1bowgXnspKueVAG62VwooLUVd3G6wTyK
-        0SOpOoSuLb5FD62Oo3TWQCmgmwYTcHp8eRKn0+sqAG3U7qG7TEahj+Si2C2ICQuJZZSO7gHi
-        4Lo7TVjU4zNxmYNvsQRQc0IFRAQkXWBxeg+iAmJCSpYBWNo/gfPDIoDjw29QfjACaNIX4FuW
-        0aFZAS+UAvjDYEA4YcNyf8aDwzjpBFWzqg2DFZkEYGeaBYdRsgaFRVUkhy3JU/CVqVfIYQG5
-        D36YasU4LCHdYbN5ZjPMHlZquBYiQrTOd+uSMC4Ykj+FUFOWg/JLJ2FnKm+GpCWc0tUJeWwH
-        u7PUAt6QCOCYvlrID2oA+27nAn7LFX7XL6/HEev1DsKaRkee9oSGri8oR0NyBxyY3cUfsAPe
-        q8/ZpCUwJVnKb++Hebpn/2Jbez5vVqPh4iezkH+sTADzH7ShGcA+739YIQAVwJqJYcMVDOsc
-        wVx3YOXhbEyEwiEwMlwL1n9Y96rO9BK8XrnaBkgCyCwkhnPTflJMHsvGh7cBSKAyK8nxj91+
-        UkmQPP4Go4z0V8aEMWwbsCUEMmuJc9HkFSmpkEczoQwTxSi3VIQQ2SQAu8Cg6NSGuaXta1bO
-        GeLzjnp1cHCKZvqaxne+ExObygfYuJLQZH3OseUDigxRbs82URwYS3Qe7Ajx81ww7vVHjK4t
-        BbWI+GbcJR8W9QLFj5xqn9p7H+2w/TZy+QJ6einAxScxg7I/W9ArBnO/e3u8s2ki0Xd385+W
-        X/Neah+ZgA2WOx1Claz8LxjfRMVdAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRmVeSWpSXmKPExsVy+t/xu7rful7HGZzepmvRe+4kk8XGGetZ
-        Lf5vm8hsceXrezaLlauPMllcnHmXxWLBfmuLL1ceMllsenyN1eLyrjlsFj0btrJarD1yl91i
-        2aY/TBZT3v5ktzj44QmrA7/HmnlrGD32flvA4rFpVSebx/ZvD1g97ncfZ/LYvKTe4/a/x8we
-        k28sZ/TYfbOBzePxr5dsHn1bVjF6fN4k53Hq62f2AN4oPZui/NKSVIWM/OISW6VoQwsjPUNL
-        Cz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYwtLbtZC+YGVky8eZi1gXG9cxcjJ4eEgInE
-        g9tvWboYuTiEBJYySmy79JwFIiEjcXJaAyuELSzx51oXG0TRJ6Cin8/ZQRJsAoYSXW8hEiIC
-        nYwS07o/soM4zAI7mSX2337KCFIlLOAtsefrRbAOFgFViTOvDoKN5RWwk9j77Q0bxAp5idUb
-        DjCD2JxA8dPHW8FqhARsJZ5/aGObwMi3gJFhFaNIamlxbnpusZFecWJucWleul5yfu4mRmBU
-        bTv2c8sOxq53wYcYBTgYlXh4X4S8jhNiTSwrrsw9xCjBwawkwut09nScEG9KYmVValF+fFFp
-        TmrxIUZToKMmMkuJJucDIz6vJN7Q1NDcwtLQ3Njc2MxCSZy3Q+BgjJBAemJJanZqakFqEUwf
-        EwenVAPjjl8WdSqe5595zjmo+Enw/Pe537TWvbJ7HvXl0bednWmh3OHLm9tSMyKe+WyW36Gm
-        Y9gXZ/rh7gxNBpEtEwzllrMeW3dCakl9z/VSZZX8aYzhqmf9NphnHOq8dcfyRHOJq5Xxn5fK
-        3/5ve6HgdUj62e6UH8/VQsUWuDXbLnF7/TLiwYq/YlcUlFiKMxINtZiLihMB19SdncACAAA=
-X-CMS-MailID: 20200618154038eucas1p1acd4fcdd183de4c19c4004778527a755
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200618154038eucas1p1acd4fcdd183de4c19c4004778527a755
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200618154038eucas1p1acd4fcdd183de4c19c4004778527a755
-References: <20200618153956.29558-1-m.szyprowski@samsung.com>
-        <CGME20200618154038eucas1p1acd4fcdd183de4c19c4004778527a755@eucas1p1.samsung.com>
+        id S1731682AbgFRPnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:43:03 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2329 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731617AbgFRPmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 11:42:55 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 1EEDA7D2836602DCFE8C;
+        Thu, 18 Jun 2020 16:42:54 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.90.32) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 18 Jun 2020 16:42:53 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <helgaas@kernel.org>, <bp@alien8.de>, <james.morse@arm.com>,
+        <lenb@kernel.org>, <tony.luck@intel.com>,
+        <dan.carpenter@oracle.com>, <zhangliguang@linux.alibaba.com>,
+        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
+        <jroedel@suse.de>
+CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: [PATCH v10 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+Date:   Thu, 18 Jun 2020 16:40:51 +0100
+Message-ID: <20200618154051.639-3-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.90.32]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use recently introduced common wrappers operating directly on the struct
-sg_table objects and scatterlist page iterators to make the code a bit
-more compact, robust, easier to follow and copy/paste safe.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-No functional change, because the code already properly did all the
-scaterlist related calls.
+The HiSilicon HIP PCIe controller is capable of handling errors
+on root port and perform port reset separately at each root port.
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Add error handling driver for HIP PCIe controller to log
+and report recoverable errors. Perform root port reset and restore
+link status after the recovery.
+
+Following are some of the PCIe controller's recoverable errors
+1. completion transmission timeout error.
+2. CRS retry counter over the threshold error.
+3. ECC 2 bit errors
+4. AXI bresponse/rresponse errors etc.
+
+The driver placed in the drivers/pci/controller/ because the
+HIP PCIe controller does not use DWC ip.
+
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+Reviewed-by: Bjorn Helgaas <helgaas@kernel.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+--
+drivers/pci/controller/Kconfig           |   8 +
+drivers/pci/controller/Makefile          |   1 +
+drivers/pci/controller/pcie-hisi-error.c | 336 +++++++++++++++++++++++++++++++
+3 files changed, 345 insertions(+)
+create mode 100644 drivers/pci/controller/pcie-hisi-error.c
 ---
- .../common/videobuf2/videobuf2-dma-contig.c   | 41 ++++++++-----------
- .../media/common/videobuf2/videobuf2-dma-sg.c | 32 ++++++---------
- .../common/videobuf2/videobuf2-vmalloc.c      | 12 ++----
- 3 files changed, 34 insertions(+), 51 deletions(-)
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
+ 3 files changed, 336 insertions(+)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index f4b4a7c135eb..ba01a8692d88 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -48,16 +48,15 @@ struct vb2_dc_buf {
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index adddf21fa381..b7949b37c029 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -286,6 +286,14 @@ config PCI_LOONGSON
+ 	  Say Y here if you want to enable PCI controller support on
+ 	  Loongson systems.
  
- static unsigned long vb2_dc_get_contiguous_size(struct sg_table *sgt)
- {
--	struct scatterlist *s;
- 	dma_addr_t expected = sg_dma_address(sgt->sgl);
--	unsigned int i;
-+	struct sg_dma_page_iter dma_iter;
- 	unsigned long size = 0;
- 
--	for_each_sg(sgt->sgl, s, sgt->nents, i) {
--		if (sg_dma_address(s) != expected)
-+	for_each_sgtable_dma_page(sgt, &dma_iter, 0) {
-+		if (sg_page_iter_dma_address(&dma_iter) != expected)
- 			break;
--		expected = sg_dma_address(s) + sg_dma_len(s);
--		size += sg_dma_len(s);
-+		expected += PAGE_SIZE;
-+		size += PAGE_SIZE;
- 	}
- 	return size;
- }
-@@ -99,8 +98,7 @@ static void vb2_dc_prepare(void *buf_priv)
- 	if (!sgt || buf->db_attach)
- 		return;
- 
--	dma_sync_sg_for_device(buf->dev, sgt->sgl, sgt->orig_nents,
--			       buf->dma_dir);
-+	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
- }
- 
- static void vb2_dc_finish(void *buf_priv)
-@@ -112,7 +110,7 @@ static void vb2_dc_finish(void *buf_priv)
- 	if (!sgt || buf->db_attach)
- 		return;
- 
--	dma_sync_sg_for_cpu(buf->dev, sgt->sgl, sgt->orig_nents, buf->dma_dir);
-+	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
- }
- 
- /*********************************************/
-@@ -273,8 +271,8 @@ static void vb2_dc_dmabuf_ops_detach(struct dma_buf *dbuf,
- 		 * memory locations do not require any explicit cache
- 		 * maintenance prior or after being used by the device.
- 		 */
--		dma_unmap_sg_attrs(db_attach->dev, sgt->sgl, sgt->orig_nents,
--				   attach->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir,
-+				  DMA_ATTR_SKIP_CPU_SYNC);
- 	sg_free_table(sgt);
- 	kfree(attach);
- 	db_attach->priv = NULL;
-@@ -299,8 +297,8 @@ static struct sg_table *vb2_dc_dmabuf_ops_map(
- 
- 	/* release any previous cache */
- 	if (attach->dma_dir != DMA_NONE) {
--		dma_unmap_sg_attrs(db_attach->dev, sgt->sgl, sgt->orig_nents,
--				   attach->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir,
-+				  DMA_ATTR_SKIP_CPU_SYNC);
- 		attach->dma_dir = DMA_NONE;
- 	}
- 
-@@ -308,9 +306,8 @@ static struct sg_table *vb2_dc_dmabuf_ops_map(
- 	 * mapping to the client with new direction, no cache sync
- 	 * required see comment in vb2_dc_dmabuf_ops_detach()
- 	 */
--	sgt->nents = dma_map_sg_attrs(db_attach->dev, sgt->sgl, sgt->orig_nents,
--				      dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
--	if (!sgt->nents) {
-+	if (dma_map_sgtable(db_attach->dev, sgt, dma_dir,
-+			    DMA_ATTR_SKIP_CPU_SYNC)) {
- 		pr_err("failed to map scatterlist\n");
- 		mutex_unlock(lock);
- 		return ERR_PTR(-EIO);
-@@ -423,8 +420,8 @@ static void vb2_dc_put_userptr(void *buf_priv)
- 		 * No need to sync to CPU, it's already synced to the CPU
- 		 * since the finish() memop will have been called before this.
- 		 */
--		dma_unmap_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--				   buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-+		dma_unmap_sgtable(buf->dev, sgt, buf->dma_dir,
-+				  DMA_ATTR_SKIP_CPU_SYNC);
- 		pages = frame_vector_pages(buf->vec);
- 		/* sgt should exist only if vector contains pages... */
- 		BUG_ON(IS_ERR(pages));
-@@ -521,9 +518,8 @@ static void *vb2_dc_get_userptr(struct device *dev, unsigned long vaddr,
- 	 * No need to sync to the device, this will happen later when the
- 	 * prepare() memop is called.
- 	 */
--	sgt->nents = dma_map_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--				      buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
--	if (sgt->nents <= 0) {
-+	if (dma_map_sgtable(buf->dev, sgt, buf->dma_dir,
-+			    DMA_ATTR_SKIP_CPU_SYNC)) {
- 		pr_err("failed to map scatterlist\n");
- 		ret = -EIO;
- 		goto fail_sgt_init;
-@@ -545,8 +541,7 @@ static void *vb2_dc_get_userptr(struct device *dev, unsigned long vaddr,
- 	return buf;
- 
- fail_map_sg:
--	dma_unmap_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--			   buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-+	dma_unmap_sgtable(buf->dev, sgt, buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
- 
- fail_sgt_init:
- 	sg_free_table(sgt);
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 92072a08af25..6ddf953efa11 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-@@ -142,9 +142,8 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,
- 	 * No need to sync to the device, this will happen later when the
- 	 * prepare() memop is called.
- 	 */
--	sgt->nents = dma_map_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--				      buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
--	if (!sgt->nents)
-+	if (dma_map_sgtable(buf->dev, sgt, buf->dma_dir,
-+			    DMA_ATTR_SKIP_CPU_SYNC)) {
- 		goto fail_map;
- 
- 	buf->handler.refcount = &buf->refcount;
-@@ -180,8 +179,8 @@ static void vb2_dma_sg_put(void *buf_priv)
- 	if (refcount_dec_and_test(&buf->refcount)) {
- 		dprintk(1, "%s: Freeing buffer of %d pages\n", __func__,
- 			buf->num_pages);
--		dma_unmap_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--				   buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-+		dma_unmap_sgtable(buf->dev, sgt, buf->dma_dir,
-+				  DMA_ATTR_SKIP_CPU_SYNC);
- 		if (buf->vaddr)
- 			vm_unmap_ram(buf->vaddr, buf->num_pages);
- 		sg_free_table(buf->dma_sgt);
-@@ -202,8 +201,7 @@ static void vb2_dma_sg_prepare(void *buf_priv)
- 	if (buf->db_attach)
- 		return;
- 
--	dma_sync_sg_for_device(buf->dev, sgt->sgl, sgt->orig_nents,
--			       buf->dma_dir);
-+	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
- }
- 
- static void vb2_dma_sg_finish(void *buf_priv)
-@@ -215,7 +213,7 @@ static void vb2_dma_sg_finish(void *buf_priv)
- 	if (buf->db_attach)
- 		return;
- 
--	dma_sync_sg_for_cpu(buf->dev, sgt->sgl, sgt->orig_nents, buf->dma_dir);
-+	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
- }
- 
- static void *vb2_dma_sg_get_userptr(struct device *dev, unsigned long vaddr,
-@@ -258,9 +256,8 @@ static void *vb2_dma_sg_get_userptr(struct device *dev, unsigned long vaddr,
- 	 * No need to sync to the device, this will happen later when the
- 	 * prepare() memop is called.
- 	 */
--	sgt->nents = dma_map_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
--				      buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
--	if (!sgt->nents)
-+	if (dma_map_sgtable(buf->dev, sgt, buf->dma_dir,
-+			    DMA_ATTR_SKIP_CPU_SYNC)) {
- 		goto userptr_fail_map;
- 
- 	return buf;
-@@ -286,8 +283,7 @@ static void vb2_dma_sg_put_userptr(void *buf_priv)
- 
- 	dprintk(1, "%s: Releasing userspace buffer of %d pages\n",
- 	       __func__, buf->num_pages);
--	dma_unmap_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents, buf->dma_dir,
--			   DMA_ATTR_SKIP_CPU_SYNC);
-+	dma_unmap_sgtable(buf->dev, sgt, buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
- 	if (buf->vaddr)
- 		vm_unmap_ram(buf->vaddr, buf->num_pages);
- 	sg_free_table(buf->dma_sgt);
-@@ -410,8 +406,7 @@ static void vb2_dma_sg_dmabuf_ops_detach(struct dma_buf *dbuf,
- 
- 	/* release the scatterlist cache */
- 	if (attach->dma_dir != DMA_NONE)
--		dma_unmap_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--			attach->dma_dir);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir);
- 	sg_free_table(sgt);
- 	kfree(attach);
- 	db_attach->priv = NULL;
-@@ -436,15 +431,12 @@ static struct sg_table *vb2_dma_sg_dmabuf_ops_map(
- 
- 	/* release any previous cache */
- 	if (attach->dma_dir != DMA_NONE) {
--		dma_unmap_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--			attach->dma_dir);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir);
- 		attach->dma_dir = DMA_NONE;
- 	}
- 
- 	/* mapping to the client with new direction */
--	sgt->nents = dma_map_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--				dma_dir);
--	if (!sgt->nents) {
-+	if (dma_map_sgtable(db_attach->dev, sgt, dma_dir, 0)) {
- 		pr_err("failed to map scatterlist\n");
- 		mutex_unlock(lock);
- 		return ERR_PTR(-EIO);
-diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index c66fda4a65e4..bf5ac63a5742 100644
---- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-+++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-@@ -229,7 +229,7 @@ static int vb2_vmalloc_dmabuf_ops_attach(struct dma_buf *dbuf,
- 		kfree(attach);
- 		return ret;
- 	}
--	for_each_sg(sgt->sgl, sg, sgt->nents, i) {
-+	for_each_sgtable_sg(sgt, sg, i) {
- 		struct page *page = vmalloc_to_page(vaddr);
- 
- 		if (!page) {
-@@ -259,8 +259,7 @@ static void vb2_vmalloc_dmabuf_ops_detach(struct dma_buf *dbuf,
- 
- 	/* release the scatterlist cache */
- 	if (attach->dma_dir != DMA_NONE)
--		dma_unmap_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--			attach->dma_dir);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir, 0);
- 	sg_free_table(sgt);
- 	kfree(attach);
- 	db_attach->priv = NULL;
-@@ -285,15 +284,12 @@ static struct sg_table *vb2_vmalloc_dmabuf_ops_map(
- 
- 	/* release any previous cache */
- 	if (attach->dma_dir != DMA_NONE) {
--		dma_unmap_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--			attach->dma_dir);
-+		dma_unmap_sgtable(db_attach->dev, sgt, attach->dma_dir, 0);
- 		attach->dma_dir = DMA_NONE;
- 	}
- 
- 	/* mapping to the client with new direction */
--	sgt->nents = dma_map_sg(db_attach->dev, sgt->sgl, sgt->orig_nents,
--				dma_dir);
--	if (!sgt->nents) {
-+	if (dma_map_sgtable(db_attach->dev, sgt, dma_dir, 0)) {
- 		pr_err("failed to map scatterlist\n");
- 		mutex_unlock(lock);
- 		return ERR_PTR(-EIO);
++config PCIE_HISI_ERR
++	depends on ARM64 || COMPILE_TEST
++	depends on ACPI
++	bool "HiSilicon HIP PCIe controller error handling driver"
++	help
++	  Say Y here if you want error handling support
++	  for the PCIe controller's errors on HiSilicon HIP SoCs
++
+ source "drivers/pci/controller/dwc/Kconfig"
+ source "drivers/pci/controller/mobiveil/Kconfig"
+ source "drivers/pci/controller/cadence/Kconfig"
+diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+index efd9733ead26..90afd865bf6b 100644
+--- a/drivers/pci/controller/Makefile
++++ b/drivers/pci/controller/Makefile
+@@ -30,6 +30,7 @@ obj-$(CONFIG_PCIE_TANGO_SMP8759) += pcie-tango.o
+ obj-$(CONFIG_VMD) += vmd.o
+ obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
+ obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
++obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
+ # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
+ obj-y				+= dwc/
+ obj-y				+= mobiveil/
+diff --git a/drivers/pci/controller/pcie-hisi-error.c b/drivers/pci/controller/pcie-hisi-error.c
+new file mode 100644
+index 000000000000..3cfcc31568f0
+--- /dev/null
++++ b/drivers/pci/controller/pcie-hisi-error.c
+@@ -0,0 +1,327 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for handling the PCIe controller errors on
++ * HiSilicon HIP SoCs.
++ *
++ * Copyright (c) 2020 HiSilicon Limited.
++ */
++
++#include <linux/acpi.h>
++#include <acpi/ghes.h>
++#include <linux/bitops.h>
++#include <linux/delay.h>
++#include <linux/pci.h>
++#include <linux/platform_device.h>
++#include <linux/kfifo.h>
++#include <linux/spinlock.h>
++
++/* HISI PCIe controller error definitions */
++#define HISI_PCIE_ERR_MISC_REGS	33
++
++#define HISI_PCIE_LOCAL_VALID_VERSION		BIT(0)
++#define HISI_PCIE_LOCAL_VALID_SOC_ID		BIT(1)
++#define HISI_PCIE_LOCAL_VALID_SOCKET_ID		BIT(2)
++#define HISI_PCIE_LOCAL_VALID_NIMBUS_ID		BIT(3)
++#define HISI_PCIE_LOCAL_VALID_SUB_MODULE_ID	BIT(4)
++#define HISI_PCIE_LOCAL_VALID_CORE_ID		BIT(5)
++#define HISI_PCIE_LOCAL_VALID_PORT_ID		BIT(6)
++#define HISI_PCIE_LOCAL_VALID_ERR_TYPE		BIT(7)
++#define HISI_PCIE_LOCAL_VALID_ERR_SEVERITY	BIT(8)
++#define HISI_PCIE_LOCAL_VALID_ERR_MISC		9
++
++static guid_t hisi_pcie_sec_guid =
++		GUID_INIT(0xB2889FC9, 0xE7D7, 0x4F9D,
++			0xA8, 0x67, 0xAF, 0x42, 0xE9, 0x8B, 0xE7, 0x72);
++
++/*
++ * We pass core id and core port id to the ACPI reset method to identify
++ * certain root port to reset, while the firmware reports sockets port
++ * id which occurs an error. Use the macros here to do the conversion
++ */
++#define HISI_PCIE_CORE_ID(v)             ((v) >> 3)
++#define HISI_PCIE_PORT_ID(core, v)       (((v) >> 1) + ((core) << 3))
++#define HISI_PCIE_CORE_PORT_ID(v)        (((v) & 7) << 1)
++
++struct hisi_pcie_error_data {
++	u64	val_bits;
++	u8	version;
++	u8	soc_id;
++	u8	socket_id;
++	u8	nimbus_id;
++	u8	sub_module_id;
++	u8	core_id;
++	u8	port_id;
++	u8	err_severity;
++	u16	err_type;
++	u8	reserv[2];
++	u32	err_misc[HISI_PCIE_ERR_MISC_REGS];
++};
++
++struct hisi_pcie_error_private {
++	struct notifier_block	nb;
++	struct device *dev;
++};
++
++enum hisi_pcie_submodule_id {
++	HISI_PCIE_SUB_MODULE_ID_AP,
++	HISI_PCIE_SUB_MODULE_ID_TL,
++	HISI_PCIE_SUB_MODULE_ID_MAC,
++	HISI_PCIE_SUB_MODULE_ID_DL,
++	HISI_PCIE_SUB_MODULE_ID_SDI,
++};
++
++static const char * const hisi_pcie_sub_module[] = {
++	[HISI_PCIE_SUB_MODULE_ID_AP]	= "AP Layer",
++	[HISI_PCIE_SUB_MODULE_ID_TL]	= "TL Layer",
++	[HISI_PCIE_SUB_MODULE_ID_MAC]	= "MAC Layer",
++	[HISI_PCIE_SUB_MODULE_ID_DL]	= "DL Layer",
++	[HISI_PCIE_SUB_MODULE_ID_SDI]	= "SDI Layer",
++};
++
++enum hisi_pcie_err_severity {
++	HISI_PCIE_ERR_SEV_RECOVERABLE,
++	HISI_PCIE_ERR_SEV_FATAL,
++	HISI_PCIE_ERR_SEV_CORRECTED,
++	HISI_PCIE_ERR_SEV_NONE,
++};
++
++static const char * const hisi_pcie_error_sev[] = {
++	[HISI_PCIE_ERR_SEV_RECOVERABLE]	= "recoverable",
++	[HISI_PCIE_ERR_SEV_FATAL]	= "fatal",
++	[HISI_PCIE_ERR_SEV_CORRECTED]	= "corrected",
++	[HISI_PCIE_ERR_SEV_NONE]	= "none",
++};
++
++static const char *hisi_pcie_get_string(const char * const *array,
++					size_t n, u32 id)
++{
++	u32 index;
++
++	for (index = 0; index < n; index++) {
++		if (index == id && array[index])
++			return array[index];
++	}
++
++	return "unknown";
++}
++
++static int hisi_pcie_port_reset(struct platform_device *pdev,
++				u32 chip_id, u32 port_id)
++{
++	struct device *dev = &pdev->dev;
++	acpi_handle handle = ACPI_HANDLE(dev);
++	union acpi_object arg[3];
++	struct acpi_object_list arg_list;
++	acpi_status s;
++	unsigned long long data = 0;
++
++	arg[0].type = ACPI_TYPE_INTEGER;
++	arg[0].integer.value = chip_id;
++	arg[1].type = ACPI_TYPE_INTEGER;
++	arg[1].integer.value = HISI_PCIE_CORE_ID(port_id);
++	arg[2].type = ACPI_TYPE_INTEGER;
++	arg[2].integer.value = HISI_PCIE_CORE_PORT_ID(port_id);
++
++	arg_list.count = 3;
++	arg_list.pointer = arg;
++
++	s = acpi_evaluate_integer(handle, "RST", &arg_list, &data);
++	if (ACPI_FAILURE(s)) {
++		dev_err(dev, "No RST method\n");
++		return -EIO;
++	}
++
++	if (data) {
++		dev_err(dev, "Failed to Reset\n");
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int hisi_pcie_port_do_recovery(struct platform_device *dev,
++				      u32 chip_id, u32 port_id)
++{
++	acpi_status s;
++	struct device *device = &dev->dev;
++	acpi_handle root_handle = ACPI_HANDLE(device);
++	struct acpi_pci_root *pci_root;
++	struct pci_bus *root_bus;
++	struct pci_dev *pdev;
++	u32 domain, busnr, devfn;
++
++	s = acpi_get_parent(root_handle, &root_handle);
++	if (ACPI_FAILURE(s))
++		return -ENODEV;
++	pci_root = acpi_pci_find_root(root_handle);
++	if (!pci_root)
++		return -ENODEV;
++	root_bus = pci_root->bus;
++	domain = pci_root->segment;
++
++	busnr = root_bus->number;
++	devfn = PCI_DEVFN(port_id, 0);
++	pdev = pci_get_domain_bus_and_slot(domain, busnr, devfn);
++	if (!pdev) {
++		dev_info(device, "Fail to get root port %04x:%02x:%02x.%d device\n",
++			 domain, busnr, PCI_SLOT(devfn), PCI_FUNC(devfn));
++		return -ENODEV;
++	}
++
++	pci_stop_and_remove_bus_device_locked(pdev);
++	pci_dev_put(pdev);
++
++	if (hisi_pcie_port_reset(dev, chip_id, port_id))
++		return -EIO;
++
++	/*
++	 * The initialization time of subordinate devices after
++	 * hot reset is no more than 1s, which is required by
++	 * the PCI spec v5.0 sec 6.6.1. The time will shorten
++	 * if Readiness Notifications mechanisms are used. But
++	 * wait 1s here to adapt any conditions.
++	 */
++	ssleep(1UL);
++
++	/* add root port and downstream devices */
++	pci_lock_rescan_remove();
++	pci_rescan_bus(root_bus);
++	pci_unlock_rescan_remove();
++
++	return 0;
++}
++
++static void hisi_pcie_handle_error(struct platform_device *pdev,
++				   const struct hisi_pcie_error_data *edata)
++{
++	struct device *dev = &pdev->dev;
++	int idx, rc;
++
++	if (edata->val_bits == 0) {
++		dev_warn(dev, "%s: no valid error information\n", __func__);
++		return;
++	}
++
++	dev_info(dev, "\nHISI : HIP : PCIe controller error\n");
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SOC_ID)
++		dev_info(dev, "Table version = %d\n", edata->version);
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SOCKET_ID)
++		dev_info(dev, "Socket ID = %d\n", edata->socket_id);
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_NIMBUS_ID)
++		dev_info(dev, "Nimbus ID = %d\n", edata->nimbus_id);
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_SUB_MODULE_ID)
++		dev_info(dev, "Sub Module = %s\n",
++			 hisi_pcie_get_string(hisi_pcie_sub_module,
++					      ARRAY_SIZE(hisi_pcie_sub_module),
++					      edata->sub_module_id));
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_CORE_ID)
++		dev_info(dev, "Core ID = core%d\n", edata->core_id);
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_PORT_ID)
++		dev_info(dev, "Port ID = port%d\n", edata->port_id);
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_ERR_SEVERITY)
++		dev_info(dev, "Error severity = %s\n",
++			 hisi_pcie_get_string(hisi_pcie_error_sev,
++					      ARRAY_SIZE(hisi_pcie_error_sev),
++					      edata->err_severity));
++	if (edata->val_bits & HISI_PCIE_LOCAL_VALID_ERR_TYPE)
++		dev_info(dev, "Error type = 0x%x\n", edata->err_type);
++
++	dev_info(dev, "Reg Dump:\n");
++	idx = HISI_PCIE_LOCAL_VALID_ERR_MISC;
++	for_each_set_bit_from(idx, (const unsigned long *)&edata->val_bits,
++			      HISI_PCIE_LOCAL_VALID_ERR_MISC + HISI_PCIE_ERR_MISC_REGS)
++		dev_info(dev, "ERR_MISC_%d = 0x%x\n", idx - HISI_PCIE_LOCAL_VALID_ERR_MISC,
++			 edata->err_misc[idx]);
++
++	if (edata->err_severity != HISI_PCIE_ERR_SEV_RECOVERABLE)
++		return;
++
++	/* Recovery for the PCIe controller errors, try reset
++	 * PCI port for the error recovery
++	 */
++	rc = hisi_pcie_port_do_recovery(pdev, edata->socket_id,
++			HISI_PCIE_PORT_ID(edata->core_id, edata->port_id));
++	if (rc)
++		dev_info(dev, "fail to do hisi pcie port reset\n");
++}
++
++static int hisi_pcie_notify_error(struct notifier_block *nb,
++				  unsigned long event, void *data)
++{
++	struct acpi_hest_generic_data *gdata = data;
++	const struct hisi_pcie_error_data *error_data = acpi_hest_get_payload(gdata);
++	struct hisi_pcie_error_private *priv;
++	struct device *dev;
++	struct platform_device *pdev;
++	guid_t err_sec_guid;
++	u8 socket;
++
++	import_guid(&err_sec_guid, gdata->section_type);
++	if (!guid_equal(&err_sec_guid, &hisi_pcie_sec_guid))
++		return NOTIFY_DONE;
++
++	priv = container_of(nb, struct hisi_pcie_error_private, nb);
++	dev = priv->dev;
++
++	if (device_property_read_u8(dev, "socket", &socket))
++		return NOTIFY_DONE;
++
++	if (error_data->socket_id != socket)
++		return NOTIFY_DONE;
++
++	pdev = container_of(dev, struct platform_device, dev);
++	hisi_pcie_handle_error(pdev, error_data);
++
++	return NOTIFY_OK;
++}
++
++static int hisi_pcie_error_handler_probe(struct platform_device *pdev)
++{
++	struct hisi_pcie_error_private *priv;
++	int ret;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->nb.notifier_call = hisi_pcie_notify_error;
++	priv->dev = &pdev->dev;
++	ret = ghes_register_event_notifier(&priv->nb);
++	if (ret) {
++		dev_err(&pdev->dev,
++			"Failed to register hisi_pcie_notify_error function\n");
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, priv);
++
++	return 0;
++}
++
++static int hisi_pcie_error_handler_remove(struct platform_device *pdev)
++{
++	struct hisi_pcie_error_private *priv = platform_get_drvdata(pdev);
++
++	ghes_unregister_event_notifier(&priv->nb);
++	kfree(priv);
++
++	return 0;
++}
++
++static const struct acpi_device_id hisi_pcie_acpi_match[] = {
++	{ "HISI0361", 0 },
++	{ }
++};
++
++static struct platform_driver hisi_pcie_error_handler_driver = {
++	.driver = {
++		.name	= "hisi-pcie-error-handler",
++		.acpi_match_table = hisi_pcie_acpi_match,
++	},
++	.probe		= hisi_pcie_error_handler_probe,
++	.remove		= hisi_pcie_error_handler_remove,
++};
++module_platform_driver(hisi_pcie_error_handler_driver);
++
++MODULE_DESCRIPTION("HiSilicon HIP PCIe controller error handling driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.17.1
+
 
