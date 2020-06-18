@@ -2,272 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19D61FEB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097FB1FEB7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 08:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgFRGaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 02:30:24 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:60301 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725898AbgFRGaX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 02:30:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592461822; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=GoNXgc7+2d91O+hXVI16Z9u6/tuLTSjOHfmUUPsJg5M=; b=vHq4YIw6aCRev5OixkODkYT445I06Km720ZGCuCMLdzUZo8trqAry+H+tt/5GP8oQ2J2qfSA
- DcWI8AdzKV9PpVLaqm5vRr/g5d91JxHPgYQJntiLuuljEWSz1mX6hVlTtCaXiBw2Hjii9B2x
- fDtjcbnZCcVsRKQreslMIzGvEcs=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5eeb09f5c76a4e7a2a990375 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Jun 2020 06:30:13
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3240EC433CA; Thu, 18 Jun 2020 06:30:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [183.83.66.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FD31C433C9;
-        Thu, 18 Jun 2020 06:30:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FD31C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH V4 2/2] mmc: sdhci-msm: Use internal voltage control
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Vijay Viswanath <vviswana@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
- <1592321779-28556-1-git-send-email-vbadigan@codeaurora.org>
- <1592321779-28556-3-git-send-email-vbadigan@codeaurora.org>
- <CAPDyKFrvvhQPio3FRQmoBgMm1Euvsma_dgGzxA=R8rm0aQgDMQ@mail.gmail.com>
- <40b03630-cdbc-50ee-e483-8ff919f76fb5@codeaurora.org>
- <CAPDyKFrf3rxA-_0wB=bNby2dVSxTwZHSTXeNO5OayQ57Eqiphg@mail.gmail.com>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <541c95a6-0b89-fdc1-4707-e0a1eef1bf91@codeaurora.org>
-Date:   Thu, 18 Jun 2020 12:00:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727889AbgFRGgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 02:36:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6359 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726940AbgFRGgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 02:36:44 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 798B494F5464E55442C0;
+        Thu, 18 Jun 2020 14:36:40 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 18 Jun 2020 14:36:30 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH 1/5] f2fs: fix to wait page writeback before update
+Date:   Thu, 18 Jun 2020 14:36:21 +0800
+Message-ID: <20200618063625.110273-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.18.0.rc1
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrf3rxA-_0wB=bNby2dVSxTwZHSTXeNO5OayQ57Eqiphg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+to make page content stable for special device like raid.
 
-On 6/17/2020 7:46 PM, Ulf Hansson wrote:
-> On Wed, 17 Jun 2020 at 14:46, Veerabhadrarao Badiganti
-> <vbadigan@codeaurora.org> wrote:
->> Thanks for comments Uffe.
->>
->> On 6/17/2020 3:04 PM, Ulf Hansson wrote:
->>> On Tue, 16 Jun 2020 at 17:38, Veerabhadrarao Badiganti
->>> <vbadigan@codeaurora.org> wrote:
->>>> On qcom SD host controllers voltage switching be done after the HW
->>>> is ready for it. The HW informs its readiness through power irq.
->>>> The voltage switching should happen only then.
->>>>
->>>> Use the internal voltage switching and then control the voltage
->>>> switching using power irq.
->>>>
->>>> IO-bus supply of eMMC would be kept always-on. So set the load
->>>> for this supply to configure it in LPM when eMMC is suspend state
->>>>    and in HPM when eMMC is active.
->>>>
->>>> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
->>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>>> Co-developed-by: Vijay Viswanath <vviswana@codeaurora.org>
->>>> Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
->>>> Co-developed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
->>>> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
->>>> ---
->>>>    drivers/mmc/host/sdhci-msm.c | 208 +++++++++++++++++++++++++++++++++++++++++--
->>>>    1 file changed, 199 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
->>>> index 15c42b059240..8297b2142748 100644
->>>> --- a/drivers/mmc/host/sdhci-msm.c
->>>> +++ b/drivers/mmc/host/sdhci-msm.c
->>>> @@ -37,7 +37,9 @@
->>>>    #define CORE_PWRCTL_IO_LOW     BIT(2)
->>>>    #define CORE_PWRCTL_IO_HIGH    BIT(3)
->>>>    #define CORE_PWRCTL_BUS_SUCCESS BIT(0)
->>>> +#define CORE_PWRCTL_BUS_FAIL    BIT(1)
->>>>    #define CORE_PWRCTL_IO_SUCCESS BIT(2)
->>>> +#define CORE_PWRCTL_IO_FAIL     BIT(3)
->>>>    #define REQ_BUS_OFF            BIT(0)
->>>>    #define REQ_BUS_ON             BIT(1)
->>>>    #define REQ_IO_LOW             BIT(2)
->>>> @@ -127,6 +129,9 @@
->>>>    /* Timeout value to avoid infinite waiting for pwr_irq */
->>>>    #define MSM_PWR_IRQ_TIMEOUT_MS 5000
->>>>
->>>> +/* Max load for eMMC Vdd-io supply */
->>>> +#define MMC_VQMMC_MAX_LOAD_UA  325000
->>>> +
->>>>    #define msm_host_readl(msm_host, host, offset) \
->>>>           msm_host->var_ops->msm_readl_relaxed(host, offset)
->>>>
->>>> @@ -278,6 +283,7 @@ struct sdhci_msm_host {
->>>>           bool uses_tassadar_dll;
->>>>           u32 dll_config;
->>>>           u32 ddr_config;
->>>> +       bool vqmmc_enabled;
->>>>    };
->>>>
->>>>    static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
->>>> @@ -1346,6 +1352,88 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
->>>>                   sdhci_msm_hs400(host, &mmc->ios);
->>>>    }
->>>>
->>>> +static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
->>>> +{
->>>> +       if (IS_ERR(mmc->supply.vmmc))
->>>> +               return 0;
->>>> +
->>>> +       return mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
->>>> +}
->>>> +
->>>> +static int msm_toggle_vqmmc(struct sdhci_msm_host *msm_host,
->>>> +                             struct mmc_host *mmc, bool level)
->>>> +{
->>>> +       int ret;
->>>> +       struct mmc_ios ios;
->>>> +
->>>> +       if (msm_host->vqmmc_enabled == level)
->>>> +               return 0;
->>>> +
->>>> +       if (level) {
->>>> +               /* Set the IO voltage regulator to default voltage level */
->>>> +               if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
->>>> +                       ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
->>>> +               else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
->>>> +                       ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
->>>> +
->>>> +               if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
->>>> +                       ret = mmc_regulator_set_vqmmc(mmc, &ios);
->>>> +                       if (ret < 0) {
->>>> +                               dev_err(mmc_dev(mmc), "%s: vqmmc set volgate failed: %d\n",
->>>> +                                       mmc_hostname(mmc), ret);
->>>> +                               goto out;
->>>> +                       }
->>>> +               }
->>>> +               ret = regulator_enable(mmc->supply.vqmmc);
->>>> +       } else {
->>>> +               ret = regulator_disable(mmc->supply.vqmmc);
->>>> +       }
->>>> +
->>>> +       if (ret)
->>>> +               dev_err(mmc_dev(mmc), "%s: vqmm %sable failed: %d\n",
->>>> +                       mmc_hostname(mmc), level ? "en":"dis", ret);
->>>> +       else
->>>> +               msm_host->vqmmc_enabled = level;
->>>> +out:
->>>> +       return ret;
->>>> +}
->>>> +
->>>> +static int msm_config_vqmmc_mode(struct sdhci_msm_host *msm_host,
->>>> +                             struct mmc_host *mmc, bool hpm)
->>>> +{
->>>> +       int load, ret;
->>>> +
->>>> +       load = hpm ? MMC_VQMMC_MAX_LOAD_UA : 0;
->>>> +       ret = regulator_set_load(mmc->supply.vqmmc, load);
->>>> +       if (ret)
->>>> +               dev_err(mmc_dev(mmc), "%s: vqmmc set load failed: %d\n",
->>>> +                       mmc_hostname(mmc), ret);
->>>> +       return ret;
->>>> +}
->>>> +
->>>> +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
->>>> +                             struct mmc_host *mmc, bool level)
->>>> +{
->>>> +       int ret;
->>>> +       bool always_on;
->>>> +
->>>> +       if (IS_ERR(mmc->supply.vqmmc)           ||
->>> White space.
->>>
->>>> +           (mmc->ios.power_mode == MMC_POWER_UNDEFINED))
->>>> +               return 0;
->>>> +       /*
->>>> +        * For eMMC don't turn off Vqmmc, Instead just configure it in LPM
->>>> +        * and HPM modes by setting the right amonut of load.
->>> /s/right amonut of load/corresponding load
->>>
->>>> +        */
->>>> +       always_on = mmc->card && mmc_card_mmc(mmc->card);
->>>> +
->>>> +       if (always_on)
->>>> +               ret = msm_config_vqmmc_mode(msm_host, mmc, level);
->>>> +       else
->>>> +               ret = msm_toggle_vqmmc(msm_host, mmc, level);
->>> I am worried that this isn't really doing what you think it does.
->>> always_on may not always be set for an eMMC.
->>>
->>> This is because the mmc->card doesn't get assigned until the
->>> initialization of the eMMC has been completed. In other words, way
->>> after VCC and VCCQ have been turned on and changed voltage levels.
->> For the very first time, i have to enable the vqmmc.
->> And second time on-wards I have to set load instead of turning vqmmc off
->> / on.
->>
->> This condition helps me in doing exactly the same.
->>
->> This gets invoked first time when  mmc_power_up() is called.
->> Yes, by that time card won't be initialized. So this check fails and
->> allows to turn on the regulator instead of setting load.
->>
->> After that, this gets invoked only next time mmc_power_up/off() is called
->> which is during mmc_suspend/resume.
-> I see.
->
-> That assumes the initialization always works at the first attempt, so
-> no re-try or power cycle gets done in some error/reset path.
->
->> By this time card is initialized, it allows to set load.
-> Okay, I get it. Thanks for clarifying.
->
-> Perhaps you can add a small comment about this in the code, so we
-> don't forget the reasons why the code looks like this.
-Sure. Will update comment with this info.
->>
->>> Moreover, mmc_card_mmc() is also about legacy MMC cards, not solely for eMMCs.
->> Okay. But on qcom platform, we have support for only eMMC/SD/SDIO.
->> So this mmc_card_mmc() meets my requirements!!! Allows only eMMC not SD
->> & SDIO.
-> Well, eMMC is fairly similar to MMC, from a basic functionality point
-> of view. So, I am quite sure you can get it to work with your
-> controller, even if it's not officially supported.
->>> If you want special treatment of an eMMC, I think it's better to use
->>> the DT bindings Documentation/devicetree/bindings/mmc/mmc-card.txt. If
->>> you have such a subnode, that indicates that there is an eMMC card
->>> attached.
-> That said, if you don't like the pure DT based solution, as I
-> suggested above - at least extend mmc_card_mmc() with checking the
-> MMC_CAP_NONREMOVABLE flag.
-sure. Will update it. Thank you.
->
-> [...]
->
-> Kind regards
-> Uffe
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/dir.c          |  2 ++
+ fs/f2fs/extent_cache.c | 18 +++++++++---------
+ fs/f2fs/f2fs.h         |  2 +-
+ fs/f2fs/file.c         |  1 +
+ fs/f2fs/inline.c       |  2 ++
+ fs/f2fs/inode.c        |  3 +--
+ 6 files changed, 16 insertions(+), 12 deletions(-)
+
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index d35976785e8c..91e86747a604 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -495,6 +495,8 @@ static int make_empty_dir(struct inode *inode,
+ 	if (IS_ERR(dentry_page))
+ 		return PTR_ERR(dentry_page);
+ 
++	f2fs_bug_on(F2FS_I_SB(inode), PageWriteback(dentry_page));
++
+ 	dentry_blk = page_address(dentry_page);
+ 
+ 	make_dentry_ptr_block(NULL, &d, dentry_blk);
+diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+index e60078460ad1..686c68b98610 100644
+--- a/fs/f2fs/extent_cache.c
++++ b/fs/f2fs/extent_cache.c
+@@ -325,9 +325,10 @@ static void __drop_largest_extent(struct extent_tree *et,
+ }
+ 
+ /* return true, if inode page is changed */
+-static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext)
++static void __f2fs_init_extent_tree(struct inode *inode, struct page *ipage)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	struct f2fs_extent *i_ext = ipage ? &F2FS_INODE(ipage)->i_ext : NULL;
+ 	struct extent_tree *et;
+ 	struct extent_node *en;
+ 	struct extent_info ei;
+@@ -335,16 +336,18 @@ static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_e
+ 	if (!f2fs_may_extent_tree(inode)) {
+ 		/* drop largest extent */
+ 		if (i_ext && i_ext->len) {
++			f2fs_wait_on_page_writeback(ipage, NODE, true, true);
+ 			i_ext->len = 0;
+-			return true;
++			set_page_dirty(ipage);
++			return;
+ 		}
+-		return false;
++		return;
+ 	}
+ 
+ 	et = __grab_extent_tree(inode);
+ 
+ 	if (!i_ext || !i_ext->len)
+-		return false;
++		return;
+ 
+ 	get_extent_info(&ei, i_ext);
+ 
+@@ -360,17 +363,14 @@ static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_e
+ 	}
+ out:
+ 	write_unlock(&et->lock);
+-	return false;
+ }
+ 
+-bool f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext)
++void f2fs_init_extent_tree(struct inode *inode, struct page *ipage)
+ {
+-	bool ret =  __f2fs_init_extent_tree(inode, i_ext);
++	__f2fs_init_extent_tree(inode, ipage);
+ 
+ 	if (!F2FS_I(inode)->extent_tree)
+ 		set_inode_flag(inode, FI_NO_EXTENT);
+-
+-	return ret;
+ }
+ 
+ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index b35a50f4953c..326c12fa0da5 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3795,7 +3795,7 @@ struct rb_entry *f2fs_lookup_rb_tree_ret(struct rb_root_cached *root,
+ bool f2fs_check_rb_tree_consistence(struct f2fs_sb_info *sbi,
+ 						struct rb_root_cached *root);
+ unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink);
+-bool f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext);
++void f2fs_init_extent_tree(struct inode *inode, struct page *ipage);
+ void f2fs_drop_extent_tree(struct inode *inode);
+ unsigned int f2fs_destroy_extent_node(struct inode *inode);
+ void f2fs_destroy_extent_tree(struct inode *inode);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 3268f8dd59bb..1862073b96d2 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1250,6 +1250,7 @@ static int __clone_blkaddrs(struct inode *src_inode, struct inode *dst_inode,
+ 				f2fs_put_page(psrc, 1);
+ 				return PTR_ERR(pdst);
+ 			}
++			f2fs_wait_on_page_writeback(pdst, DATA, true, true);
+ 			f2fs_copy_page(psrc, pdst);
+ 			set_page_dirty(pdst);
+ 			f2fs_put_page(pdst, 1);
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index dbade310dc79..4bcbc486c9e2 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -340,6 +340,8 @@ int f2fs_make_empty_inline_dir(struct inode *inode, struct inode *parent,
+ 	struct f2fs_dentry_ptr d;
+ 	void *inline_dentry;
+ 
++	f2fs_wait_on_page_writeback(ipage, NODE, true, true);
++
+ 	inline_dentry = inline_data_addr(inode, ipage);
+ 
+ 	make_dentry_ptr_inline(inode, &d, inline_dentry);
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 44582a4db513..7c156eb26dd7 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -367,8 +367,7 @@ static int do_read_inode(struct inode *inode)
+ 	fi->i_pino = le32_to_cpu(ri->i_pino);
+ 	fi->i_dir_level = ri->i_dir_level;
+ 
+-	if (f2fs_init_extent_tree(inode, &ri->i_ext))
+-		set_page_dirty(node_page);
++	f2fs_init_extent_tree(inode, node_page);
+ 
+ 	get_inline_info(inode, ri);
+ 
+-- 
+2.18.0.rc1
+
