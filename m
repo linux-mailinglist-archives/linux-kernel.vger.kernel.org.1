@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA681FDDD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045221FE014
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732203AbgFRB27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:28:59 -0400
-Received: from sonic313-22.consmr.mail.ir2.yahoo.com ([77.238.179.189]:45310
-        "EHLO sonic313-22.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731534AbgFRBZ4 (ORCPT
+        id S1733140AbgFRBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:45:09 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:27859 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732468AbgFRBpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:25:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592443553; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=N2lwg812GwPpiTS4iqO9ykinfCgsLawHRj1BUy+6/KF45iNoRdhYW3WzVS5emneIieyJED09zJTHtUpFP3luCB/hYsnAb7TSqVlbtBaS09VXIjYCScDamlrLuwDR7Pc/rCQsR94QJ0x9mydy54NXiUTyCHij9nY9G5is29C9+hCp3AKenv8XPKkT1QJFUY45NQXNyBUztVX5IcTVq6pJxuSSSuZJ4SFotVIxkaNxJgIopv2IxgNYEzu7JQT8jkKElDoXy+S1EMPVFxTXHvaHvPLFiaI8JT1Jn5hQnMkwDUz0tscWbkF8paW3ICSObyz7N4eGvxkEG1FQjQgik962fg==
-X-YMail-OSG: ptlCYzoVM1nMFORtpRlcrn33UEafr1yKwfASbWRUUKdQ.5gdngsRaPsgv5jrVF7
- y_N5yek44t.jXXnFWPOYHR9sZRhR6GoJxykL4R1tphQrrVjjJHYSwHSfhokX.8NWJjToRkkOCezf
- MX0I679XD74sbDcK0ctg.WQ1cEhCGvDf6MvlZrCWLwB5go1Mex7amG.gehrxR6FMdVl4STiTbTfX
- AJhqg9x_9ze8qXmroyclLQ2Ru_nHgl8v6S2Ur47RGVe_yFmhiZaqsPFcnSyIYi.KjcAHXmBfh59h
- kyzXo71wcd_P4DRtiNW1f18QV7cx5gN4ySgZHS.dFbwRHEgGVBNjLpRqfnurONbkmfkR98tKBN4T
- TQb1vT54DZdRGQ2OFoVh2lnmHqaSfBg.5tbXydbVEevVVDpS88FjK5a9ovW1C96bo.C26PGwJ._7
- woQVavfrzpIQ3G3NOVndVAfnORyXapfCli1HR_whGUMxqRTOsB4_Xfk9hHoD0SktFehDSzzMb.PF
- L1n4IL0MtuMRCXEXsvlmtNQOVGJ.9c84uSCyXULkR5VOuDJOeYXNUylVVSHmYUPz9Na_iVbzcZPi
- qG8H1yQqBrUc6nBL8D6_XDQMhFYRmBmKrd4NCuFrTeMd8bsPatWnU8PymwEhauRYAQDs52WbtrUQ
- jTeelKy6shdtD_Mhgjm81IVP8d1nX.ZQNSNjyJy8LdJ3TEtzW20m_5fRiI6VkRuP_2taATVyhViv
- lhYPkjLyHks.CrrfSOFcHrODVjx86DKJtMooe6z9mcSBysBowU17ltfeKchAZ9yoNLeRYdyQcuse
- v8luWnWALjuWVqtrO_wZPn8lsfNLuqnw1rg80.wzIgmofYD9jysn7VkQPoiWODMv0bc6ulnQvhQH
- 6MN0cE4598g2aAy.NnRDvC2E.o73xUnr15Pua_ixduJlmrudQSGMROs1upfZLlbTsb1RT92YTYZb
- hN1rMRDyCcdfUWQozgJ0JzZ6zIDqy0KDQKH1erONfgweNdk.3KeHHgQUuEpRcDobYIGHraOIE8yZ
- ZIBAuaYlXXaFgTdgRdjJaOmEPBxIUBfG3H_Me43EFk7YX3zcUshxKpH9j0WC9kJZxuXZRn3afiwG
- rnsGEj2.ICuqCXjbDGt0OKzCareXIlMlTwNN33usEyaJZAFDDqn0dt1NBUOcqiajmEOrlHKgpFzT
- TOLYbRewrSzFkgIgnQ3IsjY1UxmlgD64aiOTu43_gVHHSgWsrlZFNCMcgbHFhi4GRXh9MsUIIavF
- 5K8PTfLpSmKTq212kDmE_mvczM_TwaO9S6.ntghrrUS2OnpK1rwgcTTsmoGlw1ZkQrRklSbiz907
- 7MPw-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ir2.yahoo.com with HTTP; Thu, 18 Jun 2020 01:25:53 +0000
-Date:   Thu, 18 Jun 2020 01:25:53 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
-Reply-To: mrsminaaaliyahbrunel344@gmail.com
-Message-ID: <1329745505.4360115.1592443553580@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1329745505.4360115.1592443553580.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16119 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0
-To:     unlisted-recipients:; (no To-header on input)
+        Wed, 17 Jun 2020 21:45:05 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200618014502epoutp01cdaf9c9ddfe01932f4de2603565b2758~ZgAUQAnUC1369813698epoutp01I
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:45:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200618014502epoutp01cdaf9c9ddfe01932f4de2603565b2758~ZgAUQAnUC1369813698epoutp01I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592444702;
+        bh=twolrlHaZZVZpdlkPRS2+xEnnvzq2S5IOwmKy67vMX4=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=uDsBhGjrRXcjR4JP5mreRbiUTAIHbmetXQVUyxbABdCZoVN2pS1504A7XnEDvfRNp
+         mVEgxHecrMRIl6QFvDdqk9NH0vYPdzq4qnfoh1oxLG2+IxFHz69HBPrm+0bDa/Cmpq
+         HL2Rc3/wdobv8Ow9b37LF1/7U5HyLeMW48w84ujc=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200618014501epcas1p41a295123d2f95e6df8415d2e04975748~ZgATuq7Dp1323913239epcas1p4q;
+        Thu, 18 Jun 2020 01:45:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [RFC PATCH v2 3/5] scsi: ufs: Introduce HPB module
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB4640350209C30F578945492CFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592444701916.JavaMail.epsvc@epcpadp1>
+Date:   Thu, 18 Jun 2020 09:53:44 +0900
+X-CMS-MailID: 20200618005344epcms2p506001ce6c5958d65980bc9414d411695
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <SN6PR04MB4640350209C30F578945492CFC9A0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+        <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
+        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb,
+> > +                             struct ufshpb_dev_info *hpb_dev_info)
+> > +{
+> > +       int ret;
+> > +
+> > +       spin_lock_init(&hpb->hpb_state_lock);
+> > +
+> > +       ret = ufshpb_alloc_region_tbl(hba, hpb);
+> > +       if (ret)
+> > +               goto release_m_page_cache;
+> This label is added only on 4/5
+> 
+> > +static int __init ufshpb_init(void)
+> > +{
+> > +       unsigned int pool_size;
+> Unused variable
+> 
+> > +       int ret;
+> > +
+> > +       ret = driver_register(&ufshpb_drv.drv);
+> > +       if (ret)
+> > +               pr_err("ufshpb: driver register failed\n");
+> > +
+> > +       return ret;
+> > +}
 
-
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+OK, I will fix it.
