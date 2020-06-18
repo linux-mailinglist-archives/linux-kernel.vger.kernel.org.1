@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E90A1FE10C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C7E1FE105
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732932AbgFRBwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
+        id S1733009AbgFRBvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729416AbgFRB0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:26:51 -0400
+        id S1731751AbgFRB0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:26:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A42D320897;
-        Thu, 18 Jun 2020 01:26:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E99B20B1F;
+        Thu, 18 Jun 2020 01:26:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443610;
-        bh=YbQ/ve/xaN0TaYECh2pWFCVmv0cZDtl6sWpM00QVo+E=;
+        s=default; t=1592443612;
+        bh=DczPXgbR3LZtV9QYkjNMLLC5qoXA+WMPTwUX5CCeeRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rKk2aBzGhKoE6nNNpahLilCXDz+1HE9xx4iYMSaLC4fXBLcPZX6byL5T8tvoro+Wx
-         yfY8XP0obFRjefk329E9ZlL3Nu1Sa0x3K3P5ytKPnuuAu/otBq6Ihzf/HLWYDgyS6c
-         Crgn0r/PqeeatPeTeHrhkow4CP/3jAy4KZG2cexo=
+        b=wM986ioIIaESnBWGsSSet607c5l7we63fjUl+scwenf0PJXAPzzEFRfybNPq/A1Ad
+         Wp8FC2pwiEfAItFhfQv31CiJPhoWvuShpN/svP7aqtAb23N33nkPak3OZWXIgZzKCd
+         rC+efax4hRBqmM/0/5Pqmb0OzS+G43vhmdG6E02w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aiman Najjar <aiman.najjar@hurranet.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 4.14 038/108] staging: rtl8712: fix multiline derefernce warnings
-Date:   Wed, 17 Jun 2020 21:24:50 -0400
-Message-Id: <20200618012600.608744-38-sashal@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-iio@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 040/108] iio: buffer: Don't allow buffers without any channels enabled to be activated
+Date:   Wed, 17 Jun 2020 21:24:52 -0400
+Message-Id: <20200618012600.608744-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
 References: <20200618012600.608744-1-sashal@kernel.org>
@@ -44,78 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aiman Najjar <aiman.najjar@hurranet.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit 269da10b1477c31c660288633c8d613e421b131f ]
+[ Upstream commit b7329249ea5b08b2a1c2c3f24a2f4c495c4f14b8 ]
 
-This patch fixes remaining checkpatch warnings
-in rtl871x_xmit.c:
+Before activating a buffer make sure that at least one channel is enabled.
+Activating a buffer with 0 channels enabled doesn't make too much sense and
+disallowing this case makes sure that individual driver don't have to add
+special case code to handle it.
 
-WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->PrivacyKeyIndex'
-636: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:636:
-+					      (u8)psecuritypriv->
-+					      PrivacyKeyIndex);
+Currently, without this patch enabling a buffer is possible and no error is
+produced. With this patch -EINVAL is returned.
 
-WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
-643: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:643:
-+						   (u8)psecuritypriv->
-+						   XGrpKeyid);
+An example of execution with this patch and some instrumented print-code:
+   root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
+   root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
+   0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
+   1: iio_verify_update 753
+   2:__iio_update_buffers 1115 ret -22
+   3: iio_buffer_store_enable 1241 ret -22
+   -bash: echo: write error: Invalid argument
+1, 2 & 3 are exit-error paths. 0 the first print in iio_verify_update()
+rergardless of error path.
 
-WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
-652: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:652:
-+						   (u8)psecuritypriv->
-+						   XGrpKeyid);
+Without this patch (and same instrumented print-code):
+   root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
+   root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
+   0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
+   root@analog:/sys/bus/iio/devices/iio:device3/buffer#
+Buffer is enabled with no error.
 
-Signed-off-by: Aiman Najjar <aiman.najjar@hurranet.com>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/98805a72b92e9bbf933e05b827d27944663b7bc1.1585508171.git.aiman.najjar@hurranet.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note from Jonathan: Probably not suitable for automatic application to stable.
+This has been there from the very start.  It tidies up an odd corner
+case but won't effect any 'real' users.
+
+Fixes: 84b36ce5f79c0 ("staging:iio: Add support for multiple buffers")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8712/rtl871x_xmit.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/iio/industrialio-buffer.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
-index eda2aee02ff8..06e2377092fe 100644
---- a/drivers/staging/rtl8712/rtl871x_xmit.c
-+++ b/drivers/staging/rtl8712/rtl871x_xmit.c
-@@ -601,7 +601,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
- 	addr_t addr;
- 	u8 *pframe, *mem_start, *ptxdesc;
- 	struct sta_info		*psta;
--	struct security_priv	*psecuritypriv = &padapter->securitypriv;
-+	struct security_priv	*psecpriv = &padapter->securitypriv;
- 	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
- 	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
-@@ -644,15 +644,13 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
- 				case _WEP40_:
- 				case _WEP104_:
- 					WEP_IV(pattrib->iv, psta->txpn,
--					       (u8)psecuritypriv->
--					       PrivacyKeyIndex);
-+					       (u8)psecpriv->PrivacyKeyIndex);
- 					break;
- 				case _TKIP_:
- 					if (bmcst)
- 						TKIP_IV(pattrib->iv,
- 						    psta->txpn,
--						    (u8)psecuritypriv->
--						    XGrpKeyid);
-+						    (u8)psecpriv->XGrpKeyid);
- 					else
- 						TKIP_IV(pattrib->iv, psta->txpn,
- 							0);
-@@ -660,8 +658,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
- 				case _AES_:
- 					if (bmcst)
- 						AES_IV(pattrib->iv, psta->txpn,
--						    (u8)psecuritypriv->
--						    XGrpKeyid);
-+						    (u8)psecpriv->XGrpKeyid);
- 					else
- 						AES_IV(pattrib->iv, psta->txpn,
- 						       0);
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index c3badf634378..f6641b9d7cd1 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -691,6 +691,13 @@ static int iio_verify_update(struct iio_dev *indio_dev,
+ 	bool scan_timestamp;
+ 	unsigned int modes;
+ 
++	if (insert_buffer &&
++	    bitmap_empty(insert_buffer->scan_mask, indio_dev->masklength)) {
++		dev_dbg(&indio_dev->dev,
++			"At least one scan element must be enabled first\n");
++		return -EINVAL;
++	}
++
+ 	memset(config, 0, sizeof(*config));
+ 	config->watermark = ~0;
+ 
 -- 
 2.25.1
 
