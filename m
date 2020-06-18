@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC711FEED0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5ABA1FEED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729227AbgFRJkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728568AbgFRJkc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:40:32 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACC3C06174E;
-        Thu, 18 Jun 2020 02:40:32 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jlr26-00057f-LJ; Thu, 18 Jun 2020 11:40:30 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7E30C1C0087;
-        Thu, 18 Jun 2020 11:40:28 +0200 (CEST)
-Date:   Thu, 18 Jun 2020 09:40:28 -0000
-From:   "tip-bot2 for Kurt Kanzenbach" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] timekeeping: Fix kerneldoc
- system_device_crosststamp & al
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200609081726.5657-1-kurt@linutronix.de>
-References: <20200609081726.5657-1-kurt@linutronix.de>
+        id S1729264AbgFRJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729060AbgFRJnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 05:43:12 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BE5D21D7A;
+        Thu, 18 Jun 2020 09:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592473391;
+        bh=+RXnEyWQ9AZBlUJK9uGq1xTC7wqOFcAILUiorIVSfO8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xmLusXzWT6s+rVn9d6aL2LzcxlFvxFSHhADDfCAPl4fJkdf6H//ZZTWxRdc33sghp
+         dFe4Sd53tTD714hLtgethmOjjabiejKN3RN4FBepIoK6/9YVrKisc5MRn/cZM17AAL
+         raVceltVD5e6C7S9dmUHRXEP0AivsnFooWvSjHVQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        "Lee, Chiasheng" <chiasheng.lee@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        =?UTF-8?q?Thi=C3=A9baud=20Weksteen?= <tweek@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Bastien Nocera <hadess@hadess.net>, Bin Liu <b-liu@ti.com>,
+        David Heinzelmann <heinzelmann.david@gmail.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        Harry Pan <harry.pan@intel.com>, Jens Axboe <axboe@kernel.dk>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Johan Hovold <johan@kernel.org>,
+        Jonathan Cox <jonathan@jdcox.net>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Keiya Nobuta <nobuta.keiya@fujitsu.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Qi Zhou <atmgnd@outlook.com>,
+        Richard Dodd <richard.o.dodd@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 0/8] USB: fix up some old and obsolete terminology, we can do better
+Date:   Thu, 18 Jun 2020 11:42:52 +0200
+Message-Id: <20200618094300.1887727-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Message-ID: <159247322824.16989.7576904284562875293.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+There are a number of places in the USB kernel code where terms that are
+"loaded" are used.  Fix this up to be more specific and inclusive as
+there is no need for us to use these terms at all.
 
-Commit-ID:     f097eb38f71391ff2cf078788bad5a00eb3bd96a
-Gitweb:        https://git.kernel.org/tip/f097eb38f71391ff2cf078788bad5a00eb3bd96a
-Author:        Kurt Kanzenbach <kurt@linutronix.de>
-AuthorDate:    Tue, 09 Jun 2020 10:17:26 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 18 Jun 2020 11:37:03 +02:00
+In one case, this ends up saving code, a nice side affect.
 
-timekeeping: Fix kerneldoc system_device_crosststamp & al
+Greg Kroah-Hartman (8):
+  USB: rename USB quirk to USB_QUIRK_ENDPOINT_IGNORE
+  USB: rename USB OTG hub configuration option
+  USB: OHCI: remove obsolete FIXME comment
+  USB: serial: qcserial: fix up wording in a comment
+  USB: serial: sierra: unify quirk handling logic
+  USB: storage: fix wording in error message
+  USB: storage: scsi: fix up comment to be more specific
+  USB: OTG: rename product list of devices
 
-Make kernel doc comments actually work and fix the syncronized typo.
+ arch/mips/configs/fuloong2e_defconfig         |  2 +-
+ arch/mips/configs/gcw0_defconfig              |  2 +-
+ arch/mips/configs/lemote2f_defconfig          |  2 +-
+ drivers/usb/core/Kconfig                      |  8 +--
+ drivers/usb/core/config.c                     |  8 +--
+ drivers/usb/core/hub.c                        |  6 +-
+ .../{otg_whitelist.h => otg_productlist.h}    | 14 ++---
+ drivers/usb/core/quirks.c                     | 18 +++---
+ drivers/usb/core/usb.h                        |  2 +-
+ drivers/usb/host/ohci-pci.c                   |  4 --
+ drivers/usb/musb/Kconfig                      |  2 +-
+ drivers/usb/musb/musb_core.c                  |  4 +-
+ drivers/usb/serial/qcserial.c                 |  5 +-
+ drivers/usb/serial/sierra.c                   | 57 +++++++------------
+ drivers/usb/storage/scsiglue.c                |  2 +-
+ drivers/usb/storage/uas-detect.h              |  2 +-
+ include/linux/usb/quirks.h                    |  4 +-
+ 17 files changed, 57 insertions(+), 85 deletions(-)
+ rename drivers/usb/core/{otg_whitelist.h => otg_productlist.h} (90%)
 
-[ tglx: Added the missing /** and fixed up formatting ]
+-- 
+2.27.0
 
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200609081726.5657-1-kurt@linutronix.de
-
----
- include/linux/timekeeping.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index b27e2ff..d5471d6 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -222,9 +222,9 @@ extern bool timekeeping_rtc_skipresume(void);
- 
- extern void timekeeping_inject_sleeptime64(const struct timespec64 *delta);
- 
--/*
-+/**
-  * struct system_time_snapshot - simultaneous raw/real time capture with
-- *	counter value
-+ *				 counter value
-  * @cycles:	Clocksource counter value to produce the system times
-  * @real:	Realtime system time
-  * @raw:	Monotonic raw system time
-@@ -239,9 +239,9 @@ struct system_time_snapshot {
- 	u8		cs_was_changed_seq;
- };
- 
--/*
-+/**
-  * struct system_device_crosststamp - system/device cross-timestamp
-- *	(syncronized capture)
-+ *				      (synchronized capture)
-  * @device:		Device time
-  * @sys_realtime:	Realtime simultaneous with device time
-  * @sys_monoraw:	Monotonic raw simultaneous with device time
-@@ -252,12 +252,12 @@ struct system_device_crosststamp {
- 	ktime_t sys_monoraw;
- };
- 
--/*
-+/**
-  * struct system_counterval_t - system counter value with the pointer to the
-- *	corresponding clocksource
-+ *				corresponding clocksource
-  * @cycles:	System counter value
-  * @cs:		Clocksource corresponding to system counter value. Used by
-- *	timekeeping code to verify comparibility of two cycle values
-+ *		timekeeping code to verify comparibility of two cycle values
-  */
- struct system_counterval_t {
- 	u64			cycles;
