@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9C51FE46B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457341FE45B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733267AbgFRCSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        id S2387586AbgFRCRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730190AbgFRBTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:19:42 -0400
+        id S1730201AbgFRBTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:19:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A9A021D94;
-        Thu, 18 Jun 2020 01:19:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18875221ED;
+        Thu, 18 Jun 2020 01:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443182;
-        bh=vvpuIChoVDrxVuCnuaWfEEe3s5nys0MKqagrxfL9gnk=;
+        s=default; t=1592443185;
+        bh=eDerT6a56T9SvO+lpq5m979RLoTvWTPGo9xTkVnIVjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqMJyi71Yq/DvoK4+97fFoV2gChOLgFnnO6oKzVws7Zz31zBn3gvd/cUGurDQzcnl
-         WvuM2UQ3oeZcRbJUSgjF2vtnrt8mjly6xgZgrNrHirzLjuMQDMWl3LOO7GK33ijGQv
-         GJy8zd7pK/wLRxzqaq2HA3f/qj0DEgO4BC2vy0mA=
+        b=SG4p7YFD7/2Q7SZRKOSuw1HMmhfhiMnWNCO5x4o/L5uQMSJdlW+AdrMZDqY4sOK/5
+         AY6uyXEpe1lm4tGjJHbBCqDIQwDK74RunCNIYGIHNV4ULun6f4ks1IguCZOTEgCmqj
+         ZYb6SLNdP3Uh5607zKZXOZHcdD1MHrkWgVBVBHAM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 144/266] tty: n_gsm: Fix waking up upper tty layer when room available
-Date:   Wed, 17 Jun 2020 21:14:29 -0400
-Message-Id: <20200618011631.604574-144-sashal@kernel.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 147/266] PCI/PM: Assume ports without DLL Link Active train links in 100 ms
+Date:   Wed, 17 Jun 2020 21:14:32 -0400
+Message-Id: <20200618011631.604574-147-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -43,88 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit 01dbb362f0a114fbce19c8abe4cd6f4710e934d5 ]
+[ Upstream commit ec411e02b7a2e785a4ed9ed283207cd14f48699d ]
 
-Warn the upper layer when n_gms is ready to receive data
-again. Without this the associated virtual tty remains blocked
-indefinitely.
+Kai-Heng Feng reported that it takes a long time (> 1 s) to resume
+Thunderbolt-connected devices from both runtime suspend and system sleep
+(s2idle).
 
-Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Link: https://lore.kernel.org/r/20200512115323.1447922-4-gregory.clement@bootlin.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This was because some Downstream Ports that support > 5 GT/s do not also
+support Data Link Layer Link Active reporting.  Per PCIe r5.0 sec 6.6.1:
+
+  With a Downstream Port that supports Link speeds greater than 5.0 GT/s,
+  software must wait a minimum of 100 ms after Link training completes
+  before sending a Configuration Request to the device immediately below
+  that Port. Software can determine when Link training completes by polling
+  the Data Link Layer Link Active bit or by setting up an associated
+  interrupt (see Section 6.7.3.3).
+
+Sec 7.5.3.6 requires such Ports to support DLL Link Active reporting, but
+at least the Intel JHL6240 Thunderbolt 3 Bridge [8086:15c0] and the Intel
+JHL7540 Thunderbolt 3 Bridge [8086:15ea] do not.
+
+Previously we tried to wait for Link training to complete, but since there
+was no DLL Link Active reporting, all we could do was wait the worst-case
+1000 ms, then another 100 ms.
+
+Instead of using the supported speeds to determine whether to wait for Link
+training, check whether the port supports DLL Link Active reporting.  The
+Ports in question do not, so we'll wait only the 100 ms required for Ports
+that support Link speeds <= 5 GT/s.
+
+This of course assumes these Ports always train the Link within 100 ms even
+if they are operating at > 5 GT/s, which is not required by the spec.
+
+[bhelgaas: commit log, comment]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206837
+Link: https://lore.kernel.org/r/20200514133043.27429-1-mika.westerberg@linux.intel.com
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/n_gsm.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ drivers/pci/pci.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index a5165f989fcf..8a0d66a05af5 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -665,7 +665,7 @@ static struct gsm_msg *gsm_data_alloc(struct gsm_mux *gsm, u8 addr, int len,
-  *	FIXME: lock against link layer control transmissions
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index c73e8095a849..689f0280c038 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4608,7 +4608,8 @@ static int pci_pm_reset(struct pci_dev *dev, int probe)
+  * pcie_wait_for_link_delay - Wait until link is active or inactive
+  * @pdev: Bridge device
+  * @active: waiting for active or inactive?
+- * @delay: Delay to wait after link has become active (in ms)
++ * @delay: Delay to wait after link has become active (in ms). Specify %0
++ *	   for no delay.
+  *
+  * Use this to wait till link becomes active or inactive.
   */
- 
--static void gsm_data_kick(struct gsm_mux *gsm)
-+static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
- {
- 	struct gsm_msg *msg, *nmsg;
- 	int len;
-@@ -697,6 +697,24 @@ static void gsm_data_kick(struct gsm_mux *gsm)
- 
- 		list_del(&msg->list);
- 		kfree(msg);
-+
-+		if (dlci) {
-+			tty_port_tty_wakeup(&dlci->port);
-+		} else {
-+			int i = 0;
-+
-+			for (i = 0; i < NUM_DLCI; i++) {
-+				struct gsm_dlci *dlci;
-+
-+				dlci = gsm->dlci[i];
-+				if (dlci == NULL) {
-+					i++;
-+					continue;
-+				}
-+
-+				tty_port_tty_wakeup(&dlci->port);
-+			}
-+		}
+@@ -4649,7 +4650,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
+ 		msleep(10);
+ 		timeout -= 10;
  	}
- }
+-	if (active && ret)
++	if (active && ret && delay)
+ 		msleep(delay);
+ 	else if (ret != active)
+ 		pci_info(pdev, "Data Link Layer Link Active not %s in 1000 msec\n",
+@@ -4770,17 +4771,28 @@ void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev)
+ 	if (!pcie_downstream_port(dev))
+ 		return;
  
-@@ -748,7 +766,7 @@ static void __gsm_data_queue(struct gsm_dlci *dlci, struct gsm_msg *msg)
- 	/* Add to the actual output queue */
- 	list_add_tail(&msg->list, &gsm->tx_list);
- 	gsm->tx_bytes += msg->len;
--	gsm_data_kick(gsm);
-+	gsm_data_kick(gsm, dlci);
- }
- 
- /**
-@@ -1209,7 +1227,7 @@ static void gsm_control_message(struct gsm_mux *gsm, unsigned int command,
- 		gsm_control_reply(gsm, CMD_FCON, NULL, 0);
- 		/* Kick the link in case it is idling */
- 		spin_lock_irqsave(&gsm->tx_lock, flags);
--		gsm_data_kick(gsm);
-+		gsm_data_kick(gsm, NULL);
- 		spin_unlock_irqrestore(&gsm->tx_lock, flags);
- 		break;
- 	case CMD_FCOFF:
-@@ -2519,7 +2537,7 @@ static void gsmld_write_wakeup(struct tty_struct *tty)
- 	/* Queue poll */
- 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
- 	spin_lock_irqsave(&gsm->tx_lock, flags);
--	gsm_data_kick(gsm);
-+	gsm_data_kick(gsm, NULL);
- 	if (gsm->tx_bytes < TX_THRESH_LO) {
- 		gsm_dlci_data_sweep(gsm);
+-	if (pcie_get_speed_cap(dev) <= PCIE_SPEED_5_0GT) {
+-		pci_dbg(dev, "waiting %d ms for downstream link\n", delay);
+-		msleep(delay);
+-	} else {
+-		pci_dbg(dev, "waiting %d ms for downstream link, after activation\n",
+-			delay);
+-		if (!pcie_wait_for_link_delay(dev, true, delay)) {
++	/*
++	 * Per PCIe r5.0, sec 6.6.1, for downstream ports that support
++	 * speeds > 5 GT/s, we must wait for link training to complete
++	 * before the mandatory delay.
++	 *
++	 * We can only tell when link training completes via DLL Link
++	 * Active, which is required for downstream ports that support
++	 * speeds > 5 GT/s (sec 7.5.3.6).  Unfortunately some common
++	 * devices do not implement Link Active reporting even when it's
++	 * required, so we'll check for that directly instead of checking
++	 * the supported link speed.  We assume devices without Link Active
++	 * reporting can train in 100 ms regardless of speed.
++	 */
++	if (dev->link_active_reporting) {
++		pci_dbg(dev, "waiting for link to train\n");
++		if (!pcie_wait_for_link_delay(dev, true, 0)) {
+ 			/* Did not train, no need to wait any further */
+ 			return;
+ 		}
  	}
++	pci_dbg(child, "waiting %d ms to become accessible\n", delay);
++	msleep(delay);
+ 
+ 	if (!pci_device_is_present(child)) {
+ 		pci_dbg(child, "waiting additional %d ms to become accessible\n", delay);
 -- 
 2.25.1
 
