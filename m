@@ -2,165 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986201FF4DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753ED1FF4E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730828AbgFROhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
+        id S1730869AbgFROiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgFROhE (ORCPT
+        with ESMTP id S1730846AbgFROiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:37:04 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3B1C06174E;
-        Thu, 18 Jun 2020 07:37:03 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id n70so4679751ota.5;
-        Thu, 18 Jun 2020 07:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7BX2MczfwnklIekhyvJJ0NhkC58hgUYRasxuG2CoUtI=;
-        b=nEAbYtXy/1I1In7K0fSkRnbxclDKPE5x+iwVmDxh5JN/AktyUce1FVefh+UH+8tA59
-         D0+mklaklftZsz0TvqqJ7MjWoRLIt8OV3+1Fu8JsFhjL2/T+yHgfNK0eWq09CIH8E8bT
-         EXht2WVfhgfZyC3FP+lG5cQMDLf0/wc75OfpBnmGWqqzcbiEpiPHxI5FZOh8bQIQgnMO
-         b4eJxbLoIPn3SempL/oXznqAsWSTsu9ZWU3SiAvatJSxuZ+SiInzCS4aWSCnLFHNpeOK
-         KzJAgIQ9O/0nDGYgiv3yxkiNtzUYdWRsHXl0hNIbdgik/8oeEiQJM4vpFDhBFFq2BiIm
-         CGag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7BX2MczfwnklIekhyvJJ0NhkC58hgUYRasxuG2CoUtI=;
-        b=j87iLZ/KcGbDWY/XpuWHWTv6dMVhUv2JkTCkcR48mVDIPmtFZ9w6aOPl/9x0D7WZ1R
-         yEGeNGR6YZKAer7Tc1V/y461fKju78UUjARPXFZlcRthrZ/ZdpqCARsRBJQon2yVpuJT
-         jK3VUmZF75ULceWmVypy1id69rbJ3M0a9PFf/EhsQwwY6o1a2AFFdZk6261sYaVnhlXP
-         ysxr5PEPcGE8vqttL0LsDdS/3ut+HAcZYrIu3espfnhPV10UXYJZmdiA0/+DwJf1QBqh
-         LTy96AMdGvKpJqzl/9SQAUtPjJGEdA6zgJjKJdfE2sYz3AZLaVmy14rbiviwJPD1488c
-         cBLg==
-X-Gm-Message-State: AOAM531HNWM1PKqlDYh8QUtZ2FOBPGtMXBM4MiR0fizFvZpznj7VUiPf
-        Th3ivaMFma5Y2knWzNrmcHJiLiakKWDaYBpyuCMVMwJ68QRN5A==
-X-Google-Smtp-Source: ABdhPJwk6h8WIc7fO0xkSvAHrVqw51KS1v1wJFRZWH9JfYKzyXGeklPjICyAGIVoOBMnL4iwQ5OwV0yElfyM/8k0NS4=
-X-Received: by 2002:a05:6830:2054:: with SMTP id f20mr3572787otp.358.1592491022659;
- Thu, 18 Jun 2020 07:37:02 -0700 (PDT)
+        Thu, 18 Jun 2020 10:38:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33C0C06174E;
+        Thu, 18 Jun 2020 07:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QkS9Mtt0QDYYe9qdb3TQ9/JElZki5rRNgo5h249RJlY=; b=L32Q6EwUocb1McN+U2WqgDbYx1
+        4GkclM9Db9mAuFZXMPwXX23Mt2Q4oVOzO84QHQ6BBXfeCVr6gf4ZAOwBZaqc2yhhEgjG540/H/sIH
+        ePMWCIwSXxNmlgILMXr/q1zXMeXnniSlpR3cMaKca8GTWtBM23md02Wt1LXdJXPJaC6PibEhwst6c
+        ModKdOyeLTrE6BM0xiuQj/UCB/QKTszsTxl/1b25tfCB0lqf+2+uHY3slTWqn8huQQNgXqgfZi5P8
+        fvwzGm+j9zVGpgax3VqNyq2RL21lJXMhXGv2rNnWk7df6kVlVABP5JWOha8rStyxvYrFcIvWQcGNo
+        0qaAvbeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlvfe-0000C3-Ki; Thu, 18 Jun 2020 14:37:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF9CF30604B;
+        Thu, 18 Jun 2020 16:37:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B4A0E21AB372C; Thu, 18 Jun 2020 16:37:35 +0200 (CEST)
+Date:   Thu, 18 Jun 2020 16:37:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [v3 PATCH 1/2] lockdep: Split header file into lockdep and
+ lockdep_types
+Message-ID: <20200618143735.GJ576905@hirez.programming.kicks-ass.net>
+References: <20200617071524.GA3055@gondor.apana.org.au>
+ <E1jlSJz-0003hE-8g@fornost.hmeau.com>
+ <20200617082459.GC2531@hirez.programming.kicks-ass.net>
+ <20200617122449.GX31238@alley>
 MIME-Version: 1.0
-References: <20200618100400.11464-1-colin.king@canonical.com>
- <20200618121405.GJ159988@e110455-lin.cambridge.arm.com> <5d08fbec-75d8-d9a9-af61-e6ab98e77c80@canonical.com>
- <20200618142106.GK159988@e110455-lin.cambridge.arm.com>
-In-Reply-To: <20200618142106.GK159988@e110455-lin.cambridge.arm.com>
-From:   Garrit Franke <garritfranke@gmail.com>
-Date:   Thu, 18 Jun 2020 16:36:51 +0200
-Message-ID: <CAD16O86ebsDkwbnuw2G04YZWfukqxJ=_Tex5OT07icEpfPdQNw@mail.gmail.com>
-Subject: Re: [PATCH] drm/arm: fix unintentional integer overflow on left shift
-To:     Liviu Dudau <liviu.dudau@arm.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617122449.GX31238@alley>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all, newbie here.
-Can the BIT macro be safely used on other parts of the kernel as well?
-Just using git grep "1 <<" returns a ton of results where bit shifting
-is used the old fashioned way.
+On Wed, Jun 17, 2020 at 02:24:50PM +0200, Petr Mladek wrote:
+> On Wed 2020-06-17 10:24:59, Peter Zijlstra wrote:
+> > On Wed, Jun 17, 2020 at 05:17:19PM +1000, Herbert Xu wrote:
+> > > There is a header file inclusion loop between asm-generic/bug.h
+> > > and linux/kernel.h.  This causes potential compile failurs depending
+> > > on the which file is included first.  One way of breaking this loop
+> > > is to stop spinlock_types.h from including lockdep.h.  This patch
+> > > splits lockdep.h into two files for this purpose.
+> > > 
+> > > Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> > > Acked-by: Petr Mladek <pmladek@suse.com>
+> > > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > Looks good.
+> > 
+> > Petr, how about I stick this in tip/locking/header for us both to share?
+> 
+> Sure. Sounds good to me.
 
-Am Do., 18. Juni 2020 um 16:23 Uhr schrieb Liviu Dudau <liviu.dudau@arm.com=
->:
->
-> On Thu, Jun 18, 2020 at 01:50:34PM +0100, Colin Ian King wrote:
-> > On 18/06/2020 13:14, Liviu Dudau wrote:
-> > > On Thu, Jun 18, 2020 at 11:04:00AM +0100, Colin King wrote:
-> > >> From: Colin Ian King <colin.king@canonical.com>
-> > >
-> > > Hi Colin,
-> > >
-> > >>
-> > >> Shifting the integer value 1 is evaluated using 32-bit arithmetic
-> > >> and then used in an expression that expects a long value leads to
-> > >> a potential integer overflow.
-> > >
-> > > I'm afraid this explanation makes no sense to me. Do you care to expl=
-ain better what
-> > > you think the issue is? If the shift is done as 32-bit arithmetic and=
- then promoted
-> > > to long how does the overflow happen?
-> >
-> > The shift is performed using 32 bit signed math and then assigned to an
-> > unsigned 64 bit long. This if the shift is 31 bits then the signed int
-> > conversion of 0x80000000 to unsigned long becomes 0xffffffff80000000.
-> > If the shift is more than 32 bits then result overflows and becomes 0x0=
-.
->
-> You are right, I've missed the fact that it is signed math. Not very like=
-ly that
-> we are going to ever have 30 or more CRTCs in the driver, but Coverity ha=
-s no
-> way of knowing that.
->
-> Acked-by: Liviu Dudau <liviu.dudau@arm.com>
->
-> I will pull this into drm-misc-next today.
->
-> Best regards,
-> Liviu
->
-> >
-> > Colin
-> >
-> > >
-> > > Best regards,
-> > > Liviu
-> > >
-> > >> Fix this by using the BIT macro to
-> > >> perform the shift to avoid the overflow.
-> > >>
-> > >> Addresses-Coverity: ("Unintentional integer overflow")
-> > >> Fixes: ad49f8602fe8 ("drm/arm: Add support for Mali Display Processo=
-rs")
-> > >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > >> ---
-> > >>  drivers/gpu/drm/arm/malidp_planes.c | 2 +-
-> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/arm/malidp_planes.c b/drivers/gpu/drm/a=
-rm/malidp_planes.c
-> > >> index 37715cc6064e..ab45ac445045 100644
-> > >> --- a/drivers/gpu/drm/arm/malidp_planes.c
-> > >> +++ b/drivers/gpu/drm/arm/malidp_planes.c
-> > >> @@ -928,7 +928,7 @@ int malidp_de_planes_init(struct drm_device *drm=
-)
-> > >>    const struct malidp_hw_regmap *map =3D &malidp->dev->hw->map;
-> > >>    struct malidp_plane *plane =3D NULL;
-> > >>    enum drm_plane_type plane_type;
-> > >> -  unsigned long crtcs =3D 1 << drm->mode_config.num_crtc;
-> > >> +  unsigned long crtcs =3D BIT(drm->mode_config.num_crtc);
-> > >>    unsigned long flags =3D DRM_MODE_ROTATE_0 | DRM_MODE_ROTATE_90 | =
-DRM_MODE_ROTATE_180 |
-> > >>                          DRM_MODE_ROTATE_270 | DRM_MODE_REFLECT_X | =
-DRM_MODE_REFLECT_Y;
-> > >>    unsigned int blend_caps =3D BIT(DRM_MODE_BLEND_PIXEL_NONE) |
-> > >> --
-> > >> 2.27.0.rc0
-> > >>
-> > >
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> | I would like to |
-> | fix the world,  |
-> | but they're not |
-> | giving me the   |
->  \ source code!  /
->   ---------------
->     =C2=AF\_(=E3=83=84)_/=C2=AF
+OK, done. tip/locking/header should contain just this patch, and that
+branch also got merged into tip/locking/core.
