@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8301FE0F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95841FE107
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgFRBvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40102 "EHLO mail.kernel.org"
+        id S1733180AbgFRBv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:51:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45682 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731646AbgFRBu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:50:56 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDDD322205;
-        Thu, 18 Jun 2020 01:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592445055;
-        bh=hsD8rEWgNzJQVshX0lx5pB7GQ9Y4hZ3wbaRlnnuycxI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LTE+D4UbUcEkUSMktV4ESXw4EIEzIOD6H0gorecjoVPo/NCOAK0S7MJPdzPbaPD30
-         vCuOSYNxu6jFgtFv+weatEHa28lHxUrpTm/yWwt2EuwKv7ldq/dqZ94lFq6+UyI9tg
-         JZzjiI9BChv95Mdd+umax1KbG4dXUzdpcuYsEKNQ=
-Date:   Thu, 18 Jun 2020 10:50:51 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, linux-trace-devel@vger.kernel.org,
-        linux-kernel@i4.cs.fau.de,
-        Maximilian Werner <maximilian.werner96@gmail.com>
-Subject: Re: [PATCH] tracing/boottime: Fix kprobe multiple events
-Message-Id: <20200618105051.ce01a84a13bbf67b816c1363@kernel.org>
-In-Reply-To: <20200617140817.17161-1-sascha.ortmann@stud.uni-hannover.de>
-References: <20200617140817.17161-1-sascha.ortmann@stud.uni-hannover.de>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732198AbgFRBvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:51:53 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jljiV-0013N7-K9; Thu, 18 Jun 2020 03:51:47 +0200
+Date:   Thu, 18 Jun 2020 03:51:47 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, davem@davemloft.net,
+        robh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v7 2/6] net: phy: Add a helper to return the
+ index for of the internal delay
+Message-ID: <20200618015147.GH249144@lunn.ch>
+References: <20200617182019.6790-1-dmurphy@ti.com>
+ <20200617182019.6790-3-dmurphy@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617182019.6790-3-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, 17 Jun 2020 16:08:17 +0200
-Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de> wrote:
-
-> Fix boottime kprobe events to add multiple events even if one fails
-> and report probe generation failures.
+On Wed, Jun 17, 2020 at 01:20:15PM -0500, Dan Murphy wrote:
+> Add a helper function that will return the index in the array for the
+> passed in internal delay value.  The helper requires the array, size and
+> delay value.
 > 
-> As an example, when we try to set multiprobe kprobe events in
-> bootconfig like this:
+> The helper will then return the index for the exact match or return the
+> index for the index to the closest smaller value.
 > 
-> ftrace.event.kprobes.vfsevents {
-> 	probes = "vfs_read $arg1 $arg2,,
->                  !error! not reported;?", // leads to error
-> 		 "vfs_write $arg1 $arg2"
-> }
-> 
-> this will not work like expected. After commit
-> da0f1f4167e3af69e1d8b32d6d65195ddd2bfb64 ("tracing/boottime:
-> Fix kprobe event API usage"), the function
-> trace_boot_add_kprobe_event will not produce any error message,
-> aborting the function and stopping subsequent probes from getting
-> installed when adding a probe fails at kprobe_event_gen_cmd_start.
-
-Ah, good catch!
-Indeed, I missed the error message.
-
-> Furthermore, probes continue when kprobe_event_gen_cmd_end fails
-> (and kprobe_event_gen_cmd_start did not fail). In this case the
-> function even returns successfully when the last call to
-> kprobe_event_gen_cmd_end is successful.
-> 
-> The behaviour of reporting and aborting after failures is not
-> consistent.
-
-OK. And for more consistency, we should abort the loop if we hit any
-error instead of continuing, because if trace_boot_add_kprobe_event()
-returns an error code, the rest of event settings are skipped.
-(See trace_boot_init_one_event())
-
-> 
-> The function trace_boot_add_kprobe_event now continues even when
-> one of the multiple events fails. Each failure is now reported
-> individually. Since the function can only return one result to the
-> caller, the function returns now the last failure (or none, if
-> nothing fails).
-> 
-> Cc: linux-kernel@i4.cs.fau.de
-> Signed-off-by: Maximilian Werner <maximilian.werner96@gmail.com>
-> Signed-off-by: Sascha Ortmann <sascha.ortmann@stud.uni-hannover.de>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 > ---
->  kernel/trace/trace_boot.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+>  drivers/net/phy/phy_device.c | 68 ++++++++++++++++++++++++++++++++++++
+>  include/linux/phy.h          |  4 +++
+>  2 files changed, 72 insertions(+)
 > 
-> diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-> index 9de29bb45a27..dbb50184e060 100644
-> --- a/kernel/trace/trace_boot.c
-> +++ b/kernel/trace/trace_boot.c
-> @@ -95,18 +95,24 @@ trace_boot_add_kprobe_event(struct xbc_node *node, const char *event)
->  	struct xbc_node *anode;
->  	char buf[MAX_BUF_LEN];
->  	const char *val;
-> +	int error = 0;
->  	int ret = 0;
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 04946de74fa0..611d4e68e3c6 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/mdio.h>
+>  #include <linux/io.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/property.h>
 >  
->  	xbc_node_for_each_array_value(node, "probes", anode, val) {
->  		kprobe_event_cmd_init(&cmd, buf, MAX_BUF_LEN);
+>  MODULE_DESCRIPTION("PHY library");
+>  MODULE_AUTHOR("Andy Fleming");
+> @@ -2657,6 +2658,73 @@ void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause)
+>  }
+>  EXPORT_SYMBOL(phy_get_pause);
 >  
-> -		ret = kprobe_event_gen_cmd_start(&cmd, event, val);
-> -		if (ret)
-> -			break;
-> +		error = kprobe_event_gen_cmd_start(&cmd, event, val);
-> +		if (error) {
-> +			pr_err("Failed to generate probe: %s\n", buf);
-> +			ret = error;
-> +			continue;
+> +/**
+> + * phy_get_delay_index - returns the index of the internal delay
+> + * @phydev: phy_device struct
+> + * @dev: pointer to the devices device struct
+> + * @delay_values: array of delays the PHY supports
+> + * @size: the size of the delay array
+> + * @is_rx: boolean to indicate to get the rx internal delay
+> + *
+> + * Returns the index within the array of internal delay passed in.
+> + * Or if size == 0 then the delay read from the firmware is returned.
+> + * The array must be in ascending order.
+> + * Return errno if the delay is invalid or cannot be found.
+> + */
+> +s32 phy_get_internal_delay(struct phy_device *phydev, struct device *dev,
+> +			   const int *delay_values, int size, bool is_rx)
+> +{
+> +	int ret;
+> +	int i;
+> +	s32 delay;
+> +
+> +	if (is_rx)
+> +		ret = device_property_read_u32(dev, "rx-internal-delay-ps",
+> +					       &delay);
+> +	else
+> +		ret = device_property_read_u32(dev, "tx-internal-delay-ps",
+> +					       &delay);
+> +	if (ret) {
+> +		phydev_err(phydev, "internal delay not defined\n");
 
-so, could you break here?
+This is an optional property. So printing an error message seems heavy
+handed.
 
-> +		}
->  
-> -		ret = kprobe_event_gen_cmd_end(&cmd);
-> -		if (ret)
-> +		error = kprobe_event_gen_cmd_end(&cmd);
-> +		if (error) {
->  			pr_err("Failed to add probe: %s\n", buf);
-> +			ret = error;
+Maybe it would be better to default to 0 if the property is not found,
+and continue with the lookup in the table to find what value should be
+written for a 0ps delay?
 
-And here.
-
-> +		}
->  	}
->  
->  	return ret;
-> -- 
-> 2.17.1
-> 
-
-Thank you!
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+	Andrew
