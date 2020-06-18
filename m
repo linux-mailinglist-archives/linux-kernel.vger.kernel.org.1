@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8111FFC1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBBB1FFC25
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730638AbgFRUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgFRUAM (ORCPT
+        id S1730686AbgFRUAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:00:25 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:35810 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730649AbgFRUAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:00:12 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC61EC06174E;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 64so3280333pfv.11;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BBg1omQmY70sbVnTfrqZN99BMK4tyyYN7aijNl9ncAo=;
-        b=qHVOKZnnbDYvxGXWkUgUv/OJykwW4Rv0tiuG0AlmkHqfD36iP4x7BR2Py5GFqACRDm
-         5i3ifH5S1NN8V9CxJc4PaVmgovpghtY+nVQClp56dFJGJzQQ9riV5153DTb9uaaYCcXn
-         zKSIcsaAL9Q/Xd4Ml4cS0scZDEzGaEn7Pn9HA6i/TpI8l6UiOsikREy1z1OShIzot3XJ
-         tsbfdY9L9LKvv4B76PSu+Qs/yHrHoCwUVuKbjZOyCrVrhVWKboeQm1iRxPuxkDLis3b7
-         PHb0W+fdBBwNgmviD+SKTBLX4wRmnwqNSEdm8tM2U50nY/KyfFaUmFom+xEIr573l11V
-         Rs2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BBg1omQmY70sbVnTfrqZN99BMK4tyyYN7aijNl9ncAo=;
-        b=YSqDrYwXDP46vvwrlxU7mA5j/v1AYLXUfwoUYbnMnlURx2ErXXtvm1QduzHIcSAdcZ
-         J4EUpqxlMSHvxA6quPP3JW9nFYHRIvoQDQ6caevvRS0/11yaGEVovBzoARfXL2TDx4kZ
-         3wZadcc60Vl472HZvzDbkXSdxs2FNBsCVdLzjLxYXt4M0Gl02oGaDCPWlB0FrCXNG9pL
-         qcmAIVvG6vZviXUkeKY9Do3dpKp5y++OWq41M6ufHg1UmBH5gkeOqKDyDIKuFhJsAOgA
-         vy2LpixOpvqM28peTm28uEcenNjtuzPKsz8Wv6z9zcYyZAEoqEJUUoaWggDZ9dZ0uzv2
-         3Jbw==
-X-Gm-Message-State: AOAM530hAs+uVixS/Gxlprd53ekdRgfFNxjSSxs9MfxMS+wzs7jW3GiE
-        UIRckiEGJq3QeWxBqiBUGL0=
-X-Google-Smtp-Source: ABdhPJyK2nA2OlbqWp0JXDCxkOcdEg9DLXJnM7Eeefe6ew+V+/Ftk/5LqOSfW2woQbAIHrltBEwUqQ==
-X-Received: by 2002:a63:4b51:: with SMTP id k17mr176046pgl.177.1592510412155;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
-        by smtp.gmail.com with ESMTPSA id 1sm3625046pfx.210.2020.06.18.13.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:00:11 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH] restore behaviour of CAP_SYS_ADMIN allowing the loading of net bpf program
-Date:   Thu, 18 Jun 2020 12:59:56 -0700
-Message-Id: <20200618195956.73967-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-In-Reply-To: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
-References: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
+        Thu, 18 Jun 2020 16:00:18 -0400
+Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 3FF17C00A4;
+        Thu, 18 Jun 2020 20:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1592510416; bh=mhiDFpD0ojrj/5WT3pWw8gK0XfkkDDZ0iphPJ8WNfmw=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=Ly98240XaczqLnhGgpl0Aad+4Fv/6Bs3PT+eOFre0v9nTPL5Gszhj6Or7e4CK4VHO
+         agsnjaq8FfArKit7Y+8bJ2HVl5drBESjJVoHcogaEgZBcPAHrhGwEGV/zsrDkN+Uvy
+         Pma4UNw0gYBm61cJy/SQJJB4uL4UPQdAaS74hAQPQrSnWWOhm0WpKSPsjnySJSU4mq
+         lvwwSh2DAtanqS4yHTKmC7SK6vV3f9pGtHcyXJcHeICDRJBuG/PJy2iDjd/imlIWMT
+         2u3Z13JuHO4bkxDpB6ebn9nVdApDnhDiUbJrdKEp2TVgPozCXJwKKTe1XB8dFTKgSR
+         uFa4eRGYhVMmQ==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id B2C9AA0087;
+        Thu, 18 Jun 2020 20:00:11 +0000 (UTC)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 1972A400B7;
+        Thu, 18 Jun 2020 20:00:10 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="NE4haLM4";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hNVpUu2iZA2X6v38BC0dtoYa/YRDp6vay1kZb8X/S9DC0ULWqvlpytjOn06TK/NeOL5IPuHvArzp7z2A9Mrg9AJ2zDICjk8Y7h05blC0AYhL/E6duWAGKcCIqMvORhXVW3vy9Mpa5Wbmz2C6KlSBF12ciA5bv2zTg+tRmcuMzeivQDnLZiFDEs7Uxkb3RDK9J0oFZxMIn2c/+ZqfD3SdfLluBVFP4L9w7TaPSahAhDdejMDYCrv12ldk7J5JtzHxUsQQ5eKC0AA7yrVBhDR/CWkQsubU6OpEMkrGOC/BdO2CWPE7CjYl3EEPfFC88prw1Ke5uQ+7+cAxDa+4hEQdNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mhiDFpD0ojrj/5WT3pWw8gK0XfkkDDZ0iphPJ8WNfmw=;
+ b=XrmmOItvQAHs4t+BD/2fsbJ35mm1r58Dly1IxE570wauTQlnrAHuL6DPPLwYq5rC9Z5k0w7z8c4frucnywqG7mD/K/n+uXPqfmhxoUi97WteyHNRMFSaMKyIVUH/TDo5giu4iZqDKAKQfQ8N2NmShVjgZpYQFNFCdZ/JypeU4nGweno1a/ikn41ZWyDrnq7yx8NfK78CW5z78skNOqbgZcBOEbLJA4du7oelg6TnaU/jHWnqVMf2Muqg1QtklHbEn7jkwyZuTCtRlH8rGm8p5p+8mur8S7bDrpTqHlQMPb1uBhdxfwp1ZWLN7G2M7pP1Rt9KHwIha/mHINkax71Y+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mhiDFpD0ojrj/5WT3pWw8gK0XfkkDDZ0iphPJ8WNfmw=;
+ b=NE4haLM4/QITK/X/s8Zl/auDuZh1OHkJoJ0w2YbBLNyXUC60/vyJYd8LV74EJCBUkqIOnBo43eTcyAS4syb6enHzyRSxZ2zaw00oonSYXNTDt17fgBduBRw/QDzoqWMzNABBtCydi2V1+uA5XkM1Nf5KuHz99X1NI4Ld6dCFpBg=
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
+ by BYAPR12MB2710.namprd12.prod.outlook.com (2603:10b6:a03:68::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.24; Thu, 18 Jun
+ 2020 20:00:09 +0000
+Received: from BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::a43a:7392:6fa:c6af]) by BYAPR12MB3479.namprd12.prod.outlook.com
+ ([fe80::a43a:7392:6fa:c6af%6]) with mapi id 15.20.3109.021; Thu, 18 Jun 2020
+ 20:00:09 +0000
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Subject: Re: [PATCH v2 2/4] ARC: ARCv2: support loop buffer (LPB) disabling
+Thread-Topic: [PATCH v2 2/4] ARC: ARCv2: support loop buffer (LPB) disabling
+Thread-Index: AQHWOpc4cHjIBgRVG0W8gJZ90tyziKje3mEAgAACkgA=
+Date:   Thu, 18 Jun 2020 20:00:08 +0000
+Message-ID: <d22bf697-b23d-d0a8-9db7-1f0bba4b2b82@synopsys.com>
+References: <20200604173927.23127-1-Eugeniy.Paltsev@synopsys.com>
+ <20200604173927.23127-3-Eugeniy.Paltsev@synopsys.com>
+ <CY4PR1201MB0136B3C5A25EA943379FFCD0DE9B0@CY4PR1201MB0136.namprd12.prod.outlook.com>
+In-Reply-To: <CY4PR1201MB0136B3C5A25EA943379FFCD0DE9B0@CY4PR1201MB0136.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+authentication-results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [73.222.250.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 823d02df-e5a4-4f4b-221b-08d813c2340d
+x-ms-traffictypediagnostic: BYAPR12MB2710:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB2710190F057A432225788BC2B69B0@BYAPR12MB2710.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0438F90F17
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kDtaqV7OWnmLVgiw9pROwSNLRAVGnPSc/adycUAf6ilFQkJ+NnH5S7LUEUSaq80CsBQ+b6ndo4LnGrC1aGiY2ru3jtB5cvU5IzuqCF9jWIlAduAXOOLuoyw6DzuTPsdJFx26+oRajdMqUBoqxro/U6Tm41/Xqs75+kPDQhbV+njP3DLf8AVgmtVQBtC0HTZBD1D2dbGeKpEMnILadWx6UnvbtfmuseU5sQNp98hRUJYSiZ7wHZg3ta1I78K9XOt//qK6vFLy+X8cgQBrOPMcUAqOGiMdeVuWkrP/pxqSK5F3zSiacPqVkKyzBN+RZU8iIozBafQ7MwDdaHx4JuK8iMsA1iGQAuZfThbr3KiAkDIqUTYK+c4fa1OzQ1fZ3Mop
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(376002)(346002)(396003)(39860400002)(316002)(76116006)(6506007)(31696002)(53546011)(26005)(66946007)(86362001)(8676002)(64756008)(6512007)(107886003)(36756003)(66556008)(66446008)(66476007)(6486002)(8936002)(71200400001)(2616005)(54906003)(478600001)(31686004)(2906002)(5660300002)(186003)(4326008)(558084003)(110136005)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: HbIEM3PY9uVVhN9pD7mgUJIdp1GNFdqGSHPizucHgBRVVrATxN5myYgPKpBS0juLKhNbEJ3MbQW7s2JM8MG5/iC7HIwoM0q2OVtx49/NnlY+SvX66A1HYGDfR6cht7PTVPywr/7YtP1hXdxfFTGpm6sz7J+aYFnkI5nmczLYQfYLpKKpFl4D+vhS3/eOLPKsFEc1uMlLDsNvqrNltbn88u7M/JCSGybdVtshvewkEdIJXGxrsLPNhQSdd5p/lDnzpGaQ/SW5t2asLDl5Yt6NpZeSDl9ZTI7SLLMcuWgBa7Taxrvnr3COe2RObAoRZq+bTrCFhkcdeG0KMf3XVfN4eUtoJQEAiQgX1awk75EEgRJHWAuYsJgk0MkWYXjd/6qC981JODu7tr5DxlTuBp9qZQ+9XlpbP+hjzpc3qx0NOaHSQbZdgFYTO2Dd+n8Sm6yUJozPB0wwF37NpHpRMGIkukC/4wlBK84xay2/SljXavU=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1C1FA016376AEB42BE9FC75E4F62F87B@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 823d02df-e5a4-4f4b-221b-08d813c2340d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2020 20:00:08.9564
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TwFxYrSzBmDy015rhvCwsBFjNE7s7+d3CB9AjKsLDhd7ioJpdSKwPFrsdLzgKLHyWpfdtgJxViME9m2QT9UDtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2710
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
-
-This is a 5.8-rc1 regression.
-
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- kernel/bpf/syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8da159936bab..7d946435587d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2121,7 +2121,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	    !bpf_capable())
- 		return -EPERM;
- 
--	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
-+	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 	if (is_perfmon_prog_type(type) && !perfmon_capable())
- 		return -EPERM;
--- 
-2.27.0.290.gba653c62da-goog
-
+T24gNi8xOC8yMCAxMjo1MCBQTSwgRXVnZW5peSBQYWx0c2V2IHdyb3RlOg0KPiBIaSBWaW5lZXQs
+DQo+DQo+IGNvdWxkIHlvdSBhbHNvIHBlZWsgdGhpcyBwYXRjaCB0byBmb3ItY3VyciBhcyB3ZSBk
+b24ndCBoYXZlIGFueSBkaXNhZ3JlZW1lbnQgYWJvdXQgaXQ/DQo+DQo+IEknbGwgcmVzcGluIHRo
+ZSByZXN0IG9mIHRoZSBwYXRjaGVzIGxhdGVyLiBUaGFua3MuDQo+IC0tLQ0KPiAgRXVnZW5peSBQ
+YWx0c2V2DQoNCkFkZGVkICENCg0KLVZpbmVldA0KDQo=
