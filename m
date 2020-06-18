@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2589B1FE7C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABDF1FE76A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387878AbgFRCnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39722 "EHLO mail.kernel.org"
+        id S1728232AbgFRBM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728769AbgFRBLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:11:40 -0400
+        id S1728770AbgFRBLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:11:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DC2321924;
-        Thu, 18 Jun 2020 01:11:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2062320B1F;
+        Thu, 18 Jun 2020 01:11:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442700;
-        bh=4Souj+467sB2B9t0hqySqp7kimDajinP11k4r16yasg=;
+        s=default; t=1592442702;
+        bh=HyWkwtaU0/RoTtrJwEMQ2IOLdNbG66utKfyAaE3FH+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bh2jsqFdChO2kpO06DIxv6KwyXhMvvjSaD6cjTIXIalBWw57iYOA8ZIy43HTX5vTP
-         Z0QaW/Dx1d05nfCCTw48jv4C89QZavv+/ue4X9Yu11tcOqD0dq+0zmQVYvwYRCxZm+
-         E3aoH9uxk5sM69Hxwm41tESdxP4vS5u8hqr9l4ko=
+        b=cUF3JzZ3cCUoQpbPWImubojPtFYTPfi8wT4uIpw20TjE8Kml/ZWFCnowBTIWQGPFW
+         TFpNH9HMaYOtZ9rM+qnC56QpPjmVMWD1G9luDcpqo2RLK4pKxh7hEdRonrxXJiOKhE
+         hAoPW0Gr8BB+mgwTkSL6RdUbY7lef8pmlQJy8gS8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.7 163/388] soundwire: slave: don't init debugfs on device registration error
-Date:   Wed, 17 Jun 2020 21:04:20 -0400
-Message-Id: <20200618010805.600873-163-sashal@kernel.org>
+Cc:     Eddie James <eajames@linux.ibm.com>, Joel Stanley <joel@jms.id.au>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.7 164/388] ARM: dts: aspeed: ast2600: Set arch timer always-on
+Date:   Wed, 17 Jun 2020 21:04:21 -0400
+Message-Id: <20200618010805.600873-164-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -46,38 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit 8893ab5e8ee5d7c12e0fc1dca4a309475064473d ]
+[ Upstream commit c998f40f2ae6a48e93206e2c1ea0691479989611 ]
 
-The error handling flow seems incorrect, there is no reason to try and
-add debugfs support if the device registration did not
-succeed. Return on error.
+According to ASPEED, FTTMR010 is not intended to be used in the AST2600.
+The arch timer should be used, but Linux doesn't enable high-res timers
+without being assured that the arch timer is always on, so set that
+property in the devicetree.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Link: https://lore.kernel.org/r/20200419185117.4233-2-yung-chuan.liao@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+The FTTMR010 device is described by set to disabled.
+
+This fixes highres timer support for AST2600.
+
+Fixes: 2ca5646b5c2f ("ARM: dts: aspeed: Add AST2600 and EVB")
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/slave.c | 2 ++
+ arch/arm/boot/dts/aspeed-g6.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index aace57fae7f8..4bacdb187eab 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -68,6 +68,8 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 		list_del(&slave->node);
- 		mutex_unlock(&bus->bus_lock);
- 		put_device(&slave->dev);
-+
-+		return ret;
- 	}
- 	sdw_slave_debugfs_init(slave);
+diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+index 0a29b3b57a9d..fd0e483737a0 100644
+--- a/arch/arm/boot/dts/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+@@ -65,6 +65,7 @@ timer {
+ 			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
+ 		clocks = <&syscon ASPEED_CLK_HPLL>;
+ 		arm,cpu-registers-not-fw-configured;
++		always-on;
+ 	};
  
+ 	ahb {
+@@ -368,6 +369,7 @@ timer: timer@1e782000 {
+ 						<&gic  GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&syscon ASPEED_CLK_APB1>;
+ 				clock-names = "PCLK";
++				status = "disabled";
+                         };
+ 
+ 			uart1: serial@1e783000 {
 -- 
 2.25.1
 
