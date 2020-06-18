@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2021FE907
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0601E1FE8FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgFRCwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33930 "EHLO mail.kernel.org"
+        id S1727827AbgFRBIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727775AbgFRBIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:08:22 -0400
+        id S1727813AbgFRBIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:08:30 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DD6F2193E;
-        Thu, 18 Jun 2020 01:08:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 239E321D6C;
+        Thu, 18 Jun 2020 01:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442501;
-        bh=lmz8b9o30HBzXmdnXtTw1XQwTxgBU8r+b8UEb1BATFQ=;
+        s=default; t=1592442510;
+        bh=inQ6fBwnGkvWMuEiTQOAKZvZoNCHTgESJuWH3PswLnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wsQjMEevk+xWXObSz7E5Ho+8PoIMprHa2DsAQ1yhhfvhxduwmhhshUglzOOqmvAjJ
-         yOFWi/qZ8yg7bJx4oPnFVp9PwHa3dNu6p1e+RomUp+7lNAPHP0miW8QZy3SlRUFVV4
-         PUd7zU6qzPlirR9gf8aQJyTuW+nYm1kNcyn6SRMk=
+        b=zfrjFbVBXXqui+DQ5iCJJui2Ol2tPlzgau1de2gov4xympUJ8oxoJ/LmV0/hq2yRQ
+         uXpqUgIMJ5xnulfx8TzSNY7vLjEJVmhyiLohuHSW7W4gzhK+v0vSRIF+P//VL0fJG/
+         hHUCdHrMzLp8o3mLoAhDPGiUnczbYD7gy42X4MFY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.7 012/388] staging: wfx: check ssidlen and prevent an array overflow
-Date:   Wed, 17 Jun 2020 21:01:49 -0400
-Message-Id: <20200618010805.600873-12-sashal@kernel.org>
+Cc:     Marek Vasut <marex@denx.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 018/388] ARM: dts: stm32: Add missing ethernet PHY reset on AV96
+Date:   Wed, 17 Jun 2020 21:01:55 -0400
+Message-Id: <20200618010805.600873-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,37 +49,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 87f86cddda65cab8a7e3df8a00e16abeccaa0730 ]
+[ Upstream commit 010ca9fe500bfe365860b50220ff80541c18f0e1 ]
 
-We need to cap "ssidlen" to prevent a memcpy() overflow.
+Add PHY reset GPIO on AV96 ethernet PHY.
 
-Fixes: 40115bbc40e2 ("staging: wfx: implement the rest of mac80211 API")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Link: https://lore.kernel.org/r/20200424104235.GA416402@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/sta.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp157a-avenger96.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-index 9d430346a58b..969d7a4a7fbd 100644
---- a/drivers/staging/wfx/sta.c
-+++ b/drivers/staging/wfx/sta.c
-@@ -520,7 +520,9 @@ static void wfx_do_join(struct wfx_vif *wvif)
- 		ssidie = ieee80211_bss_get_ie(bss, WLAN_EID_SSID);
- 	if (ssidie) {
- 		ssidlen = ssidie[1];
--		memcpy(ssid, &ssidie[2], ssidie[1]);
-+		if (ssidlen > IEEE80211_MAX_SSID_LEN)
-+			ssidlen = IEEE80211_MAX_SSID_LEN;
-+		memcpy(ssid, &ssidie[2], ssidlen);
- 	}
- 	rcu_read_unlock();
- 
+diff --git a/arch/arm/boot/dts/stm32mp157a-avenger96.dts b/arch/arm/boot/dts/stm32mp157a-avenger96.dts
+index 425175f7d83c..081037b510bc 100644
+--- a/arch/arm/boot/dts/stm32mp157a-avenger96.dts
++++ b/arch/arm/boot/dts/stm32mp157a-avenger96.dts
+@@ -92,6 +92,9 @@ mdio0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		compatible = "snps,dwmac-mdio";
++		reset-gpios = <&gpioz 2 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++
+ 		phy0: ethernet-phy@7 {
+ 			reg = <7>;
+ 		};
 -- 
 2.25.1
 
