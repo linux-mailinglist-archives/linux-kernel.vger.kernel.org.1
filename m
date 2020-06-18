@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570751FF41E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153CE1FF428
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgFROCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgFROCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:02:53 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C5920773;
-        Thu, 18 Jun 2020 14:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592488972;
-        bh=Zi1nm8yHfREwF4pP+1YaTpENFiQVaBW3aml0Ie6+ioc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AsekxYtZ+W3shsJuZkhmOP8ftSzIZWj3LdaIR+n5JPw6tmfCXYtPBkJ/L4wq7rkta
-         OqOCFXwnqjKTC7lMgkrVyAMoQWa1P1kEI++WrlwahA/AcYRIVSI6UVTiGHRgq5mMP+
-         Kq4HWK8AvQRD7fT5XAdYkXybufco8nXjhaURPVy0=
-Date:   Thu, 18 Jun 2020 16:02:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Macpaul Lin <macpaul.lin@mediatek.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Jim Lin <jilin@nvidia.com>,
-        Siqi Lin <siqilin@google.com>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>
-Subject: Re: [PATCH v3] usb: replace hardcode maximum usb string length by
- definition
-Message-ID: <20200618140244.GA2576793@kroah.com>
-References: <1592201855-8218-1-git-send-email-macpaul.lin@mediatek.com>
- <1592471618-29428-1-git-send-email-macpaul.lin@mediatek.com>
+        id S1730514AbgFROEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:04:02 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41876 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730294AbgFROEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 10:04:01 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IDvpQa099280;
+        Thu, 18 Jun 2020 14:03:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7Q0XFI0Oxm9Myh+3IsKSVpS74n63CuzM1B1s0gyKVmA=;
+ b=h9S765iXMk7XkTerh/y8VGi3aPhMZIEz4DJqXxI0KYGrt0FeDc/WpYUhhlH63mvTxFUQ
+ ATD+5stxqHpBq046D5ODc/vFu+NKTWQmI7qUQws9r3GJlLnAUdl0MCvF+00sHh7hF1Qc
+ nF157yeaN59zGLxu6qcZZuYP6zLZIVtR9Azj1REqeWNaAnqKHfFVuYJhQuCooJLydruA
+ pZ8QGb5mpR+r08DxZm5hua2qiyMojQNGtg3kpXz7sl7D2A0gay6srj0l5DA7BDgNVX2y
+ 0wRzgs5R5A5oFq+4TsArNHSZ9L4QJK2kwPs4Aa+DjBkoDc4uF3mT1cebXOjkTyBhV/mo 0g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 31q6601chf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 Jun 2020 14:03:38 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IDvkNM191162;
+        Thu, 18 Jun 2020 14:03:38 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31q660t3bg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jun 2020 14:03:37 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05IE3YdR005939;
+        Thu, 18 Jun 2020 14:03:35 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Jun 2020 14:03:34 +0000
+Date:   Thu, 18 Jun 2020 17:03:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Zhixu Zhao <zhixu001@126.com>
+Cc:     devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Richard Yeh <rcy@google.com>,
+        Rob Springer <rspringer@google.com>,
+        Joe Perches <joe@perches.com>,
+        Todd Poynor <toddpoynor@google.com>
+Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in
+ gasket_core.c
+Message-ID: <20200618140327.GS4151@kadam>
+References: <20200617161127.32006-1-zhixu001@126.com>
+ <20200618134422.24278-1-zhixu001@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592471618-29428-1-git-send-email-macpaul.lin@mediatek.com>
+In-Reply-To: <20200618134422.24278-1-zhixu001@126.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006180107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0 impostorscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006180107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 05:13:38PM +0800, Macpaul Lin wrote:
-> Replace hardcode maximum usb string length (126 bytes) by definition
-> "MAX_USB_STRING_LEN".
+On Thu, Jun 18, 2020 at 09:44:22PM +0800, Zhixu Zhao wrote:
+> At 2020-06-18 03:10:02, "Dan Carpenter" <dan.carpenter@oracle.com> wrote:
+> >It would be better to do this in the declaration block so you can change
+> >the earlier two uses in this function:
+> >
+> >+	struct gasket_bar_data *data = &gasket_dev->bar_data[bar_num];
+> >-	ulong desc_bytes = driver_desc->bar_descriptions[bar_num].size;
+> >+	ulong desc_bytes = data->size;
+> >
+> >...
+> >
+> >-	if (driver_desc->bar_descriptions[bar_num].type != PCI_BAR) {
+> >+	if (data->type != PCI_BAR) {
 > 
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> Acked-by: Alan Stern <stern@rowland.harvard.edu>
-> ---
-> Changes for v2:
->   - Add definition "MAX_USB_STRING_LEN" in ch9.h instead of in usb.h.
->     Thanks for Alan's suggestion.
-> Changes for v3:
->   - Rebase to 5.8-rc1 and resolve conflict.
+> `struct gasket_bar_data *data` and `driver_desc->bar_descriptions[bar_num]`
+> are not the same thing as I see it. Besides, `struct gasket_bar_data`
+> doesn't have a `size` field (it does have a `length_bytes` field).
+> So... did I miss anything?
 > 
->  drivers/usb/gadget/composite.c |    4 ++--
->  drivers/usb/gadget/configfs.c  |    2 +-
->  drivers/usb/gadget/usbstring.c |    4 ++--
->  include/uapi/linux/usb/ch9.h   |    3 +++
->  4 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-> index cb4950c..d0de016 100644
-> --- a/drivers/usb/gadget/composite.c
-> +++ b/drivers/usb/gadget/composite.c
-> @@ -1041,7 +1041,7 @@ static void collect_langs(struct usb_gadget_strings **sp, __le16 *buf)
->  	while (*sp) {
->  		s = *sp;
->  		language = cpu_to_le16(s->language);
-> -		for (tmp = buf; *tmp && tmp < &buf[126]; tmp++) {
-> +		for (tmp = buf; *tmp && tmp < &buf[MAX_USB_STRING_LEN]; tmp++) {
->  			if (*tmp == language)
->  				goto repeat;
->  		}
-> @@ -1116,7 +1116,7 @@ static int get_string(struct usb_composite_dev *cdev,
->  			collect_langs(sp, s->wData);
->  		}
->  
-> -		for (len = 0; len <= 126 && s->wData[len]; len++)
-> +		for (len = 0; len <= MAX_USB_STRING_LEN && s->wData[len]; len++)
->  			continue;
->  		if (!len)
->  			return -EINVAL;
-> diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
-> index 32b637e..70dd4ba 100644
-> --- a/drivers/usb/gadget/configfs.c
-> +++ b/drivers/usb/gadget/configfs.c
-> @@ -115,7 +115,7 @@ static int usb_string_copy(const char *s, char **s_copy)
->  	char *str;
->  	char *copy = *s_copy;
->  	ret = strlen(s);
-> -	if (ret > 126)
-> +	if (ret > MAX_USB_STRING_LEN)
->  		return -EOVERFLOW;
->  
->  	str = kstrdup(s, GFP_KERNEL);
-> diff --git a/drivers/usb/gadget/usbstring.c b/drivers/usb/gadget/usbstring.c
-> index 7c24d1c..8a8d647 100644
-> --- a/drivers/usb/gadget/usbstring.c
-> +++ b/drivers/usb/gadget/usbstring.c
-> @@ -55,9 +55,9 @@
->  		return -EINVAL;
->  
->  	/* string descriptors have length, tag, then UTF16-LE text */
-> -	len = min ((size_t) 126, strlen (s->s));
-> +	len = min((size_t)MAX_USB_STRING_LEN, strlen(s->s));
->  	len = utf8s_to_utf16s(s->s, len, UTF16_LITTLE_ENDIAN,
-> -			(wchar_t *) &buf[2], 126);
-> +			(wchar_t *) &buf[2], MAX_USB_STRING_LEN);
->  	if (len < 0)
->  		return -EINVAL;
->  	buf [0] = (len + 1) * 2;
-> diff --git a/include/uapi/linux/usb/ch9.h b/include/uapi/linux/usb/ch9.h
-> index 2b623f3..cc02d05 100644
-> --- a/include/uapi/linux/usb/ch9.h
-> +++ b/include/uapi/linux/usb/ch9.h
-> @@ -364,6 +364,9 @@ struct usb_config_descriptor {
->  
->  /*-------------------------------------------------------------------------*/
->  
-> +/* USB String descriptors can contain at most 126 characters. */
-> +#define MAX_USB_STRING_LEN	126
 
-Nit, as this is part of the userspace api, we should make this
-"USB_MAX_STRING_LEN" as we should be using "USB_" for all exports here.
+Ah wow...  I'm so sorry.  You're right.  Sorry for the noise.
 
-That seems to be the case already except for one really odd set of
-"TEST_" defines, which I'll go fix up after this...
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-I will just hand-edit this patch to make that change so you don't have
-to respin it again...
-
-thanks,
-
-greg k-h
+regards,
+dan carpenter
