@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AEF1FDB0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CA31FDB14
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgFRBKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:10:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
+        id S1728404AbgFRBKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:10:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728343AbgFRBJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:09:56 -0400
+        id S1728369AbgFRBKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:10:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCB4221D92;
-        Thu, 18 Jun 2020 01:09:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E519D21D90;
+        Thu, 18 Jun 2020 01:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442595;
-        bh=LOq9WDryFQBQbvgVCaB1OKHLeNMRXnbcTegbuYzqQAY=;
+        s=default; t=1592442601;
+        bh=7OFBYehAghyI03+0CzcorCPm2clfgBnBM6lz8Cfhh80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ii3/40K02JKSed7s3eqJNmXksE8hBl7aS2hoX0UxhNZTvD6ryV+vNXr4LXAnZsbYT
-         C0GZiGSLfAXdz/HFp+P2tkaVlBYIUNjdXtLk1YfG6SiccSgj8CalYUvAHLj1uqa8m1
-         bsCL8SIfFZqkdTqfSN8r5JVurMnEOhLkI6l7W2yA=
+        b=0PCTUWZg8pWwPZ5JyN6eGg5nzI/izcDQpfozJ7+8n2qoNTo6sdqiPmxogThRmLor0
+         pr0GyTHnp3/LuTVbea7chB6WLBCaEG77lccBbaFzcKLT1gMx/zk9HiuXdyVTP7Q3Te
+         9/g/01Xe4h90vZTvAGT0IckAvuJPeotz4mp9fPV4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paulo Alcantara <pc@cjr.nz>, Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 5.7 084/388] cifs: set up next DFS target before generic_ip_connect()
-Date:   Wed, 17 Jun 2020 21:03:01 -0400
-Message-Id: <20200618010805.600873-84-sashal@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sasha Levin <sashal@kernel.org>, sparclinux@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 088/388] sparc32: mm: Don't try to free page-table pages if ctor() fails
+Date:   Wed, 17 Jun 2020 21:03:05 -0400
+Message-Id: <20200618010805.600873-88-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,102 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit aaa3aef34d3ab9499a5c7633823429f7a24e6dff ]
+[ Upstream commit 454b0289c6b5f2c66164654b80212d15fbef7a03 ]
 
-If we mount a very specific DFS link
+The pages backing page-table allocations for SRMMU are allocated via
+memblock as part of the "nocache" region initialisation during
+srmmu_paging_init() and should not be freed even if a later call to
+pgtable_pte_page_ctor() fails.
 
-    \\FS0.FOO.COM\dfs\link -> \FS0\share1, \FS1\share2
+Remove the broken call to __free_page().
 
-where its target list contains NB names ("FS0" & "FS1") rather than
-FQDN ones ("FS0.FOO.COM" & "FS1.FOO.COM"), we end up connecting to
-\FOO\share1 but server->hostname will have "FOO.COM".  The reason is
-because both "FS0" and "FS0.FOO.COM" resolve to same IP address and
-they share same TCP server connection, but "FS0.FOO.COM" was the first
-hostname set -- which is OK.
-
-However, if the echo thread timeouts and we still have a good
-connection to "FS0", in cifs_reconnect()
-
-    rc = generic_ip_connect(server) -> success
-    if (rc) {
-            ...
-            reconn_inval_dfs_target(server, cifs_sb, &tgt_list,
-	                            &tgt_it);
-            ...
-     }
-     ...
-
-it successfully reconnects to "FS0" server but does not set up next
-DFS target - which should be the same target server "\FS0\share1" -
-and server->hostname remains set to "FS0.FOO.COM" rather than "FS0",
-as reconn_inval_dfs_target() would have it set to "FS0" if called
-earlier.
-
-Finally, in __smb2_reconnect(), the reconnect of tcons would fail
-because tcon->ses->server->hostname (FS0.FOO.COM) does not match DFS
-target's hostname (FS0).
-
-Fix that by calling reconn_inval_dfs_target() before
-generic_ip_connect() so server->hostname will get updated correctly
-prior to reconnecting its tcons in __smb2_reconnect().
-
-With "cifs: handle hostnames that resolve to same ip in failover"
-patch
-
-    - The above problem would not occur.
-    - We could save an DNS query to find out that they both resolve to
-      the same ip address.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Fixes: 1ae9ae5f7df7 ("sparc: handle pgtable_page_ctor() fail")
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ arch/sparc/mm/srmmu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 28268ed461b8..47b9fbb70bf5 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -572,26 +572,26 @@ cifs_reconnect(struct TCP_Server_Info *server)
- 		try_to_freeze();
- 
- 		mutex_lock(&server->srv_mutex);
-+#ifdef CONFIG_CIFS_DFS_UPCALL
- 		/*
- 		 * Set up next DFS target server (if any) for reconnect. If DFS
- 		 * feature is disabled, then we will retry last server we
- 		 * connected to before.
- 		 */
-+		reconn_inval_dfs_target(server, cifs_sb, &tgt_list, &tgt_it);
-+#endif
-+		rc = reconn_set_ipaddr(server);
-+		if (rc) {
-+			cifs_dbg(FYI, "%s: failed to resolve hostname: %d\n",
-+				 __func__, rc);
-+		}
-+
- 		if (cifs_rdma_enabled(server))
- 			rc = smbd_reconnect(server);
- 		else
- 			rc = generic_ip_connect(server);
- 		if (rc) {
- 			cifs_dbg(FYI, "reconnect error %d\n", rc);
--#ifdef CONFIG_CIFS_DFS_UPCALL
--			reconn_inval_dfs_target(server, cifs_sb, &tgt_list,
--						&tgt_it);
--#endif
--			rc = reconn_set_ipaddr(server);
--			if (rc) {
--				cifs_dbg(FYI, "%s: failed to resolve hostname: %d\n",
--					 __func__, rc);
--			}
- 			mutex_unlock(&server->srv_mutex);
- 			msleep(3000);
- 		} else {
+diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+index a8c2f2615fc6..ecc9e8786d57 100644
+--- a/arch/sparc/mm/srmmu.c
++++ b/arch/sparc/mm/srmmu.c
+@@ -383,7 +383,6 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
+ 		return NULL;
+ 	page = pfn_to_page(__nocache_pa(pte) >> PAGE_SHIFT);
+ 	if (!pgtable_pte_page_ctor(page)) {
+-		__free_page(page);
+ 		return NULL;
+ 	}
+ 	return page;
 -- 
 2.25.1
 
