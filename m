@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258171FFCB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD021FFCAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgFRUkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:40:21 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:48844 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731307AbgFRUjV (ORCPT
+        id S1731780AbgFRUj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:39:58 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:4267 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731222AbgFRUjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:21 -0400
+        Thu, 18 Jun 2020 16:39:17 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:12 -0700
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:13 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 11569B2656;
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id D573BB2656;
         Thu, 18 Jun 2020 16:39:16 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
@@ -26,133 +26,89 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 22/51] objtool: mcount: Move has_rel_mcount() and tot_relsize()
-Date:   Thu, 18 Jun 2020 13:38:08 -0700
-Message-ID: <2511660716aabd9843ab58abef20425507aa354f.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 23/51] objtool: mcount: Move relocation entry size detection
+Date:   Thu, 18 Jun 2020 13:38:09 -0700
+Message-ID: <1ee0a207d05cd9f405ad5ee03f9982a7bf643a44.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
  designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The has_rel_mcount() and tot_relsize() helpers are no longer
-dependent on the ELF wrapper so we can move them.
+Move where we detect the size of relocation entries we wish to
+use into the first loop over the sections. This will allow us
+to allocate the mcount location and relocation sections before
+the next loop that collects them.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.c | 26 ++++++++++++++++++++++++++
- tools/objtool/recordmcount.h | 33 ---------------------------------
- 2 files changed, 26 insertions(+), 33 deletions(-)
+ tools/objtool/recordmcount.c | 8 +++++---
+ tools/objtool/recordmcount.h | 5 ++---
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index fae0b15d0632..918e47217379 100644
+index 918e47217379..29f299e5bb52 100644
 --- a/tools/objtool/recordmcount.c
 +++ b/tools/objtool/recordmcount.c
-@@ -446,6 +446,32 @@ static int nop_mcount(struct section * const rels,
- 	return 0;
+@@ -458,7 +458,7 @@ static char const *has_rel_mcount(const struct section * const rels)
+ 	return txts->name;
  }
  
-+static char const *has_rel_mcount(const struct section * const rels)
-+{
-+	const struct section *txts;
-+	if (rels->sh.sh_type != SHT_REL && rels->sh.sh_type != SHT_RELA)
-+		return NULL;
-+	txts = find_section_by_index(lf, rels->sh.sh_info);
-+	if ((txts->sh.sh_type != SHT_PROGBITS) ||
-+	    !(txts->sh.sh_flags & SHF_EXECINSTR))
-+		return NULL;
-+	return txts->name;
-+}
-+
-+static unsigned tot_relsize(void)
-+{
-+	const struct section *sec;
-+	unsigned totrelsz = 0;
-+	char const *txtname;
-+
-+	list_for_each_entry(sec, &lf->sections, list) {
-+		txtname = has_rel_mcount(sec);
-+		if (txtname && is_mcounted_section_name(txtname))
-+			totrelsz += sec->sh.sh_size;
-+	}
-+	return totrelsz;
-+}
-+
- /* 32 bit and 64 bit are very similar */
- #include "recordmcount.h"
- #define RECORD_MCOUNT_64
-diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-index 25028c61da2b..2733f7fde51d 100644
---- a/tools/objtool/recordmcount.h
-+++ b/tools/objtool/recordmcount.h
-@@ -20,8 +20,6 @@
- #undef append_func
- #undef mcount_adjust
- #undef sift_rel_mcount
--#undef has_rel_mcount
--#undef tot_relsize
- #undef do_func
- #undef Elf_Shdr
- #undef Elf_Rel
-@@ -36,8 +34,6 @@
- #ifdef RECORD_MCOUNT_64
- # define append_func		append64
- # define sift_rel_mcount	sift64_rel_mcount
--# define has_rel_mcount		has64_rel_mcount
--# define tot_relsize		tot64_relsize
- # define do_func		do64
- # define mcount_adjust		mcount_adjust_64
- # define Elf_Rel		Elf64_Rel
-@@ -51,8 +47,6 @@
- #else
- # define append_func		append32
- # define sift_rel_mcount	sift32_rel_mcount
--# define has_rel_mcount		has32_rel_mcount
--# define tot_relsize		tot32_relsize
- # define do_func		do32
- # define mcount_adjust		mcount_adjust_32
- # define Elf_Rel		Elf32_Rel
-@@ -165,33 +159,6 @@ static uint_t *sift_rel_mcount(uint_t *mlocp,
- 	return mlocp;
- }
- 
--static char const *has_rel_mcount(const struct section * const rels)
--{
--	const struct section *txts;
--	if (rels->sh.sh_type != SHT_REL && rels->sh.sh_type != SHT_RELA)
--		return NULL;
--	txts = find_section_by_index(lf, rels->sh.sh_info);
--	if ((txts->sh.sh_type != SHT_PROGBITS) ||
--	    !(txts->sh.sh_flags & SHF_EXECINSTR))
--		return NULL;
--	return txts->name;
--}
--
--
 -static unsigned tot_relsize(void)
--{
--	const struct section *sec;
--	unsigned totrelsz = 0;
--	char const *txtname;
--
--	list_for_each_entry(sec, &lf->sections, list) {
--		txtname = has_rel_mcount(sec);
++static unsigned tot_relsize(unsigned int *rel_entsize)
+ {
+ 	const struct section *sec;
+ 	unsigned totrelsz = 0;
+@@ -466,8 +466,10 @@ static unsigned tot_relsize(void)
+ 
+ 	list_for_each_entry(sec, &lf->sections, list) {
+ 		txtname = has_rel_mcount(sec);
 -		if (txtname && is_mcounted_section_name(txtname))
 -			totrelsz += sec->sh.sh_size;
--	}
--	return totrelsz;
--}
--
- /* Overall supervision for Elf32 ET_REL file. */
- static int do_func(unsigned const reltype)
- {
++		if (!(txtname && is_mcounted_section_name(txtname)))
++			continue;
++		totrelsz += sec->sh.sh_size;
++		*rel_entsize = sec->sh.sh_entsize;
+ 	}
+ 	return totrelsz;
+ }
+diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
+index 2733f7fde51d..5ca488f3471c 100644
+--- a/tools/objtool/recordmcount.h
++++ b/tools/objtool/recordmcount.h
+@@ -171,7 +171,7 @@ static int do_func(unsigned const reltype)
+ 	uint_t *      mloc0;
+ 	uint_t *      mlocp;
+ 
+-	unsigned rel_entsize = 0;
++	unsigned int rel_entsize = 0;
+ 	unsigned symsec_sh_link = 0;
+ 
+ 	struct section *sec;
+@@ -181,7 +181,7 @@ static int do_func(unsigned const reltype)
+ 	if (find_section_by_name(lf, "__mcount_loc") != NULL)
+ 		return 0;
+ 
+-	totrelsz = tot_relsize();
++	totrelsz = tot_relsize(&rel_entsize);
+ 	if (totrelsz == 0)
+ 		return 0;
+ 	mrel0 = umalloc(totrelsz);
+@@ -211,7 +211,6 @@ static int do_func(unsigned const reltype)
+ 			if (result)
+ 				goto out;
+ 
+-			rel_entsize = sec->sh.sh_entsize;
+ 			mlocp = sift_rel_mcount(mlocp,
+ 				(void *)mlocp - (void *)mloc0, &mrelp,
+ 				sec, recsym, (uint_t)recval, reltype);
 -- 
 2.20.1
 
