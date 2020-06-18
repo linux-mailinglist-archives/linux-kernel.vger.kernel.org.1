@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BD81FDD28
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE891FDD2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731149AbgFRBYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53100 "EHLO mail.kernel.org"
+        id S1730687AbgFRBYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:24:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730275AbgFRBUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:20:47 -0400
+        id S1730396AbgFRBUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:20:54 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96EB421D79;
-        Thu, 18 Jun 2020 01:20:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CE2C21974;
+        Thu, 18 Jun 2020 01:20:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443247;
-        bh=Ztf0MFblqY398kSpaTyXtwRSKN22Zy4kdj7XYww3BJU=;
+        s=default; t=1592443254;
+        bh=+nMDf1VhqDzS4D9z3QCYu5iR4JILmVW8vlqkU9jRIf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zqH7nxc1IOY7JEWMIDeYaoizWxxRAyAUMJu8GLrjZduF8TXu0T/6BvzZcrWNaQicz
-         Eynz2gvjoWjRTMJIELwlCBCsK4711+3s9lBA3YZQyVim7VfrX5ALQl6iY3ND6AGm9q
-         54yiM3j9UQDo2YfmpxDYCBePabq6V8+XItTRwJkY=
+        b=WNpljOz7eq9KinLyWNSz3T2Vzg55hDycjhexTDJzNSpPHi/vGa/sXl0lNBmEuyDV2
+         1Z6fvaM9aK77KQatiYTjSl/7qgqiUxshEN94hZecM3bUpqpNvuj5YATBcEVk83ZIOp
+         rU6m9jfCSkXtpJcH1LJ+/x5FC/fvVWb18DzHrcdQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 197/266] clk: sprd: return correct type of value for _sprd_pll_recalc_rate
-Date:   Wed, 17 Jun 2020 21:15:22 -0400
-Message-Id: <20200618011631.604574-197-sashal@kernel.org>
+Cc:     Olga Kornievskaia <olga.kornievskaia@gmail.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 202/266] NFSv4.1 fix rpc_call_done assignment for BIND_CONN_TO_SESSION
+Date:   Wed, 17 Jun 2020 21:15:27 -0400
+Message-Id: <20200618011631.604574-202-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -44,39 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Olga Kornievskaia <olga.kornievskaia@gmail.com>
 
-[ Upstream commit c2f30986d418f26abefc2eec90ebf06716c970d2 ]
+[ Upstream commit 1c709b766e73e54d64b1dde1b7cfbcf25bcb15b9 ]
 
-The function _sprd_pll_recalc_rate() defines return value to unsigned
-long, but it would return a negative value when malloc fail, changing
-to return its parent_rate makes more sense, since if the callback
-.recalc_rate() is not set, the framework returns the parent_rate as
-well.
-
-Fixes: 3e37b005580b ("clk: sprd: add adjustable pll support")
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Link: https://lkml.kernel.org/r/20200519030036.1785-2-zhang.lyra@gmail.com
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 02a95dee8cf0 ("NFS add callback_ops to nfs4_proc_bind_conn_to_session_callback")
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sprd/pll.c | 2 +-
+ fs/nfs/nfs4proc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/sprd/pll.c b/drivers/clk/sprd/pll.c
-index 640270f51aa5..eb8862752c2b 100644
---- a/drivers/clk/sprd/pll.c
-+++ b/drivers/clk/sprd/pll.c
-@@ -105,7 +105,7 @@ static unsigned long _sprd_pll_recalc_rate(const struct sprd_pll *pll,
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index e257653f25ab..33c17c69aeaa 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7870,7 +7870,7 @@ nfs4_bind_one_conn_to_session_done(struct rpc_task *task, void *calldata)
+ }
  
- 	cfg = kcalloc(regs_num, sizeof(*cfg), GFP_KERNEL);
- 	if (!cfg)
--		return -ENOMEM;
-+		return parent_rate;
+ static const struct rpc_call_ops nfs4_bind_one_conn_to_session_ops = {
+-	.rpc_call_done =  &nfs4_bind_one_conn_to_session_done,
++	.rpc_call_done =  nfs4_bind_one_conn_to_session_done,
+ };
  
- 	for (i = 0; i < regs_num; i++)
- 		cfg[i] = sprd_pll_read(pll, i);
+ /*
 -- 
 2.25.1
 
