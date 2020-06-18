@@ -2,231 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE861FE32B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E631FE391
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgFRCHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
+        id S1731634AbgFRCLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730179AbgFRCHC (ORCPT
+        with ESMTP id S1730549AbgFRCLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 22:07:02 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F03DC06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:07:02 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id j189so3648544oih.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nTuTZrROcjbKGbLzM26GRFZl+svxQ2ZPj7ijGP/cuPc=;
-        b=NHcuIinDiRWKtzcYfjGb+7YQ2+kaT6KDrLW9ZNvz1U6p4Zv8xELeWUjD5kWKrQDrOB
-         EI6EujdfQyX+G4Pp5z3V1uKb1ANZoE1LXWjfQ59bs048ZBbusafkWNgyN9Dyr7lSVVOJ
-         LsAchUzeSHFRtyD3k9a0MrC+MKYpdtEqK1hh5BG63ZUPWST2TvhwK3Claoks+N6Pw7Tj
-         mU7qHV3w66bAM5+zRlLfoCpFU+knYQ3oBSumnZesfWa+PWsrxK8iA63wellLhr8r9QTb
-         MgqXKZoQhXu/eVlkkUTS27tjk/iTOUkXxRS0z9kKYqpV0avZyrV2YnMdKh3jSvq1ztjG
-         FWIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nTuTZrROcjbKGbLzM26GRFZl+svxQ2ZPj7ijGP/cuPc=;
-        b=ONPJKmtwxJBfYnrCx10nSprH8gBjEysEjo+H0GjzMrDZ0E/sYfeP3ShCPb0CkqpDbe
-         Y+FwfTONL+iqqZRZpBN1n8KqWroJWRnnAJPOZgD1OZtQ26tqNGwraZnQHgyVGFmJHV1X
-         M/W6eQ9H1XMpi3ugzE1Cvqdn0F/Ug624uz8ojVrQr2lzFsOZmoPfM8E/NQqqyRNGuTD5
-         vNC0IrJ9SermmSVb/p1/JEJQ6KHYQipd5I2Ubo3FEghjIXS/Ey82bRuzQGbLxBHhFYew
-         hQPuEgA0KqL2sQod7/cd/LpMpksQPwyb9CKsGWU3pHvaKqLyqh4/IsXwH7GlIEBsjBm7
-         s+tw==
-X-Gm-Message-State: AOAM531ZClLR36PlJBegzcFZlIqzcyXbehJRuRFefAb1O5xsP1OLLt2y
-        HGyNQ6p0D4kbg+Mik7sjJlzkkPjKFuPiGQIJQ8J6Gg==
-X-Google-Smtp-Source: ABdhPJyFTC31VZdaVVaBE9s8VmMDzvA/wIR4yseV1PD6iJ2gshZHqOSl+guplhqIbzvkfw7/CLg6IBiJt6/p79avbek=
-X-Received: by 2002:aca:35d4:: with SMTP id c203mr1305469oia.30.1592446021379;
- Wed, 17 Jun 2020 19:07:01 -0700 (PDT)
+        Wed, 17 Jun 2020 22:11:35 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55569C06174E;
+        Wed, 17 Jun 2020 19:11:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49nQR91GBPz9sWn;
+        Thu, 18 Jun 2020 12:11:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592446293;
+        bh=/d/Jhma+imEvxuAxLE9c24AL1eQWO7+jWKTQDSwtFuU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WAj0Sbvl7Gfat/I6lvM3LprLDd6BRofv56Id2XEhtbOTr9duy/2s+DtPkz7W3MD/3
+         RQ/AqEMv41xsQaLADD1N+EB/818QsKxnOTaFJdMeMzFxh0VDTnSJS9Y9UYDQS2dMI1
+         s0AK+UX2SIzG3ALM+C0whl8aF4uJevgxqJ2YByZg78pKJTxuZlY1MduYEBR8rmZeNA
+         gQ8THUFznuHoefAx88YJ3cgrf11lakFxeEjgx7C6CNkDOunbNBFYKAdGcbGJqGQROt
+         vUSjo8fQAyFMSWjJR/pojBQs0/XjGejWOL9nxZTh03yGfWqA7Hif/9L5JMoqKwtgvI
+         sdURzcF0zX//A==
+Date:   Thu, 18 Jun 2020 12:11:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the pidfd tree with the powerpc-fixes
+ tree
+Message-ID: <20200618121131.4ad29150@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200605222257.44882-1-saravanak@google.com> <20200616213953.GA2561@willie-the-truck>
- <CAMj1kXGdpk390+b4VDzqGzUzgwZt7GjWT2p=HaZTBTqnjefKhQ@mail.gmail.com> <20200617140526.GA3747@willie-the-truck>
-In-Reply-To: <20200617140526.GA3747@willie-the-truck>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 17 Jun 2020 19:06:25 -0700
-Message-ID: <CAGETcx_hF9-G5Xg+kQJdCyho3cE3pp=L8ESsUwSQC8je9QERmA@mail.gmail.com>
-Subject: Re: [PATCH v1] arm64/module: Optimize module load time by optimizing
- PLT counting
-To:     Will Deacon <will@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/O856NgubTpu=wpzyxLA68e+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 7:05 AM Will Deacon <will@kernel.org> wrote:
->
-> Hi all,
->
-> On Wed, Jun 17, 2020 at 10:17:33AM +0200, Ard Biesheuvel wrote:
-> > On Tue, 16 Jun 2020 at 23:40, Will Deacon <will@kernel.org> wrote:
-> > > On Fri, Jun 05, 2020 at 03:22:57PM -0700, Saravana Kannan wrote:
-> > > > This gives significant reduction in module load time for modules with
-> > > > large number of relocations with no measurable impact on modules with a
-> > > > small number of relocations. In my test setup with CONFIG_RANDOMIZE_BASE
-> > > > enabled, the load time for one module went down from 268ms to 100ms.
-> > > > Another module went down from 143ms to 83ms.
-> > >
-> > > Whilst I can see that's a significant relative saving, what proportion of
-> > > actual boot time are we talking about here? It would be interesting to
-> > > know if there are bigger potential savings elsewhere.
-> > >
-> >
-> > Also, 'some module' vs 'some other module' doesn't really say
-> > anything. Please explain which modules and their sizes.
->
-> I suspect these are all out-of-tree modules, but yes, some metadata such as
-> sizes, nr or relocs etc would be good to have in the commit message.
->
-> > > > diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> > > > index 65b08a74aec6..bf5118b3b828 100644
-> > > > --- a/arch/arm64/kernel/module-plts.c
-> > > > +++ b/arch/arm64/kernel/module-plts.c
-> > > > @@ -253,6 +253,36 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
-> > > >       return ret;
-> > > >  }
-> > > >
-> > > > +static bool rela_needs_dedup(Elf64_Rela *rela)
-> > > > +{
-> > > > +     return ELF64_R_TYPE(rela->r_info) == R_AARCH64_JUMP26
-> > > > +            || ELF64_R_TYPE(rela->r_info) == R_AARCH64_CALL26;
-> > > > +}
-> > >
-> >
-> > Would it help to check the section index here as well? Call/jump
-> > instructions within a section are never sent through a PLT entry.
->
-> (I tried hacking this in below)
->
-> > > Does this handle A53 erratum 843419 correctly? I'm worried that we skip
-> > > the ADRP PLTs there.
-> > >
-> >
-> > ADRP PLTs cannot be deduplicated, as they incorporate a relative jump
-> > back to the caller.
->
-> Duh yes, thanks. We can't trash the link register here.
->
-> > > > +/* Group the CALL26/JUMP26 relas toward the beginning of the array. */
-> > > > +static int partition_dedup_relas(Elf64_Rela *rela, int numrels)
-> > > > +{
-> > > > +     int i = 0, j = numrels - 1;
-> > > > +     Elf64_Rela t;
-> > > > +
-> > > > +     while (i < j) {
-> > > > +             while (rela_needs_dedup(rela + i) && i < j)
-> > > > +                     i++;
-> > > > +             while (!rela_needs_dedup(rela + j) && i < j)
-> > > > +                     j--;
-> > > > +             if (i < j) {
-> > > > +                     t = *(rela + j);
-> > > > +                     *(rela + j) = *(rela + i);
-> > > > +                     *(rela + i) = t;
-> > > > +             }
-> > > > +     }
-> > >
-> > > This is very hard to read and I think some of the 'i < j' comparisons are
-> > > redundant. Would it make more sense to assign a temporary rather than
-> > > post-inc/decrement and recheck?
-> > >
-> >
-> > Agreed.
-> >
-> > Also, what's wrong with [] array indexing?
->
-> Saravana, since our stylistic objections are reasonably vague, I tried
-> to clean this up so you can get an idea of how I'd prefer it to look (can't
-> speak for Ard). I haven't tried running this, but please feel free to adapt
-> it. Replacement diff below.
->
-> Will
->
-> --->8
->
-> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> index 65b08a74aec6..204290314054 100644
-> --- a/arch/arm64/kernel/module-plts.c
-> +++ b/arch/arm64/kernel/module-plts.c
-> @@ -253,6 +253,39 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
->         return ret;
->  }
->
-> +static bool branch_rela_needs_plt(Elf64_Sym *syms, Elf64_Rela *rela,
-> +                                 Elf64_Word dstidx)
-> +{
-> +
-> +       Elf64_Sym *s = syms + ELF64_R_SYM(rela->r_info);
-> +
-> +       if (s->st_shndx == dstidx)
-> +               return false;
-> +
-> +       return ELF64_R_TYPE(rela->r_info) == R_AARCH64_JUMP26 ||
-> +              ELF64_R_TYPE(rela->r_info) == R_AARCH64_CALL26;
-> +}
-> +
-> +static int partition_branch_plt_relas(Elf64_Sym *syms, Elf64_Rela *rela,
-> +                                     int numrels, Elf64_Word dstidx)
-> +{
-> +       int i = 0, j = numrels - 1;
-> +
-> +       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
-> +               return 0;
-> +
-> +       while (i < j) {
-> +               if (branch_rela_needs_plt(syms, &rela[i], dstidx))
-> +                       i++;
-> +               else if (branch_rela_needs_plt(syms, &rela[j], dstidx))
-> +                       swap(rela[i], rela[j]);
-> +               else
-> +                       j--;
-> +       }
-> +
-> +       return i;
-> +}
-> +
->  int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
->                               char *secstrings, struct module *mod)
->  {
-> @@ -290,7 +323,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
->
->         for (i = 0; i < ehdr->e_shnum; i++) {
->                 Elf64_Rela *rels = (void *)ehdr + sechdrs[i].sh_offset;
-> -               int numrels = sechdrs[i].sh_size / sizeof(Elf64_Rela);
-> +               int nents, numrels = sechdrs[i].sh_size / sizeof(Elf64_Rela);
->                 Elf64_Shdr *dstsec = sechdrs + sechdrs[i].sh_info;
->
->                 if (sechdrs[i].sh_type != SHT_RELA)
-> @@ -300,8 +333,14 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
->                 if (!(dstsec->sh_flags & SHF_EXECINSTR))
->                         continue;
->
-> -               /* sort by type, symbol index and addend */
-> -               sort(rels, numrels, sizeof(Elf64_Rela), cmp_rela, NULL);
-> +               /*
-> +                * sort branch relocations requiring a PLT by type, symbol index
-> +                * and addend
-> +                */
-> +               nents = partition_branch_plt_relas(syms, rels, numrels,
-> +                                                  sechdrs[i].sh_info);
-> +               if (nents)
-> +                       sort(rels, nents, sizeof(Elf64_Rela), cmp_rela, NULL);
->
->                 if (!str_has_prefix(secstrings + dstsec->sh_name, ".init"))
->                         core_plts += count_plts(syms, rels, numrels,
+--Sig_/O856NgubTpu=wpzyxLA68e+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks Will & Ard. I'll incorporate your feedback and send a v2 within
-a few days.
+Hi all,
 
--Saravana
+Today's linux-next merge of the pidfd tree got a conflict in:
+
+  arch/powerpc/kernel/syscalls/syscall.tbl
+
+between commit:
+
+  35e32a6cb5f6 ("powerpc/syscalls: Split SPU-ness out of ABI")
+
+from the powerpc-fixes tree and commit:
+
+  9b4feb630e8e ("arch: wire-up close_range()")
+
+from the pidfd tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
+index c0cdaacd770e,dd87a782d80e..000000000000
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@@ -480,6 -524,8 +480,7 @@@
+  434	common	pidfd_open			sys_pidfd_open
+  435	32	clone3				ppc_clone3			sys_clone3
+  435	64	clone3				sys_clone3
+ -435	spu	clone3				sys_ni_syscall
++ 436	common	close_range			sys_close_range
+  437	common	openat2				sys_openat2
+  438	common	pidfd_getfd			sys_pidfd_getfd
+  439	common	faccessat2			sys_faccessat2
+
+--Sig_/O856NgubTpu=wpzyxLA68e+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7qzVMACgkQAVBC80lX
+0GwvewgAh+vJ/7gqcE/3Xk8Aya4tIWiLxqqpc5YVQlAH8zijoMf3p6i7hfZsuEM5
+JmnLvrsiOlKdDQcmy0opuHd6HxtvVXmw3lTzShGPGb5ZDYg5tMYzWA/T8qpdGHpr
+T42Da8GaxVuh9kZPLNu6AXFhe53lY/Xaol9ezWcYFrxjdcPXCbv3m7N0wlw5Hahc
+hTIFCbhobIpLsC6DVQCmETW29B6Hl1hurkPA+RCR54NwIMjiFv1iBhbdYfpMZXrG
+6J8wE96cwoQZJBWXrc7Ru9G78eIJGH7tmTEVMTDZuq7AfL1mXRAuJsoS9kiLHgCa
+niMQB7k6Qte7mDnjdbxqVSeW+heHTQ==
+=aO3b
+-----END PGP SIGNATURE-----
+
+--Sig_/O856NgubTpu=wpzyxLA68e+--
