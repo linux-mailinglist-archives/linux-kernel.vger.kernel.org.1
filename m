@@ -2,101 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86981FF62B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E9A1FF63D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbgFRPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        id S1731381AbgFRPKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730950AbgFRPGM (ORCPT
+        with ESMTP id S1731254AbgFRPKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:06:12 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877AEC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:06:12 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id n6so4796602otl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:06:12 -0700 (PDT)
+        Thu, 18 Jun 2020 11:10:47 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE97C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:47 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k1so2560215pls.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l2w5iTdi6pjAzijl7Bc7YhZ6+y+qiHcAmJvuLO19co4=;
-        b=uKqv+S2FuImmiuJOy8hZFJRZW0IbmUHdc3pzKLWsElMRzEIfB8Dmat6FhfQHbQDXMV
-         zaNY62+U/oXQonZrN9Y9e20vfNRQuYJEKPpMiTvoBq7VCTtoebGjebK0ZDeH4W55Wmd2
-         sZ40DQcu7wpBiE+ejR8UN/nlwkzMkpv3AuXt0DcSuQQ9nq3xfgnS018C9wdO8vkmT39c
-         1a9Hp0pZZi0h+cmXA1W/NhPASOUS8kRtKWetnoLN2fqtGigyg3O9qb/hw8D1XkBWtyvC
-         BswPOGNAU2Sy5tWTbp28S0VaW7wlKuN1h2Tz+FYM45G4KATczAU5h4YNKFuRehHgdEWo
-         e7yg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a8mQLD0t+cboPjyUGv/rlRj+Qss5ICQz5LRvfNgouBU=;
+        b=ZwfcIPvrNKDx+t692D9K1GQFNEsGQSVfZhEYZVBs7Jl7zFNclXAbZlo4B+E9sEGNkR
+         yJD2nhFyKLIesbLDMKCPLNlcnvRLAHoTWKiIkCiADOsroG/2cO6NSnax5G8CAuQ6irue
+         2ilzPIcya+GwU1mM2ChbbsDjwvTnSsZ1W5qX4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l2w5iTdi6pjAzijl7Bc7YhZ6+y+qiHcAmJvuLO19co4=;
-        b=biGD3XBYzjusR4fd3dRl9djWLSCuE3hRilLXmQemEnRhaltQhR453yx3x2qHZimyHs
-         8zpOzo24x70BER1yscRxzi8TDYjSGvnyu4/1uampTq9YBgr80soGLqUfb790unZySdrF
-         BRzoZwjyI8uO09uXlW3rU1l+uutsCoKK3QIKIRcVdbz02BCvyCg9gaeOEDoSXAHD6FmH
-         sv0av2Uunlvx0sDze/utuooKoC5+CR/62DdLMQM2/gqyQt6ANebJ+Y5eStkmk0bNv55o
-         jQkThaDZCqISW4Q9IuLxfziBSZi+45kitnuUUHNdqtEsFUuZVVtXNQCd6FFgLqGIirut
-         WlOA==
-X-Gm-Message-State: AOAM531cls2y2CABEhWZWuF56Vjzg207Ufq/CZDap0b+j6bVkRUgRBLh
-        sa7PMTaXGIfo2lJwTNQkOIyBWF+rqRzR4s1EjtlIpQ==
-X-Google-Smtp-Source: ABdhPJzFPc1NdRB73G1tM7LvNF+rN3FrlkyYZp5Y/15SFFi5XKr8i7Hp6GOLUfOfs2/lOt5NXmv2FO+R/e84mctWF9M=
-X-Received: by 2002:a9d:58c9:: with SMTP id s9mr4074802oth.233.1592492771742;
- Thu, 18 Jun 2020 08:06:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a8mQLD0t+cboPjyUGv/rlRj+Qss5ICQz5LRvfNgouBU=;
+        b=bj7haZB+IZMerwd9lh5Okbnk4reWsICUHItY1iatGowI31Qjhl3MP9gqNlFJwANLjJ
+         VwF9uTiU7+OiDN3hZGtKU/bbA8ssAtP2CTQQ0I/Ba/icjoxEI6SOErCKo2eQBPla0Yo2
+         UMXlbLCxxfo4WZ7P9rv61RxpsDFHDia5RH9yTg3f/JQfQN97cODkJ536aYydQyMgamDp
+         /5LDsRuQbUSPw+mf4Ats27Wo88Rm95cmgAsN8kM/70+Drv4xpCvBm4rUkqq7c0sglZjc
+         HpKbhucoOo9cKBuN08j8dI6F9Is9XzQmYCwNgks9EbAtzs0TwZm7eu4VskB11kxXYxYX
+         ZvVg==
+X-Gm-Message-State: AOAM533kfo6uRwTKLiJb2sG792kTtbpNzR1HvLTK9aAk4pnvupe2VQUd
+        jlHquzniesGLQJi4JvjZUmYrZg==
+X-Google-Smtp-Source: ABdhPJwBCiEAsnjvXI94MJ1y3WUY67xCpOx5K26a+YK+FChk55yVpiuoiRfBjWpfMLd0e7JdctVK1g==
+X-Received: by 2002:a17:902:8d97:: with SMTP id v23mr4120640plo.3.1592493046531;
+        Thu, 18 Jun 2020 08:10:46 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id b14sm3171510pft.23.2020.06.18.08.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 08:10:45 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     swboyd@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
+        skakit@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dilip Kota <dkota@codeaurora.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: [PATCH v4 0/5] spi: spi-geni-qcom: Fixes / perf improvements
+Date:   Thu, 18 Jun 2020 08:06:21 -0700
+Message-Id: <20200618150626.237027-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
 MIME-Version: 1.0
-References: <20200618144407.520952071@infradead.org> <20200618144801.819246178@infradead.org>
-In-Reply-To: <20200618144801.819246178@infradead.org>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 18 Jun 2020 17:06:00 +0200
-Message-ID: <CANpmjNNpnW2AyzKOQ8tuXvhs04Kugjuj0y+j4wMxA7YfDyOwxg@mail.gmail.com>
-Subject: Re: [PATCH 4/7] x86/entry: Increase entry_stack size to a full page
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, mhelsley@vmware.com,
-        Steven Rostedt <rostedt@goodmis.org>, jthierry@redhat.com,
-        mbenes@suse.cz, Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 at 16:50, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Marco crashed in bad_iret with a Clang11/KCSAN build due to
-> overflowing the stack. Now that we run C code on it, expand it to a
-> full page.
->
-> Suggested-by: Andy Lutomirski <luto@amacapital.net>
-> Reported-by: Marco Elver <elver@google.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+This patch series is a new version of the previous patch posted:
+  [PATCH v2] spi: spi-geni-qcom: Speculative fix of "nobody cared" about interrupt
+  https://lore.kernel.org/r/20200317133653.v2.1.I752ebdcfd5e8bf0de06d66e767b8974932b3620e@changeid
 
-This fixes the unpredictable crashes.
+At this point I've done enough tracing to know that there was a real
+race in the old code (not just weakly ordered memory problems) and
+that should be fixed with the locking patches.
 
-Tested-by: Marco Elver <elver@google.com>
+While looking at this driver, I also noticed we weren't properly
+noting error interrupts and also weren't actually using our FIFO
+effectively, so I fixed those.
 
-Thanks!
+The last patch in the series addresses review feedback about dislike
+for the "cur_mcmd" state variable.  It also could possibly make
+"abort" work ever-so-slightly more reliably.
 
+Changes in v4:
+- Drop 'controller' in comment.
+- Use Stephen's diagram to explain the race better.
 
-> ---
->  arch/x86/include/asm/processor.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -370,7 +370,7 @@ struct x86_hw_tss {
->  #define IO_BITMAP_OFFSET_INVALID       (__KERNEL_TSS_LIMIT + 1)
->
->  struct entry_stack {
-> -       unsigned long           words[64];
-> +       char    stack[PAGE_SIZE];
->  };
->
->  struct entry_stack_page {
->
->
+Changes in v3:
+- ("spi: spi-geni-qcom: No need for irqsave variant...") new for v3
+- Split out some lock cleanup to previous patch.
+- Don't need to read IRQ status register inside spinlock.
+- Don't check for state CMD_NONE; later patch is removing state var.
+- Don't hold the lock for all of setup_fifo_xfer().
+- Comment about why it's safe to Ack interrupts at the end.
+- Subject/desc changed since race is definitely there.
+- ("spi: spi-geni-qcom: Check for error IRQs") new in v3.
+- ("spi: spi-geni-qcom: Actually use our FIFO") new in v3.
+- ("spi: spi-geni-qcom: Don't keep a local state variable") new in v3.
+
+Changes in v2:
+- Detect true spurious interrupt.
+- Still return IRQ_NONE for state machine mismatch, but print warn.
+
+Douglas Anderson (5):
+  spi: spi-geni-qcom: No need for irqsave variant of spinlock calls
+  spi: spi-geni-qcom: Mo' betta locking
+  spi: spi-geni-qcom: Check for error IRQs
+  spi: spi-geni-qcom: Actually use our FIFO
+  spi: spi-geni-qcom: Don't keep a local state variable
+
+ drivers/spi/spi-geni-qcom.c | 120 ++++++++++++++++++++++++------------
+ 1 file changed, 81 insertions(+), 39 deletions(-)
+
+-- 
+2.27.0.290.gba653c62da-goog
+
