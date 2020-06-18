@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3629C1FF3DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268901FF3CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgFRNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
+        id S1730584AbgFRNvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730555AbgFRNvF (ORCPT
+        with ESMTP id S1730228AbgFRNvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:51:05 -0400
+        Thu, 18 Jun 2020 09:51:02 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B0DC0613EF;
-        Thu, 18 Jun 2020 06:51:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42CCC0613ED;
+        Thu, 18 Jun 2020 06:51:01 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jluwY-0002lb-4M; Thu, 18 Jun 2020 15:51:02 +0200
+        id 1jluwU-0002k1-2n; Thu, 18 Jun 2020 15:50:58 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CA9721C0493;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 39A5D1C06E5;
         Thu, 18 Jun 2020 15:50:57 +0200 (CEST)
 Date:   Thu, 18 Jun 2020 13:50:57 -0000
 From:   "tip-bot2 for Chang S. Bae" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] x86/process/64: Use FSGSBASE instructions on
- thread copy and ptrace
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
+Subject: [tip: x86/fsgsbase] x86/entry/64: Switch CR3 before SWAPGS in paranoid entry
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1557309753-24073-9-git-send-email-chang.seok.bae@intel.com>
-References: <1557309753-24073-9-git-send-email-chang.seok.bae@intel.com>
+In-Reply-To: <1557309753-24073-11-git-send-email-chang.seok.bae@intel.com>
+References: <1557309753-24073-11-git-send-email-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-Message-ID: <159248825763.16989.13638586965371863585.tip-bot2@tip-bot2>
+Message-ID: <159248825700.16989.16902415408601692499.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,81 +51,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fsgsbase branch of tip:
 
-Commit-ID:     005f141e5d5e05d3986539567d0bc5aa2f4dc640
-Gitweb:        https://git.kernel.org/tip/005f141e5d5e05d3986539567d0bc5aa2f4dc640
+Commit-ID:     96b2371413e8f636a5f25c42a933af21c35a2a41
+Gitweb:        https://git.kernel.org/tip/96b2371413e8f636a5f25c42a933af21c35a2a41
 Author:        Chang S. Bae <chang.seok.bae@intel.com>
-AuthorDate:    Thu, 28 May 2020 16:13:53 -04:00
+AuthorDate:    Thu, 28 May 2020 16:13:55 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 18 Jun 2020 15:47:02 +02:00
+CommitterDate: Thu, 18 Jun 2020 15:47:03 +02:00
 
-x86/process/64: Use FSGSBASE instructions on thread copy and ptrace
+x86/entry/64: Switch CR3 before SWAPGS in paranoid entry
 
-When FSGSBASE is enabled, copying threads and reading fsbase and gsbase
-using ptrace must read the actual values.
+When FSGSBASE is enabled, the GSBASE handling in paranoid entry will need
+to retrieve the kernel GSBASE which requires that the kernel page table is
+active.
 
-When copying a thread, use save_fsgs() and copy the saved values.  For
-ptrace, the bases must be read from memory regardless of the selector if
-FSGSBASE is enabled.
+As the CR3 switch to the kernel page tables (PTI is active) does not depend
+on kernel GSBASE, move the CR3 switch in front of the GSBASE handling.
 
-[ tglx: Invoke __rdgsbase_inactive() with interrupts disabled ]
-[ luto: Massage changelog ]
+Comment the EBX content while at it.
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
+No functional change.
+
+[ tglx: Rewrote changelog and comments ]
+
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/1557309753-24073-9-git-send-email-chang.seok.bae@intel.com
-Link: https://lkml.kernel.org/r/20200528201402.1708239-8-sashal@kernel.org
+Link: https://lkml.kernel.org/r/1557309753-24073-11-git-send-email-chang.seok.bae@intel.com
+Link: https://lkml.kernel.org/r/20200528201402.1708239-10-sashal@kernel.org
 
 
 ---
- arch/x86/kernel/process.c    | 10 ++++++----
- arch/x86/kernel/process_64.c |  6 ++++--
- 2 files changed, 10 insertions(+), 6 deletions(-)
+ arch/x86/entry/entry_64.S | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index f362ce0..216c88d 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -140,10 +140,12 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
- 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index d2a00c9..04d1eea 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -807,13 +807,6 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+ 	cld
+ 	PUSH_AND_CLEAR_REGS save_ret=1
+ 	ENCODE_FRAME_POINTER 8
+-	movl	$1, %ebx
+-	movl	$MSR_GS_BASE, %ecx
+-	rdmsr
+-	testl	%edx, %edx
+-	js	1f				/* negative -> in kernel */
+-	SWAPGS
+-	xorl	%ebx, %ebx
  
- #ifdef CONFIG_X86_64
--	savesegment(gs, p->thread.gsindex);
--	p->thread.gsbase = p->thread.gsindex ? 0 : current->thread.gsbase;
--	savesegment(fs, p->thread.fsindex);
--	p->thread.fsbase = p->thread.fsindex ? 0 : current->thread.fsbase;
-+	current_save_fsgs();
-+	p->thread.fsindex = current->thread.fsindex;
-+	p->thread.fsbase = current->thread.fsbase;
-+	p->thread.gsindex = current->thread.gsindex;
-+	p->thread.gsbase = current->thread.gsbase;
+ 1:
+ 	/*
+@@ -825,9 +818,29 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+ 	 * This is also why CS (stashed in the "iret frame" by the
+ 	 * hardware at entry) can not be used: this may be a return
+ 	 * to kernel code, but with a user CR3 value.
++	 *
++	 * Switching CR3 does not depend on kernel GSBASE so it can
++	 * be done before switching to the kernel GSBASE. This is
++	 * required for FSGSBASE because the kernel GSBASE has to
++	 * be retrieved from a kernel internal table.
+ 	 */
+ 	SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg=%rax save_reg=%r14
+ 
++	/* EBX = 1 -> kernel GSBASE active, no restore required */
++	movl	$1, %ebx
++	/*
++	 * The kernel-enforced convention is a negative GSBASE indicates
++	 * a kernel value. No SWAPGS needed on entry and exit.
++	 */
++	movl	$MSR_GS_BASE, %ecx
++	rdmsr
++	testl	%edx, %edx
++	jns	.Lparanoid_entry_swapgs
++	ret
 +
- 	savesegment(es, p->thread.es);
- 	savesegment(ds, p->thread.ds);
- #else
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 8ccc587..d618969 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -426,7 +426,8 @@ unsigned long x86_fsbase_read_task(struct task_struct *task)
++.Lparanoid_entry_swapgs:
++	SWAPGS
++
+ 	/*
+ 	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
+ 	 * unconditional CR3 write, even in the PTI case.  So do an lfence
+@@ -835,6 +848,8 @@ SYM_CODE_START_LOCAL(paranoid_entry)
+ 	 */
+ 	FENCE_SWAPGS_KERNEL_ENTRY
  
- 	if (task == current)
- 		fsbase = x86_fsbase_read_cpu();
--	else if (task->thread.fsindex == 0)
-+	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
-+		 (task->thread.fsindex == 0))
- 		fsbase = task->thread.fsbase;
- 	else
- 		fsbase = x86_fsgsbase_read_task(task, task->thread.fsindex);
-@@ -440,7 +441,8 @@ unsigned long x86_gsbase_read_task(struct task_struct *task)
++	/* EBX = 0 -> SWAPGS required on exit */
++	xorl	%ebx, %ebx
+ 	ret
+ SYM_CODE_END(paranoid_entry)
  
- 	if (task == current)
- 		gsbase = x86_gsbase_read_cpu_inactive();
--	else if (task->thread.gsindex == 0)
-+	else if (static_cpu_has(X86_FEATURE_FSGSBASE) ||
-+		 (task->thread.gsindex == 0))
- 		gsbase = task->thread.gsbase;
- 	else
- 		gsbase = x86_fsgsbase_read_task(task, task->thread.gsindex);
+@@ -852,7 +867,8 @@ SYM_CODE_END(paranoid_entry)
+  */
+ SYM_CODE_START_LOCAL(paranoid_exit)
+ 	UNWIND_HINT_REGS
+-	testl	%ebx, %ebx			/* swapgs needed? */
++	/* If EBX is 0, SWAPGS is required */
++	testl	%ebx, %ebx
+ 	jnz	.Lparanoid_exit_no_swapgs
+ 	/* Always restore stashed CR3 value (see paranoid_entry) */
+ 	RESTORE_CR3	scratch_reg=%rbx save_reg=%r14
