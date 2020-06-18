@@ -2,401 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51121FF1BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC43F1FF1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729771AbgFRM2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 08:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729409AbgFRM2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:28:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B41BC06174E;
-        Thu, 18 Jun 2020 05:28:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 11FC22A4B0A
-Subject: Re: next/master bisection: baseline.login on
- ox820-cloudengines-pogoplug-series-3
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-References: <5eeb5bf7.1c69fb81.4f6e3.8979@mx.google.com>
-Cc:     Boris Brezillon <bbrezillon@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>,
-        Allison Randal <allison@lohutok.net>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        kernelci-results@groups.io, Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Enrico Weigelt <info@metux.net>,
-        Mason Yang <masonccyang@mxic.com.tw>,
-        linux-next@vger.kernel.org
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <13497644-ae34-d5e3-e76a-742cddf0f0a9@collabora.com>
-Date:   Thu, 18 Jun 2020 13:28:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729870AbgFRM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 08:29:24 -0400
+Received: from mga03.intel.com ([134.134.136.65]:58149 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729840AbgFRM3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:29:04 -0400
+IronPort-SDR: bLpYikYayENzivwLYrhbTlmUFAR2QUSQSv3uTTGAJY9T1pmBah8jpgA4a46LSPekieCy704Q5s
+ VdqWATc9zWOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="142498831"
+X-IronPort-AV: E=Sophos;i="5.73,526,1583222400"; 
+   d="scan'208";a="142498831"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 05:29:03 -0700
+IronPort-SDR: zWy8t80wDV3GuZ52l+NYpDNn/3ln0dvMXJ/H9oYoCF5qW3xuuq0EMo/imTeISD+XE2ObbLZB5A
+ WKm5dp7d7X8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,526,1583222400"; 
+   d="scan'208";a="317811874"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.48.152])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Jun 2020 05:28:58 -0700
+Date:   Thu, 18 Jun 2020 14:28:56 +0200
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     David Stevens <stevensd@chromium.org>,
+        dri-devel@lists.freedesktop.org, virtio-dev@lists.oasis-open.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] virtio: add dma-buf support for exported objects
+Message-ID: <20200618122856.GC4189@ubuntu>
+References: <20200526105811.30784-1-stevensd@chromium.org>
+ <20200526105811.30784-2-stevensd@chromium.org>
+ <20200604145620-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <5eeb5bf7.1c69fb81.4f6e3.8979@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200604145620-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please see the bisection report below about a kernel panic.
+Hi Michael,
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+On Thu, Jun 04, 2020 at 03:05:23PM -0400, Michael S. Tsirkin wrote:
+> On Tue, May 26, 2020 at 07:58:09PM +0900, David Stevens wrote:
+> > This change adds a new flavor of dma-bufs that can be used by virtio
+> > drivers to share exported objects. A virtio dma-buf can be queried by
+> > virtio drivers to obtain the UUID which identifies the underlying
+> > exported object.
+> > 
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> 
+> Is this just for graphics? If yes I'd rather we put it in the graphics
+> driver. We can always move it later ...
 
-See the kernel Oops due to a NULL pointer followed by a panic:
+Wouldn't this be the API that audio virtualisation will have to use to share 
+buffers between the host and any guests?
 
-  https://storage.kernelci.org/next/master/next-20200618/arm/oxnas_v6_defconfig/gcc-8/lab-baylibre/baseline-ox820-cloudengines-pogoplug-series-3.html#L504
+Thanks
+Guennadi
 
-Thanks,
-Guillaume
-
-
-On 18/06/2020 13:20, kernelci.org bot wrote:
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> > ---
+> >  drivers/virtio/Makefile         |  2 +-
+> >  drivers/virtio/virtio.c         |  6 +++
+> >  drivers/virtio/virtio_dma_buf.c | 89 +++++++++++++++++++++++++++++++++
+> >  include/linux/virtio.h          |  1 +
+> >  include/linux/virtio_dma_buf.h  | 58 +++++++++++++++++++++
+> >  5 files changed, 155 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/virtio/virtio_dma_buf.c
+> >  create mode 100644 include/linux/virtio_dma_buf.h
+> > 
+> > diff --git a/drivers/virtio/Makefile b/drivers/virtio/Makefile
+> > index 29a1386ecc03..ecdae5b596de 100644
+> > --- a/drivers/virtio/Makefile
+> > +++ b/drivers/virtio/Makefile
+> > @@ -1,5 +1,5 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> > -obj-$(CONFIG_VIRTIO) += virtio.o virtio_ring.o
+> > +obj-$(CONFIG_VIRTIO) += virtio.o virtio_ring.o virtio_dma_buf.o
+> >  obj-$(CONFIG_VIRTIO_MMIO) += virtio_mmio.o
+> >  obj-$(CONFIG_VIRTIO_PCI) += virtio_pci.o
+> >  virtio_pci-y := virtio_pci_modern.o virtio_pci_common.o
+> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> > index a977e32a88f2..5d46f0ded92d 100644
+> > --- a/drivers/virtio/virtio.c
+> > +++ b/drivers/virtio/virtio.c
+> > @@ -357,6 +357,12 @@ int register_virtio_device(struct virtio_device *dev)
+> >  }
+> >  EXPORT_SYMBOL_GPL(register_virtio_device);
+> >  
+> > +bool is_virtio_device(struct device *dev)
+> > +{
+> > +	return dev->bus == &virtio_bus;
+> > +}
+> > +EXPORT_SYMBOL_GPL(is_virtio_device);
+> > +
+> >  void unregister_virtio_device(struct virtio_device *dev)
+> >  {
+> >  	int index = dev->index; /* save for after device release */
+> > diff --git a/drivers/virtio/virtio_dma_buf.c b/drivers/virtio/virtio_dma_buf.c
+> > new file mode 100644
+> > index 000000000000..23e3399b11ed
+> > --- /dev/null
+> > +++ b/drivers/virtio/virtio_dma_buf.c
+> > @@ -0,0 +1,89 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * dma-bufs for virtio exported objects
+> > + *
+> > + * Copyright (C) 2020 Google, Inc.
+> > + */
+> > +
+> > +#include <linux/virtio_dma_buf.h>
+> > +
+> > +/**
+> > + * virtio_dma_buf_export - Creates a new dma-buf for a virtio exported object
+> > + *
+> > + * This wraps dma_buf_export() to allow virtio drivers to create a dma-buf
+> > + * for an virtio exported object that can be queried by other virtio drivers
+> > + * for the object's UUID.
+> > + */
+> > +struct dma_buf *virtio_dma_buf_export(
+> > +		const struct virtio_dma_buf_export_info *virtio_exp_info)
+> > +{
+> > +	struct dma_buf_export_info exp_info;
+> > +
+> > +	if (!virtio_exp_info->ops
+> > +		|| virtio_exp_info->ops->ops.attach != &virtio_dma_buf_attach
+> > +		|| !virtio_exp_info->ops->get_uuid) {
+> > +		return ERR_PTR(-EINVAL);
+> > +	}
+> > +
+> > +	exp_info.exp_name = virtio_exp_info->exp_name;
+> > +	exp_info.owner = virtio_exp_info->owner;
+> > +	exp_info.ops = &virtio_exp_info->ops->ops;
+> > +	exp_info.size = virtio_exp_info->size;
+> > +	exp_info.flags = virtio_exp_info->flags;
+> > +	exp_info.resv = virtio_exp_info->resv;
+> > +	exp_info.priv = virtio_exp_info->priv;
+> > +	BUILD_BUG_ON(sizeof(struct virtio_dma_buf_export_info)
+> > +		     != sizeof(struct dma_buf_export_info));
 > 
-> next/master bisection: baseline.login on ox820-cloudengines-pogoplug-series-3
-> 
-> Summary:
->   Start:      ce2cc8efd7a4 Add linux-next specific files for 20200618
->   Plain log:  https://storage.kernelci.org/next/master/next-20200618/arm/oxnas_v6_defconfig/gcc-8/lab-baylibre/baseline-ox820-cloudengines-pogoplug-series-3.txt
->   HTML log:   https://storage.kernelci.org/next/master/next-20200618/arm/oxnas_v6_defconfig/gcc-8/lab-baylibre/baseline-ox820-cloudengines-pogoplug-series-3.html
->   Result:     7b929258ff0e mtd: rawnand: Allocate the interface configurations dynamically
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       next
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->   Branch:     master
->   Target:     ox820-cloudengines-pogoplug-series-3
->   CPU arch:   arm
->   Lab:        lab-baylibre
->   Compiler:   gcc-8
->   Config:     oxnas_v6_defconfig
->   Test case:  baseline.login
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit 7b929258ff0e913616e21661a757f5ecb776d337
-> Author: Miquel Raynal <miquel.raynal@bootlin.com>
-> Date:   Fri May 29 13:13:22 2020 +0200
-> 
->     mtd: rawnand: Allocate the interface configurations dynamically
->     
->     Instead of manipulating the statically allocated structure and copy
->     timings around, allocate one at identification time and save it in the
->     nand_chip structure once it has been initialized.
->     
->     All NAND chips using the same interface configuration during reset and
->     startup, we define a helper to retrieve a single reset interface
->     configuration object, shared across all NAND chips.
->     
->     We use a second pointer to always have a reference on the currently
->     applied interface configuration, which may either point to the "best
->     interface configuration" or to the "default reset interface
->     configuration".
->     
->     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->     Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
->     Link: https://lore.kernel.org/linux-mtd/20200529111322.7184-29-miquel.raynal@bootlin.com
-> 
-> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> index 5ebfbb89e572..012876e14317 100644
-> --- a/drivers/mtd/nand/raw/internals.h
-> +++ b/drivers/mtd/nand/raw/internals.h
-> @@ -93,6 +93,7 @@ onfi_find_closest_sdr_mode(const struct nand_sdr_timings *spec_timings);
->  int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  				 struct nand_interface_config *iface,
->  				 struct nand_sdr_timings *spec_timings);
-> +const struct nand_interface_config *nand_get_reset_interface_config(void);
->  int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
->  int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
->  int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 753328f106c1..4a0d486210e9 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -928,9 +928,9 @@ static int nand_reset_interface(struct nand_chip *chip, int chipnr)
->  	 * timings to timing mode 0.
->  	 */
->  
-> -	onfi_fill_interface_config(chip, &chip->interface_config,
-> -				   NAND_SDR_IFACE, 0);
-> -	ret = ops->setup_interface(chip, chipnr, &chip->interface_config);
-> +	chip->current_interface_config = nand_get_reset_interface_config();
-> +	ret = ops->setup_interface(chip, chipnr,
-> +				   chip->current_interface_config);
->  	if (ret)
->  		pr_err("Failed to configure data interface to SDR timing mode 0\n");
->  
-> @@ -949,7 +949,8 @@ static int nand_reset_interface(struct nand_chip *chip, int chipnr)
->   */
->  static int nand_setup_interface(struct nand_chip *chip, int chipnr)
->  {
-> -	u8 mode = chip->interface_config.timings.mode;
-> +	const struct nand_controller_ops *ops = chip->controller->ops;
-> +	u8 mode = chip->best_interface_config->timings.mode;
->  	u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { mode, };
->  	int ret;
->  
-> @@ -967,14 +968,13 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
->  	}
->  
->  	/* Change the mode on the controller side */
-> -	ret = chip->controller->ops->setup_interface(chip, chipnr,
-> -						     &chip->interface_config);
-> +	ret = ops->setup_interface(chip, chipnr, chip->best_interface_config);
->  	if (ret)
->  		return ret;
->  
->  	/* Check the mode has been accepted by the chip, if supported */
->  	if (!nand_supports_get_features(chip, ONFI_FEATURE_ADDR_TIMING_MODE))
-> -		return 0;
-> +		goto update_interface_config;
->  
->  	memset(tmode_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
->  	nand_select_target(chip, chipnr);
-> @@ -990,6 +990,9 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
->  		goto err_reset_chip;
->  	}
->  
-> +update_interface_config:
-> +	chip->current_interface_config = chip->best_interface_config;
-> +
->  	return 0;
->  
->  err_reset_chip:
-> @@ -1031,8 +1034,10 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  		/* Verify the controller supports the requested interface */
->  		ret = ops->setup_interface(chip, NAND_DATA_IFACE_CHECK_ONLY,
->  					   iface);
-> -		if (!ret)
-> +		if (!ret) {
-> +			chip->best_interface_config = iface;
->  			return ret;
-> +		}
->  
->  		/* Fallback to slower modes */
->  		best_mode = iface->timings.mode;
-> @@ -1046,9 +1051,11 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->  		ret = ops->setup_interface(chip, NAND_DATA_IFACE_CHECK_ONLY,
->  					   iface);
->  		if (!ret)
-> -			return 0;
-> +			break;
->  	}
->  
-> +	chip->best_interface_config = iface;
-> +
->  	return 0;
->  }
->  
-> @@ -1067,15 +1074,25 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
->   */
->  static int nand_choose_interface_config(struct nand_chip *chip)
->  {
-> +	struct nand_interface_config *iface;
-> +	int ret;
-> +
->  	if (!nand_controller_can_setup_interface(chip))
->  		return 0;
->  
-> +	iface = kzalloc(sizeof(*iface), GFP_KERNEL);
-> +	if (!iface)
-> +		return -ENOMEM;
-> +
->  	if (chip->ops.choose_interface_config)
-> -		return chip->ops.choose_interface_config(chip,
-> -							 &chip->interface_config);
-> +		ret = chip->ops.choose_interface_config(chip, iface);
-> +	else
-> +		ret = nand_choose_best_sdr_timings(chip, iface, NULL);
->  
-> -	return nand_choose_best_sdr_timings(chip, &chip->interface_config,
-> -					    NULL);
-> +	if (ret)
-> +		kfree(iface);
-> +
-> +	return ret;
->  }
->  
->  /**
-> @@ -2501,7 +2518,6 @@ EXPORT_SYMBOL_GPL(nand_subop_get_data_len);
->   */
->  int nand_reset(struct nand_chip *chip, int chipnr)
->  {
-> -	struct nand_interface_config saved_intf_config = chip->interface_config;
->  	int ret;
->  
->  	ret = nand_reset_interface(chip, chipnr);
-> @@ -2526,11 +2542,9 @@ int nand_reset(struct nand_chip *chip, int chipnr)
->  	 * nand_setup_interface() uses ->set/get_features() which would
->  	 * fail anyway as the parameter page is not available yet.
->  	 */
-> -	if (!memcmp(&chip->interface_config, &saved_intf_config,
-> -		    sizeof(saved_intf_config)))
-> +	if (!chip->best_interface_config)
->  		return 0;
->  
-> -	chip->interface_config = saved_intf_config;
->  	ret = nand_setup_interface(chip, chipnr);
->  	if (ret)
->  		return ret;
-> @@ -5198,7 +5212,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
->  	mutex_init(&chip->lock);
->  
->  	/* Enforce the right timings for reset/detection */
-> -	onfi_fill_interface_config(chip, &chip->interface_config, NAND_SDR_IFACE, 0);
-> +	chip->current_interface_config = nand_get_reset_interface_config();
->  
->  	ret = nand_dt_init(chip);
->  	if (ret)
-> @@ -5994,7 +6008,7 @@ static int nand_scan_tail(struct nand_chip *chip)
->  	for (i = 0; i < nanddev_ntargets(&chip->base); i++) {
->  		ret = nand_setup_interface(chip, i);
->  		if (ret)
-> -			goto err_nanddev_cleanup;
-> +			goto err_free_interface_config;
->  	}
->  
->  	/* Check, if we should skip the bad block table scan */
-> @@ -6004,10 +6018,12 @@ static int nand_scan_tail(struct nand_chip *chip)
->  	/* Build bad block table */
->  	ret = nand_create_bbt(chip);
->  	if (ret)
-> -		goto err_nanddev_cleanup;
-> +		goto err_free_interface_config;
->  
->  	return 0;
->  
-> +err_free_interface_config:
-> +	kfree(chip->best_interface_config);
->  
->  err_nanddev_cleanup:
->  	nanddev_cleanup(&chip->base);
-> @@ -6101,6 +6117,9 @@ void nand_cleanup(struct nand_chip *chip)
->  			& NAND_BBT_DYNAMICSTRUCT)
->  		kfree(chip->badblock_pattern);
->  
-> +	/* Free the data interface */
-> +	kfree(chip->best_interface_config);
-> +
->  	/* Free manufacturer priv data. */
->  	nand_manufacturer_cleanup(chip);
->  
-> diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-> index 1e22006c79ba..94d832646487 100644
-> --- a/drivers/mtd/nand/raw/nand_timings.c
-> +++ b/drivers/mtd/nand/raw/nand_timings.c
-> @@ -292,6 +292,12 @@ static const struct nand_interface_config onfi_sdr_timings[] = {
->  	},
->  };
->  
-> +/* All NAND chips share the same reset data interface: SDR mode 0 */
-> +const struct nand_interface_config *nand_get_reset_interface_config(void)
-> +{
-> +	return &onfi_sdr_timings[0];
-> +}
-> +
->  /**
->   * onfi_find_closest_sdr_mode - Derive the closest ONFI SDR timing mode given a
->   *                              set of timings
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index a2427c67d38b..a725b620aca2 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1069,7 +1069,11 @@ struct nand_manufacturer {
->   * @options: Various chip options. They can partly be set to inform nand_scan
->   *           about special functionality. See the defines for further
->   *           explanation.
-> - * @interface_config: NAND interface timing information
-> + * @current_interface_config: The currently used NAND interface configuration
-> + * @best_interface_config: The best NAND interface configuration which fits both
-> + *                         the NAND chip and NAND controller constraints. If
-> + *                         unset, the default reset interface configuration must
-> + *                         be used.
->   * @bbt_erase_shift: Number of address bits in a bbt entry
->   * @bbt_options: Bad block table specific options. All options used here must
->   *               come from bbm.h. By default, these options will be copied to
-> @@ -1116,7 +1120,8 @@ struct nand_chip {
->  	unsigned int options;
->  
->  	/* Data interface */
-> -	struct nand_interface_config interface_config;
-> +	const struct nand_interface_config *current_interface_config;
-> +	struct nand_interface_config *best_interface_config;
->  
->  	/* Bad block information */
->  	unsigned int bbt_erase_shift;
-> @@ -1209,7 +1214,7 @@ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
->  static inline const struct nand_interface_config *
->  nand_get_interface_config(struct nand_chip *chip)
->  {
-> -	return &chip->interface_config;
-> +	return chip->current_interface_config;
->  }
->  
->  /*
-> -------------------------------------------------------------------------------
+> This is the only part that gives me pause. Why do we need this hack?
+> What's wrong with just using dma_buf_export_info directly,
+> and if you want the virtio ops, just using container_off?
 > 
 > 
-> Git bisection log:
 > 
-> -------------------------------------------------------------------------------
-> git bisect start
-> # good: [1b5044021070efa3259f3e9548dc35d1eb6aa844] Merge tag 'dma-mapping-5.8-3' of git://git.infradead.org/users/hch/dma-mapping
-> git bisect good 1b5044021070efa3259f3e9548dc35d1eb6aa844
-> # bad: [ce2cc8efd7a40cbd17841add878cb691d0ce0bba] Add linux-next specific files for 20200618
-> git bisect bad ce2cc8efd7a40cbd17841add878cb691d0ce0bba
-> # bad: [b91d047b9cb0441237354c3b4fd40fb5a6e649ef] next-20200616/amdgpu
-> git bisect bad b91d047b9cb0441237354c3b4fd40fb5a6e649ef
-> # good: [ff028acf8c34f3707946fc806b8873ddb95e0f9a] Merge remote-tracking branch 'hid/for-next'
-> git bisect good ff028acf8c34f3707946fc806b8873ddb95e0f9a
-> # good: [5073201f3b80c6d798519589a81263563b4f8520] drm/amdgpu: add internal reg offset translation for VCN inst 1
-> git bisect good 5073201f3b80c6d798519589a81263563b4f8520
-> # good: [f3cdec463796c25ab829e5959488f269812fa1bb] Merge remote-tracking branch 'gfs2/for-next'
-> git bisect good f3cdec463796c25ab829e5959488f269812fa1bb
-> # good: [1134d52d6f95ae61fbd2da980a29f05c656c5934] Revert "drm/[radeon|amdgpu]: Replace one-element array and use struct_size() helper"
-> git bisect good 1134d52d6f95ae61fbd2da980a29f05c656c5934
-> # good: [3b6588fa6f92297dc26681686fd3c719647576c4] mtd: rawnand: toshiba: Choose the interface configuration for TH58NVG2S3HBAI4
-> git bisect good 3b6588fa6f92297dc26681686fd3c719647576c4
-> # bad: [97bd0ed43524a3530d5651627779c0b40385187e] mtd: rawnand: qcom: set BAM mode only if not set already
-> git bisect bad 97bd0ed43524a3530d5651627779c0b40385187e
-> # bad: [ebbd1aae9deeccf8c2adcd84dd536b451110bf07] mtd: rawnand: fsl_upm: Use gpio descriptors
-> git bisect bad ebbd1aae9deeccf8c2adcd84dd536b451110bf07
-> # bad: [d8a826cfb059b2d5d4e97ced9469d6bcf7cf40f7] mtd: rawnand: fsl_upm: Get rid of the unused fsl_upm_nand.parts field
-> git bisect bad d8a826cfb059b2d5d4e97ced9469d6bcf7cf40f7
-> # bad: [7b929258ff0e913616e21661a757f5ecb776d337] mtd: rawnand: Allocate the interface configurations dynamically
-> git bisect bad 7b929258ff0e913616e21661a757f5ecb776d337
-> # good: [a82f691ad48c63af22844cee4eb3107cf5d9ff00] mtd: rawnand: Get rid of the default ONFI timing mode
-> git bisect good a82f691ad48c63af22844cee4eb3107cf5d9ff00
-> # first bad commit: [7b929258ff0e913616e21661a757f5ecb776d337] mtd: rawnand: Allocate the interface configurations dynamically
-> -------------------------------------------------------------------------------
+> > +
+> > +	return dma_buf_export(&exp_info);
+> > +}
+> > +EXPORT_SYMBOL(virtio_dma_buf_export);
+> > +
+> > +/**
+> > + * virtio_dma_buf_attach - mandatory attach callback for virtio dma-bufs
+> > + */
+> > +int virtio_dma_buf_attach(struct dma_buf *dma_buf,
+> > +			  struct dma_buf_attachment *attach)
+> > +{
+> > +	int ret;
+> > +	const struct virtio_dma_buf_ops *ops = container_of(
+> > +			dma_buf->ops, const struct virtio_dma_buf_ops, ops);
+> > +
+> > +	if (ops->device_attach) {
+> > +		ret = ops->device_attach(dma_buf, attach);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL(virtio_dma_buf_attach);
+> > +
+> > +/**
+> > + * is_virtio_dma_buf - returns true if the given dma-buf is a virtio dma-buf
+> > + * @dma_buf: buffer to query
+> > + */
+> > +bool is_virtio_dma_buf(struct dma_buf *dma_buf)
+> > +{
+> > +	return dma_buf->ops->attach == &virtio_dma_buf_attach;
+> > +}
+> > +EXPORT_SYMBOL(is_virtio_dma_buf);
+> > +
+> > +/**
+> > + * virtio_dma_buf_get_uuid - gets the uuid of the virtio dma-buf's exported object
+> > + * @dma_buf: [in] buffer to query
+> > + * @uuid: [out] the uuid
+> > + *
+> > + * Returns: 0 on success, negative on failure.
+> > + */
+> > +int virtio_dma_buf_get_uuid(struct dma_buf *dma_buf,
+> > +			    uuid_t *uuid)
+> > +{
+> > +	const struct virtio_dma_buf_ops *ops = container_of(
+> > +			dma_buf->ops, const struct virtio_dma_buf_ops, ops);
+> > +
+> > +	if (!is_virtio_dma_buf(dma_buf))
+> > +		return -EINVAL;
+> > +
+> > +	return ops->get_uuid(dma_buf, uuid);
+> > +}
+> > +EXPORT_SYMBOL(virtio_dma_buf_get_uuid);
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index 15f906e4a748..9397e25616c4 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -128,6 +128,7 @@ static inline struct virtio_device *dev_to_virtio(struct device *_dev)
+> >  void virtio_add_status(struct virtio_device *dev, unsigned int status);
+> >  int register_virtio_device(struct virtio_device *dev);
+> >  void unregister_virtio_device(struct virtio_device *dev);
+> > +bool is_virtio_device(struct device *dev);
+> >  
+> >  void virtio_break_device(struct virtio_device *dev);
+> >  
+> > diff --git a/include/linux/virtio_dma_buf.h b/include/linux/virtio_dma_buf.h
+> > new file mode 100644
+> > index 000000000000..29fee167afbd
+> > --- /dev/null
+> > +++ b/include/linux/virtio_dma_buf.h
+> > @@ -0,0 +1,58 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * dma-bufs for virtio exported objects
+> > + *
+> > + * Copyright (C) 2020 Google, Inc.
+> > + */
+> > +
+> > +#ifndef _LINUX_VIRTIO_DMA_BUF_H
+> > +#define _LINUX_VIRTIO_DMA_BUF_H
+> > +
+> > +#include <linux/dma-buf.h>
+> > +#include <linux/uuid.h>
+> > +#include <linux/virtio.h>
+> > +
+> > +/**
+> > + * struct virtio_dma_buf_ops - operations possible on exported object dma-buf
+> > + * @ops: the base dma_buf_ops. ops.attach MUST be virtio_dma_buf_attach.
+> > + * @device_attach: [optional] callback invoked by virtio_dma_buf_attach during
+> > + *		   all attach operations.
+> > + * @get_uid: [required] callback to get the uuid of the exported object.
+> > + */
+> > +struct virtio_dma_buf_ops {
+> > +	struct dma_buf_ops ops;
+> > +	int (*device_attach)(struct dma_buf *dma_buf,
+> > +			     struct dma_buf_attachment *attach);
+> > +	int (*get_uuid)(struct dma_buf *dma_buf, uuid_t *uuid);
+> > +};
+> > +
+> > +/**
+> > + * struct virtio_dma_buf_export_info - see struct dma_buf_export_info
+> > + */
+> > +struct virtio_dma_buf_export_info {
+> > +	const char *exp_name;
+> > +	struct module *owner;
+> > +	const struct virtio_dma_buf_ops *ops;
+> > +	size_t size;
+> > +	int flags;
+> > +	struct dma_resv *resv;
+> > +	void *priv;
+> > +};
+> > +
+> > +/**
+> > + * DEFINE_VIRTIO_DMA_BUF_EXPORT_INFO - helper macro for exporters
+> > + */
+> > +#define DEFINE_VIRTIO_DMA_BUF_EXPORT_INFO(name)	\
+> > +	struct virtio_dma_buf_export_info name = { \
+> > +		.exp_name = KBUILD_MODNAME, \
+> > +		.owner = THIS_MODULE }
+> > +
+> > +int virtio_dma_buf_attach(struct dma_buf *dma_buf,
+> > +			  struct dma_buf_attachment *attach);
+> > +
+> > +struct dma_buf *virtio_dma_buf_export(
+> > +		const struct virtio_dma_buf_export_info *virtio_exp_info);
+> > +bool is_virtio_dma_buf(struct dma_buf *dma_buf);
+> > +int virtio_dma_buf_get_uuid(struct dma_buf *dma_buf, uuid_t *uuid);
+> > +
+> > +#endif /* _LINUX_VIRTIO_DMA_BUF_H */
+> > -- 
+> > 2.27.0.rc0.183.gde8f92d652-goog
 > 
-
+> _______________________________________________
+> Virtualization mailing list
+> Virtualization@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
