@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62E21FF99A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE79F1FF9A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732086AbgFRQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:48:11 -0400
-Received: from mga01.intel.com ([192.55.52.88]:59105 "EHLO mga01.intel.com"
+        id S1732110AbgFRQsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731996AbgFRQsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:48:02 -0400
-IronPort-SDR: 3s+UaHpl4piUFzX5IOL06b3epk5DU4D+qfDPStAX+X+KQm5R2q5GxQpc+FZ2SdEKXZHD+W6/qL
- L7NbZfW5hibA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="160752480"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="160752480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:48:00 -0700
-IronPort-SDR: xO1z+b2nf6ftbpfvmDkdlvN86z/cX6IfMkPIFOTchTM+XUDjnubturTYf2D63ebZHg2f7UL3fm
- /anv7pdZD5XA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="421562121"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 18 Jun 2020 09:47:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E50E624D; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: [PATCH v1 6/6] console: Fix trivia typo 'change' -> 'chance'
-Date:   Thu, 18 Jun 2020 19:47:51 +0300
-Message-Id: <20200618164751.56828-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
-References: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730373AbgFRQsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:48:32 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5E4D208C7;
+        Thu, 18 Jun 2020 16:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592498912;
+        bh=/WNekgZirWYXrCP4XgGxyiKDiwg2gM4IDVcjUWu8fBs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=JHBJc52qgg06U8TRJ0jR/I4mprYbbU4MTjDm7kuraFaXPRRQJgsb3yOg/rwPzFupq
+         x4yqSvAoIMEs1KHyFHA4Pdlg7VTPlr4AR1ptsxOB0r3oInSdR1ezG4Pz3Itth8Xui6
+         orfh/1y1Cqq3v+HjZEZtT0LDV787jsds9KKxNxMI=
+Date:   Thu, 18 Jun 2020 17:48:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     kjlu@umn.edu, "wu000273@umn.edu" <wu000273@umn.edu>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sugar Zhang <sugar.zhang@rock-chips.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>
+In-Reply-To: <20200613205158.27296-1-wu000273@umn.edu>
+References: <20200613205158.27296-1-wu000273@umn.edu>
+Subject: Re: [PATCH] ASoC: rockchip: Fix a reference count leak.
+Message-Id: <159249891020.8643.15196266849523031585.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I bet the word 'chance' has to be used in 'had a chance to be called',
-but, alas, I'm not native speaker...
+On Sat, 13 Jun 2020 15:51:58 -0500, wu000273@umn.edu wrote:
+> Calling pm_runtime_get_sync increments the counter even in case of
+> failure, causing incorrect ref count if pm_runtime_put is not called in
+> error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
----
- kernel/printk/printk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index aaea3ad182e1..6623e975675a 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2705,7 +2705,7 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
- 	/*
- 	 * Some consoles, such as pstore and netconsole, can be enabled even
- 	 * without matching. Accept the pre-enabled consoles only when match()
--	 * and setup() had a change to be called.
-+	 * and setup() had a chance to be called.
- 	 */
- 	if (newcon->flags & CON_ENABLED && c->user_specified ==	user_specified)
- 		return 0;
--- 
-2.27.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: rockchip: Fix a reference count leak.
+      commit: f141a422159a199f4c8dedb7e0df55b3b2cf16cd
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
