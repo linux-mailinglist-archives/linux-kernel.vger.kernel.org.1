@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D5C1FDA4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D0C1FDA54
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgFRAfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 20:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
+        id S1726879AbgFRAj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 20:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgFRAfZ (ORCPT
+        with ESMTP id S1726833AbgFRAj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 20:35:25 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A6DC06174E;
-        Wed, 17 Jun 2020 17:35:24 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c17so5088804lji.11;
-        Wed, 17 Jun 2020 17:35:24 -0700 (PDT)
+        Wed, 17 Jun 2020 20:39:29 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8AEC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:39:28 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id q2so4009274qkb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aVNC1BmCPpKa2GzBW7dZAnKvPYTYo+NPkmNdX8JLnR4=;
-        b=oq6rqjjV490TaHz7ljJj2OKmweYzMHSHXI8CX9EksQ7PVkG8UJip1AAb/GSVvL+jDM
-         gNNMfBwQesoftmWn4/qvZ2jKf5u7uk8Cs4e5s0Edu0eD+CMDuR93LP7yhtqBTwsBUkdL
-         n3C4c3+y06dbDvQixw9hRQrwAJWg63+r7eNfztdqITbNFJ9ec/IQ0ugOVpI2xqaKVAoi
-         yKFZ5HJxuVr/EFBDmT/IRtiP3zDo06T17G7f5qK3ajHCKn31FETW1T3ONoJoBPiyLv5f
-         jrW80a951reSe6OyyD74jlnbJpI4k/EeAvx8jTtCbIkaAvX/tI8tdDCmNJo3lDcm4j8W
-         ojzg==
+        h=from:to:subject:date:message-id;
+        bh=2rTi7sVYxh2vc2bTkTkIYUM2u0ppPplMS03UqDSUVng=;
+        b=Cy+PtbEF74jCpRkwlJPtIZiv1YjMuA9ctLDf2D6GRsI5hGPGgutVZxTMgGSGsehvvE
+         dtqOH28IEtBqoyIb/o0NDDH9loN8e6EfxKuQsbVh1Sv3b0nbVId+McCUno9PDJyb/CJF
+         UhwYdSxpYOJwMDkx6jo2IJFfj7te/4lfmPN21+ZGVwNRTn3Du292aD+5rYEBnDfcBtlM
+         euIaDf/J2aLKufk5ogY4w8W5a40upGww7+hGazur6S4snuxXHsXh4SrV2i4XnfeTWsI4
+         6tD1y1xDCut6nOJLL0rxwIe2MTfEK+5H9yq7R95pgEC4+cjFJ4LOknXc33UfkbzLVr6C
+         +DEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aVNC1BmCPpKa2GzBW7dZAnKvPYTYo+NPkmNdX8JLnR4=;
-        b=TuJoKgWqgqrfpRb3Usrdnle8RJFmHND1NkzPec9kR6XlyfSU6eeacKA0E0nR6Ysejj
-         4qOiHUvjSTXk+QdHSm40EOhaZWLy4UWNsJjr4/HTpf/jjJkDwOKDRSPOP4oKMcWs8yNG
-         z55VOS3SJU5pGqCig+g9LIe0qhbgGA3MhiY8S+HxlLfTovfvRRXijDEOfOCNjPxDwoBC
-         KGpe5M4fed0M8PxMRRWqhjNss0+fCfea1RSEByzHNajFZF7nD2nh6hQseARRNFiDeEGY
-         +QTm48+me3EAZAakT2U+dD+bke2Wy9OpUBpe0ssZ6JHrrQ3eis7Qjsbpf3Aehsgv1IC6
-         6tMw==
-X-Gm-Message-State: AOAM531tZIOKR+CGD3TT7W+A8V9SCO8G5bp6qYNe1MgWVFjUzFEF6+cZ
-        373eX8FJ+5oLn+vcYm8+iUdKuo2p
-X-Google-Smtp-Source: ABdhPJySoj+3HX79azrckkO5FfjiF1ZkiNatXCo3k3yqzun4HMezlgP82x/GEbVO5pYeo7L78Uwfjg==
-X-Received: by 2002:a2e:b4b9:: with SMTP id q25mr919864ljm.313.1592440522621;
-        Wed, 17 Jun 2020 17:35:22 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id o19sm267788ljc.23.2020.06.17.17.35.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 17:35:21 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 14/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
- <1592358094-23459-15-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <457e3754-c783-0ec4-068c-8b5f5ff8de0a@gmail.com>
-Date:   Thu, 18 Jun 2020 03:35:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1592358094-23459-15-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=2rTi7sVYxh2vc2bTkTkIYUM2u0ppPplMS03UqDSUVng=;
+        b=d0D3d85zOyXZiK/6WV9K+ZGrAbNDcxhiYtFqOPel1vmHEdaj8f6NCZowrvmsewORoU
+         TXh+KQWSqpL6N3mTYwcsOxbQlu0DngJGsb7bhfmmo/0bU5OoWFgatfcvuEusYfROG3rf
+         PuLWg17KmXhqE6FW3ac9kLfDuycXFZWhOQBsx5+JoeBZFhXo3riSJesEPJk8/2HEE4a7
+         As/TGO64a1H3+siW6//ma/SwvYpuF/Z5Q8Ixv2RG9PKwbEAA7mK1RECzv9aMjWIyUEqK
+         TW1U3r5C4tzvNuOmN43b2qDhMo8ADWVShuonILk7GoS5Uo6ZZtgPS+igPdKQCqIEaqyY
+         Iukg==
+X-Gm-Message-State: AOAM530OeF5tEm9Hgr1xiBpPd5GJHkNLnMlK4EnaVBBqsiiDtpVpvuDz
+        jnVjc7YIev4h/za3VO0VkIs=
+X-Google-Smtp-Source: ABdhPJxdV0ykrUh5oqjTY+50oYqRlJtDYcr0Bx93ANiw5+XULviU+C75bakCWcmACjAwiJMzUY/34g==
+X-Received: by 2002:a05:620a:23a:: with SMTP id u26mr1311929qkm.443.1592440767971;
+        Wed, 17 Jun 2020 17:39:27 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:9c3:b47c:c995:4853])
+        by smtp.googlemail.com with ESMTPSA id p13sm1618060qtk.24.2020.06.17.17.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 17:39:27 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
+Subject: [PATCH] [perf] Fix null pointer deference in nest_epollfd
+Date:   Wed, 17 Jun 2020 20:38:49 -0400
+Message-Id: <20200618003916.26644-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.06.2020 04:41, Sowjanya Komatineni пишет:
-...
-> -static int tegra_mipi_wait(struct tegra_mipi *mipi)
-> +int tegra_mipi_wait(struct tegra_mipi_device *device)
->  {
-> +	struct tegra_mipi *mipi = device->mipi;
->  	unsigned long timeout = jiffies + msecs_to_jiffies(250);
->  	u32 value;
-> +	int err;
-> +
-> +	err = clk_enable(device->mipi->clk);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	mutex_lock(&device->mipi->lock);
+Add a NULL check for worker before dereferencing.
 
-The timeout variable should be assigned *after* taking the lock.
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ tools/perf/bench/epoll-wait.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-It will be better if you could use the read_poll_timeout() or
-readl_relaxed_poll_timeout() here.
+diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
+index 75dca9773186..42983eb7f82e 100644
+--- a/tools/perf/bench/epoll-wait.c
++++ b/tools/perf/bench/epoll-wait.c
+@@ -239,6 +239,9 @@ static void *workerfn(void *arg)
+ 
+ static void nest_epollfd(struct worker *w)
+ {
++	if (!w)
++		return;
++
+ 	unsigned int i;
+ 	struct epoll_event ev;
+ 	int efd = multiq ? w->epollfd : epollfd;
+-- 
+2.17.1
 
->  	while (time_before(jiffies, timeout)) {
->  		value = tegra_mipi_readl(mipi, MIPI_CAL_STATUS);
->  		if ((value & MIPI_CAL_STATUS_ACTIVE) == 0 &&
->  		    (value & MIPI_CAL_STATUS_DONE) != 0)
-> -			return 0;
-> +			goto done;
->  
->  		usleep_range(10, 50);
->  	}
->  
-> -	return -ETIMEDOUT;
-> +	err = -ETIMEDOUT;
-> +done:
-> +	mutex_unlock(&device->mipi->lock);
-> +	clk_disable(device->mipi->clk);
-> +	return err;
->  }
-> +EXPORT_SYMBOL(tegra_mipi_wait);
