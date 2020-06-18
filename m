@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1BB1FEED7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E995B1FEEE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgFRJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:43:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43514 "EHLO mail.kernel.org"
+        id S1729364AbgFRJny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728568AbgFRJnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:43:10 -0400
+        id S1728568AbgFRJnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 05:43:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC0DA21548;
-        Thu, 18 Jun 2020 09:43:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 614A721548;
+        Thu, 18 Jun 2020 09:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592473389;
-        bh=i9JeJIALNjzTrIEVjDmpg7b8gg3dE54NRITDfTxUC7c=;
+        s=default; t=1592473396;
+        bh=vjhHAtX89dp52fJGjMBaXCx1opCt0jlVamfjql7G9Lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+rW7gFjAnZDhzVV5EeTL2h4bim5p831/I8lqdr9sK4UzwRsUSd31pNW0raTblHH5
-         EJemjIGPptDv5Tn8O/arGpXtKtO1g7GiYFaprYbxJuFRJ4FzLi1jCHEbejwGRyuxXv
-         2R0SbLO+ivz1L0sRe1p/nhAjmK7FmL1ON+8D1PTE=
+        b=DE/EtOgB0MLEK0vpt1l55jo6m76nx5qJ/UzQM6X0TCKLWK/8qUizlPV5w4J3Tdy6y
+         VM6y5jnruykVnFtZmoGDjuBKxZIOTzA5yxtWLD2LOccsOR/GynlvCRgWHU5p4FJ9CQ
+         1rABQZ/SPgutE3LSZ6yJsfIgsAOahiZ6MKm5JPU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-usb@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bin Liu <b-liu@ti.com>, Paul Cercueil <paul@crapouillou.net>,
         Alan Stern <stern@rowland.harvard.edu>,
-        Richard Dodd <richard.o.dodd@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jonathan Cox <jonathan@jdcox.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        =?UTF-8?q?Thi=C3=A9baud=20Weksteen?= <tweek@google.com>,
-        Nishad Kamdar <nishadkamdar@gmail.com>
-Subject: [PATCH 1/8] USB: rename USB quirk to USB_QUIRK_ENDPOINT_IGNORE
-Date:   Thu, 18 Jun 2020 11:42:53 +0200
-Message-Id: <20200618094300.1887727-2-gregkh@linuxfoundation.org>
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Heinzelmann <heinzelmann.david@gmail.com>,
+        "Lee, Chiasheng" <chiasheng.lee@intel.com>,
+        Keiya Nobuta <nobuta.keiya@fujitsu.com>,
+        Hardik Gajjar <hgajjar@de.adit-jv.com>
+Subject: [PATCH 2/8] USB: rename USB OTG hub configuration option
+Date:   Thu, 18 Jun 2020 11:42:54 +0200
+Message-Id: <20200618094300.1887727-3-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200618094300.1887727-1-gregkh@linuxfoundation.org>
 References: <20200618094300.1887727-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB core has a quirk flag to ignore specific endpoints, so rename it
-to be more obvious what this quirk does.
+The USB OTG code has the ability to disable external hubs, but the
+configuration option for it is oddly named.  Rename it to be more
+obvious as to what it does.
 
-Cc: Johan Hovold <johan@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Bin Liu <b-liu@ti.com>
+Cc: Paul Cercueil <paul@crapouillou.net>
 Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Richard Dodd <richard.o.dodd@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Jonathan Cox <jonathan@jdcox.net>
-Cc: Bastien Nocera <hadess@hadess.net>
-Cc: "Thiébaud Weksteen" <tweek@google.com>
-Cc: Nishad Kamdar <nishadkamdar@gmail.com>
+Cc: Eugeniu Rosca <erosca@de.adit-jv.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: David Heinzelmann <heinzelmann.david@gmail.com>
+Cc: "Lee, Chiasheng" <chiasheng.lee@intel.com>
+Cc: Keiya Nobuta <nobuta.keiya@fujitsu.com>
+Cc: Hardik Gajjar <hgajjar@de.adit-jv.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/config.c  |  8 ++++----
- drivers/usb/core/quirks.c  | 18 +++++++++---------
- drivers/usb/core/usb.h     |  2 +-
- include/linux/usb/quirks.h |  4 ++--
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ arch/mips/configs/gcw0_defconfig | 2 +-
+ drivers/usb/core/Kconfig         | 2 +-
+ drivers/usb/core/hub.c           | 2 +-
+ drivers/usb/musb/Kconfig         | 2 +-
+ drivers/usb/musb/musb_core.c     | 4 ++--
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
-index b7918f695434..37442f423a41 100644
---- a/drivers/usb/core/config.c
-+++ b/drivers/usb/core/config.c
-@@ -298,10 +298,10 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 		goto skip_to_next_endpoint_or_interface_descriptor;
+diff --git a/arch/mips/configs/gcw0_defconfig b/arch/mips/configs/gcw0_defconfig
+index 48131cb47e66..4994749b9eaa 100644
+--- a/arch/mips/configs/gcw0_defconfig
++++ b/arch/mips/configs/gcw0_defconfig
+@@ -96,7 +96,7 @@ CONFIG_SND_SIMPLE_CARD=y
+ CONFIG_USB_CONN_GPIO=y
+ CONFIG_USB=y
+ CONFIG_USB_OTG=y
+-CONFIG_USB_OTG_BLACKLIST_HUB=y
++CONFIG_USB_OTG_DISABLE_EXTERNAL_HUB=y
+ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_OHCI_HCD_PLATFORM=y
+ CONFIG_USB_MUSB_HDRC=y
+diff --git a/drivers/usb/core/Kconfig b/drivers/usb/core/Kconfig
+index ecaacc8ed311..06bae55860e4 100644
+--- a/drivers/usb/core/Kconfig
++++ b/drivers/usb/core/Kconfig
+@@ -66,7 +66,7 @@ config USB_OTG_WHITELIST
+ 	  "Targeted Peripherals List".  "Embedded Hosts" are likewise
+ 	  allowed to support only a limited number of peripherals.
+ 
+-config USB_OTG_BLACKLIST_HUB
++config USB_OTG_DISABLE_EXTERNAL_HUB
+ 	bool "Disable external hubs"
+ 	depends on USB_OTG || EXPERT
+ 	help
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b1e14beaac5f..ab26ac0147f7 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -1834,7 +1834,7 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 		return -E2BIG;
  	}
  
--	/* Ignore blacklisted endpoints */
--	if (udev->quirks & USB_QUIRK_ENDPOINT_BLACKLIST) {
--		if (usb_endpoint_is_blacklisted(udev, ifp, d)) {
--			dev_warn(ddev, "config %d interface %d altsetting %d has a blacklisted endpoint with address 0x%X, skipping\n",
-+	/* Ignore some endpoints */
-+	if (udev->quirks & USB_QUIRK_ENDPOINT_IGNORE) {
-+		if (usb_endpoint_is_ignored(udev, ifp, d)) {
-+			dev_warn(ddev, "config %d interface %d altsetting %d has an ignored endpoint with address 0x%X, skipping\n",
- 					cfgno, inum, asnum,
- 					d->bEndpointAddress);
- 			goto skip_to_next_endpoint_or_interface_descriptor;
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 3e8efe759c3e..20dccf34182d 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -359,7 +359,7 @@ static const struct usb_device_id usb_quirk_list[] = {
+-#ifdef	CONFIG_USB_OTG_BLACKLIST_HUB
++#ifdef	CONFIG_USB_OTG_DISABLE_EXTERNAL_HUB
+ 	if (hdev->parent) {
+ 		dev_warn(&intf->dev, "ignoring external hub\n");
+ 		return -ENODEV;
+diff --git a/drivers/usb/musb/Kconfig b/drivers/usb/musb/Kconfig
+index 3b0d1c20ebe6..8de143807c1a 100644
+--- a/drivers/usb/musb/Kconfig
++++ b/drivers/usb/musb/Kconfig
+@@ -113,7 +113,7 @@ config USB_MUSB_JZ4740
+ 	depends on OF
+ 	depends on MIPS || COMPILE_TEST
+ 	depends on USB_MUSB_GADGET
+-	depends on USB=n || USB_OTG_BLACKLIST_HUB
++	depends on USB=n || USB_OTG_DISABLE_EXTERNAL_HUB
+ 	select USB_ROLE_SWITCH
  
- 	/* Sound Devices USBPre2 */
- 	{ USB_DEVICE(0x0926, 0x0202), .driver_info =
--			USB_QUIRK_ENDPOINT_BLACKLIST },
-+			USB_QUIRK_ENDPOINT_IGNORE },
- 
- 	/* Keytouch QWERTY Panel keyboard */
- 	{ USB_DEVICE(0x0926, 0x3333), .driver_info =
-@@ -493,24 +493,24 @@ static const struct usb_device_id usb_amd_resume_quirk_list[] = {
- };
- 
- /*
-- * Entries for blacklisted endpoints that should be ignored when parsing
-- * configuration descriptors.
-+ * Entries for endpoints that should be ignored when parsing configuration
-+ * descriptors.
-  *
-- * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
-+ * Matched for devices with USB_QUIRK_ENDPOINT_IGNORE.
-  */
--static const struct usb_device_id usb_endpoint_blacklist[] = {
-+static const struct usb_device_id usb_endpoint_ignore[] = {
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0202, 1), .driver_info = 0x85 },
- 	{ }
- };
- 
--bool usb_endpoint_is_blacklisted(struct usb_device *udev,
--		struct usb_host_interface *intf,
--		struct usb_endpoint_descriptor *epd)
-+bool usb_endpoint_is_ignored(struct usb_device *udev,
-+			     struct usb_host_interface *intf,
-+			     struct usb_endpoint_descriptor *epd)
- {
- 	const struct usb_device_id *id;
- 	unsigned int address;
- 
--	for (id = usb_endpoint_blacklist; id->match_flags; ++id) {
-+	for (id = usb_endpoint_ignore; id->match_flags; ++id) {
- 		if (!usb_match_device(udev, id))
- 			continue;
- 
-diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-index 19e4c550bc73..98e7d1ee63dc 100644
---- a/drivers/usb/core/usb.h
-+++ b/drivers/usb/core/usb.h
-@@ -37,7 +37,7 @@ extern void usb_authorize_interface(struct usb_interface *);
- extern void usb_detect_quirks(struct usb_device *udev);
- extern void usb_detect_interface_quirks(struct usb_device *udev);
- extern void usb_release_quirk_list(void);
--extern bool usb_endpoint_is_blacklisted(struct usb_device *udev,
-+extern bool usb_endpoint_is_ignored(struct usb_device *udev,
- 		struct usb_host_interface *intf,
- 		struct usb_endpoint_descriptor *epd);
- extern int usb_remove_device(struct usb_device *udev);
-diff --git a/include/linux/usb/quirks.h b/include/linux/usb/quirks.h
-index 22c1f579afe3..5e4c497f54d6 100644
---- a/include/linux/usb/quirks.h
-+++ b/include/linux/usb/quirks.h
-@@ -69,7 +69,7 @@
- /* Hub needs extra delay after resetting its port. */
- #define USB_QUIRK_HUB_SLOW_RESET		BIT(14)
- 
--/* device has blacklisted endpoints */
--#define USB_QUIRK_ENDPOINT_BLACKLIST		BIT(15)
-+/* device has endpoints that should be ignored */
-+#define USB_QUIRK_ENDPOINT_IGNORE		BIT(15)
- 
- #endif /* __LINUX_USB_QUIRKS_H */
+ config USB_MUSB_MEDIATEK
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index 384a8039a7fd..5a56a03996b1 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1637,8 +1637,8 @@ static int musb_core_init(u16 musb_type, struct musb *musb)
+ 		musb->is_multipoint = 0;
+ 		type = "";
+ 		if (IS_ENABLED(CONFIG_USB) &&
+-		    !IS_ENABLED(CONFIG_USB_OTG_BLACKLIST_HUB)) {
+-			pr_err("%s: kernel must blacklist external hubs\n",
++		    !IS_ENABLED(CONFIG_USB_OTG_DISABLE_EXTERNAL_HUB)) {
++			pr_err("%s: kernel must disable external hubs, please fix the configuration\n",
+ 			       musb_driver_name);
+ 		}
+ 	}
 -- 
 2.27.0
 
