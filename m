@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133551FE2F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BEF1FE2EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731461AbgFRCFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:05:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
+        id S1731098AbgFRCFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730830AbgFRBWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:22:47 -0400
+        id S1729612AbgFRBWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:22:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E063F20663;
-        Thu, 18 Jun 2020 01:22:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B1E1221E9;
+        Thu, 18 Jun 2020 01:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443366;
-        bh=Y+FVK3XqVDpUBlVHDkpJylAgXIYqiz5DwJdh4HVr6Pg=;
+        s=default; t=1592443371;
+        bh=73WgdEFIZCa7hMRSJddpG2UJDaVIQocYkI0u7kpEY6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=szqLUu2Rv6ZmJxy5pRh/1r16pFNG748aMENpMK+GBz4mQjWhP+4TM1zzHEWNs8bjL
-         xBYkc2UXNJZOGgXIEZOOo5XbcTDGPbtQ4LOvzYNpQtKZNCV6Gv3GNXs0zuaQ83rCuP
-         dZXn4fx0u4JNj1DbtmM1yGv8WwRsIR1HFxopuZ5Q=
+        b=eCiIqEQCTgFQiQjrQNU4mo9WL13+GOK6cOytdooJ6hQqTXHdrwPqOtjin4d07JlWB
+         lRX8PfrK5327dG0HdcPbT2vJ+xlgQ6RB3M5ySPxUI1CLU+/UlZWhiNuox0Mx/7FOmA
+         Px5+O0h/W4qB/HYwikmkyHe9UI69IbgZoeZqFn0M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 022/172] clk: samsung: Mark top ISP and CAM clocks on Exynos542x as critical
-Date:   Wed, 17 Jun 2020 21:19:48 -0400
-Message-Id: <20200618012218.607130-22-sashal@kernel.org>
+Cc:     Martin Wilck <mwilck@suse.com>, Hannes Reinecke <hare@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.19 025/172] dm mpath: switch paths in dm_blk_ioctl() code path
+Date:   Wed, 17 Jun 2020 21:19:51 -0400
+Message-Id: <20200618012218.607130-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -46,90 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit e47bd937e602bb4379546095d1bd0b9871fa60c2 ]
+[ Upstream commit 2361ae595352dec015d14292f1b539242d8446d6 ]
 
-The TOP 'aclk*_isp', 'aclk550_cam', 'gscl_wa' and 'gscl_wb' clocks must
-be kept enabled all the time to allow proper access to power management
-control for the ISP and CAM power domains. The last two clocks, although
-related to GScaler device and GSCL power domain, provides also the
-I_WRAP_CLK signal to MIPI CSIS0/1 devices, which are a part of CAM power
-domain and are needed for proper power on/off sequence.
+SCSI LUN passthrough code such as qemu's "scsi-block" device model
+pass every IO to the host via SG_IO ioctls. Currently, dm-multipath
+calls choose_pgpath() only in the block IO code path, not in the ioctl
+code path (unless current_pgpath is NULL). This has the effect that no
+path switching and thus no load balancing is done for SCSI-passthrough
+IO, unless the active path fails.
 
-Currently there are no drivers for the devices, which are part of CAM and
-ISP power domains yet. This patch only fixes the race between disabling
-the unused power domains and disabling unused clocks, which randomly
-resulted in the following error during boot:
+Fix this by using the same logic in multipath_prepare_ioctl() as in
+multipath_clone_and_map().
 
-Power domain CAM disable failed
-Power domain ISP disable failed
+Note: The allegedly best path selection algorithm, service-time,
+still wouldn't work perfectly, because the io size of the current
+request is always set to 0. Changing that for the IO passthrough
+case would require the ioctl cmd and arg to be passed to dm's
+prepare_ioctl() method.
 
-Fixes: 318fa46cc60d ("clk/samsung: exynos542x: mark some clocks as critical")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/samsung/clk-exynos5420.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/md/dm-mpath.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
-index 6473af8903c5..662bb441f139 100644
---- a/drivers/clk/samsung/clk-exynos5420.c
-+++ b/drivers/clk/samsung/clk-exynos5420.c
-@@ -597,7 +597,7 @@ static const struct samsung_div_clock exynos5800_div_clks[] __initconst = {
+diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+index 207ca0ad0b59..c1ad84f3414c 100644
+--- a/drivers/md/dm-mpath.c
++++ b/drivers/md/dm-mpath.c
+@@ -1868,7 +1868,7 @@ static int multipath_prepare_ioctl(struct dm_target *ti,
+ 	int r;
  
- static const struct samsung_gate_clock exynos5800_gate_clks[] __initconst = {
- 	GATE(CLK_ACLK550_CAM, "aclk550_cam", "mout_user_aclk550_cam",
--				GATE_BUS_TOP, 24, 0, 0),
-+				GATE_BUS_TOP, 24, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_ACLK432_SCALER, "aclk432_scaler", "mout_user_aclk432_scaler",
- 				GATE_BUS_TOP, 27, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_MAU_EPLL, "mau_epll", "mout_user_mau_epll",
-@@ -984,25 +984,25 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
- 	GATE(0, "aclk300_jpeg", "mout_user_aclk300_jpeg",
- 			GATE_BUS_TOP, 4, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk333_432_isp0", "mout_user_aclk333_432_isp0",
--			GATE_BUS_TOP, 5, 0, 0),
-+			GATE_BUS_TOP, 5, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk300_gscl", "mout_user_aclk300_gscl",
- 			GATE_BUS_TOP, 6, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk333_432_gscl", "mout_user_aclk333_432_gscl",
- 			GATE_BUS_TOP, 7, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk333_432_isp", "mout_user_aclk333_432_isp",
--			GATE_BUS_TOP, 8, 0, 0),
-+			GATE_BUS_TOP, 8, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_PCLK66_GPIO, "pclk66_gpio", "mout_user_pclk66_gpio",
- 			GATE_BUS_TOP, 9, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk66_psgen", "mout_user_aclk66_psgen",
- 			GATE_BUS_TOP, 10, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk266_isp", "mout_user_aclk266_isp",
--			GATE_BUS_TOP, 13, 0, 0),
-+			GATE_BUS_TOP, 13, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk166", "mout_user_aclk166",
- 			GATE_BUS_TOP, 14, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_ACLK333, "aclk333", "mout_user_aclk333",
- 			GATE_BUS_TOP, 15, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk400_isp", "mout_user_aclk400_isp",
--			GATE_BUS_TOP, 16, 0, 0),
-+			GATE_BUS_TOP, 16, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk400_mscl", "mout_user_aclk400_mscl",
- 			GATE_BUS_TOP, 17, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk200_disp1", "mout_user_aclk200_disp1",
-@@ -1208,8 +1208,10 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
- 			GATE_IP_GSCL1, 3, 0, 0),
- 	GATE(CLK_SMMU_FIMCL1, "smmu_fimcl1", "dout_gscl_blk_333",
- 			GATE_IP_GSCL1, 4, 0, 0),
--	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12, 0, 0),
--	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13, 0, 0),
-+	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12,
-+			CLK_IS_CRITICAL, 0),
-+	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13,
-+			CLK_IS_CRITICAL, 0),
- 	GATE(CLK_SMMU_FIMCL3, "smmu_fimcl3,", "dout_gscl_blk_333",
- 			GATE_IP_GSCL1, 16, 0, 0),
- 	GATE(CLK_FIMC_LITE3, "fimc_lite3", "aclk333_432_gscl",
+ 	current_pgpath = READ_ONCE(m->current_pgpath);
+-	if (!current_pgpath)
++	if (!current_pgpath || !test_bit(MPATHF_QUEUE_IO, &m->flags))
+ 		current_pgpath = choose_pgpath(m, 0);
+ 
+ 	if (current_pgpath) {
 -- 
 2.25.1
 
