@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5741FF2AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515FC1FF2B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbgFRNHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:07:33 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:27214 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730077AbgFRNHX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:07:23 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05ID4Ihk012640;
-        Thu, 18 Jun 2020 15:07:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=Q6db3X4dxlS6qvbPYnAd4zoz3ZPexCGcUlqOVKKA23Y=;
- b=l5f/pokGAVl0Lj4IK20biU6p2wz2JLJBZGY0PTKzqWBZ37o1f0X4TIwOZbe0AGuvZEW/
- M2q1Ty7x1UxAaqduanZNnbOek4PHbFLwuH1mMtbcI+tHmrsTdYJLt+9IR0ZVGqO2gLaO
- UN6Hdz9cqpg/vJsN95nE5GtR2sKc3gVYVMJVr569Iob19AzWsiWKaZ+PkMyRoOehOi0d
- VOTLl1KOHD/08bd6aAQY4qkQNESKGCBx2DvL3QY0jc5TQ7JmXGogID4AUbQ2+mOTTmBh
- DjDNNEd9/N86vXIyqdt1gQhnSXW7jl2xB+GdnOqxWXqLD8V4SmxnpOdkG/WopEeFO50d MQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31q64ak3hx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Jun 2020 15:07:03 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A6BD9100038;
-        Thu, 18 Jun 2020 15:07:02 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9A25B2B8A0D;
-        Thu, 18 Jun 2020 15:07:02 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun 2020 15:07:02
- +0200
-From:   Erwan Le Ray <erwan.leray@st.com>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Erwan Le Ray <erwan.leray@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH v2 5/5] ARM: dts: stm32: add usart2 node to stm32mp157c-dk2
-Date:   Thu, 18 Jun 2020 15:06:51 +0200
-Message-ID: <20200618130651.29836-6-erwan.leray@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200618130651.29836-1-erwan.leray@st.com>
-References: <20200618130651.29836-1-erwan.leray@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-18_12:2020-06-18,2020-06-18 signatures=0
+        id S1730133AbgFRNJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726984AbgFRNJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 09:09:16 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FC4120707;
+        Thu, 18 Jun 2020 13:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592485755;
+        bh=Wz8/bOunSjW5fydHgst0DIKygPVfQS4J/kwnhHQlihs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=sqTNnRwiIJ2ahkMXxnpiz373DvoGyA3TQdGseAAKA+kpq/zpJp8QjdqVDTgMgVuC5
+         9NiQKthJcu+bzN8yRbIIqywYDPnfFnLM+ofTPsAPwhNywXx5endgDv6ufuBscXSAmz
+         MWmGBaUUAEpxbFCilLZ0XCf3kEkE6i2K+2DU7EhI=
+Date:   Thu, 18 Jun 2020 14:09:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+In-Reply-To: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+References: <20200617223247.25566-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH 0/5] regulator: Constify some static struct variables
+Message-Id: <159248575341.21561.10817745653684251777.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the usart2 node to stm32mp157c-dk2 board. usart2 pins are connected
-to Bluetooth component. usart2 is disabled by default.
+On Thu, 18 Jun 2020 00:32:42 +0200, Rikard Falkeborn wrote:
+> Constify some static struct variables to allow the compiler to put them
+> in read-only memory. There are more of these, but I figured I could
+> start small. Also, is one patch per driver a good resolution or too
+> fine-grained?
+> 
+> Rikard Falkeborn (5):
+>   regulator: anatop: Constify anatop_core_rops
+>   regulator: cpcap: Constify cpcap_regulator_ops
+>   regulator: ltc3676: Constify ltc3676_regulators
+>   regulator: max8907: Constify static structs
+>   regulator: max8997: Constify struct regulator_ops
+> 
+> [...]
 
-Signed-off-by: Erwan Le Ray <erwan.leray@st.com>
+Applied to
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-index ffbae4a8753d..045636555ddd 100644
---- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
-@@ -21,6 +21,7 @@
- 		serial0 = &uart4;
- 		serial1 = &usart3;
- 		serial2 = &uart7;
-+		serial3 = &usart2;
- 	};
- 
- 	chosen {
-@@ -86,3 +87,11 @@
- 		};
- 	};
- };
-+
-+&usart2 {
-+	pinctrl-names = "default", "sleep", "idle";
-+	pinctrl-0 = <&usart2_pins_c>;
-+	pinctrl-1 = <&usart2_sleep_pins_c>;
-+	pinctrl-2 = <&usart2_idle_pins_c>;
-+	status = "disabled";
-+};
--- 
-2.17.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
+Thanks!
+
+[1/5] regulator: anatop: Constify anatop_core_rops
+      commit: cae62a937912bd4b3faf8e268cc0ffcf00ec5850
+[2/5] regulator: cpcap: Constify cpcap_regulator_ops
+      commit: bcf39c1eb1e059ec612bf06f4aa7b3972dcc85e8
+[3/5] regulator: ltc3676: Constify ltc3676_regulators
+      commit: b37f076d4bfdd29b3aa497480b226759f659e25f
+[4/5] regulator: max8907: Constify static structs
+      commit: b08af72d6e5319e96527816c4b3b08d0b1a6f242
+[5/5] regulator: max8997: Constify struct regulator_ops
+      commit: 9ed84d24de480e81294e00814c142234bc17ce0c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
