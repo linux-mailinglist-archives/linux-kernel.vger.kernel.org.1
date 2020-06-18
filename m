@@ -2,123 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0D71FFD2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 23:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706801FFD43
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 23:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730302AbgFRVKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 17:10:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52548 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726478AbgFRVKR (ORCPT
+        id S1731300AbgFRVKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 17:10:55 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:57058 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730989AbgFRVKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 17:10:17 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EDA5E207564C;
-        Thu, 18 Jun 2020 14:10:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EDA5E207564C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1592514616;
-        bh=YiCRzEtMqOMRGhK1JB6+uXhuvSs5ixeHO99z/YzrCNw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=b30qOhfFRkmUxWYXsp0tCg1xNoai+tuzhcElGnk6aQqF+sHXn8o9cTZ3DOKkg2yAO
-         nCwRPVzwRoHnBYW3E5flVBJUOwZ+1JrMzNU5fwjf0CB0m9smLxLpMKgSkKF7pk8Cv1
-         12u0C4+Wu/QLKVuHjPBdpSB4IYsxlYm7AINMH764=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, sgrubb@redhat.com, paul@paul-moore.com
-Cc:     rgb@redhat.com, linux-integrity@vger.kernel.org,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] integrity: Add errno field in audit message
-Date:   Thu, 18 Jun 2020 14:10:11 -0700
-Message-Id: <20200618211012.2823-1-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 18 Jun 2020 17:10:48 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAh43036218;
+        Thu, 18 Jun 2020 16:10:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592514643;
+        bh=ehq+Ty1gZ2t4R0aAfzFJjltOQ0z7TJBMi3aVsQVQchg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=opI/u/XVls5qmauY8k3rC4TzC+lQsGCbqkcL55OjFbLaMI5VFm0heUj5WIyJjLZM+
+         ylY+iYoz9W6kr6oxkcB/Gp15EhsWejlPcX+hPMgW/3U2KHOC+RCt+tWmS8l0rHEvXr
+         eIfB7PrmNSGMO1YAR4U7gINWilqGOrJxrmvmmBBg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAhSQ084551;
+        Thu, 18 Jun 2020 16:10:43 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 18
+ Jun 2020 16:10:43 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 18 Jun 2020 16:10:43 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05ILAhgF015270;
+        Thu, 18 Jun 2020 16:10:43 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v8 5/5] net: phy: DP83822: Add setting the fixed internal delay
+Date:   Thu, 18 Jun 2020 16:10:11 -0500
+Message-ID: <20200618211011.28837-6-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200618211011.28837-1-dmurphy@ti.com>
+References: <20200618211011.28837-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Error code is not included in the audit messages logged by
-the integrity subsystem.
+The DP83822 can be configured to use the RGMII interface. There are
+independent fixed 3.5ns clock shift (aka internal delay) for the TX and RX
+paths. This allow either one to be set if the MII interface is RGMII and
+the value is set in the firmware node.
 
-Define a new function integrity_audit_message() that takes error code
-in the "errno" parameter. Add "errno" field in the audit messages logged
-by the integrity subsystem and set the value passed in the "errno"
-parameter.
-
-[    6.303048] audit: type=1804 audit(1592506281.627:2): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=kernel op=measuring_key cause=ENOMEM comm="swapper/0" name=".builtin_trusted_keys" res=0 errno=-12
-
-[    7.987647] audit: type=1802 audit(1592506283.312:9): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0 op=policy_update cause=completed comm="systemd" res=1 errno=0
-
-[    8.019432] audit: type=1804 audit(1592506283.344:10): pid=1 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t:s0 op=measuring_kexec_cmdline cause=hashing_error comm="systemd" name="kexec-cmdline" res=0 errno=-22
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Steve Grubb <sgrubb@redhat.com>
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- security/integrity/integrity.h       | 13 +++++++++++++
- security/integrity/integrity_audit.c | 11 ++++++++++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ drivers/net/phy/dp83822.c | 78 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 68 insertions(+), 10 deletions(-)
 
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index 16c1894c29bb..413c803c5208 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -239,6 +239,11 @@ void integrity_audit_msg(int audit_msgno, struct inode *inode,
- 			 const unsigned char *fname, const char *op,
- 			 const char *cause, int result, int info);
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 1dd19d0cb269..0fe91119d57f 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -26,7 +26,9 @@
+ #define MII_DP83822_PHYSCR	0x11
+ #define MII_DP83822_MISR1	0x12
+ #define MII_DP83822_MISR2	0x13
++#define MII_DP83822_RCSR	0x17
+ #define MII_DP83822_RESET_CTRL	0x1f
++#define MII_DP83822_GENCFG	0x465
  
-+void integrity_audit_message(int audit_msgno, struct inode *inode,
-+			     const unsigned char *fname, const char *op,
-+			     const char *cause, int result, int info,
-+			     int errno);
+ #define DP83822_HW_RESET	BIT(15)
+ #define DP83822_SW_RESET	BIT(14)
+@@ -77,6 +79,10 @@
+ #define DP83822_WOL_INDICATION_SEL BIT(8)
+ #define DP83822_WOL_CLR_INDICATION BIT(11)
+ 
++/* RSCR bits */
++#define DP83822_RX_CLK_SHIFT	BIT(12)
++#define DP83822_TX_CLK_SHIFT	BIT(11)
 +
- static inline struct audit_buffer *
- integrity_audit_log_start(struct audit_context *ctx, gfp_t gfp_mask, int type)
+ static int dp83822_ack_interrupt(struct phy_device *phydev)
  {
-@@ -253,6 +258,14 @@ static inline void integrity_audit_msg(int audit_msgno, struct inode *inode,
- {
+ 	int err;
+@@ -255,7 +261,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
+ 	return phy_write(phydev, MII_DP83822_PHYSCR, physcr_status);
  }
  
-+static inline void integrity_audit_message(int audit_msgno,
-+					   struct inode *inode,
-+					   const unsigned char *fname,
-+					   const char *op, const char *cause,
-+					   int result, int info, int errno)
+-static int dp83822_config_init(struct phy_device *phydev)
++static int dp8382x_disable_wol(struct phy_device *phydev)
+ {
+ 	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
+ 		    DP83822_WOL_SECURE_ON;
+@@ -264,6 +270,45 @@ static int dp83822_config_init(struct phy_device *phydev)
+ 				  MII_DP83822_WOL_CFG, value);
+ }
+ 
++static int dp83822_config_init(struct phy_device *phydev)
 +{
++	struct device *dev = &phydev->mdio.dev;
++	int rgmii_delay;
++	s32 rx_int_delay;
++	s32 tx_int_delay;
++	int err = 0;
++
++	if (phy_interface_is_rgmii(phydev)) {
++		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
++						      true);
++		if (rx_int_delay <= 0)
++			rx_int_delay = 0;
++		else
++			rgmii_delay = DP83822_RX_CLK_SHIFT;
++
++		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
++						      false);
++		if (tx_int_delay <= 0)
++			tx_int_delay = 0;
++		else
++			rgmii_delay |= DP83822_TX_CLK_SHIFT;
++
++		if (rgmii_delay) {
++			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
++					       MII_DP83822_RCSR, rgmii_delay);
++			if (err)
++				return err;
++		}
++	}
++
++	return dp8382x_disable_wol(phydev);
 +}
 +
- static inline struct audit_buffer *
- integrity_audit_log_start(struct audit_context *ctx, gfp_t gfp_mask, int type)
- {
-diff --git a/security/integrity/integrity_audit.c b/security/integrity/integrity_audit.c
-index 5109173839cc..f25e7df099c8 100644
---- a/security/integrity/integrity_audit.c
-+++ b/security/integrity/integrity_audit.c
-@@ -28,6 +28,15 @@ __setup("integrity_audit=", integrity_audit_setup);
- void integrity_audit_msg(int audit_msgno, struct inode *inode,
- 			 const unsigned char *fname, const char *op,
- 			 const char *cause, int result, int audit_info)
++static int dp8382x_config_init(struct phy_device *phydev)
 +{
-+	integrity_audit_message(audit_msgno, inode, fname, op, cause,
-+				result, audit_info, 0);
++	return dp8382x_disable_wol(phydev);
 +}
 +
-+void integrity_audit_message(int audit_msgno, struct inode *inode,
-+			     const unsigned char *fname, const char *op,
-+			     const char *cause, int result, int audit_info,
-+			     int errno)
+ static int dp83822_phy_reset(struct phy_device *phydev)
  {
- 	struct audit_buffer *ab;
- 	char name[TASK_COMM_LEN];
-@@ -53,6 +62,6 @@ void integrity_audit_msg(int audit_msgno, struct inode *inode,
- 		audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 		audit_log_format(ab, " ino=%lu", inode->i_ino);
+ 	int err;
+@@ -272,9 +317,7 @@ static int dp83822_phy_reset(struct phy_device *phydev)
+ 	if (err < 0)
+ 		return err;
+ 
+-	dp83822_config_init(phydev);
+-
+-	return 0;
++	return phydev->drv->config_init(phydev);
+ }
+ 
+ static int dp83822_suspend(struct phy_device *phydev)
+@@ -318,14 +361,29 @@ static int dp83822_resume(struct phy_device *phydev)
+ 		.resume = dp83822_resume,			\
  	}
--	audit_log_format(ab, " res=%d", !result);
-+	audit_log_format(ab, " res=%d errno=%d", !result, errno);
- 	audit_log_end(ab);
- }
+ 
++#define DP8382X_PHY_DRIVER(_id, _name)				\
++	{							\
++		PHY_ID_MATCH_MODEL(_id),			\
++		.name		= (_name),			\
++		/* PHY_BASIC_FEATURES */			\
++		.soft_reset	= dp83822_phy_reset,		\
++		.config_init	= dp8382x_config_init,		\
++		.get_wol = dp83822_get_wol,			\
++		.set_wol = dp83822_set_wol,			\
++		.ack_interrupt = dp83822_ack_interrupt,		\
++		.config_intr = dp83822_config_intr,		\
++		.suspend = dp83822_suspend,			\
++		.resume = dp83822_resume,			\
++	}
++
+ static struct phy_driver dp83822_driver[] = {
+ 	DP83822_PHY_DRIVER(DP83822_PHY_ID, "TI DP83822"),
+-	DP83822_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
+-	DP83822_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
+-	DP83822_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
+-	DP83822_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
+-	DP83822_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
+-	DP83822_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
++	DP8382X_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
++	DP8382X_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
++	DP8382X_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
++	DP8382X_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
++	DP8382X_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
++	DP8382X_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
+ };
+ module_phy_driver(dp83822_driver);
+ 
 -- 
-2.27.0
+2.26.2
 
