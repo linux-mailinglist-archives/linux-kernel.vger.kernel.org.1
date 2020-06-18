@@ -2,118 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E681FF628
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53011FF62D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731310AbgFRPGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgFRPGI (ORCPT
+        id S1731367AbgFRPG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:06:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20441 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731055AbgFRPG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:06:08 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233FFC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:06:08 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id n22so1509826vkm.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uhyo0sKph8oAx2mIyvhHF5US4adK0E3GfKdnIj29E9Y=;
-        b=aB8ub7BN1xbigSK9olQdwudzkwJ1S2Yyrfdib2JJjs9mSUrmcIBMO2frrAcBiZHX7l
-         4L9kXEoi3EWaFw233GFFuBhCKCauoatr3Dh0Zel+L6LuxU0GkTw8Fz5FrXpPncLbU1ap
-         Wjgam1IaQoIbFXWShumV1iaHOZseVhcJ8qLaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uhyo0sKph8oAx2mIyvhHF5US4adK0E3GfKdnIj29E9Y=;
-        b=UjIWj9r7KO2rMJkVHDXS5PSvJ4P34SjLGHmaPVUNOUPwDDZ0d/xysmGnwmQ84IrHlG
-         VOoVF7Dz3pvrAkXzDwyl2h151T21qbwid5NyapaCdodTyI91wTeBzGzdENGxoIqQEpw9
-         nCCw6DtpI4ruhWu2q7fuOm8NNVD3VfpYRQI4azjeRV1n+QMSmzjcTqAhNFklA5LNCm1z
-         rjD5jl+Dtxko81rDIWGtqeWwPLoho2ygdxruEMIYCmNDmfCgH7rm4HT8Ef3oJ/0CBNIm
-         aLMHzcvZ6iLb0CShmCdsCJ1SYZZ+y4K8USNHbc8ej8E/lyfY+Wcu8hCZtLzRz+b5mqo8
-         y1Xg==
-X-Gm-Message-State: AOAM530zTqU0v+U0sQoYoGng6UGBV3+9nQnOwbuSqz1NCvcnkJNNVl0z
-        e4l+50fWMRk0VLZN4fDMkwdChKvpjoU=
-X-Google-Smtp-Source: ABdhPJwQotPmEPLNgCD12BohWZyNgp7TQAeoq2Mwj5j7N82gkg1cKH8Za43OMXFuU9sDT7F9rRpAeQ==
-X-Received: by 2002:a1f:ea82:: with SMTP id i124mr3600394vkh.62.1592492766914;
-        Thu, 18 Jun 2020 08:06:06 -0700 (PDT)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id r139sm356296vkr.20.2020.06.18.08.06.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 08:06:06 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id e1so1513631vkd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:06:06 -0700 (PDT)
-X-Received: by 2002:ac5:ce86:: with SMTP id 6mr3726475vke.75.1592492765249;
- Thu, 18 Jun 2020 08:06:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200616104050.84764-1-dianders@chromium.org> <20200616034044.v3.5.Ib1e6855405fc9c99916ab7c7dee84d73a8bf3d68@changeid>
- <159242860191.62212.18088243128415903480@swboyd.mtv.corp.google.com>
-In-Reply-To: <159242860191.62212.18088243128415903480@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 18 Jun 2020 08:05:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XfYnkw2EFFHZNMRffmO3XJE9Qm8YtMzjK8OWLgL39XKQ@mail.gmail.com>
-Message-ID: <CAD=FV=XfYnkw2EFFHZNMRffmO3XJE9Qm8YtMzjK8OWLgL39XKQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] spi: spi-geni-qcom: Don't keep a local state variable
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Alok Chauhan <alokc@codeaurora.org>, skakit@codeaurora.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Jun 2020 11:06:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592492784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=B3hPwQ1JMj6rF/e1bp2vt0LwdeFLVi97mXNQvAPwIN0=;
+        b=CdiXaLl35EMwGxpmgFloM7Q9Dtm9Yn9Xrqb9cCBSU2SrrQA4/N2axFfG0mh00THKMI8SOo
+        7CkKOY/nkZ4CETYUH5yyKx7nrO81wWagz6AKoR8tNjnoe2XX6vTpC4JJQBMheYG1YaFgGl
+        9N3NO1oYoU+EYgy7D6JAqhMuGK7sDf4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-xk1ufODnM2SCYbVy4w6MZg-1; Thu, 18 Jun 2020 11:06:22 -0400
+X-MC-Unique: xk1ufODnM2SCYbVy4w6MZg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7111D19200CE;
+        Thu, 18 Jun 2020 15:06:21 +0000 (UTC)
+Received: from llong.com (ovpn-118-66.rdu2.redhat.com [10.10.118.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C03505DA33;
+        Thu, 18 Jun 2020 15:06:07 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3] xfs: Fix false positive lockdep warning with sb_internal & fs_reclaim
+Date:   Thu, 18 Jun 2020 11:05:57 -0400
+Message-Id: <20200618150557.23741-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Depending on the workloads, the following circular locking dependency
+warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
+lock) may show up:
 
-On Wed, Jun 17, 2020 at 2:16 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Douglas Anderson (2020-06-16 03:40:50)
-> > diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-> > index 63a62548b078..6feea88d63ac 100644
-> > --- a/drivers/spi/spi-geni-qcom.c
-> > +++ b/drivers/spi/spi-geni-qcom.c
-> > @@ -63,13 +63,6 @@
-> >  #define TIMESTAMP_AFTER                BIT(3)
-> >  #define POST_CMD_DELAY         BIT(4)
-> >
-> > -enum spi_m_cmd_opcode {
-> > -       CMD_NONE,
-> > -       CMD_XFER,
-> > -       CMD_CS,
-> > -       CMD_CANCEL,
-> > -};
-> > -
-> >  struct spi_geni_master {
-> >         struct geni_se se;
-> >         struct device *dev;
-> > @@ -81,10 +74,11 @@ struct spi_geni_master {
-> >         unsigned int tx_rem_bytes;
-> >         unsigned int rx_rem_bytes;
-> >         const struct spi_transfer *cur_xfer;
-> > -       struct completion xfer_done;
-> > +       struct completion cs_done;
-> > +       struct completion cancel_done;
-> > +       struct completion abort_done;
->
-> I wonder if it would be better to use the wait_bit() APIs. That would
-> let us have one word for various bits like CS_DONE, CANCEL_DONE,
-> ABORT_DONE and then wake up the waiters when the particular bit happens
-> to come in through the isr. It is probably over-engineering though
-> because it saves a handful of bytes while increasing complexity.
->
-> Otherwise I like this patch.
+======================================================
+WARNING: possible circular locking dependency detected
+5.0.0-rc1+ #60 Tainted: G        W
+------------------------------------------------------
+fsfreeze/4346 is trying to acquire lock:
+0000000026f1d784 (fs_reclaim){+.+.}, at:
+fs_reclaim_acquire.part.19+0x5/0x30
 
-I'm going to leave it as-is for v4.  We can always make it a future
-improvement if we want.
+but task is already holding lock:
+0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
 
--Doug
+which lock already depends on the new lock.
+  :
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(sb_internal);
+                               lock(fs_reclaim);
+                               lock(sb_internal);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+4 locks held by fsfreeze/4346:
+ #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
+ #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
+ #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
+ #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+
+stack backtrace:
+Call Trace:
+ dump_stack+0xe0/0x19a
+ print_circular_bug.isra.10.cold.34+0x2f4/0x435
+ check_prev_add.constprop.19+0xca1/0x15f0
+ validate_chain.isra.14+0x11af/0x3b50
+ __lock_acquire+0x728/0x1200
+ lock_acquire+0x269/0x5a0
+ fs_reclaim_acquire.part.19+0x29/0x30
+ fs_reclaim_acquire+0x19/0x20
+ kmem_cache_alloc+0x3e/0x3f0
+ kmem_zone_alloc+0x79/0x150
+ xfs_trans_alloc+0xfa/0x9d0
+ xfs_sync_sb+0x86/0x170
+ xfs_log_sbcount+0x10f/0x140
+ xfs_quiesce_attr+0x134/0x270
+ xfs_fs_freeze+0x4a/0x70
+ freeze_super+0x1af/0x290
+ do_vfs_ioctl+0xedc/0x16c0
+ ksys_ioctl+0x41/0x80
+ __x64_sys_ioctl+0x73/0xa9
+ do_syscall_64+0x18f/0xd23
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+This is a false positive as all the dirty pages are flushed out before
+the filesystem can be frozen.
+
+One way to avoid this splat is to add GFP_NOFS to the affected allocation
+calls. This is what PF_MEMALLOC_NOFS per-process flag is for. This does
+reduce the potential source of memory where reclaim can be done. This
+shouldn't really matter unless the system is really running out of
+memory.  In that particular case, the filesystem freeze operation may
+fail while it was succeeding previously.
+
+Without this patch, the command sequence below will show that the lock
+dependency chain sb_internal -> fs_reclaim exists.
+
+ # fsfreeze -f /home
+ # fsfreeze --unfreeze /home
+ # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
+
+After applying the patch, such sb_internal -> fs_reclaim lock dependency
+chain can no longer be found. Because of that, the locking dependency
+warning will not be shown.
+
+Suggested-by: Dave Chinner <david@fromorbit.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/xfs/xfs_super.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 379cbff438bc..6a95c82f2f1b 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -913,11 +913,33 @@ xfs_fs_freeze(
+ 	struct super_block	*sb)
+ {
+ 	struct xfs_mount	*mp = XFS_M(sb);
++	unsigned long pflags;
++	int ret;
+ 
++	/*
++	 * A fs_reclaim pseudo lock is added to check for potential deadlock
++	 * condition with fs reclaim. The following lockdep splat was hit
++	 * occasionally. This is actually a false positive as the allocation
++	 * is being done only after the frozen filesystem is no longer dirty.
++	 * One way to avoid this splat is to add GFP_NOFS to the affected
++	 * allocation calls. This is what PF_MEMALLOC_NOFS is for.
++	 *
++	 *       CPU0                    CPU1
++	 *       ----                    ----
++	 *  lock(sb_internal);
++	 *                               lock(fs_reclaim);
++	 *                               lock(sb_internal);
++	 *  lock(fs_reclaim);
++	 *
++	 *  *** DEADLOCK ***
++	 */
++	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
+ 	xfs_stop_block_reaping(mp);
+ 	xfs_save_resvblks(mp);
+ 	xfs_quiesce_attr(mp);
+-	return xfs_sync_sb(mp, true);
++	ret = xfs_sync_sb(mp, true);
++	current_restore_flags_nested(&pflags, PF_MEMALLOC_NOFS);
++	return ret;
+ }
+ 
+ STATIC int
+-- 
+2.18.1
+
