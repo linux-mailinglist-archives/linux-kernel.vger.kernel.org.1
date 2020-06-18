@@ -2,124 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EF81FDF23
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000271FE1E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732506AbgFRBaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729997AbgFRB1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:27:03 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731798AbgFRB5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:57:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58686 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729890AbgFRBZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:25:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592443507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Aqj1ArPukFGK/qJUycjzo0g+sizWqNKXPf2rroolkYI=;
+        b=SG4PQm/fgRo9mFzyXRFegmtesTprBnJIpa/cIkG0Xqs4yAkeutlDr8VgdDxu0tVxccSjt6
+        izr1MumKZYJtgmADZOJEr4Zn1borULG1nLDfLa9AbinE4GwxykWUf+1XVzUraELlLBCFI7
+        Mqw9/GPSNCSDy2lG6p4V6NLHDe1SIuM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-mvQFyElLOnWBcZG1gZ5MzA-1; Wed, 17 Jun 2020 21:25:03 -0400
+X-MC-Unique: mvQFyElLOnWBcZG1gZ5MzA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 246CD221F1;
-        Thu, 18 Jun 2020 01:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443622;
-        bh=nbkmqZukT/Tkw7WWqBVK/Bb+JkaY0QMzxUMcKu2QFLg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T6yC4ntFT/yO0mTNAFjVe1vwHqqQp02qZzuZwiw37VtntOrgMGbB4cbMSyG1KRojO
-         xqx+3do30l707/wbQ6mBSgf9hMDs5ajlefbKiThLzfxv5mkHkxWCF/pLmdzJZLeIif
-         5b3o5xpHT2Q2j6XtXI/15EVcPXYaA5iq4x+HXSxY=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 048/108] drivers: base: Fix NULL pointer exception in __platform_driver_probe() if a driver developer is foolish
-Date:   Wed, 17 Jun 2020 21:25:00 -0400
-Message-Id: <20200618012600.608744-48-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
-References: <20200618012600.608744-1-sashal@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0ADA4A0BD7;
+        Thu, 18 Jun 2020 01:25:02 +0000 (UTC)
+Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 80C3410013D5;
+        Thu, 18 Jun 2020 01:25:01 +0000 (UTC)
+Date:   Wed, 17 Jun 2020 19:25:01 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qian Cai <cai@lca.pw>, kvm@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 280/388] vfio/pci: fix memory leaks of
+ eventfd ctx
+Message-ID: <20200617192501.2310afe6@x1.home>
+In-Reply-To: <20200618010805.600873-280-sashal@kernel.org>
+References: <20200618010805.600873-1-sashal@kernel.org>
+        <20200618010805.600873-280-sashal@kernel.org>
+Organization: Red Hat
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Wed, 17 Jun 2020 21:06:17 -0400
+Sasha Levin <sashal@kernel.org> wrote:
 
-[ Upstream commit 388bcc6ecc609fca1b4920de7dc3806c98ec535e ]
+> From: Qian Cai <cai@lca.pw>
+> 
+> [ Upstream commit 1518ac272e789cae8c555d69951b032a275b7602 ]
+> 
+> Finished a qemu-kvm (-device vfio-pci,host=0001:01:00.0) triggers a few
+> memory leaks after a while because vfio_pci_set_ctx_trigger_single()
+> calls eventfd_ctx_fdget() without the matching eventfd_ctx_put() later.
+> Fix it by calling eventfd_ctx_put() for those memory in
+> vfio_pci_release() before vfio_device_release().
+> 
+> unreferenced object 0xebff008981cc2b00 (size 128):
+>   comm "qemu-kvm", pid 4043, jiffies 4294994816 (age 9796.310s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
+>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
+>   backtrace:
+>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
+>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
+>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
+>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
+>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
+>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
+>     [<00000000d495ef94>] el0_sync+0x164/0x180
+> unreferenced object 0x29ff008981cc4180 (size 128):
+>   comm "qemu-kvm", pid 4043, jiffies 4294994818 (age 9796.290s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
+>     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
+>   backtrace:
+>     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
+>     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
+>     [<000000005fcec025>] do_eventfd+0x54/0x1ac
+>     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
+>     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
+>     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
+>     [<00000000d495ef94>] el0_sync+0x164/0x180
+> 
+> Signed-off-by: Qian Cai <cai@lca.pw>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/vfio/pci/vfio_pci.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> index 6c6b37b5c04e..080e6608f297 100644
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -519,6 +519,10 @@ static void vfio_pci_release(void *device_data)
+>  		vfio_pci_vf_token_user_add(vdev, -1);
+>  		vfio_spapr_pci_eeh_release(vdev->pdev);
+>  		vfio_pci_disable(vdev);
+> +		if (vdev->err_trigger)
+> +			eventfd_ctx_put(vdev->err_trigger);
+> +		if (vdev->req_trigger)
+> +			eventfd_ctx_put(vdev->req_trigger);
+>  	}
+>  
+>  	mutex_unlock(&vdev->reflck->lock);
 
-If platform bus driver registration is failed then, accessing
-platform bus spin lock (&drv->driver.bus->p->klist_drivers.k_lock)
-in __platform_driver_probe() without verifying the return value
-__platform_driver_register() can lead to NULL pointer exception.
 
-So check the return value before attempting the spin lock.
+This has a fix pending, I'd suggest not picking it on its own:
 
-One such example is below:
+https://lore.kernel.org/kvm/20200616085052.sahrunsesjyjeyf2@beryllium.lan/
+https://lore.kernel.org/kvm/159234276956.31057.6902954364435481688.stgit@gimli.home/
 
-For a custom usecase, I have intentionally failed the platform bus
-registration and I expected all the platform device/driver
-registrations to fail gracefully. But I came across this panic
-issue.
-
-[    1.331067] BUG: kernel NULL pointer dereference, address: 00000000000000c8
-[    1.331118] #PF: supervisor write access in kernel mode
-[    1.331163] #PF: error_code(0x0002) - not-present page
-[    1.331208] PGD 0 P4D 0
-[    1.331233] Oops: 0002 [#1] PREEMPT SMP
-[    1.331268] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G        W         5.6.0-00049-g670d35fb0144 #165
-[    1.331341] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[    1.331406] RIP: 0010:_raw_spin_lock+0x15/0x30
-[    1.331588] RSP: 0000:ffffc9000001be70 EFLAGS: 00010246
-[    1.331632] RAX: 0000000000000000 RBX: 00000000000000c8 RCX: 0000000000000001
-[    1.331696] RDX: 0000000000000001 RSI: 0000000000000092 RDI: 0000000000000000
-[    1.331754] RBP: 00000000ffffffed R08: 0000000000000501 R09: 0000000000000001
-[    1.331817] R10: ffff88817abcc520 R11: 0000000000000670 R12: 00000000ffffffed
-[    1.331881] R13: ffffffff82dbc268 R14: ffffffff832f070a R15: 0000000000000000
-[    1.331945] FS:  0000000000000000(0000) GS:ffff88817bd80000(0000) knlGS:0000000000000000
-[    1.332008] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.332062] CR2: 00000000000000c8 CR3: 000000000681e001 CR4: 00000000003606e0
-[    1.332126] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    1.332189] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    1.332252] Call Trace:
-[    1.332281]  __platform_driver_probe+0x92/0xee
-[    1.332323]  ? rtc_dev_init+0x2b/0x2b
-[    1.332358]  cmos_init+0x37/0x67
-[    1.332396]  do_one_initcall+0x7d/0x168
-[    1.332428]  kernel_init_freeable+0x16c/0x1c9
-[    1.332473]  ? rest_init+0xc0/0xc0
-[    1.332508]  kernel_init+0x5/0x100
-[    1.332543]  ret_from_fork+0x1f/0x30
-[    1.332579] CR2: 00000000000000c8
-[    1.332616] ---[ end trace 3bd87f12e9010b87 ]---
-[    1.333549] note: swapper/0[1] exited with preempt_count 1
-[    1.333592] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-[    1.333736] Kernel Offset: disabled
-
-Note, this can only be triggered if a driver errors out from this call,
-which should never happen.  If it does, the driver needs to be fixed.
-
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Link: https://lore.kernel.org/r/20200408214003.3356-1-sathyanarayanan.kuppuswamy@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/base/platform.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index bcb6519fe211..0ee3cab88f70 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -702,6 +702,8 @@ int __init_or_module __platform_driver_probe(struct platform_driver *drv,
- 	/* temporary section violation during probe() */
- 	drv->probe = probe;
- 	retval = code = __platform_driver_register(drv, module);
-+	if (retval)
-+		return retval;
- 
- 	/*
- 	 * Fixup that section violation, being paranoid about code scanning
--- 
-2.25.1
+Thanks,
+Alex
 
