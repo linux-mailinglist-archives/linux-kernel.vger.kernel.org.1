@@ -2,72 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BCB1FFECB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6281FFEB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgFRXlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 19:41:01 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39260 "EHLO mga11.intel.com"
+        id S1727799AbgFRXia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 19:38:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:32802 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726001AbgFRXlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 19:41:00 -0400
-IronPort-SDR: NsmWbC7ysWqzaq5ynKjWH38Cs/3Cks4HnJysCz3bDnQu1tTObvlPF/7j53O4L71dlmw3QM0J78
- TpStX1wxgpeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="141075357"
+        id S1726001AbgFRXia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 19:38:30 -0400
+IronPort-SDR: lJ/8EaaVirS2ZNzdBvEma47+erKJjr9o5hG1JCYQwRz/1nQ/uJTCq859WTY1neNN3FSwyD802O
+ gxjAWg6U+TFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="160867521"
 X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
-   d="scan'208";a="141075357"
+   d="scan'208";a="160867521"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 16:41:00 -0700
-IronPort-SDR: I0qU0iqtU7izjgw61vjOgd73oVqxTlEZTgba5DL+6SDxcPU/Rc4b6Mc6wMBpigTWgrWZwYsjg8
- M6qEHV9IC6Yw==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 16:38:30 -0700
+IronPort-SDR: TxyswLJWuJnwmSgbPu4WvZ6Wy4WthaMoDVxGvXTBTnw04/xIt9x1Jqm3JunHSjMWUiaolGUJlm
+ 70c9EHDOqMww==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
-   d="scan'208";a="383673934"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Jun 2020 16:40:59 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>
-Subject: [PATCH 1/1] iommu/vt-d: Fix misuse of iommu_domain_identity_map()
-Date:   Fri, 19 Jun 2020 07:36:50 +0800
-Message-Id: <20200618233650.9214-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+   d="scan'208";a="274019906"
+Received: from lkp-server02.sh.intel.com (HELO 5ce11009e457) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 18 Jun 2020 16:38:28 -0700
+Received: from kbuild by 5ce11009e457 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jm471-0000SK-Fq; Thu, 18 Jun 2020 23:38:27 +0000
+Date:   Fri, 19 Jun 2020 07:37:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ 5ba7821bcf7d82e35582fce8fe65cd160a6954b4
+Message-ID: <5eebfac7.WS++/u3SLfqZVyPK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iommu_domain_identity_map() helper takes start/end PFN as arguments.
-Fix a misuse case where the start and end addresses are passed.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: 5ba7821bcf7d82e35582fce8fe65cd160a6954b4  x86/mce/dev-mcelog: Use struct_size() helper in kzalloc()
 
-Fixes: e70b081c6f376 ("iommu/vt-d: Remove IOVA handling code from the non-dma_ops path")
-Cc: Tom Murphy <murphyt7@tcd.ie>
-Reported-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+elapsed time: 723m
+
+configs tested: 80
+configs skipped: 69
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
 ---
- drivers/iommu/intel/iommu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index f16bf63ea9fd..d759e7234e98 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2701,7 +2701,9 @@ static int __init si_domain_init(int hw)
- 				    end >> agaw_to_width(si_domain->agaw)))
- 				continue;
- 
--			ret = iommu_domain_identity_map(si_domain, start, end);
-+			ret = iommu_domain_identity_map(si_domain,
-+					mm_to_dma_pfn(start >> PAGE_SHIFT),
-+					mm_to_dma_pfn(end >> PAGE_SHIFT));
- 			if (ret)
- 				return ret;
- 		}
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
