@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11D71FE2DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37DA1FE470
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgFRBW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:22:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
+        id S1730956AbgFRCS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730177AbgFRBTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:19:37 -0400
+        id S1727864AbgFRBTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:19:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96FBB21D94;
-        Thu, 18 Jun 2020 01:19:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B2BA206F1;
+        Thu, 18 Jun 2020 01:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443177;
-        bh=G3npwubaEKnd3PGv+uBeBKcI2zNcuNgQoVB37CCG5rs=;
+        s=default; t=1592443178;
+        bh=l0bHPfHKCL3ItJDm5/fi6/ksjpwNSpa2/4PkF1yxV/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LzaDCZf97BD3F1wqsaW+QVBC2Gb9cpLwPAkRTZ8fn/i+vPVc+sxDYBupDFx3e6gJF
-         oWI/vSesp4XTQtk99L9g1isS2IYwEdNnM90ryWHiQMuqwxbJDQuqICDDCo2r4yL7WY
-         GUILYE+K0MC/O34JQkHSMGwAioUn/rfWH520jAQ8=
+        b=HDE7/GdniWAw5imWOmQS+1NzyqTTwMFQGVXtUrgQulGxYqmG1AXr2BTEB29MBEu7V
+         Idp6qAE9FCiUmezzpAwb6ht9XR6IZ4tGQjBH6Vn62cVevX3O8gOmEvDKfYztg7yCi+
+         nyihJ5RG4MQiipxmsXvABy1nyhdGhfcLoUm1IMy0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tero Kristo <t-kristo@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 140/266] clk: ti: composite: fix memory leak
-Date:   Wed, 17 Jun 2020 21:14:25 -0400
-Message-Id: <20200618011631.604574-140-sashal@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 141/266] PCI: Fix pci_register_host_bridge() device_register() error handling
+Date:   Wed, 17 Jun 2020 21:14:26 -0400
+Message-Id: <20200618011631.604574-141-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -46,36 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+From: Rob Herring <robh@kernel.org>
 
-[ Upstream commit c7c1cbbc9217ebb5601b88d138d4a5358548de9d ]
+[ Upstream commit 1b54ae8327a4d630111c8d88ba7906483ec6010b ]
 
-The parent_names is never released for a component clock definition,
-causing some memory leak. Fix by releasing it once it is no longer
-needed.
+If device_register() has an error, we should bail out of
+pci_register_host_bridge() rather than continuing on.
 
-Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Link: https://lkml.kernel.org/r/20200429131341.4697-2-t-kristo@ti.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 37d6a0a6f470 ("PCI: Add pci_register_host_bridge() interface")
+Link: https://lore.kernel.org/r/20200513223859.11295-1-robh@kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/ti/composite.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/probe.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/ti/composite.c b/drivers/clk/ti/composite.c
-index 6a89936ba03a..eaa43575cfa5 100644
---- a/drivers/clk/ti/composite.c
-+++ b/drivers/clk/ti/composite.c
-@@ -196,6 +196,7 @@ static void __init _register_composite(void *user,
- 		if (!cclk->comp_clks[i])
- 			continue;
- 		list_del(&cclk->comp_clks[i]->link);
-+		kfree(cclk->comp_clks[i]->parent_names);
- 		kfree(cclk->comp_clks[i]);
- 	}
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index d3033873395d..e1e61b9dd066 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -867,9 +867,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+ 		goto free;
  
+ 	err = device_register(&bridge->dev);
+-	if (err)
++	if (err) {
+ 		put_device(&bridge->dev);
+-
++		goto free;
++	}
+ 	bus->bridge = get_device(&bridge->dev);
+ 	device_enable_async_suspend(bus->bridge);
+ 	pci_set_bus_of_node(bus);
 -- 
 2.25.1
 
