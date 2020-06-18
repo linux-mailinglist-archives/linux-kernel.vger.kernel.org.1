@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921031FE258
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C911FE255
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgFRCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        id S2387443AbgFRCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:00:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731143AbgFRBYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:24:12 -0400
+        id S1731151AbgFRBYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:24:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAC4721D82;
-        Thu, 18 Jun 2020 01:24:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4539A20B1F;
+        Thu, 18 Jun 2020 01:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443452;
-        bh=HXKLX0jkNW57FsNBXYExfJvymlWJBuJcGtHzUpPWnTI=;
+        s=default; t=1592443454;
+        bh=j35GjtgYFSDwHm2rZ/rpBi2m9NIfqWMWJfrXEDFLb5Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0oKLxFhaEM2B/ozVOIFurgtfBdXS5y35tFSBMkbvsgGvMWT3u09A02oPF7cdmX1if
-         71tnUv/ehCwxyT2mgzCV9mN/08l4NC+fBgSttl2p/g8m4elJrvztjxEg7n0S5GSc2V
-         qDVOYdgXKU9UN+kW/ea9zgrRo1Ulj1afkDXLdA54=
+        b=Q5CgjE3y/6RSVuIkb0cL9JwZGhh4s3I2eQkR/xPBFjFx7RTFWaUJ+8onKBFWUh7aH
+         7yWXqFKPsl+24ZYfm+y/GwJkIldEttHfKGuJ1I4nJdueIi/JIUK2APwBvP36lgIi3D
+         Sfvq1XbkvQ3kvOH8xZU5yH6pmJlV2fC+xd2YP8OA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 087/172] PCI: Fix pci_register_host_bridge() device_register() error handling
-Date:   Wed, 17 Jun 2020 21:20:53 -0400
-Message-Id: <20200618012218.607130-87-sashal@kernel.org>
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 089/172] tty: n_gsm: Fix SOF skipping
+Date:   Wed, 17 Jun 2020 21:20:55 -0400
+Message-Id: <20200618012218.607130-89-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -44,41 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-[ Upstream commit 1b54ae8327a4d630111c8d88ba7906483ec6010b ]
+[ Upstream commit 84d6f81c1fb58b56eba81ff0a36cf31946064b40 ]
 
-If device_register() has an error, we should bail out of
-pci_register_host_bridge() rather than continuing on.
+For at least some modems like the TELIT LE910, skipping SOF makes
+transfers blocking indefinitely after a short amount of data
+transferred.
 
-Fixes: 37d6a0a6f470 ("PCI: Add pci_register_host_bridge() interface")
-Link: https://lore.kernel.org/r/20200513223859.11295-1-robh@kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Given the small improvement provided by skipping the SOF (just one
+byte on about 100 bytes), it seems better to completely remove this
+"feature" than make it optional.
+
+Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Link: https://lore.kernel.org/r/20200512115323.1447922-3-gregory.clement@bootlin.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/probe.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/tty/n_gsm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index fa4c386c8cd8..b6f72f09442f 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -818,9 +818,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
- 		goto free;
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 86b7e20ffd7f..8d8229dd2796 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -669,7 +669,6 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ {
+ 	struct gsm_msg *msg, *nmsg;
+ 	int len;
+-	int skip_sof = 0;
  
- 	err = device_register(&bridge->dev);
--	if (err)
-+	if (err) {
- 		put_device(&bridge->dev);
+ 	list_for_each_entry_safe(msg, nmsg, &gsm->tx_list, list) {
+ 		if (gsm->constipated && msg->addr)
+@@ -691,15 +690,10 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ 			print_hex_dump_bytes("gsm_data_kick: ",
+ 					     DUMP_PREFIX_OFFSET,
+ 					     gsm->txframe, len);
 -
-+		goto free;
-+	}
- 	bus->bridge = get_device(&bridge->dev);
- 	device_enable_async_suspend(bus->bridge);
- 	pci_set_bus_of_node(bus);
+-		if (gsm->output(gsm, gsm->txframe + skip_sof,
+-						len - skip_sof) < 0)
++		if (gsm->output(gsm, gsm->txframe, len) < 0)
+ 			break;
+ 		/* FIXME: Can eliminate one SOF in many more cases */
+ 		gsm->tx_bytes -= msg->len;
+-		/* For a burst of frames skip the extra SOF within the
+-		   burst */
+-		skip_sof = 1;
+ 
+ 		list_del(&msg->list);
+ 		kfree(msg);
 -- 
 2.25.1
 
