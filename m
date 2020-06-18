@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528091FE584
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6611FE571
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgFRBRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        id S1729749AbgFRBRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:17:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729350AbgFRBOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:39 -0400
+        id S1729359AbgFRBOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:46 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89C1720EDD;
-        Thu, 18 Jun 2020 01:14:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49A1621D7B;
+        Thu, 18 Jun 2020 01:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442879;
-        bh=qSWUva7WVPHlE3RKgcRXLdCFyKWBerSDst6rVbst7qk=;
+        s=default; t=1592442886;
+        bh=fi+m/bnr5keFuFBgdxP/afZxdbREdMtNlTV0G1uL0gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dySIQOZb+AwvbOnCRV1U93qYAX8QlRrn1Qs+0wEmm6d4QYCcQSO3KnnxtRXrkB1JI
-         ZAlccY33Z1HCjzm/2VHgt08nz1hi7PjPgnTHdSVW8j96sDnY946jKQXxtbZ2Ybe8M2
-         +IV86xS1wB9rvta8an6wIIb5uHHBhhGxKp67mEEA=
+        b=LdJnBGeIV6zNiMYPEsXNmEgEOVMFz1IB7a2pbNdM8N02xXWKTReZL+ySoKyNfsgGj
+         4ZzTgILu44UL0iVSnJpM4Gq2lQ9pO0srSkAhhzSKyABUcGoKHlcdKe2pl4+KyDDDy8
+         +SvTM0Hf/CatipcqG2MOdgPHWjxtaVwtD4JgwPz8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 304/388] extcon: adc-jack: Fix an error handling path in 'adc_jack_probe()'
-Date:   Wed, 17 Jun 2020 21:06:41 -0400
-Message-Id: <20200618010805.600873-304-sashal@kernel.org>
+Cc:     Chuhong Yuan <hslester96@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rtc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 309/388] rtc: rv3028: Add missed check for devm_regmap_init_i2c()
+Date:   Wed, 17 Jun 2020 21:06:46 -0400
+Message-Id: <20200618010805.600873-309-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,47 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit bc84cff2c92ae5ccb2c37da73756e7174b1b430f ]
+[ Upstream commit c3b29bf6f166f6ed5f04f9c125477358e0e25df8 ]
 
-In some error handling paths, a call to 'iio_channel_get()' is not balanced
-by a corresponding call to 'iio_channel_release()'.
+rv3028_probe() misses a check for devm_regmap_init_i2c().
+Add the missed check to fix it.
 
-This can be achieved easily by using the devm_ variant of
-'iio_channel_get()'.
-
-This has the extra benefit to simplify the remove function.
-
-Fixes: 19939860dcae ("extcon: adc_jack: adc-jack driver to support 3.5 pi or simliar devices")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Fixes: e6e7376cfd7b ("rtc: rv3028: add new driver")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20200528103950.912353-1-hslester96@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-adc-jack.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/rtc/rtc-rv3028.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/extcon/extcon-adc-jack.c b/drivers/extcon/extcon-adc-jack.c
-index ad02dc6747a4..0317b614b680 100644
---- a/drivers/extcon/extcon-adc-jack.c
-+++ b/drivers/extcon/extcon-adc-jack.c
-@@ -124,7 +124,7 @@ static int adc_jack_probe(struct platform_device *pdev)
- 	for (i = 0; data->adc_conditions[i].id != EXTCON_NONE; i++);
- 	data->num_conditions = i;
+diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
+index a0ddc86c975a..ec84db0b3d7a 100644
+--- a/drivers/rtc/rtc-rv3028.c
++++ b/drivers/rtc/rtc-rv3028.c
+@@ -755,6 +755,8 @@ static int rv3028_probe(struct i2c_client *client)
+ 		return -ENOMEM;
  
--	data->chan = iio_channel_get(&pdev->dev, pdata->consumer_channel);
-+	data->chan = devm_iio_channel_get(&pdev->dev, pdata->consumer_channel);
- 	if (IS_ERR(data->chan))
- 		return PTR_ERR(data->chan);
+ 	rv3028->regmap = devm_regmap_init_i2c(client, &regmap_config);
++	if (IS_ERR(rv3028->regmap))
++		return PTR_ERR(rv3028->regmap);
  
-@@ -164,7 +164,6 @@ static int adc_jack_remove(struct platform_device *pdev)
+ 	i2c_set_clientdata(client, rv3028);
  
- 	free_irq(data->irq, data);
- 	cancel_work_sync(&data->handler.work);
--	iio_channel_release(data->chan);
- 
- 	return 0;
- }
 -- 
 2.25.1
 
