@@ -2,242 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491011FFA2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A254C1FFA37
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732232AbgFRR1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 13:27:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:55900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732139AbgFRR1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 13:27:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61B4E1396;
-        Thu, 18 Jun 2020 10:27:24 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A9793F6CF;
-        Thu, 18 Jun 2020 10:27:23 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        cristian.marussi@arm.com, dave.martin@arm.com
-Subject: [PATCH v9 9/9] firmware: arm_scmi: Add Base notifications support
-Date:   Thu, 18 Jun 2020 18:26:32 +0100
-Message-Id: <20200618172632.42842-10-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200618172632.42842-1-cristian.marussi@arm.com>
-References: <20200618172632.42842-1-cristian.marussi@arm.com>
+        id S1732292AbgFRR2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 13:28:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:7614 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731381AbgFRR2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 13:28:19 -0400
+X-UUID: c343355e2a214cf48d7eee9f142d08e5-20200619
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=yNjyRymIlzIUx/0UrSoiHb16khUEPf/l+Jda96r8vqM=;
+        b=rrebVpn2C7+nZUaEsgCBMuTAm8Fc2nX5D0rwLR57cV7PdMuZNlCtYQl2OTnIfPzPhLe9LahppXwjxaTJ3qtBMS6+2zg1x2Ug9sXqcaIEmqXUNVNOFhsqJLRoWmCJFIY56Wa8un3MIqUgU7fCr2JYnNBD7YNX4Nu1MfOivj8ExtI=;
+X-UUID: c343355e2a214cf48d7eee9f142d08e5-20200619
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <rick.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1028672340; Fri, 19 Jun 2020 01:28:16 +0800
+Received: from MTKCAS66.mediatek.inc (172.29.193.44) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 19 Jun 2020 01:28:11 +0800
+Received: from mussux00 (172.29.97.100) by MTKCAS66.mediatek.inc
+ (172.29.193.43) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 18 Jun 2020 10:28:09 -0700
+Message-ID: <1592501293.13123.2.camel@mediatek.com>
+Subject: Re: [PATCH v4 06/17] media: mtk-jpeg: Get rid of
+ mtk_smi_larb_get/put
+From:   Rick Chang <rick.chang@mediatek.com>
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        "Evan Green" <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Tomasz Figa" <tfiga@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Matthias Kaehlcke" <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <cui.zhang@mediatek.com>, <chao.hao@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, <eizan@chromium.org>,
+        <acourbot@chromium.org>, <xia.jiang@mediatek.com>
+Date:   Thu, 18 Jun 2020 10:28:13 -0700
+In-Reply-To: <1592472725.20080.12.camel@mhfsdcap03>
+References: <1590826218-23653-1-git-send-email-yong.wu@mediatek.com>
+         <1590826218-23653-7-git-send-email-yong.wu@mediatek.com>
+         <1592472725.20080.12.camel@mhfsdcap03>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.18.5.2-0ubuntu3.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make SCMI Base protocol register with the notification core.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-V8 --> V9
-- moved pr_info to pr_debug
-- removed switch()
-- use SCMI_PROTO_QUEUE_SZ
-V6 --> V7
-- fixed report.timestamp type
-- fix max_payld_sz initialization
-- fix report layout and initialization
-- expose SCMI_EVENT_ in linux/scmi_protocol.h
-V5 --> V6
-- added handle argument to fill_custom_report()
-V4 --> V5
-- fixed unsual return construct
-V3 --> V4
-- scmi_event field renamed
-V2 --> V3
-- added handle awareness
-V1 --> V2
-- simplified .set_notify_enabled() implementation moving the ALL_SRCIDs
-  logic out of protocol. ALL_SRCIDs logic is now in charge of the
-  notification core, together with proper reference counting of enables
-- switched to devres protocol-registration
----
- drivers/firmware/arm_scmi/base.c | 109 +++++++++++++++++++++++++++++--
- include/linux/scmi_protocol.h    |   9 +++
- 2 files changed, 114 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-index ce7d9203e41b..d5a7878d3fbd 100644
---- a/drivers/firmware/arm_scmi/base.c
-+++ b/drivers/firmware/arm_scmi/base.c
-@@ -5,7 +5,15 @@
-  * Copyright (C) 2018 ARM Ltd.
-  */
- 
-+#define pr_fmt(fmt) "SCMI Notifications BASE - " fmt
-+
-+#include <linux/scmi_protocol.h>
-+
- #include "common.h"
-+#include "notify.h"
-+
-+#define SCMI_BASE_NUM_SOURCES		1
-+#define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
- 
- enum scmi_base_protocol_cmd {
- 	BASE_DISCOVER_VENDOR = 0x3,
-@@ -19,16 +27,25 @@ enum scmi_base_protocol_cmd {
- 	BASE_RESET_AGENT_CONFIGURATION = 0xb,
- };
- 
--enum scmi_base_protocol_notify {
--	BASE_ERROR_EVENT = 0x0,
--};
--
- struct scmi_msg_resp_base_attributes {
- 	u8 num_protocols;
- 	u8 num_agents;
- 	__le16 reserved;
- };
- 
-+struct scmi_msg_base_error_notify {
-+	__le32 event_control;
-+#define BASE_TP_NOTIFY_ALL	BIT(0)
-+};
-+
-+struct scmi_base_error_notify_payld {
-+	__le32 agent_id;
-+	__le32 error_status;
-+#define IS_FATAL_ERROR(x)	((x) & BIT(31))
-+#define ERROR_CMD_COUNT(x)	FIELD_GET(GENMASK(9, 0), (x))
-+	__le64 msg_reports[SCMI_BASE_MAX_CMD_ERR_COUNT];
-+};
-+
- /**
-  * scmi_base_attributes_get() - gets the implementation details
-  *	that are associated with the base protocol.
-@@ -222,6 +239,84 @@ static int scmi_base_discover_agent_get(const struct scmi_handle *handle,
- 	return ret;
- }
- 
-+static int scmi_base_error_notify(const struct scmi_handle *handle, bool enable)
-+{
-+	int ret;
-+	u32 evt_cntl = enable ? BASE_TP_NOTIFY_ALL : 0;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_base_error_notify *cfg;
-+
-+	ret = scmi_xfer_get_init(handle, BASE_NOTIFY_ERRORS,
-+				 SCMI_PROTOCOL_BASE, sizeof(*cfg), 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	cfg = t->tx.buf;
-+	cfg->event_control = cpu_to_le32(evt_cntl);
-+
-+	ret = scmi_do_xfer(handle, t);
-+
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
-+static bool scmi_base_set_notify_enabled(const struct scmi_handle *handle,
-+					 u8 evt_id, u32 src_id, bool enable)
-+{
-+	int ret;
-+
-+	ret = scmi_base_error_notify(handle, enable);
-+	if (ret)
-+		pr_debug("FAIL_ENABLED - evt[%X] ret:%d\n", evt_id, ret);
-+
-+	return !ret;
-+}
-+
-+static void *scmi_base_fill_custom_report(const struct scmi_handle *handle,
-+					  u8 evt_id, u64 timestamp,
-+					  const void *payld, size_t payld_sz,
-+					  void *report, u32 *src_id)
-+{
-+	int i;
-+	const struct scmi_base_error_notify_payld *p = payld;
-+	struct scmi_base_error_report *r = report;
-+
-+
-+	/*
-+	 * BaseError notification payload is variable in size but
-+	 * up to a maximum length determined by the struct ponted by p.
-+	 * Instead payld_sz is the effective length of this notification
-+	 * payload so cannot be greater of the maximum allowed size as
-+	 * pointed by p.
-+	 */
-+	if (evt_id != SCMI_EVENT_BASE_ERROR_EVENT || sizeof(*p) < payld_sz)
-+		return NULL;
-+
-+	r->timestamp = timestamp;
-+	r->agent_id = le32_to_cpu(p->agent_id);
-+	r->fatal = IS_FATAL_ERROR(le32_to_cpu(p->error_status));
-+	r->cmd_count = ERROR_CMD_COUNT(le32_to_cpu(p->error_status));
-+	for (i = 0; i < r->cmd_count; i++)
-+		r->reports[i] = le64_to_cpu(p->msg_reports[i]);
-+	*src_id = 0;
-+
-+	return r;
-+}
-+
-+static const struct scmi_event base_events[] = {
-+	{
-+		.id = SCMI_EVENT_BASE_ERROR_EVENT,
-+		.max_payld_sz = sizeof(struct scmi_base_error_notify_payld),
-+		.max_report_sz = sizeof(struct scmi_base_error_report) +
-+				  SCMI_BASE_MAX_CMD_ERR_COUNT * sizeof(u64),
-+	},
-+};
-+
-+static const struct scmi_event_ops base_event_ops = {
-+	.set_notify_enabled = scmi_base_set_notify_enabled,
-+	.fill_custom_report = scmi_base_fill_custom_report,
-+};
-+
- int scmi_base_protocol_init(struct scmi_handle *h)
- {
- 	int id, ret;
-@@ -256,6 +351,12 @@ int scmi_base_protocol_init(struct scmi_handle *h)
- 	dev_dbg(dev, "Found %d protocol(s) %d agent(s)\n", rev->num_protocols,
- 		rev->num_agents);
- 
-+	scmi_register_protocol_events(handle, SCMI_PROTOCOL_BASE,
-+				      (4 * SCMI_PROTO_QUEUE_SZ),
-+				      &base_event_ops, base_events,
-+				      ARRAY_SIZE(base_events),
-+				      SCMI_BASE_NUM_SOURCES);
-+
- 	for (id = 0; id < rev->num_agents; id++) {
- 		scmi_base_discover_agent_get(handle, id, name);
- 		dev_dbg(dev, "Agent %d: %s\n", id, name);
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 091263aa5733..bb858d329dae 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -375,6 +375,7 @@ enum scmi_notification_events {
- 	SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED = 0x1,
- 	SCMI_EVENT_SENSOR_TRIP_POINT_EVENT = 0x0,
- 	SCMI_EVENT_RESET_ISSUED = 0x0,
-+	SCMI_EVENT_BASE_ERROR_EVENT = 0x0,
- };
- 
- struct scmi_power_state_changed_report {
-@@ -413,4 +414,12 @@ struct scmi_reset_issued_report {
- 	u32 reset_state;
- };
- 
-+struct scmi_base_error_report {
-+	u64 timestamp;
-+	u32 agent_id;
-+	bool fatal;
-+	u16 cmd_count;
-+	u64 reports[0];
-+};
-+
- #endif /* _LINUX_SCMI_PROTOCOL_H */
--- 
-2.17.1
+SGkgWW9uZywNCg0KT24gVGh1LCAyMDIwLTA2LTE4IGF0IDE3OjMyICswODAwLCBZb25nIFd1IHdy
+b3RlOg0KPiArIFJpY2sNCj4gDQo+IE9uIFNhdCwgMjAyMC0wNS0zMCBhdCAxNjoxMCArMDgwMCwg
+WW9uZyBXdSB3cm90ZToNCj4gPiANCj4gPiBNZWRpYVRlayBJT01NVSBoYXMgYWxyZWFkeSBhZGRl
+ZCBkZXZpY2VfbGluayBiZXR3ZWVuIHRoZSBjb25zdW1lcg0KPiA+IGFuZCBzbWktbGFyYiBkZXZp
+Y2UuIElmIHRoZSBqcGcgZGV2aWNlIGNhbGwgdGhlDQo+ID4gcG1fcnVudGltZV9nZXRfc3luYywN
+Cj4gPiB0aGUgc21pLWxhcmIncyBwbV9ydW50aW1lX2dldF9zeW5jIGFsc28gYmUgY2FsbGVkIGF1
+dG9tYXRpY2FsbHkuDQo+ID4gDQoNCkFja2VkLWJ5OiBSaWNrIENoYW5nIDxyaWNrLmNoYW5nQG1l
+ZGlhdGVrLmNvbT4NCg0KPiA+IENDOiBSaWNrIENoYW5nIDxyaWNrLmNoYW5nQG1lZGlhdGVrLmNv
+bT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4g
+PiBSZXZpZXdlZC1ieTogRXZhbiBHcmVlbiA8ZXZncmVlbkBjaHJvbWl1bS5vcmc+DQo+ID4gLS0t
+DQo+ID4gwqBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuYyB8
+IDIyIC0tLS0tLS0tLS0tDQo+ID4gLS0tLS0tLS0tLS0NCj4gPiDCoGRyaXZlcnMvbWVkaWEvcGxh
+dGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5oIHzCoMKgMiAtLQ0KPiA+IMKgMiBmaWxlcyBj
+aGFuZ2VkLCAyNCBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+ZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmMNCj4gPiBiL2RyaXZlcnMvbWVk
+aWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQo+ID4gaW5kZXggZjgyYTgxYS4u
+MjFmYmE2ZiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1qcGVn
+L210a19qcGVnX2NvcmUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpw
+ZWcvbXRrX2pwZWdfY29yZS5jDQo+ID4gQEAgLTIxLDcgKzIxLDYgQEANCj4gPiDCoCNpbmNsdWRl
+IDxtZWRpYS92NGwyLWlvY3RsLmg+DQo+ID4gwqAjaW5jbHVkZSA8bWVkaWEvdmlkZW9idWYyLWNv
+cmUuaD4NCj4gPiDCoCNpbmNsdWRlIDxtZWRpYS92aWRlb2J1ZjItZG1hLWNvbnRpZy5oPg0KPiA+
+IC0jaW5jbHVkZSA8c29jL21lZGlhdGVrL3NtaS5oPg0KPiA+IMKgDQo+ID4gwqAjaW5jbHVkZSAi
+bXRrX2pwZWdfaHcuaCINCj4gPiDCoCNpbmNsdWRlICJtdGtfanBlZ19jb3JlLmgiDQo+ID4gQEAg
+LTg5MywxMSArODkyLDYgQEAgc3RhdGljIGludCBtdGtfanBlZ19xdWV1ZV9pbml0KHZvaWQgKnBy
+aXYsDQo+ID4gc3RydWN0IHZiMl9xdWV1ZSAqc3JjX3ZxLA0KPiA+IMKgDQo+ID4gwqBzdGF0aWMg
+dm9pZCBtdGtfanBlZ19jbGtfb24oc3RydWN0IG10a19qcGVnX2RldiAqanBlZykNCj4gPiDCoHsN
+Cj4gPiAtCWludCByZXQ7DQo+ID4gLQ0KPiA+IC0JcmV0ID0gbXRrX3NtaV9sYXJiX2dldChqcGVn
+LT5sYXJiKTsNCj4gPiAtCWlmIChyZXQpDQo+ID4gLQkJZGV2X2VycihqcGVnLT5kZXYsICJtdGtf
+c21pX2xhcmJfZ2V0IGxhcmJ2ZGVjIGZhaWwNCj4gPiAlZFxuIiwgcmV0KTsNCj4gPiDCoAljbGtf
+cHJlcGFyZV9lbmFibGUoanBlZy0+Y2xrX2pkZWNfc21pKTsNCj4gPiDCoAljbGtfcHJlcGFyZV9l
+bmFibGUoanBlZy0+Y2xrX2pkZWMpOw0KPiA+IMKgfQ0KPiA+IEBAIC05MDYsNyArOTAwLDYgQEAg
+c3RhdGljIHZvaWQgbXRrX2pwZWdfY2xrX29mZihzdHJ1Y3QNCj4gPiBtdGtfanBlZ19kZXYgKmpw
+ZWcpDQo+ID4gwqB7DQo+ID4gwqAJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGpwZWctPmNsa19qZGVj
+KTsNCj4gPiDCoAljbGtfZGlzYWJsZV91bnByZXBhcmUoanBlZy0+Y2xrX2pkZWNfc21pKTsNCj4g
+PiAtCW10a19zbWlfbGFyYl9wdXQoanBlZy0+bGFyYik7DQo+ID4gwqB9DQo+ID4gwqANCj4gPiDC
+oHN0YXRpYyBpcnFyZXR1cm5fdCBtdGtfanBlZ19kZWNfaXJxKGludCBpcnEsIHZvaWQgKnByaXYp
+DQo+ID4gQEAgLTEwNTEsMjEgKzEwNDQsNiBAQCBzdGF0aWMgaW50IG10a19qcGVnX3JlbGVhc2Uo
+c3RydWN0IGZpbGUNCj4gPiAqZmlsZSkNCj4gPiDCoA0KPiA+IMKgc3RhdGljIGludCBtdGtfanBl
+Z19jbGtfaW5pdChzdHJ1Y3QgbXRrX2pwZWdfZGV2ICpqcGVnKQ0KPiA+IMKgew0KPiA+IC0Jc3Ry
+dWN0IGRldmljZV9ub2RlICpub2RlOw0KPiA+IC0Jc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
+djsNCj4gPiAtDQo+ID4gLQlub2RlID0gb2ZfcGFyc2VfcGhhbmRsZShqcGVnLT5kZXYtPm9mX25v
+ZGUsDQo+ID4gIm1lZGlhdGVrLGxhcmIiLCAwKTsNCj4gPiAtCWlmICghbm9kZSkNCj4gPiAtCQly
+ZXR1cm4gLUVJTlZBTDsNCj4gPiAtCXBkZXYgPSBvZl9maW5kX2RldmljZV9ieV9ub2RlKG5vZGUp
+Ow0KPiA+IC0JaWYgKFdBUk5fT04oIXBkZXYpKSB7DQo+ID4gLQkJb2Zfbm9kZV9wdXQobm9kZSk7
+DQo+ID4gLQkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gLQl9DQo+ID4gLQlvZl9ub2RlX3B1dChub2Rl
+KTsNCj4gPiAtDQo+ID4gLQlqcGVnLT5sYXJiID0gJnBkZXYtPmRldjsNCj4gPiAtDQo+ID4gwqAJ
+anBlZy0+Y2xrX2pkZWMgPSBkZXZtX2Nsa19nZXQoanBlZy0+ZGV2LCAianBnZGVjIik7DQo+ID4g
+wqAJaWYgKElTX0VSUihqcGVnLT5jbGtfamRlYykpDQo+ID4gwqAJCXJldHVybiBQVFJfRVJSKGpw
+ZWctPmNsa19qZGVjKTsNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9t
+dGstanBlZy9tdGtfanBlZ19jb3JlLmgNCj4gPiBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRr
+LWpwZWcvbXRrX2pwZWdfY29yZS5oDQo+ID4gaW5kZXggOTk5YmQxNC4uODU3OTQ5NCAxMDA2NDQN
+Cj4gPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUu
+aA0KPiA+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29y
+ZS5oDQo+ID4gQEAgLTQ3LDcgKzQ3LDYgQEAgZW51bSBtdGtfanBlZ19jdHhfc3RhdGUgew0KPiA+
+IMKgICogQGRlY19yZWdfYmFzZToJSlBFRyByZWdpc3RlcnMgbWFwcGluZw0KPiA+IMKgICogQGNs
+a19qZGVjOgkJSlBFRyBodyB3b3JraW5nIGNsb2NrDQo+ID4gwqAgKiBAY2xrX2pkZWNfc21pOglK
+UEVHIFNNSSBidXMgY2xvY2sNCj4gPiAtICogQGxhcmI6CQlTTUkgZGV2aWNlDQo+ID4gwqAgKi8N
+Cj4gPiDCoHN0cnVjdCBtdGtfanBlZ19kZXYgew0KPiA+IMKgCXN0cnVjdCBtdXRleAkJbG9jazsN
+Cj4gPiBAQCAtNjEsNyArNjAsNiBAQCBzdHJ1Y3QgbXRrX2pwZWdfZGV2IHsNCj4gPiDCoAl2b2lk
+IF9faW9tZW0JCSpkZWNfcmVnX2Jhc2U7DQo+ID4gwqAJc3RydWN0IGNsawkJKmNsa19qZGVjOw0K
+PiA+IMKgCXN0cnVjdCBjbGsJCSpjbGtfamRlY19zbWk7DQo+ID4gLQlzdHJ1Y3QgZGV2aWNlCQkq
+bGFyYjsNCj4gPiDCoH07DQo+ID4gwqANCj4gPiDCoC8qKg0KPiA=
 
