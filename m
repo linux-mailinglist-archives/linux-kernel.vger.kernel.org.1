@@ -2,106 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0140B1FFA22
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B0E1FFA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgFRR0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 13:26:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55726 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732173AbgFRR0A (ORCPT
+        id S1732168AbgFRRZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 13:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732048AbgFRRZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 13:26:00 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05IH2XcT014920;
-        Thu, 18 Jun 2020 19:25:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=9JidG9SI0t24FUmVLA0cuOTFSYM8EHYtOdUK2GCQGQo=;
- b=YroBNmuZuxNVyqP6rkpu+5jD9Co2S3KWWRo+cn/EfBpiGn9fs279erCoa7AOd3A12jDG
- yypWkHkxM6/7CtIHmIs5Zg14Yrqej1idio8agYHjut2aEXKbm/gwmKhm1OOqLjw0WXMV
- r8qLQsCUs9boQJdVz0e2lz4oYVOVrf1iKVhv0LiKKA58OFmtzeKjIINd+/N8IOjfR3mg
- R/RkFUSqeuyqSVsyeJUDo/11dRrCqJAMjJjT/q3xnoAfLtfJr5fGyuWb7SdHRajR4C6x
- +7TvTsuydOYY/DY6wmW0FN1FiPUk9EUkDaYY1vCvzYpwDRsSyxDfckRAnUmls0qzYCoy dw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31q64ccbrs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Jun 2020 19:25:43 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 50B0310002A;
-        Thu, 18 Jun 2020 19:25:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node3.st.com [10.75.127.18])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36FFC2D6955;
-        Thu, 18 Jun 2020 19:25:42 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG6NODE3.st.com (10.75.127.18)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun 2020 19:25:41
- +0200
-From:   <patrice.chotard@st.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <soc@kernel.org>
-CC:     <patrice.chotard@st.com>, Alain Volmat <alain.volmat@st.com>
-Subject: [PATCH] Revert "ARM: sti: Implement dummy L2 cache's write_sec"
-Date:   Thu, 18 Jun 2020 19:24:56 +0200
-Message-ID: <20200618172456.29475-1-patrice.chotard@st.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 18 Jun 2020 13:25:16 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF5DC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:25:16 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id u17so3996092vsu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xgctw9MRFmgKOHFIvDI6Qn+gJt1nqZ70EmKCoP+6B2U=;
+        b=UhuoNsgEpM6bl3gbq+ganUuoS0DODg218IK4kWqtQCvDD7vGvvsZr27pCvHpctOCYH
+         PeRPV0Jz4sT1rhvl0T1n+aE66bHtJXh9VaFZ8PhSIAKa9jm23xsbiepbIoATOgrf5e7J
+         11VUJzu5k4CDqPuOM4QknLOZ5Pn6VHASKMLIg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xgctw9MRFmgKOHFIvDI6Qn+gJt1nqZ70EmKCoP+6B2U=;
+        b=sLsvoi1pSfx2aVRnh5GfvDd0t2uCr0qLaD7zcTZDRaJW5BEEcm8dIyiBoXTiqqbMiR
+         qArgTuGAlRloSRqR3HnCAV84aKijsvMLIcNag+XiGiccejR/H8IrkMHFWqoBonZkNhVP
+         kjrvx8O9ZCpPKO0Ar3ucNgrEoxjPlEf9hTl2ppKe7ehaKb8ITyP70mnbJ8kEy62q1Lwo
+         eCElKdl4NaEigfYggJyIwJeqK9pdxwxo4gS/SyybD2mCNa7RaUXzftY58AbAHeTXHoUz
+         xn/KyK4WJUi9j1TMxCsh1iGYyZwMGo0rLx7knwOvbzGBv2gsy7dcpUp4ulGDzrDwnbS1
+         xUWA==
+X-Gm-Message-State: AOAM530VFRVc/h8gbWxDXTpIq+sb5TGCVhbuzqAgMI2/q6VCgjkORIe2
+        1diANJgtLHy18TVSdKYtY4ESa1WzieM=
+X-Google-Smtp-Source: ABdhPJyOxRIbIoYEpN/fyJ6tWtwVAI6NluELQs0TGw8seJimB5IQ2GnqJHWE6z8n4B74MK3y3BA7LA==
+X-Received: by 2002:a67:e40a:: with SMTP id d10mr4347047vsf.217.1592501114952;
+        Thu, 18 Jun 2020 10:25:14 -0700 (PDT)
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
+        by smtp.gmail.com with ESMTPSA id h190sm392346vka.53.2020.06.18.10.25.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jun 2020 10:25:13 -0700 (PDT)
+Received: by mail-vk1-f180.google.com with SMTP id m23so1629545vko.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:25:12 -0700 (PDT)
+X-Received: by 2002:a1f:19cd:: with SMTP id 196mr4424105vkz.0.1592501112451;
+ Thu, 18 Jun 2020 10:25:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG6NODE3.st.com
- (10.75.127.18)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-18_14:2020-06-18,2020-06-18 signatures=0
+References: <20200617145116.247432-1-dianders@chromium.org>
+ <20200617074930.v3.2.I3b5c3bfaf5fb2d28d63f1b5ee92980900e3f8251@changeid>
+ <254998b9-c45e-bd6b-bc9a-b5934c0fea8e@linaro.org> <CAD=FV=Vec5FVrDVkmUQTfa6bP+1d3yOtj_FsgVAFdHLLbZ8VDA@mail.gmail.com>
+ <db6cc914-0520-5286-f852-473fc63bd6c7@linaro.org> <CAD=FV=UZAtJY42jwSZy+Z+O3AdZqDxnjY1zzOswqQRDY91uPpA@mail.gmail.com>
+ <0b0b52db-da8c-e958-d72e-797e319bbe9c@linaro.org> <CAD=FV=UShR-a8kEvpNEx5gGkUr=DhX-=kzcBQ1SegQTQMoCyKw@mail.gmail.com>
+ <159249930746.62212.6196028697481604160@swboyd.mtv.corp.google.com>
+In-Reply-To: <159249930746.62212.6196028697481604160@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 18 Jun 2020 10:25:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Unm8RK9GDNyuRZjznT21ef=jqcqhMXUWDV6HPkhn3coQ@mail.gmail.com>
+Message-ID: <CAD=FV=Unm8RK9GDNyuRZjznT21ef=jqcqhMXUWDV6HPkhn3coQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] dt-bindings: nvmem: Add properties needed for
+ blowing fuses
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, dhavalp@codeaurora.org,
+        mturney@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Ravi Kumar Bokka <rbokka@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        sparate@codeaurora.org, mkurumel@codeaurora.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, LKML" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@st.com>
+Hi,
 
-This reverts commit 7b8e0188fa717cd9abc4fb52587445b421835c2a.
+On Thu, Jun 18, 2020 at 9:55 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Doug Anderson (2020-06-18 08:32:20)
+> > Hi,
+> >
+> > On Thu, Jun 18, 2020 at 7:01 AM Srinivas Kandagatla
+> > >
+> > > On the other note:
+> > >
+> > > clock-names are not mandatory according to
+> > > Documentation/devicetree/bindings/clock/clock-bindings.txt
+> > >
+> > > For this particular case where clock-names = "sec" is totally used for
+> > > indexing and nothing else!
+> >
+> > So I guess in the one-clock case it's more optional and if you feel
+> > strongly I'll get rid of clk-names here.  ...but if we ever need
+> > another clock we probably will want to add it back and (I could be
+> > corrected) I believe it's convention to specify clk-names even with
+> > one clock.
+>
+> TL;DR: I suggest you call this "core" if you want to keep the
+> clock-name, or just drop it if there's only one clk and move on.
 
-Initially, STiH410-B2260 was supposed to be secured, that's why
-l2c_write_sec was stubbed to avoid secure register access from
-non secure world.
+Ah, true.  "core" sounds good.
 
-But by default, STiH410-B2260 is running in non secure mode,
-so L2 cache register accesses are authorized, l2c_write_sec stub
-is not needed.
 
-With this patch, L2 cache is configured and performance are enhanced.
+> It's not required to have clock-names with one clk, and indeed it's not
+> required to have clock-names at all. The multi clk scenario is a little
+> more difficult to handle because historically the clk_get() API has been
+> name based and not index based like platform resources. When there is
+> one clk the driver can pass NULL as the 'con_id' argument to clk_get()
+> and it will do the right thing. And when you have more than one clk you
+> can pass NULL still and get the first clk, that should be in the same
+> index, and then other clks by name.
+>
+> So far nobody has added clk_get_by_index() but I suppose if it was
+> important the API could be added. Working with only legacy clkdev
+> lookups would fail of course, but clock-names could be fully deprecated
+> and kernel images may be smaller because we're not storing piles of
+> strings and doing string comparisons. Given that it's been this way for
+> a long time and we have DT schema checking it doesn't seem very
+> important to mandate anything one way or the other though. I certainly
+> don't feel good when I see of_clk_*() APIs being used by platform
+> drivers, but sometimes it is required.
+>
+> To really put this into perspective, consider the fact that most drivers
+> have code that figures out what clk names to look for and then they pile
+> them into arrays and just turn them all on and off together. Providing
+> fine grained clk control here is a gigantic waste of time, and requiring
+> clock-names is just more hoops that driver authors feel they have to
+> jump through for $reasons. We have clk_bulk_get_all() for this, but that
+> doesn't solve the one rate changing clk among the sea of clk gates
+> problem. In general, driver authors don't care and we should probably be
+> providing a richer while simpler API to them that manages power state of
+> some handful of clks, regulators, and power domains for a device while
+> also letting them control various knobs like clk rate when necessary.
+>
+> BTW, on qcom platforms they usually name clks "core" and "iface" for the
+> core clk and the interface clk used to access the registers of a device.
+> Sometimes there are esoteric ones like "axi". In theory this cuts down
+> on the number of strings the kernel keeps around but I like that it
+> helps provide continuity across drivers and DTs for their SoCs. If you
+> ask the hardware engineer what the clk name is for the hardware block
+> they'll tell you the globally unique clk name like
+> "gcc_qupv3_uart9_core_clk", which is the worst name to use.
 
-Signed-off-by: Patrice Chotard <patrice.chotard@st.com>
-Cc: Alain Volmat <alain.volmat@st.com>
----
- arch/arm/mach-sti/board-dt.c | 9 ---------
- 1 file changed, 9 deletions(-)
+OK, sounds about what I expected.  I suppose the path of least
+resistance would be to just drop clock-names.  I guess I'm just
+worried that down the road someone will want to specify the "iface"
+clock too.  If that ever happens, we're stuck with these options:
 
-diff --git a/arch/arm/mach-sti/board-dt.c b/arch/arm/mach-sti/board-dt.c
-index dcb98937fcf5..ffecbf29646f 100644
---- a/arch/arm/mach-sti/board-dt.c
-+++ b/arch/arm/mach-sti/board-dt.c
-@@ -20,14 +20,6 @@ static const char *const stih41x_dt_match[] __initconst = {
- 	NULL
- };
- 
--static void sti_l2_write_sec(unsigned long val, unsigned reg)
--{
--	/*
--	 * We can't write to secure registers as we are in non-secure
--	 * mode, until we have some SMI service available.
--	 */
--}
--
- DT_MACHINE_START(STM, "STi SoC with Flattened Device Tree")
- 	.dt_compat	= stih41x_dt_match,
- 	.l2c_aux_val	= L2C_AUX_CTRL_SHARED_OVERRIDE |
-@@ -36,5 +28,4 @@ DT_MACHINE_START(STM, "STi SoC with Flattened Device Tree")
- 			  L2C_AUX_CTRL_WAY_SIZE(4),
- 	.l2c_aux_mask	= 0xc0000fff,
- 	.smp		= smp_ops(sti_smp_ops),
--	.l2c_write_sec	= sti_l2_write_sec,
- MACHINE_END
--- 
-2.17.1
+1. Be the first ones to require adding clk_get_by_index().
 
+2. Use the frowned upon of_clk_get() API which allows getting by index.
+
+3. Get the first clock with clk_get(NULL) and the second clock with
+clk_get("iface") and figure out how to specify this happily in the
+yaml.
+
+If we just define clock-names now then we pretty much match the
+pattern of everyone else.
+
+
+Srinivas: reading all that if you still want me to drop clock-names
+then I will.  I'll use clk_get(NULL) to get the clock and if/when we
+ever need an "iface" clock (maybe we never will?) we can figure it out
+then.
+
+
+-Doug
