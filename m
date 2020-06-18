@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28881FE219
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782911FE214
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732032AbgFRB7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59346 "EHLO mail.kernel.org"
+        id S1731408AbgFRB7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731257AbgFRBYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:24:40 -0400
+        id S1731266AbgFRBYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:24:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2F8F221FB;
-        Thu, 18 Jun 2020 01:24:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5368620B1F;
+        Thu, 18 Jun 2020 01:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443479;
-        bh=+oQMsV7gJQNLISPtRZwjamRghv+JL9im7YddGrtmLtw=;
+        s=default; t=1592443482;
+        bh=dQi9xb866+G9XUycgfZuHfAeROYZU8W+1f9SlK2CqwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0zkdEt+1HTasbE4YspKB2hitStQhJ6HFDqGhu4wzSyLVkdxh2w1aRDjXXh3pQZwL/
-         CHYMNzooOiTSg/J7LUvrxttz96mJvKAYd9uxUQ4nlcV6M8/EcmWw8Z92ZQMja3qAQ7
-         Pjl6I/6i73IDdescJ2in/X1U++8fCLbYXwGYmkFw=
+        b=z6LIe/OfXcRPJq7gXh5TW48QywcR1INr3F7KNuHUDT/TeEk64nV1+N9QbXmfXatNo
+         nzSwTG2qFAnHhT7FrnQdbUGcy8KNVQRcPfMqeVfiIFtnuQJhw+LBnb2R4tbvmEntgC
+         nZ9/2VRr/idZd3qVyQ502ENFt+gky8q4IV2sADSw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 109/172] PCI: dwc: Fix inner MSI IRQ domain registration
-Date:   Wed, 17 Jun 2020 21:21:15 -0400
-Message-Id: <20200618012218.607130-109-sashal@kernel.org>
+Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>, linux-watchdog@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 111/172] watchdog: da9062: No need to ping manually before setting timeout
+Date:   Wed, 17 Jun 2020 21:21:17 -0400
+Message-Id: <20200618012218.607130-111-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -44,46 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-[ Upstream commit 0414b93e78d87ecc24ae1a7e61fe97deb29fa2f4 ]
+[ Upstream commit a0948ddba65f4f6d3cfb5e2b84685485d0452966 ]
 
-On a system that uses the internal DWC MSI widget, I get this
-warning from debugfs when CONFIG_GENERIC_IRQ_DEBUGFS is selected:
+There is actually no need to ping the watchdog before disabling it
+during timeout change. Disabling the watchdog already takes care of
+resetting the counter.
 
-  debugfs: File ':soc:pcie@fc000000' in directory 'domains' already present!
+This fixes an issue during boot when the userspace watchdog handler takes
+over and the watchdog is already running. Opening the watchdog in this case
+leads to the first ping and directly after that without the required
+heartbeat delay a second ping issued by the set_timeout call. Due to the
+missing delay this resulted in a reset.
 
-This is due to the fact that the DWC MSI code tries to register two
-IRQ domains for the same firmware node, without telling the low
-level code how to distinguish them (by setting a bus token). This
-further confuses debugfs which tries to create corresponding
-files for each domain.
-
-Fix it by tagging the inner domain as DOMAIN_BUS_NEXUS, which is
-the closest thing we have as to "generic MSI".
-
-Link: https://lore.kernel.org/r/20200501113921.366597-1-maz@kernel.org
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Jingoo Han <jingoohan1@gmail.com>
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Link: https://lore.kernel.org/r/20200403130728.39260-3-s.riedmueller@phytec.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-designware-host.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/watchdog/da9062_wdt.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 6d4ef0101ef6..be62f654c8eb 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -285,6 +285,8 @@ int dw_pcie_allocate_domains(struct pcie_port *pp)
- 		return -ENOMEM;
- 	}
+diff --git a/drivers/watchdog/da9062_wdt.c b/drivers/watchdog/da9062_wdt.c
+index 7f0a8e635286..132d45d003ce 100644
+--- a/drivers/watchdog/da9062_wdt.c
++++ b/drivers/watchdog/da9062_wdt.c
+@@ -60,11 +60,6 @@ static int da9062_wdt_update_timeout_register(struct da9062_watchdog *wdt,
+ 					      unsigned int regval)
+ {
+ 	struct da9062 *chip = wdt->hw;
+-	int ret;
+-
+-	ret = da9062_reset_watchdog_timer(wdt);
+-	if (ret)
+-		return ret;
  
-+	irq_domain_update_bus_token(pp->irq_domain, DOMAIN_BUS_NEXUS);
-+
- 	pp->msi_domain = pci_msi_create_irq_domain(fwnode,
- 						   &dw_pcie_msi_domain_info,
- 						   pp->irq_domain);
+ 	regmap_update_bits(chip->regmap,
+ 				  DA9062AA_CONTROL_D,
 -- 
 2.25.1
 
