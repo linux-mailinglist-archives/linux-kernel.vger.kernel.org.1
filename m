@@ -2,237 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCC41FEEAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056A51FEEC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgFRJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:31:39 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42805 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728819AbgFRJbi (ORCPT
+        id S1729208AbgFRJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:34:51 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:44297 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728568AbgFRJeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:31:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592472696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H7YDtxuFL6AcZ72iNyB61Lsj2cddIABxCeeJiPyH4kY=;
-        b=Tq/LgV5Q0yT/paOOgEutwA2dF1AXcharNBO3E84Gs7/3ms4rTl+Fcugx//nZi7/bnprQoJ
-        OkPgMI0jjpi+ZDzxRPbCB+ZM8JVPqZcHV09cbJWimukXF8L2CmJReyjc/E/L/JspjAHT6I
-        2G4io2HsESByIf+u4HhvJtlIxkOJpP0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218--lDILpoSOVKmBA3OQKqDVQ-1; Thu, 18 Jun 2020 05:31:32 -0400
-X-MC-Unique: -lDILpoSOVKmBA3OQKqDVQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 698AC1B2C986;
-        Thu, 18 Jun 2020 09:31:30 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F3435D9D3;
-        Thu, 18 Jun 2020 09:31:23 +0000 (UTC)
-Date:   Thu, 18 Jun 2020 11:31:21 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>, brouer@redhat.com
-Subject: Re: [PATCH v6 00/19] The new cgroup slab memory controller
-Message-ID: <20200618113121.78a6a2ca@carbon>
-In-Reply-To: <20200618104344.6a96ac04@carbon>
-References: <20200608230654.828134-1-guro@fb.com>
-        <CALvZod7ThL=yMwxzCLvrTtq=+Dr5ooUSX-iFP8AhiAGURByFBA@mail.gmail.com>
-        <20200617024147.GA10812@carbon.lan>
-        <CALvZod4vLQb4kns=ao8btL_g--9axZfcaxhMnj+CoTrCkyWoWQ@mail.gmail.com>
-        <20200617033217.GE10812@carbon.lan>
-        <e510e964-2703-d123-120c-816bbdd35743@suse.cz>
-        <20200618012928.GD24694@carbon.DHCP.thefacebook.com>
-        <20200618104344.6a96ac04@carbon>
+        Thu, 18 Jun 2020 05:34:50 -0400
+X-UUID: 855350d237af447598937a20df6f1057-20200618
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fazQeAs8inAvGwYcQXqBGXqOlhYwCeTQdth0t/3tLpc=;
+        b=MHeeNIj++emO1PxnCKYQiheDFmpZ4QBACfg0h4/OsDUonE38uDizhI+ibfWfeYHrZWzdKmqjA4pspetmXciZRh0aMpC3nZVDYa6Z/T8lj5eJdfJoht83VIS8lU3VV4mz8emEXDFGXanQq7R5q4LS8CnMUfrDFmNHFsNV7hCie9k=;
+X-UUID: 855350d237af447598937a20df6f1057-20200618
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1739908511; Thu, 18 Jun 2020 17:34:39 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Jun
+ 2020 17:34:36 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 18 Jun 2020 17:34:33 +0800
+Message-ID: <1592472725.20080.12.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 06/17] media: mtk-jpeg: Get rid of
+ mtk_smi_larb_get/put
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        "Evan Green" <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Tomasz Figa" <tfiga@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Matthias Kaehlcke" <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <cui.zhang@mediatek.com>, <chao.hao@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, <eizan@chromium.org>,
+        <acourbot@chromium.org>, Rick Chang <rick.chang@mediatek.com>,
+        <xia.jiang@mediatek.com>
+Date:   Thu, 18 Jun 2020 17:32:05 +0800
+In-Reply-To: <1590826218-23653-7-git-send-email-yong.wu@mediatek.com>
+References: <1590826218-23653-1-git-send-email-yong.wu@mediatek.com>
+         <1590826218-23653-7-git-send-email-yong.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-TM-SNTS-SMTP: EAA0222707355DB3D9C41720DD63D68CCECEA4A8CC20861737BF3012552CC6C52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 10:43:44 +0200
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
-
-> On Wed, 17 Jun 2020 18:29:28 -0700
-> Roman Gushchin <guro@fb.com> wrote:
-> 
-> > On Wed, Jun 17, 2020 at 01:24:21PM +0200, Vlastimil Babka wrote:  
-> > > On 6/17/20 5:32 AM, Roman Gushchin wrote:    
-> > > > On Tue, Jun 16, 2020 at 08:05:39PM -0700, Shakeel Butt wrote:    
-> > > >> On Tue, Jun 16, 2020 at 7:41 PM Roman Gushchin <guro@fb.com> wrote:    
-> > > >> >
-> > > >> > On Tue, Jun 16, 2020 at 06:46:56PM -0700, Shakeel Butt wrote:    
-> > > >> > > On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:    
-> > > >> > > >    
-> > > >> [...]    
-> > > >> > >
-> > > >> > > Have you performed any [perf] testing on SLAB with this patchset?    
-> > > >> >
-> > > >> > The accounting part is the same for SLAB and SLUB, so there should be no
-> > > >> > significant difference. I've checked that it compiles, boots and passes
-> > > >> > kselftests. And that memory savings are there.
-> > > >> >    
-> > > >> 
-> > > >> What about performance? Also you mentioned that sharing kmem-cache
-> > > >> between accounted and non-accounted can have additional overhead. Any
-> > > >> difference between SLAB and SLUB for such a case?    
-> > > > 
-> > > > Not really.
-> > > > 
-> > > > Sharing a single set of caches adds some overhead to root- and non-accounted
-> > > > allocations, which is something I've tried hard to avoid in my original version.
-> > > > But I have to admit, it allows to simplify and remove a lot of code, and here
-> > > > it's hard to argue with Johanness, who pushed on this design.
-> > > > 
-> > > > With performance testing it's not that easy, because it's not obvious what
-> > > > we wanna test. Obviously, per-object accounting is more expensive, and
-> > > > measuring something like 1000000 allocations and deallocations in a line from
-> > > > a single kmem_cache will show a regression. But in the real world the relative
-> > > > cost of allocations is usually low, and we can get some benefits from a smaller
-> > > > working set and from having shared kmem_cache objects cache hot.
-> > > > Not speaking about some extra memory and the fragmentation reduction.
-> > > > 
-> > > > We've done an extensive testing of the original version in Facebook production,
-> > > > and we haven't noticed any regressions so far. But I have to admit, we were
-> > > > using an original version with two sets of kmem_caches.
-> > > > 
-> > > > If you have any specific tests in mind, I can definitely run them. Or if you
-> > > > can help with the performance evaluation, I'll appreciate it a lot.    
-> > > 
-> > > Jesper provided some pointers here [1], it would be really great if you could
-> > > run at least those microbenchmarks. With mmtests it's the major question of
-> > > which subset/profiles to run, maybe the referenced commits provide some hints,
-> > > or maybe Mel could suggest what he used to evaluate SLAB vs SLUB not so long ago.
-> > > 
-> > > [1] https://lore.kernel.org/linux-mm/20200527103545.4348ac10@carbon/    
-> > 
-> > Oh, Jesper, I'm really sorry, somehow I missed your mail.
-> > Thank you, Vlastimil, for pointing at it.
-> > 
-> > I've got some results (slab_bulk_test01), but honestly I fail to interpret them.
-> > 
-> > I ran original vs patched with SLUB and SLAB, each test several times and picked
-> > 3 which looked most consistently. But it still looks very noisy.
-> > 
-> > I ran them on my desktop (8-core Ryzen 1700, 16 GB RAM, Fedora 32),
-> > it's 5.8-rc1 + slab controller v6 vs 5.8-rc1 (default config from Fedora 32).  
-> 
-> What about running these tests on the server level hardware, that you
-> intent to run this on?  
-
-To give you an idea of the performance difference I ran the same test
-on a Broadwell Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz.
-
-The SLUB fastpath:
- Type:kmem fastpath reuse Per elem: 60 cycles(tsc) 16.822 ns
-
-
-> > 
-> > How should I interpret this data?  
-> 
-> First of all these SLUB+SLAB microbenchmarks use object size 256 bytes,
-> because network stack alloc object of this size for SKBs/sk_buff (due
-> to cache-align as used size is 224 bytes). Checked SLUB: Each slab use
-> 2 pages (8192 bytes) and contain 32 object of size 256 (256*32=8192).
-> 
->   The SLUB allocator have a per-CPU slab which speedup fast-reuse, in this
-> case up-to 32 objects. For SLUB the "fastpath reuse" test this behaviour,
-> and it serves as a baseline for optimal 1-object performance (where my bulk
-> API tries to beat that, which is possible even for 1-object due to knowing
-> bulk API cannot be used from IRQ context).
-> 
-> SLUB fastpath: 3 measurements reporting cycles(tsc)
->  - SLUB-patched : fastpath reuse: 184 - 177 - 176  cycles(tsc)
->  - SLUB-original: fastpath reuse: 178 - 153 - 156  cycles(tsc)
-> 
-
-For your SLAB results:
-
- SLAB fastpath: 3 measurements reporting cycles(tsc)
-  - SLAB-patched : 161 - 160 - 163  cycles(tsc)
-  - SLAB-original: 174 - 170 - 159  cycles(tsc)
-
-I find it strange that SLAB is slightly better than SLUB (in many
-measurements), because SLUB should have an advantage on this fast-path
-quick reuse due to the per-CPU slabs.  Maybe this is also related to
-the CPU arch you are using?
-
-
-> There are some stability concerns as you mention, but it seems pretty
-> consistently that patched version is slower. If you compile with
-> no-PREEMPT you can likely get more stable results (and remove a slight
-> overhead for SLUB fastpath).
-> 
-> The microbenchmark also measures the bulk-API, which is AFAIK only used
-> by network stack (and io_uring). I guess you shouldn't focus too much
-> on these bulk measurements. When bulk-API cross this objects per slab
-> threshold, or is unlucky is it use two per-CPU slab, then the
-> measurements can fluctuate a bit.
-> 
-> Your numbers for SLUB bulk-API:
-> 
-> SLUB-patched - bulk-API
->  - SLUB-patched : bulk_quick_reuse objects=1 : 187 -  90 - 224  cycles(tsc)
->  - SLUB-patched : bulk_quick_reuse objects=2 : 110 -  53 - 133  cycles(tsc)
->  - SLUB-patched : bulk_quick_reuse objects=3 :  88 -  95 -  42  cycles(tsc)
->  - SLUB-patched : bulk_quick_reuse objects=4 :  91 -  85 -  36  cycles(tsc)
->  - SLUB-patched : bulk_quick_reuse objects=8 :  32 -  66 -  32  cycles(tsc)
-> 
-> SLUB-original -  bulk-API
->  - SLUB-original: bulk_quick_reuse objects=1 :  87 -  87 - 142  cycles(tsc)
->  - SLUB-original: bulk_quick_reuse objects=2 :  52 -  53 -  53  cycles(tsc)
->  - SLUB-original: bulk_quick_reuse objects=3 :  42 -  42 -  91  cycles(tsc)
->  - SLUB-original: bulk_quick_reuse objects=4 :  91 -  37 -  37  cycles(tsc)
->  - SLUB-original: bulk_quick_reuse objects=8 :  31 -  79 -  76  cycles(tsc)
-
-Your numbers for SLAB bulk-API:
-
-SLAB-patched -  bulk-API
- - SLAB-patched : bulk_quick_reuse objects=1 :  67 -  67 - 140  cycles(tsc)
- - SLAB-patched : bulk_quick_reuse objects=2 :  55 -  46 -  46  cycles(tsc)
- - SLAB-patched : bulk_quick_reuse objects=3 :  93 -  94 -  39  cycles(tsc)
- - SLAB-patched : bulk_quick_reuse objects=4 :  35 -  88 -  85  cycles(tsc)
- - SLAB-patched : bulk_quick_reuse objects=8 :  30 -  30 -  30  cycles(tsc)
-
-SLAB-original-  bulk-API
- - SLAB-original: bulk_quick_reuse objects=1 : 143 - 136 -  67  cycles(tsc)
- - SLAB-original: bulk_quick_reuse objects=2 :  45 -  46 -  46  cycles(tsc)
- - SLAB-original: bulk_quick_reuse objects=3 :  38 -  39 -  39  cycles(tsc)
- - SLAB-original: bulk_quick_reuse objects=4 :  35 -  87 -  87  cycles(tsc)
- - SLAB-original: bulk_quick_reuse objects=8 :  29 -  66 -  30  cycles(tsc)
-
-In case of SLAB I expect the bulk-API to be slightly faster than SLUB,
-as the SLUB bulk code is much more advanced.
-
-
-
-> Maybe it is just noise or instability in measurements, but it seem that the
-> 1-object case is consistently slower in your patched version.
-> 
-> Mail is too long now... I'll take a look at your SLAB results and followup.
-
-(This is my follow up with SLAB results.)
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+KyBSaWNrDQoNCk9uIFNhdCwgMjAyMC0wNS0zMCBhdCAxNjoxMCArMDgwMCwgWW9uZyBXdSB3cm90
+ZToNCj4gTWVkaWFUZWsgSU9NTVUgaGFzIGFscmVhZHkgYWRkZWQgZGV2aWNlX2xpbmsgYmV0d2Vl
+biB0aGUgY29uc3VtZXINCj4gYW5kIHNtaS1sYXJiIGRldmljZS4gSWYgdGhlIGpwZyBkZXZpY2Ug
+Y2FsbCB0aGUgcG1fcnVudGltZV9nZXRfc3luYywNCj4gdGhlIHNtaS1sYXJiJ3MgcG1fcnVudGlt
+ZV9nZXRfc3luYyBhbHNvIGJlIGNhbGxlZCBhdXRvbWF0aWNhbGx5Lg0KPiANCj4gQ0M6IFJpY2sg
+Q2hhbmcgPHJpY2suY2hhbmdAbWVkaWF0ZWsuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBZb25nIFd1
+IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEV2YW4gR3JlZW4gPGV2Z3Jl
+ZW5AY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpw
+ZWcvbXRrX2pwZWdfY29yZS5jIHwgMjIgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgZHJpdmVy
+cy9tZWRpYS9wbGF0Zm9ybS9tdGstanBlZy9tdGtfanBlZ19jb3JlLmggfCAgMiAtLQ0KPiAgMiBm
+aWxlcyBjaGFuZ2VkLCAyNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L21lZGlhL3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuYyBiL2RyaXZlcnMvbWVkaWEv
+cGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5jDQo+IGluZGV4IGY4MmE4MWEuLjIxZmJh
+NmYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pw
+ZWdfY29yZS5jDQo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pw
+ZWdfY29yZS5jDQo+IEBAIC0yMSw3ICsyMSw2IEBADQo+ICAjaW5jbHVkZSA8bWVkaWEvdjRsMi1p
+b2N0bC5oPg0KPiAgI2luY2x1ZGUgPG1lZGlhL3ZpZGVvYnVmMi1jb3JlLmg+DQo+ICAjaW5jbHVk
+ZSA8bWVkaWEvdmlkZW9idWYyLWRtYS1jb250aWcuaD4NCj4gLSNpbmNsdWRlIDxzb2MvbWVkaWF0
+ZWsvc21pLmg+DQo+ICANCj4gICNpbmNsdWRlICJtdGtfanBlZ19ody5oIg0KPiAgI2luY2x1ZGUg
+Im10a19qcGVnX2NvcmUuaCINCj4gQEAgLTg5MywxMSArODkyLDYgQEAgc3RhdGljIGludCBtdGtf
+anBlZ19xdWV1ZV9pbml0KHZvaWQgKnByaXYsIHN0cnVjdCB2YjJfcXVldWUgKnNyY192cSwNCj4g
+IA0KPiAgc3RhdGljIHZvaWQgbXRrX2pwZWdfY2xrX29uKHN0cnVjdCBtdGtfanBlZ19kZXYgKmpw
+ZWcpDQo+ICB7DQo+IC0JaW50IHJldDsNCj4gLQ0KPiAtCXJldCA9IG10a19zbWlfbGFyYl9nZXQo
+anBlZy0+bGFyYik7DQo+IC0JaWYgKHJldCkNCj4gLQkJZGV2X2VycihqcGVnLT5kZXYsICJtdGtf
+c21pX2xhcmJfZ2V0IGxhcmJ2ZGVjIGZhaWwgJWRcbiIsIHJldCk7DQo+ICAJY2xrX3ByZXBhcmVf
+ZW5hYmxlKGpwZWctPmNsa19qZGVjX3NtaSk7DQo+ICAJY2xrX3ByZXBhcmVfZW5hYmxlKGpwZWct
+PmNsa19qZGVjKTsNCj4gIH0NCj4gQEAgLTkwNiw3ICs5MDAsNiBAQCBzdGF0aWMgdm9pZCBtdGtf
+anBlZ19jbGtfb2ZmKHN0cnVjdCBtdGtfanBlZ19kZXYgKmpwZWcpDQo+ICB7DQo+ICAJY2xrX2Rp
+c2FibGVfdW5wcmVwYXJlKGpwZWctPmNsa19qZGVjKTsNCj4gIAljbGtfZGlzYWJsZV91bnByZXBh
+cmUoanBlZy0+Y2xrX2pkZWNfc21pKTsNCj4gLQltdGtfc21pX2xhcmJfcHV0KGpwZWctPmxhcmIp
+Ow0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgaXJxcmV0dXJuX3QgbXRrX2pwZWdfZGVjX2lycShpbnQg
+aXJxLCB2b2lkICpwcml2KQ0KPiBAQCAtMTA1MSwyMSArMTA0NCw2IEBAIHN0YXRpYyBpbnQgbXRr
+X2pwZWdfcmVsZWFzZShzdHJ1Y3QgZmlsZSAqZmlsZSkNCj4gIA0KPiAgc3RhdGljIGludCBtdGtf
+anBlZ19jbGtfaW5pdChzdHJ1Y3QgbXRrX2pwZWdfZGV2ICpqcGVnKQ0KPiAgew0KPiAtCXN0cnVj
+dCBkZXZpY2Vfbm9kZSAqbm9kZTsNCj4gLQlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2Ow0K
+PiAtDQo+IC0Jbm9kZSA9IG9mX3BhcnNlX3BoYW5kbGUoanBlZy0+ZGV2LT5vZl9ub2RlLCAibWVk
+aWF0ZWssbGFyYiIsIDApOw0KPiAtCWlmICghbm9kZSkNCj4gLQkJcmV0dXJuIC1FSU5WQUw7DQo+
+IC0JcGRldiA9IG9mX2ZpbmRfZGV2aWNlX2J5X25vZGUobm9kZSk7DQo+IC0JaWYgKFdBUk5fT04o
+IXBkZXYpKSB7DQo+IC0JCW9mX25vZGVfcHV0KG5vZGUpOw0KPiAtCQlyZXR1cm4gLUVJTlZBTDsN
+Cj4gLQl9DQo+IC0Jb2Zfbm9kZV9wdXQobm9kZSk7DQo+IC0NCj4gLQlqcGVnLT5sYXJiID0gJnBk
+ZXYtPmRldjsNCj4gLQ0KPiAgCWpwZWctPmNsa19qZGVjID0gZGV2bV9jbGtfZ2V0KGpwZWctPmRl
+diwgImpwZ2RlYyIpOw0KPiAgCWlmIChJU19FUlIoanBlZy0+Y2xrX2pkZWMpKQ0KPiAgCQlyZXR1
+cm4gUFRSX0VSUihqcGVnLT5jbGtfamRlYyk7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlh
+L3BsYXRmb3JtL210ay1qcGVnL210a19qcGVnX2NvcmUuaCBiL2RyaXZlcnMvbWVkaWEvcGxhdGZv
+cm0vbXRrLWpwZWcvbXRrX2pwZWdfY29yZS5oDQo+IGluZGV4IDk5OWJkMTQuLjg1Nzk0OTQgMTAw
+NjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29y
+ZS5oDQo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLWpwZWcvbXRrX2pwZWdfY29y
+ZS5oDQo+IEBAIC00Nyw3ICs0Nyw2IEBAIGVudW0gbXRrX2pwZWdfY3R4X3N0YXRlIHsNCj4gICAq
+IEBkZWNfcmVnX2Jhc2U6CUpQRUcgcmVnaXN0ZXJzIG1hcHBpbmcNCj4gICAqIEBjbGtfamRlYzoJ
+CUpQRUcgaHcgd29ya2luZyBjbG9jaw0KPiAgICogQGNsa19qZGVjX3NtaToJSlBFRyBTTUkgYnVz
+IGNsb2NrDQo+IC0gKiBAbGFyYjoJCVNNSSBkZXZpY2UNCj4gICAqLw0KPiAgc3RydWN0IG10a19q
+cGVnX2RldiB7DQo+ICAJc3RydWN0IG11dGV4CQlsb2NrOw0KPiBAQCAtNjEsNyArNjAsNiBAQCBz
+dHJ1Y3QgbXRrX2pwZWdfZGV2IHsNCj4gIAl2b2lkIF9faW9tZW0JCSpkZWNfcmVnX2Jhc2U7DQo+
+ICAJc3RydWN0IGNsawkJKmNsa19qZGVjOw0KPiAgCXN0cnVjdCBjbGsJCSpjbGtfamRlY19zbWk7
+DQo+IC0Jc3RydWN0IGRldmljZQkJKmxhcmI7DQo+ICB9Ow0KPiAgDQo+ICAvKioNCg0K
 
