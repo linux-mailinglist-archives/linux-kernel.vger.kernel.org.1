@@ -2,157 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E8B1FF87D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9534A1FF8A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731745AbgFRQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728134AbgFRQCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:02:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A19652075E;
-        Thu, 18 Jun 2020 16:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592496140;
-        bh=rqbQaxwYHVSog/6s0s06FTodGO8kQeNqtyZySUvpN6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UUazJfy9+SSUKCLNfartxWy/emm+rlRyoRqcnyXex7QUgkrv8PbuxpR4XPTWliD9o
-         JHrAaV6k7Rf0xEMIQqZ/A15hvXhqg5bAUs3F0/ERSZnyaZRws0u88T0CPjbT/qHzxL
-         PJBFDWfUW4gUM4BGCg7YrDz1p0BYoXuWrU7avDc0=
-Date:   Thu, 18 Jun 2020 18:02:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Oliver O'Halloran <oohall@gmail.com>
-Subject: Re: [PATCH 4/4] pci: export untrusted attribute in sysfs
-Message-ID: <20200618160212.GB3076467@kroah.com>
-References: <20200616011742.138975-1-rajatja@google.com>
- <20200616011742.138975-4-rajatja@google.com>
- <20200616073249.GB30385@infradead.org>
- <CACK8Z6ELaM8KxbwPor=BUquWN7pALQmmHu5geSOc71P3KoJ1QA@mail.gmail.com>
- <20200617073100.GA14424@infradead.org>
- <CACK8Z6FecYkAYQh4sm4RbAQ1iwb9gexqgY9ExD9BH2p-5Usj=g@mail.gmail.com>
- <CAHp75Vc6eA33cyAQH-m+yixTuHqiobg6fo7nzbbb-J6vN6qFcA@mail.gmail.com>
- <20200618083646.GA1066967@kroah.com>
- <CAHp75Vf71f2s6yipHJ4Ys1oe1v7L4PiqBCEbo0uBcG7Wpcs5dQ@mail.gmail.com>
- <CACK8Z6F2Ssj=EqhR2DZ114ETgQ-3PhzVi2rm2xxenCNOVH=60g@mail.gmail.com>
+        id S1729882AbgFRQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:07:37 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2336 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728008AbgFRQHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:07:37 -0400
+Received: from lhreml716-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 6E01FC6A77EDF1299CED;
+        Thu, 18 Jun 2020 17:07:35 +0100 (IST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 18 Jun 2020 17:07:35 +0100
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 18 Jun 2020 18:07:34 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 06/11] evm: Allow setxattr() and setattr() if metadata digest won't change
+Date:   Thu, 18 Jun 2020 18:04:53 +0200
+Message-ID: <20200618160458.1579-6-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200618160329.1263-2-roberto.sassu@huawei.com>
+References: <20200618160329.1263-2-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACK8Z6F2Ssj=EqhR2DZ114ETgQ-3PhzVi2rm2xxenCNOVH=60g@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.204.65.160]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 08:03:49AM -0700, Rajat Jain wrote:
-> Hello,
-> 
-> On Thu, Jun 18, 2020 at 2:14 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Thu, Jun 18, 2020 at 11:36 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Thu, Jun 18, 2020 at 11:12:56AM +0300, Andy Shevchenko wrote:
-> > > > On Wed, Jun 17, 2020 at 10:56 PM Rajat Jain <rajatja@google.com> wrote:
-> > > > > On Wed, Jun 17, 2020 at 12:31 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > > >
-> > > > ...
-> > > >
-> > > > > (and likely call it "external" instead of "untrusted".
-> > > >
-> > > > Which is not okay. 'External' to what? 'untrusted' has been carefully
-> > > > chosen by the meaning of it.
-> > > > What external does mean for M.2. WWAN card in my laptop? It's in ACPI
-> > > > tables, but I can replace it.
-> > >
-> > > Then your ACPI tables should show this, there is an attribute for it,
-> > > right?
-> >
-> > There is a _PLD() method, but it's for the USB devices (or optional
-> > for others, I don't remember by heart). So, most of the ACPI tables,
-> > alas, don't show this.
-> >
-> > > > This is only one example. Or if firmware of some device is altered,
-> > > > and it's internal (whatever it means) is it trusted or not?
-> > >
-> > > That is what people are using policy for today, if you object to this,
-> > > please bring it up to those developers :)
-> >
-> > > > So, please leave it as is (I mean name).
-> > >
-> > > firmware today exports this attribute, why do you not want userspace to
-> > > also know it?
-> 
-> To clarify, the attribute exposed by the firmware today is
-> "ExternalFacingPort" and "external-facing" respectively:
-> 
-> 617654aae50e ("PCI / ACPI: Identify untrusted PCI devices")
-> 9cb30a71ac45d("PCI: OF: Support "external-facing" property")
-> 
-> The kernel flag was named "untrusted" though, hence the assumption
-> that "external=untrusted" is currently baked into the kernel today.
-> IMHO, using "external" would fix that (The assumption can thus be
-> contained in the IOMMU drivers) and at the same time allow more use of
-> this attribute.
-> 
-> > >
-> > > Trust is different, yes, don't get the two mixed up please.  That should
-> > > be a different sysfs attribute for obvious reasons.
-> >
-> > Yes, as a bottom line that's what I meant as well.
-> 
-> So what is the consensus here? I don't have a strong opinion - but it
-> seemed to me Greg is saying "external" and Andy is saying "untrusted"?
+If metadata are immutable, they cannot be changed. If metadata are already
+set to the final value before cp and tar restore the value from the source,
+those applications display an error even if the operation is legitimate
+(they don't change the value).
 
-Those two things are totally separate things when it comes to a device.
+This patch determines whether setxattr()/setattr() change metadata and, if
+not, allows the operations even if metadata are immutable.
 
-One (external) describes the location of the device in the system.
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ security/integrity/evm/evm_main.c | 72 +++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-The other (untrusted) describes what you want the kernel to do with this
-device (trust or not trust it).
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 30072030f05d..41cc6a4aaaab 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -18,6 +18,7 @@
+ #include <linux/integrity.h>
+ #include <linux/evm.h>
+ #include <linux/magic.h>
++#include <linux/posix_acl_xattr.h>
+ 
+ #include <crypto/hash.h>
+ #include <crypto/hash_info.h>
+@@ -305,6 +306,56 @@ static enum integrity_status evm_verify_current_integrity(struct dentry *dentry)
+ 	return evm_verify_hmac(dentry, NULL, NULL, 0, NULL);
+ }
+ 
++static int evm_xattr_acl_change(struct dentry *dentry, const char *xattr_name,
++				const void *xattr_value, size_t xattr_value_len)
++{
++	umode_t mode;
++	struct posix_acl *acl = NULL, *acl_res;
++	struct inode *inode = d_backing_inode(dentry);
++	int rc;
++
++	/* UID/GID in ACL have been already converted from user to init ns */
++	acl = posix_acl_from_xattr(&init_user_ns, xattr_value, xattr_value_len);
++	if (!acl)
++		return 1;
++
++	acl_res = acl;
++	rc = posix_acl_update_mode(inode, &mode, &acl_res);
++
++	posix_acl_release(acl);
++
++	if (rc)
++		return 1;
++
++	if (acl_res && inode->i_mode != mode)
++		return 1;
++
++	return 0;
++}
++
++static int evm_xattr_change(struct dentry *dentry, const char *xattr_name,
++			    const void *xattr_value, size_t xattr_value_len)
++{
++	char *xattr_data = NULL;
++	int rc = 0;
++
++	if (posix_xattr_acl(xattr_name))
++		return evm_xattr_acl_change(dentry, xattr_name, xattr_value,
++					    xattr_value_len);
++
++	rc = vfs_getxattr_alloc(dentry, xattr_name, &xattr_data, 0, GFP_NOFS);
++	if (rc < 0)
++		return 1;
++
++	if (rc == xattr_value_len)
++		rc = memcmp(xattr_value, xattr_data, rc);
++	else
++		rc = 1;
++
++	kfree(xattr_data);
++	return rc;
++}
++
+ /*
+  * evm_protect_xattr - protect the EVM extended attribute
+  *
+@@ -361,6 +412,10 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
+ 	if (evm_status == INTEGRITY_FAIL_IMMUTABLE)
+ 		return 0;
+ 
++	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
++	    !evm_xattr_change(dentry, xattr_name, xattr_value, xattr_value_len))
++		return 0;
++
+ 	if (evm_status != INTEGRITY_PASS)
+ 		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
+ 				    dentry->d_name.name, "appraise_metadata",
+@@ -477,6 +532,19 @@ void evm_inode_post_removexattr(struct dentry *dentry, const char *xattr_name)
+ 	evm_update_evmxattr(dentry, xattr_name, NULL, 0);
+ }
+ 
++static int evm_attr_change(struct dentry *dentry, struct iattr *attr)
++{
++	struct inode *inode = d_backing_inode(dentry);
++	unsigned int ia_valid = attr->ia_valid;
++
++	if ((!(ia_valid & ATTR_UID) || uid_eq(attr->ia_uid, inode->i_uid)) &&
++	    (!(ia_valid & ATTR_GID) || gid_eq(attr->ia_gid, inode->i_gid)) &&
++	    (!(ia_valid & ATTR_MODE) || attr->ia_mode == inode->i_mode))
++		return 0;
++
++	return 1;
++}
++
+ /**
+  * evm_inode_setattr - prevent updating an invalid EVM extended attribute
+  * @dentry: pointer to the affected dentry
+@@ -506,6 +574,10 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
+ 	    (evm_status == INTEGRITY_FAIL_IMMUTABLE))
+ 		return 0;
+ 
++	if (evm_status == INTEGRITY_PASS_IMMUTABLE &&
++	    !evm_attr_change(dentry, attr))
++		return 0;
++
+ 	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
+ 			    dentry->d_name.name, "appraise_metadata",
+ 			    integrity_status_msg[evm_status], -EPERM, 0);
+-- 
+2.17.1
 
-One you can change (from trust to untrusted or back), the other you can
-not, it is a fixed read-only property that describes the hardware device
-as defined by the firmware.
-
-Depending on the policy you wish to define, you can use the location of
-the device to determine if you want to trust the device or not.
-
-Again, this is what USB does, but I'm getting really tired of saying
-this, so I'm going to stop now...
-
-greg k-h
