@@ -2,198 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756831FDABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAA91FDBEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgFRBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:06:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33154 "EHLO mail.kernel.org"
+        id S1729488AbgFRBPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726854AbgFRBF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:05:59 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728176AbgFRBNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:47 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3420E21527;
-        Thu, 18 Jun 2020 01:05:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E223820EDD;
+        Thu, 18 Jun 2020 01:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442359;
-        bh=fCKvWeZHV681pg3LNgZSQbejrSkS+9SbuvF+zjEAulA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=APtuJ/AWPatfvPNmx/3CBgL56NJJjWfNJ/A2S0+7BCrQAJlgCh+5AqEY6R+xiNsmt
-         UuYz3NQh6Pe+hPCTYLrrfHZEtqE0UOMNjbAi8mn1cfQe5u0ORKsA5H7Qxi7+x8BbiH
-         SUte9/ml3rR00eV8OpZ/OHU/MrjPssnDeaSd9BME=
-Date:   Wed, 17 Jun 2020 18:05:58 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] fs: generic_file_buffered_read() now uses
- find_get_pages_contig
-Message-Id: <20200617180558.9722e7337cbe3b88c4767126@linux-foundation.org>
-In-Reply-To: <20200610013642.4171512-2-kent.overstreet@gmail.com>
-References: <20200610001036.3904844-1-kent.overstreet@gmail.com>
-        <20200610013642.4171512-2-kent.overstreet@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1592442826;
+        bh=1L1IL2y01Qzhmft+H/AeRDpC/FR4sANsggs28guR4Ug=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=d4Rzd+wBXlq2u+gD9Fl96r0RpiMMX4XYtwRmM13AVZN6XfnwIw9VVsf32+mxMgyzo
+         /WWHwyJ3iSI6Fi4kvYkEmXpL9vuxNRFhbnOcGlLnATByI8XCvBCa/fyKGhT5wOYSFz
+         5tRyUAVJioBU7Fd3gK1dIaPKa5T6oeV9ZWJsnkbU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 262/388] selftests/timens: handle a case when alarm clocks are not supported
+Date:   Wed, 17 Jun 2020 21:05:59 -0400
+Message-Id: <20200618010805.600873-262-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
+References: <20200618010805.600873-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Jun 2020 21:36:42 -0400 Kent Overstreet <kent.overstreet@gmail.com> wrote:
+From: Andrei Vagin <avagin@gmail.com>
 
-> Convert generic_file_buffered_read() to get pages to read from in
-> batches, and then copy data to userspace from many pages at once - in
-> particular, we now don't touch any cachelines that might be contended
-> while we're in the loop to copy data to userspace.
-> 
-> This is is a performance improvement on workloads that do buffered reads
-> with large blocksizes, and a very large performance improvement if that
-> file is also being accessed concurrently by different threads.
-> 
-> On smaller reads (512 bytes), there's a very small performance
-> improvement (1%, within the margin of error).
-> 
+[ Upstream commit 558ae0355a91c7d28fdf4c0011bee6ebb5118632 ]
 
-checkpatch goes fairly crazy over this one, mostly legitimate.
+This can happen if a testing node doesn't have RTC (real time clock)
+hardware or it doesn't support alarms.
 
-> @@ -2255,6 +2194,79 @@ generic_file_buffered_read_no_cached_page(struct kiocb *iocb,
->  	return generic_file_buffered_read_readpage(filp, mapping, page);
->  }
->  
-> +static int generic_file_buffered_read_get_pages(struct kiocb *iocb,
-> +						struct iov_iter *iter,
-> +						struct page **pages,
-> +						unsigned nr)
-> +{
-> +	struct file *filp = iocb->ki_filp;
-> +	struct address_space *mapping = filp->f_mapping;
-> +	struct file_ra_state *ra = &filp->f_ra;
-> +	pgoff_t index = iocb->ki_pos >> PAGE_SHIFT;
-> +	pgoff_t last_index = (iocb->ki_pos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT;
-> +	int i, j, ret, err = 0;
-> +
-> +	nr = min_t(unsigned long, last_index - index, nr);
-> +find_page:
-> +	if (fatal_signal_pending(current))
-> +		return -EINTR;
-> +
-> +	ret = find_get_pages_contig(mapping, index, nr, pages);
-> +	if (ret)
-> +		goto got_pages;
-> +
-> +	if (iocb->ki_flags & IOCB_NOWAIT)
-> +		return -EAGAIN;
-> +
-> +	page_cache_sync_readahead(mapping, ra, filp, index, last_index - index);
-> +
-> +	ret = find_get_pages_contig(mapping, index, nr, pages);
-> +	if (ret)
-> +		goto got_pages;
-> +
-> +	pages[0] = generic_file_buffered_read_no_cached_page(iocb, iter);
-> +	err = PTR_ERR_OR_ZERO(pages[0]);
-> +	ret = !IS_ERR_OR_NULL(pages[0]);
+Fixes: 61c57676035d ("selftests/timens: Add Time Namespace test for supported clocks")
+Acked-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reported-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/timens/clock_nanosleep.c |  2 +-
+ tools/testing/selftests/timens/timens.c          |  2 +-
+ tools/testing/selftests/timens/timens.h          | 13 ++++++++++++-
+ tools/testing/selftests/timens/timer.c           |  5 +++++
+ tools/testing/selftests/timens/timerfd.c         |  5 +++++
+ 5 files changed, 24 insertions(+), 3 deletions(-)
 
-what?
-
-> +got_pages:
-> +	for (i = 0; i < ret; i++) {
-
-Comparing i with ret here just hurts my brain.  Two lines ago ret was a
-boolean, now it's a scalar.
-
-> +		struct page *page = pages[i];
-> +		pgoff_t pg_index = index +i;
-> +		loff_t pg_pos = max(iocb->ki_pos,
-> +				    (loff_t) pg_index << PAGE_SHIFT);
-
-hm.  I guess we can't use max_t here because we need to cast the
-pgoff_t before the << to avoid overflows on 32-bit.  Perhaps this could
-be cleaned up by using additional suitably typed and named locals.
-
-> +		loff_t pg_count = iocb->ki_pos + iter->count - pg_pos;
-> +
-> +		if (PageReadahead(page))
-> +			page_cache_async_readahead(mapping, ra, filp, page,
-> +					pg_index, last_index - pg_index);
-> +
-> +		if (!PageUptodate(page)) {
-> +			if (iocb->ki_flags & IOCB_NOWAIT) {
-> +				for (j = i; j < ret; j++)
-> +					put_page(pages[j]);
-> +				ret = i;
-> +				err = -EAGAIN;
-> +				break;
-> +			}
-> +
-> +			page = generic_file_buffered_read_pagenotuptodate(filp,
-> +						iter, page, pg_pos, pg_count);
-> +			if (IS_ERR_OR_NULL(page)) {
-> +				for (j = i + 1; j < ret; j++)
-> +					put_page(pages[j]);
-> +				ret = i;
-> +				err = PTR_ERR_OR_ZERO(page);
-> +				break;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (likely(ret))
-> +		return ret;
-> +	if (err)
-> +		return err;
-> +	goto find_page;
-> +}
-> +
->  /**
->   * generic_file_buffered_read - generic file read routine
->   * @iocb:	the iocb to read
-> @@ -2275,86 +2287,108 @@ static ssize_t generic_file_buffered_read(struct kiocb *iocb,
->  		struct iov_iter *iter, ssize_t written)
->  {
->  	struct file *filp = iocb->ki_filp;
-> +	struct file_ra_state *ra = &filp->f_ra;
->  	struct address_space *mapping = filp->f_mapping;
->  	struct inode *inode = mapping->host;
-> -	struct file_ra_state *ra = &filp->f_ra;
->  	size_t orig_count = iov_iter_count(iter);
-> -	pgoff_t last_index;
-> -	int error = 0;
-> +	struct page *page_array[8], **pages;
-> +	unsigned nr_pages = ARRAY_SIZE(page_array);
-> +	unsigned read_nr_pages = ((iocb->ki_pos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT) -
-> +		(iocb->ki_pos >> PAGE_SHIFT);
-> +	int i, pg_nr, error = 0;
-> +	bool writably_mapped;
-> +	loff_t isize, end_offset;
->  
->  	if (unlikely(iocb->ki_pos >= inode->i_sb->s_maxbytes))
->  		return 0;
->  	iov_iter_truncate(iter, inode->i_sb->s_maxbytes);
->  
-> -	last_index = (iocb->ki_pos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT;
-> -
-> -	for (;;) {
-> -		pgoff_t index = iocb->ki_pos >> PAGE_SHIFT;
-> -		struct page *page;
-> +	if (read_nr_pages > nr_pages &&
-> +	    (pages = kmalloc_array(read_nr_pages, sizeof(void *), GFP_KERNEL)))
-
-I agree with checkpatch!
-
-> +		nr_pages = read_nr_pages;
-> +	else
-> +		pages = page_array;
->  
-> +	do {
->  		cond_resched();
->
-> ...
->
-
-Please, can we make all this code nice to read?
+diff --git a/tools/testing/selftests/timens/clock_nanosleep.c b/tools/testing/selftests/timens/clock_nanosleep.c
+index 8e7b7c72ef65..72d41b955fb2 100644
+--- a/tools/testing/selftests/timens/clock_nanosleep.c
++++ b/tools/testing/selftests/timens/clock_nanosleep.c
+@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
+ 
+ 	ksft_set_plan(4);
+ 
+-	check_config_posix_timers();
++	check_supported_timers();
+ 
+ 	if (unshare_timens())
+ 		return 1;
+diff --git a/tools/testing/selftests/timens/timens.c b/tools/testing/selftests/timens/timens.c
+index 098be7c83be3..52b6a1185f52 100644
+--- a/tools/testing/selftests/timens/timens.c
++++ b/tools/testing/selftests/timens/timens.c
+@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
+ 
+ 	nscheck();
+ 
+-	check_config_posix_timers();
++	check_supported_timers();
+ 
+ 	ksft_set_plan(ARRAY_SIZE(clocks) * 2);
+ 
+diff --git a/tools/testing/selftests/timens/timens.h b/tools/testing/selftests/timens/timens.h
+index e09e7e39bc52..d4fc52d47146 100644
+--- a/tools/testing/selftests/timens/timens.h
++++ b/tools/testing/selftests/timens/timens.h
+@@ -14,15 +14,26 @@
+ #endif
+ 
+ static int config_posix_timers = true;
++static int config_alarm_timers = true;
+ 
+-static inline void check_config_posix_timers(void)
++static inline void check_supported_timers(void)
+ {
++	struct timespec ts;
++
+ 	if (timer_create(-1, 0, 0) == -1 && errno == ENOSYS)
+ 		config_posix_timers = false;
++
++	if (clock_gettime(CLOCK_BOOTTIME_ALARM, &ts) == -1 && errno == EINVAL)
++		config_alarm_timers = false;
+ }
+ 
+ static inline bool check_skip(int clockid)
+ {
++	if (!config_alarm_timers && clockid == CLOCK_BOOTTIME_ALARM) {
++		ksft_test_result_skip("CLOCK_BOOTTIME_ALARM isn't supported\n");
++		return true;
++	}
++
+ 	if (config_posix_timers)
+ 		return false;
+ 
+diff --git a/tools/testing/selftests/timens/timer.c b/tools/testing/selftests/timens/timer.c
+index 96dba11ebe44..5e7f0051bd7b 100644
+--- a/tools/testing/selftests/timens/timer.c
++++ b/tools/testing/selftests/timens/timer.c
+@@ -22,6 +22,9 @@ int run_test(int clockid, struct timespec now)
+ 	timer_t fd;
+ 	int i;
+ 
++	if (check_skip(clockid))
++		return 0;
++
+ 	for (i = 0; i < 2; i++) {
+ 		struct sigevent sevp = {.sigev_notify = SIGEV_NONE};
+ 		int flags = 0;
+@@ -74,6 +77,8 @@ int main(int argc, char *argv[])
+ 
+ 	nscheck();
+ 
++	check_supported_timers();
++
+ 	ksft_set_plan(3);
+ 
+ 	clock_gettime(CLOCK_MONOTONIC, &mtime_now);
+diff --git a/tools/testing/selftests/timens/timerfd.c b/tools/testing/selftests/timens/timerfd.c
+index eff1ec5ff215..9edd43d6b2c1 100644
+--- a/tools/testing/selftests/timens/timerfd.c
++++ b/tools/testing/selftests/timens/timerfd.c
+@@ -28,6 +28,9 @@ int run_test(int clockid, struct timespec now)
+ 	long long elapsed;
+ 	int fd, i;
+ 
++	if (check_skip(clockid))
++		return 0;
++
+ 	if (tclock_gettime(clockid, &now))
+ 		return pr_perror("clock_gettime(%d)", clockid);
+ 
+@@ -81,6 +84,8 @@ int main(int argc, char *argv[])
+ 
+ 	nscheck();
+ 
++	check_supported_timers();
++
+ 	ksft_set_plan(3);
+ 
+ 	clock_gettime(CLOCK_MONOTONIC, &mtime_now);
+-- 
+2.25.1
 
