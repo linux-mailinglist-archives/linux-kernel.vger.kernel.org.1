@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD621FE7F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122F41FE7EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgFRCop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:44:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
+        id S2387907AbgFRCo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727861AbgFRBLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:11:10 -0400
+        id S1727801AbgFRBLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:11:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54C64221EB;
-        Thu, 18 Jun 2020 01:11:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5C7021D7E;
+        Thu, 18 Jun 2020 01:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442669;
-        bh=Xwqp5VeiNd1IsDMeWotZ1nD25aou2uHxHhgfdlOCxX8=;
+        s=default; t=1592442673;
+        bh=TS51LkKgjmjEv2BFagb1w17wjUJM5ZYvOrdt2wSaGh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMxr8U4eKXvNv/aijPitK1bfPSNS9+VdOrcV5tjZF0PR/ICRR2AUOHYdKp13QhWyc
-         J07wxSnmNnJzMPs5+T8jy9zOtjBLmBQ1pH4kG8WecHtzeqsfj+e9q7I9KajAt5AmMK
-         JsT4Mxjvj6Ld+54rqVkTP5KMcltmocPN7AJUWpaQ=
+        b=js1/BdXIk8LUvZoxamm2vcStRezJWvpl+Njz8RXH5F9thpbYiDwNoBSBgxxK28w9a
+         G+tU0JwlPN0yyizXIolEj14+MerDYQ72tpp6J/f11ro/f3z3NJbIZQDcUvuszz+4c/
+         soc0M2g01t2OUwdicHuhWoT/gONe3M6W072rp6rc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.7 139/388] ALSA: usb-audio: Fix racy list management in output queue
-Date:   Wed, 17 Jun 2020 21:03:56 -0400
-Message-Id: <20200618010805.600873-139-sashal@kernel.org>
+Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 142/388] s390/qdio: tear down thinint indicator after early error
+Date:   Wed, 17 Jun 2020 21:03:59 -0400
+Message-Id: <20200618010805.600873-142-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -42,49 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit 5b6cc38f3f3f37109ce72b60bda215a5f6892c0b ]
+[ Upstream commit 68a381746f20e5435206173e22d0a011ef78790e ]
 
-The linked list entry from FIFO is peeked at
-queue_pending_output_urbs() but the actual element pop-out is
-performed outside the spinlock, and it's potentially racy.
+qdio_establish() calls qdio_establish_thinint(), but later has an error
+exit path that doesn't roll this call back. Fix it.
 
-Do delete the link at the right place inside the spinlock.
-
-Fixes: 8fdff6a319e7 ("ALSA: snd-usb: implement new endpoint streaming model")
-Link: https://lore.kernel.org/r/20200424074016.14301-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/s390/cio/qdio_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index d8dc7cb56d43..50104f658ed4 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -346,17 +346,17 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 			ep->next_packet_read_pos %= MAX_URBS;
- 
- 			/* take URB out of FIFO */
--			if (!list_empty(&ep->ready_playback_urbs))
-+			if (!list_empty(&ep->ready_playback_urbs)) {
- 				ctx = list_first_entry(&ep->ready_playback_urbs,
- 					       struct snd_urb_ctx, ready_list);
-+				list_del_init(&ctx->ready_list);
-+			}
- 		}
- 		spin_unlock_irqrestore(&ep->lock, flags);
- 
- 		if (ctx == NULL)
- 			return;
- 
--		list_del_init(&ctx->ready_list);
--
- 		/* copy over the length information */
- 		for (i = 0; i < packet->packets; i++)
- 			ctx->packet_size[i] = packet->packet_size[i];
+diff --git a/drivers/s390/cio/qdio_main.c b/drivers/s390/cio/qdio_main.c
+index da5a11138020..80cc811bd2e0 100644
+--- a/drivers/s390/cio/qdio_main.c
++++ b/drivers/s390/cio/qdio_main.c
+@@ -1363,6 +1363,7 @@ int qdio_establish(struct ccw_device *cdev,
+ 	if (rc) {
+ 		DBF_ERROR("%4x est IO ERR", irq_ptr->schid.sch_no);
+ 		DBF_ERROR("rc:%4x", rc);
++		qdio_shutdown_thinint(irq_ptr);
+ 		qdio_shutdown_irq(irq_ptr);
+ 		mutex_unlock(&irq_ptr->setup_mutex);
+ 		return rc;
 -- 
 2.25.1
 
