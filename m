@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7631FFA84
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364841FFA87
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgFRRtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 13:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
+        id S1729924AbgFRRtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 13:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbgFRRtQ (ORCPT
+        with ESMTP id S1728537AbgFRRtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 13:49:16 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9B4C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:49:16 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d8so2720342plo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:49:16 -0700 (PDT)
+        Thu, 18 Jun 2020 13:49:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBB5C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:49:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 9so8322971ljc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=gxk0mpNa0zDp1a6ZbGOjifp1sPgDInqSNRsdHtC1Hro=;
-        b=eutxv2PiYY3Hf7kIcg35ZVWehj2QRs6NISrkXqJnBcO94eFIIVNhzMmYT/KvasEv/7
-         Dg6yWieF5fjiNuTwsTlEcQTv67pMIt2tUtBgW2ivWgeFKOiU86ydlDXiQ7myVBSdjmVs
-         oZMjfJI21sdpnTEgfOMzh5iU1XLpr+ltfBd+WQE2hlaakXSoS/M/AwwQAIac0glLq+VB
-         EbsFJ0PB7xPqGSLemiArDV6EcbSQZfZTPsu4Hqc1f5tkVGA3VNvFrddyWMijSyYCNPoU
-         aPnbeTJWsDX3rmbvw85AggJa1YQLV0rNwwGgjQE92KVT7h6oNxHRKbT4pMQf/kHUwMVO
-         U+QA==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=H7TfWuJuxniQYZUFW9bvII5Vr1rgNmizaa/XrNQwKLo=;
+        b=PEfQf5gPG0tZAf8XwoEA6I3rIEdSoiO8pZUmC28ekKteAWE/CZ6pi0JS9DsYrB0piT
+         sRTlgQF/40kRiAZSdZzjNbF/a+mMEouPjXDX6IIUiWX9rPOeykZs+ENh3HD/qLn8l/T2
+         duY2whf5ha3m/DCeMHTUVQqjocduvyQXerSYFAt77Msptau40R5KfBj6P5tsxXjMufKX
+         fwdnE8chRcvriCtlAls7YgT4FmK8H8uW4Jaxvfm6RfdoV9w3YvwnjDILgTs0Gy4w2Cpj
+         WJ0GmyaaQIJcnJqngqxvWW9ELxXl9yFw/UQgr5jBQGwnfr1Jw+17nKLqijl1ou4xH/Qb
+         DPMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=gxk0mpNa0zDp1a6ZbGOjifp1sPgDInqSNRsdHtC1Hro=;
-        b=JG7ffxzWBPyWLTePnzNJQ3YCLsy5fE79un/uJmg9SIgkQW8h8fzXVPp7EC+aZa0F+C
-         9oPA8flIkXHnLkp+6wTvvo/VTr1p1LKnXiT8izl3G/x9m8Cw8CVzPrPR9XttphfhhY7o
-         h5gcFsUrkRQDjRY7cwC3v/gEPmAFgczde+NYwb1hEmONW3lnVoaMemOTq4qGN/9M6Dol
-         xa/gEqtelgghbEbO5SWwJCHQ1ujF96/GXJ47xA/m4cirTYxxvyH1gAYnGezK+ztkjmKa
-         MGxqVgK9vYT/VsHBHM3XaPcIPeik5npVNlTtqu19RPY2StCxJjnKF6SNerIfaGTekTBG
-         noGg==
-X-Gm-Message-State: AOAM530FHz1YnmMLFrUFhDaQMpCqh3FZJrvP0gBfr+BNGAFafVRpf/Xd
-        tu+PXQdbxMk3L/OaPfo3BYr/dA==
-X-Google-Smtp-Source: ABdhPJwePPoyJKKty49/kFzWmOuIwz4LoRXlzrUor1Yd1A7Fb6F2+E5Hzyy+9kCNkRpMU8WU3GMsvQ==
-X-Received: by 2002:a17:90a:e7cd:: with SMTP id kb13mr5312238pjb.138.1592502555536;
-        Thu, 18 Jun 2020 10:49:15 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id j184sm3447763pfg.131.2020.06.18.10.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 10:49:14 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 10:49:14 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Christoph Hellwig <hch@lst.de>
-cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] dma-mapping: DMA_COHERENT_POOL should select
- GENERIC_ALLOCATOR
-In-Reply-To: <20200618152506.116057-1-hch@lst.de>
-Message-ID: <alpine.DEB.2.22.394.2006181047350.246344@chino.kir.corp.google.com>
-References: <20200618152506.116057-1-hch@lst.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=H7TfWuJuxniQYZUFW9bvII5Vr1rgNmizaa/XrNQwKLo=;
+        b=jBizj3BENIYqnY2C1+nIq7ZKe+sQphy/oBqEIeX9NSRf5UD2WfgWWHc3lbVs84vYmv
+         6+6+8EjrbEpJNc188T1yhteQuwmsjWzQCTj8QODqCkgfOCaFbCx3d+Gvl5feRHxt+BNB
+         3UJiUuPScHFqF8qNrK3oePbzyoMrIy3FCdKaigLvWRxQ/MadBz70PAJPqdkeGpCJv1CE
+         hCRHyIhx+exYWAoHORZ7B5cglCL936n5AvX1BK9+tWQyUInSGt7T2YkYlt92YVzqZbl3
+         OHfZRe9F6/CrKLXAugRDUuncELFGCJsgaloLZ3yXZ/RKfAyf3lG54rhbVdxRzUDrpuia
+         ryzw==
+X-Gm-Message-State: AOAM531dcYVYja6VSg3VfNENSRveZDbptB8OVFAYakmeXIPvQB/ZQwnK
+        qIexGPaFxaF2nj8YEjPMkrNLFJOjb+T0PzN+IytkqPBi
+X-Google-Smtp-Source: ABdhPJxA7Vqa6U+T/a1agvsazT1X8WWTunK8Tu3XgAuCoXIHfYpz+yL2efUijH9+s0ZSc6dRhK68qbxIeXzXwsAyJaI=
+X-Received: by 2002:a2e:b005:: with SMTP id y5mr2716204ljk.236.1592502587699;
+ Thu, 18 Jun 2020 10:49:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   "R.F. Burns" <burnsrf@gmail.com>
+Date:   Thu, 18 Jun 2020 13:49:37 -0400
+Message-ID: <CABG1boOyDJheyNFuxhB0amA3_NH_DtvtZb2BBUtUOCQ01jeCEw@mail.gmail.com>
+Subject: PC speaker
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020, Christoph Hellwig wrote:
-
-> The dma coherent pool code needs genalloc.  Move the select over
-> from DMA_REMAP, which doesn't actually need it.
-> 
-> Fixes: dbed452a078d ("dma-pool: decouple DMA_REMAP from DMA_COHERENT_POOL")
-> Reported-by: kernel test robot <lkp@intel.com>
-
-Acked-by: David Rientjes <rientjes@google.com>
-
-Thanks Christoph.  In the initial bug report from Alex Xu, his .config set 
-CONFIG_GENERIC_ALLOCATOR already so I think there is very little risk with 
-this patch.
+Is it possible to write a kernel module which, when loaded, will blow
+the PC speaker?
