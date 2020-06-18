@@ -2,133 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EFC1FF3BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60081FF3AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730539AbgFRNuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:50:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:25304 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730454AbgFRNuH (ORCPT
+        id S1730392AbgFRNtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730345AbgFRNtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:50:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592488205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oJm9QsQNjyNKb25LuVwhqvqveb7Phcc9WaN/omydpzc=;
-        b=dOqScK8nu3YDMdkdNgyZAfSThjNYEanbQVCemCSYXJeqIPoFi5FyODdza392E7TouJ+8sD
-        A67KKwWqi1HqQ2bGTDROwOMI0dHKVL75Y3SW2nXGHzBpIKpm9wKf5jUxQkPAMO9WjtJrPD
-        67aMkq82yHu3c7ybrvIr3az//HsTMqQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-MNpJvKkvPtyHa9-pfR19tg-1; Thu, 18 Jun 2020 09:50:00 -0400
-X-MC-Unique: MNpJvKkvPtyHa9-pfR19tg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D864835B40;
-        Thu, 18 Jun 2020 13:49:57 +0000 (UTC)
-Received: from dcbz.redhat.com (ovpn-112-197.ams2.redhat.com [10.36.112.197])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 012841E2260;
-        Thu, 18 Jun 2020 13:49:45 +0000 (UTC)
-From:   Adrian Reber <areber@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?UTF-8?q?Micha=C5=82=20C=C5=82api=C5=84ski?= 
-        <mclapinski@google.com>, Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Adrian Reber <areber@redhat.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 3/3] prctl: Allow ptrace capable processes to change exe_fd
-Date:   Thu, 18 Jun 2020 15:48:25 +0200
-Message-Id: <20200618134825.487467-4-areber@redhat.com>
-In-Reply-To: <20200618134825.487467-1-areber@redhat.com>
-References: <20200618134825.487467-1-areber@redhat.com>
+        Thu, 18 Jun 2020 09:49:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF156C06174E;
+        Thu, 18 Jun 2020 06:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n9BaMVUCaVyJLD8yPDoe2PtpH60KSIZHmuyQxc4LjSI=; b=dOtH3Q4zNMES4xCLLlwm8XQOUW
+        toJqrLIhJk4+L36KIPooyLY2K+UIaOFzzH+nOTfHQn4SIFVcucJOYD41Peuylc3Cmoo+Kbx3eznT+
+        yiJ8B0pqNDI5LBVOETjtrjUw8ikMKL3NhEOyPbWqbZl2a2o9feAYkULaMnIO3N0zzEUwh5XJIrtY9
+        SXwQo/k2otshC7Kt906KTwQm27+bhgksFt+1c2mNvKd+nsB1pFykEHIfOCJnl8DfCsCn9JHfXlNoY
+        nweICrbUL4Aq3invuQwb2yeiRR40IQLPk7otS2mHGH3fbstvgLwQLZlGrPbT7v0O4Y/UUefbSPZpw
+        xVB/m5gA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jluue-0006zB-1Q; Thu, 18 Jun 2020 13:49:04 +0000
+Date:   Thu, 18 Jun 2020 06:49:04 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Simon Arlott <simon@octiron.net>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
+Message-ID: <20200618134904.GA26650@infradead.org>
+References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+ <20200618072138.GA11778@infradead.org>
+ <9877e7de-d573-694b-2b75-95192756684b@0882a8b5-c6c3-11e9-b005-00805fc181fe>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9877e7de-d573-694b-2b75-95192756684b@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
+On Thu, Jun 18, 2020 at 01:25:18PM +0100, Simon Arlott wrote:
+> On 18/06/2020 08:21, Christoph Hellwig wrote:
+> > On Wed, Jun 17, 2020 at 07:49:57PM +0100, Simon Arlott wrote:
+> >> Avoiding a stop of the disk on a reboot is appropriate for HDDs because
+> >> they're likely to continue to be powered (and should not be told to spin
+> >> down only to spin up again) but the default behaviour for SSDs should
+> >> be changed to stop them before the reboot.
+> > 
+> > I don't think that is true in general.  At least for most current server
+> > class and older desktop and laptop class systems they use the same
+> > format factors and enclosures, although they are slightly divering now.
+> > 
+> > So I think this needs to be quirked based on the platform and/or
+> > enclosure.
+> 
+> Are you referring to the behaviour for handling HDDs or SSDs?
 
-The current process is authorized to change its /proc/self/exe link via
-two policies:
-1) The current user can do checkpoint/restore In other words is
-   CAP_SYS_ADMIN or CAP_CHECKPOINT_RESTORE capable.
-2) The current user can use ptrace.
+All of the above.
 
-With access to ptrace facilities, a process can do the following: fork a
-child, execve() the target executable, and have the child use ptrace()
-to replace the memory content of the current process. This technique
-makes it possible to masquerade an arbitrary program as any executable,
-even setuid ones.
+> 
+> For HDDs, the default "1" option could mean "automatic" and apply to
+> rotational disks when power loss is expected.
+> 
+> For SSDs, I don't think an extra stop should ever be an issue.
 
-This commit also changes the permission error code from -EINVAL to
--EPERM for consistency with the rest of the prctl() syscall when
-checking capabilities.
-
-Signed-off-by: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
-Signed-off-by: Adrian Reber <areber@redhat.com>
----
- kernel/sys.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 00a96746e28a..ce77012a42d7 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2007,12 +2007,23 @@ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data
- 
- 	if (prctl_map.exe_fd != (u32)-1) {
- 		/*
--		 * Make sure the caller has the rights to
--		 * change /proc/pid/exe link: only local sys admin should
--		 * be allowed to.
-+		 * The current process is authorized to change its
-+		 * /proc/self/exe link via two policies:
-+		 * 1) The current user can do checkpoint/restore
-+		 *    In other words is CAP_SYS_ADMIN or
-+		 *    CAP_CHECKPOINT_RESTORE capable.
-+		 * 2) The current user can use ptrace.
-+		 *
-+		 * With access to ptrace facilities, a process can do the
-+		 * following: fork a child, execve() the target executable,
-+		 * and have the child use ptrace() to replace the memory
-+		 * content of the current process. This technique makes it
-+		 * possible to masquerade an arbitrary program as the target
-+		 * executable, even if it is setuid.
- 		 */
--		if (!ns_capable(current_user_ns(), CAP_SYS_ADMIN))
--			return -EINVAL;
-+		if (!(checkpoint_restore_ns_capable(current_user_ns()) ||
-+		      security_ptrace_access_check(current, PTRACE_MODE_ATTACH_REALCREDS)))
-+			return -EPERM;
- 
- 		error = prctl_set_mm_exe_file(mm, prctl_map.exe_fd);
- 		if (error)
--- 
-2.26.2
-
+Extra shutdowns will usually cause additional P/E cycles.
