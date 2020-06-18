@@ -2,417 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A891FFE47
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7141FFE50
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730456AbgFRWoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 18:44:18 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38619 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgFRWoR (ORCPT
+        id S1731510AbgFRWtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 18:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731370AbgFRWtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:44:17 -0400
-Received: by mail-il1-f195.google.com with SMTP id b5so7598690iln.5;
-        Thu, 18 Jun 2020 15:44:15 -0700 (PDT)
+        Thu, 18 Jun 2020 18:49:01 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52759C06174E;
+        Thu, 18 Jun 2020 15:49:01 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id k13so4518525vsm.13;
+        Thu, 18 Jun 2020 15:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jDIjOjdbiarDk2Fl4NccItO3BDRjCw45WmDaZ8+rKkQ=;
+        b=HHlLX0nOmr6wW2RWLAku8iPrG44Nci8A5hAoFIz4UYNne5JW1NP3V+Zco1a9hQJFBo
+         aOVr2SzL6FStgoGlqcxedDN3PZGcK4wElWjvSHO9fjsnl/YzVEsp2CrZ50wPiYkPBww5
+         lWw+A0c8Dy0IwzCNovbCNqfZOMyI6hU1cz+lRMnOE2cVl1QO8ikpU9ZsDnK/mQc3Anfj
+         mPFJdEY5Sw4qEsuO08bUKKK2ChO3ym92zuyc+6XEhq3WI9MLcYAcPo9b+J38at0QRQlQ
+         hXlJCtQjf5wXp57J6WZYNu5z8NUM4ZVdFZyzxJN4168al64/KFjKXkgLZqcNarhnxA48
+         NdbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rfITGv97c7cMb+WeohbiFTmlyExW7qDVisN2PWuDKZk=;
-        b=ULKQxxEpq2nRNL8BrwEvNUEVBcOND6DE4rytLj4gO8kFQMqjqrCjwm8zFpgghvwncj
-         gKnn4SZ9ZBeIzohVjOG+gEvvM013pCR1mXvmsN2s03xvIi0h7FhcwkH0Khej2BMFHZjS
-         2kKwJjhxQ/URAt2TizgKP9e1S/zdMB2mGgXJSNMOhYd+XNZj7WIssbIxVEwxXwP2xW5V
-         ov+r/4g+jgHTWG6njJ+4+rwP45pf7iPZJN7cYjxYKAEppuOC1+R1/BDGZkgv8ktNyl9s
-         F/pnUl7aRJLn9cFxTnypKSB1sAioldZlfx5GCLwDL3blFFMi5mSX79hOVdyIcL1pYzx9
-         Q9yw==
-X-Gm-Message-State: AOAM533qsxSEm0UOAxwjxYW5f01Bv3tGOHCp3RE6k6AFMu04bUNCVFjs
-        kP8rJwKQ7f9ZMEdbj8sBOEL7r0szcA==
-X-Google-Smtp-Source: ABdhPJzXW1Usk/qCclIYZ6LdMhqIbqVz2/F7Pljcz/cri28c7oKoRvdShQh0MP/2pgasCfzcmmEB4Q==
-X-Received: by 2002:a92:5e59:: with SMTP id s86mr819176ilb.104.1592520255062;
-        Thu, 18 Jun 2020 15:44:15 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id z4sm2333784iot.24.2020.06.18.15.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 15:44:14 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>
-Subject: [PATCH] dt-bindings: backlight: Convert common backlight bindings to DT schema
-Date:   Thu, 18 Jun 2020 16:44:13 -0600
-Message-Id: <20200618224413.1115849-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jDIjOjdbiarDk2Fl4NccItO3BDRjCw45WmDaZ8+rKkQ=;
+        b=dLBf+X20TLTYfFEp5DjJvyHmGeliNIFuv8uPnLGCG29y2zXA0YhyrLc/I1WL7C8B1w
+         W6j0StY/QxWf/qHiwU7RPCpejt/JdhhvxfPXhsvudf3g59Z9w47kXF++EbpqSlP1Sxyw
+         0wPulAhmVvh84td1QYe7OaVS4ODcXADDJRo4U//4KeseN74WM3RxVT3W1xZmM1pJTwFD
+         LbzIg/j+IfxctA4xpOy7O6OD2fx8Iwg2JizD0XEyf1RIDKF5WR4/aJR0CYxh+lp3EFis
+         KOxsblae37O3VpmTu/S2Mty9623NqlYcFFT4LpDazW/hzZ5dBXJ1Xz+mZLt0NWh+KaqS
+         lZ3g==
+X-Gm-Message-State: AOAM533drHpuS23z0W3btBG4t640nXEdGAoYzIPGBFRnC1WLpiNMRB17
+        6E2vqLSkiKhSFa1UB4eafvLwRQC4v1svwyJMbbk=
+X-Google-Smtp-Source: ABdhPJzuqXckBtIz1OgonMxHLlYJJSsdmJUV0kcoNtHizS2HYe9rZRSXH6UkCAlVYv1h1PPrCWOzBGu82ZvIpFSBebY=
+X-Received: by 2002:a67:c511:: with SMTP id e17mr5222120vsk.210.1592520540021;
+ Thu, 18 Jun 2020 15:49:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200617162536.611386-1-jim.cromie@gmail.com> <20200617162536.611386-23-jim.cromie@gmail.com>
+ <20200618161912.GD3617@alley> <20200618174058.GE3617@alley>
+ <746984fb-00ee-9079-efac-50167f3c3e40@akamai.com> <CAJfuBxwLKDSx6RA_ZOk=eEHw0P3FeAcT=PCr-aHjUFKDS2p8cQ@mail.gmail.com>
+ <172c0580-279f-aa3e-817a-4216067bea10@akamai.com> <23396523-28c3-74e6-3e62-be68e5a5465a@linaro.org>
+In-Reply-To: <23396523-28c3-74e6-3e62-be68e5a5465a@linaro.org>
+From:   jim.cromie@gmail.com
+Date:   Thu, 18 Jun 2020 16:48:33 -0600
+Message-ID: <CAJfuBxx2KDBLX9H6N-79VPOXBwbdzSQse41azTCk0SZs7PtQuA@mail.gmail.com>
+Subject: Re: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and
+ filtering on flags
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Jason Baron <jbaron@akamai.com>, Petr Mladek <pmladek@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the common GPIO, LED, and PWM backlight bindings to DT schema
-format.
+On Thu, Jun 18, 2020 at 4:34 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Hi Jason, Jim,
+>
 
-Given there's only 2 common properties and the descriptions are slightly
-different, I opted to not create a common backlight schema.
 
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../leds/backlight/gpio-backlight.txt         | 16 ---
- .../leds/backlight/gpio-backlight.yaml        | 41 ++++++++
- .../bindings/leds/backlight/led-backlight.txt | 28 ------
- .../leds/backlight/led-backlight.yaml         | 58 +++++++++++
- .../bindings/leds/backlight/pwm-backlight.txt | 61 ------------
- .../leds/backlight/pwm-backlight.yaml         | 98 +++++++++++++++++++
- 6 files changed, 197 insertions(+), 105 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
- create mode 100644 Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
- delete mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
- create mode 100644 Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
- delete mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
- create mode 100644 Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
 
-diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
-deleted file mode 100644
-index 321be6640533..000000000000
---- a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.txt
-+++ /dev/null
-@@ -1,16 +0,0 @@
--gpio-backlight bindings
--
--Required properties:
--  - compatible: "gpio-backlight"
--  - gpios: describes the gpio that is used for enabling/disabling the backlight.
--    refer to bindings/gpio/gpio.txt for more details.
--
--Optional properties:
--  - default-on: enable the backlight at boot.
--
--Example:
--	backlight {
--		compatible = "gpio-backlight";
--		gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
--		default-on;
--	};
-diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
-new file mode 100644
-index 000000000000..75cc569b9c55
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/backlight/gpio-backlight.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: gpio-backlight bindings
-+
-+maintainers:
-+  - Lee Jones <lee.jones@linaro.org>
-+  - Daniel Thompson <daniel.thompson@linaro.org>
-+  - Jingoo Han <jingoohan1@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: gpio-backlight
-+
-+  gpios:
-+    description: The gpio that is used for enabling/disabling the backlight.
-+    maxItems: 1
-+
-+  default-on:
-+    description: enable the backlight at boot.
-+    type: boolean
-+
-+required:
-+  - compatible
-+  - gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    backlight {
-+        compatible = "gpio-backlight";
-+        gpios = <&gpio3 4 GPIO_ACTIVE_HIGH>;
-+        default-on;
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
-deleted file mode 100644
-index 4c7dfbe7f67a..000000000000
---- a/Documentation/devicetree/bindings/leds/backlight/led-backlight.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--led-backlight bindings
--
--This binding is used to describe a basic backlight device made of LEDs.
--It can also be used to describe a backlight device controlled by the output of
--a LED driver.
--
--Required properties:
--  - compatible: "led-backlight"
--  - leds: a list of LEDs
--
--Optional properties:
--  - brightness-levels: Array of distinct brightness levels. The levels must be
--                       in the range accepted by the underlying LED devices.
--                       This is used to translate a backlight brightness level
--                       into a LED brightness level. If it is not provided, the
--                       identity mapping is used.
--
--  - default-brightness-level: The default brightness level.
--
--Example:
--
--	backlight {
--		compatible = "led-backlight";
--
--		leds = <&led1>, <&led2>;
--		brightness-levels = <0 4 8 16 32 64 128 255>;
--		default-brightness-level = <6>;
--	};
-diff --git a/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
-new file mode 100644
-index 000000000000..ae50945d2798
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/backlight/led-backlight.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/backlight/led-backlight.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: led-backlight bindings
-+
-+maintainers:
-+  - Lee Jones <lee.jones@linaro.org>
-+  - Daniel Thompson <daniel.thompson@linaro.org>
-+  - Jingoo Han <jingoohan1@gmail.com>
-+
-+description:
-+  This binding is used to describe a basic backlight device made of LEDs. It
-+  can also be used to describe a backlight device controlled by the output of
-+  a LED driver.
-+
-+properties:
-+  compatible:
-+    const: led-backlight
-+
-+  leds:
-+    description: A list of LED nodes
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+
-+  brightness-levels:
-+    description: Array of distinct brightness levels. The levels must be
-+      in the range accepted by the underlying LED devices. This is used
-+      to translate a backlight brightness level into a LED brightness level.
-+      If it is not provided, the identity mapping is used.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+
-+  default-brightness-level:
-+    description: The default brightness level (index into the array defined
-+      by the "brightness-levels" property).
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+dependencies:
-+  default-brightness-level: [brightness-levels]
-+
-+required:
-+  - compatible
-+  - leds
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    backlight {
-+        compatible = "led-backlight";
-+
-+        leds = <&led1>, <&led2>;
-+        brightness-levels = <0 4 8 16 32 64 128 255>;
-+        default-brightness-level = <6>;
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
-deleted file mode 100644
-index 64fa2fbd98c9..000000000000
---- a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.txt
-+++ /dev/null
-@@ -1,61 +0,0 @@
--pwm-backlight bindings
--
--Required properties:
--  - compatible: "pwm-backlight"
--  - pwms: OF device-tree PWM specification (see PWM binding[0])
--  - power-supply: regulator for supply voltage
--
--Optional properties:
--  - pwm-names: a list of names for the PWM devices specified in the
--               "pwms" property (see PWM binding[0])
--  - enable-gpios: contains a single GPIO specifier for the GPIO which enables
--                  and disables the backlight (see GPIO binding[1])
--  - post-pwm-on-delay-ms: Delay in ms between setting an initial (non-zero) PWM
--                          and enabling the backlight using GPIO.
--  - pwm-off-delay-ms: Delay in ms between disabling the backlight using GPIO
--                      and setting PWM value to 0.
--  - brightness-levels: Array of distinct brightness levels. Typically these
--                       are in the range from 0 to 255, but any range starting at
--                       0 will do. The actual brightness level (PWM duty cycle)
--                       will be interpolated from these values. 0 means a 0% duty
--                       cycle (darkest/off), while the last value in the array
--                       represents a 100% duty cycle (brightest).
--  - default-brightness-level: The default brightness level (index into the
--                              array defined by the "brightness-levels" property).
--  - num-interpolated-steps: Number of interpolated steps between each value
--                            of brightness-levels table. This way a high
--                            resolution pwm duty cycle can be used without
--                            having to list out every possible value in the
--                            brightness-level array.
--
--[0]: Documentation/devicetree/bindings/pwm/pwm.txt
--[1]: Documentation/devicetree/bindings/gpio/gpio.txt
--
--Example:
--
--	backlight {
--		compatible = "pwm-backlight";
--		pwms = <&pwm 0 5000000>;
--
--		brightness-levels = <0 4 8 16 32 64 128 255>;
--		default-brightness-level = <6>;
--
--		power-supply = <&vdd_bl_reg>;
--		enable-gpios = <&gpio 58 0>;
--		post-pwm-on-delay-ms = <10>;
--		pwm-off-delay-ms = <10>;
--	};
--
--Example using num-interpolation-steps:
--
--	backlight {
--		compatible = "pwm-backlight";
--		pwms = <&pwm 0 5000000>;
--
--		brightness-levels = <0 2048 4096 8192 16384 65535>;
--		num-interpolated-steps = <2048>;
--		default-brightness-level = <4096>;
--
--		power-supply = <&vdd_bl_reg>;
--		enable-gpios = <&gpio 58 0>;
--	};
-diff --git a/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
-new file mode 100644
-index 000000000000..7e1f109a38a4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/backlight/pwm-backlight.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/backlight/pwm-backlight.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: pwm-backlight bindings
-+
-+maintainers:
-+  - Lee Jones <lee.jones@linaro.org>
-+  - Daniel Thompson <daniel.thompson@linaro.org>
-+  - Jingoo Han <jingoohan1@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: pwm-backlight
-+
-+  pwms:
-+    maxItems: 1
-+
-+  pwm-names: true
-+
-+  power-supply:
-+    description: regulator for supply voltage
-+
-+  enable-gpios:
-+    description: Contains a single GPIO specifier for the GPIO which enables
-+      and disables the backlight
-+    maxItems: 1
-+
-+  post-pwm-on-delay-ms:
-+    description: Delay in ms between setting an initial (non-zero) PWM and
-+      enabling the backlight using GPIO.
-+
-+  pwm-off-delay-ms:
-+    description: Delay in ms between disabling the backlight using GPIO
-+      and setting PWM value to 0.
-+
-+  brightness-levels:
-+    description: Array of distinct brightness levels. Typically these are
-+      in the range from 0 to 255, but any range starting at 0 will do. The
-+      actual brightness level (PWM duty cycle) will be interpolated from
-+      these values. 0 means a 0% duty cycle (darkest/off), while the last
-+      value in the array represents a 100% duty cycle (brightest).
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+
-+  default-brightness-level:
-+    description: The default brightness level (index into the array defined
-+      by the "brightness-levels" property).
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  num-interpolated-steps:
-+    description: Number of interpolated steps between each value of brightness-levels
-+      table. This way a high resolution pwm duty cycle can be used without
-+      having to list out every possible value in the brightness-level array.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+dependencies:
-+  default-brightness-level: [brightness-levels]
-+  num-interpolated-steps: [brightness-levels]
-+
-+required:
-+  - compatible
-+  - pwms
-+  - power-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    backlight {
-+        compatible = "pwm-backlight";
-+        pwms = <&pwm 0 5000000>;
-+
-+        brightness-levels = <0 4 8 16 32 64 128 255>;
-+        default-brightness-level = <6>;
-+
-+        power-supply = <&vdd_bl_reg>;
-+        enable-gpios = <&gpio 58 0>;
-+        post-pwm-on-delay-ms = <10>;
-+        pwm-off-delay-ms = <10>;
-+    };
-+
-+  - |
-+    // Example using num-interpolation-steps:
-+    backlight {
-+        compatible = "pwm-backlight";
-+        pwms = <&pwm 0 5000000>;
-+
-+        brightness-levels = <0 2048 4096 8192 16384 65535>;
-+        num-interpolated-steps = <2048>;
-+        default-brightness-level = <4096>;
-+
-+        power-supply = <&vdd_bl_reg>;
-+        enable-gpios = <&gpio 58 0>;
-+    };
-+
-+...
--- 
-2.25.1
+> > I would be curious to see what Stanimir thinks of this proposal
+> > and whether it would work for his venus driver, which is what
+> > prompted this module group discussion.
+>
+> Hmm, we spin in a circle :)
+>
+> Infact this was my first way of implementing the groups in Venus driver,
+> you can see it at [1].
+>
+>  +#define VDBGL(fmt, args...)   pr_debug("VENUSL: " fmt, ##args)
+>  +#define VDBGM(fmt, args...)   pr_debug("VENUSM: " fmt, ##args)
+>  +#define VDBGH(fmt, args...)   pr_debug("VENUSH: " fmt, ##args)
+>  +#define VDBGFW(fmt, args...)  pr_debug("VENUSFW: " fmt, ##args)
+>
 
+I recall :-)
+
+I think Greg K-Hs   distaste for those defines was for using them,
+as it tosses the utility of grep pr_debug
+
+pr_debug("VENUSM:"
+is barely longer than
+VDBGM
+
+with ddebug_exec_queries, you can leverage the existing format.
+
+>
+> [1] https://lkml.org/lkml/2020/5/21/668
+>
+> --
+> regards,
+> Stan
+
+thanks
+Jim
