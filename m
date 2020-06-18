@@ -2,150 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D47A1FFAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 20:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A841FFB00
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 20:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgFRSXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 14:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
+        id S1730398AbgFRSZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 14:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgFRSXk (ORCPT
+        with ESMTP id S1727041AbgFRSZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 14:23:40 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAECC06174E;
-        Thu, 18 Jun 2020 11:23:38 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id w15so4035298lfe.11;
-        Thu, 18 Jun 2020 11:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OtZ+S0yqkpnvGyiBpEd57efqY8RnbTwuIeP3LIO4+t8=;
-        b=JeLKhCmsNWf+iu8vSE/iGVFYwqW4hCzZfzX0iNjqFxiezlwkzt9KzkdWB0XQeN+chQ
-         3LqWxHBswCD+kUSUVh2ImpHTCzgDK9jLEl7eN4KOanMP3vx/0uIiMSt6ey1Gy4Ac4Plh
-         r76s8iF/jiXHIKFCiNEK8K+5HBfmdcmAW3Dls5nA+y9vOWkgLPmv63MIkH6V/+MX3eZj
-         KybciiszOPkEPwLkqAgaeOSLYImnR4IOP+ZKECNZ+h0PZu73+MeRtNRmg9BYKl0ByOJ4
-         kZe6MeZDFYwB9skflValj9ymybfiN1LcmMjvhm9Ty0pKqL6qT+jWDTLSxxZZfmXDRr2j
-         wyMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OtZ+S0yqkpnvGyiBpEd57efqY8RnbTwuIeP3LIO4+t8=;
-        b=uJtkk/ybd+h6BcUl29Tgjkv1yvcu4HcIUTmd9IUKs4I/HyhDl0ajzmwBIk9Vm+2Prb
-         Nc2UT8ryoyl99xUdyz8d9eT8R+PtYbQhpS3ANRgqRNazCVGRn9eh4fVphhgIY8NoPUuM
-         FJlb0WS7cTOI7ep2whR+8CKmEwX9EMndFhJHOdbbM9Qu/WlDLydgJMqCAolMt0pXRjYA
-         NQuQJcz9z9ijRhZeK6bCIrRpagDluUemxPsJlncxURunDX0E/GTGmelK8Jas+Fq0He9c
-         xXdc9T3GqgpYmVaNoae2W8mDHrDZ5HQlcphme3qKPq3mZluoSFyFZ9fBJfuQPqQXCjHJ
-         TAbg==
-X-Gm-Message-State: AOAM532hMvoxuNmo53dUzfZTAEUXUYhLfmhLQzZWmFFWtb7i76REwl8c
-        sxx58kW/nbI0GeDHwHmUqUI=
-X-Google-Smtp-Source: ABdhPJwE8GlFDZ2vhKPL+bYHMUSg0Cv+ZXbjDv+hC3D0Zkyui+dYWdjJjnf4HhwVurZAsGWY9zoxWQ==
-X-Received: by 2002:ac2:5f07:: with SMTP id 7mr3112274lfq.132.1592504617032;
-        Thu, 18 Jun 2020 11:23:37 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id n4sm135298lfl.40.2020.06.18.11.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 11:23:35 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 18 Jun 2020 20:23:33 +0200
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200618182333.GA15082@pc636>
-References: <20200525214800.93072-1-urezki@gmail.com>
- <20200525214800.93072-10-urezki@gmail.com>
- <20200617234609.GA10087@paulmck-ThinkPad-P72>
- <20200618172504.GA14613@pc636>
- <20200618173206.GS2723@paulmck-ThinkPad-P72>
- <20200618175623.GA14865@pc636>
- <20200618181541.GS8681@bombadil.infradead.org>
+        Thu, 18 Jun 2020 14:25:44 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C732C06174E;
+        Thu, 18 Jun 2020 11:25:44 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jlzEB-0000M3-As; Thu, 18 Jun 2020 20:25:31 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id C790B101482; Thu, 18 Jun 2020 20:25:30 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: Re: [PATCH v13 00/16] Enable FSGSBASE instructions
+In-Reply-To: <CALCETrUeRPVq2n0UVuZZ9WTugH8Aetdw5rY+cccCT_=YgnJ_og@mail.gmail.com>
+References: <20200528201402.1708239-1-sashal@kernel.org> <874kr8cv9i.fsf@nanos.tec.linutronix.de> <CALCETrUeRPVq2n0UVuZZ9WTugH8Aetdw5rY+cccCT_=YgnJ_og@mail.gmail.com>
+Date:   Thu, 18 Jun 2020 20:25:30 +0200
+Message-ID: <87wo44b59h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618181541.GS8681@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 11:15:41AM -0700, Matthew Wilcox wrote:
-> On Thu, Jun 18, 2020 at 07:56:23PM +0200, Uladzislau Rezki wrote:
-> > If we mix pointers, then we can do free per pointer only. I mean in that
-> > case we will not be able to use kfree_bulk() interface for freeing SLAB
-> > memory and the code would converted to something like:
-> > 
-> > <snip>
-> > while (nr_objects_in_array > 0) {
-> >     if (is_vmalloc_addr(array[X]))
-> >        vfree(array[X]);
-> >     else
-> >        kfree(array[X]);
-> > }
-> > <snip>
-> 
-> [PATCH] Add vfree_bulk interface
-> 
-> This is a useful interface to have for the RCU kvfree code.  There is
-> scope for more performance gains later, but introducing the interface
-> now allows us to simplify the RCU code today.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 48bb681e6c2a..dc2bbb61af61 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -119,6 +119,7 @@ void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
->  
->  extern void vfree(const void *addr);
->  extern void vfree_atomic(const void *addr);
-> +extern void vfree_bulk(size_t count, void **addrs);
->  
->  extern void *vmap(struct page **pages, unsigned int count,
->  			unsigned long flags, pgprot_t prot);
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index abe37f09ac42..6042f9b4394a 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2366,6 +2366,22 @@ void vfree(const void *addr)
->  }
->  EXPORT_SYMBOL(vfree);
->  
-> +void vfree_bulk(size_t count, void **addrs)
-> +{
-> +	unsigned int i;
-> +
-> +	BUG_ON(in_nmi());
-> +	might_sleep_if(!in_interrupt());
-> +
-> +	for (i = 0; i < count; i++) {
-> +		void *addr = addrs[i];
-> +		kmemleak_free(addr);
-> +		if (addr)
-> +			__vfree(addr);
-> +	}
-> +}
-> +EXPORT_SYMBOL(vfree_bulk);
-> +
+Andy Lutomirski <luto@kernel.org> writes:
+> Is there a plan to deal with:
 >
-Can we just do addrs[i] all over the loop?
+>         /*
+>          * This function has some ABI oddities.
+>          *
+>          * A 32-bit ptracer probably expects that writing FS or GS will change
+>          * FSBASE or GSBASE respectively.  In the absence of FSGSBASE support,
+>          * this code indeed has that effect.  When FSGSBASE is added, this
+>          * will require a special case.
+>          *
+>          * For existing 64-bit ptracers, writing FS or GS *also* currently
+>          * changes the base if the selector is nonzero the next time the task
+>          * is run.  This behavior may? not be needed, and trying to preserve it
+>          * when FSGSBASE is added would be complicated at best.
+>          */
+>
+> in arch/x86/kernel/ptrace.c?
 
-Also, we can just call vfree() instead that has all checking we
-need: NMI, kmemleak, might_sleep.
-
-Thanks!
-
---
-Vlad Rezki
+Not that I'm aware of.
