@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7981FFCC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B8F1FFCC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732218AbgFRUly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:41:54 -0400
+        id S1731775AbgFRUln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:41:43 -0400
 Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:40437 "EHLO
         EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731391AbgFRUjg (ORCPT
+        by vger.kernel.org with ESMTP id S1731404AbgFRUji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:36 -0400
+        Thu, 18 Jun 2020 16:39:38 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:32 -0700
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:33 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 9A0E7B2668;
-        Thu, 18 Jun 2020 16:39:35 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 616F7B265A;
+        Thu, 18 Jun 2020 16:39:36 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,9 +26,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 42/51] objtool: mcount: Move mcount symbol name testing
-Date:   Thu, 18 Jun 2020 13:38:28 -0700
-Message-ID: <0a4ae1e3db4f65c8da1988b58e19915e1bf8327d.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 43/51] objtool: check: Use class to recognize kcov calls
+Date:   Thu, 18 Jun 2020 13:38:29 -0700
+Message-ID: <5edc3b938d5c234b012227699f12e6f3980094b8.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
@@ -42,149 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the test for mcount symbols into the ELF code itself
-and set a class on indicator on the symbol. This simplifies
-mcount a little and tests the symbols names near where they're
-first touched so should be cache-hot and may also help us
-reduce the number of passes through the ELF contents needed
-for individual subcommands. Finally, if we manage to combine
-subcommands into a single exec of objtool the number of
-passes through the ELF data could be even further reduced.
-
 Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/elf.c    | 18 ++++++++++++++++++
- tools/objtool/elf.h    |  6 ++++++
- tools/objtool/mcount.c | 31 +++----------------------------
- 3 files changed, 27 insertions(+), 28 deletions(-)
+ tools/objtool/check.c | 3 +--
+ tools/objtool/elf.c   | 7 +++++++
+ tools/objtool/elf.h   | 1 +
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 78375908acda..d08714b878c5 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -771,8 +771,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 		 * so they need a little help, NOP out any KCOV calls from noinstr
+ 		 * text.
+ 		 */
+-		if (insn->sec->noinstr &&
+-		    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
++		if (insn->sec->noinstr && insn->call_dest->class == SYM_KCOV) {
+ 			if (reloc) {
+ 				reloc->type = R_NONE;
+ 				elf_write_reloc(file->elf, reloc);
 diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 8dcdea8020a5..d55d8fef11b4 100644
+index d55d8fef11b4..666cbc01c332 100644
 --- a/tools/objtool/elf.c
 +++ b/tools/objtool/elf.c
-@@ -387,6 +387,21 @@ static int read_sections(struct elf *elf)
- 	return 0;
+@@ -402,6 +402,11 @@ static bool is_mcount_sym(const char *name)
+ 	return false;
  }
  
-+static bool is_mcount_sym(const char *name)
++static bool is_kcov_symbol(const char *name)
 +{
-+	if (name[0] == '.')
-+		name++;  /* ppc64 hack */
-+
-+	if (name[0] == '_')
-+		name++;
-+
-+	if (strcmp("mcount", name) == 0 ||
-+	    (strcmp("__gnu_mcount_nc", name) == 0) ||
-+	    (strcmp("_fentry__", name) == 0))
-+		return true;
-+	return false;
++	return !strncmp(name, "__sanitize_cov_", 16);
 +}
 +
  static int read_symbols(struct elf *elf)
  {
  	struct section *symtab, *symtab_shndx, *sec;
-@@ -456,6 +471,9 @@ static int read_symbols(struct elf *elf)
- 		} else
- 			sym->sec = find_section_by_index(elf, 0);
+@@ -473,6 +478,8 @@ static int read_symbols(struct elf *elf)
  
-+		if (is_mcount_sym(sym->name))
-+			sym->class = SYM_MCOUNT;
-+
+ 		if (is_mcount_sym(sym->name))
+ 			sym->class = SYM_MCOUNT;
++		else if (is_kcov_symbol(sym->name))
++			sym->class = SYM_KCOV;
+ 
  		sym->offset = sym->sym.st_value;
  		sym->len = sym->sym.st_size;
- 
 diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 09fa0d085341..13935edaff54 100644
+index 13935edaff54..f0b02824f9d3 100644
 --- a/tools/objtool/elf.h
 +++ b/tools/objtool/elf.h
-@@ -42,6 +42,11 @@ struct section {
- 	bool changed, text, rodata, noinstr;
+@@ -45,6 +45,7 @@ struct section {
+ enum symbol_class {
+ 	SYM_REGULAR = 0,
+ 	SYM_MCOUNT = 1,
++	SYM_KCOV = 2,
  };
  
-+enum symbol_class {
-+	SYM_REGULAR = 0,
-+	SYM_MCOUNT = 1,
-+};
-+
  struct symbol {
- 	struct list_head list;
- 	struct rb_node node;
-@@ -55,6 +60,7 @@ struct symbol {
- 	unsigned long offset;
- 	unsigned int len;
- 	struct symbol *pfunc, *cfunc, *alias;
-+	enum symbol_class class;
- 	bool uaccess_safe;
- };
- 
-diff --git a/tools/objtool/mcount.c b/tools/objtool/mcount.c
-index 029e6e72c972..7fbde6ce6eb8 100644
---- a/tools/objtool/mcount.c
-+++ b/tools/objtool/mcount.c
-@@ -152,24 +152,6 @@ static int is_mcounted_section_name(char const *const txtname)
- 		strcmp(".cpuidle.text", txtname) == 0;
- }
- 
--static struct symbol *get_mcount_sym(struct reloc *reloc)
--{
--	struct symbol *sym = reloc->sym;
--	char const *symname = sym->name;
--
--	if (symname[0] == '.')
--		symname++;  /* ppc64 hack */
--
--	if (symname[0] == '_')
--		symname++;
--
--	if (strcmp("mcount", symname) == 0 ||
--	    (strcmp("__gnu_mcount_nc", symname) == 0) ||
--	    (strcmp("_fentry__", symname) == 0))
--		return sym;
--	return NULL;
--}
--
- /*
-  * MIPS mcount long call has 2 _mcount symbols, only the position of the 1st
-  * _mcount symbol is needed for dynamic function tracer, with it, to disable
-@@ -266,16 +248,13 @@ static int nop_mcount(struct section * const rels,
- {
- 	struct reloc *reloc;
- 	struct section *txts = find_section_by_index(lf, rels->sh.sh_info);
--	struct symbol *mcount_sym = NULL;
- 	int once = 0;
- 
- 	list_for_each_entry(reloc, &rels->reloc_list, list) {
- 		int ret = -1;
- 
--		if (!mcount_sym)
--			mcount_sym = get_mcount_sym(reloc);
--
--		if (mcount_sym == reloc->sym && !is_fake_mcount(reloc)) {
-+		if (reloc->sym->class == SYM_MCOUNT &&
-+		    !is_fake_mcount(reloc)) {
- 			if (make_nop) {
- 				ret = make_nop(txts, reloc->offset);
- 				if (ret < 0)
-@@ -355,16 +334,12 @@ static void sift_rel_mcount(GElf_Addr **mlocpp,
- {
- 	GElf_Rel *mrelp = *mrelpp;
- 	GElf_Rela *mrelap = *mrelpp;
--	struct symbol *mcount_sym = NULL;
- 	struct reloc *reloc;
- 
- 	list_for_each_entry(reloc, &rels->reloc_list, list) {
- 		unsigned long addend;
- 
--		if (!mcount_sym)
--			mcount_sym = get_mcount_sym(reloc);
--
--		if (mcount_sym != reloc->sym || is_fake_mcount(reloc))
-+		if (reloc->sym->class == SYM_MCOUNT || is_fake_mcount(reloc))
- 			continue;
- 
- 		addend = reloc->offset - recval + mcount_adjust;
 -- 
 2.20.1
 
