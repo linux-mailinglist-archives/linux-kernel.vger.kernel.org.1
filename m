@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8269D1FF9D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241431FF9DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 19:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732004AbgFRREU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 13:04:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18911 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728080AbgFRRES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 13:04:18 -0400
-IronPort-SDR: mJudlzBy5CgBteVYjBUp+ZaWnr0SOaMW0S2BhPzrM7x1XzJDmkKgRsvTU78pWtT289PU/xwFYy
- KQmyaGCrDqPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="122411240"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="122411240"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 10:04:18 -0700
-IronPort-SDR: 2gUCSVXlX5ylAJVF4QwcE0B9MofR7qkp80j9DIU+dI0X1ei5sbxmeZ1zAqvFyEzMz4Moemxtf1
- uv4bSt5vJbzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="309176337"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jun 2020 10:04:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jlxxX-00EJAf-Ne; Thu, 18 Jun 2020 20:04:15 +0300
-Date:   Thu, 18 Jun 2020 20:04:15 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        Linuxarm <linuxarm@huawei.com>,
-        yangyicong <yangyicong@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        tanxiaofei <tanxiaofei@huawei.com>
-Subject: Re: [PATCH v10 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe
- controller errors
-Message-ID: <20200618170415.GY2428291@smile.fi.intel.com>
-References: <20200618154051.639-3-shiju.jose@huawei.com>
- <20200618155627.GX2428291@smile.fi.intel.com>
- <761e579035d346bf8cce2dfc6857587c@huawei.com>
+        id S1732054AbgFRRFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 13:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732039AbgFRRFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 13:05:39 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5EC0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:05:39 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id n9so2693647plk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AO2SIF4iY7sgxTuLuzUmwf7DkdmGysB0WQTalXPbMgs=;
+        b=PjKtZNzrbelzn7kEW6flnrKRJfMx65kRbQIqwTIoA+/W1n8FQeiJfwdpuOV6x2R3mS
+         XEO8LLqDs4LE7JAxtoXjAqdIN3Oc7zn+R5KYN4dgsUMhdoWSMTlwrchvmY8Z4t6chINu
+         zxbq6KbAwGuUFAyndsYbnFFB7B6PaUN8tqoLw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AO2SIF4iY7sgxTuLuzUmwf7DkdmGysB0WQTalXPbMgs=;
+        b=AI6+BHs8pDztv/qmzobNOKJN/IWCDOuqTsYdCAvkS+h4X/JD3x21+llrndhmE906Me
+         a4aPAzyKDEbE1WHaSgu0fUpaSjZgGnQ5xeEeu1bilblhyk/y1KNxaRWivyN+vsMsPsXU
+         VS1C0Jw1j04W09RcR2F5tRBdr+sIeKDtsDt3++MqiUDSkaM2p2kMP+eozPZTUYMFumHb
+         5xE4RRSAaY7cn4dst06jqG7AlB20UV+4WvNu/AgkMVl4R68bd57Ps/qGd76J/rp5WbVl
+         w9NnEtXEp9wMLAiBDPrSr/tUsA04Pdf1RYmq3iuVEWzwb0ACwNtL3NxF8IKz+4Dgsv/x
+         gy1Q==
+X-Gm-Message-State: AOAM532gosyl4sXAM9r3vXnHMSoVEIwRlIGkM45ux3eVwmKYqkLq17Jt
+        eeuakSvzv/95UTnk4/yCg1rJ9A==
+X-Google-Smtp-Source: ABdhPJxaMrMstwhBsh7FtkQsh979iTm724MDzimjrNFiSDhToMWkLyBwqBleJt9mhy08j3fm2nlAKw==
+X-Received: by 2002:a17:902:9687:: with SMTP id n7mr4557868plp.180.1592499938642;
+        Thu, 18 Jun 2020 10:05:38 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id i63sm3094782pje.34.2020.06.18.10.05.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jun 2020 10:05:37 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 10:05:36 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, saravanak@google.com, nm@ti.com,
+        bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
+        lukasz.luba@arm.com, sudeep.holla@arm.com, smasetty@codeaurora.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v6 4/5] cpufreq: qcom: Update the bandwidth levels on
+ frequency change
+Message-ID: <20200618170536.GF4525@google.com>
+References: <20200605213332.609-1-sibis@codeaurora.org>
+ <20200605213332.609-5-sibis@codeaurora.org>
+ <20200615172553.GU4525@google.com>
+ <e21f85d64d72ec637c10dae93e8323bb@codeaurora.org>
+ <20200616221157.GA4525@google.com>
+ <8a6ea89f41a3341e9d00ed9aa66355d6@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <761e579035d346bf8cce2dfc6857587c@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <8a6ea89f41a3341e9d00ed9aa66355d6@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 04:35:31PM +0000, Shiju Jose wrote:
-> >-----Original Message-----
-> >From: Andy Shevchenko [mailto:andriy.shevchenko@linux.intel.com]
-> >Sent: 18 June 2020 16:56
-> >To: Shiju Jose <shiju.jose@huawei.com>
-> >Cc: linux-acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-
-> >kernel@vger.kernel.org; rjw@rjwysocki.net; helgaas@kernel.org;
-> >bp@alien8.de; james.morse@arm.com; lenb@kernel.org;
-> >tony.luck@intel.com; dan.carpenter@oracle.com;
-> >zhangliguang@linux.alibaba.com; Wangkefeng (OS Kernel Lab)
-> ><wangkefeng.wang@huawei.com>; jroedel@suse.de; Linuxarm
-> ><linuxarm@huawei.com>; yangyicong <yangyicong@huawei.com>; Jonathan
-> >Cameron <jonathan.cameron@huawei.com>; tanxiaofei
-> ><tanxiaofei@huawei.com>
-> >Subject: Re: [PATCH v10 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe
-> >controller errors
-> >
-> >On Thu, Jun 18, 2020 at 04:40:51PM +0100, Shiju Jose wrote:
-
-...
-
-> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> >
-> >Hmm... Did I give a tag?
-
-Yes, and please, be sure that you got explicit tags from reviewers.
-
-...
-
-> >> +	for_each_set_bit_from(idx, (const unsigned long *)&edata->val_bits,
-> >
-> >Can't you make val_bits unsigned long? Because this casting is incorrect.
-> >Otherwise, make a local copy into unsigned long variable.
+On Wed, Jun 17, 2020 at 10:13:21PM +0530, Sibi Sankar wrote:
+> On 2020-06-17 03:41, Matthias Kaehlcke wrote:
+> > Hi Sibi,
+> > 
+> > after doing the review I noticed that Viresh replied on the cover letter
+> > that he picked the series up for v5.9, so I'm not sure if it makes sense
+> > to send a v7.
+> > 
+> > On Wed, Jun 17, 2020 at 02:35:00AM +0530, Sibi Sankar wrote:
+> > 
+> > > > > @@ -112,7 +178,7 @@ static int qcom_cpufreq_hw_read_lut(struct
+> > > > > device *cpu_dev,
+> > > > >
+> > > > >  		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
+> > > > >  			table[i].frequency = freq;
+> > > > > -			dev_pm_opp_add(cpu_dev, freq * 1000, volt);
+> > > > > +			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
+> > > >
+> > > > This is the cross-validation mentioned above, right? Shouldn't it
+> > > > include
+> > > > a check of the return value?
+> > > 
+> > > Yes, this is the cross-validation step,
+> > > we adjust the voltage if opp-tables are
+> > > present/added successfully and enable
+> > > them, else we would just do a add opp.
+> > > We don't want to exit early on a single
+> > > opp failure. We will error out a bit
+> > > later if the opp-count ends up to be
+> > > zero.
+> > 
+> > At least an error/warning message would seem convenient when
+> > adjusting/adding
+> > an OPP fails, otherwise you would only notice by looking at the sysfs
+> > attributes (if you'd even spot a single/few OPPs to be missing).
 > 
-> The data val_bits in the error record is 64 bits, thus used u64.
-> Casting is added because of a compilation warning on _find_nex_bit_ function as it 
-> expects the type of the address as const unsigned long*.
-> Probably I will make local copy of val_bits into unsigned long variable.
+> I did consider the case where adjust
+> voltage fails and we do report the
+> freq for which it fails for as well.
+> If adding a OPP fails we will still
+> it being listed in the sysfs cpufreq
+> scaling_available_frequencies since
+> it lists the freq_table in khz there
+> instead.
 
-I see.  So, something like this:
-
-	unsigned long bits[] = { BITMAP_FROM_U64(edata->val_bits) };
-	...
-	for_each_set_bit_from(i, bits, ...)
-		...
-
-looks plausible. Or if you have better idea...
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Ah, right, I missed that v6 added the error log to
+qcom_cpufreq_update_opp(), please ignore my comment :)
