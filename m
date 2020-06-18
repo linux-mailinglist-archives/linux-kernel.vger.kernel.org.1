@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796CA1FDA9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533D61FDA9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgFRAwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 20:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        id S1726960AbgFRAzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 20:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgFRAwa (ORCPT
+        with ESMTP id S1726893AbgFRAzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 20:52:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F8AC06174E;
-        Wed, 17 Jun 2020 17:52:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wnZd+othysjnKDvkqRAupou7YHZYy91X+uiucxvLQzg=; b=idD2mC8FmOi79TIHBN/2QGTXQN
-        58eJlL9b8Pt7orugy3GXFfZ0Y1z9ctqX84GeV6mS8Bu3N+JxLsuO/6BO9yVyPogsKU0mY27n3ngUM
-        nSrxTf0GDjrS1RFsH9kN8kfYLMia00z9NAq9Y+PyH5d+4cKU0DWYjoXadDBvrMtgbjY+2uakqrrOT
-        cDjZ1dE9++v66981aYKhdondTpA3cea311tr3nr2vshADsxubI5gQCRd5NSURC8ELrYxYjL/QQsih
-        jJ1X0vo6j80+OGG2nBV0rz/vcOwJKkAFa2MKrhxyqbzRQNuRTgZvWHTyDLnT6XCmpvhiiKWYfCcUl
-        U9cxNT4w==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlims-0003ww-V7; Thu, 18 Jun 2020 00:52:14 +0000
-Date:   Wed, 17 Jun 2020 17:52:14 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200618005214.GN8681@bombadil.infradead.org>
-References: <20200525214800.93072-1-urezki@gmail.com>
- <20200525214800.93072-10-urezki@gmail.com>
- <20200617234609.GA10087@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617234609.GA10087@paulmck-ThinkPad-P72>
+        Wed, 17 Jun 2020 20:55:37 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5502CC06174E;
+        Wed, 17 Jun 2020 17:55:37 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id p15so1995362qvr.9;
+        Wed, 17 Jun 2020 17:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=QkrtFvauH63vzyLl34SLgBXYBYzigso9U0CawvX780o=;
+        b=kEUGfJfpHGMgCu7c+K4a12UZVAfTXaQAy5kfhgscxhv/TKrTbfU3whZB3RZtjyODLN
+         cA9BnCMs90sxMBgjq6OnVhuQw+MvyaWKcBLwJZVShVCQ3IpRPU8WkpwZ7yrp7fTIgC1a
+         vn/soMmN0mV9Vt+D/N2r2eiTCZL9QJhjo8kc+9lawnsy76DCgtoIQccXEatSoxs3+1M9
+         txiO827hlQrX0GG7QggjCEtYs8O1+7fsRWTcapXdN2OLCCuF1qx8ZEKLMXtnoh3a5djS
+         auF0vWUc2T2OQ1ywqTIwmydmY+i7NOGVZE0czjHptQvqAo4L1YjRF2OmLZ9Ome/MLAQM
+         FBGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=QkrtFvauH63vzyLl34SLgBXYBYzigso9U0CawvX780o=;
+        b=JiQKdJpbt+hIwVO/lHj3RrVmBlrtgarrETm+sfotq0pCLt5zylwWmldycwVTSNBCBH
+         V+s1lxXdNRJ02MnrpZiLxKOL8iNEsTlbsnyq8c96btHbhFO9Plfkd8ySOfR0++fCzqiG
+         yn7byo9jiaHp1+jLQJR5kYDPEotQD4NosRzZ+Q8ym+K0GxQjDa8XrdLFDVWm17L0dCT3
+         AaKlDStc+wsncRG3Po5os622nreEJgWRb70+oK191saFq9Sv1ppLpreRn2knGjiEVX/F
+         tY0WartZYFEnfi2z3TTw9bON9QvLajOdbT6dVLR3+fBgQ0V9q4RMJBbGBMXKBgVDxH6O
+         OAoA==
+X-Gm-Message-State: AOAM530s/tb/+sm0ABm0el7IEQIaBUu4d4bBgsmQroeYcvDB83bwck98
+        52fxWuGKgJLvP8uXDlZ3a2Q=
+X-Google-Smtp-Source: ABdhPJw3XybahemiQNIeKp8LJpmX8EUeDDm0yVJR0PAc9Jwu3boUpU3kND1lRJ3i9Q8hgAX+/304aQ==
+X-Received: by 2002:ad4:4368:: with SMTP id u8mr1326797qvt.227.1592441736093;
+        Wed, 17 Jun 2020 17:55:36 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:9c3:b47c:c995:4853])
+        by smtp.googlemail.com with ESMTPSA id c6sm1527351qkg.93.2020.06.17.17.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 17:55:35 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:TC subsystem),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [net/sched]: Remove redundant condition in qdisc_graft
+Date:   Wed, 17 Jun 2020 20:55:26 -0400
+Message-Id: <20200618005526.27101-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 04:46:09PM -0700, Paul E. McKenney wrote:
-> > +	// Handle two first channels.
-> > +	for (i = 0; i < FREE_N_CHANNELS; i++) {
-> > +		for (; bkvhead[i]; bkvhead[i] = bnext) {
-> > +			bnext = bkvhead[i]->next;
-> > +			debug_rcu_bhead_unqueue(bkvhead[i]);
-> > +
-> > +			rcu_lock_acquire(&rcu_callback_map);
-> > +			if (i == 0) { // kmalloc() / kfree().
-> > +				trace_rcu_invoke_kfree_bulk_callback(
-> > +					rcu_state.name, bkvhead[i]->nr_records,
-> > +					bkvhead[i]->records);
-> > +
-> > +				kfree_bulk(bkvhead[i]->nr_records,
-> > +					bkvhead[i]->records);
-> > +			} else { // vmalloc() / vfree().
-> > +				for (j = 0; j < bkvhead[i]->nr_records; j++) {
-> > +					trace_rcu_invoke_kfree_callback(
-> > +						rcu_state.name,
-> > +						bkvhead[i]->records[j], 0);
-> > +
-> > +					vfree(bkvhead[i]->records[j]);
-> > +				}
-> > +			}
-> > +			rcu_lock_release(&rcu_callback_map);
-> 
-> Not an emergency, but did you look into replacing this "if" statement
-> with an array of pointers to functions implementing the legs of the
-> "if" statement?  If nothing else, this would greatly reduced indentation.
+parent cannot be NULL here since its in the else part
+of the if (parent == NULL) condition. Remove the extra
+check on parent pointer.
 
-I don't think that replacing direct function calls with indirect function
-calls is a great suggestion with the current state of play around branch
-prediction.
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ net/sched/sch_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'd suggest:
-
- 			rcu_lock_acquire(&rcu_callback_map);
-			trace_rcu_invoke_kfree_bulk_callback(rcu_state.name,
-				bkvhead[i]->nr_records, bkvhead[i]->records);
- 			if (i == 0) {
- 				kfree_bulk(bkvhead[i]->nr_records,
- 					bkvhead[i]->records);
- 			} else {
- 				for (j = 0; j < bkvhead[i]->nr_records; j++) {
- 					vfree(bkvhead[i]->records[j]);
- 				}
- 			}
- 			rcu_lock_release(&rcu_callback_map);
-
-But I'd also suggest a vfree_bulk be added.  There are a few things
-which would be better done in bulk as part of the vfree process
-(we batch them up already, but i'm sure we could do better).
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index 9a3449b56bd6..8c92d00c5c8e 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -1094,7 +1094,7 @@ static int qdisc_graft(struct net_device *dev, struct Qdisc *parent,
+ 
+ 		/* Only support running class lockless if parent is lockless */
+ 		if (new && (new->flags & TCQ_F_NOLOCK) &&
+-		    parent && !(parent->flags & TCQ_F_NOLOCK))
++		    && !(parent->flags & TCQ_F_NOLOCK))
+ 			qdisc_clear_nolock(new);
+ 
+ 		if (!cops || !cops->graft)
+-- 
+2.17.1
 
