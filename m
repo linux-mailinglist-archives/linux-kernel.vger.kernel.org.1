@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A771E1FF982
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEC21FF99E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731994AbgFRQoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:44:37 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:35679 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728090AbgFRQog (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:44:36 -0400
-Received: by mail-io1-f68.google.com with SMTP id s18so7822174ioe.2;
-        Thu, 18 Jun 2020 09:44:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P6K0NMCQ9QdVvPAqikzClu5E67Y9Qrb4CGCZ1kreB7k=;
-        b=lQQF7kigInRkQfosEdD964L/MxE8WBfqhlcjat7uGcKAHLo05DRETCrqGSyks++q+N
-         LD4YhxofHAtxiU5+rHlIy3fj7hI2j+51pQtcM6jdo+VhoSuWboDrT/C3r1LucoJ5fPo8
-         XH90hJcCZpxLydo/zfi86U+YTKyjFpcCynbHwPNVBykLh/AwfkGFiYvV01UC7Njcn9Fm
-         i7JzC87Ts5XcXKgf8rWto+0uBp8pgMrufHPIklBNXVWtmArrkvPMRXYS+6uQQNqXM3nF
-         lkAvJYLMGcm+LVrud0JLT3mPZ6pXFG4l0Cfon9dqlnZ+CMrhPV3AS8sCW/3sHC9A7wxY
-         h+Og==
-X-Gm-Message-State: AOAM532zD6wytvJDMt90fD2r8Vx2DFdu1IjS513iNUXpDm7pYMOGOlBs
-        R7JCddqfLJIs+WZMZ6CLdg==
-X-Google-Smtp-Source: ABdhPJwkW4ZsJ4bdYKr0qKa9ryOy5g+2hE48HtjOUzrbj3WgzjP+FDJi5kL2BbFKLOci4Y0m6ArWyw==
-X-Received: by 2002:a5d:858a:: with SMTP id f10mr6056867ioj.184.1592498674934;
-        Thu, 18 Jun 2020 09:44:34 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g21sm1969126ioc.14.2020.06.18.09.44.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 09:44:34 -0700 (PDT)
-Received: (nullmailer pid 504576 invoked by uid 1000);
-        Thu, 18 Jun 2020 16:44:31 -0000
-Date:   Thu, 18 Jun 2020 10:44:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Sandy Huang <hjc@rock-chips.com>, alsa-devel@alsa-project.org,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 13/29] dt: fix broken links due to txt->yaml renames
-Message-ID: <20200618164431.GA504444@bogus>
-References: <cover.1592203542.git.mchehab+huawei@kernel.org>
- <0e4a7f0b7efcc8109c8a41a2e13c8adde4d9c6b9.1592203542.git.mchehab+huawei@kernel.org>
+        id S1732093AbgFRQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:48:16 -0400
+Received: from mga03.intel.com ([134.134.136.65]:18733 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732035AbgFRQsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:48:00 -0400
+IronPort-SDR: 5MWh+y/XlxQepES0Ksq5pdL/oAb2mbygpAQXz4o+JYXqwA1djyzYDy02djRAZBHHvhPU4fdo04
+ UjPZiOaVfCQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="142595297"
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
+   d="scan'208";a="142595297"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:47:59 -0700
+IronPort-SDR: gnwiKIZgSkk3/AxCIm8t/GILe68cRFc4Z0vydQtAGTORUP0KdGveh0V1As8ajOuWcNEh5jdrc9
+ 7hO+YzG6PkPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
+   d="scan'208";a="262979081"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 18 Jun 2020 09:47:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A318513B; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 0/6] console: unify return codes from ->setup() hook
+Date:   Thu, 18 Jun 2020 19:47:45 +0300
+Message-Id: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e4a7f0b7efcc8109c8a41a2e13c8adde4d9c6b9.1592203542.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Jun 2020 08:46:52 +0200, Mauro Carvalho Chehab wrote:
-> There are some new broken doc links due to yaml renames
-> at DT. Developers should really run:
-> 
-> 	./scripts/documentation-file-ref-check
-> 
-> in order to solve those issues while submitting patches.
-> This tool can even fix most of the issues with:
-> 
-> 	./scripts/documentation-file-ref-check --fix
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/display/bridge/sii902x.txt  | 2 +-
->  .../devicetree/bindings/display/rockchip/rockchip-drm.yaml    | 2 +-
->  Documentation/devicetree/bindings/net/mediatek-bluetooth.txt  | 2 +-
->  Documentation/devicetree/bindings/sound/audio-graph-card.txt  | 2 +-
->  Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt  | 2 +-
->  Documentation/mips/ingenic-tcu.rst                            | 2 +-
->  MAINTAINERS                                                   | 4 ++--
->  7 files changed, 8 insertions(+), 8 deletions(-)
-> 
+Some of the console providers treat error code, returned by ->setup() hook,
+differently. Here is the unification of the behaviour.
 
-Applied, thanks!
+The drivers checked by one of the below criteria:
+1/ the driver has explicit struct console .setup assignment
+2/ the driver has assigned callback to the setup member
+
+All such drivers were read in order to see if there is any problematic return
+codes, and fixed accordingly which is this series in the result.
+
+Andy Shevchenko (6):
+  mips: Return proper error code from console ->setup() hook
+  serial: sunsab: Return proper error code from console ->setup() hook
+  serial: sunzilog: Return proper error code from console ->setup() hook
+  tty: hvc: Return proper error code from console ->setup() hook
+  console: Propagate error code from console ->setup()
+  console: Fix trivia typo 'change' -> 'chance'
+
+ arch/mips/fw/arc/arc_con.c    | 4 +++-
+ drivers/tty/hvc/hvsi.c        | 2 +-
+ drivers/tty/serial/sunsab.c   | 2 +-
+ drivers/tty/serial/sunzilog.c | 2 +-
+ kernel/printk/printk.c        | 8 ++++----
+ 5 files changed, 10 insertions(+), 8 deletions(-)
+
+-- 
+2.27.0
+
