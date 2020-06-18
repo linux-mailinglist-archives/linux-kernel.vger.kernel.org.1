@@ -2,76 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645FE1FFB85
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 21:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3F01FFB83
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 21:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730280AbgFRTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 15:08:28 -0400
-Received: from nautica.notk.org ([91.121.71.147]:34180 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728071AbgFRTI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 15:08:27 -0400
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id EA9E8C01C; Thu, 18 Jun 2020 21:08:22 +0200 (CEST)
-Date:   Thu, 18 Jun 2020 21:08:07 +0200
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Alexander Kapshuk <alexander.kapshuk@gmail.com>
-Cc:     ericvh@gmail.com, lucho@ionkov.net, davem@davemloft.net,
-        kuba@kernel.org, v9fs-developer@lists.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/9p: Fix sparse rcu warnings in client.c
-Message-ID: <20200618190807.GA20699@nautica>
-References: <20200618183310.5352-1-alexander.kapshuk@gmail.com>
+        id S1729709AbgFRTIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 15:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726925AbgFRTIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 15:08:12 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F4BC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 12:08:12 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
+        by Galois.linutronix.de with esmtp (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jlztS-000137-R3; Thu, 18 Jun 2020 21:08:10 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH] sched/core: Remove mmdrop() definition
+Date:   Thu, 18 Jun 2020 21:08:10 +0200
+Message-Id: <20200618190810.790211-1-bigeasy@linutronix.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200618183310.5352-1-alexander.kapshuk@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Kapshuk wrote on Thu, Jun 18, 2020:
-> Address sparse nonderef rcu warnings:
-> net/9p/client.c:790:17: warning: incorrect type in argument 1 (different address spaces)
-> net/9p/client.c:790:17:    expected struct spinlock [usertype] *lock
-> net/9p/client.c:790:17:    got struct spinlock [noderef] <asn:4> *
-> net/9p/client.c:792:48: warning: incorrect type in argument 1 (different address spaces)
-> net/9p/client.c:792:48:    expected struct spinlock [usertype] *lock
-> net/9p/client.c:792:48:    got struct spinlock [noderef] <asn:4> *
-> net/9p/client.c:872:17: warning: incorrect type in argument 1 (different address spaces)
-> net/9p/client.c:872:17:    expected struct spinlock [usertype] *lock
-> net/9p/client.c:872:17:    got struct spinlock [noderef] <asn:4> *
-> net/9p/client.c:874:48: warning: incorrect type in argument 1 (different address spaces)
-> net/9p/client.c:874:48:    expected struct spinlock [usertype] *lock
-> net/9p/client.c:874:48:    got struct spinlock [noderef] <asn:4> *
-> 
-> Signed-off-by: Alexander Kapshuk <alexander.kapshuk@gmail.com>
+Commit
+   bf2c59fce4074 ("sched/core: Fix illegal RCU from offline CPUs")
 
-Thanks for this patch.
-From what I can see, there are tons of other parts of the code doing the
-same noderef access pattern to access current->sighand->siglock and I
-don't see much doing that.
-A couple of users justify this by saying SLAB_TYPESAFE_BY_RCU ensures
-we'll always get a usable lock which won't be reinitialized however we
-access it... It's a bit dubious we'll get the same lock than unlock to
-me, so I agree to some change though.
+introduced a definition for mmdrop() but a a few lines above there is
+already mmdrop() defined as static inline.
 
-After a second look I think we should use something like the following:
+Remove the newly introduced mmdrop() definition.
 
-if (!lock_task_sighand(current, &flags))
-	warn & skip (or some error, we'd null deref if this happened currently);
-recalc_sigpending();
-unlock_task_sighand(current, &flags);
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ include/linux/sched/mm.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-As you can see, the rcu_read_lock() isn't kept until the unlock so I'm
-not sure it will be enough to please sparse, but I've convinced myself
-current->sighand cannot change while we hold the lock and there just are
-too many such patterns in the kernel.
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index 480a4d1b7dd8d..a98604ea76f10 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -49,8 +49,6 @@ static inline void mmdrop(struct mm_struct *mm)
+ 		__mmdrop(mm);
+ }
+=20
+-void mmdrop(struct mm_struct *mm);
+-
+ /*
+  * This has to be called after a get_task_mm()/mmget_not_zero()
+  * followed by taking the mmap_lock for writing before modifying the
+--=20
+2.27.0
 
-Please let me know if I missed something or if there is an ongoing
-effort to change how this works; I'll wait for a v2.
-
--- 
-Dominique
