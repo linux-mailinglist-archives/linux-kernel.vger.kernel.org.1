@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040A61FF3D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8504C1FF3DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730658AbgFRNvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730571AbgFRNvJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:51:09 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DA7C0613EF;
-        Thu, 18 Jun 2020 06:51:09 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jluwa-0002ml-HT; Thu, 18 Jun 2020 15:51:04 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 45E381C06E5;
-        Thu, 18 Jun 2020 15:50:59 +0200 (CEST)
-Date:   Thu, 18 Jun 2020 13:50:59 -0000
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1557309753-24073-4-git-send-email-chang.seok.bae@intel.com>
-References: <1557309753-24073-4-git-send-email-chang.seok.bae@intel.com>
-MIME-Version: 1.0
-Message-ID: <159248825907.16989.9482506670295698920.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+        id S1730701AbgFRNwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:52:07 -0400
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:27328
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730686AbgFRNv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 09:51:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bbv2utfSDe2u3DONvUOVKEFe2D60JsABlUBU7lMzNb7GagO6t1aXvi3M6bA6v7KVh6tvSkF5Ykljv+itEmg6Z0Ivh8nJWNcIke17hxhIg0xg2N7soBNhkigd7sAkIiK88eal5JE9o3a1orv7JZ4jAxrRLKWtfNVMUsRuNs0SvFT8kaQmz34SkuLeBdWP8HsClYRXOTa4ohAAAo+1hfL/nDcrTSVkRRxFjpdmFVaXt0cuUMy/Dv4IQaTbp3QtB9xtJTFQKQ/D/eJWAx07OTaV8x3J1avpSkLiu0XvoHBi1EDRKC9ZaW+dMIM60YfVBjl9Z7trSEthoSlpqFWpgDtUOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBOp1RIVw+1M72fxkefVlSYO8A1efQGdVEFgwlU0/ls=;
+ b=Q2cWPQNhHdBHNa3U2TsqgKWIBslStV/KWCXCsi5Ly/lwQjbXwAWapqBsl5m+cRh6iaw1Wtx28XH6cCjx/cqfrlf6QNXmX14EH8tEB7g+UYwkqU/FDr+SzcNsDi5d9jSyKT4U3UuIDM0Eysi8Lc7KJkHoEWnlz5ZGMQNl4pbZEB0poFo60AgRzgOaI5htUNKeCOQoEpJ/vAUX0qz0ayyEh+mwplWZyp7eFZGUxfBa4PZ7SxX6voj4XPjtAs+iLVaCLl65fcXNQKCQHUuSTPl6UlOiUBJS4uAbsWnYIa08d6G1ufhqL2WB94bTy1s8gnvvhSDHyJJEUP/NhkHjpAKYUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBOp1RIVw+1M72fxkefVlSYO8A1efQGdVEFgwlU0/ls=;
+ b=IpTq6o03GSxgDc2o1pAtZ2/LRixsWr54vlPOHjJfSZmgF7wOYoZHKAqYg7LlyMd3+/7TE/lJi9iP9Ea1tx1Ow0snypTWOmnSssD6OwSe4GdF4LuVMmbPqkYcBBeBRgk8/EjUKliWA3+FC5tjtTHJAm3S2XOSF6viz9JJTEpA9nc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3274.namprd12.prod.outlook.com (2603:10b6:5:182::25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3088.24; Thu, 18 Jun 2020 13:51:56 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::4ce1:9947:9681:c8b1]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::4ce1:9947:9681:c8b1%10]) with mapi id 15.20.3088.028; Thu, 18 Jun
+ 2020 13:51:56 +0000
+Subject: Re: [PATCH] crypto: ccp: remove redundant assignment to variable ret
+To:     Colin King <colin.king@canonical.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200618101229.11772-1-colin.king@canonical.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <dcbf3e93-b370-8190-4374-afd9cb4f87b8@amd.com>
+Date:   Thu, 18 Jun 2020 08:51:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <20200618101229.11772-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+X-ClientProxiedBy: SN2PR01CA0083.prod.exchangelabs.com (2603:10b6:800::51) To
+ DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN2PR01CA0083.prod.exchangelabs.com (2603:10b6:800::51) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Thu, 18 Jun 2020 13:51:55 +0000
+X-Originating-IP: [67.79.209.213]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8e084020-fe61-4c5f-c4e7-08d8138ec3a0
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3274:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3274D06A60BA729CAD91DEDAEC9B0@DM6PR12MB3274.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:517;
+X-Forefront-PRVS: 0438F90F17
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ape+xYpP3x7GXF8HZXReFqkUyjpyEWGYd/YLHjn0aT+JDxM0UT8Pj3sopoN5i8qBUHsmrmf4u1Cnuu08lj6FDiIO9zO1S9J0E4K/eX24geGYjT2R1qf3UWVWsj3pf3/r27kVX0n8NKiZr2vwYdXLXZkenjBzEmhX/xFrI3ddJK9kwCbZ9q6SdsOoaoX6hsJq1GSMbgXd2oTHWKrJzNK+Q+CP6xze9NGouy8Nx7+WQ7S4IgIxkk0vBM9XK9fjUbB7naoQLYixx/LZRjCyQ+aNPtxm76aaQtn67HDt5daJr7dGDD0Xaha3SQtvVZ2/0Hzx/39qRWw3g22j6NgMsoskoUauB980bi48FexdJrAeRlS3alWI52dk3+zUG4OOGdNh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(31686004)(36756003)(86362001)(4744005)(5660300002)(186003)(66946007)(66556008)(53546011)(66476007)(6506007)(31696002)(16526019)(6486002)(110136005)(478600001)(8676002)(4326008)(26005)(2616005)(316002)(956004)(6512007)(83380400001)(52116002)(2906002)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: O0W61Tk/q54Azcw7lyaKw72d+YTWHaAEslB2+f+2+UNO0wmvQ9lgNUb7I819MCLE6Q8hxyAdAdi65eGv5I/2/i2E4Rh9C8+e+pVP9IBPWiofEJpP9PXrN2j5gEr7lFRU/WYdSfvEI5ZMyaUNwz6Dk7iFKW4R9gztQByA1VWNVLDh6+u18Sw3EeNV7X1DYyihTbVHEarDjlxrWJF6KzTe+d2B8XPdYUtYO96iA5Uey82KAQdPA2iq1gLlt13xhdA/ZU6UlIyJ/u7NuQOsJAEZmx1nAXQtprKjBLgbuv0Q3QdGVdWhfCpOsqQs3bOX0rHCfm3Lrsl/fpe3nUzlmTZWr685LARpLRulyz6+9d/sMfIz9eTS1Zl5fGT8U3MsU9kUNkq62wL9yhO4N43ZT5+t1pyVSWv7e0ogD5jdomvgLpQFqgPCJBip75NhP5gOu7jtZ1/po5rrZ70BeaOpRVT4cefsQ5rH3S+r+HGJAeYcoTBjxMECu1iSUqhitXtGG6FB
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e084020-fe61-4c5f-c4e7-08d8138ec3a0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 13:51:56.4250
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fTe7gFhMgAmDdEPboyfmnAJtpmDjc8xqOzHDt9BUFqBgOG1QTypyFe/lzRiYtOyiJgbt8iZdfUzAr01jvmKYsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3274
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fsgsbase branch of tip:
+On 6/18/20 5:12 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable ret is being assigned with a value that is never read
+> and it is being updated later with a new value.  The assignment is
+> redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Commit-ID:     dd649bd0b3aa012740059b1ba31ecad28a408f7f
-Gitweb:        https://git.kernel.org/tip/dd649bd0b3aa012740059b1ba31ecad28a408f7f
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Thu, 28 May 2020 16:13:48 -04:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 18 Jun 2020 15:46:59 +02:00
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-x86/cpu: Add 'unsafe_fsgsbase' to enable CR4.FSGSBASE
-
-This is temporary.  It will allow the next few patches to be tested
-incrementally.
-
-Setting unsafe_fsgsbase is a root hole.  Don't do it.
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/1557309753-24073-4-git-send-email-chang.seok.bae@intel.com
-Link: https://lkml.kernel.org/r/20200528201402.1708239-3-sashal@kernel.org
-
-
----
- Documentation/admin-guide/kernel-parameters.txt |  3 ++-
- arch/x86/kernel/cpu/common.c                    | 24 ++++++++++++++++-
- 2 files changed, 27 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad..7308db7 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3079,6 +3079,9 @@
- 	no5lvl		[X86-64] Disable 5-level paging mode. Forces
- 			kernel to use 4-level paging instead.
- 
-+	unsafe_fsgsbase	[X86] Allow FSGSBASE instructions.  This will be
-+			replaced with a nofsgsbase flag.
-+
- 	no_console_suspend
- 			[HW] Never suspend the console
- 			Disable suspending of consoles during suspend and
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 043d93c..7438a31 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -442,6 +442,22 @@ static void __init setup_cr_pinning(void)
- }
- 
- /*
-+ * Temporary hack: FSGSBASE is unsafe until a few kernel code paths are
-+ * updated. This allows us to get the kernel ready incrementally.
-+ *
-+ * Once all the pieces are in place, these will go away and be replaced with
-+ * a nofsgsbase chicken flag.
-+ */
-+static bool unsafe_fsgsbase;
-+
-+static __init int setup_unsafe_fsgsbase(char *arg)
-+{
-+	unsafe_fsgsbase = true;
-+	return 1;
-+}
-+__setup("unsafe_fsgsbase", setup_unsafe_fsgsbase);
-+
-+/*
-  * Protection Keys are not available in 32-bit mode.
-  */
- static bool pku_disabled;
-@@ -1495,6 +1511,14 @@ static void identify_cpu(struct cpuinfo_x86 *c)
- 	setup_smap(c);
- 	setup_umip(c);
- 
-+	/* Enable FSGSBASE instructions if available. */
-+	if (cpu_has(c, X86_FEATURE_FSGSBASE)) {
-+		if (unsafe_fsgsbase)
-+			cr4_set_bits(X86_CR4_FSGSBASE);
-+		else
-+			clear_cpu_cap(c, X86_FEATURE_FSGSBASE);
-+	}
-+
- 	/*
- 	 * The vendor-specific functions might have changed features.
- 	 * Now we do "generic changes."
+> ---
+>   drivers/crypto/ccp/ccp-ops.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+> index 422193690fd4..d270aa792888 100644
+> --- a/drivers/crypto/ccp/ccp-ops.c
+> +++ b/drivers/crypto/ccp/ccp-ops.c
+> @@ -1308,7 +1308,6 @@ ccp_run_des3_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
+>   			return -EINVAL;
+>   	}
+>   
+> -	ret = -EIO;
+>   	/* Zero out all the fields of the command desc */
+>   	memset(&op, 0, sizeof(op));
+>   
+> 
