@@ -2,130 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6F21FE92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E7F1FE912
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgFRC7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgFRC72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 22:59:28 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75975C06174E;
-        Wed, 17 Jun 2020 19:59:28 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id r18so2231659pgk.11;
-        Wed, 17 Jun 2020 19:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=c+XBBSUJkbuSD8EzkachzbNQFLmI3baAWx8Tvz5SX9A=;
-        b=ce2KN786GgRadse5m9yAoPlwSIL8pcph73/I//OEEO+UR3c+knDGQIQwQEMWusaoxR
-         c7pEFVCQBTemK2twFjbMAprzclbJfSXlvxSwZEDK4NJZbg4jFJzsidCoszJm1akXutOb
-         rBeEVOVOQRD8f6GCeckk6oBAjBoZwbCRaB99odubFDPTUCGyqe/N/9ls/xI2juTMYmth
-         R+yaoAX6CqZQuUpynGvQ0vfBb4G7TFvCQGydsdX/oML2LpmHd6zFr82rEBqNOzbBhiZa
-         AmwIQHb0fcd6R+jRtfplgvhLANX2HEniV8Nl6XyjIqgSE4/CqjpI5+DO9ALOVronKyJh
-         SOjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=c+XBBSUJkbuSD8EzkachzbNQFLmI3baAWx8Tvz5SX9A=;
-        b=nlawB26dnHh8vgP3ywCP5tCNYY83JN5bqmeTudA1nEwUPS1MIyvu69BQPhANhFGxV7
-         6iikmWkHeMA6OoPJgnznR90YU1KBSIOrXbWB14YDXX0OeP7JwiuqfTNzJwWjPPHF0/3z
-         0nPqZCp+CLYjVDSOoImT9nnGzyh6lNWv+urywyLIGcIQ8tE5xl8zbV3vuG8B0TwBo6Wg
-         tH1rHgNUQzfW+G5kxPfJ07J0mb9dktfNIElRwB90tzFkl1gOWUNoZ3J2Q02hbgMxHR1A
-         PKHIylFdf6VmwgIjpxVbm243tKVoMgepkp4j1bTaMSZpSvkAD8s/9Y97noINQBHPzWNF
-         7mVg==
-X-Gm-Message-State: AOAM531fx4Dtwca95lJMwcwQSZ38/wvCeAh9L20vgEyPh5wsQx7QIJR6
-        NHWGxCzHO2NFEZ44VTaFH9rUyv+UMBeKP86e
-X-Google-Smtp-Source: ABdhPJxvua+/GIpND09OviVKdksZLCWgeWga/Ef+nBwx2A0d5tunbidPFHBYJKkdl+DxEaSXQcryAA==
-X-Received: by 2002:a62:3582:: with SMTP id c124mr1694339pfa.298.1592449167930;
-        Wed, 17 Jun 2020 19:59:27 -0700 (PDT)
-Received: from home-desktop ([114.204.138.55])
-        by smtp.gmail.com with ESMTPSA id j184sm1094045pfg.131.2020.06.17.19.59.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jun 2020 19:59:27 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 11:59:22 +0900
-From:   Hyeonki Hong <hhk7734@gmail.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>, khilman@baylibre.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH] [v2] pinctrl: meson: fix drive strength register and bit
- calculation
-Message-ID: <20200618025916.GA19368@home-desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2387957AbgFRCxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:53:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58718 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728161AbgFRCwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 22:52:55 -0400
+IronPort-SDR: 2fSgot4c2J4cs+COgOphYUbw/PMNZGY1MW36xZRjCOBCGWM7rK4r6oColzDKcQDlJmmrK8iqPI
+ obEQ0v2Bw3qg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 19:52:53 -0700
+IronPort-SDR: Gu66Sly+A4MSw6hpLfxeVq3rRbb7Pj7R6eY7wGmpGAaztCYgSI8+bXAZ/9FZCNasmJ3xVt0O0E
+ 1Pj9KSGbellQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,524,1583222400"; 
+   d="scan'208";a="262777561"
+Received: from xpf-desktop.sh.intel.com ([10.239.13.107])
+  by orsmga007.jf.intel.com with ESMTP; 17 Jun 2020 19:52:51 -0700
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>, Heng Su <heng.su@intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Svahn <kai.svahn@intel.com>
+Subject: [Linux] [PATCH] Kernel selftests: tpm2: upgrade tpm2 tests from python2 to python3
+Date:   Thu, 18 Jun 2020 11:02:45 +0800
+Message-Id: <20200618030245.7153-1-pengfei.xu@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a GPIO bank has greater than 16 pins, PAD_DS_REG is split into two
-or more registers. However, when register and bit were calculated, the
-first register defined in the bank was used, and the bit was calculated
-based on the first pin. This causes problems in setting the driving
-strength.
+Some Linux OS will never support python2 anymore, so upgrade tpm2 selftests
+to python3.
 
-The following method was used to solve this problem:
-A bit is calculated first using predefined strides. Then, If the bit is
-32 or more, the register is changed by the quotient of the bit divided
-by 32. And the bit is set to the remainder.
-
-Signed-off-by: Hyeonki Hong <hhk7734@gmail.com>
+Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- drivers/pinctrl/meson/pinctrl-meson.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ tools/testing/selftests/tpm2/test_smoke.sh |  4 +-
+ tools/testing/selftests/tpm2/test_space.sh |  2 +-
+ tools/testing/selftests/tpm2/tpm2.py       | 68 ++++++++++++++--------
+ tools/testing/selftests/tpm2/tpm2_tests.py | 24 +++++---
+ 4 files changed, 61 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
-index bbc919bef2bf..bf116c2e45c0 100644
---- a/drivers/pinctrl/meson/pinctrl-meson.c
-+++ b/drivers/pinctrl/meson/pinctrl-meson.c
-@@ -56,6 +56,10 @@
- #include "../pinctrl-utils.h"
- #include "pinctrl-meson.h"
+diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
+index 663062701d5a..d05467f6d258 100755
+--- a/tools/testing/selftests/tpm2/test_smoke.sh
++++ b/tools/testing/selftests/tpm2/test_smoke.sh
+@@ -6,8 +6,8 @@ ksft_skip=4
  
-+static const unsigned int meson_bit_strides[] = {
-+	1, 1, 1, 1, 1, 2, 1
-+};
-+
- /**
-  * meson_get_bank() - find the bank containing a given pin
-  *
-@@ -96,8 +100,9 @@ static void meson_calc_reg_and_bit(struct meson_bank *bank, unsigned int pin,
- {
- 	struct meson_reg_desc *desc = &bank->regs[reg_type];
+ [ -f /dev/tpm0 ] || exit $ksft_skip
  
--	*reg = desc->reg * 4;
--	*bit = desc->bit + pin - bank->first;
-+	*bit = (desc->bit + pin - bank->first) * meson_bit_strides[reg_type];
-+	*reg = (desc->reg + (*bit / 32)) * 4;
-+	*bit &= 0x1f;
- }
+-python -m unittest -v tpm2_tests.SmokeTest
+-python -m unittest -v tpm2_tests.AsyncTest
++python3 -m unittest -v tpm2_tests.SmokeTest
++python3 -m unittest -v tpm2_tests.AsyncTest
  
- static int meson_get_groups_count(struct pinctrl_dev *pcdev)
-@@ -314,7 +319,6 @@ static int meson_pinconf_set_drive_strength(struct meson_pinctrl *pc,
- 		return ret;
+ CLEAR_CMD=$(which tpm2_clear)
+ if [ -n $CLEAR_CMD ]; then
+diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
+index 36c9d030a1c6..151c64e8ee9f 100755
+--- a/tools/testing/selftests/tpm2/test_space.sh
++++ b/tools/testing/selftests/tpm2/test_space.sh
+@@ -6,4 +6,4 @@ ksft_skip=4
  
- 	meson_calc_reg_and_bit(bank, pin, REG_DS, &reg, &bit);
--	bit = bit << 1;
+ [ -f /dev/tpmrm0 ] || exit $ksft_skip
  
- 	if (drive_strength_ua <= 500) {
- 		ds_val = MESON_PINCONF_DRV_500UA;
-@@ -441,7 +445,6 @@ static int meson_pinconf_get_drive_strength(struct meson_pinctrl *pc,
- 		return ret;
+-python -m unittest -v tpm2_tests.SpaceTest
++python3 -m unittest -v tpm2_tests.SpaceTest
+diff --git a/tools/testing/selftests/tpm2/tpm2.py b/tools/testing/selftests/tpm2/tpm2.py
+index d0fcb66a88a6..b0ccc1499c53 100644
+--- a/tools/testing/selftests/tpm2/tpm2.py
++++ b/tools/testing/selftests/tpm2/tpm2.py
+@@ -247,14 +247,18 @@ class ProtocolError(Exception):
+ class AuthCommand(object):
+     """TPMS_AUTH_COMMAND"""
  
- 	meson_calc_reg_and_bit(bank, pin, REG_DS, &reg, &bit);
--	bit = bit << 1;
+-    def __init__(self, session_handle=TPM2_RS_PW, nonce='', session_attributes=0,
+-                 hmac=''):
++    def __init__(self, session_handle=TPM2_RS_PW, nonce=''.encode(),
++                 session_attributes=0, hmac=''.encode()):
++        if not isinstance(nonce, bytes):
++            nonce = nonce.encode()
++        if not isinstance(hmac, bytes):
++            hmac = hmac.encode()
+         self.session_handle = session_handle
+         self.nonce = nonce
+         self.session_attributes = session_attributes
+         self.hmac = hmac
  
- 	ret = regmap_read(pc->reg_ds, reg, &val);
- 	if (ret)
+-    def __str__(self):
++    def __bytes__(self):
+         fmt = '>I H%us B H%us' % (len(self.nonce), len(self.hmac))
+         return struct.pack(fmt, self.session_handle, len(self.nonce),
+                            self.nonce, self.session_attributes, len(self.hmac),
+@@ -268,11 +272,15 @@ class AuthCommand(object):
+ class SensitiveCreate(object):
+     """TPMS_SENSITIVE_CREATE"""
+ 
+-    def __init__(self, user_auth='', data=''):
++    def __init__(self, user_auth=''.encode(), data=''.encode()):
++        if not isinstance(user_auth, bytes):
++            user_auth = user_auth.encode()
++        if not isinstance(data, bytes):
++            data = data.encode()
+         self.user_auth = user_auth
+         self.data = data
+ 
+-    def __str__(self):
++    def __bytes__(self):
+         fmt = '>H%us H%us' % (len(self.user_auth), len(self.data))
+         return struct.pack(fmt, len(self.user_auth), self.user_auth,
+                            len(self.data), self.data)
+@@ -296,8 +304,15 @@ class Public(object):
+         return '>HHIH%us%usH%us' % \
+             (len(self.auth_policy), len(self.parameters), len(self.unique))
+ 
+-    def __init__(self, object_type, name_alg, object_attributes, auth_policy='',
+-                 parameters='', unique=''):
++    def __init__(self, object_type, name_alg, object_attributes,
++                 auth_policy=''.encode(), parameters=''.encode(),
++                 unique=''.encode()):
++        if not isinstance(auth_policy, bytes):
++            auth_policy = auth_policy.encode()
++        if not isinstance(parameters, bytes):
++            parameters = parameters.encode()
++        if not isinstance(unique, bytes):
++            unique = unique.encode()
+         self.object_type = object_type
+         self.name_alg = name_alg
+         self.object_attributes = object_attributes
+@@ -305,7 +320,7 @@ class Public(object):
+         self.parameters = parameters
+         self.unique = unique
+ 
+-    def __str__(self):
++    def __bytes__(self):
+         return struct.pack(self.__fmt(),
+                            self.object_type,
+                            self.name_alg,
+@@ -343,7 +358,7 @@ def get_algorithm(name):
+ 
+ def hex_dump(d):
+     d = [format(ord(x), '02x') for x in d]
+-    d = [d[i: i + 16] for i in xrange(0, len(d), 16)]
++    d = [d[i: i + 16] for i in range(0, len(d), 16)]
+     d = [' '.join(x) for x in d]
+     d = os.linesep.join(d)
+ 
+@@ -401,7 +416,7 @@ class Client:
+         pcrsel_len = max((i >> 3) + 1, 3)
+         pcrsel = [0] * pcrsel_len
+         pcrsel[i >> 3] = 1 << (i & 7)
+-        pcrsel = ''.join(map(chr, pcrsel))
++        pcrsel = ''.join(map(chr, pcrsel)).encode()
+ 
+         fmt = '>HII IHB%us' % (pcrsel_len)
+         cmd = struct.pack(fmt,
+@@ -430,6 +445,8 @@ class Client:
+         return rsp
+ 
+     def extend_pcr(self, i, dig, bank_alg = TPM2_ALG_SHA1):
++        if not isinstance(dig, bytes):
++            dig = dig.encode()
+         ds = get_digest_size(bank_alg)
+         assert(ds == len(dig))
+ 
+@@ -443,7 +460,7 @@ class Client:
+             TPM2_CC_PCR_EXTEND,
+             i,
+             len(auth_cmd),
+-            str(auth_cmd),
++            bytes(auth_cmd),
+             1, bank_alg, dig)
+ 
+         self.send_cmd(cmd)
+@@ -457,7 +474,7 @@ class Client:
+                           TPM2_RH_NULL,
+                           TPM2_RH_NULL,
+                           16,
+-                          '\0' * 16,
++                          ('\0' * 16).encode(),
+                           0,
+                           session_type,
+                           TPM2_ALG_NULL,
+@@ -472,7 +489,7 @@ class Client:
+ 
+         for i in pcrs:
+             pcr = self.read_pcr(i, bank_alg)
+-            if pcr == None:
++            if pcr is None:
+                 return None
+             x += pcr
+ 
+@@ -489,7 +506,7 @@ class Client:
+         pcrsel = [0] * pcrsel_len
+         for i in pcrs:
+             pcrsel[i >> 3] |= 1 << (i & 7)
+-        pcrsel = ''.join(map(chr, pcrsel))
++        pcrsel = ''.join(map(chr, pcrsel)).encode()
+ 
+         fmt = '>HII IH%usIHB3s' % ds
+         cmd = struct.pack(fmt,
+@@ -497,7 +514,8 @@ class Client:
+                           struct.calcsize(fmt),
+                           TPM2_CC_POLICY_PCR,
+                           handle,
+-                          len(dig), str(dig),
++                          len(dig),
++                          bytes(dig),
+                           1,
+                           bank_alg,
+                           pcrsel_len, pcrsel)
+@@ -570,11 +588,11 @@ class Client:
+             TPM2_CC_CREATE_PRIMARY,
+             TPM2_RH_OWNER,
+             len(auth_cmd),
+-            str(auth_cmd),
++            bytes(auth_cmd),
+             len(sensitive),
+-            str(sensitive),
++            bytes(sensitive),
+             len(public),
+-            str(public),
++            bytes(public),
+             0, 0)
+ 
+         return struct.unpack('>I', self.send_cmd(cmd)[10:14])[0]
+@@ -608,11 +626,11 @@ class Client:
+             TPM2_CC_CREATE,
+             parent_key,
+             len(auth_cmd),
+-            str(auth_cmd),
++            bytes(auth_cmd),
+             len(sensitive),
+-            str(sensitive),
++            bytes(sensitive),
+             len(public),
+-            str(public),
++            bytes(public),
+             0, 0)
+ 
+         rsp = self.send_cmd(cmd)
+@@ -635,7 +653,7 @@ class Client:
+             TPM2_CC_LOAD,
+             parent_key,
+             len(auth_cmd),
+-            str(auth_cmd),
++            bytes(auth_cmd),
+             blob)
+ 
+         data_handle = struct.unpack('>I', self.send_cmd(cmd)[10:14])[0]
+@@ -653,7 +671,7 @@ class Client:
+             TPM2_CC_UNSEAL,
+             data_handle,
+             len(auth_cmd),
+-            str(auth_cmd))
++            bytes(auth_cmd))
+ 
+         try:
+             rsp = self.send_cmd(cmd)
+@@ -675,7 +693,7 @@ class Client:
+             TPM2_CC_DICTIONARY_ATTACK_LOCK_RESET,
+             TPM2_RH_LOCKOUT,
+             len(auth_cmd),
+-            str(auth_cmd))
++            bytes(auth_cmd))
+ 
+         self.send_cmd(cmd)
+ 
+@@ -693,7 +711,7 @@ class Client:
+         more_data, cap, cnt = struct.unpack('>BII', rsp[:9])
+         rsp = rsp[9:]
+ 
+-        for i in xrange(0, cnt):
++        for i in range(0, cnt):
+             handle = struct.unpack('>I', rsp[:4])[0]
+             handles.append(handle)
+             rsp = rsp[4:]
+diff --git a/tools/testing/selftests/tpm2/tpm2_tests.py b/tools/testing/selftests/tpm2/tpm2_tests.py
+index 728be7c69b76..e134033e6f67 100644
+--- a/tools/testing/selftests/tpm2/tpm2_tests.py
++++ b/tools/testing/selftests/tpm2/tpm2_tests.py
+@@ -25,7 +25,9 @@ class SmokeTest(unittest.TestCase):
+ 
+         blob = self.client.seal(self.root_key, data, auth, None)
+         result = self.client.unseal(self.root_key, blob, auth, None)
+-        self.assertEqual(data, result)
++        if not isinstance(result, bytes):
++            result = result.encode()
++        self.assertEqual(data.encode(), result)
+ 
+     def test_seal_with_policy(self):
+         handle = self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
+@@ -51,11 +53,13 @@ class SmokeTest(unittest.TestCase):
+             self.client.policy_password(handle)
+ 
+             result = self.client.unseal(self.root_key, blob, auth, handle)
++            if not isinstance(result, bytes):
++                result = result.encode()
+         except:
+             self.client.flush_context(handle)
+             raise
+ 
+-        self.assertEqual(data, result)
++        self.assertEqual(data.encode(), result)
+ 
+     def test_unseal_with_wrong_auth(self):
+         data = 'X' * 64
+@@ -65,7 +69,7 @@ class SmokeTest(unittest.TestCase):
+         blob = self.client.seal(self.root_key, data, auth, None)
+         try:
+             result = self.client.unseal(self.root_key, blob, auth[:-1] + 'B', None)
+-        except ProtocolError, e:
++        except ProtocolError as e:
+             rc = e.rc
+ 
+         self.assertEqual(rc, tpm2.TPM2_RC_AUTH_FAIL)
+@@ -100,11 +104,13 @@ class SmokeTest(unittest.TestCase):
+             self.client.policy_password(handle)
+ 
+             result = self.client.unseal(self.root_key, blob, auth, handle)
++            if not isinstance(result, bytes):
++                result = result.encode()
+         except:
+             self.client.flush_context(handle)
+             raise
+ 
+-        self.assertEqual(data, result)
++        self.assertEqual(data.encode(), result)
+ 
+         # Then, extend a PCR that is part of the policy and try to unseal.
+         # This should fail.
+@@ -119,7 +125,7 @@ class SmokeTest(unittest.TestCase):
+             self.client.policy_password(handle)
+ 
+             result = self.client.unseal(self.root_key, blob, auth, handle)
+-        except ProtocolError, e:
++        except ProtocolError as e:
+             rc = e.rc
+             self.client.flush_context(handle)
+         except:
+@@ -136,7 +142,7 @@ class SmokeTest(unittest.TestCase):
+         rc = 0
+         try:
+             blob = self.client.seal(self.root_key, data, auth, None)
+-        except ProtocolError, e:
++        except ProtocolError as e:
+             rc = e.rc
+ 
+         self.assertEqual(rc, tpm2.TPM2_RC_SIZE)
+@@ -152,7 +158,7 @@ class SmokeTest(unittest.TestCase):
+                               0xDEADBEEF)
+ 
+             self.client.send_cmd(cmd)
+-        except IOError, e:
++        except IOError as e:
+             rejected = True
+         except:
+             pass
+@@ -212,7 +218,7 @@ class SmokeTest(unittest.TestCase):
+             self.client.tpm.write(cmd)
+             rsp = self.client.tpm.read()
+ 
+-        except IOError, e:
++        except IOError as e:
+             # read the response
+             rsp = self.client.tpm.read()
+             rejected = True
+@@ -283,7 +289,7 @@ class SpaceTest(unittest.TestCase):
+         rc = 0
+         try:
+             space1.send_cmd(cmd)
+-        except ProtocolError, e:
++        except ProtocolError as e:
+             rc = e.rc
+ 
+         self.assertEqual(rc, tpm2.TPM2_RC_COMMAND_CODE |
 -- 
 2.17.1
 
