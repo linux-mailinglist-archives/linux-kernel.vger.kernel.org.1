@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E491FDBB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F35B1FDBBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgFRBOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41716 "EHLO mail.kernel.org"
+        id S1728255AbgFRBOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:14:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728063AbgFRBMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:52 -0400
+        id S1729027AbgFRBNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5CA920CC7;
-        Thu, 18 Jun 2020 01:12:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D36C420CC7;
+        Thu, 18 Jun 2020 01:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442771;
-        bh=OqayClWImIhBqOFAFtfiY7UDh3l2XDUGo57JCkuN/ts=;
+        s=default; t=1592442779;
+        bh=ODYygIm/zaKj9Zv+hM2tviPDfsWFKYFxA44LxJQKfnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3ACGsSvpQSqSMQlxwp264AhcoQFGqKloK7cudLfxgSocd6N/OocM0Ibne9HDVUWf
-         2mfRNnIpnIab/aGFARaPcDlpQ8ow2PmbGRbmHMG2A2zHfESJcn7YEx4pr/5m8/QCdb
-         jJ26Skal4fDNpbpRnKzncFM8yUZbQqRYpayANF98=
+        b=IcylqQbSAckpBvAq5fqSvrfzkEwzIUJptlFurscJKpTuS9qg9ssjFqklezgzBpk6w
+         Iv46wcCQtWNy1wzacycvnzJaS2gzODu+vWbqxwy37QyZ3GNkZhDa+y1sRZsGYJmSwi
+         PKDX1WWSTiQCnWgFEAi54wunC+0/RPw1FhHXbgks=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.7 219/388] powerpc/64s/exceptions: Machine check reconcile irq state
-Date:   Wed, 17 Jun 2020 21:05:16 -0400
-Message-Id: <20200618010805.600873-219-sashal@kernel.org>
+Cc:     Sanket Parmar <sparmar@cadence.com>, Roger Quadros <rogerq@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 225/388] phy: cadence: sierra: Fix for USB3 U1/U2 state
+Date:   Wed, 17 Jun 2020 21:05:22 -0400
+Message-Id: <20200618010805.600873-225-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,88 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Sanket Parmar <sparmar@cadence.com>
 
-[ Upstream commit f0fd9dd3c213c947dfb5bc2cad3ef5e30d3258ec ]
+[ Upstream commit 2bcf14ca1a2f3202954f812f380c7fa8127fbd7f ]
 
-pseries fwnmi machine check code pops the soft-irq checks in rtas_call
-(after the next patch to remove rtas_token from this call path).
-Rather than play whack a mole with these and forever having fragile
-code, it seems better to have the early machine check handler perform
-the same kind of reconcile as the other NMI interrupts.
+Updated values of USB3 related Sierra PHY registers.
+This change fixes USB3 device disconnect issue observed
+while enternig U1/U2 state.
 
-  WARNING: CPU: 0 PID: 493 at arch/powerpc/kernel/irq.c:343
-  CPU: 0 PID: 493 Comm: a Tainted: G        W
-  NIP:  c00000000001ed2c LR: c000000000042c40 CTR: 0000000000000000
-  REGS: c0000001fffd38b0 TRAP: 0700   Tainted: G        W
-  MSR:  8000000000021003 <SF,ME,RI,LE>  CR: 28000488  XER: 00000000
-  CFAR: c00000000001ec90 IRQMASK: 0
-  GPR00: c000000000043820 c0000001fffd3b40 c0000000012ba300 0000000000000000
-  GPR04: 0000000048000488 0000000000000000 0000000000000000 00000000deadbeef
-  GPR08: 0000000000000080 0000000000000000 0000000000000000 0000000000001001
-  GPR12: 0000000000000000 c0000000014a0000 0000000000000000 0000000000000000
-  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR28: 0000000000000000 0000000000000001 c000000001360810 0000000000000000
-  NIP [c00000000001ed2c] arch_local_irq_restore.part.0+0xac/0x100
-  LR [c000000000042c40] unlock_rtas+0x30/0x90
-  Call Trace:
-  [c0000001fffd3b40] [c000000001360810] 0xc000000001360810 (unreliable)
-  [c0000001fffd3b60] [c000000000043820] rtas_call+0x1c0/0x280
-  [c0000001fffd3bb0] [c0000000000dc328] fwnmi_release_errinfo+0x38/0x70
-  [c0000001fffd3c10] [c0000000000dcd8c] pseries_machine_check_realmode+0x1dc/0x540
-  [c0000001fffd3cd0] [c00000000003fe04] machine_check_early+0x54/0x70
-  [c0000001fffd3d00] [c000000000008384] machine_check_early_common+0x134/0x1f0
-  --- interrupt: 200 at 0x13f1307c8
-      LR = 0x7fff888b8528
-  Instruction dump:
-  60000000 7d2000a6 71298000 41820068 39200002 7d210164 4bffff9c 60000000
-  60000000 7d2000a6 71298000 4c820020 <0fe00000> 4e800020 60000000 60000000
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200508043408.886394-5-npiggin@gmail.com
+Signed-off-by: Sanket Parmar <sparmar@cadence.com>
+Link: https://lore.kernel.org/r/1589804053-14302-1-git-send-email-sparmar@cadence.com
+Reviewed-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/exceptions-64s.S | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/phy/cadence/phy-cadence-sierra.c | 27 ++++++++++++------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
-index 463372046169..d3e19934cca9 100644
---- a/arch/powerpc/kernel/exceptions-64s.S
-+++ b/arch/powerpc/kernel/exceptions-64s.S
-@@ -1117,11 +1117,30 @@ END_FTR_SECTION_IFSET(CPU_FTR_HVMODE)
- 	li	r10,MSR_RI
- 	mtmsrd	r10,1
- 
-+	/*
-+	 * Set IRQS_ALL_DISABLED and save PACAIRQHAPPENED (see
-+	 * system_reset_common)
-+	 */
-+	li	r10,IRQS_ALL_DISABLED
-+	stb	r10,PACAIRQSOFTMASK(r13)
-+	lbz	r10,PACAIRQHAPPENED(r13)
-+	std	r10,RESULT(r1)
-+	ori	r10,r10,PACA_IRQ_HARD_DIS
-+	stb	r10,PACAIRQHAPPENED(r13)
-+
- 	addi	r3,r1,STACK_FRAME_OVERHEAD
- 	bl	machine_check_early
- 	std	r3,RESULT(r1)	/* Save result */
- 	ld	r12,_MSR(r1)
- 
-+	/*
-+	 * Restore soft mask settings.
-+	 */
-+	ld	r10,RESULT(r1)
-+	stb	r10,PACAIRQHAPPENED(r13)
-+	ld	r10,SOFTE(r1)
-+	stb	r10,PACAIRQSOFTMASK(r13)
-+
- #ifdef CONFIG_PPC_P7_NAP
- 	/*
- 	 * Check if thread was in power saving mode. We come here when any
+diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
+index a5c08e5bd2bf..faed652b73f7 100644
+--- a/drivers/phy/cadence/phy-cadence-sierra.c
++++ b/drivers/phy/cadence/phy-cadence-sierra.c
+@@ -685,10 +685,10 @@ static struct cdns_reg_pairs cdns_usb_cmn_regs_ext_ssc[] = {
+ static struct cdns_reg_pairs cdns_usb_ln_regs_ext_ssc[] = {
+ 	{0xFE0A, SIERRA_DET_STANDEC_A_PREG},
+ 	{0x000F, SIERRA_DET_STANDEC_B_PREG},
+-	{0x00A5, SIERRA_DET_STANDEC_C_PREG},
++	{0x55A5, SIERRA_DET_STANDEC_C_PREG},
+ 	{0x69ad, SIERRA_DET_STANDEC_D_PREG},
+ 	{0x0241, SIERRA_DET_STANDEC_E_PREG},
+-	{0x0010, SIERRA_PSM_LANECAL_DLY_A1_RESETS_PREG},
++	{0x0110, SIERRA_PSM_LANECAL_DLY_A1_RESETS_PREG},
+ 	{0x0014, SIERRA_PSM_A0IN_TMR_PREG},
+ 	{0xCF00, SIERRA_PSM_DIAG_PREG},
+ 	{0x001F, SIERRA_PSC_TX_A0_PREG},
+@@ -696,7 +696,7 @@ static struct cdns_reg_pairs cdns_usb_ln_regs_ext_ssc[] = {
+ 	{0x0003, SIERRA_PSC_TX_A2_PREG},
+ 	{0x0003, SIERRA_PSC_TX_A3_PREG},
+ 	{0x0FFF, SIERRA_PSC_RX_A0_PREG},
+-	{0x0619, SIERRA_PSC_RX_A1_PREG},
++	{0x0003, SIERRA_PSC_RX_A1_PREG},
+ 	{0x0003, SIERRA_PSC_RX_A2_PREG},
+ 	{0x0001, SIERRA_PSC_RX_A3_PREG},
+ 	{0x0001, SIERRA_PLLCTRL_SUBRATE_PREG},
+@@ -705,19 +705,19 @@ static struct cdns_reg_pairs cdns_usb_ln_regs_ext_ssc[] = {
+ 	{0x00CA, SIERRA_CLKPATH_BIASTRIM_PREG},
+ 	{0x2512, SIERRA_DFE_BIASTRIM_PREG},
+ 	{0x0000, SIERRA_DRVCTRL_ATTEN_PREG},
+-	{0x873E, SIERRA_CLKPATHCTRL_TMR_PREG},
+-	{0x03CF, SIERRA_RX_CREQ_FLTR_A_MODE1_PREG},
+-	{0x01CE, SIERRA_RX_CREQ_FLTR_A_MODE0_PREG},
++	{0x823E, SIERRA_CLKPATHCTRL_TMR_PREG},
++	{0x078F, SIERRA_RX_CREQ_FLTR_A_MODE1_PREG},
++	{0x078F, SIERRA_RX_CREQ_FLTR_A_MODE0_PREG},
+ 	{0x7B3C, SIERRA_CREQ_CCLKDET_MODE01_PREG},
+-	{0x033F, SIERRA_RX_CTLE_MAINTENANCE_PREG},
++	{0x023C, SIERRA_RX_CTLE_MAINTENANCE_PREG},
+ 	{0x3232, SIERRA_CREQ_FSMCLK_SEL_PREG},
+ 	{0x0000, SIERRA_CREQ_EQ_CTRL_PREG},
+-	{0x8000, SIERRA_CREQ_SPARE_PREG},
++	{0x0000, SIERRA_CREQ_SPARE_PREG},
+ 	{0xCC44, SIERRA_CREQ_EQ_OPEN_EYE_THRESH_PREG},
+-	{0x8453, SIERRA_CTLELUT_CTRL_PREG},
+-	{0x4110, SIERRA_DFE_ECMP_RATESEL_PREG},
+-	{0x4110, SIERRA_DFE_SMP_RATESEL_PREG},
+-	{0x0002, SIERRA_DEQ_PHALIGN_CTRL},
++	{0x8452, SIERRA_CTLELUT_CTRL_PREG},
++	{0x4121, SIERRA_DFE_ECMP_RATESEL_PREG},
++	{0x4121, SIERRA_DFE_SMP_RATESEL_PREG},
++	{0x0003, SIERRA_DEQ_PHALIGN_CTRL},
+ 	{0x3200, SIERRA_DEQ_CONCUR_CTRL1_PREG},
+ 	{0x5064, SIERRA_DEQ_CONCUR_CTRL2_PREG},
+ 	{0x0030, SIERRA_DEQ_EPIPWR_CTRL2_PREG},
+@@ -725,7 +725,7 @@ static struct cdns_reg_pairs cdns_usb_ln_regs_ext_ssc[] = {
+ 	{0x5A5A, SIERRA_DEQ_ERRCMP_CTRL_PREG},
+ 	{0x02F5, SIERRA_DEQ_OFFSET_CTRL_PREG},
+ 	{0x02F5, SIERRA_DEQ_GAIN_CTRL_PREG},
+-	{0x9A8A, SIERRA_DEQ_VGATUNE_CTRL_PREG},
++	{0x9999, SIERRA_DEQ_VGATUNE_CTRL_PREG},
+ 	{0x0014, SIERRA_DEQ_GLUT0},
+ 	{0x0014, SIERRA_DEQ_GLUT1},
+ 	{0x0014, SIERRA_DEQ_GLUT2},
+@@ -772,6 +772,7 @@ static struct cdns_reg_pairs cdns_usb_ln_regs_ext_ssc[] = {
+ 	{0x000F, SIERRA_LFPSFILT_NS_PREG},
+ 	{0x0009, SIERRA_LFPSFILT_RD_PREG},
+ 	{0x0001, SIERRA_LFPSFILT_MP_PREG},
++	{0x6013, SIERRA_SIGDET_SUPPORT_PREG},
+ 	{0x8013, SIERRA_SDFILT_H2L_A_PREG},
+ 	{0x8009, SIERRA_SDFILT_L2H_PREG},
+ 	{0x0024, SIERRA_RXBUFFER_CTLECTRL_PREG},
 -- 
 2.25.1
 
