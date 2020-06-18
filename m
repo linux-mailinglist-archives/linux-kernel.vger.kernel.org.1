@@ -2,254 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1BA1FEE30
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0C31FEE37
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgFRI5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:57:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45062 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgFRI4l (ORCPT
+        id S1728984AbgFRI5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:57:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58246 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728992AbgFRI5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:56:41 -0400
-Received: from ip-109-41-0-102.web.vodafone.de ([109.41.0.102] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jlqLL-0003gc-FO; Thu, 18 Jun 2020 08:56:20 +0000
-Date:   Thu, 18 Jun 2020 10:56:14 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 02/11] fs: Move __scm_install_fd() to
- __fd_install_received()
-Message-ID: <20200618085614.fw3ynalpcipbplf3@wittgenstein>
-References: <20200616032524.460144-1-keescook@chromium.org>
- <20200616032524.460144-3-keescook@chromium.org>
+        Thu, 18 Jun 2020 04:57:36 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05I8XHsP166386;
+        Thu, 18 Jun 2020 04:56:54 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31r44t239w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 04:56:54 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05I8Xovn168995;
+        Thu, 18 Jun 2020 04:56:53 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31r44t2396-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 04:56:53 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05I8tl9e022242;
+        Thu, 18 Jun 2020 08:56:50 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 31r18v04f3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Jun 2020 08:56:50 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05I8tTmP62915032
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jun 2020 08:55:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC5ED4204C;
+        Thu, 18 Jun 2020 08:56:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBBA14203F;
+        Thu, 18 Jun 2020 08:56:43 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.204.36])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 18 Jun 2020 08:56:43 +0000 (GMT)
+Date:   Thu, 18 Jun 2020 11:56:41 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 (RESEND) 0/3] arm64: Enable vmemmap mapping from
+ device memory
+Message-ID: <20200618085641.GE6493@linux.ibm.com>
+References: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616032524.460144-3-keescook@chromium.org>
+In-Reply-To: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-18_04:2020-06-17,2020-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 mlxlogscore=999
+ clxscore=1011 lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ phishscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006180065
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 08:25:15PM -0700, Kees Cook wrote:
-> In preparation for users of the "install a received file" logic outside
-> of net/ (pidfd and seccomp), relocate and rename __scm_install_fd() from
-> net/core/scm.c to __fd_install_received() in fs/file.c, and provide a
-> wrapper named fd_install_received_user(), as future patches will change
-> the interface to __fd_install_received().
+On Thu, Jun 18, 2020 at 06:45:27AM +0530, Anshuman Khandual wrote:
+> This series enables vmemmap backing memory allocation from device memory
+> ranges on arm64. But before that, it enables vmemmap_populate_basepages()
+> and vmemmap_alloc_block_buf() to accommodate struct vmem_altmap based
+> alocation requests.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  fs/file.c            | 47 ++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/file.h |  8 ++++++++
->  include/net/scm.h    |  1 -
->  net/compat.c         |  2 +-
->  net/core/scm.c       | 32 +-----------------------------
->  5 files changed, 57 insertions(+), 33 deletions(-)
+> This series applies on 5.8-rc1.
 > 
-> diff --git a/fs/file.c b/fs/file.c
-> index abb8b7081d7a..fcfddae0d252 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -11,6 +11,7 @@
->  #include <linux/export.h>
->  #include <linux/fs.h>
->  #include <linux/mm.h>
-> +#include <linux/net.h>
->  #include <linux/sched/signal.h>
->  #include <linux/slab.h>
->  #include <linux/file.h>
-> @@ -18,6 +19,8 @@
->  #include <linux/bitops.h>
->  #include <linux/spinlock.h>
->  #include <linux/rcupdate.h>
-> +#include <net/cls_cgroup.h>
-> +#include <net/netprio_cgroup.h>
->  
->  unsigned int sysctl_nr_open __read_mostly = 1024*1024;
->  unsigned int sysctl_nr_open_min = BITS_PER_LONG;
-> @@ -931,6 +934,50 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
->  	return err;
->  }
->  
-> +/**
-> + * __fd_install_received() - Install received file into file descriptor table
-> + *
-> + * @fd: fd to install into (if negative, a new fd will be allocated)
-> + * @file: struct file that was received from another process
-> + * @ufd_required: true to use @ufd for writing fd number to userspace
-> + * @ufd: __user pointer to write new fd number to
-> + * @o_flags: the O_* flags to apply to the new fd entry
-> + *
-> + * Installs a received file into the file descriptor table, with appropriate
-> + * checks and count updates. Optionally writes the fd number to userspace.
-> + *
-> + * Returns -ve on error.
-> + */
-> +int __fd_install_received(struct file *file, int __user *ufd, unsigned int o_flags)
-> +{
-> +	struct socket *sock;
-> +	int new_fd;
-> +	int error;
-> +
-> +	error = security_file_receive(file);
-> +	if (error)
-> +		return error;
-> +
-> +	new_fd = get_unused_fd_flags(o_flags);
-> +	if (new_fd < 0)
-> +		return new_fd;
-> +
-> +	error = put_user(new_fd, ufd);
-> +	if (error) {
-> +		put_unused_fd(new_fd);
-> +		return error;
-> +	}
-> +
-> +	/* Bump the usage count and install the file. */
-> +	sock = sock_from_file(file, &error);
-> +	if (sock) {
-> +		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
-> +		sock_update_classid(&sock->sk->sk_cgrp_data);
-> +	}
-> +	fd_install(new_fd, get_file(file));
-> +	return 0;
-> +}
-> +
->  static int ksys_dup3(unsigned int oldfd, unsigned int newfd, int flags)
->  {
->  	int err = -EBADF;
-> diff --git a/include/linux/file.h b/include/linux/file.h
-> index 122f80084a3e..fe18a1a0d555 100644
-> --- a/include/linux/file.h
-> +++ b/include/linux/file.h
-> @@ -91,6 +91,14 @@ extern void put_unused_fd(unsigned int fd);
->  
->  extern void fd_install(unsigned int fd, struct file *file);
->  
-> +extern int __fd_install_received(struct file *file, int __user *ufd,
-> +				 unsigned int o_flags);
-> +static inline int fd_install_received_user(struct file *file, int __user *ufd,
-> +					   unsigned int o_flags)
-> +{
-> +	return __fd_install_received(file, ufd, o_flags);
-> +}
+> Pending Question:
+> 
+> altmap_alloc_block_buf() does not have any other remaining users in
+> the tree after this change. Should it be converted into a static
+> function and it's declaration be dropped from the header
+> (include/linux/mm.h). Avoided doing so because I was not sure if there
+> are any off-tree users or not.
 
-Shouldn't this be the other way around such that
-fd_install_received_user() is the workhorse that has a "ufd" argument
-and fd_install_received() is the static inline function that doesn't?
+Well, off-tree users probably have an active fork anyway so they could
+switch to vmemmap_alloc_block_buf()...
 
-extern int fd_install_received_user(struct file *file, int __user *ufd, unsigned int o_flags)
-static inline int fd_install_received(struct file *file, unsigned int o_flags)
-{
-	return fd_install_received_user(file, NULL, o_flags);
-}
+Regardless, can you please update Documentation/vm/memory-model.rst to
+keep it in sync with the code?
 
-(So I'm on vacation this week some my reviews are selective and spotty
-but I promise to be back next week. :))
-
-Christian
-
-> +
->  extern void flush_delayed_fput(void);
->  extern void __fput_sync(struct file *);
->  
-> diff --git a/include/net/scm.h b/include/net/scm.h
-> index 581a94d6c613..1ce365f4c256 100644
-> --- a/include/net/scm.h
-> +++ b/include/net/scm.h
-> @@ -37,7 +37,6 @@ struct scm_cookie {
->  #endif
->  };
->  
-> -int __scm_install_fd(struct file *file, int __user *ufd, unsigned int o_flags);
->  void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm);
->  void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm);
->  int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *scm);
-> diff --git a/net/compat.c b/net/compat.c
-> index 27d477fdcaa0..94f288e8dac5 100644
-> --- a/net/compat.c
-> +++ b/net/compat.c
-> @@ -298,7 +298,7 @@ void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm)
->  	int err = 0, i;
->  
->  	for (i = 0; i < fdmax; i++) {
-> -		err = __scm_install_fd(scm->fp->fp[i], cmsg_data + i, o_flags);
-> +		err = fd_install_received_user(scm->fp->fp[i], cmsg_data + i, o_flags);
->  		if (err)
->  			break;
->  	}
-> diff --git a/net/core/scm.c b/net/core/scm.c
-> index 6151678c73ed..df190f1fdd28 100644
-> --- a/net/core/scm.c
-> +++ b/net/core/scm.c
-> @@ -280,36 +280,6 @@ void put_cmsg_scm_timestamping(struct msghdr *msg, struct scm_timestamping_inter
->  }
->  EXPORT_SYMBOL(put_cmsg_scm_timestamping);
->  
-> -int __scm_install_fd(struct file *file, int __user *ufd, unsigned int o_flags)
-> -{
-> -	struct socket *sock;
-> -	int new_fd;
-> -	int error;
-> -
-> -	error = security_file_receive(file);
-> -	if (error)
-> -		return error;
-> -
-> -	new_fd = get_unused_fd_flags(o_flags);
-> -	if (new_fd < 0)
-> -		return new_fd;
-> -
-> -	error = put_user(new_fd, ufd);
-> -	if (error) {
-> -		put_unused_fd(new_fd);
-> -		return error;
-> -	}
-> -
-> -	/* Bump the usage count and install the file. */
-> -	sock = sock_from_file(file, &error);
-> -	if (sock) {
-> -		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
-> -		sock_update_classid(&sock->sk->sk_cgrp_data);
-> -	}
-> -	fd_install(new_fd, get_file(file));
-> -	return 0;
-> -}
-> -
->  static int scm_max_fds(struct msghdr *msg)
->  {
->  	if (msg->msg_controllen <= sizeof(struct cmsghdr))
-> @@ -336,7 +306,7 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
->  	}
->  
->  	for (i = 0; i < fdmax; i++) {
-> -		err = __scm_install_fd(scm->fp->fp[i], cmsg_data + i, o_flags);
-> +		err = fd_install_received_user(scm->fp->fp[i], cmsg_data + i, o_flags);
->  		if (err)
->  			break;
->  	}
+> Changes in V3:
+> 
+> - Dropped comment from free_hotplug_page_range() per Robin
+> - Modified comment in unmap_hotplug_range() per Robin
+> - Enabled altmap support in vmemmap_alloc_block_buf() per Robin
+> 
+> Changes in V2: (https://lkml.org/lkml/2020/3/4/475)
+> 
+> - Rebased on latest hot-remove series (v14) adding P4D page table support
+> 
+> Changes in V1: (https://lkml.org/lkml/2020/1/23/12)
+> 
+> - Added an WARN_ON() in unmap_hotplug_range() when altmap is
+>   provided without the page table backing memory being freed
+> 
+> Changes in RFC V2: (https://lkml.org/lkml/2019/10/21/11)
+> 
+> - Changed the commit message on 1/2 patch per Will
+> - Changed the commit message on 2/2 patch as well
+> - Rebased on arm64 memory hot remove series (v10)
+> 
+> RFC V1: (https://lkml.org/lkml/2019/6/28/32)
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Fenghua Yu <fenghua.yu@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: x86@kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Anshuman Khandual (3):
+>   mm/sparsemem: Enable vmem_altmap support in vmemmap_populate_basepages()
+>   mm/sparsemem: Enable vmem_altmap support in vmemmap_alloc_block_buf()
+>   arm64/mm: Enable vmem_altmap support for vmemmap mappings
+> 
+>  arch/arm64/mm/mmu.c       | 59 ++++++++++++++++++++++++++-------------
+>  arch/ia64/mm/discontig.c  |  2 +-
+>  arch/powerpc/mm/init_64.c | 10 +++----
+>  arch/riscv/mm/init.c      |  2 +-
+>  arch/x86/mm/init_64.c     | 12 ++++----
+>  include/linux/mm.h        |  8 ++++--
+>  mm/sparse-vmemmap.c       | 38 ++++++++++++++++++++-----
+>  7 files changed, 87 insertions(+), 44 deletions(-)
+> 
 > -- 
-> 2.25.1
+> 2.20.1
 > 
+
+-- 
+Sincerely yours,
+Mike.
