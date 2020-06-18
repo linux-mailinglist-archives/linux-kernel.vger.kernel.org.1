@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92481FFCA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873801FFCBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbgFRUjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:39:46 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:3944 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730998AbgFRUjL (ORCPT
+        id S1731581AbgFRUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:39:49 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:48844 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731153AbgFRUjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:11 -0400
+        Thu, 18 Jun 2020 16:39:13 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:05 -0700
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:06 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id A8BBFB2656;
-        Thu, 18 Jun 2020 16:39:08 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id BEF8AB2656;
+        Thu, 18 Jun 2020 16:39:09 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,102 +26,110 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 13/51] objtool: mcount: Return symbol from mcountsym
-Date:   Thu, 18 Jun 2020 13:37:59 -0700
-Message-ID: <11eeca2d50d0609e0d63dc1760692ca00ee6e660.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 14/51] objtool: mcount: Move get_mcountsym
+Date:   Thu, 18 Jun 2020 13:38:00 -0700
+Message-ID: <8c3b95adbd58e26c7b09e4d0c7e59acb25b69054.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
  designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before we can move this function out of the wrapper and into
-wordsize-independent code we need to return the relocation
-symbol information in a size-independent fashion. Previously
-we compared the raw info bits but that requires passing around
-an unsigned long. Instead we just use a pointer to the objtool
-struct symbol which callers can use as-needed.
+Now that it's been stripped of using the old recordmcount ELF
+wrapper get_mcountsym() is ready to be promoted out of the
+double-included wrapper header.
 
-Reported-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
-Co-developed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Co-developed-by: Peter Zijlstra <peterz@infradead.org>
-
---
-
-Thanks to Kamalesh Babulal for reporting this problem and suggesting
-a fix. Thanks to Peter Zijlstra for recommending an enhancement to
-the fix.
 ---
- tools/objtool/recordmcount.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tools/objtool/recordmcount.c | 16 ++++++++++++++++
+ tools/objtool/recordmcount.h | 19 -------------------
+ 2 files changed, 16 insertions(+), 19 deletions(-)
 
+diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
+index dafa6dd10d04..d5f7c06afd57 100644
+--- a/tools/objtool/recordmcount.c
++++ b/tools/objtool/recordmcount.c
+@@ -422,6 +422,22 @@ static int is_mcounted_section_name(char const *const txtname)
+ 		strcmp(".cpuidle.text", txtname) == 0;
+ }
+ 
++static struct symbol *get_mcountsym(struct reloc *reloc)
++{
++	struct symbol *sym = reloc->sym;
++	char const *symname = sym->name;
++	char const *mcount = gpfx == '_' ? "_mcount" : "mcount";
++	char const *fentry = "__fentry__";
++
++	if (symname[0] == '.')
++		++symname;  /* ppc64 hack */
++	if (strcmp(mcount, symname) == 0 ||
++	    (altmcount && strcmp(altmcount, symname) == 0) ||
++	    (strcmp(fentry, symname) == 0))
++		return sym;
++	return NULL;
++}
++
+ static const unsigned int missing_sym = (unsigned int)-1;
+ 
+ /* 32 bit and 64 bit are very similar */
 diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-index df8384f8e9e7..6ac120aa45af 100644
+index 6ac120aa45af..210899819261 100644
 --- a/tools/objtool/recordmcount.h
 +++ b/tools/objtool/recordmcount.h
-@@ -271,7 +271,7 @@ static int append_func(Elf_Ehdr *const ehdr,
+@@ -27,7 +27,6 @@
+ #undef find_section_sym_index
+ #undef has_rel_mcount
+ #undef tot_relsize
+-#undef get_mcountsym
+ #undef get_shnum
+ #undef set_shnum
+ #undef get_shstrndx
+@@ -56,7 +55,6 @@
+ # define set_shnum		set_shnum64
+ # define get_shstrndx		get_shstrndx64
+ # define do_func		do64
+-# define get_mcountsym		get_mcountsym_64
+ # define is_fake_mcount		is_fake_mcount64
+ # define fn_is_fake_mcount	fn_is_fake_mcount64
+ # define MIPS_is_fake_mcount	MIPS64_is_fake_mcount
+@@ -84,7 +82,6 @@
+ # define set_shnum		set_shnum32
+ # define get_shstrndx		get_shstrndx32
+ # define do_func		do32
+-# define get_mcountsym		get_mcountsym_32
+ # define is_fake_mcount		is_fake_mcount32
+ # define fn_is_fake_mcount	fn_is_fake_mcount32
+ # define MIPS_is_fake_mcount	MIPS32_is_fake_mcount
+@@ -271,22 +268,6 @@ static int append_func(Elf_Ehdr *const ehdr,
  	return elf_write(lf);
  }
  
--static unsigned get_mcountsym(struct reloc *reloc)
-+static struct symbol *get_mcountsym(struct reloc *reloc)
- {
- 	struct symbol *sym = reloc->sym;
- 	char const *symname = sym->name;
-@@ -283,8 +283,8 @@ static unsigned get_mcountsym(struct reloc *reloc)
- 	if (strcmp(mcount, symname) == 0 ||
- 	    (altmcount && strcmp(altmcount, symname) == 0) ||
- 	    (strcmp(fentry, symname) == 0))
--		return GELF_R_INFO(reloc->sym->idx, reloc->type);
--	return 0;
-+		return sym;
-+	return NULL;
- }
- 
+-static struct symbol *get_mcountsym(struct reloc *reloc)
+-{
+-	struct symbol *sym = reloc->sym;
+-	char const *symname = sym->name;
+-	char const *mcount = gpfx == '_' ? "_mcount" : "mcount";
+-	char const *fentry = "__fentry__";
+-
+-	if (symname[0] == '.')
+-		++symname;  /* ppc64 hack */
+-	if (strcmp(mcount, symname) == 0 ||
+-	    (altmcount && strcmp(altmcount, symname) == 0) ||
+-	    (strcmp(fentry, symname) == 0))
+-		return sym;
+-	return NULL;
+-}
+-
  /*
-@@ -303,14 +303,14 @@ static uint_t *sift_rel_mcount(uint_t *mlocp,
- 	uint_t *const mloc0 = mlocp;
- 	Elf_Rel *mrelp = *mrelpp;
- 	unsigned int rel_entsize = rels->sh.sh_entsize;
--	unsigned mcountsym = 0;
-+	struct symbol *mcountsym = NULL;
- 	struct reloc *reloc;
- 
- 	list_for_each_entry(reloc, &rels->reloc_list, list) {
- 		if (!mcountsym)
- 			mcountsym = get_mcountsym(reloc);
- 
--		if (mcountsym == GELF_R_INFO(reloc->sym->idx, reloc->type) && !is_fake_mcount(reloc)) {
-+		if (mcountsym == reloc->sym && !is_fake_mcount(reloc)) {
- 			uint_t const addend =
- 				_w(reloc->offset - recval + mcount_adjust);
- 			mrelp->r_offset = _w(offbase
-@@ -342,7 +342,7 @@ static int nop_mcount(struct section * const rels,
- 		+ (void *)ehdr);
- 	struct reloc *reloc;
- 	Elf_Shdr const *const shdr = &shdr0[rels->sh.sh_info];
--	unsigned mcountsym = 0;
-+	struct symbol *mcountsym = NULL;
- 	int once = 0;
- 
- 	list_for_each_entry(reloc, &rels->reloc_list, list) {
-@@ -351,7 +351,7 @@ static int nop_mcount(struct section * const rels,
- 		if (!mcountsym)
- 			mcountsym = get_mcountsym(reloc);
- 
--		if (mcountsym == GELF_R_INFO(reloc->sym->idx, reloc->type) && !is_fake_mcount(reloc)) {
-+		if (mcountsym == reloc->sym && !is_fake_mcount(reloc)) {
- 			if (make_nop) {
- 				ret = make_nop((void *)ehdr, _w(shdr->sh_offset) + reloc->offset);
- 				if (ret < 0)
+  * Look at the relocations in order to find the calls to mcount.
+  * Accumulate the section offsets that are found, and their relocation info,
 -- 
 2.20.1
 
