@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D601D1FE1F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8901FE1C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgFRBY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54314 "EHLO mail.kernel.org"
+        id S1731378AbgFRBZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:25:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730572AbgFRBVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:21:44 -0400
+        id S1730654AbgFRBWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:22:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C754A214DB;
-        Thu, 18 Jun 2020 01:21:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C637320B1F;
+        Thu, 18 Jun 2020 01:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443303;
-        bh=V4vmO660+mBPK5zXExoxZj7uOMJXgvE67NAPbI/hdiw=;
+        s=default; t=1592443327;
+        bh=EQOKxm6aV10YMCrUx58JzOqXwaMehrIdJyBLmmicb8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XHIzBx9AF6s34DArCWL5mj3scFc3Pz0NF3pYfFmGTm2HDuDbvnh+kp5s/fc4LW421
-         JXPouHL3YSPy783A9tNkxMxqOXqbzMx+kGY/A+kl9QWHmUX5OVpHSyjynQtzZN0GQ1
-         Jr90G/VDiVskqV8PovzoRassdAE+1xrLo5TGRzNU=
+        b=BEJKEpLG851D8+phUgnCAExQ5bJS7fRIkI+qrlY6h85lQ7m9eySUa7rOjgrIuqUuF
+         EgrmmKhgk9LrYIRS/tzwfXDHGSnh4UeNsVmJChhC6fNQ4iAbvrN0n3yF4sD8wNUyui
+         yciEHJ3BQpmwAWSsCll36tPNCo9KoY77ZNljsyC8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Alexander Fomichev <fomichev.ru@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
-        linux-ntb@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 242/266] NTB: perf: Fix support for hardware that doesn't have port numbers
-Date:   Wed, 17 Jun 2020 21:16:07 -0400
-Message-Id: <20200618011631.604574-242-sashal@kernel.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 260/266] x86/idt: Keep spurious entries unset in system_vectors
+Date:   Wed, 17 Jun 2020 21:16:25 -0400
+Message-Id: <20200618011631.604574-260-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -45,50 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-[ Upstream commit b54369a248c2e033bfcf5d6917e08cf9d73d54a6 ]
+[ Upstream commit 1f1fbc70c10e81f70e9fbe2102d439c883269811 ]
 
-Legacy drivers do not have port numbers (but is reliably only two ports)
-and was broken by the recent commit that added mult-port support to
-ntb_perf. This is especially important to support the cross link
-topology which is perfectly symmetric and cannot assign unique port
-numbers easily.
+With commit dc20b2d52653 ("x86/idt: Move interrupt gate initialization to
+IDT code") non assigned system vectors are also marked as used in
+'used_vectors' (now 'system_vectors') bitmap. This makes checks in
+arch_show_interrupts() whether a particular system vector is allocated to
+always pass and e.g. 'Hyper-V reenlightenment interrupts' entry always
+shows up in /proc/interrupts.
 
-Hardware that returns zero for both the local port and the peer should
-just always use gidx=0 for the only peer.
+Another side effect of having all unassigned system vectors marked as used
+is that irq_matrix_debug_show() will wrongly count them among 'System'
+vectors.
 
-Fixes: 5648e56d03fa ("NTB: ntb_perf: Add full multi-port NTB API support")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Allen Hubbe <allenbh@gmail.com>
-Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+As it is now ensured that alloc_intr_gate() is not called after init, it is
+possible to leave unused entries in 'system_vectors' unset to fix these
+issues.
+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200428093824.1451532-4-vkuznets@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_perf.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/kernel/idt.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
-index 3817eadab2cf..281170887ad0 100644
---- a/drivers/ntb/test/ntb_perf.c
-+++ b/drivers/ntb/test/ntb_perf.c
-@@ -1423,6 +1423,16 @@ static int perf_init_peers(struct perf_ctx *perf)
- 	if (perf->gidx == -1)
- 		perf->gidx = pidx;
+diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+index 87ef69a72c52..7bb4c3cbf4dc 100644
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -318,7 +318,11 @@ void __init idt_setup_apic_and_irq_gates(void)
  
-+	/*
-+	 * Hardware with only two ports may not have unique port
-+	 * numbers. In this case, the gidxs should all be zero.
-+	 */
-+	if (perf->pcnt == 1 &&  ntb_port_number(perf->ntb) == 0 &&
-+	    ntb_peer_port_number(perf->ntb, 0) == 0) {
-+		perf->gidx = 0;
-+		perf->peers[0].gidx = 0;
-+	}
-+
- 	for (pidx = 0; pidx < perf->pcnt; pidx++) {
- 		ret = perf_setup_peer_mw(&perf->peers[pidx]);
- 		if (ret)
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 	for_each_clear_bit_from(i, system_vectors, NR_VECTORS) {
+-		set_bit(i, system_vectors);
++		/*
++		 * Don't set the non assigned system vectors in the
++		 * system_vectors bitmap. Otherwise they show up in
++		 * /proc/interrupts.
++		 */
+ 		entry = spurious_entries_start + 8 * (i - FIRST_SYSTEM_VECTOR);
+ 		set_intr_gate(i, entry);
+ 	}
 -- 
 2.25.1
 
