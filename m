@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76491FDB6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE501FDB67
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgFRBLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
+        id S1728735AbgFRBL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728709AbgFRBLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:11:05 -0400
+        id S1728710AbgFRBLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:11:06 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B88021D7E;
-        Thu, 18 Jun 2020 01:11:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB180221E6;
+        Thu, 18 Jun 2020 01:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442665;
-        bh=nXySQYyZR7XIC8RhMQ6BDal9RFYXQkjxarwlV7ejjg4=;
+        s=default; t=1592442666;
+        bh=YCQS6hEr2QhFxvArNcCpAAQU25JO6BILq2777jLW69Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oksSqBSdFUTFZz76Fsp50PfymeOiMY2wCJZwx2v9zo35ieaYH06yuo9Rr76QsKmL6
-         cQLKQlMMllPbiDHtxW6KACXZExLJx4LOaz/b1ZAIAI16MWrl34np9uQLmTaIFrveCl
-         uo30EKvIei+psEhg3Egn6c750jIBfYhT16KkOL8c=
+        b=Rf26kPiiLbpYbtPUUt/fBpzt8kUAe/GCWYCUipw0BTLX6nulLS0xoCk/qTSvBan3d
+         /O651SahvYSK5QNRvypRu2zlpsHNaQqNwXLDHIDW5+YmejuKqs2365sxu/m3f7By5U
+         Ob3jd1pq1NGFIWBzMUZJDHkEjXrE6UHAK1NS6IOE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 135/388] arm64: dts: qcom: sm8250: Fix PDC compatible and reg
-Date:   Wed, 17 Jun 2020 21:03:52 -0400
-Message-Id: <20200618010805.600873-135-sashal@kernel.org>
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
+Subject: [PATCH AUTOSEL 5.7 136/388] staging: gasket: Fix mapping refcnt leak when put attribute fails
+Date:   Wed, 17 Jun 2020 21:03:53 -0400
+Message-Id: <20200618010805.600873-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,38 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 240031967ac4c63713c6e0c3249d734e23c913aa ]
+[ Upstream commit 57a66838e1494cd881b7f4e110ec685736e8e3ca ]
 
-The pdc node suffers from both too narrow compatible and insufficient
-cells in the reg, fix these.
+gasket_sysfs_put_attr() invokes get_mapping(), which returns a reference
+of the specified gasket_sysfs_mapping object to "mapping" with increased
+refcnt.
 
-Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
-Tested-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200415054703.739507-1-bjorn.andersson@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+When gasket_sysfs_put_attr() returns, local variable "mapping" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one path of
+gasket_sysfs_put_attr(). When mapping attribute is unknown, the function
+forgets to decrease the refcnt increased by get_mapping(), causing a
+refcnt leak.
+
+Fix this issue by calling put_mapping() when put attribute fails due to
+unknown attribute.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/1587618895-13660-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/gasket/gasket_sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 891d83b2afea..2a7eaefd221d 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -314,8 +314,8 @@ intc: interrupt-controller@17a00000 {
- 		};
+diff --git a/drivers/staging/gasket/gasket_sysfs.c b/drivers/staging/gasket/gasket_sysfs.c
+index 5f0e089573a2..ad852ea1d4a9 100644
+--- a/drivers/staging/gasket/gasket_sysfs.c
++++ b/drivers/staging/gasket/gasket_sysfs.c
+@@ -339,6 +339,7 @@ void gasket_sysfs_put_attr(struct device *device,
  
- 		pdc: interrupt-controller@b220000 {
--			compatible = "qcom,sm8250-pdc";
--			reg = <0x0b220000 0x30000>, <0x17c000f0 0x60>;
-+			compatible = "qcom,sm8250-pdc", "qcom,pdc";
-+			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
- 			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
- 					  <125 63 1>, <126 716 12>;
- 			#interrupt-cells = <2>;
+ 	dev_err(device, "Unable to put unknown attribute: %s\n",
+ 		attr->attr.attr.name);
++	put_mapping(mapping);
+ }
+ EXPORT_SYMBOL(gasket_sysfs_put_attr);
+ 
 -- 
 2.25.1
 
