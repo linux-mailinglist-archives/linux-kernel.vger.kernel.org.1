@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0D51FFCAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3D91FFCD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731834AbgFRUkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:40:05 -0400
+        id S1729375AbgFRUmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:42:44 -0400
 Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:4267 "EHLO
         EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731276AbgFRUjU (ORCPT
+        by vger.kernel.org with ESMTP id S1731295AbgFRUjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:20 -0400
+        Thu, 18 Jun 2020 16:39:21 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
  15.0.1156.6; Thu, 18 Jun 2020 13:39:15 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 7B390B2656;
-        Thu, 18 Jun 2020 16:39:18 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 33CFAB2656;
+        Thu, 18 Jun 2020 16:39:19 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,9 +26,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 25/51] objtool: mcount: Use ELF header from objtool
-Date:   Thu, 18 Jun 2020 13:38:11 -0700
-Message-ID: <c0d4f6eca3fbbdd47f72fc859f17265a4f425128.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 26/51] objtool: mcount: Remove unused file mapping
+Date:   Thu, 18 Jun 2020 13:38:12 -0700
+Message-ID: <79d29ed011f2afda285691a47b157363ab547204.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
@@ -42,118 +42,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ELF header is the very first structure in an ELF file.
-Rather than cast it from the file mapping we use the ELF
-header extracted via objtool's ELF code.
+The ELF data is now accessed completely through objtool's
+ELF code. We can remove the mapping of the original ELF
+file and propagate elf_open_read(), elf_close(), and malloc()
+up in place of mmap_file(), mmap_cleanup(), and umalloc()
+respectively. This also eliminates the last use of the
+umalloc() wrapper, reduces the number of global
+variables, and limits the use of globals to:
 
-This is the last usage of the open-coded mapping of the ELF
-file which we will remove in a later step.
+	The struct elf for the file we're working on. This
+	saves passing it to nearly every function as a parameter.
+
+	Variables set depending on the ELF file endian, wordsize,
+	and arch so that the appropriate relocation structures,
+	offset sizes, architecture quirks, and nop encodings will
+	be used.
+
+	One command-line option
+
+Note that we're still using the recordmcount wrapper to change
+variable sizes and structure definitions we use to build the
+mcount relocation data and call instruction offsets.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.c | 37 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
+ tools/objtool/recordmcount.c | 99 +++---------------------------------
+ tools/objtool/recordmcount.h |  4 +-
+ 2 files changed, 9 insertions(+), 94 deletions(-)
 
 diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index aa35173de3d9..f8699e52e7e5 100644
+index f8699e52e7e5..a263062c9c64 100644
 --- a/tools/objtool/recordmcount.c
 +++ b/tools/objtool/recordmcount.c
-@@ -525,21 +525,19 @@ static void MIPS64_r_info(Elf64_Rel *const rp, unsigned sym, unsigned type)
- static int do_file(char const *const fname)
- {
+@@ -41,104 +41,14 @@
+ #define R_AARCH64_ABS64	257
+ #endif
+ 
+-#define R_ARM_PC24		1
+ #define R_ARM_THM_CALL		10
+-#define R_ARM_CALL		28
+ 
+-static int fd_map;	/* File descriptor for file being modified. */
+-static int mmap_failed; /* Boolean flag. */
+ static char gpfx;	/* prefix for global symbol name (sometimes '_') */
+ static const char *altmcount;	/* alternate mcount symbol name */
+ extern int warn_on_notrace_sect; /* warn when section has mcount not being recorded */
+-static void *file_map;	/* pointer of the mapped file */
+-static size_t file_map_size; /* original ELF file size */
+ 
+ static struct elf *lf;
+ 
+-static void mmap_cleanup(void)
+-{
+-	if (!mmap_failed)
+-		munmap(file_map, file_map_size);
+-	else
+-		free(file_map);
+-	file_map = NULL;
+-	if (lf)
+-		elf_close(lf);
+-	lf = NULL;
+-}
+-
+-static void * umalloc(size_t size)
+-{
+-	void *const addr = malloc(size);
+-	if (addr == 0) {
+-		fprintf(stderr, "malloc failed: %zu bytes\n", size);
+-		mmap_cleanup();
+-		return NULL;
+-	}
+-	return addr;
+-}
+-
+-/*
+- * Get the whole file as a programming convenience in order to avoid
+- * malloc+lseek+read+free of many pieces.  If successful, then mmap
+- * avoids copying unused pieces; else just read the whole file.
+- * Open for both read and write; new info will be appended to the file.
+- * Use MAP_PRIVATE so that a few changes to the in-memory ElfXX_Ehdr
+- * do not propagate to the file until an explicit overwrite at the last.
+- * This preserves most aspects of consistency (all except .st_size)
+- * for simultaneous readers of the file while we are appending to it.
+- * However, multiple writers still are bad.  We choose not to use
+- * locking because it is expensive and the use case of kernel build
+- * makes multiple writers unlikely.
+- */
+-static void *mmap_file(char const *fname)
+-{
+-	struct stat sb;
+-
+-	/* Avoid problems if early cleanup() */
+-	fd_map = -1;
+-	mmap_failed = 1;
+-	file_map = NULL;
+-	file_map_size = 0;
+-
+-	lf = elf_open_read(fname, O_RDWR);
+-	if (!lf) {
+-		perror(fname);
+-		return NULL;
+-	}
+-	fd_map = lf->fd;
+-	if (fstat(fd_map, &sb) < 0) {
+-		perror(fname);
+-		goto out;
+-	}
+-	if (!S_ISREG(sb.st_mode)) {
+-		fprintf(stderr, "not a regular file: %s\n", fname);
+-		goto out;
+-	}
+-	file_map = mmap(0, sb.st_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
+-			fd_map, 0);
+-	if (file_map == MAP_FAILED) {
+-		mmap_failed = 1;
+-		file_map = umalloc(sb.st_size);
+-		if (!file_map) {
+-			perror(fname);
+-			goto out;
+-		}
+-		if (read(fd_map, file_map, sb.st_size) != sb.st_size) {
+-			perror(fname);
+-			mmap_cleanup();
+-			goto out;
+-		}
+-	} else
+-		mmap_failed = 0;
+-	file_map_size = sb.st_size;
+-out:
+-	fd_map = -1;
+-
+-	return file_map;
+-}
+-
+-
+ static unsigned char ideal_nop5_x86_64[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
+ static unsigned char ideal_nop5_x86_32[5] = { 0x3e, 0x8d, 0x74, 0x26, 0x00 };
+ static unsigned char *ideal_nop;
+@@ -527,8 +437,11 @@ static int do_file(char const *const fname)
  	unsigned int reltype = 0;
--	Elf32_Ehdr *ehdr;
  	int rc = -1;
  
--	ehdr = mmap_file(fname);
--	if (!ehdr)
-+	if (!mmap_file(fname))
+-	if (!mmap_file(fname))
++	lf = elf_open_read(fname, O_RDWR);
++	if (!lf) {
++		perror(fname);
  		goto out;
++	}
  
  	w = w4nat;
  	w2 = w2nat;
- 	w8 = w8nat;
--	switch (ehdr->e_ident[EI_DATA]) {
-+	switch (lf->ehdr.e_ident[EI_DATA]) {
- 		static unsigned int const endian = 1;
- 	default:
- 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
--			ehdr->e_ident[EI_DATA], fname);
-+			lf->ehdr.e_ident[EI_DATA], fname);
- 		goto out;
- 	case ELFDATA2LSB:
- 		if (*(unsigned char const *)&endian != 1) {
-@@ -568,18 +566,18 @@ static int do_file(char const *const fname)
- 		push_bl_mcount_thumb = push_bl_mcount_thumb_be;
- 		break;
- 	}  /* end switch */
--	if (memcmp(ELFMAG, ehdr->e_ident, SELFMAG) != 0 ||
--	    w2(ehdr->e_type) != ET_REL ||
--	    ehdr->e_ident[EI_VERSION] != EV_CURRENT) {
-+	if (memcmp(ELFMAG, lf->ehdr.e_ident, SELFMAG) != 0 ||
-+	    lf->ehdr.e_type != ET_REL ||
-+	    lf->ehdr.e_ident[EI_VERSION] != EV_CURRENT) {
- 		fprintf(stderr, "unrecognized ET_REL file %s\n", fname);
- 		goto out;
- 	}
- 
- 	gpfx = '_';
--	switch (w2(ehdr->e_machine)) {
-+	switch (lf->ehdr.e_machine) {
- 	default:
- 		fprintf(stderr, "unrecognized e_machine %u %s\n",
--			w2(ehdr->e_machine), fname);
-+			lf->ehdr.e_machine, fname);
- 		goto out;
- 	case EM_386:
- 		reltype = R_386_32;
-@@ -620,37 +618,36 @@ static int do_file(char const *const fname)
- 		break;
+@@ -658,7 +571,9 @@ static int do_file(char const *const fname)
  	}  /* end switch */
  
--	switch (ehdr->e_ident[EI_CLASS]) {
-+	switch (lf->ehdr.e_ident[EI_CLASS]) {
- 	default:
- 		fprintf(stderr, "unrecognized ELF class %d %s\n",
--			ehdr->e_ident[EI_CLASS], fname);
-+			lf->ehdr.e_ident[EI_CLASS], fname);
- 		goto out;
- 	case ELFCLASS32:
--		if (w2(ehdr->e_ehsize) != sizeof(Elf32_Ehdr)
--		||  w2(ehdr->e_shentsize) != sizeof(Elf32_Shdr)) {
-+		if (lf->ehdr.e_ehsize != sizeof(Elf32_Ehdr)
-+		||  lf->ehdr.e_shentsize != sizeof(Elf32_Shdr)) {
- 			fprintf(stderr,
- 				"unrecognized ET_REL file: %s\n", fname);
- 			goto out;
- 		}
--		if (w2(ehdr->e_machine) == EM_MIPS) {
-+		if (lf->ehdr.e_machine == EM_MIPS) {
- 			reltype = R_MIPS_32;
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		rc = do32(reltype);
- 		break;
- 	case ELFCLASS64: {
--		Elf64_Ehdr *const ghdr = (Elf64_Ehdr *)ehdr;
--		if (w2(ghdr->e_ehsize) != sizeof(Elf64_Ehdr)
--		||  w2(ghdr->e_shentsize) != sizeof(Elf64_Shdr)) {
-+		if (lf->ehdr.e_ehsize != sizeof(Elf64_Ehdr)
-+		||  lf->ehdr.e_shentsize != sizeof(Elf64_Shdr)) {
- 			fprintf(stderr,
- 				"unrecognized ET_REL file: %s\n", fname);
- 			goto out;
- 		}
--		if (w2(ghdr->e_machine) == EM_S390) {
-+		if (lf->ehdr.e_machine == EM_S390) {
- 			reltype = R_390_64;
- 			mcount_adjust_64 = -14;
- 		}
--		if (w2(ghdr->e_machine) == EM_MIPS) {
-+		if (lf->ehdr.e_machine == EM_MIPS) {
- 			reltype = R_MIPS_64;
- 			Elf64_r_info = MIPS64_r_info;
- 			is_fake_mcount = MIPS_is_fake_mcount;
+ out:
+-	mmap_cleanup();
++	if (lf)
++		elf_close(lf);
++	lf = NULL;
+ 	return rc;
+ }
+ 
+diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
+index 5ca488f3471c..fcc4f1a74d60 100644
+--- a/tools/objtool/recordmcount.h
++++ b/tools/objtool/recordmcount.h
+@@ -184,13 +184,13 @@ static int do_func(unsigned const reltype)
+ 	totrelsz = tot_relsize(&rel_entsize);
+ 	if (totrelsz == 0)
+ 		return 0;
+-	mrel0 = umalloc(totrelsz);
++	mrel0 = malloc(totrelsz);
+ 	mrelp = mrel0;
+ 	if (!mrel0)
+ 		return -1;
+ 
+ 	/* 2*sizeof(address) <= sizeof(Elf_Rel) */
+-	mloc0 = umalloc(totrelsz>>1);
++	mloc0 = malloc(totrelsz>>1);
+ 	mlocp = mloc0;
+ 	if (!mloc0) {
+ 		free(mrel0);
 -- 
 2.20.1
 
