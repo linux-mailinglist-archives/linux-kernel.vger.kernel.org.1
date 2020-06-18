@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6373D1FF910
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06691FF91E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731808AbgFRQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:19:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726981AbgFRQTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:19:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AD798AC9F;
-        Thu, 18 Jun 2020 16:19:12 +0000 (UTC)
-Date:   Thu, 18 Jun 2020 18:19:12 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
-        akpm@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux@rasmusvillemoes.dk, Jonathan Corbet <corbet@lwn.net>,
+        id S1729249AbgFRQV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:21:59 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11892 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726981AbgFRQV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:21:58 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eeb94410000>; Thu, 18 Jun 2020 09:20:17 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 18 Jun 2020 09:21:57 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 18 Jun 2020 09:21:57 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun
+ 2020 16:21:57 +0000
+Subject: Re: [PATCH -next] lib: fix test_hmm.c reference after free
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and
- filtering on flags
-Message-ID: <20200618161912.GD3617@alley>
-References: <20200617162536.611386-1-jim.cromie@gmail.com>
- <20200617162536.611386-23-jim.cromie@gmail.com>
+        Linux MM <linux-mm@kvack.org>
+CC:     =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>
+References: <c845c158-9c65-9665-0d0b-00342846dd07@infradead.org>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <fae8934b-7300-27ff-e18e-6db413b9ea53@nvidia.com>
+Date:   Thu, 18 Jun 2020 09:21:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617162536.611386-23-jim.cromie@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c845c158-9c65-9665-0d0b-00342846dd07@infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592497217; bh=0hMi0xIwkUC9/TCs8lWLufXqXDXyWYEohg3QmmYj+og=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=BhqrUg2yERdAPawT5Qw+t1rBqdhQpLqbOV17quzsC/9rjv6aMSq/08gIKFAIfnzC8
+         fLNVgJUxCYmt4ODHApjKeW8X41saLfBstZnr4Mrt4ew6jwqzwgaN+FrEX5vZU0f+uv
+         ytpvt9Al4dInIlHv1IrCulb0wIIf8W43P5VnQDmijbE5NBUfUi4pX+jx4V//Jqzs7y
+         LGrHBOEfbwED/NLPnPRG4aBFm8CdNTDEp6VJ+/7FV+k7wYEj4a4KG+Ct+5I0nejD8N
+         xl3wDHJIDbbszYz4XG3tQ+uYRCN98O8xMG3f23aTRMb/uWKphvTYTYNCuv7EHEikVx
+         A+Ogz+qbUsoNA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-06-17 10:25:35, Jim Cromie wrote:
-> 1. Add a user-flag [u] which works like the [pfmlt] flags, but has no
-> effect on callsite behavior; it allows incremental marking of
-> arbitrary sets of callsites.
-> 
-> 2. Add [PFMLTU] flags, which negate their counterparts; P===!p etc.
-> And in ddebug_read_flags():
->    current code does:	[pfmltu_] -> flags
->    copy it to:		[PFMLTU_] -> mask
-> 
-> also disallow both of a pair: ie no 'pP', no true & false.
-> 
-> 3. Add filtering ops into ddebug_change(), right after all the
-> callsite-property selections are complete.  These filter on the
-> callsite's current flagstate before applying modflags.
-> 
-> Why ?
-> 
-> The u-flag & filter flags
-> 
-> The 'u' flag lets the user assemble an arbitary set of callsites.
-> Then using filter flags, user can activate the 'u' callsite set.
-> 
->   #> echo 'file foo.c +u; file bar.c +u' > control   # and repeat
->   #> echo 'u+p' > control
-> 
-> Of course, you can continue to just activate your set without ever
-> marking it 1st, but you could trivially add the markup as you go, then
-> be able to use it as a constraint later, to undo or modify your set.
-> 
->   #> echo 'file foo.c +up' >control
->   .. monitor, debug, finish ..
->   #> echo 'u-p' >control
-> 
->   # then later resume
->   #> echo 'u+p' >control
-> 
->   # disable some cluttering messages, and remove from u-set
->   #> echo 'file noisy.c function:jabber_* u-pu' >control
-> 
->   # for doc, recollection
->   grep =pu control > my-favorite-callsites
-> 
-> Note:
-> 
-> Your flagstate after boot is generally not all =_. -DDEBUG will arm
-> compiled callsites by default, $builtinmod.dyndbg=+p bootargs can
-> enable them early, and $module.dyndbg=+p bootargs will arm them when
-> the module is loaded.  But you could manage them with u-flags:
-> 
->   #> echo '-t' >control		# clear t-flag to use it as 2ndary markup
->   #> echo 'p+ut' >control	# mark the boot-enabled set of callsites
->   #> echo '-p' >control		# clean your dmesg -w stream
-> 
->   ... monitor, debug ..
->   #> echo 'module of_interest $qterms +pu' >control	# build your set of useful debugs
->   #> echo 'module of_interest $qterms UT+pu' >control	# same, but dont alter ut marked set
 
-Does anyone requested this feature, please?
+On 6/17/20 10:31 PM, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>=20
+> Coccinelle scripts report the following errors:
+>=20
+> lib/test_hmm.c:523:20-26: ERROR: reference preceded by free on line 521
+> lib/test_hmm.c:524:21-27: ERROR: reference preceded by free on line 521
+> lib/test_hmm.c:523:28-35: ERROR: devmem is NULL but dereferenced.
+> lib/test_hmm.c:524:29-36: ERROR: devmem is NULL but dereferenced.
+>=20
+> Fix these by using the local variable 'res' instead of devmem.
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: linux-mm@kvack.org
+> Cc: Ralph Campbell <rcampbell@nvidia.com>
+> ---
+>   lib/test_hmm.c |    3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> --- linux-next-20200617.orig/lib/test_hmm.c
+> +++ linux-next-20200617/lib/test_hmm.c
+> @@ -520,8 +520,7 @@ static bool dmirror_allocate_chunk(struc
+>   err_free:
+>   	kfree(devmem);
+>   err_release:
+> -	release_mem_region(devmem->pagemap.res.start,
+> -			   resource_size(&devmem->pagemap.res));
+> +	release_mem_region(res->start, resource_size(res));
+>   err:
+>   	mutex_unlock(&mdevice->devmem_lock);
+>   	return false;
+>=20
 
-For me, it is really hard to imagine people using these complex and hacky
-steps.
-
-Not to say that using t-flag as a markup looks like a real hack.
-People either always need the line number in the kernel log or
-they do not need it at all.
-
-Let me repeat. Please, stop this non-sense.
-
-Best Regards,
-Petr
+Thanks for fixing this!
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
