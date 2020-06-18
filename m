@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7020A1FED52
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF591FED59
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgFRIPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        id S1725912AbgFRIRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728398AbgFRIPV (ORCPT
+        with ESMTP id S1727098AbgFRIRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:15:21 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09D8C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:15:20 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e1so5045482wrt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:15:20 -0700 (PDT)
+        Thu, 18 Jun 2020 04:17:01 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E88FC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:17:00 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id t194so4655387wmt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VFAtsOIUbu3lSU/HEGGn9hrUEMDItq984a8uDB0vTG4=;
-        b=OeeHyY+YKwWr2fRsYI11CjIJOMFFkdCm85UynZj7MpMoE9cp+TT0NoE8bPVmdKNSzf
-         QTIAlb3B23TkGeN9VzxVOhsSJ1N47FjHc0HndFsFSgJunxiS3u/Xh0o6KkKOngoTOzQK
-         mzSxMd7ej+ALbFugboPDoWizoX/iKpXRGYPK3I0cDW7KYMWWo/cVVI1DplpNBfOTrIFJ
-         DFKek/jSOY2zOffnNr75HeaTp4uUyeotKBquwFBZwQTL7NIrn/D+1UUorehTACtmSScG
-         6RsxLv6wCrP/2KFNpXHu95CoxXxBW3VT/5dUcI4iHiTz4sZF8UAEIQVnrQPCBO+p7cdT
-         5kzw==
+        bh=NDyr9zstTs9Nq+zPZv6Gql9N0F6eSp5HHPdSh/JTGbE=;
+        b=MJlDC6ysXgmjeUc1Qc+dVLIpYvX7pC1p6fQJsbFdp5S8FrVR+Kq+idOo26bUeeWIja
+         e/8Q+asaRlszugusmnJN8yJgQQLlR0N3jkXAPXcKSiX5LcoWhWecTAy4yKpU9cUfvwPm
+         AzA06IoaxMXGuBrRLZLe2U9QAwqfBV/Kepzl0t54uMKpjJ1cjHeMoOEOzzEahkiNF9BK
+         lYqwuxk6HaVO0azDXianiiFMaUaCvl+I59c1x02uT08lTGCIzIEW3K4atLjn86ezIu2c
+         +m5QC5+zWt75hYbirmBHH80hAJOrFmqPdezZgA/tVOCYl8+k6SfG736TlxaLhAGcOcKJ
+         Z3IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=VFAtsOIUbu3lSU/HEGGn9hrUEMDItq984a8uDB0vTG4=;
-        b=SfkLtiChDmJRuqWqczu3QPzNa4Gd4F46chdhYK0xufHSdhSXtrT+0d9kcPZRqRlCxM
-         NbwEgmu2uIwKD2PID6S1X5QK5wyuaq/de0mNcIqwNML6D5ldysECVInFYopc3AFI/fxf
-         0G96Vky9NOkHvwEgXbhB7PkYdQ3i0Y7NxQfX0v3cKvcIr43a87VzjgSoo3ZEgXxEJzgV
-         Zmxpi80Wz5K+XP6b5A+feKzcSab9+o+4nEcBXUAZAWMQekIx4i7sgbN6jSBJ1TixC7Yy
-         Q+oCtG7HzetqMyUwjUxDwhBX3NyMaAV6kw3IC3lf6lb8VfUj6e8U4vgbIfoDh0ai4vGH
-         PRAA==
-X-Gm-Message-State: AOAM5328VWvSY+nV+PqIi4aHJC44urnQf8Lfx973vafISuQ/KO+sMysy
-        xuCy3qrdAyXF9O/9kefOwKaIpQ==
-X-Google-Smtp-Source: ABdhPJw7v4a6RUSX4JeAquXGtY8pIltUKnas1QX4AmwEVUOoZpZugP52IHFdKrlL7jAb5gwUMH7j6A==
-X-Received: by 2002:a5d:6809:: with SMTP id w9mr3485714wru.182.1592468119418;
-        Thu, 18 Jun 2020 01:15:19 -0700 (PDT)
+        bh=NDyr9zstTs9Nq+zPZv6Gql9N0F6eSp5HHPdSh/JTGbE=;
+        b=nXdyGej364UdsaLL3+n1WdwiSNfmv64lJnN0JOXxXNLYTbUuNkkmU1LfB3iHsC7dkS
+         fGVFHCB0xKCn5e5T873YhwmFKoKXWfLAb+8ES6KJVS5TjF6dgZ3qEjyecY2sxsMMOO+Q
+         U/aRYWOlWFlSd0aEFzCfcHSw5OzyXDV7WW0y+VH1/352pwAUW8fyq4RGpeQsSBdijO/E
+         P6eEk9ufCGybvxHGcKOtW5dYrFA0WCn1Yndbz/UYD/NIn8vbiAZVkwEv4qadKKjL/9x0
+         ZN6PtZok85Tz4sQ1wtG7z9UBoMcTwN3lhQu192+6wQbjO2tOQNdtu5wGBW1N1R7mr9m8
+         DbOg==
+X-Gm-Message-State: AOAM5335d4W89Dqt8cenp2KOXfp2tgF5ELaX79nMMWSMVTPuWrDZhBev
+        bC2MVK/+kUA6RNd5PsvUjzQ33Q==
+X-Google-Smtp-Source: ABdhPJynqsLitcWa78812w1ql91heYr7oKRr0vEFQTLuGV6/e9w6jwU/14rOdWKeAcyy4QFw6t7aVw==
+X-Received: by 2002:a1c:16:: with SMTP id 22mr2684181wma.42.1592468218943;
+        Thu, 18 Jun 2020 01:16:58 -0700 (PDT)
 Received: from dell ([95.149.164.118])
-        by smtp.gmail.com with ESMTPSA id h203sm2112690wme.37.2020.06.18.01.15.18
+        by smtp.gmail.com with ESMTPSA id 4sm2525430wrf.74.2020.06.18.01.16.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 01:15:18 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 09:15:17 +0100
+        Thu, 18 Jun 2020 01:16:58 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 09:16:56 +0100
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] mfd: add support for the Khadas System control
- Microcontroller
-Message-ID: <20200618081517.GA2608702@dell>
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 1/5] dt-bindings: mfd: add Khadas Microcontroller
+ bindings
+Message-ID: <20200618081656.GB2608702@dell>
 References: <20200608091739.2368-1-narmstrong@baylibre.com>
- <20200608091739.2368-3-narmstrong@baylibre.com>
+ <20200608091739.2368-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200608091739.2368-3-narmstrong@baylibre.com>
+In-Reply-To: <20200608091739.2368-2-narmstrong@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -77,23 +80,12 @@ On Mon, 08 Jun 2020, Neil Armstrong wrote:
 > It has multiple boot control features like password check, power-on
 > options, power-off control and system FAN control on recent boards.
 > 
-> This implements a very basic MFD driver with the fan control and User
-> NVMEM cells.
-> 
 > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
-
-A patch-level change log makes reviewing easier.
-
->  drivers/mfd/Kconfig            |  21 +++++
->  drivers/mfd/Makefile           |   1 +
->  drivers/mfd/khadas-mcu.c       | 142 +++++++++++++++++++++++++++++++++
->  include/linux/mfd/khadas-mcu.h |  91 +++++++++++++++++++++
->  4 files changed, 255 insertions(+)
->  create mode 100644 drivers/mfd/khadas-mcu.c
->  create mode 100644 include/linux/mfd/khadas-mcu.h
-
-Nicely done.
+>  .../devicetree/bindings/mfd/khadas,mcu.yaml   | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/khadas,mcu.yaml
 
 Applied, thanks.
 
