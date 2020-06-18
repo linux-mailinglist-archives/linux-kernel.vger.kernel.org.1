@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C5B1FDE90
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE35D1FDE8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731921AbgFRBed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:34:33 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36027 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733007AbgFRBdz (ORCPT
+        id S1730225AbgFRBeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:34:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32346 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732413AbgFRBeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:33:55 -0400
+        Wed, 17 Jun 2020 21:34:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592444033;
+        s=mimecast20190719; t=1592444049;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ev0jVtPh1h88q6DAHqRJNDVbh/23LwjPAgc6D+TGPrA=;
-        b=L5lZ4SSFdLvi3bAp7oLbHXqloXy+/4I0TIT7WgP2XHSSs5qLyNJ8mrb6k6KTcrsn4+abEW
-        i7fq0E4PBRqhA9sgv3Tjy7wNS+/Bw8t6lUyPNK5O4w/9jEws+YPpLt9EcDGkbcoNV2gZg0
-        uYUFl6AL9XLTFHek8OjohXBNUUt4rpg=
+        bh=rEhlovaSoKdmjBdKhncpqjOrfXJ8xJY0QnFOM08sVmA=;
+        b=Oo794d+JOaaPPa6cZvkLlDasUbSRuQLWDBIA50POD1QAbHqyNEH3l6q16xH06j3dAYIk1I
+        PavNWahldAS537zJu8lwbwXwdeLhWD5tD8Dmk/F6Jbfm0YerZic613b9IACpiQ6iMrPHqF
+        19yZk+1vhaEKkyVZKI/NlBfBzpSoFts=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-t4mywbKXNk-3Mjp_YzlHBA-1; Wed, 17 Jun 2020 21:33:49 -0400
-X-MC-Unique: t4mywbKXNk-3Mjp_YzlHBA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-198-5NhhAunyNueHcJ4qmsSIdA-1; Wed, 17 Jun 2020 21:34:07 -0400
+X-MC-Unique: 5NhhAunyNueHcJ4qmsSIdA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9CAA835B40;
-        Thu, 18 Jun 2020 01:33:47 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8969C1005512;
+        Thu, 18 Jun 2020 01:34:05 +0000 (UTC)
 Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C346709D7;
-        Thu, 18 Jun 2020 01:33:47 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 19:33:47 -0600
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 22DCB5C1D6;
+        Thu, 18 Jun 2020 01:34:05 +0000 (UTC)
+Date:   Wed, 17 Jun 2020 19:34:04 -0600
 From:   Alex Williamson <alex.williamson@redhat.com>
 To:     Sasha Levin <sashal@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         Qian Cai <cai@lca.pw>, kvm@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.14 079/108] vfio/pci: fix memory leaks of
- eventfd ctx
-Message-ID: <20200617193347.4178733f@x1.home>
-In-Reply-To: <20200618012600.608744-79-sashal@kernel.org>
-References: <20200618012600.608744-1-sashal@kernel.org>
-        <20200618012600.608744-79-sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 4.9 64/80] vfio/pci: fix memory leaks of eventfd
+ ctx
+Message-ID: <20200617193404.715afb64@x1.home>
+In-Reply-To: <20200618012819.609778-64-sashal@kernel.org>
+References: <20200618012819.609778-1-sashal@kernel.org>
+        <20200618012819.609778-64-sashal@kernel.org>
 Organization: Red Hat
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 21:25:31 -0400
+On Wed, 17 Jun 2020 21:28:03 -0400
 Sasha Levin <sashal@kernel.org> wrote:
 
 > From: Qian Cai <cai@lca.pw>
@@ -103,10 +103,10 @@ Sasha Levin <sashal@kernel.org> wrote:
 >  1 file changed, 4 insertions(+)
 > 
 > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 550ab7707b57..b7733d3c06de 100644
+> index c94167d87178..9d8715abbec1 100644
 > --- a/drivers/vfio/pci/vfio_pci.c
 > +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -397,6 +397,10 @@ static void vfio_pci_release(void *device_data)
+> @@ -390,6 +390,10 @@ static void vfio_pci_release(void *device_data)
 >  	if (!(--vdev->refcnt)) {
 >  		vfio_spapr_pci_eeh_release(vdev->pdev);
 >  		vfio_pci_disable(vdev);
