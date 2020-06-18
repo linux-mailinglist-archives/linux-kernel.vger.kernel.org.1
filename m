@@ -2,149 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01C81FDC66
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15DF1FDABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730080AbgFRBTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:19:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729157AbgFRBQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:07 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B45F72088E;
-        Thu, 18 Jun 2020 01:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442966;
-        bh=WDQHmXC96rpYPjUTKUtm1BoCjSJ3P3r3dBXWh66rDzo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PU81N6T0LuJK33UTkmdzDdU0E6rC75SfzmFf1T+1m9QVTkR0R7LrnPq7TklGkaQw/
-         lBpC7iy4NqxBjE+mDcBoTScPVpamZsh/PAG50StGQb5tzsISU7X7gWmZV6DPR+ptGf
-         IO/Y5HxQOxC1HhIUJDMIIrQAUwSslPPLJoFc1chs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 371/388] libbpf: Handle GCC noreturn-turned-volatile quirk
-Date:   Wed, 17 Jun 2020 21:07:48 -0400
-Message-Id: <20200618010805.600873-371-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1726952AbgFRBIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgFRBH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:07:59 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEC3C06174E;
+        Wed, 17 Jun 2020 18:07:59 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h95so1890060pje.4;
+        Wed, 17 Jun 2020 18:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p8zZSp1JCwgW3Vq7GmDNUsJ1DjWL0wX5Tz/OMp52IbU=;
+        b=e5IIWXRLgjqZTK6J7/0VNYrgTtEawRgKaNEk7veP7AqZIZppaTcRhyQjz0DrkCe4Gb
+         shFHrcMuP0nGsK5m/2Fv5R8bheLLpkpsfFzwZqRaYnjZpMpIqzY4Lar9tCWoYuQuP2QY
+         MFvdXNFBzOTH2om8HExE/LLkGCpFZlys00yb6165/SyNgHLuVfjzODUNoY6z1ozZMWyq
+         AQVj4qb3QBjptEV5e6jKO0oZRyd7Wc+aRY05hohUtd5IQtaENxWw1ECs3vvAWFdXI1qW
+         J5m0LnMMKU6dudrXzeK5iBTQeGdnPsW1TwVtXN1Xazp5XZXUGGC7KYuG03JxmVM9boxR
+         oIBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p8zZSp1JCwgW3Vq7GmDNUsJ1DjWL0wX5Tz/OMp52IbU=;
+        b=ZfGt3llIp+TU1yGVyPuO0tvtkrnAXHa5LtjTCNHGJQVPWVI15t4uZPnqoOA2A3dcsA
+         41u+mRJAU402LsMNHICIVSFMt9zV9FQ/GA5l6ZRHGpZ+SJKg5odnCnyUJCsL4Gl5hl/X
+         STAHPWG/3EThNv7sjogS+Vc/NlBkanlrmSykDVdLONZLvgUZtzb/Kz+j0kE6tCKcKSi+
+         JMLKZPKG4fCGVdoXakW9fHIlUvF+JQkYvVRlZiY5Xfa4Me3FPT+P3chubV0+As1nvVv1
+         sXzRNsMximoccAb4pW+Kr4XmNpmrYzqP6Sqize1PZSGakXMKGPNNxFts0V/4ZQkVRRYP
+         oHpQ==
+X-Gm-Message-State: AOAM530RjPHmJMNUeg89oRETBEVHU5KHwDrIFW+1dxJmI2orSX0Mwzmw
+        r5O+XCpFjWJSnP1WkDkSX4o=
+X-Google-Smtp-Source: ABdhPJwN7DQgI7nrMDLPd/GYGorlEDR6mr3A0sUpRNCut1O2FOtvx/aSXKVU1ny/mwbxjbZhRjLiLA==
+X-Received: by 2002:a17:90a:30a5:: with SMTP id h34mr1827522pjb.36.1592442479076;
+        Wed, 17 Jun 2020 18:07:59 -0700 (PDT)
+Received: from localhost.localdomain (c-107-3-165-39.hsd1.ca.comcast.net. [107.3.165.39])
+        by smtp.gmail.com with ESMTPSA id gb4sm661555pjb.6.2020.06.17.18.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 18:07:58 -0700 (PDT)
+From:   Pranith Kumar <bobby.prani@gmail.com>
+To:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tyler Hicks <tyhicks@canonical.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM)
+Subject: [RFC PATCH] security: Add a config option to disable security mitigations
+Date:   Wed, 17 Jun 2020 18:07:54 -0700
+Message-Id: <20200618010755.4179-1-bobby.prani@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+Instead of having to pass 'mitigations=off' on the kernel command line,
+add a config option that has a similar effect.
 
-[ Upstream commit 32022fd97ed34f6812802bf1288db27c313576f4 ]
+Adding this makes it easier to disable mitigations in scenarios where
+you cannot modify the command line or are unable to pass a command line
+while booting.
 
-Handle a GCC quirk of emitting extra volatile modifier in DWARF (and
-subsequently preserved in BTF by pahole) for function pointers marked as
-__attribute__((noreturn)). This was the way to mark such functions before GCC
-2.5 added noreturn attribute. Drop such func_proto modifiers, similarly to how
-it's done for array (also to handle GCC quirk/bug).
-
-Such volatile attribute is emitted by GCC only, so existing selftests can't
-express such test. Simple repro is like this (compiled with GCC + BTF
-generated by pahole):
-
-  struct my_struct {
-      void __attribute__((noreturn)) (*fn)(int);
-  };
-  struct my_struct a;
-
-Without this fix, output will be:
-
-struct my_struct {
-    voidvolatile  (*fn)(int);
-};
-
-With the fix:
-
-struct my_struct {
-    void (*fn)(int);
-};
-
-Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
-Reported-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Link: https://lore.kernel.org/bpf/20200610052335.2862559-1-andriin@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
 ---
- tools/lib/bpf/btf_dump.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ kernel/cpu.c     | 2 +-
+ security/Kconfig | 8 ++++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 0c28ee82834b..653dbbe2e366 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1137,6 +1137,20 @@ static void btf_dump_emit_mods(struct btf_dump *d, struct id_stack *decl_stack)
- 	}
- }
- 
-+static void btf_dump_drop_mods(struct btf_dump *d, struct id_stack *decl_stack)
-+{
-+	const struct btf_type *t;
-+	__u32 id;
-+
-+	while (decl_stack->cnt) {
-+		id = decl_stack->ids[decl_stack->cnt - 1];
-+		t = btf__type_by_id(d->btf, id);
-+		if (!btf_is_mod(t))
-+			return;
-+		decl_stack->cnt--;
-+	}
-+}
-+
- static void btf_dump_emit_name(const struct btf_dump *d,
- 			       const char *name, bool last_was_ptr)
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578ecf17..584eb39585d6 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2542,7 +2542,7 @@ early_param("mitigations", mitigations_parse_cmdline);
+ /* mitigations=off */
+ bool cpu_mitigations_off(void)
  {
-@@ -1235,14 +1249,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
- 			 * a const/volatile modifier for array, so we are
- 			 * going to silently skip them here.
- 			 */
--			while (decls->cnt) {
--				next_id = decls->ids[decls->cnt - 1];
--				next_t = btf__type_by_id(d->btf, next_id);
--				if (btf_is_mod(next_t))
--					decls->cnt--;
--				else
--					break;
--			}
-+			btf_dump_drop_mods(d, decls);
+-	return cpu_mitigations == CPU_MITIGATIONS_OFF;
++	return cpu_mitigations == CPU_MITIGATIONS_OFF || IS_ENABLED(CONFIG_DISABLE_MITIGATIONS);
+ }
+ EXPORT_SYMBOL_GPL(cpu_mitigations_off);
  
- 			if (decls->cnt == 0) {
- 				btf_dump_emit_name(d, fname, last_was_ptr);
-@@ -1270,7 +1277,15 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
- 			__u16 vlen = btf_vlen(t);
- 			int i;
+diff --git a/security/Kconfig b/security/Kconfig
+index cd3cc7da3a55..90b8e9c89a6d 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -65,6 +65,14 @@ config PAGE_TABLE_ISOLATION
  
--			btf_dump_emit_mods(d, decls);
-+			/*
-+			 * GCC emits extra volatile qualifier for
-+			 * __attribute__((noreturn)) function pointers. Clang
-+			 * doesn't do it. It's a GCC quirk for backwards
-+			 * compatibility with code written for GCC <2.5. So,
-+			 * similarly to extra qualifiers for array, just drop
-+			 * them, instead of handling them.
-+			 */
-+			btf_dump_drop_mods(d, decls);
- 			if (decls->cnt) {
- 				btf_dump_printf(d, " (");
- 				btf_dump_emit_type_chain(d, decls, fname, lvl);
+ 	  See Documentation/x86/pti.rst for more details.
+ 
++config DISABLE_MITIGATIONS
++	bool "Disable kernel security mitigations"
++	default n
++	help
++	  This turns off the kernel security mitigations. This is
++	  equivalent to passing 'mitigations=off' on the kernel
++	  command line.
++
+ config SECURITY_INFINIBAND
+ 	bool "Infiniband Security Hooks"
+ 	depends on SECURITY && INFINIBAND
 -- 
-2.25.1
+2.27.0
 
