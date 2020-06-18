@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B31F1FDAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36B81FDAE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgFRBFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:05:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6277 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726893AbgFRBFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:05:06 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 92C832C2A3F5508B2D0E;
-        Thu, 18 Jun 2020 09:05:04 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.42) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 18 Jun 2020 09:04:54 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <netdev@vger.kernel.org>, <linyunsheng@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH 5/5] net: hns3: streaming dma buffer sync between cpu and device
-Date:   Thu, 18 Jun 2020 13:02:11 +1200
-Message-ID: <20200618010211.75840-6-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
-References: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
+        id S1728048AbgFRBJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727968AbgFRBIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:08:55 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A29021D7E;
+        Thu, 18 Jun 2020 01:08:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592442534;
+        bh=rs5tw5dIQlpsvjlC1Io34WSHTvkyHWjgZTfHxcbFBhc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ivBDjBDbqy+4HGP/VbhO1Q95cGYsdVft8QnLO5zXVVvcLX8JnXQ3p29FwdP1o/Dcj
+         KSuIdwYwFuJG7VD2OyOyj4aw93V3Vz2Nx4uN5sdxSryzbLiL1w/NUcZHbWlnDMv4te
+         KOocuDFeUtpW1zqW0c6PO/8612N0dAyZIFIVXdSg=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-i2c@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 037/388] i2c: pxa: clear all master action bits in i2c_pxa_stop_message()
+Date:   Wed, 17 Jun 2020 21:02:14 -0400
+Message-Id: <20200618010805.600873-37-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
+References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.42]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now they are empty functions for our SoC since hardware can keep
-cache coherent, but it is still good to align with streaming DMA APIs
-as device drivers should not make an assumption of SoC.
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-Reviewed-by: Yunsheng Lin <linyunsheng@huawei.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+[ Upstream commit e81c979f4e071d516aa27cf5a0c3939da00dc1ca ]
+
+If we timeout during a message transfer, the control register may
+contain bits that cause an action to be set. Read-modify-writing the
+register leaving these bits set may trigger the hardware to attempt
+one of these actions unintentionally.
+
+Always clear these bits when cleaning up after a message or after
+a timeout.
+
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/hisilicon/hns3/hns3_enet.c    | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-pxa.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 1330820152fa..b319a766889f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -2473,6 +2473,11 @@ static void hns3_reuse_buffer(struct hns3_enet_ring *ring, int i)
- 	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
- 					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
-+
-+	dma_sync_single_for_device(ring_to_dev(ring),
-+			ring->desc_cb[i].dma + ring->desc_cb[i].page_offset,
-+			hns3_buf_size(ring),
-+			DMA_FROM_DEVICE);
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 466e4f681d7a..30a6e07212a4 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -747,11 +747,9 @@ static inline void i2c_pxa_stop_message(struct pxa_i2c *i2c)
+ {
+ 	u32 icr;
+ 
+-	/*
+-	 * Clear the STOP and ACK flags
+-	 */
++	/* Clear the START, STOP, ACK, TB and MA flags */
+ 	icr = readl(_ICR(i2c));
+-	icr &= ~(ICR_STOP | ICR_ACKNAK);
++	icr &= ~(ICR_START | ICR_STOP | ICR_ACKNAK | ICR_TB | ICR_MA);
+ 	writel(icr, _ICR(i2c));
  }
  
- static void hns3_nic_reclaim_desc(struct hns3_enet_ring *ring, int head,
-@@ -2918,6 +2923,11 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 			skb = ring->tail_skb;
- 		}
- 
-+		dma_sync_single_for_cpu(ring_to_dev(ring),
-+				desc_cb->dma + desc_cb->page_offset,
-+				hns3_buf_size(ring),
-+				DMA_FROM_DEVICE);
-+
- 		hns3_nic_reuse_page(skb, ring->frag_num++, ring, 0, desc_cb);
- 		trace_hns3_rx_desc(ring);
- 		ring_ptr_move_fw(ring, next_to_clean);
-@@ -3069,9 +3079,15 @@ static int hns3_handle_rx_bd(struct hns3_enet_ring *ring)
- 	if (unlikely(!(bd_base_info & BIT(HNS3_RXD_VLD_B))))
- 		return -ENXIO;
- 
--	if (!skb)
-+	if (!skb) {
- 		ring->va = desc_cb->buf + desc_cb->page_offset;
- 
-+		dma_sync_single_for_cpu(ring_to_dev(ring),
-+				desc_cb->dma + desc_cb->page_offset,
-+				hns3_buf_size(ring),
-+				DMA_FROM_DEVICE);
-+	}
-+
- 	/* Prefetch first cache line of first page
- 	 * Idea is to cache few bytes of the header of the packet. Our L1 Cache
- 	 * line size is 64B so need to prefetch twice to make it 128B. But in
 -- 
-2.23.0
-
+2.25.1
 
