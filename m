@@ -2,130 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0D41FFE28
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886591FFE2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgFRW2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 18:28:45 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50825 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727937AbgFRW2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:28:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592519319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8+pq5KNQ7cig8DZxEE8yz2Racz4jPXVsBdHBmYL2X34=;
-        b=DWUGqFzio+g08B96rqbYGu5tj2H2jvd7sDd/QcCGoWTZq6fVaFPtGTG/ZtZFkKEsEbEXny
-        OmGObvRjU3JAKYMCpUtwCbUAY2xd4Cv842c3KvEuQeTHGQsKbSDp3pShxeuJNtglW1z1rH
-        hOAoLRwh69iMwfFpzAwgB+fztkQBu3w=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-sLFoyoRMNDei96W8lV6Psg-1; Thu, 18 Jun 2020 18:28:37 -0400
-X-MC-Unique: sLFoyoRMNDei96W8lV6Psg-1
-Received: by mail-qk1-f198.google.com with SMTP id v197so5590295qkb.16
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 15:28:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8+pq5KNQ7cig8DZxEE8yz2Racz4jPXVsBdHBmYL2X34=;
-        b=Zn4FffmrfqSU5BNUZ/3IH5qwEuRPHG1sJM+A774cLIQnZbP+pEpcj0CbhmeZWKAyO2
-         qb5z5VAO7zW5vCTetvqrrGlkrMWJWLi5a2q+NgvZswHE7faeQpLTq32T3HbenOBEAAVH
-         MzDJH0i63RUn8Y8ZEStMiXo3i1ApJ8EHfVC9lQ7nASkXvgz01d2LxRCzd2t7vsUyfUJM
-         u63rLnepkfJwJ/NsjLx1TA+TuXclY04PR8bec1eViNgiRQbNvqopnlU0C3YQYQac4OL+
-         9nlE2twZNZkDC/NWPkLXm3/22cdGxi5hCMcjHqIgj9opi8ig3N+U4LVjeMgnwwvGrR7m
-         wZjQ==
-X-Gm-Message-State: AOAM533LmbMSCPgdh5ZjJveQPg0YbVBk14CK4UAaLt6QoRdXjzrw/JZ2
-        V1vD7zaiCujTMH1ZqiIPwxur50XMgV8Vby0fL0gLIJzPfguFK84OhbNSJR8anFM0VgqV2VF75/H
-        lTmic6Cl5AAQ/3YbexO7a3nNu
-X-Received: by 2002:a0c:f78b:: with SMTP id s11mr6011564qvn.33.1592519317216;
-        Thu, 18 Jun 2020 15:28:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbmu34+M16SgAS5U4xG/Drwrjpe5fqjxcuGoBXwT4tgVhl9fkHXVY+rIkocOe/GKWJxylauA==
-X-Received: by 2002:a0c:f78b:: with SMTP id s11mr6011543qvn.33.1592519316979;
-        Thu, 18 Jun 2020 15:28:36 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id f3sm4003549qta.44.2020.06.18.15.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 15:28:36 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 18:28:34 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guo Ren <guoren@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-csky@vger.kernel.org
-Subject: Re: [PATCH 07/25] mm/csky: Use mm_fault_accounting()
-Message-ID: <20200618222834.GP76766@xz-x1>
-References: <20200615221607.7764-1-peterx@redhat.com>
- <20200615221607.7764-8-peterx@redhat.com>
- <CAJF2gTSVSXO=phc1eeb-ZmDMrSDjSSLd3tN6ng_8n-pCSZh5zw@mail.gmail.com>
- <20200617154925.GC76766@xz-x1>
- <CAHk-=wi=58J7d5iyFyYyHrU+pzjWB55cit_LQCkSkavpH-trsg@mail.gmail.com>
- <20200617195807.GH76766@xz-x1>
- <CAHk-=wj_V2Tps2QrMn20_W0OJF9xqNh52XSGA42s-ZJ8Y+GyKw@mail.gmail.com>
- <20200618143801.GK76766@xz-x1>
- <CAHk-=whFEZbTJZaNwEkyevUV2aqRwbeVmtp6hhk1sK2mW4vaGA@mail.gmail.com>
- <20200618212430.GO76766@xz-x1>
+        id S1730603AbgFRWar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 18:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727001AbgFRWaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 18:30:46 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80F9D20732;
+        Thu, 18 Jun 2020 22:30:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592519445;
+        bh=vcw1GePvPvCbn7XBKx8sCrewdeL3+ljLnnsZZePyqFo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hBGzf1OoJpm+9ruEgbnzi/pYH5kO7lL/OMSIwUAskHGlkvk4q6oARpcjV3abtWdwD
+         XNmLMH88TPwpiZH0TTFgfNbNOh4oCIvkPXq3MTNZIANx65aczG/2BoxFYlcGcOTNqh
+         AgNtcO69diAcQhNzpOdUPMkVg4xNYTmqCJjEB6cY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 68EB6352264E; Thu, 18 Jun 2020 15:30:45 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 15:30:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH 4/7] rcu/trace: Print negative GP numbers correctly
+Message-ID: <20200618223045.GB2723@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200618202955.4024-1-joel@joelfernandes.org>
+ <20200618202955.4024-4-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200618212430.GO76766@xz-x1>
+In-Reply-To: <20200618202955.4024-4-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 05:24:30PM -0400, Peter Xu wrote:
-> >         /* Major fault */
-> >         if ((ret & VM_FAULT_MAJOR) || (flags & FAULT_FLAG_TRIED)) {
-> >                 flt = &current->maj_flt;
-> >                 event_type = PERF_COUNT_SW_PAGE_FAULTS_MAJ;
-> >         } else {
-> >                 flt = &current->min_flt;
-> >                 event_type = PERF_COUNT_SW_PAGE_FAULTS_MIN;
-> >         }
-> >         *flt++;
-> >         if (regs)
-> >                 perf_sw_event(event_type, 1, regs, address);
+On Thu, Jun 18, 2020 at 04:29:52PM -0400, Joel Fernandes (Google) wrote:
+> GP numbers start from -300 and gp_seq numbers start of -1200 (for a
+> shift of 2). These negative numbers are printed as unsigned long which
+> not only takes up more text space, but is rather confusing to the reader
+> as they have to constantly expend energy to truncate the number. Just
+> print the negative numbering directly.
 
-Sadly, this line seems to fail the compilation:
+Good!  This also makes the ftrace versions of the grace-period sequence
+numbers consistent with those of rcutorture.
 
-  CC      mm/memory.o
-In file included from ././include/linux/compiler_types.h:68,
-                 from <command-line>:                      
-./arch/x86/include/asm/jump_label.h: In function ‘handle_mm_fault’:
-./include/linux/compiler-gcc.h:120:38: warning: ‘asm’ operand 0 probably does not match constraints
-  120 | #define asm_volatile_goto(x...) do { asm goto(x); asm (""); } while (0)
-      |                                      ^~~
-./arch/x86/include/asm/jump_label.h:25:2: note: in expansion of macro ‘asm_volatile_goto’
-   25 |  asm_volatile_goto("1:" 
-      |  ^~~~~~~~~~~~~~~~~
-./include/linux/compiler-gcc.h:120:38: error: impossible constraint in ‘asm’
-  120 | #define asm_volatile_goto(x...) do { asm goto(x); asm (""); } while (0)
-      |                                      ^~~            
-./arch/x86/include/asm/jump_label.h:25:2: note: in expansion of macro ‘asm_volatile_goto’
-   25 |  asm_volatile_goto("1:"                                                                                                
-      |  ^~~~~~~~~~~~~~~~~
-make[1]: *** [scripts/Makefile.build:267: mm/memory.o] Error 1
-make: *** [Makefile:1729: mm] Error 2
+							Thanx, Paul
 
-Frankly speaking I have no solid understanding on what's the error about... But
-my gut feeling is that it's about the static keys, where perf_sw_event() may
-only support static event types (otherwise we won't be able to know whether to
-patch the instruction with no-op or a jump?).
-
-I'll go back to the simple version for now, until I know a solution..
-
-Thanks,
-
--- 
-Peter Xu
-
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  include/trace/events/rcu.h | 62 ++++++++++++++++++++------------------
+>  1 file changed, 32 insertions(+), 30 deletions(-)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index cb5363564f7ed..bc24862790623 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -76,18 +76,18 @@ TRACE_EVENT_RCU(rcu_grace_period,
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+>  		__field(const char *, gp_seq_src)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(const char *, gpevent)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+>  		__entry->gp_seq_src = gp_seq_src;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->gpevent = gpevent;
+>  	),
+>  
+> -	TP_printk("%s %s_gp_seq=%lu %s",
+> +	TP_printk("%s %s_gp_seq=%ld %s",
+>  		  __entry->rcuname, __entry->gp_seq_src,
+>  		  __entry->gp_seq, __entry->gpevent)
+>  );
+> @@ -118,8 +118,8 @@ TRACE_EVENT_RCU(rcu_future_grace_period,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> -		__field(unsigned long, gp_seq_req)
+> +		__field(long, gp_seq)
+> +		__field(long, gp_seq_req)
+>  		__field(u8, level)
+>  		__field(int, grplo)
+>  		__field(int, grphi)
+> @@ -128,16 +128,16 @@ TRACE_EVENT_RCU(rcu_future_grace_period,
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> -		__entry->gp_seq_req = gp_seq_req;
+> +		__entry->gp_seq = (long)gp_seq;
+> +		__entry->gp_seq_req = (long)gp_seq_req;
+>  		__entry->level = level;
+>  		__entry->grplo = grplo;
+>  		__entry->grphi = grphi;
+>  		__entry->gpevent = gpevent;
+>  	),
+>  
+> -	TP_printk("%s %lu %lu %u %d %d %s",
+> -		  __entry->rcuname, __entry->gp_seq, __entry->gp_seq_req, __entry->level,
+> +	TP_printk("%s %ld %ld %u %d %d %s",
+> +		  __entry->rcuname, (long)__entry->gp_seq, (long)__entry->gp_seq_req, __entry->level,
+>  		  __entry->grplo, __entry->grphi, __entry->gpevent)
+>  );
+>  
+> @@ -157,7 +157,7 @@ TRACE_EVENT_RCU(rcu_grace_period_init,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(u8, level)
+>  		__field(int, grplo)
+>  		__field(int, grphi)
+> @@ -166,14 +166,14 @@ TRACE_EVENT_RCU(rcu_grace_period_init,
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->level = level;
+>  		__entry->grplo = grplo;
+>  		__entry->grphi = grphi;
+>  		__entry->qsmask = qsmask;
+>  	),
+>  
+> -	TP_printk("%s %lu %u %d %d %lx",
+> +	TP_printk("%s %ld %u %d %d %lx",
+>  		  __entry->rcuname, __entry->gp_seq, __entry->level,
+>  		  __entry->grplo, __entry->grphi, __entry->qsmask)
+>  );
+> @@ -201,17 +201,17 @@ TRACE_EVENT_RCU(rcu_exp_grace_period,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gpseq)
+> +		__field(long, gpseq)
+>  		__field(const char *, gpevent)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gpseq = gpseq;
+> +		__entry->gpseq = (long)gpseq;
+>  		__entry->gpevent = gpevent;
+>  	),
+>  
+> -	TP_printk("%s %lu %s",
+> +	TP_printk("%s %ld %s",
+>  		  __entry->rcuname, __entry->gpseq, __entry->gpevent)
+>  );
+>  
+> @@ -320,17 +320,17 @@ TRACE_EVENT_RCU(rcu_preempt_task,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(int, pid)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->pid = pid;
+>  	),
+>  
+> -	TP_printk("%s %lu %d",
+> +	TP_printk("%s %ld %d",
+>  		  __entry->rcuname, __entry->gp_seq, __entry->pid)
+>  );
+>  
+> @@ -347,17 +347,17 @@ TRACE_EVENT_RCU(rcu_unlock_preempted_task,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(int, pid)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->pid = pid;
+>  	),
+>  
+> -	TP_printk("%s %lu %d", __entry->rcuname, __entry->gp_seq, __entry->pid)
+> +	TP_printk("%s %ld %d", __entry->rcuname, __entry->gp_seq, __entry->pid)
+>  );
+>  
+>  /*
+> @@ -378,7 +378,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(unsigned long, mask)
+>  		__field(unsigned long, qsmask)
+>  		__field(u8, level)
+> @@ -389,7 +389,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->mask = mask;
+>  		__entry->qsmask = qsmask;
+>  		__entry->level = level;
+> @@ -398,7 +398,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+>  		__entry->gp_tasks = gp_tasks;
+>  	),
+>  
+> -	TP_printk("%s %lu %lx>%lx %u %d %d %u",
+> +	TP_printk("%s %ld %lx>%lx %u %d %d %u",
+>  		  __entry->rcuname, __entry->gp_seq,
+>  		  __entry->mask, __entry->qsmask, __entry->level,
+>  		  __entry->grplo, __entry->grphi, __entry->gp_tasks)
+> @@ -419,19 +419,19 @@ TRACE_EVENT_RCU(rcu_fqs,
+>  
+>  	TP_STRUCT__entry(
+>  		__field(const char *, rcuname)
+> -		__field(unsigned long, gp_seq)
+> +		__field(long, gp_seq)
+>  		__field(int, cpu)
+>  		__field(const char *, qsevent)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->rcuname = rcuname;
+> -		__entry->gp_seq = gp_seq;
+> +		__entry->gp_seq = (long)gp_seq;
+>  		__entry->cpu = cpu;
+>  		__entry->qsevent = qsevent;
+>  	),
+>  
+> -	TP_printk("%s %lu %d %s",
+> +	TP_printk("%s %ld %d %s",
+>  		  __entry->rcuname, __entry->gp_seq,
+>  		  __entry->cpu, __entry->qsevent)
+>  );
+> @@ -520,17 +520,19 @@ TRACE_EVENT_RCU(rcu_segcb,
+>  		TP_STRUCT__entry(
+>  			__field(const char *, ctx)
+>  			__array(int, cb_count, 4)
+> -			__array(unsigned long, gp_seq, 4)
+> +			__array(long, gp_seq, 4)
+>  		),
+>  
+>  		TP_fast_assign(
+> +			int i;
+>  			__entry->ctx = ctx;
+>  			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
+> -			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
+> +			for (i = 0; i < 4; i++)
+> +				__entry->gp_seq[i] = (long)(gp_seq[i]);
+>  		),
+>  
+>  		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> -			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> +			  "gp_seq: (DONE=%ld, WAIT=%ld, NEXT_READY=%ld, NEXT=%ld)", __entry->ctx,
+>  			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+>  			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+>  
+> -- 
+> 2.27.0.111.gc72c7da667-goog
+> 
