@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB001FE780
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321EC1FE628
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387845AbgFRClR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727979AbgFRBM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:28 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43B76214DB;
-        Thu, 18 Jun 2020 01:12:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442747;
-        bh=mGN9DdKaAmVEzpdoVTQ/AB/ixfkCHEhhjiWmQ+Z00rI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xzsVrD7akKySIWhvQD55PtUN2F05SgqEIQ0FBQXyrmbiBXLTK2KyYj2xCXvEORWGJ
-         zHQBhVJ/v3Ymfwxra4LefSoKABPvCGyUpIX2mfrGWICi+aprnskbSySUBLb4WoAVep
-         rvWsIseXqFcwnil5YImRepnntj/Wze4KPlhO8R3c=
-Date:   Wed, 17 Jun 2020 18:12:26 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     peterz@infradead.org, jroedel@suse.de,
-        Andy Lutomirski <luto@kernel.org>,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        manvanth@linux.vnet.ibm.com, linux-next@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, hch@lst.de,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: Move p?d_alloc_track to separate header file
-Message-Id: <20200617181226.ab213ea1531b5dd6eca1b0b6@linux-foundation.org>
-In-Reply-To: <20200609120533.25867-1-joro@8bytes.org>
-References: <20200609120533.25867-1-joro@8bytes.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729461AbgFRBP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729177AbgFRBNk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:40 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D31C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 18:13:40 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id s13so3235876otd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 18:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W3IYRY5mApD1A8OkAx1KflK3AICy88VNSwsN4bKujjE=;
+        b=YkEKt4Xqjx+zUaljadFVqmEbhQJpAYp226CoARdTZb6Yq2H/HnAbdTucy3qzbhx9jJ
+         0QvOx8Ej9ODoinLyRqQ6IKGHiSophBg6PthO6sh/eA2t0O2scb44Pdgh9p2CDuA+td0D
+         Eg7zwHJn/9QNAh6DsJATmjPsfGvpmaitDA4LUG+0p7DRvO3yGhI9ybE3neNH36zSBHRQ
+         gy3wlcgzbb+zMkPWmC0uBClslu1OnWnZQceN2Wb8FRIIjN84ze5gtoVwmcbJPBRswpE9
+         nbbkBYJlwNosILLejA8e9hgmZSXTIdWF5O6FtpZHFpv/UNSrgr6HQDBR7c/GZ4imWsXd
+         Do7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W3IYRY5mApD1A8OkAx1KflK3AICy88VNSwsN4bKujjE=;
+        b=E1So2joxvTz8lifEx9VPTdpJDU+pdNdQmaxF4osbqNOm8tMgDUGEpd28MmWe7Wd4Io
+         55nbkN1xxxnOIobKxgi2/cF1wooUj7hVg78exI+R34iQEH0eu6EPgwZLzy0IueY/xr0Q
+         0pCxi/zhqEw4TsXbbZBgCABZETXHEydL5wUTaco2WTvheWuYNwlglkmNLtPuSzchUB2Q
+         eqP/FPRsk3rHP9LjE3QooaRftqGyvpy1vttLwHirQ6s3aud9lVkPj6dVjeZ2WQQxiO6P
+         kgjrF6AXLyKux+HqPTlM5NMa0Y69tn+hIgWEMJx3nKYfoqbCjO6hDVoX4Ee1Ow7h0+Jz
+         2UTQ==
+X-Gm-Message-State: AOAM5322STA1gfLdDKT46CJZcBX/1GiVs9CiG/3cUc/EVbeQIZqH0s/J
+        9dulAqducsX+dw5rflttrlsfONnpGOZlmV3UDAm9PQ==
+X-Google-Smtp-Source: ABdhPJxEH8/D5t9RpT0wPLIRenM82iFZzBH+GwCDoDkTglhtD6JQZNKdbsUFVN6/5Bi8XuJhpZJUfddbIiz67WLm/5A=
+X-Received: by 2002:a9d:ed2:: with SMTP id 76mr1501386otj.236.1592442819145;
+ Wed, 17 Jun 2020 18:13:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200610011934.49795-1-saravanak@google.com> <20200610011934.49795-3-saravanak@google.com>
+ <20200617221221.GA2923473@bogus>
+In-Reply-To: <20200617221221.GA2923473@bogus>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 17 Jun 2020 18:13:03 -0700
+Message-ID: <CAGETcx-TBg-Xm4vTkB=F73hGweM+T35Ht10x+DdpwYEbYkzg1A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Improve cycle detection when one of
+ the devices is never added
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Jun 2020 14:05:33 +0200 Joerg Roedel <joro@8bytes.org> wrote:
-
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> The functions are only used in two source files, so there is no need
-> for them to be in the global <linux/mm.h> header. Move them to the new
-> <linux/pgalloc-track.h> header and include it only where needed.
-> 
-> ...
+On Wed, Jun 17, 2020 at 3:12 PM Rob Herring <robh@kernel.org> wrote:
 >
-> new file mode 100644
-> index 000000000000..1dcc865029a2
-> --- /dev/null
-> +++ b/include/linux/pgalloc-track.h
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_PGALLLC_TRACK_H
-> +#define _LINUX_PGALLLC_TRACK_H
+> On Tue, 09 Jun 2020 18:19:34 -0700, Saravana Kannan wrote:
+> > Consider this example where -> means LHS device is a consumer of RHS
+> > device and indentation represents "child of" of the previous device.
+> >
+> > Device A -> Device C
+> >
+> > Device B -> Device A
+> >       Device C
+> >
+> > Without this commit:
+> > 1. Device A is added.
+> > 2. Device A is added to waiting for supplier list (Device C)
+> > 3. Device B is added
+> > 4. Device B is linked as a consumer to Device A
+> > 5. Device A doesn't probe because it's waiting for Device C to be added.
+> > 6. Device B doesn't probe because Device A hasn't probed.
+> > 7. Device C will never be added because it's parent hasn't probed.
+> >
+> > So, Device A, B and C will be in a probe/add deadlock.
+> >
+> > This commit detects this scenario and stops trying to create a device
+> > link between Device A and Device C since doing so would create the
+> > following cycle:
+> > Device A -> Devic C -(parent)-> Device B -> Device A.
+> >
+> > With this commit:
+> > 1. Device A is added.
+> > 3. Device B is added
+> > 4. Device B is linked as a consumer to Device A
+> > 5. Device A probes.
+> > 6. Device B probes because Device A has probed.
+> > 7. Device C is added and probed.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/of/property.c | 62 ++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 56 insertions(+), 6 deletions(-)
+> >
+>
+> Both patches applied.
 
-hm, no #includes.  I guess this is OK, given the limited use.
+Thanks!
 
-But it does make one wonder whether ioremap.c should be moved from lib/
-to mm/ and this file should be moved from include/linux/ to mm/.
-
-Oh well.
+-Saravana
