@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EBD1FEEA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3E1FEEB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgFRJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:29:37 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:40673 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729014AbgFRJ3g (ORCPT
+        id S1729184AbgFRJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728943AbgFRJcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:29:36 -0400
-Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mkpj7-1j22dt0gCV-00mKSt; Thu, 18 Jun 2020 11:29:34 +0200
-Received: by mail-qt1-f181.google.com with SMTP id y1so3848159qtv.12;
-        Thu, 18 Jun 2020 02:29:33 -0700 (PDT)
-X-Gm-Message-State: AOAM532px3Vm8oMcgKXDNs5qMUOQlMUtdsGcLyXBQQq31mCPkMbW+S8d
-        ymjYDs/z/sAxvBWYpZuWeAnJb+BqkVBvP4kfhnA=
-X-Google-Smtp-Source: ABdhPJzgdtQ0e15RU/B+VXyW0HKmnrk4ChsFiunlbGhEA/nSRl5iqi+DLHNRjiUEFWDMgOl/S3Q+Wjj/KNXfigA904g=
-X-Received: by 2002:ac8:1844:: with SMTP id n4mr3356547qtk.142.1592472572907;
- Thu, 18 Jun 2020 02:29:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200618080223.951737-1-lee.jones@linaro.org>
-In-Reply-To: <20200618080223.951737-1-lee.jones@linaro.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 18 Jun 2020 11:29:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3iRmXC2jDj92QHKqyD+x_UJ7rWU_KcGt=MFOD9UW38RA@mail.gmail.com>
-Message-ID: <CAK8P3a3iRmXC2jDj92QHKqyD+x_UJ7rWU_KcGt=MFOD9UW38RA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] mfd: Add I2C based System Configuaration (SYSCON) access
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     michael@walle.cc, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Thu, 18 Jun 2020 05:32:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC72C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:31:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o140so5735452yba.16
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=L6v3WNe9vB4gYfOBJzsidmJB3J+19cEKm9MUweYc46U=;
+        b=Lrw5CS3SLvONDKoeW6LlNlz6st2JCT6q3diuLRr/xxJ7vfuPZxfICzFgK9pJKhMgQV
+         Pzcu/M/pXb/St8kvLH4IP+SKI2RZRbuVehv79IifS2C3NKtlWycbBw6iB9nAG4EdVxep
+         D1Ucxn1UTG4SRnbNCPiFrObnnhR8sjKm3K579epxPkB3vuUSimWegkn3RY1fo8zTPyy/
+         U4SDhAlAP8ydgSbZ5ZGHH1vHTmz124P8HVOi41KwcHYi1dfA4kWn8ri1JgHdVAKuAn+I
+         Jf+dogYy6Ht0l/w7HDwfVLJG1oYbcVLomsGlse+Uf2sLdZz/AH47cb9V3zxWpDtTT+D9
+         mQfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=L6v3WNe9vB4gYfOBJzsidmJB3J+19cEKm9MUweYc46U=;
+        b=Uir8HV2fBZRnsHO64bd+eMAzCnFcw6YYKcXMVEhBhB1PsIBuFEK5xbGlohbkZ6Q79g
+         jTVjXmvJTjFVXSgnTo5zbrOc8XVMMTFS1p4Ym2R5p79yGtdmsgUqJqgpEZ9WcMmQNWpL
+         qraotO0z23Uy7I3sTZB8DfJezyZ7B3ZAV4dv84Srgvwfe99xIXaumF2ViNcUf/1oFXDq
+         lOb4HKz043Ygq7nCsW632iAns8NLXXX9Pc5MHBSk4uty5nenMk688t0BS1n4JkPYLGe9
+         djKIN13npIrrpBPo/yWEIPoNaGyYJXswdEanqoPLoW07mZG2texP518NZtXSAzEMmGUD
+         orxQ==
+X-Gm-Message-State: AOAM5319e+EPELPmQIin3G/R25P1jF3+r2lOHW8emCAQzRUQYI34pGQJ
+        cJSvjkxqr3rts5QVQ3ZdE/fNOq3ZrA==
+X-Google-Smtp-Source: ABdhPJy6LDnuo+sOzAf9LZhHavkVDrLCPvyyqa0mnCoDJix+rgoqjk/DI5NTTZig88w6szDnUq5mkXK+Tg==
+X-Received: by 2002:a25:84cc:: with SMTP id x12mr4787589ybm.454.1592472718011;
+ Thu, 18 Jun 2020 02:31:58 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 11:31:15 +0200
+Message-Id: <20200618093118.247375-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+Subject: [PATCH 0/3] kcsan: Re-add GCC support, and compiler flags improvements
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, paulmck@kernel.org
+Cc:     will@kernel.org, peterz@infradead.org, bp@alien8.de,
+        tglx@linutronix.de, mingo@kernel.org, dvyukov@google.com,
+        cai@lca.pw, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:mJn8YsYvecBQHNzW2F014KvvXMMCXXUSdpntKRjYKP8FlCPGqOE
- gVc/v9hqPBEvM7gXD94bvAvORSYxC7R32rBSY8tYbSc1Kv45vHgm2yfQzUfwsd1HhtY68vg
- ZqBW4aH3eCMtOAiS146tG2nY3TBNnc41Np7kyD78KmyS1DzBJua4Bm+/zqQOXJnltf7JE5/
- SIiIIy6Y6ptBLBoqQ78Zg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aJNVddY0ieA=:SGaGsC5HsbFxsXW3/fZvfk
- MgAK6no/aF1IbmEEuXZtshDPqmpwCbVPYgJr4sWqJ0W6us9taTpnDSZd3NCuAlV3J7xK2ZgyZ
- gZZUr1/M++LWwmMaQUEZfzR9eqYeSlfQ72T5LR5ejGTZM7rvwueA55EsGBASCICw0rTcSwjOi
- iAZtztev/PJOvbnYwweTiMqXC2cOBuUgSxDNwH5/wqbEvCxIv/BtV8icGfnR66cU4x/fmuIIy
- yIEozTnqqzn4owr5Jm6dihYjFF0sFNv2mVkDtan/D9eUd91ZoDYkcs2px3IViFO1SyeWf5t+w
- E+zjFineyeJTSfrdiFfzOnlcBM/RbO6tdTzjD2sc5v6/z7dQ0FYz07DEUjtPQcLciSb6KaYuT
- NK+f0SoYTJ6twF4YMZxYXtTsDnGSm91v4JwXKdEuiPM2emULTUESrsc6L1OQIr1sBj9N9Y9CZ
- Zwq5Jw/5mMPWhXQ8AHFoGBvruuBgEriPYq3wW7suL//sCoOB/mUkroDq8r6g2PmLVfGRc7WJ8
- Od/3rjN7DPdC2xBiVM2+FECUaU+7szCGUAymSLIr6/NASZo/tj4xqyZ4Oxpb2IBHpPDJ03+N+
- 0K3O2yCyL1rLLBOcqGv9ZD/sorH25rHNLimogocZeAZAvqtJJDZy0DjrcIT2njBl/npUDoWdR
- ZdBgfHkxK9wxbicr4eJSGSuLStcQrxIj7hU57FgbrI0mRsWJYtF4zu+8+prG9NrvylGI0nXxw
- D6jOKOUQVO1jf0O7y3iIXOm/DKdhNwfnCqGTmoaIInUCGw6j9dR0pVmsfyapuyLnr3CMPyIb6
- nzFRQG/pruKhGInthnHS0cT3ewWRfsGMLtuuqmf3KuFX1EsmQA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 10:03 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> The existing SYSCON implementation only supports MMIO (memory mapped)
-> accesses, facilitated by Regmap.  This extends support for registers
-> held behind I2C busses.
->
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Re-add GCC as a supported compiler and clean up compiler flags.
 
-The implementation looks fine to me, but can you explain how this is going to
-be used, and what the advantage is over open-coding the devm_regmap_init_i2c()
-in each driver that would use this?
+To use KCSAN with GCC before GCC 11 is released, the following will get
+a stable GCC 10 and cherry-pick the patches required for KCSAN support:
 
-Is this about using proper locking through the regmap framework for
-shared i2c clients, or to reduce memory consumption when lots of drivers
-access the same regmap?
+	git clone git://gcc.gnu.org/git/gcc.git && cd gcc
+	git checkout -b gcc-10-for-kcsan releases/gcc-10.1.0
+	git cherry-pick \
+	    4089df8ef4a63126b0774c39b6638845244c20d2 \
+	    ab2789ec507a94f1a75a6534bca51c7b39037ce0 \
+	    06712fc68dc9843d9af7c7ac10047f49d305ad76
+	./configure --prefix <your-prefix> --enable-languages=c,c++
+	make -j$(nproc) && make install
 
-My impression of the existing syscon code is that the main value-add over
-other ways of doing the same is the syscon_regmap_lookup_by_phandle()
-interface that gives other drivers a much simpler way of getting the
-regmap just based on the DT node. Are you planning to add something
-like that here as well? An ideal driver interface might allow
-syscon_regmap_lookup_by_phandle() to work for both mmio and i2c
-based syscons, or additional ones as well, but implementing this would
-be rather tricky when the i2c core is a loadable module.
+Marco Elver (3):
+  kcsan: Re-add GCC as a supported compiler
+  kcsan: Simplify compiler flags
+  kcsan: Disable branch tracing in core runtime
 
-     Arnd
+ Documentation/dev-tools/kcsan.rst | 3 ++-
+ kernel/kcsan/Makefile             | 4 ++--
+ lib/Kconfig.kcsan                 | 3 ++-
+ scripts/Makefile.kcsan            | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
+
+-- 
+2.27.0.290.gba653c62da-goog
+
