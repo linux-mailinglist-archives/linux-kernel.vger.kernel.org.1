@@ -2,95 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F18B1FDCC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630401FDBDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730594AbgFRBVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49720 "EHLO mail.kernel.org"
+        id S1727829AbgFRBPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:12 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45354 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729462AbgFRBSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:18:22 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 454F221D90;
-        Thu, 18 Jun 2020 01:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443100;
-        bh=Vp54ozwgS+zCLet7Ygucfwe5ReCS07oSecflLunDtuM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yNR8t7Ek0qwvdj+643ndskzWDr6dxA0KZiBahePhU06U/lkY38ZG5l3UFfotrqmbc
-         2LxMKyShnRRUBUu1DwK43aZfL/Hb4lsZ/XCGCBxh8rsBGDDP0fXYov4fzNH7Fenkvp
-         rQNLQuKvCwhrFElSrqgTAtzB5Ghk6zKwPjfhnAIw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Pavel Machek (CIP)" <pavel@denx.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 079/266] ASoC: meson: add missing free_irq() in error path
-Date:   Wed, 17 Jun 2020 21:13:24 -0400
-Message-Id: <20200618011631.604574-79-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
-References: <20200618011631.604574-1-sashal@kernel.org>
+        id S1729153AbgFRBNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:36 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jlj7O-0012r4-Tx; Thu, 18 Jun 2020 03:13:26 +0200
+Date:   Thu, 18 Jun 2020 03:13:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: Re: [PATCH v4 1/3] net: phy: mscc: move shared probe code into a
+ helper
+Message-ID: <20200618011326.GA249144@lunn.ch>
+References: <20200617213326.1532365-1-heiko@sntech.de>
+ <20200617213326.1532365-2-heiko@sntech.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617213326.1532365-2-heiko@sntech.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Pavel Machek (CIP)" <pavel@denx.de>
+On Wed, Jun 17, 2020 at 11:33:24PM +0200, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> 
+> The different probe functions share a lot of code, so move the
+> common parts into a helper to reduce duplication.
+> 
+> This moves the devm_phy_package_join below the general allocation
+> but as all components just allocate things, this should be ok.
+> 
+> Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-[ Upstream commit 3b8a299a58b2afce464ae11324b59dcf0f1d10a7 ]
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-free_irq() is missing in case of error, fix that.
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-
-Link: https://lore.kernel.org/r/20200606153103.GA17905@amd
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/meson/axg-fifo.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index d286dff3171d..898ef1d5608f 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -244,7 +244,7 @@ static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
- 	/* Enable pclk to access registers and clock the fifo ip */
- 	ret = clk_prepare_enable(fifo->pclk);
- 	if (ret)
--		return ret;
-+		goto free_irq;
- 
- 	/* Setup status2 so it reports the memory pointer */
- 	regmap_update_bits(fifo->map, FIFO_CTRL1,
-@@ -264,8 +264,14 @@ static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
- 	/* Take memory arbitror out of reset */
- 	ret = reset_control_deassert(fifo->arb);
- 	if (ret)
--		clk_disable_unprepare(fifo->pclk);
-+		goto free_clk;
-+
-+	return 0;
- 
-+free_clk:
-+	clk_disable_unprepare(fifo->pclk);
-+free_irq:
-+	free_irq(fifo->irq, ss);
- 	return ret;
- }
- 
--- 
-2.25.1
-
+    Andrew
