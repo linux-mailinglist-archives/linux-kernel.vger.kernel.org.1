@@ -2,114 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AF31FF66D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C141FF680
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730858AbgFRPSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:18:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54915 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728050AbgFRPSb (ORCPT
+        id S1731419AbgFRPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:23:08 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53102 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728269AbgFRPXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:18:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592493510;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rQYmuQ6MgsURSBqJgRafWuUZH2kgHeoFm2q5Vrdf7kM=;
-        b=V+OrRKM0fAX5wBvC9GSolRA0oS8Frr8GVadEOw5//oMSmyX/dx/BlVfJbLbORrfHzNTqvT
-        nh0N6Cm1TAmWjZYYgPu8oTsBQPESbKewPyEmxrMKYRWhkN9PuGrkxHNmJ4NJVaZ2/INSrb
-        DJR/WkDG9aF9zlatEUZJEkBSHbjucvY=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-6KnL345JNjiVuvF7UE5Nbg-1; Thu, 18 Jun 2020 11:18:28 -0400
-X-MC-Unique: 6KnL345JNjiVuvF7UE5Nbg-1
-Received: by mail-qt1-f200.google.com with SMTP id x21so4606366qtp.16
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:18:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=rQYmuQ6MgsURSBqJgRafWuUZH2kgHeoFm2q5Vrdf7kM=;
-        b=hKXrx14LKPUjfP8454dvPMofAKZBlQL6erqAbFC6XirtnBFLrlYZjyJoUxYlucsrkb
-         WtVDWnY4ctBkzILBcqI0jwGlXRuqwhfR2gIC0zFMzEiJL89CbxzgFyg6sQOmzkynUMUR
-         NnFlbxBwmvVRWVEclb3Fjtts4t4ZIof4/ZhDvTzSbVEav5I+6CMXmHL7rLEuIswF3KMY
-         /GZlna6J+zqf1B5zqXJhOipACkPH/LG+3jKn0CRo641Fvqxu2sU4IAL1HEBgPXY1CsIg
-         vimXxvxg4olhzm6VTWdb7i68ome0jc01/DcPqS2xQZYSJAoNBNNsmkLYroiq/1VHp4FC
-         XKIQ==
-X-Gm-Message-State: AOAM532jTUXXOaHb8HUoqGohOFRt8GIfTs/6DxXQhwQCafBdGLcA84Y9
-        PGavZGfuKaxCQl4HNeXnAR4sdwohHzdYKFrHm2Z7ha5kJ1M39NWx/qUY3DKaYLlbP/RUaAoJXKp
-        K5bLgyfjNyIfa38Hb3UQUX5yV
-X-Received: by 2002:ac8:23fb:: with SMTP id r56mr4946253qtr.197.1592493508007;
-        Thu, 18 Jun 2020 08:18:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLgX4Z87MobK3H78vsTvXLd+/eu1CkxpTofEBBUyoXsAsemLOYYh7GV5x0KAA4BnDYUAMf5w==
-X-Received: by 2002:ac8:23fb:: with SMTP id r56mr4946222qtr.197.1592493507790;
-        Thu, 18 Jun 2020 08:18:27 -0700 (PDT)
-Received: from Whitewolf.lyude.net (static-173-76-190-23.bstnma.ftas.verizon.net. [173.76.190.23])
-        by smtp.gmail.com with ESMTPSA id c2sm3131786qkl.58.2020.06.18.08.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 08:18:26 -0700 (PDT)
-Message-ID: <0b1c1a07b6589e91701a1815400a56b66c5f480d.camel@redhat.com>
-Subject: Re: [PATCH] drm/noveau: fix reference count leak in
- nv50_disp_atomic_commit
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     kjlu@umn.edu, wu000273@umn.edu, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 18 Jun 2020 11:18:25 -0400
-In-Reply-To: <20200614012920.121567-1-pakki001@umn.edu>
-References: <20200614012920.121567-1-pakki001@umn.edu>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Thu, 18 Jun 2020 11:23:04 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IFLs3J065365;
+        Thu, 18 Jun 2020 15:22:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=eNWfmZdmYXiX9iEWGc/gueYpgw2Nhm+0CuXBMAUoTzQ=;
+ b=wIXZR245s7LeBjWPKEu7t7v1oJWf6q+0hI/AIZddWx2b4HDKDTKqsD1LG+xh6mQdMVuf
+ 52CyI5MK6bIi7tW4TF37c50hAfiVp/jpURRlc+hOYs3JH5FxDCFkRzISnP2U/ncbDIAt
+ 6riGGd4hMpcqr6VgCV3WjXF76pwSyM8959gM2d065pEPuvbjHMO7VLy9hX6SZro4JkR2
+ U8JS28PQUNVnorHGVmaeSF5hyeDAEVUzMaPeZI8j0phWOyFqc/ENIxIcwSpr7c790FLd
+ uQQvsiq6WvWpvxrOgf1fBNKKP6ceOeISihmN0VQ6/JAzAPlct+479JixCFuB7B+FKNkV fw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31q6601uqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 Jun 2020 15:22:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IFJFms136555;
+        Thu, 18 Jun 2020 15:20:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 31q66sgkt6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jun 2020 15:20:58 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05IFKqLe017468;
+        Thu, 18 Jun 2020 15:20:52 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Jun 2020 08:20:52 -0700
+Date:   Thu, 18 Jun 2020 08:20:51 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        Eric Sandeen <sandeen@redhat.com>
+Subject: Re: [PATCH v3] xfs: Fix false positive lockdep warning with
+ sb_internal & fs_reclaim
+Message-ID: <20200618152051.GU11245@magnolia>
+References: <20200618150557.23741-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618150557.23741-1-longman@redhat.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 adultscore=0 phishscore=0 suspectscore=1 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006180116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=999 suspectscore=1 impostorscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006180117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-06-13 at 20:29 -0500, Aditya Pakki wrote:
-> nv50_disp_atomic_commit() calls calls pm_runtime_get_sync and in turn
-> increments the reference count. In case of failure, decrement the
-> ref count before returning the error.
+On Thu, Jun 18, 2020 at 11:05:57AM -0400, Waiman Long wrote:
+> Depending on the workloads, the following circular locking dependency
+> warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
+> lock) may show up:
 > 
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.0.0-rc1+ #60 Tainted: G        W
+> ------------------------------------------------------
+> fsfreeze/4346 is trying to acquire lock:
+> 0000000026f1d784 (fs_reclaim){+.+.}, at:
+> fs_reclaim_acquire.part.19+0x5/0x30
+> 
+> but task is already holding lock:
+> 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+> 
+> which lock already depends on the new lock.
+>   :
+>  Possible unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(sb_internal);
+>                                lock(fs_reclaim);
+>                                lock(sb_internal);
+>   lock(fs_reclaim);
+> 
+>  *** DEADLOCK ***
+> 
+> 4 locks held by fsfreeze/4346:
+>  #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
+>  #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
+>  #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
+>  #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+> 
+> stack backtrace:
+> Call Trace:
+>  dump_stack+0xe0/0x19a
+>  print_circular_bug.isra.10.cold.34+0x2f4/0x435
+>  check_prev_add.constprop.19+0xca1/0x15f0
+>  validate_chain.isra.14+0x11af/0x3b50
+>  __lock_acquire+0x728/0x1200
+>  lock_acquire+0x269/0x5a0
+>  fs_reclaim_acquire.part.19+0x29/0x30
+>  fs_reclaim_acquire+0x19/0x20
+>  kmem_cache_alloc+0x3e/0x3f0
+>  kmem_zone_alloc+0x79/0x150
+>  xfs_trans_alloc+0xfa/0x9d0
+>  xfs_sync_sb+0x86/0x170
+>  xfs_log_sbcount+0x10f/0x140
+>  xfs_quiesce_attr+0x134/0x270
+>  xfs_fs_freeze+0x4a/0x70
+>  freeze_super+0x1af/0x290
+>  do_vfs_ioctl+0xedc/0x16c0
+>  ksys_ioctl+0x41/0x80
+>  __x64_sys_ioctl+0x73/0xa9
+>  do_syscall_64+0x18f/0xd23
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> This is a false positive as all the dirty pages are flushed out before
+> the filesystem can be frozen.
+> 
+> One way to avoid this splat is to add GFP_NOFS to the affected allocation
+> calls. This is what PF_MEMALLOC_NOFS per-process flag is for. This does
+> reduce the potential source of memory where reclaim can be done. This
+> shouldn't really matter unless the system is really running out of
+> memory.  In that particular case, the filesystem freeze operation may
+> fail while it was succeeding previously.
+> 
+> Without this patch, the command sequence below will show that the lock
+> dependency chain sb_internal -> fs_reclaim exists.
+> 
+>  # fsfreeze -f /home
+>  # fsfreeze --unfreeze /home
+>  # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
+> 
+> After applying the patch, such sb_internal -> fs_reclaim lock dependency
+> chain can no longer be found. Because of that, the locking dependency
+> warning will not be shown.
+> 
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 > ---
->  drivers/gpu/drm/nouveau/dispnv50/disp.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  fs/xfs/xfs_super.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> index d472942102f5..b4039907f0d6 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> @@ -2157,8 +2157,10 @@ nv50_disp_atomic_commit(struct drm_device *dev,
->  	int ret, i;
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 379cbff438bc..6a95c82f2f1b 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -913,11 +913,33 @@ xfs_fs_freeze(
+>  	struct super_block	*sb)
+>  {
+>  	struct xfs_mount	*mp = XFS_M(sb);
+> +	unsigned long pflags;
+> +	int ret;
+
+Minor nit: please indent the variable names to line up with *sb/*mp.
+
+Otherwise this seems reasoanble.
+
+--D
+
 >  
->  	ret = pm_runtime_get_sync(dev->dev);
-> -	if (ret < 0 && ret != -EACCES)
-> +	if (ret < 0 && ret != -EACCES) {
-> +		pm_runtime_put_autosuspend(dev->dev);
-
-s/noveau/nouveau/ in the commit title, but other than that:
-
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-
->  		return ret;
-> +	}
+> +	/*
+> +	 * A fs_reclaim pseudo lock is added to check for potential deadlock
+> +	 * condition with fs reclaim. The following lockdep splat was hit
+> +	 * occasionally. This is actually a false positive as the allocation
+> +	 * is being done only after the frozen filesystem is no longer dirty.
+> +	 * One way to avoid this splat is to add GFP_NOFS to the affected
+> +	 * allocation calls. This is what PF_MEMALLOC_NOFS is for.
+> +	 *
+> +	 *       CPU0                    CPU1
+> +	 *       ----                    ----
+> +	 *  lock(sb_internal);
+> +	 *                               lock(fs_reclaim);
+> +	 *                               lock(sb_internal);
+> +	 *  lock(fs_reclaim);
+> +	 *
+> +	 *  *** DEADLOCK ***
+> +	 */
+> +	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
+>  	xfs_stop_block_reaping(mp);
+>  	xfs_save_resvblks(mp);
+>  	xfs_quiesce_attr(mp);
+> -	return xfs_sync_sb(mp, true);
+> +	ret = xfs_sync_sb(mp, true);
+> +	current_restore_flags_nested(&pflags, PF_MEMALLOC_NOFS);
+> +	return ret;
+>  }
 >  
->  	ret = drm_atomic_helper_setup_commit(state, nonblock);
->  	if (ret)
-
+>  STATIC int
+> -- 
+> 2.18.1
+> 
