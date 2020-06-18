@@ -2,108 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F338F1FDD2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3421FDC72
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731183AbgFRBYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:24:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53252 "EHLO mail.kernel.org"
+        id S1727813AbgFRBTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:19:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:38712 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730418AbgFRBU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:20:56 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4B6020776;
-        Thu, 18 Jun 2020 01:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443256;
-        bh=PN7vZoxSs59VEpACrp8hT5rx0yazfNPxZPl7VMzESdQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WQ42ibHk8eyBsCSxF0JRyUTk7mDn99la3vi+p0BcBHV5Vo3vUGNt10wVVA7Fd32B1
-         f6lz/Ikfp2MjnyuU9c2895AIbAcKZ+299HTy6cEifkgysxNOtLkfns9h7RFUuX0kAD
-         jPFdsEoHr2B4fxpAMXAz5JK2Uk0Ce6on8cHWFUKk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kevin Buettner <kevinb@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 204/266] PCI: Avoid FLR for AMD Starship USB 3.0
-Date:   Wed, 17 Jun 2020 21:15:29 -0400
-Message-Id: <20200618011631.604574-204-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
-References: <20200618011631.604574-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1729594AbgFRBQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:16:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB8A912FC;
+        Wed, 17 Jun 2020 18:16:34 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.80.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 20DE83F6CF;
+        Wed, 17 Jun 2020 18:16:29 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 (RESEND) 3/3] arm64/mm: Enable vmem_altmap support for vmemmap mappings
+Date:   Thu, 18 Jun 2020 06:45:30 +0530
+Message-Id: <1592442930-9380-4-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
+References: <1592442930-9380-1-git-send-email-anshuman.khandual@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Buettner <kevinb@redhat.com>
+Device memory ranges when getting hot added into ZONE_DEVICE, might require
+their vmemmap mapping's backing memory to be allocated from their own range
+instead of consuming system memory. This prevents large system memory usage
+for potentially large device memory ranges. Device driver communicates this
+request via vmem_altmap structure. Architecture needs to take this request
+into account while creating and tearing down vemmmap mappings.
 
-[ Upstream commit 5727043c73fdfe04597971b5f3f4850d879c1f4f ]
+This enables vmem_altmap support in vmemmap_populate() and vmemmap_free()
+which includes vmemmap_populate_basepages() used for ARM64_16K_PAGES and
+ARM64_64K_PAGES configs.
 
-The AMD Starship USB 3.0 host controller advertises Function Level Reset
-support, but it apparently doesn't work.  Add a quirk to prevent use of FLR
-on this device.
-
-Without this quirk, when attempting to assign (pass through) an AMD
-Starship USB 3.0 host controller to a guest OS, the system becomes
-increasingly unresponsive over the course of several minutes, eventually
-requiring a hard reset.  Shortly after attempting to start the guest, I see
-these messages:
-
-  vfio-pci 0000:05:00.3: not ready 1023ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 2047ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 4095ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 8191ms after FLR; waiting
-
-And then eventually:
-
-  vfio-pci 0000:05:00.3: not ready 65535ms after FLR; giving up
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 0.000 msecs
-  perf: interrupt took too long (642744 > 2500), lowering kernel.perf_event_max_sample_rate to 1000
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 82.270 msecs
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 680.608 msecs
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 100.952 msecs
-  ...
-  watchdog: BUG: soft lockup - CPU#3 stuck for 22s! [qemu-system-x86:7487]
-
-Tested on a Micro-Star International Co., Ltd. MS-7C59/Creator TRX40
-motherboard with an AMD Ryzen Threadripper 3970X.
-
-Link: https://lore.kernel.org/r/20200524003529.598434ff@f31-4.lan
-Signed-off-by: Kevin Buettner <kevinb@redhat.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Steve Capper <steve.capper@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Tested-by: Jia He <justin.he@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/mm/mmu.c | 58 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 38 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 3f89ba7fe7fb..de999f636a5f 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5134,6 +5134,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
-  * FLR may cause the following to devices to hang:
-  *
-  * AMD Starship/Matisse HD Audio Controller 0x1487
-+ * AMD Starship USB 3.0 Host Controller 0x148c
-  * AMD Matisse USB 3.0 Host Controller 0x149c
-  * Intel 82579LM Gigabit Ethernet Controller 0x1502
-  * Intel 82579V Gigabit Ethernet Controller 0x1503
-@@ -5144,6 +5145,7 @@ static void quirk_no_flr(struct pci_dev *dev)
- 	dev->dev_flags |= PCI_DEV_FLAGS_NO_FLR_RESET;
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 7ca21adb4412..f2ad5b94a235 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -759,15 +759,20 @@ int kern_addr_valid(unsigned long addr)
  }
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x1487, quirk_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x148c, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x149c, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1502, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1503, quirk_no_flr);
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+-static void free_hotplug_page_range(struct page *page, size_t size)
++static void free_hotplug_page_range(struct page *page, size_t size,
++				    struct vmem_altmap *altmap)
+ {
+-	WARN_ON(PageReserved(page));
+-	free_pages((unsigned long)page_address(page), get_order(size));
++	if (altmap) {
++		vmem_altmap_free(altmap, size >> PAGE_SHIFT);
++	} else {
++		WARN_ON(PageReserved(page));
++		free_pages((unsigned long)page_address(page), get_order(size));
++	}
+ }
+ 
+ static void free_hotplug_pgtable_page(struct page *page)
+ {
+-	free_hotplug_page_range(page, PAGE_SIZE);
++	free_hotplug_page_range(page, PAGE_SIZE, NULL);
+ }
+ 
+ static bool pgtable_range_aligned(unsigned long start, unsigned long end,
+@@ -790,7 +795,8 @@ static bool pgtable_range_aligned(unsigned long start, unsigned long end,
+ }
+ 
+ static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
+-				    unsigned long end, bool free_mapped)
++				    unsigned long end, bool free_mapped,
++				    struct vmem_altmap *altmap)
+ {
+ 	pte_t *ptep, pte;
+ 
+@@ -804,12 +810,14 @@ static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
+ 		pte_clear(&init_mm, addr, ptep);
+ 		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+ 		if (free_mapped)
+-			free_hotplug_page_range(pte_page(pte), PAGE_SIZE);
++			free_hotplug_page_range(pte_page(pte),
++						PAGE_SIZE, altmap);
+ 	} while (addr += PAGE_SIZE, addr < end);
+ }
+ 
+ static void unmap_hotplug_pmd_range(pud_t *pudp, unsigned long addr,
+-				    unsigned long end, bool free_mapped)
++				    unsigned long end, bool free_mapped,
++				    struct vmem_altmap *altmap)
+ {
+ 	unsigned long next;
+ 	pmd_t *pmdp, pmd;
+@@ -832,16 +840,17 @@ static void unmap_hotplug_pmd_range(pud_t *pudp, unsigned long addr,
+ 			flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+ 			if (free_mapped)
+ 				free_hotplug_page_range(pmd_page(pmd),
+-							PMD_SIZE);
++							PMD_SIZE, altmap);
+ 			continue;
+ 		}
+ 		WARN_ON(!pmd_table(pmd));
+-		unmap_hotplug_pte_range(pmdp, addr, next, free_mapped);
++		unmap_hotplug_pte_range(pmdp, addr, next, free_mapped, altmap);
+ 	} while (addr = next, addr < end);
+ }
+ 
+ static void unmap_hotplug_pud_range(p4d_t *p4dp, unsigned long addr,
+-				    unsigned long end, bool free_mapped)
++				    unsigned long end, bool free_mapped,
++				    struct vmem_altmap *altmap)
+ {
+ 	unsigned long next;
+ 	pud_t *pudp, pud;
+@@ -864,16 +873,17 @@ static void unmap_hotplug_pud_range(p4d_t *p4dp, unsigned long addr,
+ 			flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+ 			if (free_mapped)
+ 				free_hotplug_page_range(pud_page(pud),
+-							PUD_SIZE);
++							PUD_SIZE, altmap);
+ 			continue;
+ 		}
+ 		WARN_ON(!pud_table(pud));
+-		unmap_hotplug_pmd_range(pudp, addr, next, free_mapped);
++		unmap_hotplug_pmd_range(pudp, addr, next, free_mapped, altmap);
+ 	} while (addr = next, addr < end);
+ }
+ 
+ static void unmap_hotplug_p4d_range(pgd_t *pgdp, unsigned long addr,
+-				    unsigned long end, bool free_mapped)
++				    unsigned long end, bool free_mapped,
++				    struct vmem_altmap *altmap)
+ {
+ 	unsigned long next;
+ 	p4d_t *p4dp, p4d;
+@@ -886,16 +896,24 @@ static void unmap_hotplug_p4d_range(pgd_t *pgdp, unsigned long addr,
+ 			continue;
+ 
+ 		WARN_ON(!p4d_present(p4d));
+-		unmap_hotplug_pud_range(p4dp, addr, next, free_mapped);
++		unmap_hotplug_pud_range(p4dp, addr, next, free_mapped, altmap);
+ 	} while (addr = next, addr < end);
+ }
+ 
+ static void unmap_hotplug_range(unsigned long addr, unsigned long end,
+-				bool free_mapped)
++				bool free_mapped, struct vmem_altmap *altmap)
+ {
+ 	unsigned long next;
+ 	pgd_t *pgdp, pgd;
+ 
++	/*
++	 * altmap can only be used as vmemmap mapping backing memory.
++	 * In case the backing memory itself is not being freed, then
++	 * altmap is irrelevant. Warn about this inconsistency when
++	 * encountered.
++	 */
++	WARN_ON(!free_mapped && altmap);
++
+ 	do {
+ 		next = pgd_addr_end(addr, end);
+ 		pgdp = pgd_offset_k(addr);
+@@ -904,7 +922,7 @@ static void unmap_hotplug_range(unsigned long addr, unsigned long end,
+ 			continue;
+ 
+ 		WARN_ON(!pgd_present(pgd));
+-		unmap_hotplug_p4d_range(pgdp, addr, next, free_mapped);
++		unmap_hotplug_p4d_range(pgdp, addr, next, free_mapped, altmap);
+ 	} while (addr = next, addr < end);
+ }
+ 
+@@ -1068,7 +1086,7 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap)
+ {
+-	return vmemmap_populate_basepages(start, end, node, NULL);
++	return vmemmap_populate_basepages(start, end, node, altmap);
+ }
+ #else	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+@@ -1101,7 +1119,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 			void *p = NULL;
+ 
+ 			p = vmemmap_alloc_block_buf(PMD_SIZE, node,
+-						    NULL, false);
++						    altmap, false);
+ 			if (!p)
+ 				return -ENOMEM;
+ 
+@@ -1119,7 +1137,7 @@ void vmemmap_free(unsigned long start, unsigned long end,
+ #ifdef CONFIG_MEMORY_HOTPLUG
+ 	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+ 
+-	unmap_hotplug_range(start, end, true);
++	unmap_hotplug_range(start, end, true, altmap);
+ 	free_empty_tables(start, end, VMEMMAP_START, VMEMMAP_END);
+ #endif
+ }
+@@ -1410,7 +1428,7 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+ 	WARN_ON(pgdir != init_mm.pgd);
+ 	WARN_ON((start < PAGE_OFFSET) || (end > PAGE_END));
+ 
+-	unmap_hotplug_range(start, end, false);
++	unmap_hotplug_range(start, end, false, NULL);
+ 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+ }
+ 
 -- 
-2.25.1
+2.20.1
 
