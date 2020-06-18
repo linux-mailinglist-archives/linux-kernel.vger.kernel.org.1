@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7D81FDAE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B31F1FDAB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgFRBJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727945AbgFRBIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:08:51 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A123221D7B;
-        Thu, 18 Jun 2020 01:08:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442531;
-        bh=KV/4TVQazgEth8uM7noTCOHjy48wFXUisUo/higDEX0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zTAVFta6W9dakk5clWe++8TQPscxL9TSiwHCJDhKQpKuSHDFc1YJ8bOH/oXy6lZh+
-         IuAATbStTRuzvvwBQbU2CAZ09nD46QZJVYfs8JDIwQjMLL8FeG6d3xY19Tf6ZaDTwv
-         d+VrPolV/TzP2mEDn+qBECFZ1Ta5+ImaW/PwWo8g=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andreas Klinger <ak@it-klinger.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>, linux-iio@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 034/388] iio: bmp280: fix compensation of humidity
-Date:   Wed, 17 Jun 2020 21:02:11 -0400
-Message-Id: <20200618010805.600873-34-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1727089AbgFRBFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:05:07 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6277 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726893AbgFRBFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:05:06 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 92C832C2A3F5508B2D0E;
+        Thu, 18 Jun 2020 09:05:04 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.42) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 18 Jun 2020 09:04:54 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <netdev@vger.kernel.org>, <linyunsheng@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH 5/5] net: hns3: streaming dma buffer sync between cpu and device
+Date:   Thu, 18 Jun 2020 13:02:11 +1200
+Message-ID: <20200618010211.75840-6-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
+References: <20200618010211.75840-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.42]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Klinger <ak@it-klinger.de>
+Right now they are empty functions for our SoC since hardware can keep
+cache coherent, but it is still good to align with streaming DMA APIs
+as device drivers should not make an assumption of SoC.
 
-[ Upstream commit dee2dabc0e4115b80945fe2c91603e634f4b4686 ]
-
-Limit the output of humidity compensation to the range between 0 and 100
-percent.
-
-Depending on the calibration parameters of the individual sensor it
-happens, that a humidity above 100 percent or below 0 percent is
-calculated, which don't make sense in terms of relative humidity.
-
-Add a clamp to the compensation formula as described in the datasheet of
-the sensor in chapter 4.2.3.
-
-Although this clamp is documented, it was never in the driver of the
-kernel.
-
-It depends on the circumstances (calibration parameters, temperature,
-humidity) if one can see a value above 100 percent without the clamp.
-The writer of this patch was working with this type of sensor without
-noting this error. So it seems to be a rare event when this bug occures.
-
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/iio/pressure/bmp280-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c    | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 2540e7c2358c..973264a088f9 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -271,6 +271,8 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
- 		+ (s32)2097152) * calib->H2 + 8192) >> 14);
- 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)calib->H1) >> 4;
- 
-+	var = clamp_val(var, 0, 419430400);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 1330820152fa..b319a766889f 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -2473,6 +2473,11 @@ static void hns3_reuse_buffer(struct hns3_enet_ring *ring, int i)
+ 	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
+ 					 ring->desc_cb[i].page_offset);
+ 	ring->desc[i].rx.bd_base_info = 0;
 +
- 	return var >> 12;
- };
++	dma_sync_single_for_device(ring_to_dev(ring),
++			ring->desc_cb[i].dma + ring->desc_cb[i].page_offset,
++			hns3_buf_size(ring),
++			DMA_FROM_DEVICE);
+ }
  
+ static void hns3_nic_reclaim_desc(struct hns3_enet_ring *ring, int head,
+@@ -2918,6 +2923,11 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
+ 			skb = ring->tail_skb;
+ 		}
+ 
++		dma_sync_single_for_cpu(ring_to_dev(ring),
++				desc_cb->dma + desc_cb->page_offset,
++				hns3_buf_size(ring),
++				DMA_FROM_DEVICE);
++
+ 		hns3_nic_reuse_page(skb, ring->frag_num++, ring, 0, desc_cb);
+ 		trace_hns3_rx_desc(ring);
+ 		ring_ptr_move_fw(ring, next_to_clean);
+@@ -3069,9 +3079,15 @@ static int hns3_handle_rx_bd(struct hns3_enet_ring *ring)
+ 	if (unlikely(!(bd_base_info & BIT(HNS3_RXD_VLD_B))))
+ 		return -ENXIO;
+ 
+-	if (!skb)
++	if (!skb) {
+ 		ring->va = desc_cb->buf + desc_cb->page_offset;
+ 
++		dma_sync_single_for_cpu(ring_to_dev(ring),
++				desc_cb->dma + desc_cb->page_offset,
++				hns3_buf_size(ring),
++				DMA_FROM_DEVICE);
++	}
++
+ 	/* Prefetch first cache line of first page
+ 	 * Idea is to cache few bytes of the header of the packet. Our L1 Cache
+ 	 * line size is 64B so need to prefetch twice to make it 128B. But in
 -- 
-2.25.1
+2.23.0
+
 
