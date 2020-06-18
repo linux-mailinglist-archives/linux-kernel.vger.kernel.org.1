@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560F01FE113
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3391FDF6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgFRBwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
+        id S1732417AbgFRB34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:29:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731724AbgFRB0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:26:45 -0400
+        id S1731729AbgFRB0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:26:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA5C720776;
-        Thu, 18 Jun 2020 01:26:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FC4F2088E;
+        Thu, 18 Jun 2020 01:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443604;
-        bh=1KICtU+7Ipxdndkbsv962r1msAcOgKW2WYbRsAws1IE=;
+        s=default; t=1592443606;
+        bh=MISZoiCLDvcumQIPnbJkrwHKF0jEFowkhUBjeR/PLV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pc8BC7XYuunNerwob5gE+ziuQeGKXwDdBs7+ttAtvReE4Uw9JU2efxZiWLChLumFt
-         eUyMm4URkeDCH+0EsoyTtWaM3+2bV01Iqj5J6puW7VV0kSmH5XfOD+nSUlK2LVWDM6
-         deldGPk/UJIpcohwxGK9HzdyYFWAAAXn5A3JPIZE=
+        b=K8adrJTaWfuMq9WYNODMzEJU7bMKF54TWMFKftSutXhDLEOJTtdOiWvuijKvs4mW6
+         RbckkbnMeBKDZILO6ekEcmnQL4baQrpuxya9kvqt9cfz+Vw6fzcRRrChBShI/hmyVi
+         T1WTx5DB4vfuJV/i690/8hBelqobEEl+KBwCjW6Y=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     ashimida <ashimida@linux.alibaba.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 033/108] mksysmap: Fix the mismatch of '.L' symbols in System.map
-Date:   Wed, 17 Jun 2020 21:24:45 -0400
-Message-Id: <20200618012600.608744-33-sashal@kernel.org>
+Cc:     Simon Arlott <simon@octiron.net>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 035/108] scsi: sr: Fix sr_probe() missing deallocate of device minor
+Date:   Wed, 17 Jun 2020 21:24:47 -0400
+Message-Id: <20200618012600.608744-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
 References: <20200618012600.608744-1-sashal@kernel.org>
@@ -43,44 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ashimida <ashimida@linux.alibaba.com>
+From: Simon Arlott <simon@octiron.net>
 
-[ Upstream commit 72d24accf02add25e08733f0ecc93cf10fcbd88c ]
+[ Upstream commit 6555781b3fdec5e94e6914511496144241df7dee ]
 
-When System.map was generated, the kernel used mksysmap to
-filter the kernel symbols, but all the symbols with the
-second letter 'L' in the kernel were filtered out, not just
-the symbols starting with 'dot + L'.
+If the cdrom fails to be registered then the device minor should be
+deallocated.
 
-For example:
-ashimida@ubuntu:~/linux$ cat System.map |grep ' .L'
-ashimida@ubuntu:~/linux$ nm -n vmlinux |grep ' .L'
-ffff0000088028e0 t bLength_show
-......
-ffff0000092e0408 b PLLP_OUTC_lock
-ffff0000092e0410 b PLLP_OUTA_lock
-
-The original intent should be to filter out all local symbols
-starting with '.L', so the dot should be escaped.
-
-Fixes: 00902e984732 ("mksysmap: Add h8300 local symbol pattern")
-Signed-off-by: ashimida <ashimida@linux.alibaba.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Link: https://lore.kernel.org/r/072dac4b-8402-4de8-36bd-47e7588969cd@0882a8b5-c6c3-11e9-b005-00805fc181fe
+Signed-off-by: Simon Arlott <simon@octiron.net>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/mksysmap | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/sr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/mksysmap b/scripts/mksysmap
-index a35acc0d0b82..9aa23d15862a 100755
---- a/scripts/mksysmap
-+++ b/scripts/mksysmap
-@@ -41,4 +41,4 @@
- # so we just ignore them to let readprofile continue to work.
- # (At least sparc64 has __crc_ in the middle).
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index d0389b20574d..5be3d6b7991b 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -748,7 +748,7 @@ static int sr_probe(struct device *dev)
+ 	cd->cdi.disk = disk;
  
--$NM -n $1 | grep -v '\( [aNUw] \)\|\(__crc_\)\|\( \$[adt]\)\|\( .L\)' > $2
-+$NM -n $1 | grep -v '\( [aNUw] \)\|\(__crc_\)\|\( \$[adt]\)\|\( \.L\)' > $2
+ 	if (register_cdrom(&cd->cdi))
+-		goto fail_put;
++		goto fail_minor;
+ 
+ 	/*
+ 	 * Initialize block layer runtime PM stuffs before the
+@@ -766,6 +766,10 @@ static int sr_probe(struct device *dev)
+ 
+ 	return 0;
+ 
++fail_minor:
++	spin_lock(&sr_index_lock);
++	clear_bit(minor, sr_index_bits);
++	spin_unlock(&sr_index_lock);
+ fail_put:
+ 	put_disk(disk);
+ fail_free:
 -- 
 2.25.1
 
