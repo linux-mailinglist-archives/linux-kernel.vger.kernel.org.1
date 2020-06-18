@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47371FED54
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3CA1FED44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgFRIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:16:42 -0400
-Received: from thoth.sbs.de ([192.35.17.2]:45207 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728278AbgFRIQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:16:41 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 05I8Bhvw013177
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Jun 2020 10:11:43 +0200
-Received: from [167.87.31.88] ([167.87.31.88])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 05I8BetX029723;
-        Thu, 18 Jun 2020 10:11:41 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH] Revert "tty: xilinx_uartps: Fix missing id assignment to the
- console"
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <f4092727-d8f5-5f91-2c9f-76643aace993@siemens.com>
-Date:   Thu, 18 Jun 2020 10:11:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728414AbgFRIMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728278AbgFRIMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 04:12:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7989FC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 01:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8WLntUDK1QrdTrtcYEKpz3qz/VsDSn22rJQznhsWmU0=; b=e3MwnKPyFxHRL5O429eXq+MBeb
+        V99twzBHr2ZXWFY2ynglX6gSFx36uKpjd+0ghXzeWdf0xh2c8LctMz+VtELXUOcNHtz9XzjU8fUCr
+        l8CkSq1+PCFiYMhidXjLG1bJ5mmQfdYW5M9R7EtvGSPXG/yJFPaHK2jp8Y4bF0piLT+UoiNL7ynuj
+        Z11k3keHfxpXLobhqyoreaHbJEfFh3hYOuFNAzAig5DQnpVAPzPfHBKqxfNtgI0ibbUbbi0aN9NPv
+        5T9Rfw7VLV+IYFZNDXTnx6Qr4fb7bP+SBltVUTpaxTYa4LfhzntaknHQWJeRPCmhXI7dDHCxW7V1s
+        fhhWC9TQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlpej-0001PE-74; Thu, 18 Jun 2020 08:12:17 +0000
+Date:   Thu, 18 Jun 2020 01:12:17 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     JaeHun Jung <jh0801.jung@samsung.com>
+Cc:     tiwai@suse.de, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ANDROID: sound: usb: Add vendor's hooking interface
+Message-ID: <20200618081217.GA25552@infradead.org>
+References: <CGME20200617022554epcas2p214a49f03a15e504d8faa28148e06e796@epcas2p2.samsung.com>
+ <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592360304-29621-1-git-send-email-jh0801.jung@samsung.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Wed, Jun 17, 2020 at 11:18:24AM +0900, JaeHun Jung wrote:
+> In mobile, a co-processor is used when using USB audio
+> to improve power consumption.
+> hooking is required for sync-up when operating
+> the co-processor. So register call-back function.
+> The main operation of the call-back function is as follows:
+> - Initialize the co-processor by transmitting data
+>   when initializing.
+> - Change the co-processor setting value through
+>   the interface function.
+> - Configure sampling rate
+> - pcm open/close
+> 
+> Bug: 156315379
 
-This reverts commit 2ae11c46d5fdc46cb396e35911c713d271056d35.
-
-It turned out to break the ultra96-rev1, e.g., which uses uart1 as
-serial0 (and stdout-path = "serial0:115200n8").
-
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- drivers/tty/serial/xilinx_uartps.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 35e9e8faf8de..ac137b6a1dc1 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -1459,7 +1459,6 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- 		cdns_uart_uart_driver.cons = &cdns_uart_console;
--		cdns_uart_console.index = id;
- #endif
- 
- 		rc = uart_register_driver(&cdns_uart_uart_driver);
--- 
-2.26.2
+None of that is acceptable without an in-tree user.  Never mind that
+the interface just seems horrible.  I'm pretty sure we could do
+somehting much better and more specific based on the actual needs of
+the user, so please post it.
