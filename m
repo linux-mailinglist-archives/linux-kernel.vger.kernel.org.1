@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B02B1FFCC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBAF1FFCC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731720AbgFRUlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:41:32 -0400
+        id S1729513AbgFRUl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:41:26 -0400
 Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36734 "EHLO
         EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731497AbgFRUjn (ORCPT
+        by vger.kernel.org with ESMTP id S1731566AbgFRUjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:43 -0400
+        Thu, 18 Jun 2020 16:39:48 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:37 -0700
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:38 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id CAF65B265B;
-        Thu, 18 Jun 2020 16:39:40 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 73BC8B265A;
+        Thu, 18 Jun 2020 16:39:41 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,9 +26,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 49/51] objtool: mcount: Remove relocation size check
-Date:   Thu, 18 Jun 2020 13:38:35 -0700
-Message-ID: <6daddf400359443d5b8a2d765794524d896e3d55.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 50/51] objtool: mcount: Remove useless lookup
+Date:   Thu, 18 Jun 2020 13:38:36 -0700
+Message-ID: <5b0c55a54fec946cbbea4a3e0e87485d71123e47.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
@@ -42,94 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than use the size of the relocations check the section
-header type directly to see if the mcount relocations should
-be rel or rela relocations.
+Since the relocation section's sh_info points back to the text
+section it applies to and we already have that we can just pass
+it in and greatly simplify find_section_sym_index().
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/elf.c    |  4 ++--
- tools/objtool/elf.h    |  2 +-
- tools/objtool/mcount.c | 15 +++++----------
- 3 files changed, 8 insertions(+), 13 deletions(-)
+ tools/objtool/mcount.c | 39 +++++++++++++++------------------------
+ 1 file changed, 15 insertions(+), 24 deletions(-)
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 733e10d4a574..4948df31bba0 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -642,8 +642,8 @@ static int read_relocs(struct elf *elf)
- 
- 		sec->base->reloc = sec;
- 		sec->mcountable = relocs_mcountable(sec);
--		if (sec->mcountable && !elf->mcount_rel_entsize)
--			elf->mcount_rel_entsize = sec->sh.sh_entsize;
-+		if (sec->mcountable)
-+			elf->mcount_r_addends = (sec->sh.sh_type == SHT_RELA);
- 
- 		nr_reloc = 0;
- 		for (i = 0; i < sec->sh.sh_size / sec->sh.sh_entsize; i++) {
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 8ece1ca79cca..f298e327af01 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -87,8 +87,8 @@ struct elf {
- 	Elf *elf;
- 	GElf_Ehdr ehdr;
- 	int fd;
--	size_t mcount_rel_entsize;
- 	bool changed;
-+	bool mcount_r_addends;
- 	char *name;
- 	struct list_head sections;
- 	DECLARE_HASHTABLE(symbol_hash, ELF_HASH_BITS);
 diff --git a/tools/objtool/mcount.c b/tools/objtool/mcount.c
-index 9527924af56b..084bbc02de0c 100644
+index 084bbc02de0c..a74625aed09b 100644
 --- a/tools/objtool/mcount.c
 +++ b/tools/objtool/mcount.c
-@@ -368,22 +368,17 @@ static void fill_mcount_locs(GElf_Sxword r_offset, GElf_Addr **rbuf,
+@@ -198,35 +198,27 @@ static const unsigned int missing_sym = (unsigned int)-1;
+  *    Num:    Value  Size Type    Bind   Vis      Ndx Name
+  *      2: 00000000     0 SECTION LOCAL  DEFAULT    1
+  */
+-static int find_section_sym_index(unsigned const txtndx,
+-				char const *const txtname,
+-				unsigned long *const recvalp,
+-				unsigned int *sym_index)
++static int find_section_sym_index(const struct section * const txts,
++				  unsigned long *const recvalp,
++				  unsigned int *sym_index)
+ {
+ 	struct symbol *sym;
+-	struct section *txts = find_section_by_index(lf, txtndx);
+-
+-	if (!txts) {
+-		fprintf(stderr, "Cannot find section %u: %s.\n",
+-			txtndx, txtname);
+-		return missing_sym;
+-	}
+ 
+ 	list_for_each_entry(sym, &txts->symbol_list, list) {
+ 		/* avoid symbols with weak binding */
+-		if ((sym->bind == STB_LOCAL) || (sym->bind == STB_GLOBAL)) {
+-			/* function symbols on ARM have quirks, avoid them */
+-			if (lf->ehdr.e_machine == EM_ARM
+-			    && sym->type == STT_FUNC)
+-				continue;
+-
+-			*recvalp = sym->sym.st_value;
+-			*sym_index = sym->idx;
+-			return 0;
+-		}
++		if ((sym->bind != STB_LOCAL) && (sym->bind != STB_GLOBAL))
++			continue;
++
++		/* function symbols on ARM have quirks, avoid them */
++		if (lf->ehdr.e_machine == EM_ARM && sym->type == STT_FUNC)
++			continue;
++
++		*recvalp = sym->sym.st_value;
++		*sym_index = sym->idx;
++		return 0;
+ 	}
+ 	fprintf(stderr, "Cannot find symbol for section %u: %s.\n",
+-		txtndx, txtname);
++		txts->idx, txts->name);
+ 	return missing_sym;
  }
  
- /* Overall supervision for Elf32 ET_REL file. */
--static int do_mcount(unsigned const reltype, size_t rela_size)
-+static int do_mcount(unsigned const reltype)
- {
--	GElf_Sxword r_offset = 0;
--
- 	struct section *sec, *mlocs, *mrels;
- 	const char * const mc_name =  "__mcount_loc";
--
--	const unsigned int rel_entsize = lf->mcount_rel_entsize;
-+	GElf_Sxword r_offset = 0;
- 	int result = -1;
--	bool is_rela;
-+	const bool is_rela = lf->mcount_r_addends;
+@@ -414,8 +406,7 @@ static int do_mcount(unsigned const reltype)
+ 			unsigned long recval = 0;
+ 			unsigned int recsym;
  
- 	if (find_section_by_name(lf, "__mcount_loc") != NULL)
- 		return 0;
+-			if (find_section_sym_index(sec->sh.sh_info,
+-						txts->name, &recval, &recsym))
++			if (find_section_sym_index(txts, &recval, &recsym))
+ 				goto out;
  
--	is_rela = (rela_size == rel_entsize);
--
- 	/* add section: __mcount_loc */
- 	mlocs = elf_create_section(lf, mc_name, sizeof(GElf_Addr), 0);
- 	if (!mlocs)
-@@ -562,7 +557,7 @@ static int do_file(char const *const fname)
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		loc_size = 4;
--		rc = do_mcount(reltype, sizeof(Elf32_Rela));
-+		rc = do_mcount(reltype);
- 		break;
- 	case ELFCLASS64: {
- 		if (lf->ehdr.e_ehsize != sizeof(Elf64_Ehdr)
-@@ -580,7 +575,7 @@ static int do_file(char const *const fname)
- 			is_fake_mcount = MIPS_is_fake_mcount;
- 		}
- 		loc_size = 8;
--		rc = do_mcount(reltype, sizeof(Elf64_Rela));
-+		rc = do_mcount(reltype);
- 		break;
- 	}
- 	}  /* end switch */
+ 			sift_rel_mcount(&r_offset, sec, mrels, mlocs,
 -- 
 2.20.1
 
