@@ -2,76 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334BE1FFAFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 20:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D47A1FFAFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 20:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgFRSYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 14:24:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27333 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727900AbgFRSYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 14:24:24 -0400
-IronPort-SDR: gX3GxLXcdAV96PpVjpg1K0eyArS/yqVyTKihzy0QF5NxAwRESSRPte0+fLbwLK0CW8nf9UdfKP
- kolg7yc+fFfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="122446295"
-X-IronPort-AV: E=Sophos;i="5.75,252,1589266800"; 
-   d="scan'208";a="122446295"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 11:24:23 -0700
-IronPort-SDR: QWjFFZYrpMn49XBxW79LNyP/ysuOitYYgt9ptp+2tGCYQhTM3Z5jOA8X3HSEGlm9DcJztl0PWw
- E6FQAoxnVTXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,252,1589266800"; 
-   d="scan'208";a="299788705"
-Received: from lkp-server02.sh.intel.com (HELO 5ce11009e457) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Jun 2020 11:24:17 -0700
-Received: from kbuild by 5ce11009e457 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jlzD0-0000Mc-A4; Thu, 18 Jun 2020 18:24:18 +0000
-Date:   Fri, 19 Jun 2020 02:23:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     kbuild-all@lists.01.org, Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] printk: _printk_rb_static_dict can be static
-Message-ID: <20200618182323.GA72993@4e49555bcca1>
-References: <20200618144919.9806-4-john.ogness@linutronix.de>
+        id S1730278AbgFRSXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 14:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgFRSXk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 14:23:40 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAECC06174E;
+        Thu, 18 Jun 2020 11:23:38 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w15so4035298lfe.11;
+        Thu, 18 Jun 2020 11:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OtZ+S0yqkpnvGyiBpEd57efqY8RnbTwuIeP3LIO4+t8=;
+        b=JeLKhCmsNWf+iu8vSE/iGVFYwqW4hCzZfzX0iNjqFxiezlwkzt9KzkdWB0XQeN+chQ
+         3LqWxHBswCD+kUSUVh2ImpHTCzgDK9jLEl7eN4KOanMP3vx/0uIiMSt6ey1Gy4Ac4Plh
+         r76s8iF/jiXHIKFCiNEK8K+5HBfmdcmAW3Dls5nA+y9vOWkgLPmv63MIkH6V/+MX3eZj
+         KybciiszOPkEPwLkqAgaeOSLYImnR4IOP+ZKECNZ+h0PZu73+MeRtNRmg9BYKl0ByOJ4
+         kZe6MeZDFYwB9skflValj9ymybfiN1LcmMjvhm9Ty0pKqL6qT+jWDTLSxxZZfmXDRr2j
+         wyMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OtZ+S0yqkpnvGyiBpEd57efqY8RnbTwuIeP3LIO4+t8=;
+        b=uJtkk/ybd+h6BcUl29Tgjkv1yvcu4HcIUTmd9IUKs4I/HyhDl0ajzmwBIk9Vm+2Prb
+         Nc2UT8ryoyl99xUdyz8d9eT8R+PtYbQhpS3ANRgqRNazCVGRn9eh4fVphhgIY8NoPUuM
+         FJlb0WS7cTOI7ep2whR+8CKmEwX9EMndFhJHOdbbM9Qu/WlDLydgJMqCAolMt0pXRjYA
+         NQuQJcz9z9ijRhZeK6bCIrRpagDluUemxPsJlncxURunDX0E/GTGmelK8Jas+Fq0He9c
+         xXdc9T3GqgpYmVaNoae2W8mDHrDZ5HQlcphme3qKPq3mZluoSFyFZ9fBJfuQPqQXCjHJ
+         TAbg==
+X-Gm-Message-State: AOAM532hMvoxuNmo53dUzfZTAEUXUYhLfmhLQzZWmFFWtb7i76REwl8c
+        sxx58kW/nbI0GeDHwHmUqUI=
+X-Google-Smtp-Source: ABdhPJwE8GlFDZ2vhKPL+bYHMUSg0Cv+ZXbjDv+hC3D0Zkyui+dYWdjJjnf4HhwVurZAsGWY9zoxWQ==
+X-Received: by 2002:ac2:5f07:: with SMTP id 7mr3112274lfq.132.1592504617032;
+        Thu, 18 Jun 2020 11:23:37 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id n4sm135298lfl.40.2020.06.18.11.23.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 11:23:35 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 18 Jun 2020 20:23:33 +0200
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
+ ptrs
+Message-ID: <20200618182333.GA15082@pc636>
+References: <20200525214800.93072-1-urezki@gmail.com>
+ <20200525214800.93072-10-urezki@gmail.com>
+ <20200617234609.GA10087@paulmck-ThinkPad-P72>
+ <20200618172504.GA14613@pc636>
+ <20200618173206.GS2723@paulmck-ThinkPad-P72>
+ <20200618175623.GA14865@pc636>
+ <20200618181541.GS8681@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618144919.9806-4-john.ogness@linutronix.de>
-X-Patchwork-Hint: ignore
+In-Reply-To: <20200618181541.GS8681@bombadil.infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 18, 2020 at 11:15:41AM -0700, Matthew Wilcox wrote:
+> On Thu, Jun 18, 2020 at 07:56:23PM +0200, Uladzislau Rezki wrote:
+> > If we mix pointers, then we can do free per pointer only. I mean in that
+> > case we will not be able to use kfree_bulk() interface for freeing SLAB
+> > memory and the code would converted to something like:
+> > 
+> > <snip>
+> > while (nr_objects_in_array > 0) {
+> >     if (is_vmalloc_addr(array[X]))
+> >        vfree(array[X]);
+> >     else
+> >        kfree(array[X]);
+> > }
+> > <snip>
+> 
+> [PATCH] Add vfree_bulk interface
+> 
+> This is a useful interface to have for the RCU kvfree code.  There is
+> scope for more performance gains later, but introducing the interface
+> now allows us to simplify the RCU code today.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 48bb681e6c2a..dc2bbb61af61 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -119,6 +119,7 @@ void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
+>  
+>  extern void vfree(const void *addr);
+>  extern void vfree_atomic(const void *addr);
+> +extern void vfree_bulk(size_t count, void **addrs);
+>  
+>  extern void *vmap(struct page **pages, unsigned int count,
+>  			unsigned long flags, pgprot_t prot);
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index abe37f09ac42..6042f9b4394a 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2366,6 +2366,22 @@ void vfree(const void *addr)
+>  }
+>  EXPORT_SYMBOL(vfree);
+>  
+> +void vfree_bulk(size_t count, void **addrs)
+> +{
+> +	unsigned int i;
+> +
+> +	BUG_ON(in_nmi());
+> +	might_sleep_if(!in_interrupt());
+> +
+> +	for (i = 0; i < count; i++) {
+> +		void *addr = addrs[i];
+> +		kmemleak_free(addr);
+> +		if (addr)
+> +			__vfree(addr);
+> +	}
+> +}
+> +EXPORT_SYMBOL(vfree_bulk);
+> +
+>
+Can we just do addrs[i] all over the loop?
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- printk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Also, we can just call vfree() instead that has all checking we
+need: NMI, kmemleak, might_sleep.
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 7642ef634956f..d812ada06735f 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -434,7 +434,7 @@ static u32 log_buf_len = __LOG_BUF_LEN;
-  */
- #define PRB_AVGBITS 5	/* 32 character average length */
- 
--_DECLARE_PRINTKRB(printk_rb_static, CONFIG_LOG_BUF_SHIFT - PRB_AVGBITS,
-+static _DECLARE_PRINTKRB(printk_rb_static, CONFIG_LOG_BUF_SHIFT - PRB_AVGBITS,
- 		  PRB_AVGBITS, PRB_AVGBITS, &__log_buf[0]);
- 
- static struct printk_ringbuffer printk_rb_dynamic;
+Thanks!
+
+--
+Vlad Rezki
