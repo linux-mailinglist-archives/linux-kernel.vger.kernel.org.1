@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D767E1FE47D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B061FE5B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730137AbgFRBT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        id S1730119AbgFRC1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:27:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728169AbgFRBQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:33 -0400
+        id S1727942AbgFRBQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:16:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA6DA206F1;
-        Thu, 18 Jun 2020 01:16:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9F2C221EB;
+        Thu, 18 Jun 2020 01:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442993;
-        bh=UxPnFlX+RCpVN17Rxz0hGgqmZ5jg4GqP7f4f9zBzKIE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=A78nSsp7FSenQYB5xCrE84PM6ohazSZoSMCRK9AVFtXamQo9FtVVfiIW6e88dzCye
-         yiC3F2OP/NHTJRES25H0BfkIY4l3Yt2fEnmKvjUwIrG3mCN9EtHcB4vp1Mo5aOapdO
-         XJmcfqGOjAoOW7K87nFxNMB+/McuRd07FRb/InA4=
+        s=default; t=1592442998;
+        bh=1TLicUZauJHHS4QjENC7dQsJoviJc/aajGrqaoOUPoE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VzPLrvNfCVF9z/B3zRKxRuvQbTQElO5BrZ77TcOETvCzdIwyV63aCVtH9jVEo6CCb
+         ZVj5MMTnVsSb2w2BWVLKAxjyXh+8O1y1rWsfP+mv7GfAbWszneL451yKXYgvU0Zsgq
+         0Nr1jJ4+aP4nhru4DMBWzbqXPWih5bG20qyYurCM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 001/266] power: supply: bq24257_charger: Replace depends on REGMAP_I2C with select
-Date:   Wed, 17 Jun 2020 21:12:06 -0400
-Message-Id: <20200618011631.604574-1-sashal@kernel.org>
+Cc:     YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 005/266] ASoC: SOF: imx8: Fix randbuild error
+Date:   Wed, 17 Jun 2020 21:12:10 -0400
+Message-Id: <20200618011631.604574-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
+References: <20200618011631.604574-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -41,36 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 87c3d579c8ed0eaea6b1567d529a8daa85a2bc6c ]
+[ Upstream commit fe17e6cdc0fefca96ba9659be4b2b07487cbf0c5 ]
 
-regmap is a library function that gets selected by drivers that need
-it. No driver modules should depend on it. Depending on REGMAP_I2C makes
-this driver only build if another driver already selected REGMAP_I2C,
-as the symbol can't be selected through the menu kernel configuration.
+when do randconfig like this:
+CONFIG_SND_SOC_SOF_IMX8_SUPPORT=y
+CONFIG_SND_SOC_SOF_IMX8=y
+CONFIG_SND_SOC_SOF_OF=y
+CONFIG_IMX_DSP=m
+CONFIG_IMX_SCU=y
 
-Fixes: 2219a935963e ("power_supply: Add TI BQ24257 charger driver")
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+there is a link error:
+
+sound/soc/sof/imx/imx8.o: In function 'imx8_send_msg':
+imx8.c:(.text+0x380): undefined reference to 'imx_dsp_ring_doorbell'
+
+Select IMX_DSP in SND_SOC_SOF_IMX8_SUPPORT to fix this
+
+Fixes: f9ad75468453 ("ASoC: SOF: imx: fix reverse CONFIG_SND_SOC_SOF_OF dependency")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Link: https://lore.kernel.org/r/20200409071832.2039-2-daniel.baluta@oss.nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/Kconfig | 2 +-
+ sound/soc/sof/imx/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index c84a7b1caeb6..d6fdc10c29f0 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -577,7 +577,7 @@ config CHARGER_BQ24257
- 	tristate "TI BQ24250/24251/24257 battery charger driver"
- 	depends on I2C
- 	depends on GPIOLIB || COMPILE_TEST
--	depends on REGMAP_I2C
-+	select REGMAP_I2C
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index 71f318bc2c74..b4f0426685c4 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -14,7 +14,7 @@ if SND_SOC_SOF_IMX_TOPLEVEL
+ config SND_SOC_SOF_IMX8_SUPPORT
+ 	bool "SOF support for i.MX8"
+ 	depends on IMX_SCU
+-	depends on IMX_DSP
++	select IMX_DSP
  	help
- 	  Say Y to enable support for the TI BQ24250, BQ24251, and BQ24257 battery
- 	  chargers.
+           This adds support for Sound Open Firmware for NXP i.MX8 platforms
+           Say Y if you have such a device.
 -- 
 2.25.1
 
