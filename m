@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803341FE7AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689071FE7E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgFRBLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39068 "EHLO mail.kernel.org"
+        id S1727972AbgFRCoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:44:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728720AbgFRBLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:11:17 -0400
+        id S1727045AbgFRBLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:11:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92C4F221EA;
-        Thu, 18 Jun 2020 01:11:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD4A3221E7;
+        Thu, 18 Jun 2020 01:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442677;
-        bh=/K41qGCOksYUWpJHCUej+cRAGtzlKjR6qaDmvAdcVdA=;
+        s=default; t=1592442678;
+        bh=0wMSeq300+HLTPZeJnOyyYrhuUw76Ec0Zg0wYdFtlMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YQGX1gns+BFm8e+yPfaJH+SlQ1RzaQ6NJWKjdU6BLmdyGQV8/YkMYByBAvDVo8Yvu
-         zGsKrUairgqWLsvbawh3SsnI2DVQ1960teXzGb6n4DAuOP5msQiJFfS4VTLA9sK8ry
-         0Ur5pXS4GnvIFYXnY1dYkGvl/+HTm50f2XQu/7rk=
+        b=eUAPoeeq1Gadk7NfuJZhG7ZT2MhW4UKzp/0bdOfZ/mAG2cJ5Swx+GLZ7jAvtv2TKM
+         +/IDd+50rPdZGesWdjoPn1F0Ep+Cr3HZlQpGi5qY+P0cWA/bXk7TVI1fWdS3GZXayB
+         NfnfMsgG5NvF2EYGJpKqedmPza3rac1G1+rqsdq4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>,
+Cc:     Raghavendra Rao Ananta <rananta@codeaurora.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.7 145/388] staging: wfx: fix double init of tx_policy_upload_work
-Date:   Wed, 17 Jun 2020 21:04:02 -0400
-Message-Id: <20200618010805.600873-145-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.7 146/388] tty: hvc: Fix data abort due to race in hvc_open
+Date:   Wed, 17 Jun 2020 21:04:03 -0400
+Message-Id: <20200618010805.600873-146-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,33 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Raghavendra Rao Ananta <rananta@codeaurora.org>
 
-[ Upstream commit 6ae0878b4800c7042d35c0fb4c6baabb62621ecc ]
+[ Upstream commit e2bd1dcbe1aa34ff5570b3427c530e4332ecf0fe ]
 
-The work_struct tx_policy_upload_work was initialized twice.
+Potentially, hvc_open() can be called in parallel when two tasks calls
+open() on /dev/hvcX. In such a scenario, if the hp->ops->notifier_add()
+callback in the function fails, where it sets the tty->driver_data to
+NULL, the parallel hvc_open() can see this NULL and cause a memory abort.
+Hence, serialize hvc_open and check if tty->private_data is NULL before
+proceeding ahead.
 
-Fixes: 99879121bfbb ("staging: wfx: fix the cache of rate policies on interface reset")
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Link: https://lore.kernel.org/r/20200427134031.323403-12-Jerome.Pouiller@silabs.com
+The issue can be easily reproduced by launching two tasks simultaneously
+that does nothing but open() and close() on /dev/hvcX.
+For example:
+$ ./simple_open_close /dev/hvc0 & ./simple_open_close /dev/hvc0 &
+
+Signed-off-by: Raghavendra Rao Ananta <rananta@codeaurora.org>
+Link: https://lore.kernel.org/r/20200428032601.22127-1-rananta@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/sta.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/hvc/hvc_console.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-index 969d7a4a7fbd..b4cd7cb1ce56 100644
---- a/drivers/staging/wfx/sta.c
-+++ b/drivers/staging/wfx/sta.c
-@@ -1049,7 +1049,6 @@ int wfx_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	init_completion(&wvif->scan_complete);
- 	INIT_WORK(&wvif->scan_work, wfx_hw_scan_work);
+diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+index cdcc64ea2554..f8e43a6faea9 100644
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -75,6 +75,8 @@ static LIST_HEAD(hvc_structs);
+  */
+ static DEFINE_MUTEX(hvc_structs_mutex);
  
--	INIT_WORK(&wvif->tx_policy_upload_work, wfx_tx_policy_upload_work);
- 	mutex_unlock(&wdev->conf_mutex);
++/* Mutex to serialize hvc_open */
++static DEFINE_MUTEX(hvc_open_mutex);
+ /*
+  * This value is used to assign a tty->index value to a hvc_struct based
+  * upon order of exposure via hvc_probe(), when we can not match it to
+@@ -346,16 +348,24 @@ static int hvc_install(struct tty_driver *driver, struct tty_struct *tty)
+  */
+ static int hvc_open(struct tty_struct *tty, struct file * filp)
+ {
+-	struct hvc_struct *hp = tty->driver_data;
++	struct hvc_struct *hp;
+ 	unsigned long flags;
+ 	int rc = 0;
  
- 	hif_set_macaddr(wvif, vif->addr);
++	mutex_lock(&hvc_open_mutex);
++
++	hp = tty->driver_data;
++	if (!hp) {
++		rc = -EIO;
++		goto out;
++	}
++
+ 	spin_lock_irqsave(&hp->port.lock, flags);
+ 	/* Check and then increment for fast path open. */
+ 	if (hp->port.count++ > 0) {
+ 		spin_unlock_irqrestore(&hp->port.lock, flags);
+ 		hvc_kick();
+-		return 0;
++		goto out;
+ 	} /* else count == 0 */
+ 	spin_unlock_irqrestore(&hp->port.lock, flags);
+ 
+@@ -383,6 +393,8 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
+ 	/* Force wakeup of the polling thread */
+ 	hvc_kick();
+ 
++out:
++	mutex_unlock(&hvc_open_mutex);
+ 	return rc;
+ }
+ 
 -- 
 2.25.1
 
