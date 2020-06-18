@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95841FE107
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFDE1FE1B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733180AbgFRBv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:51:56 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45682 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732198AbgFRBvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:51:53 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jljiV-0013N7-K9; Thu, 18 Jun 2020 03:51:47 +0200
-Date:   Thu, 18 Jun 2020 03:51:47 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, davem@davemloft.net,
-        robh@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v7 2/6] net: phy: Add a helper to return the
- index for of the internal delay
-Message-ID: <20200618015147.GH249144@lunn.ch>
-References: <20200617182019.6790-1-dmurphy@ti.com>
- <20200617182019.6790-3-dmurphy@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617182019.6790-3-dmurphy@ti.com>
+        id S1733261AbgFRB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:56:34 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:52576 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728559AbgFRB4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:56:31 -0400
+Received: from ubuntu.localdomain (unknown [124.16.136.101])
+        by APP-05 (Coremail) with SMTP id zQCowACnEg+9yepektJEAQ--.42974S2;
+        Thu, 18 Jun 2020 09:56:14 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     bfields@fieldses.org, chuck.lever@oracle.com,
+        linux-nfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] nfsd: Use seq_putc() in two functions
+Date:   Thu, 18 Jun 2020 09:56:13 +0800
+Message-Id: <20200618015613.17806-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACnEg+9yepektJEAQ--.42974S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKF18tr1DKFWxXr4UZFyfCrg_yoWfZFbE93
+        yxuF10kF45Jwn8GFZ0ga1fta4DuayDJr1rt3yI9r9rKF95Gw1UZrs7ZrW3Ar95G3yFgFy8
+        Cr9YgFyFy34S9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcBMKDUUUU
+X-Originating-IP: [124.16.136.101]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBQcLA16HQn8FdgAAsd
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:20:15PM -0500, Dan Murphy wrote:
-> Add a helper function that will return the index in the array for the
-> passed in internal delay value.  The helper requires the array, size and
-> delay value.
-> 
-> The helper will then return the index for the exact match or return the
-> index for the index to the closest smaller value.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  drivers/net/phy/phy_device.c | 68 ++++++++++++++++++++++++++++++++++++
->  include/linux/phy.h          |  4 +++
->  2 files changed, 72 insertions(+)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 04946de74fa0..611d4e68e3c6 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -31,6 +31,7 @@
->  #include <linux/mdio.h>
->  #include <linux/io.h>
->  #include <linux/uaccess.h>
-> +#include <linux/property.h>
->  
->  MODULE_DESCRIPTION("PHY library");
->  MODULE_AUTHOR("Andy Fleming");
-> @@ -2657,6 +2658,73 @@ void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause)
->  }
->  EXPORT_SYMBOL(phy_get_pause);
->  
-> +/**
-> + * phy_get_delay_index - returns the index of the internal delay
-> + * @phydev: phy_device struct
-> + * @dev: pointer to the devices device struct
-> + * @delay_values: array of delays the PHY supports
-> + * @size: the size of the delay array
-> + * @is_rx: boolean to indicate to get the rx internal delay
-> + *
-> + * Returns the index within the array of internal delay passed in.
-> + * Or if size == 0 then the delay read from the firmware is returned.
-> + * The array must be in ascending order.
-> + * Return errno if the delay is invalid or cannot be found.
-> + */
-> +s32 phy_get_internal_delay(struct phy_device *phydev, struct device *dev,
-> +			   const int *delay_values, int size, bool is_rx)
-> +{
-> +	int ret;
-> +	int i;
-> +	s32 delay;
-> +
-> +	if (is_rx)
-> +		ret = device_property_read_u32(dev, "rx-internal-delay-ps",
-> +					       &delay);
-> +	else
-> +		ret = device_property_read_u32(dev, "tx-internal-delay-ps",
-> +					       &delay);
-> +	if (ret) {
-> +		phydev_err(phydev, "internal delay not defined\n");
+A single character (line break) should be put into a sequence.
+Thus use the corresponding function "seq_putc()".
 
-This is an optional property. So printing an error message seems heavy
-handed.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ fs/nfsd/nfs4idmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Maybe it would be better to default to 0 if the property is not found,
-and continue with the lookup in the table to find what value should be
-written for a 0ps delay?
+diff --git a/fs/nfsd/nfs4idmap.c b/fs/nfsd/nfs4idmap.c
+index 9460be8a8321..f92161ce1f97 100644
+--- a/fs/nfsd/nfs4idmap.c
++++ b/fs/nfsd/nfs4idmap.c
+@@ -168,7 +168,7 @@ idtoname_show(struct seq_file *m, struct cache_detail *cd, struct cache_head *h)
+ 			ent->id);
+ 	if (test_bit(CACHE_VALID, &h->flags))
+ 		seq_printf(m, " %s", ent->name);
+-	seq_printf(m, "\n");
++	seq_putc(m, '\n');
+ 	return 0;
+ }
+ 
+@@ -346,7 +346,7 @@ nametoid_show(struct seq_file *m, struct cache_detail *cd, struct cache_head *h)
+ 			ent->name);
+ 	if (test_bit(CACHE_VALID, &h->flags))
+ 		seq_printf(m, " %u", ent->id);
+-	seq_printf(m, "\n");
++	seq_putc(m, '\n');
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
 
-	Andrew
