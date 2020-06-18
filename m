@@ -2,372 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B61FFE68
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8127E1FFE6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgFRXAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 19:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
+        id S1731286AbgFRXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 19:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729992AbgFRXA3 (ORCPT
+        with ESMTP id S1730750AbgFRXBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 19:00:29 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A5DC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:00:29 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x18so7626403ilp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:00:29 -0700 (PDT)
+        Thu, 18 Jun 2020 19:01:10 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C7BC0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:01:10 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id i4so1525184ooj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vexadp3DjsMOuVAfFzbe7nXhBs4dWuB3dE8TJtjybg0=;
-        b=VQltBKp9ItrEnG6UwkqkL3U5U1GJOYwbgfEes0Rl9BBj8Q8VpaQAWp8Nq7TM3tjqUQ
-         aJgO+8K6xD0YIxMLNlbXEg2eQ7f3WOkk5r98sPRnexDNgxO/LMavEb93SUW1PafqV49X
-         b6uu1GeRJ9lvbEhfWbxqCqExewjJQRGvWQGEw=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yc8mFXvH9+bvXdPbuCrBKeuEjVF5zsJFmzpNjkxHWMo=;
+        b=F6Qzk43n9hOMr0F4NODTytpPzKoJejgC53DX0hNIAani5BvakYsEg5BYejBSfJJRFK
+         Xveb1M2471hR5+hXD0nrRKJPWetO+Sm9CXdnLQ/354Jwx2+SAROf9zcH9nOj1f4r2BmG
+         4OhP4aiWNVP3N1Z3PnwsXKCCcwprjP/r7yknNF074Mqx5ocK34Qoz+i0yhVtZqSNZl8E
+         IbSthlYnPjQ4Ifcop0/QphEEIYcIl9WJqyKdM1ZE+wTYMUHzs/utKyK0LIdSCWoIkVRg
+         TFlIL6ILcD4OJudkIbjNqm5Ppsq4BTPCwfwbR9kT+/5+LeKmP6bHS9Q4Wvj+BLy2p9Uj
+         P1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vexadp3DjsMOuVAfFzbe7nXhBs4dWuB3dE8TJtjybg0=;
-        b=VbejPv2pYrTGEDGf9FHSHs+yjB7eKJpab1krdGO3Qlxz2uCWdrw6ajthDdmSQqZ/Ql
-         WYFmfeSjmygkrkv6CJquk4REpkU3QHTeMD+foJ/0R06izEcMSUYugRq/DmUct/4FL8IP
-         QNkLjdjr+yEohB21S+UASrseWsEsGlFFV4tDfV1ffThNlUYKVI/msJ9u8w+jfa2Otw2B
-         NYqs/KMeFhc2hFesqIFYu8Qb6CDb6zRhGKTGldKjpu6fmajTQQ3oad2ufuzJ65Aq1NrB
-         tLKlzZ7X+bITgIfg+Jjf74Lwy1HGY3J4h2jgF70DteKkkhjG54vclJpYp6CngNcFAnC8
-         dxmQ==
-X-Gm-Message-State: AOAM533Qo0yATzslavLreTdycfhHortl7xau7Fgep2MuaenTxNrrRlYO
-        Z+Ai1asUUkPTGc7SXNQ09BaWdASO7VU=
-X-Google-Smtp-Source: ABdhPJxh35jaQaacmI6osbCV9DNhjEnABfgyasTHqbR/XO2jKqsgAz831QkwNCLqpNSvH2NnOtW0TA==
-X-Received: by 2002:a92:db49:: with SMTP id w9mr797911ilq.188.1592521228530;
-        Thu, 18 Jun 2020 16:00:28 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id r2sm1784478iop.34.2020.06.18.16.00.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 16:00:27 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] remoteproc: qcom: Add per subsystem SSR
- notification
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-References: <1590636883-30866-1-git-send-email-rishabhb@codeaurora.org>
- <1590636883-30866-2-git-send-email-rishabhb@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <5f258ccc-46db-50fe-61fd-d7959deb4989@ieee.org>
-Date:   Thu, 18 Jun 2020 18:00:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yc8mFXvH9+bvXdPbuCrBKeuEjVF5zsJFmzpNjkxHWMo=;
+        b=Ad3/op306tosqAUZgXoqlXca9mQhLi8t/8ymE/+DQORe/6B07+OS9Cv+bt5ij+rLzv
+         kWnYJ9NM+BJZE5anGGrZ18TLJ4wMjSLuv+QzuZVpkbaqSTYRwK7P5TYvo/yXyjF+7moS
+         16k49gaLZVudHJ6PMddQFc+SP1/1ysB4YyrIsZDDtGBHtl/dERWh9wZ/FBJ3YJXfSABb
+         /iv3zip6w7j0hVu44gZE21w7YoEWMpZ9eaiDqNjdhn9Azb3S64jgXZkxn4hix6bNtPVV
+         8GtWMlQk3PwqgrScdKmOb0Y4CXZ3a4+0WXQ+lQ+5JtGZgLbmMbUDJ6Jp8AR1bYdg2P1i
+         nElg==
+X-Gm-Message-State: AOAM533uPDRH+Sf1vEOIYwSfqlnRdEqi2cfM0gSvcaA+SEE/6G405rf1
+        KQc+TNyv+CFyioRMXNQFY9ImJCfxXw3aLDXZomDvNw==
+X-Google-Smtp-Source: ABdhPJze5y3/R2DKImLZ7iiLzxaS6HhogUtDTZ6f6c1zd9yAOujkemUlEPJ8VwbBuyiv/TUaV+zXkBMoEOzKC1JUTAg=
+X-Received: by 2002:a4a:7ac2:: with SMTP id a185mr1035246ooc.84.1592521269356;
+ Thu, 18 Jun 2020 16:01:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1590636883-30866-2-git-send-email-rishabhb@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200515053500.215929-1-saravanak@google.com> <20200515053500.215929-5-saravanak@google.com>
+ <CAMuHMdUnbDvn6GdK51MN-+5iRp6zYRf-yzKY+OwcQOGrYqOZPA@mail.gmail.com>
+ <CAGETcx9JKbNQWQwNah7pO5ppVSAe86R-OmMujZPYNkuTCLwKnQ@mail.gmail.com> <CAMuHMdU2gF=aTeVxRvtzAMLGY=GyBDfBwrYZxoRkL1tV7dL56g@mail.gmail.com>
+In-Reply-To: <CAMuHMdU2gF=aTeVxRvtzAMLGY=GyBDfBwrYZxoRkL1tV7dL56g@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 18 Jun 2020 16:00:33 -0700
+Message-ID: <CAGETcx-rHFthf-aLb_S-ST6Evozvgis5XX5u0LNxyvfMoJOLKQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] of: platform: Batch fwnode parsing when adding all
+ top level devices
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ji Luo <ji.luo@nxp.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/20 10:34 PM, Rishabh Bhatnagar wrote:
-> Currently there is a single notification chain which is called whenever any
-> remoteproc shuts down. This leads to all the listeners being notified, and
-> is not an optimal design as kernel drivers might only be interested in
-> listening to notifications from a particular remoteproc. Create a global
-> list of remoteproc notification info data structures. This will hold the
-> name and notifier_list information for a particular remoteproc. The API
-> to register for notifications will use name argument to retrieve the
-> notification info data structure and the notifier block will be added to
-> that data structure's notification chain. Also move from blocking notifier
-> to srcu notifer based implementation to support dynamic notifier head
-> creation.
+On Thu, Jun 18, 2020 at 12:32 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Wed, Jun 17, 2020 at 8:36 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Wed, Jun 17, 2020 at 5:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, May 15, 2020 at 7:38 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > The fw_devlink_pause() and fw_devlink_resume() APIs allow batching the
+> > > > parsing of the device tree nodes when a lot of devices are added. This
+> > > > will significantly cut down parsing time (as much a 1 second on some
+> > > > systems). So, use them when adding devices for all the top level device
+> > > > tree nodes in a system.
+> > > >
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > >
+> > > This is now commit 93d2e4322aa74c1a ("of: platform: Batch fwnode parsing
+> > > when adding all top level devices") in v5.8-rc1, and I have bisected a
+> > > regression to it: on r8a7740/armadillo and sh73a0/kzm9g, the system can
+> > > no longer be woken up from s2ram by a GPIO key. Reverting the commit
+> > > fixes the issue.
+> > >
+> > > On these systems, the GPIO/PFC block has its interrupt lines connected
+> > > to intermediate interrupt controllers (Renesas INTC), which are in turn
+> > > connected to the main interrupt controller (ARM GIC).  The INTC block is
+> > > part of a power and clock domain.  Hence if a GPIO is enabled as a
+> > > wake-up source, the INTC is part of the wake-up path, and thus must be
+> > > kept enabled when entering s2ram.
+> > >
+> > > While this commit has no impact on probe order for me (unlike in Marek's
+> > > case), it does have an impact on suspend order:
+> > >   - Before this commit:
+> > >       1. The keyboard (gpio-keys) is suspended, and calls
+> > >          enable_irq_wake() to inform the upstream interrupt controller
+> > >          (INTC) that it is part of the wake-up path,
+> > >       2. INTC is suspended, and calls device_set_wakeup_path() to inform
+> > >          the device core that it must be kept enabled,
+> > >       3. The system is woken by pressing a wake-up key.
+> > >
+> > >   - After this commit:
+> > >       1. INTC is suspended, and is not aware it is part of the wake-up
+> > >          path, so it is disabled by the device core,
+> > >       2. gpio-keys is suspended, and calls enable_irq_wake() in vain,
+> > >       3. Pressing a wake-up key has no effect, as INTC is disabled, and
+> > >          the interrupt does not come through.
+> > >
+> > > It looks like no device links are involved, as both gpio-keys and INTC have
+> > > no links.
+> > > Do you have a clue?
+> > >
+> > > Thanks!
+> >
+> > That patch of mine defers probe on all devices added by the
+> > of_platform_default_populate() call, and then once the call returns,
+> > it immediately triggers a deferred probe.
+> >
+> > So all these devices are being probed in parallel in the deferred
+> > probe workqueue while the main "initcall thread" continues down to
+> > further initcalls. It looks like some of the drivers in subsequent
+> > initcalls are assuming that devices in the earlier initcalls always
+> > probe and can't be deferred?
+> >
+> > There are two options.
+> > 1. Fix these drivers.
+> > 2. Add a "flush deferred workqueue" in fw_devlink_resume()
+> >
+> > I'd rather we fix the drivers so that they handle deferred probes
+> > correctly. Thoughts?
+>
+> While the affected drivers should handle deferred probe fine, none of
+> the affected drivers is subject to deferred probing: they all probe
+> successfully on first try (I had added debug prints to
+> platform_drv_probe() to be sure).
+> The affected drivers are still probed in the same order (INTC is one of
+> the earliest drivers probed, gpio-keys is the last).
 
-I'm looking at these patches now, without having reviewed the
-previous versions.  Forgive me if I contradict or duplicate
-previous feedback.
+Thanks, this is useful info. Now I know that my patch isn't somehow
+reordering devices that would have probed as soon as
+of_platform_default_populate_init() added them.
 
-I have a number of suggestions, below.
+When you say the "The affected drivers are still probed in the same
+order", are you only referring to the devices that would have probed
+before of_platform_default_populate_init() returns? Or ALL devices in
+the system are probing in the same order?
 
-					-Alex
+I assume gpio-keys gets probed in the "normal init thread" and not by
+the deferred probe workqueue? I'm guessing this because gpio_keys
+driver seems to register during late_initcall() whereas
+of_platform_default_populate_init() runs as an arch_initcall_sync().
 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->   drivers/remoteproc/qcom_common.c      | 84 ++++++++++++++++++++++++++++++-----
->   drivers/remoteproc/qcom_common.h      |  5 ++-
->   include/linux/remoteproc/qcom_rproc.h | 20 ++++++---
->   3 files changed, 90 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 9028cea..61ff2dd 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -12,6 +12,7 @@
->   #include <linux/module.h>
->   #include <linux/notifier.h>
->   #include <linux/remoteproc.h>
-> +#include <linux/remoteproc/qcom_rproc.h>
->   #include <linux/rpmsg/qcom_glink.h>
->   #include <linux/rpmsg/qcom_smd.h>
->   #include <linux/soc/qcom/mdt_loader.h>
-> @@ -23,7 +24,14 @@
->   #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, subdev)
->   #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, subdev)
->   
-> -static BLOCKING_NOTIFIER_HEAD(ssr_notifiers);
-> +struct qcom_ssr_subsystem {
-> +	const char *name;
-> +	struct srcu_notifier_head notifier_list;
-> +	struct list_head list;
-> +};
-> +
-> +static LIST_HEAD(qcom_ssr_subsystem_list);
-> +DEFINE_MUTEX(qcom_ssr_subsys_lock);
+> However, during
+> system suspend, gpio-keys is suspended before INTC, which is wrong, as
+> gpio-keys uses an interrupt provided by INTC.
+>
+> Perhaps the "in parallel" is the real culprit, and there is a race
+> condition somewhere?
 
-There is no need for this mutex to be global.
+I tried digging into the gpio_keys driver code to see how it interacts
+with INTC and if gpio-keys defers probe if INTC hasn't probed yet. But
+it seems like a rabbit hole that'd be easier to figure out when you
+have the device. Can you check if gpio-keys is probing before INTC in
+the "bad" case?
 
->   static int glink_subdev_start(struct rproc_subdev *subdev)
->   {
-> @@ -189,39 +197,79 @@ void qcom_remove_smd_subdev(struct rproc *rproc, struct qcom_rproc_subdev *smd)
->   }
->   EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
->   
-> +struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
+Also, in general, can you see if there's a difference in the probe
+order between all the devices in the system? Adding a log to
+really_probe() would be better in case non-platform devices are
+getting reordered (my change affects all devices that are created from
+DT, not just platform devices).
 
-This function should be made private (static).
+I want to make sure we understand the real issue before we try to fix it.
 
-I think the mutex should be taken in this function rather than
-the caller (more on this below).  But if you leave it this way,
-please mention something in a comment that indicates the caller
-must hold the qcom_ssr_subsys_lock mutex.
-
-> +{
-> +	struct qcom_ssr_subsystem *info;
-> +
-> +	/* Match in the global qcom_ssr_subsystem_list with name */
-> +	list_for_each_entry(info, &qcom_ssr_subsystem_list, list) {
-> +		if (!strcmp(info->name, name))
-> +			return info;
-
-This probably isn't strictly necessary, because you are
-returning a void pointer, but you could do this here:
-			return ERR_CAST(info);
-
-> +	}
-
-This is purely a style thing, but the curly braces around
-the loop body aren't necessary.
-
-> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return ERR_PTR(-ENOMEM);
-> +	info->name = kstrdup_const(name, GFP_KERNEL);
-> +	srcu_init_notifier_head(&info->notifier_list);
-> +
-> +	/* Add to global notif list */
-
-s/notif/notification/
-
-> +	INIT_LIST_HEAD(&info->list);
-
-No need to initialize the list element when adding it
-to a list.  Both uts fields will be overwritten anyway.
-
-> +	list_add_tail(&info->list, &qcom_ssr_subsystem_list);
-> +
-> +	return info;
-> +}
-> +
->   /**
->    * qcom_register_ssr_notifier() - register SSR notification handler
-> + * @name:	name that will be searched in global ssr subsystem list
-
-Maybe just "SSR subsystem name".
-
->    * @nb:		notifier_block to notify for restart notifications
-
-Drop or modify "restart" in the comment line above.
-
->    *
-> - * Returns 0 on success, negative errno on failure.
-> + * Returns a subsystem cookie on success, ERR_PTR on failure.
-
-Maybe make the above a @Return: comment.
-
->    *
-> - * This register the @notify function as handler for restart notifications. As
-> - * remote processors are stopped this function will be called, with the SSR
-> - * name passed as a parameter.
-> + * This registers the @nb notifier block as part the notifier chain for a
-> + * remoteproc associated with @name. The notifier block's callback
-> + * will be invoked when the particular remote processor is stopped.
-
-It's not just for stopping, right?  Maybe something
-more like:
-   Register to receive notification callbacks when
-   remoteproc SSR events occur (pre- and post-startup
-   and pre- and post-shutdown).
-
->    */
-> -int qcom_register_ssr_notifier(struct notifier_block *nb)
-> +void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb)
->   {
-> -	return blocking_notifier_chain_register(&ssr_notifiers, nb);
-> +	struct qcom_ssr_subsystem *info;
-> +
-> +	mutex_lock(&qcom_ssr_subsys_lock);
-
-Can you explain why the mutex is taken here (and in
-qcom_add_ssr_subdev()), rather than having the mutex
-logic be isolated in qcom_ssr_get_subsys()?
-
-> +	info = qcom_ssr_get_subsys(name);
-> +	if (IS_ERR(info)) {
-> +		mutex_unlock(&qcom_ssr_subsys_lock);
-> +		return info;
-> +	}
-
-I don't think there's any need to have the next function
-call be protected by the mutex, but maybe I'm mistaken.
-
-> +	srcu_notifier_chain_register(&info->notifier_list, nb);
-> +	mutex_unlock(&qcom_ssr_subsys_lock);
-> +	return &info->notifier_list;
->   }
->   EXPORT_SYMBOL_GPL(qcom_register_ssr_notifier);
->   
->   /**
->    * qcom_unregister_ssr_notifier() - unregister SSR notification handler
-> + * @notify:	subsystem coookie returned from qcom_register_ssr_notifier
->    * @nb:		notifier_block to unregister
-
-Add a @Return comment (0 on success, %ENOENT otherwise).
-
->    */
-> -void qcom_unregister_ssr_notifier(struct notifier_block *nb)
-> +int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
->   {
-> -	blocking_notifier_chain_unregister(&ssr_notifiers, nb);
-> +	return srcu_notifier_chain_unregister(notify, nb);
->   }
->   EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
->   
->   static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->   {
->   	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
->   
-> -	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr->name);
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
->   }
->   
-> +
->   /**
->    * qcom_add_ssr_subdev() - register subdevice as restart notification source
->    * @rproc:	rproc handle
-> @@ -229,12 +277,23 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->    * @ssr_name:	identifier to use for notifications originating from @rproc
->    *
->    * As the @ssr is registered with the @rproc SSR events will be sent to all
-> - * registered listeners in the system as the remoteproc is shut down.
-> + * registered listeners for the particular remoteproc when it is shutdown.
->    */
->   void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
->   			 const char *ssr_name)
->   {
-> -	ssr->name = ssr_name;
-> +	struct qcom_ssr_subsystem *info;
-> +
-> +	mutex_lock(&qcom_ssr_subsys_lock);
-> +	info = qcom_ssr_get_subsys(ssr_name);
-
-If there already exists an SSR subsystem having the given
-name, its info structure is returned here.  Is that OK?
-In practice, I don't expect this to be a problem, but it
-would be better to return an error if
-
-> +	if (IS_ERR(info)) {
-> +		dev_err(&rproc->dev, "Failed to add ssr subdevice\n");
-> +		mutex_unlock(&qcom_ssr_subsys_lock);
-> +		return;
-> +	}
-> +
-> +	mutex_unlock(&qcom_ssr_subsys_lock);
-> +	ssr->info = info;
->   	ssr->subdev.unprepare = ssr_notify_unprepare;
->   
->   	rproc_add_subdev(rproc, &ssr->subdev);
-> @@ -249,6 +308,7 @@ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
->   void qcom_remove_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr)
->   {
->   	rproc_remove_subdev(rproc, &ssr->subdev);
-> +	ssr->info = NULL;
->   }
->   EXPORT_SYMBOL_GPL(qcom_remove_ssr_subdev);
->   
-> diff --git a/drivers/remoteproc/qcom_common.h b/drivers/remoteproc/qcom_common.h
-> index 34e5188..dfc641c 100644
-> --- a/drivers/remoteproc/qcom_common.h
-> +++ b/drivers/remoteproc/qcom_common.h
-> @@ -26,10 +26,11 @@ struct qcom_rproc_subdev {
->   	struct qcom_smd_edge *edge;
->   };
->   
-> +struct qcom_ssr_subsystem;
-> +
->   struct qcom_rproc_ssr {
->   	struct rproc_subdev subdev;
-> -
-> -	const char *name;
-> +	struct qcom_ssr_subsystem *info;
->   };
->   
->   void qcom_add_glink_subdev(struct rproc *rproc, struct qcom_rproc_glink *glink,
-> diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
-> index fa8e386..58422b1 100644
-> --- a/include/linux/remoteproc/qcom_rproc.h
-> +++ b/include/linux/remoteproc/qcom_rproc.h
-> @@ -5,17 +5,27 @@
->   
->   #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
->   
-> -int qcom_register_ssr_notifier(struct notifier_block *nb);
-> -void qcom_unregister_ssr_notifier(struct notifier_block *nb);
-> +struct qcom_ssr_notif_data {
-> +	const char *name;
-> +	bool crashed;
-
-Is the crashed field strictly necessary?  Could we instead have
-a QCOM_SSR_CRASHED event (in place of QCOM_SSR_BEFORE_SHUTDOWN)?
-I don't know, it's possible doing it the way you do ultimately
-simplifies the logic...  So I'm asking, but not suggesting.
-
-> +};
-> +
-> +void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb);
-> +int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb);
->   
->   #else
->   
-> -static inline int qcom_register_ssr_notifier(struct notifier_block *nb)
-> +static inline void *qcom_register_ssr_notifier(const char *name,
-> +					       struct notifier_block *nb)
->   {
-> -	return 0;
-> +	return NULL;
->   }
->   
-> -static inline void qcom_unregister_ssr_notifier(struct notifier_block *nb) {}
-> +static inline int qcom_unregister_ssr_notifier(void *notify,
-> +					       struct notifier_block *nb)
-> +{
-> +	return 0;
-> +}
->   
->   #endif
->   
-> 
-
+Thanks,
+Saravana
