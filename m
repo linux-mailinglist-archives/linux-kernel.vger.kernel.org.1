@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1DE1FEB24
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 07:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACE81FEB26
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 07:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgFRFwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 01:52:22 -0400
-Received: from smtprelay0228.hostedemail.com ([216.40.44.228]:52010 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725837AbgFRFwW (ORCPT
+        id S1727021AbgFRF4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 01:56:48 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:22425 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725892AbgFRF4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 01:52:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 1D4131DF8;
-        Thu, 18 Jun 2020 05:52:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3874:4321:4605:5007:6119:7576:8957:9545:10004:10400:10471:10848:11232:11658:11914:11984:12043:12048:12114:12297:12683:12740:12760:12895:13069:13255:13311:13357:13439:14110:14181:14659:14721:21080:21451:21627:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: feast20_401413c26e0d
-X-Filterd-Recvd-Size: 2106
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 18 Jun 2020 05:52:19 +0000 (UTC)
-Message-ID: <5dc6fb7ebfd1d38079d63e54d6fb2b05fa69001a.camel@perches.com>
-Subject: Re: +
- scripts-deprecated_terms-recommend-denylist-allowlist-instead-of-blacklist-whitelist.patch
- added to -mm tree
-From:   Joe Perches <joe@perches.com>
-To:     akpm@linux-foundation.org, mm-commits@vger.kernel.org,
-        sj38.park@gmail.com, mpe@ellerman.id.au, jslaby@suse.cz,
-        colin.king@canonical.com, sjpark@amazon.de,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 17 Jun 2020 22:52:18 -0700
-In-Reply-To: <20200617213222.OcDiV%akpm@linux-foundation.org>
-References: <20200617213222.OcDiV%akpm@linux-foundation.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Thu, 18 Jun 2020 01:56:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592459805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vvsTC0zu1qccVdGrPvwGZCDTTN58VYTB/3udUE8lYkM=;
+        b=iZflSJKZjwUQ/vy4LCm1b4gT3zmMlPBUBQuypFYbzobTw6cYTN9F6uGQ5Cvhu4kCjlDynl
+        tGB527RwF/VXA+ZSZYoNWY/rBLg26s701kxaHSFHL6B3l1+poN1FxKEFNqPvqYS28pbDzG
+        QaW8HRah+1YAwpCYR/PYOv0LJnLvQvI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-dpMveLesOnykM1hhHxBXzA-1; Thu, 18 Jun 2020 01:56:41 -0400
+X-MC-Unique: dpMveLesOnykM1hhHxBXzA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC7D1835B58;
+        Thu, 18 Jun 2020 05:56:39 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-219.pek2.redhat.com [10.72.13.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A9335C1D6;
+        Thu, 18 Jun 2020 05:56:31 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
+        eperezma@redhat.com, lulu@redhat.com, shahafs@mellanox.com,
+        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
+        saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com
+Subject: [PATCH RFC 0/5] support batched IOTLB updating in vhost-vdpa
+Date:   Thu, 18 Jun 2020 13:56:21 +0800
+Message-Id: <20200618055626.25660-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-17 at 14:32 -0700, akpm@linux-foundation.org wrote:
-> The patch titled
->      Subject: scripts/deprecated_terms: recommend denylist/allowlist instead of blacklist/whitelist
-> has been added to the -mm tree.  Its filename is
->      scripts-deprecated_terms-recommend-denylist-allowlist-instead-of-blacklist-whitelist.patch
-[]
-> ------------------------------------------------------
-> From: SeongJae Park <sjpark@amazon.de>
-> Subject: scripts/deprecated_terms: recommend denylist/allowlist instead of blacklist/whitelist
-> 
-> This commit recommends that patches replace 'blacklist' and 'whitelist'
-> with 'denylist' and 'allowlist', because the new suggestions are
-> incontrovertible, doesn't make people hurt, and are more self-explanatory.
-[]
-> --- a/scripts/deprecated_terms.txt~scripts-deprecated_terms-recommend-denylist-allowlist-instead-of-blacklist-whitelist
-> +++ a/scripts/deprecated_terms.txt
-> @@ -3,3 +3,5 @@
->  # The format of each line is:
->  # deprecated||suggested
->  #
-> +blacklist||denylist
-> +whitelist||allowlist
+Hi all:
 
-I think this is a poor use of deprecated terms
-as it has nothing to do with skin color.
+This series tries to support batched IOTLB updating vhost-vdpa.
 
+Currently vhost-vdpa accepts userspace mapping via IOTLB API, and it
+can only forward one mapping to IOMMU or device through IOMMU API or
+dma_map(). Though set_map() is deisgend to have the capability to pass
+an rbtree based mapping to vDPA device, it's still be called at least
+once for each VHOST_IOTLB_UPDATE or VHOST_IOTLB_INVALIDATE. This is
+because vhost-vdpa doesn't know the userspace start or stop then
+updating.
+
+So this patch introduces two flags as hints for vhost-vdpa to call
+set_map() only when userspace finish a batch of IOTLB updating.
+
+So instead of:
+
+1) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
+2) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
+...
+n) VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE -> set_map() (s)
+
+With the help of hints, we do:
+
+0) VHOST_IOTLB_BATCH_START
+
+1) VHOST_IOTLB_UPDATE/INVALIDATE
+...
+n) VHOST_IOTLB_UPDATE/INVALIDATE
+
+n+1) VHOST_IOTLB_BATCH_END -> set_map()
+
+One one call of set_map() to vDPA device for a batch of IOTLB
+mappings. So for the device that has its own DMA translation logic, it
+can efficiently structure the memory mapping to get best performance.
+
+Note, this only impact the devices that want its own DMA
+translation. For other type of device, no changes in behaviour.
+
+Please reivew.
+
+Jason Wang (5):
+  vhost-vdpa: refine ioctl pre-processing
+  vhost: generialize backend features setting/getting
+  vhost-vdpa: support get/set backend features
+  vhost-vdpa: support IOTLB batching hints
+  vdpasim: support batch updating
+
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 40 +++++++++++++++++++++--
+ drivers/vhost/net.c              | 18 ++---------
+ drivers/vhost/vdpa.c             | 55 ++++++++++++++++++++++++++------
+ drivers/vhost/vhost.c            | 15 +++++++++
+ drivers/vhost/vhost.h            |  2 ++
+ include/uapi/linux/vhost.h       |  2 ++
+ include/uapi/linux/vhost_types.h |  7 ++++
+ 7 files changed, 110 insertions(+), 29 deletions(-)
+
+-- 
+2.20.1
 
