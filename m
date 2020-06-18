@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E291FDACF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A7A1FDAD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgFRBI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34024 "EHLO mail.kernel.org"
+        id S1727869AbgFRBIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:08:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbgFRBIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:08:25 -0400
+        id S1727782AbgFRBI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:08:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAB6421D79;
-        Thu, 18 Jun 2020 01:08:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72C9A21974;
+        Thu, 18 Jun 2020 01:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442504;
-        bh=NEZN25+YMUKahemIRd/ZYG04Rz9EGS/NjNQvn0xz5WU=;
+        s=default; t=1592442506;
+        bh=IeWIS46IeaHcbE+ILKyGGVA02wS6QtLXW2LFlM4IIxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FS0VMKRXy83qeOfuBGwWnYJD/B8horEy3KSU+7G0okmKU7Gef6GsSLVuUF/AJJZdw
-         eUzJfLLNkP8ahNlZ4fwK5074TwgEtscwArtbNcjAmvBY3dus7Nt2iW2N/4ecz/rt72
-         qlAhUGGZh5KESSTu1Ah7jEQ46bT1HGwPxF5HaXxE=
+        b=MiojPmtzZIMhYQGByqvIbbZJkMvnuZ8y6rdfFw3WmJACIxhPk+WDi45ajzALwIQET
+         /U7XL6Kesi+D0kdIHgHP2Iik02sR2K8yqywt8feJRV8tUiWpu8P5vuAMDqQl5mDBbD
+         naosnkJA3lIAw+211G0F3xSI0lWrDKJL3HJH2PCQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 014/388] backlight: lp855x: Ensure regulators are disabled on probe failure
-Date:   Wed, 17 Jun 2020 21:01:51 -0400
-Message-Id: <20200618010805.600873-14-sashal@kernel.org>
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 015/388] ARM: dts: renesas: Fix IOMMU device node names
+Date:   Wed, 17 Jun 2020 21:01:52 -0400
+Message-Id: <20200618010805.600873-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,121 +47,458 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Hunter <jonathanh@nvidia.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit d8207c155a7c6015eb7f43739baa7dfb1fa638af ]
+[ Upstream commit ae990a1de014396ffc8d0fcc31b6888c9b0ce59a ]
 
-If probing the LP885x backlight fails after the regulators have been
-enabled, then the following warning is seen when releasing the
-regulators ...
+Fix IOMMU device node names as "iommu@".
 
- WARNING: CPU: 1 PID: 289 at drivers/regulator/core.c:2051 _regulator_put.part.28+0x158/0x160
- Modules linked in: tegra_xudc lp855x_bl(+) host1x pwm_tegra ip_tables x_tables ipv6 nf_defrag_ipv6
- CPU: 1 PID: 289 Comm: systemd-udevd Not tainted 5.6.0-rc2-next-20200224 #1
- Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
-
- ...
-
- Call trace:
-  _regulator_put.part.28+0x158/0x160
-  regulator_put+0x34/0x50
-  devm_regulator_release+0x10/0x18
-  release_nodes+0x12c/0x230
-  devres_release_all+0x34/0x50
-  really_probe+0x1c0/0x370
-  driver_probe_device+0x58/0x100
-  device_driver_attach+0x6c/0x78
-  __driver_attach+0xb0/0xf0
-  bus_for_each_dev+0x68/0xc8
-  driver_attach+0x20/0x28
-  bus_add_driver+0x160/0x1f0
-  driver_register+0x60/0x110
-  i2c_register_driver+0x40/0x80
-  lp855x_driver_init+0x20/0x1000 [lp855x_bl]
-  do_one_initcall+0x58/0x1a0
-  do_init_module+0x54/0x1d0
-  load_module+0x1d80/0x21c8
-  __do_sys_finit_module+0xe8/0x100
-  __arm64_sys_finit_module+0x18/0x20
-  el0_svc_common.constprop.3+0xb0/0x168
-  do_el0_svc+0x20/0x98
-  el0_sync_handler+0xf4/0x1b0
-  el0_sync+0x140/0x180
-
-Fix this by ensuring that the regulators are disabled, if enabled, on
-probe failure.
-
-Finally, ensure that the vddio regulator is disabled in the driver
-remove handler.
-
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: bbb44da0b595 ("ARM: dts: r8a7743: Add IPMMU DT nodes")
+Fixes: 0dcba3de5835 ("ARM: dts: r8a7745: Add IPMMU DT nodes")
+Fixes: 350ae49b97c4 ("ARM: dts: r8a7744: Add IPMMU DT nodes")
+Fixes: 70496727c082 ("ARM: shmobile: r8a7790: Add IPMMU DT nodes")
+Fixes: f1951852ed17 ("ARM: shmobile: r8a7791: Add IPMMU DT nodes")
+Fixes: 098cb3a601e6 ("ARM: shmobile: r8a7793: Add IPMMU nodes")
+Fixes: 1cb2794f6082 ("ARM: shmobile: r8a7794: Add IPMMU DT nodes")
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/1587461756-13317-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lp855x_bl.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/r8a7743.dtsi | 12 ++++++------
+ arch/arm/boot/dts/r8a7744.dtsi | 12 ++++++------
+ arch/arm/boot/dts/r8a7745.dtsi | 12 ++++++------
+ arch/arm/boot/dts/r8a7790.dtsi | 12 ++++++------
+ arch/arm/boot/dts/r8a7791.dtsi | 14 +++++++-------
+ arch/arm/boot/dts/r8a7793.dtsi | 14 +++++++-------
+ arch/arm/boot/dts/r8a7794.dtsi | 12 ++++++------
+ 7 files changed, 44 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-index f68920131a4a..e94932c69f54 100644
---- a/drivers/video/backlight/lp855x_bl.c
-+++ b/drivers/video/backlight/lp855x_bl.c
-@@ -456,7 +456,7 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- 		ret = regulator_enable(lp->enable);
- 		if (ret < 0) {
- 			dev_err(lp->dev, "failed to enable vddio: %d\n", ret);
--			return ret;
-+			goto disable_supply;
- 		}
+diff --git a/arch/arm/boot/dts/r8a7743.dtsi b/arch/arm/boot/dts/r8a7743.dtsi
+index e8b340bb99bc..fff123753b85 100644
+--- a/arch/arm/boot/dts/r8a7743.dtsi
++++ b/arch/arm/boot/dts/r8a7743.dtsi
+@@ -338,7 +338,7 @@ thermal: thermal@e61f0000 {
+ 			#thermal-sensor-cells = <0>;
+ 		};
  
- 		/*
-@@ -471,24 +471,34 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- 	ret = lp855x_configure(lp);
- 	if (ret) {
- 		dev_err(lp->dev, "device config err: %d", ret);
--		return ret;
-+		goto disable_vddio;
- 	}
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -348,7 +348,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
  
- 	ret = lp855x_backlight_register(lp);
- 	if (ret) {
- 		dev_err(lp->dev,
- 			"failed to register backlight. err: %d\n", ret);
--		return ret;
-+		goto disable_vddio;
- 	}
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -357,7 +357,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
  
- 	ret = sysfs_create_group(&lp->dev->kobj, &lp855x_attr_group);
- 	if (ret) {
- 		dev_err(lp->dev, "failed to register sysfs. err: %d\n", ret);
--		return ret;
-+		goto disable_vddio;
- 	}
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -367,7 +367,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
  
- 	backlight_update_status(lp->bl);
-+
- 	return 0;
-+
-+disable_vddio:
-+	if (lp->enable)
-+		regulator_disable(lp->enable);
-+disable_supply:
-+	if (lp->supply)
-+		regulator_disable(lp->supply);
-+
-+	return ret;
- }
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -376,7 +376,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
  
- static int lp855x_remove(struct i2c_client *cl)
-@@ -497,6 +507,8 @@ static int lp855x_remove(struct i2c_client *cl)
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -386,7 +386,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
  
- 	lp->bl->props.brightness = 0;
- 	backlight_update_status(lp->bl);
-+	if (lp->enable)
-+		regulator_disable(lp->enable);
- 	if (lp->supply)
- 		regulator_disable(lp->supply);
- 	sysfs_remove_group(&lp->dev->kobj, &lp855x_attr_group);
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7743",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7744.dtsi b/arch/arm/boot/dts/r8a7744.dtsi
+index def840b8b2d3..5050ac19041d 100644
+--- a/arch/arm/boot/dts/r8a7744.dtsi
++++ b/arch/arm/boot/dts/r8a7744.dtsi
+@@ -338,7 +338,7 @@ thermal: thermal@e61f0000 {
+ 			#thermal-sensor-cells = <0>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -348,7 +348,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -357,7 +357,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -367,7 +367,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -376,7 +376,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -386,7 +386,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7744",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7745.dtsi b/arch/arm/boot/dts/r8a7745.dtsi
+index 7ab58d8bb740..b0d1fc24e97e 100644
+--- a/arch/arm/boot/dts/r8a7745.dtsi
++++ b/arch/arm/boot/dts/r8a7745.dtsi
+@@ -302,7 +302,7 @@ irqc: interrupt-controller@e61c0000 {
+ 			resets = <&cpg 407>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -312,7 +312,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -321,7 +321,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -331,7 +331,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -340,7 +340,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -350,7 +350,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7745",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7790.dtsi b/arch/arm/boot/dts/r8a7790.dtsi
+index e5ef9fd4284a..166d5566229d 100644
+--- a/arch/arm/boot/dts/r8a7790.dtsi
++++ b/arch/arm/boot/dts/r8a7790.dtsi
+@@ -427,7 +427,7 @@ thermal: thermal@e61f0000 {
+ 			#thermal-sensor-cells = <0>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -437,7 +437,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -446,7 +446,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -456,7 +456,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -465,7 +465,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -475,7 +475,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_rt: mmu@ffc80000 {
++		ipmmu_rt: iommu@ffc80000 {
+ 			compatible = "renesas,ipmmu-r8a7790",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xffc80000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7791.dtsi b/arch/arm/boot/dts/r8a7791.dtsi
+index 6e5bd86731cd..09e47cc17765 100644
+--- a/arch/arm/boot/dts/r8a7791.dtsi
++++ b/arch/arm/boot/dts/r8a7791.dtsi
+@@ -350,7 +350,7 @@ thermal: thermal@e61f0000 {
+ 			#thermal-sensor-cells = <0>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -360,7 +360,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -369,7 +369,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -379,7 +379,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -388,7 +388,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -398,7 +398,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_rt: mmu@ffc80000 {
++		ipmmu_rt: iommu@ffc80000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xffc80000 0 0x1000>;
+@@ -407,7 +407,7 @@ ipmmu_rt: mmu@ffc80000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7791",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7793.dtsi b/arch/arm/boot/dts/r8a7793.dtsi
+index dadbda16161b..1b62a7e06b42 100644
+--- a/arch/arm/boot/dts/r8a7793.dtsi
++++ b/arch/arm/boot/dts/r8a7793.dtsi
+@@ -336,7 +336,7 @@ thermal: thermal@e61f0000 {
+ 			#thermal-sensor-cells = <0>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -346,7 +346,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -355,7 +355,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -365,7 +365,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -374,7 +374,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -384,7 +384,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_rt: mmu@ffc80000 {
++		ipmmu_rt: iommu@ffc80000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xffc80000 0 0x1000>;
+@@ -393,7 +393,7 @@ ipmmu_rt: mmu@ffc80000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7793",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
+diff --git a/arch/arm/boot/dts/r8a7794.dtsi b/arch/arm/boot/dts/r8a7794.dtsi
+index 2c9e7a1ebfec..8d7f8798628a 100644
+--- a/arch/arm/boot/dts/r8a7794.dtsi
++++ b/arch/arm/boot/dts/r8a7794.dtsi
+@@ -290,7 +290,7 @@ irqc0: interrupt-controller@e61c0000 {
+ 			resets = <&cpg 407>;
+ 		};
+ 
+-		ipmmu_sy0: mmu@e6280000 {
++		ipmmu_sy0: iommu@e6280000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6280000 0 0x1000>;
+@@ -300,7 +300,7 @@ ipmmu_sy0: mmu@e6280000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_sy1: mmu@e6290000 {
++		ipmmu_sy1: iommu@e6290000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6290000 0 0x1000>;
+@@ -309,7 +309,7 @@ ipmmu_sy1: mmu@e6290000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_ds: mmu@e6740000 {
++		ipmmu_ds: iommu@e6740000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe6740000 0 0x1000>;
+@@ -319,7 +319,7 @@ ipmmu_ds: mmu@e6740000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mp: mmu@ec680000 {
++		ipmmu_mp: iommu@ec680000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xec680000 0 0x1000>;
+@@ -328,7 +328,7 @@ ipmmu_mp: mmu@ec680000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_mx: mmu@fe951000 {
++		ipmmu_mx: iommu@fe951000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xfe951000 0 0x1000>;
+@@ -338,7 +338,7 @@ ipmmu_mx: mmu@fe951000 {
+ 			status = "disabled";
+ 		};
+ 
+-		ipmmu_gp: mmu@e62a0000 {
++		ipmmu_gp: iommu@e62a0000 {
+ 			compatible = "renesas,ipmmu-r8a7794",
+ 				     "renesas,ipmmu-vmsa";
+ 			reg = <0 0xe62a0000 0 0x1000>;
 -- 
 2.25.1
 
