@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE261FE147
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B301FE11C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730644AbgFRB0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
+        id S1731652AbgFRB0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:26:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729487AbgFRBXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:23:03 -0400
+        id S1730926AbgFRBXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:23:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DDF320CC7;
-        Thu, 18 Jun 2020 01:23:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BDDC20FC3;
+        Thu, 18 Jun 2020 01:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443382;
-        bh=BUvJVBC8cHLzO7AI89N4vy5cfwfV6G40U7bIhjVbmhs=;
+        s=default; t=1592443389;
+        bh=/6TaqL/dS4z6Z66mGklGxkbdqDZPZ7/nTUQv+UC+Plc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zxwpg7INc1ZsfELqRCdOcNFqV5jWGIN+4PvmgK5ONaWyr+6Ze3F+tY9kkrm5eV7MO
-         DVc5PTUTmW8CSI52O6vkMolUn0FOEOf4Emn/eyqRL/PlfrBbZWrNh3LBbrmERzS7su
-         ktbGl/mIaknqdfSbXZMjpvNTUlTZ5+cRT+u3hPog=
+        b=aGBL/XuKDngcFtnGW3xgSzLXGWFwoEDVzylprCq1laz60dhtndPXJLWPB0o+JEaV2
+         bW5TnVZPgiZPq9xorkSru9XE0HEtPKspZ/7rXgFC3FPibUwS7WZ+A7/WUhkzGL/c3o
+         FwYfNZrY7W54XUgyCmj6VOR0ewcNsdw5BVcKlwxM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Daniel Wagner <dwagner@suse.de>,
-        James Smart <james.smart@broadcom.com>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 033/172] scsi: lpfc: Fix lpfc_nodelist leak when processing unsolicited event
-Date:   Wed, 17 Jun 2020 21:19:59 -0400
-Message-Id: <20200618012218.607130-33-sashal@kernel.org>
+Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 039/172] pwm: img: Call pm_runtime_put() in pm_runtime_get_sync() failed case
+Date:   Wed, 17 Jun 2020 21:20:05 -0400
+Message-Id: <20200618012218.607130-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -46,49 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 7217e6e694da3aae6d17db8a7f7460c8d4817ebf ]
+[ Upstream commit ca162ce98110b98e7d97b7157328d34dcfdd40a9 ]
 
-In order to create or activate a new node, lpfc_els_unsol_buffer() invokes
-lpfc_nlp_init() or lpfc_enable_node() or lpfc_nlp_get(), all of them will
-return a reference of the specified lpfc_nodelist object to "ndlp" with
-increased refcnt.
+Even in failed case of pm_runtime_get_sync(), the usage_count is
+incremented. In order to keep the usage_count with correct value call
+appropriate pm_runtime_put().
 
-When lpfc_els_unsol_buffer() returns, local variable "ndlp" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
-
-The reference counting issue happens in one exception handling path of
-lpfc_els_unsol_buffer(). When "ndlp" in DEV_LOSS, the function forgets to
-decrease the refcnt increased by lpfc_nlp_init() or lpfc_enable_node() or
-lpfc_nlp_get(), causing a refcnt leak.
-
-Fix this issue by calling lpfc_nlp_put() when "ndlp" in DEV_LOSS.
-
-Link: https://lore.kernel.org/r/1590416184-52592-1-git-send-email-xiyuyang19@fudan.edu.cn
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_els.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pwm/pwm-img.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 7398350b08b4..9032793c405e 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -7949,6 +7949,8 @@ lpfc_els_unsol_buffer(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
- 	spin_lock_irq(shost->host_lock);
- 	if (ndlp->nlp_flag & NLP_IN_DEV_LOSS) {
- 		spin_unlock_irq(shost->host_lock);
-+		if (newnode)
-+			lpfc_nlp_put(ndlp);
- 		goto dropit;
- 	}
- 	spin_unlock_irq(shost->host_lock);
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 815f5333bb8f..da72b2866e88 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -132,8 +132,10 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	duty = DIV_ROUND_UP(timebase * duty_ns, period_ns);
+ 
+ 	ret = pm_runtime_get_sync(chip->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(chip->dev);
+ 		return ret;
++	}
+ 
+ 	val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+ 	val &= ~(PWM_CTRL_CFG_DIV_MASK << PWM_CTRL_CFG_DIV_SHIFT(pwm->hwpwm));
+@@ -334,8 +336,10 @@ static int img_pwm_remove(struct platform_device *pdev)
+ 	int ret;
+ 
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put(&pdev->dev);
+ 		return ret;
++	}
+ 
+ 	for (i = 0; i < pwm_chip->chip.npwm; i++) {
+ 		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
 -- 
 2.25.1
 
