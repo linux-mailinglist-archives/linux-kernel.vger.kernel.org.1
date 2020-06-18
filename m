@@ -2,213 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7EF1FFE6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EAD1FFE71
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbgFRXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 19:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730280AbgFRXAg (ORCPT
+        id S1731568AbgFRXBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 19:01:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57199 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730750AbgFRXBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 19:00:36 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E6C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:00:36 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id m81so9225038ioa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 16:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WWegyLOphUdUq2xMzuao7on0U+YW/ae33XwIxQCwUhM=;
-        b=Lu3YAJ2Tj3Z8rdEUDrzl1hkWBmyhBLIXG0haNA5uDuo58/nFlzD0rebF/jhUdU5k9d
-         p3TtBODyabnZLauFmVG+PAVTnYHbU3X8umC5yic5wRY226pPFlrWYuaC12y+iAKfzX+8
-         hzCcM4UQu2Pdc3TNMNjqtNpFOtsiN5S/LeIUY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WWegyLOphUdUq2xMzuao7on0U+YW/ae33XwIxQCwUhM=;
-        b=IPtF7CDlFDPYwGu84cabL33CkW1166MQXUl49X507GyUtlyGVCXnx/NreUqyrT+4Oj
-         JiMnw0QnFwlK5BtUkwYGuUH28MFya/2LZXnTN5QsHEPG7AfElk5CVONhb+SkYNSFx0Ha
-         LFW8v1Ua5hQXX0IryVy1swxPE73yqTCDE/n8BUvafgr82ffP3bOYYIxqfCSPZ/vjfy0w
-         nJRvZMZly9asTnj47O95WqhMKRv2NWnibzlYHNzaWYG301w5oU2Sbc4VT/gg5AMGBvrK
-         gIriO2uVTgzV9kLj+unjXWdbkYTyaKSxhu+WcMa9C9Dw+FYdqUtqtgGg3taX/jkHdsTo
-         gnLw==
-X-Gm-Message-State: AOAM530LpBC6i1r37cxysG6s4qwRXnJovGxeHDDc8KgeJrgdhuL86rkP
-        kTO0g19+LH8/dqUX8v1QIHOHnA==
-X-Google-Smtp-Source: ABdhPJync4oY1K3Sw6X56Wque2/ctwSaQw+z+Wj62V5N5JjoYGkQXRgu3cWHiu4XdBmaioxe8ZkilQ==
-X-Received: by 2002:a05:6602:2e05:: with SMTP id o5mr1185592iow.28.1592521235677;
-        Thu, 18 Jun 2020 16:00:35 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id m18sm2199101ilj.11.2020.06.18.16.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 16:00:35 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] remoteproc: qcom: Add notification types to SSR
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-References: <1590636883-30866-1-git-send-email-rishabhb@codeaurora.org>
- <1590636883-30866-3-git-send-email-rishabhb@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <c7c2d4ac-3d09-d28b-0d21-9ac6e9e10172@ieee.org>
-Date:   Thu, 18 Jun 2020 18:00:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 18 Jun 2020 19:01:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592521294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fVl7NirlPBDaZbv0g3tbYP7L/Gzjwfxt3r7f0D5EtyA=;
+        b=fMHKBye7qMOKzFq+rFofKjt/PWcGai6G+BvQvCxHygpQ+0yg2TmZq4S6dcKhUETjJF/XDi
+        aD8NVg5LiE4BHUB1RRVdIdDP/Rhh8bepGR0ZZ8a21v13Kp/qBYkNg4EUWZ6tmv4tVltkA/
+        CNLPrqir2ShHtAU2SEtzoaZz1KyrDes=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-I141doS4NfOHr44PF510Eg-1; Thu, 18 Jun 2020 19:01:32 -0400
+X-MC-Unique: I141doS4NfOHr44PF510Eg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02636464;
+        Thu, 18 Jun 2020 23:01:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 07EEF5D9C5;
+        Thu, 18 Jun 2020 23:01:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix afs_do_lookup() to call correct fetch-status op
+ variant
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 19 Jun 2020 00:01:28 +0100
+Message-ID: <159252128817.1594103.7234386826450496394.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-In-Reply-To: <1590636883-30866-3-git-send-email-rishabhb@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/20 10:34 PM, Rishabh Bhatnagar wrote:
-> From: Siddharth Gupta <sidgup@codeaurora.org>
-> 
-> The SSR subdevice only adds callback for the unprepare event. Add callbacks
-> for unprepare, start and prepare events. The client driver for a particular
+Fix afs_do_lookup()'s fallback case for when FS.InlineBulkStatus isn't
+supported by the server.  In the fallback, it calls FS.FetchStatus for the
+specific vnode it's meant to be looking up.  Commit b6489a49f7b7 broke this
+by renaming one of the two identically-named afs_fetch_status_operation
+descriptors to something else so that one of them could be made non-static.
+The site that used the renamed one, however, wasn't renamed and didn't
+produce any warning because the other was declared in a header.
 
-   for prepare, start, and stop events
+Fix this by making afs_do_lookup() use the renamed variant.
 
-> remoteproc might be interested in knowing the status of the remoteproc
-> while undergoing SSR, not just when the remoteproc has finished shutting
-> down.
-> 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->   drivers/remoteproc/qcom_common.c      | 46 +++++++++++++++++++++++++++++++++--
->   include/linux/remoteproc/qcom_rproc.h | 14 +++++++++++
->   2 files changed, 58 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 61ff2dd..5c5a1eb 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -228,7 +228,7 @@ struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
->    *
->    * This registers the @nb notifier block as part the notifier chain for a
->    * remoteproc associated with @name. The notifier block's callback
-> - * will be invoked when the particular remote processor is stopped.
-> + * will be invoked when the particular remote processor is started/stopped.
+Note that there are two variants of the success method because one is
+called from ->lookup() where we may or may not have an inode, but can't
+call iget until after we've talked to the server - whereas the other is
+called from within iget where we have an inode, but it may or may not be
+initialised.
 
-Maybe something more like:
-   will be invoked when an SSR event occurs for the named
-   remote processor.
+The latter variant expects there to be an inode, but because it's being
+called from there former case, there might not be - resulting in an oops
+like the following:
 
->    */
->   void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb)
->   {
-> @@ -258,6 +258,44 @@ int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
->   }
->   EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
->   
-> +static int ssr_notify_prepare(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_BEFORE_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static int ssr_notify_start(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_AFTER_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static void ssr_notify_stop(struct rproc_subdev *subdev, bool crashed)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = crashed,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_BEFORE_SHUTDOWN, &data);
-> +}
-> +
->   static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->   {
->   	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> @@ -266,7 +304,8 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->   		.crashed = false,
->   	};
->   
-> -	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_AFTER_SHUTDOWN, &data);
->   }
->   
->   
-> @@ -294,6 +333,9 @@ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
->   
->   	mutex_unlock(&qcom_ssr_subsys_lock);
->   	ssr->info = info;
-> +	ssr->subdev.prepare = ssr_notify_prepare;
-> +	ssr->subdev.start = ssr_notify_start;
-> +	ssr->subdev.stop = ssr_notify_stop;
->   	ssr->subdev.unprepare = ssr_notify_unprepare;
->   
->   	rproc_add_subdev(rproc, &ssr->subdev);
-> diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
-> index 58422b1..a558183 100644
-> --- a/include/linux/remoteproc/qcom_rproc.h
-> +++ b/include/linux/remoteproc/qcom_rproc.h
-> @@ -5,6 +5,20 @@
->   
->   #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
->   
-> +/**
-> + * enum qcom_ssr_notif_type - Different stages of remoteproc notifications
-> + * @QCOM_SSR_BEFORE_SHUTDOWN:	unprepare stage of  remoteproc
-> + * @QCOM_SSR_AFTER_SHUTDOWN:	stop stage of  remoteproc
-> + * @QCOM_SSR_BEFORE_POWERUP:	prepare stage of  remoteproc
-> + * @QCOM_SSR_AFTER_POWERUP:	start stage of  remoteproc
+ BUG: kernel NULL pointer dereference, address: 00000000000000b0
+ ...
+ RIP: 0010:afs_fetch_status_success+0x27/0x7e
+ ...
+ Call Trace:
+  ? rxrpc_cleanup_call+0xb5/0xc5
+  afs_wait_for_operation+0xda/0x234
+  afs_do_lookup+0x2fe/0x3c1
+  afs_lookup+0x3c5/0x4bd
+  __lookup_slow+0xcd/0x10f
+  walk_component+0xa2/0x10c
+  ? path_init+0x101/0x2eb
+  path_lookupat.isra.0+0x80/0x110
+  filename_lookup+0x81/0x104
+  ? slab_post_alloc_hook.isra.0+0xa/0x1a
+  ? kmem_cache_alloc+0xc3/0x129
+  vfs_statx+0x76/0x109
+  ? touch_atime+0x33/0xac
+  __do_sys_newlstat+0x39/0x6b
+  ? ksys_getdents64+0xb9/0xe0
+  ? vtime_delta.isra.0+0xe/0x24
+  ? vtime_delta.isra.0+0xe/0x24
+  ? get_vtime_delta+0x12/0x20
+  ? vtime_user_exit+0x21/0x61
+  ? __context_tracking_exit+0x3a/0x87
+  do_syscall_64+0x4c/0x78
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-I think your explanations of these symbols are less clear than
-the symbol names themselves...  In any case, I wouldn't refer
-to these as "stages of notifications" but instead something
-more like startup/shutdown related events for a remote processor.
 
-I personally might have ordered them differently too:
-So maybe more like:
-	BEFORE_POWERUP	Remoteproc about to start (prepare)
-	AFTER_POWERUP	Remoteproc is running (start)
-	BEFORE_SHUTDOWN	Remoteproc crashed, or shutting down (stop)
-	AFTER_SHUTDOWN	Remoteproc is down (unprepare)
+Fixes: b6489a49f7b7 ("afs: Fix silly rename")
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-					-Alex
-	
-> + */
-> +enum qcom_ssr_notif_type {
-> +	QCOM_SSR_BEFORE_SHUTDOWN,
-> +	QCOM_SSR_AFTER_SHUTDOWN,
-> +	QCOM_SSR_BEFORE_POWERUP,
-> +	QCOM_SSR_AFTER_POWERUP,
-> +};
-> +
->   struct qcom_ssr_notif_data {
->   	const char *name;
->   	bool crashed;
-> 
+ fs/afs/dir.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 3e3c2bf0a722..96757f3abd74 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -845,7 +845,7 @@ static struct inode *afs_do_lookup(struct inode *dir, struct dentry *dentry,
+ 		 * to FS.FetchStatus for op->file[1].
+ 		 */
+ 		op->fetch_status.which = 1;
+-		op->ops = &afs_fetch_status_operation;
++		op->ops = &afs_lookup_fetch_status_operation;
+ 		afs_begin_vnode_operation(op);
+ 		afs_wait_for_operation(op);
+ 	}
+
 
