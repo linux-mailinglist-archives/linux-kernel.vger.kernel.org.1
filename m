@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B30A1FE978
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 05:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877B01FE981
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 05:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgFRDeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 23:34:18 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:44962 "EHLO inva020.nxp.com"
+        id S1727857AbgFRDeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 23:34:23 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:42306 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726854AbgFRDeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 23:34:16 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2F7121A0045;
-        Thu, 18 Jun 2020 05:34:14 +0200 (CEST)
+        id S1727070AbgFRDeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 23:34:18 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D33D200039;
+        Thu, 18 Jun 2020 05:34:15 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D6D871A0079;
-        Thu, 18 Jun 2020 05:34:07 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 523A9200015;
+        Thu, 18 Jun 2020 05:34:09 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id CADD8402B3;
-        Thu, 18 Jun 2020 11:33:59 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4A063402B0;
+        Thu, 18 Jun 2020 11:34:01 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
@@ -29,9 +29,9 @@ To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mmc@vger.kernel.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH V4 2/3] dt-bindings: clock: Correct mmc node name in i.MX35 binding
-Date:   Thu, 18 Jun 2020 11:22:57 +0800
-Message-Id: <1592450578-30140-2-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH V4 3/3] dt-bindings: clock: Correct example in i.MX8QXP LPCG binding
+Date:   Thu, 18 Jun 2020 11:22:58 +0800
+Message-Id: <1592450578-30140-3-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1592450578-30140-1-git-send-email-Anson.Huang@nxp.com>
 References: <1592450578-30140-1-git-send-email-Anson.Huang@nxp.com>
@@ -41,32 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nodename should be "mmc" instead of "esdhc" in i.MX35 clock binding
-to avoid below build error:
+In i.MX8QXP LPCG binding's example, "fsl,imx7d-usdhc" as fallback
+compatible is incorrect, remove it to avoid below build error:
 
-Documentation/devicetree/bindings/clock/imx35-clock.example.dt.yaml:
-esdhc@53fb4000: $nodename:0: 'esdhc@53fb4000' does not match '^mmc(@.*)?$'
+Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
+mmc@5b010000: compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
+Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
+mmc@5b010000: compatible: ['fsl,imx8qxp-usdhc', 'fsl,imx7d-usdhc'] is too long
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
 New patch, to fix build error when patch #1 is added.
 ---
- Documentation/devicetree/bindings/clock/imx35-clock.yaml | 2 +-
+ Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/imx35-clock.yaml b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-index bd871da..3e20cca 100644
---- a/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-@@ -130,7 +130,7 @@ examples:
-         #clock-cells = <1>;
+diff --git a/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml b/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+index 33f3010..1d5e9bc 100644
+--- a/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
++++ b/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+@@ -62,7 +62,7 @@ examples:
      };
  
--    esdhc@53fb4000 {
-+    mmc@53fb4000 {
-         compatible = "fsl,imx35-esdhc";
-         reg = <0x53fb4000 0x4000>;
-         interrupts = <7>;
+     mmc@5b010000 {
+-        compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
++        compatible = "fsl,imx8qxp-usdhc";
+         interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_HIGH>;
+         reg = <0x5b010000 0x10000>;
+         clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC0_IPG_CLK>,
 -- 
 2.7.4
 
