@@ -2,194 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950A51FF361
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA82B1FF376
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730280AbgFRNl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:41:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26234 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727101AbgFRNly (ORCPT
+        id S1730355AbgFRNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:44:53 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:50920 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730306AbgFRNos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:41:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592487712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Cexa4tsvwTnBBGHx0OVpN/yf320flKSSjXgML68NX8=;
-        b=VwLMLEBfB1WXN8qBJQvFRkJ+hFb4TwYOqNXRfnwgPwDA/pufzfB5TD/WheDbBfkGaZDlJ1
-        2oZP/hxBYeVMQWT+LJsDL6KEjQdcWgzEJVO7PLrfLvHg4Im7h0lh0+CI8cj6nTPHnUDh3g
-        kX8za3lCJMzCtn/0EY8WhbhK/oO0x0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-k6bxuqGrPWmC0i8HF5oCAg-1; Thu, 18 Jun 2020 09:41:48 -0400
-X-MC-Unique: k6bxuqGrPWmC0i8HF5oCAg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3938107ACF7;
-        Thu, 18 Jun 2020 13:41:46 +0000 (UTC)
-Received: from localhost (ovpn-12-22.pek2.redhat.com [10.72.12.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 961BB19C79;
-        Thu, 18 Jun 2020 13:41:45 +0000 (UTC)
-Date:   Thu, 18 Jun 2020 21:41:42 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Nitin Gupta <nigupta@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitin Gupta <ngupta@nitingupta.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PROC SYSCTL" <linux-fsdevel@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: Use unsigned types for fragmentation score
-Message-ID: <20200618134142.GD3346@MiWiFi-R3L-srv>
-References: <20200618010319.13159-1-nigupta@nvidia.com>
+        Thu, 18 Jun 2020 09:44:48 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 05IDi6Pb001765;
+        Thu, 18 Jun 2020 16:44:06 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
+        id 40A26639BF; Thu, 18 Jun 2020 16:44:06 +0300 (IDT)
+From:   amirmizi6@gmail.com
+To:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
+        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
+        robh+dt@kernel.org,
+        "benoit.houyere@st.com--to=mark.rutland"@arm.com,
+        peterhuewe@gmx.de, christophe-h.richard@st.com, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
+        Amir Mizinski <amirmizi6@gmail.com>
+Subject: [PATCH v11 0/8] Add tpm i2c ptp driver
+Date:   Thu, 18 Jun 2020 16:43:35 +0300
+Message-Id: <20200618134344.243537-1-amirmizi6@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618010319.13159-1-nigupta@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/17/20 at 06:03pm, Nitin Gupta wrote:
-> Proactive compaction uses per-node/zone "fragmentation score" which
-> is always in range [0, 100], so use unsigned type of these scores
-> as well as for related constants.
-> 
-> Signed-off-by: Nitin Gupta <nigupta@nvidia.com>
-> ---
->  include/linux/compaction.h |  4 ++--
->  kernel/sysctl.c            |  2 +-
->  mm/compaction.c            | 18 +++++++++---------
->  mm/vmstat.c                |  2 +-
->  4 files changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index 7a242d46454e..25a521d299c1 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -85,13 +85,13 @@ static inline unsigned long compact_gap(unsigned int order)
->  
->  #ifdef CONFIG_COMPACTION
->  extern int sysctl_compact_memory;
-> -extern int sysctl_compaction_proactiveness;
-> +extern unsigned int sysctl_compaction_proactiveness;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
->  extern int sysctl_compact_unevictable_allowed;
->  
-> -extern int extfrag_for_order(struct zone *zone, unsigned int order);
-> +extern unsigned int extfrag_for_order(struct zone *zone, unsigned int order);
->  extern int fragmentation_index(struct zone *zone, unsigned int order);
->  extern enum compact_result try_to_compact_pages(gfp_t gfp_mask,
->  		unsigned int order, unsigned int alloc_flags,
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 58b0a59c9769..40180cdde486 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2833,7 +2833,7 @@ static struct ctl_table vm_table[] = {
->  	{
->  		.procname	= "compaction_proactiveness",
->  		.data		= &sysctl_compaction_proactiveness,
-> -		.maxlen		= sizeof(int),
-> +		.maxlen		= sizeof(sysctl_compaction_proactiveness),
+From: Amir Mizinski <amirmizi6@gmail.com>
 
-Patch looks good to me. Wondering why not using 'unsigned int' here,
-just curious.
+This patch set adds support for TPM devices that implement the I2C.
+Interface defined by TCG PTP specification:
+https://trustedcomputinggroup.org/wp-content/uploads/TCG_PC_Client_Platform_TPM_Profile_PTP_2.0_r1.03_v22.pdf
 
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index ac2030814edb..45fd24a0ea0b 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -53,7 +53,7 @@ static inline void count_compact_events(enum vm_event_item item, long delta)
->  /*
->   * Fragmentation score check interval for proactive compaction purposes.
->   */
-> -static const int HPAGE_FRAG_CHECK_INTERVAL_MSEC = 500;
-> +static const unsigned int HPAGE_FRAG_CHECK_INTERVAL_MSEC = 500;
->  
->  /*
->   * Page order with-respect-to which proactive compaction
-> @@ -1890,7 +1890,7 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->   * ZONE_DMA32. For smaller zones, the score value remains close to zero,
->   * and thus never exceeds the high threshold for proactive compaction.
->   */
-> -static int fragmentation_score_zone(struct zone *zone)
-> +static unsigned int fragmentation_score_zone(struct zone *zone)
->  {
->  	unsigned long score;
->  
-> @@ -1906,9 +1906,9 @@ static int fragmentation_score_zone(struct zone *zone)
->   * the node's score falls below the low threshold, or one of the back-off
->   * conditions is met.
->   */
-> -static int fragmentation_score_node(pg_data_t *pgdat)
-> +static unsigned int fragmentation_score_node(pg_data_t *pgdat)
->  {
-> -	unsigned long score = 0;
-> +	unsigned int score = 0;
->  	int zoneid;
->  
->  	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
-> @@ -1921,17 +1921,17 @@ static int fragmentation_score_node(pg_data_t *pgdat)
->  	return score;
->  }
->  
-> -static int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
-> +static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
->  {
-> -	int wmark_low;
-> +	unsigned int wmark_low;
->  
->  	/*
->  	 * Cap the low watermak to avoid excessive compaction
->  	 * activity in case a user sets the proactivess tunable
->  	 * close to 100 (maximum).
->  	 */
-> -	wmark_low = max(100 - sysctl_compaction_proactiveness, 5);
-> -	return low ? wmark_low : min(wmark_low + 10, 100);
-> +	wmark_low = max(100U - sysctl_compaction_proactiveness, 5U);
-> +	return low ? wmark_low : min(wmark_low + 10, 100U);
->  }
->  
->  static bool should_proactive_compact_node(pg_data_t *pgdat)
-> @@ -2604,7 +2604,7 @@ int sysctl_compact_memory;
->   * aggressively the kernel should compact memory in the
->   * background. It takes values in the range [0, 100].
->   */
-> -int __read_mostly sysctl_compaction_proactiveness = 20;
-> +unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
->  
->  /*
->   * This is the entry point for compacting all nodes via
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 3e7ba8bce2ba..b1de695b826d 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1079,7 +1079,7 @@ static int __fragmentation_index(unsigned int order, struct contig_page_info *in
->   * It is defined as the percentage of pages found in blocks of size
->   * less than 1 << order. It returns values in range [0, 100].
->   */
-> -int extfrag_for_order(struct zone *zone, unsigned int order)
-> +unsigned int extfrag_for_order(struct zone *zone, unsigned int order)
->  {
->  	struct contig_page_info info;
->  
-> -- 
-> 2.27.0
-> 
-> 
+The driver was tested on Raspberry-Pie 3, using Nuvoton NPCT75X TPM.
+
+Interrupts are not implemented yet, preparing it for the next patch.
+This patch is based on initial work by oshri Alkoby, Alexander Steffen and Christophe Ricard
+
+Changes since version 1:
+-"char:tpm:Add check_data handle to tpm_tis_phy_ops in order to check data integrity"
+        - Fixed and extended commit description.
+        - Fixed an issue regarding handling max retries.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options":
+        -Converted "tpm_tis_i2c.txt" to "tpm-tis-i2c.yaml".
+        - Renamed "tpm_tis-i2c" to "tpm-tis-i2c".
+        - Removed interrupts properties.
+-"char: tpm: add tpm_tis_i2c driver"
+        - Replaced "tpm_tis-i2c" with "tpm-tis-i2c" in "tpm_tis_i2c.c".
+Addressed comments from:
+ - Jarkko Sakkinen: https://patchwork.kernel.org/patch/11236257/
+ - Rob Herring: https://patchwork.kernel.org/patch/11236253/
+
+Changes since version 2:
+- Added 2 new commits with improvements suggested by Benoit Houyere.
+        -"Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -"Handle an exception for TPM Firmware Update mode."
+- Updated patch to latest v5.5
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        - Added "interrupts" and "crc-checksum" to properties.
+        - Updated binding description and commit info.
+-"char: tpm: add tpm_tis_i2c driver" (suggested by Benoit Houyere)
+        - Added repeat I2C frame after NACK.
+        - Checksum I2C feature activation in DTS file configuration.
+Addressed comments from:
+ - Rob Herring: https://lore.kernel.org/patchwork/patch/1161287/
+
+Changes since version 3:
+- Updated patch to latest v5.6
+- Updated commits headlines and development credit format by Jarkko Sakkinen suggestion
+-"tpm: tpm_tis: Make implementation of read16 read32 write32 optional"
+        - Updated commit description.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        - Fixed 'make dt_binding_check' errors on YAML file.
+        - Removed interrupts from required and examples since there is no use for them in current patch.
+Addressed comments from:
+ - Jarkko Sakkinen: https://lore.kernel.org/patchwork/patch/1192101/
+ - Rob Herring: https://lore.kernel.org/patchwork/patch/1192099/
+
+Changes since version 4:
+-"tpm: tpm_tis: Make implementation of read16 read32 write32 optional"
+        -Added a "Reviewed-by" tag:
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops in order to check data integrity"
+        -Fixed credit typos.
+-"tpm: tpm_tis: rewrite "tpm_tis_req_canceled()""
+        -Added fixes tag and removed changes for STM.
+-"tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Fixed typos, edited description to be clearer, and added a "Suggested-by" tag.
+-"tpm: Handle an exception for TPM Firmware Update mode."
+        -Added a "Suggested-by" tag.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        -Fixed 'make dt_binding_check' errors.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -Added tested-by tag by Eddie James.
+        -Fixed indent in Kconfig file.
+        -Fixed 'MODULE_DESCRIPTION'.
+Addressed comments from:
+ - Jarkko Sakkinen: https://patchwork.kernel.org/patch/11467645/
+                https://patchwork.kernel.org/patch/11467655/
+                https://patchwork.kernel.org/patch/11467643/
+                https://patchwork.kernel.org/patch/11467659/
+                https://patchwork.kernel.org/patch/11467651/
+ - Rob Herring: https://patchwork.kernel.org/patch/11467653/
+ - Randy Dunlap: https://patchwork.kernel.org/patch/11467651/
+ - Eddie James: https://lore.kernel.org/patchwork/patch/1192104/
+
+Changes since version 5:
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Updated short description and fixed long description to be more clear.
+Addressed comments from:
+ - Jarkko Sakkinen: https://lkml.org/lkml/2020/4/6/748
+
+Changes since version 6:
+-"tpm: tpm_tis: Make implementation of read16, read32 and write32 optional"
+        -Fixed short description.
+        -fixed long description proofreading issues.
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Fixed long description by Jarkko comments and proofreading issues.
+        -Replaced "check_data" with verify_data_integrity".
+        -New line before return statement.
+-"tpm: tpm_tis: rewrite "tpm_tis_req_canceled()"
+        -Fixed line over 80 characters.
+        -fixed long description proofreading issues.
+-" tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot"
+        -fixed long description proofreading issues.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C option"
+        -Replaced "tpm-tis-i2c@2e" with "tpm_tis@2e".
+        -Fixed CRC_Checksum description.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -Replaced "depends on CRC_CCIT" with "select CRC_CCIT".
+        -Added tested-by tag by Joel Stanley.
+        -Fixed checkpatch.pl warnings.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1221336/
+        https://lore.kernel.org/patchwork/patch/1221337/
+        https://lore.kernel.org/patchwork/patch/1221339/
+ - Joel Stanley:
+        https://lore.kernel.org/patchwork/patch/1220543/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1221334/
+
+Changes since version 7:
+- Added a new commit with improvements suggested by Benoit Houyere.
+        -"tpm: tpm_tis: verify TPM_STS register is valid after locality request"
+-"tpm: tpm_tis: Rewrite "tpm_tis_req_canceled()""
+        -Fixed Hash for Fixes tag.
+-"tpm: Add YAML schema for TPM TIS I2C options"
+        -Added a compatible string specific to the nuvoton npct75x chip.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -added a compatible string according to yaml file.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1231524/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1231526/
+
+Changes since version 8:
+- "tpm: tpm_tis: Make implementation of read16, read32 and write32 optional"
+        -Fixed a compile error conflicting CR50
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Moved commit backwards from 4/8 to 2/8 for a better flow with new data integrity check design
+- "tpm: tpm_tis: Add retry in case of protocol failure or data integrity (on I2C only) failure."
+        -Renamed from "tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Redesign and added a retry for additional error cases.
+- "tpm: Add YAML schema for TPM TIS I2C options"
+        -Fixed Dual-license new binding
+        -Removed "oneOf"
+        -Fixed tpm_tis@2e to tpm@2e
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1240728/
+        https://lore.kernel.org/patchwork/patch/1240736/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1240733/
+
+Changes since version 9:
+- "tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional"
+        -Fixed short description
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Canceled wait_for_tpm_stat() function renaming.
+        -Fixed long description
+- "tpm: Add YAML schema for TPM TIS I2C options"
+        -Added a reviewed-by tag.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1247163/
+        https://lore.kernel.org/patchwork/patch/1247164/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1247161/
+
+Changes since version 10:
+- "tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional"
+        -Added a Reviewed-by and Tested-by tags
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Renamed "mask_result" parameter with "stat"
+- "tpm: tpm_tis: Add retry in case of protocol failure or data integrity (on I2C only) failure."
+        -Edited long description.
+        -Modified tpm_tis_recv() to __tpm_tis_recv() and Introduced a new tpm_tis_recv() function
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1252428/
+        https://lore.kernel.org/patchwork/patch/1252422/
+        https://lore.kernel.org/patchwork/patch/1252424/
+
+Amir Mizinski (8):
+  tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional
+  tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot
+    without last byte in exception
+  tpm: tpm_tis: Add retry in case of protocol failure or data integrity
+    (on I2C only) failure.
+  tpm: tpm_tis: Rewrite "tpm_tis_req_canceled()"
+  tpm: Handle an exception for TPM Firmware Update mode.
+  tpm: tpm_tis: verify TPM_STS register is valid after locality request
+  tpm: Add YAML schema for TPM TIS I2C options
+  tpm: tpm_tis: add tpm_tis_i2c driver
+
+ .../bindings/security/tpm/tpm-tis-i2c.yaml         |  50 ++++
+ drivers/char/tpm/Kconfig                           |  12 +
+ drivers/char/tpm/Makefile                          |   1 +
+ drivers/char/tpm/tpm2-cmd.c                        |   4 +
+ drivers/char/tpm/tpm_tis_core.c                    | 158 ++++++-----
+ drivers/char/tpm/tpm_tis_core.h                    |  41 ++-
+ drivers/char/tpm/tpm_tis_i2c.c                     | 292 +++++++++++++++++++++
+ drivers/char/tpm/tpm_tis_spi.h                     |   4 -
+ drivers/char/tpm/tpm_tis_spi_cr50.c                |   3 -
+ drivers/char/tpm/tpm_tis_spi_main.c                |  41 ---
+ include/linux/tpm.h                                |   1 +
+ 11 files changed, 485 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+ create mode 100644 drivers/char/tpm/tpm_tis_i2c.c
+
+-- 
+2.7.4
 
