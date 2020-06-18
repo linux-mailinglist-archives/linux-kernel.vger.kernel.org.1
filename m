@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4511FDF66
+	by mail.lfdr.de (Postfix) with ESMTP id A78111FDF67
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732373AbgFRB3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:29:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        id S1732380AbgFRB3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731690AbgFRB0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:26:32 -0400
+        id S1731044AbgFRB0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:26:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EFC120897;
-        Thu, 18 Jun 2020 01:26:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B3F82088E;
+        Thu, 18 Jun 2020 01:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443592;
-        bh=UsY6ojiGGo04yYN4r3Alru+AS50HUpMPbmnkwX+mkWs=;
+        s=default; t=1592443593;
+        bh=jMKMGH9oLq4ZwU2DuxOlSu/A8eXbglr0iWQy84qeamc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gHgHz3Ol8l/j+n3klM5XFldaxt2pz4OJ8+vnF/giugCXeb3+5jFjEJBzwsl4pjww1
-         5BoKDbDbADNoPmqAiHYYN7Y7Pya0SInmiWNZLBjC7RcIyZhyMONkDyrYGQTy1vB+gv
-         vYC6MLFkCS0Hx25+dIl+1AZcxQV4H3jW8e5zcjrk=
+        b=00CQXpGpTq32Zvca/DOfaYqa8jQ5A3GT3GiqxuweuH2rDfEZtUHpXa3SoaC2T68qo
+         pPCscwjpP/SoF81X0Dc/0nqFf98k4MavdHwUArdcWMhGyqMpEO5iY9nguiKRCyR8x1
+         7I5VnLR3ne2PtXypo+0F3UpIO42GjLnKvlAbdFP8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Daniel Wagner <dwagner@suse.de>,
-        James Smart <james.smart@broadcom.com>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 025/108] scsi: lpfc: Fix lpfc_nodelist leak when processing unsolicited event
-Date:   Wed, 17 Jun 2020 21:24:37 -0400
-Message-Id: <20200618012600.608744-25-sashal@kernel.org>
+Cc:     Alain Volmat <avolmat@me.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 026/108] clk: clk-flexgen: fix clock-critical handling
+Date:   Wed, 17 Jun 2020 21:24:38 -0400
+Message-Id: <20200618012600.608744-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
 References: <20200618012600.608744-1-sashal@kernel.org>
@@ -46,49 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Alain Volmat <avolmat@me.com>
 
-[ Upstream commit 7217e6e694da3aae6d17db8a7f7460c8d4817ebf ]
+[ Upstream commit a403bbab1a73d798728d76931cab3ff0399b9560 ]
 
-In order to create or activate a new node, lpfc_els_unsol_buffer() invokes
-lpfc_nlp_init() or lpfc_enable_node() or lpfc_nlp_get(), all of them will
-return a reference of the specified lpfc_nodelist object to "ndlp" with
-increased refcnt.
+Fixes an issue leading to having all clocks following a critical
+clocks marked as well as criticals.
 
-When lpfc_els_unsol_buffer() returns, local variable "ndlp" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
-
-The reference counting issue happens in one exception handling path of
-lpfc_els_unsol_buffer(). When "ndlp" in DEV_LOSS, the function forgets to
-decrease the refcnt increased by lpfc_nlp_init() or lpfc_enable_node() or
-lpfc_nlp_get(), causing a refcnt leak.
-
-Fix this issue by calling lpfc_nlp_put() when "ndlp" in DEV_LOSS.
-
-Link: https://lore.kernel.org/r/1590416184-52592-1-git-send-email-xiyuyang19@fudan.edu.cn
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: fa6415affe20 ("clk: st: clk-flexgen: Detect critical clocks")
+Signed-off-by: Alain Volmat <avolmat@me.com>
+Link: https://lkml.kernel.org/r/20200322140740.3970-1-avolmat@me.com
+Reviewed-by: Patrice Chotard <patrice.chotard@st.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_els.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/st/clk-flexgen.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 4c84c2ae1112..db1111f7e85a 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -7913,6 +7913,8 @@ lpfc_els_unsol_buffer(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
- 	spin_lock_irq(shost->host_lock);
- 	if (ndlp->nlp_flag & NLP_IN_DEV_LOSS) {
- 		spin_unlock_irq(shost->host_lock);
-+		if (newnode)
-+			lpfc_nlp_put(ndlp);
- 		goto dropit;
- 	}
- 	spin_unlock_irq(shost->host_lock);
+diff --git a/drivers/clk/st/clk-flexgen.c b/drivers/clk/st/clk-flexgen.c
+index 918ba3164da9..cd856210db58 100644
+--- a/drivers/clk/st/clk-flexgen.c
++++ b/drivers/clk/st/clk-flexgen.c
+@@ -373,6 +373,7 @@ static void __init st_of_flexgen_setup(struct device_node *np)
+ 			break;
+ 		}
+ 
++		flex_flags &= ~CLK_IS_CRITICAL;
+ 		of_clk_detect_critical(np, i, &flex_flags);
+ 
+ 		/*
 -- 
 2.25.1
 
