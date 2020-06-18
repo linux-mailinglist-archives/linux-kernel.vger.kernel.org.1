@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDDA1FFCB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AA01FFCB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 22:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732287AbgFRUko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 16:40:44 -0400
+        id S1732148AbgFRUkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 16:40:39 -0400
 Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36734 "EHLO
         EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731419AbgFRUji (ORCPT
+        by vger.kernel.org with ESMTP id S1731423AbgFRUjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:39:38 -0400
+        Thu, 18 Jun 2020 16:39:39 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Thu, 18 Jun 2020 13:39:30 -0700
+ 15.0.1156.6; Thu, 18 Jun 2020 13:39:31 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.129.221.29])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 22B7DB265A;
-        Thu, 18 Jun 2020 16:39:32 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 3BCA8B265D;
+        Thu, 18 Jun 2020 16:39:34 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,9 +26,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Julien Thierry <jthierry@redhat.com>,
         Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH v5 40/51] objtool: mcount: const-ify ARM instruction patterns
-Date:   Thu, 18 Jun 2020 13:38:26 -0700
-Message-ID: <97ecc9cc1a72e638ce9f370102777944a07a1037.1592510545.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH v5 41/51] objtool: mcount: Convert nop writes to elf_write_insn()
+Date:   Thu, 18 Jun 2020 13:38:27 -0700
+Message-ID: <b5ee19c9cadd4e786cf64dea893b47b181d80089.1592510545.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1592510545.git.mhelsley@vmware.com>
 References: <cover.1592510545.git.mhelsley@vmware.com>
@@ -42,97 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let the compiler know we won't be modifying the instruction
-patterns we use to determine how to turn ARM instruction(s)
-into nops, and the nop instruction(s) we'll put in their
-place.
-
-Also, while we're at it, convert to unsigned char because the
-next patch will need that as well.
+objtool's elf_write_insn() does extra checking when writing to
+an instruction so use that rather than a plain memcpy().
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/mcount.c | 42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ tools/objtool/mcount.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/tools/objtool/mcount.c b/tools/objtool/mcount.c
-index 5c59df0df97b..629eb7222ef3 100644
+index 629eb7222ef3..029e6e72c972 100644
 --- a/tools/objtool/mcount.c
 +++ b/tools/objtool/mcount.c
-@@ -47,10 +47,10 @@ extern int warn_on_notrace_sect; /* warn when section has mcount not being recor
- 
- static struct elf *lf;
- 
--static const unsigned char ip_relative_call_x86[5] = { 0xe8, 0x00, 0x00, 0x00, 0x00 };
--static const unsigned char ideal_nop5_x86_64[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
--static const unsigned char ideal_nop5_x86_32[5] = { 0x3e, 0x8d, 0x74, 0x26, 0x00 };
--static const unsigned char *ideal_nop;
-+static const char ip_relative_call_x86[5] = { 0xe8, 0x00, 0x00, 0x00, 0x00 };
-+static const char ideal_nop5_x86_64[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
-+static const char ideal_nop5_x86_32[5] = { 0x3e, 0x8d, 0x74, 0x26, 0x00 };
-+static const char *ideal_nop;
- 
- static char rel_type_nop;
- 
-@@ -58,7 +58,7 @@ static int (*make_nop)(struct section *, size_t const offset);
- 
- static int make_nop_x86(struct section *txts, size_t const offset)
- {
--	unsigned char *op = txts->data->d_buf + offset - 1;
-+	char *op = txts->data->d_buf + offset - 1;
- 
- 	if (offset < 1)
+@@ -66,9 +66,7 @@ static int make_nop_x86(struct section *txts, size_t const offset)
+ 	if (memcmp(op, ip_relative_call_x86, 5) != 0)
  		return -1;
-@@ -71,25 +71,25 @@ static int make_nop_x86(struct section *txts, size_t const offset)
- 	return 0;
+ 
+-	/* convert to nop */
+-	memcpy(op, ideal_nop, 5);
+-	return 0;
++	return elf_write_insn(lf, txts, offset, 5, ideal_nop);
  }
  
--static unsigned char ideal_nop4_arm_le[4] = { 0x00, 0x00, 0xa0, 0xe1 }; /* mov r0, r0 */
--static unsigned char ideal_nop4_arm_be[4] = { 0xe1, 0xa0, 0x00, 0x00 }; /* mov r0, r0 */
--static unsigned char *ideal_nop4_arm;
-+static const char ideal_nop4_arm_le[4] = { 0x00, 0x00, 0xa0, 0xe1 }; /* mov r0, r0 */
-+static const char ideal_nop4_arm_be[4] = { 0xe1, 0xa0, 0x00, 0x00 }; /* mov r0, r0 */
-+static const char *ideal_nop4_arm;
+ static const char ideal_nop4_arm_le[4] = { 0x00, 0x00, 0xa0, 0xe1 }; /* mov r0, r0 */
+@@ -117,7 +115,8 @@ static int make_nop_arm(struct section *txts, size_t const offset)
  
--static unsigned char bl_mcount_arm_le[4] = { 0xfe, 0xff, 0xff, 0xeb }; /* bl */
--static unsigned char bl_mcount_arm_be[4] = { 0xeb, 0xff, 0xff, 0xfe }; /* bl */
--static unsigned char *bl_mcount_arm;
-+static const char bl_mcount_arm_le[4] = { 0xfe, 0xff, 0xff, 0xeb }; /* bl */
-+static const char bl_mcount_arm_be[4] = { 0xeb, 0xff, 0xff, 0xfe }; /* bl */
-+static const char *bl_mcount_arm;
+ 	/* Convert to nop */
+ 	do {
+-		memcpy(map + off, ideal_nop, nop_size);
++		if (elf_write_insn(lf, txts, off, nop_size, ideal_nop))
++			return -1;
+ 		off += nop_size;
+ 	} while (--cnt > 0);
  
--static unsigned char push_arm_le[4] = { 0x04, 0xe0, 0x2d, 0xe5 }; /* push {lr} */
--static unsigned char push_arm_be[4] = { 0xe5, 0x2d, 0xe0, 0x04 }; /* push {lr} */
--static unsigned char *push_arm;
-+static const char push_arm_le[4] = { 0x04, 0xe0, 0x2d, 0xe5 }; /* push {lr} */
-+static const char push_arm_be[4] = { 0xe5, 0x2d, 0xe0, 0x04 }; /* push {lr} */
-+static const char *push_arm;
+@@ -136,8 +135,7 @@ static int make_nop_arm64(struct section *txts, size_t const offset)
+ 		return -1;
  
--static unsigned char ideal_nop2_thumb_le[2] = { 0x00, 0xbf }; /* nop */
--static unsigned char ideal_nop2_thumb_be[2] = { 0xbf, 0x00 }; /* nop */
--static unsigned char *ideal_nop2_thumb;
-+static const char ideal_nop2_thumb_le[2] = { 0x00, 0xbf }; /* nop */
-+static const char ideal_nop2_thumb_be[2] = { 0xbf, 0x00 }; /* nop */
-+static const char *ideal_nop2_thumb;
- 
--static unsigned char push_bl_mcount_thumb_le[6] = { 0x00, 0xb5, 0xff, 0xf7, 0xfe, 0xff }; /* push {lr}, bl */
--static unsigned char push_bl_mcount_thumb_be[6] = { 0xb5, 0x00, 0xf7, 0xff, 0xff, 0xfe }; /* push {lr}, bl */
--static unsigned char *push_bl_mcount_thumb;
-+static const char push_bl_mcount_thumb_le[6] = { 0x00, 0xb5, 0xff, 0xf7, 0xfe, 0xff }; /* push {lr}, bl */
-+static const char push_bl_mcount_thumb_be[6] = { 0xb5, 0x00, 0xf7, 0xff, 0xff, 0xfe }; /* push {lr}, bl */
-+static const char *push_bl_mcount_thumb;
- 
- static int make_nop_arm(struct section *txts, size_t const offset)
- {
-@@ -124,7 +124,7 @@ static int make_nop_arm(struct section *txts, size_t const offset)
- 	return 0;
+ 	/* Convert to nop */
+-	memcpy(map + offset, ideal_nop, 4);
+-	return 0;
++	return elf_write_insn(lf, txts, offset, 4, ideal_nop);
  }
  
--static unsigned char ideal_nop4_arm64[4] = {0x1f, 0x20, 0x03, 0xd5};
-+static const char ideal_nop4_arm64[4] = {0x1f, 0x20, 0x03, 0xd5};
- static int make_nop_arm64(struct section *txts, size_t const offset)
- {
- 	uint32_t *ptr;
+ /* Names of the sections that could contain calls to mcount. */
 -- 
 2.20.1
 
