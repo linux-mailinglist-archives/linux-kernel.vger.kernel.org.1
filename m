@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4431FEE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9D11FEE91
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgFRJXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:23:22 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:47492 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729023AbgFRJXV (ORCPT
+        id S1729128AbgFRJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:24:03 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:8458 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729085AbgFRJX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:23:21 -0400
+        Thu, 18 Jun 2020 05:23:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592472201; x=1624008201;
+  t=1592472238; x=1624008238;
   h=from:to:cc:subject:date:message-id:in-reply-to;
-  bh=FrQFWi/xY34CO1aXWXmdnkW19MrSY+JhOMiMHLm7T+s=;
-  b=TUG/9NqbRMFwKlSmGeqQVp3K2F9ohQgW4U9TbzQI/uL6l1Q/NWuxKRad
-   J9MVEH7PTzQM3gHKPQrhMSBl4YLifqsyjJIcUPCn2txmLWKhneCciuRQw
-   Qvpt+jc/ex+ByDvd9GRAPefc4LNgWt22q64itkCBMoZqPTMtoPhZe7gGQ
-   Y=;
-IronPort-SDR: 3luC+foP3FAHkqHBVGpAbflh+Fhxy3xXWOoEx/AnfvPeb0zPbKm0C8zlJBhWMTia+K8OdqjEuM
- QmiwPjg/YZCA==
+  bh=mwc39JT7lEE4KuagndIAD1fHOgAiEu1k9Z0qdaYumW8=;
+  b=pBeoWm6R8k8LofQFIM/BxETjO8MH+GbZXQcLWQOOlBfVX3V/Wshw9uRu
+   FaS5xxjnzp/qPDIfMgIgyJinJBpAf4QkXbqmWqXI+kAXLaf1Y+C0xIkbo
+   3OEMpmcZGp1nSZOSa9UKvBA7HHXwEpO2r7O/8frqPV6u0OkMAHkiO0/dP
+   4=;
+IronPort-SDR: 0k3bnbnOOC0ibSwUWEaAqbTA//k6JgCWBRROlxjeVKPOkcJsF5nR8ujzxI8+lOF23Mb6zLeAqQ
+ oLi3j0MLsW0w==
 X-IronPort-AV: E=Sophos;i="5.73,526,1583193600"; 
-   d="scan'208";a="38333624"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 18 Jun 2020 09:23:17 +0000
-Received: from uc85b765ebdd8595b4b67.ant.amazon.com (pdx2-ws-svc-lb17-vlan3.amazon.com [10.247.140.70])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 57FDB1A09AC;
-        Thu, 18 Jun 2020 09:23:13 +0000 (UTC)
+   d="scan'208";a="36992751"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 18 Jun 2020 09:23:55 +0000
+Received: from uc85b765ebdd8595b4b67.ant.amazon.com (iad7-ws-svc-lb50-vlan3.amazon.com [10.0.93.214])
+        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id 602E7A2134;
+        Thu, 18 Jun 2020 09:23:43 +0000 (UTC)
 Received: from uc85b765ebdd8595b4b67.ant.amazon.com (localhost [127.0.0.1])
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 05I9NAhx022461;
-        Thu, 18 Jun 2020 11:23:10 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 05I9NeHI022756;
+        Thu, 18 Jun 2020 11:23:40 +0200
 Received: (from foersleo@localhost)
-        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 05I9N6KK022447;
-        Thu, 18 Jun 2020 11:23:06 +0200
+        by uc85b765ebdd8595b4b67.ant.amazon.com (8.15.2/8.15.2/Submit) id 05I9Ndau022754;
+        Thu, 18 Jun 2020 11:23:39 +0200
 From:   Leonard Foerster <foersleo@amazon.com>
 To:     SeongJae Park <sjpark@amazon.com>
 Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
@@ -54,58 +54,35 @@ Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
         ying.huang@intel.com, david@redhat.com, linux-damon@amazon.com,
         linux-mm@kvack.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v16 03/14] mm/damon: Implement region based sampling
-Date:   Thu, 18 Jun 2020 11:23:03 +0200
-Message-Id: <1592472183-22394-1-git-send-email-foersleo@amazon.com>
+Subject: Re: [PATCH v16 04/14] mm/damon: Adaptively adjust regions
+Date:   Thu, 18 Jun 2020 11:23:38 +0200
+Message-Id: <1592472218-22708-1-git-send-email-foersleo@amazon.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20200615161927.12637-4-sjpark@amazon.com>
+In-Reply-To: <20200615161927.12637-5-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-15T18:19:16+02:00 SeongJae Park <sjpark@amazon.com> wrote:
+On 2020-06-15T18:19:17+02:00 SeongJae Park <sjpark@amazon.com> wrote:
 
 > From: SeongJae Park <sjpark@amazon.de>
 > 
-> This commit implements DAMON's target address space independent high
-> level logics for basic access check and region based sampling.  The
-> target address space specific logics for the monitoring target address
-> regions construction and the access check are required, though.  The
-> following commits will provide reference implementations of those for
-> the general virtual address spaces and the physical address space.
-> Users can implement and use their own versions for their specific use
-> cases, though.
+> Even somehow the initial monitoring target regions are well constructed
+> to fulfill the assumption (pages in same region have similar access
+> frequencies), the data access pattern can be dynamically changed.  This
+> will result in low monitoring quality.  To keep the assumption as much
+> as possible, DAMON adaptively merges and splits each region.
 > 
-> Basic Access Check
-> ------------------
+> For each ``aggregation interval``, it compares the access frequencies of
+> adjacent regions and merges those if the frequency difference is small.
+> Then, after it reports and clears the aggregated access frequency of
+> each region, it splits each region into two or third regions of random
+> size, if the total number of regions after the splits wouldn't exceed
+> the user-specified maximum number of regions.
 > 
-> DAMON basically reports what pages are how frequently accessed.  The
-> frequency is not an absolute number of accesses, but a ratio.
-> 
-> For this, DAMON first calls target monitoring construction callback
-> (``init_target_regions``), and then the access check callbacks, which is
-> assumed to check the access to each page and aggregates the number of
-> observed accesses of each page, for every ``sampling interval``.
-> Finally, DAMON resets the aggregated count per ``aggregation interval``.
-> 
-> This is thus similar to the common periodic access checks based
-> monitoring mechanisms but provides the access frequency.  The overhead
-> will increase as the size of the target process grows.
-> 
-> Region Based Sampling
-> ---------------------
-> 
-> To avoid the unbounded increase of the overhead, DAMON groups a number
-> of adjacent pages that assumed to have same access frequencies into a
-> region.  As long as the assumption (pages in a region have same access
-> frequencies) is kept, only one page in the region is required to be
-> checked.  Therefore, the monitoring overhead is controllable by setting
-> the number of regions.
-> 
-> Nonetheless, this scheme cannot preserve the quality of the output if
-> the assumption is not kept.  Following commit will introduce how we can
-> make the guarantee with some sort of best effort.
+> In this way, DAMON provides its best-effort quality and minimal overhead
+> while keeping the overhead bound.
 > 
 > Signed-off-by: SeongJae Park <sjpark@amazon.de>
 > ---
