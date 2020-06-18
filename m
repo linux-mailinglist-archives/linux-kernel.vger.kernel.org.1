@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170891FE1E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5801FE1E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387417AbgFRB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60060 "EHLO mail.kernel.org"
+        id S2387413AbgFRB5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731349AbgFRBZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:25:05 -0400
+        id S1731357AbgFRBZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:25:07 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86387221EB;
-        Thu, 18 Jun 2020 01:25:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDE8C221F1;
+        Thu, 18 Jun 2020 01:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443505;
-        bh=Z41N+cIfPZq6+16FIiby5DDwyV51obckIwKxYJuq+4g=;
+        s=default; t=1592443507;
+        bh=F7qbqL1Z+GbMg1N+HaFfBKK6cwEGtVkA9j5hs000wNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uu94Fvic27skO+Ng7LieYt2IWXloXekIPgJSFkYwQnwc68/LHUdscKWi5fYMdwFOj
-         qWltOfH74NChIOWP9mLmxV1CS18vu7Am9ezesV5ekyGlwb7BmHyBUgV6drZPC3ZOnB
-         kGKbDBbyXAWLL7nw/SmPbQbQL3YqEs3xHlK+UHaI=
+        b=aZxEngux8K33UpCAgVfUXRQAh7uOZtlqzMDySARQ2ErhoWzO455bGE26B15BIy6sc
+         DhZqS4N7u2z8uztXuqpNcTvZc13djm/5//T/CHaWEsxi9ZqNK4f/tPBRBtN/kUzW1r
+         fgUkxmx93rCG0lL/Hrz2jgsovb3hFA1Vxxu7DuuQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 130/172] of: Fix a refcounting bug in __of_attach_node_sysfs()
-Date:   Wed, 17 Jun 2020 21:21:36 -0400
-Message-Id: <20200618012218.607130-130-sashal@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 132/172] extcon: adc-jack: Fix an error handling path in 'adc_jack_probe()'
+Date:   Wed, 17 Jun 2020 21:21:38 -0400
+Message-Id: <20200618012218.607130-132-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -43,44 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 8a325dd06f2358ea0888e4ff1c9ca4bc23bd53f3 ]
+[ Upstream commit bc84cff2c92ae5ccb2c37da73756e7174b1b430f ]
 
-The problem in this code is that if kobject_add() fails, then it should
-call of_node_put(np) to drop the reference count.  I've actually moved
-the of_node_get(np) later in the function to avoid needing to do clean
-up.
+In some error handling paths, a call to 'iio_channel_get()' is not balanced
+by a corresponding call to 'iio_channel_release()'.
 
-Fixes: 5b2c2f5a0ea3 ("of: overlay: add missing of_node_get() in __of_attach_node_sysfs")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
+This can be achieved easily by using the devm_ variant of
+'iio_channel_get()'.
+
+This has the extra benefit to simplify the remove function.
+
+Fixes: 19939860dcae ("extcon: adc_jack: adc-jack driver to support 3.5 pi or simliar devices")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/kobj.c | 3 +--
+ drivers/extcon/extcon-adc-jack.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
-index c72eef988041..a32e60b024b8 100644
---- a/drivers/of/kobj.c
-+++ b/drivers/of/kobj.c
-@@ -134,8 +134,6 @@ int __of_attach_node_sysfs(struct device_node *np)
- 	if (!name)
- 		return -ENOMEM;
+diff --git a/drivers/extcon/extcon-adc-jack.c b/drivers/extcon/extcon-adc-jack.c
+index 18026354c332..b1fb38b7f270 100644
+--- a/drivers/extcon/extcon-adc-jack.c
++++ b/drivers/extcon/extcon-adc-jack.c
+@@ -128,7 +128,7 @@ static int adc_jack_probe(struct platform_device *pdev)
+ 	for (i = 0; data->adc_conditions[i].id != EXTCON_NONE; i++);
+ 	data->num_conditions = i;
  
--	of_node_get(np);
--
- 	rc = kobject_add(&np->kobj, parent, "%s", name);
- 	kfree(name);
- 	if (rc)
-@@ -144,6 +142,7 @@ int __of_attach_node_sysfs(struct device_node *np)
- 	for_each_property_of_node(np, pp)
- 		__of_add_property_sysfs(np, pp);
+-	data->chan = iio_channel_get(&pdev->dev, pdata->consumer_channel);
++	data->chan = devm_iio_channel_get(&pdev->dev, pdata->consumer_channel);
+ 	if (IS_ERR(data->chan))
+ 		return PTR_ERR(data->chan);
  
-+	of_node_get(np);
+@@ -170,7 +170,6 @@ static int adc_jack_remove(struct platform_device *pdev)
+ 
+ 	free_irq(data->irq, data);
+ 	cancel_work_sync(&data->handler.work);
+-	iio_channel_release(data->chan);
+ 
  	return 0;
  }
- 
 -- 
 2.25.1
 
