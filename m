@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1041FF3E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701431FF3D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 15:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730721AbgFRNwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 09:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
+        id S1730665AbgFRNvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 09:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730547AbgFRNvE (ORCPT
+        with ESMTP id S1730570AbgFRNvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 09:51:04 -0400
+        Thu, 18 Jun 2020 09:51:08 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFA6C0613F0;
-        Thu, 18 Jun 2020 06:51:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8332C0613EE;
+        Thu, 18 Jun 2020 06:51:08 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jluwW-0002mD-QR; Thu, 18 Jun 2020 15:51:00 +0200
+        id 1jluwb-0002nd-Nk; Thu, 18 Jun 2020 15:51:05 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 00F1F1C0489;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 88E701C07B4;
         Thu, 18 Jun 2020 15:50:59 +0200 (CEST)
-Date:   Thu, 18 Jun 2020 13:50:58 -0000
-From:   "tip-bot2 for Andi Kleen" <tip-bot2@linutronix.de>
+Date:   Thu, 18 Jun 2020 13:50:59 -0000
+From:   "tip-bot2 for Chang S. Bae" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fsgsbase] x86/fsgsbase/64: Add intrinsics for FSGSBASE instructions
-Cc:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
+Subject: [tip: x86/fsgsbase] x86/ptrace: Prevent ptrace from clearing the
+ FS/GS selector
+Cc:     Andy Lutomirski <luto@kernel.org>,
         "Chang S. Bae" <chang.seok.bae@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1557309753-24073-6-git-send-email-chang.seok.bae@intel.com>
-References: <1557309753-24073-6-git-send-email-chang.seok.bae@intel.com>
+In-Reply-To: <9040CFCD-74BD-4C17-9A01-B9B713CF6B10@intel.com>
+References: <9040CFCD-74BD-4C17-9A01-B9B713CF6B10@intel.com>
 MIME-Version: 1.0
-Message-ID: <159248825878.16989.6577797252538412576.tip-bot2@tip-bot2>
+Message-ID: <159248825935.16989.4751384633025817806.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,72 +53,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fsgsbase branch of tip:
 
-Commit-ID:     b15378ca50810c1350086cafad3fe19979262a83
-Gitweb:        https://git.kernel.org/tip/b15378ca50810c1350086cafad3fe19979262a83
-Author:        Andi Kleen <ak@linux.intel.com>
-AuthorDate:    Thu, 28 May 2020 16:13:49 -04:00
+Commit-ID:     fddf8ba1e48860211c9639d00883833b42fcc1e0
+Gitweb:        https://git.kernel.org/tip/fddf8ba1e48860211c9639d00883833b42fcc1e0
+Author:        Chang S. Bae <chang.seok.bae@intel.com>
+AuthorDate:    Thu, 28 May 2020 16:13:47 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 18 Jun 2020 15:47:00 +02:00
+CommitterDate: Thu, 18 Jun 2020 15:46:59 +02:00
 
-x86/fsgsbase/64: Add intrinsics for FSGSBASE instructions
+x86/ptrace: Prevent ptrace from clearing the FS/GS selector
 
-[ luto: Rename the variables from FS and GS to FSBASE and GSBASE and
-  make <asm/fsgsbase.h> safe to include on 32-bit kernels. ]
+When a ptracer writes a ptracee's FS/GSBASE with a different value, the
+selector is also cleared. This behavior is not correct as the selector
+should be preserved.
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Update only the base value and leave the selector intact. To simplify the
+code further remove the conditional checking for the same value as this
+code is not performance critical.
+
+The only recognizable downside of this change is when the selector is
+already nonzero on write. The base will be reloaded according to the
+selector. But the case is highly unexpected in real usages.
+
+[ tglx: Massage changelog ]
+
+Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Link: https://lkml.kernel.org/r/1557309753-24073-6-git-send-email-chang.seok.bae@intel.com
-Link: https://lkml.kernel.org/r/20200528201402.1708239-4-sashal@kernel.org
+Link: https://lkml.kernel.org/r/9040CFCD-74BD-4C17-9A01-B9B713CF6B10@intel.com
+Link: https://lkml.kernel.org/r/20200528201402.1708239-2-sashal@kernel.org
 
 
 ---
- arch/x86/include/asm/fsgsbase.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ arch/x86/kernel/ptrace.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
-index bca4c74..fdd1177 100644
---- a/arch/x86/include/asm/fsgsbase.h
-+++ b/arch/x86/include/asm/fsgsbase.h
-@@ -19,6 +19,36 @@ extern unsigned long x86_gsbase_read_task(struct task_struct *task);
- extern void x86_fsbase_write_task(struct task_struct *task, unsigned long fsbase);
- extern void x86_gsbase_write_task(struct task_struct *task, unsigned long gsbase);
- 
-+/* Must be protected by X86_FEATURE_FSGSBASE check. */
-+
-+static __always_inline unsigned long rdfsbase(void)
-+{
-+	unsigned long fsbase;
-+
-+	asm volatile("rdfsbase %0" : "=r" (fsbase) :: "memory");
-+
-+	return fsbase;
-+}
-+
-+static __always_inline unsigned long rdgsbase(void)
-+{
-+	unsigned long gsbase;
-+
-+	asm volatile("rdgsbase %0" : "=r" (gsbase) :: "memory");
-+
-+	return gsbase;
-+}
-+
-+static __always_inline void wrfsbase(unsigned long fsbase)
-+{
-+	asm volatile("wrfsbase %0" :: "r" (fsbase) : "memory");
-+}
-+
-+static __always_inline void wrgsbase(unsigned long gsbase)
-+{
-+	asm volatile("wrgsbase %0" :: "r" (gsbase) : "memory");
-+}
-+
- /* Helper functions for reading/writing FS/GS base */
- 
- static inline unsigned long x86_fsbase_read_cpu(void)
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index 4413058..1c7646c 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -379,25 +379,12 @@ static int putreg(struct task_struct *child,
+ 	case offsetof(struct user_regs_struct,fs_base):
+ 		if (value >= TASK_SIZE_MAX)
+ 			return -EIO;
+-		/*
+-		 * When changing the FS base, use do_arch_prctl_64()
+-		 * to set the index to zero and to set the base
+-		 * as requested.
+-		 *
+-		 * NB: This behavior is nonsensical and likely needs to
+-		 * change when FSGSBASE support is added.
+-		 */
+-		if (child->thread.fsbase != value)
+-			return do_arch_prctl_64(child, ARCH_SET_FS, value);
++		x86_fsbase_write_task(child, value);
+ 		return 0;
+ 	case offsetof(struct user_regs_struct,gs_base):
+-		/*
+-		 * Exactly the same here as the %fs handling above.
+-		 */
+ 		if (value >= TASK_SIZE_MAX)
+ 			return -EIO;
+-		if (child->thread.gsbase != value)
+-			return do_arch_prctl_64(child, ARCH_SET_GS, value);
++		x86_gsbase_write_task(child, value);
+ 		return 0;
+ #endif
+ 	}
