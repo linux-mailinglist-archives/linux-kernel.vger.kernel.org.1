@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B131FDF68
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086BA1FDF6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732389AbgFRB3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:29:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34334 "EHLO mail.kernel.org"
+        id S1732396AbgFRB3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:29:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730346AbgFRB0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:26:41 -0400
+        id S1730599AbgFRB0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:26:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1D9F20776;
-        Thu, 18 Jun 2020 01:26:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 262C820B1F;
+        Thu, 18 Jun 2020 01:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443600;
-        bh=eLj+WZVX7RpEdUqqaCcfffgguX5NmI4xWHrpyxqcq7M=;
+        s=default; t=1592443602;
+        bh=Xmp9h8I4G3YC2FTtCRXoSzOyc0t02HvCHHCQWkH0dYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sI/F9QmNO2nV/RHuuAjyTawetsfqfWoSRMoN5m3tVFzxILj7FMAfK/bwyrqVzBFfN
-         V5Cd5qCT7Pf4nZfdqy5f/loh2zEXM0YLAtx4epzx7fvFWPorLgb+EGRYEF9QnPhfxX
-         3FKdkDr5fcNeH0F96ryYlwPwjy4k6x8C53ainFhY=
+        b=gP33bUzZsNyDy9zUC9zIxg5HwnYOjgg5b8y+EYa+/9yyOoDiZBdIxEQAev0kzMoos
+         Ev9UlZ6SaeQ6WWThGTuATcoqO3AAoKJ0VumzEmTfnuxM5tqLqj99kMnHwW3eFykc+q
+         0HZuK0MU6r3Gt2QSSFO6Mer3/HDxhK18Qnu+HHXA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang Hai <wanghai38@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-hams@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 030/108] yam: fix possible memory leak in yam_init_driver
-Date:   Wed, 17 Jun 2020 21:24:42 -0400
-Message-Id: <20200618012600.608744-30-sashal@kernel.org>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 031/108] fat: don't allow to mount if the FAT length == 0
+Date:   Wed, 17 Jun 2020 21:24:43 -0400
+Message-Id: <20200618012600.608744-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
 References: <20200618012600.608744-1-sashal@kernel.org>
@@ -44,34 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-[ Upstream commit 98749b7188affbf2900c2aab704a8853901d1139 ]
+[ Upstream commit b1b65750b8db67834482f758fc385bfa7560d228 ]
 
-If register_netdev(dev) fails, free_netdev(dev) needs
-to be called, otherwise a memory leak will occur.
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Also Windows treats it as invalid format.
+
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hamradio/yam.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/fat/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
-index 16a6e1193912..b74c735a423d 100644
---- a/drivers/net/hamradio/yam.c
-+++ b/drivers/net/hamradio/yam.c
-@@ -1162,6 +1162,7 @@ static int __init yam_init_driver(void)
- 		err = register_netdev(dev);
- 		if (err) {
- 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
-+			free_netdev(dev);
- 			goto error;
- 		}
- 		yam_devs[i] = dev;
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index 1df023c4c2cc..c41393e30a04 100644
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1512,6 +1512,12 @@ static int fat_read_bpb(struct super_block *sb, struct fat_boot_sector *b,
+ 		goto out;
+ 	}
+ 
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
++
+ 	error = 0;
+ 
+ out:
 -- 
 2.25.1
 
