@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC2C1FE618
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D21E1FE612
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731240AbgFRCbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45744 "EHLO mail.kernel.org"
+        id S1733302AbgFRCat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729500AbgFRBPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:36 -0400
+        id S1728450AbgFRBPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:43 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E6CF21D82;
-        Thu, 18 Jun 2020 01:15:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAE5321D79;
+        Thu, 18 Jun 2020 01:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442936;
-        bh=ZII2wOPc5Pc1S7b/7uP1Twc8VfUiFwn2H5JNdyzUJ0I=;
+        s=default; t=1592442942;
+        bh=fAt8arPsk10vlHfV7fzglD1mjYS2ObhiDsvpwLieti0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nf7h00EK3OtNaTR/FDBT9J2lG03TnkFEXrwWw4mJmThzDG4ciMF6OObr9Q4+Cq4Fy
-         jfpaxZEm+xu+BSBD7NyiiNqgqLRBPkQOMm/m49RgKU4oY6rubrwqE8WY8N2fPLxdna
-         w1UDIKaaN3ClBGhMy5CyNh/u8sQUqRrUYhpBk8uA=
+        b=u+AJcvb3zqgFtagVxPH79FwkVyCI/kfcukRbRn7qVdOnZpdAu5hotES22ErnZeONo
+         dQJbq1grTHayDqpJ7WydZvhNFP4oJL7yiSqajSsqm10+/PEm5Qc6lN9UOk/vy2YUKF
+         fWIFdE3Sj4h12crAvKibsf1EcaiKrmShyTNDo0xI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sanjay R Mehta <sanju.mehta@amd.com>,
-        Arindam Nath <arindam.nath@amd.com>,
+Cc:     Logan Gunthorpe <logang@deltatee.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Alexander Fomichev <fomichev.ru@gmail.com>,
         Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
         linux-ntb@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 348/388] ntb_tool: pass correct struct device to dma_alloc_coherent
-Date:   Wed, 17 Jun 2020 21:07:25 -0400
-Message-Id: <20200618010805.600873-348-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 353/388] NTB: perf: Fix race condition when run with ntb_test
+Date:   Wed, 17 Jun 2020 21:07:30 -0400
+Message-Id: <20200618010805.600873-353-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,59 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-[ Upstream commit 433efe720674efd9fdbcef78be75793393cf05db ]
+[ Upstream commit 34d8673a01b053b6231a995a4eec9341163d63be ]
 
-Currently, ntb->dev is passed to dma_alloc_coherent
-and dma_free_coherent calls. The returned dma_addr_t
-is the CPU physical address. This works fine as long
-as IOMMU is disabled. But when IOMMU is enabled, we
-need to make sure that IOVA is returned for dma_addr_t.
-So the correct way to achieve this is by changing the
-first parameter of dma_alloc_coherent() as ntb->pdev->dev
-instead.
+When running ntb_test, the script tries to run the ntb_perf test
+immediately after probing the modules. Since adding multi-port support,
+this fails seeing the new initialization procedure in ntb_perf
+can not complete instantly.
+
+To fix this we add a completion which is waited on when a test is
+started. In this way, run can be written any time after the module is
+loaded and it will wait for the initialization to complete instead of
+sending an error.
 
 Fixes: 5648e56d03fa ("NTB: ntb_perf: Add full multi-port NTB API support")
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
-Signed-off-by: Arindam Nath <arindam.nath@amd.com>
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Allen Hubbe <allenbh@gmail.com>
+Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
 Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_tool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/ntb/test/ntb_perf.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c
-index 69da758fe64c..9eaeb221d980 100644
---- a/drivers/ntb/test/ntb_tool.c
-+++ b/drivers/ntb/test/ntb_tool.c
-@@ -590,7 +590,7 @@ static int tool_setup_mw(struct tool_ctx *tc, int pidx, int widx,
- 	inmw->size = min_t(resource_size_t, req_size, size);
- 	inmw->size = round_up(inmw->size, addr_align);
- 	inmw->size = round_up(inmw->size, size_align);
--	inmw->mm_base = dma_alloc_coherent(&tc->ntb->dev, inmw->size,
-+	inmw->mm_base = dma_alloc_coherent(&tc->ntb->pdev->dev, inmw->size,
- 					   &inmw->dma_base, GFP_KERNEL);
- 	if (!inmw->mm_base)
- 		return -ENOMEM;
-@@ -612,7 +612,7 @@ static int tool_setup_mw(struct tool_ctx *tc, int pidx, int widx,
+diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
+index 0b1eae07b133..528751803419 100644
+--- a/drivers/ntb/test/ntb_perf.c
++++ b/drivers/ntb/test/ntb_perf.c
+@@ -159,6 +159,8 @@ struct perf_peer {
+ 	/* NTB connection setup service */
+ 	struct work_struct	service;
+ 	unsigned long		sts;
++
++	struct completion init_comp;
+ };
+ #define to_peer_service(__work) \
+ 	container_of(__work, struct perf_peer, service)
+@@ -547,6 +549,7 @@ static int perf_setup_outbuf(struct perf_peer *peer)
+ 
+ 	/* Initialization is finally done */
+ 	set_bit(PERF_STS_DONE, &peer->sts);
++	complete_all(&peer->init_comp);
+ 
  	return 0;
+ }
+@@ -638,6 +641,7 @@ static void perf_service_work(struct work_struct *work)
+ 		perf_setup_outbuf(peer);
  
- err_free_dma:
--	dma_free_coherent(&tc->ntb->dev, inmw->size, inmw->mm_base,
-+	dma_free_coherent(&tc->ntb->pdev->dev, inmw->size, inmw->mm_base,
- 			  inmw->dma_base);
- 	inmw->mm_base = NULL;
- 	inmw->dma_base = 0;
-@@ -629,7 +629,7 @@ static void tool_free_mw(struct tool_ctx *tc, int pidx, int widx)
+ 	if (test_and_clear_bit(PERF_CMD_CLEAR, &peer->sts)) {
++		init_completion(&peer->init_comp);
+ 		clear_bit(PERF_STS_DONE, &peer->sts);
+ 		if (test_bit(0, &peer->perf->busy_flag) &&
+ 		    peer == peer->perf->test_peer) {
+@@ -1084,8 +1088,9 @@ static int perf_submit_test(struct perf_peer *peer)
+ 	struct perf_thread *pthr;
+ 	int tidx, ret;
  
- 	if (inmw->mm_base != NULL) {
- 		ntb_mw_clear_trans(tc->ntb, pidx, widx);
--		dma_free_coherent(&tc->ntb->dev, inmw->size,
-+		dma_free_coherent(&tc->ntb->pdev->dev, inmw->size,
- 				  inmw->mm_base, inmw->dma_base);
+-	if (!test_bit(PERF_STS_DONE, &peer->sts))
+-		return -ENOLINK;
++	ret = wait_for_completion_interruptible(&peer->init_comp);
++	if (ret < 0)
++		return ret;
+ 
+ 	if (test_and_set_bit_lock(0, &perf->busy_flag))
+ 		return -EBUSY;
+@@ -1456,6 +1461,7 @@ static int perf_init_peers(struct perf_ctx *perf)
+ 			peer->gidx = pidx;
+ 		}
+ 		INIT_WORK(&peer->service, perf_service_work);
++		init_completion(&peer->init_comp);
  	}
- 
+ 	if (perf->gidx == -1)
+ 		perf->gidx = pidx;
 -- 
 2.25.1
 
