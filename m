@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF43E1FE53A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8118B1FE521
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729367AbgFRBRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44806 "EHLO mail.kernel.org"
+        id S1729851AbgFRBR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729409AbgFRBO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:57 -0400
+        id S1729436AbgFRBPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:06 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 426852193E;
-        Thu, 18 Jun 2020 01:14:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4637221EA;
+        Thu, 18 Jun 2020 01:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442897;
-        bh=LBoXItQw4tPU5HDPVa0DFO5XKBJKjDaRBmpW4AdW098=;
+        s=default; t=1592442905;
+        bh=FgPG6cCgUeE3avIJ+Y2VCR4P+1TbrZ2c2zsyKos1QuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S6mLUYXGBMMDm67Fp38WaqxFL4vbbA08fYcW22+ufUdlMTF4GuifGilrBdpsoFlhx
-         gTN6beHGyGE69g8e5ptpp0ycmVDSq6/MhX1Du+69lFX9wojTXgHVK6ZZzTp6WSFQ/k
-         5zpU7P2miaA2HlgzMOXYcDCn+IXUX61Ujh2rblSI=
+        b=u93fT35/LXUAGvqxB03JFmkW/0XADitz3UwkPKN5EAmxYCwiobhvlyPjOwunxI20x
+         8VIRvH5E5BbWbt+DZDudBuumg62B2O0tAA9bKBVE45EsEJz0ctpNiem3PyyYVyNQ91
+         zo6zj2IHzD353gc7XXGKOMEXe+jHqCWwCG7SdrH4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.7 318/388] gfs2: Allow lock_nolock mount to specify jid=X
-Date:   Wed, 17 Jun 2020 21:06:55 -0400
-Message-Id: <20200618010805.600873-318-sashal@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 325/388] pinctrl: freescale: imx: Fix an error handling path in 'imx_pinctrl_probe()'
+Date:   Wed, 17 Jun 2020 21:07:02 -0400
+Message-Id: <20200618010805.600873-325-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,44 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ea22eee4e6027d8927099de344f7fff43c507ef9 ]
+[ Upstream commit 11d8da5cabf7c6c3263ba2cd9c00260395867048 ]
 
-Before this patch, a simple typo accidentally added \n to the jid=
-string for lock_nolock mounts. This made it impossible to mount a
-gfs2 file system with a journal other than journal0. Thus:
+'pinctrl_unregister()' should not be called to undo
+'devm_pinctrl_register_and_init()', it is already handled by the framework.
 
-mount -tgfs2 -o hostdata="jid=1" <device> <mount pt>
+This simplifies the error handling paths of the probe function.
+The 'imx_free_resources()' can be removed as well.
 
-Resulted in:
-mount: wrong fs type, bad option, bad superblock on <device>
-
-In most cases this is not a problem. However, for debugging and
-testing purposes we sometimes want to test the integrity of other
-journals. This patch removes the unnecessary \n and thus allows
-lock_nolock users to specify an alternate journal.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+Link: https://lore.kernel.org/r/20200530204955.588962-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/ops_fstype.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/freescale/pinctrl-imx.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index e2b69ffcc6a8..094f5fe7c009 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -880,7 +880,7 @@ static int init_per_node(struct gfs2_sbd *sdp, int undo)
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index 9f42036c5fbb..1f81569c7ae3 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -774,16 +774,6 @@ static int imx_pinctrl_probe_dt(struct platform_device *pdev,
+ 	return 0;
  }
  
- static const match_table_t nolock_tokens = {
--	{ Opt_jid, "jid=%d\n", },
-+	{ Opt_jid, "jid=%d", },
- 	{ Opt_err, NULL },
- };
+-/*
+- * imx_free_resources() - free memory used by this driver
+- * @info: info driver instance
+- */
+-static void imx_free_resources(struct imx_pinctrl *ipctl)
+-{
+-	if (ipctl->pctl)
+-		pinctrl_unregister(ipctl->pctl);
+-}
+-
+ int imx_pinctrl_probe(struct platform_device *pdev,
+ 		      const struct imx_pinctrl_soc_info *info)
+ {
+@@ -874,23 +864,18 @@ int imx_pinctrl_probe(struct platform_device *pdev,
+ 					     &ipctl->pctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "could not register IMX pinctrl driver\n");
+-		goto free;
++		return ret;
+ 	}
  
+ 	ret = imx_pinctrl_probe_dt(pdev, ipctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "fail to probe dt properties\n");
+-		goto free;
++		return ret;
+ 	}
+ 
+ 	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
+ 
+ 	return pinctrl_enable(ipctl->pctl);
+-
+-free:
+-	imx_free_resources(ipctl);
+-
+-	return ret;
+ }
+ 
+ static int __maybe_unused imx_pinctrl_suspend(struct device *dev)
 -- 
 2.25.1
 
