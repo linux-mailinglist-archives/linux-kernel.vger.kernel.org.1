@@ -2,107 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584411FF450
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2C91FF448
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730674AbgFROLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1730649AbgFROKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730457AbgFROLV (ORCPT
+        with ESMTP id S1728707AbgFROKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:11:21 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E662C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:11:20 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id k11so6559870ejr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Yg54d7njUgJIr5/oOvMr1TqPWbfMjWXQqQsrZ0cQ9xU=;
-        b=dZRw1G/ge2Pyp9lVS/oz979LwAUvoLOJ+pApWvx33HkscEqwAb2sNzUKblOK9Vii/F
-         uhfq8K5TkiJ2Vdy7Jr/w7B2vrb4rG2AwreV0WjERod7fGSuJD3bGPZ5oZyJb6gJL0/si
-         Ab653+fNBhymx/gp+e0qwRvfxxEYRFfVXeEMEfy89SMtqwR1whJI0k3vbOV1HTeL+uU8
-         h9bPwab6FXSn8XuvIMDKqSQY4Hfk025/nkLhf4pniJuzwscrGO0p5ej5GB/dJLT8PQBz
-         zMJxFzhRzBmZQbIlqJ7xhd2jnNDA51uXoXd03SRBqOIOgVWZewxb677lwV5U381/TTaU
-         piZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Yg54d7njUgJIr5/oOvMr1TqPWbfMjWXQqQsrZ0cQ9xU=;
-        b=ByYbkzKKDwlE/UjpWavV/DfQdOz3aLJrqvNjizR7mqNprlLXkFjGoCL1cuZjKJSzfY
-         BeQ0h3snL7bcC7Cxwn8vNAsRgZYsENshDU9O2F7X/pfaorwvjE9TtzBTISwt59YufJEa
-         Md7ngDMXSGUztpHbhO9y5FGTVPPti81NWUQ1aQykvZDYf8pZy/yrBUmFGjWMii+aoQD/
-         fJqvRDQbFmIsNTJFVQ3Wwm+HqN2Qm9LYOR/DwMmpMkMeTrBdNCcji8H+nxCuK5/w3rQ1
-         aHmsz3dclLckuCZnVhoGaUdH68oU2oDeeNTEV5wCrPmwzYU1aGZjR2/oHdkxf9EMlWKU
-         fz1Q==
-X-Gm-Message-State: AOAM532M+MbRk6WJ/UegbZTM840ucEtsKVMXlEyreohbf2Uq0HjJTItK
-        7OqCqYclP0OOzZbh7ZCkR2Gx42kVD9XSv3H7
-X-Google-Smtp-Source: ABdhPJwhOyw2Vz5MOw49Q+Yb8S5U1I4OIIY0lq3QDOnO+74vPUmR9VwzOhoPR84HycniT3kgPo1blQ==
-X-Received: by 2002:a17:906:cede:: with SMTP id si30mr4271836ejb.315.1592489478817;
-        Thu, 18 Jun 2020 07:11:18 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:908:d70:b300:c943:7d59:8784:d6c9])
-        by smtp.googlemail.com with ESMTPSA id y26sm2167230edv.91.2020.06.18.07.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 07:11:18 -0700 (PDT)
-From:   Shihab Rashed <shihab.rashed97@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Shihab Rashed <shihab.rashed97@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: os_dep: ioctl_cfg80211: fixed code styl issues
-Date:   Thu, 18 Jun 2020 16:10:02 +0200
-Message-Id: <20200618141002.18895-1-shihab.rashed97@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 18 Jun 2020 10:10:34 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85690C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:10:34 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jlvF6-0003LK-7Q; Thu, 18 Jun 2020 16:10:12 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 8CCA9101482; Thu, 18 Jun 2020 16:10:11 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH V2 0/4] x86/entry: simply stack switching when exception on userspace
+In-Reply-To: <CAJhGHyC+LswHw+=Ymo92CX-ffFB=PJRP0bSLOWEN42KLPfvJ6w@mail.gmail.com>
+References: <87mu5roov6.fsf@nanos.tec.linutronix.de> <20200529082618.1697-1-laijs@linux.alibaba.com> <CALCETrXKdh=nBWz96pow5roLmh0ez2YeQ9P+H5gxdor5TfrqUQ@mail.gmail.com> <CAJhGHyBSzhm7h5dROAKSzdSD3czmUNG+80rS9tpaau_U23p4Ug@mail.gmail.com> <CAJhGHyC+LswHw+=Ymo92CX-ffFB=PJRP0bSLOWEN42KLPfvJ6w@mail.gmail.com>
+Date:   Thu, 18 Jun 2020 16:10:11 +0200
+Message-ID: <877dw4cvng.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed two brace coding style issues and one comment style issue found by
-checkpatch.
+Lai,
 
-Signed-off-by: Shihab Rashed <shihab.rashed97@gmail.com>
----
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+Lai Jiangshan <jiangshanlai+lkml@gmail.com> writes:
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index 2fb80b6eb51d..3b06b60cdfd1 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -117,15 +117,12 @@ static struct ieee80211_supported_band *rtw_spt_band_alloc(
- 	struct ieee80211_supported_band *spt_band = NULL;
- 	int n_channels, n_bitrates;
- 
--	if (band == NL80211_BAND_2GHZ)
--	{
-+	if (band == NL80211_BAND_2GHZ)	{
- 		n_channels = RTW_2G_CHANNELS_NUM;
- 		n_bitrates = RTW_G_RATES_NUM;
--	}
--	else
--	{
-+	} else	{
- 		goto exit;
--	}
-+		}
- 
- 	spt_band = rtw_zmalloc(sizeof(struct ieee80211_supported_band) +
- 			       sizeof(struct ieee80211_channel) * n_channels +
-@@ -203,8 +200,10 @@ rtw_cfg80211_default_mgmt_stypes[NUM_NL80211_IFTYPES] = {
- 
- static int rtw_ieee80211_channel_to_frequency(int chan, int band)
- {
--	/* see 802.11 17.3.8.3.2 and Annex J
--	* there are overlapping channel numbers in 5GHz and 2GHz bands */
-+	/*
-+	 * see 802.11 17.3.8.3.2 and Annex J
-+	 * there are overlapping channel numbers in 5GHz and 2GHz bands
-+	 */
- 	if (band == NL80211_BAND_2GHZ) {
- 		if (chan == 14)
- 			return 2484;
--- 
-2.17.1
+> Hello and Ping
 
+you have poked on that on Tuesday, i.e. 2 days ago. It's on the todo
+list, but not the must urgent problem on the planet.
+
+Thanks
+
+        tglx
