@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E41FE744
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFB91FE735
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgFRCjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:39:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41856 "EHLO mail.kernel.org"
+        id S2387727AbgFRCjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728051AbgFRBM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:58 -0400
+        id S1729032AbgFRBNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B43C8214DB;
-        Thu, 18 Jun 2020 01:12:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E4E5214DB;
+        Thu, 18 Jun 2020 01:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442778;
-        bh=QzHsFMc7e1sAg3TGj2D+4DGxTg90cYJi1ce6cG/HcDY=;
+        s=default; t=1592442782;
+        bh=ogNUmHb4ecHAb3xp0gFwbZJRDxgJbUk5Zy0HwUo3QbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WEAKdeDvC6VfbF2KaH5xqS1cIIWVq5MKAEWURbodcwLtrCFT0IcKXjSue3C75AX3s
-         uMnoT6iwmm8JlgHXl3oOS28rS4nu2sd4J7exiYgdzPJSdou1HDdd/EU+gZHxA883MF
-         aaUAebt15C5JzFVdjqyJp/1UXgHtA3MJcplD3g0Y=
+        b=iomfH5F2e1MPXSIL4LniY2fzXvlFgV9CjbLYokI+7d0Zle+cUGZMnlbRSgZLYctW5
+         gUnNj+Nl1CHvljDckwDNQdZ/1jvYj9C2bTb8UcPmShXG87SGa6TMicPyCUIFXxROYD
+         7G9juesyDK2VyOvhvdphGbM6yOod/jUQQa6CTdT8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bharat Gooty <bharat.gooty@broadcom.com>,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.7 224/388] drivers: phy: sr-usb: do not use internal fsm for USB2 phy init
-Date:   Wed, 17 Jun 2020 21:05:21 -0400
-Message-Id: <20200618010805.600873-224-sashal@kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.7 227/388] iommu/arm-smmu-v3: Don't reserve implementation defined register space
+Date:   Wed, 17 Jun 2020 21:05:24 -0400
+Message-Id: <20200618010805.600873-227-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,148 +45,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bharat Gooty <bharat.gooty@broadcom.com>
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-[ Upstream commit 6f0577d1411337a0d97d545abe4a784e9e611516 ]
+[ Upstream commit 52f3fab0067d6fa9e99c1b7f63265dd48ca76046 ]
 
-During different reboot cycles, USB PHY PLL may not always lock
-during initialization and therefore can cause USB to be not usable.
+Some SMMUv3 implementation embed the Perf Monitor Group Registers (PMCG)
+inside the first 64kB region of the SMMU. Since PMCG are managed by a
+separate driver, this layout causes resource reservation conflicts
+during boot.
 
-Hence do not use internal FSM programming sequence for the USB
-PHY initialization.
+To avoid this conflict, don't reserve the MMIO regions that are
+implementation defined. Although devm_ioremap_resource() still works on
+full pages under the hood, this way we benefit from resource conflict
+checks.
 
-Fixes: 4dcddbb38b64 ("phy: sr-usb: Add Stingray USB PHY driver")
-Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
-Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Link: https://lore.kernel.org/r/20200513173947.10919-1-rayagonda.kokatanur@broadcom.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Fixes: 7d839b4b9e00 ("perf/smmuv3: Add arm64 smmuv3 pmu driver")
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/20200513110255.597203-1-jean-philippe@linaro.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/broadcom/phy-bcm-sr-usb.c | 55 +--------------------------
- 1 file changed, 2 insertions(+), 53 deletions(-)
+ drivers/iommu/arm-smmu-v3.c | 35 +++++++++++++++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/phy/broadcom/phy-bcm-sr-usb.c b/drivers/phy/broadcom/phy-bcm-sr-usb.c
-index fe6c58910e4c..7c7862b4f41f 100644
---- a/drivers/phy/broadcom/phy-bcm-sr-usb.c
-+++ b/drivers/phy/broadcom/phy-bcm-sr-usb.c
-@@ -16,8 +16,6 @@ enum bcm_usb_phy_version {
- };
+diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+index 82508730feb7..af21d24a09e8 100644
+--- a/drivers/iommu/arm-smmu-v3.c
++++ b/drivers/iommu/arm-smmu-v3.c
+@@ -171,6 +171,8 @@
+ #define ARM_SMMU_PRIQ_IRQ_CFG1		0xd8
+ #define ARM_SMMU_PRIQ_IRQ_CFG2		0xdc
  
- enum bcm_usb_phy_reg {
--	PLL_NDIV_FRAC,
--	PLL_NDIV_INT,
- 	PLL_CTRL,
- 	PHY_CTRL,
- 	PHY_PLL_CTRL,
-@@ -31,18 +29,11 @@ static const u8 bcm_usb_combo_phy_ss[] = {
- };
++#define ARM_SMMU_REG_SZ			0xe00
++
+ /* Common MSI config fields */
+ #define MSI_CFG0_ADDR_MASK		GENMASK_ULL(51, 2)
+ #define MSI_CFG2_SH			GENMASK(5, 4)
+@@ -628,6 +630,7 @@ struct arm_smmu_strtab_cfg {
+ struct arm_smmu_device {
+ 	struct device			*dev;
+ 	void __iomem			*base;
++	void __iomem			*page1;
  
- static const u8 bcm_usb_combo_phy_hs[] = {
--	[PLL_NDIV_FRAC]	= 0x04,
--	[PLL_NDIV_INT]	= 0x08,
- 	[PLL_CTRL]	= 0x0c,
- 	[PHY_CTRL]	= 0x10,
- };
+ #define ARM_SMMU_FEAT_2_LVL_STRTAB	(1 << 0)
+ #define ARM_SMMU_FEAT_2_LVL_CDTAB	(1 << 1)
+@@ -733,9 +736,8 @@ static struct arm_smmu_option_prop arm_smmu_options[] = {
+ static inline void __iomem *arm_smmu_page1_fixup(unsigned long offset,
+ 						 struct arm_smmu_device *smmu)
+ {
+-	if ((offset > SZ_64K) &&
+-	    (smmu->options & ARM_SMMU_OPT_PAGE0_REGS_ONLY))
+-		offset -= SZ_64K;
++	if (offset > SZ_64K)
++		return smmu->page1 + offset - SZ_64K;
  
--#define HSPLL_NDIV_INT_VAL	0x13
--#define HSPLL_NDIV_FRAC_VAL	0x1005
--
- static const u8 bcm_usb_hs_phy[] = {
--	[PLL_NDIV_FRAC]	= 0x0,
--	[PLL_NDIV_INT]	= 0x4,
- 	[PLL_CTRL]	= 0x8,
- 	[PHY_CTRL]	= 0xc,
- };
-@@ -52,7 +43,6 @@ enum pll_ctrl_bits {
- 	SSPLL_SUSPEND_EN,
- 	PLL_SEQ_START,
- 	PLL_LOCK,
--	PLL_PDIV,
- };
+ 	return smmu->base + offset;
+ }
+@@ -4021,6 +4023,18 @@ err_reset_pci_ops: __maybe_unused;
+ 	return err;
+ }
  
- static const u8 u3pll_ctrl[] = {
-@@ -66,29 +56,17 @@ static const u8 u3pll_ctrl[] = {
- #define HSPLL_PDIV_VAL		0x1
++static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
++				      resource_size_t size)
++{
++	struct resource res = {
++		.flags = IORESOURCE_MEM,
++		.start = start,
++		.end = start + size - 1,
++	};
++
++	return devm_ioremap_resource(dev, &res);
++}
++
+ static int arm_smmu_device_probe(struct platform_device *pdev)
+ {
+ 	int irq, ret;
+@@ -4056,10 +4070,23 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+ 	}
+ 	ioaddr = res->start;
  
- static const u8 u2pll_ctrl[] = {
--	[PLL_PDIV]	= 1,
- 	[PLL_RESETB]	= 5,
- 	[PLL_LOCK]	= 6,
- };
+-	smmu->base = devm_ioremap_resource(dev, res);
++	/*
++	 * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
++	 * the PMCG registers which are reserved by the PMU driver.
++	 */
++	smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
+ 	if (IS_ERR(smmu->base))
+ 		return PTR_ERR(smmu->base);
  
- enum bcm_usb_phy_ctrl_bits {
- 	CORERDY,
--	AFE_LDO_PWRDWNB,
--	AFE_PLL_PWRDWNB,
--	AFE_BG_PWRDWNB,
--	PHY_ISO,
- 	PHY_RESETB,
- 	PHY_PCTL,
- };
++	if (arm_smmu_resource_size(smmu) > SZ_64K) {
++		smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
++					       ARM_SMMU_REG_SZ);
++		if (IS_ERR(smmu->page1))
++			return PTR_ERR(smmu->page1);
++	} else {
++		smmu->page1 = smmu->base;
++	}
++
+ 	/* Interrupt lines */
  
- #define PHY_PCTL_MASK	0xffff
--/*
-- * 0x0806 of PCTL_VAL has below bits set
-- * BIT-8 : refclk divider 1
-- * BIT-3:2: device mode; mode is not effect
-- * BIT-1: soft reset active low
-- */
--#define HSPHY_PCTL_VAL	0x0806
- #define SSPHY_PCTL_VAL	0x0006
- 
- static const u8 u3phy_ctrl[] = {
-@@ -98,10 +76,6 @@ static const u8 u3phy_ctrl[] = {
- 
- static const u8 u2phy_ctrl[] = {
- 	[CORERDY]		= 0,
--	[AFE_LDO_PWRDWNB]	= 1,
--	[AFE_PLL_PWRDWNB]	= 2,
--	[AFE_BG_PWRDWNB]	= 3,
--	[PHY_ISO]		= 4,
- 	[PHY_RESETB]		= 5,
- 	[PHY_PCTL]		= 6,
- };
-@@ -186,38 +160,13 @@ static int bcm_usb_hs_phy_init(struct bcm_usb_phy_cfg *phy_cfg)
- 	int ret = 0;
- 	void __iomem *regs = phy_cfg->regs;
- 	const u8 *offset;
--	u32 rd_data;
- 
- 	offset = phy_cfg->offset;
- 
--	writel(HSPLL_NDIV_INT_VAL, regs + offset[PLL_NDIV_INT]);
--	writel(HSPLL_NDIV_FRAC_VAL, regs + offset[PLL_NDIV_FRAC]);
--
--	rd_data = readl(regs + offset[PLL_CTRL]);
--	rd_data &= ~(HSPLL_PDIV_MASK << u2pll_ctrl[PLL_PDIV]);
--	rd_data |= (HSPLL_PDIV_VAL << u2pll_ctrl[PLL_PDIV]);
--	writel(rd_data, regs + offset[PLL_CTRL]);
--
--	/* Set Core Ready high */
--	bcm_usb_reg32_setbits(regs + offset[PHY_CTRL],
--			      BIT(u2phy_ctrl[CORERDY]));
--
--	/* Maximum timeout for Core Ready done */
--	msleep(30);
--
-+	bcm_usb_reg32_clrbits(regs + offset[PLL_CTRL],
-+			      BIT(u2pll_ctrl[PLL_RESETB]));
- 	bcm_usb_reg32_setbits(regs + offset[PLL_CTRL],
- 			      BIT(u2pll_ctrl[PLL_RESETB]));
--	bcm_usb_reg32_setbits(regs + offset[PHY_CTRL],
--			      BIT(u2phy_ctrl[PHY_RESETB]));
--
--
--	rd_data = readl(regs + offset[PHY_CTRL]);
--	rd_data &= ~(PHY_PCTL_MASK << u2phy_ctrl[PHY_PCTL]);
--	rd_data |= (HSPHY_PCTL_VAL << u2phy_ctrl[PHY_PCTL]);
--	writel(rd_data, regs + offset[PHY_CTRL]);
--
--	/* Maximum timeout for PLL reset done */
--	msleep(30);
- 
- 	ret = bcm_usb_pll_lock_check(regs + offset[PLL_CTRL],
- 				     BIT(u2pll_ctrl[PLL_LOCK]));
+ 	irq = platform_get_irq_byname_optional(pdev, "combined");
 -- 
 2.25.1
 
