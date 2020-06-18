@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08891FEC56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DB81FEC52
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgFRHUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 03:20:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:36224 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725829AbgFRHUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:20:06 -0400
-IronPort-SDR: ZjK2exdIS5jvympC7Du2/vo3K1pXAoZNO/zvVM0rNIGvh8rv+cUC17tpkeS6e6IYOnv6EneSZo
- sBry6k98meiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9655"; a="203963885"
-X-IronPort-AV: E=Sophos;i="5.73,525,1583222400"; 
-   d="scan'208";a="203963885"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 00:20:06 -0700
-IronPort-SDR: GOOndaOg0rTI1y/zoM9ik2FFZWaBYobsTN/aX7QIWNaExAcCBhA4jz5ODZs1oAtPHDTimnz/pR
- ct72S+OAfvFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,525,1583222400"; 
-   d="scan'208";a="263517625"
-Received: from jkalinox-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.234])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Jun 2020 00:19:56 -0700
-Date:   Thu, 18 Jun 2020 10:19:55 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Luke Hinds <lhinds@redhat.com>
-Subject: Re: [PATCH v5 1/4] KEYS: trusted: Add generic trusted keys framework
-Message-ID: <20200618071955.GE6560@linux.intel.com>
-References: <1591107505-6030-1-git-send-email-sumit.garg@linaro.org>
- <1591107505-6030-2-git-send-email-sumit.garg@linaro.org>
- <20200615182457.GB5416@linux.intel.com>
- <CAFA6WYNEnXm5FOGHGAg4XB-+GXD=C+YMh+6t976=pStU0WshAA@mail.gmail.com>
- <20200617231429.GD62794@linux.intel.com>
- <CAFA6WYOdtwnewqY0ASnMf7fyw3s_hQx0+oWJRhT3CpkkkxYpDA@mail.gmail.com>
+        id S1728123AbgFRHUA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Jun 2020 03:20:00 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:47743 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727986AbgFRHT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:19:59 -0400
+X-Originating-IP: 90.76.143.236
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 004AD4000A;
+        Thu, 18 Jun 2020 07:19:55 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYOdtwnewqY0ASnMf7fyw3s_hQx0+oWJRhT3CpkkkxYpDA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200617093217.2a664161@kicinski-fedora-PC1C0HJN>
+References: <20200617133127.628454-1-antoine.tenart@bootlin.com> <20200617133127.628454-7-antoine.tenart@bootlin.com> <20200617093217.2a664161@kicinski-fedora-PC1C0HJN>
+To:     Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next v2 6/8] net: phy: mscc: timestamping and PHC support
+Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, richardcochran@gmail.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com,
+        foss@0leil.net
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Message-ID: <159246479497.467274.13476034822528412319@kwain>
+Date:   Thu, 18 Jun 2020 09:19:55 +0200
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 12:12:41PM +0530, Sumit Garg wrote:
-> On Thu, 18 Jun 2020 at 04:44, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > On Tue, Jun 16, 2020 at 07:02:37PM +0530, Sumit Garg wrote:
-> > > + Luke
-> > >
-> > > Hi Jarkko,
-> > >
-> > > Prior to addressing your comments below which seems to show your
-> > > preference for compile time selection of trust source (TPM or TEE), I
-> > > would just like to hear the reasons for this preference especially if
-> > > it makes distro vendor's life difficult [1] to make opinionated
-> > > selection which could rather be achieved dynamically based on platform
-> > > capability.
-> > >
-> > > [1] https://lkml.org/lkml/2020/6/3/405
-> > >
-> > > -Sumit
-> >
-> > Hmm... I do get the distribution kernel point. OK, lets revert to
-> > dynamic then. Thanks for the remark.
-> >
-> > /Jarkko
+Hello Jakub,
+
+Quoting Jakub Kicinski (2020-06-17 18:32:17)
+> On Wed, 17 Jun 2020 15:31:25 +0200 Antoine Tenart wrote:
+> > This patch adds support for PHC and timestamping operations for the MSCC
+> > PHY. PTP 1-step and 2-step modes are supported, over Ethernet and UDP.
+> > 
+> > To get and set the PHC time, a GPIO has to be used and changes are only
+> > retrieved or committed when on a rising edge. The same GPIO is shared by
+> > all PHYs, so the granularity of the lock protecting it has to be
+> > different from the ones protecting the 1588 registers (the VSC8584 PHY
+> > has 2 1588 blocks, and a single load/save pin).
+> > 
+> > Co-developed-by: Quentin Schulz <quentin.schulz@bootlin.com>
+> > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+> > Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
 > 
-> Thanks, will revert to dynamic mode in v6.
+> drivers/net/phy/mscc/mscc_ptp.c:406:24: warning: restricted __be16 degrades to integer
+> drivers/net/phy/mscc/mscc_ptp.c:407:24: warning: restricted __be16 degrades to integer
+> drivers/net/phy/mscc/mscc_ptp.c:1213:23: warning: symbol 'vsc85xx_clk_caps' was not declared. Should it be static?
+> 
+> Please make sure you don't add warnings when built with W=1 C=1 flags.
 
-Sorry about the extra trouble caused by me.
+I'll look into that.
 
-/Jarkko
+Thanks,
+Antoine
+
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
