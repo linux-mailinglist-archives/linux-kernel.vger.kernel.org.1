@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68AA1FE19D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A0D1FE19E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgFRBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S1731466AbgFRBZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730743AbgFRBW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:22:29 -0400
+        id S1730759AbgFRBWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:22:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8AAD20776;
-        Thu, 18 Jun 2020 01:22:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75E9021D82;
+        Thu, 18 Jun 2020 01:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443348;
-        bh=3jmixMD1aqvVxMgyqA6NUesXMHCJpUlIdFaZ9yIXDD4=;
+        s=default; t=1592443354;
+        bh=5d3vNDNuQvODzfrN0SzSBAhnNYtyMFSiHtXdBNldzrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=boZqIAPoA0yDcrnkeP4+kIMPccYJax72fdyraO2NmBqKZ66OSt80B31gToqnsZ7C6
-         MkxD0RtsktIuOPZdvlMU0EBg3adMNDFuK5f+R9rgO+h295WAiuzEi/4sz3UG14+qmq
-         d+FuuubJLxIUMgFEo2rMOk6Y8Ctw9I/HTXlaQ5ho=
+        b=uDzzTZkeiHiY2fwxFMzNCZ9BPTlk082HXQWZg57j+yVuWo3/jlk5By8eR8NvoIoIx
+         tBF4FUZzxuLRtsFaH5+ZMEPqdQfWxKCHv7Fw2HgIfpXh316xo+W0Mgn0+oHx5lYnLj
+         czWOSAhJZ+NqRSfJ2WUTL77/J7tthN5nGp1IUiR0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Elder <elder@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suman Anna <s-anna@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 008/172] remoteproc: Fix IDR initialisation in rproc_alloc()
-Date:   Wed, 17 Jun 2020 21:19:34 -0400
-Message-Id: <20200618012218.607130-8-sashal@kernel.org>
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 012/172] ARM: integrator: Add some Kconfig selections
+Date:   Wed, 17 Jun 2020 21:19:38 -0400
+Message-Id: <20200618012218.607130-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -46,58 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 6442df49400b466431979e7634849a464a5f1861 ]
+[ Upstream commit d2854bbe5f5c4b4bec8061caf4f2e603d8819446 ]
 
-If ida_simple_get() returns an error when called in rproc_alloc(),
-put_device() is called to clean things up.  By this time the rproc
-device type has been assigned, with rproc_type_release() as the
-release function.
+The CMA and DMA_CMA Kconfig options need to be selected
+by the Integrator in order to produce boot console on some
+Integrator systems.
 
-The first thing rproc_type_release() does is call:
-    idr_destroy(&rproc->notifyids);
+The REGULATOR and REGULATOR_FIXED_VOLTAGE need to be
+selected in order to boot the system from an external
+MMC card when using MMCI/PL181 from the device tree
+probe path.
 
-But at the time the ida_simple_get() call is made, the notifyids
-field in the remoteproc structure has not been initialized.
+Select these things directly from the Kconfig so we are
+sure to be able to bring the systems up with console
+from any device tree.
 
-I'm not actually sure this case causes an observable problem, but
-it's incorrect.  Fix this by initializing the notifyids field before
-calling ida_simple_get() in rproc_alloc().
-
-Fixes: b5ab5e24e960 ("remoteproc: maintain a generic child device for each rproc")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200415204858.2448-2-mathieu.poirier@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/mach-integrator/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index d5ff272fde34..e48069db1703 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1598,6 +1598,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	rproc->dev.type = &rproc_type;
- 	rproc->dev.class = &rproc_class;
- 	rproc->dev.driver_data = rproc;
-+	idr_init(&rproc->notifyids);
+diff --git a/arch/arm/mach-integrator/Kconfig b/arch/arm/mach-integrator/Kconfig
+index cefe44f6889b..ba124f8704fa 100644
+--- a/arch/arm/mach-integrator/Kconfig
++++ b/arch/arm/mach-integrator/Kconfig
+@@ -3,6 +3,8 @@ menuconfig ARCH_INTEGRATOR
+ 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5 || ARCH_MULTI_V6
+ 	select ARM_AMBA
+ 	select COMMON_CLK_VERSATILE
++	select CMA
++	select DMA_CMA
+ 	select HAVE_TCM
+ 	select ICST
+ 	select MFD_SYSCON
+@@ -34,14 +36,13 @@ config INTEGRATOR_IMPD1
+ 	select ARM_VIC
+ 	select GPIO_PL061
+ 	select GPIOLIB
++	select REGULATOR
++	select REGULATOR_FIXED_VOLTAGE
+ 	help
+ 	  The IM-PD1 is an add-on logic module for the Integrator which
+ 	  allows ARM(R) Ltd PrimeCells to be developed and evaluated.
+ 	  The IM-PD1 can be found on the Integrator/PP2 platform.
  
- 	/* Assign a unique device index and name */
- 	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
-@@ -1622,8 +1623,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 
- 	mutex_init(&rproc->lock);
- 
--	idr_init(&rproc->notifyids);
+-	  To compile this driver as a module, choose M here: the
+-	  module will be called impd1.
 -
- 	INIT_LIST_HEAD(&rproc->carveouts);
- 	INIT_LIST_HEAD(&rproc->mappings);
- 	INIT_LIST_HEAD(&rproc->traces);
+ config INTEGRATOR_CM7TDMI
+ 	bool "Integrator/CM7TDMI core module"
+ 	depends on ARCH_INTEGRATOR_AP
 -- 
 2.25.1
 
