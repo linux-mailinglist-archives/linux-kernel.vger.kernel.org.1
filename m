@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AA31FEEB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFF61FEEB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgFRJcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 05:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
+        id S1729225AbgFRJcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 05:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729187AbgFRJcC (ORCPT
+        with ESMTP id S1728943AbgFRJcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 05:32:02 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5D6C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id w9so5882729ybt.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:01 -0700 (PDT)
+        Thu, 18 Jun 2020 05:32:04 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02371C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:04 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id a6so3996647qka.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 02:32:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=tjAwEnOyA0tmPVPrOK6icwtI4Nv9CgkoPBXdv/shKX8=;
-        b=tRJULurj8Sxkc+zLSK2XRPE/sJzXm2gi8Rw1ZetD+yF0N3p/k4ToxNkfafXK66XSAd
-         TpcTuaBAJ+ou389KAKOrIX+vOyqrO4gy1J2U/SwvqOZ+i4yhI/CWQ2ugaJO7ZCuSdumP
-         DXmMjiHenxaWSbm2MuLVE42jRR5c9rCbmgCd9AuwSrCozlnyODuWZhdy0aGFPX/EWD13
-         2d7SoFzCnxlZn3ggvOr36Qy18Dst6mP6Nlr57sfBkOINPZhJn79bBRPFcC7OyZumU/Cs
-         JemPE5rgdFQiju2YJJjCueVLGIbJjMMvDxEzGGXWmaN3xdFfNwp8BPmCar1n1ickxF7V
-         zT7w==
+        bh=086vfv3gPPfJZ5VO4SEM366I1+MoqC/R0oD42Imdbh8=;
+        b=fAXDSFhjAVW4D6Zy29LknWSqsBJPV7OzLPf+6YGVWWFtRLCpfWLWCTqnk00WsdEqgk
+         nrmwG5o35UyKtRhmjzOZi9ZKNni8p0ucP+WXj8VRjDptiqWY8ns0pHEjH6Tr9tGa3T7S
+         /aZ5M+vvTdTctOQ12ZJ4lCwqda/aajsZkK7EnSe8+ngTN9Pg2cvj9AUEzh2JJB/gSL/a
+         af7HqmAVCufSsJJwNR9+epbZqE37Iq/Min3EpcTyQQvaPHuhysdkJAqRr8+1JBscNhjY
+         8JvNhKSHylMudoZdr7iedjpRNhapca1tJSKmp/8xDu9WeGFdjhRjsSNz1m+qpaNL2TUI
+         8SUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=tjAwEnOyA0tmPVPrOK6icwtI4Nv9CgkoPBXdv/shKX8=;
-        b=WNX0JOw2wfjL8C86bSEJFPut1YWRsv6BxmvJVo3p978jR/DOUzBYLltw0wggPGdfiw
-         Ctcy8GHol2xNT7gDPlFJeEX6Qeih3UkwpqwG8SGedtM9R3zgD4CWRqO2vY8fMNvGmnDq
-         A3s+wk47O7E1fISGFFbBwHIeO2fiSveAjOSAVtbYCJeuzRAQg0zpUzBqjM/dn2MSVVRL
-         5QruJ+WkyegwGcXSVnKjDBqWM4xQJVfyMnMm1SEmE9/PHqcPYDK6hrOHgsLtAPSH04Sb
-         TUlTJxX0Uo6MRqBYfUAVGJzO3KX2CJaHvM4n6FNlfq3J0nJwv+5SmLHZqEvb972e6X/j
-         MXtQ==
-X-Gm-Message-State: AOAM531cA0L9KVcnG6JGmJuibYaDGA3y0VJzqwkPNGKnPSMwqeQUudez
-        ynp57HTAK9kincEG8QENoAZT18EK/Q==
-X-Google-Smtp-Source: ABdhPJwy9+aGQsiKvvd+I3hP4gMIO0df63d901PgqqfbNUqvP+Ko0eicVQzJDje94jgUPcEfbg9b3Vo2EA==
-X-Received: by 2002:a25:be02:: with SMTP id h2mr5002260ybk.315.1592472720343;
- Thu, 18 Jun 2020 02:32:00 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 11:31:16 +0200
+        bh=086vfv3gPPfJZ5VO4SEM366I1+MoqC/R0oD42Imdbh8=;
+        b=G+5baya7UVRg0gIwgqklfORx5TAb2VRLj6aORIy2FDfunUUibjmuciKW98Y2KBa1w/
+         f/ZXfqSpqr8F3gueiLEZuqt/4OSNInoGd3KCz/YxDyLs+Bg7FIwxvikKRngo21G6xQ00
+         aZwdE8nZ1PR5UKxFB3W7BidIZhz9/tXlaRvlMWHmzU9FRDmMaxS+oQUnOm9rQCvxFikF
+         Yx0Kmz2DezmSot5Y5WOWBDo/1AKWavKThM23Rxg9sB2aWYmtQ75X1/KJl9/dFxGu4viQ
+         dWB/mPkIt7SF5xbll6LkW4jkODUY9NPpKZDMIhq3KMlnyjZKKMWkvwMiNv/7fu6nQKE9
+         AP3Q==
+X-Gm-Message-State: AOAM530K9H4/IsVUKBU2DPBjx5evH8P226hGBTstlUEj0iILF723Pj73
+        vh7CmsXqkSxIADgPxyfqE0hyzzQDAw==
+X-Google-Smtp-Source: ABdhPJxEeFmMNF1bE1+DiWwBprbkp2j2l6t7tHy189I4SoMWXy6UX9ktxxCFqnZGhSRak4y/9K3qlWG5kw==
+X-Received: by 2002:ad4:50c4:: with SMTP id e4mr2848394qvq.45.1592472722603;
+ Thu, 18 Jun 2020 02:32:02 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 11:31:17 +0200
 In-Reply-To: <20200618093118.247375-1-elver@google.com>
-Message-Id: <20200618093118.247375-2-elver@google.com>
+Message-Id: <20200618093118.247375-3-elver@google.com>
 Mime-Version: 1.0
 References: <20200618093118.247375-1-elver@google.com>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH 1/3] kcsan: Re-add GCC as a supported compiler
+Subject: [PATCH 2/3] kcsan: Simplify compiler flags
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     will@kernel.org, peterz@infradead.org, bp@alien8.de,
         tglx@linutronix.de, mingo@kernel.org, dvyukov@google.com,
         cai@lca.pw, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Martin Liska <mliska@suse.cz>
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC version 11 recently implemented all requirements to correctly
-support KCSAN:
-
-1. Correct no_sanitize-attribute inlining behaviour:
-   https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=4089df8ef4a63126b0774c39b6638845244c20d2
-
-2. --param=tsan-distinguish-volatile
-   https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=ab2789ec507a94f1a75a6534bca51c7b39037ce0
-
-3. --param=tsan-instrument-func-entry-exit
-   https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=06712fc68dc9843d9af7c7ac10047f49d305ad76
-
-Therefore, we can re-enable GCC for KCSAN, and document the new compiler
-requirements.
+Simplify the set of compiler flags for the runtime by removing cc-option
+from -fno-stack-protector, because all supported compilers support it.
+This saves us one compiler invocation during build.
 
 Signed-off-by: Marco Elver <elver@google.com>
-Cc: Martin Liska <mliska@suse.cz>
 ---
+ kernel/kcsan/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-For anyone interested to try it out before GCC 11 is released, I'd
-recommend building a stable GCC 10 with the patches applied:
-
-	git clone git://gcc.gnu.org/git/gcc.git && cd gcc
-	git checkout -b gcc-10-for-kcsan releases/gcc-10.1.0
-	git cherry-pick \
-		4089df8ef4a63126b0774c39b6638845244c20d2 \
-		ab2789ec507a94f1a75a6534bca51c7b39037ce0 \
-		06712fc68dc9843d9af7c7ac10047f49d305ad76
-	./configure --prefix <your-prefix> --enable-languages=c,c++
-	make -j$(nproc) && make install
----
- Documentation/dev-tools/kcsan.rst | 3 ++-
- lib/Kconfig.kcsan                 | 3 ++-
- scripts/Makefile.kcsan            | 2 +-
- 3 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-index ce4bbd918648..8fa0dd6c8614 100644
---- a/Documentation/dev-tools/kcsan.rst
-+++ b/Documentation/dev-tools/kcsan.rst
-@@ -8,7 +8,8 @@ approach to detect races. KCSAN's primary purpose is to detect `data races`_.
- Usage
- -----
+diff --git a/kernel/kcsan/Makefile b/kernel/kcsan/Makefile
+index 092ce58d2e56..fea064afc4f7 100644
+--- a/kernel/kcsan/Makefile
++++ b/kernel/kcsan/Makefile
+@@ -7,8 +7,8 @@ CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_debugfs.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
  
--KCSAN requires Clang version 11 or later.
-+KCSAN is supported by both GCC and Clang. With GCC we require version 11 or
-+later, and with Clang also require version 11 or later.
+-CFLAGS_core.o := $(call cc-option,-fno-conserve-stack,) \
+-	$(call cc-option,-fno-stack-protector,)
++CFLAGS_core.o := $(call cc-option,-fno-conserve-stack) \
++	-fno-stack-protector
  
- To enable KCSAN configure the kernel with::
- 
-diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 3f3b5bca7a8f..3d282d51849b 100644
---- a/lib/Kconfig.kcsan
-+++ b/lib/Kconfig.kcsan
-@@ -4,7 +4,8 @@ config HAVE_ARCH_KCSAN
- 	bool
- 
- config HAVE_KCSAN_COMPILER
--	def_bool CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-distinguish-volatile=1)
-+	def_bool (CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-distinguish-volatile=1)) || \
-+		 (CC_IS_GCC && $(cc-option,-fsanitize=thread --param tsan-distinguish-volatile=1))
- 	help
- 	  For the list of compilers that support KCSAN, please see
- 	  <file:Documentation/dev-tools/kcsan.rst>.
-diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
-index bd4da1af5953..dd66206f4578 100644
---- a/scripts/Makefile.kcsan
-+++ b/scripts/Makefile.kcsan
-@@ -6,7 +6,7 @@ ifdef CONFIG_KCSAN
- ifdef CONFIG_CC_IS_CLANG
- cc-param = -mllvm -$(1)
- else
--cc-param = --param -$(1)
-+cc-param = --param $(1)
- endif
- 
- # Keep most options here optional, to allow enabling more compilers if absence
+ obj-y := core.o debugfs.o report.o
+ obj-$(CONFIG_KCSAN_SELFTEST) += selftest.o
 -- 
 2.27.0.290.gba653c62da-goog
 
