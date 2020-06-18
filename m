@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDC01FEDC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E11B1FEDC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 10:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgFRIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 04:37:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36080 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728465AbgFRIhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 04:37:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4BFCDAD35;
-        Thu, 18 Jun 2020 08:37:07 +0000 (UTC)
-Subject: Re: [PATCH 7/9] mm, slub: introduce kmem_cache_debug_flags()
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, vinmenon@codeaurora.org,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Roman Gushchin <guro@fb.com>, Jann Horn <jannh@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>
-References: <20200610163135.17364-1-vbabka@suse.cz>
- <20200610163135.17364-8-vbabka@suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <949b90ed-e0f0-07d7-4d21-e30ec0958a7c@suse.cz>
-Date:   Thu, 18 Jun 2020 10:37:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728792AbgFRIiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 04:38:00 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:41730 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728731AbgFRIh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 04:37:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1592469478; x=1624005478;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=op9Dwd0owILrsaDW41uZbpQG/X+/tABWDFLpAQRIZB4=;
+  b=EmUXVCYblOXfXlO5FvERxo3CZ9rZH/j4nNHLTPYRX1FT4h7bTAr8ny01
+   CWfv5BPDA4r28X+NcLwOifiHTPeIwjlhxZRkbxvtwmd5zH+zINbx6Prn4
+   b+7NSHu/KSleoZtDxkdjRP8OxPJ2sUSM0EYdU9Y32C0F/iGy1HtF0o2sf
+   DFpsMgric1rZMY+Caxz2ApIssPET/m70Nk3hcEZsA4d8qGyRacUjaZz+W
+   jF1qr2YKxsNWVM0EUQXSYy4E1jlCug4SPitQV3rNqxjmDR+MDC3kku8Qa
+   IhwLra9gkdHIkFAwa3s59Wyny+0AJBOsHjj//bpJyYBkbtlvf5zQ3tcJY
+   Q==;
+IronPort-SDR: au0IV5Gn5V62aYnSuTdr0sQppXDQt0c0vpZtbIb7dDb2iuVlD2QVSxEYlx8oXTrN6jD7Ek/+oe
+ cleVbeORNQBSMWYk2zULg8s5x9htvzfXaf3vsfddhwHjBLUmonuBPONs3LLCiTHlvCRChDfDSO
+ BFUdIiL8eQrG+eVe7QCWBLakVRnNmYAbiro5oVn0lQ/KDAJlXAKb3UzeemwYwnoNgKH55QWc+u
+ D34Ibohb94mO3kFg84Xoa8mOTLFejnH/M30HViNSbL0xRmjkDhlNQGuZWhIvc+ISodgtNuugPM
+ stw=
+X-IronPort-AV: E=Sophos;i="5.73,526,1583218800"; 
+   d="scan'208";a="77021584"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Jun 2020 01:37:46 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Jun 2020 01:37:39 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 18 Jun 2020 01:37:43 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>
+CC:     <antoine.tenart@bootlin.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2] net: macb: undo operations in case of failure
+Date:   Thu, 18 Jun 2020 11:37:40 +0300
+Message-ID: <1592469460-17825-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200610163135.17364-8-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/20 6:31 PM, Vlastimil Babka wrote:
-> There are few places that call kmem_cache_debug(s) (which tests if any of debug
-> flags are enabled for a cache) immediatelly followed by a test for a specific
-> flag. The compiler can probably eliminate the extra check, but we can make the
-> code nicer by introducing kmem_cache_debug_flags() that works like
-> kmem_cache_debug() (including the static key check) but tests for specifig
-> flag(s). The next patches will add more users.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Undo previously done operation in case macb_phylink_connect()
+fails. Since macb_reset_hw() is the 1st undo operation the
+napi_exit label was renamed to reset_hw.
 
-Please add this fixup per reviews.
-----8<----
-From 25793252a31a36f8d1d4ccf0f27ed3e43fba54d8 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 18 Jun 2020 10:34:53 +0200
-Subject: [PATCH] mm, slub: introduce kmem_cache_debug_flags()-fix
-
-Change return from int to bool, per Kees.
-Add VM_WARN_ON_ONCE() for invalid flags, per Roman.
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- mm/slub.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index c8e8b4ae2451..59d19c64069e 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -127,16 +127,17 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
-  * cache. Use only for flags parsed by setup_slub_debug() as it also enables
-  * the static key.
-  */
--static inline int kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
-+static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
- {
-+	VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
- #ifdef CONFIG_SLUB_DEBUG
- 	if (static_branch_unlikely(&slub_debug_enabled))
- 		return s->flags & flags;
- #endif
--	return 0;
-+	return false;
- }
+Changes in v2:
+- corrected fixes SHA1
+
+ drivers/net/ethernet/cadence/macb_main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 67933079aeea..257c4920cb88 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -2558,7 +2558,7 @@ static int macb_open(struct net_device *dev)
  
--static inline int kmem_cache_debug(struct kmem_cache *s)
-+static inline bool kmem_cache_debug(struct kmem_cache *s)
- {
- 	return kmem_cache_debug_flags(s, SLAB_DEBUG_FLAGS);
- }
+ 	err = macb_phylink_connect(bp);
+ 	if (err)
+-		goto napi_exit;
++		goto reset_hw;
+ 
+ 	netif_tx_start_all_queues(dev);
+ 
+@@ -2567,9 +2567,11 @@ static int macb_open(struct net_device *dev)
+ 
+ 	return 0;
+ 
+-napi_exit:
++reset_hw:
++	macb_reset_hw(bp);
+ 	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue)
+ 		napi_disable(&queue->napi);
++	macb_free_consistent(bp);
+ pm_exit:
+ 	pm_runtime_put_sync(&bp->pdev->dev);
+ 	return err;
 -- 
-2.27.0
+2.7.4
 
