@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ABD1FDBD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706E61FDBD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgFRBO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42752 "EHLO mail.kernel.org"
+        id S1729437AbgFRBPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729134AbgFRBNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:13:30 -0400
+        id S1727082AbgFRBNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A80121974;
-        Thu, 18 Jun 2020 01:13:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E4D9221F1;
+        Thu, 18 Jun 2020 01:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442810;
-        bh=3FCVTIUBK2FrT/pFejJuUW8MW0xWwlLn2woVgszM86s=;
+        s=default; t=1592442814;
+        bh=C6pOC5KpqXsyu8075XFWZfvFx0K9kr4hVggmywYM0pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GItDV1A18buH7DxTDQVPKPpFe26FGjQlqE5zh6cl0jeDMGzv2WQjZviOclyJzuDwS
-         ZwIva4l75sxWWNo/+h9+IN+vMPn76871NDY9moTNu6RVFm2tMZNow3l/GrZflhrcaH
-         TP7Feb1gOIXjxbafTXIA04xSdm/DVf+UcaQWiadM=
+        b=GSCAGaG9Wk7v4Tjv0V5/NByKi0uj12xb9JXMbvVNu4as+B6ZsQRtqCdnSIS/NSofH
+         cFFRXJkUJ/tsjx4hDeMlCDQ5Z8DudrLbU2oVIMq9QL6mGgZh0KpTjnW2/LFxok9RLV
+         6hIXQZgNCr3cD4WUA18M4R2ergtz4aEQLIPp5sok=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chen Zhou <chenzhou10@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.7 249/388] powerpc/powernv: add NULL check after kzalloc
-Date:   Wed, 17 Jun 2020 21:05:46 -0400
-Message-Id: <20200618010805.600873-249-sashal@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com
+Subject: [PATCH AUTOSEL 5.7 252/388] dm zoned: return NULL if dmz_get_zone_for_reclaim() fails to find a zone
+Date:   Wed, 17 Jun 2020 21:05:49 -0400
+Message-Id: <20200618010805.600873-252-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,40 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit ceffa63acce7165c442395b7d64a11ab8b5c5dca ]
+[ Upstream commit 489dc0f06a5837f87482c0ce61d830d24e17082e ]
 
-Fixes coccicheck warning:
+The only case where dmz_get_zone_for_reclaim() cannot return a zone is
+if the respective lists are empty. So we should just return a simple
+NULL value here as we really don't have an error code which would make
+sense.
 
-./arch/powerpc/platforms/powernv/opal.c:813:1-5:
-	alloc with no test, possible model on line 814
-
-Add NULL check after kzalloc.
-
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200509020838.121660-1-chenzhou10@huawei.com
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/powernv/opal.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/md/dm-zoned-metadata.c | 4 ++--
+ drivers/md/dm-zoned-reclaim.c  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powernv/opal.c b/arch/powerpc/platforms/powernv/opal.c
-index 2b3dfd0b6cdd..d95954ad4c0a 100644
---- a/arch/powerpc/platforms/powernv/opal.c
-+++ b/arch/powerpc/platforms/powernv/opal.c
-@@ -811,6 +811,10 @@ static int opal_add_one_export(struct kobject *parent, const char *export_name,
- 		goto out;
+diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
+index 369de15c4e80..61b7d7b7e5a6 100644
+--- a/drivers/md/dm-zoned-metadata.c
++++ b/drivers/md/dm-zoned-metadata.c
+@@ -1554,7 +1554,7 @@ static struct dm_zone *dmz_get_rnd_zone_for_reclaim(struct dmz_metadata *zmd)
+ 			return dzone;
+ 	}
  
- 	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-+	if (!attr) {
-+		rc = -ENOMEM;
-+		goto out;
-+	}
- 	name = kstrdup(export_name, GFP_KERNEL);
- 	if (!name) {
- 		rc = -ENOMEM;
+-	return ERR_PTR(-EBUSY);
++	return NULL;
+ }
+ 
+ /*
+@@ -1574,7 +1574,7 @@ static struct dm_zone *dmz_get_seq_zone_for_reclaim(struct dmz_metadata *zmd)
+ 			return zone;
+ 	}
+ 
+-	return ERR_PTR(-EBUSY);
++	return NULL;
+ }
+ 
+ /*
+diff --git a/drivers/md/dm-zoned-reclaim.c b/drivers/md/dm-zoned-reclaim.c
+index e7ace908a9b7..d50817320e8e 100644
+--- a/drivers/md/dm-zoned-reclaim.c
++++ b/drivers/md/dm-zoned-reclaim.c
+@@ -349,8 +349,8 @@ static int dmz_do_reclaim(struct dmz_reclaim *zrc)
+ 
+ 	/* Get a data zone */
+ 	dzone = dmz_get_zone_for_reclaim(zmd);
+-	if (IS_ERR(dzone))
+-		return PTR_ERR(dzone);
++	if (!dzone)
++		return -EBUSY;
+ 
+ 	start = jiffies;
+ 
 -- 
 2.25.1
 
