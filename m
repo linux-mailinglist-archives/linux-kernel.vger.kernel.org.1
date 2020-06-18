@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E521FE4EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62F61FE4EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729946AbgFRBSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
+        id S1729961AbgFRBSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:18:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729487AbgFRBPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:33 -0400
+        id S1729228AbgFRBPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91E0821D79;
-        Thu, 18 Jun 2020 01:15:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89A172088E;
+        Thu, 18 Jun 2020 01:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442933;
-        bh=vM6Lnc7iSV1gQ+48IRh6IG8LuG+x2QF739G8EG3STGE=;
+        s=default; t=1592442937;
+        bh=XED/La/K5HyOjIfVSH+yJBOVDFcvzqktqsyFXZ2yA1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cogJLe8CA7pCD2LAdziux70IACbPAQQdN4K9imkQJuhtRfzhzSGJqD3qzW0mP2L5e
-         x+dxHOObFBvsKHh9hGD1FXG7nNc8oYdJZgA1mVZJDG+/1gP61w3HMeade/3yx+wJrg
-         oNqmjX4IG2twh95AdrBM3YwPxVqFauBq0sqnmUTo=
+        b=d/OBfTJKJKB9Mkx2ydwXhjrlaU00QWt7/DUyRYXgbWfOCagA2kpAKZtV6jbWKe5JL
+         eAKSMU5tuYwz/VTYf/l4kH8pWe35ZaRMMRH2jBYqUsvwJA5BQskfWZnO3ejbfLYzY2
+         5zOSWZDAFHt37qXov6v5CSLdCv/OxI6T8PqM+USg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 346/388] net: mscc: Fix OF_MDIO config check
-Date:   Wed, 17 Jun 2020 21:07:23 -0400
-Message-Id: <20200618010805.600873-346-sashal@kernel.org>
+Cc:     Logan Gunthorpe <logang@deltatee.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Alexander Fomichev <fomichev.ru@gmail.com>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
+        linux-ntb@googlegroups.com
+Subject: [PATCH AUTOSEL 5.7 349/388] NTB: ntb_tool: reading the link file should not end in a NULL byte
+Date:   Wed, 17 Jun 2020 21:07:26 -0400
+Message-Id: <20200618010805.600873-349-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,59 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-[ Upstream commit ae602786407fef34e1d66b3c8f278a10ed37197e ]
+[ Upstream commit 912e12813dd03c602e4922fc34709ec4d4380cf0 ]
 
-When CONFIG_OF_MDIO is set to be a module the code block is not
-compiled. Use the IS_ENABLED macro that checks for both built in as
-well as module.
+When running ntb_test this warning is issued:
 
-Fixes: 4f58e6dceb0e4 ("net: phy: Cleanup the Edge-Rate feature in Microsemi PHYs.")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+./ntb_test.sh: line 200: warning: command substitution: ignored null
+byte in input
+
+This is caused by the kernel returning one more byte than is necessary
+when reading the link file.
+
+Reduce the number of bytes read back to 2 as it was before the
+commit that regressed this.
+
+Fixes: 7f46c8b3a552 ("NTB: ntb_tool: Add full multi-port NTB API support")
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Allen Hubbe <allenbh@gmail.com>
+Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mscc/mscc.h      | 2 +-
- drivers/net/phy/mscc/mscc_main.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/ntb/test/ntb_tool.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/phy/mscc/mscc.h b/drivers/net/phy/mscc/mscc.h
-index 414e3b31bb1f..132f9bf49198 100644
---- a/drivers/net/phy/mscc/mscc.h
-+++ b/drivers/net/phy/mscc/mscc.h
-@@ -375,7 +375,7 @@ struct vsc8531_private {
- #endif
- };
+diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c
+index 9eaeb221d980..b7bf3f863d79 100644
+--- a/drivers/ntb/test/ntb_tool.c
++++ b/drivers/ntb/test/ntb_tool.c
+@@ -504,7 +504,7 @@ static ssize_t tool_peer_link_read(struct file *filep, char __user *ubuf,
+ 	buf[1] = '\n';
+ 	buf[2] = '\0';
  
--#ifdef CONFIG_OF_MDIO
-+#if IS_ENABLED(CONFIG_OF_MDIO)
- struct vsc8531_edge_rate_table {
- 	u32 vddmac;
- 	u32 slowdown[8];
-diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
-index c8aa6d905d8e..485a4f8a6a9a 100644
---- a/drivers/net/phy/mscc/mscc_main.c
-+++ b/drivers/net/phy/mscc/mscc_main.c
-@@ -98,7 +98,7 @@ static const struct vsc85xx_hw_stat vsc8584_hw_stats[] = {
- 	},
- };
- 
--#ifdef CONFIG_OF_MDIO
-+#if IS_ENABLED(CONFIG_OF_MDIO)
- static const struct vsc8531_edge_rate_table edge_table[] = {
- 	{MSCC_VDDMAC_3300, { 0, 2,  4,  7, 10, 17, 29, 53} },
- 	{MSCC_VDDMAC_2500, { 0, 3,  6, 10, 14, 23, 37, 63} },
-@@ -382,7 +382,7 @@ static void vsc85xx_wol_get(struct phy_device *phydev,
- 	mutex_unlock(&phydev->lock);
+-	return simple_read_from_buffer(ubuf, size, offp, buf, 3);
++	return simple_read_from_buffer(ubuf, size, offp, buf, 2);
  }
  
--#ifdef CONFIG_OF_MDIO
-+#if IS_ENABLED(CONFIG_OF_MDIO)
- static int vsc85xx_edge_rate_magic_get(struct phy_device *phydev)
- {
- 	u32 vdd, sd;
+ static TOOL_FOPS_RDWR(tool_peer_link_fops,
+@@ -1690,4 +1690,3 @@ static void __exit tool_exit(void)
+ 	debugfs_remove_recursive(tool_dbgfs_topdir);
+ }
+ module_exit(tool_exit);
+-
 -- 
 2.25.1
 
