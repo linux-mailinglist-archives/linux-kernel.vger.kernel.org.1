@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D895F1FF64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06AE1FF644
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731439AbgFRPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
+        id S1731416AbgFRPK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730950AbgFRPKv (ORCPT
+        with ESMTP id S1731398AbgFRPKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:10:51 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E4DC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:51 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b5so3029574pgm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:51 -0700 (PDT)
+        Thu, 18 Jun 2020 11:10:52 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF3DC0613EF
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:52 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e9so3023208pgo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 08:10:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EgswRRarbAngjEcfcdO7vzU1X69Dnu5N0WEEYS8N17E=;
-        b=GDnU2+CaEI6iO1FX18aBPuHJlLAXyHMvQn8RC61SQb2CvOFmgQWPfbcual4cPk934X
-         sA0sjnBzrS6IZu2mx3Yj26le/et18tojNvJpgNQHujueWEvey7C4obNY7U2CIl4myHAz
-         mcjeD1MBLt/CARfSmNysfkIDQLJS4fUXzJr6w=
+        bh=bVe6UCUtrVR7cafEV9bt9G1zk5uDkvg9No0xHEHinP8=;
+        b=HfoZ5lRONe1F61xrxP9U4L/d9eEWRtxvGR1cJncfL/woxzmvANr4v7yU5w9uV+0w7P
+         XcjIgNgXmghUX+eAEQaMHmAjrIUFdQM2LLEcvBGYYsI1BUw4VKM5Q0VLNRn6y7Vq7/9j
+         CkxlFgDNBB8iW6/bhIasfNViYUjlV+/a8geOA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EgswRRarbAngjEcfcdO7vzU1X69Dnu5N0WEEYS8N17E=;
-        b=uMoWLn5RNTNX5VEkBQHRN1JdbUO6+xqTPghTvF7cQabAfa8PZfkV6MchUclrNcg93m
-         QRB4/9ml2exUmz9X74/1MQC2FNVjKev8hI49tVRWirVOBJZykrZzEpxLAYZzKkYqjn+e
-         Tkmjso1y7u5ERH6ZpoI0VZux/yQ9cOMY4RnbvCrMVy4mBzPAwgqJmt/nqo1u3x1SiN0s
-         5OPKcDZSF8RsnYrYXTgEpv9OyPUyQ4HOofwysrzq7cXlTRxDtLqH0kFh2MFuEwIHqq5v
-         Qmp9JzIojvr0ljIsGSDVFlLEqZmxM6tvIKqc+R6CfDGiJQRNI8aIBKuKP3IF7owa8y94
-         XCaw==
-X-Gm-Message-State: AOAM532OOyStGZ1Mf4NqUO8WSoX1CdY36ep3x47kg5wKqo82Gu+TLA6Y
-        kEo1N01RcrmA4eSny2yjXN2xOw==
-X-Google-Smtp-Source: ABdhPJxWP5h6GqAJBOvQkYlENccfoLscwWKOsJ5bOnlei9cHfBy1KvAoZrC0RykDVJAKLwA2KbbfAw==
-X-Received: by 2002:a63:a558:: with SMTP id r24mr3845460pgu.70.1592493051091;
-        Thu, 18 Jun 2020 08:10:51 -0700 (PDT)
+        bh=bVe6UCUtrVR7cafEV9bt9G1zk5uDkvg9No0xHEHinP8=;
+        b=lv6GYWWxXua/zCLBWAY9qGaxvLDjq1CWOMVhRdZHcScfU/HfEL1XW8DcuwawkAXJj/
+         RwZMygYgc4aUKmaN68yV3QSsVVMEinZs/+3wNFMtc/GEhI//5MP63BkiatA70AYSQ9c5
+         Deqp0wyoW91qjLOEtE9lpjmIVvlXE19dLsvMW826kqF61ZDROJrxoE5R/iC8SfThs+B0
+         0Q7leBehXmuuexSp9VfEeq618JB4TIaln3I+fy6VG3vXaDStd/aE4BNUPHJG2tKAWuxj
+         tHvTU/otOjmgBlfLyfxTado6qWgrJ0FijXMHOZCdCssOQK2bQ9FHX3Se+tOEIvLrQbgH
+         IShg==
+X-Gm-Message-State: AOAM533HXOEyloLB7kDxT/NX0X1pQTC8G6ZynarDoAWYvyLzi+J4q+8Y
+        5upCTDeGQfouMbLdlSVv0FZ7NQ==
+X-Google-Smtp-Source: ABdhPJxeb3obYpA8AnWN2pNjegngMD5qnPGIspUqIiUGT3QjemzJUaNiSOGvh5KCaQsVt6QmO1Xtyw==
+X-Received: by 2002:a62:3103:: with SMTP id x3mr3897100pfx.130.1592493052313;
+        Thu, 18 Jun 2020 08:10:52 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id b14sm3171510pft.23.2020.06.18.08.10.49
+        by smtp.gmail.com with ESMTPSA id b14sm3171510pft.23.2020.06.18.08.10.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 08:10:50 -0700 (PDT)
+        Thu, 18 Jun 2020 08:10:51 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     swboyd@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
         skakit@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dilip Kota <dkota@codeaurora.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org
-Subject: [PATCH v4 3/5] spi: spi-geni-qcom: Check for error IRQs
-Date:   Thu, 18 Jun 2020 08:06:24 -0700
-Message-Id: <20200618080459.v4.3.Id8bebdbdb4d2ed9468634343a7e6207d6cffff8a@changeid>
+Subject: [PATCH v4 4/5] spi: spi-geni-qcom: Actually use our FIFO
+Date:   Thu, 18 Jun 2020 08:06:25 -0700
+Message-Id: <20200618080459.v4.4.I988281f7c6ee0ed00325559bfce7539f403da69e@changeid>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
 In-Reply-To: <20200618150626.237027-1-dianders@chromium.org>
 References: <20200618150626.237027-1-dianders@chromium.org>
@@ -66,39 +68,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From reading the #defines it seems like we should shout if we ever see
-one of these error bits.  Let's do so.  This doesn't do anything
-functional except print a yell in the log if the error bits are seen.
+The geni hardware has a FIFO that can hold up to 64 bytes (it has 16
+entries that can hold 4 bytes each), at least on the two SoCs I tested
+(sdm845 and sc7180).  We configured our RX Watermark to 0, which
+basically meant we got an interrupt as soon as the first 4 bytes
+showed up in the FIFO.  Tracing the IRQ handler showed that we often
+only read 4 or 8 bytes per IRQ handler.
 
+I tried setting the RX Watermark to "fifo size - 2" but that just got
+me a bunch of overrun errors reported.  Setting it to "fifo size - 3"
+seemed to work great, though.  This made me worried that we'd start
+getting overruns if we had long interrupt latency, but that doesn't
+appear to be the case and delays inserted in the IRQ handler while
+using "fifo size - 3" didn't cause any errors.  Presumably there is
+some interaction with the poorly-documented RFR (ready for receive)
+level means that "fifo size - 3" is the max.  We are the SPI master,
+so it makes sense that there would be no problems with overruns, the
+master should just stop clocking.
+
+Despite "fifo size - 3" working, I chose "fifo size / 2" (8 entries =
+32 bytes) which gives us a little extra time to get to the interrupt
+handler and should reduce dead time on the SPI wires.  With this
+setting, I often saw the IRQ handler handle 40 bytes but sometimes up
+to 56 if we had bad interrupt latency.
+
+Testing by running "flashrom -p ec -r" on a Chromebook saw interrupts
+from the SPI driver cut roughly in half.  Time was roughly the same.
+
+Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 ---
+Technically this is an improvement, not a fix.  ...but it should be
+such a decrease in interrupts that I've tagged it as a Fix nonetheless
+as per suggestion during review.
 
 Changes in v4: None
 Changes in v3:
-- ("spi: spi-geni-qcom: Check for error IRQs") new in v3.
+- ("spi: spi-geni-qcom: Actually use our FIFO") new in v3.
 
 Changes in v2: None
 
- drivers/spi/spi-geni-qcom.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/spi/spi-geni-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 7d022ccb1b6c..11f36d237c77 100644
+index 11f36d237c77..5b8ca8b93b06 100644
 --- a/drivers/spi/spi-geni-qcom.c
 +++ b/drivers/spi/spi-geni-qcom.c
-@@ -506,6 +506,11 @@ static irqreturn_t geni_spi_isr(int irq, void *data)
- 	if (!m_irq)
- 		return IRQ_NONE;
- 
-+	if (m_irq & (M_CMD_OVERRUN_EN | M_ILLEGAL_CMD_EN | M_CMD_FAILURE_EN |
-+		     M_RX_FIFO_RD_ERR_EN | M_RX_FIFO_WR_ERR_EN |
-+		     M_TX_FIFO_RD_ERR_EN | M_TX_FIFO_WR_ERR_EN))
-+		dev_warn(mas->dev, "Unexpected IRQ err status %#010x\n", m_irq);
-+
- 	spin_lock(&mas->lock);
- 
- 	if ((m_irq & M_RX_FIFO_WATERMARK_EN) || (m_irq & M_RX_FIFO_LAST_EN))
+@@ -285,7 +285,7 @@ static int spi_geni_init(struct spi_geni_master *mas)
+ 	 * Hardware programming guide suggests to configure
+ 	 * RX FIFO RFR level to fifo_depth-2.
+ 	 */
+-	geni_se_init(se, 0x0, mas->tx_fifo_depth - 2);
++	geni_se_init(se, mas->tx_fifo_depth / 2, mas->tx_fifo_depth - 2);
+ 	/* Transmit an entire FIFO worth of data per IRQ */
+ 	mas->tx_wm = 1;
+ 	ver = geni_se_get_qup_hw_version(se);
 -- 
 2.27.0.290.gba653c62da-goog
 
