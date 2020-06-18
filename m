@@ -2,88 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107351FF8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902881FF8BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731495AbgFRQHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728008AbgFRQHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:07:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC2FC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 09:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ha7fs+QSSRN9/6GlJ/iZ8nziBvAdCL8+tJH7EfoHfsc=; b=PA0DSmCSbCE2zL7zLzxAot1f1b
-        40l0H0B2fFBpw6I6+cfF4PBJPKczztvcsYkL3BG7HqGfD2RQSNnx2q43rP0gHO4OLaqTQKNIiIAA0
-        nxohwjneA+1O7tZ1AOCosyZRtZuTQH3crQSUBzARS/+7rXn34EqLkROpZUgmuj1RnrXXe1HWYVSUy
-        3TV5zFwZftto1hRxx11JVM3Xg/skgIDtErEferse9R5pvcNSiCpxmEKa+Ez7nkARYWpW28DrtEdpB
-        86Pe/yz6Gt21GkAh6XJgqXgRwAAveFSZ5dCxT1rPohUUwOWagiIEMCXbG2z0eX0ixopslkTG2JToq
-        L9xYFm7g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlx4a-00007z-1P; Thu, 18 Jun 2020 16:07:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 513C3301A32;
-        Thu, 18 Jun 2020 18:07:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 097DE20C227B5; Thu, 18 Jun 2020 18:07:26 +0200 (CEST)
-Date:   Thu, 18 Jun 2020 18:07:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michel Lespinasse <walken@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched, mm: Optimize current_gfp_context()
-Message-ID: <20200618160726.GL576905@hirez.programming.kicks-ass.net>
-References: <20200618155847.30975-1-longman@redhat.com>
+        id S1728624AbgFRQIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:08:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:54178 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726981AbgFRQIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:08:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68354101E;
+        Thu, 18 Jun 2020 09:08:29 -0700 (PDT)
+Received: from [10.57.9.128] (unknown [10.57.9.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E6CF3F6CF;
+        Thu, 18 Jun 2020 09:08:22 -0700 (PDT)
+Subject: Re: [PATCH v6 01/36] drm: prime: add common helper to check
+ scatterlist contiguity
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20200618153956.29558-1-m.szyprowski@samsung.com>
+ <CGME20200618154014eucas1p12812b08c65f53bb216f8ac8751a309de@eucas1p1.samsung.com>
+ <20200618153956.29558-2-m.szyprowski@samsung.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <968a920c-83b7-a0e5-8d0d-fa8486816b01@arm.com>
+Date:   Thu, 18 Jun 2020 17:07:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618155847.30975-1-longman@redhat.com>
+In-Reply-To: <20200618153956.29558-2-m.szyprowski@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 11:58:47AM -0400, Waiman Long wrote:
-> The current_gfp_context() converts a number of PF_MEMALLOC_* per-process
-> flags into the corresponding GFP_* flags for memory allocation. In
-> that function, current->flags is accessed 3 times. That may lead to
-> duplicated access of the same memory location.
+On 2020-06-18 16:39, Marek Szyprowski wrote:
+> It is a common operation done by DRM drivers to check the contiguity
+> of the DMA-mapped buffer described by a scatterlist in the
+> sg_table object. Let's add a common helper for this operation.
 > 
-> This is not usually a problem with minimal debug config options on as the
-> compiler can optimize away the duplicated memory accesses.  With most
-> of the debug config options on, however, that may not be the case.
-> For example, the x86-64 object size of the __need_fs_reclaim() in a
-> debug kernel that calls current_gfp_context() was 309 bytes. With this
-> patch applied, the object size is reduced to 202 bytes. This is a saving
-> of 107 bytes and will probably be slightly faster too.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 > ---
->  include/linux/sched/mm.h | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+>   drivers/gpu/drm/drm_gem_cma_helper.c | 23 +++--------------------
+>   drivers/gpu/drm/drm_prime.c          | 26 ++++++++++++++++++++++++++
+>   include/drm/drm_prime.h              |  2 ++
+>   3 files changed, 31 insertions(+), 20 deletions(-)
 > 
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index 480a4d1b7dd8..09e01909d192 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -181,18 +181,20 @@ static inline bool in_vfork(struct task_struct *tsk)
->   */
->  static inline gfp_t current_gfp_context(gfp_t flags)
->  {
-> -	if (unlikely(current->flags &
-> +	unsigned int pflags = current->flags;
+> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+> index 06a5b9ee1fe0..41566a15dabd 100644
+> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+> @@ -471,26 +471,9 @@ drm_gem_cma_prime_import_sg_table(struct drm_device *dev,
+>   {
+>   	struct drm_gem_cma_object *cma_obj;
+>   
+> -	if (sgt->nents != 1) {
+> -		/* check if the entries in the sg_table are contiguous */
+> -		dma_addr_t next_addr = sg_dma_address(sgt->sgl);
+> -		struct scatterlist *s;
+> -		unsigned int i;
+> -
+> -		for_each_sg(sgt->sgl, s, sgt->nents, i) {
+> -			/*
+> -			 * sg_dma_address(s) is only valid for entries
+> -			 * that have sg_dma_len(s) != 0
+> -			 */
+> -			if (!sg_dma_len(s))
+> -				continue;
+> -
+> -			if (sg_dma_address(s) != next_addr)
+> -				return ERR_PTR(-EINVAL);
+> -
+> -			next_addr = sg_dma_address(s) + sg_dma_len(s);
+> -		}
+> -	}
+> +	/* check if the entries in the sg_table are contiguous */
+> +	if (drm_prime_get_contiguous_size(sgt) < attach->dmabuf->size)
+> +		return ERR_PTR(-EINVAL);
+>   
+>   	/* Create a CMA GEM buffer. */
+>   	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size);
+> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> index bbfc713bfdc3..0784969894c1 100644
+> --- a/drivers/gpu/drm/drm_prime.c
+> +++ b/drivers/gpu/drm/drm_prime.c
+> @@ -825,6 +825,32 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
+>   }
+>   EXPORT_SYMBOL(drm_prime_pages_to_sg);
+>   
+> +/**
+> + * drm_prime_get_contiguous_size - returns the contiguous size of the buffer
+> + * @sgt: sg_table describing the buffer to check
+> + *
+> + * This helper calculates the contiguous size in the DMA address space
+> + * of the the buffer described by the provided sg_table.
+> + *
+> + * This is useful for implementing
+> + * &drm_gem_object_funcs.gem_prime_import_sg_table.
+> + */
+> +unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt)
+> +{
+> +	dma_addr_t expected = sg_dma_address(sgt->sgl);
+> +	struct sg_dma_page_iter dma_iter;
+> +	unsigned long size = 0;
+> +
+> +	for_each_sgtable_dma_page(sgt, &dma_iter, 0) {
+> +		if (sg_page_iter_dma_address(&dma_iter) != expected)
+> +			break;
+> +		expected += PAGE_SIZE;
+> +		size += PAGE_SIZE;
 
-Per the above, I would've expected a READ_ONCE() there, otherwise the
-compiler can still re-load.
+Hmm, in many cases this is likely to be far less efficient than simply 
+using for_each_sgtable_dma() and sg_dma_len() equivalent to the original 
+implementation, and there doesn't seem to be any good reason for that. 
+Plus AFAICS it could potentially let false-positives through if someone 
+were to pass in a table with non-page-aligned lengths (I assume that's 
+expected never to happen, but still...)
+
+Robin.
+
+> +	}
+> +	return size;
+> +}
+> +EXPORT_SYMBOL(drm_prime_get_contiguous_size);
+> +
+>   /**
+>    * drm_gem_prime_export - helper library implementation of the export callback
+>    * @obj: GEM object to export
+> diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
+> index 9af7422b44cf..47ef11614627 100644
+> --- a/include/drm/drm_prime.h
+> +++ b/include/drm/drm_prime.h
+> @@ -92,6 +92,8 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
+>   struct dma_buf *drm_gem_prime_export(struct drm_gem_object *obj,
+>   				     int flags);
+>   
+> +unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt);
+> +
+>   /* helper functions for importing */
+>   struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
+>   						struct dma_buf *dma_buf,
+> 
