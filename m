@@ -2,148 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F5B1FF849
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61A61FF857
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 17:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731581AbgFRP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 11:56:31 -0400
-Received: from mga03.intel.com ([134.134.136.65]:12775 "EHLO mga03.intel.com"
+        id S1731676AbgFRP6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 11:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727911AbgFRP4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 11:56:31 -0400
-IronPort-SDR: tIqx63aBsskYBCZSLeGvdVA2Zxt6B9DVA+UUr89YAF8BtO1AdPvABm5UIx55vtPdLmDyu/bH41
- +2WUiW5KveqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="142577081"
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="142577081"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 08:56:30 -0700
-IronPort-SDR: KOUJtvzaBQlF2Y9Xljs6cWf1KQno+1AyTVBY+RVGwEz7MfWI73+oswkK1IQUyOuxD8vbEIW4i7
- B4Zsk11lsqnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="477291931"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 08:56:26 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jlwtv-00EIOa-Vr; Thu, 18 Jun 2020 18:56:27 +0300
-Date:   Thu, 18 Jun 2020 18:56:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rjw@rjwysocki.net,
-        helgaas@kernel.org, bp@alien8.de, james.morse@arm.com,
-        lenb@kernel.org, tony.luck@intel.com, dan.carpenter@oracle.com,
-        zhangliguang@linux.alibaba.com, wangkefeng.wang@huawei.com,
-        jroedel@suse.de, linuxarm@huawei.com, yangyicong@hisilicon.com,
-        jonathan.cameron@huawei.com, tanxiaofei@huawei.com
-Subject: Re: [PATCH v10 2/2] PCI: hip: Add handling of HiSilicon HIP PCIe
- controller errors
-Message-ID: <20200618155627.GX2428291@smile.fi.intel.com>
-References: <20200618154051.639-3-shiju.jose@huawei.com>
+        id S1729225AbgFRP6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 11:58:31 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF90F20732;
+        Thu, 18 Jun 2020 15:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592495911;
+        bh=+KZmL52GIm7EihsT05Q49pyQj6KTBxyDgCq04pwK7Sc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=slS5eq2eelDBTkTN+YE2koLjJkA1T4jOn/J3pc6Nhbp+B+9CaSiptkj9cRfkRkQ0X
+         NdxAnrzSCZEjX3M7q5js+8XrRroVek9+HThygE7TBaIK7VwpoTjpNJlP3hlQeV/GT5
+         GfWM9YsGTi4yBkUvXX3YY7zuWnboCdl/2RtzPwkk=
+Date:   Thu, 18 Jun 2020 17:58:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>, rafael@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH] driver core:Export the symbol device_is_bound
+Message-ID: <20200618155820.GA3076467@kroah.com>
+References: <1591123192-565-1-git-send-email-sanm@codeaurora.org>
+ <20200618081443.GA1043700@kroah.com>
+ <20200618154555.GD4525@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618154051.639-3-shiju.jose@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200618154555.GD4525@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 04:40:51PM +0100, Shiju Jose wrote:
-> From: Yicong Yang <yangyicong@hisilicon.com>
+On Thu, Jun 18, 2020 at 08:45:55AM -0700, Matthias Kaehlcke wrote:
+> Hi Greg,
 > 
-> The HiSilicon HIP PCIe controller is capable of handling errors
-> on root port and perform port reset separately at each root port.
+> On Thu, Jun 18, 2020 at 10:14:43AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Jun 03, 2020 at 12:09:52AM +0530, Sandeep Maheswaram wrote:
+> > > Export the symbol device_is_bound so that it can be used by the modules.
+> > 
+> > What modules need this?
 > 
-> Add error handling driver for HIP PCIe controller to log
-> and report recoverable errors. Perform root port reset and restore
-> link status after the recovery.
-> 
-> Following are some of the PCIe controller's recoverable errors
-> 1. completion transmission timeout error.
-> 2. CRS retry counter over the threshold error.
-> 3. ECC 2 bit errors
-> 4. AXI bresponse/rresponse errors etc.
-> 
-> The driver placed in the drivers/pci/controller/ because the
-> HIP PCIe controller does not use DWC ip.
+> drivers/usb/dwc3/dwc3-qcom.c (and probably other dwc3 'wrappers').
 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Why wasn't that said here?  No context is not good :(
 
-Hmm... Did I give a tag?
+> Short summary: QCOM dwc3 support is split in two drivers, the core dwc3
+> driver and the QCOM specific parts. dwc3-qcom is probed first (through
+> a DT entry or ACPI), dwc3_qcom_probe() then calls of_platform_populate()
+> to probe the core part. After a successful return from _populate() the
+> driver assumes that the core device is fully initialized. However the
+> latter is not correct, the driver core doesn't propagate errors from
+> probe() to platform_populate(). The dwc3-qcom driver would use
+> device_is_bound() to make sure the core device was probed successfully.
 
-...
+why does the dwc3-qcom driver care?
 
-> +static guid_t hisi_pcie_sec_guid =
-> +		GUID_INIT(0xB2889FC9, 0xE7D7, 0x4F9D,
-> +			0xA8, 0x67, 0xAF, 0x42, 0xE9, 0x8B, 0xE7, 0x72);
+And why is the driver split in a way that requires such "broken"
+structures?  Why can't that be fixed instead?
 
-Drop one TAB in each line and add two spaces before 0xA8 on the last.
+thanks,
 
-
-...
-
-> +	idx = HISI_PCIE_LOCAL_VALID_ERR_MISC;
-
-> +	for_each_set_bit_from(idx, (const unsigned long *)&edata->val_bits,
-
-Can't you make val_bits unsigned long? Because this casting is incorrect.
-Otherwise, make a local copy into unsigned long variable.
-
-> +			      HISI_PCIE_LOCAL_VALID_ERR_MISC + HISI_PCIE_ERR_MISC_REGS)
-> +		dev_info(dev, "ERR_MISC_%d = 0x%x\n", idx - HISI_PCIE_LOCAL_VALID_ERR_MISC,
-> +			 edata->err_misc[idx]);
-
-...
-
-> +static int hisi_pcie_error_handler_probe(struct platform_device *pdev)
-> +{
-> +	struct hisi_pcie_error_private *priv;
-> +	int ret;
-> +
-
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-
-(1)
-
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->nb.notifier_call = hisi_pcie_notify_error;
-> +	priv->dev = &pdev->dev;
-> +	ret = ghes_register_event_notifier(&priv->nb);
-> +	if (ret) {
-> +		dev_err(&pdev->dev,
-> +			"Failed to register hisi_pcie_notify_error function\n");
-> +		return ret;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hisi_pcie_error_handler_remove(struct platform_device *pdev)
-> +{
-> +	struct hisi_pcie_error_private *priv = platform_get_drvdata(pdev);
-> +
-> +	ghes_unregister_event_notifier(&priv->nb);
-
-> +	kfree(priv);
-
-See (1), as I told you, this is double free.
-Have you tested this?
-
-> +	return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
