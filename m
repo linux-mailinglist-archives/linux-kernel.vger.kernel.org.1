@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6217F1FE575
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308AE1FE401
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731979AbgFRC0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48270 "EHLO mail.kernel.org"
+        id S1729967AbgFRBUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728975AbgFRBRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:17:12 -0400
+        id S1729769AbgFRBRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:17:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F94E21D82;
-        Thu, 18 Jun 2020 01:17:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45BB3221F1;
+        Thu, 18 Jun 2020 01:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443031;
-        bh=888Jc3QOglMoOyYRAqKKyDwxmx47rmmkZ4WPk0QR3qY=;
+        s=default; t=1592443035;
+        bh=w3ChTkUJ7kKAcOUwVsofeHlMjwmkoQ+pP8IZYyjE00s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQBtimaxX3ik/MKqAdGZ0CxWW9JLCX+gnrch4GLVmQ6+Fa6BLcLuT987LYOgjXM5/
-         x8kfOhLKuw3ePGS4tH81e64vsvMM3nU+ZMfPyudZjglDp0h3ImQF9NSjOIlE8g/eyE
-         EEwNA8te6L2Fl407DcOKTHEfIe4KiXhT9q9AWysk=
+        b=QK/wpH3sqiAEQNMIQyabBLa7afD2AvghoKCi3eZ3ScyIM+GhxrXd5JwB31d57Od9Z
+         1W4Jm5XmRan3SUAuWr4PPcSfn34aY4RLl4XbXjAt8pZ243vYRitPzhDJHGWr/DNrhy
+         3gp4lPLd0evpqveZEy1ikJ2WvnHZezsqSTxEmMg4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 030/266] clk: samsung: Mark top ISP and CAM clocks on Exynos542x as critical
-Date:   Wed, 17 Jun 2020 21:12:35 -0400
-Message-Id: <20200618011631.604574-30-sashal@kernel.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Long Cheng <long.cheng@mediatek.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 032/266] serial: 8250: Fix max baud limit in generic 8250 port
+Date:   Wed, 17 Jun 2020 21:12:37 -0400
+Message-Id: <20200618011631.604574-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -46,90 +56,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit e47bd937e602bb4379546095d1bd0b9871fa60c2 ]
+[ Upstream commit 7b668c064ec33f3d687c3a413d05e355172e6c92 ]
 
-The TOP 'aclk*_isp', 'aclk550_cam', 'gscl_wa' and 'gscl_wb' clocks must
-be kept enabled all the time to allow proper access to power management
-control for the ISP and CAM power domains. The last two clocks, although
-related to GScaler device and GSCL power domain, provides also the
-I_WRAP_CLK signal to MIPI CSIS0/1 devices, which are a part of CAM power
-domain and are needed for proper power on/off sequence.
+Standard 8250 UART ports are designed in a way so they can communicate
+with baud rates up to 1/16 of a reference frequency. It's expected from
+most of the currently supported UART controllers. That's why the former
+version of serial8250_get_baud_rate() method called uart_get_baud_rate()
+with min and max baud rates passed as (port->uartclk / 16 / UART_DIV_MAX)
+and ((port->uartclk + tolerance) / 16) respectively. Doing otherwise, like
+it was suggested in commit ("serial: 8250_mtk: support big baud rate."),
+caused acceptance of bauds, which was higher than the normal UART
+controllers actually supported. As a result if some user-space program
+requested to set a baud greater than (uartclk / 16) it would have been
+permitted without truncation, but then serial8250_get_divisor(baud)
+(which calls uart_get_divisor() to get the reference clock divisor) would
+have returned a zero divisor. Setting zero divisor will cause an
+unpredictable effect varying from chip to chip. In case of DW APB UART the
+communications just stop.
 
-Currently there are no drivers for the devices, which are part of CAM and
-ISP power domains yet. This patch only fixes the race between disabling
-the unused power domains and disabling unused clocks, which randomly
-resulted in the following error during boot:
+Lets fix this problem by getting back the limitation of (uartclk +
+tolerance) / 16 maximum baud supported by the generic 8250 port. Mediatek
+8250 UART ports driver developer shouldn't have touched it in the first
+place  notably seeing he already provided a custom version of set_termios()
+callback in that glue-driver which took into account the extended baud
+rate values and accordingly updated the standard and vendor-specific
+divisor latch registers anyway.
 
-Power domain CAM disable failed
-Power domain ISP disable failed
-
-Fixes: 318fa46cc60d ("clk/samsung: exynos542x: mark some clocks as critical")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Fixes: 81bb549fdf14 ("serial: 8250_mtk: support big baud rate.")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Long Cheng <long.cheng@mediatek.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Link: https://lore.kernel.org/r/20200506233136.11842-2-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/samsung/clk-exynos5420.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/tty/serial/8250/8250_port.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
-index 27fd274e92f8..dfef5f0833db 100644
---- a/drivers/clk/samsung/clk-exynos5420.c
-+++ b/drivers/clk/samsung/clk-exynos5420.c
-@@ -540,7 +540,7 @@ static const struct samsung_div_clock exynos5800_div_clks[] __initconst = {
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 2c65c775bf5a..dbb27303a6b4 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2539,6 +2539,8 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 					     struct ktermios *termios,
+ 					     struct ktermios *old)
+ {
++	unsigned int tolerance = port->uartclk / 100;
++
+ 	/*
+ 	 * Ask the core to calculate the divisor for us.
+ 	 * Allow 1% tolerance at the upper limit so uart clks marginally
+@@ -2547,7 +2549,7 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 	 */
+ 	return uart_get_baud_rate(port, termios, old,
+ 				  port->uartclk / 16 / UART_DIV_MAX,
+-				  port->uartclk);
++				  (port->uartclk + tolerance) / 16);
+ }
  
- static const struct samsung_gate_clock exynos5800_gate_clks[] __initconst = {
- 	GATE(CLK_ACLK550_CAM, "aclk550_cam", "mout_user_aclk550_cam",
--				GATE_BUS_TOP, 24, 0, 0),
-+				GATE_BUS_TOP, 24, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_ACLK432_SCALER, "aclk432_scaler", "mout_user_aclk432_scaler",
- 				GATE_BUS_TOP, 27, CLK_IS_CRITICAL, 0),
- };
-@@ -940,25 +940,25 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
- 	GATE(0, "aclk300_jpeg", "mout_user_aclk300_jpeg",
- 			GATE_BUS_TOP, 4, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk333_432_isp0", "mout_user_aclk333_432_isp0",
--			GATE_BUS_TOP, 5, 0, 0),
-+			GATE_BUS_TOP, 5, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk300_gscl", "mout_user_aclk300_gscl",
- 			GATE_BUS_TOP, 6, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk333_432_gscl", "mout_user_aclk333_432_gscl",
- 			GATE_BUS_TOP, 7, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk333_432_isp", "mout_user_aclk333_432_isp",
--			GATE_BUS_TOP, 8, 0, 0),
-+			GATE_BUS_TOP, 8, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_PCLK66_GPIO, "pclk66_gpio", "mout_user_pclk66_gpio",
- 			GATE_BUS_TOP, 9, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk66_psgen", "mout_user_aclk66_psgen",
- 			GATE_BUS_TOP, 10, CLK_IGNORE_UNUSED, 0),
- 	GATE(0, "aclk266_isp", "mout_user_aclk266_isp",
--			GATE_BUS_TOP, 13, 0, 0),
-+			GATE_BUS_TOP, 13, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk166", "mout_user_aclk166",
- 			GATE_BUS_TOP, 14, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_ACLK333, "aclk333", "mout_user_aclk333",
- 			GATE_BUS_TOP, 15, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk400_isp", "mout_user_aclk400_isp",
--			GATE_BUS_TOP, 16, 0, 0),
-+			GATE_BUS_TOP, 16, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk400_mscl", "mout_user_aclk400_mscl",
- 			GATE_BUS_TOP, 17, CLK_IS_CRITICAL, 0),
- 	GATE(0, "aclk200_disp1", "mout_user_aclk200_disp1",
-@@ -1158,8 +1158,10 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
- 			GATE_IP_GSCL1, 3, 0, 0),
- 	GATE(CLK_SMMU_FIMCL1, "smmu_fimcl1", "dout_gscl_blk_333",
- 			GATE_IP_GSCL1, 4, 0, 0),
--	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12, 0, 0),
--	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13, 0, 0),
-+	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12,
-+			CLK_IS_CRITICAL, 0),
-+	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13,
-+			CLK_IS_CRITICAL, 0),
- 	GATE(CLK_SMMU_FIMCL3, "smmu_fimcl3,", "dout_gscl_blk_333",
- 			GATE_IP_GSCL1, 16, 0, 0),
- 	GATE(CLK_FIMC_LITE3, "fimc_lite3", "aclk333_432_gscl",
+ void
 -- 
 2.25.1
 
