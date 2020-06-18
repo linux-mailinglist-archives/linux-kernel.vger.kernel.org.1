@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5266E1FE5D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2E41FE5AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgFRBQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
+        id S1728008AbgFRBQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:16:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727813AbgFRBOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:10 -0400
+        id S1729306AbgFRBOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE99720EDD;
-        Thu, 18 Jun 2020 01:14:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70B6221D7B;
+        Thu, 18 Jun 2020 01:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442849;
-        bh=Wrjt8XoJ7Bhht6hDHZeSg1rAz+D9ShRe3k4VcfYD4KE=;
+        s=default; t=1592442860;
+        bh=4119TfJh7HOmQEmTcbn7FL6rRL/Yia1MnYpYqTvsjbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxWnCAnABZbTEUhDZKd5+qcmGNaxePNT/gpwcbHBCXXk1jiyeUY2sblyNE6oPk8BW
-         hxveDOd8C2n+ljG+ex/kEqUhYJVXvfvQ7/vtgIrvleBNSDjKz7cXR+CnGFqPdT5ume
-         8UFOgs/8C8vSJxZ82rL45Wkn3SlazDyFpJeVv8Rk=
+        b=j+sgS5CZBC137IMf7BZfUXsoqLcBQX8N6OBBbrhIO5WX+iaf2yDU3lrp+QE+5fRL5
+         ZSsZhszA/F0ObWRgMAEDKMTl3thOxqMe3Pp03l7zswhs0hJQUNj+0XZKpHkLVLwB7B
+         UlcXZv4J1SvE3WlZ+LhdzDeFZPQuF/6pA/v76Vns=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Mike Christie <mchristi@redhat.com>,
-        David Disseldorp <ddiss@suse.de>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 281/388] scsi: target: tcmu: Fix a use after free in tcmu_check_expired_queue_cmd()
-Date:   Wed, 17 Jun 2020 21:06:18 -0400
-Message-Id: <20200618010805.600873-281-sashal@kernel.org>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>, Greg Kurz <groug@kaod.org>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Sasha Levin <sashal@kernel.org>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.7 289/388] KVM: PPC: Book3S HV: Relax check on H_SVM_INIT_ABORT
+Date:   Wed, 17 Jun 2020 21:06:26 -0400
+Message-Id: <20200618010805.600873-289-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -46,45 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Laurent Dufour <ldufour@linux.ibm.com>
 
-[ Upstream commit 9d7464b18892332e35ff37f0b024429a1a9835e6 ]
+[ Upstream commit e3326ae3d59e443a379367c6936941d6ab55d316 ]
 
-The pr_debug() dereferences "cmd" after we already freed it by calling
-tcmu_free_cmd(cmd).  The debug printk needs to be done earlier.
+The commit 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_*
+Hcalls") added checks of secure bit of SRR1 to filter out the Hcall
+reserved to the Ultravisor.
 
-Link: https://lore.kernel.org/r/20200523101129.GB98132@mwanda
-Fixes: 61fb24822166 ("scsi: target: tcmu: Userspace must not complete queued commands")
-Reviewed-by: Mike Christie <mchristi@redhat.com>
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+However, the Hcall H_SVM_INIT_ABORT is made by the Ultravisor passing the
+context of the VM calling UV_ESM. This allows the Hypervisor to return to
+the guest without going through the Ultravisor. Thus the Secure bit of SRR1
+is not set in that particular case.
+
+In the case a regular VM is calling H_SVM_INIT_ABORT, this hcall will be
+filtered out in kvmppc_h_svm_init_abort() because kvm->arch.secure_guest is
+not set in that case.
+
+Fixes: 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_* Hcalls")
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Reviewed-by: Ram Pai <linuxram@us.ibm.com>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_user.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/kvm/book3s_hv.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-index 517570e47958..b63a1e0c4aa6 100644
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -1292,13 +1292,13 @@ static void tcmu_check_expired_queue_cmd(struct tcmu_cmd *cmd)
- 	if (!time_after(jiffies, cmd->deadline))
- 		return;
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 93493f0cbfe8..ee581cde4878 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -1099,9 +1099,14 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
+ 			ret = kvmppc_h_svm_init_done(vcpu->kvm);
+ 		break;
+ 	case H_SVM_INIT_ABORT:
+-		ret = H_UNSUPPORTED;
+-		if (kvmppc_get_srr1(vcpu) & MSR_S)
+-			ret = kvmppc_h_svm_init_abort(vcpu->kvm);
++		/*
++		 * Even if that call is made by the Ultravisor, the SSR1 value
++		 * is the guest context one, with the secure bit clear as it has
++		 * not yet been secured. So we can't check it here.
++		 * Instead the kvm->arch.secure_guest flag is checked inside
++		 * kvmppc_h_svm_init_abort().
++		 */
++		ret = kvmppc_h_svm_init_abort(vcpu->kvm);
+ 		break;
  
-+	pr_debug("Timing out queued cmd %p on dev %s.\n",
-+		  cmd, cmd->tcmu_dev->name);
-+
- 	list_del_init(&cmd->queue_entry);
- 	se_cmd = cmd->se_cmd;
- 	tcmu_free_cmd(cmd);
- 
--	pr_debug("Timing out queued cmd %p on dev %s.\n",
--		  cmd, cmd->tcmu_dev->name);
--
- 	target_complete_cmd(se_cmd, SAM_STAT_TASK_SET_FULL);
- }
- 
+ 	default:
 -- 
 2.25.1
 
