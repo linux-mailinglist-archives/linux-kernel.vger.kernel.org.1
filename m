@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B931FFB7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 21:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645FE1FFB85
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 21:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730235AbgFRTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 15:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730176AbgFRTGj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 15:06:39 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E350C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 12:06:39 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h10so3322888pgq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 12:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pn8auUjHKcQTwjIRYtErKdN45ftSs5d94rtNVEKBPVk=;
-        b=OO1D6wC1GDI98hxs8P9LrWIjUtdriAI1LmZvZwyjbYMUmEBDkLKTLfPo/GAIzWbAkt
-         Pj1uhUGUCWCJBR3MNKVGhlaKsOPPZ1Ltm4lIWmMxRI+eJNSbGd9OuNpruk8kCnFB3G1n
-         nyEETZqWCf3GP2aFiqwNAgfGoWCp4YIQwTfNFxJ0oHOuvo/QGOvITgK5JHhEQI/b7BDq
-         a1D5hpma/qIj81ufFQntdZYAFqeWehGdOHPoiCmTEKVFFw/OEi9OeP8k+uu6HIWLuZr4
-         Awn8VU5lBj5FqeBPrZ599JUFcbmjmG4Om7z8cGDkU+xciPtnsy5laPK/3Nw9PdsGTf1e
-         fYTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pn8auUjHKcQTwjIRYtErKdN45ftSs5d94rtNVEKBPVk=;
-        b=fwvvHRpH8w6ouEqRMejhNGCWaQj4SSLz660mh/8oErriZ/9AntNtmtZSyS7bfcdZPm
-         dYF+AUD1LPDqqpMdq9wJNfe39tOWSkMJeXiKbIZ/ozxW3esMIB4f3BCSaIZgyG+KSPDM
-         p30zNjygA9lbhgFsbcHyBMOWVOkkFqv3B8A3IiiQAZYE7cLzQiIv8vQyQkxZyrFtsjYx
-         HTk1PctqWg3HttDWZjWyLMG5Eh6wbeMIJK1BvKf/eQQdtt0N3Iajltx5CxHNohy4RImu
-         R6AkHVODFJrQuQwWLGkP7Q0aqlWXZz3udVJA+FSNqYEwdBEnJQ8u+LrcuF6zsn4OCwlU
-         ueYg==
-X-Gm-Message-State: AOAM533YJw/7HaSciiarv4pSMb2kaUEHliVFDAETOTulyQkpgGeoZZd6
-        NBLDO60FlGSYijmRlPPMoMQ=
-X-Google-Smtp-Source: ABdhPJw6rTs2bGti1tEFSo17L3iq0JeqzxzZ5P9M1vy8U6/gjuGqNM8CuPFMQLrVqT+OESHWVCgRwQ==
-X-Received: by 2002:aa7:9384:: with SMTP id t4mr4755401pfe.162.1592507198830;
-        Thu, 18 Jun 2020 12:06:38 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 12sm3664885pfb.3.2020.06.18.12.06.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Jun 2020 12:06:38 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 12:06:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        frederic@kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        cai@lca.pw, mgorman@techsingularity.net
-Subject: Re: [RFC][PATCH 7/7] sched: Replace rq::wake_list
-Message-ID: <20200618190637.GB217485@roeck-us.net>
-References: <20200526161057.531933155@infradead.org>
- <20200526161908.129371594@infradead.org>
- <20200604141837.GA179816@roeck-us.net>
- <20200605002433.GA148196@sol.localdomain>
- <20200605074154.GB2750@hirez.programming.kicks-ass.net>
- <20200605161532.GD1373@sol.localdomain>
- <53318971-561c-b445-0408-530b3d3ba44e@roeck-us.net>
- <20200609202134.GA1105@sol.localdomain>
- <20200609212509.GA239889@roeck-us.net>
- <20200618175733.GA26895@home.goodmis.org>
+        id S1730280AbgFRTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 15:08:28 -0400
+Received: from nautica.notk.org ([91.121.71.147]:34180 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728071AbgFRTI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 15:08:27 -0400
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id EA9E8C01C; Thu, 18 Jun 2020 21:08:22 +0200 (CEST)
+Date:   Thu, 18 Jun 2020 21:08:07 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Alexander Kapshuk <alexander.kapshuk@gmail.com>
+Cc:     ericvh@gmail.com, lucho@ionkov.net, davem@davemloft.net,
+        kuba@kernel.org, v9fs-developer@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/9p: Fix sparse rcu warnings in client.c
+Message-ID: <20200618190807.GA20699@nautica>
+References: <20200618183310.5352-1-alexander.kapshuk@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200618175733.GA26895@home.goodmis.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200618183310.5352-1-alexander.kapshuk@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 01:57:33PM -0400, Steven Rostedt wrote:
-> On Tue, Jun 09, 2020 at 02:25:09PM -0700, Guenter Roeck wrote:
-> > > 
-> > > Still occurring on Linus' tree.  This needs to be fixed.  (And not by removing
-> > > support for randstruct; that's not a "fix"...)
-> > > 
-> > 
-> > How about the hack below ?
+Alexander Kapshuk wrote on Thu, Jun 18, 2020:
+> Address sparse nonderef rcu warnings:
+> net/9p/client.c:790:17: warning: incorrect type in argument 1 (different address spaces)
+> net/9p/client.c:790:17:    expected struct spinlock [usertype] *lock
+> net/9p/client.c:790:17:    got struct spinlock [noderef] <asn:4> *
+> net/9p/client.c:792:48: warning: incorrect type in argument 1 (different address spaces)
+> net/9p/client.c:792:48:    expected struct spinlock [usertype] *lock
+> net/9p/client.c:792:48:    got struct spinlock [noderef] <asn:4> *
+> net/9p/client.c:872:17: warning: incorrect type in argument 1 (different address spaces)
+> net/9p/client.c:872:17:    expected struct spinlock [usertype] *lock
+> net/9p/client.c:872:17:    got struct spinlock [noderef] <asn:4> *
+> net/9p/client.c:874:48: warning: incorrect type in argument 1 (different address spaces)
+> net/9p/client.c:874:48:    expected struct spinlock [usertype] *lock
+> net/9p/client.c:874:48:    got struct spinlock [noderef] <asn:4> *
 > 
-> My test suite failed due to this bug (on my allmodconfig test).
-> 
-> Your hack appears to fix it. I've applied it to my "fixes" patches applied to
-> my test suite before building my kernels.
-> 
-Ah, I would have hoped that this was by now fixed upstream. Apparently that
-is not the case. Guess Linus is using an old version of gcc (or maybe clang)
-for his test builds, and everyone doing test builds is now using this or a
-similar hack. For my part, I disabled CONFIG_GCC_PLUGIN_RANDSTRUCT.
+> Signed-off-by: Alexander Kapshuk <alexander.kapshuk@gmail.com>
 
-Guenter
+Thanks for this patch.
+From what I can see, there are tons of other parts of the code doing the
+same noderef access pattern to access current->sighand->siglock and I
+don't see much doing that.
+A couple of users justify this by saying SLAB_TYPESAFE_BY_RCU ensures
+we'll always get a usable lock which won't be reinitialized however we
+access it... It's a bit dubious we'll get the same lock than unlock to
+me, so I agree to some change though.
+
+After a second look I think we should use something like the following:
+
+if (!lock_task_sighand(current, &flags))
+	warn & skip (or some error, we'd null deref if this happened currently);
+recalc_sigpending();
+unlock_task_sighand(current, &flags);
+
+As you can see, the rcu_read_lock() isn't kept until the unlock so I'm
+not sure it will be enough to please sparse, but I've convinced myself
+current->sighand cannot change while we hold the lock and there just are
+too many such patterns in the kernel.
+
+Please let me know if I missed something or if there is an ongoing
+effort to change how this works; I'll wait for a v2.
+
+-- 
+Dominique
