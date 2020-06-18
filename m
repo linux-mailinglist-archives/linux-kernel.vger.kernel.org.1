@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D98A1FE393
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4873E1FE38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbgFRCLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54100 "EHLO mail.kernel.org"
+        id S1731495AbgFRCLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:11:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730522AbgFRBVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:21:35 -0400
+        id S1730549AbgFRBVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:21:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1685C20B1F;
-        Thu, 18 Jun 2020 01:21:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6645820CC7;
+        Thu, 18 Jun 2020 01:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443294;
-        bh=B9/0Ow2B50ThrXYP/3o+q9mII+dr7RSdAGmHoIIV34Y=;
+        s=default; t=1592443297;
+        bh=jwppOJWJ0KbGh3W6BOSV/XYDkefGSCvIOHRBpZ0GYuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCXxL3ad+KiOm6vB+NVRzDsYDxivOAiYNIgrSfXQKenKkvCiZaeyVorUAcQWSnuPR
-         n3wORW/VFKVafOl2uUKmxkErG0W90z2uUB3ZoVPfrk+spw2Y9OFwdY90jl828Mlmea
-         qe99DDO+DPxuswMqVwO2scrY2/C+k+VDaWsnxAzg=
+        b=K+jcCy3yGsqS7Z7jbyxBGbeiwtLkavL7m95AsnIvYa4+sdbYrZMh+SEjDJ6k5p++O
+         3E8uXbivliQg3Nm91kbDqiWNEfRAdYUOH85hXW95llUm5St9yEu2leMOD+3pix97cS
+         BIx9gdKUuL97Rx4QYyJC8Lci+lq58L/He6XYkNWs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.4 235/266] gfs2: fix use-after-free on transaction ail lists
-Date:   Wed, 17 Jun 2020 21:16:00 -0400
-Message-Id: <20200618011631.604574-235-sashal@kernel.org>
+Cc:     Sanjay R Mehta <sanju.mehta@amd.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Arindam Nath <arindam.nath@amd.com>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
+        linux-ntb@googlegroups.com
+Subject: [PATCH AUTOSEL 5.4 237/266] ntb_perf: pass correct struct device to dma_alloc_coherent
+Date:   Wed, 17 Jun 2020 21:16:02 -0400
+Message-Id: <20200618011631.604574-237-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
 References: <20200618011631.604574-1-sashal@kernel.org>
@@ -43,77 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Sanjay R Mehta <sanju.mehta@amd.com>
 
-[ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
+[ Upstream commit 98f4e140264eeb52f22ff05be6b6dd48237255ac ]
 
-Before this patch, transactions could be merged into the system
-transaction by function gfs2_merge_trans(), but the transaction ail
-lists were never merged. Because the ail flushing mechanism can run
-separately, bd elements can be attached to the transaction's buffer
-list during the transaction (trans_add_meta, etc) but quickly moved
-to its ail lists. Later, in function gfs2_trans_end, the transaction
-can be freed (by gfs2_trans_end) while it still has bd elements
-queued to its ail lists, which can cause it to either lose track of
-the bd elements altogether (memory leak) or worse, reference the bd
-elements after the parent transaction has been freed.
+Currently, ntb->dev is passed to dma_alloc_coherent
+and dma_free_coherent calls. The returned dma_addr_t
+is the CPU physical address. This works fine as long
+as IOMMU is disabled. But when IOMMU is enabled, we
+need to make sure that IOVA is returned for dma_addr_t.
+So the correct way to achieve this is by changing the
+first parameter of dma_alloc_coherent() as ntb->pdev->dev
+instead.
 
-Although I've not seen any serious consequences, the problem becomes
-apparent with the previous patch's addition of:
-
-	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-
-to function gfs2_trans_free().
-
-This patch adds logic into gfs2_merge_trans() to move the merged
-transaction's ail lists to the sdp transaction. This prevents the
-use-after-free. To do this properly, we need to hold the ail lock,
-so we pass sdp into the function instead of the transaction itself.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 5648e56d03fa ("NTB: ntb_perf: Add full multi-port NTB API support")
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
+Signed-off-by: Arindam Nath <arindam.nath@amd.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/log.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/ntb/test/ntb_perf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 110e5c4db819..a4b6a49462a4 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -881,8 +881,10 @@ void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl, u32 flags)
-  * @new: New transaction to be merged
-  */
+diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
+index e9b7c2dfc730..52c29791fc02 100644
+--- a/drivers/ntb/test/ntb_perf.c
++++ b/drivers/ntb/test/ntb_perf.c
+@@ -556,7 +556,7 @@ static void perf_free_inbuf(struct perf_peer *peer)
+ 		return;
  
--static void gfs2_merge_trans(struct gfs2_trans *old, struct gfs2_trans *new)
-+static void gfs2_merge_trans(struct gfs2_sbd *sdp, struct gfs2_trans *new)
- {
-+	struct gfs2_trans *old = sdp->sd_log_tr;
-+
- 	WARN_ON_ONCE(!test_bit(TR_ATTACHED, &old->tr_flags));
- 
- 	old->tr_num_buf_new	+= new->tr_num_buf_new;
-@@ -893,6 +895,11 @@ static void gfs2_merge_trans(struct gfs2_trans *old, struct gfs2_trans *new)
- 
- 	list_splice_tail_init(&new->tr_databuf, &old->tr_databuf);
- 	list_splice_tail_init(&new->tr_buf, &old->tr_buf);
-+
-+	spin_lock(&sdp->sd_ail_lock);
-+	list_splice_tail_init(&new->tr_ail1_list, &old->tr_ail1_list);
-+	list_splice_tail_init(&new->tr_ail2_list, &old->tr_ail2_list);
-+	spin_unlock(&sdp->sd_ail_lock);
+ 	(void)ntb_mw_clear_trans(peer->perf->ntb, peer->pidx, peer->gidx);
+-	dma_free_coherent(&peer->perf->ntb->dev, peer->inbuf_size,
++	dma_free_coherent(&peer->perf->ntb->pdev->dev, peer->inbuf_size,
+ 			  peer->inbuf, peer->inbuf_xlat);
+ 	peer->inbuf = NULL;
  }
+@@ -585,8 +585,9 @@ static int perf_setup_inbuf(struct perf_peer *peer)
  
- static void log_refund(struct gfs2_sbd *sdp, struct gfs2_trans *tr)
-@@ -904,7 +911,7 @@ static void log_refund(struct gfs2_sbd *sdp, struct gfs2_trans *tr)
- 	gfs2_log_lock(sdp);
+ 	perf_free_inbuf(peer);
  
- 	if (sdp->sd_log_tr) {
--		gfs2_merge_trans(sdp->sd_log_tr, tr);
-+		gfs2_merge_trans(sdp, tr);
- 	} else if (tr->tr_num_buf_new || tr->tr_num_databuf_new) {
- 		gfs2_assert_withdraw(sdp, test_bit(TR_ALLOCED, &tr->tr_flags));
- 		sdp->sd_log_tr = tr;
+-	peer->inbuf = dma_alloc_coherent(&perf->ntb->dev, peer->inbuf_size,
+-					 &peer->inbuf_xlat, GFP_KERNEL);
++	peer->inbuf = dma_alloc_coherent(&perf->ntb->pdev->dev,
++					 peer->inbuf_size, &peer->inbuf_xlat,
++					 GFP_KERNEL);
+ 	if (!peer->inbuf) {
+ 		dev_err(&perf->ntb->dev, "Failed to alloc inbuf of %pa\n",
+ 			&peer->inbuf_size);
+@@ -1517,4 +1518,3 @@ static void __exit perf_exit(void)
+ 	destroy_workqueue(perf_wq);
+ }
+ module_exit(perf_exit);
+-
 -- 
 2.25.1
 
