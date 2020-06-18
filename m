@@ -2,124 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B571FDA8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07011FDA96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 02:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgFRAr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 20:47:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35923 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726890AbgFRAr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 20:47:59 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49nNZg50TZz9sSc;
-        Thu, 18 Jun 2020 10:47:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1592441276;
-        bh=TG7uARSNXOCtzyhqf6WfzaFhVxvui+qt2GtCF7JxfbU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SbXjA23Qv4zCSPbZbYwvnNOG+10UWft7vXba1l9SRCrtwcmGfZqVAQUaL6AuE9TsE
-         Xl8kpUEXPhep2rbqO6NXznsrJ5pmyAvobpwjHEHVxQiLxssesbWWXAjq11rpOqkPJ/
-         Bu4Kua0elnAKRocSOzhOkFZs0N25INuOTibgKUf1RUgfOyxCB1ETRQ2to3KOuFgtyN
-         4Y4paRw+lgO4Ne7RBVvUmfBnBjSnl1zBRS+9dp0XvBE0Li3frprvJrcWlaIuJDQ576
-         8sy17H7cJwQpV3mCBEfaY//7xxH7MvhtZF4XaTVSxt+ZFFtYEvyouNv4FV5eu143yd
-         PEplI/YofUrmQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v5 01/13] powerpc: Remove Xilinx PPC405/PPC440 support
-In-Reply-To: <CAKwvOdnkcjLGay0jdQ77kHTmKhE56F9jvzh01XWwEE8rjbhLAA@mail.gmail.com>
-References: <cover.1590079968.git.christophe.leroy@csgroup.eu> <8c593895e2cb57d232d85ce4d8c3a1aa7f0869cc.1590079968.git.christophe.leroy@csgroup.eu> <20200616002720.GA1307277@ubuntu-n2-xlarge-x86> <68503e5e-7456-b81c-e43d-27cb331a4b72@xilinx.com> <20200616181630.GA3403678@ubuntu-n2-xlarge-x86> <50fb2dd6-4e8f-a550-6eda-073beb86f2ff@xilinx.com> <87bllidmk4.fsf@mpe.ellerman.id.au> <878sgmdmcv.fsf@mpe.ellerman.id.au> <CAKwvOdnkcjLGay0jdQ77kHTmKhE56F9jvzh01XWwEE8rjbhLAA@mail.gmail.com>
-Date:   Thu, 18 Jun 2020 10:48:21 +1000
-Message-ID: <87tuz9ci7e.fsf@mpe.ellerman.id.au>
+        id S1727052AbgFRAtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 20:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726899AbgFRAtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 20:49:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1C6C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:49:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x207so1978347pfc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 17:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o9bocZzzzDNWldBOb19aL0JrD3DAgfCWT0/GuyKYFAk=;
+        b=rkTdIS7MhTO2I2wBBSPfMICXPfkKNi2NtHsoGpbAbwz1dYXchXPlCSPnuLxbn/l0tp
+         BYjRl0UeKvJtYFYCA+ZDwNmDZRoH7Z4KEEOIUwSBbTTRkSH2b3NChumxwKzQizsj7NSR
+         t1RWZ7uJwksNI8hUSdkZuOKgbn/gMo7v3eVn3enDzpQfQgIEEfKJzPX24i11kGJMnlmu
+         LszBMUIeSDLOvLxv6lVb/09WsJDi746Yx1LgXtpCCCXGipSW+nDFqd9ldeFK+KTyG0nG
+         B9+5MTWwWP4hOq1u+gK+oeYLa6cbj9wA6Kfu8K1Wt7R7Auu9Rf8qQVuLgx2W8rXtYUP1
+         7GDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o9bocZzzzDNWldBOb19aL0JrD3DAgfCWT0/GuyKYFAk=;
+        b=OCY8GnZnamgku1UK7jLK/jftIFSl35p0rJkkZ+UKZCL2vMe58lDTHRKrD5Y/hsIFr2
+         rBornlVwnw2SDxxhGDhh6wK3ZtpzcXV6X+9R7JSeOdO3qHnRs8g/LyTyXqKij0xLVIOY
+         xXU0dAE25mK54YBxV8myB2rfyc0JMAeeKJWK44IGAiufeXuaP7o2GLC9gaSVgylfSUvl
+         dmRbp2tpc4nCQXCi7rEVmerCXXK50bfx9TK5MKBHEsQxeUSUic15j+d6FFSwHM2IPi7e
+         5IorLWcaejxERI5lX9TDZLVgmPeqij5VzN8dKYbgpkTPotCfGCFPmi1Jc+hhQrDSu9DK
+         Ok2Q==
+X-Gm-Message-State: AOAM532bX+OMNBo9pN1OGa0t4J2NA7CkVWFd3qW1K1McyGQCpnGkyr/6
+        nLDFKbCkdDkKgEwT9gDPHBA=
+X-Google-Smtp-Source: ABdhPJxwAuxQgSKygXY6lXFu92hW+tAcD659N6a7lixSQcORY2EM5Sb4JB3dVmrS0rzcc1Fk5pdCEw==
+X-Received: by 2002:a63:144c:: with SMTP id 12mr938274pgu.189.1592441341992;
+        Wed, 17 Jun 2020 17:49:01 -0700 (PDT)
+Received: from gmail.com ([2601:600:817f:a132:df3e:521d:99d5:710d])
+        by smtp.gmail.com with ESMTPSA id a19sm918008pfd.165.2020.06.17.17.49.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 17:49:01 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 17:48:58 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Oskolkov <posk@google.com>, avagin@google.com,
+        "pjt@google.com" <pjt@google.com>, Ben Segall <bsegall@google.com>
+Subject: Re: [RFC PATCH 1/3 v2] futex: introduce FUTEX_SWAP operation
+Message-ID: <20200618004858.GA326453@gmail.com>
+References: <cf7c83d0b58aa4912b465392ce8e40a974f250bb.camel@posk.io>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <cf7c83d0b58aa4912b465392ce8e40a974f250bb.camel@posk.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nick Desaulniers <ndesaulniers@google.com> writes:
-> On Wed, Jun 17, 2020 at 3:20 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Michael Ellerman <mpe@ellerman.id.au> writes:
->> > Michal Simek <michal.simek@xilinx.com> writes:
->> <snip>
->>
->> >> Or if bamboo requires uImage to be built by default you can do it via
->> >> Kconfig.
->> >>
->> >> diff --git a/arch/powerpc/platforms/44x/Kconfig
->> >> b/arch/powerpc/platforms/44x/Kconfig
->> >> index 39e93d23fb38..300864d7b8c9 100644
->> >> --- a/arch/powerpc/platforms/44x/Kconfig
->> >> +++ b/arch/powerpc/platforms/44x/Kconfig
->> >> @@ -13,6 +13,7 @@ config BAMBOO
->> >>         select PPC44x_SIMPLE
->> >>         select 440EP
->> >>         select FORCE_PCI
->> >> +       select DEFAULT_UIMAGE
->> >>         help
->> >>           This option enables support for the IBM PPC440EP evaluation board.
->> >
->> > Who knows what the actual bamboo board used. But I'd be happy to take a
->> > SOB'ed patch to do the above, because these days the qemu emulation is
->> > much more likely to be used than the actual board.
->>
->> I just went to see why my CI boot of 44x didn't catch this, and it's
->> because I don't use the uImage, I just boot the vmlinux directly:
->>
->>   $ qemu-system-ppc -M bamboo -m 128m -display none -kernel build~/vmlinux -append "console=ttyS0" -display none -nodefaults -serial mon:stdio
->>   Linux version 5.8.0-rc1-00118-g69119673bd50 (michael@alpine1-p1) (gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #4 Wed Jun 17 20:19:22 AEST 2020
->>   Using PowerPC 44x Platform machine description
->>   ioremap() called early from find_legacy_serial_ports+0x690/0x770. Use early_ioremap() instead
->>   printk: bootconsole [udbg0] enabled
->>
->>
->> So that's probably the simplest solution?
->
-> If the uImage or zImage self decompresses, I would prefer to test that as well.
+On Tue, Jun 16, 2020 at 10:22:26AM -0700, Peter Oskolkov wrote:
+> From 6fbe0261204692a7f488261ab3c4ac696b91db5c Mon Sep 17 00:00:00 2001
+> From: Peter Oskolkov <posk@google.com>
+> Date: Tue, 9 Jun 2020 16:03:14 -0700
+> Subject: [RFC PATCH 1/3 v2] futex: introduce FUTEX_SWAP operation
+> 
+> This is an RFC!
+> 
+> As Paul Turner presented at LPC in 2013 ...
+> - pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
+> - video: https://www.youtube.com/watch?v=KXuZi9aeGTw
+> 
+> ... Google has developed an M:N userspace threading subsystem backed
+> by Google-private SwitchTo Linux Kernel API (page 17 in the pdf referenced
+> above). This subsystem provides latency-sensitive services at Google with
+> fine-grained user-space control/scheduling over what is running when,
+> and this subsystem is used widely internally (called schedulers or fibers).
+> 
+> This RFC patchset is the first step to open-source this work. As explained
+> in the linked pdf and video, SwitchTo API has three core operations: wait,
+> resume, and swap (=switch). So this patchset adds a FUTEX_SWAP operation
+> that, in addition to FUTEX_WAIT and FUTEX_WAKE, will provide a foundation
+> on top of which user-space threading libraries can be built.
+> 
+> Another common use case for FUTEX_SWAP is message passing a-la RPC
+> between tasks: task/thread T1 prepares a message,
+> wakes T2 to work on it, and waits for the results; when T2 is done, it
+> wakes T1 and waits for more work to arrive. Currently the simplest
+> way to implement this is
+> 
+> a. T1: futex-wake T2, futex-wait
+> b. T2: wakes, does what it has been woken to do
+> c. T2: futex-wake T1, futex-wait
+> 
+> With FUTEX_SWAP, steps a and c above can be reduced to one futex operation
+> that runs 5-10 times faster.
+> 
 
-The uImage is decompressed by qemu AIUI.
+Hi Peter,
 
->> That means previously arch/powerpc/boot/zImage was just a hardlink to
->> the uImage:
->
-> It sounds like we can just boot the zImage, or is that no longer
-> created with the uImage?
+We have a good use-case in gVisor for this new futex command.
 
-The zImage won't boot on bamboo.
+gVisor accesses a file system through a file proxy, called the Gofer.
+The gofer runs as a separate process, that is isolated from the sandbox
+(sentry). Gofer instances communicate with their respective sentry using
+the 9P-like protocol. We used sockets as communication channels, but
+recently we switched to the flipcall (1) library which improve
+performance by using shared memory for data (reducing memory copies) and
+using futexes for control signaling (which is much cheaper than
+sendto/recvfrom/sendmsg/recvmsg).
 
-Because of the vagaries of the arch/powerpc/boot/Makefile the zImage
-ends up pointing to treeImage.ebony, which is for a different board.
+I modified the flipcall library to use FUTEX_SWAP and I see a
+significant performance improvement.
 
-The zImage link is made to the first item in $(image-y):
+A low level benchmarks (2) shows that req/resp is more than five time
+faster with FUTEX_SWAP than with FUTEX_WAKE&FUTEX_WAIT. This is more or
+less the same test what you did.
 
-$(obj)/zImage:		$(addprefix $(obj)/, $(image-y))
-	$(Q)rm -f $@; ln $< $@
-                         ^
-                         first preqrequisite
+* FUTEX_WAKE & FUTEX_WAIT
+BenchmarkSendRecv-8     88396     13625 ns/op
 
-Which for this defconfig happens to be:
+* FUTEX_SWAP
+BenchmarkSendRecv-8    479604      2524 ns/op
 
-image-$(CONFIG_EBONY)			+= treeImage.ebony cuImage.ebony
+And a more high-level test (3) which benchmarks the open syscall in
+gVisor shows about 40% improvements.
 
-If you turned off CONFIG_EBONY then the zImage will be a link to
-treeImage.bamboo, but qemu can't boot that either.
+* FUTEX_WAKE & FUTEX_WAIT
+BM_Open/1/real_time_mean        93996 ns
 
-It's kind of nuts that the zImage points to some arbitrary image
-depending on what's configured and the order of things in the Makefile.
-But I'm not sure how we make it less nuts without risking breaking
-people's existing setups.
+* FUTEX_SWAP
+BM_Open/1/real_time_mean        53136 ns
 
-cheers
+I believe there are many use-cases for FUTEX_SWAP in other projects.
+
+1. https://github.com/google/gvisor/tree/master/pkg/flipcall
+2. https://github.com/google/gvisor/blob/master/pkg/flipcall/flipcall_test.go#L361
+3. https://github.com/google/gvisor/blob/master/test/perf/linux/open_benchmark.cc
+
+Thanks,
+Andrei
