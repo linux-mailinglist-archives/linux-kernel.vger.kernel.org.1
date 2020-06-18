@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15291FE5FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3911FE4A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387691AbgFRC36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
+        id S1730071AbgFRBTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729283AbgFRBQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:01 -0400
+        id S1729538AbgFRBQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:16:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 112C12088E;
-        Thu, 18 Jun 2020 01:15:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCB1F21D94;
+        Thu, 18 Jun 2020 01:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442961;
-        bh=kE4r/DncWHkvPGYKD8JFmPlP3Dy3jow243D+vlxfFl4=;
+        s=default; t=1592442963;
+        bh=5I6Kz1baumUuPbBBYu9LWI6kVb4C70yGT/IDXOIvPXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nTTbtMmVfHW6AZE1kOfTycl3cXcd/upOqFbR+5RpAkqnCw7xzI47h5gh9on4Rk9Dd
-         PiPpzNY1BSDlt/Xma4KFUJQZOHOc8H37fb7NK5/t64N4zlWgSMmgC29tZr2x1GRcAA
-         M8fGBACy8jSGmS6V1U+OduEKHLEIqQcbkjB5OBhg=
+        b=mq4Ob2Q9fuugvnUbN9ZWbHaHgxEAY4dL+tmIgZ3ygyNNAzIeGLO4wMOsGKi3fYUZF
+         YP/vCvPccYgqny6vbIaBLoVmlnskvnzObtZ15m2Lgf4fe9zck0WXOXLRbpc1OpDFMq
+         BOjNcuoTwpYC4lZLDO/9ewZVJS3/cwRDMiWbTTY4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     dihu <anny.hu@linux.alibaba.com>,
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 367/388] bpf/sockmap: Fix kernel panic at __tcp_bpf_recvmsg
-Date:   Wed, 17 Jun 2020 21:07:44 -0400
-Message-Id: <20200618010805.600873-367-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 369/388] tracing/probe: Fix bpf_task_fd_query() for kprobes and uprobes
+Date:   Wed, 17 Jun 2020 21:07:46 -0400
+Message-Id: <20200618010805.600873-369-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -46,61 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dihu <anny.hu@linux.alibaba.com>
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-[ Upstream commit 487082fb7bd2a32b66927d2b22e3a81b072b44f0 ]
+[ Upstream commit 22d5bd6867364b41576a712755271a7d6161abd6 ]
 
-When user application calls read() with MSG_PEEK flag to read data
-of bpf sockmap socket, kernel panic happens at
-__tcp_bpf_recvmsg+0x12c/0x350. sk_msg is not removed from ingress_msg
-queue after read out under MSG_PEEK flag is set. Because it's not
-judged whether sk_msg is the last msg of ingress_msg queue, the next
-sk_msg may be the head of ingress_msg queue, whose memory address of
-sg page is invalid. So it's necessary to add check codes to prevent
-this problem.
+Commit 60d53e2c3b75 ("tracing/probe: Split trace_event related data from
+trace_probe") removed the trace_[ku]probe structure from the
+trace_event_call->data pointer. As bpf_get_[ku]probe_info() were
+forgotten in that change, fix them now. These functions are currently
+only used by the bpf_task_fd_query() syscall handler to collect
+information about a perf event.
 
-[20759.125457] BUG: kernel NULL pointer dereference, address:
-0000000000000008
-[20759.132118] CPU: 53 PID: 51378 Comm: envoy Tainted: G            E
-5.4.32 #1
-[20759.140890] Hardware name: Inspur SA5212M4/YZMB-00370-109, BIOS
-4.1.12 06/18/2017
-[20759.149734] RIP: 0010:copy_page_to_iter+0xad/0x300
-[20759.270877] __tcp_bpf_recvmsg+0x12c/0x350
-[20759.276099] tcp_bpf_recvmsg+0x113/0x370
-[20759.281137] inet_recvmsg+0x55/0xc0
-[20759.285734] __sys_recvfrom+0xc8/0x130
-[20759.290566] ? __audit_syscall_entry+0x103/0x130
-[20759.296227] ? syscall_trace_enter+0x1d2/0x2d0
-[20759.301700] ? __audit_syscall_exit+0x1e4/0x290
-[20759.307235] __x64_sys_recvfrom+0x24/0x30
-[20759.312226] do_syscall_64+0x55/0x1b0
-[20759.316852] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Signed-off-by: dihu <anny.hu@linux.alibaba.com>
+Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20200605084625.9783-1-anny.hu@linux.alibaba.com
+Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lore.kernel.org/bpf/20200608124531.819838-1-jean-philippe@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/trace/trace_kprobe.c | 2 +-
+ kernel/trace/trace_uprobe.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 9c5540887fbe..7aa68f4aae6c 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -64,6 +64,9 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
- 		} while (i != msg_rx->sg.end);
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 35989383ae11..8eeb95e04bf5 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1629,7 +1629,7 @@ int bpf_get_kprobe_info(const struct perf_event *event, u32 *fd_type,
+ 	if (perf_type_tracepoint)
+ 		tk = find_trace_kprobe(pevent, group);
+ 	else
+-		tk = event->tp_event->data;
++		tk = trace_kprobe_primary_from_call(event->tp_event);
+ 	if (!tk)
+ 		return -EINVAL;
  
- 		if (unlikely(peek)) {
-+			if (msg_rx == list_last_entry(&psock->ingress_msg,
-+						      struct sk_msg, list))
-+				break;
- 			msg_rx = list_next_entry(msg_rx, list);
- 			continue;
- 		}
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 2a8e8e9c1c75..fdd47f99b18f 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1412,7 +1412,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
+ 	if (perf_type_tracepoint)
+ 		tu = find_probe_event(pevent, group);
+ 	else
+-		tu = event->tp_event->data;
++		tu = trace_uprobe_primary_from_call(event->tp_event);
+ 	if (!tu)
+ 		return -EINVAL;
+ 
 -- 
 2.25.1
 
