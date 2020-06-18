@@ -2,112 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BD51FDB1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A994A1FDAAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgFRBKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728436AbgFRBKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:10:15 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBE7C21D92;
-        Thu, 18 Jun 2020 01:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442614;
-        bh=Jalkbzk064ChzNnKiFq6hlj29dMf2nKAQl+Hxl4t3QY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wVjbK6OX/KKIhzNOhtEhEL52Fa3DSHd/ggzX0nqyRM42Din3pmdyLBpLFaXS8Zvmp
-         VKE0kq0xCcsuo70A6PnkCgvtOcJFYcbh2ab6PI1g73IfKsuAX/kN7AACF6XglZjRUS
-         HVGdwV7uGXRY9Ut9ArvtOpKx05jj9D87rGYququw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Alexander Fomichev <fomichev.ru@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>,
-        linux-ntb@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 095/388] NTB: ntb_pingpong: Choose doorbells based on port number
-Date:   Wed, 17 Jun 2020 21:03:12 -0400
-Message-Id: <20200618010805.600873-95-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+        id S1726926AbgFRBD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:03:56 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5154 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgFRBDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:03:55 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eeabd170000>; Wed, 17 Jun 2020 18:02:15 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 17 Jun 2020 18:03:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 17 Jun 2020 18:03:55 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 18 Jun
+ 2020 01:03:54 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 18 Jun 2020 01:03:54 +0000
+Received: from ng-desktop.nvidia.com (Not Verified[10.110.48.88]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5eeabd7a0000>; Wed, 17 Jun 2020 18:03:54 -0700
+From:   Nitin Gupta <nigupta@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Nitin Gupta <ngupta@nitingupta.dev>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Baoquan He <bhe@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:PROC SYSCTL" <linux-fsdevel@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: [PATCH] mm: Use unsigned types for fragmentation score
+Date:   Wed, 17 Jun 2020 18:03:17 -0700
+Message-ID: <20200618010319.13159-1-nigupta@nvidia.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592442135; bh=wgBrBd0RNj35frLYREzbq9FYrPbCP1PSyyH9jZ1qNpI=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding:Content-Type;
+        b=oYMRhJ+kJXm0xcCrHQSm7778uBZTj03omA3m+wKT9ofTUZFkSire1HQlXOsaVrN/C
+         uS1F9MbT+iVw6R2vdcfRxUfsxNtpUuhC7ZRXVCCGRpe9+QvRtW7/AT0ciZL9BB3DqW
+         sBFyjEH6VfIRB07mRkNTsdeF/MPNUBqSNrrYVRFoncjg0m+46B94Y8qDEL7JFUYT4j
+         5xMOt3OOYkcq+0Bd5a3fJSJ1Uz1CB451n64fXz6ldqYDw72rSkbL7WdfdH18KDrP1S
+         WX4V4Ak2kXM6Z91NUPOq+gyrw1vRxEzeWjWaPO9kbGFnis7aMxLYoLHubGmnvCP7os
+         9emrlNCD6nShg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+Proactive compaction uses per-node/zone "fragmentation score" which
+is always in range [0, 100], so use unsigned type of these scores
+as well as for related constants.
 
-[ Upstream commit ca93c45755da98302c93abdd788fc09113baf9e0 ]
-
-This commit fixes pingpong support for existing drivers that do not
-implement ntb_default_port_number() and ntb_default_peer_port_number().
-This is required for hardware (like the crosslink topology of
-switchtec) which cannot assign reasonable port numbers to each port due
-to its perfect symmetry.
-
-Instead of picking the doorbell to use based on the the index of the
-peer, we use the peer's port number. This is a bit clearer and easier
-to understand.
-
-Fixes: c7aeb0afdcc2 ("NTB: ntb_pp: Add full multi-port NTB API support")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Allen Hubbe <allenbh@gmail.com>
-Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Nitin Gupta <nigupta@nvidia.com>
 ---
- drivers/ntb/test/ntb_pingpong.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ include/linux/compaction.h |  4 ++--
+ kernel/sysctl.c            |  2 +-
+ mm/compaction.c            | 18 +++++++++---------
+ mm/vmstat.c                |  2 +-
+ 4 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/ntb/test/ntb_pingpong.c b/drivers/ntb/test/ntb_pingpong.c
-index 04dd46647db3..2164e8492772 100644
---- a/drivers/ntb/test/ntb_pingpong.c
-+++ b/drivers/ntb/test/ntb_pingpong.c
-@@ -121,15 +121,14 @@ static int pp_find_next_peer(struct pp_ctx *pp)
- 	link = ntb_link_is_up(pp->ntb, NULL, NULL);
- 
- 	/* Find next available peer */
--	if (link & pp->nmask) {
-+	if (link & pp->nmask)
- 		pidx = __ffs64(link & pp->nmask);
--		out_db = BIT_ULL(pidx + 1);
--	} else if (link & pp->pmask) {
-+	else if (link & pp->pmask)
- 		pidx = __ffs64(link & pp->pmask);
--		out_db = BIT_ULL(pidx);
--	} else {
-+	else
- 		return -ENODEV;
--	}
-+
-+	out_db = BIT_ULL(ntb_peer_port_number(pp->ntb, pidx));
- 
- 	spin_lock(&pp->lock);
- 	pp->out_pidx = pidx;
-@@ -303,7 +302,7 @@ static void pp_init_flds(struct pp_ctx *pp)
- 			break;
- 	}
- 
--	pp->in_db = BIT_ULL(pidx);
-+	pp->in_db = BIT_ULL(lport);
- 	pp->pmask = GENMASK_ULL(pidx, 0) >> 1;
- 	pp->nmask = GENMASK_ULL(pcnt - 1, pidx);
- 
-@@ -432,4 +431,3 @@ static void __exit pp_exit(void)
- 	debugfs_remove_recursive(pp_dbgfs_topdir);
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index 7a242d46454e..25a521d299c1 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -85,13 +85,13 @@ static inline unsigned long compact_gap(unsigned int or=
+der)
+=20
+ #ifdef CONFIG_COMPACTION
+ extern int sysctl_compact_memory;
+-extern int sysctl_compaction_proactiveness;
++extern unsigned int sysctl_compaction_proactiveness;
+ extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+ 			void *buffer, size_t *length, loff_t *ppos);
+ extern int sysctl_extfrag_threshold;
+ extern int sysctl_compact_unevictable_allowed;
+=20
+-extern int extfrag_for_order(struct zone *zone, unsigned int order);
++extern unsigned int extfrag_for_order(struct zone *zone, unsigned int orde=
+r);
+ extern int fragmentation_index(struct zone *zone, unsigned int order);
+ extern enum compact_result try_to_compact_pages(gfp_t gfp_mask,
+ 		unsigned int order, unsigned int alloc_flags,
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 58b0a59c9769..40180cdde486 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2833,7 +2833,7 @@ static struct ctl_table vm_table[] =3D {
+ 	{
+ 		.procname	=3D "compaction_proactiveness",
+ 		.data		=3D &sysctl_compaction_proactiveness,
+-		.maxlen		=3D sizeof(int),
++		.maxlen		=3D sizeof(sysctl_compaction_proactiveness),
+ 		.mode		=3D 0644,
+ 		.proc_handler	=3D proc_dointvec_minmax,
+ 		.extra1		=3D SYSCTL_ZERO,
+diff --git a/mm/compaction.c b/mm/compaction.c
+index ac2030814edb..45fd24a0ea0b 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -53,7 +53,7 @@ static inline void count_compact_events(enum vm_event_ite=
+m item, long delta)
+ /*
+  * Fragmentation score check interval for proactive compaction purposes.
+  */
+-static const int HPAGE_FRAG_CHECK_INTERVAL_MSEC =3D 500;
++static const unsigned int HPAGE_FRAG_CHECK_INTERVAL_MSEC =3D 500;
+=20
+ /*
+  * Page order with-respect-to which proactive compaction
+@@ -1890,7 +1890,7 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+  * ZONE_DMA32. For smaller zones, the score value remains close to zero,
+  * and thus never exceeds the high threshold for proactive compaction.
+  */
+-static int fragmentation_score_zone(struct zone *zone)
++static unsigned int fragmentation_score_zone(struct zone *zone)
+ {
+ 	unsigned long score;
+=20
+@@ -1906,9 +1906,9 @@ static int fragmentation_score_zone(struct zone *zone=
+)
+  * the node's score falls below the low threshold, or one of the back-off
+  * conditions is met.
+  */
+-static int fragmentation_score_node(pg_data_t *pgdat)
++static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+ {
+-	unsigned long score =3D 0;
++	unsigned int score =3D 0;
+ 	int zoneid;
+=20
+ 	for (zoneid =3D 0; zoneid < MAX_NR_ZONES; zoneid++) {
+@@ -1921,17 +1921,17 @@ static int fragmentation_score_node(pg_data_t *pgda=
+t)
+ 	return score;
  }
- module_exit(pp_exit);
--
--- 
-2.25.1
+=20
+-static int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
++static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
+ {
+-	int wmark_low;
++	unsigned int wmark_low;
+=20
+ 	/*
+ 	 * Cap the low watermak to avoid excessive compaction
+ 	 * activity in case a user sets the proactivess tunable
+ 	 * close to 100 (maximum).
+ 	 */
+-	wmark_low =3D max(100 - sysctl_compaction_proactiveness, 5);
+-	return low ? wmark_low : min(wmark_low + 10, 100);
++	wmark_low =3D max(100U - sysctl_compaction_proactiveness, 5U);
++	return low ? wmark_low : min(wmark_low + 10, 100U);
+ }
+=20
+ static bool should_proactive_compact_node(pg_data_t *pgdat)
+@@ -2604,7 +2604,7 @@ int sysctl_compact_memory;
+  * aggressively the kernel should compact memory in the
+  * background. It takes values in the range [0, 100].
+  */
+-int __read_mostly sysctl_compaction_proactiveness =3D 20;
++unsigned int __read_mostly sysctl_compaction_proactiveness =3D 20;
+=20
+ /*
+  * This is the entry point for compacting all nodes via
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 3e7ba8bce2ba..b1de695b826d 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1079,7 +1079,7 @@ static int __fragmentation_index(unsigned int order, =
+struct contig_page_info *in
+  * It is defined as the percentage of pages found in blocks of size
+  * less than 1 << order. It returns values in range [0, 100].
+  */
+-int extfrag_for_order(struct zone *zone, unsigned int order)
++unsigned int extfrag_for_order(struct zone *zone, unsigned int order)
+ {
+ 	struct contig_page_info info;
+=20
+--=20
+2.27.0
 
