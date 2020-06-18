@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C2F1FE79C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86911FE731
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387818AbgFRCmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:42:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40326 "EHLO mail.kernel.org"
+        id S1729040AbgFRBNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728837AbgFRBMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:02 -0400
+        id S1728847AbgFRBMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:12:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AA3D214DB;
-        Thu, 18 Jun 2020 01:12:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0B1E21924;
+        Thu, 18 Jun 2020 01:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442722;
-        bh=6wPbTGryZ+Li9KZ2RtFbqqOF5Zpo2oly5gKwKhYSdhI=;
+        s=default; t=1592442724;
+        bh=tSkrvnMpksnJQhC64AZxp0y0YhNgOq7eJDfG0aV9Ngs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uSKXmWCcuJu39hlxyXh+XIwBopm17DFI9vSxKWpgG1ZUBBa8JuDotN2UiWGqWB3a+
-         KQMAp0EVyF+1wXv6pqvnbC+7cYBF+8xsjtCQ1DA/Rs8p2S7hLmjCDmo9gGywBVBa8p
-         0+Wxspgl9cTD8CT9vNCXDvQWowlkcyoUUHpr+EGA=
+        b=YcRGsN56A8Ustpk3K5nxRYuyhwyI5psnJ1B1rarHSykTDwVWOUAh2dzVfPLX60Ac2
+         SVytTJGkciqdki3jNLAUagPDxhlbZ16CC//CJSUMeYWPj0fc1nRUphCNhsqn/3lw5f
+         BLrnHP6D0rJd25SW2h8tEzB6XYeWvxrj4PP+yJdE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 180/388] power: supply: lp8788: Fix an error handling path in 'lp8788_charger_probe()'
-Date:   Wed, 17 Jun 2020 21:04:37 -0400
-Message-Id: <20200618010805.600873-180-sashal@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 182/388] PCI: brcmstb: Assert fundamental reset on initialization
+Date:   Wed, 17 Jun 2020 21:04:39 -0400
+Message-Id: <20200618010805.600873-182-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,68 +47,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-[ Upstream commit 934ed3847a4ebc75b655659c4d2349ba4337941c ]
+[ Upstream commit 22e21e51ce755399fd42055a3f668ee4af370881 ]
 
-In the probe function, in case of error, resources allocated in
-'lp8788_setup_adc_channel()' must be released.
+While preparing the driver for upstream this detail was missed.
 
-This can be achieved easily by using the devm_ variant of
-'iio_channel_get()'.
-This has the extra benefit to simplify the remove function and to axe the
-'lp8788_release_adc_channel()' function which is now useless.
+If not asserted during the initialization process, devices connected on
+the bus will not be made aware of the internal reset happening. This,
+potentially resulting in unexpected behavior.
 
-Fixes: 98a276649358 ("power_supply: Add new lp8788 charger driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20200507172020.18000-1-nsaenzjulienne@suse.de
+Fixes: c0452137034b ("PCI: brcmstb: Add Broadcom STB PCIe host controller driver")
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/lp8788-charger.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+ drivers/pci/controller/pcie-brcmstb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index 84a206f42a8e..e7931ffb7151 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -572,27 +572,14 @@ static void lp8788_setup_adc_channel(struct device *dev,
- 		return;
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index c9ecc4d639c1..2297910bf6e4 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -697,6 +697,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
  
- 	/* ADC channel for battery voltage */
--	chan = iio_channel_get(dev, pdata->adc_vbatt);
-+	chan = devm_iio_channel_get(dev, pdata->adc_vbatt);
- 	pchg->chan[LP8788_VBATT] = IS_ERR(chan) ? NULL : chan;
+ 	/* Reset the bridge */
+ 	brcm_pcie_bridge_sw_init_set(pcie, 1);
++	brcm_pcie_perst_set(pcie, 1);
  
- 	/* ADC channel for battery temperature */
--	chan = iio_channel_get(dev, pdata->adc_batt_temp);
-+	chan = devm_iio_channel_get(dev, pdata->adc_batt_temp);
- 	pchg->chan[LP8788_BATT_TEMP] = IS_ERR(chan) ? NULL : chan;
- }
+ 	usleep_range(100, 200);
  
--static void lp8788_release_adc_channel(struct lp8788_charger *pchg)
--{
--	int i;
--
--	for (i = 0; i < LP8788_NUM_CHG_ADC; i++) {
--		if (!pchg->chan[i])
--			continue;
--
--		iio_channel_release(pchg->chan[i]);
--		pchg->chan[i] = NULL;
--	}
--}
--
- static ssize_t lp8788_show_charger_status(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
-@@ -735,7 +722,6 @@ static int lp8788_charger_remove(struct platform_device *pdev)
- 	flush_work(&pchg->charger_work);
- 	lp8788_irq_unregister(pdev, pchg);
- 	lp8788_psy_unregister(pchg);
--	lp8788_release_adc_channel(pchg);
- 
- 	return 0;
- }
 -- 
 2.25.1
 
