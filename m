@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538431FEF5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 12:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC831FEF88
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 12:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgFRKJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 06:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S1727901AbgFRKRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 06:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728746AbgFRKJJ (ORCPT
+        with ESMTP id S1727889AbgFRKRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 06:09:09 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1496BC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 03:09:08 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id g12so2234908pll.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 03:09:08 -0700 (PDT)
+        Thu, 18 Jun 2020 06:17:34 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49453C0613ED;
+        Thu, 18 Jun 2020 03:17:32 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y18so2255054plr.4;
+        Thu, 18 Jun 2020 03:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0tx33LB4XJjdQBQtJdq8pHurr/XG5qcfV4Bojc0lI48=;
-        b=Xjk4lMJzfKrnO0dJ7ag4s5wJ293r8pN6aY06e7dmdJJAdcWKbyXrT4Lrd0ctnmWbZy
-         lDoSJPn4Mko3dbuiyumEg9xMiq9cbJM4Z/sxbZIMgQjxIpNigP9LDe2e7gjtnpx0USNq
-         0Q1/Q7hodWx40U/KW/hIyUDq9BoujcY3vIhBE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cDIJKs6tLPXcqu5R6eaqFKumpNXZpFJJxwW8C59eUks=;
+        b=GEbD/cJDrr6ZdyinLymiXXTUcXXDP0R1FjNsPWMDWGKLPjfgnUwdzTUpfuAaa2QyTu
+         tbShC2MqTZVz0U9UZjgjQdcpj7LL4Bn/kXTdC1H4UWpz27ReiK/I2aNJxTLCAPb9pgeD
+         7Rzt4HuQsVeI92UnJ+kvllQDoBsz7kwH4tDJ3WIhW3mxdvb8WX1YJPnZTsml5BnyEz17
+         BCq8dsWDVSqwZK9gSIXkuy/N7BfM2Ck9og5cC5bTUqHGDiiGjtf/KszAVd8+j5o6rIi1
+         1y3V2gThVpQhN8QG0ASRvZL7SM14iSw8lcfKX/4Q2mcS8asPC4AACmkbs32cr5rK7jOt
+         DXkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0tx33LB4XJjdQBQtJdq8pHurr/XG5qcfV4Bojc0lI48=;
-        b=dM7VwGtoeUC5VObmZMAW9yR9HYp/2tV7rx7JlAZRopUR5E8eaW5BVO3TAEI4pL0bkb
-         M2WhydcWPRM2jOnaHuOMq8jNnWoaHUt5yDOpkKSVhWeD0606zNlCHh3vfGdatbkTigUK
-         pTLRBENuIc2T/RjjZhVDFqjdZT7dlSKPhgqKhgrgfBBxcNtP48iI7gU9AMPetotJTZVK
-         PUnxOtsuPKyBDJCuDTu58xp7NPYMrDDBWzaSqrCINaqkMm82BsPemYjgXOqN1WlKLzzT
-         xhSfi+qWkLrwVGqFIhogjuAixmeicbHMNzpt9I/uznZo7ZAXVt0dCsTdWtYZAiSU7Fw3
-         Nagg==
-X-Gm-Message-State: AOAM533Zp7mvvDcPuWNhJGnk207ksYFFMHqRoEBkVrv4mfKwkdwdWdkY
-        +C4daKT2Gh+1YROjsuN9qzTQlQ==
-X-Google-Smtp-Source: ABdhPJyQtBMBw9LrfkiQ5o078z+MCo/lVLK2v8zmEGv9YGdhytmSTD/XuQ7v2f2i0mL/BOi1ny7s8w==
-X-Received: by 2002:a17:90b:4c4b:: with SMTP id np11mr3550785pjb.58.1592474947624;
-        Thu, 18 Jun 2020 03:09:07 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7d5:b0c7:f192:869b:df87])
-        by smtp.gmail.com with ESMTPSA id o16sm2190793pgg.57.2020.06.18.03.09.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cDIJKs6tLPXcqu5R6eaqFKumpNXZpFJJxwW8C59eUks=;
+        b=kOZ7Q2DjPQV6NDH9OwSqXDWch68He9Vr7Egh7ZdwEzyf8lIfFrDnPSR97MFNmFoGnD
+         x9dgQvnG5V8VmH0ge/WjB12niScwZ7YMC/Hp8m5FOavWuP2Y6xB65X/PNRmk2Xq3s4Ej
+         2uCG5l5sjZblcd1F1t4y94Nf4zZ+VCuTZ9GRngQWixLAfilNoZL3VZB5oEKaEsrxhUHL
+         IU0jpxAPLtiqPLx4w3illkz71pf04ozDUrnGeopNKu/10n55zyuqqW6GonxSOizkm22U
+         cWznJRDnviZDnCWr8FKmy87a7TGK51IWWqM9JuC2jVJ7aRVmJeSxrGZnbz0rCFUwlYo4
+         nI7w==
+X-Gm-Message-State: AOAM5339cTLL6KHmiTNuN1mHX2OPzGLJm+CaUi5g+18draCj4Y9Xnbw7
+        CkxJLq7kbcPqjNvcNeckn3s=
+X-Google-Smtp-Source: ABdhPJzcBh0Vyj3Dq/ZJM1qLCIW/MoLRcLjBEOigKZjSGP7HuoHWXIxHUxSWLvgfNqUaxDRxBWjj+Q==
+X-Received: by 2002:a17:90b:801:: with SMTP id bk1mr3504524pjb.28.1592475451766;
+        Thu, 18 Jun 2020 03:17:31 -0700 (PDT)
+Received: from bj616583pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id o186sm2193679pgo.65.2020.06.18.03.17.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 03:09:06 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Tom Cubie <tom@radxa.com>, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH 4/4] ARM: dts: rockchip: Add Radxa Rock Pi N8 initial support
-Date:   Thu, 18 Jun 2020 15:38:32 +0530
-Message-Id: <20200618100832.94202-5-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618100832.94202-1-jagan@amarulasolutions.com>
-References: <20200618100832.94202-1-jagan@amarulasolutions.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 18 Jun 2020 03:17:31 -0700 (PDT)
+From:   gengcixi@gmail.com
+To:     gregkh@linuxfoundation.org, jslaby@suse.com, oberpar@linux.ibm.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        Cixi Geng <cixi.geng1@unisoc.com>
+Subject: [PATCH V6] GCOV: Add config to check the preqequisites situation
+Date:   Thu, 18 Jun 2020 18:08:52 +0800
+Message-Id: <20200618100852.13715-1-gengcixi@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rock Pi N8 is a Rockchip RK3288 based SBC, which has
-- VMARC RK3288 SOM (as per SMARC standard) from Vamrs.
-- Compatible carrier board from Radxa.
+From: Cixi Geng <cixi.geng1@unisoc.com>
 
-VAMRC RK3288 SOM need to mount on top of radxa dalang
-carrier board for making Rock Pi N8 SBC.
+Introduce new configuration option GCOV_PROFILE_PREREQS that can be
+used to check whether the prerequisites for enabling gcov profiling
+for specific files and directories are met.
 
-So, add initial support for Rock Pi N8 by including rk3288,
-rk3288 vamrc-som and raxda dalang carrier board dtsi files.
+Only add SERIAL_GCOV for an example.
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
 ---
- arch/arm/boot/dts/Makefile              |  1 +
- arch/arm/boot/dts/rk3288-rock-pi-n8.dts | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+)
- create mode 100644 arch/arm/boot/dts/rk3288-rock-pi-n8.dts
+ drivers/tty/serial/Kconfig  |  7 +++++++
+ drivers/tty/serial/Makefile |  1 +
+ kernel/gcov/Kconfig         | 10 ++++++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e8dd99201397..1d1b6ac26394 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -964,6 +964,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += \
- 	rk3288-popmetal.dtb \
- 	rk3288-r89.dtb \
- 	rk3288-rock2-square.dtb \
-+	rk3288-rock-pi-n8.dtb \
- 	rk3288-tinker.dtb \
- 	rk3288-tinker-s.dtb \
- 	rk3288-veyron-brain.dtb \
-diff --git a/arch/arm/boot/dts/rk3288-rock-pi-n8.dts b/arch/arm/boot/dts/rk3288-rock-pi-n8.dts
-new file mode 100644
-index 000000000000..ffec77f0a1b6
---- /dev/null
-+++ b/arch/arm/boot/dts/rk3288-rock-pi-n8.dts
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2019 Fuzhou Rockchip Electronics Co., Ltd
-+ * Copyright (c) 2019 Vamrs Limited
-+ * Copyright (c) 2019 Amarula Solutions(India)
-+ */
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index adf9e80e7dc9..6df002370f18 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1566,3 +1566,10 @@ endmenu
+ 
+ config SERIAL_MCTRL_GPIO
+ 	tristate
 +
-+/dts-v1/;
-+#include "rk3288.dtsi"
-+#include "rk3288-vmarc-som.dtsi"
-+#include <arm/rockchip-radxa-dalang-carrier.dtsi>
++config SERIAL_GCOV
++	bool "Enable profile gcov for serial directory"
++	depends on GCOV_PROFILE_PREREQS
++	help
++	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
++	  Say 'Y' here if you want the gcov data for the serial directory,
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index d056ee6cca33..17272733db95 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for the kernel serial device drivers.
+ #
+ 
++GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
+ obj-$(CONFIG_SERIAL_CORE) += serial_core.o
+ 
+ obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 3941a9c48f83..f415c4aaf0ab 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -51,6 +51,16 @@ config GCOV_PROFILE_ALL
+ 	larger and run slower. Also be sure to exclude files from profiling
+ 	which are not linked to the kernel image to prevent linker errors.
+ 
++config GCOV_PROFILE_PREREQS
++	bool "Profile Kernel for prereqs"
++	default y if GCOV_KERNEL && !COMPILE_TEST
++	help
++	  This options activates profiling for the specified kernel modules.
 +
-+/ {
-+	model = "Radxa ROCK Pi N8";
-+	compatible = "radxa,rockpi-n8", "vamrs,rk3288-vmarc-som",
-+		     "rockchip,rk3288";
-+};
++	  When some modules need Gcov data, enable this config, then configure
++	  with gcov on the corresponding modules,The directories or files of
++	  these modules will be added profiling flags after kernel compile.
++
+ choice
+ 	prompt "Specify GCOV format"
+ 	depends on GCOV_KERNEL
 -- 
-2.25.1
+2.17.1
 
