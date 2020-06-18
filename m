@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E631FE391
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2D21FE5E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731634AbgFRCLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        id S2387668AbgFRC3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730549AbgFRCLf (ORCPT
+        with ESMTP id S1728628AbgFRC3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 22:11:35 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55569C06174E;
-        Wed, 17 Jun 2020 19:11:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49nQR91GBPz9sWn;
-        Thu, 18 Jun 2020 12:11:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592446293;
-        bh=/d/Jhma+imEvxuAxLE9c24AL1eQWO7+jWKTQDSwtFuU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WAj0Sbvl7Gfat/I6lvM3LprLDd6BRofv56Id2XEhtbOTr9duy/2s+DtPkz7W3MD/3
-         RQ/AqEMv41xsQaLADD1N+EB/818QsKxnOTaFJdMeMzFxh0VDTnSJS9Y9UYDQS2dMI1
-         s0AK+UX2SIzG3ALM+C0whl8aF4uJevgxqJ2YByZg78pKJTxuZlY1MduYEBR8rmZeNA
-         gQ8THUFznuHoefAx88YJ3cgrf11lakFxeEjgx7C6CNkDOunbNBFYKAdGcbGJqGQROt
-         vUSjo8fQAyFMSWjJR/pojBQs0/XjGejWOL9nxZTh03yGfWqA7Hif/9L5JMoqKwtgvI
-         sdURzcF0zX//A==
-Date:   Thu, 18 Jun 2020 12:11:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the pidfd tree with the powerpc-fixes
- tree
-Message-ID: <20200618121131.4ad29150@canb.auug.org.au>
+        Wed, 17 Jun 2020 22:29:16 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A71C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:29:16 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id 97so3354732otg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Jun 2020 19:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VIAbtmytWe4P0OjbpKgv5Ryn3X/VFHTsnPvYshe2qyk=;
+        b=Wg8Mr9U92fXHjjgnQ/HWv2MSYJV2hSDYM+VyVpA2AMG0EsZcBN1bdFwNfjKNqodVbv
+         kNDjVOAWSQ0NKnAc20FYVKiJZL6v6jDJJUvFq3C3faAk5bKYuypR+Z3YUAfDacTOidpw
+         WniKCkYahRbocMs47i4i25oGg3it2IBHQnSd2MyJndgpOKJw0iu4sEungNZ/wqFlN7y3
+         CzXlSo6jFNSp/+/zqO4SR6Q/1bO0PsQ+/bAntiRmnhgtt0nXbSIK5jfsWwtxNiW4ObWy
+         IwBatQVHAi+vh74ftWl8K6CnesDY9uLqfpg6SPq5tg8BX+4YutfcabW2Up+ozDPah6BX
+         7IiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VIAbtmytWe4P0OjbpKgv5Ryn3X/VFHTsnPvYshe2qyk=;
+        b=c0DzPTGTgx///ohuCvtpyhV9/Hz3REkwtrBiWJPAn0CWXPs3VOeprPkc2XctiBEv6e
+         w/xy8yuODe/grABXkt79ernmbRNcRZS5srPNxXFv++XBoxQKRfvS3zDzcmb4HNzaxkH3
+         QIHF5+mkNghMFI0t2zML/eKUa4MyL0ZzTyVq3R6HMui4GUXnMaYieJyZn+ZkWy0e1HUp
+         KjPLv2dTnHa9jAL+oGp8A0uk39jPK4OdFnwS/2P/IKcVZFGPrEhf/THHrOBEj7sKp7ao
+         zEIfA2iODhBPZaQwXKE/WelLBzHwjYe6v2y5oqnBqd07BzjCpPTaAzVYbnolVv5rZJ15
+         ybbw==
+X-Gm-Message-State: AOAM531AtCWo/HR5GtfoqlFNTpBVPg6mSWLr6MEOuZG/LJAN03gIFwmV
+        L0tXidHdKRGFcuLWPEKsTWTxAawH7DAyP7DSiO7L7A==
+X-Google-Smtp-Source: ABdhPJxDU1T28hAUkIcsmtrPI61nqUdQj6WFuskWwrVZFHaavRqvF0p9NTr7W4KrYrc7/rh6ZC8XiccaiFa2hgoVZBA=
+X-Received: by 2002:a05:6830:1e59:: with SMTP id e25mr1768564otj.127.1592447355825;
+ Wed, 17 Jun 2020 19:29:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O856NgubTpu=wpzyxLA68e+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200617203732.2076611-1-atish.patra@wdc.com> <CANN689EXQsH3C92fe=QHVEZasWmBiMXPoOB=bRLhK2CP-hdKqQ@mail.gmail.com>
+In-Reply-To: <CANN689EXQsH3C92fe=QHVEZasWmBiMXPoOB=bRLhK2CP-hdKqQ@mail.gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Thu, 18 Jun 2020 10:29:04 +0800
+Message-ID: <CANXhq0qtxyx0+4+dVy3c3R2v5DSWaJsFwc7BcwSRGcufoL6eHA@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Acquire mmap lock before invoking walk_page_range
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O856NgubTpu=wpzyxLA68e+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jun 18, 2020 at 8:01 AM Michel Lespinasse <walken@google.com> wrote:
+>
+> On Wed, Jun 17, 2020 at 1:38 PM Atish Patra <atish.patra@wdc.com> wrote:
+> > As per walk_page_range documentation, mmap lock should be acquired by the
+> > caller before invoking walk_page_range. mmap_assert_locked gets triggered
+> > without that. The details can be found here.
+> >
+> > http://lists.infradead.org/pipermail/linux-riscv/2020-June/010335.html
+> >
+> > Fixes: 395a21ff859c(riscv: add ARCH_HAS_SET_DIRECT_MAP support)
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+>
+> Thanks for the fix.
+>
+> Reviewed-by: Michel Lespinasse <walken@google.com>
 
-Hi all,
+It also looks good to me. Thanks for the fix.
 
-Today's linux-next merge of the pidfd tree got a conflict in:
-
-  arch/powerpc/kernel/syscalls/syscall.tbl
-
-between commit:
-
-  35e32a6cb5f6 ("powerpc/syscalls: Split SPU-ness out of ABI")
-
-from the powerpc-fixes tree and commit:
-
-  9b4feb630e8e ("arch: wire-up close_range()")
-
-from the pidfd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
-index c0cdaacd770e,dd87a782d80e..000000000000
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@@ -480,6 -524,8 +480,7 @@@
-  434	common	pidfd_open			sys_pidfd_open
-  435	32	clone3				ppc_clone3			sys_clone3
-  435	64	clone3				sys_clone3
- -435	spu	clone3				sys_ni_syscall
-+ 436	common	close_range			sys_close_range
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
-
---Sig_/O856NgubTpu=wpzyxLA68e+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7qzVMACgkQAVBC80lX
-0GwvewgAh+vJ/7gqcE/3Xk8Aya4tIWiLxqqpc5YVQlAH8zijoMf3p6i7hfZsuEM5
-JmnLvrsiOlKdDQcmy0opuHd6HxtvVXmw3lTzShGPGb5ZDYg5tMYzWA/T8qpdGHpr
-T42Da8GaxVuh9kZPLNu6AXFhe53lY/Xaol9ezWcYFrxjdcPXCbv3m7N0wlw5Hahc
-hTIFCbhobIpLsC6DVQCmETW29B6Hl1hurkPA+RCR54NwIMjiFv1iBhbdYfpMZXrG
-6J8wE96cwoQZJBWXrc7Ru9G78eIJGH7tmTEVMTDZuq7AfL1mXRAuJsoS9kiLHgCa
-niMQB7k6Qte7mDnjdbxqVSeW+heHTQ==
-=aO3b
------END PGP SIGNATURE-----
-
---Sig_/O856NgubTpu=wpzyxLA68e+--
+Reviewed-by: Zong Li <zong.li@sifive.com>
