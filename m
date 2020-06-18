@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE1D1FDBBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34891FDBC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgFRBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41912 "EHLO mail.kernel.org"
+        id S1729321AbgFRBOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728394AbgFRBNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:13:01 -0400
+        id S1728437AbgFRBNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:13:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CCF52193E;
-        Thu, 18 Jun 2020 01:13:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5930620CC7;
+        Thu, 18 Jun 2020 01:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442780;
-        bh=uPVJfn4eW6yGGsUiXpVMaywucoc7azMIcy2PSIJ8+B0=;
+        s=default; t=1592442790;
+        bh=0V7dE6479ka7p+b1cgEb56ZJP10pjJxIG98AhJLSwms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b6RH96YsjMrrsG6+i7crH//kF9VcNBMdE6UFbEVX18A0GqX0HclsDQs1LN3fnATOD
-         Bj9xsBgIJ9CZogBSfLTE52OdcPSR1k9a/bYQaD5rtAxeFUYvkjuts770FzZXQk6PhD
-         4LeY4WO796DDbYAh9W293wQ7Zipo4t+vBWQCo7fI=
+        b=Oyfh1tAP8QLJlTVR7PTOsNpLv3Wp5bu7nxdhaDkQ0lMeVL6cfmJcgUoe9myOHknmE
+         osySGuxvUwt88LNZ7tH2QcYai5Liv9VG9qz2KAvZSs4+mG7Je/xnvR6s++K1Qr3VoL
+         XhXEvnZB/jhOQHhUPP27TEij1v2Ot2RWbKfzYYqY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.7 226/388] powerpc/ps3: Fix kexec shutdown hang
-Date:   Wed, 17 Jun 2020 21:05:23 -0400
-Message-Id: <20200618010805.600873-226-sashal@kernel.org>
+Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 233/388] USB: host: ehci-mxc: Add error handling in ehci_mxc_drv_probe()
+Date:   Wed, 17 Jun 2020 21:05:30 -0400
+Message-Id: <20200618010805.600873-233-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -43,81 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geoff Levand <geoff@infradead.org>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
 
-[ Upstream commit 126554465d93b10662742128918a5fc338cda4aa ]
+[ Upstream commit d49292025f79693d3348f8e2029a8b4703be0f0a ]
 
-The ps3_mm_region_destroy() and ps3_mm_vas_destroy() routines
-are called very late in the shutdown via kexec's mmu_cleanup_all
-routine.  By the time mmu_cleanup_all runs it is too late to use
-udbg_printf, and calling it will cause PS3 systems to hang.
+The function ehci_mxc_drv_probe() does not perform sufficient error
+checking after executing platform_get_irq(), thus fix it.
 
-Remove all debugging statements from ps3_mm_region_destroy() and
-ps3_mm_vas_destroy() and replace any error reporting with calls
-to lv1_panic.
-
-With this change builds with 'DEBUG' defined will not cause kexec
-reboots to hang, and builds with 'DEBUG' defined or not will end
-in lv1_panic if an error is encountered.
-
-Signed-off-by: Geoff Levand <geoff@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/7325c4af2b4c989c19d6a26b90b1fec9c0615ddf.1589049250.git.geoff@infradead.org
+Fixes: 7e8d5cd93fac ("USB: Add EHCI support for MX27 and MX31 based boards")
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20200513132647.5456-1-tangbin@cmss.chinamobile.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/ps3/mm.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/usb/host/ehci-mxc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/platforms/ps3/mm.c b/arch/powerpc/platforms/ps3/mm.c
-index 423be34f0f5f..f42fe4e86ce5 100644
---- a/arch/powerpc/platforms/ps3/mm.c
-+++ b/arch/powerpc/platforms/ps3/mm.c
-@@ -200,13 +200,14 @@ void ps3_mm_vas_destroy(void)
- {
- 	int result;
- 
--	DBG("%s:%d: map.vas_id    = %llu\n", __func__, __LINE__, map.vas_id);
--
- 	if (map.vas_id) {
- 		result = lv1_select_virtual_address_space(0);
--		BUG_ON(result);
--		result = lv1_destruct_virtual_address_space(map.vas_id);
--		BUG_ON(result);
-+		result += lv1_destruct_virtual_address_space(map.vas_id);
-+
-+		if (result) {
-+			lv1_panic(0);
-+		}
-+
- 		map.vas_id = 0;
- 	}
- }
-@@ -304,19 +305,20 @@ static void ps3_mm_region_destroy(struct mem_region *r)
- 	int result;
- 
- 	if (!r->destroy) {
--		pr_info("%s:%d: Not destroying high region: %llxh %llxh\n",
--			__func__, __LINE__, r->base, r->size);
- 		return;
+diff --git a/drivers/usb/host/ehci-mxc.c b/drivers/usb/host/ehci-mxc.c
+index c9f91e6c72b6..7f65c86047dd 100644
+--- a/drivers/usb/host/ehci-mxc.c
++++ b/drivers/usb/host/ehci-mxc.c
+@@ -50,6 +50,8 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
  	}
  
--	DBG("%s:%d: r->base = %llxh\n", __func__, __LINE__, r->base);
--
- 	if (r->base) {
- 		result = lv1_release_memory(r->base);
--		BUG_ON(result);
-+
-+		if (result) {
-+			lv1_panic(0);
-+		}
-+
- 		r->size = r->base = r->offset = 0;
- 		map.total = map.rm.size;
- 	}
-+
- 	ps3_mm_set_repository_highmem(NULL);
- }
+ 	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
  
+ 	hcd = usb_create_hcd(&ehci_mxc_hc_driver, dev, dev_name(dev));
+ 	if (!hcd)
 -- 
 2.25.1
 
