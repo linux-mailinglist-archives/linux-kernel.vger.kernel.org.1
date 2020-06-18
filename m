@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30C11FE60C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E689C1FE784
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387619AbgFRCae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728792AbgFRBPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:15:47 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A52BC221F1;
-        Thu, 18 Jun 2020 01:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442946;
-        bh=sBv8mpqJlknnPCCg6c7Y2sFeS2VKiUqxb+y5UoFtA5s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBMN59X/INkILvufa15dM0M9RLLW7LMCWfWGbYpUP6NoKUMvMSYdtownlHvwXcD4T
-         0dro0vuinBcFY6RvpdgzH/7nOKmEPwihN0DKteGT9Z8H0sM7QiE1J3GmOWk76wjmzN
-         dgO+fFEJxOT0v/pPLva0Ymzpf9Q9IKNmzZlfmpFY=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 356/388] mailbox: imx: Add context save/restore for suspend/resume
-Date:   Wed, 17 Jun 2020 21:07:33 -0400
-Message-Id: <20200618010805.600873-356-sashal@kernel.org>
+        id S1730834AbgFRClg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728235AbgFRBMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:12:25 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5DAC061755;
+        Wed, 17 Jun 2020 18:12:25 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 23so1981113pfw.10;
+        Wed, 17 Jun 2020 18:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2mYYmw9nQduGr7ImYE2MP1C2QsjcPBen23TKEtxnDoY=;
+        b=kBa3G0l+ZNUXGCRjrjIh/s9kaSyUojbgB+Eyc39Uf/7c8gLLYv3g5WFrTplfAXZSGj
+         Ueg4+uAgarXniOlUAp+AC46WRJSoLNnrj1PIkVBcEeRYdR58TvKwFV9LkxqmFkUFtSDm
+         qoWSMDCY/5hMkvJl4c8s3bA93TIZqTfsYGepQ1SDqvko2De6KbRJrNRvgSriNUqyirPm
+         Z/XMPQ//Av9revEdsHJtzzlpIq+i7Nw9bzZwxc69FNnY2gRXr65vmVykrJpJbB0q8Ywi
+         vHaBxvZveDmajKMqGsWHZvRA4rcJec9Z6iAOKoTulcl+M5MN/np6JJecMEzr/NnS0HGz
+         MH9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2mYYmw9nQduGr7ImYE2MP1C2QsjcPBen23TKEtxnDoY=;
+        b=NbR8KWAtJQZhnSs47MjpcS97DqHzOQDcxVzl6ZmXYrj425VxIR0bz/KEx8S0ULGUN4
+         86zAJJHPJ4y0Qts7S9M0yLGtUv/kBXIkoBLz10buz5rnx/+Z173f/lVyNc6nU8fFn8PS
+         rhRNwCH5DgyM1lb3E2zwevMPnos1MloMlJS92qWBOOZn7qbUoJitOFNvnRAJYrqxd69f
+         F5w8Bj6zoXDYm2ns/qAZVQ2cbNKVKpcCFJYvxIPnJXCG/i0OOx+iLlyHIdkVBvfxiobK
+         DnDhptJwtsSQcFsUMesdVix78rmpiJneVRI8+v74doNQNBnPRql5s2aBAarYm9k9R81r
+         pGMw==
+X-Gm-Message-State: AOAM533scHdM1ODVLdBJ1+CeiqOmn6+qSDj75j/OrKde3G98n1E+eoFP
+        akIW+x7sQPLVIzD8KFbx7l11CBHtpLU=
+X-Google-Smtp-Source: ABdhPJz/mOUor7XwvAv9bccD3inxzqmkUVqwhIN47oG3dQuKAkR+QC0pz02eMw/i7U68pqz8EN7zXw==
+X-Received: by 2002:a63:3409:: with SMTP id b9mr1394174pga.106.1592442744653;
+        Wed, 17 Jun 2020 18:12:24 -0700 (PDT)
+Received: from dc803.localdomain (FL1-125-199-162-203.hyg.mesh.ad.jp. [125.199.162.203])
+        by smtp.gmail.com with ESMTPSA id q10sm1022781pfk.86.2020.06.17.18.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 18:12:24 -0700 (PDT)
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+To:     kohada.t2@gmail.com
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2 v3] exfat: write multiple sectors at once
+Date:   Thu, 18 Jun 2020 10:12:03 +0900
+Message-Id: <20200618011205.1406-1-kohada.t2@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dong Aisheng <aisheng.dong@nxp.com>
+Write multiple sectors at once when updating dir-entries.
+Add exfat_update_bhs() for that. It wait for write completion once
+instead of sector by sector.
+It's only effective if sync enabled.
 
-[ Upstream commit ba5f9fa0ca85a6137fa35efd3a1256d8bb6bc5ff ]
-
-For "mem" mode suspend on i.MX8 SoCs, MU settings could be
-lost because its power is off, so save/restore is needed
-for MU settings during suspend/resume. However, the restore
-can ONLY be done when MU settings are actually lost, for the
-scenario of settings NOT lost in "freeze" mode suspend, since
-there could be still IPC going on multiple CPUs, restoring the
-MU settings could overwrite the TIE by mistake and cause system
-freeze, so need to make sure ONLY restore the MU settings when
-it is powered off, Anson fixes this by checking whether restore
-is actually needed when resume.
-
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
 ---
- drivers/mailbox/imx-mailbox.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Changes in v2:
+ - Split into 'write multiple sectors at once'
+   and 'add error check when updating dir-entries'
+Changes in v3
+ - Rebase to latest exfat-dev
 
-diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 9d6f0217077b..478308fb82cc 100644
---- a/drivers/mailbox/imx-mailbox.c
-+++ b/drivers/mailbox/imx-mailbox.c
-@@ -66,6 +66,8 @@ struct imx_mu_priv {
- 	struct clk		*clk;
- 	int			irq;
+ fs/exfat/dir.c      | 12 ++++++------
+ fs/exfat/exfat_fs.h |  1 +
+ fs/exfat/misc.c     | 19 +++++++++++++++++++
+ 3 files changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index 02acbb6ddf02..a3364df6339c 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -606,13 +606,13 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es)
  
-+	u32 xcr;
+ void exfat_free_dentry_set(struct exfat_entry_set_cache *es, int sync)
+ {
+-	int i;
++	int i, err = 0;
+ 
+-	for (i = 0; i < es->num_bh; i++) {
+-		if (es->modified)
+-			exfat_update_bh(es->bh[i], sync);
+-		brelse(es->bh[i]);
+-	}
++	if (es->modified)
++		err = exfat_update_bhs(es->bh, es->num_bh, sync);
 +
- 	bool			side_b;
- };
++	for (i = 0; i < es->num_bh; i++)
++		err ? bforget(es->bh[i]):brelse(es->bh[i]);
+ 	kfree(es);
+ }
  
-@@ -558,12 +560,45 @@ static const struct of_device_id imx_mu_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, imx_mu_dt_ids);
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index 84664024e51e..cbb00ee97183 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -512,6 +512,7 @@ void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
+ u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
+ u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);
+ void exfat_update_bh(struct buffer_head *bh, int sync);
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync);
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags);
+ void exfat_chain_dup(struct exfat_chain *dup, struct exfat_chain *ec);
+diff --git a/fs/exfat/misc.c b/fs/exfat/misc.c
+index 8a3dde59052b..564718747fb2 100644
+--- a/fs/exfat/misc.c
++++ b/fs/exfat/misc.c
+@@ -172,6 +172,25 @@ void exfat_update_bh(struct buffer_head *bh, int sync)
+ 		sync_dirty_buffer(bh);
+ }
  
-+static int imx_mu_suspend_noirq(struct device *dev)
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync)
 +{
-+	struct imx_mu_priv *priv = dev_get_drvdata(dev);
++	int i, err = 0;
 +
-+	priv->xcr = imx_mu_read(priv, priv->dcfg->xCR);
++	for (i = 0; i < nr_bhs; i++) {
++		set_buffer_uptodate(bhs[i]);
++		mark_buffer_dirty(bhs[i]);
++		if (sync)
++			write_dirty_buffer(bhs[i], 0);
++	}
 +
-+	return 0;
++	for (i = 0; i < nr_bhs && sync; i++) {
++		wait_on_buffer(bhs[i]);
++		if (!buffer_uptodate(bhs[i]))
++			err = -EIO;
++	}
++	return err;
 +}
 +
-+static int imx_mu_resume_noirq(struct device *dev)
-+{
-+	struct imx_mu_priv *priv = dev_get_drvdata(dev);
-+
-+	/*
-+	 * ONLY restore MU when context lost, the TIE could
-+	 * be set during noirq resume as there is MU data
-+	 * communication going on, and restore the saved
-+	 * value will overwrite the TIE and cause MU data
-+	 * send failed, may lead to system freeze. This issue
-+	 * is observed by testing freeze mode suspend.
-+	 */
-+	if (!imx_mu_read(priv, priv->dcfg->xCR))
-+		imx_mu_write(priv, priv->xcr, priv->dcfg->xCR);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops imx_mu_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_mu_suspend_noirq,
-+				      imx_mu_resume_noirq)
-+};
-+
- static struct platform_driver imx_mu_driver = {
- 	.probe		= imx_mu_probe,
- 	.remove		= imx_mu_remove,
- 	.driver = {
- 		.name	= "imx_mu",
- 		.of_match_table = imx_mu_dt_ids,
-+		.pm = &imx_mu_pm_ops,
- 	},
- };
- module_platform_driver(imx_mu_driver);
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags)
+ {
 -- 
 2.25.1
 
