@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8A71FF994
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C3A1FF998
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 18:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgFRQr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 12:47:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:20430 "EHLO mga07.intel.com"
+        id S1732081AbgFRQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 12:48:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:18729 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731946AbgFRQrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 12:47:55 -0400
-IronPort-SDR: qmfa/nKnlduU9itOP68fs0qquvNVkvARZxZ2jD1My+K9sZvBib93O80F2KIgOJBGAOqXc6nT/s
- r8mxmhKpcKjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="207886167"
+        id S1732051AbgFRQr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 12:47:57 -0400
+IronPort-SDR: NihOJyzJSSWwQqE9pfhYyto+VpsAtx91s0MPpC0ZrWVF/L3UOAlRrbsWo54dn3Ik2gzkNjrzyG
+ Gcj0V1O17AxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="142595285"
 X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="207886167"
+   d="scan'208";a="142595285"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:47:54 -0700
-IronPort-SDR: 8oswUOEDkOkLh7BDI3SHoBHc35hsaN7g3ykAsrKXx58oKyZcHcw5gppjXAXwPoJhE8PipcwaXK
- qDqDHUxOgpjA==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 09:47:56 -0700
+IronPort-SDR: VM/QjTvVaS2DLSxAyQC9xNUoyUYCBTMBcMUQIxWhKTtiWnep2jQqcvBz2s63NB+v/1TmNISxFg
+ eCkoN0itapMw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,251,1589266800"; 
-   d="scan'208";a="477309441"
+   d="scan'208";a="309171307"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2020 09:47:52 -0700
+  by orsmga008.jf.intel.com with ESMTP; 18 Jun 2020 09:47:53 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AFC03130; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
+        id C029915C; Thu, 18 Jun 2020 19:47:51 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -37,10 +37,10 @@ To:     Petr Mladek <pmladek@suse.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH v1 1/6] mips: Return proper error code from console ->setup() hook
-Date:   Thu, 18 Jun 2020 19:47:46 +0300
-Message-Id: <20200618164751.56828-2-andriy.shevchenko@linux.intel.com>
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH v1 2/6] serial: sunsab: Return proper error code from console ->setup() hook
+Date:   Thu, 18 Jun 2020 19:47:47 +0300
+Message-Id: <20200618164751.56828-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
 References: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
@@ -55,26 +55,24 @@ For unifying console ->setup() handling, which is pure documented,
 return error code, rather than non-zero arbitrary number.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "David S. Miller" <davem@davemloft.net>
 ---
- arch/mips/fw/arc/arc_con.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/serial/sunsab.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/fw/arc/arc_con.c b/arch/mips/fw/arc/arc_con.c
-index 365e3913231e..7fdce236b298 100644
---- a/arch/mips/fw/arc/arc_con.c
-+++ b/arch/mips/fw/arc/arc_con.c
-@@ -28,7 +28,9 @@ static void prom_console_write(struct console *co, const char *s,
+diff --git a/drivers/tty/serial/sunsab.c b/drivers/tty/serial/sunsab.c
+index 1eb703c980e0..bab551f46963 100644
+--- a/drivers/tty/serial/sunsab.c
++++ b/drivers/tty/serial/sunsab.c
+@@ -886,7 +886,7 @@ static int sunsab_console_setup(struct console *con, char *options)
+ 	 * though...
+ 	 */
+ 	if (up->port.type != PORT_SUNSAB)
+-		return -1;
++		return -EINVAL;
  
- static int prom_console_setup(struct console *co, char *options)
- {
--	return !(prom_flags & PROM_FLAG_USE_AS_CONSOLE);
-+	if (prom_flags & PROM_FLAG_USE_AS_CONSOLE)
-+		return 0;
-+	return -ENODEV;
- }
- 
- static struct console arc_cons = {
+ 	printk("Console: ttyS%d (SAB82532)\n",
+ 	       (sunsab_reg.minor - 64) + con->index);
 -- 
 2.27.0
 
