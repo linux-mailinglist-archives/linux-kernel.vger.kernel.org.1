@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59711FE56D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16691FE553
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgFRBRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
+        id S1728942AbgFRBRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728294AbgFRBOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:14:47 -0400
+        id S1729384AbgFRBOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:14:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C682221EB;
-        Thu, 18 Jun 2020 01:14:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EDD821D7B;
+        Thu, 18 Jun 2020 01:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442887;
-        bh=3cZhsds1xAGMTrCeTPwU+J8P0xv9FZcUGrImlkxCbp4=;
+        s=default; t=1592442891;
+        bh=mIJ1TUXp7dszAtRrMyJYmXKkKV2repG8ZIcsS6zctIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Pw2TaYMepsbLO05ZlObXJ0jUIlT2u6PIXpoNXmhtaE+h0rVQ4T16dwtABoid8HxT
-         Jyn1BqF8cSS+GqwwBgHINpwgrojB09MEJiagkLFWGKyZ+ERIj3WLbt6NmIXRWchxzh
-         LfiojwoiF4FF7bW+8s3B3k6qn8FWjQuWELb7aqhg=
+        b=DTWvIGZS2MrSC/X735ehRXNLIFjta010kH1iqXTcfcAa+a1r8PrJAHl67pd6KKcit
+         ei2LC2C/0TcGnR7ZroLmOJh5QlZVzTE72K3wbtFQ3CxbusFsxRXAz9Ro5dGjR28V7m
+         rT+MVcTWdQXzFd8QKrfgKRyVE55duCm4cU/+H1fY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 310/388] mailbox: imx: Fix return in imx_mu_scu_xlate()
-Date:   Wed, 17 Jun 2020 21:06:47 -0400
-Message-Id: <20200618010805.600873-310-sashal@kernel.org>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.7 314/388] drm/nouveau/disp/gm200-: fix NV_PDISP_SOR_HDMI2_CTRL(n) selection
+Date:   Wed, 17 Jun 2020 21:06:51 -0400
+Message-Id: <20200618010805.600873-314-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,34 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 1b3a347b7d56aa637157da1b7df225071af1421f ]
+[ Upstream commit a1ef8bad506e4ffa0c57ac5f8cb99ab5cbc3b1fc ]
 
-This called from mbox_request_channel().  The caller is  expecting error
-pointers and not NULL so this "return NULL;" will lead to an Oops.
+This is a SOR register, and not indexed by the bound head.
 
-Fixes: 0a67003b1985 ("mailbox: imx: add SCU MU support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Fixes display not coming up on high-bandwidth HDMI displays under a
+number of configurations.
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/imx-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
-index 7906624a731c..9d6f0217077b 100644
---- a/drivers/mailbox/imx-mailbox.c
-+++ b/drivers/mailbox/imx-mailbox.c
-@@ -374,7 +374,7 @@ static struct mbox_chan *imx_mu_scu_xlate(struct mbox_controller *mbox,
- 		break;
- 	default:
- 		dev_err(mbox->dev, "Invalid chan type: %d\n", type);
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
+index 9b16a08eb4d9..bf6d41fb0c9f 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigm200.c
+@@ -27,10 +27,10 @@ void
+ gm200_hdmi_scdc(struct nvkm_ior *ior, int head, u8 scdc)
+ {
+ 	struct nvkm_device *device = ior->disp->engine.subdev.device;
+-	const u32 hoff = head * 0x800;
++	const u32 soff = nv50_ior_base(ior);
+ 	const u32 ctrl = scdc & 0x3;
  
- 	if (chan >= mbox->num_chans) {
+-	nvkm_mask(device, 0x61c5bc + hoff, 0x00000003, ctrl);
++	nvkm_mask(device, 0x61c5bc + soff, 0x00000003, ctrl);
+ 
+ 	ior->tmds.high_speed = !!(scdc & 0x2);
+ }
 -- 
 2.25.1
 
