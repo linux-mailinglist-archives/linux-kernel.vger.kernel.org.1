@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71F01FE6C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA461FE749
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgFRBN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
+        id S2387819AbgFRCj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728995AbgFRBMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:12:50 -0400
+        id S1726940AbgFRBMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:12:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22A3321924;
-        Thu, 18 Jun 2020 01:12:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F023A221EA;
+        Thu, 18 Jun 2020 01:12:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442769;
-        bh=/wUskEBPkDlGuTw0FJYcgRRsQyOeMwrGcwZ4cte4Wio=;
+        s=default; t=1592442772;
+        bh=nFULjoX+bq3d0NtMlsmQb39XEkWGVQynuH0ivMJBYA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+hCTKDGJxy9oH0L/DBpdkf3BsnF9vUfgayR6mawzI+17hZ38ECHlvcyzZwcyEGAc
-         dphGmdWmCfcdINv5UQznF2umiOJBaullXBymIooZXzvAy5przLiRbyjCArG/ofRWZt
-         +6A4Wgy7JE3mcwM6ulwTl/FHuDVlb8cSrNWmd1qw=
+        b=kZoz+a/MgMTvanFH2KUlZaW4tHU8aLErALnOaGcS+KTlKHBSLb6IwD/XYSJfkltwp
+         LPrG+9/2oFvmkORUbZKIYnZmmuyIFh1ElfirKLp2wKl5ifTcZ3QfGDg4Ykwb+f0Mxb
+         SMp5O1KLPzHPafW7RUO9DUVRUk/w1Ok8AUMhsfXw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Jack Yu <jack.yu@realtek.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.7 217/388] ASoC: codecs: rt*-sdw: fix memory leak in set_sdw_stream()
-Date:   Wed, 17 Jun 2020 21:05:14 -0400
-Message-Id: <20200618010805.600873-217-sashal@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.7 220/388] powerpc/pseries/ras: Fix FWNMI_VALID off by one
+Date:   Wed, 17 Jun 2020 21:05:17 -0400
+Message-Id: <20200618010805.600873-220-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -47,106 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 07b542fe831cbefce163ad1b3aa7292c8a6332b8 ]
+[ Upstream commit deb70f7a35a22dffa55b2c3aac71bc6fb0f486ce ]
 
-Now that the sdw_stream is allocated in machine driver,
-set_sdw_stream() is also called with a NULL argument during the
-dailink shutdown.
+This was discovered developing qemu fwnmi sreset support. This
+off-by-one bug means the last 16 bytes of the rtas area can not
+be used for a 16 byte save area.
 
-In this case, the drivers should not allocate any memory, and just
-return.
+It's not a serious bug, and QEMU implementation has to retain a
+workaround for old kernels, but it's good to tighten it.
 
-Detected with KASAN/kmemleak.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Cc: Shuming Fan <shumingf@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>
-Link: https://lore.kernel.org/r/20200515211531.11416-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Acked-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Link: https://lore.kernel.org/r/20200508043408.886394-7-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt1308-sdw.c | 3 +++
- sound/soc/codecs/rt5682.c     | 3 +++
- sound/soc/codecs/rt700.c      | 3 +++
- sound/soc/codecs/rt711.c      | 3 +++
- sound/soc/codecs/rt715.c      | 3 +++
- 5 files changed, 15 insertions(+)
+ arch/powerpc/platforms/pseries/ras.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index a5a7e46de246..a7f45191364d 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -482,6 +482,9 @@ static int rt1308_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+diff --git a/arch/powerpc/platforms/pseries/ras.c b/arch/powerpc/platforms/pseries/ras.c
+index 1d1da639b8b7..16ba5c542e55 100644
+--- a/arch/powerpc/platforms/pseries/ras.c
++++ b/arch/powerpc/platforms/pseries/ras.c
+@@ -395,10 +395,11 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
+ /*
+  * Some versions of FWNMI place the buffer inside the 4kB page starting at
+  * 0x7000. Other versions place it inside the rtas buffer. We check both.
++ * Minimum size of the buffer is 16 bytes.
+  */
+ #define VALID_FWNMI_BUFFER(A) \
+-	((((A) >= 0x7000) && ((A) < 0x7ff0)) || \
+-	(((A) >= rtas.base) && ((A) < (rtas.base + rtas.size - 16))))
++	((((A) >= 0x7000) && ((A) <= 0x8000 - 16)) || \
++	(((A) >= rtas.base) && ((A) <= (rtas.base + rtas.size - 16))))
+ 
+ static inline struct rtas_error_log *fwnmi_get_errlog(void)
  {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index d36f560ad7a8..c4892af14850 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2958,6 +2958,9 @@ static int rt5682_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index ff68f0e4f629..687ac2153666 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -860,6 +860,9 @@ static int rt700_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 2daed7692a3b..65b59dbfb43c 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -906,6 +906,9 @@ static int rt711_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 2cbc57b16b13..099c8bd20006 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -530,6 +530,9 @@ static int rt715_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- 
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
 -- 
 2.25.1
 
