@@ -2,186 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A0F1FFDF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F831FFE00
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 00:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732121AbgFRW0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 18:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbgFRWZ7 (ORCPT
+        id S1732182AbgFRW1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 18:27:05 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:45771 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728597AbgFRW1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:25:59 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A61C06174E;
-        Thu, 18 Jun 2020 15:25:59 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id r1so2533635uam.6;
-        Thu, 18 Jun 2020 15:25:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MOfsQfqk6xnh1iTLfTAqoyruTN6lABtLlvex7Rk4Lzg=;
-        b=lsOMIz3+JpwfoihFXSwZkHMEFmbhs4Qu342YopNh87yMfVGSwL51leptoSooLSwGY5
-         2qOKh1AZh5H2h2GaUb0VjzneQbmvVbUIYnSlCqEolVXrLP6xeQJgi8UBfvE4NnpVBMM3
-         C+j+zawJK+uxXva3MouN0UXH8UC+RUNuOnCuOpa0A+k5JuiwfCOwo3yt+3ZmKkcAd14p
-         tGCOqnGIccnLWFeXfDoIQMKJJxsVE4L7DZvG0rXC7DK5PWKGkhtA6a7bdVTOlQLQPrdj
-         f8/LFj2loMVsNmlnB+gt2EZ6MyZ/4bIZLxHPt5csEsXYq8X722PnoM5JFWhcjEdzzLGq
-         6A0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MOfsQfqk6xnh1iTLfTAqoyruTN6lABtLlvex7Rk4Lzg=;
-        b=Ivx69Wioc4WShIlrKYaPX2+ZNQ2zJJwiM8TJkCHBb2zgSS4taJFDUJsW37M+afNpHb
-         y77YMFO9eYZErGHy/hx2gPgWavWd1G9qNMGiXowsgrf2p4IwRq5ldyTUa0QiVgnqLxFt
-         d1QB20PJQ00+DFSUCpkO/fmWONJtdiQnAC3ftDfOAuLXy25lXFj4PGAcDsXgk3SOjJPi
-         by96U76nXsLISVf5rzgOk/HBYWJ8WTz5e/ZVRyTqVM8imI3WTRKQLteI6Nvznq3I6MqU
-         8rO7mgrHLvIeBec0FRUAXS+fKqowpD3MiGe4od29coY/G94u/b8WJFPDJ+DbqmN2YSBs
-         UpdA==
-X-Gm-Message-State: AOAM533pUIJXsshrId5WOUfmEDCZDO4kM/uxSZEPNf81jjNT113AGhB+
-        /5neWm3rKMct6kDL5lANyf+EB040/7cbIP6zYLg=
-X-Google-Smtp-Source: ABdhPJy3vY4xEr2ychPSFBX20/CmjmdawOdJkIcspH9K7mVWCHe/qCqwyNnHkm5r4olWHr+XIvucNgwpqgVitMUJWG8=
-X-Received: by 2002:ab0:61d3:: with SMTP id m19mr576135uan.23.1592519158268;
- Thu, 18 Jun 2020 15:25:58 -0700 (PDT)
+        Thu, 18 Jun 2020 18:27:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592519222; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=c9n1umGkoncSZRzNPgw5Ef58qoJ8UehY4+SX9LXN1t8=; b=GyOtOFGb44yqMiIxrSKI4hELdfGXt95V4bbbB0cyebWUt/EvKkU/pkDYshlhxxhLfh9lRBEc
+ VTENj2RV8Q8yULZic4hR7JooRogDXmiy9RuuVHETrfiJsltiUnAXPcrdyD08zomP3mx+vzw0
+ Sl24KnGpkUUOTo1PUl5bRjEbtfM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5eebea2aa6e154319f3ebb55 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Jun 2020 22:26:50
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 90136C433A0; Thu, 18 Jun 2020 22:26:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from linuxdisplay-lab-04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tanmay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3A70C433CA;
+        Thu, 18 Jun 2020 22:26:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3A70C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tanmay@codeaurora.org
+From:   Tanmay Shah <tanmay@codeaurora.org>
+To:     robh+dt@kernel.org, swboyd@chromium.org, sam@ravnborg.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, seanpaul@chromium.org,
+        robdclark@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        aravindh@codeaurora.org, abhinavk@codeaurora.org,
+        chandanu@codeaurora.org, varar@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>
+Subject: [PATCH v7 0/6] Add support for DisplayPort driver on SnapDragon
+Date:   Thu, 18 Jun 2020 15:26:08 -0700
+Message-Id: <20200618222614.14061-1-tanmay@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200617162536.611386-1-jim.cromie@gmail.com> <20200617162536.611386-15-jim.cromie@gmail.com>
-In-Reply-To: <20200617162536.611386-15-jim.cromie@gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Thu, 18 Jun 2020 16:25:32 -0600
-Message-ID: <CAJfuBxzLrV6aGmt6XwzT352c5-Qb6pN_tJFk7_f4wy8js6MJEA@mail.gmail.com>
-Subject: Re: [PATCH v3 14/21] dyndbg: accept query terms like file=bar and module=foo
-To:     Jason Baron <jbaron@akamai.com>,
-        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-oops.  got 3 copies of 14/21, this is the good one.  with module=foo
-AND file=bar
+These patches add Display-Port driver on SnapDragon/msm hardware.
+This series also contains device-tree bindings for msm DP driver.
+It also contains Makefile and Kconfig changes to compile msm DP driver.
 
-On Wed, Jun 17, 2020 at 10:26 AM Jim Cromie <jim.cromie@gmail.com> wrote:
->
-> Current code expects "keyword" "arg" as 2 space separated words.
-> Change to also accept "keyword=arg" form as well, and drop !(nwords%2)
-> requirement.
->
-> Then in rest of function, use new keyword, arg variables instead of
-> word[i], word[i+1]
->
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
->  .../admin-guide/dynamic-debug-howto.rst       |  1 +
->  lib/dynamic_debug.c                           | 51 ++++++++++++-------
->  2 files changed, 33 insertions(+), 19 deletions(-)
->
-> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> index 6c04aea8f4cd..e5a8def45f3f 100644
-> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> @@ -156,6 +156,7 @@ against.  Possible keywords are:::
->    ``line-range`` cannot contain space, e.g.
->    "1-30" is valid range but "1 - 30" is not.
->
-> +  ``module=foo`` combined keyword=value form is interchangably accepted
->
->  The meanings of each keyword are:
->
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index 7eb963b1bd11..e1dd96178f18 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -351,6 +351,8 @@ static int check_set(const char **dest, char *src, char *name)
->   * line <lineno>
->   * line <first-lineno>-<last-lineno> // where either may be empty
->   *
-> + * Also accept combined keyword=value and keyword:value forms
-> + *
->   * Only 1 of each type is allowed.
->   * Returns 0 on success, <0 on error.
->   */
-> @@ -360,22 +362,33 @@ static int ddebug_parse_query(char *words[], int nwords,
->         unsigned int i;
->         int rc = 0;
->         char *fline;
-> -
-> -       /* check we have an even number of words */
-> -       if (nwords % 2 != 0) {
-> -               pr_err("expecting pairs of match-spec <value>\n");
-> -               return -EINVAL;
-> -       }
-> +       char *keyword, *arg;
->
->         if (modname)
->                 /* support $modname.dyndbg=<multiple queries> */
->                 query->module = modname;
->
-> -       for (i = 0; i < nwords; i += 2) {
-> -               if (!strcmp(words[i], "func")) {
-> -                       rc = check_set(&query->function, words[i+1], "func");
-> -               } else if (!strcmp(words[i], "file")) {
-> -                       if (check_set(&query->filename, words[i+1], "file"))
-> +       for (i = 0; i < nwords; i++) {
-> +               /* accept keyword=arg */
-> +               vpr_info("%d w:%s\n", i, words[i]);
-> +
-> +               keyword = words[i];
-> +               if ((arg = strchr(keyword, '='))) {
-> +                       *arg++ = '\0';
-> +               } else {
-> +                       i++; /* next word is arg */
-> +                       if (!(i < nwords)) {
-> +                               pr_err("missing arg to keyword:%s\n", keyword);
-> +                               return -EINVAL;
-> +                       }
-> +                       arg = words[i];
-> +               }
-> +               vpr_info("%d key:%s arg:%s\n", i, keyword, arg);
-> +
-> +               if (!strcmp(keyword, "func")) {
-> +                       rc = check_set(&query->function, arg, "func");
-> +               } else if (!strcmp(keyword, "file")) {
-> +                       if (check_set(&query->filename, arg, "file"))
->                                 return -EINVAL;
->
->                         /* tail :$info is function or line-range */
-> @@ -391,18 +404,18 @@ static int ddebug_parse_query(char *words[], int nwords,
->                                 if (parse_linerange(query, fline))
->                                         return -EINVAL;
->                         }
-> -               } else if (!strcmp(words[i], "module")) {
-> -                       rc = check_set(&query->module, words[i+1], "module");
-> -               } else if (!strcmp(words[i], "format")) {
-> -                       string_unescape_inplace(words[i+1], UNESCAPE_SPACE |
-> +               } else if (!strcmp(keyword, "module")) {
-> +                       rc = check_set(&query->module, arg, "module");
-> +               } else if (!strcmp(keyword, "format")) {
-> +                       string_unescape_inplace(arg, UNESCAPE_SPACE |
->                                                             UNESCAPE_OCTAL |
->                                                             UNESCAPE_SPECIAL);
-> -                       rc = check_set(&query->format, words[i+1], "format");
-> -               } else if (!strcmp(words[i], "line")) {
-> -                       if (parse_linerange(query, words[i+1]))
-> +                       rc = check_set(&query->format, arg, "format");
-> +               } else if (!strcmp(keyword, "line")) {
-> +                       if (parse_linerange(query, arg))
->                                 return -EINVAL;
->                 } else {
-> -                       pr_err("unknown keyword \"%s\"\n", words[i]);
-> +                       pr_err("unknown keyword \"%s\"\n", keyword);
->                         return -EINVAL;
->                 }
->                 if (rc)
-> --
-> 2.26.2
->
+The block diagram of DP driver is shown below:
+
+
+                 +-------------+
+                 |DRM FRAMEWORK|
+                 +------+------+
+                        |
+                   +----v----+
+                   | DP DRM  |
+                   +----+----+
+                        |
+                   +----v----+
+     +------------+|   DP    +----------++------+
+     +        +---+| DISPLAY |+---+      |      |
+     |        +    +-+-----+-+    |      |      |
+     |        |      |     |      |      |      |
+     |        |      |     |      |      |      |
+     |        |      |     |      |      |      |
+     v        v      v     v      v      v      v
+ +------+ +------+ +---+ +----+ +----+ +---+ +-----+
+ |  DP  | |  DP  | |DP | | DP | | DP | |DP | | DP  |
+ |PARSER| | HPD  | |AUX| |LINK| |CTRL| |PHY| |POWER|
+ +--+---+ +---+--+ +---+ +----+ +--+-+ +-+-+ +-----+
+    |                              |     |
+ +--v---+                         +v-----v+
+ |DEVICE|                         |  DP   |
+ | TREE |                         |CATALOG|
+ +------+                         +---+---+
+                                      |
+                                  +---v----+
+                                  |CTRL/PHY|
+                                  |   HW   |
+                                  +--------+
+
+This series depends-on:
+https://patchwork.freedesktop.org/patch/366159/
+
+Changes in v7:
+
+- Modify cover letter description and fix title.
+- Introduce dp-controller.yaml for common bindings across SOC
+- Rename dp-sc7180.yaml to dp-controller-sc7180.yaml for SC7180 bindings
+- Rename compatible string to qcom,sc7180-dp
+- Add assigned-clocks and assigned-clock-parents properties in bindings
+- Remove redundant code from driver
+- Extend series to include HPD detection logic
+
+This series depends-on:
+	https://patchwork.freedesktop.org/patch/366159/
+
+
+Chandan Uddaraju (4):
+  dt-bindings: msm/dp: add bindings of DP/DP-PLL driver for Snapdragon
+  drm: add constant N value in helper file
+  drm/msm/dp: add displayPort driver support
+  drm/msm/dp: add support for DP PLL driver
+
+Jeykumar Sankaran (1):
+  drm/msm/dpu: add display port support in DPU
+
+Tanmay Shah (1):
+  drm/msm/dp: Add Display Port HPD feature
+
+ .../display/msm/dp-controller-sc7180.yaml     |  147 ++
+ .../bindings/display/msm/dp-controller.yaml   |   59 +
+ .../bindings/display/msm/dpu-sc7180.yaml      |   11 +
+ drivers/gpu/drm/i915/display/intel_display.c  |    2 +-
+ drivers/gpu/drm/msm/Kconfig                   |   16 +
+ drivers/gpu/drm/msm/Makefile                  |   14 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |   29 +-
+ .../drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |    8 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   83 +-
+ drivers/gpu/drm/msm/dp/dp_aux.c               |  530 +++++
+ drivers/gpu/drm/msm/dp/dp_aux.h               |   35 +
+ drivers/gpu/drm/msm/dp/dp_catalog.c           | 1065 ++++++++++
+ drivers/gpu/drm/msm/dp/dp_catalog.h           |   89 +
+ drivers/gpu/drm/msm/dp/dp_ctrl.c              | 1707 +++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_ctrl.h              |   35 +
+ drivers/gpu/drm/msm/dp/dp_display.c           | 1006 ++++++++++
+ drivers/gpu/drm/msm/dp/dp_display.h           |   31 +
+ drivers/gpu/drm/msm/dp/dp_drm.c               |  170 ++
+ drivers/gpu/drm/msm/dp/dp_drm.h               |   18 +
+ drivers/gpu/drm/msm/dp/dp_hpd.c               |   69 +
+ drivers/gpu/drm/msm/dp/dp_hpd.h               |   79 +
+ drivers/gpu/drm/msm/dp/dp_link.c              | 1216 ++++++++++++
+ drivers/gpu/drm/msm/dp/dp_link.h              |  132 ++
+ drivers/gpu/drm/msm/dp/dp_panel.c             |  491 +++++
+ drivers/gpu/drm/msm/dp/dp_panel.h             |   95 +
+ drivers/gpu/drm/msm/dp/dp_parser.c            |  268 +++
+ drivers/gpu/drm/msm/dp/dp_parser.h            |  202 ++
+ drivers/gpu/drm/msm/dp/dp_pll.c               |   93 +
+ drivers/gpu/drm/msm/dp/dp_pll.h               |   59 +
+ drivers/gpu/drm/msm/dp/dp_pll_10nm.c          |  884 +++++++++
+ drivers/gpu/drm/msm/dp/dp_pll_private.h       |  103 +
+ drivers/gpu/drm/msm/dp/dp_power.c             |  392 ++++
+ drivers/gpu/drm/msm/dp/dp_power.h             |  103 +
+ drivers/gpu/drm/msm/dp/dp_reg.h               |  517 +++++
+ drivers/gpu/drm/msm/msm_drv.c                 |    2 +
+ drivers/gpu/drm/msm/msm_drv.h                 |   59 +-
+ include/drm/drm_dp_helper.h                   |    1 +
+ 37 files changed, 9801 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller-sc7180.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_display.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_display.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_link.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_link.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_10nm.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_private.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_power.c
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_power.h
+ create mode 100644 drivers/gpu/drm/msm/dp/dp_reg.h
+
+
+base-commit: 66057dd1d1cf2149e0f5fdaee58d6ea69bc98048
+prerequisite-patch-id: 8058026a54241aa728a91dd1685419afb249959e
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
