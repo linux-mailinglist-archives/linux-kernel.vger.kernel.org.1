@@ -2,279 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A6B1FF51C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC711FF5B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgFROo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S1731124AbgFROu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731027AbgFROob (ORCPT
+        with ESMTP id S1730476AbgFROus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:44:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B53C061262
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:44:20 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s88so2766123pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references:reply-to
-         :mime-version:content-transfer-encoding;
-        bh=hItvrdMXW3x4/4yokWms4yIKM/BxkkcMkxbyn/WrUe0=;
-        b=RfkCMfGNHVXXALcOZPZ2jdMi+X2j7BbBbajuLvtbMQgxMG/R/SN9Lmnx9NaM1whfmk
-         FoFat2Ffm7ozF2Am9lqvkz0jsEoF+28OalJ8pxWgXrDzHjm9PzijBHVdQeoN953xZdDY
-         tf/dvYtXZA04B8ODzL5vUKx87iaBZufPMtd6kedtozYO9BMoAcWeY9LWTHO0Ida6RpP3
-         x1eoT/nTeXvRj4v/5yKnIft1RpIV2avzGEzDdkbF3szc11YLa/Lb2tqMcnSEDn0GFTjr
-         Fg3FMcJwXY/ZGtqbb19AHc5aPFxfUxJG8rl9k5i052NZMKop0iiA8EZgxFfSHlvxzSqN
-         C9BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:reply-to:mime-version:content-transfer-encoding;
-        bh=hItvrdMXW3x4/4yokWms4yIKM/BxkkcMkxbyn/WrUe0=;
-        b=PSAGIJC4sOcEaI/an3AL6Q8sFpBHGj9p3PiQc7qmyFZe2Bdr0DPNA3+4aERIsbBF2/
-         6wyihObZSrZdIV/QJD6aVK3xUrT9UXVG6nu7it2VPnxcHuTnBFqpfDLJka0m7Ecbhf6L
-         XauRYlrKqOw8IDion0V225jnBCOZA/t967EjMnJybz0npxYLZchwT73fhs0kzhWzDqT1
-         Oyqx0j4Tat3MIiPoq4ih9BdASQolvKN/IZB4rFMcRyvcSH1Kr3ETNzJvtmp6IlX8bdtX
-         WR8k+7lBuz3HkmtQSEo4OevmHyXMdCgtoKTExOwQKx2QqOOWAM4K+pNv13HuQM5/JM21
-         l29g==
-X-Gm-Message-State: AOAM531xuaQcrB+ZS5wEnConQQV74qvwA0JGzoz2e1vFM3LA0gBiOVV8
-        e1bzH/HAXd8w7+rmzyPlk65SUw==
-X-Google-Smtp-Source: ABdhPJxS5EFTVcmIXFEiggPIpu8uYctGJadye2v8tGqmJWPLNu+hH9ccfCYUZJj+BdxVYR30oM/QCw==
-X-Received: by 2002:a17:902:7c8f:: with SMTP id y15mr3899856pll.95.1592491459962;
-        Thu, 18 Jun 2020 07:44:19 -0700 (PDT)
-Received: from x1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id g9sm3127197pfm.151.2020.06.18.07.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 07:44:19 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 15/15] io_uring: support true async buffered reads, if file provides it
-Date:   Thu, 18 Jun 2020 08:43:55 -0600
-Message-Id: <20200618144355.17324-16-axboe@kernel.dk>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200618144355.17324-1-axboe@kernel.dk>
-References: <20200618144355.17324-1-axboe@kernel.dk>
-Reply-To: "[PATCHSET v7 0/15]"@vger.kernel.org, Add@vger.kernel.org,
-          support@vger.kernel.org, for@vger.kernel.org,
-          async@vger.kernel.org, buffered@vger.kernel.org,
-          reads@vger.kernel.org
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 18 Jun 2020 10:50:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA9C0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=HUZcrpjeWpTlgDPTgfnQW8KeYszUYqHGMt39rKQ+9KE=; b=c7t85aajMTzu5eNf4S54HsoM7L
+        6QNKl5cOrZsKV2oNYWHQJSanWGTGRRjl4jOiA0QWJVyzrZAcyUibv8E8piKld7OVT8zZS5uKLW9ng
+        cC+2IFaPv88Nrr+JEWRxGpd8BA0LaSH8uH6KS1bbtKZ9G74Px3CpelIvh09Z2uGE9YnuYs3zx1kFw
+        670N0GN2/Jsn3GXZbxzq/BBvicvO0HNaONMm4byXxsN6iDNLmwC6V+7iCqZucNTozbL1MwaG4KES5
+        8ibdm2n+dJH7lHNYcG92H/sNIzRl3Xbmd+FQcLEm764ctk95NSreO++FsTBlsOkHQdZydQK22mHlt
+        RWh2RBGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlvsA-0002xe-3L; Thu, 18 Jun 2020 14:50:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 33EC6307458;
+        Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 1D4F82146C3FF; Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
+Message-ID: <20200618144407.520952071@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 18 Jun 2020 16:44:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
+        elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
+        mhelsley@vmware.com, rostedt@goodmis.org, jthierry@redhat.com,
+        mbenes@suse.cz, peterz@infradead.org
+Subject: [PATCH 0/7] x86/entry: noinstr fixes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the file is flagged with FMODE_BUF_RASYNC, then we don't have to punt
-the buffered read to an io-wq worker. Instead we can rely on page
-unlocking callbacks to support retry based async IO. This is a lot more
-efficient than doing async thread offload.
+Hi all,
 
-The retry is done similarly to how we handle poll based retry. From
-the unlock callback, we simply queue the retry to a task_work based
-handler.
+These are the objtool/kcov patches that fix kcov-vs-noinstr and
+a few patches that fix bad_iret noinstr issues.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/io_uring.c | 145 +++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 137 insertions(+), 8 deletions(-)
+I'm going to merge the objtool patches in objtool/urgent but make sure the
+merge into objtool/core looks like the patches as posted here, since there's
+the reloc conflicts.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 40413fb9d07b..94282be1c413 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -78,6 +78,7 @@
- #include <linux/fs_struct.h>
- #include <linux/splice.h>
- #include <linux/task_work.h>
-+#include <linux/pagemap.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/io_uring.h>
-@@ -503,6 +504,8 @@ struct io_async_rw {
- 	struct iovec			*iov;
- 	ssize_t				nr_segs;
- 	ssize_t				size;
-+	struct wait_page_queue		wpq;
-+	struct callback_head		task_work;
- };
- 
- struct io_async_ctx {
-@@ -2750,6 +2753,126 @@ static int io_read_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
- 	return 0;
- }
- 
-+static void __io_async_buf_error(struct io_kiocb *req, int error)
-+{
-+	struct io_ring_ctx *ctx = req->ctx;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	io_cqring_fill_event(req, error);
-+	io_commit_cqring(ctx);
-+	spin_unlock_irq(&ctx->completion_lock);
-+
-+	io_cqring_ev_posted(ctx);
-+	req_set_fail_links(req);
-+	io_double_put_req(req);
-+}
-+
-+static void io_async_buf_cancel(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wpq.wait.private;
-+	__io_async_buf_error(req, -ECANCELED);
-+}
-+
-+static void io_async_buf_retry(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_ring_ctx *ctx;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wpq.wait.private;
-+	ctx = req->ctx;
-+
-+	__set_current_state(TASK_RUNNING);
-+	if (!io_sq_thread_acquire_mm(ctx, req)) {
-+		mutex_lock(&ctx->uring_lock);
-+		__io_queue_sqe(req, NULL);
-+		mutex_unlock(&ctx->uring_lock);
-+	} else {
-+		__io_async_buf_error(req, -EFAULT);
-+	}
-+}
-+
-+static int io_async_buf_func(struct wait_queue_entry *wait, unsigned mode,
-+			     int sync, void *arg)
-+{
-+	struct wait_page_queue *wpq;
-+	struct io_kiocb *req = wait->private;
-+	struct io_async_rw *rw = &req->io->rw;
-+	struct wait_page_key *key = arg;
-+	struct task_struct *tsk;
-+	int ret;
-+
-+	wpq = container_of(wait, struct wait_page_queue, wait);
-+
-+	ret = wake_page_match(wpq, key);
-+	if (ret != 1)
-+		return ret;
-+
-+	list_del_init(&wait->entry);
-+
-+	init_task_work(&rw->task_work, io_async_buf_retry);
-+	/* submit ref gets dropped, acquire a new one */
-+	refcount_inc(&req->refs);
-+	tsk = req->task;
-+	ret = task_work_add(tsk, &rw->task_work, true);
-+	if (unlikely(ret)) {
-+		/* queue just for cancelation */
-+		init_task_work(&rw->task_work, io_async_buf_cancel);
-+		tsk = io_wq_get_task(req->ctx->io_wq);
-+		task_work_add(tsk, &rw->task_work, true);
-+	}
-+	wake_up_process(tsk);
-+	return 1;
-+}
-+
-+static bool io_rw_should_retry(struct io_kiocb *req)
-+{
-+	struct kiocb *kiocb = &req->rw.kiocb;
-+	int ret;
-+
-+	/* never retry for NOWAIT, we just complete with -EAGAIN */
-+	if (req->flags & REQ_F_NOWAIT)
-+		return false;
-+
-+	/* already tried, or we're doing O_DIRECT */
-+	if (kiocb->ki_flags & (IOCB_DIRECT | IOCB_WAITQ))
-+		return false;
-+	/*
-+	 * just use poll if we can, and don't attempt if the fs doesn't
-+	 * support callback based unlocks
-+	 */
-+	if (file_can_poll(req->file) || !(req->file->f_mode & FMODE_BUF_RASYNC))
-+		return false;
-+
-+	/*
-+	 * If request type doesn't require req->io to defer in general,
-+	 * we need to allocate it here
-+	 */
-+	if (!req->io && __io_alloc_async_ctx(req))
-+		return false;
-+
-+	ret = kiocb_wait_page_queue_init(kiocb, &req->io->rw.wpq,
-+						io_async_buf_func, req);
-+	if (!ret) {
-+		io_get_req_task(req);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static int io_iter_do_read(struct io_kiocb *req, struct iov_iter *iter)
-+{
-+	if (req->file->f_op->read_iter)
-+		return call_read_iter(req->file, &req->rw.kiocb, iter);
-+	return loop_rw_iter(READ, req->file, &req->rw.kiocb, iter);
-+}
-+
- static int io_read(struct io_kiocb *req, bool force_nonblock)
- {
- 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
-@@ -2784,10 +2907,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 		unsigned long nr_segs = iter.nr_segs;
- 		ssize_t ret2 = 0;
- 
--		if (req->file->f_op->read_iter)
--			ret2 = call_read_iter(req->file, kiocb, &iter);
--		else
--			ret2 = loop_rw_iter(READ, req->file, kiocb, &iter);
-+		ret2 = io_iter_do_read(req, &iter);
- 
- 		/* Catch -EAGAIN return for forced non-blocking submission */
- 		if (!force_nonblock || (ret2 != -EAGAIN && ret2 != -EIO)) {
-@@ -2799,17 +2919,26 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 			ret = io_setup_async_rw(req, io_size, iovec,
- 						inline_vecs, &iter);
- 			if (ret)
--				goto out_free;
-+				goto out;
- 			/* any defer here is final, must blocking retry */
- 			if (!(req->flags & REQ_F_NOWAIT) &&
- 			    !file_can_poll(req->file))
- 				req->flags |= REQ_F_MUST_PUNT;
-+			/* if we can retry, do so with the callbacks armed */
-+			if (io_rw_should_retry(req)) {
-+				ret2 = io_iter_do_read(req, &iter);
-+				if (ret2 == -EIOCBQUEUED) {
-+					goto out;
-+				} else if (ret2 != -EAGAIN) {
-+					kiocb_done(kiocb, ret2);
-+					goto out;
-+				}
-+			}
-+			kiocb->ki_flags &= ~IOCB_WAITQ;
- 			return -EAGAIN;
- 		}
- 	}
--out_free:
--	kfree(iovec);
--	req->flags &= ~REQ_F_NEED_CLEANUP;
-+out:
- 	return ret;
- }
- 
--- 
-2.27.0
+The other patches I'm going to stick in x86/entry unless complaints.
 
