@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DB81FEC52
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A8E1FEC5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 09:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgFRHUA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Jun 2020 03:20:00 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:47743 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727986AbgFRHT7 (ORCPT
+        id S1727978AbgFRHVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 03:21:12 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:36211 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725829AbgFRHVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:19:59 -0400
-X-Originating-IP: 90.76.143.236
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 004AD4000A;
-        Thu, 18 Jun 2020 07:19:55 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 18 Jun 2020 03:21:11 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mq2vU-1j7pP513qM-00nBZC for <linux-kernel@vger.kernel.org>; Thu, 18 Jun
+ 2020 09:21:09 +0200
+Received: by mail-qt1-f181.google.com with SMTP id v19so1219861qtq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 00:21:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532e+QKVC3mrrWSKnlFNQ7oH+KWRV1DYSPkKcqQK8MSIUBSa6D7l
+        ugjq8U9n5dEliVAfVJ1abp80i62CvjziJRf/C/U=
+X-Google-Smtp-Source: ABdhPJyZwB+YzjDh0fJqM1eWf1KZdD5m3whVUi2LGOR5Rq66DfLtWAExIzP5DMOjDRUJoSdl6RPuwHagBzsvGAhJDHc=
+X-Received: by 2002:ac8:7417:: with SMTP id p23mr3048812qtq.204.1592464868127;
+ Thu, 18 Jun 2020 00:21:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200617093217.2a664161@kicinski-fedora-PC1C0HJN>
-References: <20200617133127.628454-1-antoine.tenart@bootlin.com> <20200617133127.628454-7-antoine.tenart@bootlin.com> <20200617093217.2a664161@kicinski-fedora-PC1C0HJN>
-To:     Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next v2 6/8] net: phy: mscc: timestamping and PHC support
-Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, richardcochran@gmail.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com,
-        foss@0leil.net
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-Message-ID: <159246479497.467274.13476034822528412319@kwain>
-Date:   Thu, 18 Jun 2020 09:19:55 +0200
+References: <1592369623-10723-1-git-send-email-Anson.Huang@nxp.com>
+ <AM6PR04MB49667E1B41DC2A77B3E2FEBF809A0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+ <AM6PR0402MB3911B852B49E194E5FE84505F59A0@AM6PR0402MB3911.eurprd04.prod.outlook.com>
+ <DB3PR0402MB39167727A8B7CEDAC531D94EF59A0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB39167727A8B7CEDAC531D94EF59A0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 18 Jun 2020 09:20:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3zHBRqSg1VeuKcmyQquE7n5wrEViw5KFbDGJNaMjtZRw@mail.gmail.com>
+Message-ID: <CAK8P3a3zHBRqSg1VeuKcmyQquE7n5wrEViw5KFbDGJNaMjtZRw@mail.gmail.com>
+Subject: Re: [PATCH] soc: imx-scu: Support module build
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Aisheng Dong <aisheng.dong@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ZyQynNmYvlOC2TyBDj7V1T5SOx7MS8SCgIOcJqy3h4eX4fBoKM8
+ Gmxm4y5mEaO1Y3mMSM/AKkJpsq7N8OLwZ76qn6TQbvwgLRQsDDCmPgVxeSo0FUyvKB5ilbQ
+ zsa06YWn8GLava34X17UXh0DIa6vwLTLOYOAtzxRA78ipzWDh2W12Vix3gZ/xCovsxddK31
+ czcGds9Ycpmcknxsdeqig==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x/gm8/irSGM=:GuMZgqwOvNlvtBUnB/TYXf
+ MrP9OOT5XZRu/0YmZkQqWzw9Dy962CiOzQCUh/3ZflrUAg52264hhAraKM6c4llDBJAmKc5fF
+ qqItK6Dc1MGDUjT4IlVP+uP2+MCPAjwtH8MHyohzaDeLQiqhQUkueD4l4xuMkPjnDi4+MKJ3o
+ t3Po2B23v/LTwbfMhCYNlkdvGUlvK+8SIRdxN7fRbK91Ajzqi/vcNBkq2gUnJnvpVOhTGdbZw
+ Odzs7F1A+aRMEWqnYKoHxw05wflnvgdOannPLbODn67yu4ZiS2BJxnrfIpl/LV7zKCXPbTGQn
+ kHA6BNOLIsvppeN0iiG6OfjQM4qTp12KsSdtyzeTfbzyw2Aca9GV8D9DlMz4FsJgMf7OqFbcf
+ t9MR7suHRdYKQLbP3tfAg0k2wcEeCwlOTMvQx8OZ2TEkEd7JhAESERUJVpJuKA4W6dVeCj7Hw
+ fx7yE90sAmZUtRtI3anT0hmGnanTQrT0xm2hU/dA5pOlIhM/f+AK8Hjt1ugHDual8DepkGL85
+ gnUvgu3w7t+5rMt0lvGWu8syOEPE19GwLg6gYEl1wytMRScAG6T4BT0Q1OB4NQ4n/PcOvbIvV
+ Na6CNIkiF2WNwMlUQc50x+qO7GFHlAtm7EBts7YoE79lfVrwrtdnXvDnDmtUGc/yjAg03jNaF
+ 3Mcfmdzlin8ZlJ+jRTPhoSEoX72n7U4oHatPthB7jj15GjBzGF4+UbX2jJlRGcQGTQHDMmwai
+ PczGpd48oiGdnYvGsjJTbhBsInpO6csa5fTt1TiI+eQgUFfGYT33cQ/5XvjVfl381fKKjJ01D
+ TGkTWLPv1la3McnVMfn6o3eIsBO84/szyPkXtnlK5t6TCEeMv0=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jakub,
+On Wed, Jun 17, 2020 at 11:41 AM Anson Huang <anson.huang@nxp.com> wrote:
 
-Quoting Jakub Kicinski (2020-06-17 18:32:17)
-> On Wed, 17 Jun 2020 15:31:25 +0200 Antoine Tenart wrote:
-> > This patch adds support for PHC and timestamping operations for the MSCC
-> > PHY. PTP 1-step and 2-step modes are supported, over Ethernet and UDP.
-> > 
-> > To get and set the PHC time, a GPIO has to be used and changes are only
-> > retrieved or committed when on a rising edge. The same GPIO is shared by
-> > all PHYs, so the granularity of the lock protecting it has to be
-> > different from the ones protecting the 1588 registers (the VSC8584 PHY
-> > has 2 1588 blocks, and a single load/save pin).
-> > 
-> > Co-developed-by: Quentin Schulz <quentin.schulz@bootlin.com>
-> > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-> > Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
-> 
-> drivers/net/phy/mscc/mscc_ptp.c:406:24: warning: restricted __be16 degrades to integer
-> drivers/net/phy/mscc/mscc_ptp.c:407:24: warning: restricted __be16 degrades to integer
-> drivers/net/phy/mscc/mscc_ptp.c:1213:23: warning: symbol 'vsc85xx_clk_caps' was not declared. Should it be static?
-> 
-> Please make sure you don't add warnings when built with W=1 C=1 flags.
+> > >
+> > > I'm ok with the change. But I'm curious how can this module be
+> > > autoloaded without MODULE_DEVICE_TABLE.
+> > > Have you tested if it can work?
+> > >
+> >
+> > I ONLY tested the manual insmod, if want to support auto load, may need
+> > some more change, will try it later and send out a V2 if needed.
+>
+> The further check shows that, if want to support auto load, the platform device
+> register needs to be done in somewhere else which is built-in (in my test, I move it
+> to clk-imx8qxp.c's probe), and also need to add below module alias in this driver,
+> because it has no device node in DT and no device table in driver.
+>
+> +MODULE_ALIAS("platform:imx-scu-soc");
+>
+> Since this driver has no device node in DT, and the target is to build all SoC specific
+> drivers as module, so the best way is to add a virtual device node in DT in order to support
+> auto load?
 
-I'll look into that.
+I see that there is indeed a driver for the device node in
+drivers/firmware/imx/imx-scu.c,
+the only reason for this module using device_initcall() with a manual
+platform_device_register_simple() seems to be that we cannot have two
+platform drivers bind to the same device node.
 
-Thanks,
-Antoine
+I think a cleaner way to handle this would be to just move the entire soc
+driver into the firmware driver and then remove the duplication.
 
--- 
-Antoine Ténart, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+       Arnd
