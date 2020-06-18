@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA001FE0DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147D71FE0E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgFRB1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:27:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57508 "EHLO mail.kernel.org"
+        id S1731804AbgFRB1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731035AbgFRBXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:23:40 -0400
+        id S1731053AbgFRBXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:23:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7088020776;
-        Thu, 18 Jun 2020 01:23:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5632D20B1F;
+        Thu, 18 Jun 2020 01:23:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443420;
-        bh=GhIYSFu1WdXO/kU0IV77O0twIZpg2ROjAYlOXLFDnZY=;
+        s=default; t=1592443426;
+        bh=BsadBBKHMduPoUtjwsrBRPIOISPZDN5z2L7lqKeMfHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czqTTQuTnZobJ+piR1GjwDy0hHbpwcsXm2AnxbrXMmsvOi1XpXBEgN2gE0F8oqiyZ
-         Tkze+1eScM0NwXpulKhRLzXshchb56P938VS6UPs+KQ8gH03JiFMcEqpxQAG3+cPxW
-         YkP874wupFBw2u458PE6hQWH1nYQMIrJPPw9EueU=
+        b=bJZsR2EBNiKSDzEEUg4RwGQxERRxHS/c8/AwgGpbXOBtBb66DLmVfU8fJLjHIdE0P
+         P5dE1F9oLd0ILW+zFpc8px6t0lxhya2RISfchS+U8N2xNEj85fGdOoCtSlx/P+ECIF
+         aHZEAE9dWphDZNyA/0YvnwURWWfpROMZf0lo1pQQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 061/172] firmware: qcom_scm: fix bogous abuse of dma-direct internals
-Date:   Wed, 17 Jun 2020 21:20:27 -0400
-Message-Id: <20200618012218.607130-61-sashal@kernel.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Andi Shyti <andi@etezian.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 066/172] Input: mms114 - add extra compatible for mms345l
+Date:   Wed, 17 Jun 2020 21:20:32 -0400
+Message-Id: <20200618012218.607130-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
 References: <20200618012218.607130-1-sashal@kernel.org>
@@ -43,70 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 459b1f86f1cba7de813fbc335df476c111feec22 ]
+[ Upstream commit 7842087b0196d674ed877d768de8f2a34d7fdc53 ]
 
-As far as the device is concerned the dma address is the physical
-address.  There is no need to convert it to a physical address,
-especially not using dma-direct internals that are not available
-to drivers and which will interact badly with IOMMUs.  Last but not
-least the commit introducing it claimed to just fix a type issue,
-but actually changed behavior.
+MMS345L is another first generation touch screen from Melfas,
+which uses mostly the same registers as MMS152.
 
-Fixes: 6e37ccf78a532 ("firmware: qcom_scm: Use proper types for dma mappings")
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20200414123136.441454-1-hch@lst.de
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+However, there is some garbage printed during initialization.
+Apparently MMS345L does not have the MMS152_COMPAT_GROUP register
+that is read+printed during initialization.
+
+  TSP FW Rev: bootloader 0x6 / core 0x26 / config 0x26, Compat group: \x06
+
+On earlier kernel versions the compat group was actually printed as
+an ASCII control character, seems like it gets escaped now.
+
+But we probably shouldn't print something from a random register.
+
+Add a separate "melfas,mms345l" compatible that avoids reading
+from the MMS152_COMPAT_GROUP register. This might also help in case
+there is some other device-specific quirk in the future.
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Andi Shyti <andi@etezian.org>
+Link: https://lore.kernel.org/r/20200423102431.2715-1-stephan@gerhold.net
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/qcom_scm.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/input/touchscreen/mms114.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 98c987188835..513908a0c262 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -18,7 +18,6 @@
- #include <linux/init.h>
- #include <linux/cpumask.h>
- #include <linux/export.h>
--#include <linux/dma-direct.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
- #include <linux/types.h>
-@@ -449,8 +448,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	struct qcom_scm_mem_map_info *mem_to_map;
- 	phys_addr_t mem_to_map_phys;
- 	phys_addr_t dest_phys;
--	phys_addr_t ptr_phys;
--	dma_addr_t ptr_dma;
-+	dma_addr_t ptr_phys;
- 	size_t mem_to_map_sz;
- 	size_t dest_sz;
- 	size_t src_sz;
-@@ -468,10 +466,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
- 			ALIGN(dest_sz, SZ_64);
+diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
+index a5ab774da4cc..a31b593f5b5f 100644
+--- a/drivers/input/touchscreen/mms114.c
++++ b/drivers/input/touchscreen/mms114.c
+@@ -54,6 +54,7 @@
+ enum mms_type {
+ 	TYPE_MMS114	= 114,
+ 	TYPE_MMS152	= 152,
++	TYPE_MMS345L	= 345,
+ };
  
--	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_dma, GFP_KERNEL);
-+	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
--	ptr_phys = dma_to_phys(__scm->dev, ptr_dma);
+ struct mms114_data {
+@@ -250,6 +251,15 @@ static int mms114_get_version(struct mms114_data *data)
+ 	int error;
  
- 	/* Fill source vmid detail */
- 	src = ptr;
-@@ -501,7 +498,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	switch (data->type) {
++	case TYPE_MMS345L:
++		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
++		if (error)
++			return error;
++
++		dev_info(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x\n",
++			 buf[0], buf[1], buf[2]);
++		break;
++
+ 	case TYPE_MMS152:
+ 		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
+ 		if (error)
+@@ -287,8 +297,8 @@ static int mms114_setup_regs(struct mms114_data *data)
+ 	if (error < 0)
+ 		return error;
  
- 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
- 				    ptr_phys, src_sz, dest_phys, dest_sz);
--	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_dma);
-+	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
- 	if (ret) {
- 		dev_err(__scm->dev,
- 			"Assign memory protection call failed %d.\n", ret);
+-	/* MMS152 has no configuration or power on registers */
+-	if (data->type == TYPE_MMS152)
++	/* Only MMS114 has configuration and power on registers */
++	if (data->type != TYPE_MMS114)
+ 		return 0;
+ 
+ 	error = mms114_set_active(data, true);
+@@ -600,6 +610,9 @@ static const struct of_device_id mms114_dt_match[] = {
+ 	}, {
+ 		.compatible = "melfas,mms152",
+ 		.data = (void *)TYPE_MMS152,
++	}, {
++		.compatible = "melfas,mms345l",
++		.data = (void *)TYPE_MMS345L,
+ 	},
+ 	{ }
+ };
 -- 
 2.25.1
 
