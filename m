@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0AF1FF5B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4561FF5B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 16:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731110AbgFROux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 10:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        id S1731195AbgFROvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 10:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730810AbgFROus (ORCPT
+        with ESMTP id S1731152AbgFROvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 10:50:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA436C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:50:47 -0700 (PDT)
+        Thu, 18 Jun 2020 10:51:02 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AF5C0613EF
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 07:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=W74ES2VEM/SOOB/brWv7H7bbbcUQlUDNFxDXundCrzg=; b=YhoDjIECxd6CN8Qio6IiS0Pcl3
-        pcVUOoM4JVdRNZ9NsrQofkBvNNT5tkOwh4k6LaHUO5pKFRFojQbW3KYg2YC9JV4PNKGpEJcv8+Aru
-        eEMggw+uNpD63NpB0SU9bROV5Cz16/b4lx1wpyVSI18+PQQJve496zRu2R66Nrh+5O5gkEGOsVeWs
-        jPWQagDRtimDxRpeDsTdSn1DS6btuQM+IJL9fq9QvpYZegJLE6GLd1W49CFUtzq0zNFEb96AGwJEs
-        lnbCE1hu96TOHGom+7710s/0xYxXUDREoXw04pcmxK6rl4J6lv0xJ6TanGHB2MwlxWtkxjZDboA9S
-        GcPXKcAQ==;
+        bh=DoID9zoGW91RyxMUWv4e500HCOtNfc1n8lbVfmpATSs=; b=lTHM5czDAtTYXfPLeK2Y0b85jY
+        eTsQ3Se3mV114drLY/tnpYloFlO6ZnAp5sMn34Ce9BKZGIGyIwp6hT7wc0p9Uvaw/Y/qpOhfTtloY
+        zIBBpWuZDgGG/LFu/wSrZh+MQfU0GP9h7nkk23NyUOHZyy/65+8mrr0jbXdw9w6x72/tnsMLQYjBr
+        qLfNWwXY0hFo3u+InDTWub0QK2V3VBh+Ds0607V2sCp8KYCQjZ1D/pI1jA38RSfZni0QmI45KZ5+5
+        0rgTBM1ILsVJgHUgxVF3A5ntfm/90POxzsZp/dS+GxRjj8Ilh/U/BNiYe+bH/OTtN4lZQIvNiXzZq
+        j/6rGYWg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlvsA-0002xh-29; Thu, 18 Jun 2020 14:50:34 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jlvsA-0006Hm-9q; Thu, 18 Jun 2020 14:50:34 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3BAB43074A7;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4693A30753E;
         Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 260A52146C401; Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
-Message-ID: <20200618144801.760070502@infradead.org>
+        id 2A4D52146C403; Thu, 18 Jun 2020 16:50:32 +0200 (CEST)
+Message-ID: <20200618144801.819246178@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 18 Jun 2020 16:44:10 +0200
+Date:   Thu, 18 Jun 2020 16:44:11 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Josh Poimboeuf <jpoimboe@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, dvyukov@google.com,
         elver@google.com, andreyknvl@google.com, mark.rutland@arm.com,
         mhelsley@vmware.com, rostedt@goodmis.org, jthierry@redhat.com,
-        mbenes@suse.cz, peterz@infradead.org
-Subject: [PATCH 3/7] x86/entry: Fixup bad_iret vs noinstr
+        mbenes@suse.cz, peterz@infradead.org,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: [PATCH 4/7] x86/entry: Increase entry_stack size to a full page
 References: <20200618144407.520952071@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,57 +54,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.o: warning: objtool: fixup_bad_iret()+0x8e: call to memcpy() leaves .noinstr.text section
+Marco crashed in bad_iret with a Clang11/KCSAN build due to
+overflowing the stack. Now that we run C code on it, expand it to a
+full page.
 
-Worse, when KASAN there is no telling what memcpy() actually is. Force
-the use of __memcpy() which is our assmebly implementation.
-
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Reported-by: Marco Elver <elver@google.com>
-Suggested-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/traps.c  |    6 +++---
- arch/x86/lib/memcpy_64.S |    4 ++++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/processor.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -685,13 +685,13 @@ struct bad_iret_stack *fixup_bad_iret(st
- 		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -370,7 +370,7 @@ struct x86_hw_tss {
+ #define IO_BITMAP_OFFSET_INVALID	(__KERNEL_TSS_LIMIT + 1)
  
- 	/* Copy the IRET target to the temporary storage. */
--	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
-+	__memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
+ struct entry_stack {
+-	unsigned long		words[64];
++	char	stack[PAGE_SIZE];
+ };
  
- 	/* Copy the remainder of the stack from the current stack. */
--	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
-+	__memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
- 
- 	/* Update the entry stack */
--	memcpy(new_stack, &tmp, sizeof(tmp));
-+	__memcpy(new_stack, &tmp, sizeof(tmp));
- 
- 	BUG_ON(!user_mode(&new_stack->regs));
- 	return new_stack;
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -8,6 +8,8 @@
- #include <asm/alternative-asm.h>
- #include <asm/export.h>
- 
-+.pushsection .noinstr.text, "ax"
-+
- /*
-  * We build a jump to memcpy_orig by default which gets NOPped out on
-  * the majority of x86 CPUs which set REP_GOOD. In addition, CPUs which
-@@ -184,6 +186,8 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	retq
- SYM_FUNC_END(memcpy_orig)
- 
-+.popsection
-+
- #ifndef CONFIG_UML
- 
- MCSAFE_TEST_CTL
+ struct entry_stack_page {
 
 
