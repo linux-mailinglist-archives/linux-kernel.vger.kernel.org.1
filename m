@@ -2,264 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB991FF138
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557601FF11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 14:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgFRMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 08:06:52 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:46510 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727093AbgFRMGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:06:50 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6E6402000A7;
-        Thu, 18 Jun 2020 14:06:48 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E2623200D40;
-        Thu, 18 Jun 2020 14:06:43 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 412C94024F;
-        Thu, 18 Jun 2020 20:06:38 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_spdif: Add pm runtime function
-Date:   Thu, 18 Jun 2020 19:55:34 +0800
-Message-Id: <1592481334-3680-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729064AbgFRMBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 08:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbgFRMBq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:01:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65985C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:01:46 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y18so2352787plr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 05:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9XFP3Su+RD6jKI5qSLrchMuNuK3XXo5FfB0Qqg4ghNQ=;
+        b=E6sV69UIw7b44KqcgkT0ApwRrgIIx/id7zBqr50T8EMtr+Zmf6R31xUXCIlqERZQp+
+         gJVbK77YZOD+bXuO2XF7zySFHLYgKaxtnIZqgI0D7tV3t0wHxDFu58ZjGOAvQfuxIThN
+         ZUKMY4zw8pNMQRIAM3B7+5ypuF8euol1VAzlC7p5mPB6vrc154JpplBBNYRX7tDrI6SM
+         w/E2GviiHYR1LN1dUs4MUdl34nHfR4z0IZNgX28fGedy+2vRTAXwKQqASA74U3AXT5rk
+         asaH8WkLw7kVxhfVwn1l6Cf+smHQrsiUxjb//Fb27M5Gojp7DjxRNSkFqZl4DZ26JFJV
+         HlWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9XFP3Su+RD6jKI5qSLrchMuNuK3XXo5FfB0Qqg4ghNQ=;
+        b=OkUkQraY11SMYaZ4EpecO82M9F6OjfKBa3/OM53cvevZ0Pnbw+p1X09A/+1/WtNWRM
+         0BKw3d5l4oaCYO+wPzjOp35CRDXZPk4Dex68WKyw0OUrFcRT4BPqMrSq4IYXXTOULpiy
+         f/NIhcF15qLlknJPaEugqUEiFRSKFCyFSHKqZDnH3nJAydN2le3DIFX9HzWKPCLBRlhK
+         /ObWbsEHE4PztMAw98FdIiNwybWM9+xiSWiY7JPP8LqVCoVuGRWPd2H/5kvz8OcoETFE
+         Zc75AkLb1gbBrDm9VvIhPj+Ql8LMEh2ZdyLRpYBmLVbP0c9mqrF5higVtu12eaXqH8T6
+         nO/Q==
+X-Gm-Message-State: AOAM5328gaOvPzI6oY1WF4LyrNV8zYobh24ZCNIchkKYWKtfnEJuovCm
+        GvA9YLqIpwMXQrxhGzfIh6iCRAlNbvvqxQjz58rXbg==
+X-Google-Smtp-Source: ABdhPJxZXQ1TMlzsNRp2Y4mHPimP/jrmL1izIpyc1MQlZQVCmjcT/Syf6oxw81FuoyNEXo8GJEwh5/w6YEmOnen2r6Y=
+X-Received: by 2002:a17:90b:1981:: with SMTP id mv1mr3862666pjb.41.1592481705370;
+ Thu, 18 Jun 2020 05:01:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <000000000000e84a3a058b0f9307@google.com> <20191001103157.GI13531@localhost>
+In-Reply-To: <20191001103157.GI13531@localhost>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 18 Jun 2020 14:01:34 +0200
+Message-ID: <CAAeHK+yOX2FBbcB5Yt3f=tx6xhyPhBcJdv+uuvYS4JAh=7vuHA@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in usb_kill_anchored_urbs
+To:     Johan Hovold <johan@kernel.org>
+Cc:     syzbot <syzbot+eb6ab607626fd1dac0f1@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pm runtime support and move clock handling there.
-Close the clocks at suspend to reduce the power consumption.
+On Tue, Oct 1, 2019 at 12:31 PM Johan Hovold <johan@kernel.org> wrote:
+>
+> On Tue, Jun 11, 2019 at 10:25:05AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    69bbe8c7 usb-fuzzer: main usb gadget fuzzer driver
+> > git tree:       https://github.com/google/kasan.git usb-fuzzer
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15df4ecaa00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=193d8457178b3229
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=eb6ab607626fd1dac0f1
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11847e7aa00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ef5f2ea00000
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+eb6ab607626fd1dac0f1@syzkaller.appspotmail.com
+> >
+> > mcba_usb 1-1:0.116 can0: Failed to send cmd (169)
+> > mcba_usb 1-1:0.116 can0: failed tx_urb -2
+> > mcba_usb 1-1:0.116 can0: Failed to send cmd (169)
+> > mcba_usb 1-1:0.116: Microchip CAN BUS Analyzer connected
+> > usb 1-1: USB disconnect, device number 2
+> > mcba_usb 1-1:0.116 can0: device disconnected
+> > ==================================================================
+> > BUG: KASAN: use-after-free in __lock_acquire+0x3a5d/0x5340
+> > kernel/locking/lockdep.c:3664
+> > Read of size 8 at addr ffff8881d44c63c8 by task kworker/0:1/12
+> >
+> > CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.2.0-rc1+ #10
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> > Google 01/01/2011
+> > Workqueue: usb_hub_wq hub_event
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:77 [inline]
+> >   dump_stack+0xca/0x13e lib/dump_stack.c:113
+> >   print_address_description+0x67/0x231 mm/kasan/report.c:188
+> >   __kasan_report.cold+0x1a/0x32 mm/kasan/report.c:317
+> >   kasan_report+0xe/0x20 mm/kasan/common.c:614
+> >   __lock_acquire+0x3a5d/0x5340 kernel/locking/lockdep.c:3664
+> >   lock_acquire+0x100/0x2b0 kernel/locking/lockdep.c:4302
+> >   __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+> >   _raw_spin_lock_irq+0x2d/0x40 kernel/locking/spinlock.c:167
+> >   spin_lock_irq include/linux/spinlock.h:363 [inline]
+> >   usb_kill_anchored_urbs+0x1e/0x110 drivers/usb/core/urb.c:787
+> >   mcba_urb_unlink drivers/net/can/usb/mcba_usb.c:722 [inline]
+> >   mcba_usb_disconnect+0xd6/0xe4 drivers/net/can/usb/mcba_usb.c:892
+> >   usb_unbind_interface+0x1bd/0x8a0 drivers/usb/core/driver.c:423
+> >   __device_release_driver drivers/base/dd.c:1081 [inline]
+> >   device_release_driver_internal+0x404/0x4c0 drivers/base/dd.c:1112
+> >   bus_remove_device+0x2dc/0x4a0 drivers/base/bus.c:556
+> >   device_del+0x460/0xb80 drivers/base/core.c:2274
+> >   usb_disable_device+0x211/0x690 drivers/usb/core/message.c:1237
+> >   usb_disconnect+0x284/0x830 drivers/usb/core/hub.c:2197
+> >   hub_port_connect drivers/usb/core/hub.c:4940 [inline]
+> >   hub_port_connect_change drivers/usb/core/hub.c:5204 [inline]
+> >   port_event drivers/usb/core/hub.c:5350 [inline]
+> >   hub_event+0x1409/0x3590 drivers/usb/core/hub.c:5432
+> >   process_one_work+0x905/0x1570 kernel/workqueue.c:2268
+> >   worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+> >   kthread+0x30b/0x410 kernel/kthread.c:254
+> >   ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> >
+> > Allocated by task 12:
+> >   save_stack+0x1b/0x80 mm/kasan/common.c:71
+> >   set_track mm/kasan/common.c:79 [inline]
+> >   __kasan_kmalloc mm/kasan/common.c:489 [inline]
+> >   __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:462
+> >   kmalloc_node include/linux/slab.h:590 [inline]
+> >   kvmalloc_node+0x61/0xf0 mm/util.c:430
+> >   kvmalloc include/linux/mm.h:637 [inline]
+> >   kvzalloc include/linux/mm.h:645 [inline]
+> >   alloc_netdev_mqs+0x97/0xce0 net/core/dev.c:9154
+> >   alloc_candev_mqs+0x58/0x320 drivers/net/can/dev.c:738
+> >   mcba_usb_probe+0xaf/0xbca drivers/net/can/usb/mcba_usb.c:810
+> >   usb_probe_interface+0x305/0x7a0 drivers/usb/core/driver.c:361
+> >   really_probe+0x281/0x660 drivers/base/dd.c:509
+> >   driver_probe_device+0x104/0x210 drivers/base/dd.c:670
+> >   __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:777
+> >   bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
+> >   __device_attach+0x217/0x360 drivers/base/dd.c:843
+> >   bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
+> >   device_add+0xae6/0x16f0 drivers/base/core.c:2111
+> >   usb_set_configuration+0xdf6/0x1670 drivers/usb/core/message.c:2023
+> >   generic_probe+0x9d/0xd5 drivers/usb/core/generic.c:210
+> >   usb_probe_device+0x99/0x100 drivers/usb/core/driver.c:266
+> >   really_probe+0x281/0x660 drivers/base/dd.c:509
+> >   driver_probe_device+0x104/0x210 drivers/base/dd.c:670
+> >   __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:777
+> >   bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
+> >   __device_attach+0x217/0x360 drivers/base/dd.c:843
+> >   bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
+> >   device_add+0xae6/0x16f0 drivers/base/core.c:2111
+> >   usb_new_device.cold+0x8c1/0x1016 drivers/usb/core/hub.c:2534
+> >   hub_port_connect drivers/usb/core/hub.c:5089 [inline]
+> >   hub_port_connect_change drivers/usb/core/hub.c:5204 [inline]
+> >   port_event drivers/usb/core/hub.c:5350 [inline]
+> >   hub_event+0x1ada/0x3590 drivers/usb/core/hub.c:5432
+> >   process_one_work+0x905/0x1570 kernel/workqueue.c:2268
+> >   worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+> >   kthread+0x30b/0x410 kernel/kthread.c:254
+> >   ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> >
+> > Freed by task 12:
+> >   save_stack+0x1b/0x80 mm/kasan/common.c:71
+> >   set_track mm/kasan/common.c:79 [inline]
+> >   __kasan_slab_free+0x130/0x180 mm/kasan/common.c:451
+> >   slab_free_hook mm/slub.c:1421 [inline]
+> >   slab_free_freelist_hook mm/slub.c:1448 [inline]
+> >   slab_free mm/slub.c:2994 [inline]
+> >   kfree+0xd7/0x280 mm/slub.c:3949
+> >   kvfree+0x59/0x60 mm/util.c:459
+> >   device_release+0x71/0x200 drivers/base/core.c:1064
+> >   kobject_cleanup lib/kobject.c:691 [inline]
+> >   kobject_release lib/kobject.c:720 [inline]
+> >   kref_put include/linux/kref.h:67 [inline]
+> >   kobject_put+0x171/0x280 lib/kobject.c:737
+> >   put_device+0x1b/0x30 drivers/base/core.c:2210
+> >   free_netdev+0x317/0x420 net/core/dev.c:9265
+> >   mcba_usb_disconnect+0xca/0xe4 drivers/net/can/usb/mcba_usb.c:890
+> >   usb_unbind_interface+0x1bd/0x8a0 drivers/usb/core/driver.c:423
+> >   __device_release_driver drivers/base/dd.c:1081 [inline]
+> >   device_release_driver_internal+0x404/0x4c0 drivers/base/dd.c:1112
+> >   bus_remove_device+0x2dc/0x4a0 drivers/base/bus.c:556
+> >   device_del+0x460/0xb80 drivers/base/core.c:2274
+> >   usb_disable_device+0x211/0x690 drivers/usb/core/message.c:1237
+> >   usb_disconnect+0x284/0x830 drivers/usb/core/hub.c:2197
+> >   hub_port_connect drivers/usb/core/hub.c:4940 [inline]
+> >   hub_port_connect_change drivers/usb/core/hub.c:5204 [inline]
+> >   port_event drivers/usb/core/hub.c:5350 [inline]
+> >   hub_event+0x1409/0x3590 drivers/usb/core/hub.c:5432
+> >   process_one_work+0x905/0x1570 kernel/workqueue.c:2268
+> >   worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+> >   kthread+0x30b/0x410 kernel/kthread.c:254
+> >   ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> >
+> > The buggy address belongs to the object at ffff8881d44c5500
+> >   which belongs to the cache kmalloc-4k of size 4096
+> > The buggy address is located 3784 bytes inside of
+> >   4096-byte region [ffff8881d44c5500, ffff8881d44c6500)
+> > The buggy address belongs to the page:
+> > page:ffffea0007513000 refcount:1 mapcount:0 mapping:ffff8881dac02600
+> > index:0x0 compound_mapcount: 0
+> > flags: 0x200000000010200(slab|head)
+> > raw: 0200000000010200 dead000000000100 dead000000000200 ffff8881dac02600
+> > raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
+> > page dumped because: kasan: bad access detected
+> >
+> > Memory state around the buggy address:
+> >   ffff8881d44c6280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >   ffff8881d44c6300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > ffff8881d44c6380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >                                                ^
+> >   ffff8881d44c6400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >   ffff8881d44c6480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > ==================================================================
+>
+> #sys dup: KASAN: use-after-free Read in mcba_usb_disconnect
 
-fsl_spdif_suspend is replaced by pm_runtime_force_suspend.
-fsl_spdif_resume is replaced by pm_runtime_force_resume.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 113 ++++++++++++++++++++++----------------
- 1 file changed, 67 insertions(+), 46 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 5bc0e4729341..46719fd2f1ec 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -16,6 +16,7 @@
- #include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/regmap.h>
-+#include <linux/pm_runtime.h>
- 
- #include <sound/asoundef.h>
- #include <sound/dmaengine_pcm.h>
-@@ -495,25 +496,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	struct regmap *regmap = spdif_priv->regmap;
- 	u32 scr, mask;
--	int i;
- 	int ret;
- 
- 	/* Reset module and interrupts only for first initialization */
- 	if (!snd_soc_dai_active(cpu_dai)) {
--		ret = clk_prepare_enable(spdif_priv->coreclk);
--		if (ret) {
--			dev_err(&pdev->dev, "failed to enable core clock\n");
--			return ret;
--		}
--
--		if (!IS_ERR(spdif_priv->spbaclk)) {
--			ret = clk_prepare_enable(spdif_priv->spbaclk);
--			if (ret) {
--				dev_err(&pdev->dev, "failed to enable spba clock\n");
--				goto err_spbaclk;
--			}
--		}
--
- 		ret = spdif_softreset(spdif_priv);
- 		if (ret) {
- 			dev_err(&pdev->dev, "failed to soft reset\n");
-@@ -531,18 +517,10 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
- 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
- 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
- 			SCR_TXFIFO_FSEL_MASK;
--		for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
--			ret = clk_prepare_enable(spdif_priv->txclk[i]);
--			if (ret)
--				goto disable_txclk;
--		}
- 	} else {
- 		scr = SCR_RXFIFO_FSEL_IF8 | SCR_RXFIFO_AUTOSYNC;
- 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
- 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
--		ret = clk_prepare_enable(spdif_priv->rxclk);
--		if (ret)
--			goto err;
- 	}
- 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
- 
-@@ -551,15 +529,7 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
- 
- 	return 0;
- 
--disable_txclk:
--	for (i--; i >= 0; i--)
--		clk_disable_unprepare(spdif_priv->txclk[i]);
- err:
--	if (!IS_ERR(spdif_priv->spbaclk))
--		clk_disable_unprepare(spdif_priv->spbaclk);
--err_spbaclk:
--	clk_disable_unprepare(spdif_priv->coreclk);
--
- 	return ret;
- }
- 
-@@ -569,20 +539,17 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
- 	struct regmap *regmap = spdif_priv->regmap;
--	u32 scr, mask, i;
-+	u32 scr, mask;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		scr = 0;
- 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
- 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
- 			SCR_TXFIFO_FSEL_MASK;
--		for (i = 0; i < SPDIF_TXRATE_MAX; i++)
--			clk_disable_unprepare(spdif_priv->txclk[i]);
- 	} else {
- 		scr = SCR_RXFIFO_OFF | SCR_RXFIFO_CTL_ZERO;
- 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
- 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
--		clk_disable_unprepare(spdif_priv->rxclk);
- 	}
- 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
- 
-@@ -591,9 +558,6 @@ static void fsl_spdif_shutdown(struct snd_pcm_substream *substream,
- 		spdif_intr_status_clear(spdif_priv);
- 		regmap_update_bits(regmap, REG_SPDIF_SCR,
- 				SCR_LOW_POWER, SCR_LOW_POWER);
--		if (!IS_ERR(spdif_priv->spbaclk))
--			clk_disable_unprepare(spdif_priv->spbaclk);
--		clk_disable_unprepare(spdif_priv->coreclk);
- 	}
- }
- 
-@@ -1350,6 +1314,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 
- 	/* Register with ASoC */
- 	dev_set_drvdata(&pdev->dev, spdif_priv);
-+	pm_runtime_enable(&pdev->dev);
-+	regcache_cache_only(spdif_priv->regmap, true);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_spdif_component,
- 					      &spdif_priv->cpu_dai_drv, 1);
-@@ -1365,36 +1331,91 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int fsl_spdif_suspend(struct device *dev)
-+#ifdef CONFIG_PM
-+static int fsl_spdif_runtime_suspend(struct device *dev)
- {
- 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
-+	int i;
- 
- 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
- 			&spdif_priv->regcache_srpc);
--
- 	regcache_cache_only(spdif_priv->regmap, true);
--	regcache_mark_dirty(spdif_priv->regmap);
-+
-+	clk_disable_unprepare(spdif_priv->rxclk);
-+
-+	for (i = 0; i < SPDIF_TXRATE_MAX; i++)
-+		clk_disable_unprepare(spdif_priv->txclk[i]);
-+
-+	if (!IS_ERR(spdif_priv->spbaclk))
-+		clk_disable_unprepare(spdif_priv->spbaclk);
-+	clk_disable_unprepare(spdif_priv->coreclk);
- 
- 	return 0;
- }
- 
--static int fsl_spdif_resume(struct device *dev)
-+static int fsl_spdif_runtime_resume(struct device *dev)
- {
- 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
-+	int ret;
-+	int i;
-+
-+	ret = clk_prepare_enable(spdif_priv->coreclk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable core clock\n");
-+		return ret;
-+	}
-+
-+	if (!IS_ERR(spdif_priv->spbaclk)) {
-+		ret = clk_prepare_enable(spdif_priv->spbaclk);
-+		if (ret) {
-+			dev_err(dev, "failed to enable spba clock\n");
-+			goto disable_core_clk;
-+		}
-+	}
-+
-+	for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
-+		ret = clk_prepare_enable(spdif_priv->txclk[i]);
-+		if (ret)
-+			goto disable_spba_clk;
-+	}
-+
-+	ret = clk_prepare_enable(spdif_priv->rxclk);
-+	if (ret)
-+		goto disable_tx_clk;
- 
- 	regcache_cache_only(spdif_priv->regmap, false);
-+	regcache_mark_dirty(spdif_priv->regmap);
- 
- 	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SRPC,
- 			SRPC_CLKSRC_SEL_MASK | SRPC_GAINSEL_MASK,
- 			spdif_priv->regcache_srpc);
- 
--	return regcache_sync(spdif_priv->regmap);
-+	ret = regcache_sync(spdif_priv->regmap);
-+	if (ret)
-+		goto disable_rx_clk;
-+
-+	return 0;
-+
-+disable_rx_clk:
-+	clk_disable_unprepare(spdif_priv->rxclk);
-+disable_tx_clk:
-+disable_spba_clk:
-+	for (i--; i >= 0; i--)
-+		clk_disable_unprepare(spdif_priv->txclk[i]);
-+	if (!IS_ERR(spdif_priv->spbaclk))
-+		clk_disable_unprepare(spdif_priv->spbaclk);
-+disable_core_clk:
-+	clk_disable_unprepare(spdif_priv->coreclk);
-+
-+	return ret;
- }
--#endif /* CONFIG_PM_SLEEP */
-+#endif
- 
- static const struct dev_pm_ops fsl_spdif_pm = {
--	SET_SYSTEM_SLEEP_PM_OPS(fsl_spdif_suspend, fsl_spdif_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+	SET_RUNTIME_PM_OPS(fsl_spdif_runtime_suspend, fsl_spdif_runtime_resume,
-+			   NULL)
- };
- 
- static const struct of_device_id fsl_spdif_dt_ids[] = {
--- 
-2.21.0
-
+#syz dup: KASAN: use-after-free Read in mcba_usb_disconnect
