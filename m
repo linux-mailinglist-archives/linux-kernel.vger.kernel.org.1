@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FFD1FFF0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF4C1FFF09
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 01:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgFRX5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 19:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36162 "EHLO mail.kernel.org"
+        id S1729164AbgFRX5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 19:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728356AbgFRX4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728361AbgFRX4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Jun 2020 19:56:42 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA3B8208B3;
-        Thu, 18 Jun 2020 23:56:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A89F21556;
+        Thu, 18 Jun 2020 23:56:42 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jm4Of-003lRp-05; Thu, 18 Jun 2020 19:56:41 -0400
-Message-ID: <20200618235640.884948657@goodmis.org>
+        id 1jm4Of-003lSL-51; Thu, 18 Jun 2020 19:56:41 -0400
+Message-ID: <20200618235641.020682640@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 18 Jun 2020 19:56:08 -0400
+Date:   Thu, 18 Jun 2020 19:56:09 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        YangHui <yanghui.def@gmail.com>
-Subject: [for-linus][PATCH 12/17] tracing: Remove unused event variable in tracing_iter_reset
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-linus][PATCH 13/17] proc/bootconfig: Fix to use correct quotes for value
 References: <20200618235556.451120786@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,37 +36,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YangHui <yanghui.def@gmail.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-We do not use the event variable, just remove it.
+Fix /proc/bootconfig to select double or single quotes
+corrctly according to the value.
 
-Signed-off-by: YangHui <yanghui.def@gmail.com>
+If a bootconfig value includes a double quote character,
+we must use single-quotes to quote that value.
+
+This modifies if() condition and blocks for avoiding
+double-quote in value check in 2 places. Anyway, since
+xbc_array_for_each_value() can handle the array which
+has a single node correctly.
+Thus,
+
+if (vnode && xbc_node_is_array(vnode)) {
+	xbc_array_for_each_value(vnode)	/* vnode->next != NULL */
+		...
+} else {
+	snprintf(val); /* val is an empty string if !vnode */
+}
+
+is equivalent to
+
+if (vnode) {
+	xbc_array_for_each_value(vnode)	/* vnode->next can be NULL */
+		...
+} else {
+	snprintf("");	/* value is always empty */
+}
+
+Link: http://lkml.kernel.org/r/159230244786.65555.3763894451251622488.stgit@devnote2
+
+Cc: stable@vger.kernel.org
+Fixes: c1a3c36017d4 ("proc: bootconfig: Add /proc/bootconfig to show boot config list")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/proc/bootconfig.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index ec44b0e2a19c..bb62269724d5 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3570,7 +3570,6 @@ static void *s_next(struct seq_file *m, void *v, loff_t *pos)
- 
- void tracing_iter_reset(struct trace_iterator *iter, int cpu)
+diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+index 9955d75c0585..ad31ec4ad627 100644
+--- a/fs/proc/bootconfig.c
++++ b/fs/proc/bootconfig.c
+@@ -26,8 +26,9 @@ static int boot_config_proc_show(struct seq_file *m, void *v)
+ static int __init copy_xbc_key_value_list(char *dst, size_t size)
  {
--	struct ring_buffer_event *event;
- 	struct ring_buffer_iter *buf_iter;
- 	unsigned long entries = 0;
- 	u64 ts;
-@@ -3588,7 +3587,7 @@ void tracing_iter_reset(struct trace_iterator *iter, int cpu)
- 	 * that a reset never took place on a cpu. This is evident
- 	 * by the timestamp being before the start of the buffer.
- 	 */
--	while ((event = ring_buffer_iter_peek(buf_iter, &ts))) {
-+	while (ring_buffer_iter_peek(buf_iter, &ts)) {
- 		if (ts >= iter->array_buffer->time_start)
+ 	struct xbc_node *leaf, *vnode;
+-	const char *val;
+ 	char *key, *end = dst + size;
++	const char *val;
++	char q;
+ 	int ret = 0;
+ 
+ 	key = kzalloc(XBC_KEYLEN_MAX, GFP_KERNEL);
+@@ -41,16 +42,20 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
  			break;
- 		entries++;
+ 		dst += ret;
+ 		vnode = xbc_node_get_child(leaf);
+-		if (vnode && xbc_node_is_array(vnode)) {
++		if (vnode) {
+ 			xbc_array_for_each_value(vnode, val) {
+-				ret = snprintf(dst, rest(dst, end), "\"%s\"%s",
+-					val, vnode->next ? ", " : "\n");
++				if (strchr(val, '"'))
++					q = '\'';
++				else
++					q = '"';
++				ret = snprintf(dst, rest(dst, end), "%c%s%c%s",
++					q, val, q, vnode->next ? ", " : "\n");
+ 				if (ret < 0)
+ 					goto out;
+ 				dst += ret;
+ 			}
+ 		} else {
+-			ret = snprintf(dst, rest(dst, end), "\"%s\"\n", val);
++			ret = snprintf(dst, rest(dst, end), "\"\"\n");
+ 			if (ret < 0)
+ 				break;
+ 			dst += ret;
 -- 
 2.26.2
 
