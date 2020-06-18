@@ -2,146 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A23F1FE736
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788341FE807
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731212AbgFRCjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 22:39:40 -0400
-Received: from mail.wingtech.com ([180.166.216.14]:54487 "EHLO
-        mail.wingtech.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726945AbgFRCjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 22:39:36 -0400
-Received: from mx.wingtech.com ([192.168.2.43])
-        by mail.wingtech.com  with SMTP id 05I2dTn2019918-05I2dTn3019918
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 10:39:29 +0800
-Received: from 192.168.51.143 (HELO ZHAOWUYUN); Thu, 18 Jun 2020 10:39:26 +0800
-From:   "Zac" <zhaowuyun@wingtech.com>
-To:     "'Chao Yu'" <yuchao0@huawei.com>, <jaegeuk@kernel.org>
-Cc:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <1592384659-20203-1-git-send-email-zhaowuyun@wingtech.com> <86069ba3-cba3-7bc9-c90b-e931abd0dde5@huawei.com>
-In-Reply-To: <86069ba3-cba3-7bc9-c90b-e931abd0dde5@huawei.com>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBmMmZzOiBmaXggYSByYWNlIGNvbmRpdGlvbg==?=
-        =?gb2312?B?IGJldHdlZW4gZjJmc193cml0ZV9lbmRfaW8gYW5kIGYyZnNfZGVsXw==?=
-        =?gb2312?B?ZnN5bmNfbm9kZV9lbnRyeQ==?=
-Date:   Thu, 18 Jun 2020 10:39:28 +0800
-Message-ID: <000001d64519$b05a1180$110e3480$@wingtech.com>
+        id S2387846AbgFRCp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:45:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53268 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728699AbgFRCpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 22:45:12 -0400
+IronPort-SDR: Ux7dnncKW/DR8W3iYQuEqc71TxZsNcb+j3u5WOlvIhpzyMwSWVdwJKym4dbJOLxSohgmYoAOdP
+ Rqk55AtJ2Mvw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2020 19:45:07 -0700
+IronPort-SDR: vpicNZtjBybqYaFOP44BICPVKXb3Pvn9De0zl/oFkhlVn6TxJ21knTXZDAFMHRPK7DEkd0T4dd
+ 1COwYAtbAjBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,524,1583222400"; 
+   d="scan'208";a="291623926"
+Received: from xingzhen-mobl1.ccr.corp.intel.com (HELO [10.238.6.47]) ([10.238.6.47])
+  by orsmga002.jf.intel.com with ESMTP; 17 Jun 2020 19:45:02 -0700
+Subject: Re: [LKP] [sched/fair] 070f5e860e: reaim.jobs_per_min -10.5%
+ regression
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200319023819.GO11705@shao2-debian>
+ <20200612110616.20264-1-hdanton@sina.com>
+ <90f4036d-bb16-af67-8776-a2cbe67dfe7f@linux.intel.com>
+ <20200615081041.GA16990@vingu-book>
+ <d60343e9-b3a0-bdc7-84f4-e8c912f92c46@linux.intel.com>
+ <20200616065432.GA18401@vingu-book>
+ <3de4937b-1dcd-6d2e-836f-fed1c295dd7c@linux.intel.com>
+ <20200617145725.GA12524@vingu-book> <20200617162558.GA3253@vingu-book>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <451eabaf-c425-8e05-f5d4-3074c867cea6@linux.intel.com>
+Date:   Thu, 18 Jun 2020 10:45:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="gb2312"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJusS8b7G89rONhvQTSKQ9/POQtRgGSiybFp6A8L1A=
-Content-Language: zh-cn
+In-Reply-To: <20200617162558.GA3253@vingu-book>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On 2020/6/17 17:04, zhaowuyun@wingtech.com wrote:
-> > From: Wuyun Zhao <zhaowuyun@wingtech.com>
-> >
-> > Under some condition, the __write_node_page will submit a page which is
-> not
-> > f2fs_in_warm_node_list and will not call f2fs_add_fsync_node_entry.
-> > f2fs_gc continue to run to invoke f2fs_iget -> do_read_inode to read the
-> same node page
-> > and set code node, which make f2fs_in_warm_node_list become true,
-> > that will cause f2fs_bug_on in f2fs_del_fsync_node_entry when
-> f2fs_write_end_io called.
-> Could you please add below race condition description into commit
-> message?
+
+On 6/18/2020 12:25 AM, Vincent Guittot wrote:
+> Le mercredi 17 juin 2020 à 16:57:25 (+0200), Vincent Guittot a écrit :
+>> Le mercredi 17 juin 2020 à 08:30:21 (+0800), Xing Zhengjun a écrit :
+>>>
+>>>
+>>> On 6/16/2020 2:54 PM, Vincent Guittot wrote:
+>>>>
+>>>> Hi Xing,
+>>>>
+>>>> Le mardi 16 juin 2020 à 11:17:16 (+0800), Xing Zhengjun a écrit :
+>>>>>
+>>>>>
+>>>>> On 6/15/2020 4:10 PM, Vincent Guittot wrote:
+>>>>>> Hi Xing,
+>>>>>>
+>>>>>> Le lundi 15 juin 2020 à 15:26:59 (+0800), Xing Zhengjun a écrit :
+>>>>>>>
+>>>>>>>
+>>>>>>> On 6/12/2020 7:06 PM, Hillf Danton wrote:
+>>>>>>>>
+>>>>>>>> On Fri, 12 Jun 2020 14:36:49 +0800 Xing Zhengjun wrote:
+>>>>>>
+>>>>
+>>>> ...
+>>>>
+> ...
+>>>
+>>> I apply the patch based on v5.7, the test result is as the following:
+>>>
+>>> =========================================================================================
+>>> tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+>>>
+>>> lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+>>>
+>>> commit:
+>>>    9f68395333ad7f5bfe2f83473fed363d4229f11c
+>>>    070f5e860ee2bf588c99ef7b4c202451faa48236
+>>>    v5.7
+>>>    63a5d0fbb5ec62f5148c251c01e709b8358cd0ee (the test patch)
+>>>
+>>> 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+>>> 63a5d0fbb5ec62f5148c251c01e
+>>> ---------------- --------------------------- ---------------------------
+>>> ---------------------------
+>>>           %stddev     %change         %stddev     %change %stddev     %change
+>>> %stddev
+>>>               \          |                \          |                \
+>>> |                \
+>>>        0.69           -10.3%       0.62            -9.1%       0.62
+>>> +1.0%       0.69        reaim.child_systime
+>>>        0.62            -1.0%       0.61            +0.5%       0.62
+>>> -0.1%       0.62        reaim.child_utime
+>>>       66870           -10.0%      60187            -7.6%      61787
+>>> +1.1%      67636        reaim.jobs_per_min
+>>>       16717           -10.0%      15046            -7.6%      15446
+>>> +1.1%      16909        reaim.jobs_per_min_child
+>>
+>> OK. So the regression disappears when the conditions on runnable_avg are removed.
+>>
+>> In the meantime, I have been able to understand more deeply what was happeningi
+>> for this bench and how it is impacted by
+>>    commit: 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
+>>
+>> This bench forks a new thread for each and every new step. But a newly forked
+>> threads start with a load_avg and a runnable_avg set to max whereas the threads
+>> are running shortly before exiting. This makes the CPU to be set overloaded in
+>> some case whereas it isn't.
+>>
+>> Could you try the patch below ?
+>> It fixes the problem on my setup (I have finally been able to reproduce the problem)
+>>
+>> ---
+>>   kernel/sched/fair.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 0aeffff62807..b33a4a9e1491 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -807,7 +807,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+>>   		}
+>>   	}
+>>   
+>> -	sa->runnable_avg = cpu_scale;
+>> +	sa->runnable_avg = sa->util_avg;
+>>   
+>>   	if (p->sched_class != &fair_sched_class) {
+>>   		/*
+>> -- 
+>> 2.17.1
+>>
 > 
-> - f2fs_write_end_io
-> 					- f2fs_iget
-> 					 - do_read_inode
-> 					  - set_cold_node
-> 					  recover cold node flag
->  - f2fs_in_warm_node_list
->   - is_cold_node
->   if node is cold, assume we have added
->   node to fsync_node_list during writepages()
->  - f2fs_del_fsync_node_entry
->   - f2fs_bug_on() due to node page
->   is not in fsync_node_list
-
-Ok, will add the commit message.
-
-> BTW, I'm curious about why we can lose cold flag for non-dir inode?
-> any clue to reproduce this bug (I mean losing cold flag)?
-
-it's a f2fs image with 25600MB
-flash this image to device
-the device will resize it according to the userdata partition size which is
-about 94GB
-the device mount the f2fs partition
-then hit this f2fs_bug_on
-
-seems that the cold flag is not been set when mkfs
-
-I think the issue is that
-
-1. the node page in the storage is without cold bit
-2. f2fs_disable_checkpoint -> f2fs_gc -> f2fs_get_node_page, this page won't
-be set cold flag
-3. f2fs_move_node_page -> __write_node_page to write this page
-4. f2fs_gc -> f2fs_iget -> do_read_inode to read this page and set cold flag
-
-> >
-> > [   34.966133] Call trace:
-> > [   34.969902]  f2fs_del_fsync_node_entry+0x100/0x108
-> > [   34.976071]  f2fs_write_end_io+0x1e0/0x288
-> > [   34.981539]  bio_endio+0x248/0x270
-> > [   34.986289]  blk_update_request+0x2b0/0x4d8
-> > [   34.991841]  scsi_end_request+0x40/0x440
-> > [   34.997126]  scsi_io_completion+0xa4/0x748
-> > [   35.002593]  scsi_finish_command+0xdc/0x110
-> > [   35.008143]  scsi_softirq_done+0x118/0x150
-> > [   35.013610]  blk_done_softirq+0x8c/0xe8
-> > [   35.018811]  __do_softirq+0x2e8/0x578
-> > [   35.023828]  irq_exit+0xfc/0x120
-> > [   35.028398]  handle_IPI+0x1d8/0x330
-> > [   35.033233]  gic_handle_irq+0x110/0x1d4
-> > [   35.038433]  el1_irq+0xb4/0x130
-> > [   35.042917]  kmem_cache_alloc+0x3f0/0x418
-> > [   35.048288]  radix_tree_node_alloc+0x50/0xf8
-> > [   35.053933]  __radix_tree_create+0xf8/0x188
-> > [   35.059484]  __radix_tree_insert+0x3c/0x128
-> > [   35.065035]  add_gc_inode+0x90/0x118
-> > [   35.069967]  f2fs_gc+0x1b80/0x2d70
-> > [   35.074718]  f2fs_disable_checkpoint+0x94/0x1d0
-> > [   35.080621]  f2fs_fill_super+0x10c4/0x1b88
-> > [   35.086088]  mount_bdev+0x194/0x1e0
-> > [   35.090923]  f2fs_mount+0x40/0x50
-> > [   35.095589]  mount_fs+0xb4/0x190
-> > [   35.100159]  vfs_kern_mount+0x80/0x1d8
-> > [   35.105260]  do_mount+0x478/0xf18
-> > [   35.109926]  ksys_mount+0x90/0xd0
-> > [   35.114592]  __arm64_sys_mount+0x24/0x38
-> >
-> > Signed-off-by: Wuyun Zhao <zhaowuyun@wingtech.com>
+> The patch above tries to move back to the group in the same classification as
+> before but this could harm other benchmarks.
 > 
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> There is another way to fix this by easing the migration of task in the case
+> of migrate_util imbalance.
 > 
-> Thanks,
+> Could you also try the patch below instead of the one above ?
 > 
-> > ---
-> >  fs/f2fs/inode.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> > index be6ac33..0df5c8c 100644
-> > --- a/fs/f2fs/inode.c
-> > +++ b/fs/f2fs/inode.c
-> > @@ -402,6 +402,7 @@ static int do_read_inode(struct inode *inode)
-> >
-> >  	/* try to recover cold bit for non-dir inode */
-> >  	if (!S_ISDIR(inode->i_mode) && !is_cold_node(node_page)) {
-> > +		f2fs_wait_on_page_writeback(node_page, NODE, true, true);
-> >  		set_cold_node(node_page, false);
-> >  		set_page_dirty(node_page);
-> >  	}
-> >
+> ---
+>   kernel/sched/fair.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 0aeffff62807..fcaf66c4d086 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7753,7 +7753,8 @@ static int detach_tasks(struct lb_env *env)
+>   		case migrate_util:
+>   			util = task_util_est(p);
+> 
+> -			if (util > env->imbalance)
+> +			if (util/2 > env->imbalance &&
+> +			    env->sd->nr_balance_failed <= env->sd->cache_nice_tries)
+>   				goto next;
+> 
+>   			env->imbalance -= util;
+> --
+> 2.17.1
+> 
+> 
 
+I apply the patch based on v5.7, the test result is as the following:
+
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+ 
+lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+
+commit:
+   9f68395333ad7f5bfe2f83473fed363d4229f11c
+   070f5e860ee2bf588c99ef7b4c202451faa48236
+   v5.7
+   69c81543653bf5f2c7105086502889fa019c15cb  (the test patch)
+
+9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7 
+69c81543653bf5f2c7105086502
+---------------- --------------------------- --------------------------- 
+---------------------------
+          %stddev     %change         %stddev     %change 
+%stddev     %change         %stddev
+              \          |                \          |                \ 
+         |                \
+       0.69           -10.3%       0.62            -9.1%       0.62 
+       -7.6%       0.63        reaim.child_systime
+       0.62            -1.0%       0.61            +0.5%       0.62 
+       +1.9%       0.63        reaim.child_utime
+      66870           -10.0%      60187            -7.6%      61787 
+       -5.9%      62947        reaim.jobs_per_min
+      16717           -10.0%      15046            -7.6%      15446 
+       -5.9%      15736        reaim.jobs_per_min_child
+      97.84            -1.1%      96.75            -0.4%      97.43 
+       -0.4%      97.47        reaim.jti
+      72000           -10.8%      64216            -8.3%      66000 
+       -5.7%      67885        reaim.max_jobs_per_min
+       0.36           +10.6%       0.40            +7.8%       0.39 
+       +6.0%       0.38        reaim.parent_time
+       1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 
+2%     +23.6%       1.95 ±  3%  reaim.std_dev_percent
+       0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 
+7%     +43.2%       0.01 ±  5%  reaim.std_dev_time
+      50800            -2.4%      49600            -1.6%      50000 
+       -0.8%      50400        reaim.workload
+
+
+>>
+>>
+>>>       97.84            -1.1%      96.75            -0.4%      97.43
+>>> +0.3%      98.09        reaim.jti
+>>>       72000           -10.8%      64216            -8.3%      66000
+>>> +0.0%      72000        reaim.max_jobs_per_min
+>>>        0.36           +10.6%       0.40            +7.8%       0.39
+>>> -1.1%       0.36        reaim.parent_time
+>>>        1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+>>> -11.9%       1.39 ±  4%  reaim.std_dev_percent
+>>>        0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+>>> -27.3%       0.00 ± 15%  reaim.std_dev_time
+>>>       50800            -2.4%      49600            -1.6%      50000
+>>> +0.0%      50800        reaim.workload
+>>>
+>>>
+>>>>>
+>>>>> =========================================================================================
+>>>>> tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+>>>>>
+>>>>> lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+>>>>>
+>>>>> commit:
+>>>>>     9f68395333ad7f5bfe2f83473fed363d4229f11c
+>>>>>     070f5e860ee2bf588c99ef7b4c202451faa48236
+>>>>>     v5.7
+>>>>>     3e1643da53f3fc7414cfa3ad2a16ab2a164b7f4d (the test patch)
+>>>>>
+>>>>> 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+>>>>> 3e1643da53f3fc7414cfa3ad2a1
+>>>>> ---------------- --------------------------- ---------------------------
+>>>>> ---------------------------
+>>>>>            %stddev     %change         %stddev     %change %stddev     %change
+>>>>> %stddev
+>>>>>                \          |                \          |                \
+>>>>> |                \
+>>>>>         0.69           -10.3%       0.62            -9.1%       0.62
+>>>>> -7.1%       0.64        reaim.child_systime
+>>>>>         0.62            -1.0%       0.61            +0.5%       0.62
+>>>>> +1.3%       0.63        reaim.child_utime
+>>>>>        66870           -10.0%      60187            -7.6%      61787
+>>>>> -6.1%      62807        reaim.jobs_per_min
+>>>>>        16717           -10.0%      15046            -7.6%      15446
+>>>>> -6.1%      15701        reaim.jobs_per_min_child
+>>>>>        97.84            -1.1%      96.75            -0.4%      97.43
+>>>>> -0.5%      97.34        reaim.jti
+>>>>>        72000           -10.8%      64216            -8.3%      66000
+>>>>> -5.7%      67885        reaim.max_jobs_per_min
+>>>>>         0.36           +10.6%       0.40            +7.8%       0.39
+>>>>> +6.9%       0.38        reaim.parent_time
+>>>>>         1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+>>>>> +32.5%       2.09 ±  6%  reaim.std_dev_percent
+>>>>>         0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+>>>>> +61.7%       0.01 ±  8%  reaim.std_dev_time
+>>>>>        50800            -2.4%      49600            -1.6%      50000
+>>>>> -1.3%      50133        reaim.workload
+>>>>>
+>>>>>
+>>>>>>>
+>>>>>>> =========================================================================================
+>>>>>>> tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup/test/cpufreq_governor/ucode:
+>>>>>>>
+>>>>>>> lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s/100%/test/five_sec/performance/0x21
+>>>>>>>
+>>>>>>> commit:
+>>>>>>>      9f68395333ad7f5bfe2f83473fed363d4229f11c
+>>>>>>>      070f5e860ee2bf588c99ef7b4c202451faa48236
+>>>>>>>      v5.7
+>>>>>>>      6b33257768b8dd3982054885ea310871be2cfe0b (Hillf's patch)
+>>>>>>>
+>>>>>>> 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.7
+>>>>>>> 6b33257768b8dd3982054885ea3
+>>>>>>> ---------------- --------------------------- ---------------------------
+>>>>>>> ---------------------------
+>>>>>>>             %stddev     %change         %stddev     %change %stddev     %change
+>>>>>>> %stddev
+>>>>>>>                 \          |                \          |                \
+>>>>>>> |                \
+>>>>>>>          0.69           -10.3%       0.62            -9.1%       0.62
+>>>>>>> -10.1%       0.62        reaim.child_systime
+>>>>>>>          0.62            -1.0%       0.61            +0.5%       0.62
+>>>>>>> +0.3%       0.62        reaim.child_utime
+>>>>>>>         66870           -10.0%      60187            -7.6%      61787
+>>>>>>> -8.3%      61305        reaim.jobs_per_min
+>>>>>>>         16717           -10.0%      15046            -7.6%      15446
+>>>>>>> -8.3%      15326        reaim.jobs_per_min_child
+>>>>>>>         97.84            -1.1%      96.75            -0.4%      97.43
+>>>>>>> -0.5%      97.37        reaim.jti
+>>>>>>>         72000           -10.8%      64216            -8.3%      66000
+>>>>>>> -8.3%      66000        reaim.max_jobs_per_min
+>>>>>>>          0.36           +10.6%       0.40            +7.8%       0.39
+>>>>>>> +9.4%       0.39        reaim.parent_time
+>>>>>>>          1.58 ±  2%     +71.0%       2.70 ±  2%     +26.9%       2.01 ± 2%
+>>>>>>> +33.2%       2.11        reaim.std_dev_percent
+>>>>>>>          0.00 ±  5%    +110.4%       0.01 ±  3%     +48.8%       0.01 ± 7%
+>>>>>>> +65.3%       0.01 ±  3%  reaim.std_dev_time
+>>>>>>>         50800            -2.4%      49600            -1.6%      50000
+>>>>>>> -1.8%      49866        reaim.workload
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> -- 
+>>>>>>> Zhengjun Xing
+>>>>>
+>>>>> -- 
+>>>>> Zhengjun Xing
+>>>
+>>> -- 
+>>> Zhengjun Xing
+
+-- 
+Zhengjun Xing
