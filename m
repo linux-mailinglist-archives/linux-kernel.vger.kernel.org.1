@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407A1FE181
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920921FE09C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 03:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733230AbgFRBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:55:12 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:44721 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729790AbgFRBZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:25:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592443546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y7xJe4wll8RNT7ZvRCMxIEw6+h6IlLNJEj6S4QZiEyg=;
-        b=bK1Z2s5NJT9WsMpxWp8hi9zPoQMzMglrY66d07/qVJ73brcBfV0GY+0G6jncKSJUBiPH69
-        4rNejfNLOIEkWnsXYjhY2aExNCb8YM+icqM6qeaG9wSIOloPZZhhRqxOKEo22YKbdhuWOt
-        ctUtK7GNSOS8l+AVZ/umwEVjBYK1vDc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-VWZLx5xVO2-22TnHDUQr5w-1; Wed, 17 Jun 2020 21:25:43 -0400
-X-MC-Unique: VWZLx5xVO2-22TnHDUQr5w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1733156AbgFRBsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 21:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731335AbgFRB1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:27:53 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C83A58018A6;
-        Thu, 18 Jun 2020 01:25:41 +0000 (UTC)
-Received: from x1.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 67DEA7CAC4;
-        Thu, 18 Jun 2020 01:25:41 +0000 (UTC)
-Date:   Wed, 17 Jun 2020 19:25:40 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qian Cai <cai@lca.pw>, kvm@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 191/266] vfio/pci: fix memory leaks of
- eventfd ctx
-Message-ID: <20200617192540.7da361fd@x1.home>
-In-Reply-To: <20200618011631.604574-191-sashal@kernel.org>
-References: <20200618011631.604574-1-sashal@kernel.org>
-        <20200618011631.604574-191-sashal@kernel.org>
-Organization: Red Hat
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C778221F7;
+        Thu, 18 Jun 2020 01:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592443673;
+        bh=H09lIr58TSUWoVk6WcWtTsuF+1QdjEMVrxFDP/b/wOE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VZTHdVZejs4wfzvN35FTtdmCDswOSJHMKTiREfoNm21C2mRKumMXFH1lJ++/OE+Vj
+         9wEBBY6+BW2gDtJbjfqSiK77MYKH044E9BQpwLy2NMA10Si/01JXzhHxc7gqqO951+
+         ySFgNN12cPQ5N2gxF891AV9G0ZoSXWvrEtvEpV30=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.14 089/108] gfs2: Allow lock_nolock mount to specify jid=X
+Date:   Wed, 17 Jun 2020 21:25:41 -0400
+Message-Id: <20200618012600.608744-89-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200618012600.608744-1-sashal@kernel.org>
+References: <20200618012600.608744-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 21:15:16 -0400
-Sasha Levin <sashal@kernel.org> wrote:
+From: Bob Peterson <rpeterso@redhat.com>
 
-> From: Qian Cai <cai@lca.pw>
-> 
-> [ Upstream commit 1518ac272e789cae8c555d69951b032a275b7602 ]
-> 
-> Finished a qemu-kvm (-device vfio-pci,host=0001:01:00.0) triggers a few
-> memory leaks after a while because vfio_pci_set_ctx_trigger_single()
-> calls eventfd_ctx_fdget() without the matching eventfd_ctx_put() later.
-> Fix it by calling eventfd_ctx_put() for those memory in
-> vfio_pci_release() before vfio_device_release().
-> 
-> unreferenced object 0xebff008981cc2b00 (size 128):
->   comm "qemu-kvm", pid 4043, jiffies 4294994816 (age 9796.310s)
->   hex dump (first 32 bytes):
->     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
->     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
->   backtrace:
->     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
->     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
->     [<000000005fcec025>] do_eventfd+0x54/0x1ac
->     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
->     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
->     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
->     [<00000000d495ef94>] el0_sync+0x164/0x180
-> unreferenced object 0x29ff008981cc4180 (size 128):
->   comm "qemu-kvm", pid 4043, jiffies 4294994818 (age 9796.290s)
->   hex dump (first 32 bytes):
->     01 00 00 00 6b 6b 6b 6b 00 00 00 00 ad 4e ad de  ....kkkk.....N..
->     ff ff ff ff 6b 6b 6b 6b ff ff ff ff ff ff ff ff  ....kkkk........
->   backtrace:
->     [<00000000917e8f8d>] slab_post_alloc_hook+0x74/0x9c
->     [<00000000df0f2aa2>] kmem_cache_alloc_trace+0x2b4/0x3d4
->     [<000000005fcec025>] do_eventfd+0x54/0x1ac
->     [<0000000082791a69>] __arm64_sys_eventfd2+0x34/0x44
->     [<00000000b819758c>] do_el0_svc+0x128/0x1dc
->     [<00000000b244e810>] el0_sync_handler+0xd0/0x268
->     [<00000000d495ef94>] el0_sync+0x164/0x180
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 02206162eaa9..d917dd2df3b3 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -472,6 +472,10 @@ static void vfio_pci_release(void *device_data)
->  	if (!(--vdev->refcnt)) {
->  		vfio_spapr_pci_eeh_release(vdev->pdev);
->  		vfio_pci_disable(vdev);
-> +		if (vdev->err_trigger)
-> +			eventfd_ctx_put(vdev->err_trigger);
-> +		if (vdev->req_trigger)
-> +			eventfd_ctx_put(vdev->req_trigger);
->  	}
->  
->  	mutex_unlock(&vdev->reflck->lock);
+[ Upstream commit ea22eee4e6027d8927099de344f7fff43c507ef9 ]
 
-This has a fix pending, I'd suggest not picking it on its own:
+Before this patch, a simple typo accidentally added \n to the jid=
+string for lock_nolock mounts. This made it impossible to mount a
+gfs2 file system with a journal other than journal0. Thus:
 
-https://lore.kernel.org/kvm/20200616085052.sahrunsesjyjeyf2@beryllium.lan/
-https://lore.kernel.org/kvm/159234276956.31057.6902954364435481688.stgit@gimli.home/
+mount -tgfs2 -o hostdata="jid=1" <device> <mount pt>
 
-Thanks,
-Alex
+Resulted in:
+mount: wrong fs type, bad option, bad superblock on <device>
+
+In most cases this is not a problem. However, for debugging and
+testing purposes we sometimes want to test the integrity of other
+journals. This patch removes the unnecessary \n and thus allows
+lock_nolock users to specify an alternate journal.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/gfs2/ops_fstype.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 057be88eb1b4..7ed0359ebac6 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -922,7 +922,7 @@ static int init_per_node(struct gfs2_sbd *sdp, int undo)
+ }
+ 
+ static const match_table_t nolock_tokens = {
+-	{ Opt_jid, "jid=%d\n", },
++	{ Opt_jid, "jid=%d", },
+ 	{ Opt_err, NULL },
+ };
+ 
+-- 
+2.25.1
 
