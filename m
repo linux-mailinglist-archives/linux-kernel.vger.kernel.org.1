@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9371FE878
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E411B1FE882
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Jun 2020 04:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgFRBJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Jun 2020 21:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36342 "EHLO mail.kernel.org"
+        id S2387947AbgFRCtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Jun 2020 22:49:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728254AbgFRBJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:09:41 -0400
+        id S1728263AbgFRBJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:09:43 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD79121D91;
-        Thu, 18 Jun 2020 01:09:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0175521D81;
+        Thu, 18 Jun 2020 01:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442581;
-        bh=EOEpLFrpL07cKV3jYLatlv8jhS7AwfBNhQfXh5nU21g=;
+        s=default; t=1592442582;
+        bh=Z/WbnyE4ZXlpudncQs5OzvRsFKu8fkgoznjwuRiGmao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uy+/TZ0yloQvgMeKWzRgLRzrQCjri7sRH5kprHCOAqCbzQGMIv8s4H6Nul3MpHbve
-         MbqVHs1oX1pVvwR8x3vXLZKfKCWlvNsH4tBK1d0oJ5zJkGX8PstWo54/dLVGFeY2DN
-         4F/HLaOTNHauH81idCkX3Ni2BCKmM4FxsiHyyQwQ=
+        b=JpN6VQNsojOp6CB8w9rmfTF1tJH4oTiDOjGDeFPQ06AHdza97EAVpzNZWFI8xHzmG
+         /Bk9D/rr2+PHPAz+8Y9tAbVyi+42VzoUQZDDdFQYWDkHeIFHkd7N88fzDH4QeNujqJ
+         R8t7ZcivvRSHs/IqJDuKYtVbgNzpGAo5h0n3Asnk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com
-Subject: [PATCH AUTOSEL 5.7 073/388] mfd: wm8994: Fix driver operation if loaded as modules
-Date:   Wed, 17 Jun 2020 21:02:50 -0400
-Message-Id: <20200618010805.600873-73-sashal@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 074/388] scsi: cxgb3i: Fix some leaks in init_act_open()
+Date:   Wed, 17 Jun 2020 21:02:51 -0400
+Message-Id: <20200618010805.600873-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -44,36 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d4f9b5428b53dd67f49ee8deed8d4366ed6b1933 ]
+[ Upstream commit b6170a49c59c27a10efed26c5a2969403e69aaba ]
 
-WM8994 chip has built-in regulators, which might be used for chip
-operation. They are controlled by a separate wm8994-regulator driver,
-which should be loaded before this driver calls regulator_get(), because
-that driver also provides consumer-supply mapping for the them. If that
-driver is not yet loaded, regulator core substitute them with dummy
-regulator, what breaks chip operation, because the built-in regulators are
-never enabled. Fix this by annotating this driver with MODULE_SOFTDEP()
-"pre" dependency to "wm8994_regulator" module.
+There wasn't any clean up done if cxgb3_alloc_atid() failed and also the
+original code didn't release "csk->l2t".
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20200521121221.GA247492@mwanda
+Fixes: 6f7efaabefeb ("[SCSI] cxgb3i: change cxgb3i to use libcxgbi")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/wm8994-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/cxgbi/cxgb3i/cxgb3i.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index 1e9fe7d92597..737dede4a95c 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -690,3 +690,4 @@ module_i2c_driver(wm8994_i2c_driver);
- MODULE_DESCRIPTION("Core support for the WM8994 audio CODEC");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
-+MODULE_SOFTDEP("pre: wm8994_regulator");
+diff --git a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
+index 524cdbcd29aa..ec7d01f6e2d5 100644
+--- a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
++++ b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
+@@ -959,6 +959,7 @@ static int init_act_open(struct cxgbi_sock *csk)
+ 	struct net_device *ndev = cdev->ports[csk->port_id];
+ 	struct cxgbi_hba *chba = cdev->hbas[csk->port_id];
+ 	struct sk_buff *skb = NULL;
++	int ret;
+ 
+ 	log_debug(1 << CXGBI_DBG_TOE | 1 << CXGBI_DBG_SOCK,
+ 		"csk 0x%p,%u,0x%lx.\n", csk, csk->state, csk->flags);
+@@ -979,16 +980,16 @@ static int init_act_open(struct cxgbi_sock *csk)
+ 	csk->atid = cxgb3_alloc_atid(t3dev, &t3_client, csk);
+ 	if (csk->atid < 0) {
+ 		pr_err("NO atid available.\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto put_sock;
+ 	}
+ 	cxgbi_sock_set_flag(csk, CTPF_HAS_ATID);
+ 	cxgbi_sock_get(csk);
+ 
+ 	skb = alloc_wr(sizeof(struct cpl_act_open_req), 0, GFP_KERNEL);
+ 	if (!skb) {
+-		cxgb3_free_atid(t3dev, csk->atid);
+-		cxgbi_sock_put(csk);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto free_atid;
+ 	}
+ 	skb->sk = (struct sock *)csk;
+ 	set_arp_failure_handler(skb, act_open_arp_failure);
+@@ -1010,6 +1011,15 @@ static int init_act_open(struct cxgbi_sock *csk)
+ 	cxgbi_sock_set_state(csk, CTP_ACTIVE_OPEN);
+ 	send_act_open_req(csk, skb, csk->l2t);
+ 	return 0;
++
++free_atid:
++	cxgb3_free_atid(t3dev, csk->atid);
++put_sock:
++	cxgbi_sock_put(csk);
++	l2t_release(t3dev, csk->l2t);
++	csk->l2t = NULL;
++
++	return ret;
+ }
+ 
+ cxgb3_cpl_handler_func cxgb3i_cpl_handlers[NUM_CPL_CMDS] = {
 -- 
 2.25.1
 
