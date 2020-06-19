@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071402012BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA5D2012B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405375AbgFSPzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:55:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52658 "EHLO mail.kernel.org"
+        id S2392073AbgFSPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392840AbgFSPVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:21:21 -0400
+        id S2392848AbgFSPV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:21:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5384A20706;
-        Fri, 19 Jun 2020 15:21:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97D1321582;
+        Fri, 19 Jun 2020 15:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580079;
-        bh=rl7zVDYqGxocr79XUZScztG4oxq9RmTVjQCEcsz10+k=;
+        s=default; t=1592580085;
+        bh=UgH8czb3Zqf99cuf6/cq5xSM1xd308oDJ5vXdkILL9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wzHeQ5GSk7ojWbi/8Znhy7YCFJ3FiaBMXnwtI4A1eTkyk6Z11LzXDIbc/9a1UEGEl
-         kh0u0PKEOPULFOx0SH75kQRSRSDNtCIVT3tkVIsAQ90HoqzzWCoAyxrByyd02iqqWS
-         DDq60NWxW3Zv3rQf6DLTA1tRBsL5COtXRxnrPFdA=
+        b=aYRsr6y89jsF1oA/X3Utv4ut4L6wOdTn3dkejmbI7cOlH1+q/oLwzfdDtzSZEdEB9
+         H33UiqN/WiVsd1MWm8lMUWmNGYJlSMDmQ2tAWiaBx3J8009FwPV7ke1Ry1un0lXjng
+         9ufEw5hmfusDQIqeuF6cO9Ui4GoG+D72DC9g4fkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>,
-        Gong junjie <gongjunjie2@huawei.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
+        stable@vger.kernel.org,
+        Venkateswara Naralasetty <vnaralas@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 084/376] drm/hisilicon: Enforce 128-byte stride alignment to fix the hardware limitation
-Date:   Fri, 19 Jun 2020 16:30:02 +0200
-Message-Id: <20200619141714.320930852@linuxfoundation.org>
+Subject: [PATCH 5.7 086/376] ath10k: fix kernel null pointer dereference
+Date:   Fri, 19 Jun 2020 16:30:04 +0200
+Message-Id: <20200619141714.414954120@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,90 +45,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tian Tao <tiantao6@hisilicon.com>
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 
-[ Upstream commit 9c9a8468de21895abc43f45fc86346467217c986 ]
+[ Upstream commit acb31476adc9ff271140cdd4d3c707ff0c97f5a4 ]
 
-because the hardware limitation,The initial color depth must set to 32bpp
-and must set the FB Offset of the display hardware to 128Byte alignment,
-which is used to solve the display problem at 800x600 and 1440x900
-resolution under 16bpp.
+Currently sta airtime is updated without any lock in case of
+host based airtime calculation. Which may result in accessing the
+invalid sta pointer in case of continuous station connect/disconnect.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Signed-off-by: Gong junjie <gongjunjie2@huawei.com>
-Acked-by: Xinliang Liu <xinliang.liu@linaro.org>
-Signed-off-by: Xinliang Liu <xinliang.liu@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1583466184-7060-4-git-send-email-tiantao6@hisilicon.com
+This patch fix the kernel null pointer dereference by updating the
+station airtime with proper RCU lock in case of host based airtime
+calculation.
+
+Proceeding with the analysis of "ARM Kernel Panic".
+The APSS crash happened due to OOPS on CPU 0.
+Crash Signature : Unable to handle kernel NULL pointer dereference
+at virtual address 00000300
+During the crash,
+PC points to "ieee80211_sta_register_airtime+0x1c/0x448 [mac80211]"
+LR points to "ath10k_txrx_tx_unref+0x17c/0x364 [ath10k_core]".
+The Backtrace obtained is as follows:
+[<bf880238>] (ieee80211_sta_register_airtime [mac80211]) from
+[<bf945a38>] (ath10k_txrx_tx_unref+0x17c/0x364 [ath10k_core])
+[<bf945a38>] (ath10k_txrx_tx_unref [ath10k_core]) from
+[<bf9428e4>] (ath10k_htt_txrx_compl_task+0xa50/0xfc0 [ath10k_core])
+[<bf9428e4>] (ath10k_htt_txrx_compl_task [ath10k_core]) from
+[<bf9b9bc8>] (ath10k_pci_napi_poll+0x50/0xf8 [ath10k_pci])
+[<bf9b9bc8>] (ath10k_pci_napi_poll [ath10k_pci]) from
+[<c059e3b0>] (net_rx_action+0xac/0x160)
+[<c059e3b0>] (net_rx_action) from [<c02329a4>] (__do_softirq+0x104/0x294)
+[<c02329a4>] (__do_softirq) from [<c0232b64>] (run_ksoftirqd+0x30/0x90)
+[<c0232b64>] (run_ksoftirqd) from [<c024e358>] (smpboot_thread_fn+0x25c/0x274)
+[<c024e358>] (smpboot_thread_fn) from [<c02482fc>] (kthread+0xd8/0xec)
+
+Tested HW: QCA9888
+Tested FW: 10.4-3.10-00047
+
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1585736290-17661-1-git-send-email-vnaralas@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c  | 9 +++++----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 4 ++--
- drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 2 +-
- 3 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/txrx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-index 55b46a7150a5..cc70e836522f 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-@@ -94,6 +94,10 @@ static int hibmc_plane_atomic_check(struct drm_plane *plane,
- 		return -EINVAL;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 39abf8b12903..f46b9083bbf1 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -84,9 +84,11 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
  
-+	if (state->fb->pitches[0] % 128 != 0) {
-+		DRM_DEBUG_ATOMIC("wrong stride with 128-byte aligned\n");
-+		return -EINVAL;
-+	}
- 	return 0;
- }
++	rcu_read_lock();
+ 	if (txq && txq->sta && skb_cb->airtime_est)
+ 		ieee80211_sta_register_airtime(txq->sta, txq->tid,
+ 					       skb_cb->airtime_est, 0);
++	rcu_read_unlock();
  
-@@ -119,11 +123,8 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
- 	writel(gpu_addr, priv->mmio + HIBMC_CRT_FB_ADDRESS);
- 
- 	reg = state->fb->width * (state->fb->format->cpp[0]);
--	/* now line_pad is 16 */
--	reg = PADDING(16, reg);
- 
--	line_l = state->fb->width * state->fb->format->cpp[0];
--	line_l = PADDING(16, line_l);
-+	line_l = state->fb->pitches[0];
- 	writel(HIBMC_FIELD(HIBMC_CRT_FB_WIDTH_WIDTH, reg) |
- 	       HIBMC_FIELD(HIBMC_CRT_FB_WIDTH_OFFS, line_l),
- 	       priv->mmio + HIBMC_CRT_FB_WIDTH);
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 222356a4f9a8..79a180ae4509 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -94,7 +94,7 @@ static int hibmc_kms_init(struct hibmc_drm_private *priv)
- 	priv->dev->mode_config.max_height = 1200;
- 
- 	priv->dev->mode_config.fb_base = priv->fb_base;
--	priv->dev->mode_config.preferred_depth = 24;
-+	priv->dev->mode_config.preferred_depth = 32;
- 	priv->dev->mode_config.prefer_shadow = 1;
- 
- 	priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
-@@ -307,7 +307,7 @@ static int hibmc_load(struct drm_device *dev)
- 	/* reset all the states of crtc/plane/encoder/connector */
- 	drm_mode_config_reset(dev);
- 
--	ret = drm_fbdev_generic_setup(dev, 16);
-+	ret = drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
- 	if (ret) {
- 		DRM_ERROR("failed to initialize fbdev: %d\n", ret);
- 		goto err;
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-index 99397ac3b363..322bd542e89d 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-@@ -50,7 +50,7 @@ void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
- int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
- 		      struct drm_mode_create_dumb *args)
- {
--	return drm_gem_vram_fill_create_dumb(file, dev, 0, 16, args);
-+	return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
- }
- 
- const struct drm_mode_config_funcs hibmc_mode_funcs = {
+ 	if (ar->bus_param.dev_type != ATH10K_DEV_TYPE_HL)
+ 		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
 -- 
 2.25.1
 
