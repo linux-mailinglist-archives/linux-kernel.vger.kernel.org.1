@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9547C20187B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4481C201878
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405761AbgFSQss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:48:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57954 "EHLO mail.kernel.org"
+        id S2405758AbgFSQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:48:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733300AbgFSOkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:40:08 -0400
+        id S1733303AbgFSOkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:40:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E313721548;
-        Fri, 19 Jun 2020 14:40:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FDA621556;
+        Fri, 19 Jun 2020 14:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577608;
-        bh=M85F/UrtNErsoLcE7Il0r35NAriyOMgFIdxGy9MPaiE=;
+        s=default; t=1592577610;
+        bh=hfapDkEfZmE1hECKHBeJP8PA9TACADmdyv6ViXtOqws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aS2rU+o4D4AjZh1Gv1bNULuOQ3R7Iz+PZWpAs55FErrt6GOv9urh1ISUJRfcdgySz
-         PxZ0rvN5W00Qsi/EDUTmFINkeJSErwvEIQtHybUW0BDJcArgBvcLVEjJOcYppspAZp
-         dMOyaLaKYN3Ph8NZKWV2AMi3B2rLDpblVWtxlTa4=
+        b=vjmM2MahXkgxn17jaaDaZa8JtsrPnmzONYZEkrqJolf90whg663DyhEGCpGKsUKBR
+         +XAPNTOG64RsQ6GAi+kPBRi838L0Lwc/9zwX6EwaE3svM1tSBhrvTLOQaB117bkGRB
+         8kbxZX/kpLMfXGOQtOlT11lEa3y8SubV64JPcmnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 017/128] ACPI: CPPC: Fix reference count leak in acpi_cppc_processor_probe()
-Date:   Fri, 19 Jun 2020 16:31:51 +0200
-Message-Id: <20200619141621.066742251@linuxfoundation.org>
+Subject: [PATCH 4.9 018/128] ACPI: GED: add support for _Exx / _Lxx handler methods
+Date:   Fri, 19 Jun 2020 16:31:52 +0200
+Message-Id: <20200619141621.125988620@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
@@ -43,38 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 4d8be4bc94f74bb7d096e1c2e44457b530d5a170 upstream.
+commit ea6f3af4c5e63f6981c0b0ab8ebec438e2d5ef40 upstream.
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Previous
-commit "b8eb718348b8" fixed a similar problem.
+Per the ACPI spec, interrupts in the range [0, 255] may be handled
+in AML using individual methods whose naming is based on the format
+_Exx or _Lxx, where xx is the hex representation of the interrupt
+index.
 
-Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Add support for this missing feature to our ACPI GED driver.
+
+Cc: v4.9+ <stable@vger.kernel.org> # v4.9+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/cppc_acpi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/acpi/evged.c |   22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -793,8 +793,10 @@ int acpi_cppc_processor_probe(struct acp
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -82,6 +82,8 @@ static acpi_status acpi_ged_request_inte
+ 	struct resource r;
+ 	struct acpi_resource_irq *p = &ares->data.irq;
+ 	struct acpi_resource_extended_irq *pext = &ares->data.extended_irq;
++	char ev_name[5];
++	u8 trigger;
  
- 	ret = kobject_init_and_add(&cpc_ptr->kobj, &cppc_ktype, &cpu_dev->kobj,
- 			"acpi_cppc");
--	if (ret)
-+	if (ret) {
-+		kobject_put(&cpc_ptr->kobj);
- 		goto out_free;
+ 	if (ares->type == ACPI_RESOURCE_TYPE_END_TAG)
+ 		return AE_OK;
+@@ -90,14 +92,28 @@ static acpi_status acpi_ged_request_inte
+ 		dev_err(dev, "unable to parse IRQ resource\n");
+ 		return AE_ERROR;
+ 	}
+-	if (ares->type == ACPI_RESOURCE_TYPE_IRQ)
++	if (ares->type == ACPI_RESOURCE_TYPE_IRQ) {
+ 		gsi = p->interrupts[0];
+-	else
++		trigger = p->triggering;
++	} else {
+ 		gsi = pext->interrupts[0];
++		trigger = p->triggering;
 +	}
  
- 	kfree(output.pointer);
- 	return 0;
+ 	irq = r.start;
+ 
+-	if (ACPI_FAILURE(acpi_get_handle(handle, "_EVT", &evt_handle))) {
++	switch (gsi) {
++	case 0 ... 255:
++		sprintf(ev_name, "_%c%02hhX",
++			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
++
++		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
++			break;
++		/* fall through */
++	default:
++		if (ACPI_SUCCESS(acpi_get_handle(handle, "_EVT", &evt_handle)))
++			break;
++
+ 		dev_err(dev, "cannot locate _EVT method\n");
+ 		return AE_ERROR;
+ 	}
 
 
