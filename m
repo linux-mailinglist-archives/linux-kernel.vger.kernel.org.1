@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E429F200EFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EB1200DF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391801AbgFSPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:13:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
+        id S2390996AbgFSPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392260AbgFSPNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:13:40 -0400
+        id S2390916AbgFSPC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 794DB20776;
-        Fri, 19 Jun 2020 15:13:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EC6C2193E;
+        Fri, 19 Jun 2020 15:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579620;
-        bh=Ioc4TzxfqbTd4S5EBzQSWT0oJidXxLmnm7TD9CDAcAw=;
+        s=default; t=1592578978;
+        bh=WMYEYzI7BjDBMgGaCwxYvQu43FWLlK9Lo5LewrgX6VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MhkVNwIseG8cDtRcjPevBwL0lGG0hrYqWtW8yhQIyre700heFrEEUKmdke+3mu90d
-         EpFhIB953YwtSe6RhjXTpUwZrW8mj3piVB/NQ5afnhGtn0MZwhBgBy8rttxY/bSNmY
-         psD+f/WYt9091QlNEqS42zIFktGOb6/SGT6oy1iA=
+        b=q82tY6HNhp7NQv3caG23IbeQx2IzhSTlojyf1eamQYP66A/LckTz2g10SgPkHyPbL
+         KzVXO+GHBAtRje9EFuJ8/Aypm3q/WWXOPor7nI9N78GguvllGW+aR2mSv5D17F4rcg
+         jVhaUfNIgDPX/13Na4XN1Quk76aODNp4C0WFxlbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Rui Salvaterra <rsalvaterra@gmail.com>
-Subject: [PATCH 5.4 204/261] b43: Fix connection problem with WPA3
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 230/267] ima: Call ima_calc_boot_aggregate() in ima_eventdigest_init()
 Date:   Fri, 19 Jun 2020 16:33:35 +0200
-Message-Id: <20200619141659.667759577@linuxfoundation.org>
+Message-Id: <20200619141659.752314005@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +45,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Larry Finger <Larry.Finger@lwfinger.net>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit 75d057bda1fbca6ade21378aa45db712e5f7d962 upstream.
+[ Upstream commit 6cc7c266e5b47d3cd2b5bb7fd3aac4e6bb2dd1d2 ]
 
-Since the driver was first introduced into the kernel, it has only
-handled the ciphers associated with WEP, WPA, and WPA2. It fails with
-WPA3 even though mac80211 can handle those additional ciphers in software,
-b43 did not report that it could handle them. By setting MFP_CAPABLE using
-ieee80211_set_hw(), the problem is fixed.
+If the template field 'd' is chosen and the digest to be added to the
+measurement entry was not calculated with SHA1 or MD5, it is
+recalculated with SHA1, by using the passed file descriptor. However, this
+cannot be done for boot_aggregate, because there is no file descriptor.
 
-With this change, b43 will handle the ciphers it knows in hardware,
-and let mac80211 handle the others in software. It is not necessary to
-use the module parameter NOHWCRYPT to turn hardware encryption off.
-Although this change essentially eliminates that module parameter,
-I am choosing to keep it for cases where the hardware is broken,
-and software encryption is required for all ciphers.
+This patch adds a call to ima_calc_boot_aggregate() in
+ima_eventdigest_init(), so that the digest can be recalculated also for the
+boot_aggregate entry.
 
-Reported-and-tested-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Cc: Stable <stable@vger.kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200526155909.5807-2-Larry.Finger@lwfinger.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: stable@vger.kernel.org # 3.13.x
+Fixes: 3ce1217d6cd5d ("ima: define template fields library and new helpers")
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima.h              |  3 ++-
+ security/integrity/ima/ima_crypto.c       |  6 +++---
+ security/integrity/ima/ima_init.c         |  2 +-
+ security/integrity/ima/ima_template_lib.c | 18 ++++++++++++++++++
+ 4 files changed, 24 insertions(+), 5 deletions(-)
 
---- a/drivers/net/wireless/broadcom/b43/main.c
-+++ b/drivers/net/wireless/broadcom/b43/main.c
-@@ -5569,7 +5569,7 @@ static struct b43_wl *b43_wireless_init(
- 	/* fill hw info */
- 	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
- 	ieee80211_hw_set(hw, SIGNAL_DBM);
--
-+	ieee80211_hw_set(hw, MFP_CAPABLE);
- 	hw->wiphy->interface_modes =
- 		BIT(NL80211_IFTYPE_AP) |
- 		BIT(NL80211_IFTYPE_MESH_POINT) |
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index e7dfd460fe1d..d12b07eb3a58 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -56,6 +56,7 @@ extern int ima_policy_flag;
+ extern int ima_hash_algo;
+ extern int ima_appraise;
+ extern struct tpm_chip *ima_tpm_chip;
++extern const char boot_aggregate_name[];
+ 
+ /* IMA event related data */
+ struct ima_event_data {
+@@ -139,7 +140,7 @@ int ima_calc_buffer_hash(const void *buf, loff_t len,
+ int ima_calc_field_array_hash(struct ima_field_data *field_data,
+ 			      struct ima_template_desc *desc, int num_fields,
+ 			      struct ima_digest_data *hash);
+-int __init ima_calc_boot_aggregate(struct ima_digest_data *hash);
++int ima_calc_boot_aggregate(struct ima_digest_data *hash);
+ void ima_add_violation(struct file *file, const unsigned char *filename,
+ 		       struct integrity_iint_cache *iint,
+ 		       const char *op, const char *cause);
+diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
+index 6a6d19ada66a..c5dd05ace28c 100644
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -663,8 +663,8 @@ static void __init ima_pcrread(int idx, u8 *pcr)
+ /*
+  * Calculate the boot aggregate hash
+  */
+-static int __init ima_calc_boot_aggregate_tfm(char *digest,
+-					      struct crypto_shash *tfm)
++static int ima_calc_boot_aggregate_tfm(char *digest,
++				       struct crypto_shash *tfm)
+ {
+ 	u8 pcr_i[TPM_DIGEST_SIZE];
+ 	int rc, i;
+@@ -688,7 +688,7 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
+ 	return rc;
+ }
+ 
+-int __init ima_calc_boot_aggregate(struct ima_digest_data *hash)
++int ima_calc_boot_aggregate(struct ima_digest_data *hash)
+ {
+ 	struct crypto_shash *tfm;
+ 	int rc;
+diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
+index faac9ecaa0ae..a2bc4cb4482a 100644
+--- a/security/integrity/ima/ima_init.c
++++ b/security/integrity/ima/ima_init.c
+@@ -25,7 +25,7 @@
+ #include "ima.h"
+ 
+ /* name for boot aggregate entry */
+-static const char *boot_aggregate_name = "boot_aggregate";
++const char boot_aggregate_name[] = "boot_aggregate";
+ struct tpm_chip *ima_tpm_chip;
+ 
+ /* Add the boot aggregate to the IMA measurement list and extend
+diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
+index 43752002c222..48c5a1be88ac 100644
+--- a/security/integrity/ima/ima_template_lib.c
++++ b/security/integrity/ima/ima_template_lib.c
+@@ -284,6 +284,24 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
+ 		goto out;
+ 	}
+ 
++	if ((const char *)event_data->filename == boot_aggregate_name) {
++		if (ima_tpm_chip) {
++			hash.hdr.algo = HASH_ALGO_SHA1;
++			result = ima_calc_boot_aggregate(&hash.hdr);
++
++			/* algo can change depending on available PCR banks */
++			if (!result && hash.hdr.algo != HASH_ALGO_SHA1)
++				result = -EINVAL;
++
++			if (result < 0)
++				memset(&hash, 0, sizeof(hash));
++		}
++
++		cur_digest = hash.hdr.digest;
++		cur_digestsize = hash_digest_size[HASH_ALGO_SHA1];
++		goto out;
++	}
++
+ 	if (!event_data->file)	/* missing info to re-calculate the digest */
+ 		return -EINVAL;
+ 
+-- 
+2.25.1
+
 
 
