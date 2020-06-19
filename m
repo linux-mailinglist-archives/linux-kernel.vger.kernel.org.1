@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB47200268
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8BC20026D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgFSHDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 03:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbgFSHDn (ORCPT
+        id S1730037AbgFSHFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 03:05:40 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:22952 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727916AbgFSHFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 03:03:43 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CABC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 00:03:43 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id e12so6778291eds.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 00:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=29xULxJCIJJBM7FmlrqMmhHTK6tWJ7AFfkAGJqVdsnU=;
-        b=L7U0ymEDMd6Bujw42JqfDFfjnSqwmTmi671C+VTC+1tsnM3fzEmNpzObB5E528wdw3
-         gxHGYIVUTz0zs7LciEdJ4SaXvYbsfPtcvbz2+NqivtMnKi6STRcX1u3Ua62r7d2US6eH
-         AD5Y69xW7hNFdou6RI+icSjFxUUtbNQVVsbKRfbXIGAp4G+x7nE6Dnq9dslmh60UIJyQ
-         QV6PqoVBQ7ahn0I1jMcBcEmXUwg3tU6z9dy146hDNIBiwRAcmGz2ifNEJ8EeWOVgFVGA
-         hzvpB1Ovknt3qJeSbPkckaQ0MKzntUX3NTNn86jrH/Hi4twNnFbjqfvEP+lHvthUI95d
-         8KdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=29xULxJCIJJBM7FmlrqMmhHTK6tWJ7AFfkAGJqVdsnU=;
-        b=uYTiXx7trrf7nwqI7HtVG1o1XD17NcIiQ3FPWUtxHlFn5QsBUTAObVkcseiUG18lDe
-         XLI/3R38BqYdCCl7kdyImVPqRtsHDXtMsi916uipZuU5zCGj811yN7d/zV3gPE5GeC/q
-         lrIMitnRk5DJVMxVe1aySZTyMrnndoLAjVlRZAo17660FKgKkyIOyS3F1frSqEj9fueR
-         7WFD7GtYoojyH4HIEDfMpv6PkhmaxMJZvRAPH8RIQLQ8BFxsepKEPRLKG+LV2UzBzAH+
-         gbRqYvnv2hsJRuLAM2IT66VAJsoWmuySdlA5AquaJUQJKFCCdxB5PitkuIXF1W6jnhgn
-         0XBQ==
-X-Gm-Message-State: AOAM5317zYQl5VpC/Fk2M2bEUC6P7Q929gyykVGR0YmPOsEObO1kZIHp
-        xcHhW5GMBd84vnFMUfsBgjkX+J5HsgnM4Q==
-X-Google-Smtp-Source: ABdhPJyDeExvTCzUgxuPVQ8DjfspddnKSeF/AU4rVBhTYA7NKS7Z7eSzN+Jq6/1RX4eqfi5Lvzh6HA==
-X-Received: by 2002:a50:cd56:: with SMTP id d22mr1800363edj.374.1592550222007;
-        Fri, 19 Jun 2020 00:03:42 -0700 (PDT)
-Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
-        by smtp.gmail.com with ESMTPSA id u3sm4208545edx.25.2020.06.19.00.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 00:03:41 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 09:03:40 +0200
-From:   Simon Horman <simon.horman@netronome.com>
-To:     Po Liu <po.liu@nxp.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, jiri@resnulli.us, vinicius.gomes@intel.com,
-        vlad@buslov.dev, claudiu.manoil@nxp.com, vladimir.oltean@nxp.com,
-        alexandru.marginean@nxp.com, michael.chan@broadcom.com,
-        vishal@chelsio.com, saeedm@mellanox.com, leon@kernel.org,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
-        pablo@netfilter.org, moshe@mellanox.com, m-karicheri2@ti.com,
-        andre.guedes@linux.intel.com, stephen@networkplumber.org
-Subject: Re: [v2,net-next] net: qos offload add flow status with dropped count
-Message-ID: <20200619070340.GE9312@netronome.com>
-References: <20200324034745.30979-1-Po.Liu@nxp.com>
- <20200619060107.6325-1-po.liu@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619060107.6325-1-po.liu@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 19 Jun 2020 03:05:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592550339; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=MKrIRmLQE/O1J309JvHBik717o1UeH59O6+bIbOXI5s=; b=RPl/zhTlrbM/47oTbWHSAYxzRNvPJRrtif54c57Pg+KJnmSJ93MaOgqBSWkT7FVVXDZ3XAbU
+ df/67Dbq7+UYlrinvzVbTQwXBKXWzPRMJabeJD7IsWGbe0MPLYTxTbbW21jJyJc56UgsmAYC
+ Wy4DF8C48cXxpTEIxB9iXVbXJDE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5eec63b56bebe35deb53f5c4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Jun 2020 07:05:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E47AC43395; Fri, 19 Jun 2020 07:05:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3536C433C9;
+        Fri, 19 Jun 2020 07:05:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E3536C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, kathirav@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     sivaprak@codeaurora.org
+Subject: [PATCH 0/6] Add frequency and voltage scaling support for IPQ6018 SoC
+Date:   Fri, 19 Jun 2020 12:35:01 +0530
+Message-Id: <1592550307-11040-1-git-send-email-kathirav@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 02:01:07PM +0800, Po Liu wrote:
-> From: Po Liu <Po.Liu@nxp.com>
-> 
-> This patch adds a drop frames counter to tc flower offloading.
-> Reporting h/w dropped frames is necessary for some actions.
-> Some actions like police action and the coming introduced stream gate
-> action would produce dropped frames which is necessary for user. Status
-> update shows how many filtered packets increasing and how many dropped
-> in those packets.
-> 
-> v2: Changes
->  - Update commit comments suggest by Jiri Pirko.
-> 
-> Signed-off-by: Po Liu <Po.Liu@nxp.com>
-> ---
-> This patch is continue the thread 20200324034745.30979-1-Po.Liu@nxp.com
-> 
->  drivers/net/dsa/sja1105/sja1105_vl.c                  |  2 +-
->  drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c          |  2 +-
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c  |  2 +-
->  .../net/ethernet/chelsio/cxgb4/cxgb4_tc_matchall.c    |  2 +-
->  drivers/net/ethernet/freescale/enetc/enetc_qos.c      |  7 +++++--
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c    |  2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c       |  4 ++--
->  drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c |  2 +-
->  drivers/net/ethernet/mscc/ocelot_flower.c             |  2 +-
->  drivers/net/ethernet/netronome/nfp/flower/offload.c   |  2 +-
->  drivers/net/ethernet/netronome/nfp/flower/qos_conf.c  |  2 +-
->  include/net/act_api.h                                 | 11 ++++++-----
->  include/net/flow_offload.h                            |  5 ++++-
->  include/net/pkt_cls.h                                 |  5 +++--
->  net/sched/act_api.c                                   | 10 ++++------
->  net/sched/act_ct.c                                    |  6 +++---
->  net/sched/act_gact.c                                  |  7 ++++---
->  net/sched/act_gate.c                                  |  6 +++---
->  net/sched/act_mirred.c                                |  6 +++---
->  net/sched/act_pedit.c                                 |  6 +++---
->  net/sched/act_police.c                                |  4 ++--
->  net/sched/act_skbedit.c                               |  5 +++--
->  net/sched/act_vlan.c                                  |  6 +++---
->  net/sched/cls_flower.c                                |  1 +
->  net/sched/cls_matchall.c                              |  3 ++-
->  25 files changed, 60 insertions(+), 50 deletions(-)
+IPQ6018 SoC uses the PMIC MP5496. SMPA2 and LDOA2 regulator of MP5496
+controls the APSS and SDCC voltage scaling respectively. Add support
+for the same.
 
-Netronome portion:
+Kathiravan T (6):
+  dt-bindings: soc: qcom: add YAML schema for SMD-RPM driver
+  dt-bindings: soc: qcom: Add IPQ6018 compatible
+  soc: qcom: smd-rpm: Add IPQ6018 compatible
+  dt-bindings: regulator: add YAML schema for QCOM SMD-RPM regulator
+  dt-bindings: add MP5496 regulator compatible
+  regulator: qcom_smd: Add MP5496 regulators
 
-Reviewed-by: Simon Horman <simon.horman@netronome.com>
+ .../bindings/regulator/qcom,smd-rpm-regulator.txt  | 320 ---------------------
+ .../bindings/regulator/qcom,smd-rpm-regulator.yaml | 106 +++++++
+ .../devicetree/bindings/soc/qcom/qcom,smd-rpm.txt  |  62 ----
+ .../devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml |  92 ++++++
+ drivers/regulator/qcom_smd-regulator.c             |  34 +++
+ drivers/soc/qcom/smd-rpm.c                         |   1 +
+ 6 files changed, 233 insertions(+), 382 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
