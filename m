@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F9C200CFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A21200BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389537AbgFSOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
+        id S2387529AbgFSOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389493AbgFSOvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:45 -0400
+        id S2388018AbgFSOjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FE6621852;
-        Fri, 19 Jun 2020 14:51:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6213221548;
+        Fri, 19 Jun 2020 14:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578305;
-        bh=qZzGSYMamJhxwefjLo2x0UV9tBBc30LX2T7wPSzplg8=;
+        s=default; t=1592577559;
+        bh=O8IWCH0+m0cboLHYQfjEKVL7l4XdRgeHAKtk8lol+os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gdEqaH5TZ5Vizy/hN9AXpgcu/+1AW2Ds3UYGAbUZKR+sdIvxVhlxIoRcbB+KjGLX0
-         NOfnO9mVPt7nRlXkLM2GlehMDW8+jbhLgra5usF2UQKsPicxz9LrnOwvLGZ6BkW4lG
-         SMvp8Yz06HV14I4cgjVHr0ukThseRVyPMf/IlZBw=
+        b=AYdGuzCdEe/j8EtbQUk6ScuK8qxGeq3gfgvfKb1utbTCmqYwM7yFy9TkpGw100bK/
+         xKqy/vgX6Bu7o4c+xfR2uKCXFD/j0HvCIwJTGWXQjNV5Bh2xKUrDHKL2EYHgULBIYT
+         RP3tdFUahfYoSUw0XVMXPKrh/SK8V+JIWouCfGhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        greybus-dev@lists.linaro.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Dave Hansen <dave.hansen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 132/190] staging: greybus: sdio: Respect the cmd->busy_timeout from the mmc core
+Subject: [PATCH 4.4 068/101] x86/mm: Stop printing BRK addresses
 Date:   Fri, 19 Jun 2020 16:32:57 +0200
-Message-Id: <20200619141640.221168613@linuxfoundation.org>
+Message-Id: <20200619141617.610711445@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit a389087ee9f195fcf2f31cd771e9ec5f02c16650 ]
+[ Upstream commit 67d631b7c05eff955ccff4139327f0f92a5117e5 ]
 
-Using a fixed 1s timeout for all commands is a bit problematic.
+This currently leaks kernel physical addresses into userspace.
 
-For some commands it means waiting longer than needed for the timeout to
-expire, which may not a big issue, but still. For other commands, like for
-an erase (CMD38) that uses a R1B response, may require longer timeouts than
-1s. In these cases, we may end up treating the command as it failed, while
-it just needed some more time to complete successfully.
-
-Fix the problem by respecting the cmd->busy_timeout, which is provided by
-the mmc core.
-
-Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-Cc: Johan Hovold <johan@kernel.org>
-Cc: Alex Elder <elder@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: greybus-dev@lists.linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20200414161413.3036-20-ulf.hansson@linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Kees Cook <keescook@chromium.org>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Link: https://lkml.kernel.org/r/20200229231120.1147527-1-nivedita@alum.mit.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/sdio.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/mm/init.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/staging/greybus/sdio.c b/drivers/staging/greybus/sdio.c
-index 101ca5097fc9..93e2c091c565 100644
---- a/drivers/staging/greybus/sdio.c
-+++ b/drivers/staging/greybus/sdio.c
-@@ -412,6 +412,7 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 	struct gb_sdio_command_request request = {0};
- 	struct gb_sdio_command_response response;
- 	struct mmc_data *data = host->mrq->data;
-+	unsigned int timeout_ms;
- 	u8 cmd_flags;
- 	u8 cmd_type;
- 	int i;
-@@ -470,9 +471,12 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 		request.data_blksz = cpu_to_le16(data->blksz);
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index f00eb52c16a6..17eb564901ca 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -109,8 +109,6 @@ __ref void *alloc_low_pages(unsigned int num)
+ 	} else {
+ 		pfn = pgt_buf_end;
+ 		pgt_buf_end += num;
+-		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
+-			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
  	}
  
--	ret = gb_operation_sync(host->connection, GB_SDIO_TYPE_COMMAND,
--				&request, sizeof(request), &response,
--				sizeof(response));
-+	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout :
-+		GB_OPERATION_TIMEOUT_DEFAULT;
-+
-+	ret = gb_operation_sync_timeout(host->connection, GB_SDIO_TYPE_COMMAND,
-+					&request, sizeof(request), &response,
-+					sizeof(response), timeout_ms);
- 	if (ret < 0)
- 		goto out;
- 
+ 	for (i = 0; i < num; i++) {
 -- 
 2.25.1
 
