@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F92B20118F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5678F20122D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392779AbgFSP06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56888 "EHLO mail.kernel.org"
+        id S2392343AbgFSPte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393371AbgFSPZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:25:07 -0400
+        id S2390865AbgFSPZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:25:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9258721548;
-        Fri, 19 Jun 2020 15:25:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FDF121582;
+        Fri, 19 Jun 2020 15:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580306;
-        bh=gJS+b6GNXzHhvclf1Xkyzwi8iPGNLwhFWy7di66hKhA=;
+        s=default; t=1592580308;
+        bh=dvPNjkEX0FRyQBVGbL9mveFmQllKPKlqmbk8N+PJ+1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PsbotpFGjtLZ18ac+EIqAK3hqEsxWu2kg6z5KA9Ca8k+aRxbv0zzmFbqnkp1OP381
-         FXelXSAqiRWIU/5skU9m1Ld710bDZcWCXTgqE4vG9dJtHmL8zPnagC13O2lw0HFoeF
-         hX63AgLR4q5HtTk2Pb4UFn8dbHu+N3CspQzurpvQ=
+        b=bSTyEepHQGk1QnoJz5fLBeDPs8S0Yj9ZHggU6mncwAn5JJQeD2l8U7W/kal+Oi0Zd
+         lKTa5rWPoy0dZZd+p1SVDq6ifoPwfJ7iW77oEoOTQUgSCsF4w7rPlG++0+sVBEfjst
+         PkFAh8Jkrg9k1mRgiwgfEzWUHPn1bcyjxsKvsSXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 199/376] x86/boot: Correct relocation destination on old linkers
-Date:   Fri, 19 Jun 2020 16:31:57 +0200
-Message-Id: <20200619141719.763805907@linuxfoundation.org>
+        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 200/376] xfs: dont fail verifier on empty attr3 leaf block
+Date:   Fri, 19 Jun 2020 16:31:58 +0200
+Message-Id: <20200619141719.810025712@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -43,112 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit 5214028dd89e49ba27007c3ee475279e584261f0 ]
+[ Upstream commit f28cef9e4daca11337cb9f144cdebedaab69d78c ]
 
-For the 32-bit kernel, as described in
+The attr fork can transition from shortform to leaf format while
+empty if the first xattr doesn't fit in shortform. While this empty
+leaf block state is intended to be transient, it is technically not
+due to the transactional implementation of the xattr set operation.
 
-  6d92bc9d483a ("x86/build: Build compressed x86 kernels as PIE"),
+We historically have a couple of bandaids to work around this
+problem. The first is to hold the buffer after the format conversion
+to prevent premature writeback of the empty leaf buffer and the
+second is to bypass the xattr count check in the verifier during
+recovery. The latter assumes that the xattr set is also in the log
+and will be recovered into the buffer soon after the empty leaf
+buffer is reconstructed. This is not guaranteed, however.
 
-pre-2.26 binutils generates R_386_32 relocations in PIE mode. Since the
-startup code does not perform relocation, any reloc entry with R_386_32
-will remain as 0 in the executing code.
+If the filesystem crashes after the format conversion but before the
+xattr set that induced it, only the format conversion may exist in
+the log. When recovered, this creates a latent corrupted state on
+the inode as any subsequent attempts to read the buffer fail due to
+verifier failure. This includes further attempts to set xattrs on
+the inode or attempts to destroy the attr fork, which prevents the
+inode from ever being removed from the unlinked list.
 
-Commit
+To avoid this condition, accept that an empty attr leaf block is a
+valid state and remove the count check from the verifier. This means
+that on rare occasions an attr fork might exist in an unexpected
+state, but is otherwise consistent and functional. Note that we
+retain the logic to avoid racing with metadata writeback to reduce
+the window where this can occur.
 
-  974f221c84b0 ("x86/boot: Move compressed kernel to the end of the
-                 decompression buffer")
-
-added a new symbol _end but did not mark it hidden, which doesn't give
-the correct offset on older linkers. This causes the compressed kernel
-to be copied beyond the end of the decompression buffer, rather than
-flush against it. This region of memory may be reserved or already
-allocated for other purposes by the bootloader.
-
-Mark _end as hidden to fix. This changes the relocation from R_386_32 to
-R_386_RELATIVE even on the pre-2.26 binutils.
-
-For 64-bit, this is not strictly necessary, as the 64-bit kernel is only
-built as PIE if the linker supports -z noreloc-overflow, which implies
-binutils-2.27+, but for consistency, mark _end as hidden here too.
-
-The below illustrates the before/after impact of the patch using
-binutils-2.25 and gcc-4.6.4 (locally compiled from source) and QEMU.
-
-  Disassembly before patch:
-    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
-    4e:   2d 00 00 00 00          sub    $0x0,%eax
-                          4f: R_386_32    _end
-  Disassembly after patch:
-    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
-    4e:   2d 00 f0 76 00          sub    $0x76f000,%eax
-                          4f: R_386_RELATIVE      *ABS*
-
-Dump from extract_kernel before patch:
-	early console in extract_kernel
-	input_data: 0x0207c098 <--- this is at output + init_size
-	input_len: 0x0074fef1
-	output: 0x01000000
-	output_len: 0x00fa63d0
-	kernel_total_size: 0x0107c000
-	needed_size: 0x0107c000
-
-Dump from extract_kernel after patch:
-	early console in extract_kernel
-	input_data: 0x0190d098 <--- this is at output + init_size - _end
-	input_len: 0x0074fef1
-	output: 0x01000000
-	output_len: 0x00fa63d0
-	kernel_total_size: 0x0107c000
-	needed_size: 0x0107c000
-
-Fixes: 974f221c84b0 ("x86/boot: Move compressed kernel to the end of the decompression buffer")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200207214926.3564079-1-nivedita@alum.mit.edu
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/compressed/head_32.S | 5 +++--
- arch/x86/boot/compressed/head_64.S | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ fs/xfs/libxfs/xfs_attr_leaf.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
-index ab3307036ba4..03557f2174bf 100644
---- a/arch/x86/boot/compressed/head_32.S
-+++ b/arch/x86/boot/compressed/head_32.S
-@@ -49,16 +49,17 @@
-  * Position Independent Executable (PIE) so that linker won't optimize
-  * R_386_GOT32X relocation to its fixed symbol address.  Older
-  * linkers generate R_386_32 relocations against locally defined symbols,
-- * _bss, _ebss, _got and _egot, in PIE.  It isn't wrong, just less
-+ * _bss, _ebss, _got, _egot and _end, in PIE.  It isn't wrong, just less
-  * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
-  * R_386_32 relocations when relocating the kernel.  To generate
-- * R_386_RELATIVE relocations, we mark _bss, _ebss, _got and _egot as
-+ * R_386_RELATIVE relocations, we mark _bss, _ebss, _got, _egot and _end as
-  * hidden:
-  */
- 	.hidden _bss
- 	.hidden _ebss
- 	.hidden _got
- 	.hidden _egot
-+	.hidden _end
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index 1d67cc9f4209..5d0b55281f9d 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -308,14 +308,6 @@ xfs_attr3_leaf_verify(
+ 	if (fa)
+ 		return fa;
  
- 	__HEAD
- SYM_FUNC_START(startup_32)
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 4f7e6b84be07..76d1d64d51e3 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -42,6 +42,7 @@
- 	.hidden _ebss
- 	.hidden _got
- 	.hidden _egot
-+	.hidden _end
+-	/*
+-	 * In recovery there is a transient state where count == 0 is valid
+-	 * because we may have transitioned an empty shortform attr to a leaf
+-	 * if the attr didn't fit in shortform.
+-	 */
+-	if (!xfs_log_in_recovery(mp) && ichdr.count == 0)
+-		return __this_address;
+-
+ 	/*
+ 	 * firstused is the block offset of the first name info structure.
+ 	 * Make sure it doesn't go off the block or crash into the header.
+@@ -331,6 +323,13 @@ xfs_attr3_leaf_verify(
+ 	    (char *)bp->b_addr + ichdr.firstused)
+ 		return __this_address;
  
- 	__HEAD
- 	.code32
++	/*
++	 * NOTE: This verifier historically failed empty leaf buffers because
++	 * we expect the fork to be in another format. Empty attr fork format
++	 * conversions are possible during xattr set, however, and format
++	 * conversion is not atomic with the xattr set that triggers it. We
++	 * cannot assume leaf blocks are non-empty until that is addressed.
++	*/
+ 	buf_end = (char *)bp->b_addr + mp->m_attr_geo->blksize;
+ 	for (i = 0, ent = entries; i < ichdr.count; ent++, i++) {
+ 		fa = xfs_attr3_leaf_verify_entry(mp, buf_end, leaf, &ichdr,
 -- 
 2.25.1
 
