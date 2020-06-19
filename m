@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4208E201B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C343A201B2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387932AbgFSTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:23:48 -0400
-Received: from ms.lwn.net ([45.79.88.28]:55270 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387818AbgFSTXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:23:47 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id F1FFE2CD;
-        Fri, 19 Jun 2020 19:23:46 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 13:23:45 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Michel Lespinasse <walken@google.com>
-Subject: Re: [PATCH] Documentation: fix filesystems/locking.rst malformed
- table warnings
-Message-ID: <20200619132345.14c868be@lwn.net>
-In-Reply-To: <12c2afd1-2dcf-2ea0-02aa-bc2759729c77@infradead.org>
-References: <12c2afd1-2dcf-2ea0-02aa-bc2759729c77@infradead.org>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+        id S2388051AbgFSTYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387633AbgFSTYX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 15:24:23 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E8AC06174E;
+        Fri, 19 Jun 2020 12:24:23 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id y9so5010427qvs.4;
+        Fri, 19 Jun 2020 12:24:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=cWkMvejmWQwS+jXBTx0owfMKl2kp7YwzCYHM7vLrpdk=;
+        b=H73cpLKrO/ZPNVmHWovgUxjS3P1lQoJSYQsORSDjq2GuKJEkUazqvFZPfC3bGgitnS
+         xHUjbIsScQ47yPy58Xa/QsZWKrwu/iaRl+P0Dr35cfmDqZKG79Rxpv6pmdFmbV3u9rH0
+         +cQiFbaCrtERnDmDvwhOd73+ZHoetXGCmj7hdYM44l5MlErfBorgc1PWlIS4d4Sk6x98
+         7RgLFN0d6f0CT4Pi6EM7/kTg0rsfqnKvxcJ9HItadDBkU6mP8GSVH1lS1zjNp11BO8IU
+         UV7FSV4URbH5+O3gDomF0IU4f0KnCP3NLNhV4ekKzdd4xJ2jR21DTclSYGS/iQpvdSV4
+         QcfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=cWkMvejmWQwS+jXBTx0owfMKl2kp7YwzCYHM7vLrpdk=;
+        b=LO0Cg76Efy9ZT3i0TZ9SBj9ozQyaOzmnPXV2iFbrtImzNaFfUJOZFEX95OonHSu2gX
+         U+PzrcngBayf0Y0VzFLnXYuXQaixfGx2bvoRW+eTReqamosbfxilgYR+idIjIxNA2lQJ
+         5tp6aHnOfQMnvdvijQfPH3IQjpyvVfLhHk+zpNiekGJs/XyPzaYapO9ebuptEWHzN2UQ
+         dTzWh9BRGAlNNGBeJi8E5KW+6ZUiA1EfsJOwoNe9KwUZn435R63NKgCmSUIuskagw3mr
+         Kx+F3dsU6of8mhpylGKrhvAS0loRPlngxwMN3iQ6/djm62nKhRtYYru7FBLy2SFvew8v
+         aljg==
+X-Gm-Message-State: AOAM5324vctaK/8PMnlkLECvG8TaBwqHQl3/bSStY7D+bE79MJg181Sw
+        QuN40/wagDRBqxFri1XFvXU=
+X-Google-Smtp-Source: ABdhPJxiJa5+i3KgoU8gJhSNFcNzddYm9wnmR/nl3PoCtQ4TurdBhDYG5UCM7fvP5I7v1Wngfqt2BQ==
+X-Received: by 2002:ad4:4841:: with SMTP id t1mr10525591qvy.187.1592594662255;
+        Fri, 19 Jun 2020 12:24:22 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:fda8:d752:6b93:379])
+        by smtp.googlemail.com with ESMTPSA id e2sm2132296qkm.115.2020.06.19.12.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 12:24:21 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:TC subsystem),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [net/sched] Remove redundant skb null check
+Date:   Fri, 19 Jun 2020 15:24:13 -0400
+Message-Id: <20200619192414.22158-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200618014328.28668-1-gaurav1086@gmail.com>
+References: <20200618014328.28668-1-gaurav1086@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Jun 2020 20:22:19 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+Remove the redundant null check for skb.
 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix Sphinx malformed table warnings in filesystems/locking.rst:
-> 
-> lnx-58-rc1/Documentation/filesystems/locking.rst:443: WARNING: Malformed table.
-> Text in column margin in table line 8.
-> 
-> lnx-58-rc1/Documentation/filesystems/locking.rst:620: WARNING: Malformed table.
-> Text in column margin in table line 2.
-> 
-> Fixes: ec23eb54fbc7 ("docs: fs: convert docs without extension to ReST")
-> Fixes: c1e8d7c6a7a6 ("mmap locking API: convert mmap_sem comments")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Cc: Michel Lespinasse <walken@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
->  Documentation/filesystems/locking.rst |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ net/sched/act_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index 8ac7eb0a8309..90be8fe9128c 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -1475,7 +1475,7 @@ static int tc_ctl_action(struct sk_buff *skb, struct nlmsghdr *n,
+ {
+ 	struct net *net = sock_net(skb->sk);
+ 	struct nlattr *tca[TCA_ROOT_MAX + 1];
+-	u32 portid = skb ? NETLINK_CB(skb).portid : 0;
++	u32 portid = NETLINK_CB(skb).portid;
+ 	int ret = 0, ovr = 0;
+ 
+ 	if ((n->nlmsg_type != RTM_GETACTION) &&
+-- 
+2.17.1
 
-jon
