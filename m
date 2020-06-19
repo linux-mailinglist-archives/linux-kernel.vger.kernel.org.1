@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63099200C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8796D200D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388737AbgFSOpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37230 "EHLO mail.kernel.org"
+        id S2390016AbgFSOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:55:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388718AbgFSOpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:45:36 -0400
+        id S2390000AbgFSOzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:55:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D9E221556;
-        Fri, 19 Jun 2020 14:45:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8B8E2158C;
+        Fri, 19 Jun 2020 14:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577935;
-        bh=ka3kEogHU5cgZlRJIabM2svKkN7TSm39TvN+wuVhi5Y=;
+        s=default; t=1592578544;
+        bh=QEa7XrlnLLr3eBhKtiELVI4afInNDVlo/26zr5Hf8z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hFOx/UXYNs24U8nf5EEZj8170pca/SIt7Z//QUFq3RiWFH5OeHZ5QzfEauE9R+cSs
-         2W0mgL+OCXJeWg6TztdgMfvC31iXf6Lo06qkXuRVJkB+nOcxHneos4KkfxatI0wSut
-         nkw7yLLdPe1AOhWvBbg2yn2VWwqdX+PO8pwa93Mw=
+        b=1dcXWTrC+tgHGnXkcTiMu9BYM+AsGPjlrzRc3/rtEg0dmXpU8O4IWRjMGERfOzRY3
+         /cNxktcwTvIMgxIv6OTwa/J8u1CEAlCf3DIwTbGvv9tnlEi53vunXsiXWKoB0ZXWTX
+         HXCzQjftVbOd3h9Mv2TGoaaixKTX8xHEdhNTQ+9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 002/190] vxlan: Avoid infinite loop when suppressing NS messages with invalid options
-Date:   Fri, 19 Jun 2020 16:30:47 +0200
-Message-Id: <20200619141633.580477005@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 063/267] spi: pxa2xx: Fix runtime PM ref imbalance on probe error
+Date:   Fri, 19 Jun 2020 16:30:48 +0200
+Message-Id: <20200619141651.902045265@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 8066e6b449e050675df48e7c4b16c29f00507ff0 ]
+[ Upstream commit 65e318e17358a3fd4fcb5a69d89b14016dee2f06 ]
 
-When proxy mode is enabled the vxlan device might reply to Neighbor
-Solicitation (NS) messages on behalf of remote hosts.
+The PXA2xx SPI driver releases a runtime PM ref in the probe error path
+even though it hasn't acquired a ref earlier.
 
-In case the NS message includes the "Source link-layer address" option
-[1], the vxlan device will use the specified address as the link-layer
-destination address in its reply.
+Apparently commit e2b714afee32 ("spi: pxa2xx: Disable runtime PM if
+controller registration fails") sought to copy-paste the invocation of
+pm_runtime_disable() from pxa2xx_spi_remove(), but erroneously copied
+the call to pm_runtime_put_noidle() as well.  Drop it.
 
-To avoid an infinite loop, break out of the options parsing loop when
-encountering an option with length zero and disregard the NS message.
-
-This is consistent with the IPv6 ndisc code and RFC 4886 which states
-that "Nodes MUST silently discard an ND packet that contains an option
-with length zero" [2].
-
-[1] https://tools.ietf.org/html/rfc4861#section-4.3
-[2] https://tools.ietf.org/html/rfc4861#section-4.6
-
-Fixes: 4b29dba9c085 ("vxlan: fix nonfunctional neigh_reduce()")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e2b714afee32 ("spi: pxa2xx: Disable runtime PM if controller registration fails")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: stable@vger.kernel.org # v4.17+
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Link: https://lore.kernel.org/r/58b2ac6942ca1f91aaeeafe512144bc5343e1d84.1590408496.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vxlan.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/spi/spi-pxa2xx.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1610,6 +1610,10 @@ static struct sk_buff *vxlan_na_create(s
- 	ns_olen = request->len - skb_network_offset(request) -
- 		sizeof(struct ipv6hdr) - sizeof(*ns);
- 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
-+		if (!ns->opt[i + 1]) {
-+			kfree_skb(reply);
-+			return NULL;
-+		}
- 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
- 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
- 			break;
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 6551188fea23..2525fd9c8aa4 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1748,7 +1748,6 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
+ 	return status;
+ 
+ out_error_pm_runtime_enabled:
+-	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ out_error_clock_enabled:
+-- 
+2.25.1
+
 
 
