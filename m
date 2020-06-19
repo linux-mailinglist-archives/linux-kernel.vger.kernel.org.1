@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC125200D8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5300E200DC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390419AbgFSO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390391AbgFSO63 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:58:29 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63690C0613EE
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:58:26 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d4so4598883pgk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=sCfJ6MRetCzZa1NZ4rYQiXY2G31ZEnc/4E26KrcXmPc=;
-        b=QZny18/SqgE+neIyWHL2sFRFJb8lqyjueOj1pOy0V6d5j1S3n0MqvWbGeu8El0o0Ta
-         5ZnIo2kqLVpAH/4d2CBUPD4VdDtyc0/z+gGARF4rUK2nkQcNLTp3k28lsHUOhK+Z9OK4
-         IkVvVNV4LnsjKA/z4ShCGiz6AQIKy7NAdxEM5Fe4iz6FuNb//7bYw1G2OrSaIS4aYIae
-         fCB8jWF5VbztYAjw22xKsMZtPTGl7u88wjU6jOuilHqfCXeJO5pEZBXZ+Urh22haijfT
-         Ku1nbjvpIbBROK7jqUbSbnu7xfDgB4b4b7Z5zPRyf9xr1BGnUsB1iMJFdTLwrbHzF+kM
-         wC4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=sCfJ6MRetCzZa1NZ4rYQiXY2G31ZEnc/4E26KrcXmPc=;
-        b=jChQIWEjRwUMDNoasRQ5nKd+hVDyYGHA87ahxSsJJ9Pj9tI3PARX7p6B72gov3e7Hg
-         2mCFgnRvD1LQ3NE/ldjil5zcmAgSOflVpgwfuDUDcBuTI5dHYr9gWtY34IxLvIAzc6aV
-         V4DqxL8FTa6v65x2+TwkdsFTF3p+3KqNUeim8vFXxkqgLZjCZJpSs0XWAyHLEpXT9tMY
-         Ykw+rHQSzsE4qTtYkRmLgIzOEP6zXdfl7zeKVnW9MkqGeAwZn+U5+QGqhbFVkRBSCeoJ
-         AqAYcS/n0WGeIsfjwf+uJY6NCWy+VxW3R8JBjPWkqVD5aPHcpUIB8Gij4hYw79SsyiKl
-         dA7g==
-X-Gm-Message-State: AOAM533sjbVeIfmczUoPgvO4eC+YLM8UccWoPintb5BeGmaMnMKn6/4Z
-        BwD//4kcdVgGOegq2rBqqgHskFuTdNkIng==
-X-Google-Smtp-Source: ABdhPJzR2GkfaR9ElBMnp1MlDz7n7rV5CEI7/KJfOSG2rVMrYC18qTlMIAVyZ7fTrcf1jTVRAlwiOw==
-X-Received: by 2002:a62:aa07:: with SMTP id e7mr8097875pff.87.1592578705575;
-        Fri, 19 Jun 2020 07:58:25 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id p19sm6251000pff.116.2020.06.19.07.58.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 07:58:24 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring fixes for 5.8-rc2
-Message-ID: <bf5c364b-aaf4-ed48-4f52-07304d6e732b@kernel.dk>
-Date:   Fri, 19 Jun 2020 08:58:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2390691AbgFSPBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390636AbgFSPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:00:29 -0400
+Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D3F620776;
+        Fri, 19 Jun 2020 15:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592578828;
+        bh=eh8/68kbF3bfkG8umypTlt9ETupXMn/3RL63q3FNss8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dRXJi17MqGUpyw2FwC0Ahwetkem/jHgi1LXdzhy2rnwFplN9inUbBfgRhar8+/v0m
+         zKDbAHU7QrKjEei5ZqgRNultCzOgxgUAoSZAMWKtivDL+3bm5TrOJVqcXtLlg75/gi
+         KFfRjwp4AhaykGagt7mqzL6VcKAmrprGWZUTn4RI=
+Received: by earth.universe (Postfix, from userid 1000)
+        id F1B623C08CD; Fri, 19 Jun 2020 17:00:26 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 17:00:26 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Keyur Patel <iamkeyur96@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] power: supply: axp20x_usb_power: fix spelling mistake
+Message-ID: <20200619150026.gam2z5tslubk2xp7@earth.universe>
+References: <20200609224524.108092-1-iamkeyur96@gmail.com>
+ <20200609225035.108435-1-iamkeyur96@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sskekeyxm6zhep2a"
+Content-Disposition: inline
+In-Reply-To: <20200609225035.108435-1-iamkeyur96@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-io_uring fixes that should go into this release:
+--sskekeyxm6zhep2a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Catch a case where io_sq_thread() didn't do proper mm acquire
+Hi,
 
-- Ensure poll completions are reaped on shutdown
+On Tue, Jun 09, 2020 at 06:50:35PM -0400, Keyur Patel wrote:
+> Fix typo: "triger" --> "trigger"
+>=20
+> Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
+> ---
 
-- Async cancelation and run fixes (Pavel)
+Thanks, queued.
 
-- io-poll race fixes (Xiaoguang)
+-- Sebastian Reichel
 
-- Request cleanup race fix (Xiaoguang)
+>  drivers/power/supply/axp20x_usb_power.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supp=
+ly/axp20x_usb_power.c
+> index 4fde24b5f35a..d01dc0332edc 100644
+> --- a/drivers/power/supply/axp20x_usb_power.c
+> +++ b/drivers/power/supply/axp20x_usb_power.c
+> @@ -78,7 +78,7 @@ static bool axp20x_usb_vbus_needs_polling(struct axp20x=
+_usb_power *power)
+>  	/*
+>  	 * Polling is only necessary while VBUS is offline. While online, a
+>  	 * present->absent transition implies an online->offline transition
+> -	 * and will triger the VBUS_REMOVAL IRQ.
+> +	 * and will trigger the VBUS_REMOVAL IRQ.
+>  	 */
+>  	if (power->axp20x_id >=3D AXP221_ID && !power->online)
+>  		return true;
+> --=20
+> 2.26.2
+>=20
 
-Please pull!
+--sskekeyxm6zhep2a
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+-----BEGIN PGP SIGNATURE-----
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s0woACgkQ2O7X88g7
++pqAcw/+PjEYLRpQCa5y8T4Qp3wi2GQiVgmCWKbxFRJMjPVLo+XspUbHh5Jz1/ak
+88omrqUZf+0qlyZmcHSjyJ6HGexo90uP1frxr5zvXm6Gb4gwfFtf8HYzF0WLuaVj
+ttX4edkhEiw5lhDWUwkKj9YxCAA1Z/e7hFUdmIuKRFVos2eYNCJ48vG+lnJoFvZ8
+E7OT81amDtEzaPxLMyZUplDbxp5JvmH8FrOCwNg1R7Psx0/Oi2vqb2CZ3fB6Ad2H
+sxV+KSj5+u5j04r+TU5uQVLfBvINNk2FyZ/rr3jy/3VbMsQc0BS0W2ZusZqveHuN
+EBAWaiV2MUv6VJfW2W6m5aWvOP9xpRF3OxePCVb/EJsvs5rgQaLorEPsDfMK8FlG
+f5zxXxBDEJxaDOkkjXkUS/PEdT+Vfx2tXc52GuO+un85daWWtIzSFbmpHhkzRQeL
+XIPKb9PUhqjptelKvaCZ8D84LDHfvaP6i5Rs5p4Srw65s4RAR1sdyd1vCpA8Uziq
+AWB++zhmK+ylTz03bUrs4LCdNxHf5vL5RU6g9P0P+tsVnciczkalx0lcpqLkdNiT
+9REG+G/+d3i8gm+irC201CbrGCz4kME7/LgQF62U/hrdKNSB8ttnW1UjQJ9+0xpf
+JzuGthPgzTxvsvMcuZtpPFlJJR6jmZm9HuicaLtPUmHh7jqkqCI=
+=+QeJ
+-----END PGP SIGNATURE-----
 
-are available in the Git repository at:
-
-  git://git.kernel.dk/linux-block.git tags/io_uring-5.8-2020-06-19
-
-for you to fetch changes up to 6f2cc1664db20676069cff27a461ccc97dbfd114:
-
-  io_uring: fix possible race condition against REQ_F_NEED_CLEANUP (2020-06-18 08:32:44 -0600)
-
-----------------------------------------------------------------
-io_uring-5.8-2020-06-19
-
-----------------------------------------------------------------
-Jens Axboe (2):
-      io_uring: acquire 'mm' for task_work for SQPOLL
-      io_uring: reap poll completions while waiting for refs to drop on exit
-
-Pavel Begunkov (7):
-      io_uring: fix lazy work init
-      io-wq: reorder cancellation pending -> running
-      io-wq: add an option to cancel all matched reqs
-      io_uring: cancel all task's requests on exit
-      io_uring: batch cancel in io_uring_cancel_files()
-      io_uring: lazy get task
-      io_uring: cancel by ->task not pid
-
-Xiaoguang Wang (3):
-      io_uring: don't fail links for EAGAIN error in IOPOLL mode
-      io_uring: add memory barrier to synchronize io_kiocb's result and iopoll_completed
-      io_uring: fix possible race condition against REQ_F_NEED_CLEANUP
-
- fs/io-wq.c    | 108 ++++++++++++++++++-----------------
- fs/io-wq.h    |   4 +-
- fs/io_uring.c | 177 +++++++++++++++++++++++++++++++++++++++-------------------
- 3 files changed, 177 insertions(+), 112 deletions(-)
-
--- 
-Jens Axboe
-
+--sskekeyxm6zhep2a--
