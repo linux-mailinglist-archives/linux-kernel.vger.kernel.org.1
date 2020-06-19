@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6E9200F16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E13200E1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392372AbgFSPPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45374 "EHLO mail.kernel.org"
+        id S2391226AbgFSPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391938AbgFSPOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:14:47 -0400
+        id S2391205AbgFSPEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:04:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1F1A20776;
-        Fri, 19 Jun 2020 15:14:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D11221841;
+        Fri, 19 Jun 2020 15:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579687;
-        bh=F56PYJf7LzlvOVbm708My6zGxN14mmdq2iquiOLJAwE=;
+        s=default; t=1592579092;
+        bh=eDxLH4ouDqLNWQDr9hjpdo2YNXdlxYjycEeNZepbj/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qxtu8LP9/TrJvFYxtKqNjjBf47ncxj8rGvljZ33j+fxGcduwEytTRqklWdUoCzOQS
-         CbsX1/0TAjDM3j8kt1iFct3qqVOoRA15y0NcS4iwNeS3PUOZje0ZzMxk6SLO+oEf3Q
-         JHsQuipPSaEqD/sn+93QCrHMmSmgd66hwIYu04TQ=
+        b=sqTndp/I4WkocbDSzB+YrYCCOYARRN1mFDKk4/wJUWjSBxYAi2NV8uN3ACsRQm59k
+         rt+UwIg1Z1MNGJb8/U302F9WI1GU3EXmCS3C8uA0QV6DvfkucS4C8ZpPwwm47rOrC5
+         gIs84eYaTraiIVsNcvKBhXbE54h0C7j0+FIFH854=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.4 229/261] ARM: dts: s5pv210: Set keep-power-in-suspend for SDHCI1 on Aries
-Date:   Fri, 19 Jun 2020 16:34:00 +0200
-Message-Id: <20200619141700.851297729@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 256/267] powerpc/64s: Dont let DT CPU features set FSCR_DSCR
+Date:   Fri, 19 Jun 2020 16:34:01 +0200
+Message-Id: <20200619141700.942231187@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Bakker <xc-racer2@live.ca>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 869d42e6eba821905e1a0950623aadafe1a6e6d3 upstream.
+commit 993e3d96fd08c3ebf7566e43be9b8cd622063e6d upstream.
 
-SDHCI1 is connected to a BCM4329 WiFi/BT chip which requires
-power to be kept over suspend.  As the surrounding hardware supports
-this, mark it as such.  This fixes WiFi after a suspend/resume cycle.
+The device tree CPU features binding includes FSCR bit numbers which
+Linux is instructed to set by firmware.
 
-Fixes: 170642468a51 ("ARM: dts: s5pv210: Add initial DTS for Samsung Aries based phones")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Whether that's a good idea or not, in the case of the DSCR the Linux
+implementation has a hard requirement that the FSCR_DSCR bit not be
+set by default. We use it to track when a process reads/writes to
+DSCR, so it must be clear to begin with.
+
+So if firmware tells us to set FSCR_DSCR we must ignore it.
+
+Currently this does not cause a bug in our DSCR handling because the
+value of FSCR that the device tree CPU features code establishes is
+only used by swapper. All other tasks use the value hard coded in
+init_task.thread.fscr.
+
+However we'd like to fix that in a future commit, at which point this
+will become necessary.
+
+Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
+Cc: stable@vger.kernel.org # v4.12+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200527145843.2761782-2-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/s5pv210-aries.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kernel/dt_cpu_ftrs.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/arch/arm/boot/dts/s5pv210-aries.dtsi
-+++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
-@@ -454,6 +454,7 @@
- 	pinctrl-names = "default";
- 	cap-sd-highspeed;
- 	cap-mmc-highspeed;
-+	keep-power-in-suspend;
+--- a/arch/powerpc/kernel/dt_cpu_ftrs.c
++++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+@@ -346,6 +346,14 @@ static int __init feat_enable_dscr(struc
+ {
+ 	u64 lpcr;
  
- 	mmc-pwrseq = <&wifi_pwrseq>;
- 	non-removable;
++	/*
++	 * Linux relies on FSCR[DSCR] being clear, so that we can take the
++	 * facility unavailable interrupt and track the task's usage of DSCR.
++	 * See facility_unavailable_exception().
++	 * Clear the bit here so that feat_enable() doesn't set it.
++	 */
++	f->fscr_bit_nr = -1;
++
+ 	feat_enable(f);
+ 
+ 	lpcr = mfspr(SPRN_LPCR);
 
 
