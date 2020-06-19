@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86F42017F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236F6201742
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404988AbgFSQpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60856 "EHLO mail.kernel.org"
+        id S2389461AbgFSQgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388324AbgFSOmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:42:03 -0400
+        id S2389184AbgFSOtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:49:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4489121527;
-        Fri, 19 Jun 2020 14:42:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DBBA2158C;
+        Fri, 19 Jun 2020 14:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577723;
-        bh=LM/du8b8FjrYi1EUgb3XJShtRGgCq7C3Ef2V21ibtII=;
+        s=default; t=1592578159;
+        bh=pYNQcSSA8JE5e7nUhFvhxl8tYDixqAuawiEefCQhtHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHnLZiZ4MS23H2UZmZ0mOBSI7NxogEazxpceEBPOri1A/1+UDfbdzwLPBvMpciM7i
-         xNEBwxd7NYHecEZ3WNQ6lE6BIczrlYV42fvk7qmsXQM3OZJk0ySDdfzvYLhRhPjnFL
-         uE1/Ovn8Tui6YmvRnhJ2Ntez6Gm1uUC1yjbwo4Bo=
+        b=q2LWXevVaPLWvn0Gnyp20dbgiURiwdV+Evp4UOlQT5hf9TPZnyWrLRnkK9TLaqHDT
+         5qU0TO8/iKzg3NZXRWutKp5nVww9ki29ai2GgHxuGsmOThOPsksIBoLjOvVTrU/0b0
+         gyYdBvoGz2Ck+9CMVa2/AMhlfoKiDuETIBzFwITs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Thierry <jthierry@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 056/128] objtool: Ignore empty alternatives
-Date:   Fri, 19 Jun 2020 16:32:30 +0200
-Message-Id: <20200619141623.160513124@linuxfoundation.org>
+        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 106/190] net: bcmgenet: set Rx mode before starting netif
+Date:   Fri, 19 Jun 2020 16:32:31 +0200
+Message-Id: <20200619141638.888122406@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <jthierry@redhat.com>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit 7170cf47d16f1ba29eca07fd818870b7af0a93a5 ]
+[ Upstream commit 72f96347628e73dbb61b307f18dd19293cc6792a ]
 
-The .alternatives section can contain entries with no original
-instructions. Objtool will currently crash when handling such an entry.
+This commit explicitly calls the bcmgenet_set_rx_mode() function when
+the network interface is started. This function is normally called by
+ndo_set_rx_mode when the flags are changed, but apparently not when
+the driver is suspended and resumed.
 
-Just skip that entry, but still give a warning to discourage useless
-entries.
+This change ensures that address filtering or promiscuous mode are
+properly restored by the driver after the MAC may have been reset.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: b6e978e50444 ("net: bcmgenet: add suspend/resume callbacks")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index b0b8ba9b800c..c7399d7f4bc7 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -778,6 +778,12 @@ static int add_special_section_alts(struct objtool_file *file)
- 		}
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 38391230ca86..7d3cbbd88a00 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -72,6 +72,9 @@
+ #define GENET_RDMA_REG_OFF	(priv->hw_params->rdma_offset + \
+ 				TOTAL_DESC * DMA_DESC_SIZE)
  
- 		if (special_alt->group) {
-+			if (!special_alt->orig_len) {
-+				WARN_FUNC("empty alternative entry",
-+					  orig_insn->sec, orig_insn->offset);
-+				continue;
-+			}
++/* Forward declarations */
++static void bcmgenet_set_rx_mode(struct net_device *dev);
 +
- 			ret = handle_group_alt(file, special_alt, orig_insn,
- 					       &new_insn);
- 			if (ret)
+ static inline void bcmgenet_writel(u32 value, void __iomem *offset)
+ {
+ 	/* MIPS chips strapped for BE will automagically configure the
+@@ -2858,6 +2861,7 @@ static void bcmgenet_netif_start(struct net_device *dev)
+ 	struct bcmgenet_priv *priv = netdev_priv(dev);
+ 
+ 	/* Start the network engine */
++	bcmgenet_set_rx_mode(dev);
+ 	bcmgenet_enable_rx_napi(priv);
+ 	bcmgenet_enable_tx_napi(priv);
+ 
 -- 
 2.25.1
 
