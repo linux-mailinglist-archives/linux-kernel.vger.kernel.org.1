@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E216201136
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED0B201139
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404882AbgFSPiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:38:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39940 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389044AbgFSPiU (ORCPT
+        id S2405019AbgFSPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:38:35 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45692 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404852AbgFSPia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:38:20 -0400
-Received: from ip-109-41-0-196.web.vodafone.de ([109.41.0.196] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jmJ5r-0000km-CT; Fri, 19 Jun 2020 15:38:15 +0000
-Date:   Fri, 19 Jun 2020 17:38:12 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>
-Subject: Re: [PATCH 2/6] arm64/vdso: Zap vvar pages when switching to a time
- namespace
-Message-ID: <20200619153812.2d6anaynb4p37qv2@wittgenstein>
-References: <20200616075545.312684-1-avagin@gmail.com>
- <20200616075545.312684-3-avagin@gmail.com>
+        Fri, 19 Jun 2020 11:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592581109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7g3smqjPAINScCPgMSu8XUaQStr8Lkex1f8ARwWIpo=;
+        b=c3UBEb3oWwSzGr+Cq5j3DdD5+5Kk014Gs3UAfvPzvUjNxa9aVmbc57O+RCkf9F/uQVyroV
+        SAz7VfvxznNU5FESA9qt6oGTQzD66DleO2c0q7vdX21+1ufXVdhLbxV5Q/F2oLUb7exxnI
+        YhFmkh1s/Ob/W2YLU8d7SE8crtWOJbs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-RJ8WWiR_Px-M8OFQTo2uEQ-1; Fri, 19 Jun 2020 11:38:25 -0400
+X-MC-Unique: RJ8WWiR_Px-M8OFQTo2uEQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 044EC85B673;
+        Fri, 19 Jun 2020 15:38:24 +0000 (UTC)
+Received: from localhost (unknown [10.40.208.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D33D45C1D0;
+        Fri, 19 Jun 2020 15:38:19 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 17:38:17 +0200
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v3] KVM: LAPIC: Recalculate apic map in batch
+Message-ID: <20200619173817.63249b3e@redhat.com>
+In-Reply-To: <3e025538-297b-74e5-f1b1-2193b614978b@redhat.com>
+References: <1582684862-10880-1-git-send-email-wanpengli@tencent.com>
+        <20200619143626.1b326566@redhat.com>
+        <3e025538-297b-74e5-f1b1-2193b614978b@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200616075545.312684-3-avagin@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 12:55:41AM -0700, Andrei Vagin wrote:
-> The VVAR page layout depends on whether a task belongs to the root or
-> non-root time namespace. Whenever a task changes its namespace, the VVAR
-> page tables are cleared and then they will be re-faulted with a
-> corresponding layout.
+On Fri, 19 Jun 2020 16:10:43 +0200
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+
+> On 19/06/20 14:36, Igor Mammedov wrote:
+> > qemu-kvm -m 2G -smp 4,maxcpus=8  -monitor stdio
+> > (qemu) device_add qemu64-x86_64-cpu,socket-id=4,core-id=0,thread-id=0
+> > 
+> > in guest fails with:
+> > 
+> >  smpboot: do_boot_cpu failed(-1) to wakeup CPU#4
+> > 
+> > which makes me suspect that  INIT/SIPI wasn't delivered
+> > 
+> > Is it a know issue?
+> >   
 > 
-> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Dmitry Safonov <dima@arista.com>
-> Signed-off-by: Andrei Vagin <avagin@gmail.com>
-> ---
->  arch/arm64/kernel/vdso.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
+> No, it isn't.  I'll revert.
+wait for a day or 2,
+
+I'll try to come up with a fix over weekend.
+
+> Paolo
 > 
-> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-> index b0aec4e8c9b4..df4bb736d28a 100644
-> --- a/arch/arm64/kernel/vdso.c
-> +++ b/arch/arm64/kernel/vdso.c
-> @@ -125,6 +125,38 @@ static int __vdso_init(enum vdso_abi abi)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_TIME_NS
-> +/*
-> + * The vvar page layout depends on whether a task belongs to the root or
-> + * non-root time namespace. Whenever a task changes its namespace, the VVAR
-> + * page tables are cleared and then they will re-faulted with a
-> + * corresponding layout.
-> + * See also the comment near timens_setup_vdso_data() for details.
-> + */
-> +int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
-> +{
-> +	struct mm_struct *mm = task->mm;
-> +	struct vm_area_struct *vma;
-> +
-> +	if (mmap_write_lock_killable(mm))
-> +		return -EINTR;
 
-Hey,
-
-Just a heads-up I'm about to plumb CLONE_NEWTIME support into setns()
-which would mean that vdso_join_timens() ould not be allowed to fail
-anymore to make it easy to switch to multiple namespaces atomically. So
-this would probably need to be changed to mmap_write_lock() which I've
-already brought up upstream:
-https://lore.kernel.org/lkml/20200611110221.pgd3r5qkjrjmfqa2@wittgenstein/
-(Assuming that people agree. I just sent the series and most people here
-are Cced.)
-
-Thanks!
-Christian
