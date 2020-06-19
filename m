@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A228F200CFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D38200C33
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389529AbgFSOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:52:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45360 "EHLO mail.kernel.org"
+        id S2388409AbgFSOnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389402AbgFSOvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:38 -0400
+        id S2388407AbgFSOmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCA4421919;
-        Fri, 19 Jun 2020 14:51:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1157020CC7;
+        Fri, 19 Jun 2020 14:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578298;
-        bh=ROXJ/dCfl2QDTiLF5kuqW9IcXc8XrfktjT2CXamAzmA=;
+        s=default; t=1592577766;
+        bh=PcpT25rK7rYNhpCqz1U5PiI8V6SO18bbgHhxO/L2RUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z9EzPOsuf/qDT05cF0kOkMaUvhlFvCkd0+rhMpyMyYpFYg5mIEvb6FdS7O+DeDlvb
-         J/cuGu2hgm98IImbAOd0ZA+xHOfht80TuZVleKvt8a5IRsqKvzzrCg7q0sMtJMHn3Y
-         CzXvkM8kNJEUhk+a+bv0/oCDPzum41Nc4jQ4elaQ=
+        b=ElikhKG1+iN9twsPnWy0HHuifgCatuZXAJNy5oDXPwS9JYTg+/QtwrIsYe2qFLUiB
+         mP2yQknn3+3oTjqbpnjb4qcdb55JqFJZZ6AV+TYQwuE58MJV60mvoo4HdslB2PJtkz
+         FdB+Nqc82bynO3cbqv0UsQfz5vWyD7KgSwuqGleE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 129/190] PCI: Dont disable decoding when mmio_always_on is set
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 080/128] mips: cm: Fix an invalid error code of INTVN_*_ERR
 Date:   Fri, 19 Jun 2020 16:32:54 +0200
-Message-Id: <20200619141640.072874226@linuxfoundation.org>
+Message-Id: <20200619141624.395317897@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +50,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit b6caa1d8c80cb71b6162cb1f1ec13aa655026c9f ]
+[ Upstream commit 8a0efb8b101665a843205eab3d67ab09cb2d9a8d ]
 
-Don't disable MEM/IO decoding when a device have both non_compliant_bars
-and mmio_always_on.
+Commit 3885c2b463f6 ("MIPS: CM: Add support for reporting CM cache
+errors") adds cm2_causes[] array with map of error type ID and
+pointers to the short description string. There is a mistake in
+the table, since according to MIPS32 manual CM2_ERROR_TYPE = {17,18}
+correspond to INTVN_WR_ERR and INTVN_RD_ERR, while the table
+claims they have {0x17,0x18} codes. This is obviously hex-dec
+copy-paste bug. Moreover codes {0x18 - 0x1a} indicate L2 ECC errors.
 
-That would allow us quirk devices with junk in BARs but can't disable
-their decoding.
-
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Acked-by: Bjorn Helgaas <helgaas@kernel.org>
+Fixes: 3885c2b463f6 ("MIPS: CM: Add support for reporting CM cache errors")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-pm@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/probe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/mips-cm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index e23bfd9845b1..92c3abe0b2b9 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1446,7 +1446,7 @@ int pci_setup_device(struct pci_dev *dev)
- 	/* device class may be changed after fixup */
- 	class = dev->class >> 8;
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index 60177a612cb1..df65516778a2 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -123,9 +123,9 @@ static char *cm2_causes[32] = {
+ 	"COH_RD_ERR", "MMIO_WR_ERR", "MMIO_RD_ERR", "0x07",
+ 	"0x08", "0x09", "0x0a", "0x0b",
+ 	"0x0c", "0x0d", "0x0e", "0x0f",
+-	"0x10", "0x11", "0x12", "0x13",
+-	"0x14", "0x15", "0x16", "INTVN_WR_ERR",
+-	"INTVN_RD_ERR", "0x19", "0x1a", "0x1b",
++	"0x10", "INTVN_WR_ERR", "INTVN_RD_ERR", "0x13",
++	"0x14", "0x15", "0x16", "0x17",
++	"0x18", "0x19", "0x1a", "0x1b",
+ 	"0x1c", "0x1d", "0x1e", "0x1f"
+ };
  
--	if (dev->non_compliant_bars) {
-+	if (dev->non_compliant_bars && !dev->mmio_always_on) {
- 		pci_read_config_word(dev, PCI_COMMAND, &cmd);
- 		if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
- 			dev_info(&dev->dev, "device has non-compliant BARs; disabling IO/MEM decoding\n");
 -- 
 2.25.1
 
