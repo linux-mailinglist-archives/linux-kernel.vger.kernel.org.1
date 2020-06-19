@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AF9200D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE43200C82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390295AbgFSO5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
+        id S2388885AbgFSOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390242AbgFSO5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:31 -0400
+        id S2388283AbgFSOqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84D88218AC;
-        Fri, 19 Jun 2020 14:57:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DF8220DD4;
+        Fri, 19 Jun 2020 14:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578651;
-        bh=g7s+4E0FWjGLf3fU+sdwvbuqe4aR7mVLH5Y7cpF0E24=;
+        s=default; t=1592578008;
+        bh=TP6ABCrW69/hmiZc5C5fJ7jMLpqQ6iQU/FXYwUyuPnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ik3qZQ7VsvqK8MEWdQUDlYRWDBrVabl6PprqrTU11KK2EVlYVqtKaFbNR4rr5VVLS
-         0JQEh5gMPZTt3KQMarBaeDxJqOxsJpiwEWHqlUefsZg28ia/l80+jTMP/kU3Fuqf5d
-         Y0EUtQxkfsz8lURGtsZ4yOZ0B8d/lG/0F0aVkF7o=
+        b=1yXFlPlz7hxCNYq+7LTzJrEae2q40IFLyAN8FHhI2aNcpK43ouy2IoczGCW7thCk1
+         FHVmLg9buJDdIWNCjxZrIY2ZGUTh/PXmWzFxkgK1/TmV1TT2M1qSZuekYViRp/LQvl
+         h2ceBuHydwilYkAxD3RzLHhPiFB82s3N5GCRwvgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Xi Wang <xi.wang@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 104/267] arm64: insn: Fix two bugs in encoding 32-bit logical immediates
-Date:   Fri, 19 Jun 2020 16:31:29 +0200
-Message-Id: <20200619141653.850412984@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 046/190] spi: Fix controller unregister order
+Date:   Fri, 19 Jun 2020 16:31:31 +0200
+Message-Id: <20200619141635.900418169@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,97 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke Nelson <lukenels@cs.washington.edu>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 579d1b3faa3735e781ff74aac0afd598515dbc63 ]
+[ Upstream commit 84855678add8aba927faf76bc2f130a40f94b6f7 ]
 
-This patch fixes two issues present in the current function for encoding
-arm64 logical immediates when using the 32-bit variants of instructions.
+When an SPI controller unregisters, it unbinds all its slave devices.
+For this, their drivers may need to access the SPI bus, e.g. to quiesce
+interrupts.
 
-First, the code does not correctly reject an all-ones 32-bit immediate,
-and returns an undefined instruction encoding.
+However since commit ffbbdd21329f ("spi: create a message queueing
+infrastructure"), spi_destroy_queue() is executed before unbinding the
+slaves.  It sets ctlr->running = false, thereby preventing SPI bus
+access and causing unbinding of slave devices to fail.
 
-Second, the code incorrectly rejects some 32-bit immediates that are
-actually encodable as logical immediates. The root cause is that the code
-uses a default mask of 64-bit all-ones, even for 32-bit immediates.
-This causes an issue later on when the default mask is used to fill the
-top bits of the immediate with ones, shown here:
+Fix by unbinding slaves before calling spi_destroy_queue().
 
-  /*
-   * Pattern: 0..01..10..01..1
-   *
-   * Fill the unused top bits with ones, and check if
-   * the result is a valid immediate (all ones with a
-   * contiguous ranges of zeroes).
-   */
-  imm |= ~mask;
-  if (!range_of_ones(~imm))
-          return AARCH64_BREAK_FAULT;
-
-To see the problem, consider an immediate of the form 0..01..10..01..1,
-where the upper 32 bits are zero, such as 0x80000001. The code checks
-if ~(imm | ~mask) contains a range of ones: the incorrect mask yields
-1..10..01..10..0, which fails the check; the correct mask yields
-0..01..10..0, which succeeds.
-
-The fix for both issues is to generate a correct mask based on the
-instruction immediate size, and use the mask to check for all-ones,
-all-zeroes, and values wider than the mask.
-
-Currently, arch/arm64/kvm/va_layout.c is the only user of this function,
-which uses 64-bit immediates and therefore won't trigger these bugs.
-
-We tested the new code against llvm-mc with all 1,302 encodable 32-bit
-logical immediates and all 5,334 encodable 64-bit logical immediates.
-
-Fixes: ef3935eeebff ("arm64: insn: Add encoder for bitwise operations using literals")
-Suggested-by: Will Deacon <will@kernel.org>
-Co-developed-by: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200508181547.24783-2-luke.r.nels@gmail.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: ffbbdd21329f ("spi: create a message queueing infrastructure")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v3.4+
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/8aaf9d44c153fe233b17bc2dec4eb679898d7e7b.1589557526.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/insn.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/spi/spi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
-index 3e6229e30109..cd37edbdedcb 100644
---- a/arch/arm64/kernel/insn.c
-+++ b/arch/arm64/kernel/insn.c
-@@ -1490,16 +1490,10 @@ static u32 aarch64_encode_immediate(u64 imm,
- 				    u32 insn)
- {
- 	unsigned int immr, imms, n, ones, ror, esz, tmp;
--	u64 mask = ~0UL;
--
--	/* Can't encode full zeroes or full ones */
--	if (!imm || !~imm)
--		return AARCH64_BREAK_FAULT;
-+	u64 mask;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 8cc1b21d00d3..49eee894f51d 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2265,6 +2265,8 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+ 	struct spi_controller *found;
+ 	int id = ctlr->bus_num;
  
- 	switch (variant) {
- 	case AARCH64_INSN_VARIANT_32BIT:
--		if (upper_32_bits(imm))
--			return AARCH64_BREAK_FAULT;
- 		esz = 32;
- 		break;
- 	case AARCH64_INSN_VARIANT_64BIT:
-@@ -1511,6 +1505,12 @@ static u32 aarch64_encode_immediate(u64 imm,
- 		return AARCH64_BREAK_FAULT;
- 	}
++	device_for_each_child(&ctlr->dev, NULL, __unregister);
++
+ 	/* First make sure that this controller was ever added */
+ 	mutex_lock(&board_lock);
+ 	found = idr_find(&spi_master_idr, id);
+@@ -2277,7 +2279,6 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+ 	list_del(&ctlr->list);
+ 	mutex_unlock(&board_lock);
  
-+	mask = GENMASK(esz - 1, 0);
-+
-+	/* Can't encode full zeroes, full ones, or value wider than the mask */
-+	if (!imm || imm == mask || imm & ~mask)
-+		return AARCH64_BREAK_FAULT;
-+
- 	/*
- 	 * Inverse of Replicate(). Try to spot a repeating pattern
- 	 * with a pow2 stride.
+-	device_for_each_child(&ctlr->dev, NULL, __unregister);
+ 	device_unregister(&ctlr->dev);
+ 	/* free bus id */
+ 	mutex_lock(&board_lock);
 -- 
 2.25.1
 
