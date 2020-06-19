@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA6920182F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718CB201883
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405734AbgFSQr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388196AbgFSQry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:47:54 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4458C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:47:54 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id q2so5967007vsr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:47:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NWEHEDf9ab+QI14tCX+z1GolOFkuRHuWtHZkHv7sE/8=;
-        b=ZQKBtVxbpMHTtarCdFEv2SLhsy1BOUCpKkvJz+7JCgxv+YLk8hpjSCZhAzUBGAQ2t4
-         +4YZTMvnx+jQZOqP8+yheWFmnjN6wUksFeVVlPRasvalm5mL/phB2Uw2Dpwkx4wYwtx1
-         ak4GFtqU29TNADOA1+On2OteQPA5/swts1SbLg92Igwa6/zSOrESGoCqlzS4kGd6qbV0
-         fUA8bTqfUeUHaaBzHIfPrWawa//gyGKcrkLltdj6GguP+ufq93wLJbA1CYEEknvQEs9Z
-         w0Z2OJvuAhb28Xf7dsz6nK3QfzKqBfyzurDhADJ8v0x4BqJBMKiLfZgIMYq/dx+H9BfL
-         rVxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NWEHEDf9ab+QI14tCX+z1GolOFkuRHuWtHZkHv7sE/8=;
-        b=cm8iXqi4svszy32nPAmJJ8+mrXfPgxsLjDQRYL6ZWg4TMzC87FcKHBS+iOSnoc6AnF
-         lkhnUuN5DLsDvuWjptUQAJmfM9KY9wCZHnV25BGNJvU+aFWTZOjxRutu0aFI+3MmQhnT
-         vKhzedrNruYyC7XD21j7bzD82R/l/wTARz9MKPzSb5qfFmbUrz7w53QLoYrz5wPkPlDc
-         7Bn95OIRy2suHsj9I4vQs7KNwhlXOjKV5z++ZSoyxJwseIs5evmikACNOr4kcXhaA1rB
-         P4DauHWCTgRJ9gqnDTzQ0KK7Ho/6k9YZz5yCutkyeMjqTK40XZhEcMOiDjU7JMOM6hUD
-         SVDw==
-X-Gm-Message-State: AOAM5337sg+igYKPlotJs2YrclgpL710kfoWB+pfduR9AqUMP5bZYS8T
-        MOy33bYuv327u5De/sP2yfMuK99qLcJTWep2Wpo=
-X-Google-Smtp-Source: ABdhPJzoqfCqyBo15NraAidXM2iN73KVqB72eAgjyPEtEdAyPlU41JcnyfE4tEok1IiLqFElTgTX4gcAbxB4NSramx0=
-X-Received: by 2002:a67:fd16:: with SMTP id f22mr8103695vsr.213.1592585273962;
- Fri, 19 Jun 2020 09:47:53 -0700 (PDT)
+        id S2393469AbgFSQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388080AbgFSOjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:48 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D5B4208B8;
+        Fri, 19 Jun 2020 14:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592577587;
+        bh=ygtLnoiUpOgaLKcoOxtcS9NrtUZR0kTHoYbA9bgfytU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZLXm9GevYiUE83l16MclWqjL9fVYx8o2DkwLmDI1qq5d+7yRL0DiMnTJB/Ra/llWy
+         ooYYqvCU05ae9K5VMT66KpRkJLuh4mGISZf8QBSiiyupjewMIK2Xthuh7QGsotOckz
+         gAvADAK96FqEoLS4EJbRhCmoeYhwcRtUWqSDa7Ik=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 001/128] ipv6: fix IPV6_ADDRFORM operation logic
+Date:   Fri, 19 Jun 2020 16:31:35 +0200
+Message-Id: <20200619141620.218012110@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-References: <20200618220139.GH27951@zn.tnic> <CAFmMkTGMAu-huTnP1aeMb_W4NddbTD_b2jhbDVKBDrkwgB97wg@mail.gmail.com>
- <20200619074053.GA32683@zn.tnic> <CAFmMkTGV0ZR6C=EBGQAiz1vw1vrUXSLTnH5ZbBUvfhPLg_tF6g@mail.gmail.com>
- <20200619132243.GC32683@zn.tnic> <CAD2FfiEr0kRWp2ut_PVqVDEVZqwESUxv=fxM9wUgi3n=ZCzPcQ@mail.gmail.com>
- <20200619134432.GE32683@zn.tnic> <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
- <20200619161026.GF32683@zn.tnic> <CAD2FfiGN5kdHHEz-6Oy9S-fFT35bJH0ZOfqfn5SyCG_Y2LtE_w@mail.gmail.com>
- <20200619164056.GB2235992@kroah.com>
-In-Reply-To: <20200619164056.GB2235992@kroah.com>
-From:   Richard Hughes <hughsient@gmail.com>
-Date:   Fri, 19 Jun 2020 17:47:42 +0100
-Message-ID: <CAD2FfiHVyt2hWBqcgtxbBaLEuxuzz6yAe1+8sK5J0SYWVEr5qQ@mail.gmail.com>
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Daniel Gutson <daniel@eclypsium.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 at 17:41, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> > Yes. I want to show the user *why* TME is not available.
-> So even if it is "available" that's fine, even if it is not being used?
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-No, it's just one more thing we can check and report. For instance,
-"Full memory encryption: NO [firmware-disabled, unencrypted-swap, EFI
-memory map incomplete]
+[ Upstream commit 79a1f0ccdbb4ad700590f61b00525b390cb53905 ]
 
-> And how can you ever tell if a BIOS disables a CPU feature, yet the chip
-> still has it?
+Socket option IPV6_ADDRFORM supports UDP/UDPLITE and TCP at present.
+Previously the checking logic looks like:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol != IPPROTO_TCP)
+	break;
 
-Isn't that what the "x86/tme: enabled by BIOS" kernel log entry is for?
+After commit b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation"), TCP
+was blocked as the logic changed to:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+	break;
+else
+	break;
 
-Richard.
+Then after commit 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
+UDP/UDPLITE were blocked as the logic changed to:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+
+if (sk->sk_protocol != IPPROTO_TCP)
+	break;
+
+Fix it by using Eric's code and simply remove the break in TCP check, which
+looks like:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+else
+	break;
+
+Fixes: 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/ipv6/ipv6_sockglue.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -184,14 +184,15 @@ static int do_ipv6_setsockopt(struct soc
+ 					retv = -EBUSY;
+ 					break;
+ 				}
+-			}
+-			if (sk->sk_protocol == IPPROTO_TCP &&
+-			    sk->sk_prot != &tcpv6_prot) {
+-				retv = -EBUSY;
++			} else if (sk->sk_protocol == IPPROTO_TCP) {
++				if (sk->sk_prot != &tcpv6_prot) {
++					retv = -EBUSY;
++					break;
++				}
++			} else {
+ 				break;
+ 			}
+-			if (sk->sk_protocol != IPPROTO_TCP)
+-				break;
++
+ 			if (sk->sk_state != TCP_ESTABLISHED) {
+ 				retv = -ENOTCONN;
+ 				break;
+
+
