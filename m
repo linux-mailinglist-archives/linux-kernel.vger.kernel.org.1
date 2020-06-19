@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F145201622
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B0B201649
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394868AbgFSQ1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:27:05 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:50666 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390094AbgFSQ1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:27:02 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JGQwFp077473;
-        Fri, 19 Jun 2020 11:26:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592584018;
-        bh=chC6pirnioIvgefBUFNtXHQtUPYlAklhZc784jj70us=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ArowfuHI6C+C60biqKWTfyl8YL+yIj+CQXlacknyNJoGoC5aBrxqwc430yoERWj5o
-         LRkyN0+EiGJGLJCpts/A1g1DYAKteUAAtwIs2IYdpqQ3cfDxn+WfJUtn1GnVO63OPa
-         Gzv3rMy0NkgRSacNTQKWXKbnaQsq2kw01jBdNDhY=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGQwrQ058946;
-        Fri, 19 Jun 2020 11:26:58 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 11:26:57 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 19 Jun 2020 11:26:57 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGQtMA051337;
-        Fri, 19 Jun 2020 11:26:56 -0500
-Subject: Re: [PATCH 0/2] arm64: dts: ti: k3: add platforms chipid module nodes
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Dave Gerlach <d-gerlach@ti.com>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200613164346.28852-1-grygorii.strashko@ti.com>
- <8b8f7f92-571d-4a44-4858-7d79676a6375@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <1dcd2e6c-924d-8151-8100-0b42f154a59c@ti.com>
-Date:   Fri, 19 Jun 2020 19:26:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2394953AbgFSQ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:28:52 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2345 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389951AbgFSQ22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:28:28 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 562AE804842AEAABF565;
+        Fri, 19 Jun 2020 17:28:24 +0100 (IST)
+Received: from localhost (10.52.127.178) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 19 Jun
+ 2020 17:28:23 +0100
+Date:   Fri, 19 Jun 2020 17:27:33 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 4.4 23/60] iio: buffer: Don't allow buffers
+ without any channels enabled to be activated
+Message-ID: <20200619172733.00005d9d@Huawei.com>
+In-Reply-To: <20200618013004.610532-23-sashal@kernel.org>
+References: <20200618013004.610532-1-sashal@kernel.org>
+        <20200618013004.610532-23-sashal@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <8b8f7f92-571d-4a44-4858-7d79676a6375@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.52.127.178]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Jun 2020 21:29:27 -0400
+Sasha Levin <sashal@kernel.org> wrote:
 
-
-On 15/06/2020 10:47, Peter Ujfalusi wrote:
-> Hi Grygorii,
+> From: Lars-Peter Clausen <lars@metafoo.de>
 > 
-> On 13/06/2020 19.43, Grygorii Strashko wrote:
->> Hi Tero,
->>
->> Hence k3 platforms chipid module driver was merged, there is follow up series
->> to add corresponding DT chipid nodes.
->>
->> [1] https://lkml.org/lkml/2020/5/29/979
->>
->> Grygorii Strashko (2):
->>    arm64: dts: ti: k3-am65-wakeup: add k3 platforms chipid module node
->>    arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid module node
+> [ Upstream commit b7329249ea5b08b2a1c2c3f24a2f4c495c4f14b8 ]
 > 
-> Can you also send a patch to enable the socinfo build?
-
-Posted.
-
+> Before activating a buffer make sure that at least one channel is enabled.
+> Activating a buffer with 0 channels enabled doesn't make too much sense and
+> disallowing this case makes sure that individual driver don't have to add
+> special case code to handle it.
 > 
-> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> index 8dd05b2a925c..1d3710e3626a 100644
-> --- a/arch/arm64/Kconfig.platforms
-> +++ b/arch/arm64/Kconfig.platforms
-> @@ -98,6 +98,7 @@ config ARCH_K3
->   	select TI_SCI_PROTOCOL
->   	select TI_SCI_INTR_IRQCHIP
->   	select TI_SCI_INTA_IRQCHIP
-> +	select TI_K3_SOCINFO
->   	help
->   	  This enables support for Texas Instruments' K3 multicore SoC
->   	  architecture.
+> Currently, without this patch enabling a buffer is possible and no error is
+> produced. With this patch -EINVAL is returned.
 > 
-> With this added:
-> Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Tero: FYI. There is no dependecies for this series.
+> An example of execution with this patch and some instrumented print-code:
+>    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
+>    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
+>    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
+>    1: iio_verify_update 753
+>    2:__iio_update_buffers 1115 ret -22
+>    3: iio_buffer_store_enable 1241 ret -22
+>    -bash: echo: write error: Invalid argument
+> 1, 2 & 3 are exit-error paths. 0 the first print in iio_verify_update()
+> rergardless of error path.
+> 
+> Without this patch (and same instrumented print-code):
+>    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
+>    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
+>    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
+>    root@analog:/sys/bus/iio/devices/iio:device3/buffer#
+> Buffer is enabled with no error.
+> 
+> Note from Jonathan: Probably not suitable for automatic application to stable.
+> This has been there from the very start.  It tidies up an odd corner
+> case but won't effect any 'real' users.
+> 
 
-Best regards,
-grygorii
+As noted. I don't think it matters if we do apply this to stable.
+It closes an interface oddity rather than an actual known bug.
+
+> Fixes: 84b36ce5f79c0 ("staging:iio: Add support for multiple buffers")
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/iio/industrialio-buffer.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index 864a61b05665..fea41b328ab9 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -641,6 +641,13 @@ static int iio_verify_update(struct iio_dev *indio_dev,
+>  	bool scan_timestamp;
+>  	unsigned int modes;
+>  
+> +	if (insert_buffer &&
+> +	    bitmap_empty(insert_buffer->scan_mask, indio_dev->masklength)) {
+> +		dev_dbg(&indio_dev->dev,
+> +			"At least one scan element must be enabled first\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	memset(config, 0, sizeof(*config));
+>  
+>  	/*
+
+
