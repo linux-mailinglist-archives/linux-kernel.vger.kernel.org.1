@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2933F20178D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE3D2015B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395417AbgFSQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:40:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37822 "EHLO mail.kernel.org"
+        id S2390042AbgFSO4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388803AbgFSOqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:46:07 -0400
+        id S2389659AbgFSOz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:55:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13ADD2083B;
-        Fri, 19 Jun 2020 14:46:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C4F2217D9;
+        Fri, 19 Jun 2020 14:55:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577967;
-        bh=a0TYNNyjIBJLR9POMM4mf+WZOZYMq1Rla4RkEy3DSIw=;
+        s=default; t=1592578559;
+        bh=2wK3x9Xyezua4jwnu29bAlX1TuakhDFi6UQptDI5vIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SoF0VHU9CJvEWyA3fwVkPd5xIfk2bG5Y0dCJPSgPSTvsV0SCYb75NAvXx8NFbzGCs
-         uBqyIoMo3YChjERC4aIshhlKip224XKDLLEFTRPbwCI52REs0L5aGiNlwBY579ylnV
-         Rv1l1oVsAgXtpLN4fZuGrqFFFCgUCqETFCakO4lU=
+        b=j/LCtPuRPlloSqBzSx7DdbzyD6IZWiXV/85xPPPCcfmRWektibyf/bjKzAnvlVxu7
+         SyFp+ZlRIKJa8S9+6Kf1PVuBDS5dzIznXJKPigR/SN7w65IPZLY7hF/bovZFykrLED
+         7nEAd7iHC9B9SssLwWe9L+An3vttFCr4ZWQz7XyM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: [PATCH 4.14 008/190] serial: imx: Fix handling of TC irq in combination with DMA
-Date:   Fri, 19 Jun 2020 16:30:53 +0200
-Message-Id: <20200619141633.883957087@linuxfoundation.org>
+        syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 4.19 069/267] proc: Use new_inode not new_inode_pseudo
+Date:   Fri, 19 Jun 2020 16:30:54 +0200
+Message-Id: <20200619141652.207568902@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 1866541492641c02874bf51f9d8712b5510f2c64 upstream.
+commit ef1548adada51a2f32ed7faef50aa465e1b4c5da upstream.
 
-When using RS485 half duplex the Transmitter Complete irq is needed to
-determine the moment when the transmitter can be disabled. When using
-DMA this irq must only be enabled when DMA has completed to transfer all
-data. Otherwise the CPU might busily trigger this irq which is not
-properly handled and so the also pending irq for the DMA transfer cannot
-trigger.
+Recently syzbot reported that unmounting proc when there is an ongoing
+inotify watch on the root directory of proc could result in a use
+after free when the watch is removed after the unmount of proc
+when the watcher exits.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-[Backport to v4.14]
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
+of proc") made it easier to unmount proc and allowed syzbot to see the
+problem, but looking at the code it has been around for a long time.
+
+Looking at the code the fsnotify watch should have been removed by
+fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
+was allocated with new_inode_pseudo instead of new_inode so the inode
+was not on the sb->s_inodes list.  Which prevented
+fsnotify_unmount_inodes from finding the inode and removing the watch
+as well as made it so the "VFS: Busy inodes after unmount" warning
+could not find the inodes to warn about them.
+
+Make all of the inodes in proc visible to generic_shutdown_super,
+and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
+The only functional difference is that new_inode places the inodes
+on the sb->s_inodes list.
+
+I wrote a small test program and I can verify that without changes it
+can trigger this issue, and by replacing new_inode_pseudo with
+new_inode the issues goes away.
+
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
+Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
+Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
+Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
+Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/imx.c |   22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ fs/proc/inode.c       |    2 +-
+ fs/proc/self.c        |    2 +-
+ fs/proc/thread_self.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -538,6 +538,11 @@ static void dma_tx_callback(void *data)
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -451,7 +451,7 @@ const struct inode_operations proc_link_
  
- 	if (!uart_circ_empty(xmit) && !uart_tx_stopped(&sport->port))
- 		imx_dma_tx(sport);
-+	else if (sport->port.rs485.flags & SER_RS485_ENABLED) {
-+		temp = readl(sport->port.membase + UCR4);
-+		temp |= UCR4_TCEN;
-+		writel(temp, sport->port.membase + UCR4);
-+	}
+ struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
+ {
+-	struct inode *inode = new_inode_pseudo(sb);
++	struct inode *inode = new_inode(sb);
  
- 	spin_unlock_irqrestore(&sport->port.lock, flags);
- }
-@@ -555,6 +560,10 @@ static void imx_dma_tx(struct imx_port *
- 	if (sport->dma_is_txing)
- 		return;
- 
-+	temp = readl(sport->port.membase + UCR4);
-+	temp &= ~UCR4_TCEN;
-+	writel(temp, sport->port.membase + UCR4);
-+
- 	sport->tx_bytes = uart_circ_chars_pending(xmit);
- 
- 	if (xmit->tail < xmit->head || xmit->head == 0) {
-@@ -617,10 +626,15 @@ static void imx_start_tx(struct uart_por
- 		if (!(port->rs485.flags & SER_RS485_RX_DURING_TX))
- 			imx_stop_rx(port);
- 
--		/* enable transmitter and shifter empty irq */
--		temp = readl(port->membase + UCR4);
--		temp |= UCR4_TCEN;
--		writel(temp, port->membase + UCR4);
-+		/*
-+		 * Enable transmitter and shifter empty irq only if DMA is off.
-+		 * In the DMA case this is done in the tx-callback.
-+		 */
-+		if (!sport->dma_is_enabled) {
-+			temp = readl(port->membase + UCR4);
-+			temp |= UCR4_TCEN;
-+			writel(temp, port->membase + UCR4);
-+		}
- 	}
- 
- 	if (!sport->dma_is_enabled) {
+ 	if (inode) {
+ 		inode->i_ino = de->low_ino;
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -42,7 +42,7 @@ int proc_setup_self(struct super_block *
+ 	inode_lock(root_inode);
+ 	self = d_alloc_name(s->s_root, "self");
+ 	if (self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+--- a/fs/proc/thread_self.c
++++ b/fs/proc/thread_self.c
+@@ -42,7 +42,7 @@ int proc_setup_thread_self(struct super_
+ 	inode_lock(root_inode);
+ 	thread_self = d_alloc_name(s->s_root, "thread-self");
+ 	if (thread_self) {
+-		struct inode *inode = new_inode_pseudo(s);
++		struct inode *inode = new_inode(s);
+ 		if (inode) {
+ 			inode->i_ino = thread_self_inum;
+ 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
 
 
