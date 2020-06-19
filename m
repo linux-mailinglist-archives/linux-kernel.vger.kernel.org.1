@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F32201982
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAF7201999
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392654AbgFSRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
+        id S2388145AbgFSRju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:39:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:50616 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392026AbgFSRbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:31:51 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB66720809;
-        Fri, 19 Jun 2020 17:31:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592587911;
-        bh=9mCNxE/8rXZYK27gbI7jREQY5FMFSwoWsy4EMvaeG3Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=unM1SajPAWGLO2RLvI4NOTywsFTs4JNz5ftkv1P4abcHdAiYJlLxxftqMzWVVdRYW
-         8LjabTaptFybYvdAORjLyRqioXRM8AthFwJhxSQKnZS4mxwSJlt2gbuQfd6hqSpuZf
-         2xrtAHAexLBnyUEGA3p6bjBJm9CePmO0zvcTHIao=
-Date:   Fri, 19 Jun 2020 12:37:15 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] ethernet: ti: am65-cpsw-qos: Use struct_size() in
- devm_kzalloc()
-Message-ID: <20200619173715.GA6998@embeddedor>
+        id S1730934AbgFSRjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:39:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83143D6E;
+        Fri, 19 Jun 2020 10:39:48 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFA8A3F71F;
+        Fri, 19 Jun 2020 10:39:46 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 18:39:44 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chrid.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/uclamp: Fix initialization of strut uclamp_rq
+Message-ID: <20200619173944.blwuimtuqmcxlj2v@e107158-lin.cambridge.arm.com>
+References: <20200618195525.7889-1-qais.yousef@arm.com>
+ <20200618195525.7889-2-qais.yousef@arm.com>
+ <20200619173055.GA576888@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200619173055.GA576888@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes. Also, remove unnecessary
-variable _size_.
+On 06/19/20 19:30, Peter Zijlstra wrote:
+> On Thu, Jun 18, 2020 at 08:55:24PM +0100, Qais Yousef wrote:
+> 
+> > +	for_each_clamp_id(clamp_id) {
+> > +		memset(uc_rq[clamp_id].bucket,
+> > +		       0,
+> > +		       sizeof(struct uclamp_bucket)*UCLAMP_BUCKETS);
+> > +
+> > +		uc_rq[clamp_id].value = uclamp_none(clamp_id);
+> 
+> I think you can replace all that with:
+> 
+> 		*uc_rq = (struct uclamp_rq){
+> 			.value = uclamp_none(clamp_id),
+> 		};
+> 
+> it's shorter and is free or weird line-breaks :-)
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+Sure. I just sent v2 so that people will be encouraged to run tests hopefully.
+But will fix in v3.
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-qos.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Do we actually need to 0 out anything here? Shouldn't the runqueues all be in
+BSS which gets initialized to 0 by default at boot?
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-index 32eac04468bb..3bdd4dbcd2ff 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-@@ -505,7 +505,6 @@ static int am65_cpsw_set_taprio(struct net_device *ndev, void *type_data)
- 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
- 	struct tc_taprio_qopt_offload *taprio = type_data;
- 	struct am65_cpsw_est *est_new;
--	size_t size;
- 	int ret = 0;
- 
- 	if (taprio->cycle_time_extension) {
-@@ -513,10 +512,9 @@ static int am65_cpsw_set_taprio(struct net_device *ndev, void *type_data)
- 		return -EOPNOTSUPP;
- 	}
- 
--	size = sizeof(struct tc_taprio_sched_entry) * taprio->num_entries +
--	       sizeof(struct am65_cpsw_est);
--
--	est_new = devm_kzalloc(&ndev->dev, size, GFP_KERNEL);
-+	est_new = devm_kzalloc(&ndev->dev,
-+			       struct_size(est_new, taprio.entries, taprio->num_entries),
-+			       GFP_KERNEL);
- 	if (!est_new)
- 		return -ENOMEM;
- 
--- 
-2.27.0
+Maybe better stay explicit..
 
+Thanks
+
+--
+Qais Yousef
