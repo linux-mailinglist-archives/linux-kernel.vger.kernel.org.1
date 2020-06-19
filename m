@@ -2,731 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BB0200F29
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00E6200FCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392460AbgFSPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
+        id S2392978AbgFSPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392026AbgFSPPs (ORCPT
+        with ESMTP id S2392440AbgFSPPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:15:48 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E75AC061794
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:15:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r9so8761934wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:15:47 -0700 (PDT)
+        Fri, 19 Jun 2020 11:15:54 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E534C0613F0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:15:53 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so7436010qtg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:15:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UeFy9wL2Na9dIEGGYMCL8c8bGY8Gy3Nu7ahNCzjtECA=;
-        b=aOFPVQdoMro4skSpksjBTH4t+98ZY+spcPEOiieM1NH/tnUqkVtfKNcN6Z14vp9ju5
-         E67yUxSizCWZ4lUBa0RenDThusaP7YDp/Tx82kHdpDWvfoheQo0dCQRzpvCuU6QL6Gny
-         ctrxF6wNrAs3+J30UnS7GMwpkQngkcU6bQly2bqn5zZSXn3b+SNz0H7c3DOmsFejzrrL
-         tXlDFSL10Y0qPAUw0n5WcZfKVJ3GompRTZbt7xvSL+i2Topt1IHIqeWCFM+LfS15mYVG
-         mAe9FZS9PZn1D1LBApsQwF9ARsMZnRCtSYajnhQypAu6E81l5oKN5d+ZiIktVgUIPkWj
-         T6Gg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X2HlrHXMTsUGZp7zXkK0C6ORZXN08Rk3M03svjYzeco=;
+        b=KCSiM2dDaLHttoqe1QHt/9yr2IYYTmKDtwUlr/2aAPsMXJotGdlS5LIUOCBI3nfUKr
+         7H5hXjOFeIhEMM1rhPsYmLXsVGK+/URRxwB5gkdgB/VVBX1WNWiPWPxGzOXFSojm2k67
+         xv0fxT++s5BYKLm5BozcojKfi5oVGvmGeiUTUYEK9kBmA8g9ZeUGElwaPjjy3Aw3zHUD
+         ZgrJPkhJj7UA3fOZqK2qsLucfVZJHTCbjC1vzx8LgcH+mB7ndhuHBfDQHVam/u5lMZnQ
+         /ScgOIQLnmny9xQ2AmPd/r9OS8erk86JqJJRaxVdcgDBEB/6Qu//RVN/4j5OzzqwuMzv
+         jKuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UeFy9wL2Na9dIEGGYMCL8c8bGY8Gy3Nu7ahNCzjtECA=;
-        b=VH3u0s2v7ZmfshLMgC3I/ToBS89vuehqJqwPuguYEt+Bu35BsH5GSdrDjY9VsXW3/z
-         ozGowr9bWoeiOKMwlcEEPFpt2Iqgs2JVEVmLuCZD/ABGy7idFvPR+167lbiijvNGgjWA
-         YP4XFnM+vop5bSIEhvn1wHIIdFeUhywVmW9oquOh3kiD5CiU32Puvv6bwLo9k1FJORhR
-         PvkW9LE5e9+qumMGRD6CG7IHcO3KOrTiLBn+yufJPDIsnyXBh3/YMHI7JCKdOmkAxnX9
-         y+T1YKviMUZ5HfvC1NuYPZg2cW6SVYuHmMmy07QqxJsdentxJFh7rilYNVpq9z9m1etJ
-         ZxFQ==
-X-Gm-Message-State: AOAM532MfGg6yrQhNfZRiIBTsoYamrLrQ766fth4qi5F91pN9AbWHQR1
-        whR21oRJmOf42hedBBDrEpglSAGpmU/VdN1haCATgg==
-X-Google-Smtp-Source: ABdhPJxMvIZHL8PmdzS0CIhA1M0D49se4Kk9bDB8WzjCsQGQsoRYSFww/ABR7CVPLeBuzfGER1sPb6CVbvYtnSIWYYM=
-X-Received: by 2002:a7b:cf13:: with SMTP id l19mr4122864wmg.76.1592579745373;
- Fri, 19 Jun 2020 08:15:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200619043356.90024-1-irogers@google.com> <20200619121557.GC12579@kernel.org>
- <20200619122051.GD12579@kernel.org>
-In-Reply-To: <20200619122051.GD12579@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 19 Jun 2020 08:15:33 -0700
-Message-ID: <CAP-5=fUrWOTangQFD6fATZQQUXLhwkt3U=_PuVL0GozhnmrVmA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] perf parse-events: enable more flex/bison warnings
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X2HlrHXMTsUGZp7zXkK0C6ORZXN08Rk3M03svjYzeco=;
+        b=Goq7y1pMYRtJMlVFEGWFJ62ELpHfhS4zn1yeSA8YPxICu4ZfIR650R1qi5J9kA4IaH
+         LERnGwZs2ppHBVxrI9bOQcMnNlOu0ac6zjAVDzMzgCqNS48N92YSGYmO63EcmEPf5kzN
+         8m7ADmrW5rGMw3i22sLcv8oYxZXotQh/+Uetqr6pMlqFDW9djBkkKgZhHafoYEYdsdjY
+         +46oPY7h0fymyziLFgONwx9AEiIC1nP/WcLUUeQFcj2GH3LQPtviUbQNX7/e4Mi9YCtN
+         TEiyL5JbqNfWK+hvPuxeCu+XIvmSzWLw950TenI+7hjcdsyTt35Kpt9XPqgyww/NgHu9
+         Rvaw==
+X-Gm-Message-State: AOAM5332+3tYn9Y3WneDbyCJ+hM7xcXGWAr/7ribH5qLjFKkfe+0OCx+
+        FDkl3An1iVTptNAS7RH84Q4Pah13jR6VqA==
+X-Google-Smtp-Source: ABdhPJwyaHoM3658+VLpg+i0sFuo+6OU0FHPK264DOfSFcO/+Xp6yT6eiXXI1R4LmEbcaqkeIQOs/w==
+X-Received: by 2002:ac8:2fb0:: with SMTP id l45mr3800795qta.260.1592579752403;
+        Fri, 19 Jun 2020 08:15:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y54sm7195320qtj.28.2020.06.19.08.15.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 08:15:51 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jmIkB-00Ap5C-Bi; Fri, 19 Jun 2020 12:15:51 -0300
+Date:   Fri, 19 Jun 2020 12:15:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200619151551.GP6578@ziepe.ca>
+References: <20200611083430.GD20149@phenom.ffwll.local>
+ <20200611141515.GW6578@ziepe.ca>
+ <20200616120719.GL20149@phenom.ffwll.local>
+ <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+ <20200617152835.GF6578@ziepe.ca>
+ <20200618150051.GS20149@phenom.ffwll.local>
+ <20200618172338.GM6578@ziepe.ca>
+ <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
+ <20200619113934.GN6578@ziepe.ca>
+ <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 5:20 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Jun 19, 2020 at 09:15:57AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Thu, Jun 18, 2020 at 09:33:46PM -0700, Ian Rogers escreveu:
-> > > All C compiler warnings are disabled are disabled by -w. This change
-> > > removes the -w from flex and bison targets. To avoid implicit
-> > > declarations header files are declared as targets and included.
+On Fri, Jun 19, 2020 at 05:06:04PM +0200, Daniel Vetter wrote:
+> On Fri, Jun 19, 2020 at 1:39 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Fri, Jun 19, 2020 at 09:22:09AM +0200, Daniel Vetter wrote:
+> > > > As I've understood GPU that means you need to show that the commands
+> > > > associated with the buffer have completed. This is all local stuff
+> > > > within the driver, right? Why use fence (other than it already exists)
 > > >
-> > > Tested with GCC 9.3.0 and clang 9.0.1.
-> > >
-> > > v2. predicates disabling the warnings on more recent bison and flex
-> > >     versions (3.5.3 and 2.6.4 respectively). An alternative would be
-> > >     to disabled a large number of warnings to cover the warnings
-> > >     generated in older distributions:
-> > >   flex_flags := -Wno-switch-enum -Wno-switch-default -Wno-unused-function \
-> > >     -Wno-redundant-decls -Wno-sign-compare -Wno-unused-parameter \
-> > >     -Wno-missing-prototypes -Wno-misleading-indentation
-> > >   bison_flags := -DYYENABLE_NLS=0 -Wno-unused-parameter -Wno-nested-externs \
-> > >     -Wno-implicit-function-declaration -Wno-switch-enum
+> > > Because that's the end-of-dma thing. And it's cross-driver for the
+> > > above reasons, e.g.
+> > > - device A renders some stuff. Userspace gets dma_fence A out of that
+> > > (well sync_file or one of the other uapi interfaces, but you get the
+> > > idea)
+> > > - userspace (across process or just different driver) issues more
+> > > rendering for device B, which depends upon the rendering done on
+> > > device A. So dma_fence A is an dependency and will block this dma
+> > > operation. Userspace (and the kernel) gets dma_fence B out of this
+> > > - because unfortunate reasons, the same rendering on device B also
+> > > needs a userptr buffer, which means that dma_fence B is also the one
+> > > that the mmu_range_notifier needs to wait on before it can tell core
+> > > mm that it can go ahead and release those pages
 > >
-> > So, it is failing with older versions of alpine Linux, but then at
-> > alpine 3.8 I noticed that the problem is happening only when building
-> > with this following set of options, and when building with gcc, building
-> > with clang, i.e. adding CC=clang to the following make command line
-> > works.
->
-> I'll also check if this isn't because these container tests do multiple
-> make calls, with different sets of options (NO_LIBBPF=1, another with
-> NO_LIBELF=1, the one with LIBCLANGLLVM=1, etc) and perhaps the stuff
-> from previous builds pollute a subsequent build, i.e. will try adding a
-> rm -rf to the O= directory if missing.
+> > I was afraid you'd say this - this is complete madness for other DMA
+> > devices to borrow the notifier hook of the first device!
+> 
+> The first device might not even have a notifier. This is the 2nd
+> device, waiting on a dma_fence of its own, but which happens to be
+> queued up as a dma operation behind something else.
+> 
+> > What if the first device is a page faulting device and doesn't call
+> > dma_fence??
+> 
+> Not sure what you mean with this ... even if it does page-faulting for
+> some other reasons, it'll emit a dma_fence which the 2nd device can
+> consume as a dependency.
 
-Thanks! I don't have a good explanation as to why this would fail.
-Sorry about the Acked-by. Let me know if I should do anything more.
+At some point the pages under the buffer have to be either pinned
+or protected by mmu notifier. So each and every single device doing
+DMA to these pages must either pin, or use mmu notifier.
 
-Ian
+Driver A should never 'borrow' a notifier from B
 
-> > + make 'ARCH=' 'CROSS_COMPILE=' 'EXTRA_CFLAGS=' 'LIBCLANGLLVM=1' -C /git/linux/tools/perf 'O=/tmp/build/perf'
-> > make: Entering directory '/git/linux/tools/perf'
-> >   BUILD:   Doing 'make -j8' parallel build
-> >   HOSTCC   /tmp/build/perf/fixdep.o
-> >   HOSTLD   /tmp/build/perf/fixdep-in.o
-> >   LINK     /tmp/build/perf/fixdep
-> >
-> > Auto-detecting system features:
-> > ...                         dwarf: [ OFF ]
-> > ...            dwarf_getlocations: [ OFF ]
-> > ...                         glibc: [ OFF ]
-> > ...                          gtk2: [ on  ]
-> > ...                        libbfd: [ on  ]
-> > ...                        libcap: [ on  ]
-> > ...                        libelf: [ on  ]
-> > ...                       libnuma: [ OFF ]
-> > ...        numa_num_possible_cpus: [ OFF ]
-> > ...                       libperl: [ on  ]
-> > ...                     libpython: [ on  ]
-> > ...                     libcrypto: [ on  ]
-> > ...                     libunwind: [ on  ]
-> > ...            libdw-dwarf-unwind: [ OFF ]
-> > ...                          zlib: [ on  ]
-> > ...                          lzma: [ on  ]
-> > ...                     get_cpuid: [ on  ]
-> > ...                           bpf: [ on  ]
-> > ...                        libaio: [ on  ]
-> > ...                       libzstd: [ on  ]
-> > ...        disassembler-four-args: [ on  ]
-> >
-> > Makefile.config:409: No libdw DWARF unwind found, Please install elfutils-devel/libdw-dev >= 0.158 and/or set LIBDW_DIR
-> > Makefile.config:414: No libdw.h found or old libdw.h found or elfutils is older than 0.138, disables dwarf support. Please install new elfutils-devel/libdw-dev
-> > Makefile.config:485: gelf_getnote() not found on libelf, SDT support disabled
-> > Makefile.config:528: DWARF support is off, BPF prologue is disabled
-> > Makefile.config:536: No sys/sdt.h found, no SDT events are defined, please install systemtap-sdt-devel or systemtap-sdt-dev
-> > Makefile.config:890: No numa.h found, disables 'perf bench numa mem' benchmark, please install numactl-devel/libnuma-devel/libnuma-dev
-> > Makefile.config:945: No libbabeltrace found, disables 'perf data' CTF format support, please install libbabeltrace-dev[el]/libbabeltrace-ctf-dev
-> > Makefile.config:971: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
-> > Makefile.config:1008: No suitable libclang found, disabling builtin clang and LLVM support. Please install libclang-dev(el) (>= 3.9.0)
-> >   GEN      /tmp/build/perf/common-cmds.h
-> > sort: unrecognized option: V
-> > BusyBox v1.28.4 (2018-12-31 18:05:13 UTC) multi-call binary.
-> >   PERF_VERSION = 5.7.g6f01af8176af
-> >
-> > Usage: sort [-nrugMcszbdfiokt] [-o FILE] [-k start[.offset][opts][,end[.offset][opts]] [-t CHAR] [FILE]...
-> >
-> > Sort lines of text
-> >
-> >       -o FILE Output to FILE
-> >       -c      Check whether input is sorted
-> >       -b      Ignore leading blanks
-> >       -f      Ignore case
-> >       -i      Ignore unprintable characters
-> >       -d      Dictionary order (blank or alphanumeric only)
-> >       -g      General numerical sort
-> >       -M      Sort month
-> >       -n      Sort numbers
-> >       -t CHAR Field separator
-> >       -k N[,M] Sort by Nth field
-> >       -r      Reverse sort order
-> >       -s      Stable (don't sort ties alphabetically)
-> >       -u      Suppress duplicate lines
-> >       -z      Lines are terminated by NUL, not newline
-> >   CC       /tmp/build/perf/exec-cmd.o
-> >   CC       /tmp/build/perf/event-parse.o
-> >   MKDIR    /tmp/build/perf/fd/
-> >   CC       /tmp/build/perf/fd/array.o
-> >   GEN      /tmp/build/perf/bpf_helper_defs.h
-> >   CC       /tmp/build/perf/event-plugin.o
-> >   CC       /tmp/build/perf/core.o
-> >   LD       /tmp/build/perf/fd/libapi-in.o
-> >   MKDIR    /tmp/build/perf/fs/
-> >   CC       /tmp/build/perf/fs/fs.o
-> >   CC       /tmp/build/perf/cpumap.o
-> >   CC       /tmp/build/perf/trace-seq.o
-> >   CC       /tmp/build/perf/threadmap.o
-> >   CC       /tmp/build/perf/help.o
-> >   MKDIR    /tmp/build/perf/staticobjs/
-> >   CC       /tmp/build/perf/staticobjs/libbpf.o
-> >   MKDIR    /tmp/build/perf/staticobjs/
-> >   CC       /tmp/build/perf/staticobjs/bpf.o
-> >   CC       /tmp/build/perf/cpu.o
-> >   CC       /tmp/build/perf/parse-filter.o
-> >   CC       /tmp/build/perf/evsel.o
-> >   CC       /tmp/build/perf/evlist.o
-> >   CC       /tmp/build/perf/pager.o
-> >   CC       /tmp/build/perf/parse-options.o
-> >   CC       /tmp/build/perf/parse-utils.o
-> >   CC       /tmp/build/perf/mmap.o
-> >   CC       /tmp/build/perf/kbuffer-parse.o
-> >   CC       /tmp/build/perf/zalloc.o
-> >   CC       /tmp/build/perf/tep_strerror.o
-> >   CC       /tmp/build/perf/xyarray.o
-> >   CC       /tmp/build/perf/event-parse-api.o
-> >   CC       /tmp/build/perf/run-command.o
-> >   CC       /tmp/build/perf/sigchain.o
-> >   LD       /tmp/build/perf/libtraceevent-in.o
-> >   LINK     /tmp/build/perf/libtraceevent.a
-> >   MKDIR    /tmp/build/perf/fs/
-> >   CC       /tmp/build/perf/fs/tracing_path.o
-> >   CC       /tmp/build/perf/debug.o
-> >   CC       /tmp/build/perf/str_error_r.o
-> >   CC       /tmp/build/perf/fs/cgroup.o
-> >   CC       /tmp/build/perf/subcmd-config.o
-> >   CC       /tmp/build/perf/lib.o
-> >   CC       /tmp/build/perf/staticobjs/nlattr.o
-> >   CC       /tmp/build/perf/staticobjs/btf.o
-> >   CC       /tmp/build/perf/staticobjs/libbpf_errno.o
-> >   LD       /tmp/build/perf/fs/libapi-in.o
-> >   CC       /tmp/build/perf/staticobjs/str_error.o
-> >   CC       /tmp/build/perf/staticobjs/netlink.o
-> >   LD       /tmp/build/perf/libapi-in.o
-> >   AR       /tmp/build/perf/libapi.a
-> >   CC       /tmp/build/perf/staticobjs/bpf_prog_linfo.o
-> >   LD       /tmp/build/perf/libperf-in.o
-> >   AR       /tmp/build/perf/libperf.a
-> >   CC       /tmp/build/perf/staticobjs/libbpf_probes.o
-> >   CC       /tmp/build/perf/staticobjs/xsk.o
-> >   LD       /tmp/build/perf/libsubcmd-in.o
-> >   CC       /tmp/build/perf/staticobjs/hashmap.o
-> >   AR       /tmp/build/perf/libsubcmd.a
-> >   CC       /tmp/build/perf/staticobjs/btf_dump.o
-> >   CC       /tmp/build/perf/staticobjs/ringbuf.o
-> >   MKDIR    /tmp/build/perf/pmu-events/
-> >   GEN      perf-archive
-> >   HOSTCC   /tmp/build/perf/pmu-events/json.o
-> >   GEN      perf-with-kcore
-> >   MKDIR    /tmp/build/perf/ui/gtk/
-> >   MKDIR    /tmp/build/perf/pmu-events/
-> >   CC       /tmp/build/perf/ui/gtk/browser.o
-> >   HOSTCC   /tmp/build/perf/pmu-events/jsmn.o
-> >   HOSTCC   /tmp/build/perf/pmu-events/jevents.o
-> >   CC       /tmp/build/perf/plugin_jbd2.o
-> >   CC       /tmp/build/perf/plugin_hrtimer.o
-> >   CC       /tmp/build/perf/plugin_kmem.o
-> >   CC       /tmp/build/perf/plugin_kvm.o
-> >   LD       /tmp/build/perf/plugin_hrtimer-in.o
-> >   LD       /tmp/build/perf/plugin_jbd2-in.o
-> >   LD       /tmp/build/perf/plugin_kmem-in.o
-> >   CC       /tmp/build/perf/plugin_mac80211.o
-> >   CC       /tmp/build/perf/plugin_sched_switch.o
-> >   CC       /tmp/build/perf/plugin_function.o
-> >   LD       /tmp/build/perf/plugin_kvm-in.o
-> >   LD       /tmp/build/perf/plugin_mac80211-in.o
-> >   MKDIR    /tmp/build/perf/ui/gtk/
-> >   CC       /tmp/build/perf/plugin_xen.o
-> >   CC       /tmp/build/perf/ui/gtk/hists.o
-> >   LD       /tmp/build/perf/plugin_sched_switch-in.o
-> >   LD       /tmp/build/perf/staticobjs/libbpf-in.o
-> >   LD       /tmp/build/perf/plugin_xen-in.o
-> >   LINK     /tmp/build/perf/libbpf.a
-> >   CC       /tmp/build/perf/plugin_scsi.o
-> >   LD       /tmp/build/perf/plugin_function-in.o
-> >   CC       /tmp/build/perf/plugin_cfg80211.o
-> >   HOSTLD   /tmp/build/perf/pmu-events/jevents-in.o
-> >   CC       /tmp/build/perf/ui/gtk/setup.o
-> >   LINK     /tmp/build/perf/plugin_jbd2.so
-> >   LINK     /tmp/build/perf/pmu-events/jevents
-> >   GEN      /tmp/build/perf/pmu-events/pmu-events.c
-> >   LINK     /tmp/build/perf/plugin_hrtimer.so
-> >   LD       /tmp/build/perf/plugin_cfg80211-in.o
-> >   LD       /tmp/build/perf/plugin_scsi-in.o
-> >   LINK     /tmp/build/perf/plugin_kmem.so
-> >   LINK     /tmp/build/perf/plugin_kvm.so
-> >   CC       /tmp/build/perf/ui/gtk/util.o
-> >   LINK     /tmp/build/perf/plugin_mac80211.so
-> >   LINK     /tmp/build/perf/plugin_sched_switch.so
-> >   LINK     /tmp/build/perf/plugin_function.so
-> >   LINK     /tmp/build/perf/plugin_xen.so
-> >   LINK     /tmp/build/perf/plugin_scsi.so
-> >   LINK     /tmp/build/perf/plugin_cfg80211.so
-> >   CC       /tmp/build/perf/ui/gtk/helpline.o
-> >   GEN      /tmp/build/perf/libtraceevent-dynamic-list
-> >   GEN      /tmp/build/perf/python/perf.so
-> >   CC       /tmp/build/perf/ui/gtk/progress.o
-> >   CC       /tmp/build/perf/pmu-events/pmu-events.o
-> >   CC       /tmp/build/perf/ui/gtk/annotate.o
-> >   CC       /tmp/build/perf/builtin-bench.o
-> >   CC       /tmp/build/perf/ui/gtk/zalloc.o
-> >   CC       /tmp/build/perf/builtin-annotate.o
-> >   CC       /tmp/build/perf/builtin-config.o
-> >   CC       /tmp/build/perf/builtin-diff.o
-> >   CC       /tmp/build/perf/builtin-evlist.o
-> >   CC       /tmp/build/perf/builtin-ftrace.o
-> >   CC       /tmp/build/perf/builtin-help.o
-> >   CC       /tmp/build/perf/builtin-sched.o
-> >   CC       /tmp/build/perf/builtin-buildid-list.o
-> >   LD       /tmp/build/perf/pmu-events/pmu-events-in.o
-> >   LD       /tmp/build/perf/ui/gtk/gtk-in.o
-> >   CC       /tmp/build/perf/builtin-buildid-cache.o
-> >   CC       /tmp/build/perf/builtin-kallsyms.o
-> >   CC       /tmp/build/perf/builtin-list.o
-> >   CC       /tmp/build/perf/builtin-record.o
-> >   CC       /tmp/build/perf/builtin-report.o
-> >   LD       /tmp/build/perf/gtk-in.o
-> >   LINK     /tmp/build/perf/libperf-gtk.so
-> >   CC       /tmp/build/perf/builtin-stat.o
-> >   CC       /tmp/build/perf/builtin-timechart.o
-> >   CC       /tmp/build/perf/builtin-top.o
-> >   CC       /tmp/build/perf/builtin-script.o
-> >   CC       /tmp/build/perf/builtin-kmem.o
-> >   CC       /tmp/build/perf/builtin-lock.o
-> >   CC       /tmp/build/perf/builtin-kvm.o
-> >   CC       /tmp/build/perf/builtin-inject.o
-> >   CC       /tmp/build/perf/builtin-mem.o
-> >   CC       /tmp/build/perf/builtin-data.o
-> >   CC       /tmp/build/perf/builtin-version.o
-> >   CC       /tmp/build/perf/builtin-c2c.o
-> >   CC       /tmp/build/perf/builtin-trace.o
-> >   CC       /tmp/build/perf/builtin-probe.o
-> >   MKDIR    /tmp/build/perf/bench/
-> >   CC       /tmp/build/perf/bench/sched-messaging.o
-> >   MKDIR    /tmp/build/perf/tests/
-> >   CC       /tmp/build/perf/tests/builtin-test.o
-> >   MKDIR    /tmp/build/perf/bench/
-> >   CC       /tmp/build/perf/bench/sched-pipe.o
-> >   MKDIR    /tmp/build/perf/util/
-> >   CC       /tmp/build/perf/util/annotate.o
-> >   CC       /tmp/build/perf/bench/mem-functions.o
-> >   CC       /tmp/build/perf/arch/common.o
-> >   MKDIR    /tmp/build/perf/tests/
-> >   MKDIR    /tmp/build/perf/arch/x86/util/
-> >   CC       /tmp/build/perf/arch/x86/util/header.o
-> >   CC       /tmp/build/perf/bench/futex-hash.o
-> >   CC       /tmp/build/perf/tests/parse-events.o
-> >   CC       /tmp/build/perf/bench/futex-wake.o
-> >   MKDIR    /tmp/build/perf/arch/x86/util/
-> >   CC       /tmp/build/perf/arch/x86/util/tsc.o
-> >   CC       /tmp/build/perf/arch/x86/util/pmu.o
-> >   CC       /tmp/build/perf/arch/x86/util/kvm-stat.o
-> >   CC       /tmp/build/perf/bench/futex-wake-parallel.o
-> >   CC       /tmp/build/perf/arch/x86/util/perf_regs.o
-> >   CC       /tmp/build/perf/bench/futex-requeue.o
-> >   CC       /tmp/build/perf/bench/futex-lock-pi.o
-> >   CC       /tmp/build/perf/arch/x86/util/group.o
-> >   CC       /tmp/build/perf/arch/x86/util/machine.o
-> >   CC       /tmp/build/perf/arch/x86/util/event.o
-> >   CC       /tmp/build/perf/arch/x86/util/unwind-libunwind.o
-> >   CC       /tmp/build/perf/arch/x86/util/auxtrace.o
-> >   CC       /tmp/build/perf/bench/epoll-wait.o
-> >   MKDIR    /tmp/build/perf/arch/x86/tests/
-> >   CC       /tmp/build/perf/arch/x86/tests/regs_load.o
-> >   MKDIR    /tmp/build/perf/util/
-> >   CC       /tmp/build/perf/util/block-info.o
-> >   MKDIR    /tmp/build/perf/arch/x86/tests/
-> >   CC       /tmp/build/perf/arch/x86/tests/dwarf-unwind.o
-> >   CC       /tmp/build/perf/arch/x86/util/archinsn.o
-> >   CC       /tmp/build/perf/arch/x86/tests/arch-tests.o
-> >   CC       /tmp/build/perf/bench/epoll-ctl.o
-> >   CC       /tmp/build/perf/arch/x86/tests/rdpmc.o
-> >   CC       /tmp/build/perf/tests/dso-data.o
-> >   CC       /tmp/build/perf/arch/x86/util/intel-pt.o
-> >   CC       /tmp/build/perf/arch/x86/tests/perf-time-to-tsc.o
-> >   CC       /tmp/build/perf/bench/synthesize.o
-> >   CC       /tmp/build/perf/util/block-range.o
-> >   CC       /tmp/build/perf/bench/kallsyms-parse.o
-> >   CC       /tmp/build/perf/arch/x86/tests/insn-x86.o
-> >   CC       /tmp/build/perf/util/build-id.o
-> >   CC       /tmp/build/perf/util/cacheline.o
-> >   CC       /tmp/build/perf/bench/mem-memcpy-x86-64-lib.o
-> >   CC       /tmp/build/perf/tests/attr.o
-> >   CC       /tmp/build/perf/bench/mem-memcpy-x86-64-asm.o
-> >   CC       /tmp/build/perf/bench/mem-memset-x86-64-asm.o
-> >   CC       /tmp/build/perf/util/config.o
-> >   CC       /tmp/build/perf/arch/x86/util/intel-bts.o
-> >   LD       /tmp/build/perf/bench/perf-in.o
-> >   CC       /tmp/build/perf/arch/x86/tests/intel-pt-pkt-decoder-test.o
-> >   CC       /tmp/build/perf/ui/setup.o
-> >   CC       /tmp/build/perf/tests/vmlinux-kallsyms.o
-> >   CC       /tmp/build/perf/arch/x86/tests/bp-modify.o
-> >   CC       /tmp/build/perf/ui/helpline.o
-> >   LD       /tmp/build/perf/arch/x86/util/perf-in.o
-> >   CC       /tmp/build/perf/ui/progress.o
-> >   CC       /tmp/build/perf/tests/openat-syscall.o
-> >   LD       /tmp/build/perf/arch/x86/tests/perf-in.o
-> >   CC       /tmp/build/perf/tests/openat-syscall-all-cpus.o
-> >   LD       /tmp/build/perf/arch/x86/perf-in.o
-> >   LD       /tmp/build/perf/arch/perf-in.o
-> >   CC       /tmp/build/perf/tests/openat-syscall-tp-fields.o
-> >   CC       /tmp/build/perf/ui/util.o
-> >   CC       /tmp/build/perf/ui/hist.o
-> >   CC       /tmp/build/perf/util/copyfile.o
-> >   CC       /tmp/build/perf/tests/mmap-basic.o
-> >   MKDIR    /tmp/build/perf/ui/stdio/
-> >   CC       /tmp/build/perf/ui/stdio/hist.o
-> >   CC       /tmp/build/perf/tests/perf-record.o
-> >   CC       /tmp/build/perf/util/ctype.o
-> >   CC       /tmp/build/perf/util/db-export.o
-> >   CC       /tmp/build/perf/tests/evsel-roundtrip-name.o
-> >   CC       /tmp/build/perf/tests/evsel-tp-sched.o
-> >   MKDIR    /tmp/build/perf/scripts/perl/Perf-Trace-Util/
-> >   CC       /tmp/build/perf/scripts/perl/Perf-Trace-Util/Context.o
-> >   CC       /tmp/build/perf/tests/fdarray.o
-> >   CC       /tmp/build/perf/tests/pmu.o
-> >   CC       /tmp/build/perf/tests/pmu-events.o
-> >   CC       /tmp/build/perf/tests/hists_common.o
-> >   CC       /tmp/build/perf/tests/hists_link.o
-> >   LD       /tmp/build/perf/scripts/perl/Perf-Trace-Util/perf-in.o
-> >   MKDIR    /tmp/build/perf/scripts/python/Perf-Trace-Util/
-> >   CC       /tmp/build/perf/ui/browser.o
-> >   CC       /tmp/build/perf/scripts/python/Perf-Trace-Util/Context.o
-> >   CC       /tmp/build/perf/tests/hists_filter.o
-> >   CC       /tmp/build/perf/util/env.o
-> >   CC       /tmp/build/perf/tests/hists_output.o
-> >   CC       /tmp/build/perf/tests/hists_cumulate.o
-> >   LD       /tmp/build/perf/scripts/python/Perf-Trace-Util/perf-in.o
-> >   LD       /tmp/build/perf/scripts/perf-in.o
-> >   CC       /tmp/build/perf/trace/beauty/clone.o
-> >   CC       /tmp/build/perf/perf.o
-> >   CC       /tmp/build/perf/trace/beauty/fcntl.o
-> >   MKDIR    /tmp/build/perf/ui/browsers/
-> >   CC       /tmp/build/perf/ui/browsers/annotate.o
-> >   CC       /tmp/build/perf/util/event.o
-> >   CC       /tmp/build/perf/tests/python-use.o
-> >   CC       /tmp/build/perf/trace/beauty/flock.o
-> >   CC       /tmp/build/perf/trace/beauty/fsmount.o
-> >   CC       /tmp/build/perf/trace/beauty/fspick.o
-> >   CC       /tmp/build/perf/trace/beauty/ioctl.o
-> >   CC       /tmp/build/perf/trace/beauty/kcmp.o
-> >   CC       /tmp/build/perf/tests/bp_signal.o
-> >   CC       /tmp/build/perf/tests/bp_signal_overflow.o
-> >   CC       /tmp/build/perf/trace/beauty/mount_flags.o
-> >   CC       /tmp/build/perf/trace/beauty/move_mount.o
-> >   CC       /tmp/build/perf/trace/beauty/pkey_alloc.o
-> >   CC       /tmp/build/perf/trace/beauty/arch_prctl.o
-> >   CC       /tmp/build/perf/trace/beauty/prctl.o
-> >   CC       /tmp/build/perf/tests/bp_account.o
-> >   CC       /tmp/build/perf/trace/beauty/renameat.o
-> >   CC       /tmp/build/perf/tests/wp.o
-> >   CC       /tmp/build/perf/tests/task-exit.o
-> >   CC       /tmp/build/perf/util/evlist.o
-> >   CC       /tmp/build/perf/trace/beauty/sockaddr.o
-> >   CC       /tmp/build/perf/trace/beauty/socket.o
-> >   CC       /tmp/build/perf/trace/beauty/statx.o
-> >   CC       /tmp/build/perf/trace/beauty/sync_file_range.o
-> >   CC       /tmp/build/perf/util/sideband_evlist.o
-> >   MKDIR    /tmp/build/perf/ui/browsers/
-> >   CC       /tmp/build/perf/ui/browsers/hists.o
-> >   CC       /tmp/build/perf/ui/browsers/map.o
-> >   MKDIR    /tmp/build/perf/trace/beauty/tracepoints/
-> >   CC       /tmp/build/perf/trace/beauty/tracepoints/x86_irq_vectors.o
-> >   MKDIR    /tmp/build/perf/trace/beauty/tracepoints/
-> >   CC       /tmp/build/perf/trace/beauty/tracepoints/x86_msr.o
-> >   CC       /tmp/build/perf/util/evsel.o
-> >   LD       /tmp/build/perf/trace/beauty/tracepoints/perf-in.o
-> >   LD       /tmp/build/perf/trace/beauty/perf-in.o
-> >   CC       /tmp/build/perf/tests/sw-clock.o
-> >   CC       /tmp/build/perf/util/evsel_fprintf.o
-> >   CC       /tmp/build/perf/util/perf_event_attr_fprintf.o
-> >   CC       /tmp/build/perf/tests/mmap-thread-lookup.o
-> >   CC       /tmp/build/perf/util/evswitch.o
-> >   CC       /tmp/build/perf/tests/thread-maps-share.o
-> >   CC       /tmp/build/perf/tests/switch-tracking.o
-> >   CC       /tmp/build/perf/util/find_bit.o
-> >   CC       /tmp/build/perf/util/get_current_dir_name.o
-> >   CC       /tmp/build/perf/util/kallsyms.o
-> >   MKDIR    /tmp/build/perf/ui/tui/
-> >   CC       /tmp/build/perf/tests/keep-tracking.o
-> >   CC       /tmp/build/perf/ui/tui/setup.o
-> >   CC       /tmp/build/perf/util/levenshtein.o
-> >   CC       /tmp/build/perf/util/llvm-utils.o
-> >   CC       /tmp/build/perf/util/mmap.o
-> >   CC       /tmp/build/perf/util/memswap.o
-> >   MKDIR    /tmp/build/perf/ui/tui/
-> >   CC       /tmp/build/perf/ui/tui/util.o
-> >   CC       /tmp/build/perf/tests/code-reading.o
-> >   CC       /tmp/build/perf/tests/sample-parsing.o
-> >   CC       /tmp/build/perf/ui/tui/helpline.o
-> >   CC       /tmp/build/perf/tests/parse-no-sample-id-all.o
-> >   CC       /tmp/build/perf/ui/tui/progress.o
-> >   CC       /tmp/build/perf/tests/kmod-path.o
-> >   CC       /tmp/build/perf/tests/thread-map.o
-> >   LD       /tmp/build/perf/ui/tui/perf-in.o
-> >   CC       /tmp/build/perf/tests/llvm.o
-> >   CC       /tmp/build/perf/tests/bpf.o
-> >   CC       /tmp/build/perf/tests/topology.o
-> >   CC       /tmp/build/perf/tests/mem.o
-> >   CC       /tmp/build/perf/tests/cpumap.o
-> >   CC       /tmp/build/perf/tests/stat.o
-> >   CC       /tmp/build/perf/tests/event_update.o
-> >   CC       /tmp/build/perf/ui/browsers/scripts.o
-> >   CC       /tmp/build/perf/ui/browsers/header.o
-> >   CC       /tmp/build/perf/tests/event-times.o
-> >   CC       /tmp/build/perf/ui/browsers/res_sample.o
-> >   CC       /tmp/build/perf/tests/expr.o
-> >   CC       /tmp/build/perf/tests/backward-ring-buffer.o
-> >   CC       /tmp/build/perf/tests/sdt.o
-> >   CC       /tmp/build/perf/tests/is_printable_array.o
-> >   CC       /tmp/build/perf/tests/bitmap.o
-> >   BISON    /tmp/build/perf/util/parse-events-bison.c
-> >   CC       /tmp/build/perf/tests/perf-hooks.o
-> >   CC       /tmp/build/perf/tests/clang.o
-> >   CC       /tmp/build/perf/util/perf_regs.o
-> >   CC       /tmp/build/perf/tests/unit_number__scnprintf.o
-> >   CC       /tmp/build/perf/tests/mem2node.o
-> >   CC       /tmp/build/perf/tests/maps.o
-> >   CC       /tmp/build/perf/tests/time-utils-test.o
-> >   CC       /tmp/build/perf/tests/genelf.o
-> >   CC       /tmp/build/perf/tests/api-io.o
-> >   CC       /tmp/build/perf/tests/demangle-java-test.o
-> >   CC       /tmp/build/perf/util/path.o
-> >   CC       /tmp/build/perf/util/print_binary.o
-> >   CC       /tmp/build/perf/tests/pfm.o
-> >   CC       /tmp/build/perf/tests/parse-metric.o
-> >   CC       /tmp/build/perf/util/rlimit.o
-> >   CC       /tmp/build/perf/tests/dwarf-unwind.o
-> >   CC       /tmp/build/perf/util/argv_split.o
-> >   CC       /tmp/build/perf/util/rbtree.o
-> >   CC       /tmp/build/perf/util/libstring.o
-> >   CC       /tmp/build/perf/util/bitmap.o
-> >   CC       /tmp/build/perf/tests/llvm-src-base.o
-> >   CC       /tmp/build/perf/tests/llvm-src-kbuild.o
-> >   CC       /tmp/build/perf/tests/llvm-src-prologue.o
-> >   CC       /tmp/build/perf/tests/llvm-src-relocation.o
-> >   CC       /tmp/build/perf/util/hweight.o
-> >   CC       /tmp/build/perf/util/smt.o
-> >   CC       /tmp/build/perf/util/strbuf.o
-> >   CC       /tmp/build/perf/util/string.o
-> >   LD       /tmp/build/perf/tests/perf-in.o
-> >   CC       /tmp/build/perf/util/strlist.o
-> >   CC       /tmp/build/perf/util/strfilter.o
-> >   CC       /tmp/build/perf/util/top.o
-> >   CC       /tmp/build/perf/util/usage.o
-> >   CC       /tmp/build/perf/util/dso.o
-> >   CC       /tmp/build/perf/util/dsos.o
-> >   CC       /tmp/build/perf/util/symbol.o
-> >   CC       /tmp/build/perf/util/symbol_fprintf.o
-> >   CC       /tmp/build/perf/util/color.o
-> >   CC       /tmp/build/perf/util/color_config.o
-> >   CC       /tmp/build/perf/util/metricgroup.o
-> >   CC       /tmp/build/perf/util/header.o
-> >   LD       /tmp/build/perf/ui/browsers/perf-in.o
-> >   CC       /tmp/build/perf/util/callchain.o
-> >   LD       /tmp/build/perf/ui/perf-in.o
-> >   CC       /tmp/build/perf/util/values.o
-> >   CC       /tmp/build/perf/util/debug.o
-> >   CC       /tmp/build/perf/util/fncache.o
-> >   CC       /tmp/build/perf/util/machine.o
-> >   CC       /tmp/build/perf/util/map.o
-> >   CC       /tmp/build/perf/util/pstack.o
-> >   CC       /tmp/build/perf/util/session.o
-> >   CC       /tmp/build/perf/util/sample-raw.o
-> >   CC       /tmp/build/perf/util/s390-sample-raw.o
-> >   CC       /tmp/build/perf/util/syscalltbl.o
-> >   CC       /tmp/build/perf/util/ordered-events.o
-> >   CC       /tmp/build/perf/util/namespaces.o
-> >   CC       /tmp/build/perf/util/comm.o
-> >   CC       /tmp/build/perf/util/thread.o
-> >   CC       /tmp/build/perf/util/thread_map.o
-> >   CC       /tmp/build/perf/util/trace-event-parse.o
-> >   FLEX     /tmp/build/perf/util/parse-events-flex.h
-> >   BISON    /tmp/build/perf/util/pmu-bison.c
-> >   CC       /tmp/build/perf/util/trace-event-read.o
-> >   CC       /tmp/build/perf/util/trace-event-info.o
-> >   CC       /tmp/build/perf/util/trace-event-scripting.o
-> >   CC       /tmp/build/perf/util/trace-event.o
-> >   CC       /tmp/build/perf/util/svghelper.o
-> >   CC       /tmp/build/perf/util/sort.o
-> >   CC       /tmp/build/perf/util/hist.o
-> >   CC       /tmp/build/perf/util/util.o
-> >   CC       /tmp/build/perf/util/cpumap.o
-> >   CC       /tmp/build/perf/util/affinity.o
-> >   CC       /tmp/build/perf/util/cputopo.o
-> >   CC       /tmp/build/perf/util/cgroup.o
-> >   CC       /tmp/build/perf/util/target.o
-> >   CC       /tmp/build/perf/util/rblist.o
-> >   CC       /tmp/build/perf/util/intlist.o
-> >   CC       /tmp/build/perf/util/vdso.o
-> >   CC       /tmp/build/perf/util/counts.o
-> >   CC       /tmp/build/perf/util/stat.o
-> >   CC       /tmp/build/perf/util/stat-shadow.o
-> >   CC       /tmp/build/perf/util/stat-display.o
-> >   CC       /tmp/build/perf/util/perf_api_probe.o
-> >   CC       /tmp/build/perf/util/record.o
-> >   CC       /tmp/build/perf/util/srcline.o
-> >   CC       /tmp/build/perf/util/srccode.o
-> >   CC       /tmp/build/perf/util/synthetic-events.o
-> >   CC       /tmp/build/perf/util/data.o
-> >   CC       /tmp/build/perf/util/tsc.o
-> >   CC       /tmp/build/perf/util/cloexec.o
-> >   CC       /tmp/build/perf/util/call-path.o
-> >   CC       /tmp/build/perf/util/rwsem.o
-> >   CC       /tmp/build/perf/util/thread-stack.o
-> >   CC       /tmp/build/perf/util/spark.o
-> >   CC       /tmp/build/perf/util/auxtrace.o
-> >   MKDIR    /tmp/build/perf/util/intel-pt-decoder/
-> >   CC       /tmp/build/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.o
-> >   MKDIR    /tmp/build/perf/util/intel-pt-decoder/
-> >   GEN      /tmp/build/perf/util/intel-pt-decoder/inat-tables.c
-> >   MKDIR    /tmp/build/perf/util/arm-spe-decoder/
-> >   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.o
-> >   MKDIR    /tmp/build/perf/util/scripting-engines/
-> >   CC       /tmp/build/perf/util/scripting-engines/trace-event-perl.o
-> >   CC       /tmp/build/perf/util/intel-pt-decoder/intel-pt-log.o
-> >   CC       /tmp/build/perf/util/intel-pt-decoder/intel-pt-decoder.o
-> >   MKDIR    /tmp/build/perf/util/arm-spe-decoder/
-> >   MKDIR    /tmp/build/perf/util/scripting-engines/
-> >   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
-> >   CC       /tmp/build/perf/util/scripting-engines/trace-event-python.o
-> >   LD       /tmp/build/perf/util/arm-spe-decoder/perf-in.o
-> >   CC       /tmp/build/perf/util/intel-pt.o
-> >   CC       /tmp/build/perf/util/intel-bts.o
-> >   CC       /tmp/build/perf/util/intel-pt-decoder/intel-pt-insn-decoder.o
-> >   CC       /tmp/build/perf/util/arm-spe.o
-> >   CC       /tmp/build/perf/util/s390-cpumsf.o
-> >   CC       /tmp/build/perf/util/parse-branch-options.o
-> >   CC       /tmp/build/perf/util/dump-insn.o
-> >   CC       /tmp/build/perf/util/parse-regs-options.o
-> >   CC       /tmp/build/perf/util/term.o
-> >   CC       /tmp/build/perf/util/help-unknown-cmd.o
-> >   CC       /tmp/build/perf/util/mem-events.o
-> >   CC       /tmp/build/perf/util/vsprintf.o
-> >   CC       /tmp/build/perf/util/units.o
-> >   CC       /tmp/build/perf/util/time-utils.o
-> >   BISON    /tmp/build/perf/util/expr-bison.c
-> >   CC       /tmp/build/perf/util/branch.o
-> >   CC       /tmp/build/perf/util/mem2node.o
-> >   CC       /tmp/build/perf/util/bpf-loader.o
-> >   CC       /tmp/build/perf/util/bpf_map.o
-> >   LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
-> >   LD       /tmp/build/perf/util/scripting-engines/perf-in.o
-> >   CC       /tmp/build/perf/util/symbol-elf.o
-> >   CC       /tmp/build/perf/util/probe-file.o
-> >   CC       /tmp/build/perf/util/probe-event.o
-> >   CC       /tmp/build/perf/util/unwind-libunwind-local.o
-> >   CC       /tmp/build/perf/util/unwind-libunwind.o
-> >   CC       /tmp/build/perf/util/zlib.o
-> >   CC       /tmp/build/perf/util/lzma.o
-> >   CC       /tmp/build/perf/util/zstd.o
-> >   CC       /tmp/build/perf/util/cap.o
-> >   CC       /tmp/build/perf/util/demangle-java.o
-> >   CC       /tmp/build/perf/util/demangle-rust.o
-> >   CC       /tmp/build/perf/util/jitdump.o
-> >   CC       /tmp/build/perf/util/genelf.o
-> >   CC       /tmp/build/perf/util/perf-hooks.o
-> >   CC       /tmp/build/perf/util/bpf-event.o
-> >   FLEX     /tmp/build/perf/util/parse-events-flex.c
-> >   CC       /tmp/build/perf/util/parse-events-bison.o
-> >   FLEX     /tmp/build/perf/util/pmu-flex.c
-> >   CC       /tmp/build/perf/util/pmu-bison.o
-> >   FLEX     /tmp/build/perf/util/expr-flex.c
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:546:0: error: unterminated #else
-> >  #ifndef YY_READ_BUF_SIZE
-> >
-> > /tmp/build/perf/util/parse-events-flex.h:545:0: error: unterminated #ifndef
-> >  /* Amount of stuff to slurp up with each read. */
-> >
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:1:0: error: unterminated #ifndef
-> >  #ifndef parse_events_HEADER_H
-> >
-> > mv: can't rename '/tmp/build/perf/util/.parse-events-bison.o.tmp': No such file or directory
-> > make[4]: *** [/git/linux/tools/build/Makefile.build:96: /tmp/build/perf/util/parse-events-bison.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> > make[3]: *** [/git/linux/tools/build/Makefile.build:139: util] Error 2
-> > make[2]: *** [Makefile.perf:625: /tmp/build/perf/perf-in.o] Error 2
-> > make[1]: *** [Makefile.perf:231: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
-> > make: Leaving directory '/git/linux/tools/perf'
-> >
-> >
-> >    1 alpine:3.4       : FAIL gcc (Alpine 5.3.0) 5.3.0, clang version 3.8.0 (tags/RELEASE_380/final)
-> >    2 alpine:3.5       : FAIL gcc (Alpine 6.2.1) 6.2.1 20160822, clang version 3.8.1 (tags/RELEASE_381/final)
-> >
-> >   CC       /tmp/build/perf/util/parse-events-bison.o
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:323:0: error: unterminated #ifndef
-> >  #ifndef YY_DECL
-> >  ^
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:1:0: error: unterminated #ifndef
-> >  #ifndef parse_events_HEADER_H
-> >  ^
-> > mv: can't rename '/tmp/build/perf/util/.parse-events-bison.o.tmp': No such file or directory
-> > /git/linux/tools/build/Makefile.build:96: recipe for target '/tmp/build/perf/util/parse-events-bison.o' failed
-> > make[4]: *** [/tmp/build/perf/util/parse-events-bison.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> >   LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
-> > /git/linux/tools/build/Makefile.build:139: recipe for target 'util' failed
-> >
-> > Slightly different:
-> >
-> >      3 alpine:3.6     : FAIL gcc (Alpine 6.3.0) 6.3.0, clang version 4.0.0 (tags/RELEASE_400/final)
-> >
-> >   CC       /tmp/build/perf/util/perf-hooks.o
-> >   FLEX     /tmp/build/perf/util/parse-events-flex.c
-> >   CC       /tmp/build/perf/util/parse-events-bison.o
-> >   FLEX     /tmp/build/perf/util/pmu-flex.c
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:1:0: error: unterminated #ifndef
-> >  #ifndef parse_events_HEADER_H
-> >
-> > mv: can't rename '/tmp/build/perf/util/.parse-events-bison.o.tmp': No such file or directory
-> > make[4]: *** [/git/linux/tools/build/Makefile.build:97: /tmp/build/perf/util/parse-events-bison.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> >
-> >
-> >    4 alpine:3.7       : FAIL gcc (Alpine 6.4.0) 6.4.0, Alpine clang version 5.0.0 (tags/RELEASE_500/final) (based on LLVM 5.0.0)
-> >
-> >   CC       /tmp/build/perf/util/pmu-bison.o
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:546:0: error: unterminated #else
-> >  #ifndef YY_READ_BUF_SIZE
-> >
-> > /tmp/build/perf/util/parse-events-flex.h:545:0: error: unterminated #ifndef
-> >  /* Amount of stuff to slurp up with each read. */
-> >
-> > In file included from util/parse-events.y:20:0:
-> > /tmp/build/perf/util/parse-events-flex.h:1:0: error: unterminated #ifndef
-> >  #ifndef parse_events_HEADER_H
-> >
-> >   FLEX     /tmp/build/perf/util/expr-flex.c
-> > mv: can't rename '/tmp/build/perf/util/.parse-events-bison.o.tmp': No such file or directory
-> > make[4]: *** [/git/linux/tools/build/Makefile.build:96: /tmp/build/perf/util/parse-events-bison.o] Error 1
-> >
-> >
->
-> --
->
-> - Arnaldo
+If each driver controls its own lifetime of the buffers, why can't the
+driver locally wait for its device to finish?
+
+Can't the GPUs cancel work that is waiting on a DMA fence? Ie if
+Driver A detects that work completed and wants to trigger a DMA fence,
+but it now knows the buffer is invalidated, can't it tell driver B to
+give up?
+
+> The problem is that there's piles of other dependencies for a dma job.
+> GPU doesn't just consume a single buffer each time, it consumes entire
+> lists of buffers and mixes them all up in funny ways. Some of these
+> buffers are userptr, entirely local to the device. Other buffers are
+> just normal device driver allocations (and managed with some shrinker
+> to keep them in check). And then there's the actually shared dma-buf
+> with other devices. The trouble is that they're all bundled up
+> together.
+
+But why does this matter? Does the GPU itself consume some work and
+then stall internally waiting for an external DMA fence?
+
+Otherwise I would expect this dependency chain should be breakable by
+aborting work waiting on fences upon invalidation (without stalling)
+
+> > Do not need to wait on dma_fence in notifiers.
+> 
+> Maybe :-) The goal of this series is more to document current rules
+> and make them more consistent. Fixing them if we don't like them might
+> be a follow-up task, but that would likely be a pile more work. First
+> we need to know what the exact shape of the problem even is.
+
+Fair enough
+
+Jason
