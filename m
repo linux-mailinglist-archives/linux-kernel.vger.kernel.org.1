@@ -2,38 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B35A201820
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EC720174B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388228AbgFSOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
+        id S2395293AbgFSQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgFSOlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:41:14 -0400
+        id S2389167AbgFSOtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:49:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4BD121527;
-        Fri, 19 Jun 2020 14:41:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A50FC20DD4;
+        Fri, 19 Jun 2020 14:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577674;
-        bh=esNBolbgB0ugwipiM6dL76rs6BAcVuftApbVE65C3aA=;
+        s=default; t=1592578144;
+        bh=CKdKwvcY/fb4n4u7xICRN+j5znN2zpd/bFyAEIqpr28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N2dSuKql/DXuGXWy7MvXdpbPMV4gNx5FWl3G4mMaIrSJ75IGoa/C4/WkECyWuRIBm
-         64fSgqXBNbLmbDbdcXhnOblSG6AeUxSDDqAdH8stT4YDDLTp4sxeJIv09WSvpeRHG1
-         a2+ksWPzk2lWUdtkOSfJYBH8QBoUkVQuxvKm6gV8=
+        b=UmjBChimo0IepVIDJ4Cw8GtpdvMj6ZoG2211uqPxJwGgbObK5lK0K8eXC4hEbRWWj
+         u8l7zvGRdtPbT0USkuzAEJPe/d/hG0DUmavobW7yY1pDi2Sta6G1VW6+UwzmKS2wPt
+         wLTSiRfDPkuDSjrnG8UBn0DUgP/RRX+vL/ZMHszk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.9 042/128] KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
-Date:   Fri, 19 Jun 2020 16:32:16 +0200
-Message-Id: <20200619141622.443266315@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 092/190] spi: dw: Fix Rx-only DMA transfers
+Date:   Fri, 19 Jun 2020 16:32:17 +0200
+Message-Id: <20200619141638.192320638@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-commit 3204be4109ad681523e3461ce64454c79278450a upstream.
+[ Upstream commit 46164fde6b7890e7a3982d54549947c8394c0192 ]
 
-AArch32 CP1x registers are overlayed on their AArch64 counterparts
-in the vcpu struct. This leads to an interesting problem as they
-are stored in their CPU-local format, and thus a CP1x register
-doesn't "hit" the lower 32bit portion of the AArch64 register on
-a BE host.
+Tx-only DMA transfers are working perfectly fine since in this case
+the code just ignores the Rx FIFO overflow interrupts. But it turns
+out the SPI Rx-only transfers are broken since nothing pushing any
+data to the shift registers, so the Rx FIFO is left empty and the
+SPI core subsystems just returns a timeout error. Since DW DMAC
+driver doesn't support something like cyclic write operations of
+a single byte to a device register, the only way to support the
+Rx-only SPI transfers is to fake it by using a dummy Tx-buffer.
+This is what we intend to fix in this commit by setting the
+SPI_CONTROLLER_MUST_TX flag for DMA-capable platform.
 
-To workaround this unfortunate situation, introduce a bias trick
-in the vcpu_cp1x() accessors which picks the correct half of the
-64bit register.
-
-Cc: stable@vger.kernel.org
-Reported-by: James Morse <james.morse@arm.com>
-Tested-by: James Morse <james.morse@arm.com>
-Acked-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Link: https://lore.kernel.org/r/20200529131205.31838-9-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/kvm_host.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/spi/spi-dw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -290,8 +290,10 @@ struct kvm_vcpu_arch {
-  * CP14 and CP15 live in the same array, as they are backed by the
-  * same system registers.
-  */
--#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
--#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
-+#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
-+
-+#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
-+#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index b11d0cd3fd20..9fcee7273a79 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -531,6 +531,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+ 			dws->dma_inited = 0;
+ 		} else {
+ 			master->can_dma = dws->dma_ops->can_dma;
++			master->flags |= SPI_CONTROLLER_MUST_TX;
+ 		}
+ 	}
  
- #ifdef CONFIG_CPU_BIG_ENDIAN
- #define vcpu_cp15_64_high(v,r)	vcpu_cp15((v),(r))
+-- 
+2.25.1
+
 
 
