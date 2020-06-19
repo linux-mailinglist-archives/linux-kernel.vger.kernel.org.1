@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A756E200A1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2F6200A1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732939AbgFSN27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:28:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46024 "EHLO mail.kernel.org"
+        id S1731869AbgFSN2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:28:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729134AbgFSN1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:27:43 -0400
+        id S1732259AbgFSN2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:28:00 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26668207FC;
-        Fri, 19 Jun 2020 13:27:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D858E20DD4;
+        Fri, 19 Jun 2020 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592573262;
-        bh=lu3A8dgfddBJOdAh48Om/2tmW8Fdzk+zN7yT4K1Hta0=;
+        s=default; t=1592573280;
+        bh=YpdfNUm60XZRpLiCg2ApF7cAEYbSiiMws4GRf6hk9yo=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=mAoOQ5S2dI0eG+mUTj3k4LYTRCwGkCXuZ0Ed8a8oUVDhRLNiRi1OnOcQhLIEW1R14
-         sdRWoDgPRRmdNx43+xX9LgOEzxcHGhUWB0f+rxdQakxaejVm1eGPFQ6fwtnP9yXLyG
-         jKCk8ZQjC/AqhcH0w6Hje01KzFQyEuxeWfAvcjZQ=
-Date:   Fri, 19 Jun 2020 14:27:40 +0100
+        b=0kDpuucr+TobRCZk9B0E75UlrpOpcER5uN+QcqLOtDsfY0WIewKqZ4YTeg4LQPPKo
+         nLG38vVbMczNBdDzJQTgvb5dpsoAR8vCDeF1sFPFCW0JOGsfSvl60D2Vqzsq7RoXp4
+         XARdoVOq+QC6e6ORhl+wwdtSuyf8ce69xVrD3aqM=
+Date:   Fri, 19 Jun 2020 14:27:58 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
-        festevam@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
-        alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <579c0d71e976f34f23f40daa9f1aa06c4baca2f1.1592552389.git.shengjiu.wang@nxp.com>
-References: <579c0d71e976f34f23f40daa9f1aa06c4baca2f1.1592552389.git.shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: fsl_spdif: Add pm runtime function
-Message-Id: <159257325526.5735.7482602069730796749.b4-ty@kernel.org>
+To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xu Yilun <yilun.xu@intel.com>
+Cc:     matthew.gerlach@linux.intel.com, hao.wu@intel.com,
+        russell.h.weight@intel.com, trix@redhat.com
+In-Reply-To: <1592531021-11412-1-git-send-email-yilun.xu@intel.com>
+References: <1592531021-11412-1-git-send-email-yilun.xu@intel.com>
+Subject: Re: [RESEND PATCH v2 0/3] add regmap & indirect access support
+Message-Id: <159257327821.5984.15184472386288306180.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 15:54:33 +0800, Shengjiu Wang wrote:
-> Add pm runtime support and move clock handling there.
-> Close the clocks at suspend to reduce the power consumption.
+On Fri, 19 Jun 2020 09:43:38 +0800, Xu Yilun wrote:
+> Updated the regmap & indirect access support for spi-altera.
 > 
-> fsl_spdif_suspend is replaced by pm_runtime_force_suspend.
-> fsl_spdif_resume is replaced by pm_runtime_force_resume.
+> Patch #1 is an 1:1 replacement of of readl/writel with regmap_read/write
+> Patch #2 introduced a new platform_device_id to support indirect access as
+>          a sub device.
+> Patch #3 is a minor fix.
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: fsl_spdif: Add pm runtime function
-      commit: 9cb2b3796e083169b368a7add19faec1750ad998
+[1/3] spi: altera: use regmap-mmio instead of direct mmio register access
+      commit: 3c6519736eefebafdf8c82d46f64b214403b5260
+[2/3] spi: altera: support indirect access to the registers
+      commit: 3820061d38156d88443d32a9a6c701d281234746
+[3/3] spi: altera: fix size mismatch on 64 bit processors
+      commit: d9dd0fb0e197ae766f0f5e06d23f5f5e1888c511
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
