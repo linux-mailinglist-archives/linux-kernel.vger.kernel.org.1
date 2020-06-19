@@ -2,201 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C59200A76
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2031200A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732786AbgFSNmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:42:13 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2344 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726124AbgFSNmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:42:08 -0400
-Received: from lhreml712-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id A9A41A06F1A0D92AE340;
-        Fri, 19 Jun 2020 14:42:05 +0100 (IST)
-Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
- lhreml712-chm.china.huawei.com (10.201.108.63) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 19 Jun 2020 14:42:05 +0100
-Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
- lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
- Fri, 19 Jun 2020 14:42:04 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     James Morse <james.morse@arm.com>
-CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "bp@alien8.de" <bp@alien8.de>, "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        yangyicong <yangyicong@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        tanxiaofei <tanxiaofei@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH v9 1/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Thread-Topic: [PATCH v9 1/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Thread-Index: AQHWQvs4YxSl5uNu+0m6mjIuOk17Uqjeo34AgAFSXnA=
-Date:   Fri, 19 Jun 2020 13:42:04 +0000
-Message-ID: <270ca5910c454f8f85ccba45d5ec00aa@huawei.com>
-References: <20200615095312.398-1-shiju.jose@huawei.com>
- <20200615095312.398-2-shiju.jose@huawei.com>
- <f6d4282e-08a4-7832-9dbc-6a4c0366eefd@arm.com>
-In-Reply-To: <f6d4282e-08a4-7832-9dbc-6a4c0366eefd@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.87.231]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1732922AbgFSNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732706AbgFSNoq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:44:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D145C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=meqaf6iQuBRGgUfgP5F6yID4Z/FiQ0y148Kp4+ucoTk=; b=ay5WOZ1SDtbdh3nUziOTxM4kee
+        w+MuMIDRukKGS6ZYu2b/RKCWuBF7vrraUkXGqVOsn2lP+KAz3sTV3RDGz2GFctClxMIfP0Dmlvuso
+        yUM7NKFsXCKSOiwWmn7ExBWX2gawCppGxUnbaOIFZAOVL525TZdTix8fgDURzp09ZGufMMJ1G6Gdm
+        017J7F5WawRkPGtjy4R3kEAAeGMV1o6m7JZoSOEkuVUJX5kduiS2thxmnRVercSLp9DvVFd8/KABS
+        OyMdByRok0sUW9i5rPF71krrWk4Lt4qt8BC2AsN0bNPIBUf6RkIVLmtSYGtJf2cKTaXXGK338G7Hx
+        WjFVGv9g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmHJj-0008UE-4u; Fri, 19 Jun 2020 13:44:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 122BE3003E5;
+        Fri, 19 Jun 2020 15:44:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 033102BA40ACD; Fri, 19 Jun 2020 15:44:23 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 15:44:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, frederic@kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        npiggin@gmail.com
+Subject: Re: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
+Message-ID: <20200619134423.GB577403@hirez.programming.kicks-ass.net>
+References: <20200615125654.678940605@infradead.org>
+ <20200615162330.GF2723@paulmck-ThinkPad-P72>
+ <20200615164048.GC2531@hirez.programming.kicks-ass.net>
+ <20200615172149.GJ2723@paulmck-ThinkPad-P72>
+ <20200615191158.GK2531@hirez.programming.kicks-ass.net>
+ <20200616170410.GL2554@hirez.programming.kicks-ass.net>
+ <20200616171721.GM2554@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616171721.GM2554@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmFtZXMsDQoNClRoYW5rcyBmb3IgcmV2aWV3aW5nIHRoZSBwYXRjaCBhbmQgdGhlIG1vZGlm
-aWNhdGlvbnMuDQogDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9tOiBKYW1lcyBN
-b3JzZSBbbWFpbHRvOmphbWVzLm1vcnNlQGFybS5jb21dDQo+U2VudDogMTggSnVuZSAyMDIwIDE5
-OjIwDQo+VG86IFNoaWp1IEpvc2UgPHNoaWp1Lmpvc2VAaHVhd2VpLmNvbT4NCj5DYzogbGludXgt
-YWNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0K
-Pmtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHJqd0Byand5c29ja2kubmV0OyBicEBhbGllbjguZGU7
-IGxlbmJAa2VybmVsLm9yZzsNCj50b255Lmx1Y2tAaW50ZWwuY29tOyBkYW4uY2FycGVudGVyQG9y
-YWNsZS5jb207DQo+emhhbmdsaWd1YW5nQGxpbnV4LmFsaWJhYmEuY29tOyBhbmRyaXkuc2hldmNo
-ZW5rb0BsaW51eC5pbnRlbC5jb207DQo+V2FuZ2tlZmVuZyAoT1MgS2VybmVsIExhYikgPHdhbmdr
-ZWZlbmcud2FuZ0BodWF3ZWkuY29tPjsNCj5qcm9lZGVsQHN1c2UuZGU7IHlhbmd5aWNvbmcgPHlh
-bmd5aWNvbmdAaHVhd2VpLmNvbT47IEpvbmF0aGFuIENhbWVyb24NCj48am9uYXRoYW4uY2FtZXJv
-bkBodWF3ZWkuY29tPjsgdGFueGlhb2ZlaSA8dGFueGlhb2ZlaUBodWF3ZWkuY29tPg0KPlN1Ympl
-Y3Q6IFJlOiBbUEFUQ0ggdjkgMS8yXSBBQ1BJIC8gQVBFSTogQWRkIHN1cHBvcnQgdG8gbm90aWZ5
-IHRoZSB2ZW5kb3INCj5zcGVjaWZpYyBIVyBlcnJvcnMNCj4NCj5IaSBTaGlqdSwNCj4NCj5PbiAx
-NS8wNi8yMDIwIDEwOjUzLCBTaGlqdSBKb3NlIHdyb3RlOg0KPj4gQWRkIHN1cHBvcnQgdG8gbm90
-aWZ5IHRoZSB2ZW5kb3Igc3BlY2lmaWMgbm9uLWZhdGFsIEhXIGVycm9ycyB0byB0aGUNCj4+IGRy
-aXZlcnMgZm9yIHRoZSBlcnJvciByZWNvdmVyeS4NCj4NCj5UaGlzIGRvZXNuJ3QgYXBwbHkgY2xl
-YW5seSB0byB2NS44LXJjMS4uLiB0aGFua3MgZm9yIHdhaXRpbmcgZm9yIHRoZSBtZXJnZQ0KPndp
-bmRvdyB0byBmaW5pc2gsIGJ1dCBwbGVhc2UgcmViYXNlIG9udG8gdGhlIGxhdGVzdCBhbmQgZ3Jl
-YXRlc3Qga2VybmVsIQ0KDQpWMTAgd2FzIHBvc3RlZCBiYXNlZCBvbiB2NS44LXJjMS4NCj4NCj5J
-J20gZ2xhZCB0aGUgbm90aWZpZXIgY2hhaW5zIGZvciBzdHVmZiB0aGF0IHNob3VsZCBiZSBidWls
-dC1pbiBoYXMgZ29uZS4NCj4oSW4gbXkgb3BpbmlvbiwgdGhlIFJBUyBjb2RlIHNob3VsZCBiZSBt
-b3ZpbmcgaW4gdGhlIGRpcmVjdGlvbiBvZiBoYXZpbmcgbGVzcw0KPmNvZGUgcnVuIGJldHdlZW4g
-YmVpbmcgdG9sZCBvZiBhbiBlcnJvciwgYW5kIHRoZSBoYW5kbGVyIHJ1bm5pbmcuIE5vdGlmaWVy
-DQo+Y2hhaW5zIGZvciB0aGluZ3MgbGlrZSBtZW1vcnktZXJyb3JzIHdhcyBtb3ZpbmcgaW4gdGhl
-IHdyb25nIGRpcmVjdGlvbiEpDQo+DQo+DQo+VGhlIEtmaWZvIGFuZCBwb29sIGFyZSBhZGRpbmcg
-Y29tcGxleGl0eSBJIGRvbid0IHRoaW5rIHlvdSBuZWVkLg0KPlBsZWFzZSBtYWtlIGl0IGNsZWFy
-IGZyb20gdGhlIG5hbWluZyB0aGlzIGlzIGZvciB2ZW5kb3IgcmVjb3Jkcy4gKHdoYXQgaXMgYW4N
-Cj5ldmVudD8pDQo+DQo+VGhlIG1lbWNweSgpIGZvciB0aGUgcmVjb3JkcyBpcyBhbm5veWluZywg
-YnV0IGVsaW1pbmF0aW5nIGl0IHRha2VzIHNvbWUNCj5yZWFsbHkgaW52YXNpdmUgY2hhbmdlcy4g
-TGV0cyBsaXZlIHdpdGggaXQgZm9yIG5vdy4NCk9rLg0KDQo+DQo+DQo+PiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9hY3BpL2FwZWkvZ2hlcy5jIGIvZHJpdmVycy9hY3BpL2FwZWkvZ2hlcy5jIGluZGV4
-DQo+PiAyNGM5NjQyZThmYzcuLjg1NGQ4MTE1Y2RmYyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMv
-YWNwaS9hcGVpL2doZXMuYw0KPj4gKysrIGIvZHJpdmVycy9hY3BpL2FwZWkvZ2hlcy5jDQo+PiBA
-QCAtNjMsNiArNjQsMTEgQEANCj4+ICAjZGVmaW5lIEdIRVNfRVNUQVRVU19DQUNIRVNfU0laRQk0
-DQo+Pg0KPj4gICNkZWZpbmUgR0hFU19FU1RBVFVTX0lOX0NBQ0hFX01BWF9OU0VDCTEwMDAwMDAw
-MDAwVUxMDQo+PiArDQo+PiArI2RlZmluZSBHSEVTX0VWRU5UX1JJTkdfU0laRQkyNTYNCj4+ICsj
-ZGVmaW5lIEdIRVNfR0RBVEFfUE9PTF9NSU5fQUxMT0NfT1JERVIJMw0KPj4gKyNkZWZpbmUgR0hF
-U19HREFUQV9QT09MX01JTl9TSVpFCTY1NTM2DQo+DQo+SHVoLiBBbm90aGVyIHBvb2wgb2YgbWVt
-b3J5LCBhbmQgd2UgZG9uJ3Qga25vdyBpZiB0aGlzIHdpbGwgZXZlciBiZSB1c2VkLg0KPkNhbiB3
-ZSBhbGxvY2F0ZSBmcm9tIGdoZXNfZXN0YXR1c19wb29sIGluc3RlYWQ/DQo+DQo+Z2hlc19lc3Rh
-dHVzX3Bvb2wgaXMgYWxyZWFkeSBzY2FsZWQgd2l0aCB0aGUgbnVtYmVyIG9mIGVycm9yIHNvdXJj
-ZXMNCj5maXJtd2FyZSBkZXNjcmliZXMgaW4gZ2hlc19lc3RhdHVzX3Bvb2xfaW5pdCgpLCBzbyBp
-dCBzaG91bGQgYmUgYmlnIGVub3VnaC4NCj4NCj5naGVzX2VzdGF0dXNfcG9vbCBhbHJlYWR5IGhh
-cyBtdWx0aXBsZSB1c2VycywgZXN0YXR1c19ub2RlcyBmb3Igd29yaw0KPmRlZmVycmVkIGZyb20g
-Tk1JIGNvbWUgZnJvbSBoZXJlLCBhcyBkbyBnaGVzX2VzdGF0dXNfY2FjaGVzIGZvciB0aGUgbG93
-LQ0KPnBhc3MgZmlsdGVyIHRoaW5nLg0KDQpPay4NCj4NCj4NCj4+IEBAIC0xMjIsNiArMTI4LDE5
-IEBAIHN0YXRpYyBERUZJTkVfTVVURVgoZ2hlc19saXN0X211dGV4KTsNCj4+ICAgKi8NCj4+ICBz
-dGF0aWMgREVGSU5FX1NQSU5MT0NLKGdoZXNfbm90aWZ5X2xvY2tfaXJxKTsNCj4+DQo+PiArc3Ry
-dWN0IGdoZXNfZXZlbnRfZW50cnkgew0KPg0KPmdoZXNfdmVuZG9yX3JlY29yZF9lbnRyeSA/DQo+
-DQo+PiArCXN0cnVjdCBhY3BpX2hlc3RfZ2VuZXJpY19kYXRhICpnZGF0YTsNCj4+ICsJaW50IGVy
-cm9yX3NldmVyaXR5Ow0KPj4gK307DQo+DQo+PiArc3RhdGljIERFRklORV9LRklGTyhnaGVzX2V2
-ZW50X3JpbmcsIHN0cnVjdCBnaGVzX2V2ZW50X2VudHJ5LA0KPj4gKwkJICAgIEdIRVNfRVZFTlRf
-UklOR19TSVpFKTsNCj4+ICsNCj4+ICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGdoZXNfZXZlbnRf
-cmluZ19sb2NrKTsNCj4NCj5EbyB5b3UgbmVlZCB0aGUgRklGTyBiZWhhdmlvdXI/DQo+SWYgeW91
-IHB1dCBhIHdvcmtfc3RydWN0IGluIHRoZSBzdHJ1Y3QgYW5kIHNjaGVkdWxlX3dvcmsoKSB0aGF0
-LCB0aGVzZSB3b3VsZA0KPnJ1biBpbiBhbnkgb3JkZXIsIGFuZCBpdCB3b3VsZCBiZSBsZXNzIGNv
-ZGUuDQo+DQo+DQo+PiArc3RhdGljIHN0cnVjdCBnZW5fcG9vbCAqZ2hlc19nZGF0YV9wb29sOyBz
-dGF0aWMgdW5zaWduZWQgbG9uZw0KPj4gK2doZXNfZ2RhdGFfcG9vbF9zaXplX3JlcXVlc3Q7DQo+
-PiArDQo+PiAgc3RhdGljIHN0cnVjdCBnZW5fcG9vbCAqZ2hlc19lc3RhdHVzX3Bvb2w7ICBzdGF0
-aWMgdW5zaWduZWQgbG9uZw0KPj4gZ2hlc19lc3RhdHVzX3Bvb2xfc2l6ZV9yZXF1ZXN0Ow0KPg0K
-PlBsZWFzZSB1c2UgdGhlIGV4aXN0aW5nIGdoZXNfZXN0YXR1c19wb29sLg0KPg0KPg0KPj4gQEAg
-LTE4OCw2ICsyMDcsNDAgQEAgaW50IGdoZXNfZXN0YXR1c19wb29sX2luaXQoaW50IG51bV9naGVz
-KQ0KPg0KPlsuLi5dDQo+DQo+PiArc3RhdGljIGludCBnaGVzX2dkYXRhX3Bvb2xfaW5pdCh2b2lk
-KSB7DQo+PiArCXVuc2lnbmVkIGxvbmcgYWRkciwgbGVuOw0KPj4gKwlpbnQgcmM7DQo+PiArDQo+
-PiArCWdoZXNfZ2RhdGFfcG9vbCA9DQo+Z2VuX3Bvb2xfY3JlYXRlKEdIRVNfR0RBVEFfUE9PTF9N
-SU5fQUxMT0NfT1JERVIsIC0xKTsNCj4+ICsJaWYgKCFnaGVzX2dkYXRhX3Bvb2wpDQo+PiArCQly
-ZXR1cm4gLUVOT01FTTsNCj4+ICsNCj4+ICsJaWYgKGdoZXNfZ2RhdGFfcG9vbF9zaXplX3JlcXVl
-c3QgPCBHSEVTX0dEQVRBX1BPT0xfTUlOX1NJWkUpDQo+PiArCQlnaGVzX2dkYXRhX3Bvb2xfc2l6
-ZV9yZXF1ZXN0ID0NCj5HSEVTX0dEQVRBX1BPT0xfTUlOX1NJWkU7DQo+PiArDQo+PiArCWxlbiA9
-IGdoZXNfZ2RhdGFfcG9vbF9zaXplX3JlcXVlc3Q7DQo+PiArCWFkZHIgPSAodW5zaWduZWQgbG9u
-Zyl2bWFsbG9jKFBBR0VfQUxJR04obGVuKSk7DQo+PiArCWlmICghYWRkcikNCj4+ICsJCWdvdG8g
-ZXJyX3Bvb2xfYWxsb2M7DQo+DQo+PiArCXZtYWxsb2Nfc3luY19tYXBwaW5ncygpOw0KPihUaGlz
-IGlzbid0IG5lZWRlZCBhbnltb3JlLiBTZWUgY29tbWl0IDczZjY5M2MzYTcwNSAoIm1tOiByZW1v
-dmUNCj52bWFsbG9jX3N5bmNfKHVuKW1hcHBpbmdzKCkiKSkNCj4NCj4NCj4+ICsJcmMgPSBnZW5f
-cG9vbF9hZGQoZ2hlc19nZGF0YV9wb29sLCBhZGRyLCBQQUdFX0FMSUdOKGxlbiksIC0xKTsNCj4+
-ICsJaWYgKHJjKQ0KPj4gKwkJZ290byBlcnJfcG9vbF9hZGQ7DQo+PiArDQo+PiArCXJldHVybiAw
-Ow0KPj4gKw0KPj4gK2Vycl9wb29sX2FkZDoNCj4+ICsJdmZyZWUoKHZvaWQgKilhZGRyKTsNCj4+
-ICsNCj4+ICtlcnJfcG9vbF9hbGxvYzoNCj4+ICsJZ2VuX3Bvb2xfZGVzdHJveShnaGVzX2dkYXRh
-X3Bvb2wpOw0KPj4gKw0KPj4gKwlyZXR1cm4gLUVOT01FTTsNCj4+ICt9DQo+DQo+QnV0OiB1c2lu
-ZyBnaGVzX2VzdGF0dXNfcG9vbCB3b3VsZCBhdm9pZCB0aGlzIGR1cGxpY2F0aW9uLg0KPg0KPg0K
-Pj4gQEAgLTI0Nyw2ICszMDAsMTAgQEAgc3RhdGljIHN0cnVjdCBnaGVzICpnaGVzX25ldyhzdHJ1
-Y3QNCj5hY3BpX2hlc3RfZ2VuZXJpYyAqZ2VuZXJpYykNCj4+ICAJCWdvdG8gZXJyX3VubWFwX3N0
-YXR1c19hZGRyOw0KPj4gIAl9DQo+Pg0KPj4gKwlnaGVzX2dkYXRhX3Bvb2xfc2l6ZV9yZXF1ZXN0
-ICs9IGdlbmVyaWMtPnJlY29yZHNfdG9fcHJlYWxsb2NhdGUgKg0KPj4gKwkJCQkJZ2VuZXJpYy0+
-bWF4X3NlY3Rpb25zX3Blcl9yZWNvcmQgKg0KPj4gKwkJCQkJZ2VuZXJpYy0+bWF4X3Jhd19kYXRh
-X2xlbmd0aDsNCj4+ICsNCj4NCj5DYXJlZnVsLCBJIHRoaW5rIGdoZXNfcHJvYmUoKSBjYW4gcnVu
-IGluIHBhcmFsbGVsIG9uIGRpZmZlcmVudCBDUFVzLiBZb3UgY2FuDQo+Y2VydGFpbmx5IHVuYmlu
-ZC9yZWJpbmQgaXQgZnJvbSB1c2VyLXNwYWNlLg0KPg0KPkkgcmVjYWxsIHRoZXNlIG1heCB0aGlz
-L3RoYXQvcHJlYWxsb2NhdGUgc3R1ZmYgYXJlIGp1bmsgdmFsdWVzIG9uIHNvbWUNCj5wbGF0Zm9y
-bS4NCj5Zb3UnZCBhdCBsZWFzdCBuZWVkIHRvIGNhcCBpdCB0byBzYW5lIG1heGltdW0gdmFsdWUu
-DQo+DQo+QnV0OiBVc2luZyBnaGVzX2VzdGF0dXNfcG9vbCB3b3VsZCB1c2UgZ2hlc19lc3RhdHVz
-X3Bvb2xfaW5pdCgpJ3Mgc2l6ZXMsDQo+d2hpY2ggYWxsb2NhdGVzIDY0SyBmb3IgZWFjaCBlcnJv
-ciBzb3VyY2UuDQo+DQo+SGlzdG9yeTogaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbGlu
-dXgtYWNwaS9tc2c4NDIzOC5odG1sDQo+DQo+DQo+PiBAQCAtNDkwLDYgKzU0Nyw2OCBAQCBzdGF0
-aWMgdm9pZCBnaGVzX2hhbmRsZV9hZXIoc3RydWN0DQo+PiBhY3BpX2hlc3RfZ2VuZXJpY19kYXRh
-ICpnZGF0YSkNCj4NCj5bLi4uXQ0KPg0KPj4gK3N0YXRpYyB2b2lkIGdoZXNfZXZlbnRfd29ya19m
-dW5jKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykgew0KPj4gKwlzdHJ1Y3QgZ2hlc19ldmVudF9l
-bnRyeSBlbnRyeTsNCj4+ICsJdTMyIGxlbjsNCj4+ICsNCj4+ICsJd2hpbGUgKGtmaWZvX2dldCgm
-Z2hlc19ldmVudF9yaW5nLCAmZW50cnkpKSB7DQo+PiArCQlibG9ja2luZ19ub3RpZmllcl9jYWxs
-X2NoYWluKCZnaGVzX2V2ZW50X25vdGlmeV9saXN0LA0KPj4gKwkJCQkJICAgICBlbnRyeS5lcnJv
-cl9zZXZlcml0eSwNCj4+ICsJCQkJCSAgICAgZW50cnkuZ2RhdGEpOw0KPj4gKwkJbGVuID0gYWNw
-aV9oZXN0X2dldF9yZWNvcmRfc2l6ZShlbnRyeS5nZGF0YSk7DQo+PiArCQlnZW5fcG9vbF9mcmVl
-KGdoZXNfZ2RhdGFfcG9vbCwgKHVuc2lnbmVkIGxvbmcpZW50cnkuZ2RhdGEsDQo+bGVuKTsNCj4+
-ICsJfQ0KPj4gK30NCj4+ICsNCj4+ICtzdGF0aWMgREVDTEFSRV9XT1JLKGdoZXNfZXZlbnRfd29y
-aywgZ2hlc19ldmVudF93b3JrX2Z1bmMpOw0KPj4gKw0KPj4gK3N0YXRpYyB2b2lkIGdoZXNfaGFu
-ZGxlX25vbl9zdGFuZGFyZF9ldmVudChzdHJ1Y3QNCj5hY3BpX2hlc3RfZ2VuZXJpY19kYXRhICpn
-ZGF0YSwNCj4+ICsJCQkJCSAgIGludCBzZXYpDQo+PiArew0KPj4gKwl1MzIgbGVuOw0KPg0KPj4g
-KwlzdHJ1Y3QgZ2hlc19ldmVudF9lbnRyeSBldmVudF9lbnRyeTsNCj4NCj4+ICsJbGVuID0gYWNw
-aV9oZXN0X2dldF9yZWNvcmRfc2l6ZShnZGF0YSk7DQo+PiArCWV2ZW50X2VudHJ5LmdkYXRhID0g
-KHZvaWQgKilnZW5fcG9vbF9hbGxvYyhnaGVzX2dkYXRhX3Bvb2wsIGxlbik7DQo+PiArCWlmIChl
-dmVudF9lbnRyeS5nZGF0YSkgew0KPj4gKwkJbWVtY3B5KGV2ZW50X2VudHJ5LmdkYXRhLCBnZGF0
-YSwgbGVuKTsNCj4+ICsJCWV2ZW50X2VudHJ5LmVycm9yX3NldmVyaXR5ID0gc2V2Ow0KPj4gKw0K
-Pj4gKwkJaWYgKGtmaWZvX2luX3NwaW5sb2NrZWQoJmdoZXNfZXZlbnRfcmluZywgJmV2ZW50X2Vu
-dHJ5LCAxLA0KPg0KPi4uLiBldmVudF9lbnRyeSBpcyBvbiB0aGUgc3RhY2sgLi4uDQo+DQpPay4N
-Cg0KPg0KPj4gKwkJCQkJJmdoZXNfZXZlbnRfcmluZ19sb2NrKSkNCj4+ICsJCQlzY2hlZHVsZV93
-b3JrKCZnaGVzX2V2ZW50X3dvcmspOw0KPj4gKwkJZWxzZQ0KPj4gKwkJCXByX3dhcm4oR0hFU19Q
-RlggImdoZXMgZXZlbnQgcXVldWUgZnVsbFxuIik7DQo+PiArCX0NCj4+ICt9DQo+DQo+DQo+SSB0
-aGluayB0aGUga2ZpZm8gaXMgYWRkaW5nIHVuLW5lZWRlZCBjb21wbGV4aXR5IGhlcmUuDQpPay4N
-Cj4NCj4NCj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2FjcGkvZ2hlcy5oIGIvaW5jbHVkZS9hY3Bp
-L2doZXMuaCBpbmRleA0KPj4gZTNmMWNkZGI0YWM4Li5hM2RkODIwNjkwNjkgMTAwNjQ0DQo+PiAt
-LS0gYS9pbmNsdWRlL2FjcGkvZ2hlcy5oDQo+PiArKysgYi9pbmNsdWRlL2FjcGkvZ2hlcy5oDQo+
-PiBAQCAtNTAsNiArNTAsMzQgQEAgZW51bSB7DQo+DQpbLi4uXQ0KPj4gK3ZvaWQgZ2hlc191bnJl
-Z2lzdGVyX2V2ZW50X25vdGlmaWVyKHN0cnVjdCBub3RpZmllcl9ibG9jayAqbmIpOyAjZWxzZQ0K
-Pg0KPlBsZWFzZSBtYWtlIGl0IGNsZWFyIGZyb20gdGhlIG5hbWVzIHRoZXNlIGFyZSBmb3IgdmVu
-ZG9yIGV2ZW50cywgdGhhdCB0aGUNCj5rZXJuZWwgd291bGQgb3RoZXJ3aXNlIGlnbm9yZS4gSXQg
-bG9va3MgbGlrZSB0aGVzZSBhcmUgZm9yIGV2ZXJ5dGhpbmcuIERyaXZlcnMNCj5oYXZlIG5vIGJ1
-c2luZXNzIHRyeWluZyB0byBoYW5kbGUgdGhlIGVycm9ycyB0aGF0IGFyZSBoYW5kbGVkIGJ5IHRo
-aW5ncyBsaWtlDQo+bWVtb3J5X2ZhaWx1cmUoKS4NCj4NCj5+DQo+DQo+SSB3b3VsZCBwb3N0IGEg
-dmVyc2lvbiBvZiB0aGlzIHRvIGlsbHVzdHJhdGUsIGJ1dCB0aGVyZSBhcmUgY29tbWVudHMgb24g
-cGF0Y2ggMg0KPnRvby4NCj4NCj5Tb21ldGhpbmcgbGlrZToNCj5odHRwOi8vd3d3LmxpbnV4LWFy
-bS5vcmcvZ2l0P3A9bGludXgtDQo+am0uZ2l0O2E9Y29tbWl0ZGlmZjtoPTljNjg1OWYzMTQ2MDAx
-Y2Q5ZjhlZGZhZjk2NTIzMmNiOTljN2RjNDINCj4NCj4oY2F2ZWF0IGVtcHRvcjogSSd2ZSBvbmx5
-IGJ1aWxkIHRlc3RlZCBpdCkNCg0KSSB0ZXN0ZWQgeW91ciBjaGFuZ2VzIGFuZCB3b3JrZWQgZmlu
-ZS4NClNob3VsZCBJIHNlbmQgdGhpcyBwYXRjaCBhbG9uZyB3aXRoIHRoZSB1cGRhdGVkIHBhdGNo
-IDI/DQoNCj4NCj4NCj5UaGFua3MsDQo+DQo+SmFtZXMNCg0KVGhhbmtzLA0KU2hpanUNCg==
+On Tue, Jun 16, 2020 at 07:17:21PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 16, 2020 at 07:04:10PM +0200, Peter Zijlstra wrote:
+> > [19324.795303] ------------[ cut here ]------------
+> > [19324.795304] WARNING: CPU: 10 PID: 76 at kernel/smp.c:138 __smp_call_single_queue+0x40/0x50
+> > [19324.795305] Modules linked in:
+> > [19324.795306] CPU: 10 PID: 76 Comm: ksoftirqd/10 Not tainted 5.8.0-rc1+ #8
+> > [19324.795307] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+> > [19324.795307] RIP: 0010:__smp_call_single_queue+0x40/0x50
+> > [19324.795308] Code: c2 40 91 02 00 4c 89 e6 4c 89 e7 48 03 14 c5 e0 56 2d b4 e8 b2 3a 2f 00 84 c0 75 04 5d 41 5c c3 89 ef 5d 41 5c e9 40 af f9 ff <0f> 0b eb cd 66 66 2e 0f 1f 84 00 00 00 00 00 90 41 54 49 89 f4 55
+> > [19324.795309] RSP: 0000:ffffb3cb4030bd18 EFLAGS: 00010046
+> > [19324.795310] RAX: 000000000000000a RBX: 0000000000000000 RCX: 00000000ffffffff
+> > [19324.795310] RDX: 00000000000090aa RSI: ffffffffb420bc3f RDI: ffffffffb4232e3e
+> > [19324.795311] RBP: 000000000000000a R08: 00001193646cd91c R09: ffff93c1df49c008
+> > [19324.795312] R10: ffffb3cb4030bdf8 R11: 000000000000032e R12: ffff93c1dbed5b30
+> > [19324.795312] R13: ffff93c1df4a8340 R14: 000000000000000a R15: ffff93c1df2e8340
+> > [19324.795313] FS:  0000000000000000(0000) GS:ffff93c1df480000(0000) knlGS:0000000000000000
+> > [19324.795313] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [19324.795314] CR2: 00000000ffffffff CR3: 000000001e40a000 CR4: 00000000000006e0
+> > [19324.795315] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [19324.795315] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [19324.795316] Call Trace:
+> > [19324.795316]  ttwu_queue_wakelist+0xa4/0xc0
+> > [19324.795316]  try_to_wake_up+0x432/0x530
+> 
+> This is indeed WF_ON_CPU... it had to be, but how ?!
+
+So my latest theory is that we have a memory ordering problem. It would
+fully explain the thing, but it would also render my patch #1
+insufficient.
+
+If we suppose the: task_cpu(p) load at the beginning of try_to_wake_up()
+returns an old value, and this old value happens to be this_cpu. Further
+assume that the p->on_cpu load accurately returns 1, it really is still
+running, just not here.
+
+Then, when we issue a local wakeup, we can crash in exactly the observed
+manner because p->se.cfs_rq != rq->cfs_rq, because p's cfs_rq is from
+the wrong CPU, therefore we'll iterate into the non-existant parents and
+NULL deref.
+
+The scenario is somewhat elaborate:
+
+
+					X->cpu = 1
+					rq(1)->curr = X
+
+
+	CPU0				CPU1				CPU2
+
+					// switch away from X
+					LOCK rq(1)->lock
+					smp_mb__after_spinlock
+					dequeue_task(X)
+					  X->on_rq = 9
+					switch_to(Z)
+					  X->on_cpu = 0
+					UNLOCK rq(1)->lock
+
+
+									// migrate X to cpu 0
+									LOCK rq(1)->lock
+									dequeue_task(X)
+									set_task_cpu(X, 0)
+									  X->cpu = 0
+									UNLOCK rq(1)->lock
+
+									LOCK rq(0)->lock
+									enqueue_task(X)
+									  X->on_rq = 1
+									UNLOCK rq(0)->lock
+
+	// switch to X
+	LOCK rq(0)->lock
+	smp_mb__after_spinlock
+	switch_to(X)
+	  X->on_cpu = 1
+	UNLOCK rq(0)->lock
+
+	// X goes sleep
+	X->state = TASK_UNINTERRUPTIBLE
+	smp_mb();			// wake X
+					ttwu()
+					  LOCK X->pi_lock
+					  smp_mb__after_spinlock
+
+					  if (p->state)
+
+					  cpu = X->cpu; // =? 1
+
+					  smp_rmb()
+
+	// X calls schedule()
+	LOCK rq(0)->lock
+	smp_mb__after_spinlock
+	dequeue_task(X)
+	  X->on_rq = 0
+
+					  if (p->on_rq)
+
+					  smp_rmb();
+
+					  if (p->on_cpu && ttwu_queue_wakelist(..)) [*]
+
+					  smp_cond_load_acquire(&p->on_cpu, !VAL)
+
+					  cpu = select_task_rq(X, X->wake_cpu, ...)
+					  if (X->cpu != cpu)
+	switch_to(Y)
+	  X->on_cpu = 0
+	UNLOCK rq(0)->lock
+
+
+Furthermore, without the fancy new path [*] we would have hit
+smp_cond_load_acquire(), and if we _really_ would have had ->on_cpu==1
+and cpu==this_cpu there, that'd have been a deadlock, but no such
+deadlocks have ever been observed.
+
+Also, note how the rest of the code never actually uses the @cpu value
+loaded earlier, all that is re-loaded after the load_aquire of
+X->on_cpu.
+
+I'm having trouble convincing myself that's actually possible on
+x86_64 -- after all, every LOCK implies an smp_mb there, so if ttwu
+observes ->state != RUNNING, it must also observe ->cpu != 1.
+
+Most of the previous ttwu() races were found on very large PowerPC
+machines which are far more 'interesting'. I suppose I should go write
+me litmus tests...
+
+Anyway, IFF any of this holds true; then I suppose a patch like the below
+ought to cure things.
+
+If not, I'm, once again, defeated by this...
+
+---
+ kernel/sched/core.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8298b2c240ce..5534eb1ab79a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2378,6 +2378,9 @@ static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+ static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+ {
+ 	if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
++		if (WARN_ON(cpu == smp_processor_id()))
++			return false;
++
+ 		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+ 		__ttwu_queue_wakelist(p, cpu, wake_flags);
+ 		return true;
+@@ -2550,7 +2553,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 
+ 	/* We're going to change ->state: */
+ 	success = 1;
+-	cpu = task_cpu(p);
+ 
+ 	/*
+ 	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+@@ -2615,7 +2617,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 	 * let the waker make forward progress. This is safe because IRQs are
+ 	 * disabled and the IPI will deliver after on_cpu is cleared.
+ 	 */
+-	if (READ_ONCE(p->on_cpu) && ttwu_queue_wakelist(p, cpu, wake_flags | WF_ON_RQ))
++	if (smp_load_acquire(&p->on_cpu) &&
++	    ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_RQ))
+ 		goto unlock;
+ 
+ 	/*
+@@ -2635,6 +2638,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 		psi_ttwu_dequeue(p);
+ 		set_task_cpu(p, cpu);
+ 	}
++#else
++	cpu = task_cpu(p);
+ #endif /* CONFIG_SMP */
+ 
+ 	ttwu_queue(p, cpu, wake_flags);
+
