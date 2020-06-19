@@ -2,212 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8D6200548
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E0620054E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbgFSJeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732145AbgFSJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 05:34:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:39573 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729195AbgFSJeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Jun 2020 05:34:24 -0400
-Received: from mx.wingtech.com ([180.166.216.14]:59047 "EHLO mail.wingtech.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732059AbgFSJdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:33:55 -0400
-Received: from mx.wingtech.com ([192.168.2.43])
-        by mail.wingtech.com  with SMTP id 05J9Xi4q022465-05J9Xi4r022465
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 17:33:44 +0800
-Received: from 192.168.51.143 (HELO ZHAOWUYUN.WINGTECH.COM); Fri, 19 Jun 2020 17:33:41 +0800
-From:   zhaowuyun@wingtech.com
-To:     yuchao0@huawei.com, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, zhaowuyun@wingtech.com
-Subject: [PATCH v4] f2fs-tools: introduce set_node_footer to initialize node footer
-Date:   Fri, 19 Jun 2020 17:33:30 +0800
-Message-Id: <1592559210-2379-1-git-send-email-zhaowuyun@wingtech.com>
-X-Mailer: git-send-email 2.7.4
+Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1Mk0a0-1j1vIw3f8i-00kQSb; Fri, 19 Jun 2020 11:34:02 +0200
+Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
+        by mail.cetitecgmbh.com (Postfix) with ESMTP id C6E456518F7;
+        Fri, 19 Jun 2020 09:34:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at cetitec.com
+Received: from mail.cetitecgmbh.com ([127.0.0.1])
+        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id imaCpHMlptGZ; Fri, 19 Jun 2020 11:34:01 +0200 (CEST)
+Received: from pflmari.corp.cetitec.com (unknown [10.10.5.94])
+        by mail.cetitecgmbh.com (Postfix) with ESMTPSA id 7EC9B65101C;
+        Fri, 19 Jun 2020 11:34:01 +0200 (CEST)
+Received: by pflmari.corp.cetitec.com (Postfix, from userid 1000)
+        id 39001804FB; Fri, 19 Jun 2020 11:34:01 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 11:34:01 +0200
+From:   Alex Riesen <alexander.riesen@cetitec.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v5 9/9] arm64: dts: renesas: salvator: add a connection
+ from adv748x codec (HDMI input) to the R-Car SoC
+Message-ID: <20200619093401.GC7780@pflmari>
+Mail-Followup-To: Alex Riesen <alexander.riesen@cetitec.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+References: <cover.1585852001.git.alexander.riesen@cetitec.com>
+ <90f2c14fcbe5d06eefdaeadbe8a6efc8c91523f3.1585852001.git.alexander.riesen@cetitec.com>
+ <fd19ca3c-e815-499e-0c46-0a4e2684b6b9@ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd19ca3c-e815-499e-0c46-0a4e2684b6b9@ideasonboard.com>
+X-Provags-ID: V03:K1:6hRrqFEh5C6YLlVBCD2cmTMQVlqVh0XZanELx8BbCR+f3axPgeL
+ AN+rfxe2SLHaB2j8Jwu4tYzy8bLyyGdexHJD7SektcqP7r9CnI5bggzgkzhwtiHRS4D02+U
+ xXdLbA2mHSwf8dExOEf1Qnz39giJ77pfzF9/1zkZdQEDgSu+0l9714+LBKDL5waWfQ/Vxgt
+ NV5Du39Q/5WP0KXEjInIw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZUe7ElXwZOQ=:+idjBDE4aBudMjQHkAgSLK
+ pAd2mOYTOnUBNpn61Otce9qCkHArtzF71ds7Kq51NdJHTDEyiGl+ajooz5KdM08ZprHjzsUmW
+ 2yiAOhnw72G3iskjQKp4WoaeVGZRlHePjqc8Z2MvdfRsQ6r6iP1EmsgLZVypUjU/zMxFabpSq
+ oeKTrtS65tDvnKtflB8kxurmXIcNcvnGK/0FMcnB4pGzyD7tB3G3EVx+YNm4Ill/r2Pso/amS
+ BBAafCnd03zSYU5JrBwhMWK+q0H5JYlDhZ7vJmIgqxnb1UorF3AprL9aop5iZBUovqJOLMLGC
+ Gm2OCgfDNzOi3PCLshFL/dSNiSepkAvv7U93lUyg8NnRbSZFP7UxPmvonScL/3wC1HPBWEour
+ itmUAHbsQs1eswpKu6EXQbjYpoTM3djPiXzhRF8fQmMqCX6uhDqUK01zALgd7UI+DkupKcCjU
+ ro091c+uqYyPG5IwzPpOrohkw/TGJh910tAwTEsq8OUdo8DRQ0QqeyoMNTV/w6g6bS7HPjLAO
+ DE8ngdZ42Kvi+JdZsVAvROJHeqvPmBSJinL1qCy9zhAUjdeELAQFH+8siWXfWa6JIXnunnOVf
+ wIZN2QJ56h1pt8h23P1MgM/A3YGQm4/HP3ZQzALlbEblqrsaMe61wX60x1iiNkw2JtstO9HEv
+ QJ1mmuzKCBF1sNULj6hNbn/Kxe1nuXBdfsKnbprhzgeS551wkOA4kj4Z6ShDiPp5lW9vJRogY
+ lY4P/DPNyDsnSmOPNOiO6GjKDDX8o28SS2QGlYN+Mbfj4Im//GvO46gJLDvnofKYonlrFrT5y
+ IlQJmvR7vuBSED58mZZSce1Li9zXGabjNuV+aPwisiTXSV2T6x9A4XxTtZ00VC2DKyxHb+u
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wuyun Zhao <zhaowuyun@wingtech.com>
+Kieran Bingham, Thu, Jun 18, 2020 18:32:55 +0200:
+> On 02/04/2020 19:35, Alex Riesen wrote:
+> > --- a/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
+> > +++ b/arch/arm64/boot/dts/renesas/r8a77950-salvator-x.dts
+> > @@ -146,7 +146,8 @@ &sata {
+> >  &sound_card {
+> >  	dais = <&rsnd_port0	/* ak4613 */
+> >  		&rsnd_port1	/* HDMI0  */
+> > -		&rsnd_port2>;	/* HDMI1  */
+> > +		&rsnd_port2	/* HDMI1  */
+> > +		&rsnd_port3>;	/* adv7482 hdmi-in  */
+> 
+> Ah - that was confusing at first... but HDMI0 and HDMI1 are *outputs*,
+> where of course the adv7482 is an input ;-)
 
-the filesystem will use the cold flag, so deal with it to avoid
-potential issue of inconsistency
+And ak4613 is both... Why? Are the "dais" of a sound_card more commonly
+outputs than inputs?
 
-Signed-off-by: Wuyun Zhao <zhaowuyun@wingtech.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
----
- fsck/dir.c         |  7 ++-----
- fsck/node.c        | 12 +++++-------
- include/f2fs_fs.h  | 23 +++++++++++++++++++++++
- mkfs/f2fs_format.c | 34 +++++++++++++---------------------
- 4 files changed, 43 insertions(+), 33 deletions(-)
+> Otherwise, I can't spot anything else yet so:
+> 
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> But I fear there may have been some churn around here, so it would be
+> good to see a rebase too.
 
-diff --git a/fsck/dir.c b/fsck/dir.c
-index 5f4f75e..b067aec 100644
---- a/fsck/dir.c
-+++ b/fsck/dir.c
-@@ -517,11 +517,8 @@ static void init_inode_block(struct f2fs_sb_info *sbi,
- 	}
- 
- 	set_file_temperature(sbi, node_blk, de->name);
--
--	node_blk->footer.ino = cpu_to_le32(de->ino);
--	node_blk->footer.nid = cpu_to_le32(de->ino);
--	node_blk->footer.flag = 0;
--	node_blk->footer.cp_ver = ckpt->checkpoint_ver;
-+	set_node_footer(node_blk, de->ino, de->ino, 0,
-+			le64_to_cpu(ckpt->checkpoint_ver), 0, S_ISDIR(mode));
- 
- 	if (S_ISDIR(mode)) {
- 		make_empty_dir(sbi, node_blk);
-diff --git a/fsck/node.c b/fsck/node.c
-index 229a99c..ef7ed0b 100644
---- a/fsck/node.c
-+++ b/fsck/node.c
-@@ -61,7 +61,7 @@ void set_data_blkaddr(struct dnode_of_data *dn)
- block_t new_node_block(struct f2fs_sb_info *sbi,
- 				struct dnode_of_data *dn, unsigned int ofs)
- {
--	struct f2fs_node *f2fs_inode;
-+	struct f2fs_node *f2fs_inode = dn->inode_blk;
- 	struct f2fs_node *node_blk;
- 	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
- 	struct f2fs_summary sum;
-@@ -69,16 +69,14 @@ block_t new_node_block(struct f2fs_sb_info *sbi,
- 	block_t blkaddr = NULL_ADDR;
- 	int type;
- 	int ret;
--
--	f2fs_inode = dn->inode_blk;
-+	nid_t ino = le32_to_cpu(f2fs_inode->footer.ino);
-+	u64 cp_ver = le64_to_cpu(ckpt->checkpoint_ver);
- 
- 	node_blk = calloc(BLOCK_SZ, 1);
- 	ASSERT(node_blk);
- 
--	node_blk->footer.nid = cpu_to_le32(dn->nid);
--	node_blk->footer.ino = f2fs_inode->footer.ino;
--	node_blk->footer.flag = cpu_to_le32(ofs << OFFSET_BIT_SHIFT);
--	node_blk->footer.cp_ver = ckpt->checkpoint_ver;
-+	set_node_footer(node_blk, dn->nid, ino, ofs, cp_ver, 0,
-+			S_ISDIR(le16_to_cpu(f2fs_inode->i.i_mode)));
- 
- 	type = CURSEG_COLD_NODE;
- 	if (IS_DNODE(node_blk)) {
-diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
-index 709bfd8..ab19eb7 100644
---- a/include/f2fs_fs.h
-+++ b/include/f2fs_fs.h
-@@ -923,6 +923,29 @@ struct f2fs_node {
- 	struct node_footer footer;
- } __attribute__((packed));
- 
-+static inline void set_cold_node(struct f2fs_node *rn, bool is_dir)
-+{
-+	unsigned int flag = le32_to_cpu(rn->footer.flag);
-+
-+	if (is_dir)
-+		flag &= ~(0x1 << COLD_BIT_SHIFT);
-+	else
-+		flag |= (0x1 << COLD_BIT_SHIFT);
-+	rn->footer.flag = cpu_to_le32(flag);
-+}
-+
-+static inline void set_node_footer(struct f2fs_node *rn, nid_t nid, nid_t ino,
-+					u32 ofs, u64 ver, block_t blkaddr,
-+					bool is_dir)
-+{
-+	rn->footer.nid = cpu_to_le32(nid);
-+	rn->footer.ino = cpu_to_le32(ino);
-+	rn->footer.flag = cpu_to_le32(ofs << OFFSET_BIT_SHIFT);
-+	rn->footer.cp_ver = cpu_to_le64(ver);
-+	rn->footer.next_blkaddr = cpu_to_le32(blkaddr);
-+	set_cold_node(rn, is_dir);
-+}
-+
- /*
-  * For NAT entries
-  */
-diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
-index 44575e0..656023a 100644
---- a/mkfs/f2fs_format.c
-+++ b/mkfs/f2fs_format.c
-@@ -1094,6 +1094,9 @@ static int f2fs_write_root_inode(void)
- 	struct f2fs_node *raw_node = NULL;
- 	u_int64_t blk_size_bytes, data_blk_nor;
- 	u_int64_t main_area_node_seg_blk_offset = 0;
-+	nid_t nid = le32_to_cpu(sb->root_ino);
-+	block_t blkaddr = get_sb(main_blkaddr) +
-+				c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg + 1;
- 
- 	raw_node = calloc(F2FS_BLKSIZE, 1);
- 	if (raw_node == NULL) {
-@@ -1101,13 +1104,7 @@ static int f2fs_write_root_inode(void)
- 		return -1;
- 	}
- 
--	raw_node->footer.nid = sb->root_ino;
--	raw_node->footer.ino = sb->root_ino;
--	raw_node->footer.cp_ver = cpu_to_le64(1);
--	raw_node->footer.next_blkaddr = cpu_to_le32(
--			get_sb(main_blkaddr) +
--			c.cur_seg[CURSEG_HOT_NODE] *
--			c.blks_per_seg + 1);
-+	set_node_footer(raw_node, nid, nid, 0, 1, blkaddr, 1);
- 
- 	raw_node->i.i_mode = cpu_to_le16(0x41ed);
- 	if (c.lpf_ino)
-@@ -1256,6 +1253,10 @@ static int f2fs_write_qf_inode(int qtype)
- 	u_int64_t main_area_node_seg_blk_offset = 0;
- 	__le32 raw_id;
- 	int i;
-+	nid_t qf_ino = le32_to_cpu(sb->qf_ino[qtype]);
-+	block_t blkaddr = get_sb(main_blkaddr) +
-+					c.cur_seg[CURSEG_HOT_NODE] *
-+					c.blks_per_seg + 1 + qtype + 1;
- 
- 	raw_node = calloc(F2FS_BLKSIZE, 1);
- 	if (raw_node == NULL) {
-@@ -1263,13 +1264,7 @@ static int f2fs_write_qf_inode(int qtype)
- 		return -1;
- 	}
- 
--	raw_node->footer.nid = sb->qf_ino[qtype];
--	raw_node->footer.ino = sb->qf_ino[qtype];
--	raw_node->footer.cp_ver = cpu_to_le64(1);
--	raw_node->footer.next_blkaddr = cpu_to_le32(
--			get_sb(main_blkaddr) +
--			c.cur_seg[CURSEG_HOT_NODE] *
--			c.blks_per_seg + 1 + qtype + 1);
-+	set_node_footer(raw_node, qf_ino, qf_ino, 0, 1, blkaddr, 0);
- 
- 	raw_node->i.i_mode = cpu_to_le16(0x8180);
- 	raw_node->i.i_links = cpu_to_le32(1);
-@@ -1447,6 +1442,9 @@ static int f2fs_write_lpf_inode(void)
- 	struct f2fs_node *raw_node;
- 	u_int64_t blk_size_bytes, main_area_node_seg_blk_offset;
- 	block_t data_blk_nor;
-+	block_t blkaddr = get_sb(main_blkaddr) +
-+				c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg +
-+				1 + c.quota_inum + 1;
- 	int err = 0;
- 
- 	ASSERT(c.lpf_ino);
-@@ -1457,13 +1455,7 @@ static int f2fs_write_lpf_inode(void)
- 		return -1;
- 	}
- 
--	raw_node->footer.nid = cpu_to_le32(c.lpf_ino);
--	raw_node->footer.ino = raw_node->footer.nid;
--	raw_node->footer.cp_ver = cpu_to_le64(1);
--	raw_node->footer.next_blkaddr = cpu_to_le32(
--			get_sb(main_blkaddr) +
--			c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg +
--			1 + c.quota_inum + 1);
-+	set_node_footer(raw_node, c.lpf_ino, c.lpf_ino, 0, 1, blkaddr, 1);
- 
- 	raw_node->i.i_mode = cpu_to_le16(0x41c0); /* 0700 */
- 	raw_node->i.i_links = cpu_to_le32(2);
--- 
-2.7.4
+Just rebased the series on top of linux-media/master and the only conflict was
+in adding ssi4 node to rcar_sound,ssi in r8a77961.dtsi, as there was an
+addition of ssi2 in the same line.
+
+Thanks,
+Alex
 
